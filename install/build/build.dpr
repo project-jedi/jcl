@@ -804,8 +804,10 @@ begin
       if ed.Version >= Result.Version then
       begin
         if (Result.Version < ed.Version) or
-           { prefere Delphi version instead of C++Builder version: }
-           ((Result.Typ = BCB) and (ed.Typ <> BCB)) then
+           { prefer Delphi version instead of C++Builder version: }
+           ((Result.Typ = BCB) and (ed.Typ <> BCB)) or
+           { prefer the new version if the result is not valid (no root set) }
+           (Result.RootDir = '') then
         begin
           if ed.IsCLX then
             Continue; // this is not a valid version
