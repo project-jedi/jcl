@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 21, 2002                                                                 }
+{ Last modified: February 26, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -166,7 +166,8 @@ type
     function LineNumberFromAddr(Addr: DWORD): Integer;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
-    function ProcNameFromAddr(Addr: DWORD): string;
+    function ProcNameFromAddr(Addr: DWORD): string; overload;
+    function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
     function SourceNameFromAddr(Addr: DWORD): string;
   end;
 
@@ -235,7 +236,8 @@ type
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
     function LineNumberFromAddr(Addr: DWORD): Integer;
-    function ProcNameFromAddr(Addr: DWORD): string;
+    function ProcNameFromAddr(Addr: DWORD): string; overload;
+    function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function SourceNameFromAddr(Addr: DWORD): string;
@@ -260,9 +262,10 @@ type
   TJclDebugInfoSource = class;
 
   TJclLocationInfo = record
-    Address: Pointer;               // Error adderss
+    Address: Pointer;               // Error address
     UnitName: string;               // Name of Delphi unit
     ProcedureName: string;          // Procedure name
+    OffsetFromProcName: Integer;    // Offset from Address to ProcedureName symbol location
     LineNumber: Integer;            // Line number
     SourceName: string;             // Module file name
     DebugInfo: TJclDebugInfoSource; // Location object
@@ -274,7 +277,7 @@ type
     function GetFileName: TFileName;
   protected
     function InitializeSource: Boolean; virtual; abstract;
-    function VAFromAddr(const Addr: Pointer): DWORD;
+    function VAFromAddr(const Addr: Pointer): DWORD; virtual;
   public
     constructor Create(AModule: HMODULE); virtual;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; virtual; abstract;
@@ -352,7 +355,8 @@ function Caller(Level: Integer = 0): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
+  IncludeProcNameOffset: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
@@ -1170,31 +1174,42 @@ end;
 
 function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
 var
+  Dummy: Integer;
+begin
+  Result := ProcNameFromAddr(Addr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMapScanner.ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string;
+var
   I: Integer;
   ModuleStartAddr: DWORD;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
+  Offset := 0;
   for I := Length(FProcNames) - 1 downto 0 do
     if FProcNames[I].Addr <= Addr then
     begin
       if FProcNames[I].Addr >= ModuleStartAddr then
+      begin
         Result := MapStringToStr(FProcNames[I].ProcName);
+        Offset := Addr - FProcNames[I].Addr;
+      end;
       Break;
     end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;
-  Name: PJclMapString);
+procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;  Name: PJclMapString);
 begin
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMapScanner.PublicsByValueItem(const Address: TJclMapAddress;
-  Name: PJclMapString);
+procedure TJclMapScanner.PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString);
 begin
   if Address.Segment = 1 then
   begin
@@ -1978,6 +1993,15 @@ end;
 
 function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD): string;
 var
+  Dummy: Integer;
+begin
+  Result := ProcNameFromAddr(Addr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string;
+var
   P: Pointer;
   Value, FirstWord, SecondWord: Integer;
   CurrAddr, ModuleStartAddr, ItemAddr: DWORD;
@@ -1985,6 +2009,7 @@ begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   FirstWord := 0;
   SecondWord := 0;
+  Offset := 0;
   if FCacheData then
   begin
     CacheProcNames;
@@ -1995,6 +2020,7 @@ begin
         begin
           FirstWord := FProcNames[Value].FirstWord;
           SecondWord := FProcNames[Value].SecondWord;
+          Offset := Addr - FProcNames[Value].Addr;
         end;
         Break;
       end;
@@ -2013,7 +2039,8 @@ begin
         begin
           FirstWord := 0;
           SecondWord := 0;
-        end;  
+          Offset := 0;
+        end;
         Break;
       end
       else
@@ -2023,6 +2050,7 @@ begin
         Inc(FirstWord, Value);
         ReadValue(P, Value);
         Inc(SecondWord, Value);
+        Offset := Addr - CurrAddr;
       end;
     end;
   end;
@@ -2219,7 +2247,7 @@ begin
     if Result then
     begin
       Info.Address := Addr;
-      Info.ProcedureName := ProcNameFromAddr(VA);
+      Info.ProcedureName := ProcNameFromAddr(VA, Info.OffsetFromProcName);
       Info.LineNumber := LineNumberFromAddr(VA);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
@@ -2264,7 +2292,7 @@ begin
     if Result then
     begin
       Info.Address := Addr;
-      Info.ProcedureName := ProcNameFromAddr(VA);
+      Info.ProcedureName := ProcNameFromAddr(VA, Info.OffsetFromProcName);
       Info.LineNumber := LineNumberFromAddr(VA);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
@@ -2324,6 +2352,7 @@ begin
   Result := False;
   VA := DWORD(Addr) - FModule;
   RawName := not FBorImage.IsPackage;
+  Info.OffsetFromProcName := 0;
   with FBorImage.ExportList do
   begin
     SortList(esAddress, False);
@@ -2333,6 +2362,7 @@ begin
         if RawName then
         begin
           Info.ProcedureName := Items[I].Name;
+          Info.OffsetFromProcName := VA - Items[I].Address;
           Result := True;
         end
         else
@@ -2346,12 +2376,14 @@ begin
                   Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
                   if smLinkProc in Desc.Modifiers then
                     Info.ProcedureName := '@' + Info.ProcedureName;
+                  Info.OffsetFromProcName := VA - Items[I].Address;
                 end;
                 Result := True;
               end;
             urNotMangled:
               begin
                 Info.ProcedureName := Items[I].Name;
+                Info.OffsetFromProcName := VA - Items[I].Address;
                 Result := True;
               end;
           end;
@@ -2398,7 +2430,7 @@ begin
     with Info do
     begin
       Address := Addr;
-      ProcedureName := FImage.TD32Scanner.ProcNameFromAddr(VA);
+      ProcedureName := FImage.TD32Scanner.ProcNameFromAddr(VA, OffsetFromProcName);
       LineNumber := FImage.TD32Scanner.LineNumberFromAddr(VA);
       SourceName := FImage.TD32Scanner.SourceNameFromAddr(VA);
       DebugInfo := Self;
@@ -2516,21 +2548,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeProcNameOffset: Boolean): string;
 var
   Info: TJclLocationInfo;
+  ProcNameOffsetStr: string;
 begin
   if GetLocationInfo(Addr, Info) then
   with Info do
   begin
+    if IncludeProcNameOffset then
+      ProcNameOffsetStr := Format(' + %x', [OffsetFromProcName])
+    else
+      ProcNameOffsetStr := '';
     if LineNumber > 0 then
-      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
-        ProcedureName, LineNumber, SourceName])
+      Result := Format('[%p] %s.%s (Line %u, "%s"%s)', [Addr, UnitName, ProcedureName, LineNumber,
+        SourceName, ProcNameOffsetStr])
     else
     if UnitName <> '' then
-      Result := Format('[%p] %s.%s', [Addr, UnitName, ProcedureName])
+      Result := Format('[%p] %s.%s%s', [Addr, UnitName, ProcedureName, ProcNameOffsetStr])
     else
-      Result := Format('[%p] %s', [Addr, ProcedureName]);
+      Result := Format('[%p] %s%s', [Addr, ProcedureName, ProcNameOffsetStr]);
   end
   else
     Result := Format('[%p]', [Addr]);
