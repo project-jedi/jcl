@@ -96,6 +96,7 @@ function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean; ove
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 {$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
+procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -4033,6 +4034,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.29  2004/08/04 09:05:51  marquardt
+// forgot to export SetGlobalEnvironmentVariable
+//
 // Revision 1.28  2004/08/04 06:11:49  marquardt
 // added SetGlobalEnvironmentVariable
 //
