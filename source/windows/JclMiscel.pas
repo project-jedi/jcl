@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: June 8, 2000                                                  }
+{ Last modified: August 9, 2000                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -29,7 +29,8 @@ unit JclMiscel;
 interface
 
 uses
-  Windows, Classes;
+  Windows, Classes,
+  JclBase;
 
 //------------------------------------------------------------------------------
 // StrLstLoadSave
@@ -50,16 +51,27 @@ function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 
 function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string;
-  Items:TStringList):Boolean;
+  Items:TStringList): Boolean;
 function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string;
-  SaveTo: TStringList):Boolean;
+  SaveTo: TStringList): Boolean;
 function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+
+//------------------------------------------------------------------------------
+// CreateProcAsUser
+//------------------------------------------------------------------------------
+
+type
+  EJclCreateProcessError = class (EJclWin32Error);
+
+procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
+procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
+  const Environment: PChar);
 
 implementation
 
 uses
   Dialogs, Registry, SysUtils,
-  JclRegistry, JclResources, JclSecurity, JclSysUtils;
+  JclRegistry, JclResources, JclSecurity, JclSysUtils, JclWin32;
 
 //==============================================================================
 
@@ -253,6 +265,137 @@ begin
   except
     Result := False;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CheckOSVersion;
+var
+  NTVersion: TOSVersionInfo;
+begin
+  NTVersion.dwOSVersionInfoSize := sizeof(TOSVersionInfo);
+
+  if not GetVersionEx(NTVersion) then
+    raise EJclError.CreateResRec(@RsCreateProcOSVersionError);
+
+  if NTVersion.dwPlatformId <> VER_PLATFORM_WIN32_NT then
+    raise EJclError.CreateResRec(@RsCreateProcNTRequiredError);
+
+  if NTVersion.dwBuildNumber < 1057 then  // NT 3.51 release build
+    raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
+begin
+  CreateProcAsUserEx(UserDomain, UserName, Password, CommandLine, nil);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
+  const Environment: PChar);
+const
+  // default values for window stations and desktops
+  CreateProcDEFWINSTATION = 'WinSta0';
+  CreateProcDEFDESKTOP    = 'Default';
+  CreateProcDOMUSERSEP    = '\';
+var
+  ConsoleTitle: string;
+  Help: string;
+  WinStaName: string;
+  DesktopName: string;
+  hUserToken: THandle;
+  hWindowStation: HWINSTA;
+  hDesktop: HDESK;
+  StartUpInfo: TStartUpInfo;
+  ProcInfo: TProcessInformation;
+begin
+
+  // Step 1: check for the correct OS version
+  CheckOSVersion;
+
+  // Step 2: logon as the specified user
+  if not LogonUser(PChar(UserName), PChar(UserDomain), PChar(Password),
+    LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT, hUserToken) then
+  begin
+    case GetLastError of
+      ERROR_PRIVILEGE_NOT_HELD:
+        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcPrivilegeMissing,
+          [GetPrivilegeDisplayName(SE_TCB_NAME), SE_TCB_NAME]);
+      ERROR_LOGON_FAILURE:
+        raise EJclCreateProcessError.CreateResRec(@RsCreateProcLogonUserError);
+      ERROR_ACCESS_DENIED:
+        raise EJclCreateProcessError.CreateResRec(@RsCreateProcAccessDenied);
+    else
+      raise EJclCreateProcessError.CreateResRec(@RsCreateProcLogonFailed);
+    end;
+  end;
+
+  // Step 3: give the new user access to the current WindowStation and Desktop
+  hWindowStation:= GetProcessWindowStation;
+  WinStaName := GetUserObjectName(hWindowStation);
+  if WinStaName = '' then
+    WinStaName := CreateProcDEFWINSTATION;
+
+  if not SetUserObjectFullAccess(hWindowStation) then
+  begin
+    CloseHandle(hUserToken);
+    raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcSetStationSecurityError, [WinStaName]);
+  end;
+
+  hDesktop := GetThreadDesktop(GetCurrentThreadId);
+  DesktopName := GetUserObjectName(hDesktop);
+  if DesktopName = '' then
+    DesktopName := CreateProcDEFDESKTOP;
+
+  if not SetUserObjectFullAccess(hDesktop) then
+  begin
+    CloseHandle(hUserToken);
+    raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcSetDesktopSecurityError, [DesktopName]);
+  end;
+
+  // Step 4: set the startup info for the new process
+  ConsoleTitle := UserDomain + UserName;
+  FillChar(StartUpInfo, SizeOf(StartUpInfo), #0);
+  with StartUpInfo do
+  begin
+    cb:= SizeOf(StartUpInfo);
+    lpTitle:= PChar(ConsoleTitle);
+    Help := WinStaName + '\' + DeskTopName;
+    lpDesktop:= PChar(Help);
+  end;
+
+  // Step 5: create the child process
+  if not CreateProcessAsUser(hUserToken, nil, PChar(CommandLine),
+    nil, nil, False, CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP,
+    Environment, nil, StartUpInfo, ProcInfo) then
+  begin
+    case GetLastError of
+      ERROR_PRIVILEGE_NOT_HELD:
+        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcPrivilegesMissing,
+          [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
+          GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
+      ERROR_FILE_NOT_FOUND:
+        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcCommandNotFound, [CommandLine]);
+      else
+        raise EJclCreateProcessError.CreateResRec(@RsCreateProcFailed);
+    end;
+  end;
+
+  // clean up
+  CloseWindowStation(hWindowStation);
+  CloseDesktop(hDesktop);
+  CloseHandle(hUserToken);
+
+  // if this code should be called although there has
+  // been an exception during invocation of CreateProcessAsUser,
+  // it will quite surely fail. you should make sure this doesn't happen.
+  // (it shouldn't happen due to the use of exceptions in the above lines)
+  CloseHandle(ProcInfo.hThread);
+  CloseHandle(ProcInfo.hProcess);
+
 end;
 
 end.
