@@ -53,9 +53,6 @@ interface
 (*$HPPEMIT '#include <winerror.h>'*)
 (*$HPPEMIT '#include <winsvc.h>'*)
 
-(*$HPPEMIT '#include <netcons.h>'*)
-(*$HPPEMIT '#include <netsetup.h>'*)
-
 (*$HPPEMIT '#include <lmaccess.h>'*)
 (*$HPPEMIT '#include <lmalert.h>'*)
 (*$HPPEMIT '#include <lmapibuf.h>'*)
@@ -3234,12 +3231,14 @@ const
 // beyond the standard portion.
 
 
+  {$EXTERNALSYM ALERT_OTHER_INFO}
   function ALERT_OTHER_INFO(x: Pointer): Pointer;    //((LPBYTE)(x) + sizeof(STD_ALERT))
 
 // The following macro gives a pointer to the variable-length data.
 // It takes a pointer to one of the other-info structs and returns a
 // pointer to the variable data portion.
 
+  {$EXTERNALSYM ALERT_VAR_DATA}
   function ALERT_VAR_DATA(const p): Pointer;      //((LPBYTE)(p) + sizeof(*p))
 
 //      Names of standard Microsoft-defined alert events.
@@ -3791,26 +3790,26 @@ type
 
 const
   SUPPORTS_REMOTE_ADMIN_PROTOCOL  = $00000002;
-  {EXTERNALSYM SUPPORTS_REMOTE_ADMIN_PROTOCOL}
+  {$EXTERNALSYM SUPPORTS_REMOTE_ADMIN_PROTOCOL}
   SUPPORTS_RPC                    = $00000004;
-  {EXTERNALSYM SUPPORTS_RPC}
+  {$EXTERNALSYM SUPPORTS_RPC}
   SUPPORTS_SAM_PROTOCOL           = $00000008;
-  {EXTERNALSYM SUPPORTS_SAM_PROTOCOL}
+  {$EXTERNALSYM SUPPORTS_SAM_PROTOCOL}
   SUPPORTS_UNICODE                = $00000010;
-  {EXTERNALSYM SUPPORTS_UNICODE}
+  {$EXTERNALSYM SUPPORTS_UNICODE}
   SUPPORTS_LOCAL                  = $00000020;
-  {EXTERNALSYM SUPPORTS_LOCAL}
+  {$EXTERNALSYM SUPPORTS_LOCAL}
   SUPPORTS_ANY                    = $FFFFFFFF;
-  {EXTERNALSYM SUPPORTS_ANY}
+  {$EXTERNALSYM SUPPORTS_ANY}
 
 // Flag bits for RxRemoteApi:
 
   NO_PERMISSION_REQUIRED  = $00000001;      // set if use NULL session;
-  {EXTERNALSYM NO_PERMISSION_REQUIRED}
+  {$EXTERNALSYM NO_PERMISSION_REQUIRED}
   ALLOCATE_RESPONSE       = $00000002;      // set if RxRemoteApi allocates response buffer;
-  {EXTERNALSYM ALLOCATE_RESPONSE}
+  {$EXTERNALSYM ALLOCATE_RESPONSE}
   USE_SPECIFIC_TRANSPORT  = $80000000;
-  {EXTERNALSYM USE_SPECIFIC_TRANSPORT}
+  {$EXTERNALSYM USE_SPECIFIC_TRANSPORT}
 
 // Translated from LMREPL.H
 
