@@ -1256,7 +1256,8 @@ end;
 
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 begin
-  Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory), ShowCommand) > 32;
+  Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName), PChar(Parameters),
+    PChar(Directory), ShowCommand) > 32;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1265,11 +1266,14 @@ function ShellExecAndWait(const FileName: string; const Parameters: string;
   const Verb: string; CmdShow: Integer): Boolean;
 var
   Sei: TShellExecuteInfo;
+  Res: LongBool;
+  Msg: tagMSG;
+
 begin
   FillChar(Sei, SizeOf(Sei), #0);
   Sei.cbSize := SizeOf(Sei);
-  Sei.fMask := SEE_MASK_DOENVSUBST      or SEE_MASK_FLAG_NO_UI  or
-               SEE_MASK_NOCLOSEPROCESS  or SEE_MASK_FLAG_DDEWAIT;
+  Sei.fMask := SEE_MASK_DOENVSUBST  or SEE_MASK_FLAG_NO_UI  or SEE_MASK_NOCLOSEPROCESS or
+    SEE_MASK_FLAG_DDEWAIT;
   Sei.lpFile := PChar(FileName);
   Sei.lpParameters := PCharOrNil(Parameters);
   Sei.lpVerb := PCharOrNil(Verb);
@@ -1278,7 +1282,17 @@ begin
   if Result then
   begin
     WaitForInputIdle(Sei.hProcess, INFINITE);
-    WaitForSingleObject(Sei.hProcess, INFINITE);
+    while (WaitForSingleObject(Sei.hProcess, 10) = WAIT_TIMEOUT) do
+    begin
+      repeat
+        Res := PeekMessage(Msg, Sei.Wnd, 0, 0, PM_REMOVE);
+        if Res then
+        begin
+          TranslateMessage(Msg);
+          DispatchMessage(Msg);
+        end;
+      until (Res = False);
+    end;
     CloseHandle(Sei.hProcess);
   end;
 end;
