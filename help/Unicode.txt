@@ -3511,7 +3511,7 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function UnicodeComposePair(First, Second: <REF TARGET"..\Types\PUCS4">UCS4; var Composite: <REF TARGET"..\Types\PUCS4">UCS4): Boolean;
+function UnicodeComposePair(First, Second: <REF TARGET"..\Types\PUCS4">UCS4</REF>; var Composite: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
 Map two sequences into a composed codepoint.
 [Description]
