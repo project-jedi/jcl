@@ -3,17 +3,14 @@
 Summary:
   Tests whether S contains only alpha characters.
 Description:
-
   StrIsAlpha tests whether the supplied string consists only of alpha characters.
   That is, whether or not all individual characters come from the ['a'..'z', 'A'..'Z']
   set.
 Parameters:
   S - The string to test
 Result:
-
   If S contains only alpha characters the result is True, otherwise the result is False.
 Notes:
-
   If S is an empty string the result is False.
 Quick info:
   Unit: JclStrings
@@ -28,17 +25,14 @@ Quick info:
 Summary:
   Tests whether S contains only alpha-numerical characters.
 Description:
-
   StrIsAlphaNum tests whether the supplied string consists only of alpha-numerical
   characters. That is, whether or not all individual characters come from
   the ['a'..'z', 'A'..'Z', '0'..'9'] set.
 Parameters:
   S - The string to test
 Result:
-
   If S contains only alpha-numerical characters the result is True, otherwise the result is False.
 Notes:
-
   If S is an empty string the result is False.
 Quick info:
   Unit: JclStrings
@@ -53,18 +47,15 @@ Quick info:
 Summary:
   Tests whether S contains only alpha-numerical and underscore characters.
 Description:
-
   StrIsAlphaNum tests whether the supplied string consists only of alpha-numerical
   and underscore characters. That is, whether or not all individual characters come
   from the ['a'..'z', 'A'..'Z', '0'..'9', '_'] set.
 Parameters:
   S - The string to test
 Result:
-
   If S contains only alpha-numerical and underscore characters the result is True,
   otherwise the result is False.
 Notes:
-
   If S is an empty string the result is False.
 Quick info:
   Unit: JclStrings
@@ -79,7 +70,6 @@ Quick info:
 Summary:
   Determines whether a string contains a specified set of characters.
 Description:
-
   StrContainsChars checks whether the specified string contains at least one character
   that matches one of the characters in the Chars set. If CheckAll is True, the
   function checks whether all characters in the Chars set appear at least once in
@@ -89,7 +79,6 @@ Parameters:
   Chars - The characters for which to test.
   CheckAll - If True, all characters from Chars must appear at least once in the specified string. If False, at least one of the characters in Chars must appear at least once in the specified string.
 Result:
-
   Returns True if the condition is met, otherwise it returns False.
 Quick info:
   Unit: JclStrings
@@ -104,7 +93,6 @@ Quick info:
 Summary:
   Tests whether S contains only numerical characters.
 Description:
-
   StrIsNumber tests whether the supplied string consists only of numerical characters.
   That is, whether or not all individual characters come from the ['0'..'9'] set.
   The test does not include the decimal separator. To include it in the test
@@ -112,10 +100,8 @@ Description:
 Parameters:
   S - The string to test
 Result:
-
   If S contains only numerical characters the result is True, otherwise the result is False.
 Notes:
-
   If S is an empty string the result is False.
 Quick info:
   Unit: JclStrings
@@ -130,7 +116,6 @@ Quick info:
 Summary:
   Tests whether S contains only numerical characters.
 Description:
-
   StrIsNumber tests whether the supplied string consists only of numerical characters.
   That is, whether or not all individual characters come from the ['0'..'9'] set
   including the decimal separator. To test for numerical characters without the
@@ -138,10 +123,8 @@ Description:
 Parameters:
   S - The string to test
 Result:
-
   If S contains only numerical characters the result is True, otherwise the result is False.
 Notes:
-
   If S is an empty string the result is False.
 Quick info:
   Unit: JclStrings
@@ -156,18 +139,15 @@ Quick info:
 Summary:
   Tests whether S contains only characters from the supplied set.
 Description:
-
   StrIsSubset tests whether the supplied string contains only characters from the
   supplied character set. Keep in mind that the test is case-sensitive.
 Parameters:
   S - The string to test.
   ValidChars - The set of characters allowed in S.
 Result:
-
   If the string contains only characters from the supplied set the result is True,
   otherwise the result is False.
 Notes:
-
   If the supplied string is empty, the result is always True. If the supplied character set is empty, the result is always False. Empty string overules empty set.
 Quick info:
   Unit: JclStrings
@@ -182,14 +162,12 @@ Quick info:
 Summary:
   Tests two strings for equality.
 Description:
-
   StrSame compares the two supplied strings and returns whether or not they are
   identical.
 Parameters:
   S1 - First string to compare
   S2 - Second string to compare
 Result:
-
   If the two strings are identical the return value is True, if they are not the
   return value is False.
 Quick info:
@@ -205,7 +183,6 @@ Quick info:
 Summary:
   Centers a string.
 Description:
-
   The StrCenter routine takes the specified string and pads it on both the left
   and right side with the specified character until the resulting string is of the
   specified length. While doing this the original string is kept centered. That is,
@@ -215,7 +192,6 @@ Parameters:
   L - The desired length of the resulting string.
   C - The character to use for padding.
 Result:
-
   The centered string.
 Quick info:
   Unit: JclStrings
@@ -230,13 +206,11 @@ Quick info:
 Summary:
   Returns a double-quoted version of the string.
 Description:
-
   StrDoubleQuote returns a copy of the string encapsulated in double quotes (").
   That is, if you pass in 'Project JEDI' you'll get '"Project JEDI"' back.
 Parameters:
   S - The string to encapsulate in quotes. Even an empty string.
 Result:
-
   The double-quoted version of the string.
 Quick info:
   Unit: JclStrings
@@ -251,7 +225,6 @@ Quick info:
 Summary:
   Forces Text to start with Prefix.
 Description:
-
   StrEnsurePrefix tests whether the supplied text start with the supplied prefix.
   If it doesn't then the prefix is prepended to the string otherwise the function
   does nothing. Note that if Text is an empty string then the result will be Prefix.
@@ -259,7 +232,6 @@ Parameters:
   Prefix - The prefix to test for and apply
   Text - The string which must be forced to have a prefix
 Result:
-
   The function result is a copy of the supplied Text, prefixed with Prefix.
 Quick info:
   Unit: JclStrings
@@ -274,7 +246,6 @@ Quick info:
 Summary:
   Forces Text to end with Suffix.
 Description:
-
   StrEnsureSuffix tests whether the supplied text ends in the supplied suffix.
   If it doesn't then the suffix is appended to the string otherwise the function
   does nothing. Note that if Text is an empty string then the result will be Suffix.
@@ -282,7 +253,6 @@ Parameters:
   Suffix - The suffix to test for and apply
   Text - The string which must be forced to have a suffix
 Result:
-
   The function result is a copy of the supplied Text, with the suffix.
 Quick info:
   Unit: JclStrings
@@ -297,7 +267,6 @@ Quick info:
 Summary:
   Converts an escaped string to a string.
 Description:
-
   StrEscapedToString converts a string which contains escape characters to a string
   without escape characters by replacing all escape characters with their string
   counterparts. For example, a string which contains a '\a' sequence will
@@ -323,7 +292,6 @@ Character  Value  Constant   Description
 Parameters:
   S - The "escaped" string to convert to a "normal" string.
 Result:
-
   The string with all escape characters replaced with their string counterparts.
 Quick info:
   Unit: JclStrings
@@ -338,7 +306,6 @@ Quick info:
 Summary:
   Lowercases all characters in a string
 Description:
-
   StrLower returns a copy of the string, converted to lowercase. That is, if you pass in 'Project JEDI' you'll get 'project jedi'.
 Parameters:
   S - String to convert to lowercase.
@@ -355,7 +322,6 @@ Quick info:
 Summary:
   Lowercases all characters in a string
 Description:
-
   StrLower converts all characters in the supplied string to lowercase.
 Parameters:
   S - String to convert to lowercase.
@@ -372,7 +338,6 @@ Quick info:
 Summary:
   Lowercases all characters in a string
 Description:
-
   StrLowerBuff converts all characters in the supplied string to lowercase.
 Parameters:
   P - String to convert to lowercase.
@@ -389,7 +354,6 @@ Quick info:
 Summary:
   Copies a sub-string from one string to another.
 Description:
-
   StrMove copies Count characters starting at FromIndex in the source string to
   the destination string starting at ToIndex. The function checks the passed
   parameters and if any is illegal the function does nothing. This includes
@@ -413,7 +377,6 @@ Quick info:
 Summary:
   Left pads a string with characters.
 Description:
-
   StrPadLeft left pads a string with the specified character until the resulting
   string is Len characters long. If the source string is already greater than or
   equal in length to Len the function does nothing.
@@ -422,7 +385,6 @@ Parameters:
   Len - The length of the resulting string.
   C - The character to pad the string with.
 Result:
-
   The string left padded with the specified character.
 Quick info:
   Unit: JclStrings
@@ -437,7 +399,6 @@ Quick info:
 Summary:
   Right pads a string with characters.
 Description:
-
   StrPadRight right pads a string with the specified character until the resulting
   string is Len characters long. If the source string is already greater than or equal
   in length to Len the function does nothing.
@@ -446,7 +407,6 @@ Parameters:
   Len - The length of the resulting string.
   C - The character to pad the string with.
 Result:
-
   The string right padded with the specified character.
 Quick info:
   Unit: JclStrings
@@ -461,13 +421,11 @@ Quick info:
 Summary:
   Lowercases the supplied string and uppercases the first character.
 Description:
-
   The StrProper routine lowercases the entire string and subsequently uppercases
   the first character.
 Parameters:
   S - The string to transform.
 Result:
-
   The transformed string.
 Quick info:
   Unit: JclStrings
@@ -482,7 +440,6 @@ Quick info:
 Summary:
   Lowercases the supplied string and uppercases the first character.
 Description:
-
   The StrProper routine lowercases the entire string and subsequently uppercases
   the first character.
 Parameters:
@@ -500,7 +457,6 @@ Quick info:
 Summary:
   Quotes a string with a specific character.
 Description:
-
   StrQuote quotes the string with a specified character. Upon return the string is
   guarenteed to begin and end with the specified character. Note that if the string
   already starts or ends with this character, it is not added again.
@@ -508,7 +464,6 @@ Parameters:
   S - The string to quote.
   C - The character with which to quote the string.
 Result:
-
   The quoted string.
 Quick info:
   Unit: JclStrings
@@ -523,7 +478,6 @@ Quick info:
 Summary:
   Removes a set of characters from a string.
 Description:
-
   StrRemoveChars removes all instances of the characters in the set from the source
   string. For example, if you pass in 'Joint Endeavour of Delphi Innovators' and
   specify ['e', 'a', 'o', 'u', 'i'] the resulting string will be 'Jnt Endvr f Dlph Innvtrs'.
@@ -531,10 +485,8 @@ Parameters:
   S - The source string from which to remove the characters.
   Chars - The set of characters which are removed from S.
 Result:
-
   The string with all characters from the supplied set removed.
 Notes:
-
   The function is case sensitive. That is, specifying 'e' will not remove 'E'.
 Quick info:
   Unit: JclStrings
@@ -549,14 +501,12 @@ Quick info:
 Summary:
   Repeats a string Count number of times.
 Description:
-
   The StrRepeat routine returns a string consisting of the specified string, repeated
   Count number of times. For example, StrRepeat('He', 3) returns 'HeHeHe'.
 Parameters:
   S - The string to repeat.
   Count - The number of times to repeat the specified string.
 Result:
-
   The specified string, repeated Count number of times.
 Quick info:
   Unit: JclStrings
@@ -571,7 +521,6 @@ Quick info:
 Summary:
   Reverses a string.
 Description:
-
   StrReverse returns a reversed copy of S. That is, if you pass in 'Delphi' the
   function result will be 'ihpleD'. Note that the original string remains unmodified,
   as the const modifier indicates. If you don't need the original string after
@@ -580,7 +529,6 @@ Description:
 Parameters:
   S - The string to reverse
 Result:
-
   A reversed copy of the supplied string.
 Quick info:
   Unit: JclStrings
@@ -595,7 +543,6 @@ Quick info:
 Summary:
   Reverses a string.
 Description:
-
   StrReverse reverses S. That is, if you pass in 'Delphi' then after the function
   returns S contains the string 'ihpleD'. If you need to retain the original
   string then use the StrReverse function instead.
@@ -614,13 +561,11 @@ Quick info:
 Summary:
   Returns a single-quoted version of the string.
 Description:
-
   StrSingleQuote returns a copy of the string encapsulated in single quotes (').
   That is, if you pass in 'Project JEDI' you'll get ''Project JEDI'' back.
 Parameters:
   S - The string to encapsulate in quotes. Even an empty string.
 Result:
-
   The single-quoted version of the string.
 Quick info:
   Unit: JclStrings
@@ -635,7 +580,6 @@ Quick info:
 Summary:
   Converts a string to 'smartcase' or 'camelcase'.
 Description:
-
   StrSmartCase converts specified characters within the supplied source string to
   uppercase. The characters that are uppercased are determined by the Delimiters
   character set. Each time the function finds a character in the source string that
@@ -648,10 +592,8 @@ Parameters:
   S - Source string.
   Delimiters - Set of characters to use as delimiters. These characters determine which other characters are uppercased. If you supply an empty set the function assumes you want to use a space only. That is, it sets Delimiters to [' '].
 Result:
-
   The string converted to smart case.
 Notes:
-
   Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten by Marcel van Brakel.
 Quick info:
   Unit: JclStrings
@@ -666,7 +608,6 @@ Quick info:
 Summary:
   Converts a string to an escaped string.
 Description:
-
   StrStringToEscaped converts a string to an escaped string by replacing non-visual
   character sequences with their escape characters. For example, if a string contains
   the character #7 the resulting string will have the #7 character replaced with the '\a'
@@ -692,7 +633,6 @@ Character  Value  Constant   Description
 Parameters:
   S - The string to convert to an escaped string.
 Result:
-
   The "escaped" string.
 Quick info:
   Unit: JclStrings
@@ -707,7 +647,6 @@ Quick info:
 Summary:
   Removes all non-number characters from a string.
 Description:
-
   StrStripNonNumberChars removes all non-number characters from the specified string.
   Hence the resulting string will contain only number characters. Testing whether
   the individual characters are numbers is done using the CharIsNumber routine and
@@ -716,7 +655,6 @@ Description:
 Parameters:
   S - The string from which to remove non-number characters.
 Result:
-
   The string after all non-number characters are removed.
 Quick info:
   Unit: JclStrings
@@ -731,7 +669,6 @@ Quick info:
 Summary:
   Removes surrounding quotes from the supplied string.
 Description:
-
   StrTrimQuotes removes surrounding quotes, either single or double-quotes, from
   the string. For example if you pass in ''Project JEDI'' you'll get 'Project JEDI'
   back. Note that this function only removes quotes if the string both begins and
@@ -739,7 +676,6 @@ Description:
 Parameters:
   S - The string to unquote.
 Result:
-
   The unquoted string.
 Quick info:
   Unit: JclStrings
@@ -754,7 +690,6 @@ Quick info:
 Summary:
   Converts a string of hex digit pairs to the corresponding bytes.
 Description:
-
   The Source string is expected to contain pairs of hex digit
   characters ['0'..'9', 'a'..'f', 'A'..'F']. Each pair is converted to a single
   byte thus converting '40' to '@'. Any character not from the hex set
@@ -763,7 +698,6 @@ Description:
 Parameters:
   S - A string of hex digit pairs to be converted
 Result:
-
   The string of converted bytes.
 Quick info:
   Unit: JclStrings
@@ -778,14 +712,12 @@ Quick info:
 Summary:
   Removes leading characters from a string.
 Description:
-
   The StrTrimCharLeft routine removes leading characters from the specified string.
   For example, StrTrimCharLeft('000123', '0') returns '123'.
 Parameters:
   S - The source string from which the leading characters need to be removed.
   C - The character to remove
 Result:
-
   The function returns the source string S without any leading characters C.
 Quick info:
   Unit: JclStrings
@@ -800,14 +732,12 @@ Quick info:
 Summary:
   Removes trailing characters from a string.
 Description:
-
   The StrTrimCharRight routine removes trailing characters from the specified string.
   For example, StrTrimCharRight('123000', '0') returns '123'.
 Parameters:
   S - The source string from which the trailing characters need to be removed.
   C - The character to remove
 Result:
-
   The function returns the source string S without any trailing characters C.
 Quick info:
   Unit: JclStrings
@@ -822,7 +752,6 @@ Quick info:
 Summary:
   Uppercases all characters in a string
 Description:
-
   StrUpper returns a copy of the string, converted to uppercase. That is, if you pass in 'Project JEDI' you'll get 'PROJECT JEDI'.
 Parameters:
   S - String to convert to uppercase.
@@ -839,7 +768,6 @@ Quick info:
 Summary:
   Uppercases all characters in a string
 Description:
-
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
   S - String to convert to uppercase.
@@ -856,7 +784,6 @@ Quick info:
 Summary:
   Uppercases all characters in a string
 Description:
-
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
   S - String to convert to uppercase.
@@ -873,7 +800,6 @@ Quick info:
 Summary:
   Increments the reference count of a long string.
 Description:
-
   The StrAddRef routine increments the reference count of the specified long string.
   Explicitly incrementing a strings reference count forces Delphi to keep the string
   in memory even if the variable itself goes out of scope and all other references
@@ -895,7 +821,6 @@ Quick info:
 Summary:
   Returns the memory allocated to store the string.
 Description:
-
   A long string variable is a 4 byte pointer to a dynamically allocated block of
   memory. This block of memory holds the actual string data, including a NULL
   character. In addition this block of memory has, at a negative offset, a number
@@ -909,11 +834,9 @@ Description:
 Parameters:
   S - The string for which to determine the total amount of used memory.
 Result:
-
   The amount of dynamic memory allocated for the string or 0 in the exceptions noted
   above. Note that, at least in Delphi 5, the result will always be a multiple of 4.
 Notes:
-
   This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
 Quick info:
   Unit: JclStrings
@@ -928,7 +851,6 @@ Quick info:
 Summary:
   Decrements the reference count of a long string.
 Description:
-
   The StrDecRef routine decrements the reference count of the specified long string.
   Note that if decrementing the reference count will set it to 0 the string is
   released and the string pointer is set to nil. Therefore the string may be
@@ -948,14 +870,12 @@ Quick info:
 Summary:
   Returns the length of the supplied string.
 Description:
-
   StrLen returns the length of the supplied string, in characters, excluding the
   null terminating character. This function is identical to the StrLen routine from
   SysUtils.pas except that it is much faster.
 Parameters:
   S - Pointer to the null terminated string for which to determine the length.
 Result:
-
   The length of the string, in characters.
 Quick info:
   Unit: JclStrings
@@ -970,17 +890,14 @@ Quick info:
 Summary:
   Returns the length of the supplied string.
 Description:
-
   StrLength returns the length of the supplied string. This is a duplication of the
   standard Delphi Length function and is only supplied for completeness. You should
   prefer the Length function over StrLength.
 Parameters:
   S - The string for which to determine the length.
 Result:
-
   The length of the string in characters.
 Notes:
-
   This function relies on pseudo undocumented knowledge.
 Quick info:
   Unit: JclStrings
@@ -995,7 +912,6 @@ Quick info:
 Summary:
   Returns the reference count of the supplied string.
 Description:
-
   StrRefCount returns the reference count of the string. Note that this function
   will always return -1 for string literals, string constants and string variables
   that are assigned to string constants, but haven't been modified yet. This is
@@ -1003,11 +919,9 @@ Description:
 Parameters:
   S - String for which to determine the reference count.
 Result:
-
   The reference count of the string or -1 if the string ultimately points to a
   string constant.
 Notes:
-
   This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
 Quick info:
   Unit: JclStrings
@@ -1022,7 +936,6 @@ Quick info:
 Summary:
   Resets the length of the supplied string.
 Description:
-
   StrResetLength resets the length of the string to encompass only the actual number
   of used characters. This is particularly useful when passing strings to API
   functions which accept PChar's. These kind of functions do modify the string but
@@ -1045,14 +958,12 @@ Quick info:
 Summary:
   Counts the occurrences of a character in a string.
 Description:
-
   StrCharCount returns the number of occurrences of the specified character in the
   supplied string.
 Parameters:
   S - Source string.
   C - The character whose occurrences to count.
 Result:
-
   The number of occurrences of C in S.
 Quick info:
   Unit: JclStrings
@@ -1067,7 +978,6 @@ Quick info:
 Summary:
   Compares two strings.
 Description:
-
   StrCompare implements a case-insensitive comparison between the two supplied
   strings. If the two strings match the function returns 0 otherwise it returns
   the number of different characters. If the supplied strings are of equal length
@@ -1089,7 +999,6 @@ Parameters:
   S1 - First string to compare
   S2 - Second string to compare
 Result:
-
   StrCompare returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
 Quick info:
@@ -1105,7 +1014,6 @@ Quick info:
 Summary:
   Compares two (sub) strings.
 Description:
-
   StrCompareRange compares a sub-string from the first supplied string with the
   second string. If the two strings are identical the function returns 0 otherwise
   it returns an indication of difference between the two strings. See StrCompare
@@ -1119,7 +1027,6 @@ Parameters:
   Index - Starting index of sub-string in S1 to.
   Count - Number of characters of the sub-string in S1 to compare to S2.
 Result:
-
   StrCompareRange returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
 Quick info:
@@ -1135,14 +1042,12 @@ Quick info:
 Summary:
   Creates a string consisting of the specified character repeated Count times.
 Description:
-
   The StrFillChar routine returns a string consisting of the specified character
   repeated Count number of times.
 Parameters:
   C - The character to repeat.
   Count - The number of times to repeat the character.
 Result:
-
   A string consisting of the specified character repeated Count times.
 Quick info:
   Unit: JclStrings
@@ -1157,7 +1062,6 @@ Quick info:
 Summary:
   Returns the index of the first character in a specified sub-string that occurs in a given string.
 Description:
-
   StrFind returns the index of the first character in a specified sub-string that
   occurs in a given string. The search starts at the supplied index and is case-insensitive.
 Parameters:
@@ -1165,7 +1069,6 @@ Parameters:
   Str - The string in which to search.
   Index - The index in Str at which to start the search.
 Result:
-
   One-based index of the first character of SubStr in Str or 0 if SubStr does not
   occur in the supplied string.
 Quick info:
@@ -1181,7 +1084,6 @@ Quick info:
 Summary:
   Returns whether a string is prefixed by one of the supplied strings.
 Description:
-
   StrHasPrefix returns whether the string is prefixed with at least one of the strings
   supplied in the Prefixes array. In other words, for each string in the Prefixes
   array it determined if the supplied string starts with that prefix. Note that
@@ -1190,7 +1092,6 @@ Parameters:
   S - The string to test.
   Prefixes - Array of prefixes to test for.
 Result:
-
   If the supplied string is prefixed with one of the supplied prefixes the routine
   returns True, otherwise it returns False.
 Quick info:
@@ -1206,7 +1107,6 @@ Quick info:
 Summary:
   Returns the index of a string in an array of strings.
 Description:
-
   StrIndex returns the index into the List array at which S is positioned. This is
   particularly useful to create a case statement based on string labels. For example:
     <PRE class=syntax>
@@ -1222,7 +1122,6 @@ Parameters:
   S - The string to test.
   List - Array of strings to search in.
 Result:
-
   If the supplied string exists in the List array the zero based index of the position
   at which it appears is returned. If the string doesn't exist in the array -1 is
   returned. Note that the string comparison is case insensitive but is based on the
@@ -1240,14 +1139,12 @@ Quick info:
 Summary:
   Returns the index of the last occurrence of SubStr in S.
 Description:
-
   StrILastPos scans the supplied string and returns the index of the first character
   of the last occurrence of the supplied sub-string. The comparison is case-insensitive.
 Parameters:
   SubStr - The sub-string to find the last occurrence of.
   S - The string in which to search.
 Result:
-
   The index of the last occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
 Quick info:
@@ -1263,14 +1160,12 @@ Quick info:
 Summary:
   Returns the index of the last occurrence of SubStr in S.
 Description:
-
   StrLastPos scans the supplied string and returns the index of the first character
   of the last occurrence of the supplied sub-string. The comparison is case-sensitive.
 Parameters:
   SubStr - The sub-string to find the last occurrence of.
   S - The string in which to search.
 Result:
-
   The index of the last occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
 Quick info:
@@ -1286,14 +1181,12 @@ Quick info:
 Summary:
   Returns the index of the first occurrence of SubStr in S.
 Description:
-
   StrIPos scans the supplied string and returns the index of the first character
   of the first occurrence of the supplied sub-string. The comparison is case-insensitive.
 Parameters:
   SubStr - The sub-string to find the first occurrence of.
   S - The string in which to search.
 Result:
-
   The index of the first occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
 Quick info:
@@ -1309,14 +1202,12 @@ Quick info:
 Summary:
   Tests whether the supplied string exists in the list of strings.
 Description:
-
   StrIsOneOf tests whether the supplied string exists in the list of strings. Note
   that the comparison is case-insensitive.
 Parameters:
   S - The string to test.
   List - The list of string in which to search.
 Result:
-
   If the string exists in the supplied list the result is True, otherwise it's False.
 Quick info:
   Unit: JclStrings
@@ -1331,7 +1222,6 @@ Quick info:
 Summary:
   Returns the position of the N-th occurence of a sub-string within a string.
 Description:
-
   StrNPos returns the index into S of the N-th occurence of the specified sub-string.
   This function is case-sensitive and does not work with multibyte character sets.
   If the specified sub-string does not have N occurence in S the function returns 0.
@@ -1340,11 +1230,9 @@ Parameters:
   SubStr - The sub-string to search for.
   Index - The number of occurences of sub-string in S.
 Result:
-
   Index into S where the N-th occurence of SubStr is located. If SubStr has less
   than N occurences in S the result is 0.
 Notes:
-
   This function was inspired by code submitted by George Tasker
 Quick info:
   Unit: JclStrings
@@ -1359,7 +1247,6 @@ Quick info:
 Summary:
   Returns the position of the N-th occurence of a sub-string within a string.
 Description:
-
   StrNPos returns the index into S of the N-th occurence of the specified sub-string.
   This function is case-insensitive and does not work with multibyte character sets.
   If the specified sub-string does not have N occurence in S the function returns 0.
@@ -1368,11 +1255,9 @@ Parameters:
   SubStr - The sub-string to search for.
   Index - The number of occurences of sub-string in S.
 Result:
-
   Index into S where the N-th occurence of SubStr is located. If SubStr has less
   than N occurences in S the result is 0.
 Notes:
-
   This function was inspired by code submitted by George Tasker
 Quick info:
   Unit: JclStrings
@@ -1387,7 +1272,6 @@ Quick info:
 Summary:
   Returns the index of the first character in a specified sub-string that occurs in a given string.
 Description:
-
   StrMatch returns the index of the first character in a specified sub-string that
   occurs in a given string. The search starts at the supplied index and is case-insensitive.
   The specified sub-string may contain wildcards. The '?' wildcard matches 1 character
@@ -1398,11 +1282,9 @@ Parameters:
   Str - The string in which to search.
   Index - The index in Str at which to start the search.
 Result:
-
   One-based index of the first character of SubStr in Str or 0 if SubStr does not
   occur in the supplied string.
 Notes:
-
   The '*' wildcard currently doesn't work correctly, it produces the same result as '?'.
 Quick info:
   Unit: JclStrings
@@ -1417,7 +1299,6 @@ Quick info:
 Summary:
   Returns the index at which a string appears which is used as a prefix.
 Description:
-
   StrPrefixIndex returns the index into the prefixes array at which a string appears
   with which the supplied string is prefixed. For example,
   StrPrefixIndex('banana', ['call', 'ban', 'bana']) will return 1. Note that as
@@ -1427,7 +1308,6 @@ Parameters:
   S - The string to test.
   Prefixes - The list of prefixes.
 Result:
-
   The zero based index into Prefixes at which the first string appears that is used
   as a prefix in the supplied string. If none of the Prefixes array strings qualifies
   the result is -1.
@@ -1444,7 +1324,6 @@ Quick info:
 Summary:
   Returns the index of the first character in a specified sub-string that occurs in a given string.
 Description:
-
   StrSearch returns the index of the first character in a specified sub-string that
   occurs in a given string. The search starts at the supplied index and is case-sensitive.
 Parameters:
@@ -1452,7 +1331,6 @@ Parameters:
   Str - The string in which to search.
   Index - The index in Str at which to start the search.
 Result:
-
   One-based index of the first character of SubStr in Str or 0 if SubStr does not
   occur in the supplied string.
 Quick info:
@@ -1468,7 +1346,6 @@ Quick info:
 Summary:
   Returns the portion of the string after a specific sub-string.
 Description:
-
   The StrAfter routine returns that portion of the specified string that appears
   after a specified sub-string. For example, StrAfter('Hello', 'Hello world') returns
   the string ' world'.
@@ -1476,7 +1353,6 @@ Parameters:
   SubStr - The sub-string to search for.
   S - The source string.
 Result:
-
   The portion of the string after the specified sub-string. If the sub-string does
   not appear in the source string the result is an empty string.
 Quick info:
@@ -1492,7 +1368,6 @@ Quick info:
 Summary:
   Returns the portion of the string before a specific sub-string.
 Description:
-
   The StrBefore routine returns that portion of the specified string that appears
   before a specified sub-string. For example, StrBefore('world', 'Hello world') returns
   the string 'Hello '.
@@ -1500,7 +1375,6 @@ Parameters:
   SubStr - The sub-string to search for.
   S - The source string.
 Result:
-
   The portion of the string before the specified sub-string. If the sub-string does
   not appear in the source string the result is the source string.
 Quick info:
@@ -1516,7 +1390,6 @@ Quick info:
 Summary:
   Returns the sub-string between the first occurences of Start and Stop.
 Description:
-
   The StrBetween routine returns the that portion of the string that appears between
   the first occurences of the Start and Stop characters. For example,
   StrBetween('Hello world', 'e', 'r') returns 'llo wo'. Note that if the position
@@ -1527,7 +1400,6 @@ Parameters:
   Start - The character which denotes the start of the sub-string to extract.
   Stop - The character which denotes the end of the sub-string to extract.
 Result:
-
   If the function succeeds, it returns the sub-string between the first occurence of
   Start and Stop, not including either of these characters. If the function fails
   it returns an empty string, for example if the Start and/or Stop character doesn't
@@ -1545,14 +1417,12 @@ Quick info:
 Summary:
   Removes the last N characters from the string.
 Description:
-
   StrChopRight removes the last N characters from the specified string and returns
   the resulting string.
 Parameters:
   S - The source string from which the characters are removed.
   N - The number of characters to remove from the end of the string.
 Result:
-
   The string with the last N characters cut off. Note that when N is larger than
   the string length, the result is an empty string.
 Quick info:
@@ -1568,7 +1438,6 @@ Quick info:
 Summary:
   Returns the Count leftmost characters from the string.
 Description:
-
   StrLeft returns the Count number of leftmost characters from the supplied string.
   Note that if the supplied string contains fewer than Count characters, the function
   returns the entire string.
@@ -1576,7 +1445,6 @@ Parameters:
   S - The string from which to copy.
   Count - The number of characters to copy.
 Result:
-
   The Count leftmost characters from S.
 Quick info:
   Unit: JclStrings
@@ -1591,7 +1459,6 @@ Quick info:
 Summary:
   Copies part of a string.
 Description:
-
   StrMid copies the part of the source string defined by Start and Count.
   If Start exceeds the length of the string then an empty string is returned.
   The extracted sub-string can be shorter than Count if Start+Count exceed the string length.
@@ -1600,7 +1467,6 @@ Parameters:
   Start - Index of the first character to copy.
   Count - Number of characters to copy.
 Result:
-
   The string copied from S starting at offset Start and with length Count.
 Quick info:
   Unit: JclStrings
@@ -1615,14 +1481,12 @@ Quick info:
 Summary:
   Returns the remainder of a string starting at the specified index.
 Description:
-
   StrRestOf returns the remainder of the the string starting at index N. For example,
   StrRestOf('Project JEDI', 9) returns 'JEDI' (index 9 through Length(S)).
 Parameters:
   S - The source string from which to copy.
   N - The starting index of the characters to copy.
 Result:
-
   The remainder of the string starting at the specified index.
 Quick info:
   Unit: JclStrings
@@ -1637,7 +1501,6 @@ Quick info:
 Summary:
   Returns the Count rightmost characters from the string.
 Description:
-
   StrRight returns the Count number of rightmost characters from the supplied string.
   Note that if the supplied string contains fewer than Count characters, the function
   returns the entire string.
@@ -1645,7 +1508,6 @@ Parameters:
   S - The string from which to copy.
   Count - The number of characters to copy.
 Result:
-
   The Count of rightmost characters from S.
 Quick info:
   Unit: JclStrings
@@ -1660,14 +1522,12 @@ Quick info:
 Summary:
   Test whether two characters are equal except possibly for case.
 Description:
-
   CharEqualNoCase determines whether two characters are equal except possibly for
   case differences. For example, 'a' and 'a' are obviously equal but so are 'a' and 'A'.
 Parameters:
   C1 - The first character to test.
   C1 - The second character to test.
 Result:
-
   If the supplied characters are equal except for case, the result is True, otherwise
   the result is False.
 Quick info:
@@ -1683,13 +1543,11 @@ Quick info:
 Summary:
   Tests whether C is an alpha character.
 Description:
-
   CharIsAlpha returns whether or not the supplied character is an alpha character.
   That is, if C comes from the ['a'..'z', 'A'..'Z'] set.
 Parameters:
   C - The character to test
 Result:
-
   If C is an alpha character the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1704,13 +1562,11 @@ Quick info:
 Summary:
   Test whether C is an alphanumeric character.
 Description:
-
   CharIsAlphaNum returns whether or not C is an alphanumerical character. That is,
   if C comes from the ['a'..'z', 'A'..'Z', '0'..'9'] set.
 Parameters:
   C - The character to test.
 Result:
-
   If C is an alphanumerical character the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1725,12 +1581,10 @@ Quick info:
 Summary:
   Test whether C is a blank character.
 Description:
-
   CharIsBlank returns whether or not C is a blank character.
 Parameters:
   C - The character to test.
 Result:
-
   If C is a blank character the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1745,13 +1599,11 @@ Quick info:
 Summary:
   Tests whether C is a control character.
 Description:
-
   CharIsControl tests whether C is a control character. That is, if it has an
   ordinal value smaller than 32.
 Parameters:
   C - Character to test.
 Result:
-
   If C is a control character the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1766,13 +1618,11 @@ Quick info:
 Summary:
   Tests whether C is a delete character.
 Description:
-
   CharIsDelete tests whether C is a delete character. That is, if it has an
   ordinal value of 8.
 Parameters:
   C - Character to test.
 Result:
-
   If C is a delete character the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1787,13 +1637,11 @@ Quick info:
 Summary:
   Test whether C is a digit.
 Description:
-
   CharIsDigit returns whether or not C is a digit. That is, if C comes from
   the ['0'..'9'] set.
 Parameters:
   C - The character to test.
 Result:
-
   If C is a digit the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1808,12 +1656,10 @@ Quick info:
 Summary:
   Tests whether a character is lowercase.
 Description:
-
   CharIsLower returns whether the specified character is lowercase.
 Parameters:
   C - The character to test.
 Result:
-
   If C is lowercase the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1828,14 +1674,12 @@ Quick info:
 Summary:
   Tests whether C is a number.
 Description:
-
   CharIsNumber returns whether or not the supplied character is a number. That is,
   if it comes from the ['0'..'9', '+', '-', '.'] set where the dot is replaced by the
   system's decimal separator character.
 Parameters:
   C - Character to test.
 Result:
-
   If C is a number the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1853,14 +1697,12 @@ Quick info:
 Summary:
   Tests whether a character is printable.
 Description:
-
   CharIsPrintable returns whether the specified character is printable. A printable
   character is any character which is not a control character and as such has an
   ordinal value larger than 31.
 Parameters:
   C - The character to test.
 Result:
-
   If C is printable the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1875,13 +1717,11 @@ Quick info:
 Summary:
   Tests whether a character is a punctuation character.
 Description:
-
   CharIsPunctuation returns whether the specified character is a punctuation character.
   An example would be '.'.
 Parameters:
   C - The character to test.
 Result:
-
   If C is a punctuation character the return value is True, otherwise the return
   value is False.
 Quick info:
@@ -1897,14 +1737,12 @@ Quick info:
 Summary:
   Tests whether C is a return character.
 Description:
-
   CharIsReturn returns whether C is a return character. In this context both the
   carriage return (#13) as well as the linefeed (#10) are considered return.
   characters.
 Parameters:
   C - Character to test.
 Result:
-
   If C is a return character the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1919,14 +1757,12 @@ Quick info:
 Summary:
   Tests whether C represents space.
 Description:
-
   CharIsSpace returns whether or not the C character represents space(s).
   In this context that means the character is tested against both the space (' ') and
   tab (#9) characters.
 Parameters:
   C - Character to test.
 Result:
-
   If the character represents a space the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1941,12 +1777,10 @@ Quick info:
 Summary:
   Tests whether a character is uppercase.
 Description:
-
   CharIsUpper returns whether the specified character is uppercase.
 Parameters:
   C - The character to test.
 Result:
-
   If C is uppercase the return value is True, otherwise the return value is False.
 Quick info:
   Unit: JclStrings
@@ -1961,7 +1795,6 @@ Quick info:
 Summary:
   Tests whether C represents space.
 Description:
-
   CharIsWhiteSpace returns whether or not the C character represents a space.
   Unlike CharIsSpace this function returns True if the specified
   character comes from the AnsiWhiteSpace set which is defined as: 
@@ -1969,7 +1802,6 @@ Description:
 Parameters:
   C - Character to test.
 Result:
-
   If the character represents a space the result is True, otherwise the result is False.
 Quick info:
   Unit: JclStrings
@@ -1984,7 +1816,6 @@ Quick info:
 Summary:
   Returns character type information.
 Description:
-
   The CharType function returns character type information about the specified
   character. This routine returns the same information as routines such as IsCharControl.
   For further information about character type information see the documentation for
@@ -1992,7 +1823,6 @@ Description:
 Parameters:
   C - The character for which to retriev type information.
 Result:
-
   The type of the character, this can be one of the following values.
     <TABLE>
 Name       Value   Meaning
@@ -2009,7 +1839,6 @@ C1_ALPHA   0x0100  Any linguistic character: alphabetic, syllabary, or ideograph
 </TABLE>
 
 Notes:
-
   In a future Linux version the values may differ.
 Quick info:
   Unit: JclStrings
@@ -2024,13 +1853,11 @@ Quick info:
 Summary:
   Converts a hex digit character to its binary value.
 Description:
-
   Converts a hex digit character to its binary value, ie $0 to $f.
   If the character is no hex digit then $ff is returned.
 Parameters:
   C - A hex digit to convert
 Result:
-
   The binary value of the hex digit or $ff if it was no hex digit.
 Quick info:
   Unit: JclStrings
@@ -2045,13 +1872,11 @@ Quick info:
 Summary:
   Lowercases a character.
 Description:
-
   CharLower converts the supplied character to lowercase. For example 'A' becomes
   'a'. If the character is already lowercase the function does nothing.
 Parameters:
   C - Character to convert to lowercase.
 Result:
-
   Copy of character converted to lowercase.
 Quick info:
   Unit: JclStrings
@@ -2066,13 +1891,11 @@ Quick info:
 Summary:
   Uppercases a character.
 Description:
-
   CharUpper converts the supplied character to uppercase. For example 'a' becomes
   'A'. If the character is already uppercase the function does nothing.
 Parameters:
   C - The character to convert to upper case.
 Result:
-
   Copy of the character converted to uppercase.
 Quick info:
   Unit: JclStrings
@@ -2087,14 +1910,12 @@ Quick info:
 Summary:
   Reverses the case of a character.
 Description:
-
   CharToggleCase reverses the case of the supplied character. That is, if you pass an
   uppercase character the function converts it to lowercase, if you pass a lowercase
   character the function converts it to uppercase.
 Parameters:
   C - Character whose case to reverse.
 Result:
-
   Copy of the character with the case reversed.
 Quick info:
   Unit: JclStrings
@@ -2109,7 +1930,6 @@ Quick info:
 Summary:
   Finds the position of a character in a string.
 Description:
-
   CharPos returns the 1-based index of the first occurrence of the supplied character
   in the string. The search starts at the supplied index and is case sensitive.
 Parameters:
@@ -2117,7 +1937,6 @@ Parameters:
   C - The character to search for.
   Index - The character index where CharPos begins searching.
 Result:
-
   The 1-based index of the first occurrence found, or 0 if the character was not found.
 Quick info:
   Unit: JclStrings
@@ -2132,7 +1951,6 @@ Quick info:
 Summary:
   Finds the position of a character in a string.
 Description:
-
   CharPos returns the 1-based index of the first occurrence of the supplied character
   in the string. The search starts at the supplied index and is case insensitive.
 Parameters:
@@ -2140,7 +1958,6 @@ Parameters:
   C - The character to search for.
   Index - The character index where CharPos begins searching.
 Result:
-
   The 1-based index of the first occurrence found, or 0 if the character was not found.
 Quick info:
   Unit: JclStrings
@@ -2155,7 +1972,6 @@ Quick info:
 Summary:
   Replaces all occurrences of a character in a string.
 Description:
-
   CharReplace replaces all occurrences of the specified search character with the
   supplied replace character. It returns the number of replacements performed.
   Note that the replacement is case-sensitive.
@@ -2164,7 +1980,6 @@ Parameters:
   Search - The character to replace.
   Replace - The character to use as a replacement of Search.
 Result:
-
   CharReplace returns the number of replacements performed.
 Quick info:
   Unit: JclStrings
@@ -2179,7 +1994,6 @@ Quick info:
 Summary:
   Converts a stringlist into a PCharVector.
 Description:
-
   A PCharVector is an array of PChar's where each PChar points to a null terminated
   string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
   usually typed as a PPSTR. This function takes a string list and builds a
@@ -2189,7 +2003,6 @@ Parameters:
   Dest - On return receives a pointer to the PCharVector.
   Source - String list to convert to a PCharVector.
 Result:
-
   The value placed in Dest to allow using the function on parameter position.
 Quick info:
   Unit: JclStrings
@@ -2204,13 +2017,11 @@ Quick info:
 Summary:
   Returns the number of elements in a PCharVector.
 Description:
-
   PCharVectorCount returns the number of items, PChar's, in the supplied PCharVector
   excluding the NULL terminator.
 Parameters:
    - The PCharVector to count the elements in.
 Result:
-
   The number of elements in the PCharVector excluding the NULL terminator.
 Quick info:
   Unit: JclStrings
@@ -2225,7 +2036,6 @@ Quick info:
 Summary:
   Converts a PCharVector to a stringlist.
 Description:
-
   A PCharVector is an array of PChar's where each PChar points to a null terminated
   string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
   usually typed as a PPSTR. This function takes such a PCharVector and converts it
@@ -2247,7 +2057,6 @@ Quick info:
 Summary:
   Frees a PCharVector
 Description:
-
   FreePCharVector frees the memory pointed to by Dest and sets Dest to nil.
   Only hand in memory allocated by StringsToPCharVector.
   Freeing a PCharVector allocated by a Windows API function will crash your program.
@@ -2266,7 +2075,6 @@ Quick info:
 Summary:
   Converts a stringlist to a list of null terminated strings.
 Description:
-
   StringsToMultiSz concatenates the strings in Source into a single PChar string,
   terminating each individual string with a NULL character and the last string with
   a double NULL character. For example, if Source contains the items 'Project',
@@ -2275,7 +2083,6 @@ Parameters:
   Dest - PChar receives a pointer to the resulting string.
   Source - List of strings to pack into a single string. This list may not contain empty items (items with the value '') or an EJclStringError is raised.
 Result:
-
   On success the function returns the value of Dest. If the function fails to allocate
   memory for the result string it (implicitly) raises an EOutOfMemory exception. The
   caller is responsible for releasing the memory pointed to by Dest.
@@ -2292,7 +2099,6 @@ Quick info:
 Summary:
   Converts a list of null terminated strings to a string list.
 Description:
-
   Source is assumed to be a list of strings, separated by a NULL character, terminated
   by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
   takes this string and copies the individual strings to the string list. Thus,
@@ -2302,7 +2108,6 @@ Parameters:
   Dest - The string list to receive the individual strings.
   Source - The source string to extract the items from.
 Notes:
-
   This function does not release the memory associated with Source.
 Quick info:
   Unit: JclStrings
@@ -2317,7 +2122,6 @@ Quick info:
 Summary:
   Frees the memory pointed to by Dest.
 Description:
-
   FreeMultiSz frees the memory pointed to by Dest which is assumed to be a list
   of strings, each terminated by a NULL character, terminated by a double NULL
   character.
@@ -2336,7 +2140,6 @@ Quick info:
 Summary:
   Converts a string into a list of strings using the specified separator character.
 Description:
-
   StrToStrings converts the supplied string, which supposedly is a list of strings
   packed into a single string variable, to a TStrings. The function uses the supplied
   separator string to separate the string into its individual elements. For
@@ -2349,7 +2152,6 @@ Parameters:
   Sep - The string that separates the individual elements
   List - A TStrings derivative that receives the individual elements
 Notes:
-
   The list will be cleared by this function before adding the elements.
 Quick info:
   Unit: JclStrings
@@ -2364,7 +2166,6 @@ Quick info:
 Summary:
   Converts a stringlist to a single string.
 Description:
-
   StringsToStr concatenates the items in List, separating them with the specified
   separator string and returns the resulting string. The last element is not terminated
   with the separator (its a separator not a terminator after all).
@@ -2384,7 +2185,6 @@ Quick info:
 Summary:
   Trims all strings in a string list.
 Description:
-
   TrimStrings trims all strings in the specified stringlist using the standard
   Delphi Trim procedure. If an entry in the list is empty or trimming it causes
   it to become empty, the entry is optionally deleted from the list depending the
@@ -2405,7 +2205,6 @@ Quick info:
 Summary:
   Right trims all strings in a stringlist.
 Description:
-
   TrimStringsRight right trims all strings in the specified stringlist using the
   standard Delphi TrimRight procedure. If an entry in the list is empty or trimming
   it causes it to become empty, the entry is optionally deleted from the list
@@ -2426,7 +2225,6 @@ Quick info:
 Summary:
   Left trims all strings in a stringlist.
 Description:
-
   TrimStringsLeft left trims all strings in the specified stringlist using the
   standard Delphi TrimLeft procedure. If an entry in the list is empty or trimming
   it causes it to become empty, the entry is optionally deleted from the list
@@ -2447,14 +2245,12 @@ Quick info:
 Summary:
   Returns a string representation of the boolean values True and False.
 Description:
-
   BooleanToStr returns a string representation of the boolean values True or False.
   Thus, if B equals True the string 'True' is returned, if B equals False the
   string 'False' is returned.
 Parameters:
   B - The boolean value for which you want the string representation.
 Result:
-
   If B is True the result is the string 'True', if B is False the result is the
   string 'False'.
 Quick info:
@@ -2470,7 +2266,6 @@ Quick info:
 Summary:
   Breaks apart S using a specified delimiter into a StringList.
 Description:
-
   Use StrTokenToStrings for breaking apart a string with parts delimited by a
   separator. For example, if you passed 'C:\Windows;C:\Delphi;C:\JEDI;' List would
   contain 'C:\Windows', 'C:\Delphi', 'C:\JEDI'.
@@ -2493,7 +2288,6 @@ Quick info:
 Summary:
   Returns a sub-string from S which is followed by Separator and deletes the sub-string from S including the separator.
 Description:
-
   Splits a string into the part preceding the separator, which is returned
   as function result, and the part following the separator which is placed
   in S.
@@ -2503,7 +2297,6 @@ Parameters:
   S - The string you want to return the part after the Separator.
   Separator - A character which determines where to break the string up at.
 Result:
-
   Any part of S in front of Separator, or the original string if Separator
   was not located in S.
   S returns the remaining portion of the string after (but not including) Separator.
@@ -2521,12 +2314,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   S - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclStrings
@@ -2541,12 +2332,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   S - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclStrings
@@ -2561,7 +2350,6 @@ Quick info:
 Summary:
   Reads the contents of a file into a string.
 Description:
-
   The FileToString routine reads the contents of the specified file into a string
   and returns it as the function result. Note that the function doesn't care about
   the contents of the file, it simply treats the string as a buffer and copies the
@@ -2569,7 +2357,6 @@ Description:
 Parameters:
   FileName - Full qualified name of the file whose contents to read.
 Result:
-
   The contents of the file as a string buffer. Note that if the file contains
   null terminating characters, the string will contain the entire contents but
   for example displaying the string will only show the part of the string up to
@@ -2587,7 +2374,6 @@ Quick info:
 Summary:
   Writes a string to a file.
 Description:
-
   The StringToFile routine writes the contents of the specified string to a file.
   Note that the full content is written to the file, including any null terminating
   characters. The string is considered a generic buffer and can contains anything.
