@@ -24,6 +24,7 @@
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJediInstallerMain{$ELSE}JediInstallerMain{$ENDIF};{$ENDIF}
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 interface
 
