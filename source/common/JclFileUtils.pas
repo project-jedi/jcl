@@ -1495,7 +1495,7 @@ procedure CreateEmptyFile(const FileName: string);
 var
   Handle: THandle;
 begin
-  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, CREATE_NEW, 0, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, CREATE_ALWAYS, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     CloseHandle(Handle)
   else
