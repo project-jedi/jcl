@@ -132,7 +132,8 @@ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Inte
 function IsLeapYear(Year: Integer): Boolean;  overload;
 function IsLeapYear(DateTime: TDateTime): Boolean;  overload;
 function DaysInMonth(DateTime: TDateTime): Integer;
-function Make4DigitYear(Year, Pivot: Integer): Integer;
+function Make4DigitYear(Year, pivot: Integer): Integer;
+function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
 function EasterSunday(Year: Integer): TDateTime;
 
 //------------------------------------------------------------------------------
@@ -448,6 +449,7 @@ end;
 
 //------------------------------------------------------------------------------
 
+(* older version*)
 function Make4DigitYear(Year, Pivot: Integer): Integer;
 begin
   // TODO
@@ -461,6 +463,37 @@ begin
   else
     Result := 1900 + Year;
 end;
+
+(* newer version *)
+{ "window" technique for years to translate 2 digits to 4 digits.
+   The window is 100 years wide
+   The windowsill year is the lower edge of the window
+  A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year
+ if WindowsillYear is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039
+ The system default is 1950
+}
+function MakeYear4Digit (Year, WindowsillYear: integer): integer;
+var
+  CC: integer;
+begin
+  { have come across this specific problem : y2K read as year 100 }
+  if Year = 100 then
+    Year := 0;
+  Assert((Year >= 0) and (Year <= 100));
+
+  { turn 2 digit years to 4 digits }
+  if (Year >= 0) and (Year < 100) then
+  begin
+    CC := (WindowsillYear div 100) * 100;
+
+    Result := Year + CC; // give the result the same century as the windowsill
+    if Result < WindowsillYear then //  cannot be lower than the windowsill
+      Result := Result + 100;
+  end
+  else
+    Result := Year;
+end;
+
 
 //------------------------------------------------------------------------------
 
