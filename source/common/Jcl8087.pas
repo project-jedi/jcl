@@ -22,13 +22,20 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: April 22, 2003                                                                    }
+{ Last modified: October 12, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// rr 2003-10-12:
+//   Removed references to Default8087CW because of compiler problems when including Jcl8087 in
+//   package (D7, I remember having seen that with D5, too; Kylix 3 however went smoothly). Error
+//   message was, in spite of {$IMPORTEDDATA ON}:
+//   "Need imported data reference ($G) to access Default8087CW".
 
 unit Jcl8087;
 
 {$I jcl.inc}
+
 {$WEAKPACKAGEUNIT ON}
 
 interface
@@ -64,25 +71,8 @@ function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean 
 
 implementation
 
-uses
-  JclBase;
-
 const
   X87ExceptBits = $3F;
-
-//--------------------------------------------------------------------------------------------------
-
-// Linux: Get Global Offset Table (GOT) adress for Position Independent Code
-// (PIC, used by shared objects)
-
-{$IFDEF PIC}
-function GetGOT: Pointer; export;
-begin
-  asm
-        MOV     Result,EBX
-  end;
-end;
-{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -169,17 +159,19 @@ end;
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
         FNCLEX
-        {$IFDEF PIC}
-        PUSH    EAX
-        CALL    GetGOT
-        LEA     EDX, [EAX].Default8087CW
-        POP     EAX
+        {$IFNDEF FPC}
+        SUB     ESP, TYPE WORD
         {$ELSE}
-        LEA     EDX, Default8087CW
-        {$ENDIF PIC}
-        FSTCW   [EDX]
-        XCHG    [EDX], AX
-        FLDCW   [EDX]
+        SUB     ESP, $2
+        {$ENDIF}
+        FSTCW   [ESP]
+        XCHG    [ESP], AX
+        FLDCW   [ESP]
+        {$IFNDEF FPC}
+        ADD     ESP, TYPE WORD
+        {$ELSE}
+        ADD     ESP, $2
+        {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -222,21 +214,23 @@ asm
         JZ      @1
         FNCLEX                     // clear pending exceptions
 @1:
-        {$IFDEF PIC}
-        PUSH    EAX
-        CALL    GetGOT
-        LEA     ECX, [EAX].Default8087CW
-        POP     EAX
+        {$IFNDEF FPC}
+        SUB     ESP, TYPE WORD
         {$ELSE}
-        LEA     ECX, Default8087CW
-        {$ENDIF PIC}
-        FSTCW   [ECX]
+        SUB     ESP, $2
+        {$ENDIF}
+        FSTCW   [ESP]
         FWAIT
         AND     AX, X87ExceptBits  // mask exception mask bits 0..5
-        MOV     DX, [ECX]
-        AND     WORD PTR [ECX], NOT X87ExceptBits
-        OR      [ECX], AX
-        FLDCW   [ECX]
+        MOV     DX, [ESP]
+        AND     WORD PTR [ESP], NOT X87ExceptBits
+        OR      [ESP], AX
+        FLDCW   [ESP]
+        {$IFNDEF FPC}
+        ADD     ESP, TYPE WORD
+        {$ELSE}
+        ADD     ESP, $2
+        {$ENDIF}
         MOV     AX, DX
         AND     AX, X87ExceptBits
 end;
