@@ -1447,7 +1447,7 @@ begin
     try
       if ProcessHandle <> 0 then
       begin
-        EnumWindows(@EnumWindowsProc, ProcessID);
+        EnumWindows(@EnumWindowsProc, LPARAM(ProcessID));
         if WaitForSingleObject(ProcessHandle, Timeout) = WAIT_OBJECT_0 then
           Result := taClean
         else if TerminateProcess(ProcessHandle, 0) then
