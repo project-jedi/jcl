@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclSvcCtrl;
@@ -1359,11 +1359,12 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/04/08 02:44:52  rrossmair
+// Log clean-up, typo in $Date$ corrected
+//
 // Revision 1.6  2004/04/07 18:43:02  peterjhaas
-// *** empty log message ***
 //
 // Revision 1.5  2004/04/07 14:01:15  obones
-// Removed stupid compilation directives
 //
 // Revision 1.4  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
