@@ -1442,7 +1442,7 @@ begin
   if WrittenBytes <> SizeOf(Pointer) then
     raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
   // make sure that everything keeps working in a dual processor setting
-  FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
+  FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
