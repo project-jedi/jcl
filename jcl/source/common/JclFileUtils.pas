@@ -2048,11 +2048,9 @@ begin
             DiffIndex := I;
             Break;
           end;
-
         Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
-        if DiffIndex < DestList.Count then
-          Result := Result + DestList[DiffIndex];
-        for I := DiffIndex + 1 to DestList.Count - 1 do
+        Result := PathRemoveSeparator(Result);
+        for I := DiffIndex to DestList.Count - 1 do
           Result := Result + PathSeparator + DestList[i];
       end;
     finally
@@ -5439,6 +5437,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.44  2005/03/22 03:40:24  rrossmair
+// - tweaked PathGetRelativePath
+//
 // Revision 1.43  2005/03/19 02:02:59  rrossmair
 // - fixed PathGetRelativePath
 //
