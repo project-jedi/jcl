@@ -20,7 +20,7 @@
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: March 17, 2002                                                                    }
+{ Last modified: May 17, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -738,6 +738,7 @@ begin
   inherited Create;
   FNameIndex := pSrcFile.NameIndex;
   FLines := TObjectList.Create;
+  {$RANGECHECKS OFF}
   for I := 0 to pSrcFile.SegmentCount - 1 do
   begin
     pLineEntry := PLineMappingEntry(Base + pSrcFile.BaseSrcLines[I]);
@@ -749,6 +750,9 @@ begin
 
   FSegments := @pSrcFile.BaseSrcLines[pSrcFile.SegmentCount];
   FSegmentCount := pSrcFile.SegmentCount;
+  {$IFDEF RANGECHECKS_ON}
+  {$RANGECHECKS ON}
+  {$ENDIF RANGECHECKS_ON}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -849,23 +853,27 @@ begin
   while True do
   begin
     Assert(pDirHeader.DirEntrySize = SizeOf(TDirectoryEntry));
+    {$RANGECHECKS OFF}
     for I := 0 to pDirHeader.DirEntryCount - 1 do
-    with pDirHeader.DirEntries[I] do
-    begin
-      pSubsection := LfaToVa(Offset);
-      case SubsectionType of
-        SUBSECTION_TYPE_MODULE:
-          AnalyseModules(pSubsection, Size);
-        SUBSECTION_TYPE_ALIGN_SYMBOLS:
-          AnalyseAlignSymbols(pSubsection, Size);
-        SUBSECTION_TYPE_SOURCE_MODULE:
-          AnalyseSourceModules(pSubsection, Size);
-        SUBSECTION_TYPE_NAMES:
-          AnalyseNames(pSubsection, Size);
-      else
-        AnalyseUnknownSubSection(pSubsection, Size);
+      with pDirHeader.DirEntries[I] do
+      begin
+        pSubsection := LfaToVa(Offset);
+        case SubsectionType of
+          SUBSECTION_TYPE_MODULE:
+            AnalyseModules(pSubsection, Size);
+          SUBSECTION_TYPE_ALIGN_SYMBOLS:
+            AnalyseAlignSymbols(pSubsection, Size);
+          SUBSECTION_TYPE_SOURCE_MODULE:
+            AnalyseSourceModules(pSubsection, Size);
+          SUBSECTION_TYPE_NAMES:
+            AnalyseNames(pSubsection, Size);
+        else
+          AnalyseUnknownSubSection(pSubsection, Size);
+        end;
       end;
-    end;
+    {$IFDEF RANGECHECKS_ON}
+    {$RANGECHECKS ON}
+    {$ENDIF RANGECHECKS_ON}
     if pDirHeader.lfoNextDir <> 0 then
       pDirHeader := PDirectoryHeader(LfaToVa(pDirHeader.lfoNextDir))
     else
@@ -934,12 +942,16 @@ var
   I: Integer;
   pSrcFile: PSourceFileEntry;
 begin
+  {$RANGECHECKS OFF}
   for I := 0 to pSrcModInfo.FileCount - 1 do
   begin
     pSrcFile := PSourceFileEntry(DWORD(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
     if pSrcFile.NameIndex > 0 then
       FSourceModules.Add(TJclSourceModuleInfo.Create(pSrcFile, DWORD(pSrcModInfo)));
   end;
+  {$IFDEF RANGECHECKS_ON}
+  {$RANGECHECKS ON}
+  {$ENDIF RANGECHECKS_ON}
 end;
 
 //--------------------------------------------------------------------------------------------------
