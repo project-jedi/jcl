@@ -105,7 +105,11 @@ function GetUserDomainName(const CurUser: string): string;
 function GetDomainName: string;
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
+
 function RunningProcessesList(List: TStrings): Boolean;
+function GetPidFromProcessName(const ProcessName: string): DWORD;
+function GetProcessNameFromWnd(Wnd: HWND): string;
+function GetProcessNameFromPid(PID: DWORD): string;
 
 //------------------------------------------------------------------------------
 // Version Information
@@ -446,9 +450,7 @@ begin
   Result := ExpandEnvironmentStrings(PChar(Value), PChar(Expanded), R) <> 0;
   if Result then
   begin
-//    SetLength(Expanded, StrLen(PChar(Value)));       BUG0001  ESF  2000/06/04
-//    SetLength(Expanded, StrLen(PChar(Expanded)));   // BUG0001  ESF  2000/06/04
-      StrResetLength(Expanded);
+    StrResetLength(Expanded);
     Value := Expanded;
   end;
 end;
@@ -458,7 +460,6 @@ end;
 function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
 var
   R: DWORD;
-//  P: Integer;
 begin
   R := GetEnvironmentVariable(PChar(Name), nil, 0);
   SetLength(Value, R);
@@ -825,6 +826,78 @@ begin
       Result := BuildListTH;
   finally
     List.EndUpdate;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetProcessNameFromWnd(Wnd: HWND): string;
+var
+  List: TStringList;
+  PID: DWORD;
+  I: Integer;
+begin
+  Result := '';
+  if IsWindow(Wnd) then
+  begin
+    PID := INVALID_HANDLE_VALUE;
+    GetWindowThreadProcessId(Wnd, @PID);
+    List := TStringList.Create;
+    try
+      if RunningProcessesList(List) then
+      begin
+        I := List.IndexOfObject(Pointer(PID));
+        if I > -1 then
+          Result := List[I];
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetPidFromProcessName(const ProcessName: string): DWORD;
+var
+  List: TStringList;
+  I: Integer;
+begin
+  Result := INVALID_HANDLE_VALUE;
+  List := TStringList.Create;
+  try
+    if RunningProcessesList(List) then
+    begin
+      I := List.IndexOf(ProcessName);
+      if I > -1 then
+        Result := DWORD(List.Objects[I]);
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetProcessNameFromPid(PID: DWORD): string;
+var
+  List: TStringList;
+  I: Integer;
+begin
+  // Note: there are other ways to retrieve the name of the process given it's
+  // PID but this implementation seems to work best without making assumptions
+  // although it may not be the most efficient implementation.
+  Result := '';
+  List := TStringList.Create;
+  try
+    if RunningProcessesList(List) then
+    begin
+      I := List.IndexOfObject(Pointer(PID));
+      if I > -1 then
+        Result := List[I];
+    end;
+  finally
+    List.Free;
   end;
 end;
 
