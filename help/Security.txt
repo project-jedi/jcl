@@ -87,11 +87,11 @@ Count=1
 1=CreateNullDacl
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PrivilegeEnabled(const Privilege: string): Boolean;
+function IsPrivilegeEnabled(const Privilege: string): Boolean;
 [ShortDescr]
 Tests if the specified Privilege is enabled.
 [Description]
-PrivilegeEnabled tests whether the specified privilege is enabled for the current
+IsPrivilegeEnabled tests whether the specified privilege is enabled for the current
 thread. If the thread is currently impersonating a client the test is made against
 the credentials of that client, otherwise the test is made against the credentials
 of the user associated with the process that the calling thread runs in.
@@ -152,7 +152,7 @@ Windows 95/98=Unsupported.
 [SeeAlso]
 Count=2
 1=EnableThreadPrivilege
-2=PrivilegeEnabled
+2=IsPrivilegeEnabled
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function EnableThreadPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
@@ -188,7 +188,7 @@ Windows 95/98=Unsupported.
 [SeeAlso]
 Count=2
 1=EnableProcessPrivilege
-2=PrivilegeEnabled
+2=IsPrivilegeEnabled
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsAdministrator: Boolean;
