@@ -2346,7 +2346,7 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@TSearchFlags
+@@TSearchFlag
 <GROUP Unicode.TSearchEngine>
 Summary:
   Flags used in the search class.
@@ -2361,14 +2361,17 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TSearchFlags.sfCaseSensitive
+@@TSearchFlag.sfCaseSensitive
   Match letter case
-@@TSearchFlags.sfIgnoreNonSpacing
+@@TSearchFlag.sfIgnoreNonSpacing
   Ignore non-spacing characters in search
-@@TSearchFlags.sfSpaceCompress
-  Handle several consecutive white spaces as one white space                   (this applies to the pattern as well as the search text)
-@@TSearchFlags.sfWholeWordOnly
+@@TSearchFlag.sfSpaceCompress
+  Handle several consecutive white spaces as one white space (this applies to the pattern as well as the search text)
+@@TSearchFlag.sfWholeWordOnly
   Match only text at end/start and/or surrounded by white spaces
+@@TSearchFlags
+<GROUP Unicode.TSearchEngine>
+<COMBINE TSearchFlag>
 --------------------------------------------------------------------------------
 @@TCharacterCategory
 <GROUP Unicode>
