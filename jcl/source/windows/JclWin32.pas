@@ -35,10 +35,13 @@ unit JclWin32;
 interface
 
 uses
-  {$IFNDEF FPC}
-  ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,
-  {$ENDIF FPC}
   Windows, ActiveX,
+  {$IFNDEF FPC}
+  WinSvc, AccCtrl, AclApi, ShlObj,
+  {$IFNDEF BCB5}
+  ImageHlp,
+  {$ENDIF BCB5}
+  {$ENDIF FPC}
   JclBase;
 
 {$HPPEMIT '#include <winnt.h>'}
@@ -1129,6 +1132,7 @@ type
 // Incorrect translations
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF BCB5}
 {$IFNDEF FPC}
 type
 {$IFNDEF COMPILER6_UP}
@@ -1153,6 +1157,7 @@ function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
 function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
   CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
   external 'imagehlp.dll' name 'ImageEnumerateCertificates';
+{$ENDIF BCB5}
 
 //==================================================================================================
 // JclShell
@@ -1220,20 +1225,18 @@ const
 
 // centralized EXTERNALSYMs to keep this Delphi 3 compatible
 
-{$IFDEF COMPILER6_UP}
-  {$EXTERNALSYM KLF_SETFORPROCESS}
-  {$EXTERNALSYM MAXIMUM_REPARSE_DATA_BUFFER_SIZE}
-  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ZERO}
-  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ONE}
-  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_RANGE}
-  {$EXTERNALSYM FILE_FLAG_OPEN_REPARSE_POINT}
+{$EXTERNALSYM KLF_SETFORPROCESS}
+{$EXTERNALSYM MAXIMUM_REPARSE_DATA_BUFFER_SIZE}
+{$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ZERO}
+{$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ONE}
+{$EXTERNALSYM IO_REPARSE_TAG_RESERVED_RANGE}
+{$EXTERNALSYM FILE_FLAG_OPEN_REPARSE_POINT}
 
-  {$EXTERNALSYM MAKELANGID}
-  {$EXTERNALSYM PRIMARYLANGID}
-  {$EXTERNALSYM SUBLANGID}
-  {$EXTERNALSYM MAKELCID}
-  {$EXTERNALSYM SORTIDFROMLCID}
-{$ENDIF}
+{$EXTERNALSYM MAKELANGID}
+{$EXTERNALSYM PRIMARYLANGID}
+{$EXTERNALSYM SUBLANGID}
+{$EXTERNALSYM MAKELCID}
+{$EXTERNALSYM SORTIDFROMLCID}
 
 {$EXTERNALSYM LCID_ALTERNATE_SORTS}
 {$EXTERNALSYM CP_THREAD_ACP}
@@ -1651,10 +1654,14 @@ const
   {$EXTERNALSYM COMIMAGE_FLAGS_IL_LIBRARY}
   {$EXTERNALSYM COMIMAGE_FLAGS_STRONGNAMESIGNED}
   {$EXTERNALSYM COMIMAGE_FLAGS_TRACKDEBUGDATA}
+{$IFDEF COMPILER6_UP}
   {$EXTERNALSYM IMAGE_COR20_HEADER}
+{$ENDIF}
+{$IFNDEF BCB5}
   {$EXTERNALSYM ImageRvaToVa}
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
+{$ENDIF}
 
   {$EXTERNALSYM CSIDL_COMMON_APPDATA}
   {$EXTERNALSYM CSIDL_WINDOWS}
@@ -1941,3 +1948,4 @@ begin
 end;
 
 end.
+
