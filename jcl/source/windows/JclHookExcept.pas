@@ -32,8 +32,7 @@ interface
 {$I JCL.INC}
 
 uses
-  Classes, SysUtils, Windows,
-  JclBase;
+  SysUtils;
 
 //------------------------------------------------------------------------------
 // Exception hooking notifiers routines
@@ -64,7 +63,8 @@ function JclExceptionsHooked: Boolean;
 implementation
 
 uses
-  JclPeImage;
+  Classes, Windows,
+  JclBase, JclPeImage, JclSysUtils;
 
 type
   PExceptionArguments = ^TExceptionArguments;
