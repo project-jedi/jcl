@@ -1,4 +1,4 @@
-@CD examples\vcl\InstallHelper
+@CD install
 @MAKE
-@CD ..\..\..
+@CD ..
 @START bin\JediInstaller.exe
