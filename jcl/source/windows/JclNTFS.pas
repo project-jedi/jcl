@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: June 21, 2000                                                 }
+{ Last modified: August 23, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
