@@ -116,9 +116,11 @@ function GetProfileFolder: string;
 type
   TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
   TAPMBatteryFlag = (abfHigh, abfLow, abfCritical, abfCharging, abfNoBattery, abfUnknown);
+  TAPMBatteryFlags = set of TAPMBatteryFlag;
 
 function GetAPMLineStatus: TAPMLineStatus;
 function GetAPMBatteryFlag: TAPMBatteryFlag;
+function GetAPMBatteryFlags: TAPMBatteryFlags;
 function GetAPMBatteryLifePercent: Integer;
 function GetAPMBatteryLifeTime: DWORD;
 function GetAPMBatteryFullLifeTime: DWORD;
@@ -3537,6 +3539,35 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+
+function GetAPMBatteryFlags: TAPMBatteryFlags;
+var
+  SystemPowerstatus: TSystemPowerStatus;
+begin
+  Result := [];
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastOSError
+  else
+  begin
+    if (SystemPowerStatus.BatteryFlag and 1)>0 then
+      Result := Result + [abfHigh];
+    if (SystemPowerStatus.BatteryFlag and 2)>0 then
+      Result := Result + [abfLow];
+    if (SystemPowerStatus.BatteryFlag and 4)>0 then
+      Result := Result + [abfCritical];
+    if (SystemPowerStatus.BatteryFlag and 8)>0 then
+      Result := Result + [abfCharging];
+    if (SystemPowerStatus.BatteryFlag and 128)>0 then
+      Result := Result + [abfNoBattery];
+    if (SystemPowerStatus.BatteryFlag = 255) then
+      Result := Result + [abfUnknown];
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function GetAPMBatteryLifePercent: Integer;
 var
   SystemPowerstatus: TSystemPowerStatus;
@@ -3974,6 +4005,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/04/09 15:05:09  mthoma
+// Added new function GetAPMBatteryFlags.
+//
 // Revision 1.11  2004/04/07 13:55:09  peter3
 // - var params cannot be passed by adress
 //
