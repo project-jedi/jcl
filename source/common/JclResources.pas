@@ -24,7 +24,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclResources;
@@ -970,10 +970,6 @@ resourcestring
 
 resourcestring
   RsOpenGLInfoError = 'Err';
-  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
-  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
-  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
-  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
   
 //--------------------------------------------------------------------------------------------------
 // JclSysUtils
@@ -1072,6 +1068,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.5  2004/04/18 00:41:04  peterjhaas
+// remove unneeded OpenGL error messages
+//
 // Revision 1.4  2004/04/06 04:38:57  peterjhaas
 // Add resources for DIT and ZLib
 //
