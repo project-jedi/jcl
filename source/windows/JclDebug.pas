@@ -3327,7 +3327,7 @@ destructor TJclGlobalModulesList.Destroy;
 begin
   FreeAndNil(FLock);
   FreeAndNil(FModulesList);
-  inherited Destory;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
