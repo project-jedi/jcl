@@ -53,19 +53,19 @@ uses
   SysUtils, Classes, JclStrHashMap, PCharUtils;
 
 type
-  TPppToken = (ptEof, ptComment, ptText, ptEol,
-    ptDefine, ptUndef, ptIfdef, ptIfndef, ptElse, ptEndif,
+  TJppToken = (ptEof, ptComment, ptText, ptEol,
+    ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt, ptElse, ptEndif,
     ptInclude);
 
-  EPppLexerError = class(Exception);
+  EJppLexerError = class(Exception);
 
-  TPppLexer = class
+  TJppLexer = class
   private
     FBuf: string;
     FTokenHash: TStringHashMap;
     FCurrPos: PChar;
     FCurrLine: Integer;
-    FCurrTok: TPppToken;
+    FCurrTok: TJppToken;
     FTokenAsString: string;
     FRawComment: string;
   public
@@ -75,7 +75,7 @@ type
     procedure Error(const AMsg: string);
     procedure NextTok;
     procedure Reset;
-    property CurrTok: TPppToken read FCurrTok;
+    property CurrTok: TJppToken read FCurrTok;
     { TokenAsString is the preprocessor symbol for $IFDEF & $IFNDEF,
       and the file name for $I and $INCLUDE, and is the actual text
       for ptComment and ptText. }
@@ -87,16 +87,18 @@ type
 
 implementation
 
-{ TPppLexer }
+{ TJppLexer }
 
-constructor TPppLexer.Create(AStream: TStream);
-  procedure AddToken(const AIdent: string; AValue: TPppToken);
+constructor TJppLexer.Create(AStream: TStream);
+
+  procedure AddToken(const AIdent: string; AValue: TJppToken);
   var
     x: Integer;
   begin
     x := Ord(AValue);
     FTokenHash.Add(AIdent, x);
   end;
+
 begin
   FTokenHash := TStringHashMap.Create(CaseInsensitiveTraits, 19);
 
@@ -104,6 +106,7 @@ begin
   AddToken('include', ptInclude);
   AddToken('ifdef', ptIfdef);
   AddToken('ifndef', ptIfndef);
+  AddToken('ifopt', ptIfopt);
   AddToken('else', ptElse);
   AddToken('endif', ptEndif);
   AddToken('define', ptDefine);
@@ -114,18 +117,18 @@ begin
   Reset;
 end;
 
-destructor TPppLexer.Destroy;
+destructor TJppLexer.Destroy;
 begin
   FTokenHash.Free;
   inherited;
 end;
 
-procedure TPppLexer.Error(const AMsg: string);
+procedure TJppLexer.Error(const AMsg: string);
 begin
-  raise EPppLexerError.CreateFmt('(%d): %s', [FCurrLine, AMsg]);
+  raise EJppLexerError.CreateFmt('(%d): %s', [FCurrLine, AMsg]);
 end;
 
-procedure TPppLexer.NextTok;
+procedure TJppLexer.NextTok;
 
   procedure HandleDirective(APos: PChar);
 
@@ -174,7 +177,7 @@ procedure TPppLexer.NextTok;
     { find identifier in hash map }
     if FTokenHash.Find(ident, tokInt) then
     begin
-      FCurrTok := TPppToken(tokInt);
+      FCurrTok := TJppToken(tokInt);
 
       case FCurrTok of
         ptDefine,
@@ -358,7 +361,7 @@ Label_NormalText:
   FCurrLine := cl;
 end;
 
-procedure TPppLexer.Reset;
+procedure TJppLexer.Reset;
 begin
   FCurrPos := PChar(FBuf);
   FCurrLine := 1;
@@ -368,6 +371,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2004/06/21 00:10:57  rrossmair
+// - added token ifopt (not handled; just to match $ELSE, $ENDIF)
+// - renamed identifiers TPpp* -> TJpp*
+//
 // Revision 1.1  2004/06/20 02:09:58  rrossmair
 // - initial check-in
 // - modified PppLexer unit, provides an extra token (ptEol) to assist in removing orphaned line breaks.
