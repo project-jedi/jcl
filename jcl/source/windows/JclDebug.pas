@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 10, 2001                                             }
+{ Last modified: February 25, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -69,7 +69,10 @@ type
 
   TJclAbstractMapParser = class (TObject)
   private
+    FLinkerBug: Boolean;
+    FLinkerBugUnitName: PJclMapString;
     FStream: TJclFileMappingStream;
+    function GetLinkerBugUnitName: string;
   protected
     FLastUnitName: PJclMapString;
     FLastUnitFileName: PJclMapString;
@@ -84,6 +87,8 @@ type
     destructor Destroy; override;
     procedure Parse;
     class function MapStringToStr(MapString: PJclMapString): string;
+    property LinkerBug: Boolean read FLinkerBug;
+    property LinkerBugUnitName: string read GetLinkerBugUnitName; 
     property Stream: TJclFileMappingStream read FStream;
   end;
 
@@ -359,6 +364,21 @@ function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 
 //------------------------------------------------------------------------------
+// Info routines base list
+//------------------------------------------------------------------------------
+
+type
+  TJclStackBaseList = class (TObjectList)
+  private
+    FThreadID: DWORD;
+    FTimeStamp: TDateTime;
+  public
+    constructor Create;
+    property ThreadID: DWORD read FThreadID;
+    property TimeStamp: TDateTime read FTimeStamp;
+  end;
+
+//------------------------------------------------------------------------------
 // Stack info routines
 //------------------------------------------------------------------------------
 
@@ -393,20 +413,19 @@ type
     property StackInfo: TStackInfo read FStackInfo;
   end;
 
-  TJclStackInfoList = class (TObjectList)
+  TJclStackInfoList = class (TJclStackBaseList)
   private
     FIgnoreLevels: DWORD;
-    FThreadID: DWORD;
-    FTimeStamp: TDateTime;
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
     procedure AddToStrings(const Strings: TStrings);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
-    property ThreadID: DWORD read FThreadID;
-    property TimeStamp: TDateTime read FTimeStamp;
   end;
+
+var
+  TrackAllModules: Boolean;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 function JclLastExceptStackList: TJclStackInfoList;
@@ -467,7 +486,7 @@ type
     property FrameKind: TExceptFrameKind read FFrameKind;
   end;
 
-  TJclExceptFrameList = class (TObjectList)
+  TJclExceptFrameList = class (TJclStackBaseList)
   private
     FIgnoreLevels: Integer;
     function GetItems(Index: Integer): TJclExceptFrame;
@@ -526,16 +545,45 @@ uses
   {$IFDEF WIN32}
   JclRegistry,
   {$ENDIF WIN32}
-  JclStrings, JclSysInfo, JclSysUtils;
+  JclStrings, JclSynch, JclSysInfo, JclSysUtils;
 
-{$UNDEF StackFramesWasOn}
-{$IFOPT W+}
-  {$DEFINE StackFramesWasOn}
-{$ENDIF W+}
-{$UNDEF OverflowChecksWasOn}
-{$IFOPT Q+}
-  {$DEFINE OverflowChecksWasOn}
-{$ENDIF Q+}
+//==============================================================================
+// Helper assembler routines
+//==============================================================================
+
+{$STACKFRAMES OFF}
+
+function GetEBP: Pointer;
+asm
+  MOV EAX, EBP
+end;
+
+//------------------------------------------------------------------------------
+
+function GetESP: Pointer;
+asm
+  MOV EAX, ESP
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFS: Pointer;
+asm
+  XOR EAX, EAX
+  MOV EAX, FS:[EAX]
+end;
+
+//------------------------------------------------------------------------------
+
+// Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
+// http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
+
+function GetStackTop: DWORD;
+asm
+  MOV EAX, FS:[4]
+end;
+
+{$IFDEF STACKFRAMES_ON} {$STACKFRAMES ON} {$ENDIF}
 
 //==============================================================================
 // Diagnostics
@@ -614,6 +662,13 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclAbstractMapParser.GetLinkerBugUnitName: string;
+begin
+  Result := MapStringToStr(FLinkerBugUnitName);
+end;
+
+//------------------------------------------------------------------------------
+
 class function TJclAbstractMapParser.MapStringToStr(MapString: PJclMapString): string;
 var
   P: PChar;
@@ -651,7 +706,7 @@ const
   ResourceFilesHeader  = 'Bound resource files';
 var
   CurrPos, EndPos: PChar;
-  A: TJclMapAddress;
+  A, PreviousA: TJclMapAddress;
   L: Integer;
   P1, P2: PJclMapString;
 
@@ -734,7 +789,7 @@ var
       Inc(CurrPos);
     until False;
   end;
-{$IFDEF OverflowChecksWasOn} {$OVERFLOWCHECKS ON} {$ENDIF}
+{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
 
   function ReadAddress: TJclMapAddress;
   begin
@@ -809,6 +864,9 @@ var
 begin
   if FStream <> nil then
   begin
+    FLinkerBug := False;
+    PreviousA.Segment := 0;
+    PreviousA.Offset := 0;
     CurrPos := FStream.Memory;
     EndPos := CurrPos + FStream.Size;
     if SyncToHeader(TableHeader) then
@@ -866,6 +924,12 @@ begin
         A := ReadAddress;
         SkipWhiteSpace;
         LineNumbersItem(L, A);
+        if (not FLinkerBug) and (A.Offset < PreviousA.Offset) then
+        begin
+          FLinkerBugUnitName := FLastUnitName;
+          FLinkerBug := True;
+        end;
+        PreviousA := A;
       until not IsDecDigit;
     end;
   end;
@@ -1854,6 +1918,9 @@ end;
 
 var
   DebugInfoList: TJclDebugInfoList;
+  DebugInfoCritSect: TJclCriticalSection;
+
+//------------------------------------------------------------------------------
 
 procedure NeedDebugInfoList;
 begin
@@ -2164,14 +2231,19 @@ begin
   end;
 end;
 
-{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 begin
-  NeedDebugInfoList;
-  DebugInfoList.GetLocationInfo(Addr, Result)
+  DebugInfoCritSect.Enter;
+  try
+    NeedDebugInfoList;
+    DebugInfoList.GetLocationInfo(Addr, Result)
+  finally
+    DebugInfoCritSect.Leave;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -2179,9 +2251,16 @@ end;
 function GetLocationInfoStr(const Addr: Pointer): string;
 var
   Info: TJclLocationInfo;
+  LocFound: Boolean;
 begin
-  NeedDebugInfoList;
-  if DebugInfoList.GetLocationInfo(Addr, Info) then
+  DebugInfoCritSect.Enter;
+  try
+    NeedDebugInfoList;
+    LocFound := DebugInfoList.GetLocationInfo(Addr, Info);
+  finally
+    DebugInfoCritSect.Leave;
+  end;
+  if LocFound then
     with Info do
     begin
       if LineNumber > 0 then
@@ -2192,7 +2271,7 @@ begin
         Result := Format('[%p] %s.%s', [Addr, UnitName, ProcedureName])
       else
         Result := Format('[%p] %s', [Addr, ProcedureName]);
-    end    
+    end
   else
     Result := Format('[%p]', [Addr]);
 end;
@@ -2201,8 +2280,13 @@ end;
 
 procedure ClearLocationData;
 begin
-  if DebugInfoList <> nil then
-    DebugInfoList.Clear;
+  DebugInfoCritSect.Enter;
+  try
+    if DebugInfoList <> nil then
+      DebugInfoList.Clear;
+  finally
+    DebugInfoCritSect.Leave;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -2270,7 +2354,7 @@ begin
   Result := MapByLevel(Level + 1, _File, _Module, _Proc, _Line);
 end;
 
-{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2351,7 +2435,112 @@ end;
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 begin
-  Result := MapOfAddr(Addr, _File, _Module, _Proc, _Line); 
+  Result := MapOfAddr(Addr, _File, _Module, _Proc, _Line);
+end;
+
+//==============================================================================
+// Info routines base list
+//==============================================================================
+
+constructor TJclStackBaseList.Create;
+begin
+  inherited Create(True);
+  FThreadID := GetCurrentThreadId;
+  FTimeStamp := Now;
+end;
+
+//==============================================================================
+// TJclGlobalStackList
+//==============================================================================
+
+type
+  TJclGlobalStackList = class (TThreadList)
+  private
+    function GetExceptStackInfo: TJclStackInfoList;
+    function GetLastExceptFrameList: TJclExceptFrameList;
+  public
+    destructor Destroy; override;
+    procedure AddObject(AObject: TJclStackBaseList);
+    function FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
+    property ExceptStackInfo: TJclStackInfoList read GetExceptStackInfo;
+    property LastExceptFrameList: TJclExceptFrameList read GetLastExceptFrameList;
+  end;
+
+var
+  GlobalStackList: TJclGlobalStackList;
+
+//------------------------------------------------------------------------------
+
+procedure TJclGlobalStackList.AddObject(AObject: TJclStackBaseList);
+var
+  ReplacedObj: TObject;
+begin
+  with LockList do
+  try
+    ReplacedObj := FindObject(AObject.ThreadID, AObject.ClassType);
+    if ReplacedObj <> nil then
+    begin
+      Remove(ReplacedObj);
+      ReplacedObj.Free;
+    end;  
+    Add(AObject);
+  finally
+    UnlockList;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclGlobalStackList.Destroy;
+var
+  I: Integer;
+begin
+  with LockList do
+  try
+    for I := 0 to Count - 1 do
+      TObject(Items[I]).Free;
+  finally
+    UnlockList;
+  end;      
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclGlobalStackList.FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
+var
+  I: Integer;
+  Item: TJclStackBaseList;
+begin
+  Result := nil;
+  with LockList do
+  try
+    for I := 0 to Count - 1 do
+    begin
+      Item := Items[I];
+      if (Item.ThreadID = TID) and (Item is AClass) then
+      begin
+        Result := Item;
+        Break;
+      end;
+    end;
+  finally
+    UnlockList;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclGlobalStackList.GetExceptStackInfo: TJclStackInfoList;
+begin
+  Result := TJclStackInfoList(FindObject(GetCurrentThreadId, TJclStackInfoList));
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclGlobalStackList.GetLastExceptFrameList: TJclExceptFrameList;
+begin
+  Result := TJclExceptFrameList(FindObject(GetCurrentThreadId, TJclExceptFrameList));
 end;
 
 //==============================================================================
@@ -2360,15 +2549,6 @@ end;
 
 {$STACKFRAMES OFF}
 
-var
-  ExceptStackInfo: TJclStackInfoList;
-  TopOfStack: DWORD;
-  BaseOfCode: DWORD;
-  TopOfCode: DWORD;
-  BaseOfStack: DWORD;
-
-//------------------------------------------------------------------------------
-
 type
   PExceptionArguments = ^TExceptionArguments;
   TExceptionArguments = record
@@ -2376,44 +2556,9 @@ type
     ExceptObj: TObject;
   end;
 
-//------------------------------------------------------------------------------
-
-function GetEBP: Pointer;
-asm
-  MOV EAX, EBP
-end;
-
-//------------------------------------------------------------------------------
-
-function GetESP: Pointer;
-asm
-  MOV EAX, ESP
-end;
-
-//------------------------------------------------------------------------------
-
-// Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
-// http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
-
-function GetStackTop: DWORD; assembler;
-asm
-  MOV EAX, FS:[4]
-end;
-
-//------------------------------------------------------------------------------
-
-procedure InitGlobalVar;
-var
-  NTHeader: PImageNTHeaders;
-begin
-  if BaseOfCode = 0 then
-  begin
-    NTHeader := PeMapImgNtHeaders(Pointer(HInstance));
-    BaseOfCode := DWORD(HInstance) + NTHeader.OptionalHeader.BaseOfCode;
-    TopOfCode := BaseOfCode + NTHeader.OptionalHeader.SizeOfCode;
-    TopOfStack := GetStackTop;
-  end;
-end;
+threadvar
+  TopOfStack: DWORD;
+  BaseOfStack: DWORD;
 
 //------------------------------------------------------------------------------
 
@@ -2426,9 +2571,10 @@ end;
 
 function ValidCodeAddr(CodeAddr: DWORD): Boolean;
 begin
-  //!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
-  Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
-  //!  Result := FindHInstance(Pointer(CodeAddr)) <> 0;
+  if TrackAllModules then
+    Result := (ModuleFromAddr(Pointer(CodeAddr)) <> 0)
+  else
+    Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
 end;
 
 //------------------------------------------------------------------------------
@@ -2447,7 +2593,6 @@ var
   C4P, C8P: PDWORD;
 begin
   // First check that the address is within range of our code segment!
-  // ! Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
   Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P)) and
@@ -2480,7 +2625,7 @@ begin
     // can also get false negatives.
   end;
 end;
-{$IFDEF OverflowChecksWasOn} {$OVERFLOWCHECKS ON} {$ENDIF}
+{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2536,16 +2681,15 @@ end;
 
 function JclLastExceptStackList: TJclStackInfoList;
 begin
-  Result := ExceptStackInfo;
+  Result := GlobalStackList.ExceptStackInfo;
 end;
 
 //------------------------------------------------------------------------------
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 begin
-  FreeAndNil(ExceptStackInfo);
-  ExceptStackInfo := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
-  Result := ExceptStackInfo;
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
+  GlobalStackList.AddObject(Result);
 end;
 
 //==============================================================================
@@ -2651,9 +2795,7 @@ var
 begin
   inherited Create;
   FIgnoreLevels := AIgnoreLevels;
-  FTimeStamp := Now;
-  FThreadID := GetCurrentThreadId;
-  InitGlobalVar;
+  TopOfStack := GetStackTop;
   if FirstCaller <> nil then
   begin
     Item := TJclStackInfoItem.Create;
@@ -2673,35 +2815,23 @@ begin
   Result := TJclStackInfoItem(inherited Items[Index]);
 end;
 
-{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
 
 //==============================================================================
 // Exception frame info routines
 //==============================================================================
 
-function GetFS: Pointer; assembler;
-asm
-  XOR EAX, EAX
-  MOV EAX, FS:[EAX]
-end;
-
-//------------------------------------------------------------------------------
-
-var
-  LastExceptFrameList: TJclExceptFrameList;
-
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 begin
-  FreeAndNil(LastExceptFrameList);
-  LastExceptFrameList := TJclExceptFrameList.Create(AIgnoreLevels);
-  Result := LastExceptFrameList;
+  Result := TJclExceptFrameList.Create(AIgnoreLevels);
+  GlobalStackList.AddObject(Result);
 end;
 
 //------------------------------------------------------------------------------
 
 function JclLastExceptFrameList: TJclExceptFrameList;
 begin
-  Result := LastExceptFrameList;
+  Result := GlobalStackList.LastExceptFrameList;
 end;
 
 //------------------------------------------------------------------------------
@@ -2902,7 +3032,7 @@ var
 
 //------------------------------------------------------------------------------
 
-var
+threadvar
   Recursive: Boolean;
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
@@ -3061,7 +3191,8 @@ begin
     // much faster. Additionally GetHandleInformation is only supported on NT...
     Result := DuplicateHandle(GetCurrentProcess, Handle, GetCurrentProcess,
       @Duplicate, 0, False, DUPLICATE_SAME_ACCESS);
-    if Result then Result := CloseHandle(Duplicate);
+    if Result then
+      Result := CloseHandle(Duplicate);
   end;
 end;
 
@@ -3070,12 +3201,14 @@ end;
 //------------------------------------------------------------------------------
 
 initialization
+  DebugInfoCritSect := TJclCriticalSection.Create;
+  GlobalStackList := TJclGlobalStackList.Create;
 
 finalization
   JclUnhookExceptions;
   FreeAndNil(DebugInfoList);
-  FreeAndNil(ExceptStackInfo);
-  FreeAndNil(LastExceptFrameList);
+  FreeAndNil(GlobalStackList);
   FreeAndNil(PeImportHooks);
+  FreeAndNil(DebugInfoCritSect);
 
 end.
