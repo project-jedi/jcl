@@ -290,8 +290,7 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer {$IFDEF 
 implementation
 
 uses
-  Registry,
-  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
+  JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
 
 const
   JclMaxKeyboardLayouts = 16;
@@ -861,37 +860,29 @@ end;
 
 procedure TJclKeyboardLayoutList.CreateAvailableLayouts;
 const
-  LayoutsKey = 'SYSTEM\CurrentControlSet\Control\Keyboard Layouts';
+  cLayoutsKey = 'SYSTEM\CurrentControlSet\Control\Keyboard Layouts';
 var
-  Reg: TRegistry;
-  KeyNames: TStringList;
   I: Integer;
+  KeyNames: TStringList;
   Item: TJclAvailableKeybLayout;
+  Layout: string;
 begin
   FAvailableLayouts := TObjectList.Create(True);
-  Reg := TRegistry.Create;
   KeyNames := TStringList.Create;
   try
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
-    if Reg.OpenKeyReadOnly(LayoutsKey) then
+    RegGetKeyNames(HKEY_LOCAL_MACHINE, cLayoutsKey, KeyNames);
+    for I := 0 to KeyNames.Count - 1 do
     begin
-      Reg.GetKeyNames(KeyNames);
-      Reg.CloseKey;
-      for I := 0 to KeyNames.Count - 1 do
-        if Reg.OpenKeyReadOnly(LayoutsKey + '\' + KeyNames[I]) then
-        begin
-          Item := TJclAvailableKeybLayout.Create;
-          Item.FOwner := Self;
-          Item.FIdentifier := StrToIntDef('$' + KeyNames[I], 0);
-          Item.FName := Reg.ReadString('Layout Text');
-          Item.FLayoutFile := Reg.ReadString('Layout File');
-          Item.FLayoutID := StrToIntDef('$' + Reg.ReadString('Layout Id'), 0);
-          FAvailableLayouts.Add(Item);
-          Reg.CloseKey;
-        end;
+      Layout := cLayoutsKey + '\' + KeyNames[I];
+      Item := TJclAvailableKeybLayout.Create;
+      Item.FOwner := Self;
+      Item.FIdentifier := StrToIntDef('$' + KeyNames[I], 0);
+      Item.FName := RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout Text', '');
+      Item.FLayoutFile := RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout File', '');
+      Item.FLayoutID := StrToIntDef('$' + RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout Id', ''), 0);
+      FAvailableLayouts.Add(Item);
     end;
   finally
-    Reg.Free;
     KeyNames.Free;
   end;
 end;
