@@ -63,6 +63,8 @@ Parameters:
   Points - An array containing the TPoint structures which define the vertices of the polygon, in device units. The polygon should be closed.
   Count - The number of points in the Points array.
   FillMode - Specifies the fillmode of polygon, which pixels will be included in the region.
+See also:
+  TPolyFillMode
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -124,6 +126,8 @@ Parameters:
   Vertex - An array containing the number of vertices of each polygon. There is one entry for every polygon in the Points array.
   Count - The number of polygons.
   FillMode - Specifies the fillmode of the polygon, which pixels will be included in the region.
+See also:
+  TPolyFillMode
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -142,6 +146,8 @@ Parameters:
   Bitmap - A bitmap used as input to create the region.
   RegionColor - The color for the mask.
   RegionBitmapMode - This flag specifies if the RegionColor is included or excluded.
+See also:
+  TJclRegionBitmapMode
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -175,6 +181,8 @@ Description:
   persistent.
 Parameters:
   RegionInfo - A regioninfo class.
+See also:
+  TJclRegionInfo
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -226,6 +234,8 @@ Parameters:
   DestRegion - The destination region class, this should be a valid region class.
   SrcRegion - The region class with which this region will be combined.
   CombineOp - The operator for the combination instruction.
+See also:
+  TJclRegionCombineOperator
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -297,6 +307,8 @@ Parameters:
   StartColor - The starting color.
   EndColor - The ending color.
   ADirection - The direction of the gradient, horizontial or vertical.
+See also:
+  TGradientDirection
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -426,6 +438,8 @@ Description:
 Parameters:
   Window - The handle of the window.
   Redraw - Should there be a repaint of the window.
+See also:
+  CreateBitmap
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -445,6 +459,8 @@ Description:
   TJclRegionInfo class.
 Result:
   The TJclRegionInfo class.
+See also:
+  TJclRegionInfo
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -488,6 +504,8 @@ Summary:
   Returns the complexity of the region.
 Description:
   Returns the complexity of the region.
+See also:
+  TJclRegionType
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -505,6 +523,8 @@ Description:
   Class that contains a description of the region, the class exposes the info of the
   region by a collection of rectangles. The class is normally created by a TJclRegion
   method call.
+See also:
+  TJclRegion
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -533,6 +553,8 @@ Summary:
 Description:
   Returns the rectangle at the current index. The index starts at 0 and ends at
   Count - 1.
+See also:
+  Count
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -547,6 +569,8 @@ Summary:
   Returns the number of rectangles that describe the region.
 Description:
   Returns the number of rectangles that describe the region.
+See also:
+  Rectangles
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -564,6 +588,8 @@ Description:
   region. The class can be created through the GetRegionInfo method of TJclRegion.
 Parameters:
   Region - The region from which you want the info.
+See also:
+  TJclRegion
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -601,6 +627,8 @@ Parameters:
   StartColor - The starting color.
   EndColor - The ending color.
   ADirection - The direction of the gradient, horizontial or vertical.
+See also:
+  <LINK TGradientDirection,TJclRegion>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -626,6 +654,9 @@ Parameters:
   RegionBitmapMode - This flag specifies if the RegionColor is included or excluded.
 Result:
   The region handle.
+See also:
+  TJclRegionBitmapMode
+  <LINK CreateBitmap,TJclRegion.CreateBitmap>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -640,6 +671,9 @@ Summary:
   Specifies the direction of the gradient.
 Description:
   Specifies the direction of the gradient. This can be gdVertical and gdHorizontial.
+See also:
+  FillGradient
+  <LINK FillGradient,TJclRegion.FillGradient>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -654,6 +688,9 @@ Summary:
   Specifies the operation on the color.
 Description:
   Specifies the operation on the color when creating the region from a bitmap.
+See also:
+  CreateRegionFromBitmap
+  <LINK CreateBitmap,TJclRegion.CreateBitmap>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -670,6 +707,9 @@ Description:
   Specifies the fillmode of a poly region. If this parameter is set to fmAlternate then
   the region is filled between odd-numbered and even-numbered sides of the polygon. Specifing
   fmWinding will fill any part of the poly region with a non-zero winding value.
+See also:
+  <LINK CreatePoly,TJclRegion.CreatePoly>
+  <LINK CreatePolyPolygon,TJclRegion.CreatePolyPolygon>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -694,6 +734,8 @@ coOr    The resulting region is the union of the regions
 coXor   The resulting region is the union of the regions except any overlapping areas
 </TABLE>
 
+See also:
+  <LINK Combine,TJclRegion.Combine>
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -718,6 +760,8 @@ rtComplex  The region consists of more than one rectangle
 rtError    The region is in error state, the last function that was executed failed.
 </TABLE>
 
+See also:
+  TJclRegion
 Quick info:
   Unit: JclGraphics
   Category: Graphics
