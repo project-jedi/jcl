@@ -111,6 +111,12 @@
 {                                                                              }
 { 001019                                                                       }
 { changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
+{                                                                              }
+{ 010210                                                                       }
+{ added overload procedures for compatibility:                                 }
+{    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,       }
+{    FileTimeToSystemTime, SystemTimeToFileTime                                }
+
 
 { TODO:                                                                        }
 { Help for FATDatesEqual                                                       }
@@ -182,23 +188,28 @@ function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; overload;
+procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 
 function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
+procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
 function DosDateTimeToStr(DateTime: Integer): string;
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
+procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word); overload;
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
+procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
 function FileTimeToStr(const FileTime: TFileTime): string;
 
 function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
+procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime : TFileTime); overload;
 function SystemTimeToStr(const SystemTime: TSystemTime): string;
 
 //------------------------------------------------------------------------------
@@ -785,23 +796,44 @@ end;
 
 //------------------------------------------------------------------------------
 
-function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime;
+function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 begin
   ResultCheck(Windows.FileTimeToSystemTime(FileTime, Result));
 end;
 
 //------------------------------------------------------------------------------
 
-function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime;
+procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
+begin
+  Windows.FileTimeToSystemTime(FileTime, ST);
+end;
+
+//------------------------------------------------------------------------------
+
+function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime;  overload;
 begin
   ResultCheck(Windows.SystemTimeToFileTime(SystemTime, Result));
 end;
 
 //------------------------------------------------------------------------------
 
-function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;
+procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime: TFileTime); overload;
+begin
+  Windows.SystemTimeToFileTime(SystemTime, FTime);
+end;
+
+//------------------------------------------------------------------------------
+
+function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;  overload;
 begin
   SysUtils.DateTimeToSystemTime(DateTime, Result);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
+begin
+  SysUtils.DateTimeToSystemTime(DateTime, SysTime);
 end;
 
 //------------------------------------------------------------------------------
@@ -813,12 +845,26 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
+begin
+  Windows.DosDateTimeToFileTime(DTH, DTL, FT);
+end;
+
+//------------------------------------------------------------------------------
+
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
 var
   Date, Time: Word;
 begin
   ResultCheck(Windows.FileTimeToDosDateTime(FileTime, Date, Time));
   Result := (Date shl 16) or Time;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word); overload;
+begin
+  Windows.FileTimeToDosDateTime(FileTime, Date, Time);
 end;
 
 //------------------------------------------------------------------------------
