@@ -203,11 +203,11 @@ uses
 
 procedure FreeAndNil(var Obj);
 var
-  P: TObject;
+  O: TObject;
 begin
-  P := TObject(Obj);
-  TObject(Obj) := nil;
-  P.Free;
+  O := TObject(Obj);
+  Pointer(Obj) := nil;
+  O.Free;
 end;
 
 {$ENDIF} // DELPHI5_UP
