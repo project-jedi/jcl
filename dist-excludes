@@ -9,6 +9,7 @@
 *.desk
 *.hpp
 template.*
+*.log
 CVS
 jcl/build.sh
 jcl/convert.sh
@@ -24,6 +25,7 @@ jcl/docs/Contributors.txt
 jcl/docs/*.info
 jcl/install/Makefile
 jcl/install/prototypes.mak
+jcl/install/BCB5-dcc32.cfg.mak
 jcl/install/prototypes
 jcl/lib/*.o
 jcl/packages/*.dev
