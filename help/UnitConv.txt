@@ -820,12 +820,12 @@ BCB=3,4,5
 [Declaration]
 function LitreToGalUs(const Litre: Float): Float;
 [ShortDescr]
-Converts a volume from liters to US Gallons.
+Converts a volume from litres to US Gallons.
 [Description]
-The LitreToGalUs routine converts the specified volume, in liters, to the corresponding volume in US Gallons.
+The LitreToGalUs routine converts the specified volume, in litres, to the corresponding volume in US Gallons.
 [Parameters]
 Count=1
-1=Litre:Float=The volume, in liters, to convert to US Gallons.
+1=Litre:Float=The volume, in litres, to convert to US Gallons.
 [Result]
 The volume after conversion to US Gallons.
 [Quick Info]
@@ -839,14 +839,14 @@ BCB=3,4,5
 [Declaration]
 function GalUsToLitre(const GalUs: Float): Float;
 [ShortDescr]
-Converts a volume from US Gallons to Liters.
+Converts a volume from US Gallons to Litres.
 [Description]
-The GalUsToLitre routine converts the specified volume, in US Gallons, to the corresponding volume in Liters.
+The GalUsToLitre routine converts the specified volume, in US Gallons, to the corresponding volume in Litres.
 [Parameters]
 Count=1
-1=GalUs:Float=The volume, in US Gallons, to convert to Liters.
+1=GalUs:Float=The volume, in US Gallons, to convert to Litres.
 [Result]
-The volume after conversion to Liters.
+The volume after conversion to Litres.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -928,6 +928,82 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LitreToGalCan(const Litre: Float): Float;
+[ShortDescr]
+Converts a volume from litres to Canadian Gallons.
+[Description]
+The LitreToGalCan routine converts the specified volume, in litres, to the corresponding volume in Canadian Gallons.
+[Parameters]
+Count=1
+1=Litre:Float=The volume, in litres, to convert to Canadian Gallons.
+[Result]
+The volume after conversion to Canadian Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Allan Lyons;lyons@cadvision.com
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalCanToLitre(const GalCan: Float): Float;
+[ShortDescr]
+Converts a volume from Canadian Gallons to Litres.
+[Description]
+The GalCanToLitre routine converts the specified volume, in Canadian Gallons, to the corresponding volume in Litres.
+[Parameters]
+Count=1
+1=GalCan:Float=The volume, in Canadian Gallons, to convert to Litres.
+[Result]
+The volume after conversion to Litres.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Allan Lyons;lyons@cadvision.com
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LitreToGalUk(const Litre: Float): Float;
+[ShortDescr]
+Converts a volume from litres to UK Gallons.
+[Description]
+The LitreToGalUk routine converts the specified volume, in litres, to the corresponding volume in UK Gallons.
+[Parameters]
+Count=1
+1=Litre:Float=The volume, in litres, to convert to UK Gallons.
+[Result]
+The volume after conversion to UK Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Allan Lyons;lyons@cadvision.com
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalUkToLitre(const GalUs: Float): Float;
+[ShortDescr]
+Converts a volume from UK Gallons to Litres.
+[Description]
+The GalUkToLitre routine converts the specified volume, in UK Gallons, to the corresponding volume in Litres.
+[Parameters]
+Count=1
+1=GalUs:Float=The volume, in UK Gallons, to convert to Litres.
+[Result]
+The volume after conversion to Litres.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Allan Lyons;lyons@cadvision.com
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
