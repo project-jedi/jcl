@@ -42,8 +42,6 @@ unit JclEDI;
 
 {$I jcl.inc}
 
-{$I jedi.inc}
-
 {$WEAKPACKAGEUNIT ON}
 
 //Add the following directive in project options for debugging.
