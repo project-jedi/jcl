@@ -13,7 +13,9 @@ The Original Code is: WStrUtils.PAS, released on 2004-01-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 All Rights Reserved.
 
-Contributor(s):
+Contributors:
+  Robert Marquardt (marquardt)
+  Robert Rossmair (rrossmair)
 
 You may retrieve the latest version of this file at the Project JEDI's JCL home page,
 located at http://jcl.sourceforge.net
@@ -2031,4 +2033,22 @@ begin
     CustomSort(DefaultSort);
 end;
 
+// History:
+
+// $Log$
+// Revision 1.6  2004/10/17 21:49:03  rrossmair
+// added CVS Log entries
+//
+// Revision 1.5                       rossmair
+// fixed D6, FPC compatibility
+//
+// Revision 1.4                       marquardt
+// complete and fix PWideChar Str functions
+//
+// Revision 1.3                       marquardt
+// PH cleaning of JclStrings
+//
+// Revision 1.2                       rrossmair
+// replaced some conditional compilation symbols by more appropriate ones
+//
 end.
