@@ -1,0 +1,3 @@
+[Directories]
+UnitOutputDir=..\..\lib\c5
+SearchPath=..\..\source;..\..\source\common;..\..\source\windows
