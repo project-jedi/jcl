@@ -27,7 +27,7 @@
 
 unit JclComplex;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
