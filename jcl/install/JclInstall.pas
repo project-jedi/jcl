@@ -132,10 +132,13 @@ const
   VersionDirExp = '\%%s%%d';
   {$ENDIF}
 
+  JclSrcDirCommon   = 'common';
+  JclSrcDirVisClx   = 'visclx';
+
   {$IFDEF MSWINDOWS}
-  {$IFNDEF COMPILER6_UP}
+  {$IFNDEF RTL140_UP}
   PathSep = ';';
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF RTL140_UP}
   VclDialogFileName = 'ExceptDlg.pas';
   VclDlgSndFileName = 'ExceptDlgMail.pas';
   VclDialogName     = 'Exception Dialog';
@@ -146,11 +149,21 @@ const
   JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
   JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
 
-  JclSourcePath     = '%0:s\common;%0:s\windows;%0:s\vcl;%0:s\visclx';
+  JclSrcDirOS       = 'windows';
+  JclSrcDirVcl      = 'vcl';
+  JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVcl, JclSrcDirVisClx);
+  JclSourcePath     = '%0:s\' + JclSrcDirOS +
+                     ';%0:s\' + JclSrcDirCommon +
+                     ';%0:s\' + JclSrcDirVcl +
+                     ';%0:s\' + JclSrcDirVisClx;
   BCBIncludePath    = '%s;%s;$(BCB)\include;$(BCB)\include\vcl';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  JclSourcePath     = '%0:s/common:%0:s/unix:%0:s/visclx';
+  JclSrcDirOS       = 'unix';
+  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVisClx);
+  JclSourcePath     = '%0:s\' + JclSrcDirOS +
+                     ':%0:s\' + JclSrcDirCommon +
+                     ':%0:s\' + JclSrcDirVisClx;
   BCBIncludePath    = '%s:%s:$(BCB)/include:$(BCB)/include/vcl';
   {$ENDIF UNIX}
 
@@ -481,7 +494,12 @@ begin
   FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
   FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
   FJclSourceDir := FJclPath + 'source';
-  FJclSourcePath := Format(JclSourcePath, [FJclSourceDir]);
+
+  FJclSourcePath := '';
+  for I := Low(JclSourceDirs) to High(JclSourceDirs) do
+    FJclSourcePath := FJclSourcePath +
+      Format('%s' + PathSeparator + '%s' + PathSep, [FJclSourceDir, JclSourceDirs[I]]);
+      
   {$IFDEF MSWINDOWS}
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
   {$ENDIF MSWINDOWS}
@@ -693,14 +711,18 @@ begin
 end;
 
 function TJclInstall.MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean): Boolean;
+var
+  I: Integer;
 begin
-  Result := CompileLibraryUnits(Installation, 'common', Debug);
-  {$IFDEF MSWINDOWS}
-  Result := Result and CompileLibraryUnits(Installation, 'windows', Debug);
-  Result := Result and CompileLibraryUnits(Installation, 'vcl', Debug);
-  {$ENDIF MSWINDOWS}
-  if Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
-    Result := Result and CompileLibraryUnits(Installation, 'visclx', Debug);
+  Result := True;
+  for I := Low(JclSourceDirs) to High(JclSourceDirs) do
+  begin
+    {$IFDEF MSWINDOWS}
+    if JclSourceDirs[I] = 'visclx' and not Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
+      Continue;
+    {$ENDIF MSWINDOWS}
+    Result := Result and CompileLibraryUnits(Installation, JclSourceDirs[I], Debug);
+  end;
 end;
 
 function TJclInstall.PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
@@ -725,10 +747,7 @@ var
     Node: TTreeNode;
   begin
     Node := AddNode(Parent, Caption[DebugSettings], Feature[DebugSettings]);
-    {$IFDEF KYLIX}
-    AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
-    {$ELSE}
-    AddNode(Node, RsMakeVcl, Feature[DebugSettings] or FID_JCL_Vcl);
+    {$IFDEF MSWINDOWS}
     if Installation.VersionNumber >= 6 then
     begin
       if Installation.SupportsVisualCLX then
