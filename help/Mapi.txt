@@ -281,7 +281,8 @@ property SelectedClientIndex: Integer read FSelectedClientIndex write SetSelecte
 [ShortDescr]
 Index of currently selected client.
 [Description]
-With SelectedClientIndex you can determine or set the client library to use.
+With SelectedClientIndex you can determine or set the client library to use. This 
+property is usefull only if ClientConnectKind = ctDirect.
 [Quick Info]
 Kind=Property
 Visibility=Public
