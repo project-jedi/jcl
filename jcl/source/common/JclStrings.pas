@@ -20,10 +20,11 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: September 30, 2002                                                                    }
+{ Last modified: February 25, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
+// rr  25 feb 2003 Linux port (implemented LoadCharTypes & LoadCaseMap)
 // mvb 20 jan 2002 added StrIToStrings to interface section
 // mvb 20 jan 2002 added AllowEmptyString parameter to StringsToStr function
 // mvb 20 jan 2002 added AddStringToStrings() by Jeff
@@ -123,8 +124,6 @@ const
   AnsiOctDigits      = ['0'..'7'];
   AnsiHexDigits      = ['0'..'9', 'A'..'F', 'a'..'f'];
 
-{$IFDEF MSWINDOWS}
-
 const
   // CharType return values
   C1_UPPER  = $0001; // Uppercase
@@ -147,7 +146,6 @@ const
   {$EXTERNALSYM C1_BLANK}
   {$EXTERNALSYM C1_XDIGIT}
   {$EXTERNALSYM C1_ALPHA}
-{$ENDIF}
 {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
@@ -369,6 +367,9 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF WIN32}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   JclLogic,
   JclResources;
 
@@ -406,15 +407,35 @@ var
   CurrChar: AnsiChar;
   CurrType: Word;
 begin
-  {$IFDEF MSWINDOWS}
   for CurrChar := Low(AnsiChar) to High(AnsiChar) do
   begin
+    {$IFDEF MSWINDOWS}
     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    CurrType := 0;
+    if isupper(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_UPPER;
+    if islower(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_LOWER;
+    if isdigit(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_DIGIT;
+    if isspace(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_SPACE;
+    if ispunct(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_PUNCT;
+    if iscntrl(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_CNTRL;
+    if isblank(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_BLANK;
+    if isxdigit(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_XDIGIT;
+    if isalpha(Byte(CurrChar)) <> 0 then
+      CurrType := CurrType or C1_ALPHA;
+    {$ENDIF LINUX}
     AnsiCharTypes[CurrChar] := CurrType;
   end;
-  {$ENDIF}
 end;
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -422,15 +443,20 @@ procedure LoadCaseMap;
 var
   CurrChar, UpCaseChar, LoCaseChar, ReCaseChar: AnsiChar;
 begin
-  {$IFDEF MSWINDOWS}
   if not AnsiCaseMapReady then
   begin
     for CurrChar := Low(AnsiChar) to High(AnsiChar) do
     begin
+      {$IFDEF MSWINDOWS}
       LoCaseChar := CurrChar;
       UpCaseChar := CurrChar;
       Windows.CharLowerBuff(@LoCaseChar, 1);
       Windows.CharUpperBuff(@UpCaseChar, 1);
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      LoCaseChar := AnsiChar(tolower(Byte(CurrChar)));
+      UpCaseChar := AnsiChar(toupper(Byte(CurrChar)));
+      {$ENDIF LINUX}
       if CharIsUpper(CurrChar) then
         ReCaseChar := LoCaseChar
       else
@@ -438,14 +464,12 @@ begin
           ReCaseChar := UpCaseChar
         else
           ReCaseChar := CurrChar;
-
       AnsiCaseMap[Ord(CurrChar) + AnsiLoOffset] := LoCaseChar;
       AnsiCaseMap[Ord(CurrChar) + AnsiUpOffset] := UpCaseChar;
       AnsiCaseMap[Ord(CurrChar) + AnsiReOffset] := ReCaseChar;
     end;
     AnsiCaseMapReady := True;
   end;
-  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1455,7 +1479,7 @@ begin
       Inc(Source);
     end;
 
-    Result[1] := UpCase(Result[1]); 
+    Result[1] := UpCase(Result[1]);
   end;
 end;
 
@@ -1625,8 +1649,8 @@ end;
 
 function StrUpper(const S: AnsiString): AnsiString;
 begin
-   Result := S;
-   StrUpperInPlace(Result);
+  Result := S;
+  StrUpperInPlace(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2879,6 +2903,7 @@ begin
     Result := StrLeft(S, P - 1);
 end;
 
+
 //--------------------------------------------------------------------------------------------------
 
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
@@ -2944,6 +2969,7 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
 
 function CharIsAlpha(const C: AnsiChar): Boolean;
 begin
@@ -3219,7 +3245,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer; 
+function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
 var
   P: PAnsiChar;
 begin
@@ -3662,6 +3688,6 @@ initialization
 
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
-  
+
 end.
 
