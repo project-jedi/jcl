@@ -411,3 +411,20 @@
   {$DEFINE SUPPORTS_DEFAULTPARAMS}
   {$DEFINE SUPPORTS_OVERLOAD}
 {$ENDIF}
+
+//------------------------------------------------------------------------------
+// Cross-platform related defines
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+  {$DEFINE MSWINDOWS}
+{$ENDIF}
+
+{$IFDEF LINUX}
+  {$DEFINE UNIX}
+  {$DEFINE COMPLIB_CLX}
+{$ENDIF}
+
+{$IFNDEF COMPLIB_CLX}
+  {$DEFINE COMPLIB_VCL}
+{$ENDIF}
