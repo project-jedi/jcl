@@ -86,6 +86,11 @@ resourcestring
 
   RsPathInvalidDrive = '%s is not a valid drive';
 
+  // Files and directories
+
+  RsFileUtilsAttrUnavailable = 'Unable to retrieve attributes of %s';
+
+  RsCannotCreateDir = 'Unable to create directory';
 
   // TJclFileVersionInfo
 
