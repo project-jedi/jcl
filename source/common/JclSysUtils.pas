@@ -179,8 +179,10 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Bool
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
 {$IFDEF SUPPORTS_VARIANT}
+{$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
 // because Compiler 5 can not differentiate between Variant and Byte, Integer, ... in case of overload
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
+{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 //--------------------------------------------------------------------------------------------------
@@ -1286,6 +1288,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_VARIANT}
+{$IFDEF COMPILER6_UP}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 begin
   if Condition then
@@ -1293,6 +1296,7 @@ begin
   else
     Result := FalsePart;
 end;
+{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 //==================================================================================================
@@ -2255,6 +2259,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/05/08 22:06:30  rrossmair
+// revert mistaken removal of COMPILER6_UP condition (v. 1.12)
+//
 // Revision 1.13  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //
