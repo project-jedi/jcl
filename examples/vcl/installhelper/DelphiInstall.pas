@@ -233,8 +233,9 @@ type
     FRootDir: string;
     FVersionNumber: Byte;
     function GetBPLOutputPath: string;
-    function GetComplier: TJclDelphiCompiler;
+    function GetCompiler: TJclDelphiCompiler;
     function GetDCPOutputPath: string;
+    function GetDebugDCUsPath: string;
     function GetEditionAsText: string;
     function GetEnvironmentVariables: TStrings;
     function GetIdeExeBuildNumber: string;
@@ -248,6 +249,7 @@ type
     procedure SetLibrarySearchPath(const Value: TJclDelphiPath);
     function GetLibraryBrowsingPath: TJclDelphiPath;
     procedure SetLibraryBrowsingPath(const Value: TJclDelphiPath);
+    procedure SetDebugDCUsPath(const Value: string);
   protected
     constructor Create(const ARegKey: string);
     procedure ReadInformation;
@@ -256,13 +258,15 @@ type
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclDelphiPath; List: TStrings);
     function AnyInstanceRunning: Boolean;
+    function AddToDebugDCUsPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
     function FindFolderInDelphiPath(Folder: string; List: TStrings): Integer;
     function SubstitutePath(const Path: string): string;
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
-    property Compiler: TJclDelphiCompiler read GetComplier;
+    property Compiler: TJclDelphiCompiler read GetCompiler;
+    property DebugDCUsPath: string read GetDebugDCUsPath write SetDebugDCUsPath;
     property DCPOutputPath: string read GetDCPOutputPath;
     property Edition: TJclDelphiEdition read FEdition;
     property EditionAsText: string read GetEditionAsText;
@@ -328,6 +332,9 @@ const
   DelphiKeyName              = 'SOFTWARE\Borland\Delphi';
   RootDirValueName           = 'RootDir';
   VersionValueName           = 'Version';
+
+  DebuggingKeyName           = 'Debugging';
+  DebugDCUsPathValueName     = 'Debug DCUs Path'; 
 
   LibraryKeyName             = 'Library';
   LibrarySearchPathValueName = 'Search Path';
@@ -1108,6 +1115,17 @@ end;
 // TJclDelphiInstallation
 //==================================================================================================
 
+function TJclDelphiInstallation.AddToDebugDCUsPath(const Path: string): Boolean;
+var
+  TempDebugDCUsPath: TJclDelphiPath;
+begin
+  TempDebugDCUsPath := DebugDCUsPath;
+  Result := AddMissingPathElements(TempDebugDCUsPath, Path);
+  DebugDCUsPath := TempDebugDCUsPath;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclDelphiInstallation.AddToLibrarySearchPath(const Path: string): Boolean;
 var
   TempLibraryPath: TJclDelphiPath;
@@ -1243,7 +1261,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDelphiInstallation.GetComplier: TJclDelphiCompiler;
+function TJclDelphiInstallation.GetCompiler: TJclDelphiCompiler;
 begin
   if not Assigned(FCompiler) then
     FCompiler := TJclDelphiCompiler.Create(Self);
@@ -1256,6 +1274,13 @@ function TJclDelphiInstallation.GetDCPOutputPath: string;
 begin
   Result := SubstitutePath(RegReadStringDef(HKEY_CURRENT_USER, RegKey + '\' + LibraryKeyName,
     LibraryDCPOutputValueName, ''));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDelphiInstallation.GetDebugDCUsPath: string;
+begin
+  Result := RegReadStringDef(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUsPathValueName, '');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1414,6 +1439,13 @@ begin
       FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
       Break;
     end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDelphiInstallation.SetDebugDCUsPath(const Value: string);
+begin
+  RegWriteString(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUsPathValueName, Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
