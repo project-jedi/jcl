@@ -136,7 +136,6 @@ function StrIsAlphaNum(const S: AnsiString): Boolean;
 function StrIsAlphaNumUnderscore(const S: AnsiString): Boolean;
 function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
 function StrIsDigit(const S: AnsiString): Boolean;
-function StrIsNumber(const S: AnsiString): Boolean;
 function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolean;
 function StrSame(const S1, S2: AnsiString): Boolean;
 
@@ -215,7 +214,7 @@ function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer):
 function StrFillChar(const C: AnsiChar; const Count: Integer): AnsiString;
 function StrFind(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of string): Boolean;
-function StrIndex(const S: AnsiString; const List: array of string): Integer;
+function StrIndex(const S: AnsiString; const List: array of AnsiString): Integer;
 function StrILastPos(const SubStr, S: AnsiString): Integer;
 function StrIPos(const SubStr, S: AnsiString): Integer;
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
@@ -252,7 +251,7 @@ function CharIsControl(const C: AnsiChar): Boolean;
 function CharIsDelete(const C: AnsiChar): Boolean;
 function CharIsDigit(const C: AnsiChar): Boolean;
 function CharIsLower(const C: AnsiChar): Boolean;
-function CharIsNumber(const C: AnsiChar): Boolean;
+function CharIsNumberChar(const C: AnsiChar): Boolean;
 function CharIsPrintable(const C: AnsiChar): Boolean;
 function CharIsPunctuation(const C: AnsiChar): Boolean;
 function CharIsReturn(const C: AnsiChar): Boolean;
@@ -299,16 +298,25 @@ function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 procedure FreeMultiSz(var Dest: PChar);
 
+
+// Note: Unit tests showed that StringsToMultiString and vice verca do not
+//       like empty strings. As designed? The already existing functions
+//       StringsToStr and StrToStrings take them...
+//
+//        A "hot" fix would be
+//        <  while (PtrStart^ <> #0) do
+//        >  while (PtrStart^ <> #0) or (PtrStart < PtrValueEnd) do  // assumes valid string
+
 { TODO -cHelp : Author: Peter J. Haas }
-function StringsToMultiString(const Value: array of String): String; overload;
+function StringsToMultiString(const Value: array of AnsiString): AnsiString; overload;
 { TODO -cHelp : Author: Peter J. Haas }
-function StringsToMultiString(const Value: TDynStringArray): String; overload;
+function StringsToMultiString(const Value: TDynStringArray): AnsiString; overload;
 { TODO -cHelp : Author: Peter J. Haas }
-function StringsToMultiString(const Value: TStrings): String; overload;
+function StringsToMultiString(const Value: TStrings): AnsiString; overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: String); overload;
+procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure MultiStringToStrings(Dest: TStrings; const Value: String); overload;
+procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString); overload;
 
 //--------------------------------------------------------------------------------------------------
 // TStrings Manipulation
@@ -745,23 +753,6 @@ begin
   for I := 1 to Length(S) do
   begin
     if not CharIsDigit(S[I]) then
-    begin
-      Result := False;
-      Exit;
-    end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function StrIsNumber(const S: AnsiString): Boolean;
-var
-  I: Integer;
-begin
-  Result := S <> '';
-  for I := 1 to Length(S) do
-  begin
-    if not CharIsNumber(S[I]) then
     begin
       Result := False;
       Exit;
@@ -1242,7 +1233,7 @@ end;
 
 procedure StrReplaceCS(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
-  ResultStr: string;     { result string }
+  ResultStr: AnsiString; { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
   SourceMatchPtr: PChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
@@ -1329,7 +1320,7 @@ end;
 
 procedure StrReplaceCI(var S: AnsiString; Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
-  ResultStr: string;     { result string }
+  ResultStr: AnsiString; { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
   SourceMatchPtr: PChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
@@ -1582,7 +1573,7 @@ begin
   for I := 1 to Length(S) do
   begin
     C := S[I];
-    if CharIsNumber(C) then
+    if CharIsNumberChar(C) then
       Result := Result + C;
   end;
 end;
@@ -1795,7 +1786,7 @@ end;
 
 procedure StrDecRef(var S: AnsiString);
 var
-  Foo: string;
+  Foo: AnsiString;
 begin
   case StrRefCount(S) of
     -1, 0: { nothing } ;
@@ -2367,7 +2358,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrIndex(const S: AnsiString; const List: array of string): Integer;
+function StrIndex(const S: AnsiString; const List: array of AnsiString): Integer;
 var
   I: Integer;
 begin
@@ -3099,7 +3090,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function CharIsNumber(const C: AnsiChar): Boolean;
+function CharIsNumberChar(const C: AnsiChar): Boolean;
 begin
   Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or
     (C in AnsiSigns) or (C = DecimalSeparator);
@@ -3430,11 +3421,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiString(const Value: array of String): String;
+function StringsToMultiString(const Value: array of AnsiString): AnsiString;
 var
   Len, I: Integer;
   DstPtr: PChar;
-  S: String;
+  S: AnsiString;
 begin
   Result := '';
   // calculate length
@@ -3453,11 +3444,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiString(const Value: TDynStringArray): String;
+function StringsToMultiString(const Value: TDynStringArray): AnsiString;
 var
   Len, I: Integer;
   DstPtr: PChar;
-  S: String;
+  S: AnsiString;
 begin
   Result := '';
   // calculate length
@@ -3476,11 +3467,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiString(const Value: TStrings): String;
+function StringsToMultiString(const Value: TStrings): AnsiString;
 var
   Len, I: Integer;
   DstPtr: PChar;
-  S: String;
+  S: AnsiString;
 begin
   Result := '';
   if not Assigned(Value) then
@@ -3501,11 +3492,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: String);
+procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString);
 var
   PtrValueEnd, PtrStart, PtrEnd: PChar;
   Count, I: Integer;
-  S: String;
+  S: AnsiString;
 begin
   // get count
   PtrStart := PChar(Value);
@@ -3532,7 +3523,7 @@ begin
   end;
 end;
 
-procedure MultiStringToStrings(Dest: TStrings; const Value: String);
+procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString);
 var
   PtrValueEnd, PtrStart, PtrEnd: PChar;
   S: String;
@@ -3545,7 +3536,7 @@ begin
     Dest.Clear;
     PtrStart := PChar(Value);
     PtrValueEnd := PtrStart + Length(Value);
-    while PtrStart^ <> #0 do
+    while (PtrStart^ <> #0) do
     begin
       PtrEnd := StrEnd(PtrStart);
       SetString(S, PtrStart, PtrEnd - PtrStart);
@@ -3769,7 +3760,7 @@ end;
 procedure StrTokens(const S: AnsiString; const List: TStrings);
 var
   Start: PChar;
-  Token: string;
+  Token: AnsiString;
   Done: Boolean;
 begin
   Assert(List <> nil);
@@ -3993,6 +3984,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.13  2004/04/11 15:58:25  mthoma
+// Fixed #1119. Removed StrIsNumber (see bugnote), renamed CharIsNumber to CharisNumberChar. Changed some Strings to AnsiString (unit now compiles also in H- mode).
+//
 // Revision 1.12  2004/04/09 20:35:14  mthoma
 // Added StrLastPos. changed $Data$ to $Date$
 //
