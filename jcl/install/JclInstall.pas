@@ -208,6 +208,7 @@ resourcestring
   RsJCLIdeAnalyzer  = 'Project Analyzer';
   RsJCLIdeFavorite  = 'Favorite combobox in Open/Save dialogs';
   RsJCLIdeThrNames  = 'Displaying thread names in Thread Status window';
+  RsJCLIdeUses      = 'Uses Wizard';
 
 // Hints
   RsHintTarget = 'Installation target';
@@ -236,6 +237,7 @@ resourcestring
   RsHintJclExpertAnalyzer = 'Install IDE Project Analyzer.';
   RsHintJclExpertFavorite = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
   RsHintJclExpertsThrNames = 'Display thread names in Thread Status window IDE extension.';
+  RsHintJclExpertUses = 'Install IDE Uses Wizard.';
   RsHintJclCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
     'the source paths.';
   RsHintJclExcDialog = 'Add selected Exception dialogs to the Object Repository.';
@@ -307,6 +309,9 @@ const
       (Parent: ioJclExperts;             // ioJclExpertsThrNames
        Caption: RsJCLIdeThrNames;
        Hint: RsHintJclExpertsThrNames),
+      (Parent: ioJclExperts;             // ioJclExpertUses
+       Caption: RsJCLIdeUses;
+       Hint: RsHintJclExpertUses),
       (Parent: ioJclPackages;            // ioJclCopyPackagesHppFiles
        Caption: RsCopyPackagesHppFiles;
        Hint: RsHintJclCopyPackagesHppFiles),
@@ -358,13 +363,15 @@ const
   JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%d0.dpk';
   JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
   JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
+  JclIdeUsesDpk     = 'examples\vcl\juw\JediUsesD%d0.dpk';  
 
-  ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
+  ExpertPaths: array[ioJclExpertDebug..ioJclExpertUses] of string =
     (
       JclIdeDebugDpk,
       JclIdeAnalyzerDpk,
       JclIdeFavoriteDpk,
-      JclIdeThrNamesDpk
+      JclIdeThrNamesDpk,
+      JclIdeUsesDpk
     );
 
   JclSrcDirOS       = 'windows';
@@ -916,6 +923,9 @@ Leave these options unchecked for Win9x/WinME until that has been examined. }
     AddNode(TempNode, ioJclExpertFavorite, False, IsWinNT);
     if Target.VersionNumber <= 6 then
       AddNode(TempNode, ioJclExpertsThrNames, False, IsWinNT);
+    //(usc) no packages and tests for D7 & D9 so far
+    if Target.VersionNumber <= 6 then  
+      AddNode(TempNode, ioJclExpertUses, False, IsWinNT);
   end;
   {$ENDIF MSWINDOWS}
   Tool.BPLPath[Target] := StoredBplPath;
@@ -976,7 +986,7 @@ begin
       end;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
-    ioJclExpertDebug..ioJclExpertsThrNames:
+    ioJclExpertDebug..ioJclExpertUses:
       Result := InstallPackageSourceFile(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
     // ioJclExcDialog:
@@ -1032,7 +1042,7 @@ begin
       end;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
-    ioJclExpertDebug..ioJclExpertsThrNames:
+    ioJclExpertDebug..ioJclExpertUses:
       Result := UninstallPackage(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: 
     // ioJclExcDialog:
@@ -1193,7 +1203,8 @@ begin
     ioJclExpertDebug,
     ioJclExpertAnalyzer,
     ioJclExpertFavorite,
-    ioJclExpertsThrNames:
+    ioJclExpertsThrNames,
+    ioJclExpertUses:
       Result := 5;
     ioJclCopyPackagesHppFiles:
       Result := 2;
@@ -1589,6 +1600,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.52  2005/02/28 20:19:05  uschuster
+// changes for Uses wizard
+//
 // Revision 1.51  2005/02/23 08:32:30  rrossmair
 // - TJclInstallation: replaced Target.DCC.Options.Clear by Target.DCC.SetDefaultOptions.
 //   Some cleanup.

@@ -50,6 +50,7 @@ type
       ioJclExpertAnalyzer,
       ioJclExpertFavorite,
       ioJclExpertsThrNames,
+      ioJclExpertUses,
       ioJclCopyPackagesHppFiles,
       ioJclExcDialog,
       ioJclExcDialogVCL,
@@ -145,6 +146,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/28 20:19:07  uschuster
+// changes for Uses wizard
+//
 // Revision 1.10  2005/02/03 05:22:17  rrossmair
 // - more uninstall support (still unfinished)
 //
