@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 1, 2003                                                                   }
+{ Last modified: October 14, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -56,8 +56,7 @@ unit JclEDI_UNEDIFACT;
 interface
 
 uses
-  SysUtils, Classes,
-  JclBase, JclEDI;
+  SysUtils, Classes, JclEDI;
 
 const
 
@@ -155,7 +154,7 @@ type
   TEDISegment = class(TEDIDataObjectGroup)
   private
     FSegmentID: string;
-    //FSegmentIdData: TEDICompositeElement; // ToDo: ex: AAA:1:1:2+data1+data2'
+    //FSegmentIdData: T???// ToDo: ex: AAA:1:1:2+data1+data2'
   protected
     function InternalCreateElement: TEDIElement; virtual;
     function InternalCreateCompositeElement: TEDICompositeElement; virtual;
@@ -518,7 +517,7 @@ begin
   FSegmentID := '';
   FEDIDOT := ediSegment;
   FCreateObjectType := ediElement;
-//  FSegmentIdData := TEDICompositeElement.Create(Self);
+//  FSegmentIdData := T???.Create(Self);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1640,7 +1639,7 @@ begin
       if SearchResult > 0 then
       begin
         // Set next start positon
-        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
         // Search for end of Functional Group Trailer Segment Terminator
         SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
         if SearchResult > 0 then
@@ -1679,7 +1678,7 @@ begin
       if SearchResult <> 0 then
       begin
         // Set the next start position
-        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
         // Search for the end of Message Trailer
         SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
         if SearchResult <> 0 then
@@ -2045,7 +2044,7 @@ begin
     SearchResult := StrSearch(FDelimiters.SD + UNZSegmentId + FDelimiters.ED, FData, StartPos);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+      SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
       // Search for the end of Interchange Control Trailer
       SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
       if SearchResult > 0 then
