@@ -1,14 +1,5 @@
 {******************************************************************************}
 {                                                                              }
-{  WARNING: This file is generated automatically by preprocessor.              }
-{                                                                              }
-{  Manual modifications will be lost on next release. Please modify the        }
-{  original source file.                                                       }
-{                                                                              }
-{******************************************************************************}
-
-{******************************************************************************}
-{                                                                              }
 {  Project JEDI Code Library (JCL)                                             }
 {                                                                              }
 {  The contents of this file are subject to the Mozilla Public License         }
@@ -37,8 +28,17 @@
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI, located at http://www.delphi-jedi.org/                                }
 {                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he       }
+{        donated to the JCL. He is not to be held responsible for              }
+{        modifications applied after this date.                                }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.     }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
 {  Contributor(s):                                                             }
-{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
+{    Peter J. Haas (peterjhaas)                                                }
 {    Robert Rossmair (rrossmair)                                               }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
@@ -56,7 +56,7 @@
 {                                                                              }
 {******************************************************************************}
 {                                                                              }
-{  Additional info:                                                            }
+{  Additional information:                                                     }
 {    RFC 1952: GZIP file format specification version 4.3, 1996, Peter Deutsch }
 {    ftp://ftp.uu.net/graphics/png/documents/zlib/zdoc-index.html              }
 {                                                                              }
@@ -76,6 +76,7 @@
 unit JclZlib;
 
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
@@ -89,8 +90,6 @@ uses
   SysUtils, Classes,
   JclBase, JclDateTime,
   zlibh;
-
-// *****************************************************************************
 
 const
   JclZLibStreamDefaultBufferSize = 32 * 1024;
@@ -115,6 +114,10 @@ const
   {$ENDIF UNIX}
 {$ENDIF ~RTL140_UP}
 
+//--------------------------------------------------------------------------------------------------
+// zlib format support
+//--------------------------------------------------------------------------------------------------
+
 type
   TJclZLibStream = class(TStream)
   protected
@@ -138,6 +141,7 @@ type
     constructor Create(const Stream: TStream;
       const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
       const WindowBits: Integer = DEF_WBITS);
+
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -160,6 +164,7 @@ type
       const Level: Integer = Z_DEFAULT_COMPRESSION;
       const Strategy: Integer = Z_DEFAULT_STRATEGY;
       const WindowBits: Integer = DEF_WBITS);
+
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -186,7 +191,9 @@ function ZLibDecompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; var DstCapacity: Integer;
   const Flush: Integer = Z_SYNC_FLUSH): Boolean;
 
-// *****************************************************************************
+//--------------------------------------------------------------------------------------------------
+// gzip format support
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclGZipStream = class(TStream)
@@ -218,6 +225,7 @@ type
     constructor Create(const Stream: TStream;
       const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
       const LineSeparator: String = JclZLibDefaultLineSeparator);
+    
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -251,6 +259,7 @@ type
       const TextMode: Boolean = False;
       const ExtraField: Pointer = Nil;
       const ExtraFieldSize: Integer = 0);
+
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -268,7 +277,9 @@ procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
   const Level: Integer = Z_DEFAULT_COMPRESSION);
 procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
 
-// *****************************************************************************
+//--------------------------------------------------------------------------------------------------
+// tar archive support
+//--------------------------------------------------------------------------------------------------
 
 const
   TarBlockSize = 512;
@@ -376,11 +387,11 @@ const
 
   // other version for GNU-Magic:  'GNUtar '#0
 
-// *****************************************************************************
-
 type
   TJclTarFileType = (tftUnknown, tftEof, tftFile, tftDirectory);
+  
   TJclTarFileSize = Int64;
+  
 
   TJclTarReader = class(TObject)
   private
@@ -436,8 +447,13 @@ procedure UnGZipTarAllFiles(const TgzFilename: String; DstDir: String);
 procedure GetFileList(RootDir: String; List: TStrings);
 
 implementation
+
 uses
   JclResources, JclFileUtils;
+
+//==================================================================================================
+// zlib format support
+//==================================================================================================
 
 function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
 const
@@ -461,6 +477,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 // if error then raise exception
 // but not for Z_OK, Z_STREAM_END and Z_NEED_DICT
 procedure Check(const ErrorCode: Integer);
@@ -469,8 +487,7 @@ begin
     raise EJclZLibError.CreateRes(GetZlibErrorText(ErrorCode));
 end;
 
-
-// **************************  TZLibStream  *************************
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclZLibStream.Create(const Stream: TStream; const BufferSize: Integer);
 begin
@@ -485,24 +502,29 @@ begin
   GetMem(FBuffer, FBufferSize);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclZLibStream.Destroy;
 begin
   FreeMem(FBuffer, FBufferSize);
   inherited Destroy;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclZLibStream.SetSize(NewSize: Longint);
 begin
   raise EJclZLibError.CreateRes(@RsZlibNoSetSize);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclZLibStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   raise EJclZLibError.CreateRes(@RsZlibNoSeek);
 end;
 
-
-// **************************  TZLibReader  *************************
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclZLibReader.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
@@ -515,6 +537,8 @@ begin
   Check(inflateInit2(FZLibStream, WindowBits));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclZLibReader.Destroy;
 begin
   try  // Stream.Seek can raise any Exception
@@ -525,6 +549,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclZLibReader.ReadNextBlock;
 begin
   if (FZLibStream.avail_in = 0) and (not FEndOfStream) then
@@ -533,6 +559,8 @@ begin
     FZLibStream.next_in := FBuffer;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclZLibReader.SyncZLibStream;
 var
@@ -553,6 +581,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclZLibReader.FinishZLibStream;
 begin
   Check(inflateEnd(FZLibStream));
@@ -560,6 +590,8 @@ begin
   if FZLibStream.avail_in > 0 then
     FStream.Seek(-FZLibStream.avail_in, soFromCurrent);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclZLibReader.Reset;
 begin
@@ -569,6 +601,8 @@ begin
   FZLibStream.total_out := 0;
   Check(inflateReset(FZLibStream));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclZLibReader.Read(var Buffer; Count: Longint): Longint;
 var
@@ -596,10 +630,14 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclZLibReader.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclZLibError.CreateRes(@RsZlibNoWrite);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclZLibReader.Seek(Offset: Longint; Origin: Word): Longint;
 begin
@@ -609,8 +647,7 @@ begin
     Result := inherited Seek(Offset, Origin);
 end;
 
-
-// **************************  TZLibWriter  *************************
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclZLibWriter.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
@@ -624,6 +661,8 @@ begin
   Check(deflateInit2(FZLibStream, Level, Z_DEFLATED, WindowBits, DEF_MEM_LEVEL, Strategy));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclZLibWriter.Destroy;
 begin
   FlushZLibStream(Z_FINISH);
@@ -631,6 +670,8 @@ begin
   Check(deflateEnd(FZLibStream));
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclZLibWriter.WriteNextBlock;
 var
@@ -642,6 +683,8 @@ begin
   FZLibStream.next_out := FBuffer;
   FZLibStream.avail_out := FBufferSize;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclZLibWriter.FlushZLibStream(const Flush: Integer);
 var
@@ -657,6 +700,8 @@ begin
   Check(Err);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclZLibWriter.Reset;
 begin
   FlushZLibStream(Z_FINISH);
@@ -665,10 +710,14 @@ begin
   Check(deflateReset(FZLibStream));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclZLibWriter.Read(var Buffer; Count: Longint): Longint;
 begin
   raise EJclZLibError.CreateRes(@RsZlibNoRead);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclZLibWriter.Write(const Buffer; Count: Longint): Longint;
 var
@@ -689,6 +738,8 @@ begin
   Check(Err);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclZLibWriter.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   if (Offset = 0) and (Origin = soFromCurrent) then  // GetPosition
@@ -697,6 +748,8 @@ begin
     Result := inherited Seek(Offset, Origin);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function ZLibCompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; out DstCapacity: Integer;
   const Level: Integer = Z_DEFAULT_COMPRESSION): Boolean;
@@ -704,18 +757,18 @@ var
   ZLibStream: TZStreamRec;
   Err: Integer;
 
-// calculate DstCapacity, at least 100.1% * SrcLen + 12
-procedure CalcDstCapacity(const Estimated: Double);
-var
-  i: Integer;
-begin
-  i := Round(Estimated * 1.002) + 12;
-  i := (i + 15) and not 15;
-  if DstCapacity < i then
-    DstCapacity := i
-  else
-    DstCapacity := DstCapacity + 16;
-end;
+  // calculate DstCapacity, at least 100.1% * SrcLen + 12
+  procedure CalcDstCapacity(const Estimated: Double);
+  var
+    i: Integer;
+  begin
+    i := Round(Estimated * 1.002) + 12;
+    i := (i + 15) and not 15;
+    if DstCapacity < i then
+      DstCapacity := i
+    else
+      DstCapacity := DstCapacity + 16;
+  end;
 
 begin
   Result := False;
@@ -724,7 +777,7 @@ begin
   DstCapacity := 0;
   if (SrcLen = 0) or (not Assigned(Src)) then
     Exit;
-
+    
   CalcDstCapacity(SrcLen);
   GetMem(Dst, DstCapacity);
   try
@@ -767,6 +820,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function ZLibDecompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; var DstCapacity: Integer;
   const Flush: Integer = Z_SYNC_FLUSH): Boolean;
@@ -774,18 +829,18 @@ var
   ZLibStream: TZStreamRec;
   Err: Integer;
 
-// calculate DstCapacity, 120% of Estimated
-procedure CalcDstCapacity(const Estimated: Double);
-var
-  i: Integer;
-begin
-  i := Round(Estimated * 1.2);
-  i := (i + 15) and not 15;
-  if DstCapacity < i then
-    DstCapacity := i
-  else
-    DstCapacity := DstCapacity + 16;
-end;
+  // calculate DstCapacity, 120% of Estimated
+  procedure CalcDstCapacity(const Estimated: Double);
+  var
+    i: Integer;
+  begin
+    i := Round(Estimated * 1.2);
+    i := (i + 15) and not 15;
+    if DstCapacity < i then
+      DstCapacity := i
+    else
+      DstCapacity := DstCapacity + 16;
+  end;
 
 begin
   Result := False;
@@ -838,7 +893,9 @@ begin
   end;
 end;
 
-// ******************************************************************
+//==================================================================================================
+// gzip format support
+//==================================================================================================
 
 constructor TJclGZipStream.Create(const Stream: TStream);
 begin
@@ -848,20 +905,28 @@ begin
   FUncompressedSize := 0;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclGZipStream.Destroy;
 begin
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclGZipStream.SetSize(NewSize: Longint);
 begin
   raise EJclGZipError.CreateRes(@RsGzipNoSetSize);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclGZipStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   raise EJclGZipError.CreateRes(@RsGzipNoSeek);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 const
   gzipMagic = $8B1F;
@@ -885,7 +950,7 @@ var
   EncryptionHeader: array[0..11] of Byte;  // placeholder
 begin
   inherited Create(Stream);
-
+                                        
   // check ID
   Stream.ReadBuffer(w, SizeOf(w));
   if w <> gzipMagic then
@@ -968,6 +1033,8 @@ begin
   FZLibReader := TJclZLibReader.Create(Stream, BufferSize, -MAX_WBITS);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclGZipReader.Destroy;
 begin
   FZLibReader.Free;
@@ -975,6 +1042,8 @@ begin
     FreeMem(FExtraField);
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclGZipReader.Read(var Buffer; Count: Longint): Longint;
 var
@@ -1002,21 +1071,25 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclGZipReader.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclGZipError.CreateRes(@RsGzipNoWrite);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function ConvertNewLineToLF(const Value: String): String;
 var
   SrcPtr: PChar;
   DstIdx: Integer;
 
-procedure AddChar(c: Char);
-begin
-  Result[DstIdx] := c;
-  Inc(DstIdx);
-end;
+  procedure AddChar(c: Char);
+  begin
+    Result[DstIdx] := c;
+    Inc(DstIdx);
+  end;
 
 begin
   SetLength(Result, Length(Value));
@@ -1046,6 +1119,8 @@ begin
   end;
   SetLength(Result, DstIdx - 1);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclGZipWriter.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
@@ -1135,6 +1210,8 @@ begin
                                        Z_DEFAULT_STRATEGY, -MAX_WBITS);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclGZipWriter.Destroy;
 begin
   FZLibWriter.Free;
@@ -1143,10 +1220,14 @@ begin
   inherited Destroy;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclGZipWriter.Read(var Buffer; Count: Longint): Longint;
 begin
   raise EJclGZipError.CreateRes(@RsGzipNoRead);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclGZipWriter.Write(const Buffer; Count: Longint): Longint;
 var
@@ -1168,11 +1249,15 @@ begin
   FUncompressedSize := FUncompressedSize + LongWord(Result);
 end;
 
-// ****************  gzip file support  *****************************
+//==================================================================================================
+// gzip file support
+//==================================================================================================
 
 const
   MaxBufferSize = 1024 * 1024;  // 1 MByte
   BufferBlockSize = 32 * 1024;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
   const Level: Integer = Z_DEFAULT_COMPRESSION);
@@ -1269,6 +1354,8 @@ begin
     Src.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
 var
@@ -1371,7 +1458,9 @@ begin
   end;
 end;
 
-// *****************************************************************************
+//==================================================================================================
+// tar archive support
+//==================================================================================================
 
 function OctalToInt(const Value: array of AnsiChar; MaxValue: TJclTarFileSize): TJclTarFileSize;
 var
@@ -1393,13 +1482,23 @@ begin
       '0'..'7':
         Result := (Result shl 3) or (Ord(C) - Ord('0'));
     else
+      {$IFDEF DELPHI3}
+      raise EConvertError.CreateFmt(RsTarOctalToIntInvalidCharacters, [V]);
+      {$ELSE DELPHI3}
       raise EConvertError.CreateResFmt(@RsTarOctalToIntInvalidCharacters, [V]);
+      {$ENDIF DELPHI3}
     end;
   end;
   // check range
   if Result > MaxValue then
+    {$IFDEF DELPHI3}
+    raise EConvertError.CreateFmt(RsTarOctalToIntOutOfRange, [V]);
+    {$ELSE DELPHI3}
     raise EConvertError.CreateResFmt(@RsTarOctalToIntOutOfRange, [V]);
+    {$ENDIF DELPHI3}
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function CalculateTarChecksum(Header: TTarHeader): Integer;
 var
@@ -1412,6 +1511,8 @@ begin
     Result := Result + Header.Buffer[i];
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclTarReader.Create(const TarStream: TStream);
 begin
   inherited Create;
@@ -1419,6 +1520,8 @@ begin
   if ReadHeader then
     ScanHeader;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclTarReader.ReadHeader: Boolean;
 var
@@ -1447,6 +1550,8 @@ begin
     FFileType := tftEof;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTarReader.ScanHeader;
 var
@@ -1480,11 +1585,11 @@ begin
       begin
         Prefix := FHeader.Prefix;
         if Prefix <> '' then
-          FFilename := Prefix + UnixPathDelimiter + FFilename;
+          FFilename := Prefix + UnixPathDelimiter + FFilename; 
       end;
   end;
   {$IFNDEF UNIX}
-  // correct path delimiter
+  // correct path delimiter 
   for I := 1 to Length(FFilename) do
     if FFilename[I] = UnixPathDelimiter then
       FFilename[I] := PathDelim;
@@ -1496,6 +1601,8 @@ begin
   if OctalToInt(FHeader.Chksum, High(Integer)) <> CalculateTarChecksum(FHeader) then
     raise EJclTarError.CreateRes(@RsTarChecksumError);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTarReader.CopyToStream(const FileStream: TStream;
   CanSeek: Boolean = False);
@@ -1527,6 +1634,8 @@ begin
   if ReadHeader then
     ScanHeader;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTarReader.CopyToFile(const FilePath: String);
 var
@@ -1563,20 +1672,28 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclTarReader.SkipFile;
 begin
   CopyToStream(Nil, False);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTarReader.SkipFileSeek;
 begin
   CopyToStream(Nil, True);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclTarReader.GetFileDateTime: TDateTime;
 begin
   Result := UnixTimeToDateTime(FFileTime);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure UnTarAllFiles(const TarFilename: String; DstDir: String);
 var
@@ -1590,7 +1707,7 @@ begin
     DstDir := {$IFDEF XPLATFORM_RTL}ExcludeTrailingPathDelimiter{$ELSE}ExcludeTrailingBackslash{$ENDIF}(DstDir);
   if DstDir = TarFilename then
     DstDir := DstDir + '.dir';
-  DstDir := DstDir + PathDelim;
+  DstDir := DstDir + PathDelim;           
 
   TarFile := TFileStream.Create(TarFilename, fmOpenRead or fmShareDenyWrite);
   try
@@ -1619,17 +1736,23 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclTarWriter.Create(const TarStream: TStream);
 begin
   inherited Create;
   FTarStream := TarStream;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclTarWriter.Destroy;
 begin
   AddEof;
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTarWriter.AddFile(FileRoot, Filename: String);
 var
@@ -1664,6 +1787,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure SetOctal(var Field: array of AnsiChar; Value: TJclTarFileSize);
 var
   V: AnsiString;
@@ -1688,6 +1813,8 @@ begin
     Field[I - 1] := V[i];
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclTarWriter.AddStream(const Stream: TStream; Filename: String;
   FileSize: TJclTarFileSize; FileTime: TJclUnixTime32);
 var
@@ -1697,7 +1824,7 @@ var
   RestBytes: Integer;
 begin
   {$IFNDEF UNIX}
-  // path delimiter -> UNIX
+  // path delimiter -> UNIX 
   for I := 1 to Length(Filename) do
     if Filename[I] = PathDelim then
       Filename[I] := UnixPathDelimiter;
@@ -1727,6 +1854,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclTarWriter.AddDirectory(DirName: String);
 var
   {$IFNDEF UNIX}
@@ -1753,6 +1882,8 @@ begin
   FTarStream.WriteBuffer(Header, SizeOf(Header));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclTarWriter.AddEof;
 var
   Buffer: array[0..TarBlockSize - 1] of Byte;
@@ -1760,6 +1891,8 @@ begin
   FillChar(Buffer, SizeOf(Buffer), 0);
   FTarStream.WriteBuffer(Buffer, SizeOf(Buffer));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure UnGZipTarAllFiles(const TgzFilename: String; DstDir: String);
 var
@@ -1808,34 +1941,38 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure GetFileList(RootDir: String; List: TStrings);
 
-procedure ScanDir(const Dir: String);
-var
-  Info: TSearchRec;
-begin
-  if Dir <> '' then
-    List.Add(Dir);
-  if FindFirst(RootDir + Dir + '*.*', -1, Info) = 0 then
-  try
-    repeat
-      if (Info.Attr and faDirectory) <> 0 then
-      begin
-        if (Info.Name <> '.') and (Info.Name <> '..') then
-          ScanDir(Dir + Info.Name + PathDelim);
-      end
-      else
-        List.Add(Dir + Info.Name);
-    until FindNext(Info) <> 0;
-  finally
-    SysUtils.FindClose(Info);
+  procedure ScanDir(const Dir: String);
+  var
+    Info: TSearchRec;
+  begin
+    if Dir <> '' then
+      List.Add(Dir);
+    if FindFirst(RootDir + Dir + '*.*', -1, Info) = 0 then
+    try
+      repeat
+        if (Info.Attr and faDirectory) <> 0 then
+        begin
+          if (Info.Name <> '.') and (Info.Name <> '..') then
+            ScanDir(Dir + Info.Name + PathDelim);
+        end
+        else
+          List.Add(Dir + Info.Name);
+      until FindNext(Info) <> 0;
+    finally
+      SysUtils.FindClose(Info);
+    end;
   end;
-end;
 
 begin
   RootDir := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(RootDir);
   ScanDir('');
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure ArrayToList(const Filenames: array of String; List: TStrings);
 var
@@ -1844,6 +1981,8 @@ begin
   for I := Low(Filenames) to High(Filenames) do
     List.Add(Filenames[I]);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TarFileList(const TarFilename, FileRoot: String; List: TStrings);
 var
@@ -1861,7 +2000,7 @@ begin
         Filename := List[I];
         if Filename <> '' then
         begin
-          if Filename[Length(Filename)] = PathDelim then
+          if Filename[Length(Filename)] = PathDelim then 
             TarWriter.AddDirectory(Filename)
           else
             TarWriter.AddFile(FileRoot, Filename);
@@ -1874,6 +2013,8 @@ begin
     TarFile.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TarAllFiles(const TarFilename, FileRoot: String);
 var
@@ -1888,6 +2029,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TarFileArray(const TarFilename, FileRoot: String; const Filenames: array of String);
 var
   List: TStringList;
@@ -1901,6 +2044,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TarGZipFileList(const TgzFilename, FileRoot: String; List: TStrings);
 var
   TgzFile: TFileStream;
@@ -1911,8 +2056,13 @@ var
 begin
   TgzFile := TFileStream.Create(TgzFilename, fmCreate);
   try
+    {$IFDEF DELPHI3}
+      GZipWriter := TJclGZipWriter.CreateDef2(TgzFile,
+        JclZLibStreamDefaultBufferSize, Z_BEST_COMPRESSION);
+    {$ELSE DELPHI3}
       GZipWriter := TJclGZipWriter.Create(TgzFile,
         JclZLibStreamDefaultBufferSize, Z_BEST_COMPRESSION);
+    {$ENDIF DELPHI3}
     try
       TarWriter := TJclTarWriter.Create(GZipWriter);
       try
@@ -1938,6 +2088,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TarGZipAllFiles(const TgzFilename, FileRoot: String);
 var
   List: TStringList;
@@ -1950,6 +2102,8 @@ begin
     List.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TarGZipFileArray(const TgzFilename, FileRoot: String; const Filenames: array of String);
 var
@@ -1964,16 +2118,8 @@ begin
   end;
 end;
 
-// ****************************************************************************
+//  History:                                                                  
 
-//  History:
-//  Revision 1.8  2004/05/09 00:18:21  peterjhaas
-//  - old history in reverse order like CVS log
-//  - change interface crc32 to avoid FPC compatibility problems
-//  - change GetZlibErrorText implementation for FPC compatibility
-//  - change OctalToInt implementation FPC compatibility
-//  - change Char to AnsiChar in fixed structures
-//
 //  Revision 1.7  2004/05/08 08:44:18  rrossmair
 //  introduced & applied symbol HAS_UNIT_LIBC
 //
@@ -1995,7 +2141,7 @@ end;
 //  Revision 1.1  2004/04/18 00:40:02  peterjhaas
 //  add prototypes for standalone library / JCL
 //  be careful with any modification to avoid breaks
-//
+//                                                                     
 //  2004-03-20
 //   - Bugfix: TJclGZipReader.Create: read multi-part number
 //
