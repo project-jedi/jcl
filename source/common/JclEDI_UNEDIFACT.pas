@@ -42,8 +42,6 @@ unit JclEDI_UNEDIFACT;
 
 {$I jcl.inc}
 
-{$I jedi.inc}
-
 {$WEAKPACKAGEUNIT ON}
 
 {$DEFINE OPTIMIZED_DISASSEMBLE}
