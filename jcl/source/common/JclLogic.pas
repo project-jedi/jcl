@@ -23,7 +23,7 @@
 { manipulation routines, min/max testing and conversion to string.             }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: June 4, 2001                                                  }
+{ Last modified: September 2, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -78,7 +78,7 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ClearBitBuffer(var Value; const Bit: TBitRange);
+procedure ClearBitBuffer(var Value; const Bit: TBitRange); // todo document
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
@@ -124,7 +124,7 @@ function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure SetBitBuffer(var Value; const Bit: TBitRange);
+procedure SetBitBuffer(var Value; const Bit: TBitRange); // todo document
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean; overload;
@@ -133,7 +133,7 @@ function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
-function TestBitBuffer(const Value; const Bit: TBitRange): Boolean;
+function TestBitBuffer(const Value; const Bit: TBitRange): Boolean; // todo document
 
 function TestBits(const Value, Mask: Byte): Boolean; overload;
 function TestBits(const Value, Mask: Shortint): Boolean; overload;
@@ -150,7 +150,7 @@ function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ToggleBitBuffer(var Value; const Bit: TBitRange);
+procedure ToggleBitBuffer(var Value; const Bit: TBitRange); // todo document
 
 procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
@@ -600,13 +600,13 @@ end;
 
 function CountBitsSet(X: Cardinal): Integer;
 var
-Index : integer;
+  Index: Integer;
 begin
-  result := 0;
+  Result := 0;
   for Index := 1 to BitsPerCardinal do
   begin
-    if ((x and 1) = 1) then inc(result);
-    x:= x shr 1;
+    if ((X and 1) = 1) then Inc(Result);
+    X := X shr 1;
   end;
 end;
 
@@ -614,28 +614,27 @@ end;
 
 function CountBitsSet(X: Byte): Integer;
 var
-Index : integer;
+  Index: Integer;
 begin
-  result := 0;
+  Result := 0;
   for Index := 1 to BitsPerByte do
   begin
-    if ((x and 1) = 1) then inc(result);
-    x:= x shr 1;
+    if ((X and 1) = 1) then Inc(Result);
+    X := X shr 1;
   end;
 end;
-
 
 //------------------------------------------------------------------------------
 
 function CountBitsSet(X: Word): Integer;
 var
-Index : integer;
+  Index: Integer;
 begin
-  result := 0;
+  Result := 0;
   for Index := 1 to BitsPerWord do
   begin
-    if ((x and 1) = 1) then inc(result);
-    x:= x shr 1;
+    if ((X and 1) = 1) then Inc(Result);
+    X := X shr 1;
   end;
 end;
 
@@ -1295,8 +1294,7 @@ end;
 function BitsNeeded(const X: Byte): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then
-    Result := 1;
+  if Result = 0 then Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1304,8 +1302,7 @@ end;
 function BitsNeeded(const X: Word): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then
-    Result := 1;
+  if Result = 0 then Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1313,8 +1310,7 @@ end;
 function BitsNeeded(const X: Integer): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then
-    Result := 1;
+  if Result = 0 then Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1322,8 +1318,7 @@ end;
 function BitsNeeded(const X: Int64): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then
-    Result := 1;
+  if Result = 0 then Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1493,7 +1488,7 @@ function IncLimit(var B: Byte; const Limit, Incr: Byte): Byte;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
-  Result := B;    
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
