@@ -160,13 +160,12 @@ $Id$
           <exclude name="${pack.dir}/*.dev/**" />
           <exclude name="${pack.dir}/JclDev*.*" />
           <exclude name="${pack.dir}/**/*.mak" />
+          <exclude name="${pack.dir}/**/template.*" />
           <exclude name="${pack.dir}/d4/**" />
           <exclude name="${pack.dir}/k1/**" />
           <exclude name="${pack.dir}/k2/**" />
           <exclude name="${pack.dir}/JclPackagesDK1.bpg" />
           <exclude name="${pack.dir}/JclPackagesDK2.bpg" />
-          <exclude name="${pack.dir}/**/*.xml" />
-          <exclude name="${pack.dir}/**/template.*" />
           <exclude name="${src.dir}/prototypes/**" />
           <exclude name="${src.dir}/common/JclD4Compatibility.pas" />
           <exclude name="${samp.dir}/makefile.mak" />
@@ -189,9 +188,6 @@ $Id$
           <include name="${pack.dir}/**/*.gmk" />
           <include name="${src.dir}/**/*.obj" />
           <include name="${src.dir}/common/*.fpc" />
-          <include name="${src.dir}/windows/win32api/*.int" />
-          <include name="${src.dir}/windows/win32api/*.imp" />
-          <include name="${src.dir}/windows/win32api/*.inc" />
           <include name="${basedir}/**/*.pas" />
           <include name="${basedir}/**/*.dfm" />
           <include name="${basedir}/**/*.xfm" />
@@ -213,11 +209,6 @@ $Id$
           <include name="${basedir}/**/*.rc" />
           <include name="${basedir}/**/*.res" />
           <include name="${basedir}/**/*.ico" />
-<!--
-          <include name="${help.dir}/JCLHelp.hlp" />
-          <include name="${help.dir}/JCLHelp.cnt" />
-          <include name="${help.dir}/JCLHelp.als" />
--->
           <include name="${basedir}/**/*.tlb" />
 
           <include name="${basedir}/**/*.txt" />
@@ -241,6 +232,7 @@ $Id$
       <fileset dir="${basedir}\.." >
           <include name="${help.dir}/JCLHelp.hlp" />
           <include name="${help.dir}/JCLHelp.cnt" />
+          <include name="${help.dir}/JCLHelp.als" />
       </fileset>
     </zip>
   </target>
