@@ -1,1 +1,1 @@
-This directory is inteded as a common place for DCU files of Delphi 5 design-time packages.
+This directory is inteded as a common place for .dcu files of Delphi 5 packages.
