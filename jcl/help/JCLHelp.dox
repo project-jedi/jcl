@@ -2378,7 +2378,7 @@ ClearDirectoryBeforeExport=1
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
 HTMLHelp=1
-HelpCompiler=E:\PROGRA~1\HTMLHE~1\hhc.exe
+HelpCompiler=E:\Program Files\HTML Help Workshop\Hhc.exe
 HTMLHelpFilename=
 HelpProjectFileAutomatic=1
 CustomHelpProjectFile=
@@ -3498,7 +3498,7 @@ Showing_10=0
 Showing_11=0
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
-HelpCompiler=E:\Program Files\Borland\Delphi6\help\tools\hcrtf.exe
+HelpCompiler=E:\Program Files\Borland\Delphi6\Help\Tools\Hcrtf.exe
 OutputFile=dtx\WinHELP\JclHelp.rtf
 HLPFilename=
 CreatePrintableDocumentation=0
