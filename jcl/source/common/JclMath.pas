@@ -2746,24 +2746,17 @@ end;
 {$IFDEF WIN32}
 
 procedure InitExceptObjProc;
-
-  // threadsafe (given ExceptObjProc is DWORD-aligned)
-  procedure HookExceptObjProc;
-  asm
-          MOV     EAX, OFFSET GetExceptionObject
-          MOV     EDX, EAX
-          XCHG    EAX, ExceptObjProc
-          CMP     EAX, EDX
-          JE      @Exit
-          MOV     PrevExceptObjProc, EAX
-  @Exit:
-  end;
-
+var
+  P: Pointer;
 begin
   if not ExceptObjProcInitialized then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      HookExceptObjProc;
+    begin
+      P := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
+      if P <> @GetExceptionObject then
+        PrevExceptObjProc := P;
+    end;
     ExceptObjProcInitialized := True;
   end;
 end;
@@ -2805,8 +2798,6 @@ end;
 //------------------------------------------------------------------------------
 
 procedure MakeQuietNaN(var X: Double; Tag: TNaNTag);
-const
-  SignBit = $8000000000000000;
 var
   Bits: Int64;
 begin
