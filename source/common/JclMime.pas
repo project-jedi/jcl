@@ -12,10 +12,11 @@
 {                                                                                                  }
 { The Original Code is JclMime.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Ralf Junker.                                       }
+{ Portions created by Ralf Junker are Copyright (C) Ralf Junker. All rights reserved.              }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Marcel van Brakel, Ralf Junker, Robert Marquardt, Robert Rossmair, Matthias Thoma, Petr Vones  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -542,6 +543,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/05 00:09:59  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.5  2004/04/09 20:21:11  mthoma
 // Updated to Ralfs latest release. That also fixed 0000406.
 //

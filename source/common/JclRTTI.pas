@@ -12,11 +12,12 @@
 {                                                                                                  }
 { The Original Code is JclRTTI.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel Bestebroer.                                 }
+{ Portions created Marcel Bestebroer are Copyright (C) Marcel Bestebroer. All rights reserved.     }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel Bestebroer                                                                              }
+{   Theo Bebekis, Marcel Bestebroer (marcelb), Peter J. Haas, Robert Marquardt, Robert Rossmair,   }
+{   Matthias Thoma, Petr Vones                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -2838,6 +2839,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 00:09:59  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.7  2004/04/23 22:08:39  mthoma
 // Removed non delphi language version of JclIsClass.
 //

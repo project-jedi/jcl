@@ -12,12 +12,13 @@
 {                                                                                                  }
 { The Original Code is JclSysUtils.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Jeroen Speldekamp                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{  Heri Bender, Bernhard Berger, Marcel van Brakel, Bernhard Berger, Peter J. Haas, Peter Friese,  }
+{  Robert Marquardt, Robert R. Marsh, Python, Alexander Radchenko, Robert Rossmair,                }
+{  Jeroen Speldekamp, Anthony Steele, Rudy Velthuis, Petr Vones                                    \
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -2255,6 +2256,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/05/05 00:15:47  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.10  2004/04/19 06:16:38  rrossmair
 // fixed for FPC, which doesn't like the assembler key word showing up in the interface section
 //
