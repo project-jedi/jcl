@@ -250,7 +250,7 @@ end;
 
 procedure LibNotLoadedHandler; cdecl;
 begin
-  raise EPCREError.Create('PCRE library not loaded', 0);
+  raise EPCREError.Create(SErrLibNotLoaded, 0);
 end;
 
 initialization
@@ -263,6 +263,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/11/09 07:53:07  rrossmair
+// - JclPCRE string extracted to JclResources
+//
 // Revision 1.6  2004/11/06 02:20:20  rrossmair
 // - better handling of calls into DLL when it got not loaded.
 //

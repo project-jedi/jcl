@@ -58,27 +58,27 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsIndexOufOfRange = 'Index out of range';
-  RsNeedUpdate      = 'You should install latest Update Pack #%d for %s';
-  RsUpdatePackName  = 'Update Pack #%d';
+  RsIndexOufOfRange  = 'Index out of range';
+  RsNeedUpdate       = 'You should install latest Update Pack #%d for %s';
+  RsUpdatePackName   = 'Update Pack #%d';
+  RsDelphiName       = 'Delphi';
+  RsBCBName          = 'C++Builder';
   {$IFDEF KYLIX}
-  RsDelphiName      = 'Kylix %d for Delphi';
-  RsBCBName         = 'Kylix %d for C++Builder';
-  RsOpenEdition     = 'Open Edition';
-  RsServerDeveloper = 'Server Developer';
-  RsVclIncludeDir   = '/include/vcl/';
+  RsKylixName        = 'Kylix for %s';
+  RsKylixVersionName = 'Kylix %d for %s';
+  RsOpenEdition      = 'Open Edition';
+  RsServerDeveloper  = 'Server Developer';
+  RsVclIncludeDir    = '/include/vcl/';
   {$ENDIF KYLIX}
   {$IFDEF MSWINDOWS}
-  RsDelphiName      = 'Delphi %d';
-  RsBCBName         = 'C++Builder %d';
-  RsClientServer    = 'Client/Server';
-  RsStandard        = 'Standard';
-  RsVclIncludeDir   = '\Include\Vcl\';
+  RsClientServer     = 'Client/Server';
+  RsStandard         = 'Standard';
+  RsVclIncludeDir    = '\Include\Vcl\';
   {$ENDIF MSWINDOWS}
-  RsArchitect       = 'Architect';
-  RsEnterprise      = 'Enterprise';
-  RsPersonal        = 'Personal';
-  RsProfessional    = 'Professional';
+  RsArchitect        = 'Architect';
+  RsEnterprise       = 'Enterprise';
+  RsPersonal         = 'Personal';
+  RsProfessional     = 'Professional';
 
 //--------------------------------------------------------------------------------------------------
 // JclCIL
@@ -645,13 +645,14 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  SErrNoMatch     = 'No match';
-  SErrNull        = 'Required value is null';
-  SErrBadOption   = 'Bad option';
-  SErrBadMagic    = 'Bad magic';
-  SErrUnknownNode = 'Unknown node';
-  SErrNoMemory    = 'Out of memory';
-  SErrNoSubString = 'No substring';
+  SErrNoMatch      = 'No match';
+  SErrNull         = 'Required value is null';
+  SErrBadOption    = 'Bad option';
+  SErrBadMagic     = 'Bad magic';
+  SErrUnknownNode  = 'Unknown node';
+  SErrNoMemory     = 'Out of memory';
+  SErrNoSubString  = 'No substring';
+  SErrLibNotLoaded = 'PCRE library not loaded';
 
 //--------------------------------------------------------------------------------------------------
 // JclPeImage
@@ -1125,6 +1126,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.22  2004/11/09 07:53:07  rrossmair
+// - JclPCRE string extracted to JclResources
+//
 // Revision 1.21  2004/10/25 08:51:22  marquardt
 // PH cleaning
 //
