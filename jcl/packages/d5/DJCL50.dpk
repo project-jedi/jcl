@@ -42,6 +42,7 @@ contains
   JclFileUtils in '..\Source\JclFileUtils.pas',
   JclGraphics in '..\Source\JclGraphics.pas',
   JclGraphUtils in '..\Source\JclGraphUtils.pas',
+  JclHookExcept in '..\Source\JclHookExcept.pas',
   JclIniFiles in '..\Source\JclIniFiles.pas',
   JclLocales in '..\Source\JclLocales.pas',
   JclLogic in '..\Source\JclLogic.pas',
