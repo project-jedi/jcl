@@ -1636,7 +1636,7 @@ begin
   I := 1;
   L := Length(S);
   while (I <= L) and (S[I] = C) do Inc(I);
-  Result := Copy(S, I, L - I);
+  Result := Copy(S, I, L - I + 1);
 end;
 
 //------------------------------------------------------------------------------
