@@ -1,0 +1,1615 @@
+@@TJclComplex
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  TJclComplex implements various operations with complex numbers.
+Description:
+
+  TJclComplex is designated to provide complex numbers computations for your
+  applications. It supports both rectangular and polar number representations.
+  All the operations are divided into groups as follows:
+    * basic arithmetics;
+    * natural logarithmic and exponential functions;
+    * trigonometric functions;
+    * hyperbolic trigonometric functions;
+    * complex Bessel functions;
+    * various miscellaneous routines.
+  All the methods could be used in two ways. Firstly you can use the methods
+  with the prefix "C", like CAdd or CLn to perform the operation over the
+  object itself, i.e. after using such methods the value of the object itself
+  will be changed. Using these methods gives you the opportunity to use quite a
+  convenient method of coding the sequential calculations like this:
+    MyComplex.Add(4,3).Mul(2,5).Ln.AsString;
+  The other way is two use the subset of methods with "CNew" prefix. They do the
+  same computations but as the result they create a new object of TComplex type.
+  It might be useful in situations when you'd like to remain your object intact
+  and get the result in a separate object. Please note that such an approach
+  requires a very attentive coding style when you need to destroy every object
+  after every "CNew*" method invocation.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TComplexKind
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Enumeration specifies the way of representing a complex number using either rectangular representation or polar coordinates.
+Description:
+  Enumeration specifies the way of representing a complex number using either rectangular representation or polar coordinates.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+@@TComplexKind.crRectangular
+  the parameters specified in a constructor or any other method are of the rectangular representation.
+@@TComplexKind.crPolar
+  the parameters specified in a constructor or any other method represent the number in polar coordinates.
+--------------------------------------------------------------------------------
+@@TJclComplex.FracLength
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Determines the precision used in formatting the value of the complex number.
+Description:
+
+  Use FracLength to set the number of digits beyond the decimal point that
+  the value should be formatted to before rounding begins. FracLength affects
+  the format of the floating-point value when it is displayed using properties AsString or AsPolarString,
+  not the actual floating-point
+  value that is stored in the complex number structures.
+  The default value of FracLength is 8 decimal places.
+Notes:
+
+  FracLength must be less or equal to 18. Trying to set FracLength to a value greater than 18 changes the value of FracLength to 18.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.Create
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Creates a new TComplex object.
+Description:
+
+  Call Create to construct a complex number object either equal to (0,0) or
+  filled with the values provided in X and Y parameters.
+Parameters:
+  X - The real part in the rectangular representation or radius in polar coordinates.
+  Y - The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
+  ComplexType - <I>Optional.</I> Represents the type of the complex number to be create.
+Notes:
+
+  All the calculations with complex numbers are performed with their rectangular representation members, except those that requires polar coordinates instead like exponential functions for instance.
+  The results of the calculations as well as the value of the complex number itself might be obtained in either rectangular or polar representation at any time using AsString or AsPolarString respectively.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.RealPart
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Specifies the value of the real part of the complex number i.e. X value in the pair of (X;Y).
+Description:
+
+  Use RealPart property to obtain the value of the real part of the
+  complex number i.e. X value in the pair of (X;Y).
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.ImaginaryPart
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Specifies the value of the imaginary part of the complex number i.e. Y value in the pair of (X;Y).
+Description:
+
+  Use ImaginaryPart property to obtain the value of the imaginary part of the
+  complex number i.e. Y value in the pair of (X;Y).
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.Radius
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Specifies the value of the radius in polar coordinates representation i.e. r value in the pair of (r;theta).
+Description:
+
+  Use Radius property to obtain the value of the radius in polar coordinates
+  representation of the complex number, i.e. r value in the pair of (r;theta).
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.Angle
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Specifies the value of the angle in polar coordinates representation of the complex number, i.e. theta value in the pair of (r;theta).
+Description:
+
+  Use Angle property to obtain the value of the angle in polar coordinates
+  representation of the complex number, i.e. theta value in the pair of (r;theta).
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.AsString
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  AsString converts the value of the complex number to a string.
+Description:
+
+  Use AsString property to obtain a string representation of the complex number
+  formatted according to the canonical form of complex numbers in rectangular
+  representation. FracLength property is used to determine the
+  precision of float parts of the complex number. For example if your complex
+  number is (5.2345355; -3.599) and FracLength=2 you will get the
+  following string as the result of calling AsString:<p align=center>5.23-3.60i</p>
+  Also you might use this property to assign the value of a
+  string to the complex number object like this:<p align=center>
+  MyComplex.AsString := '-5.3453-3.543i'</p> The string provided should represent
+  a complex number in its canonical rectangular form like this: x+yi, where
+  x and y are either positive or negative or zero floating values and i is the
+  constant text part. If either x or y is equal to zero, the corresponding part
+  of the complex number can be omitted.If the object is unable to parse the
+  string provided then an EJclMathError exception will be raised.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.AsPolarString
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  AsPolarString converts the value of the complex number to a string with a pair of complex number's polar coordinates.
+Description:
+
+  Use AsPolarString property to obtain a string representation of the complex number
+  formatted according to the canonical form of complex numbers in polar coordinates
+  representation. FracLength property is used to determine the
+  precision of float parts of the complex number. For example if your complex
+  number is (5.2345355; -3.599) and FracLength=2 you will get the
+  following string as the result of calling AsString:<p align=center>5.23-CIS(3.60)</p>
+  Here CIS(theta) = COS(theta) + SIN(theta)*i
+  Also you might use this property to assign the value of a
+  string to the complex number object like this:<p align=center>
+  MyComplex.AsPolarString := '-5.3453-CIS(3.543)'</p>
+  The string provided should represent
+  a complex number in its canonical polar coordinates form like this: r+CIS(theta), where
+  r and theta are either positive or negative or zero floating values.
+  If either r or theta is equal to zero, the corresponding part
+  of the complex number can be omitted.If the object is unable to parse the
+  string provided then an EJclMathError exception will be raised.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.Assign
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Assign the value of (X;Y) to the complex number object using ComplexType representation.
+Description:
+
+  Use Assign method to set the value of your complex number object to (X;Y). ComplexType
+  parameter is used to determine whether floating-point parameters represents (X;Y)
+  or (r;theta) pair of values.
+Parameters:
+  X - The real part in the rectangular representation or radius in polar coordinates.
+  Y - The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
+  ComplexType - <I>Optional.</I> Represents the type of the floating-point parameters above.
+Result:
+
+  Method Assign returns the complex number object itself.
+Notes:
+
+  To assign a complex number the value of zero use AssignZero method instead.
+  To assign a complex number the value of 1 ("complex unit") use AssignOne method instead.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.AssignOne
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Assign the value of (1;0) to the complex number object.
+Description:
+
+  Use AssingOne method to set the value of your complex number object to 1
+  ("complex unit"). The call to AssignOne is equal to the following: Assign(1, 0).
+Result:
+
+  Method AssingOne returns the complex number object itself.
+Notes:
+
+  To assign a complex number the value of zero use AssignZero method instead.
+  To assign a complex number any value that differs from 1 or 0 use Assign method instead.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.AssignZero
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Assign the value of (0;0) to the complex number object.
+Description:
+
+  Use AssingOne method to set the value of your complex number object to zero
+  The call to AssignZero is equal to the following: Assign(0, 0). Also if you
+  call the constructor Create omitting the parameters this method
+  will be invoked automatically.
+Result:
+
+  Method AssingZero returns the complex number object itself.
+Notes:
+
+  To assign a complex number the value of 1 ("complex unit") use AssignOne method instead.
+  To assign a complex number any value that differs from 1 or 0 use Assign method instead.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.Duplicate
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Creates a new object of TJclComplex type and assigns the value of the calling object to it.
+Description:
+
+  Use Duplicate method to create a new object of TJclComplex type and assign
+  the value of the calling object to it.
+Result:
+
+  Method Duplicate returns the newly created complex number object.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Alexei Koudinov
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CAdd
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Adds the value given by AddValue or X and Y parameters to the value of the current complex number object.
+Description:
+
+  Use CAdd method to add the value of the complex number provided to the
+  value of the calling object itself. The complex number to be added could be
+  set either as an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  AddValue - The complex number that should be added to the value of the object.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that should be added to the value of the object.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that should be added to the value of the object.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CAdd returns the calling object with the changed value.
+Notes:
+
+  The addition of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+  For leaving the value of the calling object intact use CNewAdd method to create a new resulting object of TJclComplex type.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CDiv
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Divide the value of the current complex number object by the value given by DivValue or X and Y parameters.
+Description:
+
+  Use CDiv method to perform a division operation where the current complex
+  number object is a numerator and the value provided through either X and Y
+  or DivValue parameters is a denominator. The complex number to be divided by could be
+  set either as an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  DivValue - The complex number that is the denominator for the operation.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the denominator for the operation.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the denominator for the operation.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CDiv returns the calling object with the changed value.
+Notes:
+
+  The division of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+  For leaving the value of the calling object intact use CNewDiv method to create a new resulting object of TJclComplex type.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CMul
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Multiply the value of the current complex number object by the value given by MulValue or X and Y parameters.
+Description:
+
+  Use CMul method to perform a multiplication operation where the current complex
+  number object is the first and the value provided through either X and Y
+  or DivValue parameters is the second multiplier. The complex number to be
+  multiplied by could be set either as an object of TJclComplex type or a pair
+  of its values (X;Y).
+Parameters:
+  MulValue - The complex number that is the second multiplier.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the second multiplier.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the second multiplier.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CMul returns the calling object with the changed value.
+Notes:
+
+  The multiplication of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
+  Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I> give different results and cannot substitute each other.
+  For leaving the value of the calling object intact use CNewMul method to create a new resulting object of TJclComplex type.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSub
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Subtract the value given by MulValue or X and Y parameters from the value of the current complex number object.
+Description:
+
+  Use CSub method to perform a subtraction operation where the current complex
+  number object is the minuend and the value provided through either X and Y
+  or DivValue parameters is the subtrahend. The complex number to be
+  subtracted could be set either as an object of TJclComplex type or a pair
+  of its values (X;Y).
+Parameters:
+  SubValue - The complex number that is the subtrahend.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the subtrahend.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the subtrahend.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CSub returns the calling object with the changed value.
+Notes:
+
+  The subtraction of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+  For leaving the value of the calling object intact use CNewSub method to create a new resulting object of TJclComplex type.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewAdd
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Adds the value given by AddValue or X and Y parameters to the value of the current complex number object and creates a new resulting object of TJclComplex type.
+Description:
+
+  Use CNewAdd method to add the value of the complex number provided to the
+  value of the calling object and to create a new resulting object of
+  TJclComplex type. The complex number to be added could be
+  set either as an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  AddValue - The complex number that should be added to the value of the object.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that should be added to the value of the object.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that should be added to the value of the object.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CNewAdd returns a newly created object of TJclComplex type that contains
+  the value of the addition.
+Notes:
+
+  The addition of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+  For changing the value of the calling object instead of creating a new object of TJclComplex type use CAdd method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewDiv
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Divides the value of the current complex number object by the value given by DivValue or X and Y parameters and creates a new resulting object of TJclComplex type.
+Description:
+
+  Use CNewDiv method to perform a division operation where the current complex
+  number object is a numerator and the value provided through either X and Y
+  or DivValue parameters is a denominator and to create a resulting object of
+  TJclComplex type. The complex number to be divided by could be
+  set either as an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  DivValue - The complex number that is the denominator for the operation.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the denominator for the operation.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the denominator for the operation.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CNewDiv returns a newly created object of TJclComplex type that contains
+  the value of the division.
+Notes:
+
+  The division of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+  For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CDiv method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewMul
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Multiplies the value of the current complex number object by the value given by MulValue or X and Y parameters and creates a new resulting object of TJclComplex type.
+Description:
+
+  Use CNewMul method to perform a multiplication operation where the current complex
+  number object is the first and the value provided through either X and Y
+  or DivValue parameters is the second multiplier and to create a resulting object of
+  TJclComplex type. The complex number to be multiplied by could be set either as
+  an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  MulValue - The complex number that is the second multiplier.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the second multiplier.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the second multiplier.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CNewMul returns a newly created object of TJclComplex type that contains
+  the value of the multiplication.
+Notes:
+
+  The multiplication of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
+  Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I> give different results and cannot substitute each other.
+  For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CMul method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSub
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Subtracts the value given by MulValue or X and Y parameters from the value of the current complex number object and creates a new resulting object of TJclComplex type.
+Description:
+
+  Use CNewSub method to perform a subtraction operation where the current complex
+  number object is the minuend and the value provided through either X and Y
+  or DivValue parameters is the subtrahend and to create a resulting object of
+  TJclComplex type. The complex number to be subtracted could be set either as
+  an object of TJclComplex type or a pair of its values (X;Y).
+Parameters:
+  SubValue - The complex number that is the subtrahend.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the subtrahend.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the subtrahend.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CNewSub returns a newly created object of TJclComplex type that contains
+  the value of the subtraction.
+Notes:
+
+  The subtraction of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+  For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CSub method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNeg
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Multiply the current value of the complex number object by a complex negative one.
+Description:
+
+  Use CNeg method to perform a negative transformation of the value of the current complex
+  number object i.e. to multiply it by a complex negative one. The method changes
+  the value of the current object, returning its reference.
+Result:
+
+  Method CNeg returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewNeg method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewNeg
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Multiplies the current value of the complex number object by a complex negative one and creates a new resulting complex number object.
+Description:
+
+  Use CNewNeg method to perform a negative transformation of the value of the current complex
+  number object i.e. to multiply it by a complex negative one and create a new resulting
+  object of TJclComplex type.
+Result:
+
+  Method CNewNeg returns a newly created object of TJclComplex type that contains
+  the value of the negation.
+Notes:
+
+  For changing the value of the calling complex number object instead of creating a new one use CNeg method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CConjugate
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Transform the value of the calling object of TJclComplex type into a conjugated complex number value.
+Description:
+
+  Use CConjugate method to obtain a conjugate to the current value of the complex number object
+  complex number. The method changes the value of the current object, returning its reference.
+Result:
+
+  Method CConjugate returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewConjugate method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewConjugate
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Transforms the value of the calling object of TJclComplex type into a conjugated complex number value and creates a new resulting complex number object.
+Description:
+
+  Use CNewConjugate method to obtain a conjugate to the current value of the complex number object
+  complex number.
+Result:
+
+  Method CNewConjugate returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling complex number object instead of creating a new one use CNewConjugate method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CLn
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the natural logarithm of the value of the current complex number object.
+Description:
+
+  Use CLn method to evaluate the natural logarithm of the value of the current
+  complex number object and change the value of the object accordingly.
+Result:
+
+  Method CLn returns the calling object with the changed value.
+Notes:
+
+  Complex number natural logarithm is evaluated according to the following formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewLn method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewLn
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the natural logarithm of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewLn method to evaluate the natural logarithm of the value of the current
+  complex number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewLn returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  Complex number natural logarithm is evaluated according to the following formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
+  For changing the value of the calling object instead of creating a new resulting object use CLn method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CExp
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the exponential curve for the value of the current complex number object.
+Description:
+
+  Use CExp method to evaluate the exponential curve for the value of the current
+  complex number object and change the value of the object accordingly.
+Result:
+
+  Method CExp returns the calling object with the changed value.
+Notes:
+
+  Complex number exponential curve is evaluated according to the following formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewExp method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewExp
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the exponential curve for the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewExp method to evaluate the exponential curve for the value of the current
+  complex number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewExp returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  Complex number exponential curve is evaluated according to the following formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+  For changing the value of the calling object instead of creating a new resulting object use CExp method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raise the value of the current complex number object to the PwrValue power.
+Description:
+
+  Use CPwr method to raise the value of the current complex number object to the
+  PwrValue power and change the value of the object accordingly. The complex number
+  that is the exponent for the operation is set either as an object of TJclComplex
+  type or as a pair of its values (X;Y).
+Parameters:
+  PwrValue - The complex number that is the exponent for the operation.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the exponent for the operation.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the exponent for the operation.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CPwr returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raises the value of the current complex number object to the PwrValue power and creates a new resulting complex number object.
+Description:
+
+  Use CNewPwr method to raise the value of the current complex number object to the
+  PwrValue power and get a new resulting object of TJclComplex type. The complex number
+  that is the exponent for the operation is set either as an object of TJclComplex
+  type or as a pair of its values (X;Y).
+Parameters:
+  PwrValue - The complex number that is the exponent for the operation.
+  X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the exponent for the operation.
+  Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the exponent for the operation.
+  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+Result:
+
+  Method CNewPwr returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CIntPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raise the value of the current complex number object to the Pwr power that is represented by an integer value.
+Description:
+
+  Use CIntPwr method to raise the value of the current complex number object to the
+  Pwr power that is represented by an integer value and change the value of the
+  calling object accordingly.
+Parameters:
+  Pwr - The exponent, that the value of the calling object should be raised to.
+Result:
+
+  Method CIntPwr returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewIntPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewIntPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raises the value of the current complex number object to the Pwr power that is represented by an integer value and creates a new resulting complex number object.
+Description:
+
+  Use CNewIntPwr method to raise the value of the current complex number object to the
+  Pwr power that is represented by an integer value and get a new resulting object
+  of TJclComplex type.
+Parameters:
+  Pwr - The exponent, that the value of the calling object should be raised to.
+Result:
+
+  Method CNewIntPwr returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CIntPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CRealPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raise the value of the current complex number object to the Pwr power that is represented by a floating-point value.
+Description:
+
+  Use CRealPwr method to raise the value of the current complex number object to the
+  Pwr power that is represented by a floating-point value and change the value of the
+  calling object accordingly.
+Parameters:
+  Pwr - The exponent, that the value of the calling object should be raised to.
+Result:
+
+  Method CRealPwr returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewRealPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewRealPwr
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Raises the value of the current complex number object to the Pwr power that is represented by a floating-point value and creates a new resulting complex number object.
+Description:
+
+  Use CNewRealPwr method to raise the value of the current complex number object to the
+  Pwr power that is represented by a floating-point value and get a new resulting object
+  of TJclComplex type.
+Parameters:
+  Pwr - The exponent, that the value of the calling object should be raised to.
+Result:
+
+  Method CNewRealPwr returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CRealPwr method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CRoot
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Extracts the N-th root and returns the K-th root of the extraction where K is varying from 0 to N-1.
+Description:
+
+  Use CRoot method to extract the N-th root from the value of the calling complex
+  number object, get the K-th root of the extraction, where K varies from 0 to
+  N-1 and change the value of the calling object accordingly.
+Parameters:
+  K - The number of the root to be returned.
+  N - The value of the root to be extracted.
+Result:
+
+  Method CRoot returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewRoot method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewRoot
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Extracts the N-th root and returns the K-th root of the extraction where K is varying from 0 to N-1 and creates a new resulting complex number object.
+Description:
+
+  Use CNewRoot method to extract the N-th root from the value of the calling complex
+  number object, get the K-th root of the extraction, where K varies from 0 to
+  N-1 and get a new resulting object of TJclComplex type.
+Parameters:
+  K - The number of the root to be returned.
+  N - The value of the root to be extracted.
+Result:
+
+  Method CNewRoot returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CRoot method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSqrt
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Extracts the second root from the value of the calling complex number object.
+Description:
+
+  Use CSqrt method to extract the second root from the value of the calling complex
+  number object and change the value of the calling object accordingly.
+Result:
+
+  Method CSqrt returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewSqrt method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSqrt
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Extracts the second root from the value of the calling complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewSqrt method to extract the second root from the value of the calling complex
+  number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewSqrt returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CSqrt method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCos
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cosine of the value of the current complex number object.
+Description:
+
+  Use CCos method to evaluate the cosine of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCos returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCos method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCos
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cosine of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCos method to evaluate the cosine of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCos returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCos method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSin
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the sine of the value of the current complex number object.
+Description:
+
+  Use CSin method to evaluate the sine of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CSin returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewSin method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSin
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the sine of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewSin method to evaluate the sine of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewSin returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CSin method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CTan
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the tangent of the value of the current complex number object.
+Description:
+
+  Use CTan method to evaluate the tangent of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CTan returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewTan method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewTan
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the tangent of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewTan method to evaluate the tangent of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewTan returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CTan method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCot
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cotangent of the value of the current complex number object.
+Description:
+
+  Use CCot method to evaluate the cotangent of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCot returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCot method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCot
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cotangent of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCot method to evaluate the cotangent of the value of the calling complex
+  number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCot returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCot method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSec
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the secant of the value of the current complex number object.
+Description:
+
+  Use CSec method to evaluate the secant of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CSec returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewSec method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSec
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the secant of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewSec method to evaluate the secant of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewSec returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CSec method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCsc
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cosecant of the value of the current complex number object.
+Description:
+
+  Use CCsc method to evaluate the cosecant of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCsc returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCsc method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCsc
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the cosecant of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCsc method to evaluate the cosecant of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCsc returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCsc method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCosH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cosine of the value of the current complex number object.
+Description:
+
+  Use CCosH method to evaluate the hyperbolic cosine of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCosH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCosH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCosH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cosine of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCosH method to evaluate the hyperbolic cosine of the value of the
+  calling complex number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCosH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCosH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSinH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic sine of the value of the current complex number object.
+Description:
+
+  Use CSinH method to evaluate the hyperbolic sine of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CSinH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewSinH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSinH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic sine of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewSinH method to evaluate the hyperbolic sine of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewSinH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CSinH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CTanH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic tangent of the value of the current complex number object.
+Description:
+
+  Use CTanH method to evaluate the hyperbolic tangent of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CTanH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewTanH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewTanH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic tangent of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewTanH method to evaluate the hyperbolic tangent of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewTanH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CTanH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCotH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cotangent of the value of the current complex number object.
+Description:
+
+  Use CCotH method to hyperbolic evaluate the cotangent of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCotH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCotH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCotH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cotangent of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCotH method to hyperbolic evaluate the cotangent of the value of the calling complex
+  number object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCotH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCotH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CSecH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic secant of the value of the current complex number object.
+Description:
+
+  Use CSecH method to evaluate the hyperbolic secant of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CSecH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewSecH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewSecH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic secant of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewSecH method to evaluate the hyperbolic secant of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewSecH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CSecH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CCscH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cosecant of the value of the current complex number object.
+Description:
+
+  Use CCscH method to evaluate the hyperbolic cosecant of the value of the calling complex number
+  object and change the value of the calling object accordingly.
+Result:
+
+  Method CCscH returns the calling object with the changed value.
+Notes:
+
+  For creating a new resulting complex number object instead of changing the value of the current one use CNewCscH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclComplex.CNewCscH
+<GROUP MathRoutines.Complexnumbers>
+Summary:
+  Evaluates the hyperbolic cosecant of the value of the current complex number object and creates a new resulting complex number object.
+Description:
+
+  Use CNewCscH method to evaluate the hyperbolic cosecant of the value of the calling complex number
+  object and get a new resulting object of TJclComplex type.
+Result:
+
+  Method CNewCscH returns a newly created object of TJclComplex type that contains
+  the value computed.
+Notes:
+
+  For changing the value of the calling object instead of creating a new resulting object use CCscH method.
+Quick info:
+  Unit: JclComplex
+  Category: Math Routines
+  Visibility: Public
+  Donator: Earl F. Glynn
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
