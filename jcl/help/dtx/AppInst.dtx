@@ -8,6 +8,9 @@ Description:
   property, the WParam field is set to AI_INSTANCECREATED, and the LParam field is
   set to the Process ID of the instance being created. Note that the message is also
   sent to the application instance under construction.
+See also:
+  AI_INSTANCEDESTROYED
+  AI_USERMSG
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -26,6 +29,9 @@ Description:
   property, the WParam field is set to AI_INSTANCEDESTROYED, and the LParam field is
   set to the Process ID of the instance being destroyed. Note that the message is also
   sent to the application instance which is exiting.
+See also:
+  AI_INSTANCECREATED
+  AI_USERMSG
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -43,6 +49,9 @@ Description:
   sends a message to all running instances with a message value determined by the
   MessageID property, WParam set to AI_USERMSG and LParam set to the parameter
   specified in the method call.
+See also:
+  AI_INSTANCECREATED
+  AI_INSTANCEDESTROYED
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -69,7 +78,7 @@ Description:
   call immediately terminates the application when another instance is already running.
    <P>To receive notifications you must override the WndProc of your main form and
   include the following code (or something along those lines):
-  <CODE>
+    <PRE Class=Syntax>
   procedure TForm1.WndProc(var Msg: TMessage);
   begin
     if Msg.Msg = JclAppInstances.MessageId then
@@ -80,7 +89,7 @@ Description:
       end;
     inherited WndProc(Msg);
   end;
-  </CODE>
+    </PRE>
   Note that in both instance creation and instance destruction the Msg.LParam
   field contains the process ID of the affected instance (which could be the instance
   itself). Also, notifications as well as user messages are sent to both the main
@@ -107,6 +116,8 @@ Parameters:
   Wnd - Handle of the window to bring to the foreground.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  SetForegroundWindow98
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -162,6 +173,8 @@ Parameters:
   Wnd - Handle of the window to bring into the foreground.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  BringAppWindowToFront
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -186,6 +199,10 @@ Description:
 Result:
   If fewer than MaxInstances applications are running the result is True,
   otherwise the result is False.
+See also:
+  CheckSingleInstance
+  CheckMultipleInstances
+  KillInstance
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -204,6 +221,10 @@ Description:
   instance and a notification is sent to all other running instances, otherwise the
   method brings the first instance of the application to the foreground and then
   terminates itself (as such the routine never returns).
+See also:
+  CheckSingleInstance
+  CheckInstance
+  KillInstance
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -220,6 +241,8 @@ Description:
   CheckSingleInstance checks whether the caller is the only instance of this process.
   If it's not, the application is immediately terminated and the existing instance
   of the process is brought into the foreground.
+See also:
+  CheckInstance
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -229,7 +252,8 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@TJclAppInstances.SendData
+@@SendData
+<GROUP >
 Summary:
   Sends data to all instances.
 Description:
@@ -253,14 +277,10 @@ Result:
   Delphi=4,5,6
   Kylix=1
   FPC=1.x
+See also:
+  SendString
+  SendStrings
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
-  Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendString
 Summary:
@@ -276,6 +296,9 @@ Parameters:
   OriginatorWnd - Handle of the window from which the message is send.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  SendData
+  SendStrings
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -299,6 +322,9 @@ Parameters:
   OriginatorWnd - Handle of the window from which the message is send.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  SendData
+  SendString
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -350,6 +376,9 @@ Description:
   which application instance a handle is returned. It can be at
   most InstanceCount - 1 and selects one of the application instances
   from the ProcessIDs property.
+See also:
+  InstanceCount
+  ProcessIDs
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -367,6 +396,8 @@ Description:
   ProcessIDs array property of a specific application instance. The array index is
   the process ID of the application instance for which you want to know the index.
   Upon failure the property reads -1.
+See also:
+  ProcessIDs
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -383,6 +414,9 @@ Description:
   The InstanceCount property returns the number of application instances that
   registered with the TJclAppInstances. Among others you can use this to determine
   the highest valid index into the ProcessIDs array property.
+See also:
+  ProcessIDs
+  AppWnds
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -419,6 +453,10 @@ Description:
   and ProcessIDs, or reading ProcessIDs and it, an instance terminates thereby
   invalidating the process ID. Always check the result before and after using the
   returned process ID.
+See also:
+  InstanceCount
+  AppWnds
+  InstanceIndex
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -439,9 +477,7 @@ Description:
   UniqueAppIdGuidStr parameter alllows you to customize the internal name to ensure
   uniqueness.
 Parameters:
-  UniqueAppIdGuidStr - A user defined string used to customize naming of
-                       internal objects to ensure system wide uniqueness.
-                       It's recommended you use an actual GUID.
+  UniqueAppIdGuidStr - A user defined string used to customize naming of internal objects to ensure system wide uniqueness. It's recommended you use an actual GUID.
 Result:
   Returns an instance of the TJclAppInstances class which allows you to further control
   other instances of the application and communicate with them. See the documentation
@@ -454,23 +490,26 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@JclReadMessageCheck
+@@ReadMessageCheck
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Determines the type of message.
 Description:
-  JclReadMessageCheck determines whether the specified message is a JclAppInstance
+  ReadMessageCheck determines whether the specified message is a JclAppInstance
   IPC message and returns it's data kind. Use the IgnoredOriginatorWnd to filter message
   send by the same window as the routine is being called from. Call this routine
   from an overridden WndProc, for example. See the AppInstance demo application for
   an example usage.
 Parameters:
   Message - The message to check (equals the single parameter of the WndProc).
-  IgnoredOriginatorWnd - Specify the handle of the window to filter. If the
-                         message was send from that same window, the function returns False.
+  IgnoredOriginatorWnd - Specify the handle of the window to filter. If the message was send from that same window, the function returns False.
 Result:
   If the message contains was not send from the window specified by the IgnoredOriginatorWnd
   window, the functon returns the data kind value of the message, otherwise it returns False.
+See also:
+  JclReadMessageData
+  JclReadMessageString
+  JclReadMessageStrings
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -479,19 +518,22 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@JclReadMessageData
+@@ReadMessageData
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data from a JclAppInstance IPC message.
 Description:
-  JclReadMessageData returns the data encapsulated in the message which is assumed to
+  ReadMessageData returns the data encapsulated in the message which is assumed to
   be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
-  You can use JclReadMessageCheck to determine the kind of data the message contains.
+  You can use ReadMessageCheck to determine the kind of data the message contains.
 Parameters:
   Message - The message to extract the data from.
-  Data - Returns the data buffer. This buffer is allocated by the function and
-         must be released by the caller.
+  Data - Returns the data buffer. This buffer is allocated by the function and must be released by the caller.
   Size - Returns the size of the data buffer.
+See also:
+  ReadMessageCheck
+  ReadMessageString
+  ReadMessageStrings
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -500,16 +542,20 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@JclReadMessageString
+@@ReadMessageString
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data string from a JclAppInstance IPC message.
 Description:
-  JclReadMessageString returns the data string encapsulated in the message which is assumed
+  ReadMessageString returns the data string encapsulated in the message which is assumed
   to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
 Parameters:
   Message - The message from which to extract the string data.
   S - Returns the string data.
+See also:
+  ReadMessageCheck
+  ReadMessageData
+  ReadMessageStrings
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
@@ -518,18 +564,21 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@JclReadMessageStrings
+@@ReadMessageStrings
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data string list from a JclAppInstance IPC message.
 Description:
-  JclReadMessageString returns the data string list encapsulated in the message which is
+  ReadMessageString returns the data string list encapsulated in the message which is
   assumed to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx
   methods.
 Parameters:
   Message - The message from which to extract the string list.
-  Strings - Returns the string list data. The caller must supply a valid instance
-            of a TStrings derived class. Existing items in the list are removed.
+  Strings - Returns the string list data. The caller must supply a valid instance of a TStrings derived class. Existing items in the list are removed.
+See also:
+  ReadMessageCheck
+  ReadMessageData
+  ReadMessageString
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
