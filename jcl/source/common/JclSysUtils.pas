@@ -16,13 +16,12 @@
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributors:                                                                                    }
+{   Andreas Hausladen (ahuser)                                                                     }
 {   Heri Bender                                                                                    }
 {   Bernhard Berger                                                                                }
 {   Marcel van Brakel                                                                              }
-{   Bernhard Berger                                                                                }
 {   Peter Friese                                                                                   }
 {   Peter J. Haas (peterjhaas)                                                                     }
-{   Andreas Hausladen (ahuser)                                                                     }
 {   Jeff                                                                                           }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert R. Marsh                                                                                }
@@ -2318,6 +2317,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/05/14 15:28:06  rrossmair
+// removed duplicate entry in Contributors list
+//
 // Revision 1.17  2004/05/09 11:17:49  rrossmair
 // Contributor list update
 //
