@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: July 31, 2003                                                                     }
+{ Last modified: October 1, 2003                                                                   }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -44,23 +44,32 @@ unit JclEDI;
 
 {$WEAKPACKAGEUNIT ON}
 
-//Add the following directive in project options for debugging.
-//{$DEFINE ENABLE_EDI_DEBUGGING}
+// Add the following directive in project options for debugging memory leaks.
+// {$DEFINE ENABLE_EDI_DEBUGGING}
+
+// (Default) Enable the following directive to use the TEDIObjectList implementation instead of
+// the TEDIDataObjectArray implementation.  This new directive replaces the previous
+// "OPTIMIZED_DISASSEMBLE" directive which was a temporary patch to prevent memory fragmentation.
+{$DEFINE OPTIMIZED_INTERNAL_STRUCTURE}
 
 interface
 
 uses
   SysUtils, Classes,
-  JclBase, JclStrings;
+  JclBase;
 
 const
-  NA_LoopId = 'N/A'; //Constant used for loop id comparison
+  NA_LoopId = 'N/A'; // Constant used for loop id comparison
   ElementSpecId_Reserved = 'Reserved';
 
 {$IFDEF ENABLE_EDI_DEBUGGING}
 var
   Debug_EDIDataObjectsCreated: Int64;
   Debug_EDIDataObjectsDestroyed: Int64;
+  Debug_EDIDataObjectListCreated: Int64;
+  Debug_EDIDataObjectListDestroyed: Int64;
+  Debug_EDIDataObjectListItemsCreated: Int64;
+  Debug_EDIDataObjectListItemsDestroyed: Int64;
 {$ENDIF}
 
 type
@@ -75,8 +84,10 @@ type
 
   TEDIDataObject = class;
   TEDIDataObjectGroup = class;
-  TEDIDataObjectLinkedListItem = class;
-  TEDIDataObjectLinkedListHeader = class;
+  TEDIObjectListItem = class;
+  TEDIObjectList = class;
+  TEDIDataObjectListItem = class;
+  TEDIDataObjectList = class;  
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Delimiters Object
@@ -158,7 +169,12 @@ type
 
   TEDIDataObjectGroup = class(TEDIDataObject)
   protected
+    FGroupIsParent: Boolean;
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    FEDIDataObjects: TEDIDataObjectList;
+    {$ELSE}
     FEDIDataObjects: TEDIDataObjectArray;
+    {$ENDIF}
     FCreateObjectType: TEDIDataObjectType;
     function GetCount: Integer;
     function GetEDIDataObject(Index: Integer): TEDIDataObject;
@@ -166,8 +182,9 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; virtual; abstract;
     function InternalCreateEDIDataObject: TEDIDataObject; virtual; abstract;
   public
-    constructor Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer{= 0}); reintroduce;
+    constructor Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer = 0); reintroduce;
     destructor Destroy; override;
+    function IndexIsValid(Index: Integer): Boolean;
     //
     function AddEDIDataObject: Integer;
     function AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
@@ -189,7 +206,11 @@ type
     //
     property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
-    property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects write FEDIDataObjects;
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    property EDIDataObjects: TEDIDataObjectList read FEDIDataObjects;
+    {$ELSE}
+    property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects;
+    {$ENDIF}
   published
     property CreateObjectType: TEDIDataObjectType read FCreateObjectType;
     property EDIDataObjectCount: Integer read GetCount; //[recommended instead of Length(EDIDataObject)]
@@ -199,46 +220,87 @@ type
 //  EDI Data Object Linked List Header and Item classes
 //--------------------------------------------------------------------------------------------------
 
-  TEDIDataObjectLinkedListItemOptions = set of (lhFreeDataObject);
-
-  TEDIDataObjectLinkedListItem = class(TEDIObject)
+  TEDIObjectListItem = class(TEDIObject)
   protected
-    FParent: TEDIDataObjectLinkedListHeader;
-    FOptions: TEDIDataObjectLinkedListItemOptions;
-    FPriorItem: TEDIDataObjectLinkedListItem;
-    FNextItem: TEDIDataObjectLinkedListItem;
-    FEDIDataObject: TEDIDataObject;
+    FParent: TEDIObjectList;
+    FPriorItem: TEDIObjectListItem;
+    FNextItem: TEDIObjectListItem;
+    FEDIObject: TEDIObject;
+    FItemIndex: Integer;
   public
-    constructor Create(Parent: TEDIDataObjectLinkedListHeader;
-      PriorItem: TEDIDataObjectLinkedListItem);
+    constructor Create(Parent: TEDIObjectList; PriorItem: TEDIObjectListItem;
+      EDIObject: TEDIObject = nil);
     destructor Destroy; override;
     function GetIndexPositionFromParent: Integer;
+    procedure FreeAndNilEDIDataObject;
   published
-    property PriorItem: TEDIDataObjectLinkedListItem read FPriorItem write FPriorItem;
-    property NextItem: TEDIDataObjectLinkedListItem read FNextItem write FNextItem;
-    property EDIDataObject: TEDIDataObject read FEDIDataObject write FEDIDataObject;
+    property ItemIndex: Integer read FItemIndex write FItemIndex;
+    property PriorItem: TEDIObjectListItem read FPriorItem write FPriorItem;
+    property NextItem: TEDIObjectListItem read FNextItem write FNextItem;
+    property EDIObject: TEDIObject read FEDIObject write FEDIObject;
   end;
 
-  TEDIDataObjectLinkedListHeader = class(TEDIObject)
+  TEDIDataObjectListOptions = set of (loAutoUpdateIndexes);
+
+  TEDIObjectList = class(TEDIObject)
   private
-    function GetCount: Integer;
+    function GetItem(Index: Integer): TEDIObjectListItem;
   protected
-    FFirstItem: TEDIDataObjectLinkedListItem;
-    FLastItem: TEDIDataObjectLinkedListItem;
-    FCurrentItem: TEDIDataObjectLinkedListItem;
+    FOwnsObjects: Boolean;
+    FCount: Integer;
+    FOptions: TEDIDataObjectListOptions;
+    FFirstItem: TEDIObjectListItem;
+    FLastItem: TEDIObjectListItem;
+    FCurrentItem: TEDIObjectListItem;
+    function GetEDIObject(Index: Integer): TEDIObject;
+    procedure SetEDIObject(Index: Integer; const Value: TEDIObject);    
+    function CreateListItem(PriorItem: TEDIObjectListItem;
+      EDIObject: TEDIObject = nil): TEDIObjectListItem; virtual;
   public
-    constructor Create;
+    constructor Create(OwnsObjects: Boolean = True);
     destructor Destroy; override;
-    procedure AppendEDIDataObject(EDIDataObject: TEDIDataObject);
-    procedure DeleteEDIDataObjects(FreeReferences: Boolean = False);
-    function First(Index: Integer = 0): TEDIDataObjectLinkedListItem;
-    function Next: TEDIDataObjectLinkedListItem;
-    function Prior: TEDIDataObjectLinkedListItem;
-    function Last: TEDIDataObjectLinkedListItem;
+    procedure Add(EDIObject: TEDIObject);
+    function Extract(EDIObject: TEDIObject): TEDIObject; virtual;
+    procedure Remove(EDIObject: TEDIObject);
+    function IndexOf(EDIObject: TEDIObject): Integer;
+    procedure Clear;
+    function First(Index: Integer = 0): TEDIObjectListItem; virtual;
+    function Next: TEDIObjectListItem; virtual;
+    function Prior: TEDIObjectListItem; virtual;
+    function Last: TEDIObjectListItem; virtual;
+    procedure UpdateCount;
+    // Dynamic Array Emulation
+    procedure Insert(InsertIndex: Integer; EDIObject: TEDIObject);
+    procedure Delete(Index: Integer);
+    procedure UpdateIndexes(StartItem: TEDIObjectListItem = nil);
+    //
+    property Item[Index: Integer]: TEDIObjectListItem read GetItem;
+    property EDIObject[Index: Integer]: TEDIObject read GetEDIObject
+      write SetEDIObject; default;
   published
-    property ItemCount: Integer read GetCount;
-    property FirstItem: TEDIDataObjectLinkedListItem read FFirstItem;
-    property LastItem: TEDIDataObjectLinkedListItem read FLastItem;
+    property Count: Integer read FCount;
+    property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
+    property Options: TEDIDataObjectListOptions read FOptions write FOptions;
+    property CurrentItem: TEDIObjectListItem read FCurrentItem;    
+  end;
+
+  TEDIDataObjectListItem = class(TEDIObjectListItem)
+  private
+    function GetEDIDataObject: TEDIDataObject;
+    procedure SetEDIDataObject(const Value: TEDIDataObject);
+  published
+    property EDIDataObject: TEDIDataObject read GetEDIDataObject write SetEDIDataObject;
+  end;
+
+  TEDIDataObjectList = class(TEDIObjectList)
+  private
+    function GetEDIDataObject(Index: Integer): TEDIDataObject;
+    procedure SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
+  public
+    function CreateListItem(PriorItem: TEDIObjectListItem;
+      EDIObject: TEDIObject = nil): TEDIObjectListItem; override;  
+    property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
+      write SetEDIDataObject; default;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -251,588 +313,7 @@ function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceF
 implementation
 
 uses
-  JclResources;
-
-//==================================================================================================
-// TEDIDelimiters
-//==================================================================================================
-
-constructor TEDIDelimiters.Create;
-begin
-  inherited Create;
-  SetSD('~');
-  SetED('*');
-  SetSS('>');
-  // (rom) alternatively implement as Create('~', '*', '>');
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIDelimiters.Create(const SD, ED, SS: string);
-begin
-  inherited Create;
-  SetSD(SD);
-  SetED(ED);
-  SetSS(SS);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDelimiters.SetED(const Delimiter: string);
-begin
-  FElementDelimiter := Delimiter;
-  FElementDelimiterLength := Length(FElementDelimiter);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDelimiters.SetSD(const Delimiter: string);
-begin
-  FSegmentDelimiter := Delimiter;
-  FSegmentDelimiterLength := Length(FSegmentDelimiter);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDelimiters.SetSS(const Delimiter: string);
-begin
-  FSubelementSeperator := Delimiter;
-  FSubelementSeperatorLength := Length(FSubElementSeperator);
-end;
-
-//==================================================================================================
-// TEDIDataObject
-//==================================================================================================
-
-constructor TEDIDataObject.Create(Parent: TEDIDataObject);
-begin
-  inherited Create;
-  FState := ediCreated;
-  FEDIDOT := ediUnknown;
-  FData := '';
-  FLength := 0;
-  FParent := Parent;
-  FDelimiters := nil;
-  FSpecPointer := nil;
-  FCustomData1 := nil;
-  FCustomData2 := nil;
-  {$IFDEF ENABLE_EDI_DEBUGGING}
-  Inc(Debug_EDIDataObjectsCreated);
-  {$ENDIF}
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIDataObject.Destroy;
-begin
-  {$IFDEF ENABLE_EDI_DEBUGGING}
-  Inc(Debug_EDIDataObjectsDestroyed);
-  {$ENDIF}
-  if not Assigned(FParent) then
-    FDelimiters.Free;
-  FDelimiters := nil;
-  FSpecPointer := nil;
-  FCustomData1 := nil;
-  FCustomData2 := nil;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObject.GetData: string;
-begin
-  Result := FData;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObject.SetData(const Data: string);
-begin
-  FData := Data;
-  FLength := Length(FData);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObject.SetDelimiters(const Delimiters: TEDIDelimiters);
-begin
-  if not Assigned(FParent) then
-    FreeAndNil(FDelimiters);
-  FDelimiters := Delimiters;
-end;
-
-//==================================================================================================
-// TEDIDataObjectGroup
-//==================================================================================================
-
-function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
-var
-  I, J: Integer;
-begin
-  I := Length(FEDIDataObjects);
-  Result := I; // Return position of 1st
-  // Resize
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-  // Add
-  for J := I to High(FEDIDataObjects) do
-    FEDIDataObjects[J]:= InternalCreateEDIDataObject;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.AddEDIDataObject: Integer;
-begin
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := InternalCreateEDIDataObject;
-  Result := High(FEDIDataObjects); // Return position
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
-begin
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := EDIDataObject;
-  EDIDataObject.Parent := Self;
-  Result := High(FEDIDataObjects); // Return position
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
-var
-  I, J, K: Integer;
-begin
-  I := 0;
-  J := Length(FEDIDataObjects);
-  Result := J; // Return position of 1st
-  // Resize
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Length(EDIDataObjectArray));
-  // Append
-  for K := J to High(EDIDataObjectArray) do
-  begin
-    FEDIDataObjects[K] := EDIDataObjectArray[I];
-    FEDIDataObjects[K].Parent := Self;
-    Inc(I);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
-begin
-  if Assigned(Parent) then
-    inherited Create(Parent)
-  else
-    inherited Create(nil);
-  FCreateObjectType := ediUnknown;
-  SetLength(FEDIDataObjects, 0);
-  if EDIDataObjectCount > 0 then
-    AddEDIDataObjects(EDIDataObjectCount);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIDataObject);
-var
-  I: Integer;
-begin
-  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    if FEDIDataObjects[I] = EDIDataObject then
-      DeleteEDIDataObject(I);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectGroup.DeleteEDIDataObject(Index: Integer);
-var
-  I: Integer;
-begin
-  if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
-    (Index <= High(FEDIDataObjects)) then
-  begin
-    // Delete
-    FreeAndNil(FEDIDataObjects[Index]);
-    // (rom) please replace with a call to Move() throughout the file
-    // Shift
-    for I := Index + 1 to High(FEDIDataObjects) do
-      FEDIDataObjects[I-1] := FEDIDataObjects[I];
-    // Resize
-    SetLength(FEDIDataObjects, High(FEDIDataObjects));
-  end
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
-var
-  I: Integer;
-begin
-  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    // Delete
-    FreeAndNil(FEDIDataObjects[I]);
-  // Resize
-  SetLength(FEDIDataObjects, 0);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectGroup.DeleteEDIDataObjects(Index, Count: Integer);
-var
-  I: Integer;
-begin
-  if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
-    (Index <= High(FEDIDataObjects)) then
-  begin
-    // Delete
-    for I := Index to (Index + Count) - 1 do
-      FreeAndNil(FEDIDataObjects[I]);
-    // Shift
-    for I := (Index + Count) to High(FEDIDataObjects) do
-    begin
-      FEDIDataObjects[I-Count] := FEDIDataObjects[I];
-      FEDIDataObjects[I] := nil;
-    end;
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) - Count);
-  end
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIDataObjectGroup.Destroy;
-begin
-  DeleteEDIDataObjects;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIDataObject;
-begin
-  if Length(FEDIDataObjects) > 0 then
-    if Index >= Low(FEDIDataObjects) then
-      if Index <= High(FEDIDataObjects) then
-      begin
-        if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
-        Result := FEDIDataObjects[Index];
-      end
-      else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
-    else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
-var
-  I: Integer;
-begin
-  Result := InsertIndex;
-  if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
-    (InsertIndex <= High(FEDIDataObjects)) then
-  begin
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-      FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    // Insert
-    FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
-  end
-  else
-    Result := AddEDIDataObject;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
-  EDIDataObject: TEDIDataObject): Integer;
-var
-  I: Integer;
-begin
-  Result := InsertIndex;
-  if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
-    (InsertIndex <= High(FEDIDataObjects)) then
-  begin
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-      FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    // Insert
-    FEDIDataObjects[InsertIndex] := EDIDataObject;
-    FEDIDataObjects[InsertIndex].Parent := Self;
-  end
-  else
-    Result := AppendEDIDataObject(EDIDataObject);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex: Integer;
-  EDIDataObjectArray: TEDIDataObjectArray): Integer;
-var
-  I, J, K: Integer;
-begin
-  Result := InsertIndex;
-  I := Length(EDIDataObjectArray);
-  if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
-    (InsertIndex <= High(FEDIDataObjects)) then
-  begin
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + I);
-    // Shift
-    for J := High(FEDIDataObjects) downto InsertIndex + I do
-    begin
-      FEDIDataObjects[J] := FEDIDataObjects[J-I];
-      FEDIDataObjects[J-I] := nil;
-    end;
-    // Insert
-    K := 0;
-    for J := InsertIndex to (InsertIndex + I) - 1 do
-    begin
-      FEDIDataObjects[J] := EDIDataObjectArray[K];
-      FEDIDataObjects[J].Parent := Self;
-      Inc(K);
-    end;
-  end
-  else
-    Result := AppendEDIDataObjects(EDIDataObjectArray);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex, Count: Integer): Integer;
-var
-  I: Integer;
-begin
-  Result := InsertIndex;
-  if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
-    (InsertIndex <= High(FEDIDataObjects)) then
-  begin
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + Count do
-    begin
-      FEDIDataObjects[I] := FEDIDataObjects[I-Count];
-      FEDIDataObjects[I-Count] := nil;
-    end;
-    // Insert
-    for I := InsertIndex to (InsertIndex + Count) - 1 do
-      FEDIDataObjects[I] := InternalCreateEDIDataObject;
-  end
-  else
-    Result := AddEDIDataObjects(Count);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
-begin
-  if Length(FEDIDataObjects) > 0 then
-    if Index >= Low(FEDIDataObjects) then
-      if Index <= High(FEDIDataObjects) then
-      begin
-        FreeAndNil(FEDIDataObjects[Index]);
-        FEDIDataObjects[Index] := EDIDataObject;
-      end
-      else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
-    else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  if Assigned(Parent) and (Parent is TEDIDataObjectGroup) then
-    for I := Low(TEDIDataObjectGroup(Parent).EDIDataObjects) to
-       High(TEDIDataObjectGroup(Parent).EDIDataObjects) do
-      if TEDIDataObjectGroup(Parent).EDIDataObjects[I] = Self then
-      begin
-        Result := I;
-        Break;
-      end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectGroup.GetCount: Integer;
-begin
-  Result := Length(FEDIDataObjects);
-end;
-
-//==================================================================================================
-// TEDIDataObjectLinkedListItem
-//==================================================================================================
-
-constructor TEDIDataObjectLinkedListItem.Create(Parent: TEDIDataObjectLinkedListHeader;
-  PriorItem: TEDIDataObjectLinkedListItem);
-begin
-  inherited Create;
-  FOptions := [lhFreeDataObject];
-  FEDIDataObject := nil;
-  FPriorItem := PriorItem;
-  FNextItem := nil;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIDataObjectLinkedListItem.Destroy;
-begin
-  FPriorItem := nil;
-  FNextItem := nil;
-  if lhFreeDataObject in FOptions then
-    FEDIDataObject.Free;
-  FEDIDataObject := nil;
-  FParent := nil;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListItem.GetIndexPositionFromParent: Integer;
-var
-  I: Integer;
-  ListItem: TEDIDataObjectLinkedListItem;
-begin
-  Result := -1;
-  for I := 0 to FParent.ItemCount - 1 do
-  begin
-    if I = 0 then
-      ListItem := FParent.First
-    else
-      ListItem := FParent.Next;
-    if Self = ListItem then
-    begin
-      Result := I;
-      Break;
-    end;
-  end;
-end;
-
-//==================================================================================================
-// TEDIDataObjectLinkedListHeader
-//==================================================================================================
-
-constructor TEDIDataObjectLinkedListHeader.Create;
-begin
-  inherited Create;
-  FFirstItem := nil;
-  FLastItem := nil;
-  FCurrentItem := nil;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIDataObjectLinkedListHeader.Destroy;
-begin
-  DeleteEDIDataObjects;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectLinkedListHeader.AppendEDIDataObject(EDIDataObject: TEDIDataObject);
-var
-  ListItem: TEDIDataObjectLinkedListItem;
-begin
-  ListItem := TEDIDataObjectLinkedListItem.Create(Self, FLastItem);
-  ListItem.EDIDataObject := EDIDataObject;
-  if FLastItem <> nil then
-    FLastItem.NextItem := ListItem;
-  if FFirstItem = nil then
-    FFirstItem := ListItem;
-  FLastItem := ListItem;
-  FCurrentItem := ListItem;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TEDIDataObjectLinkedListHeader.DeleteEDIDataObjects(FreeReferences: Boolean = False);
-var
-  ListItem: TEDIDataObjectLinkedListItem;
-  PriorItem: TEDIDataObjectLinkedListItem;
-begin
-  ListItem := FFirstItem;
-  while ListItem <> nil do
-  begin
-    if FreeReferences and (ListItem.EDIDataObject <> nil) then
-      ListItem.EDIDataObject.Free;
-    ListItem.EDIDataObject := nil;
-    PriorItem := ListItem;
-    ListItem := ListItem.NextItem;
-    PriorItem.Free;
-  end;
-  FFirstItem := nil;
-  FLastItem := nil;
-  FCurrentItem := nil;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListHeader.First(Index: Integer): TEDIDataObjectLinkedListItem;
-begin
-  Result := nil;
-  if Index = 0 then
-    Result := FFirstItem;
-  FCurrentItem := FFirstItem;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListHeader.GetCount: Integer;
-var
-  ListItem: TEDIDataObjectLinkedListItem;
-begin
-  Result := 0;
-  ListItem := FFirstItem;
-  while ListItem <> nil do
-  begin
-    ListItem := ListItem.NextItem;
-    Inc(Result);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListHeader.Last: TEDIDataObjectLinkedListItem;
-begin
-  FCurrentItem := FLastItem;
-  Result := FCurrentItem;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListHeader.Next: TEDIDataObjectLinkedListItem;
-begin
-  FCurrentItem := FCurrentItem.NextItem;
-  Result := FCurrentItem;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TEDIDataObjectLinkedListHeader.Prior: TEDIDataObjectLinkedListItem;
-begin
-  FCurrentItem := FCurrentItem.PriorItem;
-  Result := FCurrentItem;
-end;
+  JclResources, JclStrings;
 
 //--------------------------------------------------------------------------------------------------
 //  Other
@@ -964,6 +445,1044 @@ begin
     Inc(SearchIndex);
     Inc(ReplaceIndex);
   end;
+end;
+
+//==================================================================================================
+// TEDIDelimiters
+//==================================================================================================
+
+constructor TEDIDelimiters.Create;
+begin
+  Create('~', '*', '>');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIDelimiters.Create(const SD, ED, SS: string);
+begin
+  inherited Create;
+  SetSD(SD);
+  SetED(ED);
+  SetSS(SS);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDelimiters.SetED(const Delimiter: string);
+begin
+  FElementDelimiter := Delimiter;
+  FElementDelimiterLength := Length(FElementDelimiter);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDelimiters.SetSD(const Delimiter: string);
+begin
+  FSegmentDelimiter := Delimiter;
+  FSegmentDelimiterLength := Length(FSegmentDelimiter);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDelimiters.SetSS(const Delimiter: string);
+begin
+  FSubelementSeperator := Delimiter;
+  FSubelementSeperatorLength := Length(FSubElementSeperator);
+end;
+
+//==================================================================================================
+// TEDIDataObject
+//==================================================================================================
+
+constructor TEDIDataObject.Create(Parent: TEDIDataObject);
+begin
+  inherited Create;
+  FState := ediCreated;
+  FEDIDOT := ediUnknown;
+  FData := '';
+  FLength := 0;
+  FParent := Parent;
+  FDelimiters := nil;
+  FSpecPointer := nil;
+  FCustomData1 := nil;
+  FCustomData2 := nil;
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectsCreated);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIDataObject.Destroy;
+begin
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectsDestroyed);
+  {$ENDIF}
+  if not Assigned(FParent) then
+    FDelimiters.Free;
+  FDelimiters := nil;
+  FSpecPointer := nil;
+  FCustomData1 := nil;
+  FCustomData2 := nil;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObject.GetData: string;
+begin
+  Result := FData;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObject.SetData(const Data: string);
+begin
+  FData := Data;
+  FLength := Length(FData);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObject.SetDelimiters(const Delimiters: TEDIDelimiters);
+begin
+  if not Assigned(FParent) then
+    FreeAndNil(FDelimiters);
+  FDelimiters := Delimiters;
+end;
+
+//==================================================================================================
+// TEDIDataObjectGroup
+//==================================================================================================
+
+function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
+var
+  I{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}, J{$ENDIF}: Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Result := FEDIDataObjects.Count; // Return position of 1st
+  for I := 1 to Count do
+    FEDIDataObjects.Add(InternalCreateEDIDataObject);
+  {$ELSE}
+  I := Length(FEDIDataObjects);
+  Result := I; // Return position of 1st
+  // Resize
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
+  // Add
+  for J := I to High(FEDIDataObjects) do
+    FEDIDataObjects[J]:= InternalCreateEDIDataObject;
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.AddEDIDataObject: Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Result := FEDIDataObjects.Count; // Return position
+  FEDIDataObjects.Add(InternalCreateEDIDataObject);
+  {$ELSE}
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+  FEDIDataObjects[High(FEDIDataObjects)] := InternalCreateEDIDataObject;
+  Result := High(FEDIDataObjects); // Return position
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Result := FEDIDataObjects.Count; // Return position
+  FEDIDataObjects.Add(EDIDataObject);
+  if FGroupIsParent then
+    EDIDataObject.Parent := Self;
+  {$ELSE}
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+  FEDIDataObjects[High(FEDIDataObjects)] := EDIDataObject;
+  if FGroupIsParent then
+    EDIDataObject.Parent := Self;
+  Result := High(FEDIDataObjects); // Return position
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
+var
+  I{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}, J, K{$ENDIF}: Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Result := FEDIDataObjects.Count; // Return position of 1st
+  for I := Low(EDIDataObjectArray) to High(EDIDataObjectArray) do
+  begin
+    FEDIDataObjects.Add(EDIDataObjectArray[I]);
+    if FGroupIsParent then
+      EDIDataObjectArray[I].Parent := Self;
+  end;
+  {$ELSE}
+  I := 0;
+  J := Length(FEDIDataObjects);
+  Result := J; // Return position of 1st
+  // Resize
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Length(EDIDataObjectArray));
+  // Append
+  for K := J to High(EDIDataObjectArray) do
+  begin
+    FEDIDataObjects[K] := EDIDataObjectArray[I];
+    if FGroupIsParent then
+      FEDIDataObjects[K].Parent := Self;
+    Inc(I);
+  end;
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
+begin
+  if Assigned(Parent) then
+    inherited Create(Parent)
+  else
+    inherited Create(nil);
+  FCreateObjectType := ediUnknown;
+  FGroupIsParent := True;
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  FEDIDataObjects := TEDIDataObjectList.Create;
+  {$ELSE}
+  SetLength(FEDIDataObjects, 0);
+  {$ENDIF}
+  if EDIDataObjectCount > 0 then
+    AddEDIDataObjects(EDIDataObjectCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIDataObject);
+{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  I: Integer;
+{$ENDIF}
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  FEDIDataObjects.Remove(EDIDataObject);
+  {$ELSE}
+  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
+    if FEDIDataObjects[I] = EDIDataObject then
+      DeleteEDIDataObject(I);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectGroup.DeleteEDIDataObject(Index: Integer);
+{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  I: Integer;
+{$ENDIF}
+begin
+  if IndexIsValid(Index) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    FEDIDataObjects.Delete(Index);
+    {$ELSE}
+    // Delete
+    FreeAndNil(FEDIDataObjects[Index]);
+    // (rom) please replace with a call to Move() throughout the file
+    // Shift
+    for I := Index + 1 to High(FEDIDataObjects) do
+      FEDIDataObjects[I-1] := FEDIDataObjects[I];
+    // Resize
+    SetLength(FEDIDataObjects, High(FEDIDataObjects));
+    {$ENDIF}
+  end
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
+{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  I: Integer;
+{$ENDIF}
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  FEDIDataObjects.Clear;
+  {$ELSE}
+  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
+    // Delete
+    FreeAndNil(FEDIDataObjects[I]);
+  // Resize
+  SetLength(FEDIDataObjects, 0);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectGroup.DeleteEDIDataObjects(Index, Count: Integer);
+var
+  I: Integer;
+begin
+  if IndexIsValid(Index) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    for I := 1 to Count do
+      DeleteEDIDataObject(Index);
+    {$ELSE}
+    // Delete
+    for I := Index to (Index + Count) - 1 do
+      FreeAndNil(FEDIDataObjects[I]);
+    // Shift
+    for I := (Index + Count) to High(FEDIDataObjects) do
+    begin
+      FEDIDataObjects[I-Count] := FEDIDataObjects[I];
+      FEDIDataObjects[I] := nil;
+    end;
+    // Resize
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) - Count);
+    {$ENDIF}
+  end
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIDataObjectGroup.Destroy;
+begin
+  DeleteEDIDataObjects;
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  FreeAndNil(FEDIDataObjects);
+  {$ENDIF}  
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIDataObject;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  if FEDIDataObjects.Count > 0 then
+    if Index >= 0 then
+      if Index <= FEDIDataObjects.Count - 1 then
+      begin
+        if not Assigned(FEDIDataObjects[Index]) then
+          raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+        Result := FEDIDataObjects[Index];
+      end
+      else
+        raise EJclEDIError.CreateResRecFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
+    else
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+  {$ELSE}
+  if Length(FEDIDataObjects) > 0 then
+    if Index >= Low(FEDIDataObjects) then
+      if Index <= High(FEDIDataObjects) then
+      begin
+        if not Assigned(FEDIDataObjects[Index]) then
+          raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+        Result := FEDIDataObjects[Index];
+      end
+      else
+        raise EJclEDIError.CreateResRecFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
+    else
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
+begin
+  Result := False;
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  if (FEDIDataObjects.Count > 0) and (Index >= 0) and (Index <= FEDIDataObjects.Count - 1) then
+    Result := True;
+  {$ELSE}
+  if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
+    (Index <= High(FEDIDataObjects)) then Result := True;
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
+{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  I: Integer;
+{$ENDIF}
+begin
+  Result := InsertIndex; // Return position
+  if IndexIsValid(InsertIndex) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    FEDIDataObjects.Insert(InsertIndex, InternalCreateEDIDataObject)
+    {$ELSE}
+    // Resize
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+    // Shift
+    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
+      FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    // Insert
+    FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
+    {$ENDIF}
+  end
+  else
+    Result := AddEDIDataObject;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
+  EDIDataObject: TEDIDataObject): Integer;
+{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  I: Integer;
+{$ENDIF}
+begin
+  Result := InsertIndex; // Return position
+  if IndexIsValid(InsertIndex) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    FEDIDataObjects.Insert(InsertIndex, EDIDataObject);
+    if FGroupIsParent then
+      EDIDataObject.Parent := Self;
+    {$ELSE}
+    // Resize
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+    // Shift
+    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
+      FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    // Insert
+    FEDIDataObjects[InsertIndex] := EDIDataObject;
+    if FGroupIsParent then
+      FEDIDataObjects[InsertIndex].Parent := Self;
+    {$ENDIF}
+  end
+  else
+    Result := AppendEDIDataObject(EDIDataObject);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex: Integer;
+  EDIDataObjectArray: TEDIDataObjectArray): Integer;
+var
+  I{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}, J, K{$ENDIF}: Integer;
+begin
+  Result := InsertIndex; // Return position of 1st
+  if IndexIsValid(InsertIndex) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    for I := High(EDIDataObjectArray) downto Low(EDIDataObjectArray) do
+    begin
+      FEDIDataObjects.Insert(InsertIndex, EDIDataObjectArray[I]);
+      if FGroupIsParent then
+        EDIDataObjectArray[I].Parent := Self;
+    end;
+    {$ELSE}
+    I := Length(EDIDataObjectArray);
+    // Resize
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + I);
+    // Shift
+    for J := High(FEDIDataObjects) downto InsertIndex + I do
+    begin
+      FEDIDataObjects[J] := FEDIDataObjects[J-I];
+      FEDIDataObjects[J-I] := nil;
+    end;
+    // Insert
+    K := 0;
+    for J := InsertIndex to (InsertIndex + I) - 1 do
+    begin
+      FEDIDataObjects[J] := EDIDataObjectArray[K];
+      if FGroupIsParent then
+        FEDIDataObjects[J].Parent := Self;
+      Inc(K);
+    end;
+    {$ENDIF}
+  end
+  else
+    Result := AppendEDIDataObjects(EDIDataObjectArray);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex, Count: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := InsertIndex; // Return position of 1st
+  if IndexIsValid(InsertIndex) then
+  begin
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    for I := 1 to Count do
+      FEDIDataObjects.Insert(InsertIndex, InternalCreateEDIDataObject);
+    {$ELSE}
+    // Resize
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
+    // Shift
+    for I := High(FEDIDataObjects) downto InsertIndex + Count do
+    begin
+      FEDIDataObjects[I] := FEDIDataObjects[I-Count];
+      FEDIDataObjects[I-Count] := nil;
+    end;
+    // Insert
+    for I := InsertIndex to (InsertIndex + Count) - 1 do
+      FEDIDataObjects[I] := InternalCreateEDIDataObject;
+    {$ENDIF}
+  end
+  else
+    Result := AddEDIDataObjects(Count);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  if FEDIDataObjects.Count > 0 then
+    if Index >= 0 then
+      if Index <= FEDIDataObjects.Count - 1 then
+      begin
+        FEDIDataObjects.Item[Index].FreeAndNilEDIDataObject;
+        FEDIDataObjects[Index] := EDIDataObject;
+        if FGroupIsParent then
+          FEDIDataObjects[Index].Parent := Self;        
+      end
+      else
+        raise EJclEDIError.CreateResRecFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
+    else
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+  {$ELSE}
+  if Length(FEDIDataObjects) > 0 then
+    if Index >= Low(FEDIDataObjects) then
+      if Index <= High(FEDIDataObjects) then
+      begin
+        FreeAndNil(FEDIDataObjects[Index]);
+        FEDIDataObjects[Index] := EDIDataObject;
+        if FGroupIsParent then
+          FEDIDataObjects[Index].Parent := Self;
+      end
+      else
+        raise EJclEDIError.CreateResRecFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
+    else
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
+var
+  I: Integer;
+  ParentGroup: TEDIDataObjectGroup;
+begin
+  Result := -1;
+  if Assigned(Parent) and (Parent is TEDIDataObjectGroup) then
+  begin
+    ParentGroup := TEDIDataObjectGroup(Parent);
+    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+    for I := 0 to ParentGroup.EDIDataObjectCount - 1 do
+    {$ELSE}
+    for I := Low(ParentGroup.EDIDataObjects) to High(ParentGroup.EDIDataObjects) do
+    {$ENDIF}
+      if ParentGroup.EDIDataObject[I] = Self then
+      begin
+        Result := I;
+        Break;
+      end;
+  end; // if
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.GetCount: Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Result := FEDIDataObjects.Count;
+  {$ELSE}
+  Result := Length(FEDIDataObjects);
+  {$ENDIF}
+end;
+
+//==================================================================================================
+// TEDIObjectListItem
+//==================================================================================================
+
+constructor TEDIObjectListItem.Create(Parent: TEDIObjectList;
+  PriorItem: TEDIObjectListItem; EDIObject: TEDIObject = nil);
+begin
+  inherited Create;
+  FParent := Parent;
+  FItemIndex := 0;
+  FEDIObject := EDIObject;
+  FPriorItem := PriorItem;
+  FNextItem := nil;
+  if FPriorItem <> nil then
+    FItemIndex := FPriorItem.ItemIndex + 1;
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectListItemsCreated);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIObjectListItem.Destroy;
+begin
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectListItemsDestroyed);
+  {$ENDIF}
+  FPriorItem := nil;
+  FNextItem := nil;
+  if FParent.OwnsObjects then
+    FreeAndNilEDIDataObject;
+  FEDIObject := nil;
+  FParent := nil;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectListItem.FreeAndNilEDIDataObject;
+begin
+  FreeAndNil(FEDIObject);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectListItem.GetIndexPositionFromParent: Integer;
+var
+  I: Integer;
+  ListItem: TEDIObjectListItem;
+begin
+  Result := -1;
+  for I := 0 to FParent.Count - 1 do
+  begin
+    if I = 0 then
+      ListItem := FParent.First
+    else
+      ListItem := FParent.Next;
+    if Self = ListItem then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
+  FItemIndex := Result;
+end;
+
+//==================================================================================================
+// TEDIObjectList
+//==================================================================================================
+
+constructor TEDIObjectList.Create(OwnsObjects: Boolean = True);
+begin
+  inherited Create;
+  FOwnsObjects := OwnsObjects;
+  FFirstItem := nil;
+  FLastItem := nil;
+  FCurrentItem := nil;
+  FCount := 0;
+  FOptions := [loAutoUpdateIndexes];
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectListCreated);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIObjectList.Destroy;
+begin
+  {$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectListDestroyed);
+  {$ENDIF}
+  Clear;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Clear;
+var
+  ListItem: TEDIObjectListItem;
+  TempItem: TEDIObjectListItem;
+begin
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    TempItem := ListItem;
+    ListItem := ListItem.NextItem;
+    TempItem.Free;
+  end;
+  FFirstItem := nil;
+  FLastItem := nil;
+  FCurrentItem := nil;
+  FCount := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.First(Index: Integer): TEDIObjectListItem;
+begin
+  if Index = 0 then
+    Result := FFirstItem
+  else
+    Result := GetItem(Index);
+  FCurrentItem := Result;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Last: TEDIObjectListItem;
+begin
+  FCurrentItem := FLastItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Next: TEDIObjectListItem;
+begin
+  FCurrentItem := FCurrentItem.NextItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Prior: TEDIObjectListItem;
+begin
+  FCurrentItem := FCurrentItem.PriorItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Add(EDIObject: TEDIObject);
+var
+  ListItem: TEDIObjectListItem;
+begin
+  ListItem := CreateListItem(FLastItem, EDIObject); //TEDIObjectListItem.Create(Self, FLastItem, EDIObject);
+  if FLastItem <> nil then
+    FLastItem.NextItem := ListItem;
+  if FFirstItem = nil then
+    FFirstItem := ListItem;
+  FLastItem := ListItem;
+  FCurrentItem := ListItem;
+  Inc(FCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Insert(InsertIndex: Integer; EDIObject: TEDIObject);
+var
+  ListItem: TEDIObjectListItem;
+begin
+  FCurrentItem := GetItem(InsertIndex);
+  if FCurrentItem <> nil then
+  begin
+    ListItem := CreateListItem(FCurrentItem.PriorItem); //TEDIObjectListItem.Create(Self, FCurrentItem.PriorItem);
+    ListItem.NextItem := FCurrentItem;
+    ListItem.EDIObject := EDIObject;
+    if ListItem.PriorItem <> nil then
+      ListItem.ItemIndex := ListItem.PriorItem.ItemIndex + 1;
+    FCurrentItem.PriorItem := ListItem;
+    if FCurrentItem.PriorItem = nil then
+      FFirstItem := ListItem;
+    FCurrentItem := ListItem;
+    Inc(FCount);
+    // Update the indexes starting at the current item.
+    if loAutoUpdateIndexes in FOptions then
+      UpdateIndexes(FCurrentItem);
+  end
+  else
+    Add(EDIObject);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.GetItem(Index: Integer): TEDIObjectListItem;
+var
+  I: Integer;
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  if FCurrentItem <> nil then // Attempt to search from the current item.
+  begin
+    if Index = FCurrentItem.ItemIndex then // The index already points to the current item.
+      Result := FCurrentItem
+    else if Index > FCurrentItem.ItemIndex then // Search forward in the list.
+    begin
+      I := FCurrentItem.ItemIndex - 1;
+      ListItem := FCurrentItem;
+      while ListItem <> nil do
+      begin
+        Inc(I);
+        if I = Index then
+        begin
+          Result := ListItem;
+          Break;
+        end;
+        ListItem := ListItem.NextItem;
+      end;
+      FCurrentItem := Result;
+    end
+    else // if Index < FCurrentItem.ItemIndex then // Search backward in the list.
+    begin
+      I := FCurrentItem.ItemIndex + 1;
+      ListItem := FCurrentItem;
+      while ListItem <> nil do
+      begin
+        Dec(I);
+        if I = Index then
+        begin
+          Result := ListItem;
+          Break;
+        end;
+        ListItem := ListItem.PriorItem;
+      end;
+      FCurrentItem := Result;
+    end;
+  end
+  else // No current item was assigned so search from the beginning of the structure.
+  begin
+    I := -1;
+    FCurrentItem := FFirstItem;
+    ListItem := FFirstItem;
+    while ListItem <> nil do
+    begin
+      Inc(I);
+      if I = Index then
+      begin
+        Result := ListItem;
+        Break;
+      end;
+      ListItem := ListItem.NextItem;
+    end;
+    FCurrentItem := Result;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Delete(Index: Integer);
+var
+  ListItem: TEDIObjectListItem;
+begin
+  ListItem := GetItem(Index);
+  if ListItem <> nil then
+  begin
+    // Remove the item and relink existing items.
+    if ListItem.NextItem <> nil then
+      ListItem.NextItem.PriorItem := ListItem.PriorItem;
+    if ListItem.PriorItem <> nil then
+      ListItem.PriorItem.NextItem := ListItem.NextItem;
+    if ListItem = FFirstItem then
+      FFirstItem := ListItem.NextItem;
+    if ListItem = FLastItem then
+      FLastItem := ListItem.PriorItem;
+    Dec(FCount);
+    FCurrentItem := ListItem.NextItem;
+    FreeAndNil(ListItem);
+    // Update the indexes starting at the current item.
+    if loAutoUpdateIndexes in FOptions then
+      UpdateIndexes(FCurrentItem.PriorItem);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.UpdateIndexes(StartItem: TEDIObjectListItem = nil);
+var
+  I: Integer;
+  ListItem: TEDIObjectListItem;
+begin
+  if StartItem <> nil then
+  begin
+    ListItem := StartItem;
+    I := StartItem.ItemIndex - 1;
+  end
+  else
+  begin
+    ListItem := FFirstItem;
+    I := -1;
+  end;
+  while ListItem <> nil do
+  begin
+    Inc(I);
+    ListItem.ItemIndex := I;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.UpdateCount;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  FCount := 0;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    ListItem := ListItem.NextItem;
+    Inc(FCount);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Remove(EDIObject: TEDIObject);
+var
+  ListItem: TEDIObjectListItem;
+begin
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem.EDIObject = EDIObject then
+    begin
+      // Remove the item and relink existing items.
+      if ListItem.NextItem <> nil then
+        ListItem.NextItem.PriorItem := ListItem.PriorItem;
+      if ListItem.PriorItem <> nil then
+        ListItem.PriorItem.NextItem := ListItem.NextItem;
+      if ListItem = FFirstItem then
+        FFirstItem := ListItem.NextItem;
+      if ListItem = FLastItem then
+        FLastItem := ListItem.PriorItem;
+      Dec(FCount);
+      FCurrentItem := ListItem.NextItem;      
+      FreeAndNil(ListItem);
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Extract(EDIObject: TEDIObject): TEDIObject;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem.EDIObject = EDIObject then
+    begin
+      // Set current item
+      if ListItem.NextItem <> nil then
+        FCurrentItem := ListItem.NextItem
+      else
+        FCurrentItem := ListItem.PriorItem;
+      // Remove the item from the list
+      ListItem.NextItem.PriorItem := ListItem.PriorItem;
+      ListItem.PriorItem.NextItem := ListItem.NextItem;
+      Dec(FCount);
+      // Extract the EDI Data Object
+      Result := ListItem.EDIObject;
+      ListItem.EDIObject := nil;
+      // Free the list item
+      FreeAndNil(ListItem);
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.IndexOf(EDIObject: TEDIObject): Integer;
+var
+  I: Integer;
+  ListItem: TEDIObjectListItem;
+begin
+  Result := -1;
+  I := 0;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem.EDIObject = EDIObject then
+    begin
+      FCurrentItem := ListItem;
+      FCurrentItem.ItemIndex := I;
+      Result := I;
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+    Inc(I);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.GetEDIObject(Index: Integer): TEDIObject;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  ListItem := GetItem(Index);
+  if ListItem <> nil then
+    Result := ListItem.EDIObject;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.SetEDIObject(Index: Integer; const Value: TEDIObject);
+var
+  ListItem: TEDIObjectListItem;
+begin
+  ListItem := GetItem(Index);
+  if ListItem <> nil then
+    ListItem.EDIObject := Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TEDIDataObjectListItem }
+
+function TEDIDataObjectListItem.GetEDIDataObject: TEDIDataObject;
+begin
+  Result := TEDIDataObject(FEDIObject);
+end;
+
+procedure TEDIDataObjectListItem.SetEDIDataObject(const Value: TEDIDataObject);
+begin
+  FEDIObject := Value;
+end;
+
+{ TEDIDataObjectList }
+
+function TEDIDataObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
+  EDIObject: TEDIObject): TEDIObjectListItem;
+begin
+  Result := TEDIDataObjectListItem.Create(Self, PriorItem, EDIObject); 
+end;
+
+function TEDIDataObjectList.GetEDIDataObject(Index: Integer): TEDIDataObject;
+begin
+  Result := TEDIDataObject(GetEDIObject(Index));
+end;
+
+procedure TEDIDataObjectList.SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
+begin
+  SetEDIObject(Index, Value);
+end;
+
+function TEDIObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
+  EDIObject: TEDIObject = nil): TEDIObjectListItem;
+begin
+  Result := TEDIObjectListItem.Create(Self, PriorItem, EDIObject);
 end;
 
 end.
