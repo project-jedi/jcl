@@ -124,9 +124,21 @@ type
                               sotWin32ExitCode);
 
 const
-  DefaultSCMDesiredAccess = SC_MANAGER_CONNECT or
-                            SC_MANAGER_ENUMERATE_SERVICE or
-                            SC_MANAGER_QUERY_LOCK_STATUS;
+  // Everyone in WinNT/2K or Authenticated users in WinXP
+  EveryoneSCMDesiredAccess = SC_MANAGER_CONNECT or
+                             SC_MANAGER_ENUMERATE_SERVICE or
+                             SC_MANAGER_QUERY_LOCK_STATUS or
+                             STANDARD_RIGHTS_READ;
+
+  LocalSystemSCMDesiredAccess = SC_MANAGER_CONNECT or
+                                SC_MANAGER_ENUMERATE_SERVICE or
+                                SC_MANAGER_MODIFY_BOOT_CONFIG or
+                                SC_MANAGER_QUERY_LOCK_STATUS or
+                                STANDARD_RIGHTS_READ;
+
+  AdministratorsSCMDesiredAccess = SC_MANAGER_ALL_ACCESS;
+
+  DefaultSCMDesiredAccess = EveryoneSCMDesiredAccess;
 
   DefaultSvcDesiredAccess = SERVICE_ALL_ACCESS;
 
@@ -305,6 +317,14 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Refresh(const RefreshAll: Boolean = False);
+    function Install(const ServiceName, DisplayName, ImageName: string;
+      const Description: string = '';
+      ServiceTypes: TJclServiceTypes = [stWin32OwnProcess];
+      StartType: TJclServiceStartType = sstDemand;
+      ErrorControlType: TJclServiceErrorControlType = ectNormal;
+      DesiredAccess: DWORD = DefaultSvcDesiredAccess;
+      const LoadOrderGroup: TJclServiceGroup = nil; const Dependencies: PChar = nil;
+      const Account: PChar = nil; const Password: PChar = nil): TJclNtService;
     procedure Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean = True);
     function FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
     function FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
@@ -335,7 +355,7 @@ implementation
 
 uses
   Math,
-  JclRegistry, JclResources, JclWin32;
+  JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 const
   INVALID_SCM_HANDLE = 0;
@@ -369,6 +389,7 @@ begin
   FDependentServices := TList.Create;
   FDependentGroups := TList.Create;
   FDependentByServices := nil; // Create on demand
+  FSCManager.AddService(Self);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1018,8 +1039,6 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
       for I := 0 to ServicesReturned - 1 do
       begin
         NtSvc := TJclNtService.Create(Self, pEss^);
-        Assert(Assigned(NtSvc));
-        AddService(NtSvc);
         NtSvc.Refresh;
         Inc(pEss);
       end;
@@ -1035,10 +1054,10 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   var
     Buf: array of Char;
     pch: PChar;
-    DataSize: Integer;
+    DataSize: DWORD;
   begin
     // Get the service groups
-    DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, Buf[0], 0);
+    DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, PChar(nil)^, 0);
     SetLength(Buf, DataSize);
     DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, Buf[0], DataSize);
     if DataSize > 0 then
@@ -1244,6 +1263,48 @@ begin
     FQueryServiceConfig2A := GetModuleSymbol(AdvApi32Handle, cQueryServiceConfig2);
 
   Result := FQueryServiceConfig2A;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclSCManager.Install(
+  const ServiceName, DisplayName, ImageName, Description: string;
+  ServiceTypes: TJclServiceTypes; StartType: TJclServiceStartType;
+  ErrorControlType: TJclServiceErrorControlType; DesiredAccess: DWORD;
+  const LoadOrderGroup: TJclServiceGroup;
+  const Dependencies, Account, Password: PChar): TJclNtService;
+var
+  LoadOrderGroupName: string;
+  LoadOrderGroupNamePtr: PChar;
+  EnumServiceStatus: TEnumServiceStatus;
+  Svc: THandle;
+begin
+  if Assigned(LoadOrderGroup) then
+  begin
+    LoadOrderGroupName    := LoadOrderGroup.Name;
+    LoadOrderGroupNamePtr := PChar(LoadOrderGroupName);
+  end
+  else
+  begin
+    LoadOrderGroupName    := '';
+    LoadOrderGroupNamePtr := nil;
+  end;
+
+  Svc := CreateService(FHandle, PChar(ServiceName), PChar(DisplayName),
+    DesiredAccess, TJclSCManager.ServiceType(ServiceTypes), DWORD(StartType),
+    DWORD(ErrorControlType), PChar(ImageName), LoadOrderGroupNamePtr, nil,
+    Dependencies, Account, Password);
+  if Svc = 0 then RaiseLastOsError;
+  CloseServiceHandle(Svc);
+
+  if (Description <> '') and (IsWin2K or IsWinXP) then
+    RegWriteString(HKEY_LOCAL_MACHINE, '\SYSTEM\CurrentControlSet\Services\' + ServiceName, 'Description', Description);
+
+  EnumServiceStatus.lpServiceName := PChar(ServiceName);
+  EnumServiceStatus.lpDisplayName := PChar(DisplayName);
+
+  Result := TJclNtService.Create(Self, EnumServiceStatus);
+  Result.Refresh;
 end;
 
 //--------------------------------------------------------------------------------------------------
