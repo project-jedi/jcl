@@ -3289,7 +3289,7 @@ begin
   else
   begin
     if C in AnsiHexDigits then
-      Result := Ord(CharUpper(C)) - (Ord('A') + 10);
+      Result := Ord(CharUpper(C)) - (Ord('A')) + 10;
   end;
 end;
 
