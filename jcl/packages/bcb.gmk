@@ -151,9 +151,6 @@ endif
 # the benefit of building from the command-line using the MAKE utility.
 # ---------------------------------------------------------------------------
 $(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
-	echo ALLLIB = $(ALLLIB)
-	echo N2OBJDIR = $(N2OBJDIR)
-	echo ALLRES = $(ALLRES)
 	$(LINKER) \
 	$(LFLAGS) -L\"$(LIBPATH)\" \
 	$(ALLOBJ), \
