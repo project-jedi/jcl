@@ -9,6 +9,10 @@ Parameters:
   Pct - The percentage with which to brighten the channel. Percentage should be between 0 and 100.0.
 Result:
   The brightened channel.
+See also:
+  BrightColor
+  DarkColor
+  DarkColorChannel
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -28,6 +32,10 @@ Parameters:
   Pct - The percentage with which to darken the channel. Percentage should be between 0 and 100.0.
 Result:
   The darkened channel.
+See also:
+  BrightColor
+  DarkColor
+  BrightColorChannel
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -47,6 +55,10 @@ Parameters:
   Pct - The percentage with which to darken the color. Percentage should be between 0 and 100.0.
 Result:
   The darkened color.
+See also:
+  BrightColor
+  BrightColorChannel
+  DarkColorChannel
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -66,6 +78,10 @@ Parameters:
   Pct - The percentage with which to brighten the color. Percentage should be between 0 and 100.0.
 Result:
   The brightened color.
+See also:
+  BrightColorChannel
+  DarkColor
+  DarkColorChannel
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -87,6 +103,9 @@ Parameters:
   Red - The intensity of the Red component.
   Green - The intensity of the Green component.
   Blue - The intensity of the Blue component.
+See also:
+  SetRGBValue
+  GetColorFlag
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -109,6 +128,8 @@ Parameters:
   Blue - Intensity for the Blue component of the returned TColor value.
 Result:
   The TColor value initialized with the supplied values.
+See also:
+  GetRGBValue
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -128,6 +149,11 @@ Parameters:
   Red - New intensity for the Red component.
 Result:
   Copy of the supplied color after the Red component has been modified.
+See also:
+  SetRGBValue
+  SetColorGreen
+  SetColorBlue
+  SetColorFlag
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -147,6 +173,11 @@ Parameters:
   Green - New intensity for the Green component.
 Result:
   Copy of the supplied color after the Green component has been modified.
+See also:
+  SetRGBValue
+  SetColorRed
+  SetColorBlue
+  SetColorFlag
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -166,6 +197,11 @@ Parameters:
   Blue - New intensity for the Blue component.
 Result:
   Copy of the supplied color after the Blue component has been modified.
+See also:
+  SetRGBValue
+  SetColorRed
+  SetColorGreen
+  SetColorFlag
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -196,6 +232,11 @@ Parameters:
   Flag - Value for the Flag component. Valid values are 0,1 and 2. See the description above.
 Result:
   Copy of the supplied color after the Flag component has been modified.
+See also:
+  SetRGBValue
+  SetColorRed
+  SetColorGreen
+  SetColorBlue
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -214,6 +255,11 @@ Parameters:
   Color - The Color value from which to extract the Red component.
 Result:
   The Red component from the supplied TColor. The value ranges from 0 to 255.
+See also:
+  GetRGBValue
+  <LINK ,GetColorBlue(Color: TColor): Byte>
+  <LINK ,GetColorGreen(Color: TColor): Byte>
+  <LINK ,GetColorFlag(Color: TColor): Byte>
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -232,6 +278,11 @@ Parameters:
   Color - The Color value from which to extract the Blue component.
 Result:
   The Blue component from the supplied TColor. The value ranges from 0 to 255.
+See also:
+  GetRGBValue
+  <LINK ,GetColorRed(Color: TColor): Byte>
+  <LINK ,GetColorGreen(Color: TColor): Byte>
+  <LINK ,GetColorFlag(Color: TColor): Byte>
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -250,6 +301,11 @@ Parameters:
   Color - The Color value from which to extract the Green component.
 Result:
   The Green component from the supplied TColor. The value ranges from 0 to 255.
+See also:
+  GetRGBValue
+  <LINK ,GetColorRed(Color: TColor): Byte>
+  <LINK ,GetColorBlue(Color: TColor): Byte>
+  <LINK ,GetColorFlag(Color: TColor): Byte>
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -279,6 +335,11 @@ Parameters:
   Color - The Color value from which to extract the Flag component.
 Result:
   The Flag component from the supplied TColor. The value ranges from 0 to 2.
+See also:
+  GetRGBValue
+  <LINK ,GetColorRed(Color: TColor): Byte>
+  <LINK ,GetColorBlue(Color: TColor): Byte>
+  <LINK ,GetColorGreen(Color: TColor): Byte>
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -565,6 +626,8 @@ Parameters:
   R - The rectangle to test.
 Result:
   If the rectangle is valid the function returns True, otherwise it returns False.
+See also:
+  RectsAreValid
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -585,6 +648,8 @@ Parameters:
   R - The rectangles to test.
 Result:
   If all rectangles are valid the function returns True, otherwise it returns False.
+See also:
+  RectIsValid
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -608,6 +673,8 @@ Parameters:
   R2 - The second rectangle.
 Result:
   If the two rectangles intersect the function returns True, otherwise it returns False.
+See also:
+  RectIntersection
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -630,6 +697,8 @@ Parameters:
 Result:
   The intersection of the two rectangles. If the two rectangles don't intersect
   a null rectangle is returned.
+See also:
+  RectIntersectRect
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -653,6 +722,8 @@ Parameters:
 Result:
   If the point lies inside the rectangle (excluding the borders) the function returns
   True, otherwise it returns False.
+See also:
+  RectIncludesRect
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -675,6 +746,8 @@ Parameters:
 Result:
   If the first rectangle is embedded inside the second the function returns True,
   otherwise it returns False.
+See also:
+  RectIncludesPoint
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -697,6 +770,10 @@ Parameters:
   Height - Height of the rectangle.
 Result:
   A TRect initialized with the specified coordinates/dimensions.
+See also:
+  RectAssignPoints
+  RectCopy
+  RectAssign
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -719,6 +796,10 @@ Parameters:
   Bottom - Bottom coordinate of the rectangle.
 Result:
   A TRect initialized with the coordinates.
+See also:
+  RectAssignPoints
+  RectCopy
+  RectBounds
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -739,6 +820,10 @@ Parameters:
   BottonRight - Bottom-right coordinate of the rectangle.
 Result:
   A TRect initialized to the specified points.
+See also:
+  RectAssign
+  RectCopy
+  RectBounds
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -756,6 +841,10 @@ Description:
 Parameters:
   Dest - Destination rectangle which receives a copy of Source.
   Source - Source rectangle.
+See also:
+  RectAssign
+  RectAssignPoints
+  RectBounds
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -775,6 +864,8 @@ Parameters:
   R - The rectangle to move.
   DeltaX - The amount to move the rectangle in the horizontal direction.
   DeltaY - The amount to move the rectangle in the vertical direction.
+See also:
+  RectMoveTo
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -794,6 +885,8 @@ Parameters:
   R - The rectangle to move
   X - The new X coordinate of the top-left corner of the rectangle.
   Y - The new Y coordinate of the top-left corner of the rectangle.
+See also:
+  RectMove
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -814,6 +907,9 @@ Description:
 Parameters:
   R - The rectangle to expand.
   Delta - The amount with which to expand the rectangle.
+See also:
+  RectGrowX
+  RectGrowY
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -834,6 +930,9 @@ Description:
 Parameters:
   R - The rectangle to expand.
   Delta - The amount with which to expand the rectangle.
+See also:
+  RectGrow
+  RectGrowY
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -854,6 +953,9 @@ Description:
 Parameters:
   R - The rectangle to expand.
   Delta - The amount with which to expand the rectangle.
+See also:
+  RectGrow
+  RectGrowX
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -872,6 +974,8 @@ Parameters:
   R - The rectangle for which to calculate the height.
 Result:
   The height of the rectangle in pixels.
+See also:
+  RectWidth
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -890,6 +994,8 @@ Parameters:
   R - The rectangle for which to calculate the width.
 Result:
   The width of the rectangle in pixels.
+See also:
+  RectHeight
 Quick info:
   Unit: JclGraphUtils
   Category: Graphics
@@ -934,6 +1040,8 @@ Description:
   If the function fails at any point it raises an exception.
 Parameters:
   FileName - Name of the bitmap file to convert to a JPEG image.
+See also:
+  JPegToBitmap
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -954,6 +1062,8 @@ Description:
   function fails at any point it raises an exception.
 Parameters:
   FileName - Name of the JPEG image file to convert to a bitmap.
+See also:
+  BitmapToJpeg
 Quick info:
   Unit: JclGraphics
   Category: Graphics
@@ -1051,6 +1161,8 @@ Parameters:
   Radius - The radius in pixels that will influence the current pixel. This can be a fractional to use partial pixels.
   Source - The source bitmap. If only source is specified then source will be replaced with the resulting bitmap.
   Target - The target bitmap.
+See also:
+  TResamplingFilter
 Quick info:
   Unit: JclGraphics
   Category: Graphics
