@@ -18,12 +18,12 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Contains classes to eaisly parse EDI documents and data. Variable delimiter detection allows     }
-{ parsing of the file without knowledge of the standards at an Interchange level.  This allows     }
+{ parsing of the file without knowledge of the standards at an Interchange level.  This enables    }
 { parsing and construction of EDI documents with different delimiters.  Various EDI  file errors   }
 { can also be detected.                                                                            }
 {                                                                                                  }
 { Unit owner:    Raymond Alexander                                                                 }
-{ Last modified: March 2, 2003                                                                     }
+{ Last modified: March 5, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   Help and Demos at http://24.54.82.216/DelphiJedi/Default.htm                                   }
@@ -31,14 +31,22 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
+{ 04/05/2003 (R.A.)                                                                                }
+{                                                                                                  }
+{   Some last minute additions.                                                                    }
+{                                                                                                  }
+{   function TEDIElement.GetIndexPositionFromParent: Integer;                                      }
+{   function TEDISegment.GetIndexPositionFromParent: Integer;                                      }
+{   procedure TEDISegmentSpec.ValidateElementIndexPositions;                                       }
+{   procedure TEDITransactionSetSpec.ValidateSegmentIndexPositions;                                }
+{                                                                                                  }
 { 01/02/2003 to 04/01/2003 (R.A.)                                                                  }
 {                                                                                                  }
 {   I hope to have the utility/demos and some updated help files available for download soon.      }
 {                                                                                                  }
 {   - New Utility/Demos based on new classes.                                                      }
 {                                                                                                  }
-{       EDI Specification Manager Demo (1.0.0.9)                                                   }
-{       EDI Data Tree Demo (version 1.0.0.11)                                                      }
+{       EDI Data Tree and EDI Specification Manager                                                }
 {                                                                                                  }
 {   - New Classes and Types                                                                        }
 {                                                                                                  }
@@ -202,6 +210,7 @@ type
   public
     constructor Create; overload;
     constructor Create(const SD, ED, SS: string); overload;
+  published
     property SD: string read FSegmentDelimiter write SetSD;
     property ED: string read FElementDelimiter write SetED;
     property SS: string read FSubElementSeperator write SetSS;
@@ -224,7 +233,7 @@ type
   protected
     FEDIDOT: TEDIDataObjectType;
     FState: TEDIDataObjectDataState;
-    FData: string;    //Raw Data
+    FData: string; //Raw Data
     FLength: Integer; //Length (of data)
     FParent: TEDIDataObject;
     FDelimiters: TEDIDelimiters;
@@ -233,7 +242,6 @@ type
     FCustomData2: Pointer;
     function GetData: string;
     procedure SetData(const Data: string);
-  protected
     function Assemble: string; virtual; abstract;
     procedure Dissassemble; virtual; abstract;
   public
@@ -260,6 +268,7 @@ type
     constructor Create(Parent: TEDIDataObject); reintroduce;
     function Assemble: string; override;
     procedure Dissassemble; override;
+    function GetIndexPositionFromParent: Integer;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -278,6 +287,7 @@ type
   public
     function Assemble: string; override;
     procedure Dissassemble; override;
+  published
     property Id: string read FId write FId;
     property Position: Integer read FPosition write FPosition;
     property Description: string read FDescription write FDescription;
@@ -295,7 +305,7 @@ type
 
   TEDISegment = class(TEDIDataObject)
   private
-    FSegmentID: string;          //Specification: Segment ID
+    FSegmentID: string; //Specification and Data: Segment ID
     FElements: TEDIElementArray; //Dissassembled raw data
     function GetElement(Index: Integer): TEDIElement;
     procedure SetElement(Index: Integer; Element: TEDIElement);
@@ -323,9 +333,11 @@ type
     //
     function Assemble: string; override;
     procedure Dissassemble; override;
+    function GetIndexPositionFromParent: Integer;
+    property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
+  published
     property SegmentID: string read FSegmentID write FSegmentID;
     property Elements: TEDIElementArray read FElements write FElements;
-    property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
   end;
 
   TEDITransactionSetSegment = class(TEDISegment)
@@ -373,6 +385,8 @@ type
 
     function Assemble: string; override;
     procedure Dissassemble; override;
+    procedure ValidateElementIndexPositions;
+  published
     property Position: Integer read FPosition write FPosition;
     property Description: string read FDescription write FDescription;
     property Section: string read FSection write FSection;
@@ -466,11 +480,12 @@ type
     procedure DeleteSegments(Index, Count: Integer); overload;
 
     function Assemble: string; override;
-    procedure Dissassemble; override; 
+    procedure Dissassemble; override;
+    property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
+  published
     property SegmentST: TEDITransactionSetSegment read FSTSegment write FSTSegment;
     property SegmentSE: TEDITransactionSetSegment read FSESegment write FSESegment;
     property Segments: TEDISegmentArray read FSegments write FSegments;
-    property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -481,6 +496,8 @@ type
   private
     FTransactionSetId: string;
     FTSDescription: string;
+  public
+    procedure ValidateSegmentIndexPositions;
   published
     property TransactionSetId: string read FTransactionSetId write FTransactionSetId;
     property TSDescription: string read FTSDescription write FTSDescription;
@@ -510,15 +527,15 @@ type
     function AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
     procedure AppendSegment(Segment: TEDISegment);
     procedure DeleteEDIDataObjects;
-    //
+    property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
+      write SetEDIDataObject; default;
+  published
     property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
     property ParentLoopId: string read FParentLoopId write FParentLoopId;
     property ParentTransactionSet: TEDITransactionSet read FParentTransactionSet
       write FParentTransactionSet;
     //
     property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects write FEDIDataObjects;
-    property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
-      write SetEDIDataObject; default;
   end;
 
   TEDILoopStackRecord = record
@@ -585,7 +602,7 @@ type
     //  ToDo:  More procedures and functions to manage internal structures
     //
     procedure FormatDocument;
-  protected
+  published
     property ErrorOccured: Boolean read FErrorOccured;
   end;
 
@@ -626,11 +643,12 @@ type
 
     function Assemble: string; override;
     procedure Dissassemble; override;
+    property TransactionSet[Index: Integer]: TEDITransactionSet read GetTransactionSet
+      write SetTransactionSet; default;
+  published
     property SegmentGS: TEDIFunctionalGroupSegment read FGSSegment write FGSSegment;
     property SegmentGE: TEDIFunctionalGroupSegment read FGESegment write FGESegment;
     property TransactionSets: TEDITransactionSetArray read FTransactionSets write FTransactionSets;
-    property TransactionSet[Index: Integer]: TEDITransactionSet read GetTransactionSet
-      write SetTransactionSet; default;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -689,13 +707,14 @@ type
     procedure DeleteFunctionalGroups(Index, Count: Integer); overload;
 
     function Assemble: string; override;
-    procedure Dissassemble; override; 
+    procedure Dissassemble; override;
+    property FunctionalGroup[Index: Integer]: TEDIFunctionalGroup read GetFunctionalGroup
+      write SetFunctionalGroup; default;
+  published
     property SegmentISA: TEDIInterchangeControlSegment read FISASegment write FISASegment;
     property SegmentIEA: TEDIInterchangeControlSegment read FIEASegment write FIEASegment;
     property FunctionalGroups: TEDIFunctionalGroupArray read FFunctionalGroups
       write FFunctionalGroups;
-    property FunctionalGroup[Index: Integer]: TEDIFunctionalGroup read GetFunctionalGroup
-      write SetFunctionalGroup; default;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -722,7 +741,6 @@ type
     FFileName: string;
     FInterchanges: TEDIInterchangeControlArray;
     FEDIFileOptions: TEDIFileOptions;
-    //FErrorLog: TStrings;
     function GetInterchangeControl(Index: Integer): TEDIInterchangeControl;
     procedure SetInterchangeControl(Index: Integer; Interchange: TEDIInterchangeControl);
     procedure InternalLoadFromFile;
@@ -754,11 +772,12 @@ type
 
     function Assemble: string; override;
     procedure Dissassemble; override;
+    property Interchange[Index: Integer]: TEDIInterchangeControl read GetInterchangeControl
+      write SetInterchangeControl; default;
+  published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
     property Interchanges: TEDIInterchangeControlArray read FInterchanges write FInterchanges;
-    property Interchange[Index: Integer]: TEDIInterchangeControl read GetInterchangeControl
-      write SetInterchangeControl; default;
     property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
   end;
 
@@ -892,16 +911,39 @@ begin
   FEDIDOT := ediElement;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TEDIElement.Assemble: string;
 begin
   Result := FData;
   FState := ediAssembled;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDIElement.Dissassemble;
 begin
   FState := ediDissassembled;
   //Override in decendant class
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIElement.GetIndexPositionFromParent: Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+  if Assigned(Parent) and (Parent is TEDISegment) then
+  begin
+    for I := Low(TEDISegment(Parent).Elements) to High(TEDISegment(Parent).Elements) do
+    begin
+      if TEDISegment(Parent).Element[I] = Self then
+      begin
+        Result := I;
+      end;
+    end;
+  end;
 end;
 
 //==================================================================================================
@@ -1190,6 +1232,26 @@ begin
   FData := '';
 
   FState := ediDissassembled;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegment.GetIndexPositionFromParent: Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+  if Assigned(Parent) and (Parent is TEDITransactionSet) then
+  begin
+    for I := Low(TEDITransactionSet(Parent).Segments) to
+             High(TEDITransactionSet(Parent).Segments) do
+    begin
+      if TEDITransactionSet(Parent).Segments[I] = Self then
+      begin
+        Result := I;
+      end;
+    end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4025,6 +4087,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TEDISegmentSpec.ValidateElementIndexPositions;
+var
+  I: Integer;
+begin
+  for I := Low(FElements) to High(FElements) do
+  begin
+    TEDIElementSpec(FElements[I]).Position := I + 1;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDISegmentSpec.DissassembleReservedData(ReservedData: TStrings);
 begin
   //FSegmentId already set by the inherited Dissassemble
@@ -4307,6 +4381,21 @@ begin
         Result := Parent.Delimiters;
       end;
     end;
+  end;
+end;
+
+//==================================================================================================
+// TEDITransactionSetSpec
+//==================================================================================================
+
+procedure TEDITransactionSetSpec.ValidateSegmentIndexPositions;
+var
+  I: Integer;
+begin
+  for I := Low(FSegments) to High(FSegments) do
+  begin
+    TEDISegmentSpec(FSegments[I]).Position := I + 1;
+    TEDISegmentSpec(FSegments[I]).ValidateElementIndexPositions;
   end;
 end;
 
@@ -4864,5 +4953,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
 
 end.
