@@ -49,9 +49,24 @@ const
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
+
+
+//------------------------------------------------------------------------------
+// FreePascal Support
+//------------------------------------------------------------------------------
+
+{$IFDEF FPC}
+type
+  PResStringRec = ^string;
+
+function SysErrorMessage(ErrNo : Integer) : string;
+{$ENDIF}
+
+
 //------------------------------------------------------------------------------
 // EJclError
 //------------------------------------------------------------------------------
+
 
 type
   EJclError = class (Exception)
@@ -274,7 +289,7 @@ type
     function GetItems(Index: Integer): TObject;
     procedure SetItems(Index: Integer; const Value: TObject);
   public
-    procedure Clear; override;
+    procedure Clear; {$IFNDEF FPC}  override; {$ENDIF}
     constructor Create(AOwnsObjects: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
     property Items[Index: Integer]: TObject read GetItems write SetItems; default;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
@@ -293,14 +308,33 @@ uses
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
+{$IFNDEF FPC}
   inherited Create(LoadResString(ResStringRec));
+{$ELSE}
+  inherited Create(ResStringRec^);
+{$ENDIF}
 end;
 
 constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec;
   const Args: array of const);
 begin
+{$IFNDEF FPC}
   inherited CreateFmt(LoadResString(ResStringRec), Args);
+{$ELSE}
+  inherited CreateFmt(ResStringRec^, Args);
+{$ENDIF}
 end;
+
+
+//==============================================================================
+// FreePascal support
+//==============================================================================
+
+function SysErrorMessage(ErrNo : Integer) : string;  // TODO: Better Implemtation
+begin
+  Result := 'Win32 Error'; 
+end;
+
 
 //==============================================================================
 // EJclWin32Error
@@ -339,7 +373,12 @@ constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
+{$IFNDEF FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+{$ELSE}
+  inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+{$ENDIF}
+
 end;
 
 {$ENDIF}
