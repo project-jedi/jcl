@@ -14,7 +14,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 14 2000                                              }
+{******************************************************************************}
+{                                                                              }
+{ This include file defines various JCL specific defines. The more generic     }
+{ defines are defined in the JEDI.INC file which is shared with the JEDI VCL.  }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
