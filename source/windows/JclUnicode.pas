@@ -5138,7 +5138,7 @@ begin
 
       while P^ in [WideChar(#1)..WideSpace] do
         Inc(P);
-      if P^ = ', ' then
+      if P^ = ',' then
       begin
         repeat
           Inc(P);
