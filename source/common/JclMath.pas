@@ -51,9 +51,6 @@ unit JclMath;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF}
   Classes, SysUtils,
   JclBase;
 
@@ -455,6 +452,9 @@ procedure InitCrc16 (Polynom, Start: Word);
 implementation
 
 uses
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF MSWINDOWS}
   Jcl8087, JclResources, JclUnitConv;
 
 //==================================================================================================
@@ -2592,7 +2592,7 @@ end;
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
 var
-  Bits: DWord;
+  Bits: LongWord;
 begin
   CheckTag(Tag);
   if Tag = 0 then
@@ -2601,7 +2601,7 @@ begin
     Bits := Abs(Tag) or sQuietNaNBits;
   if Tag < 0 then
     Include(TSingleBits(Bits), sSignBit);
-  PDWord(@X)^ := Bits;
+  PLongWord(@X)^ := Bits;
 end;
 
 //--------------------------------------------------------------------------------------------------
