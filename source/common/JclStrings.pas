@@ -20,9 +20,13 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: November 18, 2001                                                                 }
+{ Last modified: Januari 20, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// mvb 20 jan 2002 added StrIToStrings to interface section
+// mvb 20 jan 2002 added AllowEmptyString parameter to StringsToStr function
+// mvb 20 jan 2002 added AddStringToStrings() by Jeff
 
 // - Rewrote StrSmartCase to fix a bug.
 // - Fixed a bug in StrIsAlphaNumUnderscore
@@ -333,11 +337,13 @@ procedure FreeMultiSz(var Dest: PChar);
 // TStrings Manipulation
 //--------------------------------------------------------------------------------------------------
 
+procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
 procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
-function StringsToStr(const List: TStrings; Sep: AnsiString): AnsiString;
+function StringsToStr(const List: TStrings; const Sep: AnsiString;const AllowEmptyString: Boolean = True): AnsiString;
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True );
+function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Miscellaneous
@@ -3454,9 +3460,9 @@ begin
   while (I > 0) do
   begin
     Left := StrLeft(S, I - 1);
-    if (Left<>'') or AllowEmptyString then
+    if (Left <> '') or AllowEmptyString then
       List.Add(Left);
-    Delete(S, 1, I + L - 1);
+    System.Delete(S, 1, I + L - 1);
     I := Pos(Sep, S);
   end;
   if S <> '' then
@@ -3473,7 +3479,6 @@ begin
   Assert(List <> nil);
   S := StrLower(S);
   Sep := StrLower(Sep);
-  
   List.Clear;
   L := Length(Sep);
   I := Pos(Sep, S);
@@ -3482,7 +3487,7 @@ begin
     Left := StrLeft(S, I - 1);
     if (Left <> '') or AllowEmptyString then
       List.Add(Left);
-    Delete(S, 1, I + L - 1);
+    System.Delete(S, 1, I + L - 1);
     I := Pos(Sep, S);
   end;
   if S <> '' then
@@ -3491,22 +3496,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToStr(const List: TStrings; Sep: AnsiString): AnsiString;
+function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean): AnsiString;
 var
   I, L: Integer;
 begin
-  Result := '';
   for I := 0 to List.Count - 1 do
   begin
-    // don't combine these into one addition, somehow it hurts performance
-    Result := Result + List[I];
-    Result := Result + Sep;
+    if (List[I] <> '') or AllowEmptyString then
+    begin
+      // don't combine these into one addition, somehow it hurts performance
+      Result := Result + List[I];
+      Result := Result + Sep;
+    end;
   end;
-  // remove last separator, doing this afterwards saves an if in the loop
+  // remove terminating separator
   if List.Count <> 0 then
   begin
     L := Length(Sep);
-    Delete(Result, Length(Result) - L + 1, L);
+    System.Delete(Result, Length(Result) - L + 1, L);
   end;
 end;
 
@@ -3553,6 +3560,24 @@ begin
     if (List[I] = '') and DeleteIfEmpty then
       List.Delete(I);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ todoc
+  descr: conditionally adds a string to a string list.
+  s: the string to add
+  strings: the string list to add s to
+  unique: determines whether s can be added to the list if an entry already exists
+  result: true if the string was added, false if it was not
+  author: Jean-Fabien Connault
+}
+
+function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
+begin
+  Assert(Strings <> nil);
+  Result := Unique and (Strings.IndexOf(S) <> -1);
+  if not Result then Result := Strings.Add(S) > -1;
 end;
 
 //==================================================================================================
