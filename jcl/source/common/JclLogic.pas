@@ -80,12 +80,12 @@ function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overlo
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 procedure ClearBitBuffer(var Value; const Bit: TBitRange);
 
-function CountBitsSet(X: Byte): Integer; assembler; overload;
-function CountBitsSet(X: Word): Integer; assembler; overload;
+function CountBitsSet(X: Byte): Integer; overload;
+function CountBitsSet(X: Word): Integer; overload;
 function CountBitsSet(X: Smallint): Integer; overload;
 function CountBitsSet(X: ShortInt): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
-function CountBitsSet(X: Cardinal): Integer; assembler; overload;
+function CountBitsSet(X: Cardinal): Integer; overload;
 function CountBitsSet(X: Int64): Integer; overload;
 
 function CountBitsCleared(X: Byte): Integer; overload;
@@ -426,14 +426,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BitsHighest(X: Integer): Integer; 
+function BitsHighest(X: Integer): Integer;
 begin
   Result := BitsHighest(Cardinal(X));
 end;
 
 //------------------------------------------------------------------------------
 
-function BitsHighest(X: Byte): Integer; 
+function BitsHighest(X: Byte): Integer;
 begin
   Result := BitsHighest(Cardinal(X) and ByteMask);
 end;
@@ -598,74 +598,78 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Cardinal): Integer; assembler;
-asm
-        MOV     ECX, BitsPerCardinal
-        XOR     EDX, EDX
-@CountBits:
-        SHR     EAX, 1
-        ADC     DL, 0
-        LOOP    @CountBits
-        MOV     EAX, EDX
+function CountBitsSet(X: Cardinal): Integer;
+var
+Index : integer;
+begin
+  result := 0;
+  for Index := 1 to BitsPerCardinal do
+  begin
+    if ((x and 1) = 1) then inc(result);
+    x:= x shr 1;
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Byte): Integer; assembler;
-asm
-        MOV     ECX, BitsPerByte
-        XOR     EDX, EDX
-@CountBits:
-        SHR     AL, 1
-        ADC     DL, 0
-        LOOP    @CountBits
-        MOV     EAX, EDX
+function CountBitsSet(X: Byte): Integer;
+var
+Index : integer;
+begin
+  result := 0;
+  for Index := 1 to BitsPerByte do
+  begin
+    if ((x and 1) = 1) then inc(result);
+    x:= x shr 1;
+  end;
+end;
+
+
+//------------------------------------------------------------------------------
+
+function CountBitsSet(X: Word): Integer;
+var
+Index : integer;
+begin
+  result := 0;
+  for Index := 1 to BitsPerWord do
+  begin
+    if ((x and 1) = 1) then inc(result);
+    x:= x shr 1;
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Word): Integer; assembler; 
-asm
-        MOV     ECX, BitsPerWord
-        XOR     EDX, EDX
-@CountBits:
-        SHR     AX, 1
-        ADC     DL, 0
-        LOOP    @CountBits
-        MOV     EAX, EDX
-end;
-
-//------------------------------------------------------------------------------
-
-function CountBitsSet(X: Smallint): Integer; 
+function CountBitsSet(X: Smallint): Integer;
 begin
   Result := CountBitsSet(Word(X));
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: ShortInt): Integer; 
+function CountBitsSet(X: ShortInt): Integer;
 begin
   Result := CountBitsSet(Byte(X));
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Integer): Integer; 
+function CountBitsSet(X: Integer): Integer;
 begin
   Result := CountBitsSet(Cardinal(X));
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Int64): Integer; 
+function CountBitsSet(X: Int64): Integer;
 begin
   Result := CountBitsSet(TLargeInteger(X).LowPart) + CountBitsSet(TLargeInteger(X).HighPart);
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsCleared(X: Byte): Integer; 
+function CountBitsCleared(X: Byte): Integer;
 begin
   Result := BitsPerByte - CountBitsSet(Byte(X));
 end;
