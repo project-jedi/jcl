@@ -20,7 +20,7 @@
 { This unit contains routines and classes to control Microsoft task schedule service               }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: November 5, 2002                                                                  }
+{ Last modified: January 3, 2003                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -38,7 +38,7 @@ uses
   {$IFDEF COMPILER5_UP}
   Contnrs,
   {$ENDIF COMPILER5_UP}
-  JwaWinBase, JwaMsTask,
+  JwaWinType, JwaWinBase, JwaMsTask,
   JclBase, JclSysUtils, JclSysInfo;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -586,7 +586,8 @@ end;
 procedure TJclTaskSchedule.Refresh;
 var
   EnumWorkItems: IEnumWorkItems;
-  ItemName, RealItemName: PWideChar;
+  ItemName: LPLPWSTR;
+  RealItemName: PWideChar;
   FetchedCount: DWORD;
   TaskIid: TIID;
   spUnk: IUnknown;
@@ -598,7 +599,7 @@ begin
   FTasks.Clear;
   while SUCCEEDED(EnumWorkItems.Next(1, ItemName, FetchedCount)) and (FetchedCount > 0) do
   begin
-    RealItemName := PWideChar(PDWORD(ItemName)^);
+    RealItemName := ItemName^;
     OleCheck(TaskScheduler.Activate(RealItemName, TaskIid, spUnk));
     ATask := TJclScheduledTask.Create(RealItemName, spUnk as ITask);
     ATask.Refresh;
