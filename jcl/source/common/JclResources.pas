@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: October 11, 2001                                              }
+{ Last modified: Januari 12, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -690,6 +690,25 @@ resourcestring
   RsIntelCacheDescr43 = 'Unified cache, 32 byte cache line, 4-way set associative, 512Kb';
   RsIntelCacheDescr44 = 'Unified cache, 32 byte cache line, 4-way set associative, 1Mb';
   RsIntelCacheDescr45 = 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb';
+
+resourcestring
+  RsOSVersionWin95 = 'Windows 95';
+  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
+  RsOSVersionWin98 = 'Windows 98';
+  RsOSVersionWin98SE = 'Windows 98 SE';
+  RsOSVersionWinME = 'Windows ME';
+  RsOSVersionWinNT3 = 'Windows NT 3.%u';
+  RsOSVersionWinNT4 = 'Windows NT 4.%u';
+  RsOSVersionWin2000 = 'Windows 2000';
+  RsOSVersionWinXP = 'Windows XP';
+
+resourcestring
+  RsProductTypeWorkStation = 'Workstation';
+  RsProductTypeServer = 'Server';
+  RsProductTypeAdvancedServer = 'Advanced Server';
+  RsProductTypePersonal = 'Home Edition';
+  RsProductTypeProfessional = 'Professional';
+  RsProductTypeDatacenterServer = 'Datacenter Server';
 
 //------------------------------------------------------------------------------
 // JclUnicode
