@@ -601,7 +601,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Memory^, Count);
+    System.Move(Buffer, Pointer(Longint(Memory) + Position)^, Count);
     Position := Position + Count;
     Result := Count;
   end;
@@ -867,7 +867,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Memory^, Count);
+    System.Move(Buffer, Pointer(Longint(Memory) + Position)^, Count);
     Position := Position + Count;
     Result := Count;
   end;
