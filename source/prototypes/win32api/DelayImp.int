@@ -1,0 +1,61 @@
+
+type
+  { TODO : Source unknown }
+  {$EXTERNALSYM ImgDelayDescr}
+  ImgDelayDescr = packed record
+    grAttrs: DWORD;                 // attributes
+    szName: DWORD;                  // pointer to dll name
+    phmod: PDWORD;                  // address of module handle
+    { TODO : probably wrong declaration }
+    pIAT: TImageThunkData;          // address of the IAT
+    { TODO : probably wrong declaration }
+    pINT: TImageThunkData;          // address of the INT
+    { TODO : probably wrong declaration }
+    pBoundIAT: TImageThunkData;     // address of the optional bound IAT
+    { TODO : probably wrong declaration }
+    pUnloadIAT: TImageThunkData;    // address of optional copy of original IAT
+    dwTimeStamp: DWORD;             // 0 if not bound,
+                                    // O.W. date/time stamp of DLL bound to (Old BIND)
+  end;
+  TImgDelayDescr = ImgDelayDescr;
+  PImgDelayDescr = ^ImgDelayDescr;
+
+(*
+  // DelayImp.h, Borland BCC 5.5
+  {$EXTERNALSYM ImgDelayDescr}
+  ImgDelayDescr = packed record
+    grAttrs: DWORD;                 // attributes
+    szName: LPCSTR;                 // pointer to dll name
+    { TODO : probably wrong declaration }
+    hmod: HMODULE;                  // address of module handle
+    pIAT: PIMAGE_THUNK_DATA;        // address of the IAT
+    pINT: PIMAGE_THUNK_DATA;        // address of the INT
+    pBoundIAT: PIMAGE_THUNK_DATA;   // address of the optional bound IAT
+    pUnloadIAT: PIMAGE_THUNK_DATA;  // address of optional copy of original IAT
+    dwTimeStamp: DWORD;             // 0 if not bound,
+                                    // O.W. date/time stamp of DLL bound to (Old BIND)
+  end;
+  TImgDelayDescr = ImgDelayDescr;
+  PImgDelayDescr = ^ImgDelayDescr;
+
+  
+  // Microsoft version (64 bit SDK)
+  {$EXTERNALSYM RVA}
+  RVA = DWORD;
+
+  {$EXTERNALSYM ImgDelayDescr}
+  ImgDelayDescr = packed record
+    grAttrs: DWORD;      // attributes
+    rvaDLLName: RVA;     // RVA to dll name
+    rvaHmod: RVA;        // RVA of module handle
+    rvaIAT: RVA;         // RVA of the IAT
+    rvaINT: RVA;         // RVA of the INT
+    rvaBoundIAT: RVA;    // RVA of the optional bound IAT
+    rvaUnloadIAT: RVA;   // RVA of optional copy of original IAT
+    dwTimeStamp: DWORD;  // 0 if not bound,
+                         // O.W. date/time stamp of DLL bound to (Old BIND)
+  end;
+  {$EXTERNALSYM PImgDelayDescr}
+  PImgDelayDescr = ImgDelayDescr;
+  TImgDelayDescr = ImgDelayDescr;
+*)

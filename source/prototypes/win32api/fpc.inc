@@ -1,0 +1,71 @@
+// JclWin32 include file for FPC compatibility
+
+// from unit Windows
+const
+
+  // from WinReg.h
+  HKEY_CLASSES_ROOT     = DWORD($80000000);
+  HKEY_CURRENT_USER     = DWORD($80000001);
+  HKEY_LOCAL_MACHINE    = DWORD($80000002);
+  HKEY_USERS            = DWORD($80000003);
+  HKEY_PERFORMANCE_DATA = DWORD($80000004);
+  HKEY_CURRENT_CONFIG   = DWORD($80000005);
+  HKEY_DYN_DATA         = DWORD($80000006);
+
+  // from WinVer.h
+  VOS__BASE = 0;
+  VOS__WINDOWS16 = 1;
+  VOS__PM16 = 2;
+  VOS__PM32 = 3;
+  VOS__WINDOWS32 = 4;
+
+{ VS_VERSION.dwFileSubtype for VFT_WINDOWS_DRV }
+
+  VFT2_UNKNOWN = 0;
+  VFT2_DRV_PRINTER = 1;
+  VFT2_DRV_KEYBOARD = 2;
+  VFT2_DRV_LANGUAGE = 3;
+  VFT2_DRV_DISPLAY = 4;
+  VFT2_DRV_MOUSE = 5;
+  VFT2_DRV_NETWORK = 6;
+  VFT2_DRV_SYSTEM = 7;
+  VFT2_DRV_INSTALLABLE = 8;
+  VFT2_DRV_SOUND = 9;
+  VFT2_DRV_COMM = 10;
+
+type
+  // from WinBase.h
+  _GET_FILEEX_INFO_LEVELS = (GetFileExInfoStandard, GetFileExMaxInfoLevel);
+  TGetFileExInfoLevels = _GET_FILEEX_INFO_LEVELS;
+  GET_FILEEX_INFO_LEVELS = _GET_FILEEX_INFO_LEVELS;
+
+type
+  PKeyboardState = ^TKeyboardState;
+  TKeyboardState = array [0..255] of Byte;
+
+// from unit AccCtrl
+type
+  SE_OBJECT_TYPE = (
+    SE_UNKNOWN_OBJECT_TYPE,
+    SE_FILE_OBJECT,
+    SE_SERVICE,
+    SE_PRINTER,
+    SE_REGISTRY_KEY,
+    SE_LMSHARE,
+    SE_KERNEL_OBJECT,
+    SE_WINDOW_OBJECT,
+    SE_DS_OBJECT,
+    SE_DS_OBJECT_ALL,
+    SE_PROVIDER_DEFINED_OBJECT,
+    SE_WMIGUID_OBJECT
+  );
+
+// from ActiveX
+const
+  // from OleIdl.h, OleIdl.Idl
+  DROPEFFECT_NONE   = 0;
+  DROPEFFECT_COPY   = 1;
+  DROPEFFECT_MOVE   = 2;
+  DROPEFFECT_LINK   = 4;
+  DROPEFFECT_SCROLL = DWORD($80000000);
+
