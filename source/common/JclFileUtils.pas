@@ -105,9 +105,8 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer;
-           Files: TStrings; Options: TFileListOptions
-           {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
-           SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
+  const Files: TStrings; Options: TFileListOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
+  SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DelTree(const Path: string): Boolean;
@@ -146,7 +145,7 @@ function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Bo
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
-function UnLockVolume(var Handle: THandle): Boolean;
+function UnlockVolume(var Handle: THandle): Boolean;
 
 //------------------------------------------------------------------------------
 // TFileVersionInfo
@@ -200,7 +199,7 @@ type
     function GetVersionKeyValue(Index: Integer): string;
   public
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
-    constructor Create(const FileName: string); 
+    constructor Create(const FileName: string);
     destructor Destroy; override;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
@@ -640,7 +639,7 @@ var
   I: Integer;
 begin
   // Note that the view destructor removes the view object from the FViews
-  // list so we must loop downwards from count to 0 
+  // list so we must loop downwards from count to 0
   for I := FViews.Count - 1 downto 0 do
     TJclFileMappingView(FViews[I]).Free;
 end;
@@ -879,12 +878,9 @@ end;
 //==============================================================================
 
 function PathAddSeparator(const Path: string): string;
-var
-  L: Integer;
 begin
   Result := Path;
-  L := Length(Path);
-  if (L = 0) or (Path[L] <> PathSeparator) then
+  if (Length(Path) = 0) or (AnsiLastChar(Path) <> PathSeparator) then
     Result := Path + PathSeparator;
 end;
 
@@ -1187,7 +1183,8 @@ begin
     I := 0;
     if PathIsUnc(Path) then
       I := Length(PathUncPrefix)
-    else if PathIsDiskDevice(Path) then
+    else
+    if PathIsDiskDevice(Path) then
       I := Length(PathDevicePrefix);
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
@@ -1218,7 +1215,7 @@ end;
 function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  NotImplemented('PathIsDiskDevice'); 
+  NotImplemented('PathIsDiskDevice');
   {$ENDIF}
   {$IFDEF WIN32}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
@@ -1252,7 +1249,7 @@ var
   L: Integer;
 begin
   L := Length(Path);
-  if (L > 0) and (Path[L] = PathSeparator) then
+  if (L <> 0) and (AnsiLastChar(Path) = PathSeparator) then
     Result := Copy(Path, 1, L - 1)
   else
     Result := Path;
@@ -1579,8 +1576,6 @@ begin
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
-    //0, 1: { handled by else }
-    //  Result := RsUnknownDrive;
     DRIVE_REMOVABLE:
       Result := RsRemovableDrive;
     DRIVE_FIXED:
@@ -1974,7 +1969,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function UnLockVolume(var Handle: THandle): Boolean;
+function UnlockVolume(var Handle: THandle): Boolean;
 var
   BytesReturned: DWORD;
 begin
@@ -2215,7 +2210,8 @@ var
       TempKey := PWideChar(P);
       Inc(P, (lstrlenW(TempKey) + 1) * SizeOf(WideChar)); // length + #0#0
       Key := TempKey;
-    end else
+    end
+    else
     begin
       DataType := 1;
       Key := PAnsiChar(P);
@@ -2511,7 +2507,8 @@ begin
   begin
     NamePart := NameExt;
     ExtPart := '';
-  end else
+  end
+  else
   begin
     NamePart := Copy(NameExt, 1, I - 1);
     ExtPart := Copy(NameExt, I + 1, Length(NameExt));
@@ -2565,7 +2562,8 @@ begin
       begin
         NS := List[I];
         ES := '';
-      end else
+      end
+      else
       begin
         NS := Copy(List[I], 1, N - 1);
         ES := Copy(List[I], N + 1, 255);
@@ -2632,10 +2630,7 @@ end;
 //------------------------------------------------------------------------------
 
 function AdvBuildFileList(const Path: string; const Attr: Integer;
-           Files: TStrings; Options: TFileListOptions
-           {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
-           SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
-
+  const Files: TStrings; Options: TFileListOptions; SubfoldersMask: string): Boolean;
 var
   FileMask: string;
   RootDir: string;
@@ -2645,49 +2640,54 @@ var
   LocAttr: Integer;
 
   procedure BuildFolderList;
-  Var FindInfo: TSearchRec;
-      Result: Integer;
+  var
+    FindInfo: TSearchRec;
+    Rslt: Integer;
   begin
     Counter := Folders.Count - 1;
     CurrentItem := 0;
-    while CurrentItem <= Counter do begin
+    while CurrentItem <= Counter do
+    begin
       // searching for subfolders
-      Result := FindFirst(Folders[CurrentItem] + '*.*', faDirectory, FindInfo);
+      Rslt := FindFirst(Folders[CurrentItem] + '*.*', faDirectory, FindInfo);
       try
-        While Result = 0 Do Begin
-          If (FindInfo.Name <> '.') And (FindInfo.Name <> '..') And
-             (FindInfo.Attr and faDirectory = faDirectory) Then
-            Folders.Add(Folders[CurrentItem] + FindInfo.Name + '\');
-          Result := FindNext(FindInfo);
-        End;
+        while Rslt = 0 do
+        begin
+          if (FindInfo.Name <> '.') and (FindInfo.Name <> '..') and
+             (FindInfo.Attr and faDirectory = faDirectory) then
+            Folders.Add(Folders[CurrentItem] + FindInfo.Name + PathSeparator);
+          Rslt := FindNext(FindInfo);
+        end;
       finally
         FindClose(FindInfo);
       end;
       Counter := Folders.Count - 1;
       Inc(CurrentItem);
-    end;    // while
+    end;
   end;
 
   procedure FillFileList(CurrentCounter: Integer);
-  Var FindInfo: TSearchRec;
-      Result: Integer;
-      CurrentFolder: String;
-  Begin
+  var
+    FindInfo: TSearchRec;
+    Rslt: Integer;
+    CurrentFolder: String;
+  begin
     CurrentFolder := Folders[CurrentCounter];
-    Result := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
+    Rslt := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
     try
-      While Result = 0 Do Begin
+      while Rslt = 0 do
+      begin
         if (LocAttr and FindInfo.Attr = FindInfo.Attr) then
           if flFullNames in Options then
             Files.Add(CurrentFolder + FindInfo.Name)
           else
             Files.Add(FindInfo.Name);
-        Result := FindNext(FindInfo);
-      End;
+        Rslt := FindNext(FindInfo);
+      end;
     finally
       FindClose(FindInfo);
     end;
-  End;
+  end;
 
 begin
   FileMask := ExtractFileName(Path);
@@ -2705,11 +2705,12 @@ begin
   if flRecursive in Options then
     BuildFolderList;
 
-  for Counter := 0 to Folders.Count - 1 do begin
-     if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter])<>0)) or
-        (not (flMaskedSubfolders in Options))) Then
+  for Counter := 0 to Folders.Count - 1 do
+  begin
+     if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter]) <> 0)) or
+        (not (flMaskedSubfolders in Options))) then
     FillFileList(Counter);
-  end;    // for
+  end;
   Folders.Free;
   Result := True;
 end;
