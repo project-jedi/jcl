@@ -35,8 +35,7 @@ unit JclSecurity;
 interface
 
 uses
-  Windows,
-  SysUtils,
+  Windows, SysUtils,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -77,7 +76,7 @@ uses
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
-  JclStrings, JclWin32, JclSysInfo;
+  JclStrings, JclSysInfo, JclWin32;
 
 //==============================================================================
 // Access Control
@@ -168,13 +167,17 @@ begin
         {$R-} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
         Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
         {$R+}
-        if Result then Break;
+        if Result then
+          Break;
       end;
     end;
   finally
-    if TokenInfo <> nil then FreeMem(TokenInfo);
-    if HaveToken then CloseHandle(Token);
-    if psidAdmin <> nil then FreeSid(psidAdmin);
+    if TokenInfo <> nil then
+      FreeMem(TokenInfo);
+    if HaveToken then
+      CloseHandle(Token);
+    if psidAdmin <> nil then
+      FreeSid(psidAdmin);
   end;
 end;
 
@@ -344,7 +347,8 @@ begin
   begin
     ReallocMem(Buffer, Length);
     B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
-    if not B then LastError := GetLastError;
+    if not B then
+      LastError := GetLastError;
   end;
   if not B then
   begin
