@@ -9,6 +9,9 @@ Description:
   has a very high frequency thereby allowing for the timing of very short intervals.
   The hardware must support a high performance counter or the construction of a
   TJclCounter object will raise an exception.
+See also:
+  StartCount
+  StopCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
@@ -25,6 +28,9 @@ Description:
   high performance counters the constructor raises an exception.
 Parameters:
   Compensate - If compensate is True the class internal determines the overhead associated with calling the user calling the Start and Stop methods and corrects the resulting time; thereby providing a more accurate timing. By default, for backwards compatibility, no compensation takes place.
+See also:
+  StartCount
+  StopCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
@@ -41,6 +47,8 @@ Description:
   Start starts the timer, resets the elapsed time and sets the Counting property to
   True. To stop the timer and retrieve the elapsed time since Start was called, use
   the Stop method.
+See also:
+  StartCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
@@ -58,6 +66,8 @@ Description:
   the elapsed time since the Start method was called.
 Result:
   The elapsed time between Start and Stop calls. Unit is seconds.
+See also:
+  StartCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
@@ -113,6 +123,8 @@ Parameters:
   Counter - Counter object instantiated by this function.
 Notes:
   If the hardware does not support high performance resolution counters an exception is raised.
+See also:
+  StopCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
@@ -135,6 +147,8 @@ Parameters:
   Counter - An instance of a TJclCounter object, usually the one returned by StartCount. This object is freed before the function returns.
 Result:
   The elapsed time since the counter was started, in seconds.
+See also:
+  StartCount
 Quick info:
   Unit: JclCounter
   Category: Date and Time
