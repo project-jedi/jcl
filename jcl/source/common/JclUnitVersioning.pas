@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ A unit version information system. That collects information form prepared units by each module. }
+{ A unit version information system. It collects information from prepared units by each module.   }
 { It also works with units in DLLs.                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -90,9 +90,19 @@ type
     property Items[Index: Integer]: TUnitVersion read GetItems; default;
   end;
 
+  TCustomUnitVersioningProvider = class(TObject)
+  public
+    constructor Create; virtual;
+    procedure LoadModuleUnitVersioningInfo(Instance: THandle); virtual;
+    procedure ReleaseModuleUnitVersioningInfo(Instance: THandle); virtual;
+  end;
+
+  TUnitVersioningProviderClass = class of TCustomUnitVersioningProvider;
+
   TUnitVersioning = class(TObject)
   private
     FModules: TObjectList;
+    FProviders: TObjectList;
 
     function GetItems(Index: Integer): TUnitVersion;
     function GetCount: Integer;
@@ -109,6 +119,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
+    procedure RegisterProvider(AProviderClass: TUnitVersioningProviderClass);
+    procedure LoadModuleUnitVersioningInfo(Instance: THandle);
 
     function IndexOf(const RCSfile: string; const LogPath: string = '*'): Integer;
     function FindUnit(const RCSfile: string; const LogPath: string = '*'): TUnitVersion;
@@ -129,7 +142,8 @@ function GetUnitVersioning: TUnitVersioning;
 
 implementation
 
-// Delphi 5 does not know this function
+// Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith
+// a fast version of Pos(SubStr, S) = 1
 function StartsWith(const SubStr, S: string): Boolean;
 var
   I, Len: Integer;
@@ -381,6 +395,29 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+{ TCustomUnitVersioningProvider }
+//--------------------------------------------------------------------------------------------------
+
+constructor TCustomUnitVersioningProvider.Create;
+begin
+  inherited Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TCustomUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
+begin
+//
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TCustomUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
+begin
+//
+end;
+
+//--------------------------------------------------------------------------------------------------
 { TUnitVersioning }
 //--------------------------------------------------------------------------------------------------
 
@@ -388,12 +425,14 @@ constructor TUnitVersioning.Create;
 begin
   inherited Create;
   FModules := TObjectList.Create;
+  FProviders := TObjectList.Create;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TUnitVersioning.Destroy;
 begin
+  FProviders.Free;
   FModules.Free;
   inherited Destroy;
 end;
@@ -430,6 +469,8 @@ begin
       FModules.Delete(I);
       Break;
     end;
+  for I := 0 to FProviders.Count -1 do
+    TCustomUnitVersioningProvider(FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -540,15 +581,43 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TUnitVersioning.RegisterProvider(AProviderClass: TUnitVersioningProviderClass);
+var
+  I, Idx: Integer;
+begin
+  Idx := -1;
+  for I := 0 to FProviders.Count - 1 do
+    if TObject(FProviders[I]).ClassType = AProviderClass then
+    begin
+      Idx := I;
+      Break;
+    end;
+  if Idx = -1 then
+    FProviders.Add(AProviderClass.Create);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TUnitVersioning.LoadModuleUnitVersioningInfo(Instance: THandle);
+var
+  I: Integer;
+begin
+  for I := 0 to FProviders.Count - 1 do
+    TCustomUnitVersioningProvider(FProviders[I]).LoadModuleUnitVersioningInfo(Instance);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer; forward;
   // Returns a 3820 Bytes large block [= 4096 - 276 = 4096 - (8+256+4+8)]
   // max 20 blocks can be allocated
 function ReleaseNamedProcessAddress(P: Pointer): Integer; forward;
 
-{$IFDEF UNIX}
+// (rom) PAGE_OFFSET is clearly Linux specific
+{$IFDEF LINUX}
 const
   PAGE_OFFSET = $C0000000; // from linux/include/asm-i386/page.h
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 const
   Signature1 = $ABCDEF0123456789;
@@ -667,7 +736,8 @@ begin
       RefCount := 1;
     end;
   end
-  else if Requested <> nil then
+  else
+  if Requested <> nil then
   begin
     Inc(Requested.RefCount);
     Result := @Requested.Data;
@@ -798,6 +868,15 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2005/02/22 07:28:08  uschuster
+// added unit versioning provider solution from donations\source\common
+//
+// (donations) Revision 1.2  2005/01/31 06:47:33  marquardt
+// cleanup and simplifications
+//
+// (donations) Revision 1.1  2005/01/30 13:51:02  uschuster
+// initial checkin (modified JclUnitVersioning 1.8)
+//
 // Revision 1.8  2004/10/28 22:42:33  ahuser
 // Fixed Mantis 2270 and 2260 (Access Violation with activated UnitVersioning)
 //
