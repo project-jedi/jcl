@@ -149,11 +149,11 @@ type
     function GetSize: DWORD; virtual;
     function DumpILOption(Option: TJclInstructionDumpILOption): string; virtual;
   public
-    constructor Create(AOwner :TJclClrILGenerator; AOpCode: TJclOpCode);
+    constructor Create(AOwner: TJclClrILGenerator; AOpCode: TJclOpCode);
     procedure Load(Stream: TStream); virtual;
     procedure Save(Stream: TStream); virtual;
     function DumpIL(Options: TJclInstructionDumpILOptions = [doIL]): string;
-    property Owner :TJclClrILGenerator read FOwner;
+    property Owner: TJclClrILGenerator read FOwner;
     property OpCode: TJclOpCode read FOpCode;
     property WideOpCode: Boolean read GetWideOpCode;
     property RealOpCode: Byte read GetRealOpCode;
@@ -170,7 +170,7 @@ type
 
   TJclBinaryInstruction = class(TJclInstruction);
 
-  TJclClrILGenerator = class
+  TJclClrILGenerator = class(TObject)
   private
     FMethod: TJclClrMethodBody;
     FInstructions: TObjectList;
@@ -178,7 +178,7 @@ type
     function GetInstruction(const Idx: Integer): TJclInstruction;
   public
     constructor Create; overload;
-    constructor Create(AMethod :TJclClrMethodBody); overload;
+    constructor Create(AMethod: TJclClrMethodBody); overload;
     destructor Destroy; override;
     function DumpIL(Options: TJclInstructionDumpILOptions): string;
     property Method: TJclClrMethodBody read FMethod;
