@@ -61,14 +61,12 @@ type
     length: UINT;
     dynamic_: Boolean;
   end;
-  {$EXTERNALSYM TAsnOctetString}
 
   PAsnObjectIdentifier = ^TAsnObjectIdentifier;
   TAsnObjectIdentifier = record
     idLength: UINT;
     ids: PUINT;
   end;
-  {$EXTERNALSYM TAsnObjectIdentifier}
 
   TAsnInteger32        = LongInt;
   {$EXTERNALSYM TAsnInteger32}
@@ -114,26 +112,21 @@ type
      10: (ticks: TAsnTimeticks);           // ASN_TIMETICKS
      11: (arbitrary: TAsnOpaque);          // ASN_OPAQUE
   end;
-  {$EXTERNALSYM TAsnAny}
 
   TAsnObjectName = TAsnObjectIdentifier;
-  {$EXTERNALSYM TAsnObjectName}
   TAsnObjectSyntax = TAsnAny;
-  {$EXTERNALSYM TAsnObjectSyntax}
 
   PSnmpVarBind = ^TSnmpVarBind;
   TSnmpVarBind = record
     name: TAsnObjectName;
     value: TAsnObjectSyntax;
   end;
-  {$EXTERNALSYM TSnmpVarBind}
 
   PSnmpVarBindList = ^TSnmpVarBindList;
   TSnmpVarBindList = record
     list: PSnmpVarBind;
     len: UINT;
   end;
-  {$EXTERNALSYM TSnmpVarBindList}
 
 const
 
