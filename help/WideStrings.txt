@@ -910,7 +910,7 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode;
+property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode default True;
 [ShortDescr]
 Determines if the class saves data as Unicode or ANSI.
 [Description]
