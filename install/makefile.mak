@@ -21,7 +21,7 @@ DRC = $&.drc
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
-jpp = ..\source\prototypes\jpp.exe
+jpp = ..\devtools\jpp.exe
 #---------------------------------------------------------------------------------------------------
 default:	clean install
 #---------------------------------------------------------------------------------------------------
