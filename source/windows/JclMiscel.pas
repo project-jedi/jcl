@@ -47,17 +47,6 @@ uses
 // StrLstLoadSave
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}
-// where is this stuff used/useful, anyway?
-const
-  HKCR: HKEY = HKEY_CLASSES_ROOT;
-  HKCU: HKEY = HKEY_CURRENT_USER;
-  HKLM: HKEY = HKEY_LOCAL_MACHINE;
-  HKUS: HKEY = HKEY_USERS;
-  HKCC: HKEY = HKEY_CURRENT_CONFIG;
-  HKPD: HKEY = HKEY_PERFORMANCE_DATA;
-{$ENDIF ~FPC}
-
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
@@ -461,6 +450,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/21 06:38:52  marquardt
+// style clenaing, bugfixes, improvements
+//
 // Revision 1.9  2004/10/17 21:00:15  mthoma
 // cleaning
 //

@@ -50,13 +50,25 @@ uses
   JclBase, JclStrings, JclWideStrings;
 
 type
-  DelphiHKEY = LongWord;
-  {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY.'}
+  DelphiHKEY = Longword;
+  {$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY or use the HK-values below.'}
 
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
     ekServiceRun, ekServiceRunOnce);
 
   EJclRegistryError = class(EJclError);
+
+{$IFNDEF FPC}
+// (rom) from JclMiscel.pas, now put to good use for BCB
+const
+  HKCR = DelphiHKEY(HKEY_CLASSES_ROOT);
+  HKCU = DelphiHKEY(HKEY_CURRENT_USER);
+  HKLM = DelphiHKEY(HKEY_LOCAL_MACHINE);
+  HKUS = DelphiHKEY(HKEY_USERS);
+  HKPD = DelphiHKEY(HKEY_PERFORMANCE_DATA);
+  HKCC = DelphiHKEY(HKEY_CURRENT_CONFIG);
+  HKDD = DelphiHKEY(HKEY_DYN_DATA);
+{$ENDIF ~FPC}
 
 function RegCreateKey(const RootKey: DelphiHKEY; const Key: string): Longint; overload;
 function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Longint; overload;
@@ -1316,6 +1328,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2004/10/21 06:38:53  marquardt
+// style clenaing, bugfixes, improvements
+//
 // Revision 1.26  2004/10/20 17:13:53  rrossmair
 // - fixed RegReadUInt64 (DataType undefined)
 //
