@@ -112,7 +112,7 @@ Returns the status of the counter.
 Counting returns whether or not the counter is currently active. That is, if
 Start has, but Stop hasn't, been called the return value is True. Immediately
 after construction or after a call to Stop, Counting is False. When Counting is
-False the ElapsedTime property is invalid.
+True the ElapsedTime property is invalid.
 [Quick Info]
 BCB=3,4,5
 Kind=Property
