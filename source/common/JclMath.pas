@@ -210,6 +210,11 @@ function Pythagoras(const X, Y: Float): Float;
 function Sgn(const X: Float): Integer;
 function Signe(const X, Y: Float): Float;
 
+{ Ranges }
+function EnsureRange(const AValue, AMin, AMax: Integer): Integer; overload;
+function EnsureRange(const AValue, AMin, AMax: Int64): Int64; overload;
+function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
+
 { Prime numbers }
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean;
@@ -2101,6 +2106,40 @@ begin
       Exit;
     end;
   Result := True;
+end;
+
+//===================================================================================================
+// Ranges
+//===================================================================================================
+
+function EnsureRange(const AValue, AMin, AMax: Integer): Integer;
+begin
+  Result := AValue;
+  assert(AMin <= AMax);
+  if Result < AMin then
+    Result := AMin;
+  if Result > AMax then
+    Result := AMax;
+end;
+
+function EnsureRange(const AValue, AMin, AMax: Int64): Int64;
+begin
+  Result := AValue;
+  assert(AMin <= AMax);
+  if Result < AMin then
+    Result := AMin;
+  if Result > AMax then
+    Result := AMax;
+end;
+
+function EnsureRange(const AValue, AMin, AMax: Double): Double;
+begin
+  Result := AValue;
+  assert(AMin <= AMax);
+  if Result < AMin then
+    Result := AMin;
+  if Result > AMax then
+    Result := AMax;
 end;
 
 //===================================================================================================
@@ -4170,6 +4209,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.19  2004/12/11 18:50:45  obones
+// Added EnsureRange
+//
 // Revision 1.18  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
