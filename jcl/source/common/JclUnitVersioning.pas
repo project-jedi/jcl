@@ -570,10 +570,13 @@ var
   {$IFDEF MSWINDOWS}
   SysInfo: TSystemInfo;
   MemInfo: TMemoryBasicInformation;
+  pid: THandle;
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  pid: __pid_t;
+  {$ENDIF LINUX}
   Requested, Allocated: PNPARecord;
   Pages: Integer;
-  pid: Integer;
   PageSize: Cardinal;
   MaximumApplicationAddress: Pointer;
 begin
@@ -788,6 +791,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2005/03/18 19:16:21  ahuser
+// process ID type bug fix
+//
 // Revision 1.10  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
