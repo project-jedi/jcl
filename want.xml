@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!--
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is want.xml.                                                             	}
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains want script for build JCl.                                                    }
+{                                                                                                  }
+{ Unit owner: Flier Lu                                                                             }
+{ Last modified: April 15, 2003                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+-->
+<project name="Project JEDI Code Library (JCL)" basedir="." default="help">
+  <tstamp>
+    <format property="when"         pattern="yyyy,mm,dd,HH,nn,ss"/>
+    <format property="date.tag"     pattern="yyyy-mm-dd"/>
+  </tstamp>
+
+  <property name="app.fullname"     value="Project JEDI Code Library"/>
+  <property name="app.shortname"    value="JCL"/>
+
+  <property name="version.major"    value="1"/>
+  <property name="version.minor"    value="22"/>
+  <property name="version"          value="${version.major}.${version.minor}"/>
+
+  <property name="bin.dir"          value="${basedir}/bin"/>
+  <property name="dcu.dir"          value="${basedir}/dcu"/>
+  <property name="dist.dir"         value="${basedir}/dist"/>
+  <property name="samp.dir"         value="${basedir}/examples"/>
+  <property name="help.dir"         value="${basedir}/help"/>
+  <property name="pack.dir"         value="${basedir}/packages"/>
+  <property name="src.dir"          value="${basedir}/source"/>
+
+  <property name="zipname"          value="JCL${version.major}_${version.minor}.zip" />
+  <property name="zipfile"          value="${dist.dir}/${zipname}" />
+
+  <property name="prepare.hint"     value="prepare the directories" />
+  <property name="clean.hint"       value="clean the binary files" />
+  <property name="versioninfo.hint" value="show the version of JCL" />
+  <property name="compile.hint"     value="compile the source and sample files" />
+  <property name="dist.hint"        value="build .zip file" />
+
+  <patternset id="src.files" >
+    <include  name="${src.dir}" />
+  </patternset>
+
+  <patternset id="samp.files" >
+    <include  name="${samp.dir}" />
+    <include  name="${samp.dir}/**" />
+  </patternset>
+
+  <patternset id="source.files" >
+    <patternset refid="src.files" />
+    <patternset refid="samp.files" />
+  </patternset>
+
+  <target name="help" >
+    <echo message="Usage:" />
+    <echo message="  want [target]" />
+    <echo message="" />
+    <echo message="Target:" />
+    <echo message="  prepare      - ${prepare.hint}" />
+    <echo message="  clean        - ${clean.hint}" />
+    <echo message="  versioninfo  - ${versioninfo.hint}" />
+    <echo message="  compile      - ${compile.hint}" />
+    <echo message="  dist         - ${dist.hint}" />
+  </target>
+
+  <target name="prepare" description="${prepare.hint}" >
+  </target>
+
+  <target name="clean" description="${clean.hint}" >
+    <!-- <delete dir="${dist.dir}" -->
+    <delete file="${dcu.dir}/*.dcu" />
+    <delete file="${bin.dir}/*.exe" />
+    <delete file="${bin.dir}/*.dll" />
+    <delete file="${bin.dir}/*.map" />
+  </target>
+
+  <target name="versioninfo" description="${versioninfo.hint}" >
+    <echo message="${app.fullname} (${app.shortname}) ${version}" />
+  </target>
+
+  <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
+    <echo message="compile the source files..." />
+    <brcc file="${src.dir}/JclUnicode.rc" output="${src.dir}/JclUnicode.res" />
+    <dcc basedir="${src.dir}" source="*.pas" >
+      <dcuoutput path="${dcu.dir}" />
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+
+      <unitpath path="${src.dir}" />
+      <resourcepath path="${src.dir}" />
+    </dcc>
+
+    <echo message="" />
+    <echo message="compile the sample files..." />
+
+    <dcc basedir="${samp.dir}" source="*.dpr" >
+      <dcuoutput path="${dcu.dir}" />
+      <exeoutput path="${bin.dir}"     />
+      <debug value="true" />
+      <build value="true" />
+
+      <unitpath     refid="source.files" />
+      <includepath  refid="source.files" />
+      <resourcepath refid="source.files" />
+    </dcc>
+  </target>
+
+  <target name="dist" description="${dist.hint}" >
+    <mkdir dir="${dist.dir}" />
+    <delete file="${zipfile}" />
+    <zip zipfile="${zipfile}" >
+      <exclude name="${dist.dir}/**" />
+
+      <include name="**/*.pas" />
+      <include name="**/*.dfm" />
+      <include name="**/*.xfm" />
+      <include name="**/*.dof" />
+      <include name="**/*.inc" />
+      <include name="**/*.cpp" />
+
+      <include name="**/*.dpr" />
+      <include name="**/*.dpk" />
+      <include name="**/*.bpg" />
+      <include name="**/*.bpk" />
+      <include name="**/*.mak" />
+
+      <include name="**/*.rc" />
+      <include name="**/*.res" />
+      <include name="**/*.ico" />
+
+      <include name="**/*.hlp" />
+      <include name="**/*.cnt" />
+
+      <include name="**/*.tlb" />
+
+      <include name="**/*.txt" />
+      <include name="**/*.html" />
+      <include name="**/*.xml" />
+      <include name="**/*.bat" />
+      <include name="want.exe" />
+    </zip>
+  </target>
+</project>
