@@ -63,6 +63,7 @@ type
     FName: string;
   public
     constructor Attach(Handle: THandle);
+    destructor Destroy; override;
     //function MsgWaitFor(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
     //function MsgWaitForEx(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
     function SignalAndWait(const Obj: TJclDispatcherObject; TimeOut: Cardinal;
@@ -475,6 +476,14 @@ begin
   else
     Result := wrError;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclDispatcherObject.Destroy;
+begin
+  CloseHandle(FHandle);
+  inherited Destroy;
 end;
 
 //------------------------------------------------------------------------------
