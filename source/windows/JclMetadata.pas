@@ -973,6 +973,72 @@ type
     property FilterOffset: DWORD read FFilterOffset;
   end;
 
+  TJclClrSignature = class
+  private
+    FBlob: TJclClrBlobRecord;
+  protected
+    function IsModifierType(const AElementType: TJclClrElementType): Boolean;
+    function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
+
+    function Inc(var pData: PByteArray; Step: Integer = 1): PByte;
+
+    function UncompressedDataSize(const pData: PByteArray): Integer;
+    function UncompressData(const pData: PByteArray; var Value: DWord): Integer;
+    function UncompressToken(const pData: PByteArray; var Token: TJclClrToken): Integer;
+
+    function UncompressCallingConv(const pData: PByteArray): Byte;
+
+    function UncompressSignedInt(const pData: PByteArray; var Value: Integer): Integer;
+
+    function UncompressElementType(const pData: PByteArray): TJclClrElementType;
+
+    function UncompressTypeSignature(const pData: PByteArray): string;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+
+    function UncompressFieldSignature: string;
+
+    function ReadValue: DWORD;
+    function ReadByte: Byte;
+    function ReadInteger: Integer;
+    function ReadToken: TJclClrToken;
+    function ReadElementType: TJclClrElementType;
+
+    property Blob: TJclClrBlobRecord read FBlob;
+  end;
+
+  TJclClrLocalVarFlag = (lvfPinned, lvfByRef);
+  TJclClrLocalVarFlags = set of TJclClrLocalVarFlag;
+
+  TJclClrLocalVar = class
+  private
+    FElementType: TJclClrElementType;
+    FFlags: TJclClrLocalVarFlags;
+    FToken: TJclClrToken;
+    function GetName: WideString;
+  public
+    property ElementType: TJclClrElementType read FElementType write FElementType;
+
+    property Name: WideString read GetName;
+    property Flags: TJclClrLocalVarFlags read FFlags write FFlags;
+
+    property Token: TJclClrToken read FToken write FToken;
+  end;
+
+  TJclClrLocalVarSign = class(TJclClrSignature)
+  private
+    FLocalVars: TObjectList;
+
+    function GetLocalVar(const Idx: Integer): TJclClrLocalVar;
+    function GetLocalVarCount: Integer;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+    destructor Destroy; override;
+
+    property LocalVars[const Idx: Integer]: TJclClrLocalVar read GetLocalVar;
+    property LocalVarCount: Integer read GetLocalVarCount;
+  end;
+
   TJclClrMethodBody = class
   private
     FMethod: TJclClrTableMethodDefRow;
@@ -980,6 +1046,7 @@ type
     FCode: Pointer;
     FMaxStack: DWORD;
     FLocalVarSignToken: TJclClrToken;
+    FLocalVarSign: TJclClrLocalVarSign;
 
     FEHTable: TObjectList;
 
@@ -990,6 +1057,7 @@ type
 
     function GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
     function GetExceptionHandlerCount: Integer;
+    function GetLocalVarSign: TJclClrLocalVarSign;
   public
     constructor Create(const AMethod: TJclClrTableMethodDefRow);
     destructor Destroy; override;
@@ -1001,7 +1069,7 @@ type
 
     property MaxStack: DWORD read FMaxStack;
     property LocalVarSignToken: TJclClrToken read FLocalVarSignToken;
-
+    property LocalVarSign: TJclClrLocalVarSign read GetLocalVarSign;
     property ExceptionHandlers[const Idx: Integer]: TJclClrExceptionHandler read GetExceptionHandler;
     property ExceptionHandlerCount: Integer read GetExceptionHandlerCount;
   end;
@@ -1669,7 +1737,7 @@ const
   // This is for signatures generated internally (which will not be persisted in any way).
   ELEMENT_TYPE_INTERNAL       = $21;     // INTERNAL <typehandle>
 
-  // Note that this is the max of base type excluding modifiers   
+  // Note that this is the max of base type excluding modifiers
   ELEMENT_TYPE_MAX            = $22;     // first invalid element type
 
 
@@ -1712,35 +1780,6 @@ begin
   Result := (Value and Flag) = Flag;
 end;
 
-type
-  TJclClrSignature = class
-  private
-    FBlob: TJclClrBlobRecord;
-  protected
-    function IsModifierType(const AElementType: TJclClrElementType): Boolean;
-    function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
-
-    function Inc(var pData: PByteArray; Step: Integer = 1): PByte;
-
-    function UncompressedDataSize(var pData: PByteArray): Integer;
-    function UncompressData(var pData: PByteArray; var Value: DWord): Integer;
-    function UncompressToken(var pData: PByteArray): TJclClrToken;
-
-    function UncompressCallingConv(var pData: PByteArray): Byte;
-
-    function UncompressSignedInt(var pData: PByteArray; var Value: Integer): Integer;
-
-    function UncompressElementType(var pData: PByteArray): TJclClrElementType;
-
-    function UncompressTypeSignature(var pData: PByteArray): string;
-  public
-    constructor Create(const ABlob: TJclClrBlobRecord);
-
-    function UncompressFieldSignature: string;
-
-    property Blob: TJclClrBlobRecord read FBlob;
-  end;
-
 { TJclClrSignature }
 
 constructor TJclClrSignature.Create(const ABlob: TJclClrBlobRecord);
@@ -1760,7 +1799,7 @@ begin
   Result := AElementType < etPtr;
 end;
 
-function TJclClrSignature.UncompressedDataSize(var pData: PByteArray): Integer;
+function TJclClrSignature.UncompressedDataSize(const pData: PByteArray): Integer;
 begin
   if (pData[0] and $80) = 0 then
     Result := 1
@@ -1770,7 +1809,7 @@ begin
     Result := 4;
 end;
 
-function TJclClrSignature.UncompressData(var pData: PByteArray; var Value: DWord): Integer;
+function TJclClrSignature.UncompressData(const pData: PByteArray; var Value: DWord): Integer;
 begin
   if (pData[0] and $80) = 0 then // 0??? ????
   begin
@@ -1788,41 +1827,39 @@ begin
     Result := 4;
   end
   else
-    Result := -1;
+    raise EJclError.Create('Invalid compressed signature data');
 end;
 
-function TJclClrSignature.UncompressToken(var pData: PByteArray): TJclClrToken;
+function TJclClrSignature.UncompressToken(const pData: PByteArray; var Token: TJclClrToken): Integer;
 const
   TableMapping: array[0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
-  UncompressData(pData, Result);
-  Result := Byte(TableMapping[Result and 3]) shl 24 + Result shr 2;
+  Result := UncompressData(pData, Token);
+  Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
 end;
 
-function TJclClrSignature.UncompressCallingConv(var pData: PByteArray): Byte;
+function TJclClrSignature.UncompressCallingConv(const pData: PByteArray): Byte;
 begin
   Result := pData[0];
-  Inc(pData);
 end;
 
-function TJclClrSignature.UncompressSignedInt(var pData: PByteArray; var Value: Integer): Integer;
+function TJclClrSignature.UncompressSignedInt(const pData: PByteArray; var Value: Integer): Integer;
 var
   Data: DWord;
 begin
   Result := UncompressData(pData, Data);
-  if Result = -1 then Exit;
 
   if (Data and 1) <> 0 then
   begin
     case Result of
       1: Value := DWord(Value shr 1) or $ffffffc0;
       2: Value := DWord(Value shr 1) or $ffffe000;
-      4: Value := DWord(Value shr 1) or $f0000000;
+    else Value := DWord(Value shr 1) or $f0000000;
     end;
   end;
 end;
 
-function TJclClrSignature.UncompressElementType(var pData: PByteArray): TJclClrElementType;
+function TJclClrSignature.UncompressElementType(const pData: PByteArray): TJclClrElementType;
 begin
   for Result:=Low(TJclClrElementType) to High(TJclClrElementType) do
     if ClrElementTypeMapping[Result] = (pData[0] and $7F) then
@@ -1840,7 +1877,7 @@ begin
   Result := UncompressTypeSignature(pData);
 end;
 
-function TJclClrSignature.UncompressTypeSignature(var pData: PByteArray): string;
+function TJclClrSignature.UncompressTypeSignature(const pData: PByteArray): string;
 const
   SimpleTypeName: array[etVoid..etString] of string =
   ('void', 'bool', 'char',
@@ -1851,9 +1888,9 @@ const
   ('ptr', 'byref', 'valuetype', 'class');
 var
   ElementType: TJclClrElementType;
+  Token: TJclClrToken;
 begin
   ElementType := UncompressElementType(pData);
-  Inc(pData);
 
   case ElementType of
     etVoid, etBoolean, etChar, etI1, etU1, etI2, etU2, etI4, etU4, etI8, etU8, etR4, etR8, etString:
@@ -1867,7 +1904,10 @@ begin
     etTypedByRef:
       Result := 'Typed By Ref';
     etPtr, etByRef, etValueType, etClass :
-      Result := Format('%s /*%.8x*/', [TypedTypeName[ElementType], UncompressToken(pData)]);
+    begin
+      UncompressToken(pData, Token);
+      Result := Format('%s /*%.8x*/', [TypedTypeName[ElementType], Token]);
+    end;
     etSzArray:
     begin
     end;
@@ -1886,6 +1926,33 @@ function TJclClrSignature.Inc(var pData: PByteArray; Step: Integer): PByte;
 begin
   Result := PByte(Integer(pData) + Step);
   pData  := PByteArray(Result);
+end;
+
+function TJclClrSignature.ReadValue: DWORD;
+begin
+  FBlob.Seek(UncompressData(Blob.Data, Result), soFromCurrent);
+end;
+
+function TJclClrSignature.ReadInteger: Integer;
+begin
+  FBlob.Seek(UncompressSignedInt(Blob.Data, Result), soFromCurrent);
+end;
+
+function TJclClrSignature.ReadToken: TJclClrToken;
+begin
+  FBlob.Seek(UncompressToken(Blob.Data, Result), soFromCurrent);
+end;
+
+function TJclClrSignature.ReadElementType: TJclClrElementType;
+begin
+  Result := UncompressElementType(Blob.Data);
+  FBlob.Seek(1, soFromCurrent);
+end;
+
+function TJclClrSignature.ReadByte: Byte;
+begin
+  Result := Blob.Data[0];
+  FBlob.Seek(1, soFromCurrent);
 end;
 
 { TJclClrTableModuleRow }
@@ -3275,6 +3342,8 @@ begin
   FMethod  := AMethod;
   FEHTable := TObjectList.Create;
 
+  FLocalVarSign := nil;
+
   ILMethod := FMethod.Table.Stream.Metadata.Image.RvaToVa(FMethod.RVA);
   if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
   begin
@@ -3297,7 +3366,8 @@ end;
 
 destructor TJclClrMethodBody.Destroy;
 begin
-  FreeAndNil(FEHTable);
+  if Assigned(FLocalVarSign) then FreeAndNil(FLocalVarSign);
+  if Assigned(FEHTable) then FreeAndNil(FEHTable);
 
   inherited;
 end;
@@ -3353,6 +3423,14 @@ end;
 function TJclClrMethodBody.GetExceptionHandlerCount: Integer;
 begin
   Result := FEHTable.Count;
+end;
+
+function TJclClrMethodBody.GetLocalVarSign: TJclClrLocalVarSign;
+begin
+  if not Assigned(FLocalVarSign) and (FLocalVarSignToken <> 0) then
+    FLocalVarSign := TJclClrLocalVarSign.Create(TJclClrTableStandAloneSigRow(FMethod.Table.Stream.Metadata.Tokens[FLocalVarSignToken]).Signature);
+
+  Result := FLocalVarSign;
 end;
 
 { TJclClrTableMethodDefRow }
@@ -3445,6 +3523,28 @@ begin
 end;
 
 function TJclClrTableMethodDefRow.DumpIL: String;
+  function LocalVarToString(LocalVar: TJclClrLocalVar): string;
+  var
+    Row: TJclClrTableRow;
+  begin
+    case LocalVar.ElementType of
+      etClass:
+        if LocalVar.Token <> 0 then
+        begin
+          Row := Table.Stream.Metadata.Tokens[LocalVar.Token];
+          if Row is TJclClrTableTypeDefRow then
+            Result := TJclClrTableTypeDefRow(Row).FullName
+          else if Row is TJclClrTableTypeRefRow then
+            Result := TJclClrTableTypeRefRow(Row).FullName
+          else if Row is TJclClrTableTypeSpecRow then
+            Result := TJclClrTableTypeSpecRow(Row).Signature.Dump('')
+          else
+            Result := '/*' + IntToHex(Row.Token, 8) + '*/';
+        end;
+    else
+      Result := LocalVar.Name;
+    end;
+  end;
 var
   I: Integer;
 begin
@@ -3462,6 +3562,20 @@ begin
   begin
     Result := Result + CRLF + '{' + CRLF +
               '.maxstack ' + IntToStr(MethodBody.MaxStack) + CRLF;
+
+    if MethodBody.LocalVarSignToken <> 0 then
+    begin
+      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + CRLF;
+      for I:=0 to MethodBody.LocalVarSign.LocalVarCount-1 do
+      begin
+        Result := Format(Result+'  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
+        if I = MethodBody.LocalVarSign.LocalVarCount-1 then
+          Result := Result + ')' + CRLF
+        else
+          Result := Result + ',' + CRLF;
+      end;
+    end;
+
     with TJclClrILGenerator.Create(MethodBody) do
     try
       Result := Result + CRLF + DumpIL(InstructionDumpILAllOption);
@@ -4216,6 +4330,106 @@ end;
 class function TJclClrTableENCLog.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableENCLogRow;
+end;
+
+{ TJclClrLocalVar }
+
+function TJclClrLocalVar.GetName: WideString;
+const
+  ClrElementTypeNameMapping: array[etVoid..etString] of string =
+    ('void', 'bool',
+     'char', 'sbyte', 'byte',
+     'short', 'ushort', 'int', 'unit',
+     'long', 'ulong', 'float', 'Double',
+     'string');
+begin
+  case ElementType of
+    etVoid, etBoolean, etChar,
+    etI1, etU1, etI2, etU2, etI4, etU4,
+    etI8, etU8, etR4, etR8, etString:
+      Result := ClrElementTypeNameMapping[ElementType];
+    etPtr, etByRef, etValueType, etClass:
+      Result := IntToHex(Token, 8);
+    etArray:      Result := 'Array';
+    etTypedByRef: Result := 'TypedByRef';
+    etI:          Result := 'IntPtr';
+    etU:          Result := 'UIntPtr';
+    etFnPtr:      Result := 'Function';
+    etObject:     Result := 'System.Object';
+    etSzArray:
+  else
+    Result := 'Unknown';
+  end;
+end;
+
+{ TJclClrLocalVarSign }
+
+constructor TJclClrLocalVarSign.Create(const ABlob: TJclClrBlobRecord);
+var
+  Sign, ElemType: Byte;
+  T: TJclClrElementType;
+  I, VarCount: DWORD;
+  LocalVar: TJclClrLocalVar;
+begin
+  inherited Create(ABlob);
+
+  Blob.Seek(0, soFromBeginning);
+
+  Sign := ReadByte;
+
+  if (Sign and IMAGE_CEE_CS_CALLCONV_MASK) <> IMAGE_CEE_CS_CALLCONV_LOCAL_SIG then
+    raise Exception.CreateFmt('Signature %s is not LocalVarSig', [IntToHex(Sign, 2)]);
+
+  VarCount := ReadValue;
+  if (VarCount < 1) or ($FFFE < VarCount) then
+    raise Exception.CreateFmt('LocalVarSig count %d is out of range [1..$$FFFE]', [VarCount]);
+
+  FLocalVars := TObjectList.Create;
+
+  LocalVar := TJclClrLocalVar.Create;
+
+  for I:=0 to VarCount-1 do
+  begin
+    ElemType := ReadByte;
+
+    case ElemType of
+    ELEMENT_TYPE_PINNED: LocalVar.Flags := LocalVar.Flags + [lvfPinned];
+    ELEMENT_TYPE_BYREF:  LocalVar.Flags := LocalVar.Flags + [lvfByRef];
+    ELEMENT_TYPE_END: Break;
+    else
+      for T:=Low(TJclClrElementType) to High(TJclClrElementType) do
+        if ClrElementTypeMapping[T] = ElemType then
+        begin
+          LocalVar.ElementType := T;
+          Break;
+        end;
+      if LocalVar.ElementType in [etPtr, etByRef, etValueType, etClass] then
+        LocalVar.Token := ReadToken
+      else
+        LocalVar.Token := 0;
+
+      FLocalVars.Add(LocalVar);
+      LocalVar := TJclClrLocalVar.Create;
+    end;
+  end;
+  FreeAndNil(LocalVar);
+end;
+
+destructor TJclClrLocalVarSign.Destroy;
+begin
+  FreeAndNil(FLocalVars);
+
+  inherited;
+end;
+
+function TJclClrLocalVarSign.GetLocalVar(const Idx: Integer): TJclClrLocalVar;
+begin
+  Result := TJclClrLocalVar(FLocalVars[Idx]);
+end;
+
+function TJclClrLocalVarSign.GetLocalVarCount: Integer;
+begin
+  Result := FLocalVars.Count;
 end;
 
 end.
