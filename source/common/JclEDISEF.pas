@@ -2583,7 +2583,7 @@ function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObjec
 begin
   Result := nil;
 end;
-{$ENDIF DELPHI6_UP}
+{$ENDIF ~DELPHI6_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4937,7 +4937,7 @@ end;
 
 procedure TEDISEFRepeatingPattern.SetParent(const Value: TEDISEFDataObject);
 begin
-  inherited;
+  inherited SetParent(Value);
   if Value is TEDISEFRepeatingPattern then
     FBaseParent := TEDISEFRepeatingPattern(Value).BaseParent
   else
@@ -5028,7 +5028,7 @@ end;
 destructor TEDISEFText.Destroy;
 begin
   FWhereLocation.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5136,7 +5136,7 @@ end;
 
 constructor TEDISEFTextSet.Create;
 begin
-  inherited;
+  inherited Create;
   FWhereSet := '';
   FWhereSegment := -1;
   FWhereElement := -1;
@@ -5147,7 +5147,7 @@ end;
 
 destructor TEDISEFTextSet.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5158,7 +5158,7 @@ begin
   FWhereSegment := -1;
   FWhereElement := -1;
   FWhereSubElement := -1;
-  inherited;
+  inherited Disassemble;
   if FWhereLocation.Count >= 1 then
   begin
     FEDISEFWhereType := twSet;

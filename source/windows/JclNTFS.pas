@@ -243,7 +243,7 @@ end;
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
-{$ENDIF STACKFRAMES_ON}
+{$ENDIF ~STACKFRAMES_ON}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -381,7 +381,7 @@ end;
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
-{$ENDIF STACKFRAMES_ON}
+{$ENDIF ~STACKFRAMES_ON}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1334,6 +1334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.9  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

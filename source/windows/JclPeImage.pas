@@ -1052,7 +1052,7 @@ const
 
   {$IFNDEF COMPILER7_UP}
   UnixDateDelta = 25569;  { TODO : Move to more appropriate unit }
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF ~COMPILER7_UP}
 
 //==================================================================================================
 // Helper routines
@@ -1209,7 +1209,7 @@ destructor TJclPeImagesCache.Destroy;
 begin
   Clear;
   FreeAndNil(FList);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1377,7 +1377,7 @@ end;
 destructor TJclPeImportFuncItem.Destroy;
 begin
   SetIndirectImportName(nil);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1461,7 +1461,7 @@ end;
 
 constructor TJclPeImportLibItem.Create(AImage: TJclPeImage);
 begin
-  inherited;
+  inherited Create(AImage);
   FTotalResolveCheck := icNotChecked;
 end;
 
@@ -1687,7 +1687,7 @@ begin
   FreeAndNil(FUniqueNamesList);
   for I := 0 to Length(FParalelImportTable) - 1 do
     FreeMem(FParalelImportTable[I]);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2189,7 +2189,7 @@ end;
 
 constructor TJclPeExportFuncList.Create(AImage: TJclPeImage);
 begin
-  inherited;
+  inherited Create(AImage);
   FTotalResolveCheck := icNotChecked;
   CreateList;
 end;
@@ -2252,7 +2252,7 @@ end;
 destructor TJclPeExportFuncList.Destroy;
 begin
   FreeAndNil(FForwardedLibsList);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2483,7 +2483,7 @@ end;
 destructor TJclPeResourceItem.Destroy;
 begin
   FreeAndNil(FList);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2703,7 +2703,7 @@ end;
 destructor TJclPeRootResourceList.Destroy;
 begin
   FreeAndNil(FManifestContent);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2850,7 +2850,7 @@ end;
 
 constructor TJclPeRelocList.Create(AImage: TJclPeImage);
 begin
-  inherited;
+  inherited Create(AImage);
   CreateList;
 end;
 
@@ -2913,7 +2913,7 @@ end;
 
 constructor TJclPeDebugList.Create(AImage: TJclPeImage);
 begin
-  inherited;
+  inherited Create(AImage);
   OwnsObjects := False;
   CreateList;
 end;
@@ -2969,7 +2969,7 @@ end;
 
 constructor TJclPeCertificateList.Create(AImage: TJclPeImage);
 begin
-  inherited;
+  inherited Create(AImage);
   CreateList;
 end;
 
@@ -4020,7 +4020,7 @@ destructor TJclPePackageInfo.Destroy;
 begin
   FreeAndNil(FContains);
   FreeAndNil(FRequires);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4212,7 +4212,7 @@ procedure TJclPeBorImage.AfterOpen;
 var
   HasDVCLAL, HasPACKAGEINFO, HasPACKAGEOPTIONS: Boolean;
 begin
-  inherited;
+  inherited AfterOpen;
   if StatusOK then
     with ResourceList do
     begin
@@ -4231,7 +4231,7 @@ begin
   FForms.Clear;
   FreeAndNil(FPackageInfo);
   FreeLibHandle;
-  inherited;
+  inherited Clear;
   FIsBorlandImage := False;
   FIsPackage := False;
   FPackageCompilerVersion := 0;
@@ -4328,7 +4328,7 @@ end;
 
 destructor TJclPeBorImage.Destroy;
 begin
-  inherited;
+  inherited Destroy;
   FreeAndNil(FForms);
 end;
 
@@ -5342,7 +5342,7 @@ destructor TJclPeMapImgHookItem.Destroy;
 begin
   if FBaseAddress <> nil then
     InternalUnhook;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5852,6 +5852,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.9  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

@@ -211,7 +211,7 @@ end;
 
 destructor TMidiOut.Destroy;
 begin
-  inherited;
+  inherited Destroy;
   midiOutClose(FHandle);
   MidiOutputs.Objects[FDeviceID] := nil;
 end;
@@ -322,6 +322,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.7  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

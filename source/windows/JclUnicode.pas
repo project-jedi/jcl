@@ -161,9 +161,7 @@ uses
  {$IFDEF MSWINDOWS}
   {$DEFINE OWN_WIDESTRING_MEMMGR}
  {$ENDIF MSWINDOWS}
-{$ENDIF FPC}
-
-
+{$ENDIF ~FPC}
 
 {$IFDEF SUPPORTS_WIDESTRING}
 
@@ -1767,7 +1765,7 @@ destructor TSearchEngine.Destroy;
 begin
   Clear;
   FResults.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2301,16 +2299,14 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TUTBMSearch.Clear;
-
 begin
   ClearPattern;
-  inherited;
+  inherited Clear;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.FindAll(const Text: WideString): Boolean;
-
 begin
   Result := FindAll(PWideChar(Text), Length(Text));
 end;
@@ -2326,7 +2322,6 @@ var
   Start, Stop: Cardinal;
   Run: PWideChar;
   RunLen: Cardinal;
-
 begin
   ClearResults;
   Run := Text;
@@ -2434,10 +2429,8 @@ const
 //----------------- TURESearch ---------------------------------------------------------------------
 
 procedure TURESearch.Clear;
-
 begin
-  inherited;
-
+  inherited Clear;
   ClearUREBuffer;
   ClearDFA;
 end;
@@ -2445,7 +2438,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TURESearch.Push(V: Cardinal);
-
 begin
   with FUREBuffer do
   begin
@@ -4466,7 +4458,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TURESearch.FindPrepare(const Pattern: WideString; Options: TSearchFlags);
-
 begin
   CompileURE(PWideChar(Pattern), Length(Pattern), not (sfCaseSensitive in Options));
 end;
@@ -4474,10 +4465,8 @@ end;
 //----------------- TWideStrings -------------------------------------------------------------------
 
 constructor TWideStrings.Create;
-
 begin
-  inherited;
-
+  inherited Create;
   FLanguage := GetUserDefaultLCID;
   FNormalizationForm := nfC;
   FSaveUnicode := True;
@@ -4610,7 +4599,6 @@ var
   I: Integer;
   S: string;
   CP: Integer;
-  
 begin
   if Dest is TStrings then
   begin
@@ -4646,7 +4634,7 @@ begin
       end;
     end
     else
-      inherited;
+      inherited AssignTo(Dest);
   end;
 end;
 
@@ -5251,13 +5239,11 @@ end;
 //----------------- TWideStringList ----------------------------------------------------------------
 
 destructor TWideStringList.Destroy;
-
 begin
   FOnChange := nil;
   FOnChanging := nil;
   Clear;
-
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5659,8 +5645,7 @@ end;
 
 procedure TWideStringList.SetLanguage(Value: LCID);
 begin
-  inherited;
-
+  inherited SetLanguage(Value);
   if Sorted then
     Sort;
 end;
@@ -8065,6 +8050,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.11  2004/06/14 13:05:22  marquardt
 // style cleaning ENDIF, Tabs
 //

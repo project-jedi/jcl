@@ -52,7 +52,7 @@ interface
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
   {$WEAKPACKAGEUNIT ON}
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-{$ENDIF SNMP_DYNAMIC_LINK}
+{$ENDIF ~SNMP_DYNAMIC_LINK}
 
 uses
   Windows;
@@ -340,7 +340,36 @@ type
 
 { SNMP API Prototypes }
 
-{$IFNDEF SNMP_DYNAMIC_LINK}
+{$IFDEF SNMP_DYNAMIC_LINK}
+
+var
+  SnmpUtilOidCpy: function(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidAppend: function(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidNCmp: function(pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
+  SnmpUtilOidCmp: function(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidFree: procedure(pOid: TAsnObjectIdentifier); stdcall;
+  SnmpUtilOctetsCmp: function(pOctets1, pOctets2: PAsnOctetString): SNMPAPI; stdcall;
+  SnmpUtilOctetsNCmp: function(pOctets1, pOctets2: PAsnOctetString; nChars: UINT): SNMPAPI; stdcall;
+  SnmpUtilOctetsCpy: function(pOctetsDst, pOctetsSrc: PAsnOctetString): SNMPAPI; stdcall;
+  SnmpUtilOctetsFree: procedure(pOctets: PAsnOctetString); stdcall;
+  SnmpUtilAsnAnyCpy: function(pAnyDst, pAnySrc: PAsnAny): SNMPAPI; stdcall;
+  SnmpUtilAsnAnyFree: procedure(pAny: PAsnAny); stdcall;
+  SnmpUtilVarBindCpy: function(pVbDst: PSnmpVarBind; pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
+  SnmpUtilVarBindFree: procedure(pVb: PSnmpVarBind); stdcall;
+  SnmpUtilVarBindListCpy: function(pVblDst: PSnmpVarBindList; pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
+  SnmpUtilVarBindListFree: procedure(pVbl: PSnmpVarBindList); stdcall;
+  SnmpUtilMemFree: procedure(pMem: Pointer); stdcall;
+  SnmpUtilMemAlloc: function(nBytes: UINT): Pointer; stdcall;
+  SnmpUtilMemReAlloc: function(pMem: Pointer; nBytes: UINT): Pointer; stdcall;
+  SnmpUtilOidToA: function(Oid: PAsnObjectIdentifier): PChar; stdcall;
+  SnmpUtilIdsToA: function(Ids: PUINT; IdLength: UINT): PChar; stdcall;
+  SnmpUtilPrintOid: procedure(Oid: PAsnObjectIdentifier); stdcall;
+  SnmpUtilPrintAsnAny: procedure(pAny: PAsnAny); stdcall;
+  SnmpSvcGetUptime: function: DWORD; stdcall;
+  SnmpSvcSetLogLevel: procedure(nLogLevel: Integer); stdcall;
+  SnmpSvcSetLogType: procedure(nLogType: Integer); stdcall;
+
+{$ELSE}
 
 function SnmpUtilOidCpy(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
 function SnmpUtilOidAppend(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
@@ -367,35 +396,6 @@ procedure SnmpUtilPrintAsnAny(pAny: PAsnAny); stdcall;
 function SnmpSvcGetUptime: DWORD; stdcall;
 procedure SnmpSvcSetLogLevel(nLogLevel: Integer); stdcall;
 procedure SnmpSvcSetLogType(nLogType: Integer); stdcall;
-
-{$ELSE SNMP_DYNAMIC_LINK}
-
-var
-  SnmpUtilOidCpy: function (pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidAppend: function (pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidNCmp: function (pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
-  SnmpUtilOidCmp: function (pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidFree: procedure (pOid: TAsnObjectIdentifier); stdcall;
-  SnmpUtilOctetsCmp: function (pOctets1, pOctets2: PAsnOctetString): SNMPAPI; stdcall;
-  SnmpUtilOctetsNCmp: function (pOctets1, pOctets2: PAsnOctetString; nChars: UINT): SNMPAPI; stdcall;
-  SnmpUtilOctetsCpy: function (pOctetsDst, pOctetsSrc: PAsnOctetString): SNMPAPI; stdcall;
-  SnmpUtilOctetsFree: procedure (pOctets: PAsnOctetString); stdcall;
-  SnmpUtilAsnAnyCpy: function (pAnyDst, pAnySrc: PAsnAny): SNMPAPI; stdcall;
-  SnmpUtilAsnAnyFree: procedure (pAny: PAsnAny); stdcall;
-  SnmpUtilVarBindCpy: function (pVbDst: PSnmpVarBind; pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
-  SnmpUtilVarBindFree: procedure (pVb: PSnmpVarBind); stdcall;
-  SnmpUtilVarBindListCpy: function (pVblDst: PSnmpVarBindList; pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
-  SnmpUtilVarBindListFree: procedure (pVbl: PSnmpVarBindList); stdcall;
-  SnmpUtilMemFree: procedure (pMem: Pointer); stdcall;
-  SnmpUtilMemAlloc: function (nBytes: UINT): Pointer; stdcall;
-  SnmpUtilMemReAlloc: function (pMem: Pointer; nBytes: UINT): Pointer; stdcall;
-  SnmpUtilOidToA: function (Oid: PAsnObjectIdentifier): PChar; stdcall;
-  SnmpUtilIdsToA: function (Ids: PUINT; IdLength: UINT): PChar; stdcall;
-  SnmpUtilPrintOid: procedure (Oid: PAsnObjectIdentifier); stdcall;
-  SnmpUtilPrintAsnAny: procedure (pAny: PAsnAny); stdcall;
-  SnmpSvcGetUptime: function: DWORD; stdcall;
-  SnmpSvcSetLogLevel: procedure (nLogLevel: Integer); stdcall;
-  SnmpSvcSetLogType: procedure (nLogType: Integer); stdcall;
 
 {$ENDIF SNMP_DYNAMIC_LINK}
 
@@ -461,7 +461,7 @@ procedure SnmpUtilDbgPrint(nLogLevel: Integer; szFormat: PChar); stdcall;
 var
   SnmpUtilDbgPrint: procedure (nLogLevel: Integer; szFormat: PChar); stdcall;
 
-{$ENDIF SNMP_DYNAMIC_LINK}
+{$ENDIF ~SNMP_DYNAMIC_LINK}
 
 {$EXTERNALSYM SnmpUtilDbgPrint}
 
@@ -517,29 +517,6 @@ const
 
 {$IFNDEF SNMP_DYNAMIC_LINK}
 
-function SNMP_oidcpy(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-function SNMP_oidappend(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-function SNMP_oidncmp(pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
-function SNMP_oidcmp(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
-procedure SNMP_oidfree(pOid: TAsnObjectIdentifier); stdcall;
-
-function SNMP_CopyVarBind(pVbDst: PSnmpVarBind; pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
-procedure SNMP_FreeVarBind(pVb: PSnmpVarBind); stdcall;
-function SNMP_CopyVarBindList(pVblDst: PSnmpVarBindList; pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
-procedure SNMP_FreeVarBindList(pVbl: PSnmpVarBindList); stdcall;
-
-procedure SNMP_printany(pAny: PAsnAny); stdcall;
-
-procedure SNMP_free(pMem: Pointer); stdcall;
-function SNMP_malloc(nBytes: UINT): Pointer; stdcall;
-function SNMP_realloc(pMem: Pointer; nBytes: UINT): Pointer; stdcall;
-
-procedure SNMP_DBG_free(pMem: Pointer); stdcall;
-function SNMP_DBG_malloc(nBytes: UINT): Pointer; stdcall;
-function SNMP_DBG_realloc(pMem: Pointer; nBytes: UINT): Pointer; stdcall;
-
-{$ELSE SNMP_DYNAMIC_LINK}
-
 var
   SNMP_oidcpy: function (pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
   SNMP_oidappend: function (pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
@@ -561,6 +538,29 @@ var
   SNMP_DBG_free: procedure (pMem: Pointer); stdcall;
   SNMP_DBG_malloc: function (nBytes: UINT): Pointer; stdcall;
   SNMP_DBG_realloc: function (pMem: Pointer; nBytes: UINT): Pointer; stdcall;
+
+{$ELSE}
+
+function SNMP_oidcpy(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+function SNMP_oidappend(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+function SNMP_oidncmp(pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
+function SNMP_oidcmp(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
+procedure SNMP_oidfree(pOid: TAsnObjectIdentifier); stdcall;
+
+function SNMP_CopyVarBind(pVbDst: PSnmpVarBind; pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
+procedure SNMP_FreeVarBind(pVb: PSnmpVarBind); stdcall;
+function SNMP_CopyVarBindList(pVblDst: PSnmpVarBindList; pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
+procedure SNMP_FreeVarBindList(pVbl: PSnmpVarBindList); stdcall;
+
+procedure SNMP_printany(pAny: PAsnAny); stdcall;
+
+procedure SNMP_free(pMem: Pointer); stdcall;
+function SNMP_malloc(nBytes: UINT): Pointer; stdcall;
+function SNMP_realloc(pMem: Pointer; nBytes: UINT): Pointer; stdcall;
+
+procedure SNMP_DBG_free(pMem: Pointer); stdcall;
+function SNMP_DBG_malloc(nBytes: UINT): Pointer; stdcall;
+function SNMP_DBG_realloc(pMem: Pointer; nBytes: UINT): Pointer; stdcall;
 
 {$ENDIF SNMP_DYNAMIC_LINK}
 
@@ -627,7 +627,7 @@ type
   TAsnGauge                       = TAsnGauge32;
   {$EXTERNALSYM TAsnGauge}
 
-{$ENDIF SNMPSTRICT}
+{$ENDIF ~SNMPSTRICT}
 
 { SNMP Extension API Prototypes }
 
@@ -773,7 +773,7 @@ begin
     @SNMP_DBG_free := nil;
     @SNMP_DBG_malloc := nil;
     @SNMP_DBG_realloc := nil;
-   {$ENDIF SNMPSTRICT}
+   {$ENDIF ~SNMPSTRICT}
   end;
 end;
 
@@ -828,13 +828,13 @@ begin
       @SNMP_DBG_free := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemFree');
       @SNMP_DBG_malloc := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemAlloc');
       @SNMP_DBG_realloc := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemReAlloc');
-      {$ENDIF SNMPSTRICT}
+      {$ENDIF ~SNMPSTRICT}
       Result := True;
    end;
   end;
 end;
 
-{$ELSE SNMP_DYNAMIC_LINK}
+{$ELSE}
 
 function SnmpUtilOidCpy; external snmpapilib name 'SnmpUtilOidCpy';
 function SnmpUtilOidAppend; external snmpapilib name 'SnmpUtilOidAppend';
@@ -880,22 +880,28 @@ function SNMP_realloc; external snmpapilib name 'SnmpUtilMemReAlloc';
 procedure SNMP_DBG_free; external snmpapilib name 'SnmpUtilMemFree';
 function SNMP_DBG_malloc; external snmpapilib name 'SnmpUtilMemAlloc';
 function SNMP_DBG_realloc; external snmpapilib name 'SnmpUtilMemReAlloc';
-{$ENDIF SNMPSTRICT}
+{$ENDIF ~SNMPSTRICT}
 
 {$ENDIF SNMP_DYNAMIC_LINK}
 
 {$IFDEF SNMP_DYNAMIC_LINK}
 {$IFNDEF SNMP_DYNAMIC_LINK_EXPLICIT}
+
 initialization
   LoadSnmp;
+
 finalization
   UnloadSnmp;
-{$ENDIF SNMP_DYNAMIC_LINK_EXPLICIT}
+
+{$ENDIF ~SNMP_DYNAMIC_LINK_EXPLICIT}
 {$ENDIF SNMP_DYNAMIC_LINK}
 
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.6  2004/06/14 13:05:22  marquardt
 // style cleaning ENDIF, Tabs
 //

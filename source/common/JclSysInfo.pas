@@ -72,7 +72,7 @@ uses
   Windows,
   {$IFNDEF FPC}
   ShlObj,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   {$ENDIF MSWINDOWS}
   Classes,
   JclResources;
@@ -3960,6 +3960,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.23  2004/06/16 07:30:28  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.22  2004/06/14 13:05:18  marquardt
 // style cleaning ENDIF, Tabs
 //

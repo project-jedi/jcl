@@ -43,7 +43,7 @@ uses
   MSTask, MSTaskError,
   {$IFNDEF RTL140_UP}
   JclUnicode,
-  {$ENDIF RTL140_UP}
+  {$ENDIF ~RTL140_UP}
   JclBase, JclSysUtils, JclSysInfo;
 
 type
@@ -1220,6 +1220,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.12  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

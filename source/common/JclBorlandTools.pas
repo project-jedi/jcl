@@ -463,7 +463,7 @@ const
   {$IFDEF MSWINDOWS}
   {$IFNDEF RTL140_UP}
   PathSep = ';';
-  {$ENDIF RTL140_UP}
+  {$ENDIF ~RTL140_UP}
 
   MSHelpSystemKeyName        = 'Software\Microsoft\Windows\Help';
 
@@ -789,7 +789,7 @@ end;
 
 constructor TJclBorRADToolIdeTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
-  inherited;
+  inherited Create(AInstallation);
   FKey := TransferKeyName;
 end;
 
@@ -918,7 +918,7 @@ end;
 
 constructor TJclBorRADToolIdePackages.Create(AInstallation: TJclBorRADToolInstallation);
 begin
-  inherited;
+  inherited Create(AInstallation);
   FDisabledPackages := TStringList.Create;
   FDisabledPackages.Sorted := True;
   FDisabledPackages.Duplicates := dupIgnore;
@@ -934,7 +934,7 @@ destructor TJclBorRADToolIdePackages.Destroy;
 begin
   FreeAndNil(FDisabledPackages);
   FreeAndNil(FKnownPackages);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1025,7 +1025,7 @@ end;
 
 constructor TJclBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
-  inherited;
+  inherited Create(AInstallation);
   FOptions := TStringList.Create;
 end;
 
@@ -1034,7 +1034,7 @@ end;
 destructor TJclBorlandCommandLineTool.Destroy;
 begin
   FreeAndNil(FOptions);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1257,7 +1257,7 @@ end;
 
 constructor TJclBorRADToolPalette.Create(AInstallation: TJclBorRADToolInstallation);
 begin
-  inherited;
+  inherited Create(AInstallation);
   FKey := PaletteKeyName;
   FTabNames := TStringList.Create;
   FTabNames.Sorted := True;
@@ -1285,7 +1285,7 @@ end;
 destructor TJclBorRADToolPalette.Destroy;
 begin
   FreeAndNil(FTabNames);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1387,7 +1387,7 @@ end;
 
 constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstallation);
 begin
-  inherited;
+  inherited Create(AInstallation);
   {$IFDEF KYLIX}
   FFileName := AInstallation.ConfigFileName('dro');
   {$ELSE}
@@ -1404,7 +1404,7 @@ destructor TJclBorRADToolRepository.Destroy;
 begin
   FreeAndNil(FPages);
   FreeAndNil(FIniFile);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1547,7 +1547,7 @@ begin
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
   {$IFNDEF KYLIX}
   FOpenHelp := TJclBorlandOpenHelp.Create(Self);
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1567,7 +1567,7 @@ begin
   FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
   {$ENDIF KYLIX}
   FreeAndNil(FConfigData);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2100,7 +2100,7 @@ end;
 destructor TJclBorRADToolInstallations.Destroy;
 begin
   FreeAndNil(FList);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2310,6 +2310,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/06/16 07:30:26  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.12  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

@@ -119,12 +119,12 @@ type
   PPointer = ^Pointer;
   {$IFNDEF RTL140_UP}
   PBoolean = ^Boolean;
-  {$ENDIF RTL140_UP}
+  {$ENDIF ~RTL140_UP}
   {$ENDIF FPC}
 
   {$IFNDEF COMPILER7}
   UInt64 = Int64;
-  {$ENDIF COMPILER7}
+  {$ENDIF ~COMPILER7}
 
 //--------------------------------------------------------------------------------------------------
 // Int64 support
@@ -180,7 +180,7 @@ type
 
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
-{$ENDIF XPLATFORM_RTL}
+{$ENDIF ~XPLATFORM_RTL}
 
 //--------------------------------------------------------------------------------------------------
 // Interface compatibility
@@ -297,11 +297,14 @@ procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
 end;
-{$ENDIF XPLATFORM_RTL}
+{$ENDIF ~XPLATFORM_RTL}
 
 // History:
 
 // $Log$
+// Revision 1.19  2004/06/16 07:30:14  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.18  2004/06/14 11:05:50  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

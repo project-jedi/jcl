@@ -249,7 +249,7 @@ begin
   if GetInterface(IID, Obj) then Result := S_OK else Result := E_NOINTERFACE;
 end;
 
-{$ENDIF RTL140_UP}
+{$ENDIF ~RTL140_UP}
 
 //==================================================================================================
 // Utility functions
@@ -1788,6 +1788,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/16 07:30:28  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.6  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

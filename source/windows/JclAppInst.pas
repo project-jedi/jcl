@@ -232,7 +232,7 @@ begin
     RemoveInstance;
   FreeAndNil(FMapping);
   FreeAndNil(FOptex);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -244,7 +244,6 @@ type
     ProcessID: DWORD;
     Wnd: HWND;
   end;
-
 var
   TopLevelWnd: TTopLevelWnd;
 
@@ -641,6 +640,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/16 07:30:30  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.7  2004/06/14 11:05:52  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //
