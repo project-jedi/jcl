@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: October 28, 2002                                                                  }
+{ Last modified: November 26, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -298,6 +298,7 @@ const
      'MAPISendDocuments',
      'MAPISendMail'
      );
+  AddressTypeDelimiter = ':';
 
 //--------------------------------------------------------------------------------------------------
 // MAPI Errors check
@@ -839,8 +840,9 @@ begin
     0, Recips, LogonOptionsToFlags(False), 0, @NewRecipCount, NewRecips);
   Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
   if Result then
-  begin
+  try
     DecodeRecips(NewRecips, NewRecipCount);
+  finally  
     MapiFreeBuffer(NewRecips);
   end;
 end;
@@ -894,15 +896,16 @@ begin
     Kind := rkOriginator;
     with RecipDesc^ do
     begin
-      S := lpszAddress;
-      N := Pos(':', S);
-      if N = 0 then
-        N := Length(S) + 1;
       if ulRecipClass in [MAPI_ORIG..MAPI_BCC] then
         Kind := TJclEmailRecipKind(ulRecipClass)
       else
         MapiCheck(MAPI_E_INVALID_MESSAGE, True);
-      Recipients.Add(Copy(S, 1, N - 1), lpszName, Kind, Copy(S, N + 1, Length(S)));
+      S := lpszAddress;
+      N := Pos(AddressTypeDelimiter, S);
+      if N = 0 then
+        Recipients.Add(S, lpszName, Kind)
+      else
+        Recipients.Add(Copy(S, N + 1, Length(S)), lpszName, Kind, Copy(S, 1, N - 1));
     end;
     Inc(RecipDesc);
   end;  
@@ -1042,10 +1045,10 @@ begin
           else
             lpszName := PChar(FName);
           if FAddressType <> '' then
-            RealAdresses[I] := FAddressType + ':' + FAddress
+            RealAdresses[I] := FAddressType + AddressTypeDelimiter + FAddress
           else
           if Recipients.AddressesType <> '' then
-            RealAdresses[I] := Recipients.AddressesType + ':' + FAddress
+            RealAdresses[I] := Recipients.AddressesType + AddressTypeDelimiter + FAddress
           else
             RealAdresses[I] := FAddress;
           lpszAddress := PCharOrNil(RealAdresses[I]);
