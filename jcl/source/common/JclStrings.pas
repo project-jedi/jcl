@@ -299,24 +299,35 @@ procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 procedure FreeMultiSz(var Dest: PChar);
 
 
-// Note: Unit tests showed that StringsToMultiString and vice verca do not
-//       like empty strings. As designed? The already existing functions
-//       StringsToStr and StrToStrings take them...
-//
-//        A "hot" fix would be
-//        <  while (PtrStart^ <> #0) do
-//        >  while (PtrStart^ <> #0) or (PtrStart < PtrValueEnd) do  // assumes valid string
-
 { TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: array of AnsiString): AnsiString; overload;
 { TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: TDynStringArray): AnsiString; overload;
 { TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: TStrings): AnsiString; overload;
+
 { TODO -cHelp : Author: Peter J. Haas }
 procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString); overload;
 { TODO -cHelp : Author: Peter J. Haas }
 procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString); overload;
+
+{ TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
+function StringsToMultiWideString(const Value: array of AnsiString): WideString; overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
+function StringsToMultiWideString(const Value: TDynStringArray): WideString; overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
+function StringsToMultiWideString(const Value: TStrings): WideString; overload;
+
+{ TODO -cHelp : Author: Peter J. Haas }
+procedure MultiWideStringToStrings(out Dest: TDynStringArray; const Value: WideString); overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+procedure MultiWideStringToStrings(Dest: TStrings; const Value: WideString); overload;
 
 //--------------------------------------------------------------------------------------------------
 // TStrings Manipulation
@@ -371,7 +382,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  JclSysUtils, JclLogic, JclResources;
+  JclSysUtils, JclUnicode, JclLogic, JclResources;
 
 //==================================================================================================
 // Internal
@@ -3423,22 +3434,57 @@ end;
 
 function StringsToMultiString(const Value: array of AnsiString): AnsiString;
 var
-  Len, I: Integer;
-  DstPtr: PChar;
+  LenSum, Len, I: Integer;
+  DstPtr: PAnsiChar;
   S: AnsiString;
 begin
   Result := '';
   // calculate length
-  Len := 0;
+  LenSum := 0;
   for I := Low(Value) to High(Value) do
-    Inc(Len, Length(Value[I]) + 1);
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
   // Copy the contents
-  SetLength(Result, Len);
-  DstPtr := PChar(Result);
+  SetLength(Result, LenSum);
+  DstPtr := PAnsiChar(Result);
   for I := Low(Value) to High(Value) do
   begin
     S := Value[I];
-    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiWideString(const Value: array of AnsiString): WideString;
+var
+  LenSum, Len, I: Integer;
+  DstPtr: PWideChar;
+  S: WideString;
+begin
+  Result := '';
+  // calculate length
+  LenSum := 0;
+  for I := Low(Value) to High(Value) do
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
+  // Copy the contents
+  SetLength(Result, LenSum);
+  DstPtr := PWideChar(Result);
+  for I := Low(Value) to High(Value) do
+  begin
+    S := Value[I];  { TODO : or other convert? }
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
   end;
 end;
 
@@ -3446,22 +3492,57 @@ end;
 
 function StringsToMultiString(const Value: TDynStringArray): AnsiString;
 var
-  Len, I: Integer;
-  DstPtr: PChar;
+  LenSum, Len, I: Integer;
+  DstPtr: PAnsiChar;
   S: AnsiString;
 begin
   Result := '';
   // calculate length
-  Len := 0;
+  LenSum := 0;
   for I := Low(Value) to High(Value) do
-    Inc(Len, Length(Value[I]) + 1);
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
   // Copy the contents
-  SetLength(Result, Len);
-  DstPtr := PChar(Result);
+  SetLength(Result, LenSum);
+  DstPtr := PAnsiChar(Result);
   for I := Low(Value) to High(Value) do
   begin
     S := Value[I];
-    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiWideString(const Value: TDynStringArray): WideString;
+var
+  LenSum, Len, I: Integer;
+  DstPtr: PWideChar;
+  S: WideString;
+begin
+  Result := '';
+  // calculate length
+  LenSum := 0;
+  for I := Low(Value) to High(Value) do
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
+  // Copy the contents
+  SetLength(Result, LenSum);
+  DstPtr := PWideChar(Result);
+  for I := Low(Value) to High(Value) do
+  begin
+    S := Value[I];  { TODO : or other convert? }
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
   end;
 end;
 
@@ -3469,24 +3550,61 @@ end;
 
 function StringsToMultiString(const Value: TStrings): AnsiString;
 var
-  Len, I: Integer;
-  DstPtr: PChar;
+  LenSum, Len, I: Integer;
+  DstPtr: PAnsiChar;
   S: AnsiString;
 begin
   Result := '';
   if not Assigned(Value) then
     Exit;
   // calculate length
-  Len := 0;
+  LenSum := 0;
   for I := 0 to Value.Count - 1 do
-    Inc(Len, Length(Value[I]) + 1);
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
   // Copy the contents
-  SetLength(Result, Len);
-  DstPtr := PChar(Result);
+  SetLength(Result, LenSum);
+  DstPtr := PAnsiChar(Result);
   for I := 0 to Value.Count - 1 do
   begin
     S := Value[I];
-    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiWideString(const Value: TStrings): WideString;
+var
+  LenSum, Len, I: Integer;
+  DstPtr: PWideChar;
+  S: WideString;
+begin
+  Result := '';
+  if not Assigned(Value) then
+    Exit;
+  // calculate length
+  LenSum := 0;
+  for I := 0 to Value.Count - 1 do
+  begin
+    Len := Length(Value[I]);
+    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    if Len > 0 then
+      Inc(LenSum, Len + 1);
+  end;
+  // Copy the contents
+  SetLength(Result, LenSum);
+  DstPtr := PWideChar(Result);
+  for I := 0 to Value.Count - 1 do
+  begin
+    S := Value[I];  { TODO : or other convert? }
+    if S <> '' then
+      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
   end;
 end;
 
@@ -3494,12 +3612,12 @@ end;
 
 procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString);
 var
-  PtrValueEnd, PtrStart, PtrEnd: PChar;
+  PtrValueEnd, PtrStart, PtrEnd: PAnsiChar;
   Count, I: Integer;
   S: AnsiString;
 begin
   // get count
-  PtrStart := PChar(Value);
+  PtrStart := PAnsiChar(Value);
   PtrValueEnd := PtrStart + Length(Value);
   Count := 0;
   while PtrStart^ <> #0 do
@@ -3513,7 +3631,7 @@ begin
   end;
   SetLength(Dest, Count);
   // get items
-  PtrStart := PChar(Value);
+  PtrStart := PAnsiChar(Value);
   for I := Low(Dest) to High(Dest) do
   begin
     PtrEnd := StrEnd(PtrStart);
@@ -3523,10 +3641,45 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+procedure MultiWideStringToStrings(out Dest: TDynStringArray; const Value: WideString);
+var
+  PtrValueEnd, PtrStart, PtrEnd: PWideChar;
+  Count, I: Integer;
+  S: WideString;
+begin
+  // get count
+  PtrStart := PWideChar(Value);
+  PtrValueEnd := PtrStart + Length(Value);
+  Count := 0;
+  while PtrStart^ <> #0 do
+  begin
+    PtrEnd := StrEndW(PtrStart);
+    Inc(Count);
+    // single string or missing the double null at end
+    if PtrEnd >= PtrValueEnd then
+      Break;
+    PtrStart := PtrEnd + 1;
+  end;
+  SetLength(Dest, Count);
+  // get items
+  PtrStart := PWideChar(Value);
+  for I := Low(Dest) to High(Dest) do
+  begin
+    PtrEnd := StrEndW(PtrStart);
+    SetString(S, PtrStart, PtrEnd - PtrStart);
+    Dest[I] := S;  { TODO : or other convert? }
+    PtrStart := PtrEnd + 1;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString);
 var
-  PtrValueEnd, PtrStart, PtrEnd: PChar;
-  S: String;
+  PtrValueEnd, PtrStart, PtrEnd: PAnsiChar;
+  S: AnsiString;
 begin
   Assert(Assigned(Dest));
   if not Assigned(Dest) then
@@ -3534,13 +3687,43 @@ begin
   Dest.BeginUpdate;
   try
     Dest.Clear;
-    PtrStart := PChar(Value);
+    PtrStart := PAnsiChar(Value);
     PtrValueEnd := PtrStart + Length(Value);
     while (PtrStart^ <> #0) do
     begin
       PtrEnd := StrEnd(PtrStart);
       SetString(S, PtrStart, PtrEnd - PtrStart);
       Dest.Add(S);
+      // single string or missing the double null at end
+      if PtrEnd >= PtrValueEnd then
+        Break;
+      PtrStart := PtrEnd + 1;
+    end;
+  finally
+    Dest.EndUpdate;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure MultiWideStringToStrings(Dest: TStrings; const Value: WideString);
+var
+  PtrValueEnd, PtrStart, PtrEnd: PWideChar;
+  S: WideString;
+begin
+  Assert(Assigned(Dest));
+  if not Assigned(Dest) then
+    Exit;    { TODO : Exception? }
+  Dest.BeginUpdate;
+  try
+    Dest.Clear;
+    PtrStart := PWideChar(Value);
+    PtrValueEnd := PtrStart + Length(Value);
+    while (PtrStart^ <> #0) do
+    begin
+      PtrEnd := StrEndW(PtrStart);
+      SetString(S, PtrStart, PtrEnd - PtrStart);
+      Dest.Add(S);  { TODO : or other convert? }
       // single string or missing the double null at end
       if PtrEnd >= PtrValueEnd then
         Break;
@@ -3696,7 +3879,7 @@ end;
 
 function BooleanToStr(B: Boolean): AnsiString;
 const
-  Bools: array [Boolean] of PChar = ('False', 'True');
+  Bools: array [Boolean] of PAnsiChar = ('False', 'True');
 begin
   Result := Bools[B];
 end;
@@ -3984,6 +4167,11 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.14  2004/04/12 22:07:45  peterjhaas
+// Bugfix: StringsToMultiString, MultiStringToStrings,
+//         empty list entries are not allowed
+// Add: StringsToMultiWideString, MultiWideStringToStrings
+//
 // Revision 1.13  2004/04/11 15:58:25  mthoma
 // Fixed #1119. Removed StrIsNumber (see bugnote), renamed CharIsNumber to CharisNumberChar. Changed some Strings to AnsiString (unit now compiles also in H- mode).
 //
