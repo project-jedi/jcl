@@ -1272,3 +1272,149 @@ Delphi=3,4,5
 [SeeAlso]
 Count=1
 1=CheckCrc32
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TFloatingPointClass = (fpZero, fpNormal, fpDenormal, fpInfinite, fpNaN, fpInvalid);
+[ShortDescr]
+Describes the hierarchy of floating point classes.
+[Description]
+Enumeration which describes the classes into which floating point encodings can
+be divided. Their relations are as follows: A floating point encoding can be
+either supported by the hardware or unsupported (<I>fpInvalid</I>). Supported
+encodings subdivide into numbers and non-numbers, denoted by the term NaN
+(<U>N</U>ot <U>a</U> <U>N</U>umber, <I>fpNaN</I>).  A number is either
+finite or infinite (<I>fpInfinite</I>).  If finite, it is either denormal
+(<I>fpDenormal</I>) or normal. If normal, it is either non-zero (<I>fpNormal</I>)
+or zero (<I>fpZero</I>).
+ <P>
+ <B>Remarks</B>
+ <LI>Only the Extended data type allows for unsupported encodings.
+ <LI>What separates NaNs from numbers is that the former are unordered. That is,
+ the result of relational operations (<, <=, =, >=, >) is not defined for NaNs.
+ <LI>Certain classes of floating point values may result from an exception
+ condition if the corresponding FPU exception is
+ <REF Target"..\..\Hardware\Mask8087Exceptions">masked</REF> out.
+ <BR>See table below.
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width=20%>Exception class</TH>
+ <TH align=left width=60%>Result on masked exception</TH>
+ <TH align=left width=20%>Result class</TH>
+ </TR>
+ <TR VALIGN="top">
+ <TD width=20%>EInvalidOp</TD>
+ <TD width=60%>NaN (real indefinite)</TD>
+ <TD width=20%>fpNaN</TD>
+ </TR>
+ <TR VALIGN="top">
+ <TD width=20%>EZeroDivide</TD>
+ <TD width=60%>Infinity/NegInfinity</TD>
+ <TD width=20%>fpInfinite</TD>
+ </TR>
+ <TR VALIGN="top">
+ <TD width=20%>EOverflow</TD>
+ <TD width=60%>Infinity/NegInfinity</TD>
+ <TD width=20%>fpInfinite</TD>
+ </TR>
+ <TR VALIGN="top">
+ <TD width=20%>EUnderflow</TD>
+ <TD width=60%>Denormal number</TD>
+ <TD width=20%>fpDenormal</TD>
+ </TR>
+ </TABLE>
+ </P>
+[Enumeration]
+Count=6
+1=fpZero=zero
+2=fpNormal=non-zero normal finite number
+3=fpDenormal=denormalized finite
+4=fpInfinite=infinite
+5=fpNaN=not a number
+6=fpInvalid=unsupported floating point format
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=FloatingPointClass;..\FloatingPointClass
+2=IsNaN;..\IsNaN
+3=IsInfinite;..\IsInfinite
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
+function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
+function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
+[ShortDescr]
+Classifies the supplied floating point value.
+[Description]
+Classifies the supplied floating point value.
+[Parameters]
+Count=1
+1=Value:Single=The value to classify.
+[Result]
+The result is the <REF Target"Types\TFloatingPointClass">class</REF> to which <I>Value</I> belongs.
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TFloatingPointClass;Types\TFloatingPointClass
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsInfinite(const Value: Single): Boolean; overload;
+function IsInfinite(const Value: Double): Boolean; overload;
+function IsInfinite(const Value: Extended): Boolean; overload;
+[ShortDescr]
+Determines whether <I>Value</I> is infinite.
+[Description]
+Determines whether <I>Value</I> is infinite.
+[Parameters]
+Count=1
+1=Value:Single=The floating point value to examine.
+[Result]
+The result is True when <I>Value</I> is infinite, False otherwise.
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=TFloatingPointClass;Types\TFloatingPointClass
+2=FloatingPointClass
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsNaN(const Value: Single): Boolean; overload;
+function IsNaN(const Value: Double): Boolean; overload;
+function IsNaN(const Value: Extended): Boolean; overload;
+[ShortDescr]
+Determines whether <I>Value</I> is a NaN.
+[Description]
+Determines whether <I>Value</I> is a NaN.
+[Parameters]
+Count=1
+1=Value:Single=The floating point value to examine.
+[Result]
+The result is True when <I>Value</I> is a NaN, False otherwise.
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=TFloatingPointClass;Types\TFloatingPointClass
+2=FloatingPointClass
