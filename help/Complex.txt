@@ -6,7 +6,7 @@ TJclComplex implements various operations with complex numbers.
 [Description]
 TJclComplex is designated to provide complex numbers computations for your
 applications. It supports both rectangular and polar number representations.
-All the operations are divided into groups as follow:
+All the operations are divided into groups as follows:
   <li>basic arithmetics;
   <li>natural logarithmic and exponential functions;
   <li>trigonometric functions;
@@ -22,7 +22,7 @@ convenient method of coding the sequential calculations like this:
 The other way is two use the subset of methods with "CNew" prefix. They do the
 same computations but as the result they create a new object of TComplex type.
 It might be useful in situations when you'd like to remain your object intact
-and get ther result in a separate object. Please note that such an approach
+and get the result in a separate object. Please note that such an approach
 requires a very attentive coding style when you need to destroy every object
 after every "CNew*" method invocation.
 [Quick Info]
@@ -36,7 +36,7 @@ Delphi=4,5
 [Declaration]
 TComplexKind = (crRectangular, crPolar)
 [ShortDescr]
-Enumeration specifies the way of representing a complex numer using either
+Enumeration specifies the way of representing a complex number using either
 rectangular representation or polar coordinates.
 [Enumeration]
 Count=2
@@ -66,7 +66,7 @@ value that is stored in the complex number structures.
 The default value of FracLength is 8 decimal places.<br>
 [Notes]
 Count=1
-1=FracLength must be greater less or equal to 18.
+1=FracLength must be less or equal to 18.
 Trying to set FracLength to a value greater than 18 changes the value of
 FracLength to 18.
 [Quick Info]
@@ -84,7 +84,7 @@ constructor Create(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKi
 [ShortDescr]
 Creates a new TComplex object.
 [Description]
-Call create to construct a complex number object either equal to (0,0) or
+Call Create to construct a complex number object either equal to (0,0) or
 filled with the values provided in X and Y parameters.
 [Parameters]
 Count=3
@@ -212,12 +212,12 @@ number is (5.2345355; -3.599) and FracLength=2 you will get the
 following string as the result of calling AsString:<br><p align=center>5.23-3.60i</p>
 Also you might use this property to assign the value of a
 string to the complex number object like this:<p align=center>
-MyComplex.AsString := '-5.3453-3.543i'</p> The string provided should be represent
+MyComplex.AsString := '-5.3453-3.543i'</p> The string provided should represent
 a complex number in its canonical rectangular form like this: x+yi, where
 x and y are either positive or negative or zero floating values and i is the
-constant text part. If eiter x or y is equal to zero, the corresponding part
+constant text part. If either x or y is equal to zero, the corresponding part
 of the complex number can be omitted.<br>If the object is unable to parse the
-string provided then EJclMathError exception will be raised.
+string provided then an EJclMathError exception will be raised.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -247,12 +247,12 @@ Here CIS(theta) = COS(theta) + SIN(theta)*i<br>
 Also you might use this property to assign the value of a
 string to the complex number object like this:<p align=center>
 MyComplex.AsPolarString := '-5.3453-CIS(3.543)'</p>
-The string provided should be represent
+The string provided should represent
 a complex number in its canonical polar coordinates form like this: r+CIS(theta), where
 r and theta are either positive or negative or zero floating values.
-If eiter r or theta is equal to zero, the corresponding part
+If either r or theta is equal to zero, the corresponding part
 of the complex number can be omitted.<br>If the object is unable to parse the
-string provided then EJclMathError exception will be raised.
+string provided then an EJclMathError exception will be raised.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -272,16 +272,16 @@ function Assign(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind"
 Assign the value of (X;Y) to the complex number object using ComplexType
 representation.
 [Description]
-Use Assing method to set the value of your complex number object to (X;Y). ComplexType
+Use Assign method to set the value of your complex number object to (X;Y). ComplexType
 parameter is used to determine whether floating-point parameters represents (X;Y)
 or (r;theta) pair of values.
 [Parameters]
 Count=3
 1=X:Float=The real part in the rectangular representation or radius in polar coordinates.
 2=Y:Float=The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
-3=ComplexType:TComplexKind=<I>Optional.</I> Represents the type the floating-point parameters above.
+3=ComplexType:TComplexKind=<I>Optional.</I> Represents the type of the floating-point parameters above.
 [Result]
-Method Assing returns complex number object itself.
+Method Assign returns the complex number object itself.
 [Notes]
 Count=2
 1=To assign a complex number the value of zero use <REF>AssignZero</REF> method instead.
@@ -360,7 +360,7 @@ Count=4
 [Declaration]
 function Duplicate: TJclComplex;
 [ShortDescr]
-Creates a new object of TJclComplex type and assign the value of the calling object to it.
+Creates a new object of TJclComplex type and assigns the value of the calling object to it.
 [Description]
 Use Duplicate method to create a new object of TJclComplex type and assign
 the value of the calling object to it.
@@ -435,7 +435,7 @@ polar coordinates of the complex number that is the denominator for the operatio
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CDiv method to perform a division operation where the cureent complex
+Use CDiv method to perform a division operation where the current complex
 number object is a numerator and the value provided through either X and Y
 or DivValue parameters is a denominator. The complex number to be divided by could be
 set either as an object of TJclComplex type or a pair of its values (X;Y).
@@ -481,7 +481,7 @@ polar coordinates of the complex number that is the second multiplier.
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CMul method to perform a multiplication operation where the cureent complex
+Use CMul method to perform a multiplication operation where the current complex
 number object is the first and the value provided through either X and Y
 or DivValue parameters is the second multiplier. The complex number to be
 multiplied by could be set either as an object of TJclComplex type or a pair
@@ -529,7 +529,7 @@ polar coordinates of the complex number that is the subtrahend.
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CSub method to perform a subtraction operation where the cureent complex
+Use CSub method to perform a subtraction operation where the current complex
 number object is the minuend and the value provided through either X and Y
 or DivValue parameters is the subtrahend. The complex number to be
 subtracted could be set either as an object of TJclComplex type or a pair
@@ -606,7 +606,7 @@ Count=3
 function CNewDiv(DivValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
 function CNewDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
-Divide the value of the current complex number object by the value given by
+Divides the value of the current complex number object by the value given by
 DivValue or X and Y parameters and creates a new resulting object of TJclComplex type.
 [Parameters]
 Count=4
@@ -618,7 +618,7 @@ polar coordinates of the complex number that is the denominator for the operatio
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CDiv method to perform a division operation where the cureent complex
+Use CNewDiv method to perform a division operation where the current complex
 number object is a numerator and the value provided through either X and Y
 or DivValue parameters is a denominator and to create a resulting object of
 TJclComplex type. The complex number to be divided by could be
@@ -654,7 +654,7 @@ Count=3
 function CNewMul(MulValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
 function CNewMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
-Multiply the value of the current complex number object by the value given by
+Multiplies the value of the current complex number object by the value given by
 MulValue or X and Y parameters and creates a new resulting object of TJclComplex type.
 [Parameters]
 Count=4
@@ -666,7 +666,7 @@ polar coordinates of the complex number that is the second multiplier.
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CMul method to perform a multiplication operation where the cureent complex
+Use CNewMul method to perform a multiplication operation where the current complex
 number object is the first and the value provided through either X and Y
 or DivValue parameters is the second multiplier and to create a resulting object of
 TJclComplex type. The complex number to be multiplied by could be set either as
@@ -703,7 +703,7 @@ Count=3
 function CNewSub(SubValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
 function CNewSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
-Subtract the value given by MulValue or X and Y parameters from the value of
+Subtracts the value given by MulValue or X and Y parameters from the value of
 the current complex number object and creates a new resulting object of TJclComplex type.
 [Parameters]
 Count=4
@@ -715,7 +715,7 @@ polar coordinates of the complex number that is the subtrahend.
 4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
-Use CSub method to perform a subtraction operation where the cureent complex
+Use CNewSub method to perform a subtraction operation where the current complex
 number object is the minuend and the value provided through either X and Y
 or DivValue parameters is the subtrahend and to create a resulting object of
 TJclComplex type. The complex number to be subtracted could be set either as
@@ -773,7 +773,7 @@ Count=2
 [Declaration]
 function CNewNeg: <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
-Multiply the current value of the complex number object by a complex negative one
+Multiplies the current value of the complex number object by a complex negative one
 and creates a new resulting complex number object.
 [Description]
 Use CNewNeg method to perform a negative transformation of the value of the current complex
@@ -829,7 +829,7 @@ Count=2
 [Declaration]
 function CNewConjugate: <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
-Transform the value of the calling object of TJclComplex type into a conjugated
+Transforms the value of the calling object of TJclComplex type into a conjugated
 complex number value and creates a new resulting complex number object.
 [Description]
 Use CNewConjugate method to obtain a conjugate to the current value of the complex number object
@@ -897,7 +897,7 @@ function CNewLn: <REF Target"..\TJclComplex">TJclComplex</REF>;
 Evaluates the natural logarithm of the value of the current complex number
 object and creates a new resulting complex number object.
 [Description]
-Use CLn method to evaluate the natural logarithm of the value of the current
+Use CNewLn method to evaluate the natural logarithm of the value of the current
 complex number object and get a new resulting object of TJclComplex type.
 [Notes]
 Count=2
@@ -970,7 +970,7 @@ function CNewExp: <REF Target"..\TJclComplex">TJclComplex</REF>;
 Evaluates the exponential curve for the value of the current complex number
 object and creates a new resulting complex number object.
 [Description]
-Use CExp method to evaluate the exponential curve for the value of the current
+Use CNewExp method to evaluate the exponential curve for the value of the current
 complex number object and get a new resulting object of TJclComplex type.
 [Notes]
 Count=2
@@ -1048,7 +1048,7 @@ Count=8
 function CNewPwr(PwrValue: TJclComplex): <REF Target"..\TJclComplex">TJclComplex</REF>;
 function CNewPwr(X, Y: Float; [ComplexType: <REF Target="..\..\Types\TComplexKind">TComplexKind</REF>]): <REF Target="..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
-Raise the value of the current complex number object to the PwrValue power
+Raises the value of the current complex number object to the PwrValue power
 and creates a new resulting complex number object.
 [Description]
 Use CNewPwr method to raise the value of the current complex number object to the
@@ -1130,7 +1130,7 @@ Count=8
 [Declaration]
 function CNewIntPwr(Pwr: Integer): <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
-Raise the value of the current complex number object to the Pwr power that is
+Raises the value of the current complex number object to the Pwr power that is
 represented by an integer value and creates a new resulting complex number object.
 [Description]
 Use CNewIntPwr method to raise the value of the current complex number object to the
@@ -1205,7 +1205,7 @@ Count=8
 [Declaration]
 function CNewRealPwr(Pwr: Float): <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
-Raise the value of the current complex number object to the Pwr power that is
+Raises the value of the current complex number object to the Pwr power that is
 represented by a floating-point value and creates a new resulting complex number object.
 [Description]
 Use CNewRealPwr method to raise the value of the current complex number object to the
@@ -1327,7 +1327,7 @@ number object and change the value of the calling object accordingly.
 [Notes]
 Count=1
 1=For creating a new resulting complex number object instead of changing the value
-of the current one use <REF>CSqrt</REF> method.
+of the current one use <REF>CNewSqrt</REF> method.
 [Result]
 Method CSqrt returns the calling object with the changed value.
 [Quick Info]
@@ -1735,7 +1735,7 @@ Count=7
 7=TJclComplex; ..\TJclComplex
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CNewScs: <REF Target"..\TJclComplex">TJclComplex</REF>;
+function CNewCsc: <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
 Evaluates the cosecant of the value of the current complex number object
 and creates a new resulting complex number object.
@@ -2119,7 +2119,7 @@ Count=7
 7=TJclComplex; ..\TJclComplex
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CNewScsH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+function CNewCscH: <REF Target"..\TJclComplex">TJclComplex</REF>;
 [ShortDescr]
 Evaluates the hyperbolic cosecant of the value of the current complex number object
 and creates a new resulting complex number object.
