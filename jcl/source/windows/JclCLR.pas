@@ -20,7 +20,7 @@
 { Microsoft .Net framework Clr information support routines and classes.                           }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: March 18, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -120,6 +120,57 @@ type
   PImageCorVTableFixupArray = ^TImageCorVTableFixupArray;
 
 //==================================================================================================
+// TypeDef/ExportedType attr bits, used by DefineTypeDef.
+//==================================================================================================
+const
+  // Use this mask to retrieve the type visibility information.
+  tdVisibilityMask        =   $00000007;
+  tdNotPublic             =   $00000000;     // Class is not public scope.
+  tdPublic                =   $00000001;     // Class is public scope.
+  tdNestedPublic          =   $00000002;     // Class is nested with public visibility.
+  tdNestedPrivate         =   $00000003;     // Class is nested with private visibility.
+  tdNestedFamily          =   $00000004;     // Class is nested with family visibility.
+  tdNestedAssembly        =   $00000005;     // Class is nested with assembly visibility.
+  tdNestedFamANDAssem     =   $00000006;     // Class is nested with family and assembly visibility.
+  tdNestedFamORAssem      =   $00000007;     // Class is nested with family or assembly visibility.
+
+  // Use this mask to retrieve class layout information
+  tdLayoutMask            =   $00000018;
+  tdAutoLayout            =   $00000000;     // Class fields are auto-laid out
+  tdSequentialLayout      =   $00000008;     // Class fields are laid out sequentially
+  tdExplicitLayout        =   $00000010;     // Layout is supplied explicitly
+  // end layout mask
+
+  // Use this mask to retrieve class semantics information.
+  tdClassSemanticsMask    =   $00000020;
+  tdClass                 =   $00000000;     // Type is a class.
+  tdInterface             =   $00000020;     // Type is an interface.
+  // end semantics mask
+
+  // Special semantics in addition to class semantics.
+  tdAbstract              =   $00000080;     // Class is abstract
+  tdSealed                =   $00000100;     // Class is concrete and may not be extended
+  tdSpecialName           =   $00000400;     // Class name is special.  Name describes how.
+
+  // Implementation attributes.
+  tdImport                =   $00001000;     // Class / interface is imported
+  tdSerializable          =   $00002000;     // The class is Serializable.
+
+  // Use tdStringFormatMask to retrieve string information for native interop
+  tdStringFormatMask      =   $00030000;
+  tdAnsiClass             =   $00000000;     // LPTSTR is interpreted as ANSI in this class
+  tdUnicodeClass          =   $00010000;     // LPTSTR is interpreted as UNICODE
+  tdAutoClass             =   $00020000;     // LPTSTR is interpreted automatically
+  // end string format mask
+
+  tdBeforeFieldInit       =   $00100000;     // Initialize the class any time before first static field access.
+
+  // Flags reserved for runtime use.
+  tdReservedMask          =   $00040800;
+  tdRTSpecialName         =   $00000800;     // Runtime should check name encoding.
+  tdHasSecurity           =   $00040000;     // Class has security associate with it.
+
+//==================================================================================================
 // Flags for Params
 //==================================================================================================
 const
@@ -157,7 +208,7 @@ type
     // for each present table.
     Rows: array[0..MaxWord] of DWORD;
     //Rows: array[0..n-1] of DWORD;
-    //Tables: array 
+    //Tables: array
   end;
 
   PClrMetadataHeader = ^TClrMetadataHeader;
@@ -396,7 +447,7 @@ type
     property RowCount: Integer read GetRowCount;
   end;
 
-  TJclClrTableModule = class(TJclClrTable)
+  TJclClrTableModuleRow = class(TJclClrTableRow)
   private
     FGeneration: Word;
     FNameOffset,
@@ -408,7 +459,7 @@ type
     function GetEncBaseId: TGUID;
     function GetEncId: TGUID;
   protected
-    procedure Load; override;
+    constructor Create(const ATable: TJclClrTable); override;
   public
     function HasEncId: Boolean;
     function HasEncBaseId: Boolean;
@@ -423,6 +474,15 @@ type
     property Mvid: TGUID read GetMvid;
     property EncId: TGUID read GetEncId;
     property EncBaseId: TGUID read GetEncBaseId;
+  end;
+
+  TJclClrTableModule = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableModuleRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableModuleRow read GetRow; default;
   end;
 
   TJclClrTableModuleRefRow = class(TJclClrTableRow)
@@ -1233,6 +1293,17 @@ type
     property Rows[const Idx: Integer]: TJclClrTableStandAloneSigRow read GetRow; default;
   end;
 
+  TJclClrTypeVisibility = (tvNotPublic, tvPublic, tvNestedPublic,
+                           tvNestedPrivate, tvNestedFamily, tvNestedAssembly,
+                           tvNestedFamANDAssem, tvNestedFamORAssem);
+  TJclClrClassLayout = (clAuto, clSequential, clExplicit);
+  TJclClrClassSemantics = (csClass, csInterface);
+  TJclClrStringFormatting = (sfAnsi, sfUnicode, sfAutoChar);
+
+  TJclClrTypeAttribute = (taAbstract, taSealed, taSpecialName, taImport,
+    taSerializable, taBeforeFieldInit, taRTSpecialName, taHasSecurity);
+  TJclClrTypeAttributes = set of TJclClrTypeAttribute;
+
   TJclClrTableTypeDefRow = class(TJclClrTableRow)
   private
     FNamespaceOffset: DWORD;
@@ -1243,6 +1314,11 @@ type
     FMethodListIdx: DWORD;
     FFields,
     FMethods: TList;
+    FClassLayout: TJclClrClassLayout;
+    FClassSemantics: TJclClrClassSemantics;
+    FStringFormatting: TJclClrStringFormatting;
+    FVisibility: TJclClrTypeVisibility;
+    FAttributes: TJclClrTypeAttributes;
     function GetName: WideString;
     function GetNamespace: WideString;
     function GetField(const Idx: Integer): TJclClrTableFieldRow;
@@ -1251,6 +1327,7 @@ type
     function GetMethodCount: Integer;
     procedure UpdateFields;
     procedure UpdateMethods;
+    function GetFullName: WideString;
   protected
     constructor Create(const ATable: TJclClrTable); override;
 
@@ -1270,6 +1347,14 @@ type
 
     property Name: WideString read GetName;
     property Namespace: WideString read GetNamespace;
+    property FullName: WideString read GetFullName;
+
+    property Attributes: TJclClrTypeAttributes read FAttributes;
+
+    property Visibility: TJclClrTypeVisibility read FVisibility;
+    property ClassLayout: TJclClrClassLayout read FClassLayout;
+    property ClassSemantics: TJclClrClassSemantics read FClassSemantics;
+    property StringFormatting: TJclClrStringFormatting read FStringFormatting;
 
     property Fields[const Idx: Integer]: TJclClrTableFieldRow read GetField;
     property FieldCount: Integer read GetFieldCount;
@@ -1372,7 +1457,6 @@ type
     FGuidStream: TJclClrGuidStream;
     FBlobStream: TJclClrBlobStream;
     FTableStream: TJclClrTableStream;
-    function GetVersionString: WideString;
     function GetStream(const Idx: Integer): TJclClrStream;
     function GetStreamCount: Integer;
     function GetString(const Idx: Integer): WideString;
@@ -1384,6 +1468,8 @@ type
     function GetTable(const AKind: TJclClrTableKind): TJclClrTable;
     function GetTableCount: Integer;
     function GetToken(const AToken: TJclClrToken): TJclClrTableRow;
+    function GetVersion: string;
+    function GetVersionString: WideString;
   protected
     constructor Create(const AImage: TJclPeImage);
   public
@@ -1405,6 +1491,7 @@ type
     property Image: TJclPeImage read FImage;
     property Header: PClrMetadataHeader read FHeader;
 
+    property Version: string read GetVersion;
     property VersionString: WideString read GetVersionString;
 
     property Streams[const Idx: Integer]: TJclClrStream read GetStream; default;
@@ -1559,6 +1646,11 @@ const
      afNonSideBySideAppDomain, afNonSideBySideProcess,
      afNonSideBySideMachine, afEnableJITcompileTracking,
      afDisableJITcompileOptimizer);
+
+{ TODO : Move resourcestring to JclResources }
+resourcestring
+  RsUnknownClassLayout      = 'Unknown class layout - $%.8x';
+  RsUnknownStringFormatting = 'Unknown string formatting - $%.8x';
 
 { TJclClrStream }
 
@@ -1972,53 +2064,63 @@ begin
   Result := (CodedIndex and ValueMask) shr TagWidth;
 end;
 
-{ TJclClrTableModule }
+{ TJclClrTableModuleRow }
 
-procedure TJclClrTableModule.Load;
+constructor TJclClrTableModuleRow.Create(const ATable: TJclClrTable);
 begin
-  Assert(RowCount = 1); // The Module table shall contain one and only one row
-
   inherited;
 
-  FGeneration   := ReaDWORD;            // Generation (reserved, shall be zero)
-  FNameOffset   := ReadIndex(hkString); // Name (index into String heap)
-  FMvidIdx      := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
-  FEncIdIdx     := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
-  FEncBaseIdIdx := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
+  FGeneration   := Table.ReaDWORD;            // Generation (reserved, shall be zero)
+  FNameOffset   := Table.ReadIndex(hkString); // Name (index into String heap)
+  FMvidIdx      := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
+  FEncIdIdx     := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
+  FEncBaseIdIdx := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
 end;
 
-function TJclClrTableModule.HasEncId: Boolean;
+function TJclClrTableModuleRow.HasEncId: Boolean;
 begin
   Result := FEncIdIdx > 0;
 end;
 
-function TJclClrTableModule.HasEncBaseId: Boolean;
+function TJclClrTableModuleRow.HasEncBaseId: Boolean;
 begin
   Result := FEncBaseIdIdx > 0;
 end;
 
-function TJclClrTableModule.GetName: WideString;
+function TJclClrTableModuleRow.GetName: WideString;
 begin
-  Result := Stream.Metadata.StringAt(FNameOffset);
+  Result := Table.Stream.Metadata.StringAt(FNameOffset);
   Assert(Result <> ''); // Name shall index a non-null string.
   Assert(Length(Result) < MAX_PATH_NAME);
 end;
 
-function TJclClrTableModule.GetMvid: TGUID;
+function TJclClrTableModuleRow.GetMvid: TGUID;
 begin
   // Mvid shall index a non-null GUID in the Guid heap
-  Assert(FMvidIdx <= DWORD(Stream.Metadata.GuidCount));
-  Result := Stream.Metadata.Guids[FMvidIdx-1];
+  Assert(FMvidIdx <= DWORD(Table.Stream.Metadata.GuidCount));
+  Result := Table.Stream.Metadata.Guids[FMvidIdx-1];
 end;
 
-function TJclClrTableModule.GetEncId: TGUID;
+function TJclClrTableModuleRow.GetEncId: TGUID;
 begin
-  Result := Stream.Metadata.Guids[FEncIdIdx-1];
+  Result := Table.Stream.Metadata.Guids[FEncIdIdx-1];
 end;
 
-function TJclClrTableModule.GetEncBaseId: TGUID;
+function TJclClrTableModuleRow.GetEncBaseId: TGUID;
 begin
-  Result := Stream.Metadata.Guids[FEncBaseIdIdx-1];
+  Result := Table.Stream.Metadata.Guids[FEncBaseIdIdx-1];
+end;
+
+{ TJclClrTableModule }
+
+function TJclClrTableModule.GetRow(const Idx: Integer): TJclClrTableModuleRow;
+begin
+  Result := TJclClrTableModuleRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableModule.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableModuleRow;
 end;
 
 { TJclClrTableModuleRefRow }
@@ -3085,18 +3187,65 @@ end;
 { TJclClrTableTypeDefRow }
 
 constructor TJclClrTableTypeDefRow.Create(const ATable: TJclClrTable);
+  function GetClassLayout: TJclClrClassLayout;
+  begin
+    case FFlags and tdLayoutMask of
+      tdAutoLayout:       Result := clAuto;
+      tdSequentialLayout: Result := clSequential;
+      tdExplicitLayout:   Result := clExplicit;
+    else
+      raise EJclError.CreateResRecFmt(@RsUnknownClassLayout, [FFlags and tdLayoutMask]);
+    end;
+  end;
+  function GetClassSemantics: TJclClrClassSemantics;
+  const
+    ClassSemanticsMapping: array[Boolean] of TJclClrClassSemantics =
+      (csClass, csInterface);
+  begin
+    Result := ClassSemanticsMapping[(FFlags and tdClassSemanticsMask) = tdInterface];
+  end;
+  function GetStringFormatting: TJclClrStringFormatting;
+  begin
+    case FFlags and tdStringFormatMask of
+      tdAnsiClass:    Result := sfAnsi;
+      tdUnicodeClass: Result := sfUnicode;
+      tdAutoClass:    Result := sfAutoChar;
+    else
+      raise EJclError.CreateResRecFmt(@RsUnknownStringFormatting, [FFlags and tdStringFormatMask]);
+    end;
+  end;
+  function GetTypeAttributes: TJclClrTypeAttributes;
+  const
+    TypeAttributesMapping: array[TJclClrTypeAttribute] of DWORD =
+      (tdAbstract, tdSealed, tdSpecialName, tdImport,
+       tdSerializable, tdBeforeFieldInit, tdRTSpecialName, tdHasSecurity);
+  var
+    Attr: TJclClrTypeAttribute;
+  begin
+    Result := [];
+    for Attr:=Low(TJclClrTypeAttribute) to High(TJclClrTypeAttribute) do
+      if (FFlags and TypeAttributesMapping[Attr]) = TypeAttributesMapping[Attr] then
+        Include(Result, Attr); 
+  end;
 begin
   inherited;
 
-  FFlags           := Table.ReadDWORD;
-  FNameOffset      := Table.ReadIndex(hkString);
-  FNamespaceOffset := Table.ReadIndex(hkString);
-  FExtendsIdx      := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
-  FFieldListIdx    := Table.ReadIndex([ttFieldDef]);
-  FMethodListIdx   := Table.ReadIndex([ttMethodDef]);
+  FFlags            := Table.ReadDWORD;
+  FNameOffset       := Table.ReadIndex(hkString);
+  FNamespaceOffset  := Table.ReadIndex(hkString);
+  FExtendsIdx       := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
+  FFieldListIdx     := Table.ReadIndex([ttFieldDef]);
+  FMethodListIdx    := Table.ReadIndex([ttMethodDef]);
 
-  FFields          := nil;
-  FMethods         := nil;
+  FFields           := nil;
+  FMethods          := nil;
+
+  FClassLayout      := GetClassLayout;
+  FClassSemantics   := GetClassSemantics;
+  FStringFormatting := GetStringFormatting;
+  FVisibility       := TJclClrTypeVisibility(FFlags and tdVisibilityMask);
+
+  FAttributes       := GetTypeAttributes;
 end;
 
 destructor TJclClrTableTypeDefRow.Destroy;
@@ -3203,6 +3352,14 @@ begin
 
   UpdateFields;
   UpdateMethods;
+end;
+
+function TJclClrTableTypeDefRow.GetFullName: WideString;
+begin
+  if FNamespaceOffset <> 0 then
+    Result := Namespace + '.' + Name
+  else
+    Result := Name;
 end;
 
 { TJclClrTableTypeDef }
@@ -3448,6 +3605,11 @@ begin
   StrlCopy(PChar(VerStr), @Header.Version[0], Header.Length);
   SetLength(VerStr, StrLen(PChar(VerStr)));
   Result := UTF8ToWideString(VerStr)
+end;
+
+function TJclPeMetadata.GetVersion: string;
+begin
+  Result := FormatVersionString(Header.MajorVersion, Header.MinorVersion);
 end;
 
 function TJclPeMetadata.GetStream(const Idx: Integer): TJclClrStream;
