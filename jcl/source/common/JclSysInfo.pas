@@ -96,8 +96,8 @@ type
 function GetAPMLineStatus: TAPMLineStatus;
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 function GetAPMBatteryLifePercent: Integer;
-function GetAPMBatteryLifeTime: Integer;
-function GetAPMBatteryFullLifeTime: Integer;
+function GetAPMBatteryLifeTime: DWORD;
+function GetAPMBatteryFullLifeTime: DWORD;
 
 //------------------------------------------------------------------------------
 // Identification
@@ -2459,7 +2459,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetAPMBatteryLifeTime: Integer;
+function GetAPMBatteryLifeTime: DWORD;
 var
   SystemPowerstatus: TSystemPowerStatus;
 begin
@@ -2472,7 +2472,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetAPMBatteryFullLifeTime: Integer;
+function GetAPMBatteryFullLifeTime: DWORD;
 var
   SystemPowerstatus: TSystemPowerStatus;
 begin
