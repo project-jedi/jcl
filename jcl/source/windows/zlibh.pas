@@ -1186,22 +1186,19 @@ function get_crc_table: PCRCTable;
 
 implementation
 
-{$L deflate.obj}
-{$L inflate.obj}
-{$L compress.obj}
-{$L uncompr.obj}
-{$L adler32.obj}
-{$L crc32.obj}
+{$L obj\deflate.obj}
+{$L obj\inflate.obj}
+{$L obj\compress.obj}
+{$L obj\uncompr.obj}
+{$L obj\adler32.obj}
+{$L obj\crc32.obj}
 
 
-{$L inftrees.obj}
-{$L trees.obj}
-{.$L infblock.obj}
-{.$L infcodes.obj}
-{.$L infutil.obj}
-{$L inffast.obj}
-{$L zutil.obj}
-{$L infback.obj}
+{$L obj\inftrees.obj}
+{$L obj\trees.obj}
+{$L obj\inffast.obj}
+{$L obj\zutil.obj}
+{$L obj\infback.obj}
 
 
 // **************************  zutil.c  *****************************
@@ -1339,8 +1336,8 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
-//   Revision 1.1  2004/04/06 04:57:00  peterjhaas
-//   zlib header conversion
+//   Revision 1.2  2004/04/06 23:02:10  peterjhaas
+//   Change the (relative) path to the obj files to 'obj'
 //
 
 end.
