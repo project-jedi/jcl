@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 18, 2000                                            }
+{ Last modified: December 12, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -204,11 +204,12 @@ uses
 const
   JclMaxKeyboardLayouts = 16;
   LocaleUseAcp: array [Boolean] of DWORD = (0, LOCALE_USE_CP_ACP);
+{ TODO -cMOVE : Move the constant to JclWin32 }
   KLF_SETFORPROCESS = $00000100;
 
 var
-  GlobalKeyboardLayoutList: TJclKeyboardLayoutList = nil;
-  GlobalLocalesList: TJclLocalesList = nil;
+  GlobalKeyboardLayoutList: TJclKeyboardLayoutList;
+  GlobalLocalesList: TJclLocalesList;
 
 //------------------------------------------------------------------------------
 
