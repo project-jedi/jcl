@@ -1,4 +1,3 @@
 [Directories]
 UnitOutputDir=..\..\lib\d5
-SearchPath=..\..\source\common;..\..\source\windows;..\..\source\prototypes
-
+SearchPath=..\source;..\..\source\common;..\..\source\windows
