@@ -135,13 +135,22 @@ begin
   Result := True;
 end;
 
+//------------------------------------------------------------------------------
+
+function RelativeKey(const Key: string): PChar;
+begin
+  Result := PChar(Key);
+  if (Key <> '') and (Key[1] = '\') then
+    Inc(Result);
+end;
+
 //==============================================================================
 // Registry
 //==============================================================================
 
 function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 begin
-  Result := RegSetValue(RootKey, PChar(Key), REG_SZ, PChar(Value), Length(Value));
+  Result := RegSetValue(RootKey, RelativeKey(Key), REG_SZ, PChar(Value), Length(Value));
 end;
 
 //------------------------------------------------------------------------------
@@ -151,7 +160,7 @@ var
   RegKey: HKEY;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
     RegCloseKey(RegKey);
@@ -173,7 +182,7 @@ var
   MaxSubKeyLen: DWORD;
   KeyName: string;
 begin
-  Result := RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
+  Result := RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
@@ -190,7 +199,7 @@ begin
       end;
     RegCloseKey(RegKey);
     if Result then
-      Result := Windows.RegDeleteKey(RootKey, PChar(Key)) = ERROR_SUCCESS;
+      Result := Windows.RegDeleteKey(RootKey, RelativeKey(Key)) = ERROR_SUCCESS;
     end
     else
       WriteError(Key);
@@ -221,7 +230,7 @@ var
   Ret: Longint;
 begin
   Result := 0;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := SizeOf(Integer);
@@ -251,7 +260,7 @@ var
   RegKind: DWORD;
 begin
   Result := Def;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := SizeOf(Integer);
@@ -273,7 +282,7 @@ var
   Ret: Longint;
 begin
   Result := '';
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := 0;
@@ -304,7 +313,7 @@ var
   RegKind: DWORD;
 begin
   Result := Def;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := 0;
@@ -332,7 +341,7 @@ var
   Ret: Longint;
 begin
   Result := 0;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := 0;
@@ -365,7 +374,7 @@ var
 begin
   Result := 0;
   FillChar(Value, ValueSize, Def);
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
     Size := 0;
@@ -398,7 +407,7 @@ var
   RegKey: HKEY;
   Ret: Longint;
 begin
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_DWORD, @Value, SizeOf(Integer));
     RegCloseKey(RegKey);
@@ -416,7 +425,7 @@ var
   RegKey: HKEY;
   Ret: Longint;
 begin
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_SZ, PChar(Value), Length(Value));
     RegCloseKey(RegKey);
@@ -434,7 +443,7 @@ var
   RegKey: HKEY;
   Ret: Longint;
 begin
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_BINARY, @Value, ValueSize);
     RegCloseKey(RegKey);
@@ -483,7 +492,7 @@ var
 begin
   Result := False;
   List.Clear;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
     begin
@@ -516,7 +525,7 @@ var
 begin
   Result := False;
   List.Clear;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
     begin
@@ -544,7 +553,7 @@ var
   NumSubKeys: Integer;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
     Result := NumSubKeys <> 0;
