@@ -484,7 +484,7 @@ Notes:
 See also:
   ISOWeekToDateTime
 Quick info:
-  Donator: <LINK PeterJHaas, Peter J. Haas>
+  Donator: Anonymous
 --------------------------------------------------------------------------------
 @@ISOWeekToDateTime
 <GROUP $DateandTime>
@@ -506,7 +506,7 @@ Notes:
 See also:
   ISOWeekNumber
 Quick info:
-  Donator: <LINK PeterJHaas, Peter J. Haas>
+  Donator: Anonymous
 --------------------------------------------------------------------------------
 @@DayOfTheYear
 <GROUP $DateandTime>
@@ -925,6 +925,28 @@ Quick info:
   Donator: Michael Schnell
 @@FileTimeToLocalDateTime
 --------------------------------------------------------------------------------
+@@DateTimeToUnixTime
+<GROUP $DateandTime.Conversion>
+Summary:
+  Converts a TDateTime value to a Unix based date/time value (TJclUnixTime32).
+Description:
+  UnixTimeToDateTime converts the supplied TDateTime value to Unix based
+  TJclUnixTime32. Unix based TJclUnixTime32 values are encoded as the
+  number of seconds since midnight at the start of January 1st, 1970.
+Parameters:
+  DateTime - The TDateTime value to convert.
+Result:
+  The TDateTime value converted to TJclUnixTime32. On failure the function
+  raises an exception.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
+Quick info:
+  Donator: Rik Barker
+--------------------------------------------------------------------------------
 @@UnixTimeToDateTime
 <GROUP $DateandTime.Conversion>
 Summary:
@@ -944,7 +966,7 @@ See also:
   DateTimeToDosDateTime
   FileTimeToDateTime
 Quick info:
-  Donator: <LINK PeterJHaas, Peter J. Haas>
+  Donator: Rik Barker
 --------------------------------------------------------------------------------
 @@UnixTimeToFileTime
 <GROUP $DateandTime.Conversion>
@@ -966,7 +988,7 @@ See also:
   FileTimeToDateTime
   UnixTimeToDateTime
 Quick info:
-  Donator: <LINK PeterJHaas, Peter J. Haas>
+  Donator: Anonymous
 --------------------------------------------------------------------------------
 @@FileTimeToUnixTime
 <GROUP $DateandTime.Conversion>
@@ -989,7 +1011,7 @@ See also:
   UnixTimeToFileTime
   UnixTimeToDateTime
 Quick info:
-  Donator: <LINK PeterJHaas, Peter J. Haas>
+  Donator: Anonymous
 --------------------------------------------------------------------------------
 @@TJclUnixTime32
 <GROUP $DateandTime.Conversion>

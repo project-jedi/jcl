@@ -105,7 +105,7 @@ Result:
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@QueryTimer
 <GROUP $LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -131,7 +131,7 @@ Result:
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@QuerySemaphore
 <GROUP $LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -156,7 +156,7 @@ Result:
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@QueryMutex
 <GROUP $LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -182,7 +182,7 @@ Result:
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite
 <GROUP $LibrariesProcessesandThreads.Synchronization.TJclMultiReadExclusiveWrite>
@@ -459,7 +459,7 @@ Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimer
 Summary:
@@ -480,7 +480,7 @@ Result:
   you set Resume to True on a platform which doesn't support this, the method
   succeeds (returns True) but calling GetLastError will return ERROR_NOT_SUPPORTED.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimerApc
 Summary:
@@ -512,7 +512,7 @@ Result:
   you set Resume to True on a platform which doesn't support this, the method
   succeeds (returns True) but calling GetLastError will return ERROR_NOT_SUPPORTED.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TFNTimerAPCRoutine
 <GROUP $LibrariesProcessesandThreads.Synchronization.TJclWaitableTimer>
@@ -541,7 +541,7 @@ Parameters:
   Manual - If True the timer acts as a manual-reset notification timer. If False the timer acts as a synchronization timer.
   Name - Name of the waitable timer object, can be empty. If a waitable timer already exists on the system with the same name, the waitable timer is opened with TIMER_ALL_ACCESS. If the waitable timer cannot be opened the constructor fails by raising an EJclWaitableTimerError exception. If no waitable timer with the specified name exists, the waitable timer is created with that name. If a named object already exists with the specified name but it is not a waitable timer, the constructor fails by raising an EJclWaitableTimerError exception.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Open
 Summary:
@@ -563,7 +563,7 @@ SYNCHRONIZE         <B>Windows NT/2000:</B> Enables use of the timer handle in a
   Inheritable - Specifies whether the Handle of the waitable timer object can be inherited by child processes.
   Name - Name of the waitable timer object to open.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclSemaphore
 <GROUP $LibrariesProcessesandThreads.Synchronization.TJclSemaphore>
@@ -724,7 +724,7 @@ Parameters:
   SpinCount - The spincount for the critical section object. Conceptually the critical section will try to attempt ownership of the critical section for SpinCount number of times when the Enter method is called. If the critical section is still not available after these attempts the thread enters a wait state until the critical section is released. On a single-processor system this parameter is ignored and the critical section will use 0 internally. This means the critical section will never spin before waiting on a kernel event. This makes sense since the critical section could never be released while the thread was spinning (and thus monopolizing the processor).
   NoFailEnter - If True the kernel event object which is used when a thread must enter a wait state because the critical section is not available, is preallocated thereby guaranteeing that the Enter method does not fail, even in low memory situations.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.TryEnter
 Summary:
@@ -740,7 +740,7 @@ Result:
   owned by a different thread the function returns False. In this latter case you
   must take care <u>not</U> to call Release.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.GetSpinTimeOut
 Summary:
@@ -1068,7 +1068,7 @@ See also:
   WaitForMultipleObjects
   WaitAlertableForMultipleObjects
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitAlertable
 Summary:

@@ -8,10 +8,15 @@
 <TITLE Files and Directories>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
+@@$FilesandIO.FilesandDirectories.FileSearch
+<GROUP $FilesandIO.FilesandDirectories>
+<TITLE File Search>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
 @@$FilesandIO.FilesandDirectories.FileVersionInfo
 <GROUP $FilesandIO.FilesandDirectories>
 <TITLE File Version Information>
-<TOPICORDER 100>
+<TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$FilesandIO.FileSystems
 <GROUP $FilesandIO>
@@ -323,7 +328,6 @@ Description:
   creation. This only applies if you used the Open constructor or specified a name
   in the constructor and another process had already created the filemapping with
   the same name.
-
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Handle
@@ -343,7 +347,6 @@ Summary:
 Description:
   The Name property contains the name of the filemapping object as specified during
   construction.
-
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.RoundViewOffset
@@ -367,7 +370,6 @@ Description:
   using the Add or AddAt method. The number of Views in this list can be determined
   using the Count property. When a View is created it is automatically
   added to the list and when a view is destroyed is is removed from the list.
-
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping
@@ -413,7 +415,6 @@ Description:
   use the handle after the TJclFileMapping class has been destroyed then you must
   copy it using DuplicateHandle. Note that if you decide to use the Handle as such
   you are still required to close the original handle using CloseHandle!
-
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclSwapFileMapping
@@ -451,7 +452,8 @@ Description:
   in a system defined folder reserved for temporary files and is automatically
   deleted when the object is freed. The stream object is opened with full access
   rights and in such manner that the stream cannot be opened by another thread.
-
+Platforms:
+  Windows, Unix
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclTempFileStream.FileName
@@ -477,7 +479,6 @@ Description:
   is automatically deleted when the object is destroyed.
 Parameters:
   Prefix - On input the first three characters of the string are used to form the name of the temporary file (can be empty). On return, assuming the function succeeded, the FileName property contains the actual name of the temporary file, including the path.
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileGetTypeName
@@ -494,9 +495,10 @@ Parameters:
   FileName - The name of the file for which you want to know the type name. The file does not have to exist physically.
 Result:
   String that describes the file type.
+Platform:
+  Windows
 See also:
   PathGetDisplayName
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FindUnusedFileName
@@ -560,16 +562,41 @@ See also:
 
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
+@@PathCanonicalize
+Summary:
+  If possible, shortens a path by resolving relative path elements ('.', '..')
+Description:
+  Canonicalizes a path. Meaning, it parses the specified path for the character
+  sequences '.' and '..' where '.' means skip over the next path part and '..'
+  means remove the previous path part.
+
+  For example:
+    c:\users\.\delphi\data => c:\users\delphi\data
+    c:\users\..\delphi\data => c:\delphi\data
+    c:\users\.\delphi\.. => c:\users
+    c:\users\.\..\data => c:\data
+
+  Thus, the '.' and '..' sequences have similar meaning to their counterparts in
+  the filesystem.
+
+Parameters:
+  Path - The path to canonicalize.
+Result:
+  The canonicalized path.
+Notes:
+  (Kylix) Libc.canonicalize_file_name() is different in that it converts
+  relative paths to absolute ones - and thus needs to evaluate the program's
+  environment.
+Donator:
+  Jeff
+--------------------------------------------------------------------------------
 @@PathGetLongName
 <GROUP $FilesandIO.Pathmanipulation>
 Summary:
   Returns the long name of a path.
 Description:
-  PathGetLongName returns the long name of a given path. PathGetLongName uses
-  the shell to discover the long path while PathGetLongName2 relies on the
-  filesystem to discover the long path. Consequence of this is that while
-  PathGetLongName2 is much faster than PathGetLongName, the latter can be
-  used for shell paths which include GUIDs, while PathGetLongName2 cannot.
+  PathGetLongName returns the long name of a given path. Can be
+  used for shell paths which include GUIDs.
 Parameters:
   Path -   The path for which you want to know the long name. The path must physically exist on the
            drive or the function fails.
@@ -577,13 +604,29 @@ Result:
   If the function succeeds it returns the long name of the supplied path. If the
   function fails the result is a copy of the supplied Path.
 Category: Files and IO
+Platform:
+  Windows
 Donator: Rudy Velthuis
-Quick info:
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: Shell32 Version 4.00 or later.
 See Also
   PathGetShortName
+--------------------------------------------------------------------------------
+@@PathGetLongName2
+<GROUP $FilesandIO.Pathmanipulation>
+Summary
+  Returns the long name of a path.
+Description
+  Deprecated, do not use. PathGetLongName2 has been changed to be a mere wrapper
+  around PathGetLongName.
+Parameters:
+  Path -   The path for which you want to know the long name. The
+           path must physically exist on the drive or the function
+           fails.
+Result:
+  If the function succeeds it returns the long name of the
+  supplied path. If the function fails the result is a copy of
+  the supplied Path.
+See Also
+  PathGetLongName
 --------------------------------------------------------------------------------
 @@PathGetShortName
 <GROUP $FilesandIO.Pathmanipulation>
@@ -599,15 +642,33 @@ Result:
 See also:
   PathGetLongName
   PathGetDisplayName
-
 Donator: Rudy Velthuis
+--------------------------------------------------------------------------------
+@@PathGetRelativePath
+<GROUP $FilesandIO.Pathmanipulation>
+Summary: TODO
+Description: TODO
+Result: TODO
+Donator: Olivier Sannier
+Contributor: Robert Rossmair
+--------------------------------------------------------------------------------
+@@PathGetTempPath
+<GROUP $FilesandIO.Pathmanipulation>
+Summary: Retrieves the path of the directory designated for temporary files.
+Description: The <i>GetTempPath</i> function retrieves the path of the directory
+  designated for temporary files.
+Result:
+  The path of the directory designated for temporary files.
+Platforms:
+  Windows, Unix
+Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@PathIsChild
 <GROUP $FilesandIO.Pathmanipulation>
 Summary:
   Checks whether Path is a child of Base.
 Description:
-  The PathIsChild routine determines whether the directory specified by Path is
+  The <i>PathIsChild</i> routine determines whether the directory specified by Path is
   a child directory, either immediate or several levels deep, of the specified
   Base path. For example, 'c:\winnt\system32' is a child of 'c:\winnt'.
 Parameters:
@@ -802,7 +863,7 @@ Result:
 Notes:
   If Width is smaller than the most compacted path then the result is the most compacted path, even though it does not fit within the specified width.
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@PathExtractFileDirFixed
 <GROUP $FilesandIO.Pathmanipulation>
@@ -893,13 +954,21 @@ Description:
    (such as a designated folder for temporary files) and the supplied prefix. As
   the name suggests, this is mostly useful when you need to create a temporary
   file.
+
+  Warning (Unix): Between the time the pathname is constructed and the file is created
+  another process might have created a file with the same name using tmpnam,
+  leading to a possible security hole. The implementation generates names which
+  can hardly be predicted, but when opening the file you should use the O_EXCL
+  flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
 Parameters:
   Prefix - On input the first three characters of the string are used to form the name of the temporary file (can be empty).
 Result:
   If the function succeeds it returns a fully qualified filename. If it fails it
   returns an empty string.
-
-Donator: Marcel van Brakel
+Platforms:
+  Windows, Unix
+Donators:
+  Marcel van Brakel (Windows), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@FileCreateTemp
 <GROUP $FilesandIO.FilesandDirectories>
@@ -917,8 +986,63 @@ Parameters:
 Result:
   If the function succeeds the result is a handle to the temporary file, on failure
   the function returns INVALID_HANDLE_VALUE.
-
-Donator: Marcel van Brakel
+Platforms:
+  Windows, Unix
+Donators: Marcel van Brakel (Windows), Robert Rossmair (Unix)
+--------------------------------------------------------------------------------
+@@FileBackup
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName - The name of the file to backup.
+Result:
+  True on success, False otherwise. If the function fails, call GetLastError to
+  to get extended error information, or RaiseLastOSError to pass the information
+  on to the user.
+Platforms:
+  Windows, Unix
+Donator: ?
+Contributor: Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileCopy
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+  Copies a file.
+Description:
+  The <i>FileCopy</i> function copies an existing file to a new file.
+Parameters:
+  ExistingFileName - The existing file.
+  NewFileName - Specifies the name of the new file, or name of a directory where the
+    copy will be created.
+  ReplaceExisting - Specifies how to proceed if a file of the same name as that
+    specified by NewFileName already exists. If this parameter is False and the
+    new file already exists, the function fails. If this parameter is True and
+    the new file already exists, the function overwrites the existing file and
+    succeeds.
+Result:
+  If the function succeeds, the return value is True; False otherwise
+Platforms:
+  Windows, Unix
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileDelete
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName - The name of the file to delete.
+  MoveToRecycleBin - If True, the file is move to the recycle bin/trash can (and
+  still might be restored later); if False, it is to be deleted, allowing no
+  recovery later.
+Result:
+Platforms:
+  Windows, Unix
+Donator:
+  Marcel van Brakel
+Contributor:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileExists
 <GROUP $FilesandIO.FilesandDirectories>
@@ -932,8 +1056,36 @@ Parameters:
   FileName - The fully qualified name of the file whose existence to test.
 Result:
   If the file exists the function returns True, otherwise it returns False.
-
 Donator: Pelle F. S. Liljendal
+--------------------------------------------------------------------------------
+@@FileMove
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  ExistingFileName - The existing file.
+  NewFileName - Specifies the new file name, or the name of a directory
+    where the file shall be moved to.
+Result:
+  True, if the file was successfully moved, False, if not.
+Platforms:
+  Windows, Unix
+Donator: Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileRestore
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName - The name of the file to restore.
+Result:
+  True on success, False otherwise. If the function fails, call GetLastError to
+  to get extended error information, or RaiseLastOSError to pass the information
+  on to the user.
+Platforms:
+  Windows, Unix
+Donator: ?
+Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@ShredFile
 <GROUP $FilesandIO.FilesandDirectories>
@@ -946,8 +1098,8 @@ Description:
 Parameters:
   FileName - The fully qualified name of the file to shred.
   Times - Number of file overwrites. Defaults to 1.
-
-Donator: Pelle F. S. Liljendal
+Donator:
+  Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FileGetSize
 <GROUP $FilesandIO.FilesandDirectories>
@@ -962,7 +1114,6 @@ Result:
   If the function succeeds it returns the size, in bytes, of the specified file.
   If the function fails, for example because the file does not exist, the result
   is -1.
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetFileAttributeListEx
@@ -996,8 +1147,8 @@ Parameters:
   Attr - Attributes of a file, usually you'll pass in TSearchRec.Attr.
 See also:
   GetFileAttributeListEx
-
-Donator: Charlie Calvert
+Donator:
+  Charlie Calvert
 --------------------------------------------------------------------------------
 @@GetDirectorySize
 <GROUP $FilesandIO.FilesandDirectories>
@@ -1287,7 +1438,7 @@ See also:
   GetFileInformation
 
 Donator: Marcel van Brakel
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@GetFileAgeCoherence
 <GROUP $FilesandIO.FilesandDirectories>
@@ -1453,8 +1604,8 @@ Notes:
   Returning False will abort the entire deletion process, not just for the specified file only.
 See also:
   DelTreeEx
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@DelTree
 <GROUP $FilesandIO.FilesandDirectories>
@@ -1477,8 +1628,9 @@ Notes:
   The deletions are permanent! Deletions are not recoverable through the recycle bin.
 See also:
   DelTreeEx
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
+Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DelTreeEx
 <GROUP $FilesandIO.FilesandDirectories>
@@ -1872,8 +2024,8 @@ Description:
 See also:
   SpecialBuild
   FileFlags
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Items
 Summary:
@@ -1883,24 +2035,24 @@ Description:
   resource. This is implemented as an array with a string index. The key you
   want to read is used as an index into this array. For example:
   S := V.UserKeys['MyKey']; The property returns the value of the key 'MyKey'.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinFileVersion
 Summary:
   Returns the binary file version string.
 Description:
   BinFileVersion returns the value of the binary file version string key.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinProductVersion
 Summary:
   Returns the binary product string.
 Description:
   The BinProductVersion returns the value of the binary product version string key.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Attach
 Summary:
@@ -2003,64 +2155,36 @@ Parameters
 Result:
   If there is no an appropriate value for FileType passed the
   function returns an empty string.
-Category: Files and IO
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathExtractPathDepth
 Summary
   Returns Depth parts of the path excluding drive.
 Description
-  Returns first Depth parts of the path excluding drive letter
-  and colon.
+  Returns first Depth parts of the specified path excluding drive letter
+  and colon. Example:
+
+  PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
 Parameters
-  Depth :   Specify the depts of path's parts to return.
-  Path :    Path to extract parts from.
-Category: Files and IO
-Donator: Marcel van Brakel
+  Depth - Specifies the maximum of path parts to return.
+  Path - The path to extract parts from.
+Donator:
+  Jeff
 See Also
   PathGetDepth
 --------------------------------------------------------------------------------
 @@PathGetDepth
 Summary
-  Counts the depth of the path specified by Path parameter.
+  Returns the depth of the path specified by Path parameter.
 Description
-  Counts the depth of the path specified by Path parameter,
-  i.e. counts subdirectories in the path.
+  Returns the depth of the path specified by Path parameter, that is the number
+  of subdirectories in the path.
 Parameters
-  Path :   Path to count the depth of.
+  Path - The path to count the depth of.
 See Also
    PathExtractPathDepth
-Category: Files and IO
-Donator: Marcel van Brakel
---------------------------------------------------------------------------------
-@@PathGetLongName2
-<GROUP $FilesandIO.Pathmanipulation>
-Summary
-  Returns the long name of a path.
-Description
-  PathGetLongName2 returns the long name of a given path.
-  PathGetLongName uses the file system to discover the long
-  path while PathGetLongName relies on the shell to discover
-  the long path. Consequence of this is that while
-  PathGetLongName2 is much faster than PathGetLongName, the
-  latter can be used for shell paths which include GUIDs, while
-  PathGetLongName2 cannot.
-Parameters
-  Path :   The path for which you want to know the long name. The
-           path must physically exist on the drive or the function
-           fails.
-Result
-  If the function succeeds it returns the long name of the
-  supplied path. If the function fails the result is a copy of
-  the supplied Path.
-Category: Files and IO
-Donator: Rudy Velthuis
-QuickInfo
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: Shell32 Version 4.00 or later.
-See Also
-  PathGetLongName
+Donator:
+  Jeff
 --------------------------------------------------------------------------------
 @@UnlockVolume
 <GROUP $FilesandIO.FilesandDirectories>
@@ -2088,32 +2212,39 @@ Parameters
              function directly.
 Result
   Returns <B>True </B>if the function succeeded, <B>False </B>otherwise.
-Category: Files and IO
-Donator: Rudy Velthuis
-QuickInfo
+Platforms:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Unsupported.
+Donator: Rudy Velthuis
 --------------------------------------------------------------------------------
 @@Win32DeleteFile
 <GROUP $FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
-  FileName - 
+  FileName -
   MoveToRecycleBin -
 Result:
-Donator: Jeff
+Note:
+  Obsolete. Use FileDelete instead.
+Donator:
+  Jeff
 --------------------------------------------------------------------------------
 @@Win32MoveFileReplaceExisting
 <GROUP $FilesandIO.FilesandDirectories>
 Summary: TODO
 Description: TODO
 Parameters:
-  SrcFilename -
-  DstFilename -
+  ExistingFilename -
+  NewFileName -
 Result:
   True on success, False otherwise.
-Donator: <LINK PeterJHaas, Peter J. Haas>
+Note:
+  Obsolete. Use FileMove instead.
+Platform:
+  Windows
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@Win32BackupFile
 <GROUP $FilesandIO.FilesandDirectories>
@@ -2126,8 +2257,12 @@ Result:
   True on success, False otherwise. If the function fails, call GetLastError to
   to get extended error information, or RaiseLastOSError to pass the information
   on to the user.
+Note:
+  Obsolete. Use FileBackup instead.
+Platform:
+  Windows
 Donator:
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+  ?
 --------------------------------------------------------------------------------
 @@Win32RestoreFile
 <GROUP $FilesandIO.FilesandDirectories>
@@ -2139,8 +2274,12 @@ Result:
   True on success, False otherwise. If the function fails, call GetLastError to
   to get extended error information, or RaiseLastOSError to pass the information
   on to the user.
-Donator: Unknown
-Contributor: <LINK PeterJHaas, Peter J. Haas>
+Note:
+  Obsolete. Use FileRestore instead.
+Platform:
+  Windows
+Donator:
+  ?
 --------------------------------------------------------------------------------
 @@VersionFixedFileInfo
 <GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
@@ -2166,43 +2305,42 @@ See Also
 --------------------------------------------------------------------------------
 @@CreateSymbolicLink
 <GROUP $FilesandIO.FilesandDirectories>
-Parameters
-  const Name :  The name of the symbolic link.
-  const Target: The file the link points to.
-Donator: Robert Rossmair
-Platforms: Unix
+Parameters:
+  Name - The name of the symbolic link.
+  Target - The file the link points to.
+Platforms:
+  Unix
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@SymbolicLinkTarget
 <GROUP $FilesandIO.FilesandDirectories>
-Parameters
-  const Name :  The name of the symbolic link
-Result
+Parameters:
+  Name - The name of the symbolic link
+Result:
   The file the link points to.
-Donator: Robert Rossmair
+Platforms:
+  Unix
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@TFileSearchOptions
-<GROUP $FilesandIO.FilesandDirectories.>
-
-Description
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
   TODO
-
-Summary
+Description:
   TODO
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@TAttributeInterest
-<GROUP $FilesandIO.FilesandDirectories>
-
-Description
-Specifies how a given file attribute shall affect file search results.
-
-Summary
-Defines the interest a file search operation may have in
-specific file attributes.
-
-QuickInfo
-Category: Files and Directories
-Donator: Robert Rossmair
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  Defines the interest a file search operation may have in specific file
+  attributes.
+Description:
+  Specifies how a given file attribute shall affect file search results.
+Donator:
+  Robert Rossmair
 
 @@TAttributeInterest.aiIgnored
 File search matching is not affected by this attribute
@@ -2213,15 +2351,124 @@ The attribute is required for a file to be included in the search result set.
 @@TAttributeInterest.aiRejected
 The attribute causes a file to be excluded from the search result set.
 --------------------------------------------------------------------------------
+@@VerifyFileAttributeMask
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Parameters:
+  RejectedAttributes - TODO
+  RequiredAttributes - TODO
+Result:
+  TODO
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@IsFileAttributeMatch
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Parameters:
+  FileAttributes - TODO
+  RejectedAttributes - TODO
+  RequiredAttributes - TODO
+Result:
+  TODO
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileAttributesStr
+<GROUP $FilesandIO.FilesandDirectories>
+Parameters:
+  FileInfo - TODO
+Result:
+  TODO
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@IsFileNameMatch
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Parameters:
+  FileName - TODO
+  Mask - TODO
+  CaseSensitive - default is False for Windows, True else
+Result:
+  TODO
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@EnumFiles
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Parameters:
+  Path - TODO
+  HandleFile - TODO
+  RejectedAttributes - TODO; default = faRejectedByDefault.
+  RequiredAttributes - TODO
+  Abort - default = nil);
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@EnumDirectories
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Parameters:
+  Root - TODO
+  HandleDirectory - TODO
+  IncludeHiddenDirectories - TODO
+  SubDirectoriesMask - TODO
+  Abort - TODO
+  ResolveSymLinks - (Unix only)
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@TJclCustomFileAttrMask
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  TODO
+Description:
+  TODO
+Platforms:
+  Win32, Unix
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@TJclFileAttributeMask
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  TODO
+Description:
+  TODO
+Platforms:
+  Win32, Unix
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@TJclFileEnumerator
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  TODO
+Description:
+  TODO
+Platforms:
+  Win32, Unix
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
 @@IJclFileEnumerator
 <GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  <COLOR 00000E>Interface for thread-based file search</COLOR>
+Description:
+  TODO
+Platforms:
+  Win32, Unix
+Donator:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileSearch
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+Summary:
+  TODO
+Description:
+  TODO
+Result:
+  TODO
+Platforms:
+  Win32, Unix
+Donator:
+  Robert Rossmair
 
-Description
-
-Summary
-<COLOR 00000E>Interface for thread-based file search</COLOR>
-
-QuickInfo
-Category: File search
-Donator: Robert Rossmair
-Platforms: Win32/Unix
