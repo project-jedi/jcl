@@ -3,45 +3,55 @@
 <TITLE Graphics>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
+@@$Graphics.Bitmap32
+<GROUP Graphics>
+<TITLE Bitmap32>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@$Graphics.Clipping
+<GROUP Graphics>
+<TITLE Clipping>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
 @@$Graphics.Colors
 <GROUP Graphics>
 <TITLE Colors>
-<TOPICORDER 100>
+<TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@$Graphics.Conversion
 <GROUP Graphics>
 <TITLE Conversion>
-<TOPICORDER 200>
+<TOPICORDER 400>
 --------------------------------------------------------------------------------
 @@$Graphics.Points
 <GROUP Graphics>
 <TITLE Points>
-<TOPICORDER 300>
+<TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@$Graphics.Rectangles
 <GROUP Graphics>
 <TITLE Rectangles>
-<TOPICORDER 400>
+<TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclDesktopCanvas
 <GROUP Graphics>
 <TITLE TJclDesktopCanvas>
-<TOPICORDER 500>
+<TOPICORDER 700>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclRegion
 <GROUP Graphics>
 <TITLE TJclRegion>
-<TOPICORDER 600>
+<TOPICORDER 800>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclRegionInfo
 <GROUP Graphics>
 <TITLE TJclRegionInfo>
-<TOPICORDER 700>
+<TOPICORDER 900>
 --------------------------------------------------------------------------------
 @@$Graphics.Types
 <GROUP Graphics>
 <TITLE Types>
-<TOPICORDER 800>
+<TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@BrightColorChannel
 <GROUP Graphics.Colors>
@@ -1191,9 +1201,9 @@ Quick info:
 @@Stretch
 <GROUP Graphics>
 Summary:
-  Scales a bitmap to another bitmap.
+  Scales a graphic to a bitmap.
 Description:
-  Scales the source bitmap to the given size (NewWidth, NewHeight) and stores the Result
+  Scales the source graphic to the given size (NewWidth, NewHeight) and stores the Result
   in Target. Filter describes the filter function to be applied and Radius the size of
   the filter area. If Radius = 0 then the recommended filter area will be used
   (see DefaultFilterRadius). With the filters you can determine the quality and the speed
@@ -1204,8 +1214,9 @@ Parameters:
   NewHeight - The new height of the target bitmap.
   Filter - The filter to be used.
   Radius - The radius in pixels that will influence the current pixel. This can be a fractional to use partial pixels.
-  Source - The source bitmap. If only source is specified then source will be replaced with the resulting bitmap.
+  Source - The source graphic.
   Target - The target bitmap.
+  Bitmap - The bitmap to scale.
 See also:
   TResamplingFilter
 Quick info:
@@ -1425,7 +1436,7 @@ Quick info:
   Category: Graphics
   Donator: Pelle Liljendal
   Delphi Versions: 4,5,6
-  Kylix Versions: 1
+  Kylix Versions: not applicable
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Create
@@ -1439,7 +1450,7 @@ Quick info:
   Visibility: Public
   Donator: Pelle Liljendal
   Delphi Versions: 4,5,6
-  Kylix Versions: 1
+  Kylix Versions: not applicable
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Destroy
@@ -1453,7 +1464,7 @@ Quick info:
   Visibility: Public
   Donator: Pelle Liljendal
   Delphi Versions: 4,5,6
-  Kylix Versions: 1
+  Kylix Versions: not applicable
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TColor32
@@ -1498,3 +1509,73 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@PointIsNull
+<GROUP Graphics.Points>
+Summary:
+  Tests a point against the null point.
+Description:
+  PointIsNull compares P against the null point (0, 0).
+Parameters:
+  P - The point to test.
+Result:
+  If the supplied point equals the null point (a TPoint with both X and Y set to 0)
+  the function returns True, otherwise it returns False.
+Quick info:
+  Unit: JclGraphUtils
+  Category: Graphics
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@ClipLine
+<GROUP Graphics.Clipping>
+Summary:
+  Intersects a line with a rectangle.
+Description:
+  Computes the section of a line that lies inside a given rectangle.
+Parameters:
+  X1, X2 - Coordinates of the line's starting point.
+  X2, Y2 - Coordinates of the line's ending point.
+  ClipRect - Clipping rectangle.
+  MinX, MinY, MaxX, MaxY - Borders of the clipping rectangle.
+  Codes - Points to a TClipCodes variable in which the clipping code for (X2, Y2) is stored.
+  As for the use of this parameter, have a look at the source code of the DrawPolyLine routine.
+Result:
+  True, if some section of the line lies inside of the clipping rectangle (and eventually shall be
+  drawn), False otherwise.
+Quick info:
+  Unit: JclGraphUtils
+  Category: Graphics
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@DrawPolyLine
+<GROUP Graphics.Clipping>
+Summary:
+  Clips drawing of a line sequence to a rectangular region.
+Description:
+  The DrawPolyline function draws a series of connected line segments, clipping them to the
+  rectangle specified by ClipRect. The lines are drawn by connecting the points in the specified
+  array by using the current pen.
+Parameters:
+  Canvas - The canvas to draw on.
+  Points - The array of points that define the line sequence.
+  ClipRect - The clipping rectangle.
+Quick info:
+  Unit: JclGraphUtils
+  Category: Graphics
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGraphics.pas
+The resampling algorithms and methods used in this library
+were adapted by Anders Melander from the article "General
+Filtered Image Rescaling" by Dale Schumacher which appeared
+in the book Graphics Gems III, published by Academic Press,
+Inc. Additional improvements were done by David Ullrich,
+Josha Beukema and Mike Lischke.
