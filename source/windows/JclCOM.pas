@@ -51,16 +51,12 @@ var
   OldError: Longint;
 begin
   Result := False;
-  CoCreateInstanceEx := nil;
   OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-    if @CoCreateInstanceEx = nil then
-    begin
-      Ole32 := GetModuleHandle('ole32.dll');
-      Win32Check(Ole32 > HINSTANCE_ERROR);
-      @CoCreateInstanceEx := GetProcAddress(Ole32, 'CoCreateInstanceEx');
-      Result := @CoCreateInstanceEx <> nil;
-    end;
+    Ole32 := GetModuleHandle('ole32.dll');
+    Win32Check(Ole32 > HINSTANCE_ERROR);
+    @CoCreateInstanceEx := GetProcAddress(Ole32, 'CoCreateInstanceEx');
+    Result := @CoCreateInstanceEx <> nil;
   finally
     SetErrorMode(OldError);
   end;
