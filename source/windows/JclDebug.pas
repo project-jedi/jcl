@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 14, 2001                                              }
+{ Last modified: January 16, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -70,7 +70,8 @@ type
   private
     FStream: TJclFileMappingStream;
   protected
-    FLastUnitName, FLastUnitFileName: PJclMapString;
+    FLastUnitName: PJclMapString;
+    FLastUnitFileName: PJclMapString;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); virtual; abstract;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); virtual; abstract;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
@@ -306,7 +307,7 @@ type
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 function IsSystemModule(const Module: HMODULE): Boolean;
 
-function Caller(Level: Integer): Pointer;
+function Caller(Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 function GetLocationInfoStr(const Addr: Pointer): string;
@@ -316,11 +317,15 @@ function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$END
 function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer;
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
 
 function __FILE_OF_ADDR__(const Addr: Pointer): string;
 function __MODULE_OF_ADDR__(const Addr: Pointer): string;
 function __PROC_OF_ADDR__(const Addr: Pointer): string;
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
+function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+
 
 //------------------------------------------------------------------------------
 // Stack info routines
@@ -355,7 +360,6 @@ type
     FStackInfo: TStackInfo;
     function GetLogicalAddress: DWORD;
   public
-    constructor Create;
     property LogicalAddress: DWORD read GetLogicalAddress;
     property StackInfo: TStackInfo read FStackInfo;
   end;
@@ -373,8 +377,7 @@ type
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer;
-  FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 function JclLastExceptStackList: TJclStackInfoList;
 
 //------------------------------------------------------------------------------
@@ -477,6 +480,11 @@ implementation
 
 uses
   JclRegistry, JclStrings, JclSysUtils;
+
+{$UNDEF StackFramesWasOn}
+{$IFOPT W+}
+  {$DEFINE StackFramesWasOn}
+{$ENDIF}
 
 //==============================================================================
 // Crash
@@ -1893,7 +1901,9 @@ begin
     Free;
   end;
 end;
-{$STACKFRAMES OFF}
+{$IFNDEF StackFramesWasOn}
+  {$STACKFRAMES OFF}
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1928,6 +1938,8 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$STACKFRAMES ON}
+
 function __FILE__(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).SourceName;
@@ -1956,6 +1968,18 @@ end;
 
 //------------------------------------------------------------------------------
 
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+begin
+  Result := __MAP_OF_ADDR__(Caller(Level + 1), _File, _Module, _Proc, _Line);
+end;
+
+{$IFNDEF StackFramesWasOn}
+  {$STACKFRAMES OFF}
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
 function __FILE_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).SourceName;
@@ -1980,6 +2004,24 @@ end;
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
 begin
   Result := GetLocationInfo(Addr).LineNumber;
+end;
+
+//------------------------------------------------------------------------------
+
+function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+var
+  LocInfo: TJclLocationInfo;
+begin
+  NeedDebugInfoList;
+  Result := DebugInfoList.GetLocationInfo(Addr, LocInfo);
+  if Result then
+  begin
+    _File := LocInfo.SourceName;
+    _Module := LocInfo.UnitName;
+    _Proc := LocInfo.ProcedureName;
+    _Line := LocInfo.LineNumber;
+  end;
 end;
 
 //==============================================================================
@@ -2021,6 +2063,8 @@ end;
 //------------------------------------------------------------------------------
 
 function GetStackTop: DWORD;
+// Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
+// http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
 asm
   MOV EAX, FS:[4]
 end;
@@ -2041,61 +2085,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-{$STACKFRAMES ON}
-procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-var
-  IgnoreLevels: Integer;
-  FirstCaller: Pointer;
-begin
-  if RawStackTracking then
-    IgnoreLevels := 5
-  else
-    IgnoreLevels := 3;
-  if OSException then
-    FirstCaller := ExceptAddr
-  else
-    FirstCaller := nil;
-  JclCreateStackList(RawStackTracking, IgnoreLevels, FirstCaller);
-end;
-{$STACKFRAMES OFF}
-
-//------------------------------------------------------------------------------
-
-function JclLastExceptStackList: TJclStackInfoList;
-begin
-  Result := ExceptStackInfo;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
-begin
-  FreeAndNil(ExceptStackInfo);
-  ExceptStackInfo := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
-  Result := ExceptStackInfo;
-end;
-
-//==============================================================================
-// TJclStackInfoItem
-//==============================================================================
-
-constructor TJclStackInfoItem.Create;
-begin
-  inherited Create;
-  FillChar(FStackInfo, SizeOf(FStackInfo), 0);
-end;
-
-//------------------------------------------------------------------------------
-
-function TJclStackInfoItem.GetLogicalAddress: DWORD;
-begin
-  Result := FStackInfo.CallerAdr - DWORD(HInstance);
-end;
-
-//==============================================================================
-// TJclStackInfoList
-//==============================================================================
 
 function ValidStackAddr(StackAddr: DWORD): Boolean;
 begin
@@ -2127,8 +2116,6 @@ begin
 //!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-//!  Result := (CodeAddr > 8) and IsSystemModule(ModuleFromAddr(C8P)) and
-//!    not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
   Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P)) and
     not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
 
@@ -2193,6 +2180,53 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$STACKFRAMES ON}
+
+procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+var
+  IgnoreLevels: Integer;
+  FirstCaller: Pointer;
+begin
+  if RawStackTracking then
+    IgnoreLevels := 8
+  else
+    IgnoreLevels := 4;
+  if OSException then
+    FirstCaller := ExceptAddr
+  else
+    FirstCaller := nil;
+  JclCreateStackList(RawStackTracking, IgnoreLevels, FirstCaller);
+end;
+
+//------------------------------------------------------------------------------
+
+function JclLastExceptStackList: TJclStackInfoList;
+begin
+  Result := ExceptStackInfo;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+begin
+  FreeAndNil(ExceptStackInfo);
+  ExceptStackInfo := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
+  Result := ExceptStackInfo;
+end;
+
+//==============================================================================
+// TJclStackInfoItem
+//==============================================================================
+
+function TJclStackInfoItem.GetLogicalAddress: DWORD;
+begin
+  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(Pointer(FStackInfo.CallerAdr)));
+end;
+
+//==============================================================================
+// TJclStackInfoList
+//==============================================================================
+
 procedure StoreToList(List: TJclStackInfoList; const StackInfo: TStackInfo);
 var
   Item: TJclStackInfoItem;
@@ -2208,7 +2242,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$STACKFRAMES ON}
 procedure TraceStackFrames(List: TJclStackInfoList);
 var
   StackFrame: PStackFrame;
@@ -2276,7 +2309,6 @@ begin
     Inc(StackPtr);
   end;
 end;
-{$STACKFRAMES OFF}
 
 //------------------------------------------------------------------------------
 
@@ -2317,6 +2349,10 @@ function TJclStackInfoList.GetItems(Index: Integer): TJclStackInfoItem;
 begin
   Result := TJclStackInfoItem(inherited Items[Index]);
 end;
+
+{$IFNDEF StackFramesWasOn}
+  {$STACKFRAMES OFF}
+{$ENDIF}
 
 //==============================================================================
 // Stack frame info routines
@@ -2566,7 +2602,6 @@ begin
     Result := False
   else
   begin
-    InitGlobalVar;
     Recursive := False;
     SysUtils_ExceptObjProc := System.ExceptObjProc;
     System.ExceptObjProc := @HookedExceptObjProc;
