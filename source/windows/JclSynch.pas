@@ -1463,8 +1463,8 @@ end;
 
 function TJclMeteredSection.Enter(TimeOut: Longword): TJclWaitResult;
 begin
-  Result := wrError; // Delphi 7.1 compiler warning bug
-  while True do
+  Result := wrSignaled;
+  while Result = wrSignaled do
   begin
     AcquireLock;
     try
@@ -1480,8 +1480,6 @@ begin
       ReleaseLock;
     end;
     Result := MapSignalResult(Windows.WaitForSingleObject(FMetSect^.Event, TimeOut));
-    if Result <> wrSignaled then
-      Exit;
   end;
 end;
 
@@ -1636,6 +1634,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/09 10:13:38  ahuser
+// Better Delphi 7.1 fix that does not throw hints for older versions
+//
 // Revision 1.6  2004/05/07 19:29:09  ahuser
 // Fix for Delphi 7.1 compiler warning bug.
 //
