@@ -1442,8 +1442,8 @@ Count=2
 2=Info:TJclLocationInfo=Structure that holds information on the address, if address
 belongs to any module in the current process.
 [Result]
-If the specified address exists within the curent process the function returns True 
-and Info will hold the information for the specified address. If the address does 
+If the specified address exists within the curent process the function returns True
+and Info will hold the information for the specified address. If the address does
 not exist within the current process, the function returns False.
 [Quick Info]
 Kind=Method
@@ -1452,6 +1452,26 @@ BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DebugInfoAvailable(const Module: HMODULE): Boolean;
+[ShortDescr]
+Determines if debug info for a module is available.
+[Description]
+DebugInfoAvailable checks if the specified module has debug information.
+[Parameters]
+Count=1
+1=Module:HMODULE=Handle of module to check for debug information.
+[Result]
+If the specified module has debug information the function returns True, otherwise
+False will be returned.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -1607,7 +1627,8 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
+function GetLocationInfo(const Addr: Pointer): <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>; overload;
+function GetLocationInfo(const Addr: Pointer; var Info: <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>): Boolean; overload;
 [ShortDescr]
 Returns location info given an address.
 [Description]
