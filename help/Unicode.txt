@@ -509,7 +509,7 @@ Tests whether the codepoint is a composite character.
 [Description]
 UnicodeIsComposed tests whether the specified unicode codepoint is a composite
 character. That is it returns whether the character can be decomposed into a set
-of other characters (eg an U umlaut is a composite character).
+of other characters (eg an &uuml; u umlaut is a composite character).
 [Parameters]
 Count=1
 1=Code:UCS4=The unicode codepoint (character) to test.
@@ -677,7 +677,7 @@ function UnicodeIsConnectionPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF
 Tests whether the codepoint is a connection punctuation.
 [Description]
 UnicodeIsConnectionPunctuation tests whether the specified unicode codepoint is
-a connection punctuation, for example an underscore
+a connection punctuation, for example an underscore.
 [Parameters]
 Count=1
 1=C:UCS4=The unicode codepoint (character) to test.
@@ -693,11 +693,11 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function UnicodeIsDash(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
+function UnicodeIsMath(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
 Tests whether the codepoint is a math character.
 [Description]
-UnicodeIsDash tests whether the specified unicode codepoint is a math
+UnicodeIsMath tests whether the specified unicode codepoint is a math
 character, for example a hyphen.
 [Parameters]
 Count=1
@@ -714,11 +714,11 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function UnicodeIsMath(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
+function UnicodeIsDash(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
 Tests whether the codepoint is a dash punctuation.
 [Description]
-UnicodeIsMath tests whether the specified unicode codepoint is a dash
+UnicodeIsDash tests whether the specified unicode codepoint is a dash
 punctuation, for example a plus sign.
 [Parameters]
 Count=1
@@ -737,7 +737,7 @@ BCB=4,5
 [Declaration]
 function UnicodeIsCurrency(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
-Tests whether the codepoint is a dash punctuation.
+Tests whether the codepoint is a currency symbol.
 [Description]
 UnicodeIsCurrency tests whether the specified unicode codepoint is a currency symbol,
 for example the dollar sign.
@@ -926,7 +926,7 @@ BCB=4,5
 [Declaration]
 function UnicodeIsIdentifierStart(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
-Tests whether the codepoint is a paragraph separator character.
+Tests whether the codepoint is allowed as initial character of an identifier.
 [Description]
 UnicodeIsIdentifierStart tests whether the specified unicode codepoint is a
 character that can begin an identifier, ie. the character must be a letter
@@ -939,7 +939,7 @@ If the specified codepoint can begin an identifier the
 function returns True, otherwise the function returns False.
 [Notes]
 Count=1
-1=UnicodeIsIdentifierStart could be replace by (UnicodeIsAlpha <B>or</B>
+1=UnicodeIsIdentifierStart could be replaced by (UnicodeIsAlpha <B>or</B>
 UnicodeIsLetterNumber) <B>and not</B> UnicodeIsModifier
 [Quick Info]
 Unit=JclUnicode
@@ -952,7 +952,7 @@ BCB=4,5
 [Declaration]
 function UnicodeIsIdentifierPart(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
 [ShortDescr]
-Tests whether the codepoint is a paragraph separator character.
+Tests whether the codepoint is allowed as part of an identifier.
 [Description]
 UnicodeIsIdentifierPart tests whether the specified unicode codepoint is a
 character that can be in an identifier, ie. the character must be a letter
@@ -967,7 +967,7 @@ If the specified codepoint can be in an identifier the
 function returns True, otherwise the function returns False.
 [Notes]
 Count=1
-1=UnicodeIsIdentifierPart could be replace by (UnicodeIsIdentifierStart <B>or</B>
+1=UnicodeIsIdentifierPart could be replaced by (UnicodeIsIdentifierStart <B>or</B>
 UnicodeIsNonSpacingMark <B>or</B> UnicodeIsSpacingMark <B>or</B> UnicodeIsDigit <B>or</B>
 UnicodeIsConnectionPunctuation <B>or</B> UnicodeIsFormatControl
 [Quick Info]
@@ -1073,7 +1073,7 @@ UnicodeNumberLookup searches for the given code and returns its number equivalen
 Count=1
 1=Code:UCS4=The unicode codepoint (character) to locate number equivalent of.
 [Result]
-True if a number can be found.
+True if a number could be found.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -1612,14 +1612,14 @@ function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integ
 Returns the index of the first occurrence of Ch in S. 
 [Description]
 WideCharPos returns the index of the first occurrence of the specified character
-in the supplied string. Note that this is a binary search, no attempt is made to
+in the supplied string. Note that this is a search for the binary pattern, no attempt is made to
 interpret either the given character or the string (ligatures, modifiers, surrogates etc.).
 [Parameters]
 Count=3
 1=S:WideString=The string which to scan for the Ch character.
 2=Ch:WideChar=The character to search for.
 3=Index:Integer=The index at which to start searching in S. Usually you'll pass 1
-to search the entire string (note: the string is one based, not zero based!).
+to search the entire string (Note: the string is one based, not zero based!).
 [Result]
 Index of the first occurrence of the specified character in the supplied string.
 This index is relative to the first character of the string, not relative to the
@@ -1739,7 +1739,7 @@ procedure StrDisposeW(Str: PWideChar);
 Release the memory of a wide character string.
 [Description]
 Release the memory of a wide character string previously allocated by <REF>StrNewW</REF>
-of <REF>StrAllocW</REF>.
+or <REF>StrAllocW</REF>.
 [Parameters]
 Count=1
 1=Str:PWideChar=The string to release.
@@ -1809,7 +1809,7 @@ function StrBufSizeW(Str: PWideChar): Cardinal;
 [ShortDescr]
 Returns the buffer size for a null-terminated wide string.
 [Description]
-Returns the buffer size allocatied for the specified null-terminated wide string.
+Returns the buffer size allocated for the specified null-terminated wide string.
 [Parameters]
 Count=1
 1=Str:PWideChar=Null-terminated wide string
@@ -1985,9 +1985,9 @@ the strings.
  <TH align=left width =20%>Value</TH>
  <TH align=left width =80%>Description</TH>
  </TR>
- <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&lt;0</TD><TD width=80%>Str1 &lt; Str2</TD>
  <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
- <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;0</TD><TD width=80%>Str1 &gt; Str2</TD>
  </TABLE>
 [Notes]
 Count=1
@@ -2020,9 +2020,9 @@ the strings.
  <TH align=left width =20%>Value</TH>
  <TH align=left width =80%>Description</TH>
  </TR>
- <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&lt;0</TD><TD width=80%>Str1 &lt; Str2</TD>
  <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
- <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;0</TD><TD width=80%>Str1 &gt; Str2</TD>
  </TABLE>
 [Quick Info]
 Unit=JclUnicode
@@ -2051,9 +2051,9 @@ the strings.
  <TH align=left width =20%>Value</TH>
  <TH align=left width =80%>Description</TH>
  </TR>
- <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&lt;0</TD><TD width=80%>Str1 &lt; Str2</TD>
  <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
- <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;0</TD><TD width=80%>Str1 &gt; Str2</TD>
  </TABLE>
 [Quick Info]
 Unit=JclUnicode
@@ -2082,9 +2082,9 @@ the strings.
  <TH align=left width =20%>Value</TH>
  <TH align=left width =80%>Description</TH>
  </TR>
- <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&lt;0</TD><TD width=80%>Str1 &lt; Str2</TD>
  <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
- <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;0</TD><TD width=80%>Str1 &gt; Str2</TD>
  </TABLE>
 [Quick Info]
 Unit=JclUnicode
@@ -2099,7 +2099,7 @@ function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 [ShortDescr]
 Concatenates two strings enforcing a maximum for the total length.
 [Description]
-StrCatW concatenates two strings and ensures that the resulting string is at
+StrLCatW concatenates two strings and ensures that the resulting string is at
 maximum MaxLen characters long. Thus, it appends at most MaxLen - StrLenW(Dest)
 characters from Source to Dest.
 [Parameters]
@@ -2515,7 +2515,7 @@ Count=1
 function KeyUnicode(C: Char): WideChar;
 [ShortDescr]
 [Description]
-Converts the specified character (as it comes with a WM_CHAR message) into it's
+Converts the specified character (as it comes with a WM_CHAR message) into its
 corresponding Unicode character. The conversion is based upon the active keyboard
 layout.
 [Parameters]
@@ -2712,9 +2712,9 @@ TCharacterCategory = (ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase,
   ccOtherPrivate, ccOtherUnassigned, ccLetterModifier, ccLetterOther,
   ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
   ccPunctuationInitialQuote, ccPunctuationFinalQuote, ccPunctuationOther, ccSymbolMath,
-  ccSymbolCurrency, ccSymbolModifier, ccSymbolOther, ccleftToRight, ccLeftToRightEmbedding,
+  ccSymbolCurrency, ccSymbolModifier, ccSymbolOther, ccLeftToRight, ccLeftToRightEmbedding,
   ccLeftToRightOverride, ccRightToLeft, ccRightToLeftArabic, ccRightToLeftEmbedding,
-  ccRightToLeftoverride, ccPopDirectionalFormat, ccEuropeanNumber, ccEuropeanNumberSeparator,
+  ccRightToLeftOverride, ccPopDirectionalFormat, ccEuropeanNumber, ccEuropeanNumberSeparator,
   ccEuropeanNumberTerminator, ccArabicNumber, ccCommonNumberSeparator, ccBoundaryNeutral,
   ccSegmentSeparator, ccWhiteSpace, ccOtherNeutrals, ccComposed, ccNonBreaking,
   ccSymmetric, ccHexDigit, ccQuotationMark, ccMirroring, ccSpaceOther, ccAssigned,
@@ -2756,13 +2756,13 @@ Count=56
 28=ccSymbolCurrency=Currency symbol
 29=ccSymbolModifier=Modifier symbol
 30=ccSymbolOther=Undefined symbol
-31=ccleftToRight=
+31=ccLeftToRight=
 32=ccLeftToRightEmbedding=
 33=ccLeftToRightOverride=
 34=ccRightToLeft=
 35=ccRightToLeftArabic=
 36=ccRightToLeftEmbedding=
-37=ccRightToLeftoverride=
+37=ccRightToLeftOverride=
 38=ccPopDirectionalFormat=
 39=ccEuropeanNumber=
 40=ccEuropeanNumberSeparator=
@@ -2824,7 +2824,7 @@ Count=1
 [Notes]
 Count=1
 1=The AOwner parameter, although assigned to the engine, is not used at all and can
-therefore be <B>nil<B>. It's possible, however, that it will be used in the future.
+therefore be <B>nil</B>. It's possible, however, that it will be used in the future.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2975,13 +2975,13 @@ interest if only one occurence needs to be found.
 Count=4
 1=Text:Type=Text to be searched
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
-3=Start:Cardinal=Start index of match if the function returned true, otherwise
+3=Start:Cardinal=Start index of match if the function returned True, otherwise
 undefined.
-4=Stop:Cardinal=End index of match if the function returned true, otherwise
+4=Stop:Cardinal=End index of match if the function returned True, otherwise
 undefined.
 [Result]
 True is the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3009,7 +3009,7 @@ Count=2
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
 [Result]
 True is the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3029,7 +3029,7 @@ procedure GetResult(Index: Cardinal; var Start, Stop: Integer); virtual;
 [ShortDescr]
 Returns a match result.
 [Description]
-GetResult returns the specified match result in the Start and Stop paramers. 
+GetResult returns the specified match result in the Start and Stop parameters. 
 [Parameters]
 Count=3
 1=Index:Cardinal=Index (0-based) of match result to return.
@@ -3113,7 +3113,7 @@ called by <REF>FindPrepare</REF>.
 [Parameters]
 Count=3
 1=Pattern:PUSC2=Pattern to find
-2=PatternLength:Integer=ength of pattern to find
+2=PatternLength:Integer=Length of pattern to find
 3=Flags:TSearchFlags=Search options. See <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>
 for more information on this parameter.
 [Quick Info]
@@ -3131,7 +3131,7 @@ function Find(Text: <REF TARGET"..\Types\PUCS2">PUCS2</REF>; TextLen: Cardinal; 
 [ShortDescr]
 Main matching routine using a tuned Boyer-Moore algorithm.
 [Description]
-Find is the main matching routine that implements a tunes Boyer-Moore algoritm.
+Find is the main matching routine that implements a tuned Boyer-Moore algorithm.
 Find gets called by <REF>FindFirst</REF> and <REF>FindAll</REF>.
 [Parameters]
 Count=4
@@ -3276,13 +3276,13 @@ interest if only one occurence needs to be found.
 Count=4
 1=Text:Type=Text to be searched
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
-3=Start:Cardinal=Start index of match if the function returned true, otherwise
+3=Start:Cardinal=Start index of match if the function returned True, otherwise
 undefined.
-4=Stop:Cardinal=End index of match if the function returned true, otherwise
+4=Stop:Cardinal=End index of match if the function returned True, otherwise
 undefined.
 [Result]
 True if the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3297,7 +3297,7 @@ Count=1
 1=FindAll
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function FindAll(const Text: WideString): Boolean; overload; overload; abstract;
+function FindAll(const Text: WideString): Boolean; overload; abstract;
 function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
 [ShortDescr]
 Finds all occurences of a search pattern.
@@ -3310,7 +3310,7 @@ Count=2
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
 [Result]
 True is the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3380,7 +3380,7 @@ characters and optionally returns whole words only.</P><P>
         followed by a comma separated list of integers between 0 and the maximum entry index
         in <REF Target"..\Types\TCharacterCategory">TCharacterCategory</REF>. These integers
         directly correspond to the TCharacterCategory enumeration entries. <BR>
-        <B>Note:</B> upper, lower and titel case classes need to have case sensitive search
+        <B>Note:</B> upper, lower and title case classes need to have case sensitive search
         enabled to match correctly!</LI>
   </UL>
 [Notes]
@@ -3434,13 +3434,13 @@ interest if only one occurence needs to be found.
 Count=4
 1=Text:Type=Text to be searched
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
-3=Start:Cardinal=Start index of match if the function returned true, otherwise
+3=Start:Cardinal=Start index of match if the function returned True, otherwise
 undefined.
-4=Stop:Cardinal=End index of match if the function returned true, otherwise
+4=Stop:Cardinal=End index of match if the function returned True, otherwise
 undefined.
 [Result]
 True if the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3455,7 +3455,7 @@ Count=1
 1=FindAll
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function FindAll(const Text: WideString): Boolean; overload; overload; abstract;
+function FindAll(const Text: WideString): Boolean; overload; abstract;
 function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
 [ShortDescr]
 Finds all occurences of a search pattern.
@@ -3468,7 +3468,7 @@ Count=2
 2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
 [Result]
 True is the pattern provided in FindPrepare was found in the Text parameter,
-False otherwise
+False otherwise.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3577,7 +3577,7 @@ BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TUcNumber = record
-  Numerator,
+  Numerator: Integer;
   Denominator: Integer;
 end;
 [ShortDescr]
@@ -3626,7 +3626,7 @@ Count=1
 [Declaration]
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
 [ShortDescr]
-Normalize a Widestring.
+Normalize a WideString.
 [Description]
 Returns a normalized string.
 [Parameters]
@@ -3655,7 +3655,7 @@ Count=3
 2=Second:USC4=The second sequence.
 [Result]
 UnicodeComposePair returns True if there was a mapping (in which case Composite
-is the composed version of First and Second) otherwise it returns false.
+is the composed version of First and Second) otherwise it returns False.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
