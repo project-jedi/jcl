@@ -1273,3 +1273,27 @@ Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean;
+function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean;
+[ShortDescr]
+Test if the dates are equal within the granularity of the FAT file system (2 seconds)
+[Description]
+Test if the dates are equal within the granularity of the FAT file system (2 seconds)
+[Parameters]
+Count=2
+1=FileTime1:TFileTime=Time to compare
+2=FileTime2:TFileTime=Time to compare
+[Result]
+True if dates differ less than the granularity of the FAT file system (2 seconds)
+[Notes]
+Count=2
+1=A TFiletime can be seen as an Int64 or as a record of two Integers.
+2=Use DateTimeToFileTime if one argument is a TDatetime.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
