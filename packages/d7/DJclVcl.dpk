@@ -30,7 +30,7 @@ package DJclVcl;
 requires
   rtl,
   vcljpg,
-  DJCL,
+  DJcl,
   vcl;
 
 contains
