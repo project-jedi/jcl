@@ -691,33 +691,6 @@ const
   TurboDebuggerSymbolExt = '.tds';
 
 //==================================================================================================
-// TReferenceMemoryStream
-//==================================================================================================
-
-type
-  TReferenceMemoryStream = class (TCustomMemoryStream)
-  public
-    constructor Create(const Ptr: Pointer; const Size: Longint);
-    function Write(const Buffer; Count: Longint): Longint; override;
-  end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TReferenceMemoryStream.Create(const Ptr: Pointer; const Size: Longint);
-begin
-  Assert(not IsBadReadPtr(Ptr, Size));
-  inherited Create;
-  SetPointer(Ptr, Size);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
-begin
-  raise EJclError.CreateResRec(@RsCannotWriteRefStream);
-end;
-
-//==================================================================================================
 // TJclModuleInfo
 //==================================================================================================
 
@@ -986,7 +959,7 @@ begin
   FModules := TObjectList.Create;
   FSourceModules := TObjectList.Create;
   FSymbols := TObjectList.Create;
-  FNames.Add(nil); // FNames.Add(PChar(RsUnknownName));
+  FNames.Add(nil);
   FData := ATD32Data;
   FBase := FData.Memory;
   FValidData := IsTD32DebugInfoValid(FBase, FData.Size);
@@ -1328,7 +1301,7 @@ begin
       DebugDataSize := DebugDir.SizeOfData;
       Result := TJclTD32InfoParser.IsTD32DebugInfoValid(BugDataStart, DebugDataSize);
       if Result then
-        DataStream := TReferenceMemoryStream.Create(BugDataStart, DebugDataSize);
+        DataStream := TJclReferenceMemoryStream.Create(BugDataStart, DebugDataSize);
     end;
   end;
 end;
