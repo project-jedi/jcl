@@ -59,6 +59,11 @@ const
   MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
 
+  MetadataHeaderSignature = $424A5342; // 'BSJB'
+
+type
+  TJclCLRToken = DWORD;
+
 //==================================================================================================
 // Flag	Value	Description
 //==================================================================================================
@@ -84,10 +89,14 @@ const
   COR_VTABLE_CALL_MOST_DERIVED = $10;          // Call most derived method described by
 
 type
+  TClrVTableKind = (vtk32Bit, vtk64Bit, vtkFromUnmanaged, vtkCallMostDerived);
+  TClrVTableKinds = set of TClrVTableKind;
+
+type
   _IMAGE_COR_VTABLEFIXUP = packed record
-    RVA: DWORD;            // Offset of v-table array in image.
-    EntriesCount,          // How many entries at location.
-    EntriesType: Word;     // COR_VTABLE_xxx type of entries.
+    RVA: DWORD;     // Offset of v-table array in image.
+    Count,          // How many entries at location.
+    Kind: Word;     // COR_VTABLE_xxx type of entries.
   end;
   IMAGE_COR_VTABLEFIXUP = _IMAGE_COR_VTABLEFIXUP;
   TImageCorVTableFixup = _IMAGE_COR_VTABLEFIXUP;
@@ -106,12 +115,6 @@ const
   pdHasFieldMarshal           =   $2000;     // Param has FieldMarshal.
 
   pdUnused                    =   $cfe0;
-
-const
-  MetadataHeaderSignature = $424A5342; // 'BSJB'
-
-type
-  TJclCLRToken = DWORD;
 
 type
   PCLRStreamHeader = ^TCLRStreamHeader;
@@ -1033,22 +1036,61 @@ type
     property Tokens[const AToken: TJclCLRToken]: TJclPeCLRTableRow read GetToken;
   end;
 
+  TJclPeCLRResourceRecord = class(TJclReferenceMemoryStream)
+  private
+    FData: Pointer;
+    FOffset: DWORD;
+    FRVA: DWORD;
+  protected
+    constructor Create(const AData: PChar; const AOffset: DWORD; const ARVA: DWORD);
+  public
+    property Data: Pointer read FData;
+    property Offset: DWORD read FOffset;
+    property RVA: DWORD read FRVA;
+  end;
+
+  TJclPeCLRVTableFixupRecord = class
+  private
+    FData: PImageCorVTableFixup;
+    function GetCount: DWORD;
+    function GetKinds: TClrVTableKinds;
+    function GetRVA: DWORD;
+  protected
+    constructor Create(const AData: PImageCorVTableFixup);
+
+    class function VTableKinds(const Kinds: TClrVTableKinds): DWORD; overload;
+    class function VTableKinds(const Kinds: DWORD): TClrVTableKinds; overload;
+  public
+    property Data: PImageCorVTableFixup read FData;
+    property RVA: DWORD read GetRVA;               // RVA of Vtable
+    property Count: DWORD read GetCount;           // Number of entries in Vtable
+    property Kinds: TClrVTableKinds read GetKinds; // Type of the entries
+  end;
+
   TJclPeCLRHeaderEx = class(TJclPeCLRHeader)
   private
     FMetadata: TJclPeMetadata;
     FFlags: TClrImageFlags;
-    FResources,
     FStrongNameSignature: TCustomMemoryStream;
+    FResources,
+    FVTableFixups: TObjectList;
     function GetMetadata: TJclPeMetadata;
-    function GetResources: TCustomMemoryStream;
     function GetStrongNameSignature: TCustomMemoryStream;
     function GetEntryPointToken: TJclPeCLRTableRow;
+    function GetVTableFixup(const Idx: Integer): TJclPeCLRVTableFixupRecord;
+    function GetVTableFixupCount: Integer;
+    procedure UpdateResources;
+    function GetResource(const Idx: Integer): TJclPeCLRResourceRecord;
+    function GetResourceCount: Integer;
   public
     constructor Create(const AImage: TJclPeImage);
     destructor Destroy; override;
 
     function HasResources: Boolean;
     function HasStrongNameSignature: Boolean;
+    function HasVTableFixup: Boolean;
+
+    function ResourceAt(const Offset: DWORD): TJclPeCLRResourceRecord;
 
     class function ClrImageFlag(const Flags: DWORD): TClrImageFlags; overload;
     class function ClrImageFlag(const Flags: TClrImageFlags): DWORD; overload;
@@ -1057,8 +1099,12 @@ type
 
     property Flags: TClrImageFlags read FFlags;
     property EntryPointToken: TJclPeCLRTableRow read GetEntryPointToken;
-    property Resources: TCustomMemoryStream read GetResources;
     property StrongNameSignature: TCustomMemoryStream read GetStrongNameSignature;
+
+    property Resources[const Idx: Integer]: TJclPeCLRResourceRecord read GetResource;
+    property ResourceCount: Integer read GetResourceCount;
+    property VTableFixups[const Idx: Integer]: TJclPeCLRVTableFixupRecord read GetVTableFixup;
+    property VTableFixupCount: Integer read GetVTableFixupCount;
   end;
 
 implementation
@@ -2610,9 +2656,77 @@ begin
   Result := (DWORD(Table) shl 24) and TokenIndex(Idx);
 end;
 
+{ TJclPeCLRResourceRecord }
+
+constructor TJclPeCLRResourceRecord.Create(const AData: PChar;
+  const AOffset: DWORD; const ARVA: DWORD);
+begin
+  FData   := AData;
+  FOffset := AOffset;
+  FRVA    := ARVA;
+
+  inherited Create(Pointer(DWORD(Data)+SizeOf(DWORD)), PDWORD(Data)^);
+end;
+
+{ TJclPeCLRVTableFixupRecord }
+
+constructor TJclPeCLRVTableFixupRecord.Create(
+  const AData: PImageCorVTableFixup);
+begin
+  inherited Create;
+
+  FData := AData;
+end;
+
+function TJclPeCLRVTableFixupRecord.GetCount: DWORD;
+begin
+  Result := Data.Count;
+end;
+
+function TJclPeCLRVTableFixupRecord.GetKinds: TClrVTableKinds;
+begin
+  Result := VTableKinds(Data.Kind);
+end;
+
+function TJclPeCLRVTableFixupRecord.GetRVA: DWORD;
+begin
+  Result := Data.RVA;
+end;
+
+const
+  ClrVTableKindMapping: array[TClrVTableKind] of DWORD =
+    (COR_VTABLE_32BIT, COR_VTABLE_64BIT,
+     COR_VTABLE_FROM_UNMANAGED, COR_VTABLE_CALL_MOST_DERIVED);
+
+class function TJclPeCLRVTableFixupRecord.VTableKinds(
+  const Kinds: TClrVTableKinds): DWORD;
+var
+  AKind: TClrVTableKind;
+begin
+  Result := 0;
+  for AKind:=Low(TClrVTableKind) to High(TClrVTableKind) do
+    if AKind in Kinds then
+      Result := Result or ClrVTableKindMapping[AKind];
+end;
+
+class function TJclPeCLRVTableFixupRecord.VTableKinds(
+  const Kinds: DWORD): TClrVTableKinds;
+var
+  AKind: TClrVTableKind;
+begin
+  Result := [];
+  for AKind:=Low(TClrVTableKind) to High(TClrVTableKind) do
+    if (ClrVTableKindMapping[AKind] and Kinds) = ClrVTableKindMapping[AKind] then
+      Include(Result, AKind);
+end;
+
 { TJclPeCLRInformation }
 
 constructor TJclPeCLRHeaderEx.Create(const AImage: TJclPeImage);
+  procedure UpdateVTableFixups;
+  begin
+    if Header.VTableFixups.VirtualAddress = 0 then
+  end;
 begin
   inherited Create(AImage);
 
@@ -2620,10 +2734,12 @@ begin
   FMetadata            := nil;
   FResources           := nil;
   FStrongNameSignature := nil;
+  FVTableFixups        := nil;
 end;
 
 destructor TJclPeCLRHeaderEx.Destroy;
 begin
+  FreeAndNil(FVTableFixups);
   FreeAndNil(FStrongNameSignature);
   FreeAndNil(FResources);
   FreeAndNil(FMetadata);
@@ -2670,6 +2786,13 @@ begin
             ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
+function TJclPeCLRHeaderEx.HasVTableFixup: Boolean;
+begin
+  with Header.VTableFixups do
+  Result := Assigned(FVTableFixups) or
+            ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+end;
+
 function TJclPeCLRHeaderEx.GetStrongNameSignature: TCustomMemoryStream;
 begin
   if not Assigned(FStrongNameSignature) and HasStrongNameSignature then
@@ -2685,15 +2808,44 @@ begin
             ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
-function TJclPeCLRHeaderEx.GetResources: TCustomMemoryStream;
+procedure TJclPeCLRHeaderEx.UpdateResources;
+var
+  Base, Ptr: PChar;
+  ARes: TJclPeCLRResourceRecord;
 begin
-  if not Assigned(FResources) and HasResources then
+  FResources := TObjectList.Create;
+
   with Header.Resources do
   begin
-    FResources := TJclReferenceMemoryStream.Create(
-      Image.RvaToVa(VirtualAddress), Size);
+    Base := Image.RvaToVa(VirtualAddress);
+    Ptr  := Base;
+    while DWORD(Ptr-Base) < Size do
+    begin
+      ARes := TJclPeCLRResourceRecord.Create(Ptr, Ptr-Base, Ptr-Image.LoadedImage.MappedAddress);
+      FResources.Add(ARes);
+      Ptr := PChar(ARes.Memory) + ARes.Size;
+    end;
   end;
-  Result := FResources;
+end;
+
+function TJclPeCLRHeaderEx.GetResource(
+  const Idx: Integer): TJclPeCLRResourceRecord;
+begin
+  if not Assigned(FResources) and HasResources then
+    UpdateResources;
+
+  Result := TJclPeCLRResourceRecord(FResources.Items[Idx]);
+end;
+
+function TJclPeCLRHeaderEx.GetResourceCount: Integer;
+begin
+  if not Assigned(FResources) and HasResources then
+    UpdateResources;
+
+  if Assigned(FResources) then
+    Result := FResources.Count
+  else
+    Result := 0;
 end;
 
 function TJclPeCLRHeaderEx.GetEntryPointToken: TJclPeCLRTableRow;
@@ -2702,6 +2854,48 @@ begin
     Result := Metadata.Tokens[Header.EntryPointToken]
   else
     Result := nil;
+end;
+
+function TJclPeCLRHeaderEx.GetVTableFixup(
+  const Idx: Integer): TJclPeCLRVTableFixupRecord;
+var
+  I: Integer;
+  pData: PImageCorVTableFixup;
+begin
+  if not Assigned(FVTableFixups) and HasVTableFixup then
+  begin
+    FVTableFixups := TObjectList.Create;
+
+    with Header.VTableFixups do
+    begin
+      pData := PImageCorVTableFixup(Image.RvaToVa(VirtualAddress));
+      for I:=0 to GetVTableFixupCount-1 do
+      begin
+        FVTableFixups.Add(TJclPeCLRVTableFixupRecord.Create(pData));
+        Inc(pData);
+      end;
+    end;
+  end;
+  Result := TJclPeCLRVTableFixupRecord(FVTableFixups.Items[Idx]);
+end;
+
+function TJclPeCLRHeaderEx.GetVTableFixupCount: Integer;
+begin
+  Result := Header.VTableFixups.Size div SizeOf(TImageCorVTableFixup);
+end;
+
+function TJclPeCLRHeaderEx.ResourceAt(const Offset: DWORD): TJclPeCLRResourceRecord;
+var
+  I: Integer;
+begin
+  if HasResources then
+  for I:=0 to ResourceCount-1 do
+  begin
+    Result := Resources[I];
+    if Result.Offset = Offset then
+      Exit;
+  end;
+  Result := nil;
 end;
 
 end.
