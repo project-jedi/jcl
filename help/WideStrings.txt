@@ -6,7 +6,7 @@ TWideStrings is the abstract base class for objects that represent a list of Wid
 [Description]
 TWideStrings is the abstract base class for objects that represent a list of
 WideStrings. It is very similar to the Delphi TStrings class with the one
-fundamental difference; instead of storing a list of string it stores a list
+fundamental difference; instead of storing a list of strings it stores a list of
 WideStrings. TWideStrings introduces properties and methods to:<BR>
   <UL>
     <LI>Add or delete WideStrings at specified positions in the list.
@@ -123,8 +123,8 @@ Appends a WideString to the list.
 [Description]
 Appends a WideString to the list. This method is identical to the <REF>Add</REF>
 method except that it does not return the index at which the WideString was
-inserted. Use this method rather then Add when the index is not needed or for
-descendent classes for which the index does not have any meaning.
+inserted. Use this method rather than Add when the index is not needed or for
+descendant classes for which the index does not have any meaning.
 [Parameters]
 Count=1
 1=S:WideString=The WideString to add to the list.
@@ -151,7 +151,7 @@ procedure AddStrings(Strings: TWideStrings); overload; virtual;
 Copies strings from another TStrings or TWideStrings into this object.
 [Description]
 Use AddStrings to add the strings from a TStrings or TWideStrings descendant to
-this list. If the source list has objects associated with it's items a reference
+this list. If the source list has objects associated with its items a reference
 to these objects is copied as well (only a reference, no deep copy is made). Note
 that the strings in the source list are implicitly converted to WideStrings based
 on the systems locale for the overloaded method that accepts a TStrings.
@@ -205,7 +205,7 @@ AssignTo assigns itself to the specified object.
 AssignTo assigns itself to the specified Dest(ination) object. For AssignTo to
 do anything the Dest object must be of type TStrings or TWideStrings. Conceptually
 AssignTo is equivalent to Dest.Assign(Self) except that this method enables a
-TWideString to be assigned to a TStrings which otherwise wouldn't be possible.
+TWideStrings to be assigned to a TStrings which otherwise wouldn't be possible.
 [Parameters]
 Count=1
 1=Dest:TPersistent=The TStrings or TWideStrings descendant to which to assign
@@ -252,9 +252,9 @@ procedure Clear; virtual; abstract;
 [ShortDescr]
 Clears the list of WideStrings and associated objects.
 [Description]
-Clear is an abstract method implemented by descendents to clear the list of
+Clear is an abstract method implemented by descendants to clear the list of
 WideStrings and associated objects. Note that, unless otherwise stated in the
-documentation for the descendent class, clearing the list of objects does not
+documentation for the descendant class, clearing the list of objects does not
 free the objects, it only removes the references to the objects.
 [Quick Info]
 Kind=Method
@@ -271,12 +271,12 @@ procedure Delete(Index: Integer); virtual; abstract;
 [ShortDescr]
 Deletes the item at a specified position.
 [Description]
-Delete is an abstract method implemented by descendent classes to delete an item
+Delete is an abstract method implemented by descendant classes to delete an item
 at a specified position from the list. If the WideString has an associated object,
 the reference to that object is deleted as well.
 [Parameters]
 Count=1
-1=Index:Integer=Zero based index of the WideString to delete form the list.
+1=Index:Integer=Zero based index of the WideString to delete from the list.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -441,7 +441,7 @@ Returns the position of the first string with the form Name=Value with the speci
 [Description]
 IndexOfName returns the zero based index of the first occurrence of the string of the form
 Name=Value where the Name part matches the specified Name. If no such occurrence
-exists in the list the function returns -1. These kind of strings are commonly
+exists in the list the function returns -1. This kind of strings is commonly
 found in .ini files which are usually not Unicode based but can be loaded into
 TWideStrings anyway.
 [Parameters]
@@ -640,7 +640,7 @@ strings are separated by a carriage-return linefeed pair. SaveToFile uses the
 value of the SaveUnicode property to determine whether to save the contents as
 Unicode or ANSI text. If SaveUnicode is False the text is saved as ANSI and in
 the process is implicitly converted using the systems locale. However, if there
-exist a potential information loss the user is notified through
+exists a potential information loss the user is notified through
 the <REF Target"..\Events\OnConfirmConversion">OnConfirmConversion</REF>
 event. If SaveUnicode is True the text is saved as Unicode but is first prepended
 with the BOM_LSB_FIRST value to identify the text as Unicode appearing in with
@@ -675,7 +675,7 @@ strings are separated by a carriage-return linefeed pair. SaveToStream uses the
 value of the SaveUnicode property to determine whether to save the contents as
 Unicode or ANSI text. If SaveUnicode is False the text is saved as ANSI and in
 the process is implicitly converted using the systems locale. However, if there
-exist a potential information loss the user is notified through
+exists a potential information loss the user is notified through
 the <REF Target"..\Events\OnConfirmConversion">OnConfirmConversion</REF>
 event. If SaveUnicode is True the text is saved as Unicode but is first prepended
 with the BOM_LSB_FIRST value to identify the text as Unicode appearing in with
@@ -685,7 +685,7 @@ Count=1
 1=Upon exit the Saved property is updated to reflect the result of the method.
 [Parameters]
 Count=1
-1=Stream:TStream=TStream descendent to write the strings to.
+1=Stream:TStream=TStream descendant to write the strings to.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -706,7 +706,7 @@ procedure SetText(const Value: WideString); virtual;
 Sets the text property.
 [Description]
 SetText replaces the list with the strings specified by the Value parameter. This
-method assumed that the individual strings are separated by a WideNull, LineFeed,
+method assumes that the individual strings are separated by a WideNull, LineFeed,
 CarriageReturn, VerticalTab, FormFeed, LineSeparator or ParagraphSeparator.
 [Parameters]
 Count=1
@@ -746,7 +746,8 @@ property CommaText: WideString read GetCommaText write SetCommaText;
 Lists the WideStrings in the TWideStrings in system data format (SDF).
 [Description]
 CommaText gets or sets all the strings in the TWideStrings object in a single
-comma-delimited string. Strings in the list that include spaces, commas or quotes will be contained in double quotes; any double quotes in a string will be repeated. 
+comma-delimited string. Strings in the list that include spaces, commas or quotes will be 
+contained in double quotes; any double quotes in a string will be repeated. 
 For example, if the list contains the following strings:<BR>
 Hell,o 1<BR>
 Hel"lo 2<BR>
@@ -758,7 +759,8 @@ To assign CommaText, create the string as SDF formatted text. The SDF
 format specifies strings are to be separated by commas or spaces and optionally enclosed in
 double quotes. Double quote marks that occur within the string are repeated to
 distinguish them from the quotes that surround the string. If a space or comma
-occurs within the string, the string must be enclosed in double quotes or the space or comma will be treated as a delimeter. To indicate an empty string, enter two commas next
+occurs within the string, the string must be enclosed in double quotes or the space or 
+comma will be treated as a delimiter. To indicate an empty string, enter two commas next
 to each other. Spaces that appear next to another delimiter are ignored (white space). For
 example, suppose CommaText is set to:<BR>
 "Hel,lo 1", "He""llo 2" , Hello 3,Hello4<BR>
@@ -807,7 +809,7 @@ Represents the set of objects associated with the strings.
 [Description]
 Objects contains a set of objects associated with the strings contained in the
 list. Reading the Objects property in TWideStrings returns nil and setting this
-property does nothing. Descendent classes can, and usually will, override this
+property does nothing. Descendant classes can, and usually will, override this
 behavior to allow you to associate objects with the strings. The Objects and
 Strings properties are in synch, that is, the object at index zero is the object
 associated with the string at index 0, the same goes for index 1, 2, ... Count - 1.
@@ -828,7 +830,7 @@ property Values[const Name: WideString]: WideString read GetValue write SetValue
 [ShortDescr]
 Retrieves the Value part if the list contains strings of the form Name=Value.
 [Description]
-When the list contains string of the form Name=Value then you can use the Values
+When the list contains strings of the form Name=Value you can use the Values
 property to get or set the Value part of these strings. Name is the name part of
 the string whose Value you want to get or set. If the list does not contain a
 string with the specified Name, reading this property will return an empty string
@@ -853,7 +855,7 @@ property Names[Index: Integer]: WideString read GetName;
 [ShortDescr]
 Retrieves the Name part if the list contains strings of the form Name=Value.
 [Description]
-When the list contains string of the form Name=Value then you can use the Names
+When the list contains strings of the form Name=Value you can use the Names
 property to access the Name part of these strings. Index is the zero based index
 of the string whose name part to retrieve. If the string is not of the form
 Name=Value the property will return an empty string.
@@ -915,7 +917,7 @@ property Strings[Index: Integer]: WideString read Get write Put; default;
 Represents the set of WideStrings managed by the class.
 [Description]
 Partial abstract property which contains the set of strings managed by the class.
-Descendent classes must implement the <REF>Get</REF> method (Put is implemented
+Descendant classes must implement the <REF>Get</REF> method (Put is implemented
 through Delete and Insert). Reading the Strings property returns the WideString
 at the position indicated by the zero based index. Setting the property sets the
 WideString at the specified index. Note that a possibly associated object is not
@@ -937,7 +939,8 @@ BCB=4,5
 [Declaration]
 property Text: WideString read GetText write SetText;
 [ShortDescr]
-Lists the strings in the TStrings object as a single string with the individual strings delimited by carriage returns and line feeds.
+Lists the strings in the TStrings object as a single string with the individual 
+strings delimited by carriage returns and line feeds.
 [Description]
 The Text property enables you the get or set the contents of the string in the
 list as a single WideString. Reading the Text property returns a WideString with
@@ -1017,7 +1020,7 @@ BCB=4,5
 [Declaration]
 procedure Error(const Msg: string; Data: Integer);
 [ShortDescr]
-Utility method which raising an EStringListError exception.
+Utility method which raises an EStringListError exception.
 [Description]
 Error is a utility method used by various other methods for raising an
 EStringListError exception.
@@ -1025,7 +1028,7 @@ EStringListError exception.
 Count=2
 1=Msg:string=The runtime error message to display in the exception dialog box.
 The exception object is created with the CreateFmt constructor and as such this
-message can contain a integer format specifier.
+message can contain an integer format specifier.
 2=Data:Integer=The Data argument is passed to the CreateFmt constructor of the
 EStringListError constructor as its Args parameter and as such replaces the first
 format specifier found in the Msg argument.
@@ -1044,7 +1047,7 @@ function Get(Index: Integer): WideString; virtual; abstract;
 [ShortDescr]
 Abstract property read method for the Strings property.
 [Description]
-Get is the abstract property read method for the Strings property. Descendent
+Get is the abstract property read method for the Strings property. Descendant
 classes must implement this method and return a WideString given an Index.
 [Parameters]
 Count=1
@@ -1072,7 +1075,7 @@ Property read method of the Capacity property.
 Capacity determines the number of strings that the list can hold without having
 to resize/reallocate the internal storage. The TWideStrings implementation simply
 returns the number of strings in the list by querying the Count property. However,
-descendent classes can, and usually will, override this method to return the
+descendant classes can, and usually will, override this method to return the
 actual capacity of the list.
 [Result]
 The capacity of the list.
@@ -1091,7 +1094,7 @@ function GetCount: Integer; virtual; abstract;
 [ShortDescr]
 Property read method of the Count property.
 [Description]
-GetCount is the abstract property read method of the Count property. Descendent
+GetCount is the abstract property read method of the Count property. Descendant
 classes must implement this method and return the number of items in the Strings
 list.
 [Result]
@@ -1111,7 +1114,7 @@ function GetObject(Index: Integer): TObject; virtual;
 [ShortDescr]
 Property read method of the Objects property.
 [Description]
-GetObject is the abstract property read method of the Objects property. Descendent
+GetObject is the abstract property read method of the Objects property. Descendant
 classes must implement this method and return the Object at the specified Index.
 [Parameters]
 Count=1
@@ -1135,10 +1138,10 @@ function GetText: WideString; virtual;
 [ShortDescr]
 Property read method of the Text property.
 [Description]
-GetText is the property read method of the Text property. It's purpose is to
+GetText is the property read method of the Text property. Its purpose is to
 list the strings in the TWideStrings object as a single string with the individual
 WideStrings delimited by carriage returns and line feeds. The default implementation
-of this method is usually sufficient, however, descendent classes can override
+of this method is usually sufficient, however, descendant classes can override
 this method to provide a faster implementation. Note that this method is also
 called internally by the GetText method.
 [Result]
@@ -1182,7 +1185,7 @@ procedure PutObject(Index: Integer; AObject: TObject); virtual;
 Property write method of the Objects property.
 [Description]
 PutObject is the property write method of the Objects property. In TWideStrings
-PutObject does nothing. It is up to descendent classes to override this method
+PutObject does nothing. It is up to descendant classes to override this method
 and implement it in an appropriate manner.
 [Parameters]
 Count=2
@@ -1204,7 +1207,7 @@ procedure SetCapacity(NewCapacity: Integer); virtual;
 Property write method of the Capacity property.
 [Description]
 SetCapacity is the property write method of the Capacity property. In TWideStrings
-the SetCapacity does not do anything. Descendent classes can optionally override
+the SetCapacity does not do anything. Descendant classes can optionally override
 this method to implement a capacity scheme. In this case the SetCapacity method
 should take steps to ensure that the list of WideStrings is expanded in such a
 manner that the list will not have to be reallocated again until the list holds more 
@@ -1229,7 +1232,7 @@ Called whenever the update state of the class changes.
 [Description]
 SetUpdateState is called whenever the update state of the class changes. Thus,
 it is called for each first BeginUpdate and for each last EndUpdate. SetUpdateState
-in TWideStrings is merely a place-holder and does nothing. Descendent classes
+in TWideStrings is merely a place-holder and does nothing. Descendant classes
 can override this method to receive notification of changes to the update state.
 [Parameters]
 Count=1
@@ -1251,7 +1254,7 @@ procedure SetLanguage(Value: LCID); virtual;
 [ShortDescr]
 [Description]
 SetLanguage is the property write method of the Language property. The TWideStrings
-implementation does nothing except store the new value. Descendent classes may
+implementation does nothing except store the new value. Descendant classes may
 override this method to respond to language changes such as re-sorting the list. 
 [Parameters]
 Count=1
@@ -1270,7 +1273,7 @@ BCB=4,5
 TWideStringList = class(TWideStrings)
 [ShortDescr]
 [Description]
-TWideStringList is a TWideStrings descendent which maintains a list of WideStrings.
+TWideStringList is a TWideStrings descendant which maintains a list of WideStrings.
 The class implements the abstract methods of TWideStrings and introduces some new
 methods and properties to:<BR>
   <UL>
@@ -1334,7 +1337,7 @@ procedure Delete(Index: Integer); override;
 [ShortDescr]
 Deletes the item at a specified position.
 [Description]
-Delete is an abstract method implemented by descendent classes to delete an item
+Delete is an abstract method implemented by descendant classes to delete an item
 at a specified position from the list. If the WideString has an associated object,
 the reference to that object (but not the object itself) is deleted as well.
 [Parameters]
@@ -1383,7 +1386,7 @@ Locates the position of a string in a sorted list and whether the string exists.
 [Description]
 Find returns the position in a sorted list where S should be inserted.
 If the specified string already exists the method returns True and Index contains
-it's zero based index, if the string does not exist in the list the method returns
+its zero based index, if the string does not exist in the list the method returns
 False and Index contains the zero based index where S should be inserted. Note
 that you should use Find only for sorted lists. For an unsorted list use IndexOf
 instead.
@@ -1608,7 +1611,7 @@ Property write method of the Items property.
 [Description]
 Put is the property write method of the Items property. Put sets the value of
 the string at the specified index which must be in the range 0 to Count - 1 or
-an exception is raised. Note that Put can not be used to insert a string into
+an exception is raised. Note that Put cannot be used to insert a string into
 a sorted list.
 [Parameters]
 Count=2
@@ -1635,7 +1638,7 @@ range 0 to Count - 1 or an exception is raised.
 [Parameters]
 Count=2
 1=Index:Integer=Zero based index of the string with which the specified object
-must be associated.
+should be associated.
 2=AObject:TObject=The object with which to associate the string at the specified index.
 [Quick Info]
 Kind=Method
@@ -1678,11 +1681,11 @@ Called when the update state changes.
 SetUpdateState is called whenever the update state of the list changes. The update
 state of the list is considered changed when the update count either becomes zero
 or changes from zero to non-zero. The update count is changed by the user calling
-BeginUpdate and EndUpdate.
+BeginUpdate or EndUpdate.
 [Parameters]
 Count=1
 1=Updating:Boolean=True if the list enters the update state (update count larger
-then 0) otherwise False.
+than 0) otherwise False.
 [Quick Info]
 Kind=Method
 Visibility=Protected
@@ -1776,7 +1779,7 @@ and the modification of a string. Note that before the modification is made
 the <REF>OnChanging</REF> event is fired.
 [Notes]
 Count=1
-1=This event is only fired when the updatecount is 0 (BeginUpdate and EndUpdate
+1=This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate
 calls are balanced).
 [Quick Info]
 Kind=Event
@@ -1802,7 +1805,7 @@ exchange) and the modification of a string. Note that after the modification is
 made the <REF>OnChange</REF> event is fired.
 [Notes]
 Count=1
-1=This event is only fired when the updatecount is 0 (BeginUpdate and EndUpdate
+1=This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate
 calls are balanced).
 [Quick Info]
 Kind=Event
