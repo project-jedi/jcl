@@ -965,9 +965,6 @@ physically exist on the drive or the function fails.
 [Result]
 If the function succeeds it returns the long name of the supplied path. If the
 function fails the result is a copy of the supplied Path.
-[Notes]
-Count=1
-1=PathGetLongName2 was written by Petr Vones.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
