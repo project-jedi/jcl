@@ -39,9 +39,9 @@ interface
 
 uses
   JclBase,
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Types, Libc,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -51,7 +51,7 @@ uses
 // replacements for defective Libc.pas declarations
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
 {$EXTERNALSYM stat64}
@@ -60,7 +60,7 @@ function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer; cdecl;
 function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
 {$EXTERNALSYM lstat64}
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 // Path Manipulation
@@ -165,7 +165,7 @@ function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean)
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 {$ENDIF MSWINDOWS}
-function DirectoryExists(const Name: string{$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 {$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
@@ -221,7 +221,7 @@ function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 {$ENDIF MSWINDOWS}
-function IsDirectory(const FileName: string{$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+function IsDirectory(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 function IsRootDirectory(const CanonicFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
@@ -256,7 +256,7 @@ function SymbolicLinkTarget(const Name: string): string;
 type
   TAttributeInterest = (aiIgnored, aiRejected, aiRequired);
 
-  TJclCustomFileAttrMask = class (TPersistent)
+  TJclCustomFileAttrMask = class(TPersistent)
   private
     FRequiredAttr: Integer;
     FRejectedAttr: Integer;
@@ -309,17 +309,17 @@ type
     property Attribute[Index: Integer]: TAttributeInterest read GetAttr write SetAttr; default;
   end;
 
-  TJclFileAttributeMask = class (TJclCustomFileAttrMask)
+  TJclFileAttributeMask = class(TJclCustomFileAttrMask)
   published
     property ReadOnly;
     property Hidden;
     property System;
     property Directory;
     property Normal;
-{$IFDEF UNIX}
+    {$IFDEF UNIX}
     property SymLink;
-{$ENDIF UNIX}
-{$IFDEF MSWINDOWS}
+    {$ENDIF UNIX}
+    {$IFDEF MSWINDOWS}
     property VolumeID;
     property Archive;
     property Temporary;
@@ -329,7 +329,7 @@ type
     property OffLine;
     property NotContentIndexed;
     property Encrypted;
-{$ENDIF MSWINDOWS}
+    {$ENDIF MSWINDOWS}
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -418,7 +418,7 @@ type
       write SetOnTerminateTask;
   end;
 
-  TJclFileEnumerator = class (TPersistent, IJclFileEnumerator)
+  TJclFileEnumerator = class(TPersistent, IJclFileEnumerator)
   private
     FOwnerInterface: IInterface;
     FTasks: TList;
@@ -445,7 +445,7 @@ type
     FRefCount: Integer;
     function CreateTask: TThread;
     procedure TaskTerminated(Sender: TObject);
-    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     // IJclFileEnumerator property access methods
@@ -551,9 +551,9 @@ type
       Pair: DWORD);
   end;
 
-  EJclFileVersionInfoError = class (EJclError);
+  EJclFileVersionInfoError = class(EJclError);
 
-  TJclFileVersionInfo = class (TObject)
+  TJclFileVersionInfo = class(TObject)
   private
     FBuffer: string;
     FFixedInfo: PVSFixedFileInfo;
@@ -634,7 +634,9 @@ type
 
 function FormatVersionString(const HiV, LoV: Word): string; overload;
 function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
+
 {$IFDEF MSWINDOWS}
+
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string; overload;
 
 //--------------------------------------------------------------------------------------------------
@@ -660,12 +662,10 @@ function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFile
 // TStream descendent classes for dealing with temporary files and for using file mapping objects.
 //--------------------------------------------------------------------------------------------------
 
-{ TTempFileStream }
-
 {$IFDEF MSWINDOWS}
-type
 
-  TJclTempFileStream = class (THandleStream)
+type
+  TJclTempFileStream = class(THandleStream)
   private
     FFileName: string;
   public
@@ -677,9 +677,7 @@ type
 
   TJclCustomFileMapping = class;
 
-{ TJclFileMappingView }
-
-  TJclFileMappingView = class (TCustomMemoryStream)
+  TJclFileMappingView = class(TCustomMemoryStream)
   private
     FFileMapping: TJclCustomFileMapping;
     FOffsetHigh: Cardinal;
@@ -701,11 +699,9 @@ type
     property Offset: Int64 read GetOffset;
   end;
 
-{ TJclCustomFileMapping }
-
   TJclFileMappingRoundOffset = (rvDown, rvUp);
 
-  TJclCustomFileMapping = class (TObject)
+  TJclCustomFileMapping = class(TObject)
   private
     FExisted: Boolean;
     FHandle: THandle;
@@ -736,9 +732,7 @@ type
     property Views[index: Integer]: TJclFileMappingView read GetView;
   end;
 
-{ TJclFileMapping }
-
-  TJclFileMapping = class (TJclCustomFileMapping)
+  TJclFileMapping = class(TJclCustomFileMapping)
   private
     FFileHandle: THandle;
   public
@@ -752,9 +746,7 @@ type
     property FileHandle: THandle read FFileHandle;
   end;
 
-{ TJclSwapFileMapping }
-
-  TJclSwapFileMapping = class (TJclCustomFileMapping)
+  TJclSwapFileMapping = class(TJclCustomFileMapping)
   public
     constructor Create(const Name: string; Protect: Cardinal;
       const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
@@ -764,7 +756,7 @@ type
 // TJclFileMappingStream
 //--------------------------------------------------------------------------------------------------
 
-  TJclFileMappingStream = class (TCustomMemoryStream)
+  TJclFileMappingStream = class(TCustomMemoryStream)
   private
     FFileHandle: THandle;
     FMapping: THandle;
@@ -785,7 +777,7 @@ type
   PPCharArray = ^TPCharArray;
   TPCharArray = array [0..0] of PChar;
 
-  TJclMappedTextReader = class (TPersistent)
+  TJclMappedTextReader = class(TPersistent)
   private
     FContent: PChar;
     FEnd: PChar;
@@ -839,7 +831,7 @@ type
 // TJclFileMaskComparator
 //--------------------------------------------------------------------------------------------------
 
-// TODO UNTESTET/UNDOCUMENTED
+// TODO UNTESTED/UNDOCUMENTED
 
 type
   TJclFileMaskComparator = class(TObject)
@@ -871,12 +863,12 @@ type
 // Exceptions
 //--------------------------------------------------------------------------------------------------
 
-  EJclPathError = class (EJclError);
-  EJclFileUtilsError = class (EJclError);
+  EJclPathError = class(EJclError);
+  EJclFileUtilsError = class(EJclError);
   {$IFDEF MSWINDOWS}
-  EJclTempFileStreamError = class (EJclWin32Error);
-  EJclFileMappingError = class (EJclWin32Error);
-  EJclFileMappingViewError = class (EJclWin32Error);
+  EJclTempFileStreamError = class(EJclWin32Error);
+  EJclFileMappingError = class(EJclWin32Error);
+  EJclFileMappingViewError = class(EJclWin32Error);
   {$ENDIF MSWINDOWS}
 
 implementation
@@ -890,7 +882,7 @@ uses
 
 { Some general notes:
 
-  This unit redeclares some functions from FileCtrl.pas to avoid a dependeny on that unit in the
+  This unit redeclares some functions from FileCtrl.pas to avoid a dependency on that unit in the
   JCL. The problem is that FileCtrl.pas uses some units (eg Forms.pas) which have ridiculous
   initialization requirements. They add 4KB (!) to the executable and roughly 1 second of startup.
   That initialization is only necessary for GUI applications and is unacceptable for high
@@ -916,7 +908,7 @@ const
 // replacements for defective Libc.pas declarations
 //==================================================================================================
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer;
 begin
@@ -937,7 +929,7 @@ begin
   Result := __xstat64(_STAT_VER, FileName, StatBuffer);
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //==================================================================================================
 // TJclTempFileStream
@@ -951,6 +943,7 @@ var
 begin
   FFileName := Prefix;
   FileHandle := FileCreateTemp(FFileName);
+  // (rom) is it really wise to throw an exception before calling inherited?
   if FileHandle = INVALID_HANDLE_VALUE then
     raise EJclTempFileStreamError.CreateResRec(@RsFileStreamCreate);
   inherited Create(FileHandle);
@@ -1370,7 +1363,7 @@ end;
 destructor TJclFileMappingStream.Destroy;
 begin
   Close;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1399,7 +1392,7 @@ begin
       TStrings(Dest).Add(ReadLn);
   end
   else
-    inherited;
+    inherited AssignTo(Dest);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1407,6 +1400,7 @@ end;
 constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean;
   const AIndexOption: TJclMappedTextReaderIndex);
 begin
+  // (rom) why no inherited Create?
   FMemoryStream := MemoryStream;
   FFreeStream := FreeStream;
   FIndexOption := AIndexOption;
@@ -1418,6 +1412,7 @@ end;
 constructor TJclMappedTextReader.Create(const FileName: string;
   const AIndexOption: TJclMappedTextReaderIndex);
 begin
+  // (rom) why no inherited Create?
   FMemoryStream := TJclFileMappingStream.Create(FileName);
   FFreeStream := True;
   FIndexOption := AIndexOption;
@@ -1468,7 +1463,7 @@ begin
   if FFreeStream then
     FMemoryStream.Free;
   FreeMem(FIndex);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1498,6 +1493,9 @@ end;
 
 function TJclMappedTextReader.GetLineCount: Integer;
 
+  // (rom) assembler is problematic here
+  // (rom) also not portable because Unix uses Carriage Return
+  
   function CountLines(StartPtr: PChar; Len: Integer): Integer; assembler;
   asm
        PUSH    EDI
@@ -1705,7 +1703,7 @@ begin
   Result := Path;
   if (Path <> '') and (ExtractFileExt(Path) = '') and (Extension <> '') then
   begin
-    // Note that if we get here Path is quarenteed not to end in a '.' otherwise ExtractFileExt
+    // Note that if we get here Path is guarenteed not to end in a '.' otherwise ExtractFileExt
     // would have returned '.' therefore there's no need to check it explicitly in the code below
     if Extension[1] = '.' then
       Result := Result + Extension
@@ -1730,7 +1728,7 @@ begin
       Result := Append
     else
     begin
-      // The following code may look a bit complex but al it does is add Append to Path ensuring
+      // The following code may look a bit complex but all it does is add Append to Path ensuring
       // that there is one and only one path separator character between them
       B1 := Path[PathLength] = PathSeparator;
       B2 := Append[1] = PathSeparator;
@@ -1862,11 +1860,13 @@ begin
     while (P1^ = P2^) and (P1^ <> #0) do
     begin
       Inc(Result);
-      if P1^ in [PathSeparator, ':'] then LastSeparator := Result;
+      if P1^ in [PathSeparator, ':'] then
+        LastSeparator := Result;
       Inc(P1);
       Inc(P2);
     end;
-    if (LastSeparator < Result) and (P1^ <> #0) then Result := LastSeparator;
+    if (LastSeparator < Result) and (P1^ <> #0) then
+      Result := LastSeparator;
   end;
 end;
 
@@ -1965,7 +1965,8 @@ begin
     I := Depth + 1;
     if PathIsUNC(LocalPath) then
       I := I + 2;
-    while (I < List.Count) do List.Delete(I);
+    while I < List.Count do
+      List.Delete(I);
     Result := PathAddSeparator(StringsToStr(List, '\', True));
   finally
     List.Free;
@@ -2003,7 +2004,8 @@ begin
       Start := 0;
     for I := Start to List.Count - 1 do
     begin
-      if (Pos(':', List[I]) = 0) then Inc(Result);
+      if Pos(':', List[I]) = 0 then
+        Inc(Result);
     end;
   finally
     List.Free;
@@ -2742,10 +2744,10 @@ function GetDirectorySize(const Path: string): Int64;
             Inc(Result, TempSize.QuadPart);
           end;
           {$ENDIF MSWINDOWS}
-          {$IFDEF LINUX}
+          {$IFDEF UNIX}
             // SysUtils.Find* don't perceive files >= 2 GB anyway 
             Inc(Result, Int64(F.Size));
-          {$ENDIF LINUX}
+          {$ENDIF UNIX}
         end;
         R := SysUtils.FindNext(F);
       end;
@@ -3071,9 +3073,9 @@ begin
 {$IFDEF MSWINDOWS}
   L := Windows.GetModuleFileName(Module, Pointer(Result), L);
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
   L := GetModuleFileName(Module, Pointer(Result), L);
-{$ENDIF LINUX}
+{$ENDIF UNIX}
   SetLength(Result, L);
 end;
 
@@ -3319,8 +3321,10 @@ begin
     TimeBuf.actime := StatBuf.st_atime;
     TimeBuf.modtime := StatBuf.st_mtime;
     case Times of
-      ftLastAccess: TimeBuf.actime := FileTime;
-      ftLastWrite: TimeBuf.modtime := FileTime;
+      ftLastAccess:
+        TimeBuf.actime := FileTime;
+      ftLastWrite:
+        TimeBuf.modtime := FileTime;
     end;
     Result := utime(PChar(FileName), @TimeBuf) = 0;
   end;
@@ -3842,7 +3846,7 @@ destructor TJclFileVersionInfo.Destroy;
 begin
   FreeAndNil(FItemList);
   FreeAndNil(FItems);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4239,7 +4243,7 @@ end;
 
 constructor TJclFileMaskComparator.Create;
 begin
-  inherited;
+  inherited Create;
   FSeparator := ';';
 end;
 
@@ -4341,7 +4345,6 @@ end;
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
   const AttributeMatch: TJclAttributeMatch; const Options: TFileListOptions;
   const SubfoldersMask: string; const FileMatchFunc: TFileMatchFunc): Boolean;
-
 var
   FileMask: string;
   RootDir: string;
@@ -4396,12 +4399,17 @@ var
          Matches := False;
 
          case AttributeMatch of
-           amAny: Matches := (LocAttr and FindInfo.Attr) <> 0;
-           amExact: Matches := LocAttr = FindInfo.Attr;
-           amSubSetOf: Matches := (LocAttr and FindInfo.Attr) = LocAttr;
-           amSuperSetOf: Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
-           amCustom: if @FileMatchFunc <> nil then
-                       Matches := FileMatchFunc(LocAttr,  FindInfo);
+           amAny:
+             Matches := True;
+           amExact:
+             Matches := LocAttr = FindInfo.Attr;
+           amSubSetOf:
+             Matches := (LocAttr and FindInfo.Attr) = LocAttr;
+           amSuperSetOf:
+             Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
+           amCustom:
+             if Assigned(FileMatchFunc) then
+               Matches := FileMatchFunc(LocAttr,  FindInfo);
          end;
 
          if Matches then
@@ -4645,12 +4653,12 @@ begin
 end;
 
 //==================================================================================================
-// class TJclFileAttributeMask
+// TJclFileAttributeMask
 //==================================================================================================
 
 constructor TJclCustomFileAttrMask.Create;
 begin
-  inherited;
+  inherited Create;
   FRejectedAttr := faRejectedByDefault;
 end;
 
@@ -4712,11 +4720,11 @@ end;
 
 function TJclCustomFileAttrMask.GetAttr(Index: Integer): TAttributeInterest;
 begin
-  if (FRequiredAttr and Index <> 0)
-  or (Index = faNormalFile) and (FRejectedAttr = not faNormalFile) then
+  if ((FRequiredAttr and Index) <> 0) or (Index = faNormalFile) and
+    (FRejectedAttr = not faNormalFile) then
     Result := aiRequired
   else
-    if FRejectedAttr and Index <> 0 then
+  if (FRejectedAttr and Index) <> 0 then
     Result := aiRejected
   else
     Result := aiIgnored;
@@ -4786,7 +4794,7 @@ end;
 //==================================================================================================
 
 type
-  TEnumFileThread = class (TThread)
+  TEnumFileThread = class(TThread)
   private
     FID: TFileSearchTaskID;
     FFileMasks: TStrings;
@@ -4856,9 +4864,9 @@ begin
   {$IFDEF MSWINDOWS}
   Priority := tpIdle;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Priority := 0;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   FreeOnTerminate := True;
   FNotifyOnTermination := True;
 end;
@@ -4868,7 +4876,7 @@ end;
 destructor TEnumFileThread.Destroy;
 begin
   FFileMasks.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4898,7 +4906,7 @@ end;
 procedure TEnumFileThread.DoTerminate;
 begin
   if FNotifyOnTermination then
-    inherited;
+    inherited DoTerminate;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5025,7 +5033,7 @@ end;
 
 constructor TJclFileEnumerator.Create;
 begin
-  inherited;
+  inherited Create;
   FTasks := TList.Create;
   FAttributeMask := TJclFileAttributeMask.Create;
   FRootDirectory := '.';
@@ -5048,21 +5056,21 @@ begin
   FTasks.Free;
   FAttributeMask.Free;
   FFileMasks.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclFileEnumerator.AfterConstruction;
 begin
-  inherited;
+  inherited AfterConstruction;
   if GetOwner <> nil then
     GetOwner.GetInterface(IInterface, FOwnerInterface);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclFileEnumerator.QueryInterface(const IID: TGUID; out Obj): HResult;
+function TJclFileEnumerator.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 begin
   if GetInterface(IID, Obj) then
     Result := S_OK
@@ -5385,7 +5393,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclFileEnumerator.GetOptions: TFileSearchoptions;
+function TJclFileEnumerator.GetOptions: TFileSearchOptions;
 begin
   Result := FOptions;
 end;
@@ -5420,8 +5428,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileEnumerator.SetCaseSensitiveSearch(
-  const Value: Boolean);
+procedure TJclFileEnumerator.SetCaseSensitiveSearch(const Value: Boolean);
 begin
   FCaseSensitiveSearch := Value;
 end;
