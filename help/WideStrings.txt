@@ -666,7 +666,7 @@ Count=2
 2=OnConfirmConversion;..\Events\OnConfirmConversion
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SaveToStream(Stream: TStream); virtual;
+procedure SaveToStream(Stream: TStream; WithBOM: Boolean = True); virtual;
 [ShortDescr]
 Writes the contents of the list to a stream.
 [Description]
@@ -684,8 +684,10 @@ the least-significant-byte first byte-order mark.
 Count=1
 1=Upon exit the Saved property is updated to reflect the result of the method.
 [Parameters]
-Count=1
+Count=2
 1=Stream:TStream=TStream descendant to write the strings to.
+2=WithBOM:Boolean=WithBOM determines whether to write a <B>B</B>yte <B>O</B>rder <B>M</B>ark or not.
+ <B>Note:</B> when saved as ANSI text there will never be a BOM.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -872,6 +874,22 @@ BCB=4,5
 Count=2
 1=Values
 2=Items
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property NormalizationForm: TNormalizationForm read FNormalizationForm write SetNormalizationForm default nfC;
+[ShortDescr]
+Determines in which form Unicode strings should be stored
+[Description]
+NormalizationForm determines in which form Unicode strings should be stored.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TWideStrings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Saved: Boolean read FSaved;
@@ -1158,13 +1176,13 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure Put(Index: Integer; const S: WideString); virtual;
+procedure Put(Index: Integer; const S: WideString); virtual; abstract;
 [ShortDescr]
 Property write method of the Strings property.
 [Description]
-Put is the property write method of the Strings property. It is implemented by
-first deleting the item at the specified index and then inserting the new string
-at that same index.
+Put is the property write method of the Strings property. In TWideStrings Put
+does nothing. It is up to descendant classes to override this method and
+implement it in an appropriate manner.
 [Parameters]
 Count=2
 1=Index:Integer=The zero based index of the WideString to set.
@@ -1180,7 +1198,7 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure PutObject(Index: Integer; AObject: TObject); virtual;
+procedure PutObject(Index: Integer; AObject: TObject); virtual; abstract
 [ShortDescr]
 Property write method of the Objects property.
 [Description]
@@ -1210,7 +1228,7 @@ SetCapacity is the property write method of the Capacity property. In TWideStrin
 the SetCapacity does not do anything. Descendant classes can optionally override
 this method to implement a capacity scheme. In this case the SetCapacity method
 should take steps to ensure that the list of WideStrings is expanded in such a
-manner that the list will not have to be reallocated again until the list holds more 
+manner that the list will not have to be reallocated again until the list holds more
 than Capacity number of strings.
 [Parameters]
 Count=1
@@ -1255,7 +1273,7 @@ procedure SetLanguage(Value: LCID); virtual;
 [Description]
 SetLanguage is the property write method of the Language property. The TWideStrings
 implementation does nothing except store the new value. Descendant classes may
-override this method to respond to language changes such as re-sorting the list. 
+override this method to respond to language changes such as re-sorting the list.
 [Parameters]
 Count=1
 1=Value:LCID=The new language locale.
