@@ -1,5 +1,83 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function PWideCharOrNil(const W: WideString): PWideChar;
+[ShortDescr]
+Explicit replacement for PWideChar typecast.
+[Description]
+PWideCharOrNil returns a pointer to the first character of the specified string
+or nil of the string is empty. This is identical to simply typecasting to
+PWideChar except that this function makes the behaviour of the typecast explicit
+ (and independent of the compiler).
+[Parameters]
+Count=1
+1=S:WideString=The string to for which to return a PWideChar.
+[Result]
+If the specified string is empty the funtion returns nil, otherwise it returns
+a pointer to the first character of the string.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Pointer manipulation
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=PCharOrNil
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PCharOrNil(const S: AnsiString): PChar;
+[ShortDescr]
+Explicit replacement for PChar typecast.
+[Description]
+PCharOrNil returns a pointer to the first character of the specified string or
+nil of the string is empty. This is identical to simply typecasting to PChar
+except that this function makes the behaviour of the typecast explicit (and
+independent of the compiler).
+[Parameters]
+Count=1
+1=S:AnsiString=The string to for which to return a PChar.
+[Result]
+If the specified string is empty the funtion returns nil, otherwise it returns
+a pointer to the first character of the string.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Pointer manipulation
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=PWideCharOrNil
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IntToStrZeroPad(Value, Count: Integer): AnsiString;
+[ShortDescr]
+Converts an integer to a string an left pads it with zero's.
+[Description]
+IntToStrZeroPad converts the specified integer value to a string containing the
+decimal representation of that number and left pads it with zero's if the
+resulting string is less than the specified number of characters.
+[Parameters]
+Count=2
+1=Value:Integer=The integer value to convert to a string.
+2=Count:Integer=The number of characters in the resulting string. If the string
+is less than the specified number, the string is left padded with zero's until
+the string is the specified number of characters long.
+[Result]
+The string representation of the specified integer value, left padded with zero's.
+I don't know of any input that can cause this function to fail, but in the
+unlikely event that it does, it does so by raising an exception.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Numeric formatting routines
+Author=Anthony Steele;anthony@southeaster.com
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte; overload;
@@ -28,7 +106,6 @@ Unit=JclSysUtils
 Category=Base Services
 Author=Bernhard Berger;bernhardberger@yahoo.de
 Delphi=3,4,5
-BCB=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
