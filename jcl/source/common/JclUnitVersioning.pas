@@ -567,9 +567,9 @@ var
 begin
   RefCount := 0;
   {$IFDEF MSWINDOWS}
-  pid := GetCurrentProcessId;
   GetSystemInfo(SysInfo);
   PageSize := SysInfo.dwPageSize;
+  pid := GetCurrentProcessId;
   MaximumApplicationAddress := SysInfo.lpMaximumApplicationAddress;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
@@ -585,6 +585,13 @@ begin
     Requested := Pointer((Cardinal(Requested) div PageSize) * PageSize);
     {$IFDEF MSWINDOWS}
     Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or MEM_COMMIT, PAGE_READWRITE);
+    if Assigned(Allocated) and (Requested <> Allocated) then
+    begin
+      // We got relocated (should not happen at all)
+      VirtualFree(Allocated, 0, MEM_RELEASE);
+      Inc(Pages);
+      Continue;
+    end;
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     // Do not use MAP_FIXED because it replaces the already allocated map by a
@@ -607,10 +614,7 @@ begin
     {$ENDIF UNIX}
 
     if Assigned(Allocated) then
-    begin
-      //if Requested = Allocated then
-        Break; // new block allocated
-    end
+      Break // new block allocated
     else
     begin
       if (Requested.Signature1 = Signature1 xor pid) and
@@ -673,14 +677,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-var
-  UnitVersioningOwner: Boolean = False;
-  GlobalUnitVersioning: TUnitVersioning = nil;
-
 type
   PUnitVersioning = ^TUnitVersioning;
 
 var
+  UnitVersioningOwner: Boolean = False;
+  GlobalUnitVersioning: TUnitVersioning = nil;
   UnitVersioningNPA: PUnitVersioning = nil;
 
 function GetUnitVersioning: TUnitVersioning;
@@ -774,6 +776,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/10/27 15:54:47  ahuser
+// Update
+//
 // Revision 1.6  2004/10/17 11:01:03  ahuser
 // Fixed memory leak
 //
