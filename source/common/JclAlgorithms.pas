@@ -113,8 +113,6 @@ procedure Sort(AList: IJclIntfList; First, Last: Integer; AComparator: TIntfComp
 procedure Sort(AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
 procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
-procedure DCLAppendDelimited(Obj: IJclStrCollection; const AString, Separator: string);
-
 implementation
 
 uses
@@ -579,39 +577,22 @@ begin
   SortProc(AList, First, Last, AComparator);
 end;
 
-procedure DCLAppendDelimited(Obj: IJclStrCollection; const AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
-  PString, PSep, PPos: PChar;
-begin
-  PString := PChar(AString);
-  PSep := PChar(Separator);
-  PPos := StrPos(PString, PSep);
-  if PPos <> nil then
-  begin
-    SepLen := StrLen(PSep);
-    repeat
-      //SetLength(Item, PPos - PString + 1);
-      SetLength(Item, PPos - PString);
-      Move(PString^, Item[1], PPos - PString);
-      //Item[PPos - PString + 1] := #0;
-      Obj.Add(Item);
-      PString := PPos + SepLen;
-      PPos := StrPos(PString, PSep);
-    until PPos = nil;
-    if StrLen(PString) > 0 then //ex. hello#world
-      Obj.Add(PString);
-  end
-  else //There isnt a Separator in AString
-    Obj.Add(AString);
-end;
-
 // History:
 
 // $Log$
+// Revision 1.5  2005/03/02 17:51:15  rrossmair
+// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
+//
 // Revision 1.4  2005/03/02 09:59:30  dade2004
-// - DCLAppendDelimited replaced by JclAbstractContainers.TJclStrCollection.AppendDelimited
+// Added
+//  -TJclStrCollection in JclContainerIntf
+//        Every common methods for IJclStrCollection are implemented here
+//
+// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
+// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
+//
+// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
+// relative method in TJclStrCollection
 //
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas

@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is DCL_intf.pas and DCLUtil.pas.                                               }
+{ The Original Code is DCL_intf.pas.                                               }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
 { Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
@@ -448,6 +448,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/02 17:51:24  rrossmair
+// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
