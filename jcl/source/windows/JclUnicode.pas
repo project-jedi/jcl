@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: October 14, 2001                                              }
+{ Last modified: November 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -26,6 +26,8 @@ unit JclUnicode;
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 //
+// 29-NOV-2001:
+//   - bug fix
 // 06-JUN-2001:
 //   - small changes
 // 28-APR-2001:
@@ -5110,7 +5112,7 @@ begin
       else
       begin
         P1 := P;
-        while (P^ > WideSpace) and (P^ <> ', ') do
+        while (P^ > WideSpace) and (P^ <> ',') do 
           Inc(P);
         SetString(S, P1, P - P1);
       end;
