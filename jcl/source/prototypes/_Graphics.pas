@@ -2601,9 +2601,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ Documentation Info (from MSDN): After a successful call to SetWindowRgn, the system owns
+                                  the region specified by the region handle hRgn. The system does
+                                  not make a copy of the region. Thus, you should not make any
+                                  further function calls with this region handle. In particular,
+                                  do not delete this region handle. The system deletes the region
+                                  handle when it no longer needed. }
+
 procedure TJclRegion.SetWindow(Window: HWND; Redraw: Boolean);
 begin
-  SetWindowRgn(Window, FHandle, Redraw);
+  if SetWindowRgn(Window, FHandle, Redraw) <> 0 then
+    FOwnsHandle := False;  // Make sure that we do not release the Handle. If we didn't own it before
+                           // please take care that the owner doesn't release it.
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -6128,6 +6137,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.17  2004/11/06 02:19:45  mthoma
+// history cleaning.
+//
 // Revision 1.16  2004/10/17 20:54:14  mthoma
 // cleaning
 //
