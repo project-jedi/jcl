@@ -13,7 +13,7 @@ The Original Code is: WStrUtils.PAS, released on 2004-01-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 All Rights Reserved.
 
-Contributers:
+Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JCL home page,
 located at http://jcl.sourceforge.net
@@ -44,7 +44,6 @@ type
    );
   TWideFileOptions = set of TWideFileOptionsType;
 
-  // (rom) IFDEF VisualCLX removed
   TSearchFlag = (
     sfCaseSensitive,    // match letter case
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
@@ -230,12 +229,12 @@ function StrLCatW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;
 function WidePos(const SubStr, S: WideString): Integer;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF RTL140_UP}
 function WideCompareText(const S1, S2: WideString): Integer;
 function WideCompareStr(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF ~RTL140_UP}
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
@@ -253,9 +252,9 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Math;
 
-{$IFDEF COMPILER5}
-// (ahuser) Delphi 5 does not know Sign and I will not depend on JCL in this
-//          unit.
+{$IFNDEF FPC}
+{$IFNDEF RTL140_UP      // Delphi 5 Math unit has no Sign function }
+
 function Sign(A: Integer): Integer;
 begin
   if A < 0 then
@@ -265,7 +264,9 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF COMPILER5}
+
+{$ENDIF ~RTL140_UP}
+{$ENDIF ~FPC}
 
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
@@ -636,7 +637,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
+{$IFDEF RTL140_UP}
 
 function TrimW(const S: WideString): WideString;
 begin
@@ -653,7 +654,7 @@ begin
   Result := TrimRight(S);
 end;
 
-{$ELSE}
+{$ELSE ~RTL140_UP}
 
 // missing function in Delphi 5
 
@@ -728,7 +729,7 @@ begin
   Result := Copy(S, 1, I);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF ~RTL140_UP}
 
 function TrimLeftLengthW(const S: WideString): Integer;
 var
@@ -757,9 +758,9 @@ begin
   {$IFDEF MSWINDOWS}
   FLineSeparator := WideChar(13) + '' + WideChar(10); // compiler wants it this way
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FLineSeparator := WideChar(10);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   FNameValueSeparator := '=';
   FDelimiter := ',';
   FQuoteChar := '"';
@@ -826,13 +827,13 @@ begin
     BeginUpdate;
     try
       Clear;
-      {$IFDEF COMPILER7_UP}
+      {$IFDEF RTL150_UP}
       FNameValueSeparator := CharToWideChar(TStrings(Source).NameValueSeparator);
-      {$ENDIF COMPILER7_UP}
-      {$IFDEF COMPILER6_UP}
+      {$ENDIF RTL150_UP}
+      {$IFDEF RTL140_UP}
       FQuoteChar := CharToWideChar(TStrings(Source).QuoteChar);
       FDelimiter := CharToWideChar(TStrings(Source).Delimiter);
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF RTL140_UP}
       AddStrings(TStrings(Source));
     finally
       EndUpdate;
@@ -851,13 +852,13 @@ begin
     TStrings(Dest).BeginUpdate;
     try
       TStrings(Dest).Clear;
-      {$IFDEF COMPILER7_UP}
+      {$IFDEF RTL150_UP}
       TStrings(Dest).NameValueSeparator := WideCharToChar(NameValueSeparator);
-      {$ENDIF COMPILER7_UP}
-      {$IFDEF COMPILER6_UP}
+      {$ENDIF RTL150_UP}
+      {$IFDEF RTL140_UP}
       TStrings(Dest).QuoteChar := WideCharToChar(QuoteChar);
       TStrings(Dest).Delimiter := WideCharToChar(Delimiter);
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF RTL140_UP}
       for I := 0 to Count - 1 do
         TStrings(Dest).AddObject(GetP(I)^, Objects[I]);
     finally
