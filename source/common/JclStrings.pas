@@ -140,9 +140,7 @@ const
 {$IFDEF WIN32}
 
 const
-
-// CharType return values
-
+  // CharType return values
   C1_UPPER  = $0001; // Uppercase
   C1_LOWER  = $0002; // Lowercase
   C1_DIGIT  = $0004; // Decimal digits
@@ -393,30 +391,28 @@ var
 
 //------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
-
 procedure LoadCharTypes;
 var
   CurrChar: AnsiChar;
   CurrType: Word;
 begin
+  {$IFDEF WIN32}
   for CurrChar := Low(AnsiChar) to High(AnsiChar) do
   begin
     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
     AnsiCharTypes[CurrChar] := CurrType;
   end;
+  {$ENDIF WIN32}
 end;
 
-{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
-
-{$IFDEF WIN32}
 
 procedure LoadCaseMap;
 var
   CurrChar, UpCaseChar, LoCaseChar, ReCaseChar: AnsiChar;
 begin
+  {$IFDEF WIN32}
   if not AnsiCaseMapReady then
   begin
     for CurrChar := Low(AnsiChar) to High(AnsiChar) do
@@ -438,9 +434,8 @@ begin
     end;
     AnsiCaseMapReady := True;
   end;
+  {$ENDIF WIN32}
 end;
-
-{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
