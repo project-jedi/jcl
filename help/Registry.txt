@@ -120,7 +120,7 @@ Reads a string key from the registry.
 [Description]
 RegReadStringDef reads a single string value from the registry. If the function fails
 it returns the value specified by Def. The function accepts only key values of type
-REG_SZ.
+REG_SZ and REG_EXPAND_SZ.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
