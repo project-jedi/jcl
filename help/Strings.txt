@@ -16,12 +16,13 @@ If S contains only alpha characters the result is True, otherwise the result is 
 Count=1
 1=If S is an empty string the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrIsNumber
@@ -44,12 +45,13 @@ If S contains only alpha-numerical characters the result is True, otherwise the 
 Count=1
 1=If S is an empty string the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=StrIsAlpha
@@ -74,12 +76,13 @@ otherwise the result is False.
 Count=1
 1=If S is an empty string the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrIsAlpha
@@ -104,12 +107,13 @@ appear at least once in the specified string.
 [Result]
 Returns True if the condition is met, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrIsDigit(const S: AnsiString): Boolean;
@@ -129,12 +133,13 @@ If S contains only numerical characters the result is True, otherwise the result
 Count=1
 1=If S is an empty string the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Martin Kubecka;martin.kubecka@amenit.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=StrIsAlpha
@@ -159,12 +164,13 @@ If S contains only numerical characters the result is True, otherwise the result
 Count=1
 1=If S is an empty string the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=StrIsAlpha
@@ -190,12 +196,13 @@ Count=1
 1=If the supplied string is empty, the result is always True. If the supplied
 character set is empty, the result is always False. Empty string overules empty set.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrSame(const S1, S2: AnsiString): Boolean;
@@ -212,12 +219,13 @@ Count=2
 If the two strings are identical the return value is True, if they are not the
 return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrCompare;String Find and Replace\StrCompare
@@ -239,12 +247,13 @@ Count=3
 [Result]
 The centered string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Alexander Radchenko;ravnvt@chat.ru
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrDoubleQuote(const S: AnsiString): AnsiString;
@@ -259,12 +268,13 @@ Count=1
 [Result]
 The double-quoted version of the string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrSingleQuote
@@ -285,12 +295,13 @@ Count=2
 [Result]
 The function result is a copy of the supplied Text, prefixed with Prefix.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrEnsureSuffix
@@ -310,12 +321,13 @@ Count=2
 [Result]
 The function result is a copy of the supplied Text, with the suffix.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrEnsurePrefix
@@ -356,12 +368,13 @@ Count=1
 [Result]
 The string with all escape characters replaced with their string counterparts.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrStringToEscaped
@@ -376,12 +389,13 @@ StrLower returns a copy of the string, converted to lowercase. That is, if you p
 Count=1
 1=S:AnsiString=String to convert to lowercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrLowerInPLace
@@ -400,12 +414,13 @@ StrLower converts all characters in the supplied string to lowercase.
 Count=1
 1=S:AnsiString=String to convert to lowercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrLower
@@ -424,12 +439,13 @@ StrLowerBuff converts all characters in the supplied string to lowercase.
 Count=1
 1=P:PAnsiChar=String to convert to lowercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrLower
@@ -455,12 +471,13 @@ Count=5
 4=FromIndex:Integer=The starting index into the source string from which count characters are copied.
 5=Count:Integer=Length of the sub-string to copy in characters.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar = ' '): AnsiString;
@@ -478,12 +495,13 @@ Count=3
 [Result]
 The string left padded with the specified character.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrPadRight
@@ -505,12 +523,13 @@ Count=3
 [Result]
 The string right padded with the specified character.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrPadLeft
@@ -529,12 +548,13 @@ Count=1
 [Result]
 The transformed string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure StrProperBuff(S: PAnsiChar);
@@ -547,12 +567,13 @@ the first character.
 Count=1
 1=S:PAnsiChar=The string to transform.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
@@ -569,12 +590,13 @@ Count=2
 [Result]
 The quoted string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRemoveChars(const S: AnsiString; Chars: TSysCharSet): AnsiString;
@@ -594,12 +616,13 @@ The string with all characters from the supplied set removed.
 Count=1
 1=The function is case sensitive. That is, specifying 'e' will not remove 'E'.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
@@ -615,12 +638,13 @@ Count=2
 [Result]
 The specified string, repeated Count number of times.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrReverse(const S: AnsiString): AnsiString;
@@ -638,12 +662,13 @@ Count=1
 [Result]
 A reversed copy of the supplied string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrReverseInPlace
@@ -660,12 +685,13 @@ string then use the <REF>StrReverse</REF> function instead.
 Count=1
 1=S:AnsiString=The string to reverse.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrReverse
@@ -683,12 +709,13 @@ Count=1
 [Result]
 The single-quoted version of the string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrDoubleQuote
@@ -720,12 +747,13 @@ Count=1
 1=Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten
 by Marcel van Brakel.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrStringToEscaped(S: AnsiString): AnsiString;
@@ -763,12 +791,13 @@ Count=1
 [Result]
 The "escaped" string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrEscapedToString
@@ -789,12 +818,13 @@ Count=1
 [Result]
 The string after all non-number characters are removed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrTrimQuotes(const S: AnsiString): AnsiString;
@@ -811,12 +841,13 @@ Count=1
 [Result]
 The unquoted string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrSingleQuote
@@ -838,12 +869,13 @@ Count=1
 [Result]
 The string of converted bytes.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
@@ -859,12 +891,13 @@ Count=2
 [Result]
 The function returns the source string S without any leading characters C.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Jack N.A. Bakker;JACKB@Europdonor.NL
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrTrimCharRight
@@ -883,12 +916,13 @@ Count=2
 [Result]
 The function returns the source string S without any trailing characters C.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Jack N.A. Bakker;JACKB@Europdonor.NL
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrTrimCharLeft
@@ -903,12 +937,13 @@ StrUpper returns a copy of the string, converted to uppercase. That is, if you p
 Count=1
 1=S:AnsiString=String to convert to uppercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrUpperInPlace
@@ -927,12 +962,13 @@ StrUpper converts all characters in the supplied string to uppercase.
 Count=1
 1=S:AnsiString=String to convert to uppercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrUpper
@@ -951,12 +987,13 @@ StrUpper converts all characters in the supplied string to uppercase.
 Count=1
 1=S:PAnsiChar=String to convert to uppercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=StrUpper
@@ -980,12 +1017,13 @@ reference count becomes 1.
 Count=1
 1=S:AnsiString=The long string whose reference count to increment.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrDecRef
@@ -1016,12 +1054,13 @@ Count=1
 1=This function relies on pseudo-undocumented knowledge and should only be used
 for debugging purposes.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRefCount
@@ -1040,12 +1079,13 @@ Count=1
 1=S:AnsiString=The long string whose reference count to increment. Upon return
 the string may have been freed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrDecRef
@@ -1064,12 +1104,13 @@ Count=1
 [Result]
 The length of the string, in characters.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Robert Lee;rhlee@nwu.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrLength(const S: AnsiString): Longint;
@@ -1088,12 +1129,13 @@ The length of the string in characters.
 Count=1
 1=This function relies on pseudo undocumented knowledge.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrAllocSize
@@ -1119,12 +1161,13 @@ Count=1
 1=This function relies on pseudo-undocumented knowledge and should only be used
 for debugging purposes.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [Example]
 [SeeAlso]
 Count=1
@@ -1147,12 +1190,13 @@ Count=1
 1=S:AnsiString=The string whose length to reset.
 [Result]
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrCharCount(const S: AnsiString; C: AnsiChar): Integer;
@@ -1168,12 +1212,13 @@ Count=2
 [Result]
 The number of occurrences of C in S.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Massimo Maria Ghisalberti;obyou@dada.it
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrCompare(const S1, S2: AnsiString): Integer;
@@ -1207,12 +1252,13 @@ Count=2
 StrCompare returns 0 if the two strings match or the number of different characters
 in case of a mismatch.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
@@ -1236,12 +1282,13 @@ Count=4
 StrCompareRange returns 0 if the two strings match or the number of different characters
 in case of a mismatch.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrCompare
@@ -1260,12 +1307,13 @@ Count=2
 [Result]
 A string consisting of the specified character repeated Count times.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrFind(const Substr, Str: AnsiString; const Index: Integer = 1): Integer;
@@ -1283,12 +1331,13 @@ Count=3
 One-based index of the first character of SubStr in Str or 0 if SubStr does not
 occur in the supplied string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrSearch
@@ -1310,12 +1359,13 @@ Count=2
 If the supplied string is prefixed with one of the supplied prefixes the routine
 returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrPrefixIndex
@@ -1346,12 +1396,13 @@ at which it appears is returned. If the string doesn't exist in the array -1 is
 returned. Note that the string comparison is case insensitive but is based on the
 current locale (ie it uses AnsiSameText).
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrILastPos(const SubStr, S: AnsiString): Integer;
@@ -1368,12 +1419,13 @@ Count=2
 The index of the last occurrence of SubStr in S. If the sub-string does not exist
 at all the result is 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrLastPos
@@ -1393,12 +1445,13 @@ Count=2
 The index of the last occurrence of SubStr in S. If the sub-string does not exist
 at all the result is 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrILastPos
@@ -1418,12 +1471,13 @@ Count=2
 The index of the first occurrence of SubStr in S. If the sub-string does not exist
 at all the result is 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
@@ -1439,12 +1493,13 @@ Count=2
 [Result]
 If the string exists in the supplied list the result is True, otherwise it's False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
@@ -1466,12 +1521,13 @@ than N occurences in S the result is 0.
 Count=1
 1=This function was inspired by code submitted by George Tasker
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=JCL Team;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrNIPos
@@ -1496,12 +1552,13 @@ than N occurences in S the result is 0.
 Count=1
 1=This function was inspired by code submitted by George Tasker
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=JCL Team;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrNPos
@@ -1528,12 +1585,13 @@ occur in the supplied string.
 Count=1
 1=The '*' wildcard currently doesn't work correctly, it produces the same result as '?'.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrSearch
@@ -1557,12 +1615,13 @@ The zero based index into Prefixes at which the first string appears that is use
 as a prefix in the supplied string. If none of the Prefixes array strings qualifies
 the result is -1.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrSearch(const Substr, Str: string; const Index: Integer = 1): Integer;
@@ -1580,12 +1639,13 @@ Count=3
 One-based index of the first character of SubStr in Str or 0 if SubStr does not
 occur in the supplied string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrFind
@@ -1606,12 +1666,13 @@ Count=2
 The portion of the string after the specified sub-string. If the sub-string does
 not appear in the source string the result is an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrBefore
@@ -1632,12 +1693,13 @@ Count=2
 The portion of the string before the specified sub-string. If the sub-string does
 not appear in the source string the result is the source string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrAfter
@@ -1663,12 +1725,13 @@ Start and Stop, not including either of these characters. If the function fails
 it returns an empty string, for example if the Start and/or Stop character doesn't
 appear in the sources string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrChopRight(const S: AnsiString; N: Integer): AnsiString;
@@ -1685,12 +1748,13 @@ Count=2
 The string with the last N characters cut off. Note that when N is larger than
 the string length, the result is an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrLeft(const S: AnsiString; Count: Integer): AnsiString;
@@ -1707,12 +1771,13 @@ Count=2
 [Result]
 The Count leftmost characters from S.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRight
@@ -1733,12 +1798,13 @@ Count=3
 [Result]
 The string copied from S starting at offset Start and with length Count.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=String Extraction
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
@@ -1754,12 +1820,13 @@ Count=2
 [Result]
 The remainder of the string starting at the specified index. 
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 Author=Anthony Steele;asteele@iafrica.com
 SubCat=String Extraction
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRight(const S: AnsiString; Count: Integer): AnsiString;
@@ -1776,12 +1843,13 @@ Count=2
 [Result]
 The Count of rightmost characters from S.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 Author=Anthony Steele;asteele@iafrica.com
 SubCat=String Extraction
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrLeft
@@ -1801,12 +1869,13 @@ Count=1
 If the supplied characters are equal except for case, the result is True, otherwise
 the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsAlpha(const C: AnsiChar): Boolean;
@@ -1821,12 +1890,13 @@ Count=1
 [Result]
 If C is an alpha character the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=CharIsDigit
@@ -1846,12 +1916,13 @@ Count=1
 [Result]
 If C is an alphanumerical character the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=CharIsAlpha
@@ -1870,12 +1941,13 @@ Count=1
 [Result]
 If C is a blank character the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsControl(const C: AnsiChar): Boolean;
@@ -1890,12 +1962,13 @@ Count=1
 [Result]
 If C is a control character the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsDelete(const C: AnsiChar): Boolean;
@@ -1910,12 +1983,13 @@ Count=1
 [Result]
 If C is a delete character the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsDigit(const C: AnsiChar): Boolean;
@@ -1930,12 +2004,13 @@ Count=1
 [Result]
 If C is a digit the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=CharIsAlpha
@@ -1954,12 +2029,13 @@ Count=1
 [Result]
 If C is lowercase the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsNumber(const C: AnsiChar): Boolean;
@@ -1975,15 +2051,16 @@ Count=1
 [Result]
 If C is a number the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=CharIsAlpha
@@ -2004,12 +2081,13 @@ Count=1
 [Result]
 If C is printable the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsPunctuation(const C: AnsiChar): Boolean;
@@ -2025,12 +2103,13 @@ Count=1
 If C is a punctuation character the return value is True, otherwise the return
 value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsReturn(const C: AnsiChar): Boolean;
@@ -2046,12 +2125,13 @@ Count=1
 [Result]
 If C is a return character the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsSpace(const C: AnsiChar): Boolean;
@@ -2067,12 +2147,13 @@ Count=1
 [Result]
 If the character represents a space the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CharIsWhiteSpace
@@ -2089,12 +2170,13 @@ Count=1
 [Result]
 If C is uppercase the return value is True, otherwise the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
@@ -2111,12 +2193,13 @@ Count=1
 [Result]
 If the character represents a space the result is True, otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CharIsSpace
@@ -2162,12 +2245,13 @@ The type of the character, this can be one of the following values.
 Count=1
 1=In a future Linux version the values may differ.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Test Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharHex(const C: AnsiChar): Byte;
@@ -2182,12 +2266,13 @@ Count=1
 [Result]
 The binary value of the hex digit or $ff if it was no hex digit.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharLower(const C: AnsiChar): AnsiChar;
@@ -2202,12 +2287,13 @@ Count=1
 [Result]
 Copy of character converted to lowercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CharUpper
@@ -2226,12 +2312,13 @@ Count=1
 [Result]
 Copy of the character converted to uppercase.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CharLower
@@ -2251,12 +2338,13 @@ Count=1
 [Result]
 Copy of the character with the case reversed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Transformation Routines
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
@@ -2273,12 +2361,13 @@ Count=3
 [Result]
 The 1-based index of the first occurrence found, or 0 if the character was not found.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Search and Replace
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharIPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
@@ -2295,12 +2384,13 @@ Count=3
 [Result]
 The 1-based index of the first occurrence found, or 0 if the character was not found.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Search and Replace
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
@@ -2318,12 +2408,13 @@ Count=3
 [Result]
 CharReplace returns the number of replacements performed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Character Search and Replace
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PCharVector;
@@ -2342,12 +2433,13 @@ Count=2
 [Result]
 The value placed in Dest to allow using the function on parameter position.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=PCharVector
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PCharVectorToStrings
@@ -2367,12 +2459,13 @@ Count=1
 [Result]
 The number of elements in the PCharVector excluding the NULL terminator.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=PCharVector
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PCharVectorToStrings
@@ -2394,12 +2487,13 @@ Count=2
 1=Dest:TStrings=List which recieves the elements in the PCharVector.
 2=Source:PCharVector=PCharVector from which to retrieve the elements.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=PCharVector
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PCharVectorCount
@@ -2418,12 +2512,13 @@ Freeing a PCharVector allocated by a Windows API function will crash your progra
 Count=1
 1=Dest:PCharVector=The PCharVector whose memory to free.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=PCharVector
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PCharVectorCount
@@ -2449,12 +2544,13 @@ On success the function returns the value of Dest. If the function fails to allo
 memory for the result string it (implicitly) raises an EOutOfMemory exception. The
 caller is responsible for releasing the memory pointed to by Dest.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=MultiSz
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=MultiSzToStrings
@@ -2479,12 +2575,13 @@ Count=1
 1=This function does not release the memory associated with Source.
 [Result]
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=MultiSz
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StringsToMultiSz
@@ -2502,12 +2599,13 @@ character.
 Count=1
 1=Dest:PChar=The memory to free. Is set to nil before return.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=MultiSz
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StringsToMultiSz
@@ -2534,12 +2632,13 @@ Count=3
 Count=1
 1=The list will be cleared by this function before adding the elements.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StringsToStr
@@ -2557,12 +2656,13 @@ Count=2
 1=List:TStrings=Stringlist which contains the strings to concatenate.
 2=Sep:AnsiString=String to separate the individual strings with.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=TStrings Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrToStrings
@@ -2582,12 +2682,13 @@ Count=2
 2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
 in an empty string, the entry is deleted from the list.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TrimStringsRight
@@ -2608,12 +2709,13 @@ Count=2
 2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
 in an empty string, the entry is deleted from the list.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TrimStrings
@@ -2634,12 +2736,13 @@ Count=2
 2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
 in an empty string, the entry is deleted from the list.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TrimStrings
@@ -2664,8 +2767,9 @@ Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; List: TStrings);
@@ -2683,12 +2787,13 @@ Count=3
 2=Separator:AnsiChar=Any character you want to use to separate S.
 3=List:TStrings=Returns separated parts or the entire string if no separator occurs.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Huanlin Tsai;huanlin_tsai@yahoo.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrToken
@@ -2714,12 +2819,13 @@ was not located in S.
 S returns the remaining portion of the string after (but not including) Separator.
 If Separator was not found, S is an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Huanlin Tsai;huanlin_tsai@yahoo.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrTokenToStrings
@@ -2736,12 +2842,13 @@ Count=1
 [Result]
 TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
@@ -2755,12 +2862,13 @@ Count=1
 [Result]
 TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FileToString(const FileName: AnsiString): AnsiString;
@@ -2784,8 +2892,9 @@ Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StringToFile
@@ -2807,8 +2916,9 @@ Unit=JclStrings
 Category=String manipulation
 SubCat=Miscellaneous
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FileToString
