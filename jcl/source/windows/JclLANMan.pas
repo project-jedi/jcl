@@ -53,8 +53,8 @@ type
   TNetWellKnownRID = (wkrAdmins, wkrUsers, wkrGuests, wkrPowerUsers, wkrBackupOPs,
     wkrReplicator, wkrEveryone);
 
-function CreateAccount(const Server, Username, Password, Description, Homedir, Script: string): Boolean;
-function CreateLocalAccount(const Username, Password, Description, Homedir, Script: string): Boolean;
+function CreateAccount(const Server, Username, Fullname, Password, Description, Homedir, Script: string): boolean;
+function CreateLocalAccount(const Username, Fullname, Password, Description, Homedir, Script: string): Boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
@@ -62,27 +62,32 @@ function CreateGlobalGroup(const Server, Groupname, Description: string): Boolea
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
+procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+function IsLocalAccount(const AccountName: string): boolean;
 
 function GetFileOwner(FileName: string; var Domain, Username: string): Boolean;
 
 implementation
 
 uses
-  SysUtils, LM, JclStrings, JclWin32;
+  Classes, SysUtils,
+  LM, JclStrings, JclWin32;
 
 //------------------------------------------------------------------------------
 // User Management
 //------------------------------------------------------------------------------
 
-function CreateAccount(const Server, Username, Password, Description, Homedir, Script: string): boolean;
+function CreateAccount(const Server, Username, Fullname, Password, Description, Homedir, Script: string): boolean;
 var
-  wServer, wUsername, wPassword, wDescription, wHomedir, wScript: WideString;
-  details: USER_INFO_1;
+  wServer, wUsername, wFullname,
+  wPassword, wDescription, wHomedir, wScript: WideString;
+  details: USER_INFO_2;
   err: NET_API_STATUS;
   parmErr: DWORD;
 begin
   wServer := Server;
   wUsername := Username;
+  wFullname := Fullname;
   wPassword := Password;
   wDescription := Description;
   wScript := Script;
@@ -91,30 +96,26 @@ begin
   FillChar (details, sizeof(details), 0);
   with details do
   begin
-    usri1_name := PWideChar(wUsername);
-    usri1_password := PWideChar(wPassword);
-    usri1_comment := PWideChar(wDescription);
-    usri1_priv := USER_PRIV_USER;
-    usri1_flags := UF_SCRIPT;
-    usri1_script_path := PWideChar(wScript);
-    usri1_home_dir := PWideChar(wHomedir);
+    usri2_name := PWideChar(wUsername);
+    usri2_full_name := PWideChar(wFullname);
+    usri2_password := PWideChar(wPassword);
+    usri2_comment := PWideChar(wDescription);
+    usri2_priv := USER_PRIV_USER;
+    usri2_flags := UF_SCRIPT;
+    usri2_script_path := PWideChar(wScript);
+    usri2_home_dir := PWideChar(wHomedir);
   end;
 
-  err := NetUserAdd (PWideChar(wServer), 1, @details, @parmErr);
+  err := NetUserAdd(PWideChar(wServer), 2, @details, @parmErr);
   Result := (err = NERR_SUCCESS);
-
   // callers should call RaiseLastWin32Error to get detailed error information
-  // if err <> NERR_Success then
-  //  raise ENTException.Create (err)
-  //else
-  //  Result := true;
 end;
 
 //------------------------------------------------------------------------------
 
-function CreateLocalAccount(const Username, Password, Description, Homedir, Script: string): boolean;
+function CreateLocalAccount(const Username, Fullname, Password, Description, Homedir, Script: string): boolean;
 begin
-  Result := CreateAccount('', Username, Password, Description, Homedir, Script);
+  Result := CreateAccount('', Username, Fullname, Password, Description, Homedir, Script);
 end;
 
 //------------------------------------------------------------------------------
@@ -122,14 +123,12 @@ end;
 function DeleteAccount(const Servername, Username: string): Boolean;
 var
   wServername, wUsername: WideString;
+  err: NET_API_STATUS;
 begin
-  Result := false;
   wServername := Servername;
   wUsername := Username;
-  if NetUserDel(PWideChar(wServername), PWideChar(wUsername)) = NERR_Success then
-    Result := true
-  else
-    RaiseLastWin32Error;
+  err := NetUserDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -186,14 +185,12 @@ end;
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
+  err: NET_API_STATUS;
 begin
-  Result := false;
   wServername := Server;
   wUsername := Groupname;
-  if NetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername)) = NERR_Success then
-    Result := true
-  else
-    RaiseLastWin32Error;
+  err := NetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -201,14 +198,12 @@ end;
 function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
+  err: NET_API_STATUS;
 begin
-  Result := false;
   wServername := Server;
   wUsername := Groupname;
-  if NetGroupDel(PWideChar(wServername), PWideChar(wUsername)) = NERR_Success then
-    Result := true
-  else
-    RaiseLastWin32Error;
+  err := NetGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -305,6 +300,33 @@ begin
   end;
 end;
 
+procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+var
+  Parts: TStrings;
+begin
+  Parts := TStringList.Create;
+  try
+    StrTokenToStrings(QualifiedName, '\', Parts);
+    if Parts.Count = 1 then
+      UserName := Parts[0]
+    else begin
+      Domain := Parts[0];
+      UserName := Parts[1];
+    end;
+  finally
+    Parts.Free;
+  end;
+end;
+
+function IsLocalAccount(const AccountName: string): boolean;
+var
+  Domain: string;
+  Username: string;
+begin
+  ParseAccountName(AccountName, Domain, Username);
+  Result := (Domain = '');
+end;
+
 //------------------------------------------------------------------------------
 
 (* incomplete. see MSDN Knowledegbase article ID Q157234 for full C source
@@ -350,8 +372,8 @@ begin
         exit;
       SizeNeeded := 1024;
       SizeNeeded2 := 1024;
-      if not LookupAccountSID(nil,OwnerSID,OwnerName, SizeNeeded,
-                              DomainName,SizeNeeded2,OwnerType) then
+      if not LookupAccountSID(nil, OwnerSID, OwnerName, SizeNeeded,
+                              DomainName, SizeNeeded2, OwnerType) then
 	      exit;
       Domain := DomainName;
       Username := OwnerName;
