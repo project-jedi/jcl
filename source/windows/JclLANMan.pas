@@ -250,7 +250,7 @@ begin
       end;
   end
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
 
   NetApiBufferFree(@details);
   Result := (err = NERR_SUCCESS);
@@ -361,6 +361,8 @@ var
   SidNameUse: SID_NAME_USE;
 begin
   Result := '';
+  rd2 := 0;
+
   if RID = wkrEveryOne then
   begin
     sia := SECURITY_WORLD_SID_AUTHORITY;
@@ -388,7 +390,7 @@ begin
     then
       StrResetLength(Result)
     else
-      RaiseLastWin32Error;
+      RaiseLastOSError;
   finally
     FreeSID(sd);
   end;
