@@ -23,12 +23,18 @@ Count=2
 2=StopCount;..\StopCount
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor Create;
+constructor Create(Compensate: Boolean);
 [ShortDescr]
 Creates an instance of a TJclCounter class.
 [Description]
 Creates an instance of a TJclCounter class. If the hardware does not support
 high performance counters the constructor raises an exception.
+[Parameters]
+Count=1
+1=Compensate:Boolean=If compensate is True the class internal determines the
+overhead associated with calling the user calling the Start and Stop methods and
+corrects the resulting time; thereby providing a more accurate timing. By default,
+for backwards compatibility, no compensation takes place.
 [Quick Info]
 BCB=3,4,5
 Kind=Method
