@@ -758,18 +758,18 @@ end;
 // TJclBorRADToolIdeTool
 //==================================================================================================
 
-procedure TJclBorRADToolIdeTool.CheckIndex(Index: Integer);
-begin
-  if (Index < 0) or (Index >= Count) then
-    raise EJclError.CreateResRec(@RsIndexOufOfRange);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclBorRADToolIdeTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
   FKey := TransferKeyName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclBorRADToolIdeTool.CheckIndex(Index: Integer);
+begin
+  if (Index < 0) or (Index >= Count) then
+    raise EJclError.CreateResRec(@RsIndexOufOfRange);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -885,16 +885,6 @@ end;
 // TJclBorRADToolIdePackages
 //==================================================================================================
 
-function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string): Boolean;
-begin
-  Result := True;
-  RemoveDisabled(FileName);
-  Installation.ConfigData.WriteString(KnownPackagesKeyName, FileName, Description);
-  ReadPackages;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclBorRADToolIdePackages.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
@@ -914,6 +904,16 @@ begin
   FreeAndNil(FDisabledPackages);
   FreeAndNil(FKnownPackages);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string): Boolean;
+begin
+  Result := True;
+  RemoveDisabled(FileName);
+  Installation.ConfigData.WriteString(KnownPackagesKeyName, FileName, Description);
+  ReadPackages;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -995,13 +995,6 @@ end;
 // TJclBorlandCommandLineTool
 //==================================================================================================
 
-procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
-begin
-  Options.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
@@ -1014,6 +1007,13 @@ destructor TJclBorlandCommandLineTool.Destroy;
 begin
   FreeAndNil(FOptions);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
+begin
+  Options.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1183,6 +1183,25 @@ end;
 // TJclBorRADToolPalette
 //==================================================================================================
 
+constructor TJclBorRADToolPalette.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited Create(AInstallation);
+  FKey := PaletteKeyName;
+  FTabNames := TStringList.Create;
+  FTabNames.Sorted := True;
+  ReadTabNames;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolPalette.Destroy;
+begin
+  FreeAndNil(FTabNames);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclBorRADToolPalette.ComponentsOnTabToStrings(Index: Integer; Strings: TStrings;
   IncludeUnitName: Boolean; IncludeHiddenComponents: Boolean);
 var
@@ -1234,17 +1253,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclBorRADToolPalette.Create(AInstallation: TJclBorRADToolInstallation);
-begin
-  inherited Create(AInstallation);
-  FKey := PaletteKeyName;
-  FTabNames := TStringList.Create;
-  FTabNames.Sorted := True;
-  ReadTabNames;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.DeleteTabName(const TabName: string): Boolean;
 var
   I: Integer;
@@ -1257,14 +1265,6 @@ begin
     Installation.ConfigData.DeleteKey(Key, FTabNames[I] + PaletteHiddenTag);
     FTabNames.Delete(I);
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclBorRADToolPalette.Destroy;
-begin
-  FreeAndNil(FTabNames);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1331,6 +1331,30 @@ end;
 // TJclBorRADToolRepository
 //==================================================================================================
 
+constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited Create(AInstallation);
+  {$IFDEF KYLIX}
+  FFileName := AInstallation.ConfigFileName('dro');
+  {$ELSE}
+  FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
+  {$ENDIF KYLIX}
+  FPages := TStringList.Create;
+  IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
+  CloseIniFile;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolRepository.Destroy;
+begin
+  FreeAndNil(FPages);
+  FreeAndNil(FIniFile);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclBorRADToolRepository.AddObject(const FileName, ObjectType, PageName, ObjectName,
   IconFileName, Description, Author, Designer: string; const Ancestor: string);
 var
@@ -1360,30 +1384,6 @@ end;
 procedure TJclBorRADToolRepository.CloseIniFile;
 begin
   FreeAndNil(FIniFile);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstallation);
-begin
-  inherited Create(AInstallation);
-  {$IFDEF KYLIX}
-  FFileName := AInstallation.ConfigFileName('dro');
-  {$ELSE}
-  FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
-  {$ENDIF KYLIX}
-  FPages := TStringList.Create;
-  IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
-  CloseIniFile;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclBorRADToolRepository.Destroy;
-begin
-  FreeAndNil(FPages);
-  FreeAndNil(FIniFile);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1453,6 +1453,46 @@ end;
 // TJclBorRADToolInstallation
 //==================================================================================================
 
+constructor TJclBorRADToolInstallation.Create;
+begin
+  inherited Create;
+  {$IFDEF KYLIX}
+  FConfigData := TMemIniFile.Create(AConfigDataLocation);
+  FMake := TJclCommandLineTool.Create('make');
+  {$ELSE}
+  FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
+  FMake := TJclBorlandMake.Create(Self);
+  {$ENDIF KYLIX}
+  FGlobals := TStringList.Create;
+  ReadInformation;
+  FIdeTools := TJclBorRADToolIdeTool.Create(Self);
+  {$IFNDEF KYLIX}
+  FOpenHelp := TJclBorlandOpenHelp.Create(Self);
+  {$ENDIF ~KYLIX}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolInstallation.Destroy;
+begin
+  FreeAndNil(FRepository);
+  FreeAndNil(FDCC);
+  FreeAndNil(FIdePackages);
+  FreeAndNil(FIdeTools);
+  {$IFDEF MSWINDOWS}
+  FreeAndNil(FOpenHelp);
+  {$ENDIF MSWINDOWS}
+  FreeAndNil(FPalette);
+  FreeAndNil(FGlobals);
+  {$IFDEF KYLIX}
+  FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
+  {$ENDIF KYLIX}
+  FreeAndNil(FConfigData);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorRADToolInstallation.AddToDebugDCUPath(const Path: string): Boolean;
 var
   TempDebugDCUPath: TJclBorRADToolPath;
@@ -1516,45 +1556,6 @@ begin
   Result := '';
 end;
 {$ENDIF KYLIX}
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclBorRADToolInstallation.Create;
-begin
-  {$IFDEF KYLIX}
-  FConfigData := TMemIniFile.Create(AConfigDataLocation);
-  FMake := TJclCommandLineTool.Create('make');
-  {$ELSE}
-  FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
-  FMake := TJclBorlandMake.Create(Self);
-  {$ENDIF KYLIX}
-  FGlobals := TStringList.Create;
-  ReadInformation;
-  FIdeTools := TJclBorRADToolIdeTool.Create(Self);
-  {$IFNDEF KYLIX}
-  FOpenHelp := TJclBorlandOpenHelp.Create(Self);
-  {$ENDIF ~KYLIX}
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclBorRADToolInstallation.Destroy;
-begin
-  FreeAndNil(FRepository);
-  FreeAndNil(FDCC);
-  FreeAndNil(FIdePackages);
-  FreeAndNil(FIdeTools);
-  {$IFDEF MSWINDOWS}
-  FreeAndNil(FOpenHelp);
-  {$ENDIF MSWINDOWS}
-  FreeAndNil(FPalette);
-  FreeAndNil(FGlobals);
-  {$IFDEF KYLIX}
-  FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
-  {$ENDIF KYLIX}
-  FreeAndNil(FConfigData);
-  inherited Destroy;
-end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1953,15 +1954,6 @@ end;
 // TJclBCBInstallation
 //==================================================================================================
 
-{$IFDEF KYLIX}
-function TJclBCBInstallation.ConfigFileName(const Extension: string): string;
-begin
-  Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
-end;
-{$ENDIF KYLIX}
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
 begin
   inherited Create(AConfigDataLocation);
@@ -1975,6 +1967,15 @@ begin
   FBpr2Mak.Free;
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF KYLIX}
+function TJclBCBInstallation.ConfigFileName(const Extension: string): string;
+begin
+  Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
+end;
+{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2051,8 +2052,24 @@ begin
 end;
 
 //==================================================================================================
-// TDelphiInstallations
+// TJclBorRADToolInstallations
 //==================================================================================================
+
+constructor TJclBorRADToolInstallations.Create;
+begin
+  FList := TObjectList.Create;
+  ReadInstallations;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolInstallations.Destroy;
+begin
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.AnyInstanceRunning: Boolean;
 var
@@ -2081,22 +2098,6 @@ begin
       Text := Format(RsNeedUpdate, [Installations[I].LatestUpdatePack, Installations[I].Name]);
       Break;
     end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclBorRADToolInstallations.Create;
-begin
-  FList := TObjectList.Create;
-  ReadInstallations;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclBorRADToolInstallations.Destroy;
-begin
-  FreeAndNil(FList);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2172,6 +2173,8 @@ end;
 
 procedure TJclBorRADToolInstallations.ReadInstallations;
 {$IFDEF KYLIX}
+var
+  I: Integer;
 
   procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
   const
@@ -2192,8 +2195,6 @@ procedure TJclBorRADToolInstallations.ReadInstallations;
     end;
   end;
 
-var
-  I: Integer;
 begin
   FList.Clear;
   for I := 1 to 3 do
@@ -2306,6 +2307,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/08/01 05:52:10  marquardt
+// move constructors/destructors
+//
 // Revision 1.16  2004/07/30 07:20:24  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate
 //

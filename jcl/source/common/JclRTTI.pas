@@ -392,8 +392,25 @@ uses
   SysConst,
   JclLogic, JclResources, JclStrings;     
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 // TJclInfoWriter
+//==================================================================================================
+
+constructor TJclInfoWriter.Create(const AWrap: Integer);
+begin
+  inherited Create;
+  Wrap := AWrap;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclInfoWriter.Destroy;
+begin
+  if CurLine <> '' then
+    Writeln('');
+  inherited Destroy;
+end;
+
 //--------------------------------------------------------------------------------------------------
 
 function TJclInfoWriter.GetWrap: Integer;
@@ -471,23 +488,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclInfoWriter.Create(const AWrap: Integer);
-begin
-  inherited Create;
-  Wrap := AWrap;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclInfoWriter.Destroy;
-begin
-  if CurLine <> '' then
-    Writeln('');
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclInfoWriter.Indent;
 begin
   IndentLevel := IndentLevel + 1;
@@ -520,18 +520,18 @@ end;
 // TJclInfoStringsWriter
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclInfoStringsWriter.PrimWrite(const S: string);
-begin
-  Strings.Add(S);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclInfoStringsWriter.Create(const AStrings: TStrings;
   const AWrap: Integer);
 begin
   inherited Create(AWrap);
   FStrings := AStrings;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclInfoStringsWriter.PrimWrite(const S: string);
+begin
+  Strings.Add(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -558,6 +558,15 @@ type
     property TypeInfo: PTypeInfo read GetTypeInfo;
     property TypeKind: TTypeKind read GetTypeKind;
   end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclTypeInfo.Create(ATypeInfo: PTypeInfo);
+begin
+  inherited Create;
+  FTypeInfo := ATypeInfo;
+  FTypeData := TypInfo.GetTypeData(ATypeInfo);
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -603,15 +612,6 @@ procedure TJclTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   { TODO : localize? }
   Dest.Write('// Declaration for ''' + Name + ''' not supported.');
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclTypeInfo.Create(ATypeInfo: PTypeInfo);
-begin
-  inherited Create;
-  FTypeInfo := ATypeInfo;
-  FTypeData := TypInfo.GetTypeData(ATypeInfo);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1197,6 +1197,14 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TJclPropInfo.Create(const APropInfo: PPropInfo);
+begin
+  inherited Create;
+  FPropInfo := APropInfo;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclPropInfo.GetPropInfo: PPropInfo;
 begin
   Result := FPropInfo;
@@ -1337,14 +1345,6 @@ end;
 function TJclPropInfo.GetStoredValue: Integer;
 begin
   Result := GetSpecValue(Integer(StoredProc));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclPropInfo.Create(const APropInfo: PPropInfo);
-begin
-  inherited Create;
-  FPropInfo := APropInfo;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1659,6 +1659,14 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TJclEventParamInfo.Create(const AParam: Pointer);
+begin
+  inherited Create;
+  FParam := AParam;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclEventParamInfo.GetFlags: TParamFlags;
 begin
   Result := TParamFlags(PByte(Param)^);
@@ -1699,14 +1707,6 @@ end;
 function TJclEventParamInfo.GetParam: Pointer;
 begin
   Result := FParam;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclEventParamInfo.Create(const AParam: Pointer);
-begin
-  inherited Create;
-  FParam := AParam;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2849,6 +2849,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2004/08/01 05:52:11  marquardt
+// move constructors/destructors
+//
 // Revision 1.12  2004/07/31 06:21:01  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

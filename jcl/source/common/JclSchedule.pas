@@ -207,18 +207,18 @@ type
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
   end;
 
-{ TAggregatedObject }
-
-function TAggregatedObject.GetController: IUnknown;
-begin
-  Result := IUnknown(FController);
-end;
-
-//--------------------------------------------------------------------------------------------------
+//=== { TAggregatedObject } ========================================================================
 
 constructor TAggregatedObject.Create(Controller: IUnknown);
 begin
   FController := Pointer(Controller);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TAggregatedObject.GetController: IUnknown;
+begin
+  Result := IUnknown(FController);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -625,6 +625,16 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TDailyFreq.Create(const Controller: IUnknown);
+begin
+  inherited Create(Controller);
+  FStartTime := 0;
+  FEndTime := HoursToMSecs(24) - 1;
+  FInterval := 500;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TDailyFreq.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
   Result := (Cardinal(Stamp.Time) >= FStartTime) and (Cardinal(Stamp.Time) <= FEndTime) and
@@ -648,14 +658,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-constructor TDailyFreq.Create(const Controller: IUnknown);
-begin
-  inherited Create(Controller);
-  FStartTime := 0;
-  FEndTime := HoursToMSecs(24) - 1;
-  FInterval := 500;
-end;
 
 function TDailyFreq.GetStartTime: Cardinal;
 begin
@@ -751,6 +753,15 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TDailySchedule.Create(const Controller: IUnknown);
+begin
+  inherited Create(Controller);
+  FEveryWeekDay := True;
+  FInterval := 1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class function TDailySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkDaily;
@@ -792,15 +803,6 @@ begin
     else
       Inc(Result.Date, Interval); // always valid as we started with a valid stamp
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TDailySchedule.Create(const Controller: IUnknown);
-begin
-  inherited Create(Controller);
-  FEveryWeekDay := True;
-  FInterval := 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -872,6 +874,15 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TWeeklySchedule.Create(const Controller: IUnknown);
+begin
+  inherited Create(Controller);
+  FDaysOfWeek := [swdMonday];
+  FInterval := 1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class function TWeeklySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkWeekly;
@@ -911,15 +922,6 @@ begin
     Inc(Result.Date);
     MakeValidStamp(Result);    // Skip over unwanted days and weeks
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TWeeklySchedule.Create(const Controller: IUnknown);
-begin
-  inherited Create(Controller);
-  FDaysOfWeek := [swdMonday];
-  FInterval := 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -995,6 +997,17 @@ type
     property Day: Cardinal read GetDay write SetDay;
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TMonthlySchedule.Create(const Controller: IUnknown);
+begin
+  inherited Create(Controller);
+  FIndexKind := sikNone;
+  FIndexValue := sivFirst;
+  FDay := 1;
+  FInterval := 1;
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1075,10 +1088,7 @@ begin
   DIM := DaysInMonth(JclDateTime.EncodeDate(TYear, TMonth, 1));
   case IndexKind of
     sikNone:
-      Result := (TDay = Day) or (
-        (Integer(Day) > DIM) and
-        (TDay = DIM)
-      );
+      Result := (TDay = Day) or ((Integer(Day) > DIM) and (TDay = DIM));
     sikDay:
       Result :=
         ((IndexValue = sivLast) and (TDay = DIM)) or
@@ -1103,16 +1113,14 @@ begin
           sivLast:
             TempDay := LastWeekDay(TYear, TMonth);
           else
+            TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
+            if TempDay = 0 then
             begin
-              TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
-              if TempDay = 0 then
-              begin
-                if IndexValue > 0 then
-                  TempDay := LastWeekDay(TYear, TMonth)
-                else
-                if IndexValue < 0 then
-                  TempDay := FirstWeekDay(TYear, TMonth);
-              end;
+              if IndexValue > 0 then
+                TempDay := LastWeekDay(TYear, TMonth)
+              else
+              if IndexValue < 0 then
+                TempDay := FirstWeekDay(TYear, TMonth);
             end;
         end;
         Result := TDay = TempDay;
@@ -1125,27 +1133,19 @@ begin
           sivLast:
             TempDay := LastWeekendDay(TYear, TMonth);
           else
+            TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
+            if TempDay = 0 then
             begin
-              TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
-              if TempDay = 0 then
-              begin
-                if IndexValue > 0 then
-                  TempDay := LastWeekendDay(TYear, TMonth)
-                else
-                if IndexValue < 0 then
-                  TempDay := FirstWeekendDay(TYear, TMonth);
-              end;
+              if IndexValue > 0 then
+                TempDay := LastWeekendDay(TYear, TMonth)
+              else
+              if IndexValue < 0 then
+                TempDay := FirstWeekendDay(TYear, TMonth);
             end;
         end;
         Result := TDay = TempDay;
       end;
-    sikMonday,
-    sikTuesday,
-    sikWednesday,
-    sikThursday,
-    sikFriday,
-    sikSaturday,
-    sikSunday:
+    sikMonday..sikSunday:
       begin
         case IndexValue of
           sivFirst:
@@ -1153,17 +1153,15 @@ begin
           sivLast:
             TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
           else
+            TempDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+              IndexValue);
+            if TempDay = 0 then
             begin
-              TempDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
-                IndexValue);
-              if TempDay = 0 then
-              begin
-                if IndexValue > 0 then
-                  TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-                else
-                if IndexValue < 0 then
-                  TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-              end;
+              if IndexValue > 0 then
+                TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+              else
+              if IndexValue < 0 then
+                TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
             end;
         end;
         Result := TDay = TempDay;
@@ -1252,32 +1250,19 @@ begin
           sivLast:
             TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
           else
+            TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+              IndexValue);
+            if TDay = 0 then
             begin
-              TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
-                IndexValue);
-              if TDay = 0 then
-              begin
-                if IndexValue > 0 then
-                  TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-                else
-                if IndexValue < 0 then
-                  TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-              end;
+              if IndexValue > 0 then
+                TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+              else
+              if IndexValue < 0 then
+                TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
             end;
         end;
       end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TMonthlySchedule.Create(const Controller: IUnknown);
-begin
-  inherited Create(Controller);
-  FIndexKind := sikNone;
-  FIndexValue := sivFirst;
-  FDay := 1;
-  FInterval := 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1378,7 +1363,14 @@ type
     
     property Month: Cardinal read GetMonth write SetMonth;
   end;
-  
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TYearlySchedule.Create(const Controller: IUnknown);
+begin
+  inherited Create(Controller);
+  FMonth := 1;
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1440,14 +1432,6 @@ begin
     Inc(Result.Date);
     MakeValidStamp(Result);    // Skip over unwanted days and months
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TYearlySchedule.Create(const Controller: IUnknown);
-begin
-  inherited Create(Controller);
-  FMonth := 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1535,6 +1519,37 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TSchedule.Create;
+var
+  InitialStamp: TTimeStamp;
+begin
+  inherited Create;
+  FDailyFreq := TDailyFreq.Create(Self);
+  FDailySchedule := TDailySchedule.Create(Self);
+  FWeeklySchedule := TWeeklySchedule.Create(Self);
+  FMonthlySchedule := TMonthlySchedule.Create(Self);
+  FYearlySchedule := TYearlySchedule.Create(Self);
+  InitialStamp := DateTimeToTimeStamp(Now);
+  InitialStamp.Time := 1000 * (InitialStamp.Time div 1000); // strip of milliseconds
+  StartDate := InitialStamp;
+  EndType := sekNone;
+  RecurringType := srkOneShot;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TSchedule.Destroy;
+begin
+  FreeAndNil(FYearlySchedule);
+  FreeAndNil(FMonthlySchedule);
+  FreeAndNil(FWeeklySchedule);
+  FreeAndNil(FDailySchedule);
+  FreeAndNil(FDailyFreq);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TSchedule.GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
 var
   UseFrom: TTimeStamp;
@@ -1615,37 +1630,6 @@ begin
       FLastEvent := Result;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TSchedule.Create;
-var
-  InitialStamp: TTimeStamp;
-begin
-  inherited Create;
-  FDailyFreq := TDailyFreq.Create(Self);
-  FDailySchedule := TDailySchedule.Create(Self);
-  FWeeklySchedule := TWeeklySchedule.Create(Self);
-  FMonthlySchedule := TMonthlySchedule.Create(Self);
-  FYearlySchedule := TYearlySchedule.Create(Self);
-  InitialStamp := DateTimeToTimeStamp(Now);
-  InitialStamp.Time := 1000 * (InitialStamp.Time div 1000); // strip of milliseconds
-  StartDate := InitialStamp;
-  EndType := sekNone;
-  RecurringType := srkOneShot;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TSchedule.Destroy;
-begin
-  FreeAndNil(FYearlySchedule);
-  FreeAndNil(FMonthlySchedule);
-  FreeAndNil(FWeeklySchedule);
-  FreeAndNil(FDailySchedule);
-  FreeAndNil(FDailyFreq);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1800,6 +1784,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/01 05:52:12  marquardt
+// move constructors/destructors
+//
 // Revision 1.8  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //

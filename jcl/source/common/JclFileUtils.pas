@@ -1161,6 +1161,35 @@ end;
 // TJclCustomFileMapping
 //==================================================================================================
 
+constructor TJclCustomFileMapping.Create;
+begin
+  inherited Create;
+  FViews := TList.Create;
+  FRoundViewOffset := rvDown;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclCustomFileMapping.Open(const Name: string;
+  const InheritHandle: Boolean; const DesiredAccess: Cardinal);
+begin
+  Create;
+  InternalOpen(Name, InheritHandle, DesiredAccess);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclCustomFileMapping.Destroy;
+begin
+  ClearViews;
+  if FHandle <> 0 then
+    CloseHandle(FHandle);
+  FreeAndNil(FViews);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclCustomFileMapping.Add(const Access, Count: Cardinal; const Offset: Int64): Integer;
 var
   View: TJclFileMappingView;
@@ -1196,39 +1225,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclCustomFileMapping.Create;
-begin
-  inherited Create;
-  FViews := TList.Create;
-  FRoundViewOffset := rvDown;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclCustomFileMapping.Open(const Name: string;
-  const InheritHandle: Boolean; const DesiredAccess: Cardinal);
-begin
-  Create;
-  InternalOpen(Name, InheritHandle, DesiredAccess);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclCustomFileMapping.Delete(const Index: Integer);
 begin
   // Note that the view destructor removes itself from FViews
   TJclFileMappingView(FViews[Index]).Free;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclCustomFileMapping.Destroy;
-begin
-  ClearViews;
-  if FHandle <> 0 then
-    CloseHandle(FHandle);
-  FreeAndNil(FViews);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1339,27 +1339,6 @@ end;
 // TJclFileMappingStream
 //==================================================================================================
 
-procedure TJclFileMappingStream.Close;
-begin
-  if Memory <> nil then
-  begin
-    UnMapViewOfFile(Memory);
-    SetPointer(nil, 0);
-  end;
-  if FMapping <> 0 then
-  begin
-    CloseHandle(FMapping);
-    FMapping := 0;
-  end;
-  if FFileHandle <> INVALID_HANDLE_VALUE then
-  begin
-    FileClose(FFileHandle);
-    FFileHandle := INVALID_HANDLE_VALUE;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclFileMappingStream.Create(const FileName: string; FileMode: Word);
 var
   Protect, Access, Size: DWORD;
@@ -1411,6 +1390,27 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclFileMappingStream.Close;
+begin
+  if Memory <> nil then
+  begin
+    UnMapViewOfFile(Memory);
+    SetPointer(nil, 0);
+  end;
+  if FMapping <> 0 then
+  begin
+    CloseHandle(FMapping);
+    FMapping := 0;
+  end;
+  if FFileHandle <> INVALID_HANDLE_VALUE then
+  begin
+    FileClose(FFileHandle);
+    FFileHandle := INVALID_HANDLE_VALUE;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclFileMappingStream.Write(const Buffer; Count: Integer): Longint;
 begin
   Result := 0;
@@ -1425,6 +1425,40 @@ end;
 //==================================================================================================
 // TJclMappedTextReader
 //==================================================================================================
+
+constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean;
+  const AIndexOption: TJclMappedTextReaderIndex);
+begin
+  inherited Create;
+  FMemoryStream := MemoryStream;
+  FFreeStream := FreeStream;
+  FIndexOption := AIndexOption;
+  Init;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMappedTextReader.Create(const FileName: string;
+  const AIndexOption: TJclMappedTextReaderIndex);
+begin
+  inherited Create;
+  FMemoryStream := TJclFileMappingStream.Create(FileName);
+  FFreeStream := True;
+  FIndexOption := AIndexOption;
+  Init;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMappedTextReader.Destroy;
+begin
+  if FFreeStream then
+    FMemoryStream.Free;
+  FreeMem(FIndex);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMappedTextReader.AssignTo(Dest: TPersistent);
 begin
@@ -1441,30 +1475,6 @@ begin
   end
   else
     inherited AssignTo(Dest);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean;
-  const AIndexOption: TJclMappedTextReaderIndex);
-begin
-  // (rom) why no inherited Create?
-  FMemoryStream := MemoryStream;
-  FFreeStream := FreeStream;
-  FIndexOption := AIndexOption;
-  Init;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMappedTextReader.Create(const FileName: string;
-  const AIndexOption: TJclMappedTextReaderIndex);
-begin
-  // (rom) why no inherited Create?
-  FMemoryStream := TJclFileMappingStream.Create(FileName);
-  FFreeStream := True;
-  FIndexOption := AIndexOption;
-  Init;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1502,16 +1512,6 @@ begin
   {$IFDEF RANGECHECKS_ON}
   {$RANGECHECKS ON}
   {$ENDIF RANGECHECKS_ON}
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMappedTextReader.Destroy;
-begin
-  if FFreeStream then
-    FMemoryStream.Free;
-  FreeMem(FIndex);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3982,14 +3982,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileVersionInfo.CheckLanguageIndex(Value: Integer);
-begin
-  if (Value < 0) or (Value >= LanguageCount) then
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclFileVersionInfo.Create(const FileName: string);
 var
   Handle: THandle;
@@ -4005,6 +3997,23 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TJclFileVersionInfo.Destroy;
+begin
+  FreeAndNil(FItemList);
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclFileVersionInfo.CheckLanguageIndex(Value: Integer);
+begin
+  if (Value < 0) or (Value >= LanguageCount) then
+    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclFileVersionInfo.CreateItemsForLanguage;
 var
   I: Integer;
@@ -4013,15 +4022,6 @@ begin
   for I := 0 to FItemList.Count - 1 do
     if Integer(FItemList.Objects[I]) = FLanguageIndex then
       Items.AddObject(FItemList[I], Pointer(FLanguages[FLanguageIndex].Pair));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclFileVersionInfo.Destroy;
-begin
-  FreeAndNil(FItemList);
-  FreeAndNil(FItems);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4388,6 +4388,14 @@ end;
 // TJclFileMaskComparator
 //==================================================================================================
 
+constructor TJclFileMaskComparator.Create;
+begin
+  inherited Create;
+  FSeparator := ';';
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclFileMaskComparator.Compare(const NameExt: string): Boolean;
 var
   I: Integer;
@@ -4419,14 +4427,6 @@ begin
       Break;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclFileMaskComparator.Create;
-begin
-  inherited Create;
-  FSeparator := ';';
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5762,6 +5762,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.26  2004/08/01 05:52:11  marquardt
+// move constructors/destructors
+//
 // Revision 1.25  2004/07/30 07:20:25  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate
 //

@@ -50,7 +50,6 @@ uses
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
-
   TEDISpecToSEFTranslator = class(TEDIObject)
   public
     constructor Create;
@@ -85,13 +84,12 @@ type
 
 implementation
 
-uses JclStrings;
+uses
+  JclStrings;
 
 //==================================================================================================
-// TEDISpecToSEFTranslator
+// { TEDISpecToSEFTranslator }
 //==================================================================================================
-
-{ TEDISpecToSEFTranslator }
 
 constructor TEDISpecToSEFTranslator.Create;
 begin
@@ -410,10 +408,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFToSpecTranslator
+// { TEDISEFToSpecTranslator }
 //==================================================================================================
-
-{ TEDISEFToSpecTranslator }
 
 constructor TEDISEFToSpecTranslator.Create;
 begin

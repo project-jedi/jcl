@@ -458,10 +458,8 @@ uses
   JclResources, JclStrings;
 
 //==================================================================================================
-// TEDIElement
+// { TEDIElement }
 //==================================================================================================
-
-{ TEDIElement }
 
 constructor TEDIElement.Create(Parent: TEDIDataObject);
 begin
@@ -520,10 +518,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISegment
+// { TEDISegment }
 //==================================================================================================
-
-{ TEDISegment }
 
 constructor TEDISegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -848,10 +844,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIMessageSegment
+// { TEDIMessageSegment }
 //==================================================================================================
-
-{ TEDIMessageSegment }
 
 constructor TEDIMessageSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -868,10 +862,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIFunctionalGroupSegment
+// { TEDIFunctionalGroupSegment }
 //==================================================================================================
-
-{ TEDIFunctionalGroupSegment }
 
 constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -904,10 +896,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIInterchangeControlSegment
+// { TEDIInterchangeControlSegment }
 //==================================================================================================
-
-{ TEDIInterchangeControlSegment }
 
 constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -929,10 +919,30 @@ begin
 end;
 
 //==================================================================================================
-// TEDIMessage
+// { TEDIMessage }
 //==================================================================================================
 
-{ TEDIMessage }
+constructor TEDIMessage.Create(Parent: TEDIDataObject; SegmentCount: Integer);
+begin
+  if Assigned(Parent) and
+    ((Parent is TEDIFunctionalGroup) or (Parent is TEDIInterchangeControl)) then
+    inherited Create(Parent, SegmentCount)
+  else
+    inherited Create(nil, SegmentCount);
+  FEDIDOT := ediMessage;
+  InternalCreateHeaderTrailerSegments;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIMessage.Destroy;
+begin
+  FUNTSegment.Free;
+  FUNHSegment.Free;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDIMessage.AddSegment: Integer;
 begin
@@ -997,19 +1007,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIMessage.Create(Parent: TEDIDataObject; SegmentCount: Integer);
-begin
-  if Assigned(Parent) and
-    ((Parent is TEDIFunctionalGroup) or (Parent is TEDIInterchangeControl)) then
-    inherited Create(Parent, SegmentCount)
-  else
-    inherited Create(nil, SegmentCount);
-  FEDIDOT := ediMessage;
-  InternalCreateHeaderTrailerSegments;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIMessage.DeleteSegment(Index: Integer);
 begin
   DeleteEDIDataObject(Index);
@@ -1034,15 +1031,6 @@ end;
 procedure TEDIMessage.DeleteSegments(Index, Count: Integer);
 begin
   DeleteEDIDataObjects(Index, Count);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIMessage.Destroy;
-begin
-  FUNTSegment.Free;
-  FUNHSegment.Free;
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1209,10 +1197,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIFunctionalGroup
+// { TEDIFunctionalGroup }
 //==================================================================================================
-
-{ TEDIFunctionalGroup }
 
 constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject; MessageCount: Integer);
 begin
@@ -1516,10 +1502,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIInterchangeControl
+// { TEDIInterchangeControl }
 //==================================================================================================
-
-{ TEDIInterchangeControl }
 
 constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer);
 begin
@@ -1894,10 +1878,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIFile
+// { TEDIFile }
 //==================================================================================================
-
-{ TEDIFile }
 
 constructor TEDIFile.Create(Parent: TEDIDataObject; InterchangeCount: Integer);
 begin
@@ -2297,10 +2279,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDICompositeElement
+// { TEDICompositeElement }
 //==================================================================================================
-
-{ TEDICompositeElement }
 
 constructor TEDICompositeElement.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -2517,25 +2497,14 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-//  EDI Transaction Set Loop
-//--------------------------------------------------------------------------------------------------
-
-{ TEDIMessageLoop }
-
-function TEDIMessageLoop.InternalAssignDelimiters: TEDIDelimiters;
-begin
-  Result := nil;
-  if FDelimiters = nil then // Attempt to assign the delimiters
-    if Assigned(FParentMessage) then
-      Result := FParentMessage.Delimiters;
-end;
-
+// { TEDIMessageLoop }
+// EDI Transaction Set Loop
 //--------------------------------------------------------------------------------------------------
 
 constructor TEDIMessageLoop.Create(Parent: TEDIDataObject);
 begin
   inherited Create(Parent);
-  FCreateObjectType := ediLoop;  
+  FCreateObjectType := ediLoop;
   FGroupIsParent := False;
   if Assigned(Parent) and (Parent is TEDIMessage) then
     FParentMessage := TEDIMessage(Parent)
@@ -2554,6 +2523,16 @@ destructor TEDIMessageLoop.Destroy;
 begin
   DeleteEDIDataObjects;
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.InternalAssignDelimiters: TEDIDelimiters;
+begin
+  Result := nil;
+  if FDelimiters = nil then // Attempt to assign the delimiters
+    if Assigned(FParentMessage) then
+      Result := FParentMessage.Delimiters;
 end;
 
 //--------------------------------------------------------------------------------------------------

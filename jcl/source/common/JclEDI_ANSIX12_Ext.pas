@@ -94,10 +94,8 @@ type
 implementation
 
 //==================================================================================================
-// TEDI_ANSIX12_Document
+// { TEDI_ANSIX12_Document }
 //==================================================================================================
-
-{ TEDI_ANSIX12_Document }
 
 constructor TEDI_ANSIX12_Document.Create(Parent: TEDIDataObject;
   TransactionSet: TEDITransactionSet;

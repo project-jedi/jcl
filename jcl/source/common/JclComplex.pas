@@ -101,21 +101,9 @@ type
     function CoreLnGamma(Value: TRectCoord): TRectCoord;
     function CoreGamma(const Value: TRectCoord): TRectCoord;
   public
-    property FracLength: Byte read FFracLen write SetFracLen default 8;
-
     //----------- constructors
     constructor Create; overload;
     constructor Create(const X, Y: Float; const ComplexType: TComplexKind = crRectangular); overload;
-
-    //----------- getting different parts of the number
-    property RealPart: Float read FCoord.X;
-    property ImaginaryPart: Float read FCoord.Y;
-    property Radius: Float read GetRadius;
-    property Angle: Float read GetAngle;
-
-    //----------- format output
-    property AsString: string read GetRectangularString write SetRectangularString;
-    property AsPolarString: string read GetPolarString write SetPolarString;
 
     //----------- complex numbers assignment routines
     function Assign(const X, Y: Float; const ComplexType: TComplexKind = crRectangular): TJclComplex; overload;
@@ -212,6 +200,18 @@ type
     function AbsoluteValueSqr: Float; overload;
     function AbsoluteValueSqr(const Coord: TRectCoord): Float; overload;
     function FormatExtended(const X: Float): string;
+
+    property FracLength: Byte read FFracLen write SetFracLen default 8;
+
+    //----------- getting different parts of the number
+    property RealPart: Float read FCoord.X;
+    property ImaginaryPart: Float read FCoord.Y;
+    property Radius: Float read GetRadius;
+    property Angle: Float read GetAngle;
+
+    //----------- format output
+    property AsString: string read GetRectangularString write SetRectangularString;
+    property AsPolarString: string read GetPolarString write SetPolarString;
   end;
 
 var
@@ -1770,6 +1770,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/08/01 05:52:11  marquardt
+// move constructors/destructors
+//
 // Revision 1.6  2004/07/28 18:00:49  marquardt
 // various style cleanings, some minor fixes
 //

@@ -104,9 +104,7 @@ type
   private
     FHashMap: TStringHashMap;
   public
-    constructor Create(
-      ACaseSensitive: Boolean = False;
-      AHashSize: Integer = 127);
+    constructor Create(ACaseSensitive: Boolean = False; AHashSize: Integer = 127);
     destructor Destroy; override;
     procedure Add(ASymbol: TExprSym);
     procedure Remove(const AName: string);
@@ -490,7 +488,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Add(AOp: TExprVirtMachOp);
     procedure AddConst(AOp: TExprVirtMachOp);
     procedure Clear;
@@ -807,7 +804,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     function Evaluate(const AExpr: string): TFloat;
   end;
 
@@ -818,7 +814,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Compile(const AExpr: string);
     function Evaluate: TFloat;
   end;
@@ -840,7 +835,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     function Compile(const AExpr: string): TCompiledExpression;
     procedure Remove(const AExpr: string);
     procedure Delete(ACompiledExpression: TCompiledExpression);
@@ -897,27 +891,11 @@ end;
 // TExprSetContext
 //==================================================================================================
 
-procedure TExprSetContext.Add(AContext: TExprContext);
-begin
-  FList.Add(AContext);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TExprSetContext.Create(AOwnsContexts: Boolean);
 begin
   inherited Create;
   FOwnsContexts := AOwnsContexts;
   FList := TList.Create;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TExprSetContext.Delete(AIndex: Integer);
-begin
-  if FOwnsContexts then
-    TObject(FList[AIndex]).Free;
-  FList.Delete(AIndex);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -928,6 +906,22 @@ begin
     ClearObjectList(FList);
   FList.Free;
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TExprSetContext.Add(AContext: TExprContext);
+begin
+  FList.Add(AContext);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TExprSetContext.Delete(AIndex: Integer);
+begin
+  if FOwnsContexts then
+    TObject(FList[AIndex]).Free;
+  FList.Delete(AIndex);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4147,17 +4141,17 @@ end;
 // TExprConstSym
 //==================================================================================================
 
-function TExprConstSym.Compile: TExprNode;
-begin
-  Result := NodeFactory.LoadConst(FValue);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TExprConstSym.Create(const AIdent: string; AValue: TFloat);
 begin
   inherited Create(AIdent);
   FValue := AValue;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TExprConstSym.Compile: TExprNode;
+begin
+  Result := NodeFactory.LoadConst(FValue);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4589,6 +4583,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/08/01 05:52:11  marquardt
+// move constructors/destructors
+//
 // Revision 1.7  2004/07/03 03:27:48  rrossmair
 // documentation extracted to ExprEval.dtx (Doc-O-Matic topic file)
 //

@@ -660,6 +660,7 @@ type
 
 constructor TSafeGuard.Create(Mem: Pointer);
 begin
+  inherited Create;
   FItem := Mem;
 end;
 
@@ -701,7 +702,7 @@ end;
 
 constructor TObjSafeGuard.Create(Obj: TObject);
 begin
-  inherited Create(Obj);
+  inherited Create(Pointer(Obj));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -719,14 +720,6 @@ end;
 // TMultiSafeGuard
 //--------------------------------------------------------------------------------------------------
 
-function TMultiSafeGuard.AddItem(Mem: Pointer): Pointer;
-begin
-  Result := Mem;
-  FItems.Add(Mem);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TMultiSafeGuard.Create;
 begin
   inherited Create;
@@ -740,8 +733,16 @@ var
   I: Integer;
 begin
   for I := FItems.Count - 1 downto 0 do FreeItem(I);
-  FItems.Free;
+    FItems.Free;
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TMultiSafeGuard.AddItem(Mem: Pointer): Pointer;
+begin
+  Result := Mem;
+  FItems.Add(Mem);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1657,6 +1658,8 @@ const
 {$ENDIF MATH_SINGLE_PRECISION}
 
 //--------------------------------------------------------------------------------------------------
+// TJclNumericFormat
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclNumericFormat.Create;
 begin
@@ -2322,6 +2325,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/08/01 05:52:12  marquardt
+// move constructors/destructors
+//
 // Revision 1.21  2004/07/28 18:00:52  marquardt
 // various style cleanings, some minor fixes
 //

@@ -1898,7 +1898,9 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// TJclSparseFlatSet
+//==================================================================================================
 
 procedure TJclSparseFlatSet.Clear;
 var
@@ -2663,14 +2665,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor EJclNaNSignal.Create(ATag: TNaNTag);
-begin
-  FTag := ATag;
-  CreateResRecFmt(@RsNaNSignal, [ATag]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure CheckTag(Tag: TNaNTag);
 begin
   if (Tag < Low(TNaNTag)) or (Tag > High(TNaNTag)) then
@@ -2863,6 +2857,17 @@ begin
   Result := IsNan(X) or IsInfinite(X);
 end;
 
+
+//===================================================================================================
+// EJclNaNSignal
+//===================================================================================================
+
+constructor EJclNaNSignal.Create(ATag: TNaNTag);
+begin
+  FTag := ATag;
+  // (rom) no raise here?
+  CreateResRecFmt(@RsNaNSignal, [ATag]);
+end;
 
 //===================================================================================================
 // Rational Numbers
@@ -3728,6 +3733,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.11  2004/08/01 05:52:11  marquardt
+// move constructors/destructors
+//
 // Revision 1.10  2004/07/29 15:16:51  marquardt
 // simple style cleaning
 //

@@ -526,11 +526,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+// TJclZLibReader
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclZLibReader.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
   const WindowBits: Integer = DEF_WBITS);
-
 begin
   inherited Create(Stream, BufferSize);
   FEndOfStream := False;
@@ -648,6 +649,8 @@ begin
     Result := inherited Seek(Offset, Origin);
 end;
 
+//--------------------------------------------------------------------------------------------------
+// TJclZLibWriter
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclZLibWriter.Create(const Stream: TStream;
@@ -928,6 +931,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+// TJclGZipReader
+//--------------------------------------------------------------------------------------------------
 
 const
   gzipMagic = $8B1F;
@@ -1121,6 +1126,8 @@ begin
   SetLength(Result, DstIdx - 1);
 end;
 
+//--------------------------------------------------------------------------------------------------
+// TJclGZipWriter
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclGZipWriter.Create(const Stream: TStream;
@@ -1738,6 +1745,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+// TJclTarWriter
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclTarWriter.Create(const TarStream: TStream);
 begin
@@ -2131,6 +2140,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.14  2004/08/01 05:52:12  marquardt
+//  move constructors/destructors
+//
 //  Revision 1.13  2004/07/31 06:21:01  marquardt
 //  fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

@@ -529,10 +529,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIDelimiters
+// { TEDIDelimiters }
 //==================================================================================================
-
-{ TEDIDelimiters }
 
 constructor TEDIDelimiters.Create;
 begin
@@ -574,10 +572,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIDataObject
+// { TEDIDataObject }
 //==================================================================================================
-
-{ TEDIDataObject }
 
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
@@ -637,10 +633,20 @@ begin
 end;
 
 //==================================================================================================
-// TEDIDataObjectGroup
+// { TEDIDataObjectGroup }
 //==================================================================================================
 
-{ TEDIDataObjectGroup }
+constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
+begin
+  inherited Create(Parent);
+  FCreateObjectType := ediUnknown;
+  FGroupIsParent := True;
+  FEDIDataObjects := TEDIDataObjectList.Create;
+  if EDIDataObjectCount > 0 then
+    AddEDIDataObjects(EDIDataObjectCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
@@ -682,21 +688,6 @@ begin
     if FGroupIsParent then
       EDIDataObjectArray[I].Parent := Self;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
-begin
-  if Assigned(Parent) then
-    inherited Create(Parent)
-  else
-    inherited Create(nil);
-  FCreateObjectType := ediUnknown;
-  FGroupIsParent := True;
-  FEDIDataObjects := TEDIDataObjectList.Create;
-  if EDIDataObjectCount > 0 then
-    AddEDIDataObjects(EDIDataObjectCount);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -895,10 +886,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIObjectListItem
+// { TEDIObjectListItem }
 //==================================================================================================
-
-{ TEDIObjectListItem }
 
 constructor TEDIObjectListItem.Create(Parent: TEDIObjectList;
   PriorItem: TEDIObjectListItem; EDIObject: TEDIObject = nil);
@@ -948,10 +937,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIObjectList
+// { TEDIObjectList }
 //==================================================================================================
-
-{ TEDIObjectList }
 
 constructor TEDIObjectList.Create(OwnsObjects: Boolean = True);
 begin
@@ -1587,10 +1574,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDILoopStack
+// { TEDILoopStack }
 //==================================================================================================
-
-{ TEDILoopStack }
 
 constructor TEDILoopStack.Create;
 begin
