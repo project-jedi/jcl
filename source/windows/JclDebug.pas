@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 15, 2002                                                                    }
+{ Last modified: March 17, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -218,8 +218,10 @@ type
 
 const
   JclDbgDataSignature = $4742444A; // JDBG
-  JclDbgDataResName = 'JCLDEBUG';
+  JclDbgDataResName   = 'JCLDEBUG';
   JclDbgFileExtension = '.jdbg';
+
+  JclDbgHeaderVersion = 1; // JCL 1.11 and 1.20
 
   MapFileExtension    = '.map';
   DrcFileExtension    = '.drc';
@@ -1296,7 +1298,7 @@ begin
       begin
         Result := FLineNumbers[I].LineNumber;
         Offset := Addr - FLineNumbers[I].Addr;
-      end;  
+      end;
       Break;
     end;
 end;
@@ -1412,11 +1414,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function MapLineNumberCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(PJclMapLineNumber(Item1)^.Addr) - Integer(PJclMapLineNumber(Item2)^.Addr);
+end;
+
+function MapProcNameCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(PJclMapProcName(Item1)^.Addr) - Integer(PJclMapProcName(Item2)^.Addr);
+end;
+
 procedure TJclMapScanner.Scan;
 begin
   Parse;
   SetLength(FLineNumbers, FLineNumbersCnt);
   SetLength(FProcNames, FProcNamesCnt);
+  if LinkerBug then
+  begin
+    SortDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), MapLineNumberCompare);
+    SortDynArray(FSourceNames, SizeOf(FSourceNames[0]), MapProcNameCompare);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1687,8 +1704,8 @@ begin
   LinkerBugUnit := '';
   if BinDebug.Stream <> nil then
   begin
-    Result := not BinDebug.LinkerBug;
-    if not Result then
+    Result := True;
+    if BinDebug.LinkerBug then
       LinkerBugUnit := BinDebug.LinkerBugUnitName;
   end
   else
@@ -1765,6 +1782,8 @@ end;
 // TJclBinDebugGenerator
 //==================================================================================================
 
+{$OVERFLOWCHECKS OFF}
+
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
 var
   Header: PJclDbgHeader;
@@ -1788,6 +1807,10 @@ begin
     Header^.CheckSum := CheckSum;
   end;
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1868,7 +1891,7 @@ begin
     WordList.Duplicates := dupError;
 
     FileHeader.Signature := JclDbgDataSignature;
-    FileHeader.Version := 1;
+    FileHeader.Version := JclDbgHeaderVersion;
     FileHeader.CheckSum := 0;
     FileHeader.CheckSumValid := False;
     FileHeader.ModuleName := AddWord(PathExtractFileNameNoExt(FMapFileName));
@@ -2017,6 +2040,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$OVERFLOWCHECKS OFF}
+
 procedure TJclBinDebugScanner.CheckFormat;
 var
   CheckSum: Integer;
@@ -2027,7 +2052,7 @@ begin
   Header := PJclDbgHeader(Data);
   FValidFormat := (Data <> nil) and (FStream.Size > SizeOf(TJclDbgHeader)) and
     (FStream.Size mod 4 = 0) and
-    (Header^.Signature = JclDbgDataSignature) and (Header^.Version = 1);
+    (Header^.Signature = JclDbgDataSignature) and (Header^.Version = JclDbgHeaderVersion);
   if FValidFormat and Header^.CheckSumValid then
   begin
     CheckSum := -Header^.CheckSum;
@@ -2041,6 +2066,10 @@ begin
     FValidFormat := (CheckSum = Header^.CheckSum);
   end;
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //--------------------------------------------------------------------------------------------------
 
