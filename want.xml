@@ -146,6 +146,11 @@ $Id$
           <exclude name="${basedir}/dist/**" />
           <exclude name="${basedir}/docs/about jcl/**" />
           <exclude name="${basedir}/docs/contributors.txt" />
+          <exclude name="${basedir}/devtools/*.dpr" />
+          <exclude name="${basedir}/devtools/*.dof" />
+          <exclude name="${basedir}/devtools/*.htm" />
+          <exclude name="${basedir}/devtools/*.ico" />
+          <exclude name="${basedir}/devtools/*.txt" />
           <exclude name="${doc.dir}/*.info" />
           <exclude name="${doc.dir}/internal/**" />
           <exclude name="${install.dir}/prototypes/**" />
@@ -170,13 +175,14 @@ $Id$
           <exclude name="${samp.dir}/makefile.mak" />
           <exclude name="${samp.dir}/vcl/installhelper/**" />
           <exclude name="${basedir}/want.*" />
-          <exclude name="${basedir}/devtools/**" />
 
           <include name="${basedir}/include/**" />
           <include name="${bin.dir}/JediInstaller.exe" />
+          <include name="${basedir}/devtools/jpp*" />
           <include name="${install.dir}/**/*.cfg" />
           <include name="${install.dir}/**/*.conf" />
           <include name="${install.dir}/QJediInstaller.conf" />
+          <include name="${install.dir}/build/**" />
           <include name="${doc.dir}/**" />
           <include name="${help.dir}/JclHelp.als" />
           <include name="${help.dir}/JclHelp.cnt" />
