@@ -20,10 +20,13 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
-// For history see end of file
+{$IFDEF PROTOTYPE}
+// Last modified: $Date$
+{$ELSE ~PROTOTYPE}
+// For history, see end of file
 
-{$IFNDEF Develop}unit {$IFDEF VisualCLX}JclQGraphUtils{$ELSE}JclGraphUtils{$ENDIF};{$ENDIF}
+unit {$IFDEF VisualCLX}JclQGraphUtils{$ELSE}JclGraphUtils{$ENDIF};
+{$ENDIF ~PROTOTYPE}
 
 interface
 
@@ -2562,8 +2565,12 @@ finalization
 
 // 2001-03-28, Mike Lischke:
 //  - ShortenString included
-
+{$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.5  2004/04/18 06:32:07  rrossmair
+// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.4  2004/04/06 05:01:54  peterjhaas
 // adapt compiler conditions, add log entry
 //
