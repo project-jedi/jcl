@@ -183,6 +183,7 @@ type
   TDynSingleArray   = array of Single;
   TDynFloatArray    = array of Float;
   TDynPointerArray  = array of Pointer;
+  TDynStringArray   = array of string;
 
 //--------------------------------------------------------------------------------------------------
 // TObjectList
