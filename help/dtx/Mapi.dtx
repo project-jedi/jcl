@@ -669,7 +669,7 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@TJclEmailFindOptions
+@@TJclEmailFindOption
 <GROUP InternetandE-mail.MAPI>
 Summary:
   MAPI search options
@@ -682,32 +682,38 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TJclEmailFindOptions.foFifo
+@@TJclEmailFindOption.foFifo
   The message identifiers returned should be in the order of time received. FindFirstMessage and FindNextMessage calls can take longer if this flag is set. Some MAPI implementations cannot honor this request and return the MAPI_E_NO_SUPPORT value.
-@@TJclEmailFindOptions.foUnreadOnly
+@@TJclEmailFindOption.foUnreadOnly
   Only unread messages of the specified type are returned. If this flag is not set, any message of the specified type can be returned.
+@@TJclEmailFindOptions
+<GROUP InternetandE-mail.MAPI>
+<COMBINE TJclEmailFindOption>
 --------------------------------------------------------------------------------
+@@TJclEmailLogonOption
+<GROUP InternetandE-mail.MAPI>
+Summary:
+  Logon options
+Description:
+  Logon options
+Quick info:
+  Unit: JclMapi
+  Category: Internet and E-mail
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+@@TJclEmailLogonOption.loLogonUI
+  Login with a user interface (i.e.. show login dialog of client).
+@@TJclEmailLogonOption.loNewSession
+  Start a new session.
+@@TJclEmailLogonOption.loForceDownload
+  Force mails and attachments to be downloaded.
 @@TJclEmailLogonOptions
 <GROUP InternetandE-mail.MAPI>
-Summary:
-  Logon options
-Description:
-  Logon options
-Quick info:
-  Unit: JclMapi
-  Category: Internet and E-mail
-  Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-@@TJclEmailLogonOptions.loLoginUI
-  Login with a user interface (i.e.. show login dialog of client).
-@@TJclEmailLogonOptions.loNewSession
-  Start a new session.
-@@TJclEmailLogonOptions.loForceDownload
-  Force mails and attachments to be downloaded.
+<COMBINE TJclEmailLogonOption>
 --------------------------------------------------------------------------------
-@@TJclEmailReadOptions
+@@TJclEmailReadOption
 <GROUP InternetandE-mail.MAPI>
 Summary:
   Read options
@@ -720,12 +726,15 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TJclEmailReadOptions.roAttachments
+@@TJclEmailReadOption.roAttachments
   Read attachments.
-@@TJclEmailReadOptions.roHeaderOnly
+@@TJclEmailReadOption.roHeaderOnly
   Read header only (no body).
-@@TJclEmailReadOptions.roMarkAsRead
+@@TJclEmailReadOption.roMarkAsRead
   Mark the message as read.
+@@TJclEmailReadOptions
+<GROUP InternetandE-mail.MAPI>
+<COMBINE TJclEmailReadOption>
 --------------------------------------------------------------------------------
 @@TJclEmailReadMsg
 <GROUP InternetandE-mail.MAPI>
