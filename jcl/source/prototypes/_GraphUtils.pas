@@ -275,7 +275,7 @@ procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF ~DROP_OBSOLETE_CODE}
 
-// keep HSL identifier to avoid ambiguidy with HLS overload
+// keep HSL identifier to avoid ambiguity with HLS overload
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
@@ -2880,6 +2880,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.15  2004/10/18 16:22:14  marquardt
+// corrected typo
+//
 // Revision 1.14  2004/10/17 20:54:14  mthoma
 // cleaning
 //
