@@ -55,9 +55,9 @@ contains
   JclPrint in '..\Source\JclPrint.pas',
   JclRegistry in '..\Source\JclRegistry.pas',
   JclResources in '..\Source\JclResources.pas',
+  JclRTF in '..\Source\JclRTF.pas',
   JclSecurity in '..\Source\JclSecurity.pas',
   JclShell in '..\Source\JclShell.pas',
-  JclSscanf in '..\Source\JclSscanf.pas',
   JclStatistics in '..\Source\JclStatistics.pas',
   JclStrings in '..\Source\JclStrings.pas',
   JclSynch in '..\Source\JclSynch.pas',
@@ -65,6 +65,11 @@ contains
   JclSysUtils in '..\Source\JclSysUtils.pas',
   JclUnicode in '..\Source\JclUnicode.pas',
   JclUnitConv in '..\Source\JclUnitConv.pas',
-  Jcl8087 in '..\Source\Jcl8087.pas';
+  Jcl8087 in '..\Source\Jcl8087.pas',
+  JclLANMan in '..\Source\JclLANMan.pas',
+  JclExprEval in '..\Source\JclExprEval.pas',
+  JclRTTI in '..\Source\JclRTTI.pas',
+  LM in '..\Source\LM.pas',
+  JclStrHashMap in '..\Source\JclStrHashMap.pas';
 
 end.
