@@ -3321,7 +3321,7 @@ end;
 // TStrings Manipulation
 //==================================================================================================
 
-procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
+procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
 var
   I, L: Integer;
   Left: AnsiString;
@@ -3344,23 +3344,25 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
+procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
 var
   I, L: Integer;
+  LowerCaseStr: string;
   Left: AnsiString;
 begin
   Assert(List <> nil);
-  S := StrLower(S);
+  LowerCaseStr := StrLower(S);
   Sep := StrLower(Sep);
   List.Clear;
   L := Length(Sep);
-  I := Pos(Sep, S);
+  I := Pos(Sep, LowerCaseStr);
   while (I > 0) do
   begin
     Left := StrLeft(S, I - 1);
     if (Left <> '') or AllowEmptyString then
       List.Add(Left);
     System.Delete(S, 1, I + L - 1);
+    System.Delete(LowerCaseStr, 1, I + L - 1);
     I := Pos(Sep, S);
   end;
   if S <> '' then
