@@ -1,6 +1,11 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{                                                                              }
+{  WARNING: This file is generated automatically by preprocessor.              }
+{                                                                              }
+{  Manual modifications will be lost on next release. Please modify the        }
+{  original source file.                                                       }
+{                                                                              }
+{******************************************************************************}
 
 {******************************************************************************}
 {                                                                              }
@@ -27,11 +32,9 @@
 {  Portions created by Peter J. Haas are Copyright (C) 2002-2004               }
 {  Peter J. Haas. All Rights Reserved.                                         }
 {                                                                              }
-
 {  Obtained through:                                                           }
 {    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
 {                                                                              }
-
 {  You may retrieve the latest version of the original file at the homepage    }
 {  of the Project ZLib, located at http://www.gzip.org/zlib/                   }
 {                                                                              }
@@ -56,8 +59,8 @@
 {                                                                              }
 {******************************************************************************}
 
-// $Id$
-
+// Last modified: $Id$
+// For history see end of file
 
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
 {$OVERFLOWCHECKS OFF}{$RANGECHECKS OFF}{$TYPEDADDRESS ON}{$MINENUMSIZE 1}
@@ -72,54 +75,15 @@
 
 unit zlibh;
 
-{$IFDEF PLATFORM_SPECIFIC_COMMENT}
-// On Windows platform, you can choose between static linking and
-// load time dynamic linking
-
-// static linking: deactivate the symbol ZLIB_WIN32DLL
-
-// dynamic linking: activate the symbol ZLIB_WIN32DLL
-// You may retrieve a current Win32-DLL from the zlib homepage
-// located at http://www.gzip.org/zlib/
-{.$DEFINE ZLIB_WIN32DLL}
-
-
-// ZLIB_STDCALL is currently unused, because the new dll use cdecl
-
-
-// There is no simple possibility to support gzip over gzio with static
-// linking. If you wish to include gzio, you must find a way to include
-// any stdio functions used in gzio.
-
-// However, gzio don't use any Delphi-like file access methods.
-// See gzips.pas for a Delphi-like gzip support with TStream descendants.
-{$ENDIF PLATFORM_SPECIFIC_COMMENT}
-
-
-
-
-  
-  
-  
-  
-
-
-
-
-
 
 interface
 uses
-                          
   {$IFDEF HAS_UNIT_LIBC}
   Libc;
   {$ENDIF HAS_UNIT_LIBC}
 
-
-
 {$HPPEMIT '#define ZEXPORT __cdecl'}
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
-
 {$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
@@ -1123,7 +1087,6 @@ function uncompress(out dest; var destLen: ULong;
                     const source; sourceLen: ULong): Integer; cdecl;
 
 
-
 type
   {$EXTERNALSYM gzFile}
   gzFile = Pointer;
@@ -1333,8 +1296,6 @@ function gzerror(_file: TGZFile; var errnum: Integer): PChar; cdecl;
 procedure gzclearerr(_file: TGZFile); cdecl;
 
 
-
-
 //                         checksum functions
 
 { These functions are not related to compression but are exported
@@ -1356,7 +1317,7 @@ procedure gzclearerr(_file: TGZFile); cdecl;
 //   }
 //   if (adler != original_adler) error();
 {$EXTERNALSYM adler32}
-function adler32(adler: ULong; const buf; len: UInt): ULong; cdecl;
+function adler32(adler: ULong; buf: Pointer; len: UInt): ULong; cdecl;
 
 
 { crc32
@@ -1373,7 +1334,7 @@ function adler32(adler: ULong; const buf; len: UInt): ULong; cdecl;
 //   }
 //   if (crc != original_crc) error();
 {$EXTERNALSYM crc32}
-function crc32(crc: ULong; var buf; len: UInt): ULong; cdecl;
+function crc32(crc: ULong; buf: Pointer; len: UInt): ULong; cdecl;
 
 
 //                         various hacks, don't look :)
@@ -1434,19 +1395,14 @@ function get_crc_table: PCRCTable; cdecl;
 implementation
 
 
-
-
 const
   ZLibModuleName = 'libz.so';
-
 
 
 // **************************  zutil.c  *****************************
 function zlibVersion;      external ZLibModuleName name 'zlibVersion';
 function zError;           external ZLibModuleName name 'zError';
 function zlibCompileFlags; external ZLibModuleName name 'zlibCompileFlags';
-
-
 
 
 // **************************  deflate.c  ***************************
@@ -1490,7 +1446,6 @@ function compressBound; external ZLibModuleName name 'compressBound';
 function uncompress; external ZLibModuleName name 'uncompress';
 
 
-
 // **************************  gzio.c  ******************************
 function gzopen;      external ZLibModuleName name 'gzopen';
 function gzdopen;     external ZLibModuleName name 'gzdopen';
@@ -1513,7 +1468,6 @@ function gzclose;     external ZLibModuleName name 'gzclose';
 function gzerror;     external ZLibModuleName name 'gzerror';
 function gzungetc;    external ZLibModuleName name 'gzungetc';
 procedure gzclearerr; external ZLibModuleName name 'gzclearerr';
-
 
 
 // **************************  adler32.c  ***************************
@@ -1555,5 +1509,57 @@ begin
   Result := inflateBackInit_(strm, windowBits, window, ZLIB_VERSION, SizeOf(strm));
 end;
 
+// ****************************************************************************
+
+//  History:
+//   Revision 1.7  2004/05/09 00:03:51  peterjhaas
+//   - old history in reverse order like CVS log
+//   - change interface adler32 and crc32 to avoid FPC compatibility problems
+//
+//   Revision 1.6  2004/05/08 08:44:18  rrossmair
+//   introduced & applied symbol HAS_UNIT_LIBC
+//
+//   Revision 1.5  2004/05/01 03:04:37  peterjhaas
+//   - move jedi.in after setting compiler options
+//   - add symbols for calling conventions
+//
+//   Revision 1.4  2004/04/30 17:59:43  peterjhaas
+//   - add calling convention for .hpp file
+//   - change NONBORLAND to BORLAND
+//
+//   Revision 1.3  2004/04/28 15:48:45  peterjhaas
+//   - add include of zutil.h for C compilers
+//
+//   Revision 1.2  2004/04/20 01:34:06  rrossmair
+//   "uses LibC" changed to "uses Libc" (unit names are case-sensitive on Unix)
+//
+//   Revision 1.1  2004/04/08 00:29:22  peterjhaas
+//   Zlib header conversion prototype
+//
+//   2004-03-19, Peter J. Haas
+//    - compiler symbol to hide platform specific comments
+//
+//   2004-03-15, Peter J. Haas
+//    - move directive comments to directives
+//
+//   2004-01-23, Peter J. Haas
+//    - add new functions from version 1.2.1
+//    - generate different units for Delphi 3, Delphi 4 ... and Kylix
+//
+//   2003-11-14, Peter J. Haas
+//    - add demo
+//
+//   2003-04-14, Peter J. Haas
+//    - First public version
+//
+//   2002-04-07, Peter J. Haas
+//    - First public pre release
+//
+//   2002-04-04, Matthias Thoma (mthoma)
+//    - Global change: define Kylix had to be change to Linux
+//
+//   2002-04-04, Peter J. Haas
+//    - first internal version 1.1.4
+//
 
 end.

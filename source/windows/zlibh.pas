@@ -59,7 +59,8 @@
 {                                                                              }
 {******************************************************************************}
 
-// $Id$
+// Last modified: $Id$
+// For history see end of file
 
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
 {$OVERFLOWCHECKS OFF}{$RANGECHECKS OFF}{$TYPEDADDRESS ON}{$MINENUMSIZE 1}
@@ -1109,7 +1110,7 @@ function uncompress(out dest; var destLen: ULong;
 //   }
 //   if (adler != original_adler) error();
 {$EXTERNALSYM adler32}
-function adler32(adler: ULong; const buf; len: UInt): ULong;
+function adler32(adler: ULong; buf: Pointer; len: UInt): ULong;
 
 
 { crc32
@@ -1126,7 +1127,7 @@ function adler32(adler: ULong; const buf; len: UInt): ULong;
 //   }
 //   if (crc != original_crc) error();
 {$EXTERNALSYM crc32}
-function crc32(crc: ULong; var buf; len: UInt): ULong;
+function crc32(crc: ULong; buf: Pointer; len: UInt): ULong;
 
 
 //                         various hacks, don't look :)
@@ -1306,5 +1307,58 @@ function inflateBackInit(var strm: TZStreamRec; windowBits: Integer;
 begin
   Result := inflateBackInit_(strm, windowBits, window, ZLIB_VERSION, SizeOf(strm));
 end;
+
+// ****************************************************************************
+
+//  History:
+//   Revision 1.7  2004/05/09 00:03:51  peterjhaas
+//   - old history in reverse order like CVS log
+//   - change interface adler32 and crc32 to avoid FPC compatibility problems
+//
+//   Revision 1.6  2004/05/08 08:44:18  rrossmair
+//   introduced & applied symbol HAS_UNIT_LIBC
+//
+//   Revision 1.5  2004/05/01 03:04:37  peterjhaas
+//   - move jedi.in after setting compiler options
+//   - add symbols for calling conventions
+//
+//   Revision 1.4  2004/04/30 17:59:43  peterjhaas
+//   - add calling convention for .hpp file
+//   - change NONBORLAND to BORLAND
+//
+//   Revision 1.3  2004/04/28 15:48:45  peterjhaas
+//   - add include of zutil.h for C compilers
+//
+//   Revision 1.2  2004/04/20 01:34:06  rrossmair
+//   "uses LibC" changed to "uses Libc" (unit names are case-sensitive on Unix)
+//
+//   Revision 1.1  2004/04/08 00:29:22  peterjhaas
+//   Zlib header conversion prototype
+//
+//   2004-03-19, Peter J. Haas
+//    - compiler symbol to hide platform specific comments
+//
+//   2004-03-15, Peter J. Haas
+//    - move directive comments to directives
+//
+//   2004-01-23, Peter J. Haas
+//    - add new functions from version 1.2.1
+//    - generate different units for Delphi 3, Delphi 4 ... and Kylix
+//
+//   2003-11-14, Peter J. Haas
+//    - add demo
+//
+//   2003-04-14, Peter J. Haas
+//    - First public version
+//
+//   2002-04-07, Peter J. Haas
+//    - First public pre release
+//
+//   2002-04-04, Matthias Thoma (mthoma)
+//    - Global change: define Kylix had to be change to Linux
+//
+//   2002-04-04, Peter J. Haas
+//    - first internal version 1.1.4
+//
 
 end.
