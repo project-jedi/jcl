@@ -21,7 +21,7 @@
 { This unit contains various PE file classes and support routines              }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 23, 2001                                              }
+{ Last modified: January 27, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -669,7 +669,8 @@ type
   TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
   TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
 
-  TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage) of object;
+  TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage;
+    var Process: Boolean) of object;
   TJclPeNameSearchFoundEvent = procedure (Sender: TObject; const FileName: TFileName;
     const FunctionName: string; Option: TJclPeNameSearchOption) of object;
 
@@ -678,6 +679,7 @@ type
     F_FileName: TFileName;
     F_FunctionName: string;
     F_Option: TJclPeNameSearchOption;
+    F_Process: Boolean;
     FFunctionName: string;
     FOptions: TJclPeNameSearchOptions;
     FPath: string;
@@ -3725,7 +3727,7 @@ end;
 procedure TJclPeNameSearch.DoProcessFile;
 begin
   if Assigned(FOnProcessFile) then
-    FOnProcessFile(Self, FPeImage);
+    FOnProcessFile(Self, FPeImage, F_Process);
 end;
 
 //------------------------------------------------------------------------------
@@ -3758,10 +3760,11 @@ var
       while not Terminated and (SearchResult = 0) do
       begin
         F_FileName := PathAddSeparator(ExtractFilePath(DirName)) + Se.Name;
+        F_Process := True;
         FPeImage.FileName := F_FileName;
         if Assigned(FOnProcessFile) then
           Synchronize(DoProcessFile);
-        if FPeImage.StatusOK then
+        if F_Process and FPeImage.StatusOK then
         begin
           if seExports in FOptions then
           begin
