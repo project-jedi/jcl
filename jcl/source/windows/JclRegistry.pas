@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 23, 2001                                              }
+{ Last modified: January 27, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -137,9 +137,14 @@ begin
   Result := False;
   if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
-    Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
-    RegCloseKey(RegKey);
-  end;
+    result := RegDeleteValue(Regkey, PChar(Name)) = ERROR_SUCCESS;
+    if result then
+      RegCloseKey(RegKey)
+    else
+      ValueError(Key,Name);
+  end
+  else
+    WriteError(Key);
 end;
 
 //------------------------------------------------------------------------------
@@ -171,7 +176,9 @@ begin
     RegCloseKey(RegKey);
     if Result then
       Result := Windows.RegDeleteKey(RootKey, PChar(Key)) = ERROR_SUCCESS;
-  end;
+    end
+    else
+      WriteError(Key);
 end;
 
 //------------------------------------------------------------------------------
@@ -396,7 +403,9 @@ begin
       Result := True;
     end;
     RegCloseKey(RegKey);
-  end;
+  end
+  else
+    ReadError(key);
 end;
 
 //------------------------------------------------------------------------------
@@ -427,7 +436,9 @@ begin
       Result := True;
     end;
     RegCloseKey(RegKey);
-  end;
+  end
+  else
+    ReadError(key);
 end;
 
 //------------------------------------------------------------------------------
@@ -443,7 +454,9 @@ begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
     Result := NumSubKeys <> 0;
     RegCloseKey(RegKey);
-  end;
+  end
+  else
+    ReadError(key);
 end;
 
 end.
