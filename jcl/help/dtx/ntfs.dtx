@@ -86,6 +86,10 @@ Result:
   of failure this is unnecessary (in fact FindStreamClose will return False).
 Notes:
   The set of functions for the enumeration of streams was adapted from the PSDK sample EnumStreams.
+See also:
+  NtfsFindNextStream
+  NtfsFindStreamClose
+  TFindStreamData
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -114,6 +118,10 @@ Result:
   If the function succeeds in finding another stream it returns True, otherwise it
   returns False. In this latter case you can call GetLastError to retrieve detailed
   information about the cause of failure.
+See also:
+  NtfsFindFirstStream
+  NtfsFindStreamClose
+  TFindStreamData
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -140,6 +148,10 @@ Result:
   latter case you can call GetLastError to retrieve the reason of failure.
 Notes:
   Note that if NtfsFindFirstStream fails there's no need to call this function because NtfsFindFirstStream performs the necessary cleanup. It is however, harmless to call this function anyway (though it will fail and GetLastError will return ERROR_INVALID_HANDLE).
+See also:
+  NtfsFindFirstStream
+  NtfsFindNextStream
+  TFindStreamData
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -170,6 +182,9 @@ Result:
   can call GetLastError to get a more specific failure description. The most common
   reason for failure is that either the Source doesn't exist or isn't empty or
   that the destination directory doesn't exist.
+See also:
+  NtfsDeleteJunctionPoint
+  NtfsGetJunctionPointDestination
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -195,6 +210,9 @@ Parameters:
   Source - The junction point to delete.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  NtfsCreateJunctionPoint
+  NtfsGetJunctionPointDestination
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -220,6 +238,9 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of Destination are undefined.
+See also:
+  NtfsCreateJunctionPoint
+  NtfsDeleteJunctionPoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -247,6 +268,8 @@ Parameters:
   Last - Indicates the byte offset of the first byte beyond the last zeroed byte.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  NtfsZeroDataByHandle
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -274,6 +297,8 @@ Parameters:
   Last - Indicates the byte offset of the first byte beyond the last zeroed byte.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  NtfsZeroDataByName
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -314,6 +339,9 @@ Summary:
   TNtfsAllocRanges is initialized by a call to NtfsQueryAllocRanges. It holds the data that describes the allocated ranges in the file within the boundaries that the file was queried for. You can use the NtfsGetAllocRangeEntry to extract the individual entries from this record. WARNING: After you're done with this record you are responsible for freeing the memory associated with the Data member, i.e. you must call: FreeMem(Ranges.Data).
 Description:
   TNtfsAllocRanges is initialized by a call to NtfsQueryAllocRanges. It holds the data that describes the allocated ranges in the file within the boundaries that the file was queried for. You can use the NtfsGetAllocRangeEntry to extract the individual entries from this record. WARNING: After you're done with this record you are responsible for freeing the memory associated with the Data member, i.e. you must call: FreeMem(Ranges.Data).
+See also:
+  NtfsGetAllocRangeEntry
+  NtfsQueryAllocRanges
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -349,6 +377,10 @@ Parameters:
 Result:
   The function returns the TFileAllocatedRangeBuffer at the specified Index. The
   index is asserted to be within range.
+See also:
+  NtfsSetSparse
+  TNtfsAllocRanges
+  NtfsQueryAllocRanges
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -389,6 +421,10 @@ Result:
 Notes:
   The caller is responsible for freeing the memory associated with the Data member of the TNtfsAllocRanges record.
   Sparse files are only supported by NTFS version 5.0 and higher.
+See also:
+  NtfsSetSparse
+  TNtfsAllocRanges
+  NtfsGetAllocRangeEntry
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -416,6 +452,8 @@ Result:
   returns False.
 Notes:
   Sparse files are only supported by NTFS version 5.0 and higher.
+See also:
+  NtfsSetSparse
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -443,6 +481,10 @@ Result:
   If the function succeeds the return value is True, otherwise it's False.
 Notes:
   Sparse files are only supported by NTFS version 5.0 and higher.
+See also:
+  NtfsGetSparse
+  NtfsZeroDataByHandle
+  NtfsZeroDataByName
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -466,6 +508,8 @@ Parameters:
   ReparseTag - The tag of the reparse point to delete.
 Result:
   If the function succeeds the function returns True, otherwise it returns False.
+See also:
+  NtfsSetReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -484,6 +528,10 @@ Summary:
 Description:
   TGenericReparseBuffer is a generic record type used for reparse point operations
   on an NTFS volume.
+See also:
+  NtfsDeleteReparsePoint
+  NtfsSetReparsePoint
+  NtfsGetReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -516,6 +564,9 @@ Parameters:
   ReparseData - A TReparseGuidData record which contains the reparse point data.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  NtfsDeleteReparsePoint
+  NtfsGetReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -543,6 +594,9 @@ Result:
   it returns False and sets ReparseDataLength to the number of bytes retrieved.
   You can distinguish between no data and partial data by calling GetLastError which
   will return ERROR_INSUFFICIENT_BUFFER or ERROR_MORE_DATA respectively.
+See also:
+  NtfsDeleteReparsePoint
+  NtfsSetReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -568,6 +622,9 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the value of Tag is undefined.
+See also:
+  NtfsReparsePointsSupported
+  NtfsFileHasReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -592,6 +649,9 @@ Parameters:
 Result:
   If the specified volume supports reparse points the function returns True. If the
   volume does not support reparse points or the function fails, the return value is False.
+See also:
+  NtfsGetReparseTag
+  NtfsFileHasReparsePoint
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -619,6 +679,9 @@ Parameters:
 Result:
   If the function succeeds and the specified file or directory has an associated
   reparse point, the function returns True. Otherwise it returns False.
+See also:
+  NtfsGetReparseTag
+  NtfsReparsePointsSupported
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -642,6 +705,9 @@ Parameters:
 Result:
   If the function succeeds and the specified directory is a mount point the function
   returns True, otherwise it returns False.
+See also:
+  NtfsMountDeviceAsDrive
+  NtfsMountVolume
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -677,6 +743,9 @@ Result:
   the error "parameter is incorrect".
 Notes:
   Internally this function has to temporarily create a symbolic link for the specified device. This link is deleted as soon as possible. Although very unlikely, it is possible that deleting this link will fail. If so, the function raises an EJclNtfsError exception and exits <B>without</B> mounting the device. If this happens you should try to delete the symbolic link at a later time and retry. See the implementation of this function for how to achieve this.
+See also:
+  NtfsIsFolderMountPoint
+  NtfsMountVolume
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -702,6 +771,9 @@ Parameters:
   MountPoint - The directory to which the volume should be mounted. Note that if the directory doesn't exist yet it is automatically created.
 Result:
   If the function succeeds it returns True otherwise it returns False.
+See also:
+  NtfsIsFolderMountPoint
+  NtfsMountDeviceAsDrive
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -731,6 +803,12 @@ Result:
 Notes:
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
   Directories are not actually compressed by this operation. Rather, the operation sets the default state for files created in the directory to be compressed. To change the compression state of a directory and all of its contents, use NtfsSetDirectoryTreeCompression.
+See also:
+  NtfsGetCompression
+  NtfsSetFileCompression
+  NtfsSetDefaultFileCompression
+  NtfsSetDirectoryTreeCompression
+  NtfsSetPathCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -756,6 +834,12 @@ Parameters:
 Notes:
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
   NtfsSetFileCompression will raise an EJclInvalidArgument exception if the 'FileName' parameter denotes a directory. To change the compression state of a directory, use NtfsSetDirectoryTreeCompression.
+See also:
+  TFileCompressionState
+  NtfsSetDefaultFileCompression
+  NtfsSetDirectoryTreeCompression
+  NtfsSetPathCompression
+  NtfsGetCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -782,6 +866,12 @@ Parameters:
 Notes:
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
   NtfsSetDirectoryTreeCompression will raise an EJclInvalidArgument exception if the 'Directory' parameter does not denote a directory.
+See also:
+  TFileCompressionState
+  NtfsSetPathCompression
+  NtfsSetDefaultFileCompression
+  NtfsSetFileCompression
+  NtfsGetCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -810,6 +900,12 @@ Parameters:
 Notes:
   The file compression default (compare NtfsSetDefaultFileCompression) for the involved directories is affected only if <I>Path</I> denotes a directory. If, in addition, <I>Recursive</I> is set, NtfsSetPathCompression will work exactly like NtfsSetDirectoryTreeCompression(Path, State).
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
+See also:
+  TFileCompressionState
+  NtfsSetDefaultFileCompression
+  NtfsSetFileCompression
+  NtfsSetDirectoryTreeCompression
+  NtfsGetCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -837,6 +933,12 @@ Notes:
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
   This operation does not alter the compression state of files already existing in the directory. To change the compression state of a directory and all of its contents, use NtfsSetDirectoryTreeCompression.
   NtfsSetDefaultFileCompression will raise an EJclInvalidArgument exception if the 'Directory' parameter does not denote a directory.
+See also:
+  TFileCompressionState
+  NtfsSetFileCompression
+  NtfsSetDirectoryTreeCompression
+  NtfsSetPathCompression
+  NtfsGetCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -867,6 +969,9 @@ Result:
   specified file; in case of failure an exception is raised.
 Notes:
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
+See also:
+  TFileCompressionState
+  NtfsSetCompression
 Quick info:
   Unit: JclNTFS
   Category: Files and IO
@@ -888,6 +993,11 @@ Description:
   result, LZNT1 will be used as the default compression method; which implies that
    <I>fcDefaultCompression</I> and <I>fcLZNT1Compression</I> are equivalent. This,
   however, might change in the future.
+See also:
+  NtfsGetCompression
+  NtfsSetFileCompression
+  NtfsSetDefaultFileCompression
+  NtfsSetDirectoryTreeCompression
 Quick info:
   Unit: JclNtfs
   Category: Files and IO
