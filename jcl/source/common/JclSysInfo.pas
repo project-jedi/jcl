@@ -2328,6 +2328,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TransmetaSpecific(var CpuInfo: TCpuInfo);
+begin
+  with CpuInfo do
+  begin
+    Manufacturer := 'Transmeta';
+    CpuName := 'Crusoue';
+  end;
+end;
+  
+//--------------------------------------------------------------------------------------------------
+
 function CPUID: TCpuInfo;
 var
   CPUInfo: TCpuInfo;
@@ -2628,12 +2639,22 @@ begin
         POP     EBP
         POP     EAX
   end;
+
   if CPUInfo.VendorIDString = 'GenuineIntel' then
-    IntelSpecific(CpuInfo);
-  if CPUInfo.VendorIDString = 'CyrixInstead' then
-    CyrixSpecific(CpuInfo);
-  if CPUInfo.VendorIDString = 'AuthenticAMD' then
-    AMDSpecific(CpuInfo);
+    IntelSpecific(CpuInfo)
+  else if CPUInfo.VendorIDString = 'CyrixInstead' then
+    CyrixSpecific(CpuInfo)
+  else if CPUInfo.VendorIDString = 'AuthenticAMD' then
+    AMDSpecific(CpuInfo)
+  else if CPUInfo.VendorIDString = 'GenuineTMx86' then
+    TransmetaSpecific(CpuInfo)
+  else
+  begin
+    CpuInfo.Manufacturer := 'Unknown';
+    CpuInfo.CpuName := 'Unknown';
+  end;
+
+
   Result := CPUInfo;
 end;
 
@@ -2971,13 +2992,14 @@ begin
 
   { Windows version information }
 
+  IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
+
   Kernel32FileName := GetModulePath(GetModuleHandle(kernel32));
   if (not IsWinNT) and VersionFixedFileInfo(Kernel32FileName, VerFixedFileInfo) then
     KernelVersionHi := VerFixedFileInfo.dwProductVersionMS
   else
     KernelVersionHi := 0;
 
-  IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
   case GetWindowsVersion of
     wvUnknown: ;
     wvWin95:
