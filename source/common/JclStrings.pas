@@ -359,16 +359,6 @@ function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
 
-{$IFNDEF RTL130_UP}
-
-//--------------------------------------------------------------------------------------------------
-// Backward compatibility
-//--------------------------------------------------------------------------------------------------
-
-function AnsiSameText(const S1, S2: AnsiString): Boolean;
-
-{$ENDIF RTL130_UP}
-
 //--------------------------------------------------------------------------------------------------
 // Exceptions
 //--------------------------------------------------------------------------------------------------
@@ -425,6 +415,7 @@ begin
   begin
     {$IFDEF MSWINDOWS}
     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
+    {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     CurrType := 0;
@@ -446,8 +437,12 @@ begin
       CurrType := CurrType or C1_XDIGIT;
     if isalpha(Byte(CurrChar)) <> 0 then
       CurrType := CurrType or C1_ALPHA;
+    {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF LINUX}
     AnsiCharTypes[CurrChar] := CurrType;
+    {$IFNDEF CHAR_TYPES_INITIALIZED}
+    Implement case map initialization here
+    {$ENDIF ~CHAR_TYPES_INITIALIZED}
   end;
 end;
 
@@ -466,11 +461,15 @@ begin
       UpCaseChar := CurrChar;
       Windows.CharLowerBuff(@LoCaseChar, 1);
       Windows.CharUpperBuff(@UpCaseChar, 1);
+      {$DEFINE CASE_MAP_INITIALIZED}
       {$ENDIF MSWINDOWS}
       {$IFDEF LINUX}
       LoCaseChar := AnsiChar(tolower(Byte(CurrChar)));
       UpCaseChar := AnsiChar(toupper(Byte(CurrChar)));
       {$ENDIF LINUX}
+      {$IFNDEF CASE_MAP_INITIALIZED}
+      Implement case map initialization here
+      {$ENDIF ~CASE_MAP_INITIALIZED}
       if CharIsUpper(CurrChar) then
         ReCaseChar := LoCaseChar
       else
@@ -4134,20 +4133,6 @@ begin
 end;
 
 //==================================================================================================
-// Backward compatibility
-//==================================================================================================
-
-{$IFNDEF RTL130_UP}
-
-function AnsiSameText(const S1, S2: AnsiString): Boolean;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, PChar(S1),
-    Length(S1), PChar(S2), Length(S2)) = 2;
-end;
-
-{$ENDIF RTL130_UP}
-
-//==================================================================================================
 // Initialization
 //==================================================================================================
 
@@ -4194,6 +4179,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.18  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.17  2004/05/05 00:11:24  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

@@ -18,6 +18,7 @@
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
@@ -41,8 +42,9 @@ unit JclLocales;
 interface
 
 uses
+  {$IFDEF FPC} JwaWinNLS, {$ENDIF}
   Windows, Classes, SysUtils, Contnrs,
-  JclWin32;
+  JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // System locales
@@ -878,7 +880,7 @@ end;
 
 function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
+  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -970,7 +972,7 @@ end;
 function TJclKeyboardLayoutList.ActivateNextLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := Windows.ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
+  Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -978,7 +980,7 @@ end;
 function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := Windows.ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
+  Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1146,6 +1148,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.5  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

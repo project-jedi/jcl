@@ -59,17 +59,11 @@ const
 
 {$IFDEF FPC}
 
-type
-  PResStringRec = ^string;
-
 function SysErrorMessage(ErrNo: Integer): string;
 
 {$IFDEF MSWINDOWS}
 procedure RaiseLastWin32Error;
 function Win32Check(RetVal: BOOL): BOOL;
-
-function QueryPerformanceCounter(var C: Int64): Boolean;
-function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 {$ENDIF MSWINDOWS}
 
 var
@@ -137,15 +131,14 @@ type
 {$IFDEF FPC}
 type
   Largeint    = Int64;
-  LongWord    = Cardinal;
-  TSysCharSet = set of Char;
 {$ENDIF FPC}
-
 type
+  {$IFNDEF FPC}
   PPointer = ^Pointer;
+  {$ENDIF ~FPC}
 
-  {$IFNDEF RTL140_UP}   
-  PBoolean = ^Boolean;
+  {$IFNDEF RTL140_UP}
+  PBoolean = ^Boolean;  // FPC defines "PBOOLEAN = ^BYTE;" in rtl\win32\wininc\base.inc.
   {$ENDIF RTL140_UP}
 
   {$IFNDEF COMPILER7}
@@ -275,28 +268,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
-var
-  T: TULargeInteger;
-begin
-  Result := Windows.QueryPerformanceFrequency(@T);
-  if Result then
-    CardinalsToI64(Frequency, T.LowPart, T.HighPart);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function QueryPerformanceCounter(var C: Int64): Boolean;
-var
-  T: TULargeInteger;
-begin
-  Result := Windows.QueryPerformanceCounter(@T);
-  if Result then
-    CardinalsToI64(C, T.LowPart, T.HighPart);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function Win32Check(RetVal: BOOL): BOOL;
 begin
   if not RetVal then
@@ -394,6 +365,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.11  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

@@ -45,9 +45,8 @@ unit JclConsole;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
+  {$IFDEF FPC} JwaWinNT, {$ENDIF}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
   Classes, SysUtils, Contnrs,
   JclBase;
 
@@ -345,7 +344,7 @@ type
     procedure InternalSetSize(const X, Y: SmallInt);
   protected
     constructor Create(const AScrBuf: TJclScreenBuffer);
-    procedure DoResize(const NewRect: TSmallRect; bAbsolute: Boolean = True);
+    procedure DoResize({$IFNDEF FPC}const{$ENDIF} NewRect: TSmallRect; bAbsolute: Boolean = True);
   public
     procedure Scroll(const cx, cy: Smallint);
     property ScreenBuffer: TJclScreenBuffer read FScreenBuffer;
@@ -682,7 +681,7 @@ begin
   { TODO : Documentation of this solution }
   with PImageDosHeader(Module)^ do
   if e_magic = IMAGE_DOS_SIGNATURE then
-    with PImageNtHeaders(Integer(Module) + _lfanew)^ do
+    with PImageNtHeaders(Integer(Module) + {$IFDEF FPC} e_lfanew {$ELSE} _lfanew {$ENDIF})^ do
       if Signature = IMAGE_NT_SIGNATURE then
         Result := OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
 end;
@@ -1041,7 +1040,7 @@ end;
 
 procedure TJclScreenBuffer.Clear;
 begin
-  Fill(' ', TJclScreenTextAttribute.Create);
+  Fill(' ', TJclScreenTextAttribute.Create(fclWhite, bclBlack, False, False, []));
 end;
 
 //==================================================================================================
@@ -1551,7 +1550,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclScreenWindow.DoResize(const NewRect: TSmallRect; bAbsolute: Boolean);
+procedure TJclScreenWindow.DoResize({$IFNDEF FPC}const{$ENDIF} NewRect: TSmallRect; bAbsolute: Boolean);
 begin
   Win32Check(SetConsoleWindowInfo(ScreenBuffer.Handle, bAbsolute, NewRect));
 end;
@@ -1722,6 +1721,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
