@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclRTTI;
@@ -2762,9 +2762,29 @@ type
   end;
 
 //--------------------------------------------------------------------------------------------------
-// Copied from System.pas (_IsClass function)
+
+// Assembler implementation copied from System.pas, Delphi 5 (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
+{$IFDEF PUREPASCAL}
+type
+  PClass = ^TClass;
+var
+  ClassPtr: PClass;
+  CurrentClass: TClass;
+begin
+  Result := False;
+  ClassPtr := PClass(AnObj);
+  while Assigned(ClassPtr) do       
+  begin
+    CurrentClass := ClassPtr^;
+    Result := CurrentClass = AClass;
+    if Result then
+      Break;
+    ClassPtr := PClass(PPointer(Integer(CurrentClass) + vmtParent)^);
+  end;
+end;
+{$ELSE}
 asm
         { ->    EAX     left operand (class)    }
         {       EDX VMT of right operand        }
@@ -2783,6 +2803,7 @@ asm
         MOV     AL,1
 @@exit:
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2840,6 +2861,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/04/15 16:19:36  peterjhaas
+// add pure pascal implementation (JclIsClass)
+//
 // Revision 1.5  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
