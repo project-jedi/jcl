@@ -4970,21 +4970,12 @@ end;
 
 procedure TWideStrings.ReadData(Reader: TReader);
 
-var
-  W: WideString;
-  Len: Integer;
-  Value: TValueType;
-
 begin
-  Reader.Read(Value, SizeOf(Value));
-  if Value <> vaWString then
-    raise Exception.Create(SInvalidProperty);
-  Reader.Read(Len, SizeOf(Len));
-  if Len > 0 then
-  begin
-    SetLength(W, Len);
-    Reader.Read(PWideChar(W)^, 2 * Len);
-    SetText(W);
+  case Reader.NextValue of
+    vaLString, vaString:
+      SetText(Reader.ReadString);
+  else
+    SetText(Reader.ReadWideString);
   end;
 end;
 
@@ -5130,8 +5121,7 @@ begin
     begin
       Tail := Head;
       while not (Tail^ in [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
-            (Tail^ <> WideLineSeparator) and
-            (Tail^ <> WideParagraphSeparator) do
+        (Tail^ <> WideLineSeparator) and (Tail^ <> WideParagraphSeparator) do
         Inc(Tail);
       SetString(S, Head, Tail - Head);
       Add(S);
@@ -5201,18 +5191,8 @@ end;
 
 procedure TWideStrings.WriteData(Writer: TWriter);
 
-var
-  Len: Integer;
-  W: WideString;
-  Value: TValueType;
-  
 begin
-  Value := vaWString;
-  W := GetText;
-  Len := Length(W);
-  Writer.Write(Value, SizeOf(Value));
-  Writer.Write(Len, SizeOf(Len));
-  Writer.Write(PWideChar(W)^, 2 * Len);
+  Writer.WriteWideString(GetText);
 end;
 
 //----------------- TWideStringList ------------------------------------------------------------------------------------
