@@ -77,7 +77,7 @@ type
 // replacements for defective Libc.pas declarations
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF UNIX}
+{$IFDEF KYLIX}
 
 function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
 {$EXTERNALSYM stat64}
@@ -86,7 +86,7 @@ function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer; cdecl;
 function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
 {$EXTERNALSYM lstat64}
 
-{$ENDIF UNIX}
+{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 // Path Manipulation
@@ -270,11 +270,8 @@ function UnlockVolume(var Handle: THandle): Boolean;
 {$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 {$ENDIF FPC}
-{ TODO -cHelp : Win32MoveFileReplaceExisting }
 function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
-{ TODO -cHelp : Win32BackupFile }
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
-{ TODO -cHelp : Win32RestoreFile }
 function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
 
@@ -1928,7 +1925,6 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function PathCompactPath(const DC: HDC; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string;
 const
@@ -1996,7 +1992,7 @@ end;
   Example: PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
   Path: the path to extract from
   Depth: the depth of the path to return (i.e. the number of directory parts).
-  Author: Jeff
+  Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?)
 }
 
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
@@ -2029,7 +2025,7 @@ end;
 { Returns the depth of a path. That is the number of subdirectories in the path.
   Path: the path for which to return the depth
   Result: depth of the path
-  Author: Jeff
+  Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?)
   Notes: maybe this function should first apply PathCanonicalize() ?
 }
 
@@ -2277,7 +2273,6 @@ end;
 
 function PathIsDiskDevice(const Path: string): Boolean;
 {$IFDEF UNIX}
-  { TODO -cHelp : Author: André Snepvangers, contributor: Robert Rossmair }
   procedure GetAvailableFileSystems(const List: TStrings);
   var
     F: TextFile;
@@ -2513,7 +2508,7 @@ end;
 
 {$IFNDEF FPC}  // needs JclShell
 
-{ TODO -cHelp : Author: Jeff }
+{ TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Anthony Steele". Excuse me?) }
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -2615,7 +2610,6 @@ end;
 
 {$IFDEF UNIX}
 function DirectoryExists(const Name: string; ResolveSymLinks: Boolean): Boolean;
-{ TODO -cHelp : Author: Robert Rossmair }
 begin
   Result := IsDirectory(Name, ResolveSymLinks);
 end;
@@ -2678,14 +2672,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : GetBackupFileName }
-{ returns a filename that can be used for backup purposes. this is similar to
-  how delphi uses backup's: it simply prepends a tilde (~) to the extension.
-  filename: the filename for which to return a backup filename
-  result: the filename used for backup purposes
-  author: Jeff
-}
 
 function GetBackupFileName(const FileName: string): string;
 var
@@ -3305,9 +3291,9 @@ end;
 var
   Buf: TStatBuf64;
 begin
-  // Note that SysUtils.FindFirst/Next ignore files >= 2 GB under Linux, thus the following code is
-  // rather pointless at the moment of this writing.
-  // We apparently need to write our own set of Findxxx functions to overcome this limitation.
+  // rr: Note that SysUtils.FindFirst/Next ignore files >= 2 GB under Linux,
+  //     thus the following code is rather pointless at the moment of this writing.
+  //     We apparently need to write our own set of Findxxx functions to overcome this limitation.
   if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf, True) <> 0 then
     Result := -1
   else
@@ -3319,7 +3305,6 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
   Handle: THandle;
@@ -3367,7 +3352,6 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 function IsDirectory(const FileName: string; ResolveSymLinks: Boolean): Boolean;
-{ TODO -cHelp : Author: Robert Rossmair }
 var
   Buf: TStatBuf64;
 begin
@@ -3659,7 +3643,7 @@ end;
 
 {$IFNDEF FPC}  // needs JclShell
 
-{ TODO -cHelp : Author: Jeff }
+{ TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?) }
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -3673,7 +3657,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Author: Peter J. Haas }
 function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
 begin
   Result := RtdlMoveFileEx(PChar(SrcFilename), PChar(DstFilename), MOVEFILE_REPLACE_EXISTING);
@@ -3685,10 +3668,10 @@ begin
   end;
 end;
 
-{ TODO -cHelp : Win9x and Move = True, the function return True, if the file is
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : Win9x and Move = True, the function returns True, if the file is
   copied, but not deleted }
-{ TODO -cHelp : Contributer: Peter J. Haas }
-{ TODO -cHelp : Error code -> GetLastError }
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 begin
   if Move then
@@ -3699,8 +3682,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
-{ TODO -cHelp : Error code -> GetLastError }
 function Win32RestoreFile(const FileName: string): Boolean;
 begin
   Result := CopyFile(PChar(GetBackupFileName(FileName)), PChar(FileName), False);
@@ -5751,6 +5732,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/05/31 01:42:27  rrossmair
+// Processed documentation TODOs
+//
 // Revision 1.18  2004/05/18 19:07:58  rrossmair
 // fixed contributor information
 //
