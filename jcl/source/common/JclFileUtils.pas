@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 03, 2000                                              }
+{ Last modified: January 09, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -1172,7 +1172,7 @@ var
 begin
   Assert(List <> nil);
   R := FindFirst(Path, Attr, SearchRec);
-  Result := Cardinal(R) <> INVALID_HANDLE_VALUE;
+  Result := R = 0;
   if Result then
   begin
     while R = 0 do
