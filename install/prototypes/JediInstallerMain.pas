@@ -278,7 +278,8 @@ var
 begin
   ParentNode := TTreeNode(Parent);
   Checked := goChecked in GUIOptions;
-  if Assigned(Parent) then
+  {
+  if Assigned(Parent) and not (goRadioButton in GUIOptions) then
   begin
     Assert(Parent is TTreeNode);
     if Checked and Assigned(Parent) then
@@ -288,6 +289,7 @@ begin
         Exclude(GUIOptions, goChecked);
       end;
   end;
+  }
   FeatureID := Cardinal(Ord(Option)) + Flag[goChecked in GUIOptions];
   if goStandAloneParent in GUIOptions then
     FeatureID := FeatureID + FID_StandAloneParent;
