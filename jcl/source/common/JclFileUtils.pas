@@ -694,8 +694,6 @@ function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFile
 // TStream descendent classes for dealing with temporary files and for using file mapping objects.
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 type
   TJclTempFileStream = class(THandleStream)
   private
@@ -706,6 +704,7 @@ type
     property FileName: string read FFileName;
   end;
 
+{$IFDEF MSWINDOWS}
 
   TJclCustomFileMapping = class;
 
@@ -996,8 +995,6 @@ end;
 // TJclTempFileStream
 //==================================================================================================
 
-{$IFDEF MSWINDOWS}
-
 constructor TJclTempFileStream.Create(const Prefix: string);
 var
   FileHandle: THandle;
@@ -1022,6 +1019,8 @@ end;
 //==================================================================================================
 // TJclFileMappingView
 //==================================================================================================
+
+{$IFDEF MSWINDOWS}
 
 constructor TJclFileMappingView.Create(const FileMap: TJclCustomFileMapping;
   Access, Size: Cardinal; ViewOffset: Int64);
@@ -2153,63 +2152,85 @@ end;
 
 function PathGetRelativePath(Origin, Destination: string): string;
 var
+  OrigDrive: string;
+  DestDrive: string;
   OrigList: TStringList;
   DestList: TStringList;
   DiffIndex: Integer;
   I: Integer;
+
+  function StartsFromRoot(const Path: string): Boolean;
+ {$IFDEF MSWINDOWS}
+  var
+    I: Integer;
+  begin
+    I := Length(ExtractFileDrive(Path));
+    Result := (Length(Path) > I) and (Path[I + 1] = PathSeparator);
+  end;
+  {$ELSE}
+  begin
+    Result := Pos(PathSeparator, Path) = 1;
+  end;
+  {$ENDIF}
+
 begin
   Origin := PathCanonicalize(Origin);
   Destination := PathCanonicalize(Destination);
-  // create a list of paths as separate strings
-  OrigList := TStringList.Create;
-  DestList := TStringList.Create;
-  try
-    // NOTE: DO NOT USE DELIMITER AND DELIMITEDTEXT FROM
-    // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
-    StrToStrings(Origin, PathSeparator, OrigList);
-    StrToStrings(Destination, PathSeparator, DestList);
-    {$IFDEF MSWINDOWS}
-    { TODO : Handle UNC names properly }
-
-    // Let's do some tests when the paths indicate drive letters
-    // This, of course, only happens under a Windows platform
-
-    // If the destination indicates a drive and the drive
-    // letter is different from the one from the one in
-    // origin, then simply return it as the result
-    // Else, if the origin indicates a drive and destination
-    // doesn't, then return the concatenation of origin and
-    // destination, ensuring a pathseparator between them.
-    // Else, try to find the relative path between the two.
-    if (OrigList[0][2] = ':') and (DestList[0][2] = ':') and (DestList[0][1] <> OrigList[0][1]) then
-      Result := Destination
-    else
-    if (OrigList[0][2] = ':') and (DestList[0][2] <> ':') then
-      Result := StrEnsureSuffix(PathSeparator, Origin) +
-        StrEnsureNoPrefix(PathSeparator, Destination)
-    else
-    {$ENDIF MSWINDOWS}
-    begin
-      // find the first directory that is not the same
-      DiffIndex := 0;
-      {$IFDEF MSWINDOWS} // case insensitive
-      while StrSame(OrigList[DiffIndex], DestList[DiffIndex]) do
-      {$ELSE}            // case sensitive
-      while OrigList[DiffIndex] = DestList[DiffIndex] do
-      {$ENDIF }
-        Inc(DiffIndex);
-
-      Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
-      if DiffIndex < DestList.Count then
+  OrigDrive := ExtractFileDrive(Origin);
+  DestDrive := ExtractFileDrive(Destination);
+  if (Origin = Destination) or (Destination = '') then
+    Result := ''
+  else
+  if Origin = '' then
+    Result := Destination
+  else
+  {$IFDEF MSWINDOWS}
+  if (DestDrive <> '') and ((OrigDrive = '') or ((OrigDrive <> '') and (OrigDrive <> DestDrive))) then
+    Result := Destination
+  else
+  if (OrigDrive <> '') and (Pos('\', Destination) = 1) then
+    Result := OrigDrive + Destination  // prepend drive part from Origin
+  else
+  {$ENDIF MSWINDOWS}
+  if StartsFromRoot(Origin) and not StartsFromRoot(Destination) then
+    Result := StrEnsureSuffix(PathSeparator, Origin) +
+      StrEnsureNoPrefix(PathSeparator, Destination)
+  else
+  begin
+    // create a list of paths as separate strings
+    OrigList := TStringList.Create;
+    DestList := TStringList.Create;
+    try
+      // NOTE: DO NOT USE DELIMITER AND DELIMITEDTEXT FROM
+      // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
+      StrToStrings(Origin, PathSeparator, OrigList);
+      StrToStrings(Destination, PathSeparator, DestList);
       begin
-        for I := DiffIndex to DestList.Count - 2 do
-          Result := Result + DestList[i] + PathSeparator;
-        Result := Result + DestList[DestList.Count - 1];
+        // find the first directory that is not the same
+        DiffIndex := OrigList.Count;
+        if DestList.Count < DiffIndex then
+          DiffIndex := DestList.Count;
+        for I := 0 to DiffIndex - 1 do
+        {$IFDEF MSWINDOWS} // case insensitive
+          if not StrSame(OrigList[I], DestList[I]) then
+        {$ELSE}            // case sensitive
+          if OrigList[I] <> DestList[I] then
+        {$ENDIF }
+          begin
+            DiffIndex := I;
+            Break;
+          end;
+
+        Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
+        if DiffIndex < DestList.Count then
+          Result := Result + DestList[DiffIndex];
+        for I := DiffIndex + 1 to DestList.Count - 1 do
+          Result := Result + PathSeparator + DestList[i];
       end;
+    finally
+      DestList.Free;
+      OrigList.Free;
     end;
-  finally
-    DestList.Free;
-    OrigList.Free;
   end;
 end;
 
@@ -2709,8 +2730,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp: Donator: Robert Rossmair }
-
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 begin
   if Move then
@@ -2720,8 +2739,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp: Donator: Robert Rossmair }
 
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 var
@@ -2775,7 +2792,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
-  { TODO -cHelp: Donator: Robert Rossmair }
   { TODO : implement MoveToRecycleBin for appropriate Desktops (e.g. KDE) }
 begin
   Result := remove(PChar(FileName)) <> -1;
@@ -2791,8 +2807,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp: Donator: Robert Rossmair }
 
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 {$IFDEF MSWINDOWS}
@@ -2815,8 +2829,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp: Donator: Robert Rossmair }
 
 function FileRestore(const FileName: string): Boolean;
 var
@@ -5929,6 +5941,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.33  2004/11/18 00:42:59  rrossmair
+// - fixed mantis #1667
+//
 // Revision 1.32  2004/10/17 21:40:17  rrossmair
 // fixed PathGetLongName
 //
