@@ -1435,13 +1435,16 @@ begin
   if Target.RADToolKind = brCppBuilder then
     Result := Target.VersionNumber in [5..6]
   else
-    Result := Target.VersionNumber in [5..7];
+    Result := Target.VersionNumber in [5..7, 9];
   {$ENDIF ~KYLIX}
 end;
 
 // History:
 
 // $Log$
+// Revision 1.44  2004/12/15 21:49:35  rrossmair
+// - denotes D2005 as supported now
+//
 // Revision 1.43  2004/12/08 18:25:07  rrossmair
 // - fixed TJclInstallation.StoredOption so that Default parameter gets evaluated
 //
