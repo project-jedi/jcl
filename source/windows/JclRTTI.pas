@@ -372,7 +372,7 @@ uses
 
 {$IFNDEF COMPILER5_UP}
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: DWORD;
-  var flOldProtect: DWORD): BOOL; external 'kernel32.dll' name 'VirtualProtect';
+  var flOldProtect: DWORD): BOOL; stdcall; external 'kernel32.dll' name 'VirtualProtect';
 {$ENDIF}
 
 //------------------------------------------------------------------------------
