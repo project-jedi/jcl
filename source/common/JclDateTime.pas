@@ -1137,92 +1137,10 @@ end;
 
 // History:
 
-// 2000-06-22, Michael Schnell:
-//  Name changed GetCenturyOfDate -> CenturyOfDate
-//  Name changed GetCenturyBaseYear -> CenturyBaseYear
-//
-//  function GetWeekNumber(Today: TDateTime): string;  ->
-//  function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;
-//
-//  Added overload function IsLeapYear(Year: Integer): Boolean;
-//  to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear
-//  IsLeapYear is now using SysUtils.IsLeapYear
-//
-//  Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->
-//  function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
-//  now not calling DecodeTime any more
-//
-//  Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer
-
-// 2000-06-24, Michael Schnell:
-//  DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate
-//  so let's have Delphi do the work here
-//  DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime
-//  so let's have Delphi do the work here
-//
-//  DosDateTimeToStr does not use FileTime any more
-//
-//  Added function DateTimeToFileTime
-//  Added function LocalDateTimeToFileTime
-//  Changed function  FileTimeToDateTime
-//    not using TSystemDate and avoid systemcalls
-//  Changed function  FileTimeToLocalDateTime
-//    not using TSystemDate and avoid systemcalls
-
-// 2000-06-25, Michael Schnell:
-//  Added function SystemTimeToFileTime
-//  Added function FieTimeToSystemTime
-//  Added function Datetimetosystemtime
-//  Added function DosDateTimeToFileTime
-//  Added function FileTimeToDosDateTime
-//  Added function SystemTimeToStr
-
-// 2000-07-06, Michael Schnell:
-//  Formatted according to style rules
-
-// 2000-07-08, Michael Schnell:
-//  Swapped function names CenturyOfDate and CenturyBaseYear
-//  those were obviously called wrong before
-//  Attention: must be done in the Help, too
-                                                                                            
-// 2000-07-16, Michael Schnell:                                                                       
-//  Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate               
-
-// 2000-08-09, Michael Schnell:                                                                       
-//  added functions
-//  CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile                   
-
-// 2000-08-28, Michael Schnell:                                                                      
-//  added function MakeYear4Digit                                                                 
-                                                                                               
-// 2000-09-07, Michael Schnell:                                                                      
-//  added ISOWeekNumber with 1 and 3 parameters                                                   
-                                                                                               
-// 2000-09-12, Michael Schnell:                                                                      
-//  more elegant code for ISOWeekNumber                                                           
-//  added ISOWeekToDateTime                                                                       
-//  added overload for ISOWeekNumber with three integer parameters                                
-                                                                                               
-// 2000-09-14, Michael Schnell                                                                       
-//  added functions DayOfTheYear and DayOfTheYearToDateTime                                       
-                                                                                               
-// 2000-09-18, Michael Schnell                                                                       
-//  added function FormatDateTime
-                                                                                               
-// 2000-10-15, Michael Schnell
-//  avoiding "absolute" (in locations where stated)                                               
-//  extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate           
-//  added function FATDatesEqual                                                                  
-                                                                                               
-// 2000-10-19, Michael Schnell                                                                       
-//  changed EasterSunday to the code by Marc Convents (marc dott convents att progen dott be)                   
-                                                                                               
-// 2001-02-10, Michael Schnell                                                                       
-//  added overload procedures for compatibility:                                                  
-//    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,                        
-//    FileTimeToSystemTime, SystemTimeToFileTime                                                 
-
 // $Log$
+// Revision 1.12  2004/10/15 03:36:46  rrossmair
+// - rearranged pre-CVS history
+//
 // Revision 1.11  2004/10/14 14:38:50  rikbarker
 // Added DateTimeToUnixTime
 // Rewrote UnixTimeToDateTime to remove PH Code
@@ -1252,4 +1170,90 @@ end;
 // Add UNIX time <--> TDateTime / TFiletime conversion
 //
 
+// 2001-02-10, Michael Schnell
+//  added overload procedures for compatibility:
+//    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,
+//    FileTimeToSystemTime, SystemTimeToFileTime
+//
+// 2000-10-19, Michael Schnell
+//  changed EasterSunday to the code by Marc Convents (marc dott convents att progen dott be)
+//
+// 2000-10-15, Michael Schnell
+//  avoiding "absolute" (in locations where stated)
+//  extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate
+//  added function FATDatesEqual
+//
+// 2000-09-18, Michael Schnell
+//  added function FormatDateTime
+//
+// 2000-09-14, Michael Schnell
+//  added functions DayOfTheYear and DayOfTheYearToDateTime
+//
+// 2000-09-12, Michael Schnell:
+//  more elegant code for ISOWeekNumber
+//  added ISOWeekToDateTime
+//  added overload for ISOWeekNumber with three integer parameters
+//
+// 2000-09-07, Michael Schnell:
+//  added ISOWeekNumber with 1 and 3 parameters
+//
+// 2000-08-28, Michael Schnell:
+//  added function MakeYear4Digit
+//
+// 2000-08-09, Michael Schnell:
+//  added functions
+//  CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile
+//
+// 2000-07-16, Michael Schnell:
+//  Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate
+//
+// 2000-07-08, Michael Schnell:
+//  Swapped function names CenturyOfDate and CenturyBaseYear
+//  those were obviously called wrong before
+//  Attention: must be done in the Help, too
+//
+// 2000-07-06, Michael Schnell:
+//  Formatted according to style rules
+//
+// 2000-06-25, Michael Schnell:
+//  Added function SystemTimeToFileTime
+//  Added function FieTimeToSystemTime
+//  Added function Datetimetosystemtime
+//  Added function DosDateTimeToFileTime
+//  Added function FileTimeToDosDateTime
+//  Added function SystemTimeToStr
+//
+// 2000-06-24, Michael Schnell:
+//  DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate
+//  so let's have Delphi do the work here
+//  DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime
+//  so let's have Delphi do the work here
+//
+//  DosDateTimeToStr does not use FileTime any more
+//
+//  Added function DateTimeToFileTime
+//  Added function LocalDateTimeToFileTime
+//  Changed function  FileTimeToDateTime
+//    not using TSystemDate and avoid systemcalls
+//  Changed function  FileTimeToLocalDateTime
+//    not using TSystemDate and avoid systemcalls
+//
+// 2000-06-22, Michael Schnell:
+//  Name changed GetCenturyOfDate -> CenturyOfDate
+//  Name changed GetCenturyBaseYear -> CenturyBaseYear
+//
+//  function GetWeekNumber(Today: TDateTime): string;  ->
+//  function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;
+//
+//  Added overload function IsLeapYear(Year: Integer): Boolean;
+//  to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear
+//  IsLeapYear is now using SysUtils.IsLeapYear
+//
+//  Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->
+//  function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
+//  now not calling DecodeTime any more
+//
+//  Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer
+
 end.
+
