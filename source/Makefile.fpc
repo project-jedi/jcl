@@ -2,7 +2,7 @@ FpcRtl = $(fpc)\rtl
 Fcl = $(fpc)\fcl
 FpcOut = ..\lib\fpc           # for now...
 
-PPCOptions = -Mdelphi -FE$(FpcOut) -Fu$(FpcOut);common;windows;..\..\Win32API
+PPCOptions = -Mdelphi -FE$(FpcOut) -Fu$(FpcOut);$(Fcl)\inc;common;windows;..\..\Win32API
 
 PPC = ppc386 $(PPCOptions)
 

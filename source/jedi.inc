@@ -875,6 +875,7 @@
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
+    {$DEFINE HAS_UNIT_RTLCONST}
 
     {$DEFINE XPLATFORM_RTL}
 
@@ -1018,6 +1019,9 @@
 // History:
 
 // $Log$
+// Revision 1.20  2004/11/18 00:57:13  rrossmair
+// - check-in for release 1.93
+//
 // Revision 1.19  2004/11/06 02:11:20  mthoma
 // history cleaning.
 //
