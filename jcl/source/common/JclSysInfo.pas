@@ -92,6 +92,20 @@ function GetCookiesFolder: string;
 function GetHistoryFolder: string;
 
 //------------------------------------------------------------------------------
+// APM (Advanced Power Management)
+//------------------------------------------------------------------------------
+
+type
+  TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
+  TAPMBatteryFlag = (abfHigh, abfLow, abfCritical, abfCharging, abfNoBattery, abfUnknown);
+
+function GetAPMLineStatus: TAPMLineStatus;
+function GetAPMBatteryFlag: TAPMBatteryFlag;
+function GetAPMBatteryLifePercent: Integer;
+function GetAPMBatteryLifeTime: Integer;
+function GetAPMBatteryFullLifeTime: Integer;
+
+//------------------------------------------------------------------------------
 // Identification
 //------------------------------------------------------------------------------
 
@@ -2037,6 +2051,85 @@ end;
 // CSIDL_NETWORK
 // CSIDL_ALTSTARTUP
 // CSIDL_COMMON_ALTSTARTUP
+
+function GetAPMLineStatus: TAPMLineStatus;
+var
+ SystemPowerstatus: _System_Power_Status;
+begin
+  Result := alsUnknown;
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastWin32Error
+  else
+  begin
+    case SystemPowerStatus.ACLineStatus  of
+      0:
+        Result := alsOffline;
+      1:
+        Result := alsOnline;
+      255:
+        Result := alsUnknown;
+    end;
+  end;
+end;
+
+function GetAPMBatteryFlag: TAPMBatteryFlag;
+var
+ SystemPowerstatus: _System_Power_Status;
+begin
+  Result := abfUnknown;
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastWin32Error
+  else
+  begin
+    case SystemPowerStatus.BatteryFlag of
+      1:
+       Result := abfHigh;
+      2:
+        Result := abfLow;
+      4:
+        Result := abfCritical;
+      8:
+        Result := abfCharging;
+      128:
+        Result := abfNoBattery;
+      255:
+        Result := abfUnknown;
+    end;
+  end;
+end;
+
+function GetAPMBatteryLifePercent: Integer;
+var
+ SystemPowerstatus:_System_Power_Status;
+begin
+  Result := 0;
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastWin32Error
+  else
+    Result := SystemPowerStatus.BatteryLifePercent;
+end;
+
+function GetAPMBatteryLifeTime: Integer;
+var
+ SystemPowerstatus:_System_Power_Status;
+begin
+  Result := 0;
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastWin32Error
+  else
+    Result := SystemPowerStatus.BatteryLifeTime;
+end;
+
+function GetAPMBatteryFullLifeTime: Integer;
+var
+ SystemPowerstatus:_System_Power_Status;
+begin
+  Result := 0;
+  if not GetSystemPowerStatus(SystemPowerStatus) then
+    RaiseLastWin32Error
+  else
+    Result := SystemPowerStatus.BatteryFullLifeTime;
+end;
 
 initialization
   InitSysInfo;
