@@ -37,7 +37,7 @@ uses
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IJclIntfCollection,
-    IJclIntfList, IJclIntfArray, IJclIntfCloneable)
+      IJclIntfList, IJclIntfArray, IJclIntfCloneable)
   private
     FElementData: TDynIInterfaceArray;
     FSize: Integer;
@@ -77,8 +77,8 @@ type
     property Capacity: Integer read FCapacity write SetCapacity;
   end;
 
-  TJclStrArrayList = class(TJclAbstractContainer, IJclStrCollection,
-    IJclStrList, IJclStrArray, IJclCloneable)
+  //Daniele Teti 02/03/2005
+  TJclStrArrayList = class(TJclStrCollection, IJclStrList, IJclStrArray, IJclCloneable)
   private
     FCapacity: Integer;
     FElementData: TDynStringArray;
@@ -87,28 +87,19 @@ type
   protected
     procedure Grow; virtual;
     { IJclStrCollection }
-    function Add(const AString: string): Boolean; overload;
-    function AddAll(ACollection: IJclStrCollection): Boolean; overload;
-    procedure Clear;
-    function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean;
-    function Equals(ACollection: IJclStrCollection): Boolean;
-    function First: IJclStrIterator;
-    function IsEmpty: Boolean;
-    function Last: IJclStrIterator;
-    function Remove(const AString: string): Boolean; overload;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean;
-    function RetainAll(ACollection: IJclStrCollection): Boolean;
-    function Size: Integer;
-    //Daniele Teti 27/12/2004
-    procedure LoadFromStrings(Strings: TStrings);
-    procedure SaveToStrings(Strings: TStrings);
-    procedure AppendToStrings(Strings: TStrings);
-    procedure AppendFromStrings(Strings: TStrings);
-    function GetAsStrings: TStrings;
-    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
+    function Add(const AString: string): Boolean; overload; override;
+    function AddAll(ACollection: IJclStrCollection): Boolean; overload; override;
+    procedure Clear; override;
+    function Contains(const AString: string): Boolean; override;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean; override;
+    function Equals(ACollection: IJclStrCollection): Boolean; override;
+    function First: IJclStrIterator; override;
+    function IsEmpty: Boolean; override;
+    function Last: IJclStrIterator; override;
+    function Remove(const AString: string): Boolean; overload; override;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(ACollection: IJclStrCollection): Boolean; override;
+    function Size: Integer; override;
     { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
     function InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean; overload;
@@ -128,7 +119,7 @@ type
   end;
 
   TJclArrayList = class(TJclAbstractContainer, IJclCollection, IJclList,
-    IJclArray, IJclCloneable)
+      IJclArray, IJclCloneable)
   private
     FCapacity: Integer;
     FElementData: TDynObjectArray;
@@ -225,9 +216,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   // inlined FOwnList.Add
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
@@ -250,9 +241,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
 end;
 
@@ -272,9 +263,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
   //FLastRet := FCursor;
   Inc(FCursor);
@@ -291,9 +282,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Dec(FCursor);
   //FLastRet := FCursor;
   Result := FOwnList.FElementData[FCursor];
@@ -310,9 +301,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   with FOwnList do
   begin
     FElementData[FCursor] := nil; // Force Release
@@ -334,9 +325,9 @@ begin
   if FLastRet = -1 then
     raise EJclIllegalState.Create(SIllegalState);
   }
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.FElementData[FCursor] := AInterface;
 end;
 
@@ -388,9 +379,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   // inlined FOwnList.Add
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
@@ -413,9 +404,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
 end;
 
@@ -435,9 +426,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
   //FLastRet := FCursor;
   Inc(FCursor);
@@ -454,9 +445,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Dec(FCursor);
   //FLastRet := FCursor;
   Result := FOwnList.FElementData[FCursor];
@@ -473,9 +464,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   with FOwnList do
   begin
     FElementData[FCursor] := ''; // Force Release
@@ -497,9 +488,9 @@ begin
   if FLastRet = -1 then
     raise EJclIllegalState.Create(SIllegalState);
   }
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.FElementData[FCursor] := AString;
 end;
 
@@ -551,9 +542,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   // inlined FOwnList.Add
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
@@ -574,9 +565,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
 end;
 
@@ -596,9 +587,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FOwnList.FElementData[FCursor];
   //FLastRet := FCursor;
   Inc(FCursor);
@@ -615,9 +606,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Dec(FCursor);
   //FLastRet := FCursor;
   Result := FOwnList.FElementData[FCursor];
@@ -634,9 +625,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   with FOwnList do
   begin
     FreeObject(FElementData[FCursor]);
@@ -654,9 +645,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.FElementData[FCursor] := AObject;
 end;
 
@@ -695,9 +686,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
@@ -715,13 +706,13 @@ function TJclIntfArrayList.InsertAll(Index: Integer; ACollection: IJclIntfCollec
 var
   It: IJclIntfIterator;
   Size: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
@@ -750,9 +741,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FSize = Capacity then
     Grow;
   FillChar(FElementData[FSize], SizeOf(IInterface), 0);
@@ -764,13 +755,13 @@ end;
 function TJclIntfArrayList.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -790,13 +781,13 @@ end;
 procedure TJclIntfArrayList.Clear;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FSize - 1 do
     FElementData[I] := nil;
   FSize := 0;
@@ -814,13 +805,13 @@ end;
 function TJclIntfArrayList.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AInterface = nil then
     Exit;
@@ -835,32 +826,32 @@ end;
 function TJclIntfArrayList.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Contains(It.Next) and Result;
+  Result := contains(It.Next) and Result;
 end;
 
 function TJclIntfArrayList.Equals(ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
   It: IJclIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -879,9 +870,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     Result := nil
   else
@@ -910,13 +901,13 @@ end;
 function TJclIntfArrayList.IndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AInterface = nil then
     Exit;
@@ -951,13 +942,13 @@ end;
 function TJclIntfArrayList.LastIndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AInterface = nil then
     Exit;
@@ -972,13 +963,13 @@ end;
 function TJclIntfArrayList.Remove(AInterface: IInterface): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AInterface = nil then
     Exit;
@@ -1000,9 +991,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := FElementData[Index];
@@ -1016,13 +1007,13 @@ end;
 function TJclIntfArrayList.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1034,13 +1025,13 @@ end;
 function TJclIntfArrayList.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1055,9 +1046,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AInterface;
@@ -1072,13 +1063,13 @@ function TJclIntfArrayList.SubList(First, Count: Integer): IJclIntfList;
 var
   I: Integer;
   Last: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last >= FSize then
     Last := FSize - 1;
@@ -1122,9 +1113,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
@@ -1142,13 +1133,13 @@ function TJclStrArrayList.InsertAll(Index: Integer; ACollection: IJclStrCollecti
 var
   It: IJclStrIterator;
   Size: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
@@ -1177,9 +1168,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FSize = Capacity then
     Grow;
   FillChar(FElementData[FSize], SizeOf(string), 0);
@@ -1191,13 +1182,13 @@ end;
 function TJclStrArrayList.AddAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1218,13 +1209,13 @@ end;
 procedure TJclStrArrayList.Clear;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FSize - 1 do
     FElementData[I] := '';
   FSize := 0;
@@ -1242,13 +1233,13 @@ end;
 function TJclStrArrayList.Contains(const AString: string): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1263,32 +1254,32 @@ end;
 function TJclStrArrayList.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Contains(It.Next) and Result;
+  Result := contains(It.Next) and Result;
 end;
 
 function TJclStrArrayList.Equals(ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
   It: IJclStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1312,9 +1303,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     Result := ''
   else
@@ -1343,13 +1334,13 @@ end;
 function TJclStrArrayList.IndexOf(const AString: string): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AString = '' then
     Exit;
@@ -1379,13 +1370,13 @@ end;
 function TJclStrArrayList.LastIndexOf(const AString: string): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AString = '' then
     Exit;
@@ -1400,13 +1391,13 @@ end;
 function TJclStrArrayList.Remove(const AString: string): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1428,9 +1419,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := FElementData[Index];
@@ -1444,13 +1435,13 @@ end;
 function TJclStrArrayList.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1462,13 +1453,13 @@ end;
 function TJclStrArrayList.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1483,9 +1474,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AString
@@ -1500,13 +1491,13 @@ function TJclStrArrayList.SubList(First, Count: Integer): IJclStrList;
 var
   I: Integer;
   Last: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last >= FSize then
     Last := FSize - 1;
@@ -1552,9 +1543,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
@@ -1570,13 +1561,13 @@ function TJclArrayList.InsertAll(Index: Integer; ACollection: IJclCollection): B
 var
   It: IJclIterator;
   Size: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
@@ -1603,9 +1594,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FSize = Capacity then
     Grow;
   FElementData[FSize] := AObject;
@@ -1616,13 +1607,13 @@ end;
 function TJclArrayList.AddAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1641,13 +1632,13 @@ end;
 procedure TJclArrayList.Clear;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FSize - 1 do
     FreeObject(FElementData[I]);
   FSize := 0;
@@ -1665,13 +1656,13 @@ end;
 function TJclArrayList.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1686,32 +1677,32 @@ end;
 function TJclArrayList.ContainsAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Contains(It.Next) and Result;
+  Result := contains(It.Next) and Result;
 end;
 
 function TJclArrayList.Equals(ACollection: IJclCollection): Boolean;
 var
   I: Integer;
   It: IJclIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1739,9 +1730,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     Result := nil
   else
@@ -1770,13 +1761,13 @@ end;
 function TJclArrayList.IndexOf(AObject: TObject): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AObject = nil then
     Exit;
@@ -1811,13 +1802,13 @@ end;
 function TJclArrayList.LastIndexOf(AObject: TObject): Integer;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := -1;
   if AObject = nil then
     Exit;
@@ -1832,13 +1823,13 @@ end;
 function TJclArrayList.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1860,9 +1851,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := nil;
@@ -1876,13 +1867,13 @@ end;
 function TJclArrayList.RemoveAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1894,13 +1885,13 @@ end;
 function TJclArrayList.RetainAll(ACollection: IJclCollection): Boolean;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1915,9 +1906,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AObject;
@@ -1932,13 +1923,13 @@ function TJclArrayList.SubList(First, Count: Integer): IJclList;
 var
   I: Integer;
   Last: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last >= FSize then
     Last := FSize - 1;
@@ -1947,72 +1938,20 @@ begin
     Result.Add(FElementData[I]);
 end;
 
-function TJclStrArrayList.GetAsStrings: TStrings;
-begin
-  Result := TStringList.Create;
-  try
-    AppendToStrings(Result);
-  except
-    Result.Free;
-    raise;
-  end;
-end;
-
-procedure TJclStrArrayList.LoadFromStrings(Strings: TStrings);
-begin
-  Clear;
-  AppendFromStrings(Strings);
-end;
-
-procedure TJclStrArrayList.AppendToStrings(Strings: TStrings);
-var
-  It: IJclStrIterator;
-begin
-  It := First;
-  while It.HasNext do
-    Strings.Add(It.Next);
-end;
-
-procedure TJclStrArrayList.SaveToStrings(Strings: TStrings);
-begin
-  Strings.Clear;
-  AppendToStrings(Strings);
-end;
-
-procedure TJclStrArrayList.AppendFromStrings(Strings: TStrings);
-var
-  I: Integer;
-begin
-  for I := 0 to Strings.Count - 1 do
-    Add(Strings[I]);
-end;
-
-function TJclStrArrayList.GetAsDelimited(Separator: string): string;
-var
-  It: IJclStrIterator;
-begin
-  It := First;
-  Result := '';
-  if It.HasNext then
-    Result := It.Next;
-  while It.HasNext do
-    Result := Result + Separator + It.Next;
-end;
-
-procedure TJclStrArrayList.AppendDelimited(AString, Separator: string);
-begin
-  DCLAppendDelimited(Self, AString, Separator);
-end;
-
-procedure TJclStrArrayList.LoadDelimited(AString, Separator: string);
-begin
-  Clear;
-  AppendDelimited(AString, Separator);
-end;
-
 // History:
 
 // $Log$
+// Revision 1.5  2005/03/02 09:59:30  dade2004
+// Added
+//  -TJclStrCollection in JclContainerIntf
+//        Every common methods for IJclStrCollection are implemented here
+//
+// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
+// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
+//
+// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
+// relative method in TJclStrCollection
+//
 // Revision 1.4  2005/02/27 11:36:19  marquardt
 // fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
 //
