@@ -183,9 +183,9 @@ BRCC32 = brcc32
 # ---------------------------------------------------------------------------
 $(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
     $(BCB)\BIN\$(LINKER) @&&!
-    $(LFLAGS) -l$(BPILIBDIR) -L$(LIBPATH) +
+    $(LFLAGS) -l"$(BPILIBDIR)" -L"$(LIBPATH)" +
     $(ALLOBJ), +
-    $(BPLDIR)\$(PROJECT),, +
+    "$(BPLDIR)\$(PROJECT)",, +
     $(ALLLIB), +
     $(DEFFILE), +
     $(ALLRES)
