@@ -2895,34 +2895,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function LocateIsClassHelper(const AnObj: TObject;
-  const AClass: TClass): Boolean; register;
-begin
-  Result := AnObj is AClass;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function LocateAsClassHelper(const AnObj: TObject;
-  const AClass: TClass): TObject; register;
-begin
-  Result := AnObj as AClass;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure LocateIsClass;
-var
-  AddrOfHelper: PReadLoc;
 begin
-  AddrOfHelper := PReadLoc(Addr(LocateIsClassHelper));
-  OrgIsClass := Pointer(AddrOfHelper.CallOffset + Longint(AddrOfHelper) +
-    SizeOf(TReadLoc));
-  with PJmp(OrgIsClass)^ do
-  begin
-    if OpCodeJmp = $FF then
-      // _IsClass is in a package. Obtain address in the package.
-      OrgIsClass := Pointer(PInteger(EntryOffset)^);
+  asm
+    MOV EAX,OFFSET System.@IsClass
+    MOV OrgIsClass, EAX
   end;
   Move(PChar(OrgIsClass), SavedIs, SizeOf(SavedIs));
 end;
@@ -2930,17 +2907,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure LocateAsClass;
-var
-  AddrOfHelper: PReadLoc;
 begin
-  AddrOfHelper := PReadLoc(Addr(LocateAsClassHelper));
-  OrgAsClass := Pointer(AddrOfHelper.CallOffset + Longint(AddrOfHelper) +
-    SizeOf(TReadLoc));
-  with PJmp(OrgAsClass)^ do
-  begin
-    if OpCodeJmp = $FF then
-      // _AsClass is in a package. Obtain address in the package.
-      OrgAsClass := Pointer(PInteger(EntryOffset)^);
+  asm
+    MOV EAX,OFFSET System.@AsClass
+    MOV OrgAsClass, EAX
   end;
   Move(PChar(OrgAsClass), SavedAs, SizeOf(SavedAs));
 end;
