@@ -1501,6 +1501,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+
 function SimpleCryptString(const S: string): string;
 var
   I: Integer;
@@ -1657,9 +1660,17 @@ begin
   SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
 end;
 
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
+
 //--------------------------------------------------------------------------------------------------
 
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; 
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
 var
   Dummy1: string;
   Dummy2: Integer;
