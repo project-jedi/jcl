@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 15, 2001                                              }
+{ Last modified: January 19, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -67,43 +67,101 @@ type
     function GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
     function GetFontCharset: Byte;
     procedure SetUseSystemACP(const Value: Boolean);
+    procedure SetCharInfo(InfoType: Integer; const Value: Char);
+    procedure SetIntegerInfo(InfoType: Integer; const Value: Integer);
+    procedure SetStringInfo(InfoType: Integer; const Value: string);
   public
     constructor Create(ALocaleID: LCID {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SYSTEM_DEFAULT {$ENDIF});
     destructor Destroy; override;
-    property CharInfo[InfoType: Integer]: Char read GetCharInfo;
-    property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo;
-    property StringInfo[InfoType: Integer]: string read GetStringInfo; default;
+    property CharInfo[InfoType: Integer]: Char read GetCharInfo write SetCharInfo;
+    property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo write SetIntegerInfo;
+    property StringInfo[InfoType: Integer]: string read GetStringInfo write SetStringInfo; default;
+    property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
     property FontCharset: Byte read GetFontCharset;
     property LangID: LANGID read GetLangID;
     property LocaleID: LCID read FLocaleID;
     property LangIDPrimary: Word read GetLangIDPrimary;
     property LangIDSub: Word read GetLangIDSub;
     property SortID: Word read GetSortID;
-    property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
-    property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
-    property AbbreviatedDayNames[Day: TJclLocalesDays]: string read GetAbbreviatedDayNames;
+    property DateFormats[Format: TJclLocaleDateFormats]: TStrings read GetDateFormats;
+    property TimeFormats: TStrings read GetTimeFormats;
+    // Languages
+    property LanguageIndentifier: string index LOCALE_ILANGUAGE read GetStringInfo;
+    property LocalizedLangName: string index LOCALE_SLANGUAGE read GetStringInfo;
+    property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
     property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME read GetStringInfo;
-    property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string read GetAbbreviatedMonthNames;
+    property NativeLangName: string index LOCALE_SNATIVELANGNAME read GetStringInfo;
+    // Countries
+    property CountryCode: Integer index LOCALE_ICOUNTRY read GetIntegerInfo;
+    property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
+    property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
+    property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
+    property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
+    // Codepages
+    property DefaultLanguageId: Integer index LOCALE_IDEFAULTLANGUAGE read GetIntegerInfo;
+    property DefaultCountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
+    property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
     property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE read GetIntegerInfo;
     property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE read GetIntegerInfo;
-    property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
-    property CountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
-    property DateFormats[Format: TJclLocaleDateFormats]: TStrings read GetDateFormats;
-    property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo;
-    property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
-    property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
-    property LangIdStr: string index LOCALE_ILANGUAGE read GetStringInfo;
-    property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo;
-    property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
-    property LocalizedLangName: string index LOCALE_SLANGUAGE read GetStringInfo;
-    property LongDayNames[Day: TJclLocalesDays]: string read GetLongDayNames;
-    property LongMonthNames[Month: TJclLocalesMonths]: string read GetLongMonthNames;
+    // Digits
+    property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo write SetCharInfo;
+    property Measure: Integer index LOCALE_IMEASURE read GetIntegerInfo write SetIntegerInfo;
+    property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo write SetCharInfo;
+    property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo write SetCharInfo;
+    property DigitGrouping: string index LOCALE_SGROUPING read GetStringInfo write SetStringInfo;
+    property NumberOfFractionalDigits: Integer index LOCALE_IDIGITS read GetIntegerInfo write SetIntegerInfo;
+    property LeadingZeros: Integer index LOCALE_ILZERO read GetIntegerInfo write SetIntegerInfo;
+    property NegativeNumberMode: Integer index LOCALE_INEGNUMBER read GetIntegerInfo write SetIntegerInfo;
+    property NativeDigits: string index LOCALE_SNATIVEDIGITS read GetStringInfo;
+    // Monetary
+    property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo write SetStringInfo;
     property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL read GetStringInfo;
-    property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo;
-    property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
-    property NegativeNumber: Char index LOCALE_INEGNUMBER read GetCharInfo;
-    property TimeFormats: TStrings read GetTimeFormats;
-    property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo;
+    property MonetaryDecimalSeparator: Char index LOCALE_SMONDECIMALSEP read GetCharInfo write SetCharInfo;
+    property MonetaryThousandsSeparator: Char index LOCALE_SMONTHOUSANDSEP read GetCharInfo write SetCharInfo;
+    property MonetaryGrouping: string index LOCALE_SMONGROUPING read GetStringInfo write SetStringInfo;
+    property NumberOfLocalMonetaryDigits: Integer index LOCALE_ICURRDIGITS read GetIntegerInfo write SetIntegerInfo;
+    property NumberOfIntlMonetaryDigits: Integer index LOCALE_IINTLCURRDIGITS read GetIntegerInfo;
+    property PositiveCurrencyMode: string index LOCALE_ICURRENCY read GetStringInfo write SetStringInfo;
+    property NegativeCurrencyMode: string index LOCALE_INEGCURR read GetStringInfo write SetStringInfo;
+    // Date and time
+    property DateSeparator: Char index LOCALE_SDATE read GetCharInfo write SetCharInfo;
+    property TimeSeparator: Char index LOCALE_STIME read GetCharInfo write SetCharInfo;
+    property ShortDateFormat: string index LOCALE_SSHORTDATE read GetStringInfo write SetStringInfo;
+    property LongDateFormat: string index LOCALE_SLONGDATE read GetStringInfo write SetStringInfo;
+    property TimeFormatString: string index LOCALE_STIMEFORMAT read GetStringInfo write SetStringInfo;
+    property ShortDateOrdering: Integer index LOCALE_IDATE read GetIntegerInfo;
+    property LongDateOrdering: Integer index LOCALE_ILDATE read GetIntegerInfo;
+    property TimeFormatSpecifier: Integer index LOCALE_ITIME read GetIntegerInfo write SetIntegerInfo;
+    property TimeMarkerPosition: Integer index LOCALE_ITIMEMARKPOSN read GetIntegerInfo;
+    property CenturyFormatSpecifier: Integer index LOCALE_ICENTURY read GetIntegerInfo;
+    property LeadZerosInTime: Integer index LOCALE_ITLZERO read GetIntegerInfo;
+    property LeadZerosInDay: Integer index LOCALE_IDAYLZERO read GetIntegerInfo;
+    property LeadZerosInMonth: Integer index LOCALE_IMONLZERO read GetIntegerInfo;
+    property AMDesignator: string index LOCALE_S1159 read GetStringInfo write SetStringInfo;
+    property PMDesignator: string index LOCALE_S2359 read GetStringInfo write SetStringInfo;
+    // Calendar
+    property CalendarType: Integer index LOCALE_ICALENDARTYPE read GetIntegerInfo write SetIntegerInfo;
+    property AdditionalCaledarTypes: Integer index LOCALE_IOPTIONALCALENDAR read GetIntegerInfo;
+    property FirstDayOfWeek: Integer index LOCALE_IFIRSTDAYOFWEEK read GetIntegerInfo write SetIntegerInfo;
+    property FirstWeekOfYear: Integer index LOCALE_IFIRSTWEEKOFYEAR read GetIntegerInfo write SetIntegerInfo;
+    // Day and month names
+    property LongDayNames[Day: TJclLocalesDays]: string read GetLongDayNames;
+    property AbbreviatedDayNames[Day: TJclLocalesDays]: string read GetAbbreviatedDayNames;
+    property LongMonthNames[Month: TJclLocalesMonths]: string read GetLongMonthNames;
+    property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string read GetAbbreviatedMonthNames;
+    // Sign
+    property PositiveSign: string index LOCALE_SPOSITIVESIGN read GetStringInfo write SetStringInfo;
+    property NegativeSign: string index LOCALE_SNEGATIVESIGN read GetStringInfo write SetStringInfo;
+    property PositiveSignPos: Integer index LOCALE_IPOSSIGNPOSN read GetIntegerInfo;
+    property NegativeSignPos: Integer index LOCALE_INEGSIGNPOSN read GetIntegerInfo;
+    property PosOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSYMPRECEDES read GetIntegerInfo;
+    property SepOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSEPBYSPACE read GetIntegerInfo;
+    property PosOfNegativeMonetarySymbol: Integer index LOCALE_INEGSYMPRECEDES read GetIntegerInfo;
+    property SepOfNegativeMonetarySymbol: Integer index LOCALE_INEGSEPBYSPACE read GetIntegerInfo;
+    // Misc
+    property FontSignature: string index LOCALE_FONTSIGNATURE read GetStringInfo;
+    property ISOAbbreviatedLangName: string index LOCALE_SISO639LANGNAME read GetStringInfo;
+    property ISOAbbreviatedCountryName: string index LOCALE_SISO3166CTRYNAME read GetStringInfo;
   end;
 
   TJclLocalesKind = (lkInstalled, lkSupported);
@@ -119,8 +177,9 @@ type
   protected
     procedure CreateList;
   public
-    constructor Create(AKind: TJclLocalesKind {$IFDEF SUPPORTS_DEFAULTPARAMS} = lkSupported {$ENDIF});
+    constructor Create(AKind: TJclLocalesKind {$IFDEF SUPPORTS_DEFAULTPARAMS} = lkInstalled {$ENDIF});
     destructor Destroy; override;
+    procedure FillStrings(Strings: TStrings; InfoType: Integer);
     property CodePages: TStrings read FCodePages;
     property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
     property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
@@ -133,6 +192,7 @@ type
 // Keyboard layouts
 //------------------------------------------------------------------------------
 
+type
   TJclKeybLayoutFlags = set of (klReorder, klUnloadPrevious, klSetForProcess,
     klActivate, klNotEllShell, klReplaceLang, klSubstituteOK);
 
@@ -211,6 +271,12 @@ type
     property LayoutFromLocaleID[LocaleID: Word]: TJclKeyboardLayout read GetLayoutFromLocaleID;
     property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
   end;
+
+//------------------------------------------------------------------------------
+// Various routines
+//------------------------------------------------------------------------------
+
+procedure JclLocalesInfoList(Strings: TStrings; InfoType: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SENGCOUNTRY {$ENDIF});
 
 implementation
 
@@ -495,6 +561,27 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure TJclLocaleInfo.SetCharInfo(InfoType: Integer; const Value: Char);
+begin
+  SetStringInfo(InfoType, Value);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclLocaleInfo.SetIntegerInfo(InfoType: Integer; const Value: Integer);
+begin
+  SetStringInfo(InfoType, IntToStr(Value));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclLocaleInfo.SetStringInfo(InfoType: Integer; const Value: string);
+begin
+  Win32Check(SetLocaleInfo(FLocaleID, InfoType, PChar(Value)));
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TJclLocaleInfo.SetUseSystemACP(const Value: Boolean);
 begin
   if FUseSystemACP <> Value then
@@ -555,6 +642,17 @@ destructor TJclLocalesList.Destroy;
 begin
   FreeAndNil(FCodePages);
   inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclLocalesList.FillStrings(Strings: TStrings; InfoType: Integer);
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    with Items[I] do
+      Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
 end;
 
 //------------------------------------------------------------------------------
@@ -890,11 +988,25 @@ var
 begin
   Cnt := GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
   // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff
-  // it always returns 0 on Win95 (not tested on NT).
+  // it always returns 0 on Win95.
   FList.Clear;
   for I := 1 to Cnt do
     FList.Add(TJclKeyboardLayout.Create(Self, Layouts[I]));
   DoRefresh;
+end;
+
+//==============================================================================
+// Various routines
+//==============================================================================
+
+procedure JclLocalesInfoList(Strings: TStrings; InfoType: Integer);
+begin
+  with TJclLocalesList.Create(lkInstalled) do
+  try
+    FillStrings(Strings, InfoType);
+  finally
+    Free;
+  end;
 end;
 
 end.
