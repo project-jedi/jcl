@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 14, 2000                                             }
+{ Last modified: December 29, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -56,7 +56,7 @@ unit JclStrings;
            lowercases the string and then upercases the first char
 
            TEST STRING->Test string
-           
+
    o added: CharHex, StrToHex
 
             CharHex:  converts a given character hex char to a byte, Returns $FF on error
@@ -85,10 +85,11 @@ unit JclStrings;
                           Stream.WriteBuffer(Pointer(Data)^, Length(Data));
                           ......
                         end;
-                        
+
    o Reorganized unit and added (long overdue) string routines from Anthony
      Working on updating the documentation, undocumented routines have a TODO
      comment in the helpfile, or TODOC comment after declaration (MVB)
+   o Added StrNPos/StrNIPos (inspired by George Tasker)
  }
 
 interface
@@ -127,7 +128,7 @@ const
   AnsiLineBreak      = AnsiCrLf;
   {$ENDIF}
 
-// Misc. character sets 
+// Misc. character sets
 
   AnsiSigns          = ['-', '+'];
   AnsiWhiteSpace     = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed,
@@ -152,7 +153,19 @@ const
   C1_XDIGIT = $0080; // Hexadecimal digits
   C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
-{$ENDIF}
+{$IFDEF SUPPORTS_EXTSYM}
+  {$EXTERNALSYM C1_UPPER}
+  {$EXTERNALSYM C1_LOWER}
+  {$EXTERNALSYM C1_DIGIT}
+  {$EXTERNALSYM C1_SPACE}
+  {$EXTERNALSYM C1_PUNCT}
+  {$EXTERNALSYM C1_CNTRL}
+  {$EXTERNALSYM C1_BLANK}
+  {$EXTERNALSYM C1_XDIGIT}
+  {$EXTERNALSYM C1_ALPHA}
+{$ENDIF SUPPORTS_EXTSYM}
+
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // String Test Routines
@@ -188,7 +201,8 @@ function StrProper(const S: AnsiString): AnsiString;
 procedure StrProperBuff(S: PAnsiChar);
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrRemoveChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
-procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString); // TODOC Robert Lee
+procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString;
+  Flags: TReplaceFlags{$IFDEF SUPPORTS_DEFAULTPARAMS} = []{$ENDIF}); // TODOC Robert Lee
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
 function StrReverse(const S: AnsiString): AnsiString;
 procedure StrReverseInPlace(var S: AnsiString);
@@ -196,7 +210,7 @@ function StrSingleQuote(const S: AnsiString): AnsiString;
 function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 function StrStringToEscaped(const S: AnsiString): AnsiString;
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
-function StrToHex(const S: AnsiString): AnsiString;
+function StrToHex(const Source: AnsiString): AnsiString;
 function StrTrimQuotes(const S: AnsiString): AnsiString;
 procedure StrUpper(var S: AnsiString);
 procedure StrUpperBuff(S: PAnsiChar);
@@ -229,6 +243,8 @@ function StrIPos(const SubStr, S: AnsiString): Integer;
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
 function StrLastPos(const SubStr, S: AnsiString): Integer;
 function StrMatch(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
+function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
+function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
 function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer;
 function StrSearch(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
 
@@ -315,8 +331,9 @@ procedure FreeMultiSz(var Dest: PChar);
 
 procedure StrToStrings(S: AnsiString; Sep: AnsiString; const List: TStrings);
 function StringsToStr(const List: TStrings; Sep: AnsiString): AnsiString;
-procedure TrimStrings(const List: TStrings);
-procedure TrimStringsRight(const List: TStrings);
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF});
+procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF});
+procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF});
 
 //------------------------------------------------------------------------------
 // Miscellaneous
@@ -1200,9 +1217,11 @@ end;
 
 { Temporary replacement of StrReplace. Basic algorithm is the same except that
   it has been simplified a little. This version is a little slower than the one
-  below but at least it works. Someone will have to go over this sometime. }
+  below but at least it works. Someone will have to go over this sometime.
 
-procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString);
+  TODO: Implement case-insensitive version (Flags = rfIgnoreCase) }
+
+procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
   Result: string;        { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
@@ -1214,64 +1233,76 @@ var
   ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
   C: Char;               { first character of search string }
 begin
-  if (S <> '') and (Search <> '') then
+  if (S = '') or (Search = '') then Exit;
+  { avoid having to call Length() within the loop }
+  SearchLength := Length(Search);
+  ReplaceLength := Length(Replace);
+  { initialize result string to maximum (worst case scenario) length }
+  if Length(Search) >= ReplaceLength then
+    ResultLength := Length(S)
+  else
+    ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
+  SetLength(Result, ResultLength);
+  { get pointers to begin of source and result }
+  ResultPtr := PChar(Result);
+  SourcePtr := PChar(S);
+  C := Search[1];
+  { while we haven't reached the end of the string }
+  while True do
   begin
-    { avoid having to call Length() within the loop }
-    SearchLength := Length(Search);
-    ReplaceLength := Length(Replace);
-    { initialize result string to maximum (worst case scenario) length }
-    if Length(Search) >= ReplaceLength then
-      ResultLength := Length(S)
-    else
-      ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
-    SetLength(Result, ResultLength);
-    { get pointers to begin of source and result }
-    ResultPtr := PChar(Result);
-    SourcePtr := PChar(S);
-    C := Search[1];
-    { while we haven't reached the end of the string }
-    while SourcePtr^ <> #0 do
+    { copy characters until we find the first character of the search string }
+    while (SourcePtr^ <> C) and (SourcePtr^ <> #0) do
     begin
-      { copy characters until we find the first character of the search string }
-      while (SourcePtr^ <> #0) and (SourcePtr^ <> C) do
+      ResultPtr^ := SourcePtr^;
+      Inc(ResultPtr);
+      Inc(SourcePtr);
+    end;
+    { did we find that first character or did we hit the end of the string? }
+    if SourcePtr^ = #0 then
+      Break
+    else
+    begin
+      { continue comparing, +1 because first character was matched already }
+      SourceMatchPtr := SourcePtr + 1;
+      SearchMatchPtr := PChar(Search) + 1;
+      while (SourceMatchPtr^ = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
       begin
+        Inc(SourceMatchPtr);
+        Inc(SearchMatchPtr);
+      end;
+      { did we find a complete match? }
+      if SearchMatchPtr^ = #0 then
+      begin
+        { append replace to result and move past the search string in source }
+        Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+        Inc(SourcePtr, SearchLength);
+        Inc(ResultPtr, ReplaceLength);
+        { replace all instances or just one? }
+        if not (rfReplaceAll in Flags) then
+        begin
+          { just one, copy until end of source and break out of loop }
+          while SourcePtr^ <> #0 do
+          begin
+            ResultPtr^ := SourcePtr^;
+            Inc(ResultPtr);
+            Inc(SourcePtr);
+          end;
+          Break;
+        end;
+      end
+      else
+      begin
+        { copy current character and start over with the next }
         ResultPtr^ := SourcePtr^;
         Inc(ResultPtr);
         Inc(SourcePtr);
       end;
-      { did we find that first character or did we hit the end of the string? }
-      if SourcePtr^ <> #0 then
-      begin
-        { continue comparing, +1 because first character was matched already }
-        SourceMatchPtr := SourcePtr + 1;
-        SearchMatchPtr := PChar(Search) + 1;
-        while (SourceMatchPtr^ <> #0) and (SearchMatchPtr^ <> #0) and (SourceMatchPtr^ = SearchMatchPtr^) do
-        begin
-          Inc(SourceMatchPtr);
-          Inc(SearchMatchPtr);
-        end;
-        { did we find a complete match? }
-        if SearchMatchPtr^ = #0 then
-        begin
-          { append replace to result and move past the search string in source }
-          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
-          Inc(SourcePtr, SearchLength);
-          Inc(ResultPtr, ReplaceLength);
-        end
-        else
-        begin
-          { copy current character and start over with the next }
-          ResultPtr^ := SourcePtr^;
-          Inc(ResultPtr);
-          Inc(SourcePtr);
-        end;
-      end;
     end;
-    { append null terminator, copy into S and reset the string length }
-    ResultPtr^ := #0;
-    S := Result;
-    SetLength(S, StrLen(PChar(S)));
   end;
+  { append null terminator, copy into S and reset the string length }
+  ResultPtr^ := #0;
+  S := Result;
+  SetLength(S, StrLen(PChar(S)));
 end;
 
 (*
@@ -1501,47 +1532,42 @@ end;
 
 //------------------------------------------------------------------------------
 
-function StrToHex(const S: AnsiString): AnsiString;
+function StrToHex(const Source: AnsiString): AnsiString;
 var
   P: PChar;
-  I, L, N, C: Integer;
+  C, L, N: Integer;
   BL, BH: Byte;
+  S: AnsiString;
 begin
+  S := Source;
   Result := '';
-  if S = '' then Exit;
+  if S = '' then
+    Exit;
 
   L := Length(S);
-  if L = 1 then
+  if Odd(L) then
   begin
-    BL := CharHex(S[1]);
-    if BL = $FF then
-      Exit;
-    SetLength(Result, 1);
-    Byte(Result[1]) := BL;
-    Exit;
+    S := '0' + S;
+    Inc(L);
   end;
 
-  P := Pointer(S);
-  I := L div 2;
-  SetLength(Result, I);
+  P := PChar(S);
+  SetLength(Result, L div 2);
   C := 1;
   N := 1;
   while C <= L do
   begin
     BH := CharHex(P^);
-    Inc(C);
-    BL := CharHex((P + 1)^);
-    if C > L then
-      BL := 0;
-    Inc(C);
+    Inc(P);
+    BL := CharHex(P^);
+    Inc(P);
+    Inc(C, 2);
     if (BH = $FF) or (BL = $FF) then
     begin
       Result := '';
       Exit;
     end;
-    BH := (BH shl 4) + BL;
-    Byte(Result[N]) := BH;
-    Inc(P, 2);
+    Byte(Result[N]) := Byte((BH shl 4) + BL);
     Inc(N);
   end;
 end;
@@ -1918,7 +1944,7 @@ asm
         JNE     @@MisMatch
 
         DEC     ECX
-        JG      @@Loop
+        JGE     @@Loop
 
 @@Match:
         XOR     EAX, EAX
@@ -2373,6 +2399,54 @@ asm
 
 @@SubstrIsNull:
 @@Exit:
+end;
+
+//------------------------------------------------------------------------------
+
+function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
+var
+  I, P: Integer;
+begin
+  Result := StrSearch(SubStr, S, 1);
+  I := 1;
+  while I < N do
+  begin
+    P := StrSearch(SubStr, S, Result + 1);
+    if P = 0 then
+    begin
+      Result := 0;
+      Break;
+    end
+    else
+    begin
+      Result := P;
+      Inc(I);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
+var
+  I, P: Integer;
+begin
+  Result := StrFind(SubStr, S, 1);
+  I := 1;
+  while I < N do
+  begin
+    P := StrFind(SubStr, S, Result + 1);
+    if P = 0 then
+    begin
+      Result := 0;
+      Break;
+    end
+    else
+    begin
+      Result := P;
+      Inc(I);
+    end;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -2843,11 +2917,11 @@ function CharHex(const C: AnsiChar): Byte;
 begin
   Result := $FF;
   if C in AnsiDecDigits then
-    Result := Ord(CharUpper(C)) - 48
+    Result := Ord(CharUpper(C)) - Ord('0')
   else
   begin
     if C in AnsiHexDigits then
-      Result := Ord(CharUpper(C)) - 55;
+      Result := Ord(CharUpper(C)) - (Ord('A') + 10);
   end;
 end;
 
@@ -3029,6 +3103,7 @@ begin
   Result := '';
   for I := 0 to List.Count - 1 do
   begin
+    // don't combine these into one addition, somehow it hurts performance
     Result := Result + List[I];
     Result := Result + Sep;
   end;
@@ -3042,7 +3117,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TrimStrings(const List: TStrings);
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -3050,34 +3125,38 @@ begin
   for I := List.Count - 1 downto 0 do
   begin
     List[I] := Trim(List[I]);
-    if List[I] = '' then
+    if (List[I] = '') and DeleteIfEmpty then
       List.Delete(I);
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TrimStringsRight(const List: TStrings);
+procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
-  I := List.Count - 1;
-  while I >= 0 do
+  Assert(List <> nil);
+  for I := List.Count - 1 downto 0 do
   begin
-    // remove spaces at the end
     List[I] := TrimRight(List[I]);
-    // empty line
-    if List[I] = '' then
-    begin
-      // delete it & try the previous line
+    if (List[I] = '') and DeleteIfEmpty then
       List.Delete(I);
-      Dec(I);
-    end
-    else
-    begin
-      // last line not empty - we are done
-      I := -1;
-    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean);
+var
+  I: Integer;
+begin
+  Assert(List <> nil);
+  for I := List.Count - 1 downto 0 do
+  begin
+    List[I] := TrimLeft(List[I]);
+    if (List[I] = '') and DeleteIfEmpty then
+      List.Delete(I);
   end;
 end;
 
@@ -3100,10 +3179,17 @@ var
   F: File;
   Size: Integer;
   Buffer: Pointer;
+  SaveFileMode: integer;
 begin
   Assert(FileExists(FileName));
-  AssignFile(F, FileName);
-  Reset(F, 1);
+  SaveFileMode := FileMode;
+  try
+    FileMode := fmOpenRead;
+    AssignFile(F, FileName);
+    Reset(F, 1);
+  finally
+    FileMode := SaveFileMode;
+  end;
   try
     Size := FileSize(F);
     SetLength(Result, Size);
@@ -3228,11 +3314,11 @@ begin
   end;
 end;
 
-{$IFNDEF DELPHI5_UP}
-
 //==============================================================================
 // Backward compatibility
 //==============================================================================
+
+{$IFNDEF DELPHI5_UP}
 
 function AnsiSameText(const S1, S2: string): Boolean;
 begin
@@ -3252,3 +3338,4 @@ initialization
   LoadCaseMap;    // or this function does not work
 
 end.
+
