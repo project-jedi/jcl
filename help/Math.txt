@@ -215,7 +215,7 @@ function NormalizeAngle(const Angle: Float): Float;
 Normalizes the given angle
 [Description]
 NormalizeAngle normalizes the given angle. That is, it makes sure that the angle
-falls in the interval -PI..PI by iteratively adding or subtracting 2.PI.
+falls in the interval -PI..PI by iteratively adding or subtracting 2*PI.
 [Parameters]
 Count=1
 1=Angle:Float=The angle to normalize.
@@ -370,7 +370,7 @@ Count=2
 1=X:Cardinal=First of the two values.
 2=Y:Cardinal=Second of the two values.
 [Result]
-The greatest common devisor of X and Y.
+The greatest common divisor of X and Y.
 [Quick Info]
 BCB=3,4,5
 Unit=JclMath
@@ -512,7 +512,7 @@ function LogBase10(X: Float): Float;
 [ShortDescr]
 Returns log base 10.
 [Description]
-LogBase10 returns the log base 10 of X. This is calculates as Log10(X) := Log.2(X) * Log.10(2)
+LogBase10 returns the log base 10 of X. This is calculated as Log10(X) := Log.2(X) * Log.10(2)
 [Parameters]
 Count=1
 1=X:Float=Value whose log base 10 to calculate. X must be larger than 0.0.
@@ -536,11 +536,11 @@ function ArcCos(X: Float): Float;
 Calculates the inverse cosine of X.
 [Description]
 ArcCos calculates the inverse cosine of X. Meaning it returns the angle whose
-cosine equals X. ArcCos is defined as ArcTan2(Sqrt(1 - X*X), X).
+cosine equals X. ArcCos is defined as ArcTan2(Sqrt(1.0 - X*X), X).
 [Parameters]
 Count=1
 1=X:Float=Value for which to calculate the inverse cosine. Absolute value of X
-must be smaller than 1.
+must be smaller than 1.0.
 [Result]
 The inverse cosine of X in radians.
 [Quick Info]
@@ -561,7 +561,7 @@ Ln(X + Sqrt(X * X - 1).
 [Parameters]
 Count=1
 1=X:Float=Value for which to calculate the inverse hyperbolic cosine. Must be
-greater than or equal to 1.
+greater than or equal to 1.0.
 [Result]
 The inverse hyperbolic cosine of X.
 [Quick Info]
@@ -602,7 +602,7 @@ whose hyperbolic cotangent equals X. It is defined as Ln((X + 1.0) / (X - 1.0)) 
 [Parameters]
 Count=1
 1=X:Float=The value whose ArcCotH to calculate. Absolute value of X must be inequal
-to 1.
+to 1.0.
 [Result]
 ArcCoth of X.
 [Quick Info]
@@ -622,7 +622,7 @@ ArcCsc calculates the inverse cosecant. Meaning it returns the angle whose cosec
 ArcCsc is calculated as ArcTan(1.0 / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PI_2.
 [Parameters]
 Count=1
-1=X:Float=Value whose ArcCsc to calculate. Absolute value of X must be smaller than 1.
+1=X:Float=Value whose ArcCsc to calculate. Absolute value of X must be smaller than 1.0.
 [Result]
 The angle, in radians, whose cosecant equals X.
 [Quick Info]
@@ -642,7 +642,7 @@ ArcCscH calculates the inverse hyperbolic cosecant. Meaning, it returns the valu
 whose hyperbolic cosecant equals X. ArcCscH is calculates as Ln((Sgn(X) * Sqrt (Sqr(X) + 1.0) + 1.0) / X)
 [Parameters]
 Count=1
-1=X:Float=Value whose ArcCscH to calculate, cannot be 0.
+1=X:Float=Value whose ArcCscH to calculate, cannot be 0.0.
 [Result]
 ArcCscH of X.
 [Quick Info]
@@ -662,7 +662,7 @@ ArcSec calculates the inverse secant of X. Meaning it returns the angle whose
 secant equals X.
 [Parameters]
 Count=1
-1=X:Float=Value whose ArcSec to calculate. Absolute value of X must be smaller than 1.
+1=X:Float=Value whose ArcSec to calculate. Absolute value of X must be smaller than 1.0.
 [Result]
 ArcSec of X in radians.
 [Quick Info]
@@ -682,7 +682,7 @@ Calculates the inverse hyperbolic secant. Meaning it returns the value whose hyp
 secant equals X. ArcSecH is calculated as Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X).
 [Parameters]
 Count=1
-1=X:Float=Value whose ArcSecH to calculate. X must be smaller than or equal to 1.
+1=X:Float=Value whose ArcSecH to calculate. X must be smaller than or equal to 1.0.
 [Result]
 Inverse hyperbolic secant of X.
 [Quick Info]
@@ -702,7 +702,7 @@ ArcSin calculates the inverse sine. Meaning it returns the angle whose sine
 equals X.
 [Parameters]
 Count=1
-1=X:Float=The value whose inverse sine to calculate. X must be smaller than or equal to 1.
+1=X:Float=The value whose inverse sine to calculate. X must be smaller than or equal to 1.0.
 [Result]
 ArcSin of X in radians.
 [Quick Info]
@@ -817,7 +817,7 @@ function CosH(X: Float): Float;
 [ShortDescr]
 Returns the hyperbolic cosine of X.
 [Description]
-Returns the hyperbolic cosine of X. CosH is calculated as [Exp(X) + Exp(-X)] / 2.
+Returns the hyperbolic cosine of X. CosH is calculated as [Exp(X) + Exp(-X)] / 2.0.
 [Parameters]
 Count=1
 1=X:Float=Value whose CosH to calculate.
@@ -836,7 +836,7 @@ function Cot(X: Float): Float;
 [ShortDescr]
 Returns the cotangent of the argument.
 [Description]
-Cot returns the cotangent of X. Cot(X) is defined 1 / Tan(X).
+Cot returns the cotangent of X. Cot(X) is defined as 1.0 / Tan(X).
 [Parameters]
 Count=1
 1=X:Float=Angle, in radians, whose cotangent to calculate.
@@ -989,7 +989,7 @@ function SinH(X: Float): Float;
 [ShortDescr]
 Returns the hyperbolic sine of the argument.
 [Description]
-SinH returns the hyperbolic sine of X. This is defined as [Exp(X) - Exp(-X)] / 2.
+SinH returns the hyperbolic sine of X. This is defined as [Exp(X) - Exp(-X)] / 2.0.
 [Parameters]
 Count=1
 1=X:Float=Value whose hyperbolic sine to calculate.
@@ -1161,7 +1161,7 @@ Count=2
 1=X:Float=Value 1.
 2=Y:Float=Value 2.
 [Result]
-The largest of the two arguments.
+The larger of the two arguments.
 [Quick Info]
 BCB=3,4,5
 Unit=JclMath
@@ -1235,43 +1235,12 @@ SubCat=CRC
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
-Count=2
-1=Crc32Corr
-2=Crc32
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function Crc32Corr(Crc: Cardinal; N: Integer): Cardinal;
-[ShortDescr]
-Calculates the bit to correct, if any.
-[Description]
-Calculates the bit to correct, if any.
-[Parameters]
-Count=2
-1=Crc:Cardinal=The CRC to work with or 0 to create one.
-2=N:Integer=The number of elements, in bytes, in the data.
-[Result]
- <UL>
- <LI>Result&gt;=0 The bit position to correct.
- <LI>-32 &lt; Result &lt; 0 Position of false bit in the CRC itself.
- <LI>Result &lt; -1000 More than one false bit encountered.
- </UL>
-[Notes]
 Count=1
-1=This function is only suitable for 32 bit CRC's.
-[Quick Info]
-BCB=3,4,5
-Unit=JclMath
-Category=Math Routines
-SubCat=CRC
-Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
-[SeeAlso]
-Count=2
 1=Crc32
-2=CheckCrc32
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0):
+Cardinal;
 [ShortDescr]
 Calculates or checks a CRC.
 [Description]
@@ -1280,13 +1249,15 @@ Calculates or checks a CRC.
 Count=3
 1=X:array of Byte=The array which contains the data.
 2=N:Integer=The number of elements in X.
-3=Crc:Cardinal=0 to create CRC for the data array or transmitted CRC value to
-check the data against.
+3=Crc:Cardinal=(optional) if not defined or = 0: Crc32 calculates the CRC
+for the data array or transmitted; if CRC is defined: the CRC value is
+checked against the data.
 [Result]
  <UL>
- <LI>If on input CRC = 0: The result is the created CRC.
- <LI>If on input CRC &lt;&gt; 0: The is 0 if the CRC was OK, otherwise the function
-  returns the input for the CRC correction function.
+ <LI>If on input CRC not defined or = 0: The result is the created CRC.
+ <LI>If on input CRC is defined: The result is 0 if the CRC was OK,
+otherwise the function
+  returns the residuum for the correction function.
  </UL>
 [Quick Info]
 BCB=3,4,5
@@ -1296,6 +1267,5 @@ SubCat=CRC
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
-Count=2
-1=Crc32Corr
-2=CheckCrc32
+Count=1
+1=CheckCrc32
