@@ -1186,18 +1186,6 @@ end;
 // TJclPeImagesCache
 //==================================================================================================
 
-procedure TJclPeImagesCache.Clear;
-var
-  I: Integer;
-begin
-  with FList do
-    for I := 0 to Count - 1 do
-      Objects[I].Free;
-  FList.Clear;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclPeImagesCache.Create;
 begin
   inherited Create;
@@ -1213,6 +1201,18 @@ begin
   Clear;
   FreeAndNil(FList);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclPeImagesCache.Clear;
+var
+  I: Integer;
+begin
+  with FList do
+    for I := 0 to Count - 1 do
+      Objects[I].Free;
+  FList.Clear;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1418,6 +1418,14 @@ end;
 // TJclPeImportLibItem
 //==================================================================================================
 
+constructor TJclPeImportLibItem.Create(AImage: TJclPeImage);
+begin
+  inherited Create(AImage);
+  FTotalResolveCheck := icNotChecked;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclPeImportLibItem.CheckImports(ExportImage: TJclPeImage);
 var
   I: Integer;
@@ -1458,14 +1466,6 @@ begin
     for I := 0 to Count - 1 do
       Items[I].FResolveCheck := icUnresolved;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclPeImportLibItem.Create(AImage: TJclPeImage);
-begin
-  inherited Create(AImage);
-  FTotalResolveCheck := icNotChecked;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1561,6 +1561,34 @@ end;
 // TJclPeImportList
 //==================================================================================================
 
+constructor TJclPeImportList.Create(AImage: TJclPeImage);
+begin
+  inherited Create(AImage);
+  FAllItemsList := TList.Create;
+  FAllItemsList.Capacity := 256;
+  FUniqueNamesList := TStringList.Create;
+  FUniqueNamesList.Sorted := True;
+  FUniqueNamesList.Duplicates := dupIgnore;
+  FLastAllSortType := isName;
+  FLastAllSortDescending := False;
+  CreateList;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclPeImportList.Destroy;
+var
+  I: Integer;
+begin
+  FreeAndNil(FAllItemsList);
+  FreeAndNil(FUniqueNamesList);
+  for I := 0 to Length(FParalelImportTable) - 1 do
+    FreeMem(FParalelImportTable[I]);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclPeImportList.CheckImports(PeImageCache: TJclPeImagesCache);
 var
   I: Integer;
@@ -1586,21 +1614,6 @@ begin
     if PeImageCache = nil then
       ExportPeImage.Free;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclPeImportList.Create(AImage: TJclPeImage);
-begin
-  inherited Create(AImage);
-  FAllItemsList := TList.Create;
-  FAllItemsList.Capacity := 256;
-  FUniqueNamesList := TStringList.Create;
-  FUniqueNamesList.Sorted := True;
-  FUniqueNamesList.Duplicates := dupIgnore;
-  FLastAllSortType := isName;
-  FLastAllSortDescending := False;
-  CreateList;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1678,19 +1691,6 @@ begin
   end;
   for I := 0 to Count - 1 do
     Items[I].FImportDirectoryIndex := I;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclPeImportList.Destroy;
-var
-  I: Integer;
-begin
-  FreeAndNil(FAllItemsList);
-  FreeAndNil(FUniqueNamesList);
-  for I := 0 to Length(FParalelImportTable) - 1 do
-    FreeMem(FParalelImportTable[I]);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2119,6 +2119,23 @@ end;
 // TJclPeExportFuncList
 //==================================================================================================
 
+constructor TJclPeExportFuncList.Create(AImage: TJclPeImage);
+begin
+  inherited Create(AImage);
+  FTotalResolveCheck := icNotChecked;
+  CreateList;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclPeExportFuncList.Destroy;
+begin
+  FreeAndNil(FForwardedLibsList);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclPeExportFuncList.CanPerformFastNameSearch: Boolean;
 begin
   Result := FSorted and (FLastSortType = esName) and not FLastSortDescending;
@@ -2190,15 +2207,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclPeExportFuncList.Create(AImage: TJclPeImage);
-begin
-  inherited Create(AImage);
-  FTotalResolveCheck := icNotChecked;
-  CreateList;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPeExportFuncList.CreateList;
 var
   Functions: DWORD;
@@ -2248,14 +2256,6 @@ begin
       end;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclPeExportFuncList.Destroy;
-begin
-  FreeAndNil(FForwardedLibsList);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2455,19 +2455,6 @@ end;
 // TJclPeResourceItem
 //==================================================================================================
 
-function TJclPeResourceItem.CompareName(AName: PChar): Boolean;
-var
-  P: PChar;
-begin
-  if IsName then
-    P := PChar(Name)
-  else
-    P := PChar(FEntry^.Name and $FFFF);
-  Result := CompareResourceName(AName, P);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclPeResourceItem.Create(AImage: TJclPeImage;
   AParentItem: TJclPeResourceItem; AEntry: PImageResourceDirectoryEntry);
 begin
@@ -2487,6 +2474,19 @@ destructor TJclPeResourceItem.Destroy;
 begin
   FreeAndNil(FList);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeResourceItem.CompareName(AName: PChar): Boolean;
+var
+  P: PChar;
+begin
+  if IsName then
+    P := PChar(Name)
+  else
+    P := PChar(FEntry^.Name and $FFFF);
+  Result := CompareResourceName(AName, P);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3057,6 +3057,24 @@ end;
 // TJclPeImage
 //==================================================================================================
 
+constructor TJclPeImage.Create(ANoExceptions: Boolean);
+begin
+  FNoExceptions := ANoExceptions;
+  FReadOnlyAccess := True;
+  FImageSections := TStringList.Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclPeImage.Destroy;
+begin
+  Clear;
+  FreeAndNil(FImageSections);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclPeImage.AfterOpen;
 begin
 end;
@@ -3142,15 +3160,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclPeImage.Create(ANoExceptions: Boolean);
-begin
-  FNoExceptions := ANoExceptions;
-  FReadOnlyAccess := True;
-  FImageSections := TStringList.Create;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 class function TJclPeImage.DebugTypeNames(DebugType: DWORD): string;
 begin
   case DebugType of
@@ -3175,15 +3184,6 @@ begin
   else
     Result := '???';
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclPeImage.Destroy;
-begin
-  Clear;
-  FreeAndNil(FImageSections);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4232,6 +4232,22 @@ end;
 // TJclPeBorImage
 //==================================================================================================
 
+constructor TJclPeBorImage.Create(ANoExceptions: Boolean);
+begin
+  FForms := TObjectList.Create(True);
+  inherited Create(ANoExceptions);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclPeBorImage.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FForms);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclPeBorImage.AfterOpen;
 var
   HasDVCLAL, HasPACKAGEINFO, HasPACKAGEOPTIONS: Boolean;
@@ -4259,14 +4275,6 @@ begin
   FIsBorlandImage := False;
   FIsPackage := False;
   FPackageCompilerVersion := 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclPeBorImage.Create(ANoExceptions: Boolean);
-begin
-  FForms := TObjectList.Create(True);
-  inherited Create(ANoExceptions);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4348,14 +4356,6 @@ begin
     ImportList.Free;
     List.EndUpdate;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclPeBorImage.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FForms);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4475,13 +4475,6 @@ end;
 // TJclPeNameSearch
 //==================================================================================================
 
-function TJclPeNameSearch.CompareName(const FunctionName, ComparedName: string): Boolean;
-begin
-  Result := PeSmartFunctionNameSame(ComparedName, FunctionName, [scIgnoreCase]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclPeNameSearch.Create(const FunctionName, Path: string; Options: TJclPeNameSearchOptions);
 begin
   inherited Create(True);
@@ -4489,6 +4482,13 @@ begin
   FOptions := Options;
   FPath := Path;
   FreeOnTerminate := True;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeNameSearch.CompareName(const FunctionName, ComparedName: string): Boolean;
+begin
+  Result := PeSmartFunctionNameSame(ComparedName, FunctionName, [scIgnoreCase]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5918,6 +5918,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.13  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

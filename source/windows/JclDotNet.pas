@@ -658,8 +658,7 @@ end;
 // TJclClrObject
 //==================================================================================================
 
-constructor TJclClrObject.Create(
-  const AssemblyName, NamespaceName, ClassName: WideString;
+constructor TJclClrObject.Create(const AssemblyName, NamespaceName, ClassName: WideString;
   const Parameters: array of const);
 begin
   inherited Create;
@@ -667,8 +666,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclClrObject.Create(
-  const AssemblyName, NamespaceName, ClassName: WideString;
+constructor TJclClrObject.Create(const AssemblyName, NamespaceName, ClassName: WideString;
   const NewInstance: Boolean);
 begin
   Create(AssemblyName, NamespaceName, ClassName, []);
@@ -860,6 +858,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.7  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

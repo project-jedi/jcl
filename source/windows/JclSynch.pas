@@ -482,15 +482,6 @@ end;
 // TJclDispatcherObject
 //==================================================================================================
 
-constructor TJclDispatcherObject.Attach(Handle: THandle);
-begin
-  FExisted := True;
-  FHandle := Handle;
-  FName := '';
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function MapSignalResult(const Ret: DWORD): TJclWaitResult;
 begin
   case Ret of
@@ -507,6 +498,15 @@ begin
   else
     Result := wrError;
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclDispatcherObject.Attach(Handle: THandle);
+begin
+  FExisted := True;
+  FHandle := Handle;
+  FName := '';
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -592,6 +592,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TJclCriticalSection.Destroy;
+begin
+  Windows.DeleteCriticalSection(FCriticalSection);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class procedure TJclCriticalSection.CreateAndEnter(var CS: TJclCriticalSection);
 var
   NewCritSect: TJclCriticalSection;
@@ -603,14 +611,6 @@ begin
     NewCritSect.Free;
   end;
   CS.Enter;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclCriticalSection.Destroy;
-begin
-  Windows.DeleteCriticalSection(FCriticalSection);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1051,6 +1051,31 @@ end;
 // TJclMultiReadExclusiveWrite
 //==================================================================================================
 
+constructor TJclMultiReadExclusiveWrite.Create(Preferred: TMrewPreferred);
+begin
+  inherited Create;
+  FLock := TJclCriticalSection.Create;
+  FPreferred := Preferred;
+  FSemReaders := TJclSemaphore.Create(nil, 0, MaxInt, '');
+  FSemWriters := TJclSemaphore.Create(nil, 0, MaxInt, '');
+  SetLength(FThreads, 0);
+  FState := 0;
+  FWaitingReaders := 0;
+  FWaitingWriters := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMultiReadExclusiveWrite.Destroy;
+begin
+  FreeAndNil(FSemReaders);
+  FreeAndNil(FSemWriters);
+  FreeAndNil(FLock);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Longword;
   Reader: Boolean);
 var
@@ -1171,31 +1196,6 @@ begin
   end;
   if MustWait then
     FSemWriters.WaitFor(INFINITE);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMultiReadExclusiveWrite.Create(Preferred: TMrewPreferred);
-begin
-  inherited Create;
-  FLock := TJclCriticalSection.Create;
-  FPreferred := Preferred;
-  FSemReaders := TJclSemaphore.Create(nil, 0, MaxInt, '');
-  FSemWriters := TJclSemaphore.Create(nil, 0, MaxInt, '');
-  SetLength(FThreads, 0);
-  FState := 0;
-  FWaitingReaders := 0;
-  FWaitingWriters := 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMultiReadExclusiveWrite.Destroy;
-begin
-  FreeAndNil(FSemReaders);
-  FreeAndNil(FSemWriters);
-  FreeAndNil(FLock);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1336,6 +1336,50 @@ end;
 const
   MAX_METSECT_NAMELEN = 128;
 
+constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Name: string);
+begin
+  if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
+    (Length(Name) > MAX_METSECT_NAMELEN) then
+    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInvalidParameter);
+  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
+  if FMetSect <> nil then
+  begin
+    if not InitMeteredSection(InitialCount, MaxCount, Name, False) then
+    begin
+      CloseMeteredSection;
+      FMetSect := nil;
+      raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMeteredSection.Open(const Name: string);
+begin
+  FMetSect := nil;
+  if Name = '' then
+    raise EJclMeteredSectionError.CreateResRec(@RsMetSectNameEmpty);
+  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
+  Assert(FMetSect <> nil);
+  if not InitMeteredSection(0, 0, Name, True) then
+  begin
+    CloseMeteredSection;
+    FMetSect := nil;
+    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMeteredSection.Destroy;
+begin
+  CloseMeteredSection;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMeteredSection.AcquireLock;
 begin
   while Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
@@ -1355,25 +1399,6 @@ begin
     if FMetSect^.Event <> 0 then
       Windows.CloseHandle(FMetSect^.Event);
     FreeMem(FMetSect);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Name: string);
-begin
-  if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
-    (Length(Name) > MAX_METSECT_NAMELEN) then
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInvalidParameter);
-  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
-  if FMetSect <> nil then
-  begin
-    if not InitMeteredSection(InitialCount, MaxCount, Name, False) then
-    begin
-      CloseMeteredSection;
-      FMetSect := nil;
-      raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
-    end;
   end;
 end;
 
@@ -1434,14 +1459,6 @@ begin
       Result := True;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMeteredSection.Destroy;
-begin
-  CloseMeteredSection;
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1517,23 +1534,6 @@ var
   Previous: Longint;
 begin
   Result := Leave(ReleaseCount, Previous);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMeteredSection.Open(const Name: string);
-begin
-  FMetSect := nil;
-  if Name = '' then
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectNameEmpty);
-  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
-  Assert(FMetSect <> nil);
-  if not InitMeteredSection(0, 0, Name, True) then
-  begin
-    CloseMeteredSection;
-    FMetSect := nil;
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1615,6 +1615,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.10  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //

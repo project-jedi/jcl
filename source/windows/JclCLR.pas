@@ -678,8 +678,8 @@ end;
 // TJclClrGuidStream
 //==================================================================================================
 
-constructor TJclClrGuidStream.Create(
-  const AMetadata: TJclPeMetadata; AHeader: PClrStreamHeader);
+constructor TJclClrGuidStream.Create(const AMetadata: TJclPeMetadata;
+  AHeader: PClrStreamHeader);
 var
   I: Integer;
   pg: PGUID;
@@ -807,8 +807,8 @@ end;
 // TJclClrBlobStream
 //==================================================================================================
 
-constructor TJclClrBlobStream.Create(
-  const AMetadata: TJclPeMetadata; AHeader: PClrStreamHeader);
+constructor TJclClrBlobStream.Create(const AMetadata: TJclPeMetadata;
+  AHeader: PClrStreamHeader);
 var
   ABlob: TJclClrBlobRecord;
 begin
@@ -1709,8 +1709,7 @@ end;
 // TJclClrVTableFixupRecord
 //==================================================================================================
 
-constructor TJclClrVTableFixupRecord.Create(
-  AData: PImageCorVTableFixup);
+constructor TJclClrVTableFixupRecord.Create(AData: PImageCorVTableFixup);
 begin
   inherited Create;
   FData := AData;
@@ -1739,8 +1738,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class function TJclClrVTableFixupRecord.VTableKinds(
-  const Kinds: TJclClrVTableKinds): DWORD;
+class function TJclClrVTableFixupRecord.VTableKinds(const Kinds: TJclClrVTableKinds): DWORD;
 var
   AKind: TJclClrVTableKind;
 begin
@@ -1752,8 +1750,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class function TJclClrVTableFixupRecord.VTableKinds(
-  const Kinds: DWORD): TJclClrVTableKinds;
+class function TJclClrVTableFixupRecord.VTableKinds(const Kinds: DWORD): TJclClrVTableKinds;
 var
   AKind: TJclClrVTableKind;
 begin
@@ -1771,6 +1768,7 @@ constructor TJclClrHeaderEx.Create(const AImage: TJclPeImage);
 
   procedure UpdateVTableFixups;
   begin
+    // (rom) What is this?
     if Header.VTableFixups.VirtualAddress = 0 then
   end;
 
@@ -1978,6 +1976,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.8  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

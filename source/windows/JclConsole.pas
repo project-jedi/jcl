@@ -1062,11 +1062,11 @@ end;
 
 function TJclScreenCustomTextAttribute.GetColor: TJclScreenFontColor;
 var
-  ta: Word;
+  TA: Word;
 begin
-  ta := TextAttribute and FontColorMask;
+  TA := TextAttribute and FontColorMask;
   for Result := High(TJclScreenFontColor) downto Low(TJclScreenFontColor) do
-    if (ta and FontColorMapping[Result]) = FontColorMapping[Result] then
+    if (TA and FontColorMapping[Result]) = FontColorMapping[Result] then
       Break;
 end;
 
@@ -1074,11 +1074,11 @@ end;
 
 function TJclScreenCustomTextAttribute.GetBgColor: TJclScreenBackColor;
 var
-  ta: Word;
+  TA: Word;
 begin
-  ta := TextAttribute and BackColorMask;
+  TA := TextAttribute and BackColorMask;
   for Result := High(TJclScreenBackColor) downto Low(TJclScreenBackColor) do
-    if (ta and BackColorMapping[Result]) = BackColorMapping[Result] then
+    if (TA and BackColorMapping[Result]) = BackColorMapping[Result] then
       Break;
 end;
 
@@ -1201,9 +1201,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclScreenTextAttribute.Create(
-  const AColor: TJclScreenFontColor; const ABgColor: TJclScreenBackColor;
-  const AHighLight, ABgHighLight: Boolean;
+constructor TJclScreenTextAttribute.Create(const AColor: TJclScreenFontColor;
+  const ABgColor: TJclScreenBackColor; const AHighLight, ABgHighLight: Boolean;
   const AStyle: TJclScreenFontStyles);
 begin
   inherited Create;
@@ -1725,6 +1724,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.10  2004/07/29 07:58:21  marquardt
 // inc files updated
 //

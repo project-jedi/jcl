@@ -832,6 +832,17 @@ end;
 // TJclModuleInfoList
 //==================================================================================================
 
+constructor TJclModuleInfoList.Create(ADynamicBuild, ASystemModulesOnly: Boolean);
+begin
+  inherited Create(True);
+  FDynamicBuild := ADynamicBuild;
+  FSystemModulesOnly := ASystemModulesOnly;
+  if not FDynamicBuild then
+    BuildModulesList;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclModuleInfoList.AddModule(Module: HMODULE; SystemModule: Boolean): Boolean;
 begin
   Result := not IsValidModuleAddress(Pointer(Module)) and
@@ -866,17 +877,6 @@ begin
       List.Free;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclModuleInfoList.Create(ADynamicBuild, ASystemModulesOnly: Boolean);
-begin
-  inherited Create(True);
-  FDynamicBuild := ADynamicBuild;
-  FSystemModulesOnly := ASystemModulesOnly;
-  if not FDynamicBuild then
-    BuildModulesList;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1307,17 +1307,17 @@ end;
 // TJclMapScanner
 //==================================================================================================
 
-procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress; Len: Integer;
-  SectionName, GroupName: PJclMapString);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclMapScanner.Create(const MapFileName: TFileName);
 begin
   inherited Create(MapFileName);
   Scan;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress; Len: Integer;
+  SectionName, GroupName: PJclMapString);
+begin
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1882,6 +1882,25 @@ end;
 // TJclBinDebugGenerator
 //==================================================================================================
 
+constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
+begin
+  inherited Create(MapFileName);
+  FDataStream := TMemoryStream.Create;
+  FMapFileName := MapFileName;
+  if FStream <> nil then
+    CreateData;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBinDebugGenerator.Destroy;
+begin
+  FreeAndNil(FDataStream);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 {$OVERFLOWCHECKS OFF}
 
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
@@ -1911,17 +1930,6 @@ end;
 {$IFDEF OVERFLOWCHECKS_ON}
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
-begin
-  inherited Create(MapFileName);
-  FDataStream := TMemoryStream.Create;
-  FMapFileName := MapFileName;
-  if FStream <> nil then
-    CreateData;
-end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2070,17 +2078,18 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclBinDebugGenerator.Destroy;
-begin
-  FreeAndNil(FDataStream);
-  inherited Destroy;
-end;
-
 //==================================================================================================
 // TJclBinDebugScanner
 //==================================================================================================
+
+constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
+begin
+  FCacheData := CacheData;
+  FStream := AStream;
+  CheckFormat;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBinDebugScanner.CacheLineNumbers;
 var
@@ -2170,15 +2179,6 @@ end;
 {$IFDEF OVERFLOWCHECKS_ON}
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
-begin
-  FCacheData := CacheData;
-  FStream := AStream;
-  CheckFormat;
-end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3173,6 +3173,22 @@ var
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TJclGlobalStackList.Destroy;
+var
+  I: Integer;
+begin
+  with LockList do
+  try
+    for I := 0 to Count - 1 do
+      TObject(Items[I]).Free;
+  finally
+    UnlockList;
+  end;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclGlobalStackList.AddObject(AObject: TJclStackBaseList);
 var
   ReplacedObj: TObject;
@@ -3189,22 +3205,6 @@ begin
   finally
     UnlockList;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclGlobalStackList.Destroy;
-var
-  I: Integer;
-begin
-  with LockList do
-  try
-    for I := 0 to Count - 1 do
-      TObject(Items[I]).Free;
-  finally
-    UnlockList;
-  end;
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3307,6 +3307,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TJclGlobalModulesList.Destroy;
+begin
+  FreeAndNil(FLock);
+  FreeAndNil(FModulesList);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclGlobalModulesList.CreateModulesList: TJclModuleInfoList;
 var
   I: Integer;
@@ -3330,15 +3339,6 @@ begin
   finally
     FLock.Leave;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclGlobalModulesList.Destroy;
-begin
-  FreeAndNil(FLock);
-  FreeAndNil(FModulesList);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3485,23 +3485,6 @@ end;
 // TJclStackInfoList
 //==================================================================================================
 
-procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset, IncludeVAdress: Boolean);
-var
-  I: Integer;
-begin
-  Strings.BeginUpdate;
-  try
-    for I := 0 to Count - 1 do
-      Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
-        IncludeStartProcLineOffset, IncludeVAdress));
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
 var
   Item: TJclStackInfoItem;
@@ -3528,6 +3511,23 @@ destructor TJclStackInfoList.Destroy;
 begin
   GlobalModulesList.FreeModulesList(FModuleInfoList);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
+  IncludeStartProcLineOffset, IncludeVAdress: Boolean);
+var
+  I: Integer;
+begin
+  Strings.BeginUpdate;
+  try
+    for I := 0 to Count - 1 do
+      Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
+        IncludeStartProcLineOffset, IncludeVAdress));
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3774,6 +3774,15 @@ end;
 // TJclExceptFrame
 //==================================================================================================
 
+constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
+begin
+  inherited Create;
+  FExcFrame := AExcFrame;
+  DoDetermineFrameKind;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclExceptFrame.DoDetermineFrameKind;
 var
   Dest: Longint;
@@ -3802,15 +3811,6 @@ begin
       end;
     end;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
-begin
-  inherited Create;
-  FExcFrame := AExcFrame;
-  DoDetermineFrameKind;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3884,6 +3884,15 @@ end;
 // TJclExceptFrameList
 //==================================================================================================
 
+constructor TJclExceptFrameList.Create(AIgnoreLevels: Integer);
+begin
+  inherited Create;
+  FIgnoreLevels := AIgnoreLevels;
+  TraceExceptionFrames;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
 begin
   Result := TJclExceptFrame.Create(AFrame);
@@ -3901,15 +3910,6 @@ end;
 function TJclExceptFrameList.GetItems(Index: Integer): TJclExceptFrame;
 begin
   Result := TJclExceptFrame(Get(Index));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclExceptFrameList.Create(AIgnoreLevels: Integer);
-begin
-  inherited Create;
-  FIgnoreLevels := AIgnoreLevels;
-  TraceExceptionFrames;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4093,8 +4093,6 @@ end;
 
 type
   TThreadAccess = class(TThread);
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclDebugThreadList.Create;
 begin
@@ -4371,6 +4369,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.9  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

@@ -355,6 +355,33 @@ function mixerSetControlDetails(hmxobj: HMIXEROBJ; pmxcd: PMixerControlDetails; 
 // TJclMultimediaTimer
 //==================================================================================================
 
+constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
+begin
+  FKind := Kind;
+  FNotification := Notification;
+  FPeriod := 0;
+  FTimerID := 0;
+  FEvent := nil;
+  FillChar(FTimeCaps, SizeOf(FTimeCaps), #0);
+  if timeGetDevCaps(@FTimeCaps, SizeOf(FTimeCaps)) = TIMERR_STRUCT then
+    raise EJclMmTimerError.CreateResRec(@RsMmTimerGetCaps);
+  FPeriod := FTimeCaps.wPeriodMin;
+  if Notification <> nkCallback then
+    FEvent := TJclEvent.Create(nil, Notification = nkSetEvent, False, '');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMultimediaTimer.Destroy;
+begin
+  EndTimer;
+  FreeAndNil(FEvent);
+  FOnTimer := nil;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure MmTimerCallback(TimerId, Msg: Cardinal; User, dw1, dw2: DWORD); stdcall;
 begin
   TJclMultimediaTimer(User).Timer(TimerId);
@@ -406,33 +433,6 @@ begin
     FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack, DWORD(Self), Event);
   if FTimerId = 0 then
     raise EJclMmTimerError.CreateResRec(@RsMmSetEvent);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
-begin
-  FKind := Kind;
-  FNotification := Notification;
-  FPeriod := 0;
-  FTimerID := 0;
-  FEvent := nil;
-  FillChar(FTimeCaps, SizeOf(FTimeCaps), #0);
-  if timeGetDevCaps(@FTimeCaps, SizeOf(FTimeCaps)) = TIMERR_STRUCT then
-    raise EJclMmTimerError.CreateResRec(@RsMmTimerGetCaps);
-  FPeriod := FTimeCaps.wPeriodMin;
-  if Notification <> nkCallback then
-    FEvent := TJclEvent.Create(nil, Notification = nkSetEvent, False, '');
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMultimediaTimer.Destroy;
-begin
-  EndTimer;
-  FreeAndNil(FEvent);
-  FOnTimer := nil;
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -754,6 +754,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+constructor TJclMixerLine.Create(AMixerDevice: TJclMixerDevice);
+begin
+  FMixerDevice := AMixerDevice;
+  FLineControls := TObjectList.Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerLine.Destroy;
+begin
+  FreeAndNil(FLineControls);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMixerLine.BuildLineControls;
 var
   MixerControls: TMixerLineControls;
@@ -823,22 +839,6 @@ begin
   else
     Result := '';
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMixerLine.Create(AMixerDevice: TJclMixerDevice);
-begin
-  FMixerDevice := AMixerDevice;
-  FLineControls := TObjectList.Create;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMixerLine.Destroy;
-begin
-  FreeAndNil(FLineControls);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -921,20 +921,6 @@ end;
 // TJclMixerDestination
 //==================================================================================================
 
-procedure TJclMixerDestination.BuildSources;
-var
-  I: Cardinal;
-  Item: TJclMixerSource;
-begin
-  for I := 1 to LineInfo.cConnections do
-  begin
-    Item := TJclMixerSource.Create(Self, I - 1);
-    FSources.Add(Item);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclMixerDestination.Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
 begin
   inherited Create(AMixerDevice);
@@ -950,6 +936,20 @@ destructor TJclMixerDestination.Destroy;
 begin
   FreeAndNil(FSources);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerDestination.BuildSources;
+var
+  I: Cardinal;
+  Item: TJclMixerSource;
+begin
+  for I := 1 to LineInfo.cConnections do
+  begin
+    Item := TJclMixerSource.Create(Self, I - 1);
+    FSources.Add(Item);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -974,6 +974,29 @@ end;
 //==================================================================================================
 // TJclMixerDevice
 //==================================================================================================
+
+constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
+begin
+  FDeviceIndex := ADeviceIndex;
+  FHandle := -1;
+  FDestinations := TObjectList.Create;
+  FLines := TList.Create;
+  MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities, SizeOf(FCapabilities)));
+  Open(ACallBackWnd);
+  BuildDestinations;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerDevice.Destroy;
+begin
+  Close;
+  FreeAndNil(FDestinations);
+  FreeAndNil(FLines);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMixerDevice.BuildDestinations;
 var
@@ -1013,29 +1036,6 @@ begin
     mixerClose(FHandle);
     FHandle := -1;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
-begin
-  FDeviceIndex := ADeviceIndex;
-  FHandle := -1;
-  FDestinations := TObjectList.Create;
-  FLines := TList.Create;
-  MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities, SizeOf(FCapabilities)));
-  Open(ACallBackWnd);
-  BuildDestinations;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclMixerDevice.Destroy;
-begin
-  Close;
-  FreeAndNil(FDestinations);
-  FreeAndNil(FLines);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1184,20 +1184,6 @@ end;
 // TJclMixer
 //==================================================================================================
 
-procedure TJclMixer.BuildDevices;
-var
-  I: Cardinal;
-  Item: TJclMixerDevice;
-begin
-  for I := 1 to mixerGetNumDevs do
-  begin
-    Item := TJclMixerDevice.Create(I - 1, FCallbackWnd);
-    FDeviceList.Add(Item);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclMixer.Create(ACallBackWnd: HWND);
 begin
   FDeviceList := TObjectList.Create;
@@ -1211,6 +1197,20 @@ destructor TJclMixer.Destroy;
 begin
   FreeAndNil(FDeviceList);
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixer.BuildDevices;
+var
+  I: Cardinal;
+  Item: TJclMixerDevice;
+begin
+  for I := 1 to mixerGetNumDevs do
+  begin
+    Item := TJclMixerDevice.Create(I - 1, FCallbackWnd);
+    FDeviceList.Add(Item);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1540,6 +1540,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.12  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

@@ -740,6 +740,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TJclLocalesList.Destroy;
+begin
+  FreeAndNil(FCodePages);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclLocalesList.CreateList;
 const
   Flags: array [TJclLocalesKind] of DWORD = (LCID_INSTALLED, LCID_SUPPORTED);
@@ -768,14 +776,6 @@ begin
   finally
     ProcessedLocalesList := nil;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclLocalesList.Destroy;
-begin
-  FreeAndNil(FCodePages);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -988,8 +988,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclKeyboardLayoutList.ActivateNextLayout(
-  ActivateFlags: TJclKeybLayoutFlags): Boolean;
+function TJclKeyboardLayoutList.ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
   Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
@@ -1167,6 +1166,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.10  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //
