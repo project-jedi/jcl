@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 14, 2003                                                                  }
+{ Last modified: October 22, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -114,8 +114,6 @@ type
 //  EDI Element
 //--------------------------------------------------------------------------------------------------
 
-  TEDIElementArray = array of TEDIElement;
-
   TEDIElement = class(TEDIDataObject)
   public
     constructor Create(Parent: TEDIDataObject); reintroduce;
@@ -123,6 +121,8 @@ type
     procedure Disassemble; override;
     function GetIndexPositionFromParent: Integer;
   end;
+
+  TEDIElementArray = array of TEDIElement;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Element Specification
@@ -160,8 +160,6 @@ type
 //--------------------------------------------------------------------------------------------------
 //  EDI Segment Classes
 //--------------------------------------------------------------------------------------------------
-
-  TEDISegmentArray = array of TEDISegment;
 
   TEDISegment = class(TEDIDataObjectGroup)
   private
@@ -207,6 +205,8 @@ type
     property SegmentId: string read FSegmentId write FSegmentId;
     property ElementCount: Integer read GetCount;
   end;
+
+  TEDISegmentArray = array of TEDISegment;
 
   TEDITransactionSetSegment = class(TEDISegment)
   public
@@ -308,8 +308,6 @@ type
 //  EDI Transaction Set
 //--------------------------------------------------------------------------------------------------
 
-  TEDITransactionSetArray = array of TEDITransactionSet;
-
   TEDITransactionSet = class(TEDIDataObjectGroup)
   private
     FSTSegment: TEDITransactionSetSegment;
@@ -359,6 +357,8 @@ type
     property SegmentSE: TEDITransactionSetSegment read FSESegment write SetSESegment;
     property SegmentCount: Integer read GetCount;
   end;
+
+  TEDITransactionSetArray = array of TEDITransactionSet;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Transaction Set Specification
@@ -423,7 +423,7 @@ type
   protected
     FErrorOccured: Boolean;
     FEDITSDOptions: TEDITransactionSetDocumentOptions;
-    FEDILoopStack: TEDILoopStack;    
+    FEDILoopStack: TEDILoopStack;
     // References
     FEDITransactionSet: TEDITransactionSet;
     FEDITransactionSetSpec: TEDITransactionSetSpec;
@@ -457,8 +457,6 @@ type
 //--------------------------------------------------------------------------------------------------
 //  EDI Functional Group
 //--------------------------------------------------------------------------------------------------
-
-  TEDIFunctionalGroupArray = array of TEDIFunctionalGroup;
 
   TEDIFunctionalGroup = class(TEDIDataObjectGroup)
   private
@@ -512,6 +510,8 @@ type
     property TransactionSetCount: Integer read GetCount;
   end;
 
+  TEDIFunctionalGroupArray = array of TEDIFunctionalGroup;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Functional Specification
 //--------------------------------------------------------------------------------------------------
@@ -537,8 +537,6 @@ type
 //--------------------------------------------------------------------------------------------------
 //  EDI Interchange Control
 //--------------------------------------------------------------------------------------------------
-
-  TEDIInterchangeControlArray = array of TEDIInterchangeControl;
 
   TEDIInterchangeControl = class(TEDIDataObjectGroup)
   private
@@ -592,6 +590,8 @@ type
     property FunctionalGroupCount: Integer read GetCount;
   end;
 
+  TEDIInterchangeControlArray = array of TEDIInterchangeControl;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Interchange Specification
 //--------------------------------------------------------------------------------------------------
@@ -617,8 +617,6 @@ type
 //--------------------------------------------------------------------------------------------------
 //  EDI File
 //--------------------------------------------------------------------------------------------------
-
-  TEDIFileArray = array of TEDIFile;
 
   TEDIFileOptions = set of (foVariableDelimiterDetection, foUseAltDelimiterDetection, foRemoveCrLf,
     foRemoveCr, foRemoveLf);
@@ -682,6 +680,8 @@ type
     property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
     property InterchangeControlCount: Integer read GetCount;
   end;
+
+  TEDIFileArray = array of TEDIFile;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI File Specification
@@ -3051,8 +3051,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TEDITransactionSetLoop.AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
+{$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
 var
   Loop: TEDITransactionSetLoop;
+{$ENDIF}
 begin
   FCreateObjectType := ediLoop;
   {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
@@ -3148,7 +3150,7 @@ var
 begin
   Result := nil;
   J := StartIndex;
-  for I := StartIndex to FEDIDataObjects.Count - 1 do
+  for I := StartIndex to GetCount {FEDIDataObjects.Count} - 1 do
   begin
     StartIndex := I;
     if FEDIDataObjects[I] is TEDITransactionSetLoop then
@@ -3174,7 +3176,7 @@ var
 begin
   Result := nil;
   J := StartIndex;
-  for I := StartIndex to FEDIDataObjects.Count - 1 do
+  for I := StartIndex to GetCount {FEDIDataObjects.Count} - 1 do
   begin
     StartIndex := I;
     if FEDIDataObjects[I] is TEDISegment then
