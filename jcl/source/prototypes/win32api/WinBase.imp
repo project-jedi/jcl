@@ -1,3 +1,5 @@
+{$IFDEF MSWINDOWS}
+
 var
   _BackupSeek: Pointer;
 
@@ -161,3 +163,4 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}

@@ -1,3 +1,5 @@
+{$IFDEF MSWINDOWS}
+
 const
   aclapilib = 'advapi32.dll';
 
@@ -13,3 +15,5 @@ begin
     jmp [_SetNamedSecurityInfoW]
   end;
 end;
+
+{$ENDIF MSWINDOWS}

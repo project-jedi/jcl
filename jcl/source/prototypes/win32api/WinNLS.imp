@@ -1,3 +1,5 @@
+{$IFDEF MSWINDOWS}
+
 var
   _GetCalendarInfoA: Pointer;
 
@@ -37,3 +39,4 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}

@@ -1,3 +1,4 @@
+{$IFDEF MSWINDOWS}
 
 const
   ImageHlpLib = 'imagehlp.dll';
@@ -132,3 +133,71 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+
+function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
+  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL;
+begin
+  Result := False;
+end;
+
+function CheckSumMappedFile(BaseAddress: Pointer; FileLength: DWORD;
+  out HeaderSum, CheckSum: DWORD): PImageNtHeaders;
+begin
+  HeaderSum := 0;
+  CheckSum := 0;
+  Result := nil;
+end;
+
+function GetImageUnusedHeaderBytes(const LoadedImage: LOADED_IMAGE;
+  var SizeUnusedHeaderBytes: DWORD): DWORD;
+begin
+  SizeUnusedHeaderBytes := 0;
+  Result := 0;
+end;
+
+function MapAndLoad(ImageName, DllPath: PChar; var LoadedImage: LOADED_IMAGE;
+  DotDll: BOOL; ReadOnly: BOOL): BOOL;
+begin
+  Result := False;
+end;
+
+function UnMapAndLoad(const LoadedImage: LOADED_IMAGE): BOOL;
+begin
+  Result := False;
+end;
+
+function TouchFileTimes(const FileHandle: THandle; const pSystemTime: TSystemTime): BOOL;
+begin
+  Result := False;
+end;
+
+function ImageDirectoryEntryToData(Base: Pointer; MappedAsImage: ByteBool;
+  DirectoryEntry: USHORT; var Size: ULONG): Pointer;
+begin
+  Size := 0;
+  Result := nil;
+end;
+
+function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG): PImageSectionHeader;
+begin
+  Result := nil;
+end;
+
+function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
+  LastRvaSection: PPImageSectionHeader): Pointer;
+begin
+  Result := nil;
+end;
+
+function UnDecorateSymbolName(DecoratedName: PAnsiChar; UnDecoratedName: PAnsiChar;
+  UndecoratedLength: DWORD; Flags: DWORD): DWORD;
+begin
+  Result := 0;
+end;
+
+{$ENDIF UNIX}

@@ -4,6 +4,8 @@
 // Function Prototypes - User
 //
 
+{$IFDEF MSWINDOWS}
+
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
 
@@ -36,6 +38,8 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
+
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - User
@@ -152,10 +156,11 @@ const
   UF_SERVER_TRUST_ACCOUNT      = $2000;
   {$EXTERNALSYM UF_SERVER_TRUST_ACCOUNT}
 
-  UF_MACHINE_ACCOUNT_MASK = (UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT);
+  UF_MACHINE_ACCOUNT_MASK = UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
   {$EXTERNALSYM UF_MACHINE_ACCOUNT_MASK}
 
-  UF_ACCOUNT_TYPE_MASK = UF_TEMP_DUPLICATE_ACCOUNT or UF_NORMAL_ACCOUNT or UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
+  UF_ACCOUNT_TYPE_MASK = UF_TEMP_DUPLICATE_ACCOUNT or UF_NORMAL_ACCOUNT or
+    UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
   {$EXTERNALSYM UF_ACCOUNT_TYPE_MASK}
 
   UF_DONT_EXPIRE_PASSWD                     = $10000;
@@ -179,23 +184,23 @@ const
 
 
   UF_SETTABLE_BITS =
-                    UF_SCRIPT or
-                    UF_ACCOUNTDISABLE or
-                    UF_LOCKOUT or
-                    UF_HOMEDIR_REQUIRED or
-                    UF_PASSWD_NOTREQD or
-                    UF_PASSWD_CANT_CHANGE or
-                    UF_ACCOUNT_TYPE_MASK or
-                    UF_DONT_EXPIRE_PASSWD or
-                    UF_MNS_LOGON_ACCOUNT or
-                    UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED or
-                    UF_SMARTCARD_REQUIRED or
-                    UF_TRUSTED_FOR_DELEGATION or
-                    UF_NOT_DELEGATED or
-                    UF_USE_DES_KEY_ONLY or
-                    UF_DONT_REQUIRE_PREAUTH or
-                    UF_PASSWORD_EXPIRED or
-                    UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION;
+    UF_SCRIPT or
+    UF_ACCOUNTDISABLE or
+    UF_LOCKOUT or
+    UF_HOMEDIR_REQUIRED or
+    UF_PASSWD_NOTREQD or
+    UF_PASSWD_CANT_CHANGE or
+    UF_ACCOUNT_TYPE_MASK or
+    UF_DONT_EXPIRE_PASSWD or
+    UF_MNS_LOGON_ACCOUNT or
+    UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED or
+    UF_SMARTCARD_REQUIRED or
+    UF_TRUSTED_FOR_DELEGATION or
+    UF_NOT_DELEGATED or
+    UF_USE_DES_KEY_ONLY or
+    UF_DONT_REQUIRE_PREAUTH or
+    UF_PASSWORD_EXPIRED or
+    UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION;
   {$EXTERNALSYM UF_SETTABLE_BITS}
 
 // line 1056
@@ -241,6 +246,8 @@ const
 // Function Prototypes
 //
 
+{$IFDEF MSWINDOWS}
+
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
 
@@ -268,6 +275,8 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
+
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - Group
@@ -311,6 +320,8 @@ type
 // Function Prototypes
 //
 
+{$IFDEF MSWINDOWS}
+
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
 
@@ -344,6 +355,8 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
+
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - LocalGroup
@@ -445,4 +458,3 @@ type
   {$EXTERNALSYM LOCALGROUP_MEMBERS_INFO_3}
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
-

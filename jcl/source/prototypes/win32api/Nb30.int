@@ -418,6 +418,7 @@ const
  * Usage: result = Netbios( pncb );                             *
  ****************************************************************)
 
+{$IFDEF MSWINDOWS}
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
-
+{$ENDIF MSWINDOWS}

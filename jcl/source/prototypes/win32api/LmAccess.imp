@@ -1,3 +1,5 @@
+{$IFDEF MSWINDOWS}
+
 var
   _NetUserAdd: Pointer;
 
@@ -401,3 +403,4 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
