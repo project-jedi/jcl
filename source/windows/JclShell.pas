@@ -139,9 +139,11 @@ procedure ShellLinkFree(var Link: TShellLink);
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
+function ShellLinkIcon(const Link: TShellLink): HICON; overload;
+function ShellLinkIcon(const FileName: string): HICON; overload;
 
 //--------------------------------------------------------------------------------------------------
-// Miscellanuous
+// Miscellaneous
 //--------------------------------------------------------------------------------------------------
 
 function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
@@ -1044,8 +1046,59 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function ShellLinkIcon(const Link: TShellLink): HICON; overload;
+var
+  LocExt: string;
+  Info: TSHFileInfo;
+begin
+  Result := 0;
+  LocExt := LowerCase(ExtractFileExt(Link.IconLocation));
+  // 1. See if IconLocation specifies a valid icon file
+  if (LocExt = '.ico') and (FileExists(Link.IconLocation)) then
+  begin
+    { TODO : Implement loading from an .ico file }
+  end;
+  // 2. See if IconLocation specifies an executable
+  if Result = 0 then
+  begin
+    if (LocExt = '.dll') or (LocExt = '.exe') then
+      Result := ExtractIcon(0, PChar(Link.IconLocation), Link.IconIndex);
+  end;
+  // 3. See if target specifies a file
+  if Result = 0 then
+  begin
+    if FileExists(Link.Target) then
+      Result := ExtractIcon(0, PChar(Link.Target), Link.IconIndex);
+  end;
+  // 4. See if the target is an object
+  if Result = 0 then
+  begin
+    if Link.IdList <> nil then
+    begin
+      FillChar(Info, SizeOf(Info), 0);
+      if SHGetFileInfo(PChar(Link.IdList), 0, Info, SizeOf(Info), SHGFI_PIDL or SHGFI_ICON) <> 0 then
+        Result := Info.hIcon;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ShellLinkIcon(const FileName: string): HICON; overload;
+var
+  Link: TShellLink;
+begin
+  if Succeeded(ShellLinkResolve(FileName, Link)) then
+  begin
+    Result := ShellLinkIcon(Link);
+    ShellLinkFree(Link);
+  end;
+end;
+
 //==================================================================================================
-// Miscellanuous
+// Miscellaneous
 //==================================================================================================
 
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
