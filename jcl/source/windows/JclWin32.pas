@@ -22,8 +22,8 @@
 { incorrect in one or more of the supported Delphi versions. This unit is not  }
 { intended for regular code, only API declarations.                            }
 {                                                                              }
-{ Unit owner:                                                                  }
-{ Last modified: January 24, 2001                                              }
+{ Unit owner: Peter Friese                                                     }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
