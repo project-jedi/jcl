@@ -152,8 +152,7 @@ type
 implementation
 
 uses
-  SysConst,
-  SysUtils,
+  SysConst, SysUtils,
   JclFileUtils, JclResources;
 
 //==============================================================================
@@ -163,7 +162,7 @@ uses
 // Helper consts, helper types, helper routines
 
 const
-  CompressionFormat: array[TFileCompressionState] of Short =
+  CompressionFormat: array [TFileCompressionState] of Short =
   (
     COMPRESSION_FORMAT_NONE,
     COMPRESSION_FORMAT_DEFAULT,
@@ -171,7 +170,7 @@ const
   );
 
   // use IsDirectory(FileName) as array index
-  FileFlag: array[Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
+  FileFlag: array [Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
 
 type
   TStackFrame = packed record
@@ -181,6 +180,8 @@ type
 
   EJclInvalidArgument = class (EJclError);
 
+//------------------------------------------------------------------------------
+
 {$STACKFRAMES OFF}
 
 function CallersCallerAddress: Pointer;
@@ -188,6 +189,8 @@ asm
         MOV     EAX, [EBP]
         MOV     EAX, TStackFrame([EAX]).CallerAddress
 end;
+
+//------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -199,7 +202,11 @@ begin
       at CallersCallerAddress;
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
+
+//------------------------------------------------------------------------------
 
 function SetCompression(const FileName: string; const State: Short; FileFlag: DWORD): Boolean;
 var
@@ -219,6 +226,8 @@ begin
     CloseHandle(Handle);
   end
 end;
+
+//------------------------------------------------------------------------------
 
 function SetPathCompression(Dir: string; const Mask: string; const State: Short;
   const SetDefault, Recursive: Boolean): Boolean;
@@ -245,12 +254,12 @@ begin
           else
             if Recursive then
               Result := SetPathCompression(FileName, Mask, State, SetDefault, True);
-          if Result = False then
+          if not Result then
             Exit;
         end;
         R := FindNext(SearchRec);
       until R <> 0;
-      Result := R = ERROR_NO_MORE_FILES;
+      Result := (R = ERROR_NO_MORE_FILES);
     finally
       SysUtils.FindClose(SearchRec);
     end;
@@ -268,12 +277,12 @@ begin
   Handle := CreateFile(PChar(FileName), 0, 0, nil, OPEN_EXISTING,
     FileFlag[IsDirectory(FileName)], 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Result := DeviceIoControl(Handle, FSCTL_GET_COMPRESSION, nil, 0, @State,
-      SizeOf(Short), BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      Result := DeviceIoControl(Handle, FSCTL_GET_COMPRESSION, nil, 0, @State,
+        SizeOf(Short), BytesReturned, nil);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 function NtfsGetCompression(const FileName: string): TFileCompressionState;
@@ -329,7 +338,9 @@ begin
     RaiseLastOSError;
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
 
 //------------------------------------------------------------------------------
 
@@ -368,11 +379,11 @@ begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0, BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0, BytesReturned, nil);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 //------------------------------------------------------------------------------
@@ -409,11 +420,11 @@ begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Result := NtfsZeroDataByHandle(Handle, First, Last);
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      Result := NtfsZeroDataByHandle(Handle, First, Last);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 //------------------------------------------------------------------------------
@@ -506,12 +517,12 @@ begin
   Handle := CreateFile(PChar(FileName), 0, FILE_SHARE_READ or FILE_SHARE_WRITE,
     nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    GetFileInformationByHandle(Handle, Info);
-    Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      GetFileInformationByHandle(Handle, Info);
+      Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 //==============================================================================
@@ -573,14 +584,14 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    FillChar(ReparseData, SizeOf(ReparseData), #0);
-    ReparseData.ReparseTag := ReparseTag;
-    Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT, @ReparseData,
-      REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nil, 0, BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      FillChar(ReparseData, SizeOf(ReparseData), #0);
+      ReparseData.ReparseTag := ReparseTag;
+      Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT, @ReparseData,
+        REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nil, 0, BytesReturned, nil);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 //------------------------------------------------------------------------------
@@ -594,12 +605,12 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
-      Size, nil, 0, BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end;
+    try
+      Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
+        Size, nil, 0, BytesReturned, nil);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
 //------------------------------------------------------------------------------
@@ -615,18 +626,18 @@ begin
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   LastError := GetLastError;
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-      ReparseData.ReparseDataLength + SizeOf(ReparseData), BytesReturned, nil);
-    if not Result then
-    begin
-      ReparseData.ReparseDataLength := BytesReturned;
-      LastError := GetLastError;
+    try
+      Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
+        ReparseData.ReparseDataLength + SizeOf(ReparseData), BytesReturned, nil);
+      if not Result then
+      begin
+        ReparseData.ReparseDataLength := BytesReturned;
+        LastError := GetLastError;
+      end;
+    finally
+      CloseHandle(Handle);
+      SetLastError(LastError);
     end;
-  finally
-    CloseHandle(Handle);
-    SetLastError(LastError);
-  end;
 end;
 
 //==============================================================================
@@ -754,6 +765,17 @@ end;
 // Junction Points
 //==============================================================================
 
+type
+  TReparseDataBufferOverlay = record
+  case Boolean of
+    False:
+      (Reparse: TReparseDataBuffer;);
+    True:
+      (Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;);
+  end;
+  
+//------------------------------------------------------------------------------
+
 function IsReparseTagValid(Tag: DWORD): Boolean;
 begin
   Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
@@ -768,8 +790,7 @@ var
   DestW: WideString;             // Unicode version of Dest
   FullDir: array [0..1024] of Char;
   FilePart: PChar;
-  Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
-  ReparseData: TReparseDataBuffer absolute Buffer;
+  ReparseData: TReparseDataBufferOverlay;
   NameLength: Longword;
 begin
   Result := False;
@@ -790,16 +811,16 @@ begin
   end;
   FillChar(ReparseData, SizeOf(ReparseData), #0);
   NameLength := StrLen(Dest) * SizeOf(WideChar);
-  ReparseData.ReparseTag := IO_REPARSE_TAG_MOUNT_POINT;
-  ReparseData.ReparseDataLength := NameLength + 12;
-  ReparseData.SubstituteNameLength := NameLength;
-  ReparseData.PrintNameOffset := NameLength + 2;
-  // Not the most ellegant way to copy an AnsiString into an Unicode buffer but
+  ReparseData.Reparse.ReparseTag := IO_REPARSE_TAG_MOUNT_POINT;
+  ReparseData.Reparse.ReparseDataLength := NameLength + 12;
+  ReparseData.Reparse.SubstituteNameLength := NameLength;
+  ReparseData.Reparse.PrintNameOffset := NameLength + 2;
+  // Not the most elegant way to copy an AnsiString into an Unicode buffer but
   // let's avoid dependencies on JclUnicode.pas (adds significant resources).
   DestW := WideString(Dest);
-  Move(DestW[1], ReparseData.PathBuffer, Length(DestW) * SizeOf(WideChar));
-  Result := NtfsSetReparsePoint(Source, ReparseData,
-    ReparseData.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
+  Move(DestW[1], ReparseData.Reparse.PathBuffer, Length(DestW) * SizeOf(WideChar));
+  Result := NtfsSetReparsePoint(Source, ReparseData.Reparse,
+    ReparseData.Reparse.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
 
 //------------------------------------------------------------------------------
@@ -817,8 +838,7 @@ const
 function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 var
   Handle: THandle;
-  Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
-  ReparseData: TReparseDataBuffer absolute Buffer;
+  ReparseData: TReparseDataBufferOverlay;
   BytesReturned: DWORD;
 begin
   Result := False;
@@ -830,14 +850,14 @@ begin
     try
       if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
         MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
-        IsReparseTagValid(ReparseData.ReparseTag) then}
+        IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
         then
       begin
-        if BytesReturned >= ReparseData.SubstituteNameLength + SizeOf(WideChar) then
+        if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
         begin
-          SetLength(Destination, (ReparseData.SubstituteNameLength div SizeOf(WideChar)) + 1);
-          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.PathBuffer,
-            (ReparseData.SubstituteNameLength div SizeOf(WCHAR)) + 1,
+          SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
+          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
+            (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
             PChar(Destination), Length(Destination), nil, nil);
           Result := True;
         end;
@@ -909,7 +929,8 @@ begin
       end;
       StreamName[Header.dwStreamNameSize div SizeOf(WCHAR)] := WideChar(#0);
     end
-    else StreamName := nil;
+    else
+      StreamName := nil;
     // Did we find any of the specified streams ([] means any stream)?
     if (Data.Internal.StreamIds = []) or
       (TStreamId(Header.dwStreamId) in Data.Internal.StreamIds) then
@@ -983,20 +1004,17 @@ function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 var
   BytesRead: DWORD;
 begin
-  if Data.Internal.FileHandle <> INVALID_HANDLE_VALUE then
+  Result := Data.Internal.FileHandle <> INVALID_HANDLE_VALUE;
+  if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
     BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
     CloseHandle(Data.Internal.FileHandle);
     Data.Internal.FileHandle := INVALID_HANDLE_VALUE;
     Data.Internal.Context := nil;
-    Result := True;
   end
   else
-  begin
     SetLastError(ERROR_INVALID_HANDLE);
-    Result := False;
-  end;
 end;
 
 end.
