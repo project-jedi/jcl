@@ -1717,7 +1717,7 @@ begin
 { TODO : Here's a problem if X > High(Int64).
 It *seems* to surface only if ExponentDivision > 12, but it
 has not been investigated if ExponentDivision <= 12 is safe. }
-  K := Int(X);
+  K := Trunc(X);
   if Value < 0 then
     K := -K;
   Mantissa := IntToStr(K, FirstDigitPos);
@@ -1883,12 +1883,13 @@ end;
 procedure TJclNumericFormat.SetExpDivision(const Value: Integer);
 begin
   if Value <= 1 then
-    Value := 1
+    FExpDivision := 1
   else
   // see TODO in GetMantissaExp
   if Value > 12 then
-    Value := 12;
-  FExpDivision := Value;
+    FExpDivision := 12
+  else
+    FExpDivision := Value;
 end;
 
 //--------------------------------------------------------------------------------------------------
