@@ -2163,7 +2163,7 @@ end;
 
 function GetAPMLineStatus: TAPMLineStatus;
 var
- SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: _System_Power_Status;
 begin
   Result := alsUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2185,7 +2185,7 @@ end;
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
- SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: _System_Power_Status;
 begin
   Result := abfUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2213,7 +2213,7 @@ end;
 
 function GetAPMBatteryLifePercent: Integer;
 var
- SystemPowerstatus:_System_Power_Status;
+  SystemPowerstatus: _System_Power_Status;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2226,7 +2226,7 @@ end;
 
 function GetAPMBatteryLifeTime: Integer;
 var
- SystemPowerstatus:_System_Power_Status;
+  SystemPowerstatus: _System_Power_Status;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2239,7 +2239,7 @@ end;
 
 function GetAPMBatteryFullLifeTime: Integer;
 var
- SystemPowerstatus:_System_Power_Status;
+  SystemPowerstatus: _System_Power_Status;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2278,9 +2278,9 @@ function GetMemoryLoad: Byte;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwMemoryLoad;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwMemoryLoad;
 end;
 
 //------------------------------------------------------------------------------
@@ -2289,10 +2289,10 @@ function GetSwapFileSize: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- with MemoryStatus do
-   Result := Trunc(dwTotalPageFile - dwAvailPageFile);
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  with MemoryStatus do
+    Result := Trunc(dwTotalPageFile - dwAvailPageFile);
 end;
 
 //------------------------------------------------------------------------------
@@ -2301,10 +2301,10 @@ function GetSwapFileUsage: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- with MemoryStatus do
-   Result := 100-trunc(dwAvailPageFile/dwTotalPageFile*100);
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  with MemoryStatus do
+    Result := 100-Trunc(dwAvailPageFile/dwTotalPageFile*100);
 end;
 
 //------------------------------------------------------------------------------
@@ -2313,9 +2313,9 @@ function GetTotalPhysicalMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwTotalPhys;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwTotalPhys;
 end;
 
 //------------------------------------------------------------------------------
@@ -2324,9 +2324,9 @@ function GetFreePhysicalMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwAvailPhys;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwAvailPhys;
 end;
 
 //------------------------------------------------------------------------------
@@ -2335,9 +2335,9 @@ function GetTotalPageFileMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwTotalPageFile;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwTotalPageFile;
 end;
 
 //------------------------------------------------------------------------------
@@ -2346,9 +2346,9 @@ function GetFreePageFileMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwAvailPageFile;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwAvailPageFile;
 end;
 
 //------------------------------------------------------------------------------
@@ -2357,9 +2357,9 @@ function GetTotalVirtualMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwTotalVirtual;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwTotalVirtual;
 end;
 
 //------------------------------------------------------------------------------
@@ -2368,9 +2368,9 @@ function GetFreeVirtualMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
- MemoryStatus.dwLength:=SizeOf(MemoryStatus);
- GlobalMemoryStatus(MemoryStatus);
- Result := MemoryStatus.dwAvailVirtual;
+  MemoryStatus.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(MemoryStatus);
+  Result := MemoryStatus.dwAvailVirtual;
 end;
 
 //==============================================================================
