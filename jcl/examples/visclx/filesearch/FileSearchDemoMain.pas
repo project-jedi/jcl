@@ -134,6 +134,8 @@ begin
     if (FileInfo.Attr and faSymLink) <> 0 then
       SubItems.Add(SymbolicLinkTarget(Caption));
     {$ENDIF UNIX}
+    SubItems.Add(FileGetOwnerName(Caption));
+    SubItems.Add(FileGetGroupName(Caption));
   end;
 end;
 

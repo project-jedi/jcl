@@ -66,6 +66,14 @@ object FileSearchForm: TFileSearchForm
       item
         Caption = 'Attr.'
         Width = 60
+      end
+      item
+        Caption = 'Owner'
+        Width = 100
+      end
+      item
+        Caption = 'Group'
+        Width = 50
       end>
     ReadOnly = True
     ShowColumnSortIndicators = True
