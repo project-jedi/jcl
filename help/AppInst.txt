@@ -18,16 +18,16 @@ call immediately terminates the application when another istance is already runn
  <P>To receive notifications you must override the WndProc of your main form and
 include the following code (or something along those lines):<BR>
   <PRE Class=Syntax>
-  procedure TForm1.WndProc(var Msg: TMessage);<BR>
-  begin<BR>
-    if Msg.Msg = JclAppInstances.MessageId then<BR>
-      case Msg.WParam of<BR>
-        AI_INSTANCECREATED: [another instance was created]<BR>
-        AI_INSTANCEDESTROYED: [another instance was destroyed]<BR>
-        AI_USERMSG: [user defined message (UserNotify)]<BR>
-      end;
-    inherited WndProc(Msg);
-  end;
+procedure TForm1.WndProc(var Msg: TMessage);<BR>
+begin<BR>
+  if Msg.Msg = JclAppInstances.MessageId then<BR>
+    case Msg.WParam of<BR>
+      AI_INSTANCECREATED: [another instance was created]<BR>
+      AI_INSTANCEDESTROYED: [another instance was destroyed]<BR>
+      AI_USERMSG: [user defined message (UserNotify)]<BR>
+    end;
+  inherited WndProc(Msg);
+end;
   </PRE>
 Note that in both instance creation and instance destruction the Msg.LParam
 field contains the process ID of the affected instance (which could be the instance
@@ -43,12 +43,80 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+AI_INSTANCECREATED = $0001;
+[ShortDescr]
+WParam field for instance creation notifications
+[Description]
+When an application instance is created TJclAppInst sends a notification message
+to all other running instances. The message value is determined by the MessageId
+property, the WParam field is set to AI_INSTANCECREATED and the LParam fiels is
+set to the Process ID of the instance being created. Note that message is also
+send to the application instance under construction.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclAppInst
+Category=Libraries, Processes and Threads
+SubCat=TJclAppInstances
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=AI_INSTANCEDESTROYED
+2=AI_USERMSG
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+AI_INSTANCEDESTROYED = $0002;
+[ShortDescr]
+WParam field for instance destruction notifications
+[Description]
+When an application instance is destroyed TJclAppInst sends a notification message
+to all other running instances. The message value is determined by the MessageId
+property, the WParam field is set to AI_INSTANCEDESTROYED and the LParam fiels is
+set to the Process ID of the instance being destroyed. Note that message is also
+send to the application instance which is exiting.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclAppInst
+Category=Libraries, Processes and Threads
+SubCat=TJclAppInstances
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=AI_INSTANCECREATED
+2=AI_USERMSG
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+AI_USERMSG = $0003;
+[ShortDescr]
+WParam field for user-defined notification messages.
+[Description]
+When an application uses the UserNotify method of TJclAppInstances the class
+sends a message to all running instances with a message value determined by the
+MessageID property, WParam set to AI_USERMSG and LParam set to the parameter
+specified in the method call.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclAppInst
+Category=Libraries, Processes and Threads
+SubCat=TJclAppInstances
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=AI_INSTANCECREATED
+2=AI_INSTANCEDESTROYED
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 class function BringAppWindowToFront(const Wnd: HWND): Boolean;
 [ShortDescr]
 Brings the specified window into the foreground.
 [Description]
-BringAppWindowToFrontputs the thread that created the specified window into the
-foreground and activated the window. Keyboard input is directed
+BringAppWindowToFront puts the thread that created the specified window into the
+foreground and activates the window. Keyboard input is directed
 to the window, and various visual cues are changed for the user. The system
 assigns a slightly higher priority to the thread that created the foreground
 window than it does to other threads (from the Platform SDK).
@@ -154,6 +222,30 @@ calling <REF>KillInstance</REF>.
 [Result]
 If fewer than MaxInstances appplications we're running the result is True,
 otherwise the result is False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=3,4,5
+Unit=JclAppInst
+Category=Libraries, Processes and Threads
+SubCat=TJclAppInstances
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=CheckSingleInstance
+2=KillInstance
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CheckMultipleInstances(const MaxInstances: Word);
+[ShortDescr]
+Check the number of running instances.
+[Description]
+CheckMultipleInstance determines whether fewer than MaxInstances application
+instances are running. If this is true, the process is registered as a running
+instance and a notification is send to all other running instances, otherwise the
+method brings the first instance of the application to the foreground and then
+terminates itself (as such the routine never returns).
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -305,6 +397,7 @@ Returns the index into the ProcessIDs array for a process.
 Read the InstanceIndex property to determine the zero based index into the
 ProcessIDs array property of a specific application instance. The array index is
 the process ID of the application instance for which you want to know the index.
+Upon failure the property reads -1.
 [Quick Info]
 Kind=Property
 Visibility=Public
