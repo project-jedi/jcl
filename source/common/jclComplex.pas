@@ -28,8 +28,9 @@ unit JclComplex;
 
 interface
 
-uses SysUtils,
-     JclBase, JclMath, JclSysUtils, JclStrings, JclResources;
+uses
+  SysUtils,
+  JclBase, JclMath, JclResources, JclStrings, JclSysUtils;
 
 const
   TComplex_VERSION = 5.01;
