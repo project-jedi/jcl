@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: February 21, 2002                                                                 }
+{ Last modified: March 31, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -45,6 +45,170 @@ uses
 // Locales related
 //--------------------------------------------------------------------------------------------------
 
+const
+  KLF_SETFORPROCESS = $00000100;
+
+  LCID_ALTERNATE_SORTS      = $00000004;
+
+  CP_THREAD_ACP             = 3;
+  CP_SYMBOL                 = 42;
+
+  CTRY_ALBANIA              = 355;        // Albania
+  CTRY_ALGERIA              = 213;        // Algeria
+  CTRY_ARGENTINA            = 54;         // Argentina
+  CTRY_ARMENIA              = 374;        // Armenia
+  CTRY_AUSTRALIA            = 61;         // Australia
+  CTRY_AUSTRIA              = 43;         // Austria
+  CTRY_AZERBAIJAN           = 994;        // Azerbaijan
+  CTRY_BAHRAIN              = 973;        // Bahrain
+  CTRY_BELARUS              = 375;        // Belarus
+  CTRY_BELGIUM              = 32;         // Belgium
+  CTRY_BELIZE               = 501;        // Belize
+  CTRY_BOLIVIA              = 591;        // Bolivia
+  CTRY_BRAZIL               = 55;         // Brazil
+  CTRY_BRUNEI_DARUSSALAM    = 673;        // Brunei Darussalam
+  CTRY_BULGARIA             = 359;        // Bulgaria
+  CTRY_CANADA               = 2;          // Canada
+  CTRY_CARIBBEAN            = 1;          // Caribbean
+  CTRY_CHILE                = 56;         // Chile
+  CTRY_COLOMBIA             = 57;         // Colombia
+  CTRY_COSTA_RICA           = 506;        // Costa Rica
+  CTRY_CROATIA              = 385;        // Croatia
+  CTRY_CZECH                = 420;        // Czech Republic
+  CTRY_DENMARK              = 45;         // Denmark
+  CTRY_DOMINICAN_REPUBLIC   = 1;          // Dominican Republic
+  CTRY_ECUADOR              = 593;        // Ecuador
+  CTRY_EGYPT                = 20;         // Egypt
+  CTRY_EL_SALVADOR          = 503;        // El Salvador
+  CTRY_ESTONIA              = 372;        // Estonia
+  CTRY_FAEROE_ISLANDS       = 298;        // Faeroe Islands
+  CTRY_FINLAND              = 358;        // Finland
+  CTRY_FRANCE               = 33;         // France
+  CTRY_GEORGIA              = 995;        // Georgia
+  CTRY_GERMANY              = 49;         // Germany
+  CTRY_GREECE               = 30;         // Greece
+  CTRY_GUATEMALA            = 502;        // Guatemala
+  CTRY_HONDURAS             = 504;        // Honduras
+  CTRY_HONG_KONG            = 852;        // Hong Kong S.A.R., P.R.C.
+  CTRY_HUNGARY              = 36;         // Hungary
+  CTRY_ICELAND              = 354;        // Iceland
+  CTRY_INDIA                = 91;         // India
+  CTRY_INDONESIA            = 62;         // Indonesia
+  CTRY_IRAN                 = 981;        // Iran
+  CTRY_IRAQ                 = 964;        // Iraq
+  CTRY_IRELAND              = 353;        // Ireland
+  CTRY_ISRAEL               = 972;        // Israel
+  CTRY_ITALY                = 39;         // Italy
+  CTRY_JAMAICA              = 1;          // Jamaica
+  CTRY_JAPAN                = 81;         // Japan
+  CTRY_JORDAN               = 962;        // Jordan
+  CTRY_KAZAKSTAN            = 7;          // Kazakstan
+  CTRY_KENYA                = 254;        // Kenya
+  CTRY_KUWAIT               = 965;        // Kuwait
+  CTRY_KYRGYZSTAN           = 996;        // Kyrgyzstan
+  CTRY_LATVIA               = 371;        // Latvia
+  CTRY_LEBANON              = 961;        // Lebanon
+  CTRY_LIBYA                = 218;        // Libya
+  CTRY_LIECHTENSTEIN        = 41;         // Liechtenstein
+  CTRY_LITHUANIA            = 370;        // Lithuania
+  CTRY_LUXEMBOURG           = 352;        // Luxembourg
+  CTRY_MACAU                = 853;        // Macau S.A.R., PRC
+  CTRY_MACEDONIA            = 389;        // Former Yugoslav Republic of Macedonia
+  CTRY_MALAYSIA             = 60;         // Malaysia
+  CTRY_MALDIVES             = 960;        // Maldives
+  CTRY_MEXICO               = 52;         // Mexico
+  CTRY_MONACO               = 33;         // Principality of Monaco
+  CTRY_MONGOLIA             = 976;        // Mongolia
+  CTRY_MOROCCO              = 212;        // Morocco
+  CTRY_NETHERLANDS          = 31;         // Netherlands
+  CTRY_NEW_ZEALAND          = 64;         // New Zealand
+  CTRY_NICARAGUA            = 505;        // Nicaragua
+  CTRY_NORWAY               = 47;         // Norway
+  CTRY_OMAN                 = 968;        // Oman
+  CTRY_PAKISTAN             = 92;         // Islamic Republic of Pakistan
+  CTRY_PANAMA               = 507;        // Panama
+  CTRY_PARAGUAY             = 595;        // Paraguay
+  CTRY_PERU                 = 51;         // Peru
+  CTRY_PHILIPPINES          = 63;         // Republic of the Philippines
+  CTRY_POLAND               = 48;         // Poland
+  CTRY_PORTUGAL             = 351;        // Portugal
+  CTRY_PRCHINA              = 86;         // People's Republic of China
+  CTRY_PUERTO_RICO          = 1;          // Puerto Rico
+  CTRY_QATAR                = 974;        // Qatar
+  CTRY_ROMANIA              = 40;         // Romania
+  CTRY_RUSSIA               = 7;          // Russia
+  CTRY_SAUDI_ARABIA         = 966;        // Saudi Arabia
+  CTRY_SERBIA               = 381;        // Serbia
+  CTRY_SINGAPORE            = 65;         // Singapore
+  CTRY_SLOVAK               = 421;        // Slovak Republic
+  CTRY_SLOVENIA             = 386;        // Slovenia
+  CTRY_SOUTH_AFRICA         = 27;         // South Africa
+  CTRY_SOUTH_KOREA          = 82;         // Korea
+  CTRY_SPAIN                = 34;         // Spain
+  CTRY_SWEDEN               = 46;         // Sweden
+  CTRY_SWITZERLAND          = 41;         // Switzerland
+  CTRY_SYRIA                = 963;        // Syria
+  CTRY_TAIWAN               = 886;        // Taiwan
+  CTRY_TATARSTAN            = 7;          // Tatarstan
+  CTRY_THAILAND             = 66;         // Thailand
+  CTRY_TRINIDAD_Y_TOBAGO    = 1;          // Trinidad y Tobago
+  CTRY_TUNISIA              = 216;        // Tunisia
+  CTRY_TURKEY               = 90;         // Turkey
+  CTRY_UAE                  = 971;        // U.A.E.
+  CTRY_UKRAINE              = 380;        // Ukraine
+  CTRY_UNITED_KINGDOM       = 44;         // United Kingdom
+  CTRY_UNITED_STATES        = 1;          // United States
+  CTRY_URUGUAY              = 598;        // Uruguay
+  CTRY_UZBEKISTAN           = 7;          // Uzbekistan
+  CTRY_VENEZUELA            = 58;         // Venezuela
+  CTRY_VIET_NAM             = 84;         // Viet Nam
+  CTRY_YEMEN                = 967;        // Yemen
+  CTRY_ZIMBABWE             = 263;        // Zimbabwe
+
+  LOCALE_RETURN_NUMBER          = $20000000;
+
+  LOCALE_IDEFAULTEBCDICCODEPAGE = $00001012;
+  LOCALE_IPAPERSIZE             = $0000100A;
+  LOCALE_SENGCURRNAME           = $00001007;
+  LOCALE_SNATIVECURRNAME        = $00001008;
+  LOCALE_SYEARMONTH             = $00001006;
+  LOCALE_SSORTNAME              = $00001013;
+  LOCALE_IDIGITSUBSTITUTION     = $00001014;
+
+  DATE_YEARMONTH            = $00000008;
+  DATE_LTRREADING           = $00000010;
+  DATE_RTLREADING           = $00000020;
+
+  CAL_SYEARMONTH            = $0000002F;
+  CAL_ITWODIGITYEARMAX      = $00000030;
+
+  CAL_NOUSEROVERRIDE        = LOCALE_NOUSEROVERRIDE;
+  CAL_USE_CP_ACP            = LOCALE_USE_CP_ACP;
+  CAL_RETURN_NUMBER         = LOCALE_RETURN_NUMBER;
+
+  CAL_GREGORIAN_ME_FRENCH      = 9;       // Gregorian Middle East French calendar
+  CAL_GREGORIAN_ARABIC         = 10;      // Gregorian Arabic calendar
+  CAL_GREGORIAN_XLIT_ENGLISH   = 11;      // Gregorian Transliterated English calendar
+  CAL_GREGORIAN_XLIT_FRENCH    = 12;      // Gregorian Transliterated French calendar
+
+  LGRPID_WESTERN_EUROPE        = $0001;   // Western Europe & U.S.
+  LGRPID_CENTRAL_EUROPE        = $0002;   // Central Europe
+  LGRPID_BALTIC                = $0003;   // Baltic
+  LGRPID_GREEK                 = $0004;   // Greek
+  LGRPID_CYRILLIC              = $0005;   // Cyrillic
+  LGRPID_TURKISH               = $0006;   // Turkish
+  LGRPID_JAPANESE              = $0007;   // Japanese
+  LGRPID_KOREAN                = $0008;   // Korean
+  LGRPID_TRADITIONAL_CHINESE   = $0009;   // Traditional Chinese
+  LGRPID_SIMPLIFIED_CHINESE    = $000A;   // Simplified Chinese
+  LGRPID_THAI                  = $000B;   // Thai
+  LGRPID_HEBREW                = $000C;   // Hebrew
+  LGRPID_ARABIC                = $000D;   // Arabic
+  LGRPID_VIETNAMESE            = $000E;   // Vietnamese
+  LGRPID_INDIC                 = $000F;   // Indic
+  LGRPID_GEORGIAN              = $0010;   // Georgian
+  LGRPID_ARMENIAN              = $0011;   // Armenian
+
 function LANGIDFROMLCID(const lcid: LCID): Word;
 function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
 function PRIMARYLANGID(const lgid: Word): Word;
@@ -52,9 +216,19 @@ function SUBLANGID(const lgid: Word): Word;
 function MAKELCID(const wLanguageID, wSortID: Word): LCID;
 function SORTIDFROMLCID(const lcid: LCID): Word;
 
-const
-  KLF_SETFORPROCESS = $00000100;
-  DATE_YEARMONTH = $00000008;
+function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar;
+  cchData: Integer; lpValue: PDWORD): Integer; stdcall;
+function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar;
+  cchData: Integer; lpValue: PDWORD): Integer; stdcall;
+
+function SetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar): Integer; stdcall;
+function SetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar): Integer; stdcall;
+
+type
+  TEnumCalendarInfoProcEx = function (lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+
+function EnumCalendarInfoEx(lpCalInfoEnumProc: TEnumCalendarInfoProcEx; Locale: LCID;
+  Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 
 //--------------------------------------------------------------------------------------------------
 // Various Base Services declarations
@@ -518,13 +692,6 @@ const
   FILE_FLAG_OPEN_REPARSE_POINT = $00200000;
 
 //--------------------------------------------------------------------------------------------------
-// Junction Points
-//--------------------------------------------------------------------------------------------------
-
-const
-  CP_THREAD_ACP = 3;           // current thread's ANSI code page
-
-//--------------------------------------------------------------------------------------------------
 // Streams
 //--------------------------------------------------------------------------------------------------
 
@@ -935,6 +1102,158 @@ const
 
 // centralized EXTERNALSYMs to keep this Delphi 3 compatible
 
+{$EXTERNALSYM LCID_ALTERNATE_SORTS}
+{$EXTERNALSYM CP_THREAD_ACP}
+{$EXTERNALSYM CP_SYMBOL}
+{$EXTERNALSYM CTRY_ALBANIA}
+{$EXTERNALSYM CTRY_ALGERIA}
+{$EXTERNALSYM CTRY_ARGENTINA}
+{$EXTERNALSYM CTRY_ARMENIA}
+{$EXTERNALSYM CTRY_AUSTRALIA}
+{$EXTERNALSYM CTRY_AUSTRIA}
+{$EXTERNALSYM CTRY_AZERBAIJAN}
+{$EXTERNALSYM CTRY_BAHRAIN}
+{$EXTERNALSYM CTRY_BELARUS}
+{$EXTERNALSYM CTRY_BELGIUM}
+{$EXTERNALSYM CTRY_BELIZE}
+{$EXTERNALSYM CTRY_BOLIVIA}
+{$EXTERNALSYM CTRY_BRAZIL}
+{$EXTERNALSYM CTRY_BRUNEI_DARUSSALAM}
+{$EXTERNALSYM CTRY_BULGARIA}
+{$EXTERNALSYM CTRY_CANADA}
+{$EXTERNALSYM CTRY_CARIBBEAN}
+{$EXTERNALSYM CTRY_CHILE}
+{$EXTERNALSYM CTRY_COLOMBIA}
+{$EXTERNALSYM CTRY_COSTA_RICA}
+{$EXTERNALSYM CTRY_CROATIA}
+{$EXTERNALSYM CTRY_CZECH}
+{$EXTERNALSYM CTRY_DENMARK}
+{$EXTERNALSYM CTRY_DOMINICAN_REPUBLIC}
+{$EXTERNALSYM CTRY_ECUADOR}
+{$EXTERNALSYM CTRY_EGYPT}
+{$EXTERNALSYM CTRY_EL_SALVADOR}
+{$EXTERNALSYM CTRY_ESTONIA}
+{$EXTERNALSYM CTRY_FAEROE_ISLANDS}
+{$EXTERNALSYM CTRY_FINLAND}
+{$EXTERNALSYM CTRY_FRANCE}
+{$EXTERNALSYM CTRY_GEORGIA}
+{$EXTERNALSYM CTRY_GERMANY}
+{$EXTERNALSYM CTRY_GREECE}
+{$EXTERNALSYM CTRY_GUATEMALA}
+{$EXTERNALSYM CTRY_HONDURAS}
+{$EXTERNALSYM CTRY_HONG_KONG}
+{$EXTERNALSYM CTRY_HUNGARY}
+{$EXTERNALSYM CTRY_ICELAND}
+{$EXTERNALSYM CTRY_INDIA}
+{$EXTERNALSYM CTRY_INDONESIA}
+{$EXTERNALSYM CTRY_IRAN}
+{$EXTERNALSYM CTRY_IRAQ}
+{$EXTERNALSYM CTRY_IRELAND}
+{$EXTERNALSYM CTRY_ISRAEL}
+{$EXTERNALSYM CTRY_ITALY}
+{$EXTERNALSYM CTRY_JAMAICA}
+{$EXTERNALSYM CTRY_JAPAN}
+{$EXTERNALSYM CTRY_JORDAN}
+{$EXTERNALSYM CTRY_KAZAKSTAN}
+{$EXTERNALSYM CTRY_KENYA}
+{$EXTERNALSYM CTRY_KUWAIT}
+{$EXTERNALSYM CTRY_KYRGYZSTAN}
+{$EXTERNALSYM CTRY_LATVIA}
+{$EXTERNALSYM CTRY_LEBANON}
+{$EXTERNALSYM CTRY_LIBYA}
+{$EXTERNALSYM CTRY_LIECHTENSTEIN}
+{$EXTERNALSYM CTRY_LITHUANIA}
+{$EXTERNALSYM CTRY_LUXEMBOURG}
+{$EXTERNALSYM CTRY_MACAU}
+{$EXTERNALSYM CTRY_MACEDONIA}
+{$EXTERNALSYM CTRY_MALAYSIA}
+{$EXTERNALSYM CTRY_MALDIVES}
+{$EXTERNALSYM CTRY_MEXICO}
+{$EXTERNALSYM CTRY_MONACO}
+{$EXTERNALSYM CTRY_MONGOLIA}
+{$EXTERNALSYM CTRY_MOROCCO}
+{$EXTERNALSYM CTRY_NETHERLANDS}
+{$EXTERNALSYM CTRY_NEW_ZEALAND}
+{$EXTERNALSYM CTRY_NICARAGUA}
+{$EXTERNALSYM CTRY_NORWAY}
+{$EXTERNALSYM CTRY_OMAN}
+{$EXTERNALSYM CTRY_PAKISTAN}
+{$EXTERNALSYM CTRY_PANAMA}
+{$EXTERNALSYM CTRY_PARAGUAY}
+{$EXTERNALSYM CTRY_PERU}
+{$EXTERNALSYM CTRY_PHILIPPINES}
+{$EXTERNALSYM CTRY_POLAND}
+{$EXTERNALSYM CTRY_PORTUGAL}
+{$EXTERNALSYM CTRY_PRCHINA}
+{$EXTERNALSYM CTRY_PUERTO_RICO}
+{$EXTERNALSYM CTRY_QATAR}
+{$EXTERNALSYM CTRY_ROMANIA}
+{$EXTERNALSYM CTRY_RUSSIA}
+{$EXTERNALSYM CTRY_SAUDI_ARABIA}
+{$EXTERNALSYM CTRY_SERBIA}
+{$EXTERNALSYM CTRY_SINGAPORE}
+{$EXTERNALSYM CTRY_SLOVAK}
+{$EXTERNALSYM CTRY_SLOVENIA}
+{$EXTERNALSYM CTRY_SOUTH_AFRICA}
+{$EXTERNALSYM CTRY_SOUTH_KOREA}
+{$EXTERNALSYM CTRY_SPAIN}
+{$EXTERNALSYM CTRY_SWEDEN}
+{$EXTERNALSYM CTRY_SWITZERLAND}
+{$EXTERNALSYM CTRY_SYRIA}
+{$EXTERNALSYM CTRY_TAIWAN}
+{$EXTERNALSYM CTRY_TATARSTAN}
+{$EXTERNALSYM CTRY_THAILAND}
+{$EXTERNALSYM CTRY_TRINIDAD_Y_TOBAGO}
+{$EXTERNALSYM CTRY_TUNISIA}
+{$EXTERNALSYM CTRY_TURKEY}
+{$EXTERNALSYM CTRY_UAE}
+{$EXTERNALSYM CTRY_UKRAINE}
+{$EXTERNALSYM CTRY_UNITED_KINGDOM}
+{$EXTERNALSYM CTRY_UNITED_STATES}
+{$EXTERNALSYM CTRY_URUGUAY}
+{$EXTERNALSYM CTRY_UZBEKISTAN}
+{$EXTERNALSYM CTRY_VENEZUELA}
+{$EXTERNALSYM CTRY_VIET_NAM}
+{$EXTERNALSYM CTRY_YEMEN}
+{$EXTERNALSYM CTRY_ZIMBABWE}
+{$EXTERNALSYM LOCALE_RETURN_NUMBER}
+{$EXTERNALSYM LOCALE_IDEFAULTEBCDICCODEPAGE}
+{$EXTERNALSYM LOCALE_IPAPERSIZE}
+{$EXTERNALSYM LOCALE_SENGCURRNAME}
+{$EXTERNALSYM LOCALE_SNATIVECURRNAME}
+{$EXTERNALSYM LOCALE_SYEARMONTH}
+{$EXTERNALSYM LOCALE_SSORTNAME}
+{$EXTERNALSYM LOCALE_IDIGITSUBSTITUTION}
+{$EXTERNALSYM DATE_YEARMONTH}
+{$EXTERNALSYM DATE_LTRREADING}
+{$EXTERNALSYM DATE_RTLREADING}
+{$EXTERNALSYM CAL_SYEARMONTH}
+{$EXTERNALSYM CAL_ITWODIGITYEARMAX}
+{$EXTERNALSYM CAL_GREGORIAN_ME_FRENCH}
+{$EXTERNALSYM CAL_GREGORIAN_ARABIC}
+{$EXTERNALSYM CAL_GREGORIAN_XLIT_ENGLISH}
+{$EXTERNALSYM CAL_GREGORIAN_XLIT_FRENCH}
+{$EXTERNALSYM CAL_NOUSEROVERRIDE}
+{$EXTERNALSYM CAL_USE_CP_ACP}
+{$EXTERNALSYM CAL_RETURN_NUMBER}
+{$EXTERNALSYM LGRPID_WESTERN_EUROPE}
+{$EXTERNALSYM LGRPID_CENTRAL_EUROPE}
+{$EXTERNALSYM LGRPID_BALTIC}
+{$EXTERNALSYM LGRPID_GREEK}
+{$EXTERNALSYM LGRPID_CYRILLIC}
+{$EXTERNALSYM LGRPID_TURKISH}
+{$EXTERNALSYM LGRPID_JAPANESE}
+{$EXTERNALSYM LGRPID_KOREAN}
+{$EXTERNALSYM LGRPID_TRADITIONAL_CHINESE}
+{$EXTERNALSYM LGRPID_SIMPLIFIED_CHINESE}
+{$EXTERNALSYM LGRPID_THAI}
+{$EXTERNALSYM LGRPID_HEBREW}
+{$EXTERNALSYM LGRPID_ARABIC}
+{$EXTERNALSYM LGRPID_VIETNAMESE}
+{$EXTERNALSYM LGRPID_INDIC}
+{$EXTERNALSYM LGRPID_GEORGIAN}
+{$EXTERNALSYM LGRPID_ARMENIAN}
+
 {$EXTERNALSYM InterlockedExchangePointer}
 {$EXTERNALSYM SignalObjectAndWait}
 {$EXTERNALSYM GetVersionEx}
@@ -1266,9 +1585,103 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 var
+  _GetCalendarInfoA: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar;
+    cchData: Integer; lpValue: PDWORD): Integer; stdcall;
+  _GetCalendarInfoW: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar;
+    cchData: Integer; lpValue: PDWORD): Integer; stdcall;
+  _SetCalendarInfoA: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar): Integer; stdcall;
+  _SetCalendarInfoW: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar): Integer; stdcall;
+  _EnumCalendarInfoEx: function (lpCalInfoEnumProc: TEnumCalendarInfoProcEx; Locale: LCID;
+    Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar;
+  cchData: Integer; lpValue: PDWORD): Integer;
+begin
+  if not Assigned(_GetCalendarInfoA) then
+    @_GetCalendarInfoA := GetProcAddress(GetModuleHandle(kernel32), 'GetCalendarInfoA');
+  if Assigned(_GetCalendarInfoA) then
+    Result := _GetCalendarInfoA(Locale, Calendar, CalType, lpCalData, cchData, lpValue)
+  else
+  begin
+    Result := 0;
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar;
+  cchData: Integer; lpValue: PDWORD): Integer;
+begin
+  if not Assigned(_GetCalendarInfoW) then
+    @_GetCalendarInfoW := GetProcAddress(GetModuleHandle(kernel32), 'GetCalendarInfoW');
+  if Assigned(_GetCalendarInfoW) then
+    Result := _GetCalendarInfoW(Locale, Calendar, CalType, lpCalData, cchData, lpValue)
+  else
+  begin
+    Result := 0;
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar): Integer;
+begin
+  if not Assigned(_SetCalendarInfoA) then
+    @_SetCalendarInfoA := GetProcAddress(GetModuleHandle(kernel32), 'SetCalendarInfoA');
+  if Assigned(_SetCalendarInfoA) then
+    Result := _SetCalendarInfoA(Locale, Calendar, CalType, lpCalData)
+  else
+  begin
+    Result := 0;
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar): Integer;
+begin
+  if not Assigned(_SetCalendarInfoW) then
+    @_SetCalendarInfoW := GetProcAddress(GetModuleHandle(kernel32), 'SetCalendarInfoW');
+  if Assigned(_SetCalendarInfoW) then
+    Result := _SetCalendarInfoW(Locale, Calendar, CalType, lpCalData)
+  else
+  begin
+    Result := 0;
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function EnumCalendarInfoEx(lpCalInfoEnumProc: TEnumCalendarInfoProcEx; Locale: LCID;
+  Calendar: CALID; CalType: CALTYPE): BOOL;
+begin
+  if not Assigned(_EnumCalendarInfoEx) then
+    @_EnumCalendarInfoEx := GetProcAddress(GetModuleHandle(kernel32), 'EnumCalendarInfoExA');
+  if Assigned(_EnumCalendarInfoEx) then
+    Result := _EnumCalendarInfoEx(lpCalInfoEnumProc, Locale, Calendar, CalType)
+  else
+  begin
+    Result := False;
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+// NTFS related I/O control codes, types and constants from winnt.h, winioctl.h
+//--------------------------------------------------------------------------------------------------
+
+var
   _GetVolumeNameForVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
   _SetVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
   _DeleteVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
+
+//--------------------------------------------------------------------------------------------------
 
 function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL;
 var
@@ -1286,6 +1699,8 @@ begin
     Result := False;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL;
 var
   Kernel32Handle: THandle;
@@ -1301,6 +1716,8 @@ begin
   else
     Result := False;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL;
 var
