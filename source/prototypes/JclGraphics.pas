@@ -1136,6 +1136,7 @@ begin
     CurrentLineR := nil;
     CurrentLineG := nil;
     CurrentLineB := nil;
+    Target.Modified := True;
   end;
 end;
 
@@ -1299,6 +1300,9 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 var
   Temp: TBitmap;
 begin
+  if Source.Empty then
+    Exit;               // do nothing
+    
   if Radius = 0 then
     Radius := DefaultFilterRadius[Filter];
 
@@ -1313,7 +1317,8 @@ begin
     Target.Width := NewWidth;
     Target.Height := NewHeight;
 
-    DoStretch(FilterList[Filter], Radius, Temp, Target);
+    if not Target.Empty then
+      DoStretch(FilterList[Filter], Radius, Temp, Target);
   finally
     Temp.Free;
   end;
