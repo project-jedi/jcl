@@ -35,8 +35,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclAbstractContainer, JclAlgorithms, JclDCL_intf, JclDCLUtil,
-  JclStrings;
+  JclBase, JclAbstractContainer, JclAlgorithms, JclDCL_intf, JclDCLUtil;
 
 type
   TJclTreeColor = (tcBlack, tcRed);
@@ -262,7 +261,7 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
@@ -272,7 +271,7 @@ end;
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -579,7 +578,7 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
@@ -589,7 +588,7 @@ end;
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -897,7 +896,7 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
@@ -908,7 +907,7 @@ end;
 function TItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -1978,23 +1977,8 @@ begin
 end;
 
 procedure TJclStrBinaryTree.AppendDelimited(AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
 begin
-  if Pos(Separator, AString) > 0 then
-  begin
-    SepLen := Length(Separator);
-    repeat
-      Item := StrBefore(Separator, AString);
-      Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Add(AString);
-  end
-  else //There isnt a Separator in AString
-    Add(AString);
+  DCLAppendDelimited(Self, AString, Separator);
 end;
 
 procedure TJclStrBinaryTree.Clear;

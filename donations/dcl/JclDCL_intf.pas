@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclStrings;
+  JclBase;
 
 type
   IIntfCloneable = interface

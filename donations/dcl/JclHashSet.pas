@@ -33,8 +33,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclHashMap,
-  JclStrings;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclHashMap;
 
 type
   TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
@@ -669,23 +668,8 @@ begin
 end;
 
 procedure TJclStrHashSet.AppendDelimited(AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
 begin
-  if Pos(Separator, AString) > 0 then
-  begin
-    SepLen := Length(Separator);
-    repeat
-      Item := StrBefore(Separator, AString);
-      Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Add(AString);
-  end
-  else //There isnt a Separator in AString
-    Add(AString);
+  DCLAppendDelimited(Self, AString, Separator);
 end;
 
 end.

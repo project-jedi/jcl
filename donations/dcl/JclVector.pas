@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclStrings;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil;
 
 type
   TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
@@ -539,7 +539,7 @@ end;
 procedure TJclIntfVector.Insert(Index: Integer; AObject: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
@@ -563,7 +563,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -725,7 +725,7 @@ end;
 function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := nil;
   System.Move(Items[Index + 1], Items[Index],
@@ -778,7 +778,7 @@ procedure TJclIntfVector.SetObject(Index: Integer;
   AObject: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -827,7 +827,7 @@ end;
 procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
@@ -863,7 +863,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1037,7 +1037,7 @@ end;
 function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := '';
   System.Move(Items[Index + 1], Items[Index],
@@ -1072,7 +1072,7 @@ end;
 procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
@@ -1115,7 +1115,7 @@ end;
 procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(Items);
@@ -1139,7 +1139,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1327,7 +1327,7 @@ end;
 function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
   System.Move(Items[Index + 1], Items[Index], (FCount - Index) * SizeOf(TObject));
@@ -1361,7 +1361,7 @@ end;
 procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -1455,23 +1455,8 @@ begin
 end;
 
 procedure TJclStrVector.AppendDelimited(AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
 begin
-  if Pos(Separator, AString) > 0 then
-  begin
-    SepLen := Length(Separator);
-    repeat
-      Item := StrBefore(Separator, AString);
-      Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Add(AString);
-  end
-  else //There isnt a Separator in AString
-    Add(AString);
+  DCLAppendDelimited(Self, AString, Separator);
 end;
 
 end.

@@ -31,24 +31,20 @@ interface
 
 uses
   SysUtils,
-  JclBase, JclDCL_Intf;
+  JclBase, JclDCL_Intf, JclStrings;
 
 const
   DCLDefaultCapacity = 16;
 
 type
-  TDynIInterfaceArray = array of IInterface;
-  TDynObjectArray = array of TObject;
-  TDynStringArray = array of string;
-
   // Exceptions
-  EDCLException = class(Exception);
-  EDCLOutOfBounds = class(EDCLException);
-  EDCLNoSuchElement = class(EDCLException);
-  EDCLIllegalState = class(EDCLException);
-  EDCLConcurrentModification = class(EDCLException);
-  EDCLIllegalArgument = class(EDCLException);
-  EDCLOperationNotSupported = class(EDCLException);
+  EDCLError = class(EJclError);
+  EDCLOutOfBoundsError = class(EDCLError);
+  EDCLNoSuchElementError = class(EDCLError);
+  EDCLIllegalStateError = class(EDCLError);
+  EDCLConcurrentModificationError = class(EDCLError);
+  EDCLIllegalArgumentError = class(EDCLError);
+  EDCLOperationNotSupportedError = class(EDCLError);
 
 resourcestring
   RsEOutOfBounds = 'Out of bounds';
@@ -60,6 +56,28 @@ resourcestring
   RsEValueNotFound = 'Value %s not found';
   RsENoCollection = 'Collection = nil';
 
+procedure DCLAppendDelimited(Obj: IStrCollection; AString, Separator: string);
+
 implementation
+
+procedure DCLAppendDelimited(Obj: IStrCollection; AString, Separator: string);
+var
+  Item: string;
+  SepLen: Integer;
+begin
+  if Pos(Separator, AString) > 0 then
+  begin
+    SepLen := Length(Separator);
+    repeat
+      Item := StrBefore(Separator, AString);
+      Obj.Add(Item);
+      Delete(AString, 1, Length(Item) + SepLen);
+    until Pos(Separator, AString) = 0;
+    if Length(AString) > 0 then //ex. hello#world
+      Obj.Add(AString);
+  end
+  else //There isnt a Separator in AString
+    Obj.Add(AString);
+end;
 
 end.

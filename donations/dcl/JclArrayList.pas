@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclStrings;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil;
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IIntfCollection, IIntfList,
@@ -661,7 +661,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EDCLIllegalArgument.Create(RsENoCollection);
+    raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size);
   It := ACollection.First;
   while It.HasNext do
@@ -684,7 +684,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
   System.Move(FElementData[Index], FElementData[Index + 1],
@@ -747,7 +747,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -965,7 +965,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := FElementData[Index];
   FElementData[Index] := nil;
   System.Move(FElementData[Index + 1], FElementData[Index],
@@ -1019,7 +1019,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   FElementData[Index] := AObject;
 end;
 
@@ -1064,7 +1064,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EDCLIllegalArgument.Create(RsENoCollection);
+    raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size);
   It := ACollection.First;
   while It.HasNext do
@@ -1087,7 +1087,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
   System.Move(FElementData[Index], FElementData[Index + 1],
@@ -1125,7 +1125,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1369,7 +1369,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := FElementData[Index];
   FElementData[Index] := '';
   System.Move(FElementData[Index + 1], FElementData[Index],
@@ -1423,7 +1423,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   FElementData[Index] := AString
 end;
 
@@ -1470,7 +1470,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EDCLIllegalArgument.Create(RsENoCollection);
+    raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size, AOwnsObjects);
   It := ACollection.First;
   while It.HasNext do
@@ -1493,7 +1493,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
   System.Move(FElementData[Index], FElementData[Index + 1],
@@ -1556,7 +1556,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1783,7 +1783,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   Result := nil;
   FreeObject(FElementData[Index]);
   System.Move(FElementData[Index + 1], FElementData[Index],
@@ -1837,7 +1837,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   FElementData[Index] := AObject;
 end;
 
@@ -1918,23 +1918,8 @@ begin
 end;
 
 procedure TJclStrArrayList.AppendDelimited(AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
 begin
-  if Pos(Separator, AString) > 0 then
-  begin
-    SepLen := Length(Separator);
-    repeat
-      Item := StrBefore(Separator, AString);
-      Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Add(AString);
-  end
-  else //There isnt a Separator in AString
-    Add(AString);
+  DCLAppendDelimited(Self, AString, Separator);
 end;
 
 procedure TJclStrArrayList.LoadDelimited(AString, Separator: string);

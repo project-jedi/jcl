@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclBase, JclAbstractContainer, JclDCL_intf, JclStrings;
+  JclBase, JclAbstractContainer, JclDCL_intf;
 
 type
   PJclIntfLinkedListItem = ^TJclIntfLinkedListItem;
@@ -319,7 +319,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Next: IInterface;
@@ -339,19 +339,19 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -457,7 +457,7 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Next: string;
@@ -477,19 +477,19 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -595,7 +595,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Next: TObject;
@@ -615,19 +615,19 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No Index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
   // No Index
-  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -706,7 +706,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -794,7 +794,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -1236,7 +1236,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1765,7 +1765,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1853,7 +1853,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -2330,23 +2330,8 @@ begin
 end;
 
 procedure TJclStrLinkedList.AppendDelimited(AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
 begin
-  if Pos(Separator, AString) > 0 then
-  begin
-    SepLen := Length(Separator);
-    repeat
-      Item := StrBefore(Separator, AString);
-      Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Add(AString);
-  end
-  else //There isnt a Separator in AString
-    Add(AString);
+  DCLAppendDelimited(Self, AString, Separator);
 end;
 
 end.
