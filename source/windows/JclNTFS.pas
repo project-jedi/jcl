@@ -197,7 +197,7 @@ uses
   WinSysUt,
   {$ENDIF FPC}
   SysUtils, Hardlinks,
-  JclFileUtils, JclResources, JclSecurity;
+  JclFileUtils, JclSysInfo, JclResources, JclSecurity;
 
 //==================================================================================================
 // NTFS - Compression
@@ -544,12 +544,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
-var
-  MCL, Flags: Cardinal;
 begin
-  Result := GetVolumeInformation(PChar(Volume), nil, 0, nil, MCL, Flags, nil, 0);
-  if Result then
-    Result := (Flags and FILE_SUPPORTS_SPARSE_FILES) <> 0;
+  Result := fsSupportsSparseFiles in GetVolumeFileSystemFlags(Volume);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -598,12 +594,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
-var
-  MCL, Flags: Cardinal;
 begin
-  Result := GetVolumeInformation(PChar(Volume), nil, 0, nil, MCL, Flags, nil, 0);
-  if Result then
-    Result := (Flags and FILE_SUPPORTS_REPARSE_POINTS) <> 0;
+  Result := fsSupportsReparsePoints in GetVolumeFileSystemFlags(Volume);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1295,6 +1287,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2004/12/07 02:46:44  rrossmair
+// - NtfsSparseStreamsSupported, NtfsReparsePointsSupported:
+//   Fixed bug in call to GetVolumeInformation (did not ensure trailing backslash)
+//   by replacing it with new function JclSysInfo.GetVolumeFileSystemFlags
+//
 // Revision 1.19  2004/10/20 19:52:15  rrossmair
 // - renamed Hardlink to Hardlinks
 // - Hardlinks now generated from prototype unit
