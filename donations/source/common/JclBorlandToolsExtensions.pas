@@ -24,7 +24,7 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: April 11, 2004                                                                    }
+{ Last modified: May 05, 2004                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -54,14 +54,14 @@ uses
   {$IFDEF LINUX}
   Libc, Types,
   {$ENDIF}
-  SysUtils, Classes, IniFiles;
+  SysUtils, Classes, IniFiles, Contnrs;
 
 type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);
   TJclDCCMapFileLevel = (mfloff, mflsegments, mflpublics, mfldetailed);
 
   //(usc) need optionen "MakeModifiedUnits" (-M) ?
-  //   I guess -M is opposite of -B  
+  //   I guess -M is opposite of -B
   TJclCustomDCCConfig = class(TObject)
   private
     FBPLOutputDirectory: string;
@@ -87,6 +87,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    //(usc) Assign
+
     property BPLOutputDirectory: string read FBPLOutputDirectory write FBPLOutputDirectory;
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
     //(usc) TJclDCCEx name is Defines only
@@ -98,7 +100,7 @@ type
     property EXEOutputDirectory: string read FEXEOutputDir write FEXEOutputDir;
     property ImageBaseAddr: DWord read FImageBaseAddr write FImageBaseAddr;
     property IncludeDirectories: string read FIncludeDirectories write FIncludeDirectories;
-    property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;    
+    property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
     property MaxStackSize: Integer read FMaxStackSize write FMaxStackSize;
     property MinStackSize: Integer read FMinStackSize write FMinStackSize;
     property ObjectDirectories: string read FObjectDirectories write FObjectDirectories;
@@ -120,18 +122,49 @@ type
     procedure LoadFromFile(AFileName: string);
   end;
 
-  TJclDCCEx = class(TObject)
+  TJclDCCMessage = class(TObject)
+  private
+    FKind: TJclDCCMessageKind;
+    FMessageStr: string;
+    function GetText: string;
+  public
+    constructor Create(AKind: TJclDCCMessageKind; AMessageStr: string);
+    //(usc) add File and Line (currently part of MessageStr)
+    property Kind: TJclDCCMessageKind read FKind;
+    property MessageStr: string read FMessageStr;
+    property Text: string read GetText;
+  end;
+
+  TJclDCCMessages = class(TObject)
   private
     FErrorCount: Integer;
     FHintCount: Integer;
     FWarnCount: Integer;
     FFatalCount: Integer;
+    FItems: TObjectList;
+    function GetCount: Integer;
+    function GetItems(AIndex: Integer): TJclDCCMessage;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Add(AKind: TJclDCCMessageKind; AMessageStr: string);
+    procedure Clear;
+    property Count: Integer read GetCount;
+    property Items[AIndex: Integer]: TJclDCCMessage read GetItems; default;
+    property ErrorCount: Integer read FErrorCount;
+    property HintCount: Integer read FHintCount;
+    property WarnCount: Integer read FWarnCount;
+    property FatalCount: Integer read FFatalCount;
+  end;
+
+  TJclDCCEx = class(TObject)
+  private
     FFileToCompile: string;
     FPlainOutput: TStringList;
     FExeName: string;
     FCurrentFile: string;
     FCurrentLineNo: Integer;
-    FMessages: TStringList;
+    FMessages: TJclDCCMessages;
 
     FEXEOutputDir: string;
     FDCUOutputDir: string;
@@ -150,9 +183,10 @@ type
     FMinStackSize: DWord;
     FMaxStackSize: DWord;
     FImageBase: DWord;
-    FOnCompileUpdate: TNotifyEvent;
+    FOnCompileProgress: TNotifyEvent;
     FBuildAllUnits: Boolean;
     FQuietCompile: Boolean;
+    FOnMessage: TNotifyEvent;
     procedure CaptureLine(const Line: string; var Aborted: Boolean);
     procedure ClearValues;
   public
@@ -161,15 +195,12 @@ type
 
     function Compile: Boolean;
 
+    //(usc) replace several property by TJclCustomDCCConfig
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
     property QuietCompile: Boolean read FQuietCompile write FQuietCompile;
     property ExeName: string read FExeName write FExeName;
     property CurrentFile: string read FCurrentFile;
     property CurrentLineNo: Integer read FCurrentLineNo;
-    property ErrorCount: Integer read FErrorCount;
-    property HintCount: Integer read FHintCount;
-    property WarnCount: Integer read FWarnCount;
-    property FatalCount: Integer read FFatalCount;
     property CompileWithPackages: Boolean read FCompileWithPackages write FCompileWithPackages;
     property DCUOutputDir: string read FDCUOutputDir write FDCUOutputDir;
     property Defines: string read FDefines write FDefines;
@@ -179,8 +210,7 @@ type
     //(usc) better as StringList
     property SearchPaths: string read FSearchpaths write FSearchPaths;
     property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
-    //(usc) better as TJclDCCMessages
-    property Messages: TStringList read FMessages;
+    property Messages: TJclDCCMessages read FMessages;
     //(usc) better as StringList
     property Packages: string read FPackages write FPackages;
     //(usc) better as TJclDCCSwitches
@@ -195,7 +225,8 @@ type
     property MaxStackSize: DWord read FMaxStackSize write FMaxStackSize;
     property ImageBase: DWord read FImageBase write FImageBase;
     //(usc) better split into OnCompileProgress and OnMessage
-    property OnCompileUpdate: TNotifyEvent read FOnCompileUpdate write FOnCompileUpdate;
+    property OnCompileProgress: TNotifyEvent read FOnCompileProgress write FOnCompileProgress;
+    property OnMessage: TNotifyEvent read FOnMessage write FOnMessage;
   end;
 
 implementation
@@ -621,11 +652,81 @@ begin
     end;
 end;
 
+constructor TJclDCCMessage.Create(AKind: TJclDCCMessageKind; AMessageStr: string);
+begin
+  inherited Create;
+  FKind := AKind;
+  FMessageStr := AMessageStr;
+end;
+
+function TJclDCCMessage.GetText: string;
+var
+  KindStr: string;
+begin
+  case FKind of
+    mkHint: KindStr :='[Hint]';
+    mkWarning: KindStr := '[Warning]';
+    mkError: KindStr := '[Error]';
+    mkFatal: KindStr := '[Fatal Error]';
+    else
+      KindStr := '';
+  end;
+
+  Result := Format('%s %s', [KindStr, FMessageStr]);
+end;
+
+constructor TJclDCCMessages.Create;
+begin
+  inherited Create;
+  FItems := TObjectList.Create;
+  Clear;
+end;
+
+destructor TJclDCCMessages.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TJclDCCMessages.Add(AKind: TJclDCCMessageKind; AMessageStr: string);
+var
+  DCCMessage: TJclDCCMessage;
+begin
+  DCCMessage := TJclDCCMessage.Create(AKind, AMessageStr);
+  FItems.Add(DCCMessage);
+
+  case AKind of
+    mkHint: Inc(FHintCount);
+    mkWarning: Inc(FWarnCount);
+    mkError: Inc(FErrorCount);
+    mkFatal: Inc(FErrorCount);
+  end;
+end;
+
+procedure TJclDCCMessages.Clear;
+begin
+  FItems.Clear;
+  FErrorCount := 0;
+  FHintCount := 0;
+  FWarnCount := 0;
+  FFatalCount := 0;
+end;
+
+function TJclDCCMessages.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclDCCMessages.GetItems(AIndex: Integer): TJclDCCMessage;
+begin
+  Result := TJclDCCMessage(FItems[AIndex]);
+end;
+
 constructor TJclDCCEx.Create;
 begin
   inherited Create;
   FPlainOutput := TStringList.Create;
-  FMessages := TStringList.Create;
+  FMessages := TJclDCCMessages.Create;
   ClearValues;
   FEXEOutputDir := '';
   FDCUOutputDir := '';
@@ -644,9 +745,10 @@ begin
   FMinStackSize := $4000;
   FMaxStackSize := $100000;
   FImageBase := $400000;
-  FOnCompileUpdate := nil;
+  FOnCompileProgress := nil;
   FBuildAllUnits := True;
   FQuietCompile := False;
+  FOnMessage := nil;
 end;
 
 destructor TJclDCCEx.Destroy;
@@ -685,39 +787,18 @@ begin
   FilePart := '';
   if (LineErr <> mkUnknown) and HasPos then
     FilePart := Format('%s(%d): ', [ExtractFileName(FCurrentFile), FCurrentLineNo]);
-  if LineErr = mkHint then
+  if LineErr <> mkUnknown then
   begin
-    Inc(FHintCount);
-    FMessages.Add(Format('[Hint] %s%s', [FilePart, LineMsg]));
-  end
-  else
-  if LineErr = mkWarning then
-  begin
-    Inc(FWarnCount);
-    FMessages.Add(Format('[Warning] %s%s', [FilePart, LineMsg]));
-  end
-  else
-  if LineErr = mkError then
-  begin
-    Inc(FErrorCount);
-    FMessages.Add(Format('[Error] %s%s', [FilePart, LineMsg]));
-  end
-  else
-  if LineErr = mkFatal then
-  begin
-    Inc(FErrorCount);
-    FMessages.Add(Format('[Fatal Error] %s%s', [FilePart, LineMsg]));
+    FMessages.Add(LineErr, Format('%s%s', [FilePart, LineMsg]));
+    if Assigned(FOnMessage) then
+      FOnMessage(nil);
   end;
-  if Assigned(FOnCompileUpdate) and (HasPos or (LineErr <> mkUnknown)) then
-    FOnCompileUpdate(nil);
+  if Assigned(FOnCompileProgress) and HasPos then
+    FOnCompileProgress(nil);
 end;
 
 procedure TJclDCCEx.ClearValues;
 begin
-  FErrorCount := 0;
-  FHintCount := 0;
-  FWarnCount := 0;
-  FFatalCount := 0;
   FPlainOutput.Clear;
   FCurrentFile := '';
   FCurrentLineNo := 0;
@@ -790,7 +871,7 @@ begin
       Arguments := Arguments + ' -Q';
 
     Result := (ExecAndCapture(FExeName + ' ' + Arguments, CaptureLine) = 0) and
-      (FErrorCount = 0) and (FFatalCount = 0);
+      (FMessages.ErrorCount = 0) and (FMessages.FatalCount = 0);
   end;
 end;
 
