@@ -1,4 +1,3 @@
-@@$LibrariesProcessesandThreads.TJclAppInstances
 <GROUP LibrariesProcessesandThreads>
 <TITLE TJclAppInstances>
 <TOPICORDER 300>
@@ -12,17 +11,12 @@ Description:
   to all other running instances. The message value is determined by the MessageId
   property, the WParam field is set to AI_INSTANCECREATED, and the LParam field is
   set to the Process ID of the instance being created. Note that the message is also
-  sent to the application instance under construction.
+  sent to the application inst%Zeilennummer%ance under construction.
 See also:
   AI_INSTANCEDESTROYED
   AI_USERMSG
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@AI_INSTANCEDESTROYED
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -38,12 +32,7 @@ See also:
   AI_INSTANCECREATED
   AI_USERMSG
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@AI_USERMSG
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -58,12 +47,7 @@ See also:
   AI_INSTANCECREATED
   AI_INSTANCEDESTROYED
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -101,12 +85,7 @@ Description:
   form and to the application message queue. Therefore instead of overriding
   WndProc you could have also used the TApplication.OnMessage event.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.BringAppWindowToFront
 Summary:
@@ -124,13 +103,7 @@ Result:
 See also:
   SetForegroundWindow98
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.GetApplicationWnd
 Summary:
@@ -143,13 +116,7 @@ Parameters:
 Result:
   If the function succeeds it returns the requested handle, otherwise it returns 0.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.KillInstance
 Summary:
@@ -157,13 +124,7 @@ Summary:
 Description:
   KillInstance terminates the application by calling Halt.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SetForegroundWindow98
 Summary:
@@ -181,13 +142,7 @@ Result:
 See also:
   BringAppWindowToFront
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckInstance
 Summary:
@@ -209,13 +164,7 @@ See also:
   CheckMultipleInstances
   KillInstance
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckMultipleInstances
 Summary:
@@ -231,13 +180,7 @@ See also:
   CheckInstance
   KillInstance
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckSingleInstance
 Summary:
@@ -249,13 +192,7 @@ Description:
 See also:
   CheckInstance
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendData
 Summary:
@@ -273,17 +210,10 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 See also:
   SendString
   SendStrings
-Quick info:
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendString
 Summary:
@@ -303,13 +233,7 @@ See also:
   SendData
   SendStrings
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendStrings
 Summary:
@@ -329,13 +253,7 @@ See also:
   SendData
   SendString
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SwitchTo
 Summary:
@@ -347,13 +265,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.UserNotify
 Summary:
@@ -362,13 +274,7 @@ Description:
   UserNotify sends a notification message to all running instances with WParam set
   to AI_USERMSG and LParam set to the specified parameter.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.AppWnds
 Summary:
@@ -383,13 +289,7 @@ See also:
   InstanceCount
   ProcessIDs
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.InstanceIndex
 Summary:
@@ -402,13 +302,7 @@ Description:
 See also:
   ProcessIDs
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.InstanceCount
 Summary:
@@ -421,13 +315,7 @@ See also:
   ProcessIDs
   AppWnds
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.MessageID
 Summary:
@@ -436,13 +324,7 @@ Description:
   Read MessageId to learn the message ID used by TJclAppInstances to send
   notification messages (ie instance creation and destruction).
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.ProcessIDs
 Summary:
@@ -461,13 +343,7 @@ See also:
   AppWnds
   InstanceIndex
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@JclAppInstances
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -486,12 +362,7 @@ Result:
   other instances of the application and communicate with them. See the documentation
   of TJclAppInstance for more detail on using the TJclAppInstances class.
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ReadMessageCheck
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -514,12 +385,7 @@ See also:
   JclReadMessageString
   JclReadMessageStrings
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ReadMessageData
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -538,12 +404,7 @@ See also:
   ReadMessageString
   ReadMessageStrings
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ReadMessageString
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -560,12 +421,7 @@ See also:
   ReadMessageData
   ReadMessageStrings
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ReadMessageStrings
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
@@ -583,10 +439,5 @@ See also:
   ReadMessageData
   ReadMessageString
 Quick info:
-  Unit: JclAppInst
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
