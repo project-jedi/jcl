@@ -16,7 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: August 9, 2000                                                }
+{******************************************************************************}
+{                                                                              }
+{ Various miscellanuous routines that do not (yet) fit nicely into other units }
+{                                                                              }
+{ Unit owner: Jeroen Speldekamp                                                }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
