@@ -2255,7 +2255,7 @@ begin
   // Favor documented API over registry
   if IsWinNT4 and (GetWindowsServicePackVersion >= 6) then
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(@VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptWorkstation
@@ -2266,7 +2266,7 @@ begin
   else
   if IsWin2K then
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(@VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_SERVER) then
       begin
@@ -2288,7 +2288,7 @@ begin
   else
   if IsWinXP then
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(@VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
       begin
@@ -2373,7 +2373,7 @@ begin
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
-    if GetVersionEx(VersionInfo) then Result := VersionInfo.wServicePackMajor;
+    if GetVersionEx(@VersionInfo) then Result := VersionInfo.wServicePackMajor;
   end
   else
   begin
@@ -3974,6 +3974,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/07 07:33:39  marquardt
+// fixes for GetVersionEx
+//
 // Revision 1.9  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

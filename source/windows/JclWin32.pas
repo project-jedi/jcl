@@ -861,28 +861,26 @@ const
   VER_SUITE_SERVERAPPLIANCE          = $00000400;  // not part of the current Platform SDK
 
 type
-  {$EXTERNALSYM _OSVERSIONINFOEXA}
-  _OSVERSIONINFOEXA = packed record
+  {$EXTERNALSYM OSVERSIONINFOEXA}
+  OSVERSIONINFOEXA = packed record
     dwOSVersionInfoSize: DWORD;
     dwMajorVersion: DWORD;
     dwMinorVersion: DWORD;
     dwBuildNumber: DWORD;
     dwPlatformId: DWORD;
-    szCSDVersion: array[0..127] of AnsiChar;     // Maintenance string for PSS usage
+    szCSDVersion: array [0..127] of Char;     // Maintenance string for PSS usage
     wServicePackMajor: WORD;
     wServicePackMinor: WORD;
     wSuiteMask: WORD;
     wProductType: BYTE;
     wReserved: BYTE;
   end;
-  {$EXTERNALSYM OSVERSIONINFOEXA}
-  OSVERSIONINFOEXA = _OSVERSIONINFOEXA;
   {$EXTERNALSYM POSVERSIONINFOEXA}
-  POSVERSIONINFOEXA = ^_OSVERSIONINFOEXA;
+  TOSVersionInfoEx = OSVERSIONINFOEXA;
+  POSVERSIONINFOEXA = ^OSVERSIONINFOEXA;
   {$EXTERNALSYM LPOSVERSIONINFOEXA}
   LPOSVERSIONINFOEXA = POSVERSIONINFOEXA;
-  TOSVersionInfoEx = _OSVERSIONINFOEXA;
-  POSVersionInfoEx = POSVersionInfoExA;
+  POSVERSIONINFOEX = POSVERSIONINFOEXA;
 
 //--------------------------------------------------------------------------------------------------
 // Security related declarations (WinNT.h)
@@ -1917,7 +1915,9 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
 
 // alternative conversion for WinNT 4.0 SP6 and later (OSVersionInfoEx instead of OSVersionInfo)
 {$EXTERNALSYM GetVersionEx}
-function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
+//function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
+// (rom) changed to pointer for now
+function GetVersionEx(lpVersionInformation: POSVERSIONINFOEX): BOOL; stdcall;
 
 { TODO -cTest : test the CreateMutex - BOOL problem }
 // Supposition: modified conversion to avoid a WinAPI bug
@@ -3784,6 +3784,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/04/07 07:33:41  marquardt
+// fixes for GetVersionEx
+//
 // Revision 1.11  2004/04/06 22:41:26  peterjhaas
 // Bugfix the in Delphi missing pointer declarations for BCB
 //
