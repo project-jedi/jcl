@@ -37,8 +37,7 @@ unit JclShell;
 interface
 
 uses
-  Windows, ShlObj,
-  Graphics, SysUtils,
+  Windows, Graphics, ShlObj, SysUtils,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -197,6 +196,10 @@ implementation
 uses
   ActiveX, CommCtrl, ComObj, Messages, ShellApi,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
+
+const
+  cVerbProperties = 'properties';
+  cVerbOpen = 'open';
 
 //==============================================================================
 // Files and Folders
@@ -436,7 +439,7 @@ begin
     nShow := SW_SHOW;
     fMask := SEE_MASK_INVOKEIDLIST;
     Wnd := Handle;
-    lpVerb := PChar('properties');
+    lpVerb := cVerbProperties;
   end;
   Result := ShellExecuteEx(@Info);
 end;
@@ -455,7 +458,7 @@ begin
     lpIDList := Item;
     fMask := SEE_MASK_INVOKEIDLIST or SEE_MASK_IDLIST;
     Wnd := Handle;
-    lpVerb := PChar('properties');
+    lpVerb := cVerbProperties;
   end;
   Result := ShellExecuteEx(@Info);
 end;
@@ -474,24 +477,24 @@ var
   ContextMenu2: IContextMenu2;
 begin
   case Msg of
-  WM_CREATE:
-    begin
-      ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
-      SetWindowLong(Wnd, GWL_USERDATA, Longint(ContextMenu2));
-      Result := DefWindowProc(Wnd, Msg, wParam, lParam);
-    end;
-  WM_INITMENUPOPUP:
-    begin
-      ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
-      Result := 0;
-    end;
-  WM_DRAWITEM, WM_MEASUREITEM:
-    begin
-      ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
-      Result := 1;
-    end;
+    WM_CREATE:
+      begin
+        ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
+        SetWindowLong(Wnd, GWL_USERDATA, Longint(ContextMenu2));
+        Result := DefWindowProc(Wnd, Msg, wParam, lParam);
+      end;
+    WM_INITMENUPOPUP:
+      begin
+        ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
+        ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
+        Result := 0;
+      end;
+    WM_DRAWITEM, WM_MEASUREITEM:
+      begin
+        ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
+        ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
+        Result := 1;
+      end;
   else
     Result := DefWindowProc(Wnd, Msg, wParam, lParam);
   end;
@@ -597,7 +600,7 @@ begin
     begin
       cbSize := SizeOf(Sei);
       Wnd := Parent;
-      lpVerb := PChar('open');
+      lpVerb := cVerbOpen;
       lpFile := PChar(Path);
       nShow := SW_SHOWNORMAL;
     end;
@@ -623,7 +626,7 @@ begin
       cbSize := SizeOf(Sei);
       Wnd := Parent;
       fMask := SEE_MASK_INVOKEIDLIST;
-      lpVerb := 'open';
+      lpVerb := cVerbOpen;
       lpIDList := Pidl;
       nShow := SW_SHOWNORMAL;
       if PidlToPath(Pidl) = '' then
@@ -949,16 +952,14 @@ begin
           SHFreeMem(Pointer(StrRet.pOleStr));
       end;
     STRRET_OFFSET:
-      begin
-        if IdList <> nil then
-          Result := PChar(IdList) + StrRet.uOffset
-        else
-          Result := '';
-      end;
+      if IdList <> nil then
+        Result := PChar(IdList) + StrRet.uOffset
+      else
+        Result := '';
     STRRET_CSTR:
-      begin
-        Result := StrRet.cStr;
-      end;
+      Result := StrRet.cStr;
+  else
+    Result := '';
   end;
 end;
 
@@ -1400,7 +1401,8 @@ begin
   begin
     // FindExecutable replaces #32 with #0
     for I := Low(Buffer) to High(Buffer) - 1 do
-      if Buffer[I] = #0 then Buffer[I] := #32;
+      if Buffer[I] = #0 then
+        Buffer[I] := #32;
     Buffer[High(Buffer)] := #0;
     Result := Trim(Buffer);
   end
