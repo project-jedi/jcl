@@ -23,7 +23,7 @@
 { higher!                                                                                          }
 {                                                                                                  }
 { Unit Owner: Marcel van Brakel                                                                    }
-{ Last modified: August 20, 2001                                                                   }
+{ Last modified: May 5, 2002                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -937,8 +937,8 @@ begin
       HeapFree(GetProcessHeap, 0, StreamName);
     // Move past data part to beginning of next stream (or EOF)
     BytesToSeek.QuadPart := Header.Size;
-    if not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
-      BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context) then
+    if (Header.Size <> 0) and (not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+      BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
     begin
       SetLastError(ERROR_READ_FAULT);
       Exit;
