@@ -216,6 +216,15 @@ resourcestring
   RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
   RsMapiErrNOT_SUPPORTED            = 'Not supported';
 
+  RsMapiMailNoClient = 'No Simple MAPI client installed, can''t send the message';
+
+  RsMapiMailTO          = 'To';
+  RsMapiMailCC          = 'Cc';
+  RsMapiMailBCC         = 'Bcc';
+  RsMapiMailSubject     = 'Subject';
+  RsMapiMailBody        = 'Body';
+  RsMapiMailAttachments = 'Attachments';
+
 //------------------------------------------------------------------------------
 // JclMath
 //------------------------------------------------------------------------------
