@@ -36,8 +36,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Messages, Forms, Menus, StdActns, StdCtrls, ComCtrls,
-  ActnList, ImgList, Controls, Dialogs, ExtCtrls, Graphics, HexDump,
-  JclGraphUtils, JclStructStorage;
+  ActnList, ImgList, Controls, Dialogs, ExtCtrls, Graphics, HexDump, JclStructStorage;
 
 const
   WM_SHOWABOUT = WM_USER + 1;
@@ -177,27 +176,41 @@ type
   public
     { Public declarations }
     property Modified: boolean read GetModified write SetModified;
-    property ReadOnly:boolean read GetReadOnly write SetReadOnly;
+    property ReadOnly: boolean read GetReadOnly write SetReadOnly;
   end;
 
 var
   frmMain: TfrmMain;
 
-
-
 implementation
 uses
-  ActiveX, ComObj, PropsFrm; //, JvFunctions;
+  ActiveX, ComObj, PropsFrm;
 
 {$R *.DFM}
 
 const
   cImageClosed = 0;
   cImageOpen = 1;
-  cImageDoc  = 2;
-  cImageMod  = 3;
+  cImageDoc = 2;
+  cImageMod = 3;
+
+function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+var
+  R: TRect;
+begin
+  Result := Filename;
+  if Result <> '' then
+  begin
+    UniqueString(Result);
+    R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
+    if DrawText(Canvas.Handle, PChar(@Result[1]), Length(Result), R,
+      DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) = 0 then
+      Result := Filename;
+  end;
+end;
 
 // returns true if Node.Data contains a TJclStructStorageFolder instance
+
 function IsFolder(Node: TTreeNode): boolean;
 begin
   Result := (Node <> nil) and (Node.Data <> nil) and (TObject(Node.Data) is TJclStructStorageFolder);
@@ -205,6 +218,7 @@ end;
 
 // finds and returns the first sibling of ASibling (or ASibling itself) that has
 // Text = AName. Returns nil if sucha  node couldn't be found
+
 function FindSibling(ASibling: TTreeNode; AName: string): TTreeNode;
 begin
   Result := ASibling;
@@ -229,12 +243,12 @@ end;
 
 function YesNoDlg(const Caption, Msg: string): boolean;
 begin
-  Result := MessageBox(0, PChar(Msg), PChar(Caption), MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
+  Result := Windows.MessageBox(0, PChar(Msg), PChar(Caption), MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
 end;
 
 procedure ErrorDlg(const Caption, Msg: string);
 begin
-  MessageBox(0, PChar(Msg), PChar(Caption), MB_OK or MB_ICONERROR or MB_TASKMODAL);
+  Windows.MessageBox(0, PChar(Msg), PChar(Caption), MB_OK or MB_ICONERROR or MB_TASKMODAL);
 end;
 
 procedure TfrmMain.LoadFile(const AFilename: string; CreateNew: boolean);
@@ -246,7 +260,7 @@ begin
   Screen.Cursor := crHourGlass;
   FUpdating := true;
   try
-    if (AFilename <> '') and (Succeeded(TJclStructStorageFolder.IsStructured(AFilename)) or CreateNew) then
+    if (AFilename <> '') and ((TJclStructStorageFolder.IsStructured(AFilename) = S_OK)or CreateNew) then
     begin
       FFilename := AFilename;
       tvDocInfo.Items.BeginUpdate;
@@ -258,8 +272,8 @@ begin
         else if ReadOnly then
           AModes := [smOpenRead]
         else
-          AModes := [smOpenRead,smOpenWrite];
-        AModes := AModes + [smShareDenyRead,smShareDenyWrite];
+          AModes := [smOpenRead, smOpenWrite];
+        AModes := AModes + [smShareDenyRead, smShareDenyWrite];
         Root := TJclStructStorageFolder.Create(FFilename, AModes, CreateNew);
         AddFolder(nil, SRoot, Root);
       finally
@@ -275,7 +289,7 @@ begin
         LoadFile(AFilename, false);
       end
       else
-        ErrorDlg(SError, Format(SConvertFailFmt,[SysErrorMessage(HR)]));
+        ErrorDlg(SError, Format(SConvertFailFmt, [SysErrorMessage(HR)]));
     end;
     if tvDocInfo.Items.Count > 0 then
     begin
@@ -283,8 +297,8 @@ begin
       tvDocInfo.Selected := tvDocInfo.Items[0];
       tvDocInfo.Selected.Focused := true;
     end;
-    StatusBar1.Panels[0].Text := ShortenString(StatusBar1.Canvas.Handle, FFilename,
-      StatusBar1.Panels[0].Width - 4, False);
+    StatusBar1.Panels[0].Text := MinimizeName(FFilename, StatusBar1.Canvas,
+      StatusBar1.Panels[0].Width - 4);
     SortTree;
   finally
     Screen.Cursor := crDefault;
@@ -324,7 +338,8 @@ begin
 end;
 
 procedure TfrmMain.ViewDetails(Stream: TStream);
-var aSize:double;
+var
+  aSize: double;
 begin
   if acEditData.Checked then acEditDataExecute(nil); // toggle into browse mode
   HD.LoadFromStream(Stream);
@@ -338,12 +353,14 @@ begin
 end;
 
 procedure TfrmMain.ViewDocument;
-var Filename:string;F:TFileStream;
+var
+  Filename: string;
+  F: TFileStream;
 begin
   Filename := TJclStructStorageFolder(tvDocInfo.Items.getFirstNode.Data).Name;
   if FileExists(Filename) then
   begin
-    F := TFileStream.Create(Filename,fmOpenRead or fmShareDenyNone);
+    F := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
     try
       ViewDetails(F);
     finally
@@ -356,7 +373,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   HD := CreateHexDump(self);
   HD.Font := self.Font;
-//  HD.Font.Name := 'Courier New';
+  //  HD.Font.Name := 'Courier New';
   HD.AddressColor := clMaroon;
   HD.AnsiCharColor := clNavy;
   Application.Title := Caption;
@@ -391,7 +408,10 @@ begin
 end;
 
 procedure TfrmMain.acAddFolderExecute(Sender: TObject);
-var S: string; N: TTreeNode; SS, SS2: TJclStructStorageFolder;
+var
+  S: string;
+  N: TTreeNode;
+  SS, SS2: TJclStructStorageFolder;
 begin
   if not IsFolder(tvDocInfo.Selected) then
     N := tvDocInfo.Selected.Parent
@@ -427,7 +447,10 @@ begin
 end;
 
 procedure TfrmMain.acAddFileExecute(Sender: TObject);
-var S: string; N: TTreeNode; SS: TJclStructStorageFolder;
+var
+  S: string;
+  N: TTreeNode;
+  SS: TJclStructStorageFolder;
 begin
   if not IsFolder(tvDocInfo.Selected) then
     N := tvDocInfo.Selected.Parent
@@ -438,14 +461,14 @@ begin
   begin
     if S = '' then
     begin
-      ErrorDlg(SError,SErrNameEmpty);
+      ErrorDlg(SError, SErrNameEmpty);
       Exit;
     end;
     // since a duplicate name replaces the current folder/file, we have to check
     // explicitly for duplicates here so we don't add a duplicate node by mistake
     if (FindSibling(N.getFirstChild, S) <> nil) then
     begin
-      ErrorDlg(SError,SErrNameDuplicate);
+      ErrorDlg(SError, SErrNameDuplicate);
       Exit;
     end;
     SS := GetFolder(N);
@@ -472,10 +495,10 @@ begin
     end;
 end;
 
-
-
 procedure TfrmMain.acAboutExecute(Sender: TObject);
-var ParamsW: TMsgBoxParamsW; ParamsA: TMsgBoxParamsA;
+var
+  ParamsW: TMsgBoxParamsW;
+  ParamsA: TMsgBoxParamsA;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
@@ -494,7 +517,8 @@ begin
       MessageBoxIndirectW(ParamsW);
     end
   end
-  else with ParamsA do
+  else
+    with ParamsA do
     begin
       cbSize := sizeof(TMsgBoxParamsA);
       hwndOwner := Handle;
@@ -512,7 +536,8 @@ end;
 
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
   var Handled: Boolean);
-var IsReadOnly:boolean;
+var
+  IsReadOnly: boolean;
 begin
   IsReadOnly := ReadOnly;
   acTransacted.Enabled := not IsReadOnly;
@@ -576,14 +601,15 @@ end;
 
 procedure TfrmMain.AddFile(ParentNode: TTreeNode; AName: string;
   Storage: TJclStructStorageFolder);
-var Stream: TStream;
+var
+  Stream: TStream;
 begin
   if ParentNode <> nil then
-  with ParentNode do
-  begin
-    ImageIndex := Ord(Expanded);
-    SelectedIndex := ImageIndex;
-  end;
+    with ParentNode do
+    begin
+      ImageIndex := Ord(Expanded);
+      SelectedIndex := ImageIndex;
+    end;
   if not Storage.GetFileStream(AName, Stream) then
     OleError(Storage.LastError)
   else
@@ -598,14 +624,18 @@ end;
 
 procedure TfrmMain.AddFolder(ParentNode: TTreeNode; AName: string;
   Storage: TJclStructStorageFolder);
-var S: TStringlist; i: integer; N: TTreeNode; ST: TJclStructStorageFolder;
+var
+  S: TStringlist;
+  i: integer;
+  N: TTreeNode;
+  ST: TJclStructStorageFolder;
 begin
   if ParentNode <> nil then
-  with ParentNode do
-  begin
-    ImageIndex := Ord(Expanded);
-    SelectedIndex := ImageIndex;
-  end;
+    with ParentNode do
+    begin
+      ImageIndex := Ord(Expanded);
+      SelectedIndex := ImageIndex;
+    end;
   N := tvDocInfo.Items.AddChildObject(ParentNode, AName, Storage);
   with N do
   begin
@@ -657,7 +687,8 @@ begin
 end;
 
 procedure TfrmMain.acSaveDataExecute(Sender: TObject);
-var S: TStream;
+var
+  S: TStream;
 begin
   S := GetStream(tvDocInfo.Selected);
   if (S <> nil) and reDetails.Modified then
@@ -690,7 +721,8 @@ begin
 end;
 
 procedure TfrmMain.FreeData(const Node: TTreeNode);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   TObject(Node.Data).Free;
   Node.Data := nil;
@@ -708,7 +740,10 @@ begin
 end;
 
 procedure TfrmMain.UpdateFolderData(Node: TTreeNode; const AName: string; Storage: TJclStructStorageFolder);
-var SS: TJclStructStorageFolder; S: TStringlist; i: integer;
+var
+  SS: TJclStructStorageFolder;
+  S: TStringlist;
+  i: integer;
 begin
   TObject(Node.Data).Free;
   Node.Data := nil;
@@ -744,7 +779,8 @@ begin
 end;
 
 procedure TfrmMain.UpdateFileData(Node: TTreeNode; const AName: string; Storage: TJclStructStorageFolder);
-var SS: TStream;
+var
+  SS: TStream;
 begin
   TObject(Node.Data).Free;
   Node.Data := nil;
@@ -785,7 +821,7 @@ begin
       Node.EndEdit(true);
     end
     else
-    begin // update the node's (and subnodes') Data with new storages / streams 
+    begin // update the node's (and subnodes') Data with new storages / streams
       if WasFolder then
       begin
         if not SS.GetFolder(S, SS2) then
@@ -858,7 +894,8 @@ begin
 end;
 
 procedure TfrmMain.acSaveExecute(Sender: TObject);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   if Modified then
   begin
@@ -879,24 +916,28 @@ begin
 end;
 
 procedure TfrmMain.acSaveAsExecute(Sender: TObject);
-var AFile:TJclStructStorageFolder;
+var
+  AFile: TJclStructStorageFolder;
 begin
   // I know: I could just as well have done a standard FileCopy, but that's not any fun!
   if SaveDialog.Execute then
   begin
-    AFile := TJclStructStorageFolder.Create(SaveDialog.Filename,[smCreate],true);
+    AFile := TJclStructStorageFolder.Create(SaveDialog.Filename, [smCreate], true);
     try
       AFile.Assign(TJclStructStorageFolder(tvDocInfo.Items.GetFirstNode.Data));
     finally
       AFile.Free;
     end;
-    LoadFile(SaveDialog.Filename,false);
+    LoadFile(SaveDialog.Filename, false);
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.2  2004/06/12 04:44:16  rrossmair
+// mistakenly commited the wrong (outdated) file version at first; corrected
+//
 // Revision 1.1  2004/06/12 03:44:01  rrossmair
 // structured storage demo initial check-in; adapted for JCL
 //
