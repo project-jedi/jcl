@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 01, 2000                                                 }
+{ Last modified: October 17, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -89,6 +89,15 @@ const
   TIME_ZONE_ID_DAYLIGHT = 2;
 
 {$ENDIF} // COMPILER4_UP
+
+//==============================================================================
+// COM related declarations
+//==============================================================================
+
+type
+  TCoCreateInstanceExProc = function (const clsid: TCLSID;
+    unkOuter: IUnknown; dwClsCtx: Longint; ServerInfo: PCoServerInfo;
+    dwCount: Longint; rgmqResults: PMultiQIArray): HResult stdcall;
 
 //==============================================================================
 // Security related declarations from winnt.h
