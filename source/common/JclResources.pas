@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 14, 2001                                                }
+{ Last modified: April 17, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -85,6 +85,44 @@ resourcestring
   RsDebugMapFileExtension = '.map'; // do not localize
   RsDebugNoProcessInfo    = 'Unable to obtain process information';
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
+
+//------------------------------------------------------------------------------
+// JclExprEval
+//------------------------------------------------------------------------------
+
+resourcestring
+
+  // Stacks
+  RsExprEvalStackEmpty              = 'Stack is empty';
+  RsExprEvalStackTopNotAnExpression = 'Item on stack is not an expression';
+  RsExprEvalStackTopNotAnOpOrVar    = 'Item on stack is not an operand or a ' +
+    'variable';
+  RsExprEvalStackBadItem            = 'Item on stack is of an unexpected type';
+
+  // Evaluation / parsing
+  RsExprEvalOperandExpected         = 'Operand expected';
+  RsExprEvalOperatorExpected        = 'Operator expected';
+  RsExprEvalToomanyOperands         = 'Too many operands';
+  RsExprEvalInvalidChar             = 'Invalid character at position %d';
+  RsExprEvalMissingLeftParenthesis  = 'Missing left parenthesis';
+  RsExprEvalMissingRightParenthesis = 'Missing right parenthesis';
+  RsExprEvalMissingRightBracket     = 'Missing right bracket';
+  RsExprEvalLeftParenthesis         = 'Cannot evaluate left parenthesis';
+  RsExprEvalRightParenthesis        = 'Cannot evaluate right parenthesis';
+
+  // Expression list
+  RsExprEvalExprUnexpectedItem      = 'Unexpected expression item';
+
+  // Variables
+  RsExprEvalUnknownVariable         = 'Variable ''%s'' not found';
+  RsExprEvalDuplicateVariable       = 'Variable ''%s'' already exists';
+
+  // Functions
+  RsExprEvalWrongArgumentCount      = 'Too many arguments for function ''%s''';
+  RsExprEvalUnknownFunction         = 'Function ''%s'' not found';
+  RsExprEvalInvalidArgument         = 'Invalid argument to function ''%s''';
+  RsExprEvalInvalidArrayCount       = 'Invalid array count (%d) to function '+
+    '''%s''';
 
 //------------------------------------------------------------------------------
 // JclFileUtils
