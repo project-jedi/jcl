@@ -5,7 +5,14 @@ object ProductFrame: TProductFrame
   Height = 410
   HorzScrollBar.Range = 398
   Color = clBackground
+  Font.Color = clBlack
+  Font.Height = 12
+  Font.Name = 'helvetica'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
   ParentColor = False
+  ParentFont = False
   TabOrder = 0
   object Splitter: TSplitter
     Left = 393
@@ -27,7 +34,7 @@ object ProductFrame: TProductFrame
     object Label1: TLabel
       Left = 8
       Top = 8
-      Width = 156
+      Width = 155
       Height = 15
       Caption = '&Select components to install'
     end
@@ -57,7 +64,7 @@ object ProductFrame: TProductFrame
     object Label2: TLabel
       Left = 5
       Top = 8
-      Width = 60
+      Width = 62
       Height = 15
       Caption = '&Information'
     end
@@ -80,14 +87,14 @@ object ProductFrame: TProductFrame
       object BplPathLabel: TLabel
         Left = 8
         Top = 19
-        Width = 48
+        Width = 47
         Height = 15
         Caption = '.bpl path'
       end
       object DcpPathLabel: TLabel
         Left = 8
         Top = 51
-        Width = 52
+        Width = 50
         Height = 15
         Caption = '.dcp path'
       end
@@ -98,6 +105,7 @@ object ProductFrame: TProductFrame
         Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
+        OnChange = PathEditChange
       end
       object DcpPathEdit: TEdit
         Left = 68
@@ -106,7 +114,7 @@ object ProductFrame: TProductFrame
         Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
-        OnChange = DcpPathEditChange
+        OnChange = PathEditChange
       end
       object Button1: TButton
         Left = 373

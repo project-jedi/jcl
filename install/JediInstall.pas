@@ -73,6 +73,7 @@ type
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);
+    function Supports(Installation: TJclBorRADToolInstallation): Boolean;
   end;
 
 implementation

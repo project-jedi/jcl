@@ -19,13 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Log$
-// Revision 1.8  2004/03/20 18:01:30  rrossmair
-// *** empty log message ***
-//
-// Revision 1.7  2004/03/12 04:59:56  rrossmair
-// BCB/Win32 support basically working now
-//
+// $Id$
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJediInstallerMain{$ELSE}JediInstallerMain{$ENDIF};{$ENDIF}
 
@@ -82,6 +76,7 @@ type
     FJediInstall: IJediInstall;
     FInstallLog: TFileStream;
     FSystemPaths: TStringList;
+    function CheckUpdatePack(Installation: TJclBorRADToolInstallation): Boolean;
     function CreateView(Installation: TJclBorRADToolInstallation): Boolean;
     procedure ReadSystemPaths;
     function View(Installation: TJclBorRADToolInstallation): TProductFrame; overload;
@@ -95,7 +90,6 @@ type
     {$ENDIF VisualCLX}
   public
     function CheckRunningInstances: Boolean;
-    procedure CheckUpdatePacks;
     procedure Install;
     function PopulateTreeViews: Boolean;
     function SystemPathValid(const Path: string): Boolean;
@@ -144,7 +138,14 @@ const
   {$IFNDEF COMPILER6_UP}
   PathSep = ';';
   {$ENDIF COMPILER6_UP}
-  DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
+  {$IFDEF MSWINDOWS}
+  SupportURLs: array[TJclBorRADToolKind] of string = (
+                'http://www.borland.com/devsupport/delphi/',
+                'http://www.borland.com/devsupport/bcppbuilder/');
+  {$ENDIF MSWINDOWS}
+  {$IFDEF KYLIX}
+  KylixSupportURL     = 'http://www.borland.com/devsupport/kylix/';
+  {$ENDIF KYLIX}
   DelphiJediURL     = 'http://delphi-jedi.org';
   VersionSignature  = 'D%d';
   BCBTag            = $10000;
@@ -156,7 +157,8 @@ resourcestring
   RsConfirmInstall  = 'Are you sure to install all selected features?';
   RsInstallSuccess  = 'Installation finished';
   RsNoInstall       = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
-  RsUpdateNeeded    = '. Would you like to open Borland %s support web page?';
+  RsUpdateNeeded    = 'You should install latest Update Pack #%d for %s.'#13#10 +
+                      'Would you like to open Borland support web page?';
 
 { TMainForm }
 
@@ -166,18 +168,21 @@ var
   ProductFrame: TProductFrame;
 begin
   Result := True;
-  Page := TTabSheet.Create(Self);
-  with Installation do
+  if FJediInstall.Supports(Installation) then
   begin
-    Page.Name := Format('%s%dPage', [Prefixes[RADToolKind], VersionNumber]);
-    Page.Caption := Name;
+    Page := TTabSheet.Create(Self);
+    with Installation do
+    begin
+      Page.Name := Format('%s%dPage', [Prefixes[RADToolKind], VersionNumber]);
+      Page.Caption := Name;
+    end;
+    Page.PageControl := ProductsPageControl;
+    ProductFrame := TProductFrame.Create(Self);
+    ProductFrame.Installation := Installation;
+    ProductFrame.TreeView.Images := ImageList;
+    ProductFrame.Align := alClient;
+    ProductFrame.Parent := Page;
   end;
-  Page.PageControl := ProductsPageControl;
-  ProductFrame := TProductFrame.Create(Self);
-  ProductFrame.Installation := Installation;
-  ProductFrame.TreeView.Images := ImageList;
-  ProductFrame.Align := alClient;
-  ProductFrame.Parent := Page;
 end;
 
 function TMainForm.CheckRunningInstances: Boolean;
@@ -187,19 +192,24 @@ begin
     MessageBox(RsCloseRADTool, mtWarning);
 end;
 
-procedure TMainForm.CheckUpdatePacks;
+function TMainForm.CheckUpdatePack(Installation: TJclBorRADToolInstallation): Boolean;
 var
-  UpdateText: string;
+  Msg: string;
 begin
-  if BorRADToolInstallations.AnyUpdatePackNeeded(UpdateText) then
-  begin
-    UpdateText := UpdateText + RsUpdateNeeded;
-    if MessageBox(UpdateText, mtWarning, [mbYes, mbNo]{$IFDEF VisualCLX}, mbYes{$ENDIF}) = mrYes then
-    { TODO : Analoguous function for Linux }
-    {$IFDEF MSWINDOWS}
-      ShellExecEx(DelphiSupportURL);
-    {$ENDIF MSWINDOWS}
-  end;
+  Result := True;
+  with Installation do
+    if UpdateNeeded then
+    begin
+      Msg := Format(RsUpdateNeeded, [LatestUpdatePack, Name]);
+      if MessageBox(Msg, mtWarning, [mbYes, mbNo]{$IFDEF VisualCLX}, mbYes{$ENDIF}) = mrYes then
+      {$IFDEF MSWINDOWS}
+        ShellExecEx(SupportURLs[RadToolKind]);
+      {$ENDIF MSWINDOWS}
+      {$IFDEF UNIX}
+      { TODO : Analoguous function for Linux };
+      // Exec(KylixSupportURL);
+      {$ENDIF UNIX}
+    end;
 end;
 
 procedure TMainForm.Install;
@@ -221,8 +231,11 @@ begin
       MessageBox(RsInstallSuccess)
     else
       {$IFDEF UNIX}
-      Libc.system(PChar(Format('xterm -e less %s', [LogFileName])))
-      {$ENDIF};
+      Libc.system(PChar(Format('xterm -e less %s', [LogFileName])));
+      {$ENDIF}
+      {$IFDEF MSWINDOWS}
+      ShellExecEx(LogFileName);
+      {$ENDIF MSWINDOWS}
   finally
     Screen.Cursor := crDefault;
   end;
@@ -325,7 +338,7 @@ procedure TMainForm.WriteInstallLog(const Text: string);
 var
   TextLine: string;
 begin
-  TextLine := Text + sLineBreak;
+  TextLine := Text + AnsiLineBreak;
   FInstallLog.WriteBuffer(Pointer(TextLine)^, Length(TextLine));
 end;
 
@@ -355,11 +368,11 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
-  FBorRADToolInstallations.Iterate(CreateView);
   //FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJediInstall := CreateJediInstall;
+  FBorRADToolInstallations.Iterate(CreateView);
   FJediInstall.SetTool(Self);
   UpdateStatus('');
   if not FJediInstall.InitInformation(Application.ExeName) then
@@ -392,7 +405,7 @@ function TMainForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   if QEvent_type(Event) = QEventType_UMCheckUpdates then
   begin
-    CheckUpdatePacks;
+    BorRADToolInstallations.Iterate(CheckUpdatePack);
     Result := True;
   end
   else
@@ -402,7 +415,7 @@ end;
 {$IFDEF VCL}
 procedure TMainForm.UMCheckUpdates(var Message: TMessage);
 begin
-  CheckUpdatePacks;
+  BorRADToolInstallations.Iterate(CheckUpdatePack);
   Message.Result := 0;
 end;
 {$ENDIF VCL}
