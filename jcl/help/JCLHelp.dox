@@ -4,7 +4,7 @@ Version=201
 [General]
 Title=JEDI Code Library
 VersionMajor=1
-VersionMinor=11
+VersionMinor=20
 Copyright=Project JEDI (http://www.delphi-jedi.org)
 Type=1
 
@@ -178,7 +178,7 @@ Count=0
 Count=0
 
 [Filters]
-CurrentID={D3A588E0-9472-11D3-BDD1-0080C8BA053D}
+CurrentID={C81B476F-5DE3-416C-A73A-9674B8ECC110}
 
 [Disabled Filters]
 Count=0
@@ -3508,8 +3508,8 @@ HelpProjectFileAutomatic=1
 CustomHelpProjectFile=
 CreateContentFile=1
 CompressHelp=1
-CreateMapFiles=1
-CreateDualHelpSupportFiles=1
+CreateMapFiles=0
+CreateDualHelpSupportFiles=0
 WindowNameTopic=MAIN
 WindowNameNav=NAV
 WindowNameExample=EXAMPLE
