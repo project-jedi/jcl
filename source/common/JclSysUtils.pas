@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: November 5, 2002                                                                  }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -49,10 +49,6 @@ uses
 //--------------------------------------------------------------------------------------------------
 // Pointer manipulation
 //--------------------------------------------------------------------------------------------------
-
-{$IFNDEF COMPILER5_UP}
-procedure FreeAndNil(var Obj);
-{$ENDIF COMPILER5_UP}
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
@@ -331,21 +327,6 @@ uses
 //==================================================================================================
 // Pointer manipulation
 //==================================================================================================
-
-{$IFNDEF COMPILER5_UP}
-
-procedure FreeAndNil(var Obj);
-var
-  O: TObject;
-begin
-  O := TObject(Obj);
-  Pointer(Obj) := nil;
-  O.Free;
-end;
-
-{$ENDIF COMPILER5_UP}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 begin
@@ -1566,11 +1547,7 @@ end;
 
 function SystemTObjectInstance: LongWord;
 begin
-  {$IFDEF COMPILER4}
-  Result := LongWord(FindClassHInstance(System.TObject));
-  {$ELSE COMPILER4}
   Result := FindClassHInstance(System.TObject);
-  {$ENDIF COMPILER4}
 end;
 
 //--------------------------------------------------------------------------------------------------
