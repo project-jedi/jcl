@@ -1199,7 +1199,7 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    if GetWindowsVersion in [wvWinNT3, wvWinNT4] then
+    if IsWinNT then
       Result := BuildListPS
     else
       Result := BuildListTH;
