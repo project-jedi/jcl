@@ -33,8 +33,9 @@
 {    the provisions above, a recipient may use your version of this file       }
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
+{    $Id$              }
+{                                                                              }
 { **************************************************************************** }
-{ $Id$ }
 
 unit JppParser;
 
@@ -51,7 +52,7 @@ type
     FLexer: TPppLexer;
     FState: TPppState;
     FResult: string;
-    FStateUnknown: Boolean;
+    FTriState: TTriState;
   protected
     procedure Emit(const AText: string);
 
@@ -83,6 +84,7 @@ begin
 
   FLexer := TPppLexer.Create(AStream);
   FState := APppState;
+  FTriState := ttDefined;
 end;
 
 destructor TJppParser.Destroy;
@@ -114,13 +116,13 @@ end;
 
 function TJppParser.ParseCondition(Token: TPppToken): string;
 var
-  T: TTriState;
+  SavedTriState: TTriState;
 begin
-  T := State.TriState(Lexer.TokenAsString);
-  if T = ttUnknown then
-  begin
-    FStateUnknown := True;
-    try
+  SavedTriState := FTriState;
+  FTriState := State.TriState(Lexer.TokenAsString);
+  try
+    if FTriState = ttUnknown then
+    begin
       Result := Lexer.RawComment;
       Lexer.NextTok;
       Result := Result + ParseText;
@@ -131,37 +133,37 @@ begin
         Result := Result + ParseText;
       end;
       Result := Result + Lexer.RawComment;
-    finally
-      FStateUnknown := False;
-    end;
-  end
-  else
-    if ((Token = ptIfdef) and (T = ttDefined))
-    or ((Token = ptIfndef) and (T = ttUndef)) then
-    begin
-      Lexer.NextTok;
-      Result := ParseText;
-      if Lexer.CurrTok = ptElse then
-      begin
-        Lexer.NextTok;
-        ParseText;
-      end;
     end
     else
-    begin
-      Lexer.NextTok;
-      ParseText;
-      if Lexer.CurrTok = ptElse then
+      if ((Token = ptIfdef) and (FTriState = ttDefined))
+      or ((Token = ptIfndef) and (FTriState = ttUndef)) then
       begin
         Lexer.NextTok;
         Result := ParseText;
+        if Lexer.CurrTok = ptElse then
+        begin
+          Lexer.NextTok;
+          ParseText;
+        end;
       end
       else
-        Result := '';
-    end;
-  if Lexer.CurrTok <> ptEndif then
-    Lexer.Error('$ENDIF expected');
-  Lexer.NextTok;
+      begin
+        Lexer.NextTok;
+        ParseText;
+        if Lexer.CurrTok = ptElse then
+        begin
+          Lexer.NextTok;
+          Result := ParseText;
+        end
+        else
+          Result := '';
+      end;
+    if Lexer.CurrTok <> ptEndif then
+      Lexer.Error('$ENDIF expected');
+    Lexer.NextTok;
+  finally
+    FTriState := SavedTriState;
+  end;
 end;
 
 function TJppParser.ParseIfdef: string;
@@ -305,12 +307,12 @@ begin
           if poProcessDefines in State.Options then
             case Lexer.CurrTok of
               ptDefine:
-                if FStateUnknown then
+                if FTriState <> ttDefined then
                   AddRawComment
                 else
                   ParseDefine;
               ptUndef:
-                if FStateUnknown then
+                if FTriState <> ttDefined then
                   AddRawComment
                 else
                   ParseUndef;
