@@ -105,8 +105,8 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer;
-  const Files: TStrings; Options: TFileListOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
-  SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
+  const Files: TStrings; const Options: TFileListOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
+  const SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DelTree(const Path: string): Boolean;
@@ -2633,7 +2633,7 @@ end;
 //------------------------------------------------------------------------------
 
 function AdvBuildFileList(const Path: string; const Attr: Integer;
-  const Files: TStrings; Options: TFileListOptions; SubfoldersMask: string): Boolean;
+  const Files: TStrings; const Options: TFileListOptions; const SubfoldersMask: string): Boolean;
 var
   FileMask: string;
   RootDir: string;
