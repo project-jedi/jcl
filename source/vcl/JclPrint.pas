@@ -1302,15 +1302,18 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/11/06 02:07:05  mthoma
+// cleaning.
+//
 // Revision 1.16  2004/10/09 13:58:52  marquardt
 // style cleaning JclPrint
 // remove WinSpool related functions from JclWin32
 //
 // Revision 1.15  2004/10/09 06:17:27  marquardt
-// PH cleaning DPSetDefaultPrinter reimplemented from scratch
+// cleaning: DPSetDefaultPrinter reimplemented from scratch
 //
 // Revision 1.14  2004/10/08 16:45:31  marquardt
-// PH cleaning DPGetDefaultPrinter reimplemented from scratch
+// cleaning: DPGetDefaultPrinter reimplemented from scratch
 //
 // Revision 1.13  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
@@ -1336,13 +1339,13 @@ end;
 // Revision 1.6  2004/05/13 07:32:18  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.5  2004/04/13 13:33:38  peterjhaas
+// Revision 1.5  2004/04/13 13:33:38
 // add DPSetDefaultPrinter, bugfix GetDefaultPrinterName
 //
 // Revision 1.4  2004/04/11 22:12:16  mthoma
 // Added a new function: GetDefaultPrinterName.
 //
-// Revision 1.3  2004/04/06 04:37:59  peterjhaas
+// Revision 1.3  2004/04/06 04:37:59
 // DPSetDefaultPrinter
 //
 
