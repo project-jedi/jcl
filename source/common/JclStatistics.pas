@@ -43,7 +43,7 @@ uses
 function ArithmeticMean(const X: TDynFloatArray): Float;
 function GeometricMean(const X: TDynFloatArray): Float;
 function HarmonicMean(const X: TDynFloatArray): Float;
-function HeronianMean(const a, b: Float): Float;
+function HeronianMean(const A, B: Float): Float;
 
 { Miscellanous }
 
@@ -133,11 +133,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function HeronianMean(const a, b: Float): Float;
+function HeronianMean(const A, B: Float): Float;
 begin
-  Assert(a >= 0);
-  Assert(b >= 0);
-  Result := (a + sqrt(a*b) + b) / 3;
+  Assert(A >= 0);
+  Assert(B >= 0);
+  Result := (A + Sqrt(A * B) + B) / 3;
 end;
 
 //==================================================================================================
@@ -187,10 +187,8 @@ begin
   Result := False;
   L := GetDynLengthNotNull(X);
   for I := 0 to L - 1 do
-  begin
     if X[I] <= PrecisionTolerance then
       Exit;
-  end;
   Result := True;
 end;
 
@@ -255,7 +253,7 @@ begin
   // We need to sort the values first
   SortedList := Copy(X);
   // type cast to Pointer for the sake of FPC
-  SortDynArray(Pointer(SortedList), sizeof(Float),DynArrayCompareFloat);
+  SortDynArray(Pointer(SortedList), SizeOf(Float),DynArrayCompareFloat);
 
   // and call the median function afterwards
   Result := Median(SortedList);
@@ -305,13 +303,13 @@ begin
   end;
   Result := 1.0;
   if R <> 0 then
-  try
-    for I := N downto N - R + 1 do
-      Result := Result * I;
-    Result := Int(Result + 0.5);
-  except
-    Result := -1.0;
-  end;
+    try
+      for I := N downto N - R + 1 do
+        Result := Result * I;
+      Result := Int(Result + 0.5);
+    except
+      Result := -1.0;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -482,6 +480,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/29 15:16:51  marquardt
+// simple style cleaning
+//
 // Revision 1.7  2004/05/05 07:18:31  rrossmair
 // MedianUnsorted: type cast for FPC compatibility
 //

@@ -86,7 +86,6 @@ const
   GoldenMean: Float   = 1.618033988749894848204586834365638;  // GoldenMean
   EulerMascheroni: Float = 0.5772156649015328606065120900824;  // Euler GAMMA
 
-
 const
   MaxAngle: Float = 9223372036854775808.0; // 2^63 Rad
 
@@ -150,7 +149,6 @@ procedure SinCos(X: Float; var Sin, Cos: Float);
 function Tan(X: Float): Float;
 function Versine(X: Float): Float;
 
-
 { Hyperbolic }
 
 function ArcCosH(X: Float): Float;
@@ -173,13 +171,12 @@ procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obso
 
 { Exponential }
 
-function Exp(const x: Float): Float;
+function Exp(const X: Float): Float;
 function Power(const Base, Exponent: Float): Float;
 function PowerInt(const X: Float; N: Integer): Float;
 function TenToY(const Y: Float): Float;
 function TruncPower(const Base, Exponent: Float): Float;
 function TwoToY(const Y: Float): Float;
-
 
 { Floating point support routines }
 
@@ -412,7 +409,6 @@ type
     procedure Power(const V: Float); overload;
   end;
 
-
 type
   EJclMathError = class(EJclError);
 
@@ -448,7 +444,6 @@ function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 procedure InitCrc32(Polynom, Start: Cardinal);
 procedure InitCrc16(Polynom, Start: Word);
 {$ENDIF CRCINIT}
-
 
 implementation
 
@@ -503,7 +498,7 @@ end;
 
 function DoubleToHex(const D: Double): string;
 var
-  Overlay: array [1..2] of LongInt absolute D;
+  Overlay: array [1..2] of Longint absolute D;
 begin
   // Look at element 2 before element 1 because of "Little Endian" order.
   Result := IntToHex(Overlay[2], 8) + IntToHex(Overlay[1], 8);
@@ -514,7 +509,7 @@ end;
 function HexToDouble(const Hex: string): Double;
 var
   D: Double;
-  Overlay: array [1..2] of LongInt absolute D;
+  Overlay: array [1..2] of Longint absolute D;
 begin
   if Length(Hex) <> 16 then
     raise EJclMathError.CreateResRec(@RsUnexpectedValue);
@@ -714,7 +709,7 @@ end;
 
 function ArcCsc(X: Float): Float;
 begin
-  Result := arcsec(x / sqrt(x * x -1));
+  Result := ArcSec(X / Sqrt(X * X -1));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -730,7 +725,7 @@ function ArcSec(X: Float): Float;
   end;
 
 begin
-  Result := FArcTan(sqrt(x*x - 1));
+  Result := FArcTan(Sqrt(X*X - 1));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -818,7 +813,7 @@ end;
 
 function Coversine(X: Float): Float;
 begin
-  Result := 1 - sin(x);
+  Result := 1 - Sin(X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -838,14 +833,14 @@ end;
 
 function Exsecans(X: Float): Float;
 begin
-  Result := sec(x) - 1;
+  Result := Sec(X) - 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function Haversine(X: Float): Float;
 begin
-  Result := 0.5 * (1 - cos(x)) ;
+  Result := 0.5 * (1 - Cos(X)) ;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -924,7 +919,7 @@ end;
 
 function Versine(X: Float): Float;
 begin
-  Result := 1 - cos(x);
+  Result := 1 - Cos(X);
 end;
 
 //===================================================================================================
@@ -1029,18 +1024,18 @@ const
 var
   ControlWW: Word;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     X    { TODO : Legal values for X? }
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLDCW   [EAX].RoundDown
-{$ELSE}
+        {$ELSE}
         FLDCW   RoundDown
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1054,11 +1049,11 @@ asm
         FLD1
         FDIVRP  ST(1), ST
         FADDP   ST(1), ST
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLD     [EAX].OneHalf
-{$ELSE}
+        {$ELSE}
         FLD     OneHalf
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FMULP   ST(1), ST
         FWAIT
 end;
@@ -1098,18 +1093,18 @@ const
 var
   ControlWW: Word;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     X  { TODO : Legal values for X? }
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLDCW   [EAX].RoundDown
-{$ELSE}
+        {$ELSE}
         FLDCW   RoundDown
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1123,11 +1118,11 @@ asm
         FLD1
         FDIVRP  ST(1), ST
         FSUBP   ST(1), ST
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLD     [EAX].OneHalf
-{$ELSE}
+        {$ELSE}
         FLD     OneHalf
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FMULP   ST(1), ST
         FWAIT
 end;
@@ -1176,7 +1171,7 @@ end;
 // Exponential
 //===================================================================================================
 
-function Exp(const x: Float): Float;
+function Exp(const X: Float): Float;
 begin
   {$IFDEF MATH_EXT_EXTREMEVALUES}
   if IsSpecialValue(X) then
@@ -1189,7 +1184,7 @@ begin
   end;
   {$ENDIF MATH_EXT_EXTREMEVALUES}
 
-  Result := System.Exp(x);
+  Result := System.Exp(X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1201,16 +1196,16 @@ begin
   if (Exponent = 0.0) or (Base = 1.0) then
     Result := 1
   else
-    if Base = 0.0 then
-    begin
-      if Exponent > 0.0 then
-        Result := 0.0
-      else
-        {$IFDEF MATH_EXT_EXTREMEVALUES}
-        Result := Infinity;
-        {$ELSE}
-        raise EJclMathError.Create('Power function: Result is infinite');
-        {$ENDIF MATH_EXT_EXTREMEVALUES}
+  if Base = 0.0 then
+  begin
+    if Exponent > 0.0 then
+      Result := 0.0
+    else
+      {$IFDEF MATH_EXT_EXTREMEVALUES}
+      Result := Infinity;
+      {$ELSE}
+      raise EJclMathError.Create('Power function: Result is infinite');
+      {$ENDIF MATH_EXT_EXTREMEVALUES}
   end
   else
   if Base > 0.0 then
@@ -1220,8 +1215,8 @@ begin
     IsAnInteger := (Frac(Exponent) = 0.0);
     if IsAnInteger then
     begin
-      Result := exp(Exponent * Ln(Abs(Base)));
-      IsOdd := abs(round(ModFloat(Exponent, 2))) = 1;
+      Result := Exp(Exponent * Ln(Abs(Base)));
+      IsOdd := Abs(Round(ModFloat(Exponent, 2))) = 1;
       if IsOdd then
         Result := -Result;
     end
@@ -1257,7 +1252,6 @@ begin
   end;
 
   // Legendre's algorithm for minimizing the number of multiplications
-
   T := 1.0;
   M := Abs(N);
   Xc := X;
@@ -1644,7 +1638,7 @@ function Floor(const X: Float): Integer;
 begin
   Result := Integer(Trunc(X));
   if Frac(X) < 0 then
-    dec(Result);
+    Dec(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1688,12 +1682,11 @@ end;
 
 function LCM(const X, Y: Cardinal): Cardinal;
 var
-  e: Cardinal;
-
+  E: Cardinal;
 begin
-  e := GCD(X, Y);
-  if e > 0 then
-    Result := (X div e) * Y
+  E := GCD(X, Y);
+  if E > 0 then
+    Result := (X div E) * Y
   else
     Result := 0;
 end;
@@ -1782,43 +1775,39 @@ end;
 
 function Ackermann(const A, B: Integer): Integer;
 begin
-  if a = 0 then
+  if A = 0 then
   begin
-    Result := b + 1;
+    Result := B + 1;
     Exit;
   end;
 
-  if b = 0 then
-    Result := Ackermann(a-1, 1)
+  if B = 0 then
+    Result := Ackermann(A - 1, 1)
   else
-    Result := Ackermann(a-1, Ackermann(a, b-1));
+    Result := Ackermann(A - 1, Ackermann(A, B - 1));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function Fibonacci(const N: Integer): Integer;
 var
-  i: Integer;
-  p1, p2: Integer;
-
+  I: Integer;
+  P1, P2: Integer;
 begin
   Assert(N >= 0);
   Result := 0;
-  p1 := 1;
-  p2 := 1;
+  P1 := 1;
+  P2 := 1;
 
-  if (n = 1) or (n = 2) then
-  begin
-    Result := 1;
-    Exit;
-  end;
-
-  for i := 3 to N do
-  begin
-    Result := p1 + p2;
-    p1 := p2;
-    p2 := Result;
-  end;
+  if (N = 1) or (N = 2) then
+    Result := 1
+  else
+    for I := 3 to N do
+    begin
+      Result := P1 + P2;
+      P1 := P2;
+      P2 := Result;
+    end;
 end;
 
 //===================================================================================================
@@ -2072,11 +2061,11 @@ begin
       MaxJ := PrimeCacheLimit div I;
       J := 3;
       repeat
-          PrimeSet.SetBit((I*J) div 2, False);
-          inc (J,2);
+        PrimeSet.SetBit((I*J) div 2, False);
+        Inc(J,2);
       until J > MaxJ;
     end;
-    inc (I, 2);
+    Inc(I, 2);
   until I > MaxI;
 end;
 
@@ -2085,46 +2074,42 @@ end;
 function IsPrimeTD(N: Cardinal): Boolean;
 { Trial Division Algorithm }
 var
-  I, MAX: Cardinal;
+  I, Max: Cardinal;
   R: Extended;
 begin
   if N = 2 then
   begin
     Result := True;
-    exit;
+    Exit;
   end;
   if (N and 1) = 0 then   //Zero or even
   begin
     Result := False;
-    exit;
+    Exit;
   end;
   if PrimeSet = nil then // initialize look-up table
      InitPrimeSet;
   if N <= PrimeCacheLimit then // do look-up
-  begin
-     Result := PrimeSet.GetBit(N div 2)
-  end
+    Result := PrimeSet.GetBit(N div 2)
   else
   begin // calculate
     R := N;
-    MAX := Round(Sqrt (R));
-    if MAX > PrimeCacheLimit then
+    Max := Round(Sqrt (R));
+    if Max > PrimeCacheLimit then
     begin
       raise EJclMathError.CreateResRec(@RsUnexpectedValue);
       Exit;
     end;
     I := 1;
     repeat
-      inc (I,2);
+      Inc(I,2);
       if PrimeSet.GetBit(I div 2) then
-      begin
         if N mod I = 0 then
-           begin
-           Result := False;
-           Exit;
-         end;
-      end;
-    until I >= MAX;
+        begin
+          Result := False;
+          Exit;
+        end;
+    until I >= Max;
     Result := True;
   end;
 end;
@@ -2135,88 +2120,88 @@ end;
 
 function IsPrimeRM(N: Cardinal): Boolean;
 asm
-       TEST  EAX,1            // Odd(N) ??
-       JNZ   @@1
-       CMP   EAX,2            // N == 2 ??
-       SETE  AL
-       RET
-@@1:   CMP   EAX,73
-       JBE   @@C
-       PUSH  ESI
-       PUSH  EDI
-       PUSH  EBX
-       PUSH  EBP
-       PUSH  EAX              // save N as Param for @@5
-       LEA   EBP,[EAX - 1]    // M == N -1, Exponent
-       MOV   ECX,32           // calc remaining Bits of M and shift M'
-       MOV   ESI,EBP
-@@2:   DEC   ECX
-       SHL   ESI,1
-       JNC   @@2
-       PUSH  ECX              // save Bits as Param for @@5
-       PUSH  ESI              // save M' as Param for @@5
-       CMP   EAX,08A8D7Fh     // N >= 9080191 ??
-       JAE   @@3
+        TEST  EAX,1            // Odd(N) ??
+        JNZ   @@1
+        CMP   EAX,2            // N == 2 ??
+        SETE  AL
+        RET
+@@1:    CMP   EAX,73
+        JBE   @@C
+        PUSH  ESI
+        PUSH  EDI
+        PUSH  EBX
+        PUSH  EBP
+        PUSH  EAX              // save N as Param for @@5
+        LEA   EBP,[EAX - 1]    // M == N -1, Exponent
+        MOV   ECX,32           // calc remaining Bits of M and shift M'
+        MOV   ESI,EBP
+@@2:    DEC   ECX
+        SHL   ESI,1
+        JNC   @@2
+        PUSH  ECX              // save Bits as Param for @@5
+        PUSH  ESI              // save M' as Param for @@5
+        CMP   EAX,08A8D7Fh     // N >= 9080191 ??
+        JAE   @@3
 // now if (N < 9080191) and SPP(31, N) and SPP(73, N) then N is prime
-       MOV   EAX,31
-       CALL  @@5
-       JC    @@4
-       MOV   EAX,73
-       PUSH  OFFSET @@4
-       JMP   @@5
+        MOV   EAX,31
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,73
+        PUSH  OFFSET @@4
+        JMP   @@5
 // now if (N < 4759123141) and SPP(2, N) and SPP(7, N) and SPP(61, N) then N is prime
-@@3:   MOV   EAX,2
-       CALL  @@5
-       JC    @@4
-       MOV   EAX,7
-       CALL  @@5
-       JC    @@4
-       MOV   EAX,61
-       CALL  @@5
-@@4:   SETNC AL
-       ADD   ESP,4 * 3
-       POP   EBP
-       POP   EBX
-       POP   EDI
-       POP   ESI
-       RET
+@@3:    MOV   EAX,2
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,7
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,61
+        CALL  @@5
+@@4:    SETNC AL
+        ADD   ESP,4 * 3
+        POP   EBP
+        POP   EBX
+        POP   EDI
+        POP   ESI
+        RET
 // do a Strong Pseudo Prime Test
-@@5:   MOV   EBX,[ESP + 12]   // N on stack
-       MOV   ECX,[ESP +  8]   // remaining Bits
-       MOV   ESI,[ESP +  4]   // M'
-       MOV   EDI,EAX          // T = b, temp. Base
-@@6:   DEC   ECX
-       MUL   EAX
-       DIV   EBX
-       MOV   EAX,EDX
-       SHL   ESI,1
-       JNC   @@7
-       MUL   EDI
-       DIV   EBX
-       AND   ESI,ESI
-       MOV   EAX,EDX
-@@7:   JNZ   @@6
-       CMP   EAX,1            // b^((N -1)(2^s)) mod N ==  1 mod N ??
-       JE    @@A
-@@8:   CMP   EAX,EBP          // b^((N -1)(2^s)) mod N == -1 mod N ??
-       JE    @@A
-       DEC   ECX              // second part to 2^s
-       JNG   @@9
-       MUL   EAX
-       DIV   EBX
-       CMP   EDX,1
-       MOV   EAX,EDX
-       JNE   @@8
-@@9:   STC
-@@A:   RET
-@@B:   DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
-@@C:   MOV   EDX,OFFSET @@B
-       MOV   ECX,19
-@@D:   CMP   AL,[EDX + ECX]
-       JE    @@E
-       DEC   ECX
-       JNL   @@D
-@@E:   SETE  AL
+@@5:    MOV   EBX,[ESP + 12]   // N on stack
+        MOV   ECX,[ESP +  8]   // remaining Bits
+        MOV   ESI,[ESP +  4]   // M'
+        MOV   EDI,EAX          // T = b, temp. Base
+@@6:    DEC   ECX
+        MUL   EAX
+        DIV   EBX
+        MOV   EAX,EDX
+        SHL   ESI,1
+        JNC   @@7
+        MUL   EDI
+        DIV   EBX
+        AND   ESI,ESI
+        MOV   EAX,EDX
+@@7:    JNZ   @@6
+        CMP   EAX,1            // b^((N -1)(2^s)) mod N ==  1 mod N ??
+        JE    @@A
+@@8:    CMP   EAX,EBP          // b^((N -1)(2^s)) mod N == -1 mod N ??
+        JE    @@A
+        DEC   ECX              // second part to 2^s
+        JNG   @@9
+        MUL   EAX
+        DIV   EBX
+        CMP   EDX,1
+        MOV   EAX,EDX
+        JNE   @@8
+@@9:    STC
+@@A:    RET
+@@B:    DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
+@@C:    MOV   EDX,OFFSET @@B
+        MOV   ECX,19
+@@D:    CMP   AL,[EDX + ECX]
+        JE    @@E
+        DEC   ECX
+        JNL   @@D
+@@E:    SETE  AL
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2236,7 +2221,7 @@ begin
     L := 0;
     R := N;
     R := Sqrt(R);
-    Max := Round (R);        // only one factor can be > sqrt (N)
+    Max := Round (R);        // only one factor can be > Sqrt (N)
     if N mod 2 = 0 then      // test even at first
     begin                    // 2 is a prime factor
       Inc(L);
@@ -2250,7 +2235,7 @@ begin
     end;
     I := 3;                  // test all odd factors
     repeat
-      if (N mod I = 0) and IsPrime (I)  then
+      if (N mod I = 0) and IsPrime(I)  then
       begin                  // I is a prime factor
         Inc(L);
         SetLength(Result, L);
@@ -2261,9 +2246,9 @@ begin
             Exit;
         until N mod I <> 0;
       end;
-      inc (I, 2);
+      Inc(I, 2);
     until I > Max;
-    Inc(L);                  // final factor (> sqrt(N))
+    Inc(L);                  // final factor (> Sqrt(N))
     SetLength(Result, L);
     Result[L - 1] := N;
   end;
@@ -2288,8 +2273,10 @@ end;
 procedure SetPrimalityTest(const Method: TPrimalityTestMethod);
 begin
   case Method of
-    ptTrialDivision: IsPrime := IsPrimeTD;
-    ptRabinMiller: IsPrime := IsPrimeRM;
+    ptTrialDivision:
+      IsPrime := IsPrimeTD;
+    ptRabinMiller:
+      IsPrime := IsPrimeRM;
   end;
 end;
 
@@ -2349,10 +2336,10 @@ end;
 
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
         MOV     ECX, EAX
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
@@ -2361,10 +2348,10 @@ end;
 
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
         MOV     ECX, EAX
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
@@ -2515,10 +2502,10 @@ begin
   if sSignBit in TSingleBits(NaN) then
     Result := -Temp
   else
-    if Temp = ZeroTag then
-      Result := 0
-    else
-      Result := Temp;
+  if Temp = ZeroTag then
+    Result := 0
+  else
+    Result := Temp;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2536,10 +2523,10 @@ begin
   {$ENDIF FPC}
     Result := -Temp
   else
-    if Temp = ZeroTag then
-      Result := 0
-    else
-      Result := Temp;
+  if Temp = ZeroTag then
+    Result := 0
+  else
+    Result := Temp;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2554,14 +2541,14 @@ begin
   {$IFDEF FPC}
   if (TExtendedRec(NaN).Exponent and $8000) <> 0 then
   {$ELSE}
-   if xSignBit in TExtendedBits(NaN) then
+  if xSignBit in TExtendedBits(NaN) then
   {$ENDIF FPC}
     Result := -Temp
   else
-    if Temp = ZeroTag then
-      Result := 0
-    else
-      Result := Temp; 
+  if Temp = ZeroTag then
+    Result := 0
+  else
+    Result := Temp;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2590,7 +2577,7 @@ type
     UnknownL: Longint;
   end;
 
-  TExceptObjProc = function (P: PExceptionRecord): Exception;
+  TExceptObjProc = function(P: PExceptionRecord): Exception;
 
 var
   PrevExceptObjProc: TExceptObjProc;
@@ -2605,25 +2592,25 @@ var
 
   function GetOperandType(OpCode: Word): TRealType;
   var
-    nnn: 0..7;
+    NNN: 0..7;
   begin
     Result := rtUndef;
-    nnn := (Lo(OpCode) shr 3) and 7;   // nnn field of ModR/M byte
+    NNN := (Lo(OpCode) shr 3) and 7;   // NNN field of ModR/M byte
     if Lo(OpCode) <= $BF then
     case Hi(OpCode) of   // 3 least significant bits of first opcode byte
       0:
         Result := rtSingle;
       1:
-        if nnn < 4 then
+        if NNN < 4 then
           Result := rtSingle;
       // Extended signaling NaNs don't cause exceptions on FLD/FST(P) ?!
       3:
-        if nnn = 5 then
+        if NNN = 5 then
           Result := rtExtended;
       4:
         Result := rtDouble;
       5:
-        if nnn = 0 then
+        if NNN = 0 then
           Result := rtDouble;
     end;
   end;
@@ -2662,8 +2649,8 @@ procedure InitExceptObjProc;
 
   function IsInitialized: Boolean;
   asm
-     MOV   AL, True
-     LOCK XCHG  AL, ExceptObjProcInitialized
+          MOV       AL, True
+          LOCK XCHG AL, ExceptObjProcInitialized
   end;
 
 begin
@@ -2694,7 +2681,7 @@ end;
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
 var
-  Bits: LongWord;
+  Bits: Longword;
 begin
   CheckTag(Tag);
   if Tag = 0 then
@@ -2873,7 +2860,7 @@ end;
 
 function IsSpecialValue(const X: Float): Boolean;
 begin
-  Result := IsNan(x) or IsInfinite(x);
+  Result := IsNan(X) or IsInfinite(X);
 end;
 
 
@@ -3271,17 +3258,14 @@ end;
 
 { TODO : check for the correct polynom and init, exit values }
 
-// (rom) to be made var
-
-{$IFDEF CRCINIT}
-{$J+ to have the Polynomial changable}
-{$ENDIF CRCINIT}
-
 // CRC 16
 
+{$IFDEF CRCINIT}
+var
+{$ELSE}
 const
-//  CRC16Polynom = $1021;
-
+{$ENDIF CRCINIT}
+  //  CRC16Polynom = $1021;
   Crc16Table: array [0..255] of Word = (
     $0000, $1021, $2042, $3063, $4084, $50A5, $60C6, $70E7,
     $8108, $9129, $A14A, $B16B, $C18C, $D1AD, $E1CE, $F1EF,
@@ -3316,12 +3300,10 @@ const
     $EF1F, $FF3E, $CF5D, $DF7C, $AF9B, $BFBA, $8FD9, $9FF8,
     $6E17, $7E36, $4E55, $5E74, $2E93, $3EB2, $0ED1, $1EF0
    );
+  Crc16Start: Cardinal = $FFFF;
 
-
-
-
+const
   Crc16Bits = 16;
-  Crc16Start : Cardinal = $FFFF;
   Crc16Bytes = 2;
   Crc16HighBit = $8000;
   NotCrc16HighBit = $7FFF;
@@ -3336,8 +3318,8 @@ begin
   // calculate Syndrome
 //  CrcX := CrC;
   for I := 1 to Crc16Bytes do
-//  a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
-      Crc := Crc16Table[Crc shr (CRC16Bits-8)] xor Word(Crc shl 8);
+    // a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    Crc := Crc16Table[Crc shr (CRC16Bits - 8)] xor Word(Crc shl 8);
   I := -1;
   repeat
     Inc(I);
@@ -3350,12 +3332,12 @@ begin
   if Crc <> Crc16HighBit then
     Result := -1000 // not correctable
   else
-      // I = No. of single faulty bit
-      // (high bit first,
-      // starting from lowest with CRC bits)
+    // I = No. of single faulty bit
+    // (high bit first,
+    // starting from lowest with CRC bits)
     Result := I - Crc16Bits;
-      // Result <  0 faulty CRC-bit
-      // Result >= 0 No. of faulty data bit
+    // Result <  0 faulty CRC-bit
+    // Result >= 0 No. of faulty data bit
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3366,13 +3348,11 @@ var
 begin
   Result := Crc16Start;
   for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
+    // a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    Result := Crc16Table[Result shr (CRC16Bits - 8)] xor Word((Result shl 8)) xor X[I];
+  for I := 0 to Crc16Bytes - 1 do
   begin
-//  a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
-    Result := Crc16Table[Result shr (CRC16Bits-8)] xor Word((Result shl 8)) xor X[I];
-  end;
-  for i := 0 to Crc16Bytes - 1 do
-  begin
-//  a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    // a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc16Table[Result shr (CRC16Bits-8)] xor Word((Result shl 8)) xor (Crc shr (CRC16Bits-8));
     Crc := Word(Crc shl 8);
   end;
@@ -3399,7 +3379,7 @@ begin
       if J < 0 then
         Result := 1 // one faulty Bit in CRC itself
       else
-      begin // Bit j is faulty
+      begin // Bit J is faulty
         I := J and 7; // I <= 7 (faulty Bit in Byte)
         C := 1 shl I; // C <= 128
         I := J shr 3; // I: Index of faulty Byte
@@ -3442,60 +3422,52 @@ end;
 
 {$IFDEF CRCINIT}
 // The CRC Table can be generated like this:
-// const crc16start0 = 0;  !!
+// const Crc16Start0 = 0;  !!
 
-function crc16_bitwise(x: PByteArray; n: integer; crc: Word; Polynom: Word) : Word;
-var
-  i, j: integer;
-  sr, srhighbit: Word;
-  b: Byte;
-
+function Crc16_Bitwise(X: PByteArray; N: Integer; Crc: Word; Polynom: Word): Word;
 const
-  crc16start0 = 0;   //Generating the table
-
+  Crc16Start0 = 0;   //Generating the table
+var
+  I, J: Integer;
+  Sr, SrHighBit: Word;
+  B: Byte;
 begin
-   sr := crc16start0;
-   srhighbit := 0;
-   for i := 0 to n-1+crc16bytes do
+   Sr := Crc16Start0;
+   SrHighBit := 0;
+   for I := 0 to N - 1 + Crc16Bytes do
    begin
-      if i>=n then
+      if I >= N then
       begin
-         b := crc shr (crc16bits-8);
-         crc := crc shl 8;
-        end
-        else
-        begin
-         b := x[i]
-      end;
-      for j := 1 to 8 do
-      begin
-         if (srhighbit <> 0) then
-         begin
-           sr := sr xor polynom;
-         end;
-         srhighbit := sr and crc16highbit ;
-         sr := (Word (sr shl 1)) or ((b shr 7) and 1);
-         b := byte (b shl 1);
+         B := Crc shr (Crc16Bits - 8);
+         Crc := Crc shl 8;
       end
+      else
+        B := X[I];
+      for J := 1 to 8 do
+      begin
+        if SrHighBit <> 0 then
+          Sr := Sr xor Polynom;
+        SrHighBit := Sr and Crc16HighBit;
+        Sr := (Word (Sr shl 1)) or ((B shr 7) and 1);
+        B := Byte(B shl 1);
+      end;
    end;
-   if (srhighbit <> 0) then
-   begin
-      sr := sr xor polynom;
-   end;
-   crc16_bitwise := sr;
+   if SrHighBit <> 0 then
+      Sr := Sr xor Polynom;
+   Result := Sr;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure InitCrc16 (Polynom, Start: Word);
+procedure InitCrc16(Polynom, Start: Word);
 var
-  x: array [0..0] of byte;
-  i: integer;
+  X: array [0..0] of Byte;
+  I: Integer;
 begin
-   for i := 0 to 255 do
+   for I := 0 to 255 do
    begin
-     x[0] := i;
-     crc16table [i] := crc16_bitwise (@x, 1, 0, Polynom); { nur mit crcstart=0 !!!!}
+     X[0] := I;
+     Crc16Table[I] := Crc16_Bitwise(@X, 1, 0, Polynom); { only with crcstart=0 !!!!}
    end;
    Crc16Start := Start;
 end;
@@ -3506,9 +3478,12 @@ end;
 
 // CRC 32
 
+{$IFDEF CRCINIT}
+var
+{$ELSE}
 const
+{$ENDIF CRCINIT}
   //  CRC32Polynom = $04C11DB7;
-
   Crc32Table: array [0..255] of Cardinal = (
     $00000000, $04C11DB7, $09823B6E, $0D4326D9, $130476DC, $17C56B6B, $1A864DB2, $1E475005,
     $2608EDB8, $22C9F00F, $2F8AD6D6, $2B4BCB61, $350C9B64, $31CD86D3, $3C8EA00A, $384FBDBD,
@@ -3543,8 +3518,9 @@ const
     $89B8FD09, $8D79E0BE, $803AC667, $84FBDBD0, $9ABC8BD5, $9E7D9662, $933EB0BB, $97FFAD0C,
     $AFB010B1, $AB710D06, $A6322BDF, $A2F33668, $BCB4666D, $B8757BDA, $B5365D03, $B1F740B4
     );
+  Crc32Start: Cardinal = $FFFFFFFF;
 
-  Crc32Start : Cardinal = $FFFFFFFF;
+const
   Crc32Bits = 32;
   Crc32Bytes = 4;
   Crc32HighBit = $80000000;
@@ -3558,7 +3534,7 @@ var
 begin
   // calculate Syndrome
   for I := 1 to Crc32Bytes do
-    Crc := Crc32Table[Crc shr (CRC32Bits-8)] xor (Crc shl 8);
+    Crc := Crc32Table[Crc shr (CRC32Bits - 8)] xor (Crc shl 8);
   I := -1;
   repeat
     Inc(I);
@@ -3591,7 +3567,7 @@ begin
     // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc32Table[Result shr (CRC32Bits-8)] xor (Result shl 8) xor X[I];
   end;
-  for i := 0 to Crc32Bytes - 1 do
+  for I := 0 to Crc32Bytes - 1 do
   begin
     // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc32Table[Result shr (CRC32Bits-8)] xor (Result shl 8) xor (Crc shr (CRC32Bits-8));
@@ -3620,7 +3596,7 @@ begin
       if J < 0 then
         Result := 1 // one faulty Bit in CRC itself
       else
-      begin // Bit j is faulty
+      begin // Bit J is faulty
         I := J and 7; // I <= 7 (faulty Bit in Byte)
         C := 1 shl I; // C <= 128
         I := J shr 3; // I: Index of faulty Byte
@@ -3663,61 +3639,53 @@ end;
 
 {$IFDEF CRCINIT}
 // The CRC Table can be generated like this:
-// const crc32start0 = 0;  !!
+// const Crc32Start0 = 0;  !!
 
-function crc32_bitwise (x: PByteArray; n: integer; crc: Cardinal; Polynom: Cardinal) : Cardinal;
-var
- i, j: Integer;
- sr, srhighbit: Cardinal;
- b: Byte;
-
+function Crc32_Bitwise(X: PByteArray; N: Integer; Crc: Cardinal; Polynom: Cardinal) : Cardinal;
 const
-  crc32start0 = 0;   //Generating the table
-
+  Crc32Start0 = 0;   //Generating the table
+var
+  I, J: Integer;
+  Sr, SrHighBit: Cardinal;
+  B: Byte;
 begin
-  sr := crc32start0;
-  srhighbit := 0;
-  for i := 0 to n-1+crc32bytes do begin
-    if i > =n then
+  Sr := Crc32Start0;
+  SrHighBit := 0;
+  for I := 0 to N - 1 + Crc32Bytes do
+  begin
+    if I >= N then
     begin
-      b := crc shr (crc32bits-8);
-      crc := crc shl 8;
+      B := Crc shr (Crc32Bits - 8);
+      Crc := Crc shl 8;
     end
     else
+       B := X[I];
+    for J := 1 to 8 do
     begin
-       b := x[i]
-    end;
-    for j := 1 to 8 do
-    begin
-       if (srhighbit <> 0) then
-       begin
-         sr := sr xor polynom;
-       end;
-       srhighbit := sr and crc32highbit ;
-       sr := (sr shl 1) or ((b shr 7) and 1);
-       b := byte (b shl 1);
+       if SrHighBit <> 0 then
+         Sr := Sr xor Polynom;
+       SrHighBit := Sr and Crc32HighBit;
+       Sr := (Sr shl 1) or ((B shr 7) and 1);
+       B := Byte(B shl 1);
     end
   end;
 
-  if (srhighbit <> 0) then
-  begin
-    sr := sr xor polynom;
-  end;
-  crc32_bitwise := sr;
+  if SrHighBit <> 0 then
+    Sr := Sr xor Polynom;
+  Result := Sr;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure InitCrc32 (Polynom, Start: Cardinal);
+procedure InitCrc32(Polynom, Start: Cardinal);
 var
-  x: array [0..0] of byte;
-  i: integer;
-
+  X: array [0..0] of Byte;
+  I: Integer;
 begin
-   for i := 0 to 255 do
+   for I := 0 to 255 do
    begin
-     x[0] := i;
-     crc32table [i] := crc32_bitwise (@x, 1, 0, Polynom);
+     X[0] := I;
+     Crc32Table[I] := Crc32_Bitwise(@X, 1, 0, Polynom);
    end;
    Crc32Start := Start;
 end;
@@ -3760,6 +3728,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.10  2004/07/29 15:16:51  marquardt
+// simple style cleaning
+//
 // Revision 1.9  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //
