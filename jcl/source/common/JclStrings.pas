@@ -3703,22 +3703,24 @@ function StrToFloatSafe(const S: AnsiString): Float;
 { TODOc: Contributors: Robert Rossmair }
 var
   Temp: AnsiString;
-  I, K: Integer;
+  I, J, K: Integer;
   SwapSeparators, IsNegative: Boolean;
 begin
   Temp := S;
   SwapSeparators := False;
 
   IsNegative := False;
+  J := 0;
   for I := 1 to Length(Temp) do
   begin
     if Temp[I] = '-' then
       IsNegative := not IsNegative
     else
-      if not (Temp[I] in [' ', '+']) then
+      if not (Temp[I] in [' ', '(', '+']) then
       begin
         // if it appears prior to any digit, it has to be a decimal separator
         SwapSeparators := Temp[I] = ThousandSeparator;
+        J := I;
         Break;
       end;
   end;
@@ -3728,7 +3730,7 @@ begin
     K := CharPos(Temp, DecimalSeparator);
     SwapSeparators :=
       // if it appears prior to any digit, it has to be a decimal separator
-      (K > 1) and
+      (K > J) and
       // if it appears multiple times, it has to be a thousand separator
       ((StrCharCount(Temp, DecimalSeparator) > 1) or
       // we assume (consistent with Windows Platform SDK documentation),
