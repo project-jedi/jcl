@@ -5,8 +5,7 @@ uses
   JediInstall in 'JediInstall.pas',
   JclInstall in 'JclInstall.pas',
   QJediInstallerMain in 'QJediInstallerMain.pas' {MainForm},
-  QProductFrames in 'QProductFrames.pas' {ProductFrame: TFrame},
-  JclBorlandTools in '..\source\common\JclBorlandTools.pas';
+  QProductFrames in 'QProductFrames.pas' {ProductFrame: TFrame};
 
 {$R *.res}
 

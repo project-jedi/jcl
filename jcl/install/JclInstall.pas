@@ -856,8 +856,8 @@ begin
     end;
   { TODO : Object Repository access for D 2005 }
   if Target.VersionNumber <= 7 then
+  {$ENDIF MSWINDOWS}
   begin
-    {$ENDIF MSWINDOWS}
     TempNode := AddNode(ProductNode, ioJclExcDialog);
     {$IFDEF MSWINDOWS}
     AddNode(TempNode, ioJclExcDialogVCL);
@@ -1448,6 +1448,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.46  2004/12/23 05:32:28  rrossmair
+// - fixed for Kylix
+//
 // Revision 1.45  2004/12/23 05:09:26  rrossmair
 // - except dialog and help integration disabled for D 2005
 //
