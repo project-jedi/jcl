@@ -1,11 +1,8 @@
 FpcRtl = $(fpc)\rtl
+Fcl = $(fpc)\fcl
 FpcOut = ..\lib\fpc           # for now...
 
-PPCOptions = -Fi$(FpcRtl)\i386;$(FpcRtl)\inc;$(FpcRtl)\win32;$(FpcRtl)\win32\wininc \
-             -Fi$(FpcRtl)\objpas;$(FpcRtl)\objpas\classes;$(FpcRtl)\objpas\sysutils \
-             -Fl$(FpcRtl)\win32;$(FpcOut) \
-             -FE$(FpcOut) \
-             -Fucommon;windows;$(FpcRtl)\inc;$(FpcRtl)\objpas;$(fpc)\packages\extra\mmsystem;$(FpcRtl)\win32;$(fpc)\fcl\inc
+PPCOptions = -Mdelphi -FE$(FpcOut) -Fu$(FpcOut);common;windows;..\..\Win32API
 
 PPC = ppc386 $(PPCOptions)
 
