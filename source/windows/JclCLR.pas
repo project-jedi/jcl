@@ -526,40 +526,15 @@ const
 
   GUID_NULL : TGUID = '{00000000-0000-0000-0000-000000000000}';
 
-  mdtModule               = $00000000;
-  mdtTypeRef              = $01000000;
-  mdtTypeDef              = $02000000;
-  mdtFieldDef             = $04000000;
-  mdtMethodDef            = $06000000;
-  mdtParamDef             = $08000000;
-  mdtInterfaceImpl        = $09000000;
-  mdtMemberRef            = $0a000000;
-  mdtCustomAttribute      = $0c000000;
-  mdtPermission           = $0e000000;
-  mdtSignature            = $11000000;
-  mdtEvent                = $14000000;
-  mdtProperty             = $17000000;
-  mdtModuleRef            = $1a000000;
-  mdtTypeSpec             = $1b000000;
-  mdtAssembly             = $20000000;
-  mdtAssemblyRef          = $23000000;
-  mdtFile                 = $26000000;
-  mdtExportedType         = $27000000;
-  mdtManifestResource     = $28000000;
-
-  mdtString               = $70000000;
-  mdtName                 = $71000000;
-  mdtBaseType             = $72000000; // Leave this on the high end value. This does not correspond to metadata table
-
   ValidTableMapping: array[TJclClrTableKind] of TJclClrTableClass = (
     TJclClrTableModule,               //  $00 ttModule
     TJclClrTableTypeRef,              //  $01 ttTypeRef
     TJclClrTableTypeDef,              //  $02 ttTypeDef
-    TJclClrTable,                     //  $03 ttFieldPtr
-    TJclClrTableField,                //  $04 ttFieldDef
-    TJclClrTable,                     //  $05 ttMethodPtr
+    TJclClrTableFieldPtr,             //  $03 ttFieldPtr
+    TJclClrTableFieldDef,             //  $04 ttFieldDef
+    TJclClrTableMethodPtr,            //  $05 ttMethodPtr
     TJclClrTableMethodDef,            //  $06 ttMethodDef
-    TJclClrTable,                     //  $07 ttParamPtr
+    TJclClrTableParamPtr,             //  $07 ttParamPtr
     TJclClrTableParamDef,             //  $08 ttParamDef
     TJclClrTableInterfaceImpl,        //  $09 ttInterfaceImpl
     TJclClrTableMemberRef,            //  $0a ttMemberRef
@@ -571,11 +546,11 @@ const
     TJclClrTableFieldLayout,          //  $10 ttFieldLayout
     TJclClrTableStandAloneSig,        //  $11 ttSignature
     TJclClrTableEventMap,             //  $12 ttEventMap
-    TJclClrTable,                     //  $13 ttEventPtr
-    TJclClrTableEvent,                //  $14 ttEventDef
+    TJclClrTableEventPtr,             //  $13 ttEventPtr
+    TJclClrTableEventDef,             //  $14 ttEventDef
     TJclClrTablePropertyMap,          //  $15 ttPropertyMap
-    TJclClrTable,                     //  $16 ttPropertyPtr
-    TJclClrTableProperty,             //  $17 ttPropertyDef
+    TJclClrTablePropertyPtr,          //  $16 ttPropertyPtr
+    TJclClrTablePropertyDef,          //  $17 ttPropertyDef
     TJclClrTableMethodSemantics,      //  $18 ttMethodSemantics
     TJclClrTableMethodImpl,           //  $19 ttMethodImpl
     TJclClrTableModuleRef,            //  $1a ttModuleRef
