@@ -193,7 +193,7 @@ implementation
 uses
   {$IFDEF WIN32}
   Windows, { for PByte }
-  {$ENDIF}
+  {$ENDIF WIN32}
   JclBase, JclResources;
 
 //==============================================================================
