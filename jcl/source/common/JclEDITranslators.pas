@@ -155,7 +155,7 @@ begin
   begin
     ElementSpec := TEDIElementSpec(SegmentSpec[E]);
     SEFElement := TranslateToSEFElement(ElementSpec, Result);
-    Result.Elements.AddByNameOrId(SEFElement);
+    Result.Elements.Add(SEFElement);
   end;
 end;
 
@@ -208,7 +208,7 @@ begin
   begin
     SEFLoop := TEDISEFLoop.Create(TEDISEFDataObject(StackRecord.EDIObject));
     SEFLoop.Id := SegmentId;
-    TEDISEFDataObjectGroup(StackRecord.EDIObject).EDISEFDataObjects.AddByNameOrId(SEFLoop);
+    TEDISEFDataObjectGroup(StackRecord.EDIObject).EDISEFDataObjects.Add(SEFLoop);
     EDIObject := SEFLoop;
   end;
 end;
@@ -241,7 +241,7 @@ begin
       begin
         // Initialize the stack
         SEFTable := TEDISEFTable.Create(Result);
-        Result.EDISEFDataObjects.AddByNameOrId(SEFTable);
+        Result.EDISEFDataObjects.Add(SEFTable);
         LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, NA_LoopId, NA_LoopId, 0, SEFTable);
       end
       else
@@ -252,7 +252,7 @@ begin
         begin
           // Create new table for new section
           SEFTable := TEDISEFTable.Create(Result);
-          Result.EDISEFDataObjects.AddByNameOrId(SEFTable);
+          Result.EDISEFDataObjects.Add(SEFTable);
           // Re-initialize the stack
           LS.Pop(1);
           LS.UpdateStackObject(SEFTable);
@@ -275,7 +275,7 @@ begin
       begin
         SEFTable := TEDISEFTable(LSR.EDIObject);
         SEFSegment := TranslateToSEFSegment(SegmentSpec, SEFTable);
-        SEFTable.EDISEFDataObjects.AddByNameOrId(SEFSegment);
+        SEFTable.EDISEFDataObjects.Add(SEFSegment);
         SEFSegment.ParentSet.AssignSegmentOrdinals;
         TranslateToSEFSegmentTEXTSETS(SegmentSpec, SEFSegment);
       end
@@ -283,7 +283,7 @@ begin
       begin
         SEFLoop := TEDISEFLoop(LSR.EDIObject);
         SEFSegment := TranslateToSEFSegment(SegmentSpec, SEFLoop);
-        SEFLoop.EDISEFDataObjects.AddByNameOrId(SEFSegment);
+        SEFLoop.EDISEFDataObjects.Add(SEFSegment);
         SEFSegment.ParentSet.AssignSegmentOrdinals;
         TranslateToSEFSegmentTEXTSETS(SegmentSpec, SEFSegment);
       end;
@@ -317,7 +317,7 @@ begin
           begin
             ElementSpec := TEDIElementSpec(SegmentSpec[E]);
             if Result.ELMS.FindItemByName(ElementSpec.Id) = nil then
-              Result.ELMS.AddByNameOrId(TranslateToSEFElement(ElementSpec, Result))
+              Result.ELMS.Add(TranslateToSEFElement(ElementSpec, Result))
             else
             begin
               //raise Exception.Create('Element Repeated - Incompatible File');
@@ -331,7 +331,7 @@ begin
         begin
           SegmentSpec := TEDISegmentSpec(ICSpec[F][T][S]);
           if Result.SEGS.FindItemByName(SegmentSpec.Id) = nil then
-            Result.SEGS.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, Result))
+            Result.SEGS.Add(TranslateToSEFSegment(SegmentSpec, Result))
           else
           begin
             //raise Exception.Create('Segment Repeated - Incompatible File');
@@ -344,7 +344,7 @@ begin
         begin
           TransactionSetSpec := TEDITransactionSetSpec(ICSpec[F][T]);
           if Result.SETS.FindItemByName(TransactionSetSpec.Id) = nil then
-            Result.SETS.AddByNameOrId(TranslateToSEFSet(TransactionSetSpec, Result))
+            Result.SETS.Add(TranslateToSEFSet(TransactionSetSpec, Result))
           else
           begin
             //raise Exception.Create('Segment Repeated - Incompatible File');
