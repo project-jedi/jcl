@@ -1179,13 +1179,16 @@ begin
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Target.Name]));
   if IsDelphiPackage(Name) then
   begin
-    Result := Target.InstallPackage(PackageFileName, BplPath,
-      DcpPath);
+    Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath);
   end
   else
-    if Target is TJclBCBInstallation then
+  if Target is TJclBCBInstallation then
     with TJclBCBInstallation(Target) do
     begin
+      // to satisfy JVCL (and eventually other libraries), create a .dcp file;
+      // note that it is put out to .bpl path to make life easier for JVCL
+      Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
+      // now create .bpi & .lib
       Bpr2Mak.Options.Clear;
       Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
       {$IFDEF KYLIX}
@@ -1199,7 +1202,7 @@ begin
       if OptionSelected(ioJclCopyPackagesHppFiles) then
         Make.AddPathOption('DHPPDIR=', (Target as TJclBCBInstallation).VclIncludeDir);
       {$ENDIF}
-      Result := Target.InstallPackage(PackageFileName, BplPath,
+      Result := Result and Target.InstallPackage(PackageFileName, BplPath,
         DcpPath);
     end;
   WriteLog('...done.');
@@ -1689,6 +1692,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.58  2005/03/20 04:53:59  rrossmair
+// - create .dcp files for C++Builder now
+//
 // Revision 1.57  2005/03/16 18:11:33  rrossmair
 // - "Copy HPP files to ..." options now checked by default.
 //
