@@ -281,7 +281,7 @@ type
     Name: PChar;
   end;
 const
-  RootKeys: array [0..6] of TRootKey =
+  RootKeys: array [0..13] of TRootKey =
    (
     (Key: HKCR; Name: 'HKEY_CLASSES_ROOT\'),
     (Key: HKCU; Name: 'HKEY_CURRENT_USER\'),
@@ -289,7 +289,14 @@ const
     (Key: HKUS; Name: 'HKEY_USERS\'),
     (Key: HKPD; Name: 'HKEY_PERFORMANCE_DATA\'),
     (Key: HKCC; Name: 'HKEY_CURRENT_CONFIG\'),
-    (Key: HKDD; Name: 'HKEY_DYN_DATA\')
+    (Key: HKDD; Name: 'HKEY_DYN_DATA\'),
+    (Key: HKCR; Name: 'HKCR\'),
+    (Key: HKCU; Name: 'HKCU\'),
+    (Key: HKLM; Name: 'HKLM\'),
+    (Key: HKUS; Name: 'HKUS\'),
+    (Key: HKPD; Name: 'HKPD\'),
+    (Key: HKCC; Name: 'HKCC\'),
+    (Key: HKDD; Name: 'HKDD\')
    );
 var
   I: Integer;
@@ -298,7 +305,7 @@ begin
   if Result^ = '\' then
     Inc(Result);
   for I := Low(RootKeys) to High(RootKeys) do
-    if StrPos(Key, RootKeys[I].Name) = Key then
+    if StrPos(Key, RootKeys[I].Name) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
         raise EJclRegistryError.CreateResRecFmt(@RsInconsistentPath, [Key])
@@ -457,8 +464,8 @@ var
 begin
   if not RegKeyExists(RootKey, Key) then
     RegCreateKey(RootKey, Key);
-  WideKey := RelativeKey(RootKey, PChar(Key));
   WideName := Name;
+  WideKey := RelativeKey(RootKey, PChar(Key));
   if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
       if RegSetValueExW(RegKey, PWideChar(WideName), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
@@ -740,9 +747,9 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
+  OldSep := DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      OldSep := DecimalSeparator;
       DecimalSeparator := '.';
       Result := StrToFloat(RegReadString(RootKey, Key, Name));
     finally
@@ -772,9 +779,9 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
+  OldSep := DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      OldSep := DecimalSeparator;
       DecimalSeparator := '.';
       Result := StrToFloat(RegReadString(RootKey, Key, Name));
     finally
@@ -804,9 +811,9 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
+  OldSep := DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      OldSep := DecimalSeparator;
       DecimalSeparator := '.';
       Result := StrToFloat(RegReadString(RootKey, Key, Name));
     finally
@@ -1549,6 +1556,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/10/25 15:05:13  marquardt
+// bugfix
+//
 // Revision 1.29  2004/10/25 08:51:22  marquardt
 // PH cleaning
 //
