@@ -266,7 +266,9 @@ begin
   Result.Y := Value.FCoord.Y;
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// TJclComplex
+//==================================================================================================
 
 constructor TJclComplex.Create;
 begin
@@ -280,7 +282,6 @@ end;
 constructor TJclComplex.Create(const X, Y: Float; const ComplexType: TComplexKind);
 begin
   inherited Create;
-
   Assign(X, Y, ComplexType);
   FFracLen := MaxFracLen;
 end;
@@ -1546,8 +1547,8 @@ end;
 function TJclComplex.CoreApproxLnGamma(const Value: TRectCoord): TRectCoord;
 const
   c: array [1..8] of Float =
-  (1.0 / 12.0, -1.0 / 360.0, 1.0 / 1260.0, -1.0 / 1680.0,
-   1.0 / 1188.0, -691.0 / 360360.0, 1.0 / 156.0, -3617.0 / 122400.0);
+   (1.0 / 12.0, -1.0 / 360.0, 1.0 / 1260.0, -1.0 / 1680.0,
+    1.0 / 1188.0, -691.0 / 360360.0, 1.0 / 156.0, -3617.0 / 122400.0);
 var
   i: Integer;
   Powers: array [1..8] of TRectCoord;
@@ -1561,9 +1562,9 @@ begin
 
   temp1 := RectOne;
   Powers[1] := CoreDiv(temp1, Value);
-  temp2 := CoreMul(powers[1], powers[1]);
+  temp2 := CoreMul(powers[1], Powers[1]);
   for i := 2 to 8 do
-    Powers[i] := CoreMul(powers[i - 1], temp2);
+    Powers[i] := CoreMul(Powers[i - 1], temp2);
   for i := 8 downto 1 do
   begin
     temp1 := RectCoord(c[i] * Powers[i].X, c[i] * Powers[i].Y);
