@@ -466,7 +466,7 @@ begin
       CatRegister := nil;
     end;
 
-  { Return the Appropriate Result }
+  { Return the appropriate Result }
   Result := hr;
 end;
 
