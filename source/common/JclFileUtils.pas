@@ -1060,66 +1060,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PathGetLongName2(const Path: string): string;
-var
-  ResultPtr: PChar;
-
-  procedure ProcessPartialPath(const Path: string);
-  var
-    FFD: TWin32FindData;
-    H: THandle;
-    L: Integer;
-    DirDrive: string;
-  begin
-    DirDrive := ExtractFileDir(Path);
-    // if Path and DirDrive equal, we have a root
-    if DirDrive <> Path then
-    begin
-      H := FindFirstFile(PChar(Path), FFD);
-      if H <> INVALID_HANDLE_VALUE then
-      try
-        // first process parent directories
-        ProcessPartialPath(DirDrive);
-        // then add the result of FindFirstFile to the buffer
-        ResultPtr^ := '\';
-        L := StrLen(FFD.cFileName);
-        System.Move(FFD.cFileName[0], ResultPtr[1], L);
-        Inc(ResultPtr, L + 1);
-        ResultPtr^ := #0;
-      finally
-        Windows.FindClose(H);
-      end
-      else
-        RaiseLastWin32Error;
-    end
-    else
-    begin
-      // Root directory, end of recursion, copy root to buffer without '\'
-      // Note that if DirDrive = '' then the ResultPtr^ := #0 will cause AV!
-      L := Length(DirDrive) - 1;
-      Move(DirDrive[1], ResultPtr^, L);
-      Inc(ResultPtr, L);
-      ResultPtr^ := #0;
-    end;
-  end;
-
-begin
-  // ProcessPartialPath doesn't like empty strings that much...
-  if Path = '' then
-    Result := ''
-  else
-  begin
-    SetLength(Result, 2 * MAX_PATH);
-    ResultPtr := PChar(Result);
-    // Create fully qualified path and pass it to the converter
-    ProcessPartialPath(ExpandFileName(Path));
-    SetLength(Result, ResultPtr - PChar(Result));
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function PathGetLongName(Path: String): String;
+function PathGetLongName2(Path: String): String;
 var
   I : Integer;
   SearchHandle : THandle;
@@ -1160,6 +1101,34 @@ begin
     end;
     Delete(Path, 1, I);
   until Length(Path) = 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function PathGetLongName(const Path: string): string;
+var
+  PIDL: PItemIDList;
+  Desktop: IShellFolder;
+  AnsiName: AnsiString;
+  WideName: array [0..MAX_PATH] of WideChar;
+  Eaten, Attr: ULONG; // both unused but API requires them (incorrect translation)
+begin
+  Result := Path;
+  if Path <> '' then
+  begin
+    if Succeeded(SHGetDesktopFolder(Desktop)) then
+    begin
+      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WideName, MAX_PATH);
+      if Succeeded(Desktop.ParseDisplayName(0, nil, WideName, Eaten, PIDL, Attr)) then
+      try
+        SetLength(AnsiName, MAX_PATH);
+        if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
+          Result := PChar(AnsiName);
+      finally
+        CoTaskMemFree(PIDL);
+      end;
+    end;
+  end;
 end;
 
 //------------------------------------------------------------------------------
