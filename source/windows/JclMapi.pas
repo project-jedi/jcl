@@ -266,7 +266,7 @@ begin
     Error := EJclMapiError.CreateResRecFmt(@RsMapiError, [Res, MapiErrorMessage(Res)]);
     Error.FErrorCode := Res;
     raise Error;
-  end;  
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -762,7 +762,7 @@ begin
     LoadClientLib;
     MapiCheck(MapiLogOn(GetParentWindow(ParentWND), PChar(ProfileName),
       PChar(Password), LogonOptionsToFlags, 0, @FSessionHandle));
-  end;    
+  end; 
 end;
 
 //------------------------------------------------------------------------------
