@@ -63,9 +63,5 @@
   </BUILDTOOLS>
 
   <IDEOPTIONS>
-[Linker]
-LibPrefix=
-LibSuffix=60
-LibVersion=
   </IDEOPTIONS>
 </PROJECT>
