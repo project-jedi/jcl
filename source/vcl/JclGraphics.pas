@@ -27,14 +27,15 @@
 { and Mike Lischke. Portions created by these individuals are Copyright (C) of these individuals.  }
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
-{   Charlie Calvert                                                                                }
-{   Robert Marquardt (marquardt)                                                                   }
+{ Contributors:                                                                                    }
 {   Alexander Radchenko                                                                            }
-{   Robert Rossmair (rrossmair)                                                                    }
+{   Charlie Calvert                                                                                }
+{   Marcel van Brakel                                                                              }
+{   Marcin Wieczorek                                                                               }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
