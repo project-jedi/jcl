@@ -28,6 +28,7 @@
 {   Raymond Alexander (rayspostbox3)                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Scott Price (scottprice)                                                                       }                                                                       
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1047,6 +1048,14 @@ resourcestring
   RsUREExpressionEmpty     = 'Expression is empty.';
 
 //--------------------------------------------------------------------------------------------------
+// JclUnitConv
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
+  RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
+
+//--------------------------------------------------------------------------------------------------
 // JclWinMidi
 //--------------------------------------------------------------------------------------------------
 
@@ -1110,6 +1119,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.13  2004/08/23 10:13:58  scottprice
+// Modified temperature routines, and added support for Rankine and Reaumur.  Added some string constants to this unit related to that change.
+//
 // Revision 1.12  2004/08/18 17:10:27  rrossmair
 // added RsInvalidSampleSize for JclStatistics
 //
