@@ -795,8 +795,8 @@ function StrToHex(const Source: AnsiString): AnsiString;
 [ShortDescr]
 Converts a string of hex digit pairs to the corresponding bytes.
 [Description]
-The Source string is expected to contain pairs of hex digit characters
-['0'..'9', 'a'..'f', 'A'..'F']. Each pair is converted to a single
+The Source string is expected to contain pairs of hex digit
+characters ['0'..'9', 'a'..'f', 'A'..'F']. Each pair is converted to a single
 byte thus converting '40' to '@'. Any character not from the hex set
 results in an empty string. If the string length of the Source is odd
 then a '0' is prepended internally to make up the first byte.
