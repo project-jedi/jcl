@@ -260,8 +260,14 @@ constructor TFavOpenDialog.Create;
 begin
   FFavoriteFolders := TStringList.Create;
   FHooks := TJclPeMapImgHooks.Create;
+  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FParentWndInstance := MakeObjectInstance(ParentWndProc);
   FWndInstance := MakeObjectInstance(WndProc);
+  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
+  {$WARN SYMBOL_DEPRECATED ON}
+  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FFavoritePanel := TPanel.Create(nil);
   with FFavoritePanel do
   begin
@@ -302,8 +308,14 @@ end;
 destructor TFavOpenDialog.Destroy;
 begin
   UnhookDialogs;
+  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FreeObjectInstance(FParentWndInstance);
   FreeObjectInstance(FWndInstance);
+  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
+  {$WARN SYMBOL_DEPRECATED ON}
+  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FreeAndNil(FFavoritePanel);
   FreeAndNil(FFavoriteFolders);
   FreeAndNil(FHooks);
