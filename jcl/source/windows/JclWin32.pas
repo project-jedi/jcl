@@ -2948,15 +2948,15 @@ procedure ExitNetbios; // do nothing, obsolete
 // Run time dynamic linking
 //==================================================================================================
 
-function Kernel32Handle: HModule;
-function Advapi32Handle: HModule;
-function NetApi32Handle: HModule;
-function WinSpoolHandle: HModule;
-function ImageHlpHandle: HModule;
-function RasDlgHandle: HModule;
-function NTDllHandle: HModule;
-function OpenGl32Handle: HModule;
-function Glu32Handle: HModule;
+function Kernel32Handle: HMODULE;
+function Advapi32Handle: HMODULE;
+function NetApi32Handle: HMODULE;
+function WinSpoolHandle: HMODULE;
+function ImageHlpHandle: HMODULE;
+function RasDlgHandle: HMODULE;
+function NTDllHandle: HMODULE;
+function OpenGl32Handle: HMODULE;
+function Glu32Handle: HMODULE;
 
 //==================================================================================================
 // COM related declarations
@@ -2983,7 +2983,7 @@ implementation
 const
   CallNotImplemented = Pointer(-1);
 
-function JclLoadLibrary(var LibHandle: HModule; LibFileName: LPCTSTR): HModule;
+function JclLoadLibrary(var LibHandle: HMODULE; LibFileName: LPCTSTR): HMODULE;
 begin
   if LibHandle = 0 then
   begin
@@ -2994,7 +2994,7 @@ begin
   Result := LibHandle;
 end;
 
-function JclGetModuleHandle(var LibHandle: HModule; LibFileName: LPCTSTR): HModule;
+function JclGetModuleHandle(var LibHandle: HMODULE; LibFileName: LPCTSTR): HMODULE;
 begin
   if LibHandle = 0 then
   begin
@@ -3005,7 +3005,7 @@ begin
   Result := LibHandle;
 end;
 
-procedure JclFreeLibrary(LibHandle: HModule);
+procedure JclFreeLibrary(var LibHandle: HMODULE);
 begin
   case LibHandle of
     0, INVALID_HANDLE_VALUE: ;
@@ -3015,7 +3015,7 @@ begin
   end;
 end;
 
-function JclGetProcAddress(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): Boolean;
+function JclGetProcAddress(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): Boolean;
 begin
   if not Assigned(Call) then
   begin
@@ -3031,7 +3031,7 @@ begin
   Result := Call <> CallNotImplemented;
 end;
 
-function JclGetProcAddressResult(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): HResult;
+function JclGetProcAddressResult(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): HResult;
 begin
   if JclGetProcAddress(Call, LibHandle, ProcName) then
     Result := ERROR_SUCCESS
@@ -3039,7 +3039,7 @@ begin
     Result := ERROR_CALL_NOT_IMPLEMENTED;
 end;
 
-function JclGetProcAddressBool(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): BOOL;
+function JclGetProcAddressBool(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): BOOL;
 begin
   Result := JclGetProcAddress(Call, LibHandle, ProcName);
   if Result then
@@ -3048,12 +3048,12 @@ begin
     SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
 end;
 
-function JclGetProcAddressInt(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): Integer;
+function JclGetProcAddressInt(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): Integer;
 begin
   Result := Integer(JclGetProcAddressBool(Call, LibHandle, ProcName));
 end;
 
-function JclGetProcAddressNTStatus(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): NTSTATUS;
+function JclGetProcAddressNTStatus(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): NTSTATUS;
 begin
   if JclGetProcAddressBool(Call, LibHandle, ProcName) then
     Result := STATUS_SUCCESS
@@ -3064,7 +3064,7 @@ end;
 var
   LastOpenGlCallFailed: Boolean{ = False};
 
-function JclGetProcAddressOpenGl(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): Boolean;
+function JclGetProcAddressOpenGl(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): Boolean;
 begin
   Result := JclGetProcAddress(Call, LibHandle, ProcName);
   LastOpenGlCallFailed := not Result;
@@ -3073,58 +3073,58 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 var
-  _Kernel32Handle: HModule{ = 0};
+  _Kernel32Handle: HMODULE{ = 0};
   // LoadLibrary, need to be released in the finalization section
-  _Advapi32Handle: HModule{ = 0};
-  _NetApi32Handle: HModule{ = 0};
-  _WinSpoolHandle: HModule{ = 0};
-  _ImageHlpHandle: HModule{ = 0};
-  _RasDlgHandle: HModule{ = 0};
-  _NTDllHandle: HModule{ = 0};
-  _OpenGl32Handle: HModule{ = 0};
-  _Glu32Handle: HModule{ = 0};
+  _Advapi32Handle: HMODULE{ = 0};
+  _NetApi32Handle: HMODULE{ = 0};
+  _WinSpoolHandle: HMODULE{ = 0};
+  _ImageHlpHandle: HMODULE{ = 0};
+  _RasDlgHandle: HMODULE{ = 0};
+  _NTDllHandle: HMODULE{ = 0};
+  _OpenGl32Handle: HMODULE{ = 0};
+  _Glu32Handle: HMODULE{ = 0};
 
-function Kernel32Handle: HModule;
+function Kernel32Handle: HMODULE;
 begin
   Result := JclGetModuleHandle(_Kernel32Handle, Kernel32);
 end;
 
-function Advapi32Handle: HModule;
+function Advapi32Handle: HMODULE;
 begin
   Result := JclLoadLibrary(_Advapi32Handle, 'Advapi32.dll');
 end;
 
-function NetApi32Handle: HModule;
+function NetApi32Handle: HMODULE;
 begin
   Result := JclLoadLibrary(_NetApi32Handle, 'NetApi32.dll');
 end;
 
-function WinSpoolHandle: HModule;
+function WinSpoolHandle: HMODULE;
 begin
   Result := JclLoadLibrary(_WinSpoolHandle, 'winspool.drv');
 end;
 
-function ImageHlpHandle: HModule;
+function ImageHlpHandle: HMODULE;
 begin
   Result := JclLoadLibrary(_ImageHlpHandle, ImageHlpLib);
 end;
 
-function RasDlgHandle: HModule;
+function RasDlgHandle: HMODULE;
 begin
   Result := JclLoadLibrary(_RasDlgHandle, 'rasdlg.dll');
 end;
 
-function NTDllHandle: HModule;
+function NTDllHandle: HMODULE;
 begin
   Result := JclLoadLibrary(_NTDllHandle, 'ntdll.dll');
 end;
 
-function OpenGl32Handle: HModule;
+function OpenGl32Handle: HMODULE;
 begin
   Result := JclLoadLibrary(_OpenGl32Handle, opengl32);
 end;
 
-function Glu32Handle: HModule;
+function Glu32Handle: HMODULE;
 begin
   Result := JclLoadLibrary(_Glu32Handle, 'glu32.dll');
 end;
@@ -4036,6 +4036,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.26  2004/08/01 05:50:00  marquardt
+// fix JclFreeLibrary
+//
 // Revision 1.25  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //
