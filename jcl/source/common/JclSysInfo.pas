@@ -201,20 +201,11 @@ function GetShellProcessHandle: THandle;
 // Version Information
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31 }
-
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
                      wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
                     ptPersonal, ptProfessional, ptDatacenterServer);
-
-{ TODO -cHelp : TNtProductType }
-{ Added to TNtProductType (by Jean-Fabien Connault):
-  ptPersonal          Windows XP Personal
-  ptProfessional      Windows 2000/XP Proffesional
-  ptDatacenterServer  Windows 2000 DataCenter server
-}
 
 var
   { in case of additions, don't forget to update initialization section! }
@@ -236,55 +227,12 @@ var
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
-
-{ TODO -cHelp : GetWindowsVersionString }
-
 function GetWindowsVersionString: string;
-{
-ShortDescr: Returns the windows version as a string.
-Descr: GetWindowsVersion returns the operating system as a string. For example, 'Windows 2000'.
-Result: The windows version as a string or an empty string if the OS is not recognized.
-Author: Jean-Fabien Connault
-}
-
 function NtProductTypeString: string;
-{
-ShortDescr: Returns the Windows NT product type as a string.
-Descr: NtProductTypeString returns the NT product type as a string. For example 'Workstation'.
-Result: The NT product type as a string or an empty string if the product type is not recognized.
-Author: Jean-Fabien Connault
-}
 function GetWindowsServicePackVersion: Integer;
-{
-ShortDescr: Returns the installed service pack
-Descr: Returns the major version number of the latest installed Windows Service Pack.
-Result: The major version number of the latest installed Service Pack. In case of failure, or it
-        no Service Pack is installed, the function returns 0.
-Author: Jean-Fabien Connault
-}
-
 function GetWindowsServicePackVersionString: string;
-{
-ShortDescr: Returns the installed service pack as a string
-Descr: Returns the major version number of the latest installed Windows Service Pack.
-Result: The major version number of the latest installed Service Pack. In case of failure, or if
-        no Service Pack is installed, the function returns an empty string.
-Author: Jean-Fabien Connault
-}
-
-{ TODO -cHelp : Author: Scott Price; Contributor: Peter J. Haas;
-                return OpenGL version for window rendering }
-function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean; 
-{ TODO -cHelp : Author: Peter J. Haas, return OpenGL version for bitmap rendering }
+function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean;
 function GetOpenGLVersionBitmapRendering(out Version, Vendor: AnsiString): Boolean;
-{
-ShortDescr: Returns the current OpenGL library version string
-Descr: Takes a WinControl against which to perform the tests, and then Returns
-       the Version String information provided by the current OpenGL library.
-Result: Surfaces the information provided by the OpenGL library (if any) relating to
-        the version and vendor of the OpenGL library in the parameters passed.
-Author: Scott Price
-}
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
@@ -654,7 +602,6 @@ uses
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
   UnSetEnv(PChar(Name));
   Result := True ;
 {$ENDIF UNIX}
@@ -667,7 +614,6 @@ end;
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 begin
   Result := True;
 end;
@@ -692,7 +638,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
 begin
   Value := getenv(PChar(Name));
@@ -731,9 +676,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF LINUX}
+{$IFDEF KYLIX}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
-{ TODO -cHelp : Author: Robert Rossmair }
 var
   P: PPChar;
 begin
@@ -746,12 +690,13 @@ begin
     Inc(P);
   end;
 end;
-
+{$ENDIF KYLIX}
+{$IFDEF UNIX}
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 begin
   Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
 begin
@@ -789,7 +734,6 @@ end;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
   SetEnv(PChar(Name), PChar(Value), 1);
   Result := True ;
 {$ENDIF UNIX}
@@ -897,7 +841,6 @@ end;
 
 function GetCurrentFolder: string;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: Robert Rossmair }
 const
   InitialSize = 64;
 var
@@ -1011,7 +954,6 @@ end;
 function GetPersonalFolder: string;
 begin
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
   Result := GetEnvironmentVariable('HOME');
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
@@ -1104,11 +1046,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : GetCommonAppdataFolder }
-// From: Jean-Fabien Connault
-// Descr: Application data for all users. A typical path is C:\Documents and Settings\All Users\Application Data.
-// Note: requires shell v 5.00 up
 
 function GetCommonAppdataFolder: string;
 begin
@@ -1284,7 +1221,6 @@ end;
 
 function GetLocalComputerName: string;
 {$IFDEF LINUX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   MachineInfo: utsname;
 begin
@@ -1311,7 +1247,6 @@ end;
 
 function GetLocalUserName: string;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 begin
   Result := GetEnv('USER');
 end;
@@ -1358,8 +1293,6 @@ end;
 // GetLastError = ERROR_CALL_NOT_IMPLEMENTED
 { TODO : Move to JclSecurity? }
 { TODO : Maybe a other, Win9x compatible solution }
-{ TODO -cHelp : Win9x: return always '' }
-{ TODO -cHelp : modify this function, need to change the help for GetDomainName as well }
 function GetUserDomainName(const CurUser: string): string;
 var
   Count1, Count2: DWORD;
@@ -1386,15 +1319,13 @@ begin
     end;
   end
   else
-    Result := '';  // if Win9x, then function return ''
+    Result := '';  // Win9x/ME
 end;
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always '', because GetUserDomainName }
 function GetDomainName: string;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   MachineInfo: utsname ;
 begin
@@ -1411,9 +1342,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
 
-{ TODO -cHelp : This information is accurate only if you have not updated or
-  changed the BIOS since you last ran Windows 95/98 or Windows Millennium
-  Edition (Me) Setup. }
 function GetBIOSName: string;
 const
   Win9xBIOSInfoKey = 'Enum\Root\*PNP0C01\0000';
@@ -1461,9 +1389,6 @@ end;
 // Reference: How to Obtain BIOS Information from the Registry
 // http://support.microsoft.com/default.aspx?scid=kb;EN-US;195268
 
-{ TODO -cHelp : This information is accurate only if you have not updated or
-  changed the BIOS since you last ran Windows 95/98 or Windows Millennium
-  Edition (Me) Setup. }
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
@@ -2239,7 +2164,7 @@ begin
             1:
               Result := wvWinXP;
             2:
-              Result := wvWin2003;  
+              Result := wvWin2003;
           end;
       end;
   end;
@@ -2276,10 +2201,8 @@ begin
     begin
       if (VersionInfo.wProductType = VER_NT_SERVER) then
       begin
-        { Changes by Scott Price on 2002-01-11 }
         if (VersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
           Result := ptDatacenterServer
-        { Changes by Scott Price on 2002-01-11 }
         else
         if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
           Result := ptAdvancedServer
@@ -2298,7 +2221,6 @@ begin
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
       begin
-        { Changes by Scott Price on 2002-01-10 }
         if (VersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
         else
@@ -2310,7 +2232,6 @@ begin
   if Result = ptUnknown then
   begin
     // Non Windows 2000/XP system or the above method failed, try registry
-    { Changes by Scott Price on 2002-01-11 }
     Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
     if CompareText(Product, 'WINNT') = 0 then
       Result :=  ptWorkStation
@@ -2433,9 +2354,10 @@ begin
 
   // To call for the version information string we must first have an active
   // context established for use.  We can, of course, close this after use
-  Save8087CW := Get8087ControlWord;
+  Save8087CW := Set8087ControlWord($133F);
   try
-    Set8087CW($133F);
+    // We need to load the OpenGl32 library before calling ChoosePixelFormat
+    OpenGl32Handle;
 
     FillChar(PFDesc, SizeOf(PFDesc), 0);
     with PFDesc do
@@ -2444,13 +2366,11 @@ begin
       nVersion := 1;               // The Current Version of the descriptor is 1
       dwFlags := Flags or PFD_SUPPORT_OPENGL;
       iPixelType := PFD_TYPE_RGBA;
-      cColorBits := 24;            // support 24-bit colour 
-      cDepthBits := 32;            // Depth of the z-buffer 
+      cColorBits := 24;            // support 24-bit colour
+      cDepthBits := 32;            // Depth of the z-buffer
       iLayerType := PFD_MAIN_PLANE;
     end;
 
-    // We need to load the OpenGl32 library before calling ChoosePixelFormat
-    OpenGl32Handle;
     FormatIndex := ChoosePixelFormat(DCHandle, @PFDesc);
     if FormatIndex = 0 then
       RaiseLastOSError;
@@ -2476,7 +2396,7 @@ begin
         RtdlwglDeleteContext(RenderingContextHandle);
     end;
   finally
-    Set8087CW(Save8087CW);
+    Set8087ControlWord(Save8087CW);
   end;
 end;
 
@@ -2531,7 +2451,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
-{ TODO -cHelp : Author: Robert Rossmair }
 {$IFDEF UNIX}
 var
   MachineInfo: utsname;
@@ -3649,7 +3568,6 @@ end;
 
 function GetMemoryLoad: Byte;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo ;
 begin
@@ -3673,7 +3591,6 @@ end;
 
 function GetSwapFileSize: Integer;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3697,7 +3614,6 @@ end;
 
 function GetSwapFileUsage: Integer;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3725,7 +3641,6 @@ end;
 
 function GetTotalPhysicalMemory: Integer;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3748,7 +3663,6 @@ end;
 
 function GetFreePhysicalMemory: Integer;
 {$IFDEF UNIX}
-{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -4014,6 +3928,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.16  2004/04/19 06:14:43  rrossmair
+// Help TODOs done
+//
 // Revision 1.15  2004/04/18 19:57:29  peterjhaas
 // - rename one of the GetOpenGLVersion to GetOpenGLVersionBitmapRendering
 // - delete pre-loading of Glu32Handle
