@@ -864,7 +864,7 @@ var
 begin
   FDCCOutput := '';
   FOptions.SaveToFile(DCCConfFileName);
-  Cmd := Format('"%s" "%s"', [DCCLocation, CommandLine]);
+  Cmd := Format('"%s" "%s" 2>&1', [DCCLocation, CommandLine]);
   Output := Libc.popen(PChar(Cmd), 'r');
   repeat
     Count := fread_unlocked(@Buffer, 1, Length(Buffer) - 1, Output);
@@ -876,6 +876,7 @@ begin
   until Count < Length(Buffer) - 1;
   FDCCOutput := FDCCOutput + TempOutput;
   ResultCode := pclose(Output);
+  wait(nil);
   Result := ResultCode = 0;
   DeleteFile(DCCConfFileName);
 end;
