@@ -20,10 +20,10 @@
 { Contains routines for DFM reading and writing...                                                 }
 {                                                                                                  }
 { Known Issues:                                                                                    }
-{   This is a preview - class and functionnames might be changed                               }
+{   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: October 03, 2003                                                                  }
+{ Last modified: October 30, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -40,7 +40,7 @@ JCL Style checks/fixes:
   "Result := FList.Count"
 - .GetItem w/o indexcheck - TList will trow the exception
 - .Delete w/o indexcheck - TList will trow the exception
-- TObject(FList[i]).Free should be okay in TDFMPropertys.Clear
+//- TObject(FList[i]).Free should be okay in TDFMPropertys.Clear
 - inherited functions with "inherited function;" and not "inherited;"
 - no assign alignment
     ShortVar := 1;
@@ -55,9 +55,10 @@ JCL Style todo:
   //--------------------------------------------------------------------------------------------------
 - check/fix function order in interface and implementation
 TODO:
-- use TObjectList in TDFMPropertys and TDFMComponents
-- support vaList in AsString
-- make TDFMProperty.As... writable
+**- use TObjectList in **TDFMPropertys and **TDFMComponents
+** support vaList in AsString
+*- make TDFMProperty.As... writable
+   ? delete/insert ?
 - improve DFMLevel writing (autoclean, binary write for D2 or lower)
 - tests
 }
@@ -69,12 +70,36 @@ unit JclDFM;
 interface
 
 uses
-  SysUtils, Classes, TypInfo;
+  SysUtils, Classes, TypInfo, Contnrs;
 
 type
-  TDFMFiler = class (TFiler)
-  public
+  TDFMStdPropertyProcRec = record
+    Name: string;
+    ReadProc: TReaderProc;
+    WriteProc: TWriterProc;
+  end;
+  PDFMStdPropertyProcRec = ^TDFMStdPropertyProcRec;
+
+  TDFMBinaryPropertyProcRec = record
+    Name: string;
     ReadProc, WriteProc: TStreamProc;
+  end;
+  PDFMBinaryPropertyProcRec = ^TDFMBinaryPropertyProcRec;
+
+  TDFMFiler = class (TFiler)
+  private
+    FStdPropertyProcList,
+    FBinaryPropertyProcList: TList;
+    function GetStdCount: Integer;
+    function GetStdPropertyProcRec(AIndex: Integer): TDFMStdPropertyProcRec;
+    function GetBinaryCount: Integer;
+    function GetBinaryPropertyProcRec(AIndex: Integer): TDFMBinaryPropertyProcRec;
+  public
+    constructor Create(Stream: TStream; BufSize: Integer);
+    destructor Destroy; override;
+
+    procedure ClearPropertyLists;
+
     procedure DefineProperty(const Name: string;
       ReadData: TReaderProc; WriteData: TWriterProc;
       HasData: Boolean); override;
@@ -82,6 +107,15 @@ type
       ReadData, WriteData: TStreamProc;
       HasData: Boolean); override;
     procedure FlushBuffer; override;
+
+    function GetBinaryReadProcByName(AName: string): TStreamProc;
+
+    property StdCount: Integer read GetStdCount;
+    property StdItems[AIndex: Integer]: TDFMStdPropertyProcRec read
+      GetStdPropertyProcRec;
+    property BinaryCount: Integer read GetBinaryCount;
+    property BinaryItems[AIndex: Integer]: TDFMBinaryPropertyProcRec read
+      GetBinaryPropertyProcRec;
   end;
 
   TDFMReader = class (TReader)
@@ -91,6 +125,24 @@ type
 
   TDFMWriteLevel = (dwlD1, dwlD2, dwlD3, dwlD4, dwlD5, dwlD6, dwlD7);
 
+  TDFMLevelItemRec = record
+    MinimumWriteLevel: TDFMWriteLevel;
+    PropertyName: string;
+  end;
+
+const
+  DFMPropertyList: array[0..6] of TDFMLevelItemRec =
+  (
+    (MinimumWriteLevel: dwlD6; PropertyName: '*.DesignSize'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TPageControl.TabIndex'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TJvPageControl.TabIndex'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TImage.Proportional'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TJvComboBox.AutoDropDown'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.AutoDropDown'),
+    (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.OnCloseUp')
+  );
+
+type
   TDFMWriter = class (TWriter)
   private
     FNestingLevel: Integer;
@@ -113,22 +165,32 @@ type
 
   TDFMCollectionProperty = class;
 
+  TDFMPropertys = class;
+
   TDFMProperty = class (TObject)
   private
     FName: string;
     FTyp: TValueType;
     FData: Pointer;
     procedure ReadValue(AReader: TDFMReader);
+    procedure SetTyp(AValue: TValueType);
     procedure FreeData;
     function GetAsInteger: Integer;
+    procedure SetAsInteger(AValue: Integer);
     function GetAsString: string;
+    procedure SetAsString(AValue: string);
 
     procedure WriteValue(AWriter: TDFMWriter);
     function GetAsExtended: Extended;
+    procedure SetAsExtended(AValue: Extended);
     function GetAsWideString: WideString;
+    procedure SetAsWideString(AValue: WideString);
     function GetAsInt64: Int64;
+    procedure SetAsInt64(AValue: Int64);
     function GetAsStream: TMemoryStream;
     function GetAsCollectionProperty: TDFMCollectionProperty;
+    function GetAsStrings: TStrings;
+    function GetAsDFMPropertys: TDFMPropertys;
   public
     constructor Create;
     destructor Destroy; override;
@@ -136,22 +198,24 @@ type
     procedure ReadProperty(AReader: TDFMReader);
     procedure WriteProperty(AWriter: TDFMWriter);
 
-    property Name: string read FName;
-    property Typ: TValueType read FTyp;
+    property Name: string read FName write FName;
+    property Typ: TValueType read FTyp write SetTyp;
 
-    property AsInteger: Integer read GetAsInteger;
-    property AsString: string read GetAsString;
-    property AsWideString: WideString read GetAsWideString;
-    property AsExtended: Extended read GetAsExtended;
-    property AsInt64: Int64 read GetAsInt64;
+    property AsInteger: Integer read GetAsInteger write SetAsInteger;
+    property AsString: string read GetAsString write SetAsString;
+    property AsWideString: WideString read GetAsWideString write SetAsWideString;
+    property AsExtended: Extended read GetAsExtended write SetAsExtended;
+    property AsInt64: Int64 read GetAsInt64 write SetAsInt64;
     property AsStream: TMemoryStream read GetAsStream;
     property AsCollectionProperty: TDFMCollectionProperty read
       GetAsCollectionProperty;
+    property AsStrings: TStrings read GetAsStrings;
+    property AsDFMPropertys: TDFMPropertys read GetAsDFMPropertys;
   end;
 
   TDFMPropertys = class (TObject)
   private
-    FList: TList;
+    FPropertyList: TObjectList;
     function GetCount: Integer;
     function GetItem(AIndex: Integer): TDFMProperty;
   public
@@ -187,7 +251,7 @@ type
 
   TDFMCollectionProperty = class (TObject)
   private
-    FList: TList;
+    FCollectionPropertyDataList: TObjectList;
     function GetCount: Integer;
     function GetItem(AIndex: Integer): TDFMCollectionPropertyData;
   public
@@ -250,7 +314,7 @@ type
 
   TDFMComponents = class (TObject)
   private
-    FList: TList;
+    FComponentList: TObjectList;
     function GetCount: Integer;
     function GetItem(AIndex: Integer): TDFMComponent;
   public
@@ -472,56 +536,48 @@ end;
 function TDFMPropertys.Add: TDFMProperty;
 begin
   Result := TDFMProperty.Create;
-  FList.Add(Result);
+  FPropertyList.Add(Result);
 end;
 
 function TDFMPropertys.AddPropertys: TDFMPropertys;
 begin
   Result := TDFMPropertys.Create;
-  FList.Add(Result);
+  FPropertyList.Add(Result);
 end;
 
 procedure TDFMPropertys.Clear;
-var
-  i: Integer;
 begin
-  if FList.Count > 0 then
-  begin
-    for i := 0 to FList.Count - 1 do
-      TObject(FList[i]).Free;
-    FList.Clear;
-  end;
+  FPropertyList.Clear;
 end;
 
 constructor TDFMPropertys.Create;
 begin
   inherited Create;
 
-  FList := TList.Create;
+  FPropertyList := TObjectList.Create;
 end;
 
 procedure TDFMPropertys.Delete(AIndex: Integer);
 begin
-  TObject(FList[AIndex]).Free;
-  FList.Delete(AIndex);
+  FPropertyList.Delete(AIndex);
 end;
 
 destructor TDFMPropertys.Destroy;
 begin
   Clear;
-  FList.Free;
+  FPropertyList.Free;
 
   inherited Destroy;
 end;
 
 function TDFMPropertys.GetCount: Integer;
 begin
-  Result := FList.Count;
+  Result := FPropertyList.Count;
 end;
 
 function TDFMPropertys.GetItem(AIndex: Integer): TDFMProperty;
 begin
-  Result := FList[AIndex];
+  Result := TDFMProperty(FPropertyList[AIndex]);
 end;
 
 procedure TDFMPropertys.ReadPropertys(AReader: TDFMReader);
@@ -533,7 +589,7 @@ begin
   begin
     DFMProperty := TDFMProperty.Create;
     DFMProperty.ReadProperty(AReader);
-    FList.Add(DFMProperty);
+    FPropertyList.Add(DFMProperty);
   end;
 end;
 
@@ -552,7 +608,7 @@ begin
   inherited Create;
 
   FName := '';
-  FTyp  := vaNull;
+  FTyp  := vaInt8;
   FData := nil;
 end;
 
@@ -561,6 +617,52 @@ begin
   FreeData;
 
   inherited Destroy;
+end;
+
+procedure TDFMProperty.SetTyp(AValue: TValueType);
+var
+  pE: PExtended;
+  pWStr: PWideString;
+  pStr: PString;
+  pI64: PInt64;
+begin
+  if FTyp <> AValue then
+  begin
+    FreeData;
+    FTyp := AValue;
+    if FTyp = vaList then
+      FData := TDFMPropertys.Create
+    else if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then
+    begin
+      New(pE);
+      pE^ := 0;
+      FData := pE;
+    end
+    else if FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}] then
+    begin
+      New(pWStr);
+      pWStr^ := '';
+      FData := pWStr;
+    end
+    else if FTyp in [vaString, vaLString, vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
+    begin
+      New(pStr);
+      pStr^ := '';
+      FData := pStr;
+    end
+    else if FTyp = vaBinary then
+      FData := TMemoryStream.Create
+    else if FTyp = vaSet then
+      FData := TStringList.Create
+    else if FTyp = vaCollection then
+      FData := TDFMCollectionProperty.Create
+    else if FTyp = vaInt64 then
+    begin
+      New(pI64);
+      pI64^ := 0;
+      FData := pI64;
+    end
+  end;
 end;
 
 procedure TDFMProperty.FreeData;
@@ -591,6 +693,12 @@ begin
     Result := PExtended(FData)^;
 end;
 
+procedure TDFMProperty.SetAsExtended(AValue: Extended);
+begin
+  if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then   //todo - single, currency, data
+    PExtended(FData)^ := AValue;
+end;
+
 function TDFMProperty.GetAsInt64: Int64;
 begin
   if FTyp = vaInt64 then
@@ -599,11 +707,23 @@ begin
     Result := GetAsInteger;
 end;
 
+procedure TDFMProperty.SetAsInt64(AValue: Int64);
+begin
+  if FTyp = vaInt64 then
+    PInt64(FData)^ := AValue;
+end;
+
 function TDFMProperty.GetAsInteger: Integer;
 begin
   Result := 0;
   if FTyp in [vaInt8, vaInt16, vaInt32] then
     Result := Integer(FData);
+end;
+
+procedure TDFMProperty.SetAsInteger(AValue: Integer);
+begin
+  if FTyp in [vaInt8, vaInt16, vaInt32] then
+    Integer(FData) := AValue;
 end;
 
 function TDFMProperty.GetAsStream: TMemoryStream;
@@ -617,9 +737,21 @@ function TDFMProperty.GetAsString: string;
 var
   i: Integer;
   s: string;
+  ListPropertys: TDFMPropertys;
 begin
   Result := '';
-  if FTyp in [vaInt8, vaInt16, vaInt32] then
+  if FTyp = vaList then
+  begin
+    ListPropertys := FData;
+    if Assigned(ListPropertys) and (ListPropertys.Count > 0) then
+      for i := 0 to ListPropertys.Count - 1 do
+      begin
+        if Result <> '' then
+          Result := Result + sLineBreak;
+        Result := Result + ListPropertys[i].AsString;
+      end;
+  end
+  else if FTyp in [vaInt8, vaInt16, vaInt32] then
     Result := IntToStr(GetAsInteger)
   else if FTyp = vaExtended then
     Result := FloatToStr(GetAsExtended)
@@ -636,7 +768,7 @@ begin
   else if FTyp = vaSet then
   begin
     Result := '[';
-    with TStringList(FData) do
+    with AsStrings do
       for i := 0 to Count - 1 do
       begin
         s := Strings[i];
@@ -650,6 +782,14 @@ begin
   end
   else if FTyp = vaInt64 then
     Result := IntToStr(GetAsInt64);
+  //todo - support widestring
+end;
+
+procedure TDFMProperty.SetAsString(AValue: string);
+begin
+  if FTyp in [vaString, vaLString, vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
+    PString(FData)^ := AValue;
+  //todo - support widestring    
 end;
 
 function TDFMProperty.GetAsWideString: WideString;
@@ -661,10 +801,32 @@ begin
     Result := GetAsString;
 end;
 
+procedure TDFMProperty.SetAsWideString(AValue: WideString);
+begin
+  if FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}] then
+    PWideString(FData)^ := AValue
+  else
+    AsString := AValue; //todo - check
+end;
+
 function TDFMProperty.GetAsCollectionProperty: TDFMCollectionProperty;
 begin
   Result := nil;
   if FTyp = vaCollection then
+    Result := FData;
+end;
+
+function TDFMProperty.GetAsStrings: TStrings;
+begin
+  Result := nil;
+  if FTyp = vaSet then
+    Result := FData;
+end;
+
+function TDFMProperty.GetAsDFMPropertys: TDFMPropertys;
+begin
+  Result := nil;
+  if FTyp = vaList then
     Result := FData;
 end;
 
@@ -677,85 +839,42 @@ end;
 procedure TDFMProperty.ReadValue(AReader: TDFMReader);
 var
   APos: Integer;
-  pStr: PString;
-  TSL: TStringList;
   s: string;
 
-  pE: PExtended;
-  ListPropertys: TDFMPropertys;
-  pWStr: PWideString;
-  pI64: PInt64;
-  Collection: TDFMCollectionProperty;
   CollectionData: TDFMCollectionPropertyData;
   TempDFMProperty: TDFMProperty;
 begin
-  FreeData;
   APos := AReader.Position;
-  FTyp := AReader.ReadValue;
+  SetTyp(AReader.ReadValue); //todo - extern Typ := AReader.ReadValue ?
   AReader.Position := APos;
   case FTyp of
     vaList:
     begin
       AReader.ReadValue;
-      ListPropertys := TDFMPropertys.Create;
-      FData := ListPropertys;
       while not AReader.EndOfList do
-        ListPropertys.Add.ReadValue(AReader);
+        AsDFMPropertys.Add.ReadValue(AReader);
       AReader.ReadListEnd;
     end;
     vaInt8, vaInt16, vaInt32:
-      Integer(FData) := AReader.ReadInteger;
+      AsInteger := AReader.ReadInteger;
     vaExtended:
-    begin
-      New(pE);
-      pE^ := AReader.ReadFloat;
-      FData := pE;
-    end;
+      AsExtended := AReader.ReadFloat;
     vaSingle:
-    begin
-      New(pE);
-      pE^ := AReader.ReadSingle; //todo - check if saving in extended is okay
-      FData := pE;
-    end;
+      AsExtended := AReader.ReadSingle; //todo - check if saving in extended is okay
     vaCurrency:
-    begin
-      New(pE);
-      pE^ := AReader.ReadCurrency; //todo - check if saving in extended is okay
-      pE^ := pE^ * 10000;
-      FData := pE;
-    end;
+      AsExtended := AReader.ReadCurrency * 10000; //todo - check if saving in extended is okay
     vaDate:
-    begin
-      New(pE);
-      pE^ := AReader.ReadDate; //todo - check if saving in extended is okay
-      FData := pE;
-    end;
+      AsExtended := AReader.ReadDate; //todo - check if saving in extended is okay
     vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}:
-    begin
-      New(pWStr);
-      pWStr^ := AReader.ReadWideString;
-      FData := pWStr;
-    end;
+      AsWideString := AReader.ReadWideString;
     vaString, vaLString:
-    begin
-      New(pStr);
-      pStr^ := AReader.ReadString;
-      FData := pStr;
-    end;
+      AsString := AReader.ReadString;
     vaIdent, vaFalse, vaTrue, vaNil, vaNull:
-    begin
-      New(pStr);
-      pStr^ := AReader.ReadIdent;
-      FData := pStr;
-    end;
+      AsString := AReader.ReadIdent;
     vaBinary:
-    begin
-      FData := TMemoryStream.Create;
-      AReader.ReadBinary(FData);
-    end;
+      AReader.ReadBinary(AsStream);
     vaSet:
     begin
-      TSL := TStringList.Create;
       AReader.ReadValue;
       while True do
       begin
@@ -763,26 +882,26 @@ begin
         if s = '' then
           Break
         else
-          TSL.Add(s);
+          AsStrings.Add(s);
       end;
-      FData := TSL;
     end;
     vaCollection:
     begin
-      Collection := TDFMCollectionProperty.Create;
-      FData := Collection;
       AReader.ReadValue;
       while not AReader.EndOfList do
       begin
-        CollectionData := Collection.Add;
+        CollectionData := AsCollectionProperty.Add;
 
         if AReader.NextValue in [vaInt8, vaInt16, vaInt32] then
         begin
           CollectionData.HasIndex := True;
           TempDFMProperty := TDFMProperty.Create;
-          TempDFMProperty.ReadValue(AReader);
-          CollectionData.Idx := TempDFMProperty.AsInteger;
-          TempDFMProperty.Free;
+          try
+            TempDFMProperty.ReadValue(AReader);
+            CollectionData.Idx := TempDFMProperty.AsInteger;
+          finally
+            TempDFMProperty.Free;
+          end;
         end
         else
           CollectionData.HasIndex := False;
@@ -795,11 +914,7 @@ begin
       AReader.ReadListEnd;
     end;
     vaInt64:
-    begin
-      New(pI64);
-      pI64^ := AReader.ReadInt64;
-      FData := pI64;
-    end
+      AsInt64 := AReader.ReadInt64;
     else
       AReader.SkipValue;
   end;
@@ -830,7 +945,7 @@ begin
   case FTyp of
     vaList:
       begin
-        ListPropertys := FData;
+        ListPropertys := AsDFMPropertys;
         AWriter.WriteStr('(');
         AWriter.IncNestingLevel;
         for i := 0 to ListPropertys.Count - 1 do
@@ -963,14 +1078,14 @@ begin
     vaIdent, vaFalse, vaTrue, vaNil, vaNull:
       AWriter.WriteStr(GetAsString);
     vaBinary:
-      AWriter.WriteBinary(TMemoryStream(FData));
+      AWriter.WriteBinary(AsStream);
     vaSet:
       AWriter.WriteStr(GetAsString);
     vaCollection:
       begin
         AWriter.WriteStr('<');
         AWriter.IncNestingLevel;
-        Collection := FData;
+        Collection := AsCollectionProperty;
         for i := 0 to Collection.Count - 1 do
         begin
           CollectionData := Collection[i];
@@ -1004,46 +1119,38 @@ end;
 { TDFMComponents }
 
 procedure TDFMComponents.Clear;
-var
-  i: Integer;
 begin
-  if FList.Count > 0 then
-  begin
-    for i := 0 to FList.Count - 1 do
-      TObject(FList[i]).Free;
-    FList.Clear;
-  end;
+  FComponentList.Clear;
 end;
 
 constructor TDFMComponents.Create;
 begin
   inherited Create;
 
-  FList := TList.Create;
+  FComponentList := TObjectList.Create;
 end;
 
 procedure TDFMComponents.Delete(AIndex: Integer);
 begin
-  TObject(FList[AIndex]).Free;
-  FList.Delete(AIndex);
+  FComponentList.Delete(AIndex);
 end;
 
 destructor TDFMComponents.Destroy;
 begin
   Clear;
-  FList.Free;
+  FComponentList.Free;
 
   inherited Destroy;
 end;
 
 function TDFMComponents.GetCount: Integer;
 begin
-  Result := FList.Count;
+  Result := FComponentList.Count;
 end;
 
 function TDFMComponents.GetItem(AIndex: Integer): TDFMComponent;
 begin
-  Result := FList[AIndex];
+  Result := TDFMComponent(FComponentList[AIndex]);
 end;
 
 procedure TDFMComponents.ReadComponents(AReader: TDFMReader);
@@ -1055,7 +1162,7 @@ begin
   begin
     DFMComponent := TDFMComponent.Create;
     DFMComponent.ReadComponent(AReader);
-    FList.Add(DFMComponent);
+    FComponentList.Add(DFMComponent);
   end;
 end;
 
@@ -1237,24 +1344,103 @@ end;
 
 { TDFMFiler }
 
+function TDFMFiler.GetStdCount: Integer;
+begin
+  Result := FStdPropertyProcList.Count;
+end;
+
+function TDFMFiler.GetStdPropertyProcRec(AIndex: Integer): TDFMStdPropertyProcRec;
+begin
+  Result := PDFMStdPropertyProcRec(FStdPropertyProcList[AIndex])^;
+end;
+
+function TDFMFiler.GetBinaryCount: Integer;
+begin
+  Result := FBinaryPropertyProcList.Count;
+end;
+
+function TDFMFiler.GetBinaryPropertyProcRec(AIndex: Integer): TDFMBinaryPropertyProcRec;
+begin
+  Result := PDFMBinaryPropertyProcRec(FBinaryPropertyProcList[AIndex])^;
+end;
+
+constructor TDFMFiler.Create(Stream: TStream; BufSize: Integer);
+begin
+  inherited Create(Stream, BufSize);
+  FStdPropertyProcList    := TList.Create;
+  FBinaryPropertyProcList := TList.Create;
+end;
+
+destructor TDFMFiler.Destroy;
+begin
+  ClearPropertyLists;
+  FStdPropertyProcList.Free;
+  FBinaryPropertyProcList.Free;
+  inherited Destroy;
+end;
+
+procedure TDFMFiler.ClearPropertyLists;
+var
+  i: Integer;
+begin
+  if FStdPropertyProcList.Count > 0 then
+  begin
+    for i := 0 to FStdPropertyProcList.Count - 1 do
+      Dispose(FStdPropertyProcList[i]);
+    FStdPropertyProcList.Clear;
+  end;
+  if FBinaryPropertyProcList.Count > 0 then
+  begin
+    for i := 0 to FBinaryPropertyProcList.Count - 1 do
+      Dispose(FBinaryPropertyProcList[i]);
+    FBinaryPropertyProcList.Clear;
+  end;
+end;
+
 procedure TDFMFiler.DefineProperty(const Name: string;
   ReadData: TReaderProc; WriteData: TWriterProc;
   HasData: Boolean);
+var
+  PStdPropertyRec: PDFMStdPropertyProcRec;
 begin
-//do nothing
+  New(PStdPropertyRec);
+  PStdPropertyRec^.Name := Name;
+  PStdPropertyRec^.ReadProc := ReadData;
+  PStdPropertyRec^.WriteProc := WriteData;
+  FStdPropertyProcList.Add(PStdPropertyRec);
 end;
 
 procedure TDFMFiler.DefineBinaryProperty(const Name: string;
   ReadData, WriteData: TStreamProc;
   HasData: Boolean);
+var
+  PBinaryPropertyRec: PDFMBinaryPropertyProcRec;
 begin
-  ReadProc  := ReadData;
-  WriteProc := WriteData;
+  New(PBinaryPropertyRec);
+  PBinaryPropertyRec^.Name := Name;
+  PBinaryPropertyRec^.ReadProc := ReadData;
+  PBinaryPropertyRec^.WriteProc := WriteData;
+  FBinaryPropertyProcList.Add(PBinaryPropertyRec);
 end;
 
 procedure TDFMFiler.FlushBuffer;
 begin
 //do nothing
+end;
+
+function TDFMFiler.GetBinaryReadProcByName(AName: string): TStreamProc;
+var
+  i: Integer;
+begin
+  Result := nil;
+  if FBinaryPropertyProcList.Count > 0 then
+    for i := 0 to FBinaryPropertyProcList.Count - 1 do
+      with PDFMBinaryPropertyProcRec(FBinaryPropertyProcList[i])^ do
+        if Name = AName then
+        begin
+          Result := ReadProc;
+          Break;
+        end;
 end;
 
 { TDFMReader }
@@ -1305,44 +1491,37 @@ end;
 function TDFMCollectionProperty.Add: TDFMCollectionPropertyData;
 begin
   Result := TDFMCollectionPropertyData.Create;
-  FList.Add(Result);
+  FCollectionPropertyDataList.Add(Result);
 end;
 
 procedure TDFMCollectionProperty.Clear;
-var
-  i: Integer;
 begin
-  if FList.Count > 0 then
-  begin
-    for i := 0 to FList.Count - 1 do
-      TObject(FList[i]).Free;
-    FList.Clear;
-  end;
+  FCollectionPropertyDataList.Clear;
 end;
 
 constructor TDFMCollectionProperty.Create;
 begin
   inherited Create;
-  FList := TList.Create;
+  FCollectionPropertyDataList := TObjectList.Create;
 end;
 
 destructor TDFMCollectionProperty.Destroy;
 begin
   Clear;
-  FList.Free;
+  FCollectionPropertyDataList.Free;
 
   inherited Destroy;
 end;
 
 function TDFMCollectionProperty.GetCount: Integer;
 begin
-  Result := FList.Count;
+  Result := FCollectionPropertyDataList.Count;
 end;
 
 function TDFMCollectionProperty.GetItem(
   AIndex: Integer): TDFMCollectionPropertyData;
 begin
-  Result := FList[AIndex];
+  Result := TDFMCollectionPropertyData(FCollectionPropertyDataList[AIndex]);
 end;
 
 function IsUnwantedComponent(const AClassName: string;
