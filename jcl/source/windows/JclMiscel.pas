@@ -53,6 +53,12 @@ function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
+function ExitWindows(ExitCode: Cardinal): Boolean;
+function LogOffOS: Boolean;
+function PowerOffOS: Boolean;
+function ShutDownOS: Boolean;
+function RebootOS: Boolean;
+
 
 //--------------------------------------------------------------------------------------------------
 // CreateProcAsUser
@@ -156,6 +162,81 @@ begin
     CloseHandle(ProcessInfo.hThread);
     CloseHandle(ProcessInfo.hProcess);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function LogOffOS: Boolean;
+begin
+  Result := False;
+
+  {$IFDEF MSWINDOWS}
+  Result := ExitWindows(EWX_LOGOFF);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PowerOffOS: Boolean;
+begin
+  Result := False;
+
+  {$IFDEF MSWINDOWS}
+  Result := ExitWindows(EWX_POWEROFF);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ShutDownOS: Boolean;
+begin
+  Result := False;
+
+  {$IFDEF MSWINDOWS}
+  Result := ExitWindows(EWX_SHUTDOWN);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RebootOS: Boolean;
+begin
+  Result := False;
+
+  {$IFDEF MSWINDOWS}
+  Result := ExitWindows(EWX_Reboot);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ExitWindows(ExitCode: Cardinal): Boolean;
+const
+  SE_SHUTDOWN_NAME = 2;
+var
+  hToken: Cardinal;
+  Privs: TTokenPrivileges;
+  ReturnLength: Cardinal;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    Result := OpenProcessToken(GetCurrentProcess,TOKEN_ADJUST_PRIVILEGES Or TOKEN_QUERY,hToken) and
+    LookupPrivilegeValue(nil, 'SeShutdownPrivilege', Privs.Privileges[0].luid);
+    if Result then
+    begin
+      with Privs do
+      begin
+        PrivilegeCount := 1;
+        Privileges[0].Attributes := SE_SHUTDOWN_NAME;
+      end;
+
+      Result := AdjustTokenPrivileges(Token, false, Privs, sizeof(Privs), nil, @ReturnLength);
+    end;
+    if not Result then
+      Exit;
+  end;
+
+  Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
 end;
 
 //--------------------------------------------------------------------------------------------------
