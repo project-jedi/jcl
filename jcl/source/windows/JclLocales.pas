@@ -1,31 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclLocales.pas.                                         }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains a set of classes which allow you to easily retrieve       }
-{ locale specific information such the list of keyboard layouts, names used    }
-{ for dates and characters used for formatting numbers and dates.              }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: January 29, 2000                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclLocales.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains a set of classes which allow you to easily retrieve locale specific           }
+{ information such the list of keyboard layouts, names used for dates and characters used for      }
+{ formatting numbers and dates.                                                                    }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: January 29, 2000                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclLocales;
 
@@ -42,9 +41,9 @@ uses
   {$ENDIF DELPHI5_UP}
   JclBase;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // System locales
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclLocalesDays = 1..7;
@@ -78,7 +77,7 @@ type
     procedure SetIntegerInfo(InfoType: Integer; const Value: Integer);
     procedure SetStringInfo(InfoType: Integer; const Value: string);
   public
-    constructor Create(ALocaleID: LCID {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SYSTEM_DEFAULT {$ENDIF});
+    constructor Create(ALocaleID: LCID = LOCALE_SYSTEM_DEFAULT);
     destructor Destroy; override;
     property CharInfo[InfoType: Integer]: Char read GetCharInfo write SetCharInfo;
     property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo write SetIntegerInfo;
@@ -98,12 +97,14 @@ type
     property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
     property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME read GetStringInfo;
     property NativeLangName: string index LOCALE_SNATIVELANGNAME read GetStringInfo;
+    property ISOAbbreviatedLangName: string index LOCALE_SISO639LANGNAME read GetStringInfo;
     // Countries
     property CountryCode: Integer index LOCALE_ICOUNTRY read GetIntegerInfo;
     property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
     property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
     property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
     property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
+    property ISOAbbreviatedCountryName: string index LOCALE_SISO3166CTRYNAME read GetStringInfo;
     // Codepages
     property DefaultLanguageId: Integer index LOCALE_IDEFAULTLANGUAGE read GetIntegerInfo;
     property DefaultCountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
@@ -167,8 +168,6 @@ type
     property SepOfNegativeMonetarySymbol: Integer index LOCALE_INEGSEPBYSPACE read GetIntegerInfo;
     // Misc
     property FontSignature: string index LOCALE_FONTSIGNATURE read GetStringInfo;
-    property ISOAbbreviatedLangName: string index LOCALE_SISO639LANGNAME read GetStringInfo;
-    property ISOAbbreviatedCountryName: string index LOCALE_SISO3166CTRYNAME read GetStringInfo;
   end;
 
   TJclLocalesKind = (lkInstalled, lkSupported);
@@ -184,7 +183,7 @@ type
   protected
     procedure CreateList;
   public
-    constructor Create(AKind: TJclLocalesKind {$IFDEF SUPPORTS_DEFAULTPARAMS} = lkInstalled {$ENDIF});
+    constructor Create(AKind: TJclLocalesKind = lkInstalled);
     destructor Destroy; override;
     procedure FillStrings(Strings: TStrings; InfoType: Integer);
     property CodePages: TStrings read FCodePages;
@@ -195,9 +194,9 @@ type
     property Kind: TJclLocalesKind read FKind;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Keyboard layouts
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclKeybLayoutFlag = (klReorder, klUnloadPrevious, klSetForProcess,
@@ -239,7 +238,7 @@ type
   public
     constructor Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
     destructor Destroy; override;
-    function Activate(ActivateFlags: TJclKeybLayoutFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+    function Activate(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
     function Unload: Boolean;
     property DeviceHandle: Word read GetDeviceHandle;
     property DisplayName: string read GetDisplayName;
@@ -267,8 +266,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
-    function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+    function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
+    function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
     function LoadLayout(const LayoutName: string; LoadFlags: TJclKeybLayoutFlags): Boolean;
     procedure Refresh;
     property ActiveLayout: TJclKeyboardLayout read GetActiveLayout;
@@ -281,11 +280,11 @@ type
     property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Various routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SENGCOUNTRY {$ENDIF});
+procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE_SENGCOUNTRY);
 
 implementation
 
@@ -296,7 +295,7 @@ const
   JclMaxKeyboardLayouts = 16;
   LocaleUseAcp: array [Boolean] of DWORD = (0, LOCALE_USE_CP_ACP);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function KeybLayoutFlagsToDWORD(const ActivateFlags: TJclKeybLayoutFlags;
   const LoadMode: Boolean): DWORD;
@@ -321,17 +320,17 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // EnumXXX functions helper thread variables
-//==============================================================================
+//==================================================================================================
 
 threadvar
   ProcessedLocaleInfoList: TStrings;
   ProcessedLocalesList: TJclLocalesList;
 
-//==============================================================================
+//==================================================================================================
 // TJclLocaleInfo
-//==============================================================================
+//==================================================================================================
 
 constructor TJclLocaleInfo.Create(ALocaleID: LCID);
 begin
@@ -341,7 +340,7 @@ begin
   FValidDateFormatLists := [];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclLocaleInfo.Destroy;
 var
@@ -353,14 +352,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetAbbreviatedDayNames(Day: TJclLocalesDays): string;
 begin
   Result := GetStringInfo(LOCALE_SABBREVDAYNAME1 + Day - 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetAbbreviatedMonthNames(Month: TJclLocalesMonths): string;
 var
@@ -373,7 +372,7 @@ begin
   Result := GetStringInfo(Param);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetCharInfo(InfoType: Integer): Char;
 var
@@ -386,7 +385,7 @@ begin
     Result := ' ';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
 const
@@ -418,9 +417,7 @@ begin
   Result := FDateFormats[Format];
 end;
 
-//------------------------------------------------------------------------------
-
-// TODO : Is there any better way how to get font charset for particular locale ?
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetFontCharset: Byte;
 const
@@ -452,42 +449,42 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetIntegerInfo(InfoType: Integer): Integer;
 begin
   Result := StrToIntDef(GetStringInfo(InfoType), 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetLangID: LANGID;
 begin
   Result := LANGIDFROMLCID(FLocaleID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetLangIDPrimary: Word;
 begin
   Result := PRIMARYLANGID(LangID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetLangIDSub: Word;
 begin
   Result := SUBLANGID(LangID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetLongDayNames(Day: TJclLocalesDays): string;
 begin
   Result := GetStringInfo(LOCALE_SDAYNAME1 + Day - 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetLongMonthNames(Month: TJclLocalesMonths): string;
 var
@@ -500,14 +497,14 @@ begin
   Result := GetStringInfo(Param);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetSortID: Word;
 begin
   Result := SORTIDFROMLCID(FLocaleID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetStringInfo(InfoType: Integer): string;
 var
@@ -521,8 +518,8 @@ begin
     SetString(Result, nil, Res);
     Res := GetLocaleInfoA(FLocaleID, InfoType, PChar(Result), Res);
     StrResetLength(Result);
-    // Note: GetLocaleInfo returns sometimes incorrect length of string on
-    // Win95 (usually plus 1), that's why StrResetLength is called.
+    // Note: GetLocaleInfo returns sometimes incorrect length of string on Win95 (usually plus 1),
+    // that's why StrResetLength is called.
   end
   else
   if IsWinNT then
@@ -540,7 +537,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetTimeFormats: TStrings;
 
@@ -568,28 +565,28 @@ begin
   Result := FTimeFormats;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocaleInfo.SetCharInfo(InfoType: Integer; const Value: Char);
 begin
   SetStringInfo(InfoType, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocaleInfo.SetIntegerInfo(InfoType: Integer; const Value: Integer);
 begin
   SetStringInfo(InfoType, IntToStr(Value));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocaleInfo.SetStringInfo(InfoType: Integer; const Value: string);
 begin
   Win32Check(SetLocaleInfo(FLocaleID, InfoType, PChar(Value)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocaleInfo.SetUseSystemACP(const Value: Boolean);
 begin
@@ -601,9 +598,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclLocalesList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclLocalesList.Create(AKind: TJclLocalesKind);
 begin
@@ -613,7 +610,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocalesList.CreateList;
 const
@@ -645,7 +642,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclLocalesList.Destroy;
 begin
@@ -653,7 +650,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLocalesList.FillStrings(Strings: TStrings; InfoType: Integer);
 var
@@ -664,7 +661,7 @@ begin
       Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocalesList.GetItemFromLangID(LangID: LANGID): TJclLocaleInfo;
 var
@@ -679,7 +676,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocalesList.GetItemFromLangIDPrimary(LangIDPrimary: Word): TJclLocaleInfo;
 var
@@ -694,7 +691,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocalesList.GetItemFromLocaleID(LocaleID: LCID): TJclLocaleInfo;
 var
@@ -709,46 +706,46 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLocalesList.GetItems(Index: Integer): TJclLocaleInfo;
 begin
   Result := TJclLocaleInfo(inherited Items[Index]);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclAvailableKeybLayout
-//==============================================================================
+//==================================================================================================
 
 function TJclAvailableKeybLayout.GetIdentifierName: string;
 begin
   Result := Format('%.8x', [FIdentifier]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAvailableKeybLayout.GetLayoutFileExists: Boolean;
 begin
   Result := FileExists(PathAddSeparator(GetWindowsSystemFolder) + LayoutFile);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAvailableKeybLayout.Load(const LoadFlags: TJclKeybLayoutFlags): Boolean;
 begin
   Result := FOwner.LoadLayout(IdentifierName, LoadFlags);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclKeyboardLayout
-//==============================================================================
+//==================================================================================================
 
 function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
   Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclKeyboardLayout.Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
 begin
@@ -757,7 +754,7 @@ begin
   FOwner := AOwner;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclKeyboardLayout.Destroy;
 begin
@@ -765,14 +762,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetDeviceHandle: Word;
 begin
   Result := HiWord(FLayout);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetDisplayName: string;
 begin
@@ -781,14 +778,14 @@ begin
     Result := Result + ' - ' + VariationName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetLocaleID: Word;
 begin
   Result := LoWord(FLayout);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetLocaleInfo: TJclLocaleInfo;
 begin
@@ -797,7 +794,7 @@ begin
   Result := FLocaleInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetVariationName: string;
 var
@@ -819,7 +816,7 @@ begin
         end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.Unload: Boolean;
 begin
@@ -828,9 +825,9 @@ begin
     FOwner.Refresh;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclKeyboardLayoutList
-//==============================================================================
+//==================================================================================================
 
 function TJclKeyboardLayoutList.ActivateNextLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
@@ -838,7 +835,7 @@ begin
   Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
@@ -846,7 +843,7 @@ begin
   Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclKeyboardLayoutList.Create;
 begin
@@ -856,7 +853,7 @@ begin
   Refresh;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclKeyboardLayoutList.CreateAvailableLayouts;
 const
@@ -887,7 +884,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclKeyboardLayoutList.Destroy;
 begin
@@ -896,7 +893,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclKeyboardLayoutList.DoRefresh;
 begin
@@ -904,35 +901,35 @@ begin
     FOnRefresh(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetActiveLayout: TJclKeyboardLayout;
 begin
   Result := ItemFromHKL[GetKeyboardLayout(0)];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetAvailableLayoutCount: Integer;
 begin
   Result := FAvailableLayouts.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetAvailableLayouts(Index: Integer): TJclAvailableKeybLayout;
 begin
   Result := TJclAvailableKeybLayout(FAvailableLayouts[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetItemFromHKL(Layout: HKL): TJclKeyboardLayout;
 var
@@ -947,14 +944,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetItems(Index: Integer): TJclKeyboardLayout;
 begin
   Result := TJclKeyboardLayout(FList[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.GetLayoutFromLocaleID(LocaleID: Word): TJclKeyboardLayout;
 var
@@ -969,7 +966,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclKeyboardLayoutList.LoadLayout(const LayoutName: string;
   LoadFlags: TJclKeybLayoutFlags): Boolean;
@@ -980,7 +977,7 @@ begin
     Refresh;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclKeyboardLayoutList.Refresh;
 var
@@ -988,17 +985,17 @@ var
   Layouts: array [1..JclMaxKeyboardLayouts] of HKL;
 begin
   Cnt := GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
-  // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff
-  // it always returns 0 on Win95.
+  // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff it always returns 0
+  // on Win95.
   FList.Clear;
   for I := 1 to Cnt do
     FList.Add(TJclKeyboardLayout.Create(Self, Layouts[I]));
   DoRefresh;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Various routines
-//==============================================================================
+//==================================================================================================
 
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
