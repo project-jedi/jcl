@@ -26,7 +26,7 @@
 {                                                                                                  }
 {  Contributor(s):                                                                                 }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
-{    Robert Rossmair (rrossmair}                                                                   }
+{    Robert Rossmair (rrossmair)                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
 { Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
@@ -1001,7 +1001,7 @@ end;
 constructor TJclGZipStream.Create(const Stream: TStream);
 {$IFDEF FPC}
 var
-  P: PByte;
+  P: Pointer;
 begin
   inherited Create;
   FStream := Stream;
@@ -2201,6 +2201,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.5  2004/05/05 05:24:58  rrossmair
+//  fixed typo
+//
 //  Revision 1.4  2004/05/05 04:06:06  rrossmair
 //  changes for FPC-compatibility (tested under Win32 only)
 //
