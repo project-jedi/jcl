@@ -16,7 +16,9 @@
 { Portions created Marcel Bestebroer are Copyright (C) Marcel Bestebroer. All rights reserved.     }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel Bestebroer (marcelb), Peter J. Haas, Robert Rossmair, Petr Vones                        }
+{   Marcel Bestebroer (marcelb)                                                                    }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1784,6 +1786,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/10/17 22:30:27  mthoma
+// file header update
+//
 // Revision 1.10  2004/10/12 18:29:52  rrossmair
 // cleanup
 //
