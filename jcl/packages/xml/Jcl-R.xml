@@ -39,8 +39,8 @@
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
     <File Name="..\..\source\common\Jcl8087.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCIL.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCLR.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCIL.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCLR.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclCOM.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclConsole.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebug.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
@@ -48,7 +48,7 @@
     <File Name="..\..\source\windows\JclLANMan.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLocales.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMapi.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMetadata.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMetadata.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMiscel.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclMultimedia.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclNTFS.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
