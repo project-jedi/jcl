@@ -135,6 +135,7 @@ function StrIsAlpha(const S: AnsiString): Boolean;
 function StrIsAlphaNum(const S: AnsiString): Boolean;
 function StrIsAlphaNumUnderscore(const S: AnsiString): Boolean;
 function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
+function StrConsistsOfNumberChars(const S: AnsiString): Boolean;
 function StrIsDigit(const S: AnsiString): Boolean;
 function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolean;
 function StrSame(const S1, S2: AnsiString): Boolean;
@@ -298,7 +299,6 @@ function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 procedure FreeMultiSz(var Dest: PChar);
 
-
 { TODO -cHelp : Author: Peter J. Haas }
 { TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: array of AnsiString): AnsiString; overload;
@@ -382,7 +382,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  JclSysUtils, JclUnicode, JclLogic, JclResources;
+  JclSysUtils, JclLogic, JclResources;
 
 //==================================================================================================
 // Internal
@@ -661,6 +661,22 @@ asm
 @@StrIsNull:
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function StrEndW(Str: PWideChar): PWideChar;
+// returns a pointer to the end of a null terminated string
+// stolen from JclUnicode
+asm
+       MOV     EDX, EDI
+       MOV     EDI, EAX
+       MOV     ECX, 0FFFFFFFFH
+       XOR     AX, AX
+       REPNE   SCASW
+       LEA     EAX, [EDI - 2]
+       MOV     EDI, EDX
+
+end;
+
 //==================================================================================================
 // String Test Routines
 //==================================================================================================
@@ -695,6 +711,23 @@ begin
       Exit;
     end;
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StrConsistsofNumberChars(const S: AnsiString): Boolean;
+var
+  I: Integer;
+begin
+  Result := S <> '';
+  for I := 1 to Length(S) do
+  begin
+    if not CharIsNumberChar(S[I]) then
+    begin
+      Result := False;
+      Exit;
+    end;
+ end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4167,6 +4200,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.15  2004/04/14 20:39:59  mthoma
+// Reintroduced StrIsNumber as StrConsistsofNumberChars, copied local function StrEndW from JclUnicode to get rid of that dependency.
+//
 // Revision 1.14  2004/04/12 22:07:45  peterjhaas
 // Bugfix: StringsToMultiString, MultiStringToStrings,
 //         empty list entries are not allowed
