@@ -10,7 +10,7 @@ PWideChar except that this function makes the behaviour of the typecast explicit
  (and independent of the compiler).
 [Parameters]
 Count=1
-1=S:WideString=The string to for which to return a PWideChar.
+1=S:WideString=The string for which to return a PWideChar.
 [Result]
 If the specified string is empty the funtion returns nil, otherwise it returns
 a pointer to the first character of the string.
@@ -31,12 +31,12 @@ function PCharOrNil(const S: AnsiString): PChar;
 Explicit replacement for PChar typecast.
 [Description]
 PCharOrNil returns a pointer to the first character of the specified string or
-nil of the string is empty. This is identical to simply typecasting to PChar
+nil if the string is empty. This is identical to simply typecasting to PChar
 except that this function makes the behaviour of the typecast explicit (and
 independent of the compiler).
 [Parameters]
 Count=1
-1=S:AnsiString=The string to for which to return a PChar.
+1=S:AnsiString=The string for which to return a PChar.
 [Result]
 If the specified string is empty the funtion returns nil, otherwise it returns
 a pointer to the first character of the string.
@@ -90,9 +90,10 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64;
 [ShortDescr]
 Replacement for the C++ ternary conditional operator.
 [Description]
-Iff is a replacement for the C++ ternary conditional operator ?:. It evaluates
+Iff is a replacement for the C/C++ ternary conditional operator ?:. It evaluates
 the specified boolean expression and depending on the outcome returns either
 the specified TruePart or FalsePart parameter.
+The difference to the C/C++ operator is that both expressions are evaluated.
 [Parameters]
 Count=3
 1=Condition:Boolean=The expression which determines which of the other parameters
@@ -142,11 +143,11 @@ Frees an object reference and replaces it with nil.
 FreeAndNil frees the object instance pointed to by Obj and replaces the reference
 with nil. This ensures that the reference is nil after the object has been
 destroyed and helps debugging. Do not use this routine on objects or generic
-pointers which are not TObject descendents. For generic pointers you can use
+pointers which are not TObject descendants. For generic pointers you can use
 the <REF>FreeMemAndNil</REF> procedure.
 [Parameters]
 Count=1
-1=Obj:TObject=Reference to an instance of a TObject descendent to free. Upon return
+1=Obj:TObject=Reference to an instance of a TObject descendant to free. Upon return
 the Obj variable has been reset to nil so future references ensure a relatively
 easy to understand access violation.
 [Quick Info]
@@ -167,7 +168,7 @@ Frees a block of memory and sets the reference to nil.
 FreeMemAndNil frees the memory pointed to by P and replaces the reference
 with nil. This ensures that the reference is nil after the memory has been
 released and helps debugging. Do not use this routine on objects or TObject
-descendents. For TObject (descendents) you can use the <REF>FreeAndNil</REF> procedure.
+descendants. For TObject (descendants) you can use the <REF>FreeAndNil</REF> procedure.
 [Parameters]
 Count=1
 1=P:Pointer=Reference to the memory block to release. Upon return the P variable
@@ -267,6 +268,7 @@ changes the pointer in the VMT of the specified class, not the static references
 to this method, which are made when an anchestor uses inherited to call the virtual
 method. This procedure changes the executable code (with the risk of completly
 destroying your application) and uses WriteProcessMemory to accomplish that.
+The function is multiprocessor safe.
 [Parameters]
 Count=3
 1=AClass:TClass=The class for which to set a virtual method.
@@ -288,7 +290,7 @@ function GetDynamicMethodCount(AClass: TClass): Integer;
 [ShortDescr]
 Returns the number of dynamic methods of a class.
 [Description]
-GetDynamicMethodCount returns the number of dynamic methods for of the specified
+GetDynamicMethodCount returns the number of dynamic methods for the specified
 class (including abstract methods). This only includes dynamic methods declared
 in the class itself, not the methods delcared in ancestor classes.
 [Parameters]
@@ -308,18 +310,18 @@ function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
 [ShortDescr]
 Returns the list of indices of the dynamic methods.
 [Description]
-Returns the list of indices for the dynamic methods, not including the indexes
+Returns the list of indices for the dynamic methods, not including the indices
 of the dynamic methods from inherited classes.
 Use this list in combination with <REF>GetDynamicAddressList</REF>
-and <REF>GetDynamicMethodCount</REF> to get all dynamic methods with their indexes.
-The number of entries in the returned array that contain meaningfull data is
+and <REF>GetDynamicMethodCount</REF> to get all dynamic methods with their indices.
+The number of entries in the returned array that contain meaningful data is
 returned by <REF>GetDynamicMethodCount</REF>. The returned pointer points directly
 into the class structure and should not be modified.
 [Parameters]
 Count=1
 1=AClass:TClass=The class for which to get dynamic method index list.
 [Result]
-Pointer to an array containing the indices. Do not modify this array.
+Pointer to an array containing the indices. Do not modify this array!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -331,7 +333,7 @@ Count=1
 1=TDynamicIndexList;..\TDynamicIndexList
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TDynamicIndexList = array[0..MaxInt div 16] of Word;
+TDynamicIndexList = array [0..MaxInt div 16] of Word;
 PDynamicIndexList = ^TDynamicIndexList;
 [ShortDescr]
 List of valid indices in a dynamic method table.
@@ -353,15 +355,15 @@ Returns the list of addresses for the dynamic methods of a class.
 [Description]
 Returns the list of addresses for the dynamic methods of the specified class.
 Use this list in combination with <REF>GetDynamicIndexList</REF>
-and <REF>GetDynamicMethodCount</REF> to get all dynamic methods and their indexes.
-The number of entries in the returned array that contain meaningfull data is
-returned by GetDynamicMethodCount. The returned pointer points direcrtly into
+and <REF>GetDynamicMethodCount</REF> to get all dynamic methods and their indices.
+The number of entries in the returned array that contain meaningful data is
+returned by GetDynamicMethodCount. The returned pointer points directly into
 the class structure and should not be modified.
 [Parameters]
 Count=1
 1=AClass:TClass=The class for which to get dynamic method address list.
 [Result]
-Pointer to an array containing the addresses. Do not modify this array.
+Pointer to an array containing the addresses. Do not modify this array!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -373,7 +375,7 @@ Count=1
 1=TDynamicAddressList;Types\TDynamicAddressList
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TDynamicAddressList = array[0..MaxInt div 16] of Pointer;
+TDynamicAddressList = array [0..MaxInt div 16] of Pointer;
 PDynamicAddressList = ^TDynamicAddressList;
 [ShortDescr]
 List of addresses of a dynamic methods
@@ -437,7 +439,7 @@ function GetInitTable(AClass: TClass): PTypeInfo;
 Returns the initialization table of a class.
 [Description]
 GetInitTable returns the initialization table of the specified class.
-TODO Tihs is abacadabra to me :-) Need to contact author for further explanation
+TODO This is abracadabra to me :-) Need to contact author for further explanation
 about this (eg what does the init table look like).
 The initialization table is a record type info, from which the size is set to zero, but
 still has info about the fields which needs to be initialized, but only for
@@ -447,7 +449,7 @@ object is created to initialize its fields.
 Count=1
 1=AClass:TClass=The class for which to get the initialization table.
 [Result]
-The result is a pointer to the initialization table. Do not modify this structure.
+The result is a pointer to the initialization table. Do not modify this structure!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -466,7 +468,7 @@ A field table contains information about the published fields in a class.
 Count=1
 1=AClass:TClass=The class for which to retrieve the field table.
 [Result]
-Pointer to the field table. Do not modify this structure.
+Pointer to the field table. Do not modify this structure!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -482,7 +484,7 @@ TFieldTable = packed record
   EntryCount: Word;
   FieldClassTable: <REF>PFieldClassTable</REF>;
   FirstEntry: <REF>TFieldEntry</REF>;
- {Entries: array[1..65534] of TFieldEntry;}
+ {Entries: array [1..65534] of TFieldEntry;}
 end;
 PFieldTable = ^TFieldTable;
 [ShortDescr]
@@ -505,7 +507,7 @@ Delphi=4,5
 [Declaration]
 TFieldClassTable = packed record
   Count: Smallint;
-  Classes: array[0..8191] of ^TPersistentClass;
+  Classes: array [0..8191] of ^TPersistentClass;
 end;
 PFieldClassTable = ^TFieldClassTable;
 [ShortDescr]
@@ -515,7 +517,7 @@ List of classes used by the fields entries.
 [RecordFields]
 Count=2
 1=Count:Smallint=Number of classes in the Classes array.
-2=Classes:array[0..8191] of ^TPersistentClass=array of classes. The highest valid
+2=Classes:array [0..8191] of ^TPersistentClass=array of classes. The highest valid
 index in this array is Count - 1.
 [Quick Info]
 Kind=Type
@@ -541,7 +543,7 @@ TFieldEntry contains information about a field of a class.
 TFieldEntry contains information about a field of a class.
 [RecordFields]
 Count=3
-1=OffSet:Integer=OffSet off the field. TODO relative to what?
+1=OffSet:Integer=OffSet of the field. TODO relative to what?
 2=IDX:Word=Index for the classtype in the class list.
 3=Name:ShortString=Name of the field.
 [Quick Info]
@@ -564,7 +566,7 @@ class.
 Count=1
 1=AClass:TClass=The class for which to retrieve the method table.
 [Result]
-Pointer to the method table. Do not modify this structure.
+Pointer to the method table. Do not modify this structure!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -579,13 +581,13 @@ Count=1
 TMethodTable = packed record
   Count: Word;
   FirstEntry: <REF Target"TMethodEntry">TMethodEntry</REF>;
- {Entries: array[1..65534] of TMethodEntry;}
+ {Entries: array [1..65534] of TMethodEntry;}
 end;
 PMethodTable = ^TMethodTable;
 [ShortDescr]
 Structure for the Method Table
 [Description]
-Method Table Structure. Gives an discription of method, with Count the number
+Method Table Structure. Gives a description of method, with Count the number
 of methods, followed by count numbers of a variable length structure for each
 entry.
 [RecordFields]
@@ -611,7 +613,7 @@ function GetMethodEntry(MethodTable: <REF Target"TMethodTable">PMethodTable</REF
 [ShortDescr]
 Returns an entry from the method table.
 [Description]
-GetMEthodEntry returns the entry with the given index from the method table.
+GetMethodEntry returns the entry with the given index from the method table.
 There is no checking performed that the given Index is valid.
 [Parameters]
 Count=2
@@ -619,7 +621,7 @@ Count=2
 2=Index:Integer=The index of the entry to retrieve.
 [Result]
 Pointer to the method table entry from the method table with
-the given index. Do not modify this structure.
+the given index. Do not modify this structure!
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
@@ -662,9 +664,10 @@ Modifies the class parent for the given class.
 [Description]
 Changes the parent of AClass to become NewClassParent. <P><FONT color=red>
 Do <B>NOT</B> use this function.</FONT><BR> There should be
-no need to use this function unless your implementing a very dirty hack.<P>
-This procedure changes the executable code (with the risk of completley destroying
+no need to use this function unless you are implementing a very dirty hack.<P>
+This procedure changes the executable code (with the risk of completly destroying
 your application) and uses WriteProcessMemory for this.</P>
+The function is multiprocessor safe.
 [Parameters]
 Count=2
 1=AClass:TClass=The class whose parent to change.
@@ -708,11 +711,11 @@ function IsClass(Address: Pointer): Boolean;
 Returns whether a pointer points to a class.
 [Description]
 IsClass tests whether the specified pointer points to a class. Currently the
-implementation only test whether the Self pointer actually points to the itself.
+implementation only test whether the Self pointer actually points to the class itself.
 [Parameters]
 Count=1
 1=Address:Pointer=The address to test. Note that this should be the equivalent
-of Obj.ClassType where Obj is an instance of TObject or descendent class.
+of Obj.ClassType where Obj is an instance of TObject or descendant class.
 [Result]
 The result is True if the Address is a class otherwise it is False.
 [Quick Info]
@@ -731,11 +734,11 @@ function IsObject(Address: Pointer): Boolean;
 Returns whether a pointer points to an object.
 [Description]
 IsObject tests whether the specified pointer points to an object. Currently the
-implementation only test whether the Self pointer actually points to the itself.
+implementation only test whether the Self pointer actually points to the object itself.
 [Parameters]
 Count=1
 1=Address:Pointer=The address to test. Note that this should be a TObject or
-TObject descendent.
+TObject descendant.
 [Result]
 The result is True if the Address is an object otherwise it is False.
 [Quick Info]
@@ -781,7 +784,7 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -793,7 +796,7 @@ Count=3
 [Declaration]
 function ReleaseItem: Pointer;
 [ShortDescr]
-Disacociates the resource from the safeguard.
+Disassociates the resource from the safeguard.
 [Description]
 ReleaseItem returns a pointer to the associated resource and then disassociates it
 with the safeguard. This means that when execution leaves the scope in which
@@ -808,7 +811,7 @@ Visibility=Public
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -828,7 +831,7 @@ Visibility=Public
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -846,7 +849,7 @@ Visibility=Public
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -856,14 +859,14 @@ property Item: Pointer read GetItem;
 Returns a pointer to the protected resource.
 [Description]
 The Item property returns a pointer to the associated resource protected by the
-safeguard. You'll have to case the pointer to the appropriate type.
+safeguard. You'll have to cast the pointer to the appropriate type.
 [Quick Info]
 Kind=Property
 Visibility=Public
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -894,7 +897,7 @@ without having to explicitly code it. For example: <BR>
 In the above code, the TStrings object is associated with the SafeGuard. No matter
 how the function terminates, the safeguard ensures that the TStrings object is
 destroyed. Usually you will simply store the returned safeguard interface pointer
-in a variable at the appropriate scope and forget about. However, the ISafeGuard
+in a variable at the appropriate scope and forget about it. However, the ISafeGuard
 interface does provide some additional functionality which may be useful at times.
 See the <REF>ISafeGuard</REF> interface for more information.
 [Parameters]
@@ -908,7 +911,7 @@ you to create the resource embedded inside the function call as demonstrated abo
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -923,7 +926,7 @@ function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 Allocates a specified amount of memory and associates it with a safeguard.
 [Description]
 GuardGetMem allocates the specified amount of memory and associates it with a
-safequard. A pointer to the allocated memory is returned as the function result.
+safeguard. A pointer to the allocated memory is returned as the function result.
 By using GuardGetMem you ensure that no matter how the scope in which the memory
 is allocated is left (e.g. by an exception or explicit Exit), the memory will be
 freed. See <REF>Guard</REF> for a more detailed description.
@@ -939,7 +942,7 @@ Pointer to the block of allocated memory.
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -954,9 +957,9 @@ function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 Allocates a specified amount of memory and associates it with a safeguard.
 [Description]
 GuardGetMem allocates the specified amount of memory and associates it with a
-safequard. This function is identical to GuardGetMem except that the function
+safeguard. This function is identical to GuardGetMem except that the function
 uses AllocMem internally, as opposed to GetMem. As such the allocated memory is
-intialized with all zeros. A pointer to the allocated memory is returned as the
+initialized with all zeros. A pointer to the allocated memory is returned as the
 function result. By using GuardGetMem you ensure that no matter how the scope in
 which the memory is allocated is left (e.g. by an exception or explicit Exit), the
 memory will be freed. See <REF>Guard</REF> for a more detailed description.
@@ -972,7 +975,7 @@ Pointer to the block of allocated memory.
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
-Author=Rudolph Velthuis;rvelthuis@gmx.de
+Author=Rudy Velthuis;rvelthuis@gmx.de
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -986,9 +989,9 @@ procedure ClearObjectList(List: TList);
 [ShortDescr]
 Clears the contents of a TList which contains objects.
 [Description]
-ClearObjectList clears the contents specified list. The routine assumes that each
-item in the list is a TObject descendent and frees these objects before removing
-them from the list. If the list contains items other then TObject descendents,
+ClearObjectList clears the contents of the specified list. The routine assumes that each
+item in the list is a TObject descendant and frees these objects before removing
+them from the list. If the list contains items other than TObject descendants,
 the result is unpredictable (likely an access violation will occur).
 [Parameters]
 Count=1
@@ -1009,10 +1012,10 @@ procedure FreeObjectList(var List: TList);
 [ShortDescr]
 Clears the contents of a TList which contains objects.
 [Description]
-FreeObjectList clears the contents specified list and the frees the list itself.
-The routine assumes that each item in the list is a TObject descendent and frees
+FreeObjectList clears the contents of the specified list and then frees the list itself.
+The routine assumes that each item in the list is a TObject descendant and frees
 these objects before removing them from the list. If the list contains items other
-then TObject descendents, the result is unpredictable (likely an access violation
+than TObject descendants, the result is unpredictable (likely an access violation
 will occur).
 [Parameters]
 Count=1
