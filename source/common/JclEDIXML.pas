@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
-{ Last modified: October 1, 2003                                                                   }
+{ Last modified: October 26, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -478,7 +478,35 @@ implementation
 uses
   JclResources, JclStrings;
 
-// (rom) contains too many string literals better make them constants
+const
+  EDIXML_Ampersand = '&';
+  EDIXML_LessThanSign = '<';
+  EDIXML_GreaterThanSign = '>';
+  EDIXML_QuotationMark = '"';
+  EDIXML_Apostrophe = '''';
+
+  EDIXML_HTMLAmpersand = '&amp;';
+  EDIXML_HTMLLessThanSign = '&lt;';
+  EDIXML_HTMLGreaterThanSign = '&gt;';
+  EDIXML_HTMLQuotationMark = '&quot;';
+  EDIXML_HTMLApostrophe = '&apos;';
+
+  EDIXMLDelimiter_ForwardSlash = '/';
+  EDIXMLDelimiter_EqualToSign = '=';
+  EDIXMLDelimiter_CDATABegin = '<![CDATA[';
+  EDIXMLDelimiter_CDATAEnd = ']]>';
+  EDIXMLDelimiter_FileHeaderBegin = '<?';
+  EDIXMLDelimiter_FileHeaderEnd = '?>';
+
+  EDIXMLAttributeStr_version = 'version';
+  EDIXMLAttributeStr_encoding = 'encoding';
+  EDIXMLAttributeStr_xmlns = 'xmlns';
+  EDIXMLAttributeStr_xmlnsEDI = 'xmlns:EDI';
+
+  Value_xml = 'xml';
+  Value_Version10 = '1.0';
+  Value_Windows1252 = 'windows-1252';
+  Value_EDITRANSDOC = 'EDITRANSDOC';  
 
 //==================================================================================================
 // TEDIXMLDelimiters
@@ -487,15 +515,15 @@ uses
 constructor TEDIXMLDelimiters.Create;
 begin
   inherited Create;
-  SetBeginTagDelimiter('<');
-  SetBeginOfEndTagDelimiter(FBeginTagDelimiter + '/');
-  SetEndTagDelimiter('>');
-  FSpaceDelimiter := ' ';
-  FAssignmentDelimiter := '=';
-  FSingleQuote := '''';
-  FDoubleQuote := '"';
-  SetBeginCDataDelimiter('<![CDATA[');
-  SetEndCDataDelimiter(']]>');
+  SetBeginTagDelimiter(EDIXML_LessThanSign);
+  SetBeginOfEndTagDelimiter(FBeginTagDelimiter + EDIXMLDelimiter_ForwardSlash);
+  SetEndTagDelimiter(EDIXML_GreaterThanSign);
+  FSpaceDelimiter := AnsiSpace;
+  FAssignmentDelimiter := EDIXMLDelimiter_EqualToSign;
+  FSingleQuote := EDIXML_Apostrophe;
+  FDoubleQuote := EDIXML_QuotationMark;
+  SetBeginCDataDelimiter(EDIXMLDelimiter_CDATABegin);
+  SetEndCDataDelimiter(EDIXMLDelimiter_CDATAEnd);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -754,11 +782,11 @@ begin
 
   OriginalData := FData;
   // Handle Entity Reference Characters
-  StrReplace(OriginalData, '&', '&amp;', [rfReplaceAll]);
-  StrReplace(OriginalData, '<', '&lt;', [rfReplaceAll]);
-  StrReplace(OriginalData, '>', '&gt;', [rfReplaceAll]);
-  StrReplace(OriginalData, '"', '&quot;', [rfReplaceAll]);
-  StrReplace(OriginalData, '''', '&apos;', [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_Ampersand, EDIXML_HTMLAmpersand, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_LessThanSign, EDIXML_HTMLLessThanSign, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_GreaterThanSign, EDIXML_HTMLGreaterThanSign, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_QuotationMark, EDIXML_HTMLQuotationMark, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_Apostrophe, EDIXML_HTMLApostrophe, [rfReplaceAll]);
   //
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
@@ -832,11 +860,11 @@ begin
   else
     raise EJclEDIError.CreateResRec(@EDIXMLError049);
   // Handle Entity Reference Characters
-  StrReplace(FData, '&lt;', '<', [rfReplaceAll]);
-  StrReplace(FData, '&gt;', '>', [rfReplaceAll]);
-  StrReplace(FData, '&quot;', '"', [rfReplaceAll]);
-  StrReplace(FData, '&apos;', '''', [rfReplaceAll]);
-  StrReplace(FData, '&amp;', '&', [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLLessThanSign, EDIXML_LessThanSign, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLGreaterThanSign, EDIXML_GreaterThanSign, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLQuotationMark, EDIXML_QuotationMark, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLApostrophe, EDIXML_Apostrophe, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLAmpersand, EDIXML_Ampersand, [rfReplaceAll]);
   //
   FState := ediDissassembled;
 end;
@@ -2478,16 +2506,17 @@ begin
     if not Assigned(FDelimiters) then
       raise EJclEDIError.CreateResRec(@EDIXMLError003);
   end;
-  // Search for XML file header
+  // Search for XML file heaer
   StartPos := 1;
-  SearchResult := StrSearch('<?', FData, StartPos);
+  SearchResult := StrSearch(EDIXMLDelimiter_FileHeaderBegin, FData, StartPos);
   StartPos := SearchResult;
   if SearchResult > 0 then
   begin
-    SearchResult := StrSearch('?>', FData, StartPos);
+    SearchResult := StrSearch(EDIXMLDelimiter_FileHeaderEnd, FData, StartPos);
     if SearchResult > 0 then
     begin
-      XMLHeader := Copy(FData, StartPos, ((SearchResult - StartPos) + Length('?>')));
+      XMLHeader :=
+        Copy(FData, StartPos, ((SearchResult - StartPos) + Length(EDIXMLDelimiter_FileHeaderEnd)));
       FEDIXMLFileHeader.ParseXMLHeader(XMLHeader);
     end
     else
@@ -2633,11 +2662,11 @@ begin
   inherited Create;
   FAttributes := TEDIXMLAttributes.Create;
   FDelimiters := TEDIXMLDelimiters.Create;
-  FAttributes.SetAttribute('version', '1.0');
-  FAttributes.SetAttribute('encoding', 'windows-1252'); // ISO-8859-1
+  FAttributes.SetAttribute(EDIXMLAttributeStr_version, Value_Version10);
+  FAttributes.SetAttribute(EDIXMLAttributeStr_encoding, Value_Windows1252); // ISO-8859-1
   FXMLNameSpaceOption := nsNone;
-  FAttributes.SetAttribute('xmlns', 'EDITRANSDOC');
-  FAttributes.SetAttribute('xmlns:EDI', 'EDITRANSDOC');
+  FAttributes.SetAttribute(EDIXMLAttributeStr_xmlns, Value_EDITRANSDOC);
+  FAttributes.SetAttribute(EDIXMLAttributeStr_xmlnsEDI, Value_EDITRANSDOC);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2662,24 +2691,25 @@ function TEDIXMLFileHeader.OutputXMLHeader: string;
 var
   AdditionalAttributes: string;
 begin
-  Result := FDelimiters.BTD + '?xml' + Delimiters.SpaceDelimiter +
-    FAttributes.GetAttributeString('version');
+  Result := EDIXMLDelimiter_FileHeaderBegin + Value_xml + Delimiters.SpaceDelimiter +
+    FAttributes.GetAttributeString(EDIXMLAttributeStr_version);
   case FXMLNameSpaceOption of
     nsNone:
-      Result := Result + Delimiters.SpaceDelimiter + FAttributes.GetAttributeString('encoding');
+      Result := Result + Delimiters.SpaceDelimiter +
+        FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding);
     nsDefault:
       Result := Result +
-        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString('encoding') +
-        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString('xmlns');
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlns);
     nsQualified:
       Result := Result +
-        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString('encoding') +
-        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString('xmlns:EDI');
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlnsEDI);
   end;
   AdditionalAttributes := OutputAdditionalXMLHeaderAttributes;
   if AdditionalAttributes <> '' then
     Result := Result + Delimiters.SpaceDelimiter + AdditionalAttributes;
-  Result := Result + '?' + FDelimiters.ETD;
+  Result := Result + EDIXMLDelimiter_FileHeaderEnd;
 end;
 
 //--------------------------------------------------------------------------------------------------
