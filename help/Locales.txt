@@ -2,9 +2,10 @@
 [Declaration]
 TJclLocaleInfo = class (TObject)
 [ShortDescr]
-TODO
+TJclLocaleInfo represents an installed or supported locale.
 [Description]
-TODO
+TJclLocaleInfo represents an installed or supported locale. You can use it to
+easily access information about the locale.
 [Quick Info]
 Unit=JclLocales
 Category=Internationalisation
@@ -18,9 +19,13 @@ BCB=4,5
 [Declaration]
 constructor Create(ALocaleID: LCID = LOCALE_SYSTEM_DEFAULT);
 [ShortDescr]
-TODO
+Creates an instance of TJclLocaleInfo for a specific locale.
 [Description]
-TODO
+Creates and initializes an instance of the TJclLocaleInfo class. You normally don't
+explicitly create such an instance but instead retrieve them using the TJclLocalesList.
+[Parameters]
+Count=1
+1=ALocaleID:LCID=The locale which the instance will represent.
 [Quick Info]
 Unit=JclLocales
 Category=Internationalisation
@@ -42,7 +47,7 @@ want to retrieve. You can specify any LOCALE_* information types as documented
 in the Platform SDK documentation on GetLocaleInfo. Note that if the locale
 information type requested is string based, only the first character of the
 string is returned. This property should only be used for those information types
-that are not directly supported by this class through it's properties.
+that are not directly supported by this class through its properties.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -65,7 +70,7 @@ The InfoType is an Integer which specifies the locale information type which you
 want to retrieve. You can specify any LOCALE_* information types as documented
 in the Platform SDK documentation on GetLocaleInfo. This property should only be
 used for those information types that are not directly supported by this class
-through it's properties.
+through its properties.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -88,7 +93,7 @@ The InfoType is an Integer which specifies the locale information type which you
 want to retrieve. You can specify any LOCALE_* information types as documented
 in the Platform SDK documentation on GetLocaleInfo. This property should only be
 used for those information types that are not directly supported by this class
-through it's properties.
+through its properties.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -380,8 +385,8 @@ property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
 Determines whether the system ACP is used for string translation.
 [Description]
 Determines whether the class uses the system ANSI code page (ACP) for string
-translation instread of the locale's code page. This property is True by default,
-assign False to turn of usage of the system ACP instead.
+translation instead of the locale's code page. This property is True by default,
+assign False to turn off usage of the system ACP instead.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -459,7 +464,7 @@ Returns a list of native abbreviated names for the months in a year.
 [Description]
 AbbreviatedMonthNames contains a list of abbreviated names, one for each month of the
 year. The list is indexed with a 1-based index which indicates the month for which
-to retrieve the abbreviated name. For example, 1 is januari, 2 is februari and so forth.
+to retrieve the abbreviated name. For example, 1 is january, 2 is february and so forth.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -559,20 +564,9 @@ List of date formats that are available for this locale.
 [Description]
 List of date formats that are available for this locale. The list is indexed by
 a TJclLocaleDateFormats which is defined as:<br>
-  TJclLocaleDateFormats = (ldShort, ldLong);<br>
-As such the index determines whether the returned list contains the long or short
-date formats. The returned string list is only valid as long as you don't read the
-DateFormats property again with a different index. If you need this list to outlive
-subsequent reads than assign it's contents to a different stringlist, for example: <br>
-  <p class=syntax>
-var
-  ShortDateFormats: TStrings;
-  LongDateFormats: TStrings;
-  Info: TJclLocaleInfo;
-  ...
-  ShortDateFormats.Assign(Info.DateFormats[ldShort]);
-  LongDateFormats.Assign(Info.DateFormats[ldLong]);
-  </p>
+  TJclLocaleDateFormats = (ldShort, ldLong, ldYearMonth);<br>
+As such the index determines whether the returned list contains the long, short
+or year/month date formats.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -591,7 +585,7 @@ property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo;
 Character(s) used as the decimal separator.
 [Description]
 Character(s) used as the decimal separator. The maximum number of characters
-allowed for this string is 4.
+allowed for this string is four.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -667,8 +661,8 @@ property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo;
 [ShortDescr]
 Character(s) used to separate list items.
 [Description]
-Character(s) used to separate list items. For example, a comma is used in many
-locales. The maximum number of characters allowed for this string is 4.
+Character(s) used to separate list items. For example, a ',' is used in many
+locales. The maximum number of characters allowed for this string is four.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -746,7 +740,7 @@ Returns the native long name for the specified month.
 [Description]
 List of native long names for the months in a year. The index into this list is
 a 1 based index of the month for which to retrieve the long name. For example, 1
-is january, 2 is februari and so forth. The highest possible index is 13 which
+is january, 2 is february and so forth. The highest possible index is 13 which
 may return an empty string if the 13th month doesn't exist for this locale.
 [Quick Info]
 Kind=Property
@@ -873,7 +867,7 @@ property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo;
 Character(s) used to separate groups of digits to the left of the decimal.
 [Description]
 Character(s) used to separate groups of digits to the left of the decimal. The
-maximum number of characters allowed for this string is four
+maximum number of characters allowed for this string is four.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1079,6 +1073,696 @@ Unit=JclLocales
 Category=Internationalisation
 SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclKeyboardLayoutList = class (TObject)
+[ShortDescr]
+Maintains a list of input locale identifiers.
+[Description]
+The TJclKeyboardLayoutList class maintains a list of input locale identifiers (formerly
+called keyboard layout handles) corresponding to the current set of input locales
+in the system. Note that unlike keyboard layouts, an input locale can also encompass
+a speech-to-toext converter, IME or any other kind of input.
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
+[ShortDescr]
+Activates the previous input locale identifier.
+[Description]
+The system maintains a circular list of all loaded input locale identifiers. Calling
+this method will result in the input locale identifier that preceeds the currently
+active input locale to be activated.
+[Parameters]
+Count=1
+1=ActivateFlags:TJclKeybLayoutFlags=Set of flags that determine how the input locale
+is to be activated. See <REF>TjclKeybLayoutFlags</REF> for a detailed description
+of the possible flags.
+[Result]
+If the function succeeds it returns True otherwise it returns False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+[ShortDescr]
+Activates the next input locale identifier.
+[Description]
+The system maintains a circular list of all loaded input locale identifiers. Calling
+this method will result in the input locale identifier that succeeds the currently
+active input locale to be activated.
+[Parameters]
+Count=1
+1=ActivateFlags:TJclKeybLayoutFlags=Set of flags that determine how the input locale
+is to be activated. See <REF>TjclKeybLayoutFlags</REF> for a detailed description
+of the possible flags.
+[Result]
+If the function succeeds it returns True otherwise it returns False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LoadLayout(const LayoutName: string; LoadFlags: TJclKeybLayoutFlags): Boolean;
+[ShortDescr]
+Loads a new input locale identifier.
+[Description]
+The LoadLayout method loads a new input locale identifier into the system. Note
+that many input locale identifiers can be loaded at the same time, but only can
+be active at any moment. This method only loads the input locale identifier but
+does not activate it. To do so use the Activate method of the TJclKeyboardLayout
+class.
+[Parameters]
+Count=2
+1=LayoutName:string=Name of the input locale identifier to load. The name is
+composed of the hexadecimal value of the language identifier (low word) and a
+devide identifier (high word).
+2=LoadFlags:TJclKeybLayoutFlags=Set of flags that determine how the input locale
+identifier is loaded. See <REF>TJclKeybLayoutFlags</REF> for an explanantion of
+the possible flags.
+[Result]
+If the function succeeds it returns True and automatically refreshes the list. If
+the funcion fails it returns False and the list remains unchanged.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Refresh;
+[ShortDescr]
+Refreshes the list of input locales and fires the OnRefresh event.
+[Description]
+Refreshes the list of input locales and fires the OnRefresh event.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ActiveLayout: TJclKeyboardLayout read GetActiveLayout;
+[ShortDescr]
+Returns the currently active input locale identifier for the calling thread.
+[Description]
+Returns the currently active input locale identifier for the calling thread.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AvailableLayouts[Index: Integer]: TJclAvailableKeybLayout read GetAvailableLayouts;
+[ShortDescr]
+[Description]
+A list of TJclAvailableKeybLayout items representing the available keyboard layouts.
+The AvailableLayoutCount property contains the number of elements in this list and
+as such the valid indices range from 0 to AvailableLayoutCount - 1.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AvailableLayoutCount: Integer read GetAvailableLayoutCount;
+[ShortDescr]
+Returns the number of elements in the AvailableLayouts list.
+[Description]
+Returns the number of elements in the AvailableLayouts list.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read GetCount;
+[ShortDescr]
+The number of elements in the list.
+[Description]
+Count returns the number of elements in the Items list. Note that the Items list
+is zero based and therefore valid indices range from 0 to Count - 1.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromHKL[Layout: HKL]: TJclKeyboardLayout read GetItemFromHKL;
+[ShortDescr]
+Returns the TJclKeyboardLayout class for a specified input locale identifier.
+[Description]
+ItemFromHKL returns the TJclKeyboardLayout item from the list of loaded input
+locale identifiers with the specified identifier. If the specified input identifier
+does not exist in the list (it is not loaded) the property reads nil.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclKeyboardLayout read GetItems; default;
+[ShortDescr]
+The list of loaded input locale identifiers.
+[Description]
+Items contains the list of loaded input locale identifiers. Each entry contains
+a TJclKeyboardLayout class which you can use to read information about the input
+locale identifier or manipulate it (such as activation).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LayoutFromLocaleID[LocaleID: Word]: TJclKeyboardLayout read GetLayoutFromLocaleID;
+[ShortDescr]
+Returns the TJclKeyboardLayout class for a specified locale identifier.
+[Description]
+LayoutFromLocaleID returns the TJclKeyboardLayout item from the list of loaded input
+locale identifiers with the specified locale identifier. If the specified input
+identifier does not exist in the list (it is not loaded) the property reads nil.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
+[ShortDescr]
+The event is fired whenever the list is refreshed, either implicitly or explicitly.
+[Description]
+The event is fired whenever the list is refreshed, either implicitly or explicitly.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayoutList
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclKeyboardLayout = class (TObject)
+[ShortDescr]
+Wrapper for a loaded input locale identifier.
+[Description]
+TJclKeyboardLayout is a wrapper for an input locale identifier which is loaded in
+the system. You can use it to retrieve information about the input locale identifier
+and manipulate it, for example, unload or activate it. You normally don't create
+instances of this class directly but instead use the TJclKeyboardLayoutList to
+maintain a list of loaded TJclKeyboardLayout objects and retrieve them from there.
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
+[ShortDescr]
+Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
+[Description]
+Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
+Note that you normally don't construct instances of this class explicitly but instead
+use the TJclKeyboardLayoutList to maintain a list of TJclKeyboardLayout objects. You
+can, however, create an instance yourself. If you do so set the AOwner parameter to nil.
+[Parameters]
+Count=2
+1=AOwner:TJclKeyboardLayoutList=Instance of the TJclKeyboardLayoutList that is
+creating this object. The supplied object is automatically kept up to date in
+case of changes (such as unloading of the input locale identifier).
+2=ALayout:HKL=The input locale identifier which this class will represent.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Activate(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
+[ShortDescr]
+Activates the input locale identifier represented by this object.
+[Description]
+Activates the input locale identifier represented by this object.
+[Parameters]
+Count=1
+1=ActivateFlags:TJclKeybLayoutFlags=Set of flags that determine how the input
+locale identifier is activated. See <REF>TJclKeybLayoutFlags</REF> for a detailed
+description of the possible flags.
+[Result]
+If the function succeeds it returns True otherwise it returns False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Unload: Boolean;
+[ShortDescr]
+Unloads the input locale identifier.
+[Description]
+Unloads the input locale identifier represented by this object. After calling this
+method the input locale identifier is no longer available until it is explicitly
+loaded again. If this object is connected to a TJclKeyboardLayoutList through the
+AOwner parameter of it's constructor, that list is automatically updated to reflect
+the change.
+[Result]
+If the function succeeds it returns True and update the AOwner list, if present.
+If the function fails it returns False and the AOwner list remains unchanged.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DisplayName: string read GetDisplayName;
+[ShortDescr]
+Returns the (localized) display name for this keyboard layout.
+[Description]
+Returns the (localized) display name for this keyboard layout.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DeviceHandle: Word read GetDeviceHandle;
+[ShortDescr]
+Extracts the device identifier part from the input locale identifier that this object represents.
+[Description]
+Extracts the device identifier part from the input locale identifier that this object represents.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Layout: HKL read FLayout;
+[ShortDescr]
+Returns the input locale identifier that this object represents.
+[Description]
+Returns the input locale identifier that this object represents.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LocaleID: Word read GetLocaleID;
+[ShortDescr]
+Extracts the locale identifier from the input locale identifier.
+[Description]
+Extracts the locale identifier from the input locale identifier that this object
+represents. Note that the Locale Identifier is referred to as the language
+identifier in the Microsoft documentation.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LocaleInfo: TJclLocaleInfo read GetLocaleInfo;
+[ShortDescr]
+Provides access to the locale information for this input locale identifier.
+[Description]
+Returns a TJclLocaleInfo object which provides access to information about the
+locale identifier associated with this input locale identifier. The object remains
+owned by this class so you don't have to free it.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property VariationName: string read GetVariationName;
+[ShortDescr]
+Returns the variation name for this keyboard layout.
+[Description]
+Returns the variation name for this keyboard layout.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclKeyboardLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclKeybLayoutFlags = set of (klReorder, klUnloadPrevious, klSetForProcess,
+  klActivate, klNotEllShell, klReplaceLang, klSubstituteOK);
+[ShortDescr]
+Set of flags which describe how to load, unload or activate an input locale identifier.[Description]
+[Description]
+Set of flags which describe how to load, unload or activate an input locale identifier.
+It is used by the TJclKeyboardLayout and TJclKeyboardLayoutList classes.
+[Enumeration]
+Count=7
+1=klReorder=Moves the specified input locale identifier to the head of the input
+locale identifier list, making that locale identifier the active locale identifier
+for the current thread. This value reorders the input locale identifier list even
+if KLF_ACTIVATE is not provided.
+2=klUnloadPrevious=Unsupported.
+3=klSetForProcess=This flag is valid only with KLF_ACTIVATE. Activates the specified
+input locale identifier for the entire process and sends the WM_INPUTLANGCHANGE
+message to the current thread's Focus or Active window. Typically,
+LoadKeyboardLayout activates an input locale identifier only for the current
+thread. This flag is only supported for Windows 2000.
+4=klActivate=If the specified input locale identifier is not already loaded, the
+function loads and activates the input locale identifier for the current thread.
+5=klNotEllShell=Prevents a ShellProc hook procedure from receiving an
+HSHELL_LANGUAGE hook code when the new input locale identifier is loaded. This
+value is typically used when an application loads multiple input locale identifiers
+one after another. Applying this value to all but the last input locale identifier
+delays the shell's processing until all input locale identifiers have been added.
+6=klReplaceLang=If the new input locale identifier has the same language
+identifier as a current input locale identifier, the new input locale identifier
+replaces the current one as the input locale identifier for that language. If this
+value is not provided and the input locale identifiers have the same language
+identifiers, the current input locale identifier is not replaced and the function
+returns NULL.
+7=klSubstituteOK=Substitutes the specified input locale identifier with another
+locale preferred by the user. The system starts with this flag set, and it is
+recommended that your application always use this flag. The substitution occurs
+only if the registry key HKEY_CURRENT_USER\Keyboard Layout\Substitutes explicitly
+defines a substitution locale. For example, if the key includes the value
+name "00000409" with value "00010409", loading the U.S. English layout ("00000409")
+causes the Dvorak U.S. English layout ("00010409") to be loaded instead. The system
+uses KLF_SUBSTITUTE_OK when booting, and it is recommended that all applications
+use this value when loading input locale identifiers to ensure that the user's
+preference is selected.
+[Quick Info]
+Kind=Type
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclAvailableKeybLayout = class (TObject)
+[ShortDescr]
+Describes an available keyboard layout.
+[Description]
+Describes an available keyboard layout.
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Load(const LoadFlags: TJclKeybLayoutFlags): Boolean;
+[ShortDescr]
+Loads the keyboard layout.
+[Description]
+Loads the keyboard layout. This method is implemented by calling the
+TJclAvailableKeybLayout.Load method. See the description of that method for more
+information.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Identifier: DWORD read FIdentifier;
+[ShortDescr]
+The Windows keyboard layout code.
+[Description]
+An 8-digit hexadecimal Windows keyboard layout code. The first four digits
+of the codes indicate whether the keyboard layout or IME is the default layout
+for the language (as indicated by all zeros), or a variation of the
+default (other than zeros). The last four digits are the standard locale ID.
+For example, the 00010402 subkey represents the first variation of the keyboard
+layouts associated with locale 0x0402 (Bulgarian).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IdentifierName: string read GetIdentifierName;
+[ShortDescr]
+String representation (8-digit hexadecimal value) of the keybaord layout code.
+[Description]
+String representation (8-digit hexadecimal value) of the keybaord layout code.
+The string is formed on demand using the <REF>Idenitifier</REF> property.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LayoutID: Word read FLayoutID;
+[ShortDescr]
+Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
+[Description]
+Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LayoutFile: string read FLayoutFile;
+[ShortDescr]
+Specifies the DLL for the keyboard layout or Input Method Editor (IME).
+[Description]
+Specifies the DLL for the keyboard layout or Input Method Editor (IME).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LayoutFileExists: Boolean read GetLayoutFileExists;
+[ShortDescr]
+Returns whether the file specified by the LayoutFile property exists in the filesystem.
+[Description]
+Returns whether the file specified by the LayoutFile property exists in the filesystem.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read FName;
+[ShortDescr]
+Name of the keybaord layout or Input Method Editor.
+[Description]
+Specifies the name used to represent the keyboard layout or Input Method
+Editor (IME) on the Input Locales tab of Regional Options in Control Panel.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=Keyboard Input\TJclAvailableKeybLayout
+Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
