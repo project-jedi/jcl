@@ -1718,7 +1718,7 @@ var
   S: AnsiString;
 begin
   Result := '';
-  if S <> '' then
+  if Source <> '' then
   begin
     S := Source;
     L := Length(S);
