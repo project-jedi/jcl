@@ -150,10 +150,10 @@ and you call Mask8087Exceptions([emZeroDivide]) then upon return the exception
 mask equals [emInvalidOp, emDenormalizedOperand, emZeroDivide].
 [Parameters]
 Count=1
-1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=Set of exceptions to mask, in addition to the currently
+1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=Set of exceptions to mask, in addition to the current
 set of masked exceptions.
 [Result]
-The set of exceptions that we're masked upon routine entry. Upon exit the set of
+The set of exceptions that were masked upon routine entry. Upon exit the set of
 masked exceptions equals Result + Exceptions.
 [Quick Info]
 BCB=3,4,5
@@ -275,7 +275,7 @@ Count=1
 infinity control of the FPU. See <REF Target"Types\T8087Infinity">T8087Infinity</REF>
 for the possible values and their meaning.
 [Result]
-The old infinity setting of the FPU.
+The previous infinity setting of the FPU.
 [Quick Info]
 BCB=3,4,5
 Unit=Jcl8087
@@ -306,7 +306,7 @@ Count=1
 precision control of the FPU. See <REF Target"Types\T8087Precision">T8087Precision</REF>
 for the possible values and their meaning.
 [Result]
-The old precision setting of the FPU.
+The previous precision setting of the FPU.
 [Quick Info]
 BCB=3,4,5
 Unit=Jcl8087
@@ -337,7 +337,7 @@ Count=1
 rounding control of the FPU. See <REF Target"Types\T8087Rounding">T8087Rounding</REF>
 for the possible values and their meaning.
 [Result]
-The old rounding setting of the FPU.
+The previous rounding setting of the FPU.
 [Quick Info]
 BCB=3,4,5
 Unit=Jcl8087
@@ -448,7 +448,7 @@ for details on the individual bits of the Control parameter.
 Count=1
 1=Control:Word=New value for the 80x87 control word.
 [Result]
-Old value of the control word.
+Previous value of the control word.
 [Quick Info]
 BCB=3,4,5
 Unit=JclMath
@@ -469,7 +469,7 @@ Returns the 80x87 control word.
 Get8087ControlWord returns the 80x87 control word (register). This is the FPU's
 register that controls how the FPU operates with regard to things such as precision,
 rounding and infinity control. See the table below for the meaning of the individual
-bits. Note that althought this routine might be handy at times, you should prefer
+bits. Note that although this routine might be handy at times, you should prefer
 the usage of the Get8087Inifinity, Get8087Precision and Get8087Rounding instead
 as they shield you from the low level bit manipulation. 
  <TABLE>
