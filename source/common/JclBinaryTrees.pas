@@ -1368,11 +1368,11 @@ begin
 end;
 
 function TJclIntfBinaryTree.Contains(AInterface: IInterface): Boolean;
-{$IFDEF THREADSAFE}
 var
+  {$IFDEF THREADSAFE}
   CS: IInterface;
+  {$ENDIF THREADSAFE}
   Comp: Integer;
-{$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
   function ContainsChild(Node: PJclIntfBinaryNode): Boolean;
@@ -2081,11 +2081,11 @@ begin
 end;
 
 function TJclStrBinaryTree.Contains(const AString: string): Boolean;
-{$IFDEF THREADSAFE}
 var
+  {$IFDEF THREADSAFE}
   CS: IInterface;
+  {$ENDIF THREADSAFE}
   Comp: Integer;
-{$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
   function ContainsChild(Node: PJclStrBinaryNode): Boolean;
@@ -2726,11 +2726,11 @@ begin
 end;
 
 function TJclBinaryTree.Contains(AObject: TObject): Boolean;
-{$IFDEF THREADSAFE}
 var
+  {$IFDEF THREADSAFE}
   CS: IInterface;
+  {$ENDIF THREADSAFE}
   Comp: Integer;
-{$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
   function ContainsChild(Node: PJclBinaryNode): Boolean;
@@ -3143,6 +3143,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/26 16:42:08  marquardt
+// deactivated THREADSAFE and fixed bugs stemming from that
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

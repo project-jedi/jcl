@@ -68,12 +68,15 @@ ALERT_jedi_inc_incompatible
 
 
 //Threadsafe directive (added for DCL support)
-{$DEFINE THREADSAFE}
+{.DEFINE THREADSAFE}
 
 // To exclude obsolete code from compilation, remove the point from the line below
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 // $Log$
+// Revision 1.11  2005/02/26 16:42:08  marquardt
+// deactivated THREADSAFE and fixed bugs stemming from that
+//
 // Revision 1.10  2005/01/05 17:36:34  dade2004
 // Added THREADSAFE directive for DCL support
 //
@@ -81,6 +84,9 @@ ALERT_jedi_inc_incompatible
 // Added THREADSAFE directive
 //
 // $Log$
+// Revision 1.11  2005/02/26 16:42:08  marquardt
+// deactivated THREADSAFE and fixed bugs stemming from that
+//
 // Revision 1.10  2005/01/05 17:36:34  dade2004
 // Added THREADSAFE directive for DCL support
 //
