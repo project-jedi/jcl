@@ -461,10 +461,10 @@ Count=4
 4=SetBit
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure BooleansToBits(var Dest: Byte; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
+procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Integer; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Int64; const B: TBooleanArray); overload;
 [ShortDescr]
 Packs an array of booleans into a set of bits.
 [Description]
@@ -478,7 +478,7 @@ variable will be ignored.
 [Parameters]
 Count=2
 1=Dest:Integer=Integer type variable in which the appropriate bits are set/cleared.
-2=B:array of Boolean=The array of Booleans to pack into a set of bits. Note that
+2=B:TBooleanArray=The array of Booleans to pack into a set of bits. Note that
 the upper bound of this array must not be larger then the size of the Dest parameters,
 in bits. Thus, for the Byte variant this array must not be larger then 8 elements.
 [Quick Info]
