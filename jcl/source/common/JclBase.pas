@@ -51,9 +51,9 @@ uses
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 91;   // Forth minor release JCL 1.20
-  JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1540; // build number, days since march 1, 2000
+  JclVersionMinor   = 91;   // First minor release since JCL 1.90
+  JclVersionRelease = 1;    // 0=pre-release|beta/1=release
+  JclVersionBuild   = 1558; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -311,6 +311,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/06/06 01:31:09  rrossmair
+// version information updated for build #1558
+//
 // Revision 1.15  2004/05/31 01:43:18  rrossmair
 // Processed documentation TODOs
 //
