@@ -28,7 +28,7 @@
 { Last created: October 2, 2003                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
-{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   For latest EDI specific demos see http://sourceforge.net/projects/edisdk                       }
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
