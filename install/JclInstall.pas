@@ -209,7 +209,7 @@ resourcestring
   RsHintTarget = 'Installation target';
   RsHintJCL = 'Select to install JCL for this target.';
   RsHintJclEnv = 'Set selected environment items';
-  RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to browsing path';
+  RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
   RsHintJclEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units ' +
     'by means of the respective'#13#10'Project Options|Compiler switch. See "Make library ' +
@@ -1133,9 +1133,11 @@ begin
   if OptionSelected(ioJCL) then
   begin
     InstallationStarted;
-    Result := InstallSelectedOptions;
-    if Result then
+    try
+      Result := InstallSelectedOptions;
+    finally
       InstallationFinished;
+    end;
   end;
   SaveOptions;
 end;
@@ -1179,7 +1181,7 @@ end;
 
 function TJclInstallation.StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
 begin
-  Result := Distribution.FIniFile.ReadInteger(Target.Name, OptionToStr(Option), Invalid) <> Invalid;
+  Result := Distribution.FIniFile.ReadInteger(Target.Name, OptionToStr(Option), 0) <> Invalid;
 end;
 
 function TJclInstallation.TotalUnitCount: Integer;
@@ -1433,6 +1435,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.42  2004/12/08 18:14:49  rrossmair
+// - all install options now selected by default
+// - minor fixes
+//
 // Revision 1.41  2004/11/18 10:14:54  rrossmair
 // - changes for release 1.93
 //
