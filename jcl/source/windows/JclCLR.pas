@@ -48,8 +48,6 @@ uses
   {$ENDIF RTL130_UP}
   JclBase, JclSysUtils, JclFileUtils, JclPeImage;
 
-{ TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
 type
   _IMAGE_COR_VTABLEFIXUP = packed record
     RVA: DWORD;     // Offset of v-table array in image.
@@ -1975,6 +1973,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/13 07:35:09  rrossmair
+// removed obsolete TODO
+//
 // Revision 1.5  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
