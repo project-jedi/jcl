@@ -19,7 +19,7 @@
 {                                                                                                  }
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
-{ Last modified: February 26, 2002                                                                 }
+{ Last modified: February 27, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -686,7 +686,7 @@ implementation
 
 uses
   Math,
-  JclResources;
+  JclResources, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
 
