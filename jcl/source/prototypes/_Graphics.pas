@@ -2303,7 +2303,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateElliptic(const ARect: TRect);
+constructor TJclRegion.CreateElliptic(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
   inherited Create;
   FHandle := CreateEllipticRgnIndirect(ARect);
@@ -2313,7 +2313,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateElliptic(Top, Left, Bottom, Right: Integer);
+constructor TJclRegion.CreateElliptic(Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
   inherited Create;
   FHandle := CreateEllipticRgn(Top, Left, Bottom, Right);
@@ -2355,7 +2355,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer);
+constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
   inherited Create;
   FHandle := CreateRectRgn(Top, Left, Bottom, Right);
@@ -2365,7 +2365,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(ARect: TRect);
+constructor TJclRegion.CreateRect(ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
   inherited Create;
   FHandle := CreateRectRgnIndirect(ARect);
