@@ -232,7 +232,7 @@ begin
     end;
   end;
 
-  NetApiBufferFree(@Details);
+  NetApiBufferFree(Buffer);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -265,7 +265,7 @@ begin
   else
     RaiseLastOSError;
 
-  NetApiBufferFree(@Details);
+  NetApiBufferFree(Buffer);
   Result := (Err = NERR_SUCCESS);
 end;
 
