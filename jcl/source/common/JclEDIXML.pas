@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
-{ Last modified: March 25, 2003                                                                    }
+{ Last modified: October 1, 2003                                                                   }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -767,7 +767,6 @@ begin
 
   if FCData then
     FData := FData + FDelimiters.BCDataD + OriginalData + FDelimiters.ECDataD
-  // (rom) added missing else
   else
     FData := FData + OriginalData;
 
@@ -1154,9 +1153,11 @@ begin
   if Assigned(Parent) and (Parent is TEDIXMLTransactionSet) then
     for I := Low(TEDIXMLTransactionSet(Parent).EDIDataObjects) to
       High(TEDIXMLTransactionSet(Parent).EDIDataObjects) do
-      // (rom) mybe a Break would improve performance
       if TEDIXMLTransactionSet(Parent).EDIDataObject[I] = Self then
+      begin
         Result := I;
+        Break;
+      end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2787,7 +2788,7 @@ begin
   else
     Result := TEDIXMLSegment.Create(nil);
   Result.Attributes.SetAttribute(XMLAttribute_Id, EDISegment.SegmentID);
-  for ediE := Low(EDISegment.Elements) to High(EDISegment.Elements) do
+  for ediE := 0 to EDISegment.ElementCount - 1 do
   begin
     xmlE := Result.AddElement;
     Result[xmlE].Data := EDISegment[ediE].Data;
@@ -2834,7 +2835,7 @@ begin
   XMLSegment := ConvertToXMLSegment(EDITransactionSet.SegmentST);
   Result.AppendEDIDataObject(XMLSegment);
 
-  for I := Low(EDITransactionSet.Segments) to High(EDITransactionSet.Segments) do
+  for I := 0 to EDITransactionSet.SegmentCount - 1 do
   begin
     XMLSegment := ConvertToXMLSegment(EDITransactionSet.Segment[I]);
     Result.AppendEDIDataObject(XMLSegment);
@@ -2885,7 +2886,7 @@ var
   nEDILoop: TEDITransactionSetLoop;
   nXMLLoop: TEDIXMLTransactionSetLoop;
 begin
-  for I := Low(EDILoop.EDIDataObjects) to High(EDILoop.EDIDataObjects) do
+  for I := 0 to EDILoop.EDIDataObjects.Count - 1 do
   begin
     if EDILoop[I] is TEDISegment then
     begin
