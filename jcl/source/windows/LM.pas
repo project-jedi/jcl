@@ -9902,9 +9902,6 @@ implementation
 
 const
   netapi32lib = 'netapi32.dll';
-{$IFDEF COMPILER6_UP}
-  {$NODEFINE netapi32lib}
-{$ENDIF}
 
 {$IFDEF LANMAN_DYNAMIC_LINK}
 
@@ -9937,9 +9934,6 @@ end;
 
 const
   APINotPresentErrorCode = ERROR_CALL_NOT_IMPLEMENTED;
-{$IFDEF COMPILER6_UP}
-  {$NODEFINE APINotPresentErrorCode}
-{$ENDIF}
 
 {$ENDIF LANMAN_DYNAMIC_LINK}
 
