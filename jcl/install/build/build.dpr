@@ -43,7 +43,7 @@ type
 const
   LibraryName = 'JCL';
   LibraryRootDirRelativeToBuild = 2; // means: '..\..'
-  pgEditFile = 'install\build\pgEdit.xml'; // relative to the Library-Path
+  pgEditFile = 'install\build\pgEdit.xml'; // relative to the Library-Directory
   ExtraOptions: array[0..0] of TOption = (
     (Name: ''; Env: ''; Default: '')
   );
@@ -53,7 +53,7 @@ const
 const
   LibraryName = 'JVCL';
   LibraryRootDirRelativeToBuild = 2; // means: '..\..'
-  pgEditFile = 'devtools\bin\pgEdit.xml'; // relative to the Library-Path
+  pgEditFile = 'devtools\bin\pgEdit.xml'; // relative to the Library-Directory
   ExtraOptions: array[0..0] of TOption = (
     (Name: 'jcl-path'; Env: 'JCLROOT'; Default: '..\..\..\jcl')
   );
@@ -739,9 +739,14 @@ begin
     end;
     S := ExtractFileDir(S);
     DxgettextDir := S;
-    if Version = 5 then
-      S := S + '\delphi5';
-    ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+    if not FileExists(DxgettextDir + '\msgfmt.exe') then
+      DxgettextDir := ''
+    else
+    begin
+      if Version = 5 then
+        S := S + '\delphi5';
+      ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+    end;
   end;
 end;
 {******************************************************************************}
@@ -1050,7 +1055,8 @@ var
   Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
-//  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+  // ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+  // ahuser (2005-01-22): make.exe fails only if a path with spaces is in the PATH envvar
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
@@ -1122,6 +1128,11 @@ begin
       Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + ExtractShortPathName(UserLibDir) + ';' + Path
     else
       Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + Path;
+    { Add original BPL directory for "common" BPLs, but add it as the very last
+      path to prevent collisions between packages in TargetConfig.BplDir and
+      Target.BplDir. }
+    Path := Path + ';' + ExtractShortPathName(Edition.BplDir);
+
     SetEnvironmentVariable('PATH', Pointer(Path));
 
     SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
