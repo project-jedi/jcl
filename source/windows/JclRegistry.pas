@@ -22,7 +22,7 @@
 { directly call the registry API they do not suffer from the resource overhead as TRegistry does.  }
 {                                                                                                  }
 { Unit owner: Eric S.Fisher                                                                        }
-{ Last modified: February 21, 2001                                                                 }
+{ Last modified: June 1, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -56,10 +56,13 @@ function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): st
 function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
 function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
+function RegReadDWORD(const RootKey: HKEY; const Key, Name: string): Int64;
+function RegReadDWORDDef(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
 procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
 procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
+procedure RegWriteDWORD(const RootKey: HKEY; const Key, Name: string; Value: Int64);
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -425,6 +428,58 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function RegReadDWORD(const RootKey: HKEY; const Key, Name: string): Int64;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  IntVal: Int64;
+  RegKind: DWORD;
+  Ret: Longint;
+begin
+  Result := 0;
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := SizeOf(Int64);
+    Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @IntVal, @Size);
+    RegCloseKey(RegKey);
+    if Ret = ERROR_SUCCESS then
+    begin
+      if RegKind = REG_DWORD then
+        Result := IntVal
+      else
+        ValueError(Key, Name);
+    end
+    else
+      ValueError(Key, Name);
+  end
+  else
+    ReadError(Key);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadDWORDDef(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  IntVal: Int64;
+  RegKind: DWORD;
+begin
+  Result := Def;
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := SizeOf(Int64);
+    if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @IntVal, @Size) = ERROR_SUCCESS then
+      if RegKind = REG_DWORD then
+        Result := IntVal;
+    RegCloseKey(RegKey);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 begin
   RegWriteInteger(RootKey, Key, Name, Ord(Value));
@@ -476,6 +531,24 @@ begin
   if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_BINARY, @Value, ValueSize);
+    RegCloseKey(RegKey);
+    if Ret <> ERROR_SUCCESS then
+      WriteError(Key);
+  end
+  else
+    WriteError(Key);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteDWORD(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+var
+  RegKey: HKEY;
+  Ret: Longint;
+begin
+  if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  begin
+    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_DWORD, @Value, SizeOf(Int64));
     RegCloseKey(RegKey);
     if Ret <> ERROR_SUCCESS then
       WriteError(Key);
