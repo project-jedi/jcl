@@ -1,58 +1,22 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeStripFunctionAW(const FunctionName: string): string;
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=1
-1=FunctionName:string=TODO
-[Result]
-TODO
-[Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Smart Name Comparison
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=PeSmartFunctionNameSame
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
-  Options: TJclSmartCompOptions = []): Boolean;
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=3
-1=ComparedName:string=TODO
-2=FunctionName:string=TODO
-3=Options:<REF Target"Types\TJclSmartCompOptions>TJclSmartCompOptions</REF>=TODO
-[Result]
-TODO
-[Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Smart Name Comparison
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=PeStripFunctionAW
-<DECL>--------------------------------------------------------------------------
-[Declaration]
 TJclSmartCompOptions = set of TJclSmartCompOption;
 TJclSmartCompOption = (scSimpleCompare, scIgnoreCase);
 [ShortDescr]
-TODO
+TJclSmartCompOptions is a set of flags which determine how comparison of function
+names within the TJclPeImage module is performed. Using these options you can
+specify, for example, whether such a comparison should be case sensitive or not.
 [Enumeration]
 Count=2
-1=scSimpleComare=TODO
-2=scIgnoreCase=TODO
+1=scSimpleCompare=Many Win32 dynamic link libraries export functions in two forms,
+one for ansi and one for unicode, and distinquish between these functions using a
+single letter suffix, A and W respectively. The name without this suffix is refered
+to as the base name. Ommiting the scSimpleCompare flag specifies that name comparison
+should perform the comparison based on the base name only. As such it ignores the
+suffix and considers, for example, CharUpper, CharUpperA and CharUpperW as the same
+function. If the flag is included each of these functions are considered different.
+2=scIgnoreCase=Specifies that the comparison should be case insensitive. By default
+all comparisons are case sensitive.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -65,11 +29,67 @@ Count=1
 1=PeSmartFunctionNameSame;..\PeSmartFunctionNameSame
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function PeStripFunctionAW(const FunctionName: string): string;
+[ShortDescr]
+Returns the base name of the supplied function name.
+[Description]
+Many Win32 dynamic link libraries export functions in two forms, one for ansi and
+one for unicode, and distinquish between these functions using a single letter
+suffix, A and W respectively. The name without this suffix is refered to as the
+base name. The PeStripFunctionAW accepts a function name and returns the base name,
+stripping of the suffix character if necessary.
+[Parameters]
+Count=1
+1=FunctionName:string=Name of a function as it appears in the import or export
+section of an image file.
+[Result]
+The base name of the supplied function.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Smart Name Comparison
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeSmartFunctionNameSame
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeSmartFunctionNameSame(const ComparedName, FunctionName: string; Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+Compares two function names.
+[Description]
+The PeSmartFunctionNameSame function compares two function names and returns
+whether they are equal observing the comparison rules specified through the
+options parameter.
+[Parameters]
+Count=3
+1=ComparedName:string=First function name to be compared.
+2=FunctionName:string=Second function name to be compared.
+3=Options:<REF Target"Types\TJclSmartCompOptions>TJclSmartCompOptions</REF>=A set
+of options which determine how the names are compared. See TJclSmartCompOptions
+for more information.
+[Result]
+If the two function names are considered equal the function returns True, otherwise
+it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Smart Name Comparison
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeStripFunctionAW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 EJclPeImageError = class (EJclError);
 [ShortDescr]
-TODO
+Base exception class for exceptions raised by the JclPeImage module.
 [Description]
-TODO
+EJclPeImageError is the base exception class for exception raised by the JclPeImage
+module. EJclPeImageError does not introduce any new methods or properties and
+merely serves to identify exceptions raised explicitly by the JclPeImage module.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -81,9 +101,13 @@ Delphi=4,5
 [Declaration]
 TJclPeImageBaseList = class (TObjectList)
 [ShortDescr]
-TODO
+Baseclass for list-like classes which require a TJclPeImage instance reference.
 [Description]
-TODO
+TJclPeImageBaseList is the baseclass for all list classes in the JclPeImage module
+which require a reference to the TJclPeImage instance for which they were created.
+TJclPeImageBaseList does not introduce any new behaviours and serves merely as a
+baseclass, you'll likely never need to instantiate a TJclPeImageBaseList class
+explicitly.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -92,14 +116,21 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor Create(AImage: <REF>TJclPeImage</REF>);
+constructor Create(AImage: TJclPeImage);
 [ShortDescr]
-TODO
+Instantiates a TJclPeImageBaseList class.
 [Description]
-TODO
+Creates an instance of the TJclPeImageBaseList class and stores the reference
+to AImage in the Image property for later use. The constructor calls the inherited
+constructor specifying True for the AOwnsObjects parameter and as such the list
+will own any objects stored in it. See TObjectList in the Delphi VCL help for
+more information. Note that the TJclPeImageBaseList does not assume ownership of
+the specified TJclPeImage instance. It merely stored a reference to it and as
+such it remains the responsibility of the caller to free that instance eventually.
 [Parameters]
 Count=1
-1=AImage:<REF>TJclPeImage</REF>=TODO
+1=AImage:TJclPeImage=Reference to a TJclPeImage instance for which the class is
+created. The reference will be available for later use through the Image property.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -115,9 +146,11 @@ Count=1
 [Declaration]
 property Image: <REF>TJclPeImage</REF> read FImage;
 [ShortDescr]
-TODO
+Reference to the TJclPeImage specified during construction.
 [Description]
-TODO
+Reference to the TJclPeImage instance for which the class was instantiated. This
+is a direct copy of the AImage parameter as specified when the constructor was
+called.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -130,9 +163,12 @@ Delphi=4,5
 [Declaration]
 TJclPeImagesCache = class (TObject)
 [ShortDescr]
-TODO
+Cahce for TJclPeImage objects.
 [Description]
-TODO
+Provides a cache for TJclPeImage instances. The cache is used internally (though
+you can also use it outside of the module) by the JclPeImage module to prevent
+frequent loading and unloading of image files, thereby increasing performance.
+Note that the TJclPeImagesCache class is not inherently thread safe. 
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -145,9 +181,11 @@ Delphi=4,5
 [Declaration]
 procedure Clear;
 [ShortDescr]
-TODO
+Clears the list of image objects
 [Description]
-TODO
+Clears the list of image objects. Before the list is cleared all instances are
+freed first. Therefore you should make sure not to use any cached references to
+any of image objects retrieved from the cache earlier.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -160,9 +198,18 @@ Delphi=4,5
 [Declaration]
 property Images[const FileName: TFileName]: TJclPeImage read GetImages; default;
 [ShortDescr]
-TODO
+Returns a TJclPeImage instance for the specified image file.
 [Description]
-TODO
+The Images property returns an TJclPeImage object for the image file specified
+by the FileName index. If there is already an object for that image in the cache
+the property returns a reference to it. If there isn't an object in the cache yet
+the property creates the object first and then returns a reference to this newly
+created object. The FileName index should be the fully qualified name of the
+image file for which you need a TJclPeImage instance. If the filename is not
+fully qualified and can't be found in the usually directories (path, system etc)
+an exception is raised. Note that any references to TJclPeImage instances retrieved
+through the cache become invalid when the TJclPeImagesCache object is destroyed
+or when it's Clear method is called.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -175,9 +222,9 @@ Delphi=4,5
 [Declaration]
 property Count: Integer read GetCount;
 [ShortDescr]
-TODO
+Returns the number of TJclPeImage instances currently in the cache.
 [Description]
-TODO
+Returns the number of TJclPeImage instances currently in the cache.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -190,13 +237,16 @@ Delphi=4,5
 [Declaration]
 TJclPeImportSort = (isName, isOrdinal, isHint, isLibImport);
 [ShortDescr]
-TODO
+Enumeration used by the various import section related classes to determine how
+a list of imported functions should be sorted. Usually the method called to perform
+the sort operation allows for further options such as whether the sort should be
+ascending or descending.
 [Enumeration]
 Count=4
-1=isName=TODO
-2=isOrdinal=TODO
-3=isHint=TODO
-4=isLibImport=TODO
+1=isName=The list is sorted on the name of the imported function.
+2=isOrdinal=The list is sorted on the ordinal by which the function was imported.
+3=isHint=The list is sorted on the hint of the imported function.
+4=isLibImport=The list is sorted by the name of the image from which the functions were imported.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -208,11 +258,12 @@ Delphi=4,5
 [Declaration]
 TJclPeImportLibSort = (ilName, ilIndex);
 [ShortDescr]
-TODO
+Enumeration used by the TJclPeImportList which determines how the list of import
+library items is sorted.
 [Enumeration]
 Count=2
-1=ilName=TODO
-2=ilIndex=TODO
+1=ilName=The list is sorted by name (TJclPeImportLibItem.Name property).
+2=ilIndex=The list is sorted by index (TJclPeImportLibItem.ImportDirectoryIndex property).
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -242,12 +293,24 @@ Delphi=4,5
 [Declaration]
 TJclPeResolveCheck = (icNotChecked, icResolved, icUnresolved);
 [ShortDescr]
-TODO
+Both the classes that wrap the import section as well as the class that wraps
+the export section have methods to perform a resolve check. This means slightly
+different things for an import section than it does for an export section. For
+example, for the import section it means that the method tries to resolve all
+imported function by looking them up in the exports section of the image from
+which the function is imported. If the function is found there the import is
+considered resolved, otherwise it is unresolved. This latter case would indicate
+that the OS loader would probably also be unable to resolve the import and loading
+of the image would fail. The TJclPeResolveCheck type is used by the imports and
+exports classes to specify whether a function could be resolved. Note that all
+items start off begin unchecked, you have to request function resolving explicitly
+through the appropriate method call.
 [Enumeration]
 Count=3
-1=icNotChecked=TODO
-2=icResolved=TODO
-3=icUnresolved=TODO
+1=icNotChecked=The function was not checked yet. Initial state of all items.
+2=icResolved=The function could be resolved.
+3=icUnresolved=The function could not be resolved. This would indicate an error
+in the image file evantually causing the OS loader to fail loading the image.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -259,11 +322,13 @@ Delphi=4,5
 [Declaration]
 TJclPeLinkerProducer = (lrBorland, lrMicrosoft);
 [ShortDescr]
-TODO
+Specifies the manufacturer of the linker that produced an image file. The function
+uses a heauristic which is not perfect and is only capable of recognizing Borland
+Delphi, C++ Builder and Microsoft Visual Studio linkers.
 [Enumeration]
 Count=2
-1=lrBorland=TODO
-2=lrMicrosoft=TODO
+1=lrBorland=The image was produced by the Borland Delphi linker.
+2=lrMicrosoft=The image was produced by the Borland C++ Builder or Microsoft Visual C++ linker.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -275,9 +340,13 @@ Delphi=4,5
 [Declaration]
 TJclPeImportFuncItem = class (TObject)
 [ShortDescr]
-TODO
+Represents a single imported function.
 [Description]
-TODO
+The TJclPeImportFuncItem class represents a single imported function from some
+image file. The class provides detailed information about how the function was
+imported such as it's name or ordinal. You'll normally won't instantiate this
+class directly but instead retrieve a reference to it through the Items property
+of the TJclPeImportLibItem class.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -288,9 +357,11 @@ Delphi=4,5
 [Declaration]
 property Ordinal: Word read FOrdinal;
 [ShortDescr]
-TODO
+The ordinal value by which the function was imported.
 [Description]
-TODO
+If the function was imported by ordinal the property reads the ordinal value by
+which it was imported, otherwise it reads 0. You can determine whether the function
+was imported by ordinal or name through the IsByOrdinal property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -303,9 +374,13 @@ Delphi=4,5
 [Declaration]
 property Hint: Word read FHint;
 [ShortDescr]
-TODO
+Hint of the imported function.
 [Description]
-TODO
+Returns the hint value of the function. The hint is an index into the exports
+table of the image from which the function is imported which allows the OS loader
+to find the correct export a little faster. Note that the hint value may be
+incorrect. In those situations the OS loader itself uses a binary search on the
+exports table to find the correct export. 
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -318,9 +393,10 @@ Delphi=4,5
 [Declaration]
 property ImportLib: TJclPeImportLibItem read FImportLib;
 [ShortDescr]
-TODO
+Reference to the TJclPeImportLibItem which owns this TJclPeImportFuncItem.
 [Description]
-TODO
+Reference to the TJclPeImportLibItem which owns this TJclPeImportFuncItem. See
+the description of TJclPeImportFunctItem for more information.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -333,9 +409,15 @@ Delphi=4,5
 [Declaration]
 property IndirectImportName: Boolean read FIndirectImportName;
 [ShortDescr]
-TODO
+Returns the name of a function which was imported by ordinal (if available).
 [Description]
-TODO
+If the function was imported by ordinal the IndirectImportName property returns
+the name of the function. The JclPeImage module has to look up this name from the
+exports section of the image from which the function is imported. Since an image
+file does not always provide the name of an export, the IndirectImportName can
+be empty. You have to explicitly request this look up through the
+TryGetNamesForOrdinalImports method of the TJclPeImportList or TJclPeImage class
+that owns the TJclPeImportFuncItem.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -348,9 +430,11 @@ Delphi=4,5
 [Declaration]
 property IsByOrdinal: Boolean read GetIsByOrdinal;
 [ShortDescr]
-TODO
+Specifies whether the function was imported by ordinal.
 [Description]
-TODO
+Specifies whether the function was imported by ordinal. If the function is imported
+by Ordinal the property reads True, otherwise it reads False (and as such the
+function was imported by name).
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -363,9 +447,12 @@ Delphi=4,5
 [Declaration]
 property Name: string read GetName;
 [ShortDescr]
-TODO
+Returns the name of the imported function.
 [Description]
-TODO
+The Name property returns the name of the imported function. If the function
+was imported by name the property simply returns that name. If the function was
+imported by ordinal the property returns the value of the IndirectImportName
+property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -378,9 +465,11 @@ Delphi=4,5
 [Declaration]
 property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
 [ShortDescr]
-TODO
+Specifies whether the function could be resolved.
 [Description]
-TODO
+Specifies whether the function could be resolved. The intial value of this property
+will be icNotChecked. You have to request function resolving explicitly through
+the CheckImports method of the TJclPeImportList class.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -393,9 +482,17 @@ Delphi=4,5
 [Declaration]
 TJclPeImportLibItem = class (TJclPeImageBaseList)
 [ShortDescr]
-TODO
+Abstraction of an import descriptor.
 [Description]
-TODO
+The import section of an image file consists of a variable number of entries
+named import descriptors. Each individual import descriptor is basically a table
+that describes the imports from one specific image. The TJclPeImportLibItem is
+a class which abstracts such an import descriptor and provides properties to read
+the information contained within it, most importantly the functions imported from
+the image. You'll normally won't create an instance of this class but instead
+retrieve a reference to it through the Items property of the TJclPeImportList class.
+Note that there can, and often will, exist multiple TJclPeImportLibItem entries
+for one image.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -404,33 +501,19 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor Create(AImage: TJclPeImage);
+procedure SortList(SortType: TJclPeImportSort; Descending: Boolean = False);
 [ShortDescr]
-TODO
+Sorts the list of imports.
 [Description]
-TODO
-[Parameters]
-Count=1
-1=AImage:TJclPeImage=TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-procedure SortList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-[ShortDescr]
-TODO
-[Description]
-TODO
+Sorts the list of imports in this import descriptor according to the supplied
+parameters. You can sort the list on things such as the name of the imports
+and specify an ascending or descending sort.
 [Parameters]
 Count=2
-1=SortType:TJclPeImportSort=TODO
-2=Descending:Boolean=TODO
+1=SortType:TJclPeImportSort=Specifies on which field the list should be sorted.
+See TJclPeImportSort for a description of the allowed values and their meaning.
+2=Descending:Boolean=If True the list is sorted in descending order, if False
+the list is sorted in ascending order.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -443,9 +526,10 @@ Delphi=4,5
 [Declaration]
 property Count: Integer read GetCount;
 [ShortDescr]
-TODO
+Returns the number of items in the Items property.
 [Description]
-TODO
+Returns the number of items in the Items property. As such it returns the number
+of imports described by, or contained in, this import descriptor.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -458,9 +542,10 @@ Delphi=4,5
 [Declaration]
 property FileName: TFileName read GetFileName;
 [ShortDescr]
-TODO
+Returns the fully qualified filename of the image described by this entry.
 [Description]
-TODO
+Returns the fully qualified name of the image file from which the functions
+described by this import descriptor are imported.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -488,9 +573,10 @@ Delphi=4,5
 [Declaration]
 property ImportDirectoryIndex: Integer read FImportDirectoryIndex;
 [ShortDescr]
-TODO
+Position within the Items list of the TJclImportList class.
 [Description]
-TODO
+Zero based index into the Items property of the TJclImportList class at which
+this TJclPeImportLibItem is positioned.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -503,9 +589,12 @@ Delphi=4,5
 [Declaration]
 property ImportKind: TJclPeImportKind read FImportKind;
 [ShortDescr]
-TODO
+Specifies the kind of import.
 [Description]
-TODO
+Specifies the kind of import. It can be either a normal import, a bound import
+or a delay loaded import. See the description of TJclPeImportKind for more information.
+Note that this has nothing to do with the method by which a function is imported,
+such as by name or by ordinal. To find out about that use the IsByOrdinal property. 
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -518,9 +607,13 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TJclPeImportFuncItem read GetItems; default;
 [ShortDescr]
-TODO
+Provides indexed access to the items in the list.
 [Description]
-TODO
+Provides (zero based) indexed access to the items contained in the import
+descriptor. Each entry in the list is a reference to a TJclPeImportFuncItem
+which describes a single imported function from the image described by this
+import descriptor. The number of items in the list can be found by reading the
+Count property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -533,9 +626,13 @@ Delphi=4,5
 [Declaration]
 property Name: string read GetName;
 [ShortDescr]
-TODO
+Returns the lowercase filename of the image described by this entry.
 [Description]
-TODO
+Returns the filename of the image file from which the functions described by this
+import descriptor are imported. The returned filename is returned as it appears
+in the image file, except that it's converted to lowercase before it's returned.
+Like the OriginalName property, the returned name is often without path or drive
+indication.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -548,9 +645,11 @@ Delphi=4,5
 [Declaration]
 property OriginalName: string read GetOriginalName;
 [ShortDescr]
-TODO
+Returns the filename of the image described by this entry.
 [Description]
-TODO
+Returns the filename of the image file from which the functions described by this
+import descriptor are imported. The returned filename is returned as it appears
+in the image file, often uppercase and without path or drive indication.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -578,9 +677,13 @@ Delphi=4,5
 [Declaration]
 property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
 [ShortDescr]
-TODO
+Specifies whether all imported functions in this import directory could be resolved.
 [Description]
-TODO
+Specifies whether all imported functions in this import directory could be resolved.
+If as little as one function could not be resolved, the property returns icUnresolved.
+This property starts out with the icNotChecked value indicating that resolvement
+wasn't checked yet. You have the explicitly request function resolving through the
+CheckImports method of the TJclPeImportList class. 
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -593,9 +696,15 @@ Delphi=4,5
 [Declaration]
 TJclPeImportList = class (TJclPeImageBaseList)
 [ShortDescr]
-TODO
+Represents the import section of an image file.
 [Description]
-TODO
+The TJclPeImportList class represents the import section of an image file. The
+import section contains a list of import descriptors (represented by the
+TJclPeImportLibItem class) each of which in turn contain all imports from a
+specific image file. Therefore the import section can be viewed as a two-level
+tree structure. For convenience the TJclPeImportList class also allows direct
+access to the complete list of imported functions, thus bypassing the import
+directories level.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -604,42 +713,25 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor Create(AImage: TJclPeImage);
+procedure CheckImports(PeImageCache: TJclPeImagesCache = nil);
 [ShortDescr]
-TODO
+Determines whether all imported functions can be resolved.
 [Description]
-TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Import Section\TJclPeImportList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-procedure CheckImports(PeImageCache: TJclPeImagesCache {$IFDEF SUPPORTS_DEFAULTPARAMS} = nil {$ENDIF});
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Import Section\TJclPeImportList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function SmartFindName(const CompareName, LibName: string;
-  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): TJclPeImportFuncItem;
-[ShortDescr]
-TODO
-[Description]
-TODO
+This method determines whether all imported functions can be resolved  by looking
+them up in the exports section of the image from which the function is imported.
+If the function is found there the import is considered resolved, otherwise it is
+unresolved. This latter case would indicate that the OS loader would probably also
+be unable to resolve the import and loading of the image would fail.
+[Parameters]
+Count=1
+1=PeImageCache:TJclPeImagesCache=Allows you to specify a TJclPeImagesCache to be
+used by the method. This can significantly increase performance because it may
+prevent a lot of loading and unloading of image files (especially when the image
+is imports functions from a lot of different images). If you are using an image
+cache in your application it is recommended you use it here. That way the method
+can reuse your already loaded images. Note though that if the method needs to
+load additional images, it will do so using the cache. Those images will not be
+removed upon method exit.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -650,11 +742,51 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+function SmartFindName(const CompareName, LibName: string; Options: TJclSmartCompOptions = []): TJclPeImportFuncItem;
 [ShortDescr]
-TODO
+Searches the import section for a specific function.
 [Description]
-TODO
+The SmartFindName method searches through the all the import directories that apply
+to the specified image name (LibName parameter) for the specified function
+name (CompareName). Through the Options parameter you can specify whether the
+search should be case-sensitive and/or base the comparison on the full name or
+only the basename of the function.
+[Parameters]
+Count=3
+1=CompareName:string=Name of the function to search for.
+2=LibName:string=Image from which the function should be imported. If you specify
+an empty string the search includes all images.
+3=Options:TJclSmartCompOptions=Set of options that influence the name comparison
+such as whether it's case-sensitive. See the description of TJclSmartCompOptions
+for more information.
+[Result]
+If the specified function was found SmartFindName returns a reference to the
+TJclPeImportFuncItem that represents the found imported function. This reference
+remains owned by the class so you shouldn't free it. It also remains valid only
+as long as the TJclPeImportList isn't destroyed. If the function couldn't be
+found the return value is nil.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean = False);
+[ShortDescr]
+Sorts the list of imported functions as accesible through the AllItems property.
+[Description]
+Sorts the list of imported functions as accesible through the AllItems property.
+[Parameters]
+Count=2
+1=SortType:TJclPeImportSort=Specifies by which property the list is sorted. You
+can sort on Name, Ordinal, Hint or Image name. See the description of TJclPeImportSort
+for more information.
+2=Descending:Boolean=Specifies whether the sort should be in ascending (False) or
+descending (True) order.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -667,9 +799,15 @@ Delphi=4,5
 [Declaration]
 procedure SortList(SortType: TJclPeImportLibSort);
 [ShortDescr]
-TODO
+Sorts the list of import directories (the Items property).
 [Description]
-TODO
+Sorts the list of import directories (the Items property) according to the property
+specified by the SortType parameter. You can sort either on Index or Name.
+[Parameters]
+Count=1
+1=SortType:TJclPeImportLibSort=Specifies on which property the list should be
+sorted. You can sort either on Index or Name. See the description of TJclPeImportLibSort
+for more information.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -682,9 +820,12 @@ Delphi=4,5
 [Declaration]
 procedure TryGetNamesForOrdinalImports;
 [ShortDescr]
-TODO
+Attempts to resolve the names of functions that were imported by ordinal.
 [Description]
-TODO
+The TryGetNamesForOrdinalImports method searches the export sections of each image
+that is linked against in an attempt to find the names of those functions that
+were imported by ordinal instead of by name. See also the description of the
+IndirectImportName property of the TJclPeImportFuncItem class.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -697,9 +838,14 @@ Delphi=4,5
 [Declaration]
 property AllItems[Index: Integer]: TJclPeImportFuncItem read GetAllItems;
 [ShortDescr]
-TODO
+Provides indexed access to all imported functions.
 [Description]
-TODO
+Provides (zero-based) indexed access to all imported functions, bypassing the
+import directories. Note that this list is initially empty and has to be explicitly
+initialized either by reading the AllItemsCount property (which subsequently returns
+the number of items in the list) or by setting the FilterModuleName property. In
+addition, the items in the AllItems list can be filtered by that same FilterModuleName
+property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -712,9 +858,11 @@ Delphi=4,5
 [Declaration]
 property AllItemCount: Integer read GetAllItemCount;
 [ShortDescr]
-TODO
+Returns the number of items in the AllItems list.
 [Description]
-TODO
+Returns the number of items in the AllItems list. Note that if the list is empty
+the property read method will first trigger the initialisation of the list before
+returning the count.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -727,9 +875,11 @@ Delphi=4,5
 [Declaration]
 property FilterModuleName: string read FFilterModuleName write SetFilterModuleName;
 [ShortDescr]
-TODO
+Filters the items that are included in the AllItems list.
 [Description]
-TODO
+Allows you to filter the items that are included in the AllItems list. Setting
+this property to a non-empty string will cause only those functions to be added
+that are imported from the specified image.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -742,9 +892,12 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TJclPeImportLibItem read GetItems; default;
 [ShortDescr]
-TODO
+Provides indexed access to the import directories list.
 [Description]
-TODO
+Provides (zero-based) indexed access to the import directories list. Read the
+Count property to determine the number of items in the list. Each item in the
+list represents a single import directory but multiple items may exist for one
+single image file.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -757,9 +910,10 @@ Delphi=4,5
 [Declaration]
 property LinkerProducer: TJclPeLinkerProducer read FLinkerProducer;
 [ShortDescr]
-TODO
+Returns the manufacturer of the linker that produced the image.
 [Description]
-TODO
+Returns the manufacturer of the linker that produced the image. See the
+description of TJclPeLinkerProducer for more information.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -772,9 +926,9 @@ Delphi=4,5
 [Declaration]
 property UniqueLibItemCount: Integer read GetUniqueLibItemCount;
 [ShortDescr]
-TODO
+Returns the number of items in the UniqueLibItems list.
 [Description]
-TODO
+Returns the number of items in the UniqueLibItems list.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -802,9 +956,16 @@ Delphi=4,5
 [Declaration]
 property UniqueLibItems[Index: Integer]: TJclPeImportLibItem read GetUniqueLibItems;
 [ShortDescr]
-TODO
+List of unique import directories.
 [Description]
-TODO
+As you may recall, an import section may contain multiple import directories for
+one and the same image (for example, it may contains two or more import directories
+for the user32.dll image). The UniqueLibItems list provides (zero-based) indexed
+access to a list of import directories that are unique across the import section.
+You can use this list to find out exactly from which images functions are imported,
+including some details about those images, but you shouldn't use, for example,
+the Items property to determine which functions are imported from that image
+because there may exist other import directories which import additional functions.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -817,9 +978,14 @@ Delphi=4,5
 [Declaration]
 property UniqueLibNames[Index: Integer]: string read GetUniqueLibNames;
 [ShortDescr]
-TODO
+List of image names from which functions are imported.
 [Description]
-TODO
+As you may recall, an import section may contain multiple import directories for
+one and the same image (for example, it may contains two or more import directories
+for the user32.dll image). The UniqueLibNames list provides (zero-based) indexed
+access to a list of image names that are unique across the import section.
+You can use this list to find out the names of the images from which functions
+are imported.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -832,15 +998,16 @@ Delphi=4,5
 [Declaration]
 TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded, esAddrOrFwd);
 [ShortDescr]
-TODO
+Enumeration used to determine on which field a list of exported functions is sorted.
 [Enumeration]
 Count=6
-1=esName=TODO
-2=esOrdinal=TODO
-3=esHint=TODO
-4=esAddress=TODO
-5=esForwarded=TODO
-6=esAddrOrFwd=TODO
+1=esName=Sorted on the name by which the function is exported.
+2=esOrdinal=Sorted on the ordinal by which the function is exported.
+3=esHint=Sorted on the hint.
+4=esAddress=Sorted on the address of the exported function.
+5=esForwarded=Sorted on the name of the function to which the export is forwarded.
+6=esAddrOrFwd=Sorted on address or name of the function to which the export is
+forwarded depending on whether the function is forwarded or not. 
 [Quick Info]
 Kind=Type
 Visibility=Public
@@ -853,9 +1020,11 @@ Delphi=4,5
 [Declaration]
 TJclPeExportFuncItem = class (TObject)
 [ShortDescr]
-TODO
+Represents a single exported function.
 [Description]
-TODO
+The TJclPeExportFuncItem represents a single exported function in the exports
+section of an image. The class provides all the details about the function such
+as the name or ordinal by which it is exported.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -896,9 +1065,10 @@ Delphi=4,5
 [Declaration]
 property IsForwarded: Boolean read GetIsForwarded;
 [ShortDescr]
-TODO
+Specifies whether the export is a function forwarder.
 [Description]
-TODO
+If the export is a function forwarder the IsForwarded property returns True, if
+it is not forwarded the property returns False.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -911,9 +1081,12 @@ Delphi=4,5
 [Declaration]
 property ForwardedName: string read GetForwardedName;
 [ShortDescr]
-TODO
+Name of the image and function to which the export is forwarded.
 [Description]
-TODO
+If the export is a function forwarder, as can be determined by reading the
+IsForwarded property, the ForwardedName property returns the name of the image
+to which the function is forwarded and the name of that function, separated with
+a single dot.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -926,9 +1099,11 @@ Delphi=4,5
 [Declaration]
 property ForwardedLibName: string read GetForwardedLibName;
 [ShortDescr]
-TODO
+Returns the name of the image to which the export is forwarded.
 [Description]
-TODO
+Returns the name of the image, including extension, to which the export is forwarded.
+If the export isn't forwarded the property returns an empty string. You can
+determine whether the export is forwarded by reading the IsForwarded property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -941,9 +1116,12 @@ Delphi=4,5
 [Declaration]
 property ForwardedFuncOrdinal: DWORD read GetForwardedFuncOrdinal;
 [ShortDescr]
-TODO
+Returns the ordinal of the function to which the export is forwarded.
 [Description]
-TODO
+If the export is forwarded the ForwardedFuncOrdinal property returns the ordinal
+of the function to which the export is forwarded. If the export is not forwarded
+the property returns 0. You can determine whether the export is
+forwarded by reading the IsForwarded property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -956,9 +1134,12 @@ Delphi=4,5
 [Declaration]
 property ForwardedFuncName: string read GetForwardedFuncName;
 [ShortDescr]
-TODO
+Returns the name of the function to which the export is forwarded.
 [Description]
-TODO
+If the export is forwarded the ForwardedFuncOrdinal property returns the name
+of the function to which the export is forwarded. If the export is not forwarded
+the property returns an empty string. You can determine whether the export is
+forwarded by reading the IsForwarded property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -971,9 +1152,11 @@ Delphi=4,5
 [Declaration]
 property Hint: Word read FHint;
 [ShortDescr]
-TODO
+Contains the index into TJclPeExportFuncList.Items property at which the function is located.
 [Description]
-TODO
+The Hint property contains the (zero based) index into Items property of the
+TJclPeExportFuncList at which this function is located. This is also the position
+in the export table at which the function is located.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -986,9 +1169,11 @@ Delphi=4,5
 [Declaration]
 property Name: string read GetName;
 [ShortDescr]
-TODO
+Returns the name by which the function is exported.
 [Description]
-TODO
+If the function is exported by name the Name property returns the name by which
+the function is exported. If the function is not exported by name the property
+returns an empty string.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1001,9 +1186,11 @@ Delphi=4,5
 [Declaration]
 property Ordinal: DWORD read FOrdinal;
 [ShortDescr]
-TODO
+Returns the ordinal value by which the function is exported.
 [Description]
-TODO
+If the function is exported by ordinal the Ordinal property returns the ordinal
+value by which  the function is exported. If the function is not exported by
+ordinal the property returns 0.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1031,28 +1218,12 @@ Delphi=4,5
 [Declaration]
 TJclPeExportFuncList = class (TJclPeImageBaseList)
 [ShortDescr]
-TODO
+The TJclPeExportFuncList class represents the export section of an image file.
 [Description]
-TODO
+The TJclPeExportFuncList class represents the export section of an image file.
+As such it allowsaccess to the list of exported functions in various ways and
+provides some information about the exports section itself.
 [Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor Create(AImage: TJclPeImage);
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=1
-1=AImage:TJclPeImage=TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
 SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
@@ -1062,12 +1233,22 @@ Delphi=4,5
 [Declaration]
 procedure CheckForwards(PeImageCache: TJclPeImagesCache = nil);
 [ShortDescr]
-TODO
+Determines the validity of all forwarded function exports.
 [Description]
-TODO
+CheckForwards determines whether all forwarded function exports are valid. That is,
+it determines whether the function which is forwarded to atually exist. When the
+method returns the TotalResolveCheck property indicates whether or not all function
+forwards are valid. You can also use the ResolveCheck property of the individual
+TJclPeExportFuncItem items to determine the result on a per function basis.
 [Parameters]
 Count=1
-1=PeImageCache:TJclPeImagesCache=TODO
+1=PeImageCache:TJclPeImagesCache=Allows you to specify a TJclPeImagesCache to be
+used by the method. This can significantly increase performance because it may
+prevent a lot of loading and unloading of image files. If you are using an image
+cache in your application it is recommended you use it here. That way the method
+can reuse your already loaded images. Note though that if the method needs to
+load additional images, it will do so using the cache. Those images will not be
+removed upon method exit.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1080,13 +1261,17 @@ Delphi=4,5
 [Declaration]
 class function ItemName(Item: TJclPeExportFuncItem): string;
 [ShortDescr]
-TODO
+Returns the Name propery of a function item.
 [Description]
-TODO
+Helper class methods which returns the name of the specified item (it's name
+property) if the Item is valid (non-nil) or an empty string if the Item parameter
+is nil.
 [Parameters]
 Count=1
-1=Item:TJclPeExportFuncItem=TODO
+1=Item:TJclPeExportFuncItem=The Item for which to retrieve the Name property. Can be nil.
 [Result]
+If Item is non-nil the method returns the Name property of the Item, otherwise
+it returns an empty string.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1117,9 +1302,10 @@ Delphi=4,5
 [Declaration]
 procedure PrepareForFastNameSearch;
 [ShortDescr]
-TODO
+Prepares the list for fast name searching.
 [Description]
-TODO
+Prepares the list for fast name searching. It does so basically by sorting the
+list in ascending order on the Name property of the individual function exports.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1130,17 +1316,21 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function SmartFindName(const CompareName: string; Options: TJclSmartCompOptions = [] {$ENDIF}): TJclPeExportFuncItem;
+function SmartFindName(const CompareName: string; Options: TJclSmartCompOptions = []): TJclPeExportFuncItem;
 [ShortDescr]
-TODO
+Searches the list of function exports for a specific function.
 [Description]
-TODO
+The SmartFindName method searches the list of function exports for the specified function.
 [Parameters]
 Count=2
-1=CompareName:string=TODO
-2=Options:TJclSmartCompOptions=TODO
+1=CompareName:string=The name of the function to search for.
+2=Options:TJclSmartCompOptions=Set of options which determine how the method performs
+the name comparison. You can specify, for example, that the comparison should be
+case insensitive. See the description of TJclSmartCompOptions for more information.
 [Result]
-TODO
+If the method finds the specified export it returns a reference to a TJclPeExportFuncItem
+instance which represents the found export. You can use this instance to find out more
+details about it. The instance remains owned by the class so never free it.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1151,15 +1341,17 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SortList(SortType: TJclPeExportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+procedure SortList(SortType: TJclPeExportSort; Descending: Boolean = False);
 [ShortDescr]
-TODO
+Sorts the exported functions list.
 [Description]
-TODO
+Sorts the exported functions list.
 [Parameters]
 Count=2
-1=SortType:TJclPeExportSort=TODO
-2=Descending:Boolean=TODO
+1=SortType:TJclPeExportSort=Determines the key on which the list is sorted. An
+example is sorting based on the name by which the functions are exported. See the
+description of TJclPeExportSort for more information.
+2=Descending:Boolean=Determines whether the sort is in ascending or descending order.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1172,9 +1364,10 @@ Delphi=4,5
 [Declaration]
 property AnyForwards: Boolean read FAnyForwards;
 [ShortDescr]
-TODO
+AnyFowards determines whether the image contains any function forwarderes.
 [Description]
-TODO
+AnyFowards determines whether the image contains any function forwarderes. It
+reads True if there is at least one function forwarder, otherwise it reads False.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1187,9 +1380,9 @@ Delphi=4,5
 [Declaration]
 property Base: DWORD read FBase;
 [ShortDescr]
-TODO
+The starting ordinal number for exports in this image. Will usually be 1.
 [Description]
-TODO
+The starting ordinal number for exports in this image. Will usually be 1.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1202,9 +1395,11 @@ Delphi=4,5
 [Declaration]
 property ExportDir: PImageExportDirectory read FExportDir;
 [ShortDescr]
-TODO
+Pointer to a TImageExportDirectory record which describes the Export Directory Table.
 [Description]
-TODO
+Pointer to a TImageExportDirectory record which describes the Export Directory Table.
+The Export Directory Table contains address information that is used to resolve
+fix-up references to the entry points within this image.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1217,9 +1412,10 @@ Delphi=4,5
 [Declaration]
 property ForwardedLibsList: TStrings read GetForwardedLibsList;
 [ShortDescr]
-TODO
+Returns a list containing the names of forwarded functions.
 [Description]
-TODO
+Returns a list containing the names of forwarded functions, if any. The list
+remains owned by the class so never free it.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1232,9 +1428,10 @@ Delphi=4,5
 [Declaration]
 property FunctionCount: DWORD read FFunctionCount;
 [ShortDescr]
-TODO
+Returns the number of items in the Items property.
 [Description]
-TODO
+Returns the number of items in the Items property. In other words, it returns the
+number of function exports in this image.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1247,9 +1444,12 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TJclPeExportFuncItem read GetItems; default;
 [ShortDescr]
-TODO
+Provides indexed access to the items contained in the export table.
 [Description]
-TODO
+Provides (zero based) indexed access to the items contained in the export table.
+As such it contains all exported funtions in the image. Initially the list is
+in the same order as the functions appear in the export table but they may be
+sorted afterwards.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1277,9 +1477,14 @@ Delphi=4,5
 [Declaration]
 property ItemFromName[const Name: string]: TJclPeExportFuncItem read GetItemFromName;
 [ShortDescr]
-TODO
+Provides, name based, indexed access to the list of exported functions.
 [Description]
-TODO
+Provides indexed access to the list of exported functions where the index is the
+name by which the function is exported. If a function by the specified name is
+exported from the image the property returns a reference to a TJclPeExportFuncItem
+which represents that function. Note that the returned reference remains owned by
+the class so never free it. If no function is exported by the specified name the
+property returns nil.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1292,9 +1497,14 @@ Delphi=4,5
 [Declaration]
 property ItemFromOrdinal[Ordinal: DWORD]: TJclPeExportFuncItem read GetItemFromOrdinal;
 [ShortDescr]
-TODO
+Provides, ordinal based, indexed access to the list of exported functions.
 [Description]
-TODO
+Provides indexed access to the list of exported functions where the index is the
+ordinal value by which the function is exported. If a function by the orindal value
+is exported from the image the property returns a reference to a TJclPeExportFuncItem
+which represents that function. Note that the returned reference remains owned by
+the class so never free it. If no function is exported by the specified ordinal
+value the property returns nil.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1438,6 +1648,25 @@ SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
+constructor Create(AImage: TJclPeImage; AParentItem: TJclPeResourceItem; AEntry: PImageResourceDirectoryEntry);
+[Declaration]
+TJclPeResourceItem = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=3
+1=AImage:TJclPeImage=TODO
+2=AParentItem:TJclPeResourceItem=TODO
+3=AEntry:PImageResourceDirectoryEntry=TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
 [Declaration]
 property DataEntry: PImageResourceDataEntry read GetDataEntry;
 [ShortDescr]
@@ -1529,6 +1758,21 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+property Level: Byte read FLevel;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 property Name: string read GetName;
 [ShortDescr]
 TODO
@@ -1560,6 +1804,21 @@ Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ParentItem: TJclPeResourceItem read FParentItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RawEntryDataSize: Integer read GetRawEntryDataSize;
 [ShortDescr]
 TODO
 [Description]
@@ -1682,31 +1941,27 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+property ParentItem: TJclPeResourceItem read FParentItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 TJclPeRootResourceList = class (TJclPeResourceList)
 [ShortDescr]
 TODO
 [Description]
 TODO
 [Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Resource Section\TJclPeRootResourceList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage);
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=2
-1=ADirectory:PImageResourceDirectory=TODO
-2=AImage:TJclPeImage=TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
 SubCat=Portable Executable File Format\Resource Section\TJclPeRootResourceList
@@ -1743,12 +1998,19 @@ end;
 [ShortDescr]
 TODO
 [Description]
-TODO
+The TJclPeRelocation record represents a single address fix up in the relocation
+table of the imagefile.
 [RecordFields]
 Count=3
-1=Address:Word=TODO
-2=RelocType:Byte=TODO
-3=VirtualAddress:DWORD=TODO
+1=Address:Word=The relocation offset which, when added to the VirtualAddress
+property of the relocation block, specifies the address which needs to be fixed up.
+2=RelocType:Byte=The relocation type which indicates how the fix up is to be
+performed. Common values on Intel platforms are IMAGE_REL_BASED_HIGHLOW and
+IMAGE_REL_BASED_ABSOLUTE. Delcarations for the complete list is includedin the
+JclWin32 file. Search the Platform SDK and/or MSDN library for details about all
+these possible relocation types. 
+3=VirtualAddress:DWORD=The relative virtual address specifying the memory address
+which needs to be fixed up (equal to Address + TJclPeRelocEntry.VirtualAddress).
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -1760,9 +2022,10 @@ Delphi=4,5
 [Declaration]
 TJclPeRelocEntry = class (TObject)
 [ShortDescr]
-TODO
+Represents a block of relocation entries.
 [Description]
-TODO
+The TJclPeRelocEntry class represents a block of relocation entries. Each such
+block specifies the address fix-ups for a single 4KB block within the image file.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -1773,9 +2036,10 @@ Delphi=4,5
 [Declaration]
 property Count: Integer read FCount;
 [ShortDescr]
-TODO
+Returns the number of elements in the Relocations property.
 [Description]
-TODO
+Returns the number of elements in the Relocations property. That is, it returns
+the number of address fix-ups defined in this block.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1788,9 +2052,12 @@ Delphi=4,5
 [Declaration]
 property Relocations[Index: Integer]: TJclPeRelocation read GetRelocations; default;
 [ShortDescr]
-TODO
+Provides indexed access to the address fix-ups defined in this block.
 [Description]
-TODO
+The Relocations property provides (zero-based) indexed access to the address
+fix-ups defined in this block. To learn the number of entries in the list read
+the Count property. Each entry defines a single address fix-up as it appears in
+the relocations table.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1803,9 +2070,12 @@ Delphi=4,5
 [Declaration]
 property Size: DWORD read GetSize;
 [ShortDescr]
-TODO
+The Size property returns the size, in bytes, occupied by the relocation block.
 [Description]
-TODO
+The Size property returns the size, in bytes, occupied by the relocation block.
+Since each block is a variable length structure representing a single 4KB of the
+image file, each block may need a different ammount of memory to hold all necessary
+fixups. 
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1818,9 +2088,12 @@ Delphi=4,5
 [Declaration]
 property VirtualAddress: DWORD read GetVirtualAddress;
 [ShortDescr]
-TODO
+Returns the starting relative virtual address (RVA) for this block of relocations.
 [Description]
-TODO
+The VirtualAddress property returns the starting relative virtual address (RVA)
+for this block of relocations. The offset of each relocation (the Address field
+of the TJclPeRelocation record) is added to this value to form the actual RVA
+where the relocation needs to be applied.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1833,28 +2106,13 @@ Delphi=4,5
 [Declaration]
 TJclPeRelocList = class (TJclPeImageBaseList)
 [ShortDescr]
-TODO
+The TJclPeRelocList class represents the fix-up table of the image.
 [Description]
-TODO
+The TJclPeRelocList class represents the fix-up table of the image. The fix-up
+table contains entries for all fixups in the image. The fixup table is broken into
+blocks of fixups. Each block represents the fixups for a 4K page. Each block is
+represented as an instance of TJclPeRelocEntry in the Items property.
 [Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor Create(AImage: TJclPeImage);
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=1
-1=AImage:TJclPeImage=TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
 SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
@@ -1864,9 +2122,11 @@ Delphi=4,5
 [Declaration]
 property AllItems[Index: Integer]: TJclPeRelocation read GetAllItems;
 [ShortDescr]
-TODO
+Provides indexed access to the complete list of individual address fix ups.
 [Description]
-TODO
+The AllItems property provides (zero based) indexed access to the complete list
+of individual address fix ups. See the description of TJclPeRelocation for more
+information on how to interpret the returned record.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1879,9 +2139,9 @@ Delphi=4,5
 [Declaration]
 property AllItemCount: Integer read FAllItemCount;
 [ShortDescr]
-TODO
+Contains the number of entries in the Items property.
 [Description]
-TODO
+Contains the number of entries in the Items property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1894,9 +2154,12 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TJclPeRelocEntry read GetItems; default;
 [ShortDescr]
-TODO
+Provides indexed access to the fixup blocks.
 [Description]
-TODO
+The Items property provides (zero-based) indexed access to the fixup blocks. Each
+entry represents a 4 KB block within the image and contains a list of address
+fix-ups. To directly access these individual fix-up use the AllItems property. To
+learn the number of items in the list readthe Count property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1909,28 +2172,10 @@ Delphi=4,5
 [Declaration]
 TJclPeDebugList = class (TJclPeImageBaseList)
 [ShortDescr]
-TODO
+The TJclPeDebugList represent the debug section of an image file.
 [Description]
-TODO
+The TJclPeDebugList represent the debug section of an image file.
 [Quick Info]
-Unit=JclPeImage
-Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format\Debug Section\TJclPeDebugList
-Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor Create(AImage: TJclPeImage);
-[ShortDescr]
-TODO
-[Description]
-TODO
-[Parameters]
-Count=1
-1=AImage:TJclPeImage=TODO
-[Quick Info]
-Kind=Method
-Visibility=Public
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
 SubCat=Portable Executable File Format\Debug Section\TJclPeDebugList
@@ -1940,9 +2185,14 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TImageDebugDirectory read GetItems; default;
 [ShortDescr]
-TODO
+Provides indexed access to the list of debug directories.
 [Description]
-TODO
+The Items property provides (zero based) indexed access to the list of debug
+directories maintained by the class. Each entry in the list describes a single
+debug directory including it's locations, size and the type of debug information
+it contains. For details about the contents of the returned TImageDebugDirectory
+record look up IMAGE_DEBUG_DIRECTORY in the Platform SDK. To learn the number of
+items in the list read the Count property.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -2040,16 +2290,16 @@ TJclPeFileProperties = record
   Attributes: Integer;
 end;
 [ShortDescr]
-TODO
+Record which contains some common attributes of an image file.
 [Description]
-TODO
+Record which contains some common attributes of an image file.
 [RecordFields]
 Count=5
-1=Size:DWORD=TODO
-2=CreationTime:TDateTime=TODO
-3=LastAccessTime:TDateTime=TODO
-4=LastWriteTime:TDateTime=TODO
-5=Attributes:Integer=TODO
+1=Size:DWORD=Size, in bytes, of the image file.
+2=CreationTime:TDateTime=Date when the image file was created.
+3=LastAccessTime:TDateTime=Date when the image file was last accessed.
+4=LastWriteTime:TDateTime=Date when the image file was last written to.
+5=Attributes:Integer=Attributes of the image file.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -2082,9 +2332,13 @@ Delphi=4,5
 [Declaration]
 TJclPeImage = class (TObject)
 [ShortDescr]
-TODO
+Abstraction of a portable executable file.
 [Description]
-TODO
+The TJclPeImage class provides an abstraction of a portable executable (PE) file,
+referred to throughout this documentation as simply image or PE file. PE is
+the standard format for executable files on the Windows platform. This includes
+files such as .exe, .dll and so forth. TJclPeImage allow you to easily read all
+information contained in a PE file such as the functions it imports and/or exports.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -2095,12 +2349,36 @@ Delphi=4,5
 [Declaration]
 constructor Create(ANoExceptions: Boolean = False);
 [ShortDescr]
-TODO
+Creates an instance of the TJclPeImage class.
 [Description]
-TODO
+Creates an instance of the TJclPeImage class. Use the FileName property or
+AttachLoadedModule method to attach the class to a specific image.
 [Parameters]
 Count=1
-1=ANoExceptions:Boolean=TODO
+1=ANoExceptions:Boolean=Determines whether certain methods raise exceptions when
+they encounter a failure. Currently this applies only to setting the FileName
+property to an invalid filename or calling the AttachLoadedModule method with
+an invalid parameter. 
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure AttachLoadedModule(const Handle: HMODULE);
+[ShortDescr]
+Attaches the TJclPeImage instance to an already loaded image.
+[Description]
+Attaches the TJclPeImage instance to an already loaded image. This causes the
+currently loaded image to be discarded and the class to reinitialize itself to
+the image specified by the Handle parameter.
+[Parameters]
+Count=1
+1=Handle:HMODULE=Handle to the image you want to attach to.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2150,15 +2428,39 @@ Delphi=4,5
 [Declaration]
 function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
 [ShortDescr]
-TODO
+Returns a pointer to the section header of the specified named section in the image.
 [Description]
-TODO
+Returns a pointer to the section header of the specified named section in the image.
 [Parameters]
 Count=2
-1=SectionName:string=TODO
-2=Header:PImageSectionHeader=TODO
+1=SectionName:string=Name of the section for which to retrieve the section header.
+2=Header:PImageSectionHeader=Receives a pointer to a TImageSectionHeader record which
+describes the section header of the requested section. If the method fails the
+contents of this parameter are undefined.
 [Result]
-TODO
+If the function succeeds it returns True, otherwise it returns False. 
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSectionName(const Header: PImageSectionHeader): string;
+[ShortDescr]
+Returns the name of the section specified by the Header parameter.
+[Description]
+Returns the name of the section specified by the Header parameter.
+[Parameters]
+Count=1
+1=Header:PImageSectionHeader=Pointer to the section header record for which you
+want to retrieve the name.
+[Result]
+If the function succeeds it returns the name of the specified section, otherwise
+it returns an empty string.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2171,9 +2473,47 @@ Delphi=4,5
 [Declaration]
 function IsSystemImage: Boolean;
 [ShortDescr]
+Returns True if the image is a kernel mode executable.
+[Description]
+Returns True if the image is a kernel mode executable.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RawToVa(Raw: DWORD): Pointer;
+[ShortDescr]
 TODO
 [Description]
 TODO
+[Parameters]
+Count=1
+1=Raw:DWORD=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RvaToSection(Rva: DWORD): PImageSectionHeader;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Rva:DWORD=TODO
 [Result]
 TODO
 [Quick Info]
@@ -2208,11 +2548,12 @@ Delphi=4,5
 [Declaration]
 function StatusOK: Boolean;
 [ShortDescr]
-TODO
+Indicates whether the object is correctly initialized.
 [Description]
-TODO
-[Result]
-TODO
+Indicates whether the object is correctly initialized. That is, if it was
+succesfully attached to a valid image file. If this poperty returns False you
+should not use any of it's properties or methods until reinitialized using the
+FileName property or the AttachLoadedModule method.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2225,9 +2566,13 @@ Delphi=4,5
 [Declaration]
 procedure TryGetNamesForOrdinalImports;
 [ShortDescr]
-TODO
+Looks up the names of functions that we're imported by ordinal.
 [Description]
-TODO
+The TryGetNamesForOrdinalImports method searches the export sections of each image
+that it is linked against in an attempt to find the names of those functions that
+were imported by ordinal instead of by name. See also the description of the
+IndirectImportName property of the TJclPeImportFuncItem class and the same named
+method in the TJclPeImportList class.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2240,11 +2585,12 @@ Delphi=4,5
 [Declaration]
 function VerifyCheckSum: Boolean;
 [ShortDescr]
-TODO
+Verifies the checksum of a portable executable file.
 [Description]
-TODO
+VerifyCheckSum verifies the correctness of the checksum of the image file.
 [Result]
-TODO
+If the checksum is valid the method returns True, otherwise it returns False. Note
+that 0 is considered a valid checksum.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2388,6 +2734,21 @@ Count=1
 TODO
 [Quick Info]
 Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AttachedImage: Boolean read FAttachedImage;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
 Visibility=Public
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -2598,6 +2959,21 @@ Count=2
 2=ImageSectionHeaders
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 property ImportList: TJclPeImportList read GetImportList;
 [ShortDescr]
 Allows access to the import section.
@@ -2777,18 +3153,409 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
-TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
+property VersionInfoAvailable: Boolean read GetVersionInfoAvailable;
 [ShortDescr]
 TODO
 [Description]
 TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPePackageInfo = class (TObject)
+[ShortDescr]
+Allows you to obtain information about Delphi packages.
+[Description]
+The TJclPackageInfo class allows you to obtain information about Delphi packages
+such as which units it contains and which packages it requires.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(ALibHandle: THandle);
+[ShortDescr]
+Creates and initializes an instance of TJclPePackageInfo.
+[Description]
+Creates and initializes an instance of TJclPePackageInfo.
+[Parameters]
+Count=1
+1=ALibHandle:THandle=Handle to a loaded package. For example, the handle returned
+by the LoadPackage RTL function.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function PackageModuleTypeToString(Flags: Integer): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function PackageOptionsToString(Flags: Integer): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function ProducerToString(Flags: Integer): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function UnitInfoFlagsToString(UnitFlags: Byte): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Contains: TStrings read FContains;
+[ShortDescr]
+Returns a list containing the names of all units contained in the package.
+[Description]
+Returns a list containing the names of all units contained in the package.
+Note that the returned TStrings instance remains owned by the class so you should
+never free it.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ContainsCount: Integer read GetContainsCount;
+[ShortDescr]
+Returns the number of items in the ContainsNames property.
+[Description]
+Returns the number of items in the ContainsNames property.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ContainsNames[Index: Integer]: string read GetContainsNames;
+[ShortDescr]
+Provides indexed access to the list of unit names contained in the package.
+[Description]
+The ContainsNames property provides (zero based) indexed access to the list of
+unit names contained in the package. To learn the number of items in the list
+read the ContainsCount property. To read the flags associated with the contained
+unit read ContainsFlags property using the same index.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
+[ShortDescr]
+Flags associated with a particular contained unit.
+[Description]
+The ContainsFlags property provides (zero based) indexed access to the list of
+flags associated with the list of units contained in the package. This list is
+parallel to the ContainsNames property; to determine the flags associated with
+ContainsNames[I] read ContainsFalgs[I]. The valid values are defined in SysUtils<br>
+  <table>
+  <tr valign="top"><th align=left width=25%>Flag</th><th align=left width=75%>Description</th></tr>
+  <tr valign="top"><td width=25%>ufMainUnit</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>ufPackageUnit</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>ufWeakUnit</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>ufOrgWeakUnit</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>ufImplicitUnit</td><td width=25%>TODO</td></tr>
+  </table>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Description: string read FDescription;
+[ShortDescr]
+Returns the description string for the package as it appears in the package resource.
+[Description]
+Returns the description string for the package as it appears in the package resource.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Flags: Integer read FFlags;
+[ShortDescr]
+Returns a set of flags for the package encoded as a set of bits.
+[Description]
+Returns a set of flags for the package. The valid values for this property are
+defined in SysUtils<br>
+  <table>
+  <tr valign="top"><th align=left width=25%>Flag</th><th align=left width=75%>Description</th></tr>
+  <tr valign="top"><td width=25%>pfNeverBuild</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfDesignOnly</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfRunOnly</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfIgnoreDupUnits</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfModuleTypeMask</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfExeModule</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfPackageModule</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfProducerMask</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfV3Produced</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfProducerUndefined</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfBCB4Produced</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfDelphi4Produced</td><td width=25%>TODO</td></tr>
+  <tr valign="top"><td width=25%>pfLibraryModule</td><td width=25%>TODO</td></tr>
+  </table>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Requires: TStrings read FRequires;
+[ShortDescr]
+Returns a list of package names that the package requires.
+[Description]
+Returns a list of package names that the package requires. Note that the returned
+TStrings object remains owned by the class so you should never free it.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RequiresCount: Integer read GetRequiresCount;
+[ShortDescr]
+Returns the number of items in the RequiresNames property.
+[Description]
+Returns the number of items in the RequiresNames property.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RequiresNames[Index: Integer]: string read GetRequiresNames;
+[ShortDescr]
+Provides indexed access to the list of package names that are required by the package.
+[Description]
+The RequiresNames property provides (zero based) indexed access to the list of
+package names that are required by the package. To learn the number of items in
+the list read the RequiresCount property.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPePackageInfo
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeBorImage = class (TJclPeImage)
+[ShortDescr]
+Specialisation of TJclPeImage for Borland produced images.
+[Description]
+The TJclPeBorImage class is a specialisation of TJclPeImage which allows access
+to information contained in the image file which is specific, and therefore unique,
+to images produced by a Borland linker.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FreeLibHandle: Boolean;
+[ShortDescr]
+Closes the library handle as returned by the LibHandle property.
+[Description]
+Closes the library handle as returned by the LibHandle property.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
+[ShortDescr]
+Returns whether or not the image contains TD32 symbolic debugging information.
+[Description]
+The IsTD32DebugPresent returns whether or not the image contains TD32 symbolic
+debugging information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsBorlandImage: Boolean read FIsBorlandImage;
+[ShortDescr]
+Returns whether or not the image is an image produced by a Borland linker.
+[Description]
+Returns whether or not the image is an image produced by a Borland linker.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsPackage: Boolean read FIsPackage;
+[ShortDescr]
+Returns whether the image is Borland package file.
+[Description]
+Returns whether the image is Borland package file.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LibHandle: THandle read GetLibHandle;
+[ShortDescr]
+Returns a handle to the loaded library (image).
+[Description]
+The LibHandle property loads the image file as a datafile (if necessary) and
+returns a handle to the loaded image. Use the FreeLibHandle method when you no
+longer need the handle.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property PackageInfo: TJclPePackageInfo read GetPackageInfo;
+[ShortDescr]
+Returns an object which provides additional information about a package.
+[Description]
+Returns an instance of TJclPePackageInfo which provides additional information
+about the image such as the units contained in it. This property is only valid
+if the image is a package.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Borland Delphi Specific\TJclPeBorImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
+TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
+[ShortDescr]
+Flags that determine which parts of an image is searched.
+[Description]
+TJclPeNameSearchOptions is a set of flags used by the TJclPeNameSearch class to
+determine the scope of the search. In other word, these flags determine which
+parts of an image is searched.
 [Enumeration]
 Count=4
-1=seImports=TODO
-2=seDelayImports=TODO
-3=seBoundImports=TODO
-4=seExports=TODO
+1=seImports=Searches the import section of the image.
+2=seDelayImports=Searches the delay loaded imports.
+3=seBoundImports=Searches the bound imports.
+4=seExports=Searches the export section of the image.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -2798,15 +3565,20 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage) of object;
+TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage; var Process: Boolean) of object;
 [ShortDescr]
-TODO
+Event which is fired immediately before a new image is searched.
 [Description]
-TODO
+Event exposed by the TJclPeNameSearch class which is fired each time the search
+continues it search in a new image. The event is fired immediately before the
+image is searched and you can use it, for example, to display user progress
+information or to exclude certain images from being searched.
 [Parameters]
-Count=2
-1=Sender:TObject=TODO
-2=PeImage:TJclPeImage=TODO
+Count=3
+1=Sender:TObject=Reference to the TJclPeNameSearch instance for which the event is fired.
+2=PeImage:TJclPeImage=Reference to a TJclPeImage instance which is used to perform the search.
+3=Process:Boolean=Determines whether or not to process the image file. If you set Process to
+False the image is skipped, if you set it to True the image is searched.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -2819,15 +3591,20 @@ Delphi=4,5
 TJclPeNameSearchFoundEvent = procedure (Sender: TObject; const FileName: TFileName;
   const FunctionName: string; Option: TJclPeNameSearchOption) of object;
 [ShortDescr]
-TODO
+Event which is fired each time a name is found.
 [Description]
-TODO
+Event exposed by the TJclPeNameSearch class which is fired each time the class
+finds the name it's searching for.
 [Parameters]
 Count=4
-1=Sender:TObject=TODO
-2=FileName:TFileName=TODO
-3=FunctionName:string=TODO
-4=Option:TJclPeNameSearchOption=TODO
+1=Sender:TObject=Reference to the TJclPeNameSearch instance for which the event is fired.
+2=FileName:TFileName=Name of the image file in which the function was found.
+3=FunctionName:string=The name of the function as it was found in the image file.
+Depending on which options you specified this name may be slightly different than
+the one being searched for (for example, in case).
+4=Option:TJclPeNameSearchOption=Indicates in which section of the image file the
+function was found(for example, import or export section). This is quarenteed to
+be one of the options you specified when you started the search.
 [Quick Info]
 Kind=Type
 Unit=JclPeImage
@@ -2839,9 +3616,13 @@ Delphi=4,5
 [Declaration]
 TJclPeNameSearch = class (TThread)
 [ShortDescr]
-TODO
+Searches a set of image files for occurences of a specific function.
 [Description]
-TODO
+TJclPeNameSearch is a thread class which allows you to search through a set of
+image files for occurences of a specific function. You can search through both
+the import and export section ofthe image files and through a mask specify
+exactly which image files are to be searched. Occurences are reported back through
+an event. 
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
@@ -2852,14 +3633,22 @@ Delphi=4,5
 [Declaration]
 constructor Create(const FunctionName, Path: string; Options: TJclPeNameSearchOptions = [seImports, seExports]);
 [ShortDescr]
-TODO
+Creates and initializes an instance of the TJclPeNameSearch class.
 [Description]
-TODO
+Creates and initializes an instance of the TJclPeNameSearch class. The thread
+starts off in the suspended state and has to be explicitly resumed using the
+Start method to actually start the search.
 [Parameters]
 Count=3
-1=FunctionName:string=TODO
-2=Path:string=TODO
-3=Options:TJclPeNameSearchOptions=TODO
+1=FunctionName:string=The name of the function you want to search for.
+2=Path:string=The Path parameter is the directory and file name mask, including
+wildcard characters that define the image files to be searched.
+For example, 'c:\winnt\system32\*.dll' specifies all dynamic link libraries
+in the c:\winnt\system32 directory. Using the OnProcessFile event you can perform
+additional filtering of image files.
+3=Options:TJclPeNameSearchOptions=Set of options specifying which sections of
+the image files are to be searched (for example, import and/or export sections).
+See the description of TJclPeNameSearchOptions for more information.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2872,9 +3661,10 @@ Delphi=4,5
 [Declaration]
 procedure Start;
 [ShortDescr]
-TODO
+Starts the search operation.
 [Description]
-TODO
+Starts the search operation. To temporarily pause the search set the Suspended
+property to True. To cancel the search set the Terminated property to True.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2887,9 +3677,12 @@ Delphi=4,5
 [Declaration]
 property OnFound: TJclPeNameSearchFoundEvent read FOnFound write FOnFound;
 [ShortDescr]
-TODO
+Event fired whenever an occurence of the specified function is found.
 [Description]
-TODO
+Event which is fired whenever an occurence of the specified function is found.
+Note that the event is automatically synchronized with the main thread by firing
+it through the standard TThread method Synchronize.
+See the description of TJclPeNameSearchFoundEvent for more information.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -2902,9 +3695,12 @@ Delphi=4,5
 [Declaration]
 property OnProcessFile: TJclPeNameSearchNotifyEvent read FOnProcessFile write FOnProcessFile;
 [ShortDescr]
-TODO
+Event which is fired whenever the class is about to search an image file.
 [Description]
-TODO
+Event which is fired whenever the class is about to search an image file.
+Note that the event is automatically synchronized with the main thread by firing
+it through the standard TThread method Synchronize.
+See the description of TJclPeNameSearchNotifyEvent for more information.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -2922,10 +3718,9 @@ TJclRebaseImageInfo = record
   NewImageBase: DWORD;
 end;
 [ShortDescr]
-Record used by the <REF Target"..\PeRebaseImage">PeRebaseImage</REF> function to
-return information about a rebase operation.
+Record used by the PeRebaseImage function to return information about a rebase operation.
 [Description]
-Record used by the <REF>PeRebaseImage</REF> function to return information about
+Record used by the PeRebaseImage function to return information about
 a rebase operation.
 [RecordFields]
 Count=4
@@ -2945,25 +3740,23 @@ Count=1
 1=PeRebaseImage;..\PeRebaseImage
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function IsPeExe(const FileName: TFileName): Boolean;
+function IsValidPeFile(const FileName: TFileName): Boolean;
 [ShortDescr]
 Determines whether a file is a valid portable executable file.
 [Description]
-IsPeExe determines whether the specified file is a valid portable executable file.
+IsValidPeFile determines whether the specified file is a valid portable executable file.
 Examples of valid PE files are Win32 .exe, .dll and .obj files as generated by
 Delphi or any other Win32 compiler.
 [Parameters]
 Count=1
-1=FileName:TFileName=Name of the executable image file to test. The normal search
-path is used to locate this file (application path, current directory, windows folder
-etc.). If the filename does not include an extension, '.dll' is assumed.
+1=FileName:TFileName=Fully qualified filename of the executable image file to test.
 [Result]
 If the specified file is a valid portable executable file the function returns
 True, otherwise it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Miscellaneous
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -2981,7 +3774,7 @@ TODO
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Miscellaneous
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3016,7 +3809,7 @@ and image size. If the function fails it raises an EWin32Error exception.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Miscellaneous
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 [SeeAlso]
@@ -3037,7 +3830,7 @@ Count=1
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Miscellaneous
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3052,7 +3845,7 @@ by the specified name. The Options parameter allows you to fine tune the search.
 Count=3
 1=FileName:TFileName=Filename of the image file to test.
 2=FunctionName:string=Name of the function to search for.
-3=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+3=Options:TJclSmartCompOptions=Optional parameter which determine various aspects
 of the search such as case sensitivity.
 See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
 for more detailed information.
@@ -3062,7 +3855,7 @@ it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 [SeeAlso]
@@ -3070,13 +3863,12 @@ Count=1
 1=TJclSmartCompOptions;Smart Name Comparison\Types\TJclSmartCompOptions
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
-  var ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
+function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string; var ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
 [ShortDescr]
 Tests whether a function is forwarded.
 [Description]
 PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
-to another module/function or not. If it is forwarded the ForwardedName parameter
+to another image/function or not. If it is forwarded the ForwardedName parameter
 receives the location to which the function is forwarded.
 [Parameters]
 Count=4
@@ -3096,18 +3888,17 @@ parameter is undefined.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
-  Options: TJclSmartCompOptions = []): Boolean;
+function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string; Options: TJclSmartCompOptions = []): Boolean;
 [ShortDescr]
 Tests whether a function is forwarded.
 [Description]
 PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
-to another module/function or not.
+to another image/function or not.
 [Parameters]
 Count=3
 1=FileName:TFileName=Filename of the image file to test.
@@ -3122,7 +3913,7 @@ otherwise it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3143,7 +3934,7 @@ Count=4
 If this parameter is left empty the function simply tests if the function is imported
 at all from any library. If however this parameter is specified the function only
 returns True if the function is actually imported from the specified library.
-4=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+4=Options:TJclSmartCompOptions=Optional parameter which determine various aspects
 of the functionname matching such as case sensitivity.
 See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
 for more detailed information.
@@ -3153,47 +3944,53 @@ returns True, otherwise ut returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string): Boolean;
+function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string; Recursive: Boolean = False): Boolean;
 [ShortDescr]
 Tests whether an image is implicitly linked against a library.
 [Description]
 PeDoesImportLibrary determines whether the specified image implicitly links
 against the specified library. Thus it tests whether the image imports anything
-from the library. Note that this function only tests direct imports. If for example
-Lib2 links against Lib3 and Lib1 links against Lib2, then testing Lib1 for
-linking against Lib3 will return False.
+from the library.
 [Parameters]
-Count=2
+Count=3
 1=FileName:TFileName=Filename of the image to test.
 2=LibraryName:string=Name of the library to test against.
+3=Recursive:Boolean=If False the function only tests for direct imports (library
+A links directly against lbrary B). If True the function performs the test
+recursively and therefore includes indirect imports (library A links against
+library B which links against library C therefore library A links against library
+C).
 [Result]
 If the image directly imports the library the function returns True, otherwise it
 returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings): Boolean;
+function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings; Recursive: Boolean = False; FullPathName: Boolean = False): Boolean;
 [ShortDescr]
 Returns a list of all libraries an image imports.
 [Description]
 PeImportedLibraries returns a list of all libraries which the specified image
-imports (implicitly links against). Note that the list only includes direct imports.
-If Lib1 imports Lib2 and Lib2 imports Lib3 then Lib3 will not be included in the
-listing for Lib1.
+imports (implicitly links against).
 [Parameters]
-Count=2
+Count=4
 1=FileName:TFileName=Filename of the image for which to retrieve an import list.
 2=LibrariesList:TStrings=Receives the list of imported libraries.
+3=Recursive:Boolean=If False the function only includes direct imports. If True
+the function includes indirect imports as well (library A imports library B which
+in turn imports library C and therefore library A indirectly imports library C).
+4=FullPathName:Boolean=Determines whether the list of libraries includes the full
+path of the image files.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. In the
 latter case the contents of the list is undefined.
@@ -3203,12 +4000,12 @@ Count=1
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray): Boolean;
+function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray; Recursive: Boolean = False; FullPathName: Boolean = False): Boolean;
 [ShortDescr]
 Returns a list of all libraries an image imports.
 [Description]
@@ -3217,16 +4014,21 @@ imports (implicitly links against). Note that the list only includes direct impo
 If Lib1 imports Lib2 and Lib2 imports Lib3 then Lib3 will not be included in the
 listing for Lib1.
 [Parameters]
-Count=2
+Count=4
 1=FileName:TFileName=Filename of the image for which to retrieve an import list.
 2=LibrariesList:TJclStringArray=Receives the list of imported libraries.
+3=Recursive:Boolean=If False the function only includes direct imports. If True
+the function includes indirect imports as well (library A imports library B which
+in turn imports library C and therefore library A indirectly imports library C).
+4=FullPathName:Boolean=Determines whether the list of libraries includes the full
+path of the image files.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. In the
 latter case the contents of the list is undefined.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3257,7 +4059,7 @@ of success, the list may not contain any entries (the image may not import anyth
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3287,7 +4089,7 @@ anything).
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3307,7 +4109,7 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3326,7 +4128,7 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3349,7 +4151,7 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -3370,26 +4172,642 @@ returns False.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Simple PE Helpers
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure PeClearGlobalImage;
+function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 [ShortDescr]
-Clears the global TJclPeImage object.
+Returns a pointer to the TImageNtHeaders record.
 [Description]
-The various routines in the JclPeImage unit all use a single global TJclPeImage
-instance to perform their work. This instance is created during unit initialization.
-All PE functions check whether the global instance is initialized for the correct
-image file and initalize it if not. This is to increase performance when multiple
-queries are performed on the same PE file. Whenever you
-no longer need to use the PE functions you should clear the contents of the
-global TJclPeImage instance to release all resources held by it. Note that this
-does not destroy the instance, this is done automatically upon application exit.
+Returns a pointer to the TImageNtHeaders record for the image whose address is
+specified as the BaseAddress parameter. This record contains a signature for the
+PE image ('PE#0#0') and two subrecords for the COFF header and optional header.
+[Parameters]
+Count=1
+1=BaseAddress:Pointer=Base address at which the image file for which you want
+to retrieve the TImageNtHeader record is mapped. This address is returned by
+the MapAndLoad and LoadLibrary API functions.
+[Result]
+If the function succeeds it returns a pointer to the requested TImageNtHeaders
+record. If the function fails it returns nil. Note that the returned pointer is
+only valid as long as the image file remains mapped in memory.
 [Quick Info]
 Unit=JclPeImage
 Category=Libraries, Processes and Threads
-SubCat=Portable Executable File Format
+SubCat=Portable Executable File Format\Mapped Image Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeMapImgLibraryName(const BaseAddress: Pointer): string;
+[ShortDescr]
+Returns the name of the image file mapped at the specified address.
+[Description]
+Returns the name of the image file mapped at the specified address.
+[Parameters]
+Count=1
+1=BaseAddress:Pointer=Base address at which the image file for which you want
+to retrieve the name is mapped. This address is returned by the MapAndLoad and
+LoadLibrary API functions.
+[Result]
+If the function succeeds it returns the name of the image mapped at the specified
+address. If the function fails it returns an empty string.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
+[ShortDescr]
+Returns a pointer to the header of the first section in an image.
+[Description]
+The PeMapImgSections function returns a pointer to a TImageSectionHeader record
+which describes the first section in the image file specified (indirectly) by the
+NtHeaders parameter. That pointer can be retrieved, for example, by using the
+PeMapImgNtHeaders function. For an example of how to use this function to traverse
+all the ections in an image see the implementation of the PeMapImgFindSection
+function.
+[Parameters]
+Count=1
+1=NtHeader:PImageNtHeaders=Pointer to the TImageNtHeaders record which specifies
+the mapped image for which to retrieve the header of the first section.
+[Result]
+If the function succeeds it returns a pointer to the TImageSectionHeader of the
+first section in the image. If the function fails it returns nil. Note that the
+returned pointer is valid only as long as the image remains mapped in memory.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeMapImgFindSection(const NtHeaders: PImageNtHeaders; const SectionName: string): PImageSectionHeader;
+[ShortDescr]
+Searches the image, specified by NtHeaders, for a specific named section.
+[Description]
+Searches the image, specified by NtHeaders, for a specific named section.
+[Parameters]
+Count=2
+1=NtHeaders:PImageNtHeaders=Pointer to the TImageNtHeaders record which specifies
+the mapped image in which to search for a specific section.
+2=SectionName:string=Name of the section to search for. Note that the search is
+case insensitive.
+[Result]
+If the function finds the specified named section it returns a pointer to the
+section header. If the function doesn't find the named section it returns nil.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeSectionStream = class (TCustomMemoryStream)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines\TJclPeSectionStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(Instance: HMODULE; const ASectionName: string);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=TODO:TODO=TODO
+2=TODO:TODO=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines\TJclPeSectionStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Write(const Buffer; Count: Longint): Longint; override;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=TODO:TODO=TODO
+2=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines\TJclPeSectionStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Instance: HMODULE read FInstance;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines\TJclPeSectionStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SectionHeader: TImageSectionHeader read FSectionHeader;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Mapped Image Routines\TJclPeSectionStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeMapImgHookItem = class (TObject)
+[ShortDescr]
+The TJclPeMapImgHookItem represents a single hooked API function.
+[Description]
+The TJclPeMapImgHookItem represents a single hooked API function. The class
+provides detailed information about the hooked function, such as it's name and
+the image it resides in, as well as methods to unhook the function. You perform
+the initial hooking itself using the TJclPeMapImgHooks class.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Unhook: Boolean;
+[ShortDescr]
+Unhooks the function.
+[Description]
+Call the UnHook method to unhook the function represented by this TJclPeMapImgHookItem
+instance. This will cause the import to revert to the state before the hooking took
+place and will destroy the TJclPeMapImgHookItem instance on which the method was
+invoked.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property BaseAddress: Pointer read FBaseAddress;
+[ShortDescr]
+Base address at which the image in which the hooked function resides, is mapped.
+[Description]
+Base address at which the image in which the hooked function resides, is mapped.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FunctionName: string read FFunctionName;
+[ShortDescr]
+Name of the hooked function.
+[Description]
+Name of the hooked function.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ModuleName: string read FModuleName;
+[ShortDescr]
+Name of the image in which the hooked function resides.
+[Description]
+Name of the image in which the hooked function resides.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property NewAddress: Pointer read FNewAddress;
+[ShortDescr]
+Address of the function that replaced the original, hooked function.
+[Description]
+Address of the function that replaced the original, hooked function.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OriginalAddress: Pointer read FOriginalAddress;
+[ShortDescr]
+Address of the original, hooked funcion.
+[Description]
+Address of the original, hooked funcion.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHookItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeMapImgHooks = class (TObjectList)
+[ShortDescr]
+Provides hooking and unhooking of API functions.
+[Description]
+The TJclPeMapImgHooks provides the functionality to hook and unhook API functions
+as well as manage a set of those hooks. The class automatically unhooks all functions
+it manages when it is destroyed. The class does not allow you to hook a single
+function more than once.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HookImport(Base: Pointer; const ModuleName, FunctionName: string; NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
+[ShortDescr]
+Hooks a imported function.
+[Description]
+The HookImports method hooks the specified function. That is, it replaces the
+imported function with the one supplied. Thereafter all calls to the original
+function anywhere in the application automatically call this new function. When
+the hook is no longer needed you should unhook the function. Destroying the
+TJclPeMapImgHooks instance automatically unhooks all functions it manages.
+[Parameters]
+Count=5
+1=Base:Pointer=Base address at which the image, in which the function you want to
+hook resides, is mapped.
+2=ModuleName:string=Name of the image in which the function you want to hook resides.
+3=FunctionName:string=Name of the function you want to hook.
+4=NewAddress:Pointer=Address of the new function which should replace the original function.
+5=OriginalAddress:Pointer=Upon success receives the address of the function which was hooked.
+[Result]
+If the function succeeds it returns True and adds an item representing the hooked
+function to the list.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function IsWin9xDebugThunk(P: Pointer): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=P:Pointer=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
+[ShortDescr]
+Hooks an imported function by replacing it with the new function.
+[Description]
+Hooks an imported function by replacing it with the new function. Unlike the
+HookImport function this class method does not add an entry representing the
+hooked function to the list (how could it, being a class method!).
+[Parameters]
+Count=4
+1=Base:Pointer=Base address at which the image, in which the function you want to
+hook resides, is mapped.
+2=ModuleName:string=Name of the image in which the function you want to hook resides.
+3=FromProc:Pointer=Address of the function you want to hook.
+4=ToProc:Pointer=Address of the function that is to replace the original function.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Hallvard Vassbotn;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnhookByNewAddress(NewAddress: Pointer): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=NewAddress:Pointer=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromNewAddress[NewAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromNewAddress;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\API Hooking\TJclPeMapImgHooks
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer; var NtHeaders: TImageNtHeaders): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Image access under debugger
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer; var Name: string): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Image access under debugger
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclBorUmDescription = record
+  Kind: TJclBorUmSymbolKind;
+  Modifiers: TJclBorUmSymbolModifiers;
+end;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[RecordFields]
+Count=2
+1=Kind:TJclBorUmSymbolKind=TODO
+2=Modifiers:TJclBorUmSymbolModifiers=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclBorUmSymbolKind = (skData, skFunction, skConstructor, skDestructor, skRTTI, skVTable);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Enumeration]
+Count=6
+1=skData=TODO
+2=skFunction=TODO
+3=skConstructor=TODO
+4=skDestructor=TODO
+5=skRTTI=TODO
+6=skVTable=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclBorUmSymbolModifier = (smQualified, smLinkProc);
+TJclBorUmSymbolModifiers = set of TJclBorUmSymbolModifier;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Enumeration]
+Count=2
+1=smQualified=TODO
+2=smLinkProc=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclBorUmResult = (urOk, urNotMangled, urMicrosoft, urError);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Enumeration]
+Count=4
+1=urOk=TODO
+2=urNotMangled=TODO
+3=urMicrosoft=TODO
+4=urError=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeUmResult = (umNotMangled, umBorland, umMicrosoft);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Enumeration]
+Count=3
+1=umNotMangled=TODO
+2=umBorland=TODO
+3=umMicrosoft=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeBorUnmangleName(const Name: string; var Unmangled: string; var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; var Unmangled: string; var Description: TJclBorUmDescription): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string): string; overload;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeIsNameMangled(const Name: string): TJclPeUmResult;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TODO:TODO=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Name unmangling
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
