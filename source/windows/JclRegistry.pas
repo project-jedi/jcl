@@ -595,7 +595,7 @@ begin
   else
     InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
       SizeOf(Ret), DataType, @Ret, DataSize);
-  Result := Ret and $FFFFFFFF;
+  Result := Integer(Ret and $FFFFFFFF);
 end;
 
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
@@ -932,7 +932,7 @@ end;
 
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 begin
-  RegWriteInteger(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
+  RegWriteInteger(RootKey, Key, Name, REG_DWORD, Value);
 end;
 
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Integer);
@@ -1394,6 +1394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.37  2005/04/04 19:15:42  outchy
+// IT2805: Range Check Error in RegReadInteger and RegWriteInteger
+//
 // Revision 1.36  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
