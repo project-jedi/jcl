@@ -96,11 +96,11 @@ function PathCommonPrefix(const Path1, Path2: string): Integer;
 {$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
-{$ENDIF MSWINDOWS}
 {$IFDEF VCL}
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
 {$ENDIF VCL}
+{$ENDIF MSWINDOWS}
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
@@ -186,22 +186,18 @@ procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 function GetFileInformation(const FileName: string): TSearchRec;
 {$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
-{$ENDIF LINUX}
-{$IFDEF MSWINDOWS}
 function GetFileLastAccess(const FileName: string): TFileTime;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
+function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
 function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 function GetFileCreation(const FileName: string): TFileTime;
 function GetModulePath(const Module: HMODULE): string;
-function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 {$ENDIF MSWINDOWS}
+function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFDEF MSWINDOWS}
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
@@ -304,7 +300,7 @@ type
     fsLastChangeBefore, fsMaxSize, fsMinSize);
   TFileSearchOptions = set of TFileSearchOption;
   TFileSearchTaskID = Integer;
-  TFileSearchTerminationEvent = procedure (ID: TFileSearchTaskID) of object;
+  TFileSearchTerminationEvent = procedure (const ID: TFileSearchTaskID; const Aborted: Boolean) of object;
   TFileEnumeratorSyncMode = (smPerFile, smPerDirectory);
 
   IJclFileEnumerator = interface
@@ -450,6 +446,7 @@ type
       read GetOption write SetOption;
     property IncludeHiddenSubDirectories: Boolean index fsIncludeHiddenSubDirectories
       read GetOption write SetOption;
+    property SearchOption[const Option: TFileSearchOption]: Boolean read GetOption write SetOption;
     property LastChangeAfterAsString: string read GetLastChangeAfterStr write SetLastChangeAfterStr;
     property LastChangeBeforeAsString: string read GetLastChangeBeforeStr write SetLastChangeBeforeStr;
   published
@@ -1695,47 +1692,56 @@ end;
   Path: the path to canonicalize
   Result: the canonicalized path
   Author: Jeff
-  Notes: This function does not behave exactly like the one from shlwapi.dll!!
-         Especially 'c:\..' => 'c:' whereas shlwapi returns 'c:\'
+
+  Linux: Libc.canonicalize_file_name() is different in that it converts relative paths
+         to absolute ones - and thus needs to evaluate the program's environment.
+
 }
 
 function PathCanonicalize(const Path: string): string;
-{$IFDEF MSWINDOWS}
-
 var
   List: TStrings;
-  I: Integer;
+  S: string;
+  I, K: Integer;
+  IsAbsolute: Boolean;
 begin
+  I := Pos(':', Path); // for Windows' sake
+  K := Pos(PathSeparator, Path);
+  IsAbsolute := K - I = 1;
+  if not IsAbsolute then
+    K := I;
+  if K = 0 then
+    S := Path
+  else
+    S := Copy(Path, K + 1, Length(Path));
   List := TStringList.Create;
   try
-    StrIToStrings(Path, '\', List, False);
+    StrIToStrings(S, PathSeparator, List, False);
     I := 0;
     while I < List.Count do
     begin
       if List[I] = '.' then List.Delete(I)
-      else if (List[I] = '..') then
+      else if (IsAbsolute or (I > 0) and not (List[I-1] = '..')) and (List[I] = '..') then
       begin
         List.Delete(I);
-        Dec(I);
-        if I > 0 then List.Delete(I);
+        if I > 0 then
+        begin
+          Dec(I);
+          List.Delete(I);
+        end;
       end
       else Inc(I);
     end;
-    Result := StringsToStr(List, '\', False);
+    Result := StringsToStr(List, PathSeparator, False);
   finally
     List.Free;
   end;
+  if K > 0 then
+    Result := Copy(Path, 1, K) + Result
+  else
+  if Result = '' then
+    Result := '.';
 end;
-
-{$ENDIF MSWINDOWS}
-
-{$IFDEF LINUX}
-
-begin
-  Result := canonicalize_file_name(PChar(Path));
-end;
-
-{$ENDIF LINUX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1850,24 +1856,6 @@ function PathExtractFileNameNoExt(const Path: string): string;
 begin
   Result := PathRemoveExtension(ExtractFileName(Path));
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-{$IFNDEF COMPILER6_UP}
-
-function IncludeTrailingPathDelimiter(const Path: string): string;
-begin
-  Result := IncludeTrailingBackSlash(Path);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-begin
-  Result := ExcludeTrailingBackSlash(Path);
-end;
-
-{$ENDIF not def COMPILER6_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2599,6 +2587,7 @@ function GetDirectorySize(const Path: string): Int64;
           end;
           {$ENDIF MSWINDOWS}
           {$IFDEF LINUX}
+            // SysUtils.Find* don't perceive files >= 2 GB anyway 
             Inc(Result, Int64(F.Size));
           {$ENDIF LINUX}
         end;
@@ -2739,12 +2728,16 @@ end;
 
 {$IFDEF LINUX}
 
-function GetFileStatus(const FileName: string; out Buf: TStatBuf; DereferenceSymLinks: Boolean = True): Integer;
+function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
+  const DereferenceSymLinks: Boolean = True): Integer;
+const
+  _STAT_VER_LINUX = 3; // defined in bits/stat.h
 begin
+  // stat64/lstat64 from unit Libc always(?) report "file not found" - why?
   if DereferenceSymLinks then
-    Result := stat(PChar(FileName), Buf)
+    Result := __xstat64(_STAT_VER_LINUX, PChar(FileName), StatBuf)
   else
-    Result := lstat(PChar(FileName), Buf);
+    Result := __lxstat64(_STAT_VER_LINUX, PChar(FileName), StatBuf);
 end;
 
 {$ENDIF LINUX}
@@ -2764,7 +2757,7 @@ end;
 
 function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
 var
-  Buf: TStatBuf;
+  Buf: TStatBuf64;
 begin
   if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
     Result := Buf.st_mtime
@@ -2790,7 +2783,7 @@ end;
 
 function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
 var
-  Buf: TStatBuf;
+  Buf: TStatBuf64;
 begin
   if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
     Result := Buf.st_atime
@@ -2821,9 +2814,12 @@ begin
   SetLength(Result, L);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetSizeOfFile(const FileName: string): Int64;
+{$IFDEF MSWINDOWS}
 var
   Handle: THandle;
   FindData: TWin32FindData;
@@ -2841,8 +2837,20 @@ begin
   else
     RaiseLastOSError;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+var
+  Buf: TStatBuf64;
+begin
+  if GetFileStatus(FileName, Buf) <> 0 then
+    RaiseLastOSError;
+  Result := Buf.st_size
+end;
+{$ENDIF LINUX}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function GetSizeOfFile(Handle: THandle): Int64;
 var
@@ -2867,16 +2875,16 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
- // Why the f*** are stat64/lstat64 reporting "file not found"?
- // No such problems with 32-bit stat/lstat!
 var
-  StatBuf: TStatBuf64;
+  Buf: TStatBuf64;
 begin
-  if lstat64(PChar(FileInfo.PathOnly + FileInfo.Name), StatBuf) = 0 then
-    Result := StatBuf.st_size
-  else
-    // RaiseLastOSError;
-    Result := Cardinal(FileInfo.Size);
+  // Note that SysUtils.FindFirst/Next do not "see" files >= 2 GB under Linux, thus the following
+  // code is rather pointless at the moment of this writing.
+  // We apparently need to write our own set of Findxxx functions to overcome this limitation.
+  // (rr, 2003-03-06)
+  if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf) <> 0 then
+    RaiseLastOSError;
+  Result := Buf.st_size
 end;
 {$ENDIF LINUX}
 
@@ -3198,6 +3206,8 @@ begin
        Result := MoveFileEx(PChar(TempFileName), PChar(FileName), MOVEFILE_REPLACE_EXISTING);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
@@ -3222,6 +3232,8 @@ end;
 //==================================================================================================
 // File Version info routines
 //==================================================================================================
+
+{$IFDEF MSWINDOWS}
 
 const
   VerKeyNames: array [1..12] of string[17] =
@@ -4167,14 +4179,16 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 const
-  SAllAttrSet = 'rwxrwxrwx';
+  SAllAttrSet = 'drwxrwxrwx';
 var
   I: Integer;
   Flag: Cardinal;
 begin
   Result := SAllAttrSet;
+  if FileInfo.Attr and faDirectory = 0 then
+    Result[1] := '-'; // no directory
   Flag := 1 shl 8;
-  for I := 1 to 9 do
+  for I := 2 to 10 do
   begin
     if FileInfo.Mode and Flag = 0 then
       Result[I] := '-';
@@ -4182,6 +4196,21 @@ begin
   end;
 end;
 {$ENDIF LINUX}
+
+//--------------------------------------------------------------------------------------------------
+
+function CanonicalizedSearchPath(const Directory: string): string;
+begin
+  Result := PathCanonicalize(Directory);
+  {$IFDEF MSWINDOWS}
+  // avoid changing "X:" (current directory on drive X:) into "X:\" (root dir.)
+  if Result[Length(Result)] <> ':' then
+  {$ENDIF MSWINDOWS}
+    Result := PathAddSeparator(Result);
+  // strip leading "./" resp. ".\"
+  if Pos('.' + PathSeparator, Result) = 1 then
+    Result := Copy(Result, 3, Length(Result) - 2);
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4262,8 +4291,7 @@ var
 
 begin
   Assert(Assigned(HandleDirectory));
-
-  RootDir := PathAddSeparator(Root);
+  RootDir := CanonicalizedSearchPath(Root);
 
   if IncludeHiddenDirectories then
     Attr := faDirectory + faHidden  // no effect on Linux
@@ -4445,7 +4473,7 @@ type
     property FileMask: string write SetFileMask;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
-    property Directory: string read FDirectory;
+    property Directory: string read FDirectory write FDirectory;
     property IncludeSubDirectories: Boolean
       read FIncludeSubDirectories write FIncludeSubDirectories;
     property IncludeHiddenSubDirectories: Boolean
@@ -4469,9 +4497,6 @@ begin
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
   FFileSizeMax := High(FFileSizeMax);
-  {$IFDEF COMPILER6_UP}
-  FFileMask.Delimiter := ';';
-  {$ENDIF def COMPILER6_UP}
   {$IFDEF MSWINDOWS}
   Priority := tpIdle;
   {$ENDIF MSWINDOWS}
@@ -4509,7 +4534,7 @@ begin
     EnumDirectories(Directory, FInternalDirHandler, FIncludeHiddenSubDirectories,
       FSubDirectoryMask, @Terminated)
   else
-    FInternalDirHandler(PathAddSeparator(Directory));
+    FInternalDirHandler(CanonicalizedSearchPath(Directory));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4722,7 +4747,7 @@ begin
   Task.FID := FNextTaskID;
   Inc(FNextTaskID);
   Task.FileMask := FileMask;
-  Task.FDirectory := RootDirectory;
+  Task.Directory := RootDirectory;
   Task.RejectedAttr := AttributeMask.Rejected;
   Task.RequiredAttr := AttributeMask.Required;
   Task.IncludeSubDirectories := IncludeSubDirectories;
@@ -4733,7 +4758,7 @@ begin
     Task.FileSizeMax := FileSizeMax;
   if fsLastChangeAfter in Options then
     Task.FFileTimeMin := DateTimeToFileDate(LastChangeAfter);
-  if fsLastChangeAfter in Options then
+  if fsLastChangeBefore in Options then
     Task.FFileTimeMax := DateTimeToFileDate(LastChangeBefore);
   Task.SynchronizationMode := SynchronizationMode;
   Task.FOnEnterDirectory := OnEnterDirectory;
@@ -4820,7 +4845,8 @@ procedure TJclFileEnumerator.TaskTerminated(Sender: TObject);
 begin
   FTasks.Remove(Sender);
   if Assigned(FOnTerminateTask) then
-    FOnTerminateTask(TEnumFileThread(Sender).ID);
+    with TEnumFileThread(Sender) do
+      FOnTerminateTask(ID, Terminated);
   if FRefCount > 0 then
     _Release;
 end;
