@@ -23,6 +23,11 @@ Parameters:
   s - String to be encoded
 Result:
   MIME encoded string
+See also:
+  MimeDecodeString
+  MimeEncodeStream
+  MimeEncode
+  MimeEncodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -41,6 +46,11 @@ Parameters:
   s - MIME64-encoded string to be decoded
 Result:
   Decoded string
+See also:
+  MimeEncodeString
+  MimeDecodeStream
+  MimeDecode
+  MimeDecodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -65,6 +75,11 @@ Description:
 Parameters:
   InputStream - Input stream to be encoded
   OutputStream - Output stream
+See also:
+  MimeDecodeStream
+  MimeEncodeString
+  MimeEncode
+  MimeEncodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -89,6 +104,11 @@ Description:
 Parameters:
   InputStream - Input stream to be decoded
   OutputStream - Output stream
+See also:
+  MimeEncodeStream
+  MimeDecodeString
+  MimeDecode
+  MimeDecodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -107,6 +127,9 @@ Parameters:
   I - Number of bytes to encode
 Result:
   Number of bytes needed for encoding
+See also:
+  MimeEncode
+  MimeDecodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -127,6 +150,9 @@ Parameters:
   I - Number of bytes to decode
 Result:
   Maximum number of bytes needed for decoding
+See also:
+  MimeDecode
+  MimeEncodedSize
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -153,6 +179,9 @@ Parameters:
   OutputBuffer - Points to the output buffer
 Notes:
   If not all data fits into memory at once, you can use MimeEncode multiple times, but you must be very careful about the size of the InputBuffer. It should be set to a number that is a multiple of 3.
+See also:
+  MimeEncodedSize
+  MimeDecode
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -180,6 +209,9 @@ Parameters:
   OutputBuffer - Points to the output buffer
 Result:
   Number of bytes actually written to the OutputBuffer
+See also:
+  MimeDecodedSize
+  MimeEncode
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -206,6 +238,8 @@ Result:
   Number of bytes actually written to the OutputBuffer
 Notes:
   On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be 4. The values returned in these parameters should be used in the next call to MimeDecodePartial or MimeDecodePartialEnd.
+See also:
+  MimeDecodePartialEnd
 Quick info:
   Unit: JclMime
   Category: MIME
@@ -230,6 +264,8 @@ Result:
   Number of bytes actually written to the OutputBuffer
 Notes:
   ByteBuffer and ByteBufferSpace are the values returned in the last call to MimeDecodePartial.
+See also:
+  MimeDecodePartial
 Quick info:
   Unit: JclMime
   Category: MIME
