@@ -2850,8 +2850,11 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.15  2004/09/30 07:50:29  marquardt
-// remove PH contributions
+// remove JclIsClass pure pascal contributions
 //
 // Revision 1.14  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
@@ -2877,10 +2880,10 @@ finalization
 // Revision 1.7  2004/04/23 22:08:39  mthoma
 // Removed non delphi language version of JclIsClass.
 //
-// Revision 1.6  2004/04/15 16:19:36  peterjhaas
+// Revision 1.6  2004/04/15 16:19:36
 // add pure pascal implementation (JclIsClass)
 //
-// Revision 1.5  2004/04/06 04:53:18  peterjhaas
+// Revision 1.5  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 

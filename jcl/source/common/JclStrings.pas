@@ -4064,20 +4064,23 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.30  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.29  2004/10/11 14:54:38  marquardt
 // MultiSz finetuning
 //
 // Revision 1.28  2004/10/11 08:13:03  marquardt
-// PH cleaning of JclStrings
+// cleaning of JclStrings
 //
 // Revision 1.27  2004/10/10 12:52:12  marquardt
 // DestroyEnvironmentBlock introduced
 //
 // Revision 1.26  2004/09/30 13:11:27  marquardt
-// remove PH contributions
+// remove contributions
 //
 // Revision 1.25  2004/09/30 07:50:29  marquardt
-// remove PH contributions
+// remove contributions
 //
 // Revision 1.24  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
@@ -4109,7 +4112,7 @@ initialization
 // Revision 1.15  2004/04/14 20:39:59  mthoma
 // Reintroduced StrIsNumber as StrConsistsofNumberChars, copied local function StrEndW from JclUnicode to get rid of that dependency.
 //
-// Revision 1.14  2004/04/12 22:07:45  peterjhaas
+// Revision 1.14  2004/04/12 22:07:45
 // Bugfix: StringsToMultiString, MultiStringToStrings,
 //         empty list entries are not allowed
 // Add: StringsToMultiWideString, MultiWideStringToStrings
@@ -4123,7 +4126,7 @@ initialization
 // Revision 1.11  2004/04/08 19:40:26  mthoma
 // Fixed 0000947, 0001060 (StrBetween with same start/end symbol problem). Added a note to the docs.
 //
-// Revision 1.10  2004/04/06 04:31:32  peterjhaas
+// Revision 1.10  2004/04/06 04:31:32
 // Add functions for String <--> MultiString conversion
 //
 

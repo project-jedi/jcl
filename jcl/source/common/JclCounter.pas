@@ -17,7 +17,11 @@
 { Portions created by Theo Bebekis are Copyright (C) Theo Bebekis. All Rights Reserved.            }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Theo Bebekis, Marcel van Brakel, Robert Marquardt, Matthias Thoma, Petr Vones                  }
+{   Theo Bebekis                                                                                   }
+{   Marcel van Brakel                                                                              }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -221,6 +225,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.9  2004/07/28 18:00:49  marquardt
 // various style cleanings, some minor fixes
 //
@@ -236,7 +243,7 @@ end;
 // Revision 1.5  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
-// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// Revision 1.4  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 

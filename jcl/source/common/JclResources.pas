@@ -1105,6 +1105,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.17  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.16  2004/10/11 08:13:03  marquardt
 // PH cleaning of JclStrings
 //
@@ -1138,10 +1141,10 @@ implementation
 // Revision 1.6  2004/05/14 15:26:34  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.5  2004/04/18 00:41:04  peterjhaas
+// Revision 1.5  2004/04/18 00:41:04  
 // remove unneeded OpenGL error messages
 //
-// Revision 1.4  2004/04/06 04:38:57  peterjhaas
+// Revision 1.4  2004/04/06 04:38:57  
 // Add resources for DIT and ZLib
 //
 
