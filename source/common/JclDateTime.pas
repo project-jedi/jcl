@@ -502,7 +502,6 @@ var
  tmpYear: Integer;
  January4th: TDateTime;
  FirstMonday: TDateTime;
- DaysBetween: Word;
 
 begin
   // Applying the rule: The first calender week is the week that includes January, 4th
@@ -537,7 +536,7 @@ var
   temp: Integer;
 
 begin
-  ISOWeekNumber(DateTime, YearOfWeekNumber, temp);
+  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -546,7 +545,7 @@ function ISOWeekNumber(DateTime: TDateTime): Integer;
 var
   temp: Integer;
 begin
-  ISOWeekNumber(DateTime, temp, temp);
+  Result := ISOWeekNumber(DateTime, temp, temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1224,6 +1223,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/10/17 20:05:31  mthoma
+// style cleaned.
+//
 // Revision 1.14  2004/10/17 19:43:44  mthoma
 // Wrote "placeholders" for FileTimeToUnixTime, UnixTimeToFileTime until someone writes a better cleanroom solution. Rewrote ISOWeekNumber and ISOWeekToDateTime. Introduced new functions: GetISOYearNumberOfDays,
 // IsISOLongYear, ISODayOfWeek.
