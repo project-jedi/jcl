@@ -173,8 +173,8 @@ CAUTION:</B> OutputBuffer must have enough memory allocated to take all encoded
 output. <REF>MimeEncodedSize</REF>(InputBytesCount) calculates this amount in bytes.
 MimeEncode will then fill the entire OutputBuffer, so there is no
 OutputBytesCount result for this procedure. Preallocating all memory at once (as
-required by MimeEncode) avoids the time-consuming process of reallocation. If
-InputBuffer and/or OutBuffer is/are nil an exception is raised.
+required by MimeEncode) avoids the time-consuming process of reallocation.
+
 [Notes]
 Count=1
 1=If not all data fits into memory at once, you can use MimeEncode multiple times, but you must be very careful about the size of the InputBuffer. It should be set to a number that is a multiple of 3.
@@ -206,8 +206,8 @@ guarantee that all output will be filled after decoding. MimeDecode therefore
 returns the actual number of bytes written to OutputBuffer. Preallocating all
 memory at once (as is required by MimeDecode) avoids the time-consuming process
 of reallocation. After calling MimeDecode, simply cut the allocated memory down
-to OutputBytesCount, i.e. SetLength(OutString, OutputBytesCount). If InputBuffer
-and/or OutBuffer is/are nil an exception is raised
+to OutputBytesCount, i.e. SetLength(OutString, OutputBytesCount).
+
 [Parameters]
 Count=3
 1=InputBuffer:=Points to the memory block to encode
@@ -233,7 +233,7 @@ MIME decode a chunk of data in a multi-phase decoding routine
 [Description]
 MIME decodes a chunk of data in a mutli-phase decoding routine. It is used
 within <REF>MimeDecodeString</REF>, <REF>MimeDecodeStream</REF>, and <REF>MimeDecode</REF>, but can also be used
-directly. If either InputBuffer or OutBuffer are nil, an exception is raised.
+directly.
 [Notes]
 Count=1
 1=On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be 4. The values returned in these parameters should be used in the next call to MimeDecodePartial or <REF>MimeDecodePartialEnd</REF>.
@@ -261,9 +261,9 @@ function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
 [ShortDescr]
 MIME decode the last chunk of data in a multi-phase decoding routine
 [Description]
-MIME decodes the last chunk of data in a mutli-phase decoding routine. It is
+MIME decodes the last chunk of data in a multi-phase decoding routine. It is
 used within <REF Target"MimeDecodeString">MimeDecodeString</REF>, <REF Target"MimeDecodeStream">MimeDecodeStream,/REF> and <REF Target"MimeDecode">MimeDecode</REF>, but can also be
-used directly. If OutBuffer is nil, an exception is raised.
+used directly.
 [Notes]
 Count=1
 1=ByteBuffer and ByteBufferSpace are the values returned in the last call to <REF>MimeDecodePartial</REF>.
@@ -282,3 +282,4 @@ Delphi=4,5
 [SeeAlso]
 Count=1
 1=MimeDecodePartial
+
