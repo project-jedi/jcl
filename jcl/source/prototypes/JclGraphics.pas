@@ -33,16 +33,8 @@ unit JclGraphics;
 interface
 
 uses
-  SysUtils, Classes,
-{$IFDEF MSWINDOWS}
-  Windows, JclSynch,
-{$ENDIF MSWINDOWS}
-{$IFDEF VCL}
-  Graphics,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  Types, QGraphics,
-{$ENDIF VisualCLX}
+  SysUtils, Classes, {$IFDEF MSWINDOWS} Windows, {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}Graphics, JclSynch, {$ENDIF VCL}{$IFDEF VisualCLX}Types, QGraphics, {$ENDIF VisualCLX}
   JclBase, JclGraphUtils;
 
 type
@@ -115,9 +107,7 @@ var
 //--------------------------------------------------------------------------------------------------
 
 type
-
 {$IFDEF VCL}
-
   TJclDesktopCanvas = class (TCanvas)
   private
     FDesktop: HDC;
@@ -234,9 +224,8 @@ type
     property Height: Integer read FHeight write SetHeight;
     property Width: Integer read FWidth write SetWidth;
   end;
-
-  {$DEFINE Bitmap32}
-
+{$ENDIF VCL}
+{$IFDEF Bitmap32}
   { TJclBitmap32 }
   { The TJclBitmap32 class is responsible for storage of a bitmap, as well as for drawing in it }
   TJclBitmap32 = class (TJclCustomMap)
@@ -390,7 +379,8 @@ type
     property OnChanging;
     property OnChange;
   end;
-
+{$ENDIF Bitmap32}
+{$IFDEF VCL}
   TJclByteMap = class (TJclCustomMap)
   private
     FBytes: TDynByteArray;
@@ -414,9 +404,7 @@ type
     property ValPtr[X, Y: Integer]: PByte read GetValPtr;
     property Value[X, Y: Integer]: Byte read GetValue write SetValue; default;
   end;
-
 {$ENDIF VCL}
-
   TJclTransformation = class (TObject)
   public
     function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
@@ -461,24 +449,22 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 {$IFDEF MSWINDOWS}
 procedure DrawBitmap(DC: HDC; Bitmap: HBitMap; X, Y, Width, Height: Integer);
 
-procedure BitmapToJPeg(const FileName: string);
-procedure JPegToBitmap(const FileName: string);
-
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
+{$ENDIF MSWINDOWS}
+{$IFDEF VCL}
+procedure BitmapToJPeg(const FileName: string);
+procedure JPegToBitmap(const FileName: string);
+
 procedure SaveIconToFile(Icon: HICON; const FileName: string);
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap;
   WriteLength: Boolean = False); overload;
 procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False); overload;
-{$ENDIF MSWINDOWS}
-
-{$IFDEF VCL}
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$ENDIF VCL}
-
 {$IFDEF Bitmap32}
 procedure BlockTransfer( Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
@@ -493,19 +479,17 @@ procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 {$ENDIF MSWINDOWS}
-
 {$IFDEF VCL}
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = 0); overload;
 procedure ScreenShot(bm: TBitmap); overload;
 {$ENDIF VCL}
-
+{$IFDEF Bitmap32}
 //--------------------------------------------------------------------------------------------------
 // PolyLines and Polygons
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF Bitmap32}
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 procedure PolyLineAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 procedure PolyLineFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF; Color: TColor32);
@@ -520,13 +504,11 @@ procedure PolyPolygonAS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArr
   Color: TColor32);
 procedure PolyPolygonFS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArrayF;
   Color: TColor32);
-{$ENDIF Bitmap32}
 
 //--------------------------------------------------------------------------------------------------
 // Filters
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF Bitmap32}
 procedure AlphaToGrayscale(Dst, Src: TJclBitmap32);
 procedure IntensityToAlpha(Dst, Src: TJclBitmap32);
 procedure Invert(Dst, Src: TJclBitmap32);
@@ -541,7 +523,10 @@ implementation
 uses
   TypInfo, Math,
   {$IFDEF MSWINDOWS}
-  ClipBrd, CommCtrl, ShellApi, JPeg,
+  CommCtrl, ShellApi,
+  {$IFDEF VCL}
+  ClipBrd, JPeg,
+  {$ENDIF}
   {$ENDIF MSWINDOWS}
   JclLogic, JclResources, JclSysUtils;
 
@@ -606,9 +591,8 @@ begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF Bitmap32}
+//--------------------------------------------------------------------------------------------------
 
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
 begin
@@ -630,9 +614,7 @@ begin
     raise EJclGraphicsError.CreateResRec(@RsSourceBitmapInvalid);
   Result := True;
 end;
-
 {$ENDIF Bitmap32}
-
 //==================================================================================================
 // Internal low level routines
 //==================================================================================================
@@ -1373,9 +1355,8 @@ begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF Bitmap32}
+//--------------------------------------------------------------------------------------------------
 
 procedure StretchNearest(Dst: TJclBitmap32; DstRect: TRect;
   Src: TJclBitmap32; SrcRect: TRect; CombineOp: TDrawMode);
@@ -1636,12 +1617,9 @@ begin
     MapY := nil;
   end;
 end;
-
 {$ENDIF Bitmap32}
-
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBitMap; X, Y, Width, Height: Integer);
 var
@@ -1654,12 +1632,9 @@ begin
   SelectObject(MemDC, OldBitmap);
   DeleteObject(MemDC);
 end;
-
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF VCL}
+//--------------------------------------------------------------------------------------------------
 
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
@@ -1699,11 +1674,7 @@ begin
   Result := Antialias;
 end;
 
-{$ENDIF VCL}
-
 //--------------------------------------------------------------------------------------------------
-
-{$IFDEF MSWINDOWS}
 
 procedure JPegToBitmap(const FileName: string);
 var
@@ -1744,37 +1715,14 @@ begin
     FreeAndNil(JPeg);
   end;
 end;
-
+{$ENDIF VCL}
+{$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function ExtractIconCount(const FileName: string): Integer;
 begin
   Result := ExtractIcon(HInstance, PChar(FileName), $FFFFFFFF);
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-{$IFDEF VCL}
-
-procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
-var
-  IconInfo: TIconInfo;
-begin
-  with TBitmap.Create do
-  try
-    Assign(Bitmap);
-    if not Transparent then
-      TransparentColor := clNone;
-    IconInfo.fIcon := True;
-    IconInfo.hbmMask := MaskHandle;
-    IconInfo.hbmColor := Handle;
-    Icon.Handle := CreateIconIndirect(IconInfo);
-  finally
-    Free;
-  end;
-end;
-
-{$ENDIF VCL}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1803,6 +1751,27 @@ begin
   begin
     DeleteObject(IconInfo.hbmMask);
     Result := IconInfo.hbmColor;
+  end;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF VCL}
+//--------------------------------------------------------------------------------------------------
+
+procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
+var
+  IconInfo: TIconInfo;
+begin
+  with TBitmap.Create do
+  try
+    Assign(Bitmap);
+    if not Transparent then
+      TransparentColor := clNone;
+    IconInfo.fIcon := True;
+    IconInfo.hbmMask := MaskHandle;
+    IconInfo.hbmColor := Handle;
+    Icon.Handle := CreateIconIndirect(IconInfo);
+  finally
+    Free;
   end;
 end;
 
@@ -1890,6 +1859,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// WriteIcon depends on unit Graphics by use of GetDIBSizes and GetDIB
+
 procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 var
   IconInfo: TIconInfo;
@@ -1918,12 +1889,9 @@ begin
     Stream.Free;
   end;
 end;
-
-{$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
-
+{$ENDIF VCL}
 {$IFDEF Bitmap32}
+//--------------------------------------------------------------------------------------------------
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
   Transformation: TJclTransformation);
@@ -2052,12 +2020,9 @@ begin
     ABitmap.Changed;
   end;
 end;
-
 {$ENDIF Bitmap32}
-
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF VCL}
+//--------------------------------------------------------------------------------------------------
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
@@ -2184,12 +2149,9 @@ procedure ScreenShot(bm: TBitmap); overload;
 begin
   ScreenShot(bm, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
 end;
-
 {$ENDIF VCL}
-
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
@@ -2239,14 +2201,11 @@ begin
   end;
   Result := True;
 end;
-
 {$ENDIF MSWINDOWS}
-
+{$IFDEF VCL}
 //==================================================================================================
 // TJclDesktopCanvas
 //==================================================================================================
-
-{$IFDEF VCL}
 
 constructor TJclDesktopCanvas.Create;
 begin
@@ -2771,12 +2730,11 @@ procedure TJclCustomMap.SetWidth(NewWidth: Integer);
 begin
   SetSize(NewWidth, Height);
 end;
-
+{$ENDIF VCL}
+{$IFDEF Bitmap32}
 //==================================================================================================
 // TJclBitmap32
 //==================================================================================================
-
-{$IFDEF Bitmap32}
 
 constructor TJclBitmap32.Create;
 begin
@@ -4724,9 +4682,8 @@ begin
     B.Free;
   end;
 end;
-
 {$ENDIF Bitmap32}
-
+{$IFDEF VCL}
 //==================================================================================================
 // TJclByteMap
 //==================================================================================================
@@ -5018,9 +4975,7 @@ begin
     Dest.Changed;
   end;
 end;
-
-{$ENDIF MSWINDOWS}
-
+{$ENDIF VCL}
 //==================================================================================================
 // Matrices
 //==================================================================================================
@@ -5255,9 +5210,7 @@ end;
 //==================================================================================================
 // PolyLines and Polygons
 //==================================================================================================
-
 {$IFDEF Bitmap32}
-
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
 var
@@ -5329,10 +5282,8 @@ begin
   Bitmap.EndUpdate;
   Bitmap.Changed;
 end;
-
-{$ENDIF Bitmap32}
-
 //--------------------------------------------------------------------------------------------------
+{$ENDIF Bitmap32}
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -5504,10 +5455,8 @@ begin
       AddEdgePoint(X1, Y1);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF Bitmap32}
+//--------------------------------------------------------------------------------------------------
 
 procedure FillLines(Bitmap: TJclBitmap32; BaseY: Integer;
   const ScanLines: TScanLines; Color: TColor32);
@@ -6053,9 +6002,7 @@ begin
   end;
   Dst.Changed;
 end;
-
 {$ENDIF Bitmap32}
-
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
