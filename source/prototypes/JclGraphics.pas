@@ -22,8 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: January 29, 2001                                                                  }
-{                by Roland for use under BCB5                                                      }
+{ Last modified: April 4, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -440,9 +439,9 @@ type
 //--------------------------------------------------------------------------------------------------
 
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
-  Radius: Single; Source, Target: TBitmap); overload;
+  Radius: Single; Source: TGraphic; Target: TBitmap); overload;
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
-  Radius: Single; Source: TBitmap); overload;
+  Radius: Single; Bitmap: TBitmap); overload;
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBitMap; X, Y, Width, Height: Integer);
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
@@ -956,10 +955,10 @@ begin
       for I := 0 to TargetWidth - 1 do
       begin
         ContributorList[I].N := 0;
-        SetLength(ContributorList[I].Contributors, Trunc(2 * Width + 1));
         Center := I / ScaleX;
         Left := Math.Floor(Center - Width);
         Right := Math.Ceil(Center + Width);
+        SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
           Weight := Round(Filter((Center - J) * ScaleX) * ScaleX * 256);
@@ -987,10 +986,10 @@ begin
       for I := 0 to TargetWidth - 1 do
       begin
         ContributorList[I].N := 0;
-        SetLength(ContributorList[I].Contributors, Trunc(2 * Radius + 1));
         Center := I / ScaleX;
         Left := Math.Floor(Center - Radius);
         Right := Math.Ceil(Center + Radius);
+        SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
           Weight := Round(Filter(Center - J) * 256);
@@ -1047,10 +1046,10 @@ begin
       for I := 0 to TargetHeight - 1 do
       begin
         ContributorList[I].N := 0;
-        SetLength(ContributorList[I].Contributors, Trunc(2 * Width + 1));
         Center := I / ScaleY;
         Left := Math.Floor(Center - Width);
         Right := Math.Ceil(Center + Width);
+        SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
           Weight := Round(Filter((Center - J) * ScaleY) * ScaleY * 256);
@@ -1078,10 +1077,10 @@ begin
       for I := 0 to TargetHeight - 1 do
       begin
         ContributorList[I].N := 0;
-        SetLength(ContributorList[I].Contributors, Trunc(2 * Radius + 1));
         Center := I / ScaleY;
         Left := Math.Floor(Center - Radius);
         Right := Math.Ceil(Center + Radius);
+        SetLength(ContributorList[I].Contributors, Right - Left + 1);
         for J := Left to Right do
         begin
           Weight := Round(Filter(Center - J) * 256);
@@ -1291,43 +1290,41 @@ end;
 // Bitmap Functions
 //==================================================================================================
 
-// Scales the source bitmap to the given size (NewWidth, NewHeight) and stores the Result in Target.
+// Scales the source graphic to the given size (NewWidth, NewHeight) and stores the Result in Target.
 // Filter describes the filter function to be applied and Radius the size of the filter area.
 // Is Radius = 0 then the recommended filter area will be used (see DefaultFilterRadius).
 
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
-  Radius: Single; Source, Target: TBitmap);
+  Radius: Single; Source: TGraphic; Target: TBitmap);
+var
+  Temp: TBitmap;
 begin
   if Radius = 0 then
     Radius := DefaultFilterRadius[Filter];
-  Target.FreeImage;
-  Target.PixelFormat := pf24Bit;
-  Target.Width := NewWidth;
-  Target.Height := NewHeight;
-  Source.PixelFormat := pf24Bit;
-  DoStretch(FilterList[Filter], Radius, Source, Target);
+
+  Temp := TBitmap.Create;
+  try
+    // To allow Source = Target, the following assignment needs to be done initially
+    Temp.Assign(Source);
+    Temp.PixelFormat := pf24Bit;
+
+    Target.FreeImage;
+    Target.PixelFormat := pf24Bit;
+    Target.Width := NewWidth;
+    Target.Height := NewHeight;
+
+    DoStretch(FilterList[Filter], Radius, Temp, Target);
+  finally
+    Temp.Free;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
-  Radius: Single; Source: TBitmap);
-var
-  Target: TBitmap;
+  Radius: Single; Bitmap: TBitmap);
 begin
-  if Radius = 0 then
-    Radius := DefaultFilterRadius[Filter];
-  Target := TBitmap.Create;
-  try
-    Target.PixelFormat := pf24Bit;
-    Target.Width := NewWidth;
-    Target.Height := NewHeight;
-    Source.PixelFormat := pf24Bit;
-    DoStretch(FilterList[Filter], Radius, Source, Target);
-    Source.Assign(Target);
-  finally
-    Target.Free;
-  end;
+  Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
 
 //--------------------------------------------------------------------------------------------------
