@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: February 28, 2001                                              }
+{ Last modified: July 13, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -2707,7 +2707,7 @@ begin
       IsWinNT4 := True;
     wvWin2000:
       IsWin2K := True;
-    wvWinXP
+    wvWinXP:
       IsWinXP := True;
   end;
 end;
