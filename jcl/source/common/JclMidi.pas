@@ -414,32 +414,25 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function MIDINoteToStr(Note: TMIDINote): string;
 const
   HalftonesPerOctave = 12;
-var
-  OctaveNotes: array[0..HalftonesPerOctave-1] of string[2];
-
-procedure InitOctaveNotes;
 begin
-  OctaveNotes[0] := RsOctaveC;
-  OctaveNotes[1] := RsOctaveCSharp;
-  OctaveNotes[2] := RsOctaveD;
-  OctaveNotes[3] := RsOctaveDSharp;
-  OctaveNotes[4] := RsOctaveE;
-  OctaveNotes[5] := RsOctaveF;
-  OctaveNotes[6] := RsOctaveFSharp;
-  OctaveNotes[7] := RsOctaveG;
-  OctaveNotes[8] := RsOctaveGSharp;
-  OctaveNotes[9] := RsOctaveA;
-  OctaveNotes[10] := RsOctaveASharp;
-  OctaveNotes[11] := RsOctaveB;
-end;
-
-function MIDINoteToStr(Note: TMIDINote): string;
-begin
-  if OctaveNotes[0] = '' then
-    InitOctaveNotes;
-  Result := Format('%s%d', [OctaveNotes[Note mod HalftonesPerOctave], Note div HalftonesPerOctave -2]);
+  case Note mod HalftonesPerOctave of
+     0: Result := RsOctaveC;
+     1: Result := RsOctaveCSharp;
+     2: Result := RsOctaveD;
+     3: Result := RsOctaveDSharp;
+     4: Result := RsOctaveE;
+     5: Result := RsOctaveF;
+     6: Result := RsOctaveFSharp;
+     7: Result := RsOctaveG;
+     8: Result := RsOctaveGSharp;
+     9: Result := RsOctaveA;
+    10: Result := RsOctaveASharp;
+    11: Result := RsOctaveB;
+  end;
+  Result := Format('%s%d', [Result, Note div HalftonesPerOctave -2]);
 end;
 
 //==================================================================================================
@@ -867,7 +860,7 @@ end;
 procedure TJclMIDIOut.OmniModeOff(Channel: TMIDIChannel);
 begin
   ControlChange(Channel, MIDICCOmniModeOff, 0);
-  FActiveNotes[Channel] := [];
+  FActiveNotes[Channel] := []; // implicite All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -875,7 +868,7 @@ end;
 procedure TJclMIDIOut.OmniModeOn(Channel: TMIDIChannel);
 begin
   ControlChange(Channel, MIDICCOmniModeOn, 0);
-  FActiveNotes[Channel] := [];
+  FActiveNotes[Channel] := []; // implicite All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -883,7 +876,7 @@ end;
 procedure TJclMIDIOut.MonoModeOn(Channel: TMIDIChannel; ChannelCount: Integer);
 begin
   ControlChange(Channel, MIDICCMonoModeOn, ChannelCount);
-  FActiveNotes[Channel] := [];
+  FActiveNotes[Channel] := []; // implicite All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -891,7 +884,7 @@ end;
 procedure TJclMIDIOut.PolyModeOn(Channel: TMIDIChannel);
 begin
   ControlChange(Channel, MIDICCPolyModeOn, 0);
-  FActiveNotes[Channel] := [];
+  FActiveNotes[Channel] := []; // implicite All Notes Off
 end;
 
 end.
