@@ -21,7 +21,6 @@
 {   Bernhard Berger                                                                                }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Jeff                                                                                           }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert R. Marsh                                                                                }
@@ -71,17 +70,6 @@ function SizeOfMem(const APointer: Pointer): Integer;
 
 function WriteProtectedMemory(BaseAddress, Buffer: Pointer; Size: Cardinal;
   out WrittenBytes: Cardinal): Boolean;
-
-//--------------------------------------------------------------------------------------------------
-// Memory manipulation
-//--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : Author: Peter J. Haas }
-procedure FillRemainBytes(var Data; DataSize: Integer; Offset: Integer; Value: Byte);
-{ TODO -cHelp : Author: Peter J. Haas
-                Copy Count bytes from Src to Dst and
-                return a pointer to the end of dst buffer  }
-function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer;
 
 //--------------------------------------------------------------------------------------------------
 // Guards
@@ -370,13 +358,6 @@ type
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
 //--------------------------------------------------------------------------------------------------
-// Integer type conversion
-//--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : Author: Peter J. Haas }
-function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
-
-//--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
 //--------------------------------------------------------------------------------------------------
 
@@ -578,41 +559,6 @@ begin
 end;
 
 {$ENDIF LINUX}
-
-//==================================================================================================
-// Memory manipulation
-//==================================================================================================
-
-procedure FillRemainBytes(var Data; DataSize: Integer; Offset: Integer; Value: Byte);
-var
-  P: PByte;
-  Count: Integer;
-begin
-  Count := DataSize - Offset;
-  if Count > 0 then
-  begin
-    P := @Data;
-    Inc(P, Offset);
-    FillChar(P^, Count, Value);
-  end;
-end;
-
-function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer; assembler;
-asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     EDI,EAX
-        MOV     ESI,EDX
-        MOV     EDX,ECX
-        SHR     ECX,2
-        REP     MOVSD
-        MOV     ECX,EDX
-        AND     ECX,3
-        REP     MOVSB
-        MOV     EAX,EDI
-        POP     ESI
-        POP     EDI
-end;
 
 //==================================================================================================
 // Guards
@@ -2103,31 +2049,6 @@ begin
 end;
 
 //==================================================================================================
-// Integer type conversion
-//==================================================================================================
-
-function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
-const
-  SignMasks: array [1..7] of Int64 = (
-    $0000000000000080, $0000000000008000, $0000000000800000, $0000000080000000,
-    $0000008000000000, $0000800000000000, $0080000000000000);
-  ExtendMasks: array [1..7] of Int64 = (
-    $FFFFFFFFFFFFFF80, $FFFFFFFFFFFF8000, $FFFFFFFFFF800000, $FFFFFFFF80000000,
-    $FFFFFF8000000000, $FFFF800000000000, $FF80000000000000);
-begin
-  Result := Value;
-  case ValidBytes of
-    0:
-      Result := 0;
-    1..7:
-      if (Result and SignMasks[ValidBytes]) = 0 then
-        Result := Result and not ExtendMasks[ValidBytes]  // extend positive
-      else
-        Result := Result or ExtendMasks[ValidBytes];      // extend negative
-  end;
-end;
-
-//==================================================================================================
 // Loading of modules (DLLs)
 //==================================================================================================
 
@@ -2325,6 +2246,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.22  2004/08/01 05:52:12  marquardt
 // move constructors/destructors
 //

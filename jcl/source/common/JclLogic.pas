@@ -61,7 +61,7 @@ function OrdToBinary(const Value: Int64): string; overload;
 
 type
   TBitRange = Byte;
-  TBooleanArray = TDynBooleanArray;
+  TBooleanArray = array of Boolean;
 
 function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: Shortint): Integer; overload;
@@ -2510,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.10  2004/07/28 18:00:50  marquardt
 // various style cleanings, some minor fixes
 //
