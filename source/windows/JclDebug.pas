@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 6, 2002                                                                     }
+{ Last modified: April 28, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -82,6 +82,7 @@ type
     function CreateItemForAddress(Addr: Pointer; SystemModule: Boolean): TJclModuleInfo;
   public
     constructor Create(ADynamicBuild, ASystemModulesOnly: Boolean);
+    function AddModule(Module: HMODULE; SystemModule: Boolean): Boolean;
     function IsSystemModuleAddress(Addr: Pointer): Boolean;
     function IsValidModuleAddress(Addr: Pointer): Boolean;
     property DynamicBuild: Boolean read FDynamicBuild;
@@ -407,7 +408,7 @@ type
 // Source location functions
 //--------------------------------------------------------------------------------------------------
 
-function Caller(Level: Integer = 0): Pointer;
+function Caller(Level: Integer = 0; FastStackWalk: Boolean = False): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
@@ -493,7 +494,7 @@ type
     function GetCallerAdr: Pointer;
     function GetLogicalAddress: DWORD;
   public
-    property CallerAdr: Pointer read GetCallerAdr; 
+    property CallerAdr: Pointer read GetCallerAdr;
     property LogicalAddress: DWORD read GetLogicalAddress;
     property StackInfo: TStackInfo read FStackInfo;
   end;
@@ -509,7 +510,7 @@ type
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
-    function ValidCallSite(CodeAddr: DWORD): Boolean;
+    function ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: DWORD): Boolean;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
@@ -618,6 +619,8 @@ var
 function JclStartExceptionTracking: Boolean;
 function JclStopExceptionTracking: Boolean;
 function JclExceptionTrackingActive: Boolean;
+
+function JclTrackExceptionsFromLibraries: Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Thread exception tracking support
@@ -733,7 +736,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
-// http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
+// http://www.microsoft.com/MSJ/archive/S2CE.HTM
 
 function GetStackTop: DWORD;
 asm
@@ -804,6 +807,14 @@ end;
 //==================================================================================================
 // TJclModuleInfoList
 //==================================================================================================
+
+function TJclModuleInfoList.AddModule(Module: HMODULE; SystemModule: Boolean): Boolean;
+begin
+  Result := not IsValidModuleAddress(Pointer(Module)) and
+    (CreateItemForAddress(Pointer(Module), SystemModule) <> nil);
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclModuleInfoList.BuildModulesList;
 var
@@ -1296,6 +1307,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function Search_MapLineNumber(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(PJclMapLineNumber(Item1)^.Addr) - PInteger(Item2)^;
+end;
+
 function TJclMapScanner.LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer;
 var
   I: Integer;
@@ -1304,7 +1320,13 @@ begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := 0;
   Offset := 0;
-  for I := Length(FLineNumbers) - 1 downto 0 do
+  I := SearchDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), Search_MapLineNumber, @Addr, True);
+  if (I <> -1) and (FLineNumbers[I].Addr >= ModuleStartAddr) then
+  begin
+    Result := FLineNumbers[I].LineNumber;
+    Offset := Addr - FLineNumbers[I].Addr;
+  end;
+{  for I := Length(FLineNumbers) - 1 downto 0 do
     if FLineNumbers[I].Addr <= Addr then
     begin
       if FLineNumbers[I].Addr >= ModuleStartAddr then
@@ -1313,7 +1335,7 @@ begin
         Offset := Addr - FLineNumbers[I].Addr;
       end;
       Break;
-    end;
+    end;}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1393,6 +1415,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function Search_MapProcName(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(PJclMapProcName(Item1)^.Addr) - PInteger(Item2)^;
+end;
+
 function TJclMapScanner.ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string;
 var
   I: Integer;
@@ -1401,7 +1428,13 @@ begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
   Offset := 0;
-  for I := Length(FProcNames) - 1 downto 0 do
+  I := SearchDynArray(FProcNames, SizeOf(FProcNames[0]), Search_MapProcName, @Addr, True);
+  if (I <> -1) and (FProcNames[I].Addr > ModuleStartAddr) then
+  begin
+    Result := MapStringToStr(FProcNames[I].ProcName);
+    Offset := Addr - FProcNames[I].Addr;
+  end;
+{  for I := Length(FProcNames) - 1 downto 0 do
     if FProcNames[I].Addr <= Addr then
     begin
       if FProcNames[I].Addr >= ModuleStartAddr then
@@ -1410,7 +1443,7 @@ begin
         Offset := Addr - FProcNames[I].Addr;
       end;
       Break;
-    end;
+    end;}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1473,13 +1506,16 @@ var
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
-  for I := Length(FSourceNames) - 1 downto 0 do
+  I := SearchDynArray(FSourceNames, SizeOf(FSourceNames[0]), Search_MapProcName, @Addr, True);
+  if (I <> -1) and (FSourceNames[I].Addr > ModuleStartAddr) then
+    Result := MapStringToStr(FSourceNames[I].ProcName);
+{  for I := Length(FSourceNames) - 1 downto 0 do
     if FSourceNames[I].Addr <= Addr then
     begin
       if FSourceNames[I].Addr >= ModuleStartAddr then
         Result := MapStringToStr(FSourceNames[I].ProcName);
       Break;
-    end;
+    end;}
 end;
 
 //==================================================================================================
@@ -2486,16 +2522,20 @@ end;
 function TJclDebugInfoList.GetItemFromModule(const Module: HMODULE): TJclDebugInfoSource;
 var
   I: Integer;
+  TempItem: TJclDebugInfoSource;
 begin
   Result := nil;
   if Module = 0 then
     Exit;
   for I := 0 to Count - 1 do
-    if Items[I].Module = Module then
+  begin
+    TempItem := Items[I];
+    if TempItem.Module = Module then
     begin
-      Result := Items[I];
+      Result := TempItem;
       Break;
     end;
+  end;  
   if Result = nil then
   begin
     Result := CreateDebugInfo(Module);
@@ -2759,15 +2799,35 @@ end;
 
 {$STACKFRAMES ON}
 
-function Caller(Level: Integer): Pointer;
+function Caller(Level: Integer; FastStackWalk: Boolean): Pointer;
+var
+  TopOfStack: Cardinal;
+  BaseOfStack: Cardinal;
+  StackFrame: PStackFrame;
 begin
+  Result := nil;
   try
+    if FastStackWalk then
+    begin
+      StackFrame := GetEBP;
+      BaseOfStack := Cardinal(StackFrame) - 1;
+      TopOfStack := GetStackTop;
+      while (BaseOfStack < Cardinal(StackFrame)) and (Cardinal(StackFrame) < TopOfStack) do
+      begin
+        if Level = 0 then
+        begin
+          Result := Pointer(StackFrame^.CallerAdr - 1);
+          Break;
+        end;
+        StackFrame := PStackFrame(StackFrame^.CallersEBP);
+        Dec(Level);
+      end;
+    end
+    else
     with TJclStackInfoList.Create(False, 1, nil) do
     try
       if Level < Count then
-        Result := Items[Level].CallerAdr
-      else
-        Result := nil;
+        Result := Items[Level].CallerAdr;
     finally
       Free;
     end;
@@ -3214,6 +3274,7 @@ end;
 type
   TJclGlobalModulesList = class (TObject)
   private
+    FHookedModules: TJclModuleArray;
     FLock: TJclCriticalSection;
     FModulesList: TJclModuleInfoList;
   public
@@ -3221,6 +3282,7 @@ type
     destructor Destroy; override;
     function CreateModulesList: TJclModuleInfoList;
     procedure FreeModulesList(var ModulesList: TJclModuleInfoList);
+    procedure HookExceptionsInLibraries;
   end;
 
 var
@@ -3236,12 +3298,20 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclGlobalModulesList.CreateModulesList: TJclModuleInfoList;
+var
+  I: Integer;
+  SystemModulesOnly: Boolean;
 begin
   FLock.Enter;
   try
     if FModulesList = nil then
     begin
-      Result := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
+      SystemModulesOnly := not (stAllModules in JclStackTrackingOptions);
+      Result := TJclModuleInfoList.Create(False, SystemModulesOnly);
+      // Add known Borland modules collected by DLL exception hooking code 
+      if SystemModulesOnly then
+        for I := Low(FHookedModules) to High(FHookedModules) do
+          Result.AddModule(FHookedModules[I], True);
       if stStaticModuleList in JclStackTrackingOptions then
         FModulesList := Result;
     end
@@ -3270,7 +3340,21 @@ begin
     if FModulesList <> ModulesList then
       FreeAndNil(ModulesList);
   finally
-    FLock.Leave
+    FLock.Leave;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclGlobalModulesList.HookExceptionsInLibraries;
+begin
+  FLock.Enter;
+  try
+    // Return list of hooked or Borland modules to merge it in CreateModulesList method. Some
+    // modules could be Borland but not hooked if the module was compiled with packages. 
+    JclHookExceptionsInLibraries(FHookedModules, True);
+  finally
+    FLock.Leave;
   end;
 end;
 
@@ -3286,10 +3370,6 @@ begin
     Result := ModuleList.IsValidModuleAddress(Pointer(CodeAddr))
   else
     Result := ModuleList.IsSystemModuleAddress(Pointer(CodeAddr));
-{  if stAllModules in JclStackTrackingOptions then
-    Result := (ModuleFromAddr(Pointer(CodeAddr)) <> 0)
-  else
-    Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3329,7 +3409,7 @@ var
 begin
   RawMode := stRawMode in JclStackTrackingOptions;
   if RawMode then
-    IgnoreLevels := 10
+    IgnoreLevels := 7
   else
     IgnoreLevels := 5;
   if OSException then
@@ -3439,6 +3519,8 @@ end;
 {$OVERFLOWCHECKS OFF}
 
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
+var
+  CallInstructionSize: Cardinal;
 begin
   // Only report this stack frame into the StockInfo structure
   // if the StackFrame pointer, EBP on the stack and return
@@ -3453,7 +3535,11 @@ begin
       StackInfo.StackFrame := StackFrame;
       StackInfo.ParamPtr := PDWORDArray(DWORD(StackFrame) + SizeOf(TStackFrame));
       StackInfo.CallersEBP := StackFrame^.CallersEBP;
-      StackInfo.CallerAdr := StackFrame^.CallerAdr;
+      // Calculate the address of caller by subtracting the CALL instruction size (if possible)
+      if ValidCallSite(StackFrame^.CallerAdr, CallInstructionSize) then
+        StackInfo.CallerAdr := StackFrame^.CallerAdr - CallInstructionSize
+      else
+        StackInfo.CallerAdr := StackFrame^.CallerAdr;
       StackInfo.DumpSize := StackFrame^.CallersEBP - DWORD(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
       // Step to the next stack frame by following the EBP pointer
@@ -3512,6 +3598,7 @@ var
   StackInfo: TStackInfo;
   StackPtr: PDWORD;
   PrevCaller: DWORD;
+  CallInstructionSize: Cardinal;
 begin
   // We define the bottom of the valid stack to be the current ESP pointer
   BaseOfStack := DWORD(GetESP);
@@ -3525,12 +3612,11 @@ begin
   // Loop through all of the valid stack space
   while DWORD(StackPtr) < TopOfStack do
   begin
-    // If the current DWORD on the stack,
-    // refers to a valid call site...
-    if ValidCallSite(StackPtr^) and (StackPtr^ <> PrevCaller) then
+    // If the current DWORD on the stack refers to a valid call site...
+    if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
     begin
       // then pick up the callers address
-      StackInfo.CallerAdr := StackPtr^;
+      StackInfo.CallerAdr := StackPtr^ - CallInstructionSize;
       // remember to callers address so that we don't report it repeatedly
       PrevCaller := StackPtr^;
       // increase the stack level
@@ -3553,7 +3639,7 @@ end;
 
 {$OVERFLOWCHECKS OFF}
 
-function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD): Boolean;
+function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
 var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
@@ -3562,34 +3648,44 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and
-    not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
+  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
 
   // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
   if Result then
   begin
-    // Check the instruction prior to the potential call site.
-    // We consider it a valid call site if we find a CALL instruction there
-    // Check the most common CALL variants first
-    // ! CodeDWORD8 := PDWORD(CodeAddr-8)^;
-    // ! CodeDWORD4 := PDWORD(CodeAddr-4)^;
-    CodeDWORD8 := C8P^;
-    CodeDWORD4 := C4P^;
+    try
+      CodeDWORD8 := PDWORD(C8P)^;
+      CodeDWORD4 := PDWORD(C4P)^;
 
-    Result :=
-      ((CodeDWORD8 and $FF000000) = $E8000000) or // 5-byte, CALL [-$1234567]
-      ((CodeDWORD4 and $38FF0000) = $10FF0000) or // 2 byte, CALL EAX
-      ((CodeDWORD4 and $0038FF00) = $0010FF00) or // 3 byte, CALL [EBP+0x8]
-      ((CodeDWORD4 and $000038FF) = $000010FF) or // 4 byte, CALL ??
-      ((CodeDWORD8 and $38FF0000) = $10FF0000) or // 6-byte, CALL ??
-      ((CodeDWORD8 and $0038FF00) = $0010FF00) or // 7-byte, CALL [ESP-0x1234567]
-    // It is possible to simulate a CALL by doing a PUSH followed by RET,
-    // so we check for a RET just prior to the return address
-      ((CodeDWORD4 and $FF000000) = $C3000000);   // PUSH XX, RET
-    // Because we're not doing a complete disassembly, we will potentially report
-    // false positives. If there is odd code that uses the CALL 16:32 format, we
-    // can also get false negatives.
+      // Check the instruction prior to the potential call site.
+      // We consider it a valid call site if we find a CALL instruction there
+      // Check the most common CALL variants first
+      if ((CodeDWORD8 and $FF000000) = $E8000000) then // 5-byte, CALL [-$1234567]
+        CallInstructionSize := 5
+      else
+      if ((CodeDWORD4 and $38FF0000) = $10FF0000) then // 2 byte, CALL EAX
+        CallInstructionSize := 2
+      else
+      if ((CodeDWORD4 and $0038FF00) = $0010FF00) then // 3 byte, CALL [EBP+0x8]
+        CallInstructionSize := 3
+      else
+      if ((CodeDWORD4 and $000038FF) = $000010FF) then // 4 byte, CALL ??
+        CallInstructionSize := 4
+      else
+      if ((CodeDWORD8 and $38FF0000) = $10FF0000) then // 6-byte, CALL ??
+        CallInstructionSize := 6
+      else
+      if ((CodeDWORD8 and $0038FF00) = $0010FF00) then // 7-byte, CALL [ESP-0x1234567]
+        CallInstructionSize := 7
+      else
+        Result := False;
+      // Because we're not doing a complete disassembly, we will potentially report
+      // false positives. If there is odd code that uses the CALL 16:32 format, we
+      // can also get false negatives.}
+    except
+      Result := False;
+    end;    
   end;
 end;
 
@@ -3835,7 +3931,7 @@ begin
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
     if stExceptFrame in JclStackTrackingOptions then
       DoExceptFrameTrace;
-  end;    
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3869,6 +3965,15 @@ end;
 function JclExceptionTrackingActive: Boolean;
 begin
   Result := TrackingActive;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclTrackExceptionsFromLibraries: Boolean;
+begin
+  Result := TrackingActive;
+  if Result then
+    GlobalModulesList.HookExceptionsInLibraries;
 end;
 
 //==================================================================================================
@@ -3936,7 +4041,7 @@ begin
   // exception handling routine easily.
   // Any other call of those JclLastXXX routines from another thread at the same
   // time will return expected information for current Thread ID.
-  DoNotify;
+   DoNotify;
 end;
 
 //--------------------------------------------------------------------------------------------------
