@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: October 6, 2003                                                                      }
+{ Last modified: December 14, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -37,7 +37,10 @@ uses
   Libc, Types,
 {$ENDIF}
 {$IFDEF MSWINDOWS}
-  Windows, ActiveX, ShlObj,
+  Windows, ActiveX,
+  {$IFNDEF FPC}
+  ShlObj,
+  {$ENDIF FPC}
 {$ENDIF}
   Classes, JclResources;
 
@@ -606,8 +609,12 @@ implementation
 uses
   SysUtils,
   {$IFDEF MSWINDOWS}
-  Messages, TLHelp32, PsApi, Winsock, Snmp,
-  JclRegistry, JclShell, JclWin32,
+  Messages, Winsock, Snmp,
+  JclRegistry,
+  {$IFNDEF FPC}
+  TLHelp32, PsApi,
+  JclShell, JclWin32,
+  {$ENDIF FPC}
   {$ENDIF MSWINDOWS}
   JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
 
