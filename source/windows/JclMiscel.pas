@@ -20,7 +20,7 @@
 { Various miscellanuous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
 { Unit owner: Jeroen Speldekamp                                                                    }
-{ Last modified: July 18, 2002                                                                     }
+{ Last modified: April 6, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -53,6 +53,8 @@ function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
+function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean = False): Cardinal;
+
 function ExitWindows(ExitCode: Cardinal): Boolean;
 function LogOffOS: Boolean;
 function PowerOffOS: Boolean;
@@ -75,7 +77,7 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSecurity, JclWin32;
+  JclResources, JclSecurity, JclStrings, JclWin32;
 
 //==================================================================================================
 
@@ -162,6 +164,92 @@ begin
     CloseHandle(ProcessInfo.hThread);
     CloseHandle(ProcessInfo.hProcess);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean): Cardinal;
+const
+  BufferSize = 1024;
+var
+  Buffer: array[0..BufferSize] of Char;
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecurityAttr: TSecurityAttributes;
+  PipeRead, PipeWrite: THandle;
+  PipeBytesRead: Cardinal;
+  BufPos, OutPos, LfPos, EndPos: Integer;
+  C: Char;
+  TempOutput: string;
+begin
+  Result := $FFFFFFFF;
+  Output := '';
+  TempOutput := '';
+  SecurityAttr.nLength := SizeOf(SecurityAttr);
+  SecurityAttr.lpSecurityDescriptor := nil;
+  SecurityAttr.bInheritHandle := True;
+  if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
+  begin
+    Result := GetLastError;
+    Exit;
+  end;
+  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  StartupInfo.cb := SizeOf(TStartupInfo);
+  StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+  StartupInfo.wShowWindow := SW_HIDE;
+  StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+  StartupInfo.hStdOutput := PipeWrite;
+  StartupInfo.hStdError := PipeWrite;
+  if CreateProcess(nil, PChar(Cmd), nil, nil, True, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+    ProcessInfo) then
+  begin
+    CloseHandle(PipeWrite);
+    while ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
+    begin
+      Buffer[PipeBytesRead] := #0;
+      TempOutput := TempOutput + Buffer;
+    end;
+    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
+      not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
+        Result := $FFFFFFFF;
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+    if RawOutput then
+      Output := TempOutput
+    else
+    begin
+      SetLength(Output, Length(TempOutput));
+      OutPos := 1;
+      LfPos := OutPos;
+      EndPos := OutPos;
+      for BufPos := 1 to Length(TempOutput) do
+      begin
+        C := TempOutput[BufPos];
+        case C of
+          AnsiCarriageReturn:
+            OutPos := LfPos;
+          AnsiLineFeed:
+            begin
+              OutPos := EndPos;
+              Output[OutPos] := AnsiCarriageReturn;
+              Inc(OutPos);
+              Output[OutPos] := C;
+              Inc(OutPos);
+              EndPos := OutPos;
+              LfPos := OutPos;
+            end;
+        else
+          Output[OutPos] := C;
+          Inc(OutPos);
+          EndPos := OutPos;
+        end;
+      end;
+      SetLength(Output, OutPos - 1);
+    end;
+  end
+  else
+    CloseHandle(PipeWrite);
+  CloseHandle(PipeRead);
 end;
 
 //--------------------------------------------------------------------------------------------------
