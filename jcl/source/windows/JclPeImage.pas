@@ -1833,7 +1833,8 @@ begin
     finally
       FileImage.Free;
     end;
-  end else
+  end
+  else
     Result := True;
 end;
 
@@ -3981,7 +3982,8 @@ begin
   begin
     Result := FreeLibrary(FLibHandle);
     FLibHandle := 0;
-  end else
+  end
+  else
     Result := True;
 end;
 
@@ -3999,7 +4001,8 @@ begin
     DebugDir := DebugList[0];
     Signature := RvaToVa(DebugDir.AddressOfRawData);
     Result := (DebugDir._Type = IMAGE_DEBUG_TYPE_UNKNOWN) and (Signature^ = TD32Signature);
-  end else
+  end
+  else
     Result := False;
 end;
 
@@ -4705,7 +4708,8 @@ begin
         begin
           Result := Header;
           Break;
-        end else
+        end
+        else
           Inc(Header);
   end;
 end;
@@ -5034,7 +5038,8 @@ var
       begin
         MarkQualifier;
         NameU^ := '.';
-      end else
+      end
+      else
         NameU^ := NameP^;
       Inc(NameP);
       Inc(NameU);
@@ -5052,7 +5057,8 @@ var
       ReadSpecialSymbol;
       if QualifierFound then
         Include(Description.Modifiers, smQualified);
-    end else
+    end
+    else
       Result := urError;
   end;
 
@@ -5099,7 +5105,8 @@ var
                       Description.Kind := skDestructor;
                   end;
                   Inc(NameP, 6);
-                end else
+                end
+                else
                   Description.Kind := skFunction;
                 Break; // no parameters unmangling yet
               end;
@@ -5221,7 +5228,8 @@ begin
         begin
           StrResetLength(Unmangled);
           Result := umMicrosoft;
-        end else
+        end
+        else
           Unmangled := '';
       end;
   end;
