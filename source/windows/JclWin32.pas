@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: November 18, 2001                                             }
+{ Last modified: January 21, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -920,6 +920,40 @@ const
   IMAGE_DEBUG_TYPE_BORLAND = 9;
 
 //------------------------------------------------------------------------------
+// CorHdr.h translations (part of CLR)
+//------------------------------------------------------------------------------
+
+const
+  COMIMAGE_FLAGS_ILONLY           = $00000001;
+  COMIMAGE_FLAGS_32BITREQUIRED    = $00000002;
+  COMIMAGE_FLAGS_IL_LIBRARY       = $00000004;
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;
+  COMIMAGE_FLAGS_TRACKDEBUGDATA   = $00010000;
+
+type
+  PImageCor20Header = ^TImageCor20Header;
+  IMAGE_COR20_HEADER = record
+    // Header versioning
+    cb: Cardinal;
+    MajorRuntimeVersion: Word;
+    MinorRuntimeVersion: Word;
+    // Symbol table and startup information
+    MetaData: TImageDataDirectory;
+    Flags: Cardinal;
+    EntryPointToken: Cardinal;
+    // Binding information
+    Resources: TImageDataDirectory;
+    StrongNameSignature: TImageDataDirectory;
+    // Regular fixup and binding information
+    CodeManagerTable: TImageDataDirectory;
+    VTableFixups: TImageDataDirectory;
+    ExportAddressTableJumps: TImageDataDirectory;
+    // Precompiled image info (internal use only - set to zero)
+    ManagedNativeHeader: TImageDataDirectory;
+  end;
+  TImageCor20Header = IMAGE_COR20_HEADER;
+
+//------------------------------------------------------------------------------
 // Incorrect translations
 //------------------------------------------------------------------------------
 
@@ -1231,6 +1265,12 @@ type
   {$EXTERNALSYM IMAGE_REL_BASED_DIR64}
   {$EXTERNALSYM IMAGE_REL_BASED_HIGH3ADJ}
   {$EXTERNALSYM IMAGE_DEBUG_TYPE_BORLAND}
+  {$EXTERNALSYM COMIMAGE_FLAGS_ILONLY}
+  {$EXTERNALSYM COMIMAGE_FLAGS_32BITREQUIRED}
+  {$EXTERNALSYM COMIMAGE_FLAGS_IL_LIBRARY}
+  {$EXTERNALSYM COMIMAGE_FLAGS_STRONGNAMESIGNED}
+  {$EXTERNALSYM COMIMAGE_FLAGS_TRACKDEBUGDATA}
+  {$EXTERNALSYM IMAGE_COR20_HEADER}
   {$EXTERNALSYM ImageRvaToVa}
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
