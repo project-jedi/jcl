@@ -16,81 +16,18 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 29, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ Various character and string routines (searching, testing and transforming)  }
+{                                                                              }
+{ Unit owner: Azret Botash                                                     }
+{ Last modified: December 30, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
 unit JclStrings;
 
 {$I JCL.INC}
-
-{
-   (Azret)
-   o CharIsAlphaNum was using AND, should be OR. (Fixed)
-   o Modified StrLength to use AnsiLnOffset constant instead of
-     hardcoded 4
-   o AnsiOctalDigits was renamed to AnsiOctDigits
-   o AnsiOctDigits and AnsiHexDigits changed to sets (Robert Marquardt)
-
-   o StrTokens (Azret)
-     StrWord: tokenizes the string. Returns True if end of string is reached.
-              see StrTokens for an example.
-
-   o StrReplace  (Robert Lee)
-   o StrLen (Robert Lee)
-
-   o TrimStrings (Anthony Steele)
-   o RepeatStr   (Anthony Steele)
-                 Az: renamed to StrRepeat,
-                 Az: Re-implemented to use move proc. instead of Result + Result
-
-   o fixes:   StrCompareRange, (Azret)
-   o fixed:   StrLen  (Azret)
-   o added:   AnsiLineBreak (Robert Marquardt)
-   o changed: #13, #10 to AnsiCarriageReturn, AnsiLineFeed (Robert Marquardt)
-   o improved: StrFind (Azret)
-               StrFind now does not need the string to be null terminated you can use
-               it on any ansistring buffer.
-
-   o added: StrProper, StrProperBuff functions (Azret)
-           lowercases the string and then upercases the first char
-
-           TEST STRING->Test string
-
-   o added: CharHex, StrToHex
-
-            CharHex:  converts a given character hex char to a byte, Returns $FF on error
-
-            example:    CharHex('0') = $00;
-                        CharHex('1') = $01;
-                        CharHex('9') = $09;
-                        CharHex('A') = $0F;
-                        CharHex('F') = $0F;
-                        CharHex('Z') = $FF;  error
-
-            StrToHex: converts a given hex string to byte array and retruns that array in
-                      a string buffer. Size of the buffer is the length of
-                      the returned string.
-
-   o        example:    StrHex('ABCD') = $ABCD
-                        StrHex('ABCD') = $ABCD
-                        StrHex('DFGF') = ''   error
-
-                        var
-                          Data: string;
-                          Stream: TStream;
-                        begin
-                          ......
-                          Data := StrHex('00FFAADFCE24'); // 6 bytes
-                          Stream.WriteBuffer(Pointer(Data)^, Length(Data));
-                          ......
-                        end;
-
-   o Reorganized unit and added (long overdue) string routines from Anthony
-     Working on updating the documentation, undocumented routines have a TODO
-     comment in the helpfile, or TODOC comment after declaration (MVB)
-   o Added StrNPos/StrNIPos (inspired by George Tasker)
- }
 
 interface
 
