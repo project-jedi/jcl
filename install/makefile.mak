@@ -19,7 +19,7 @@ MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
+DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) $(DCC32EXTRA) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
 jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
@@ -61,9 +61,12 @@ clean:
 prototypes: VclUnits ClxUnits
 
 prepare:	BCB5
+	if exist "$(ROOT)\Lib\vcl.dcp" SET DCC32EXTRA="-LUvcl -LUrtl"
+	@echo $(DCC32EXTRA)
 
 BCB5:
-	if exist "$(ROOT)\Lib\Obj\vcl50.dcp" $(MAKEDIR)\make.exe -fBCB5-dcc32.cfg.mak
+	if exist "$(ROOT)\Lib\Obj\vcl50.dcp" SET DCC32EXTRA="-LUvcl50"
+	#$(MAKEDIR)\make.exe -fBCB5-dcc32.cfg.mak
 
 VclUnits:
 	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
