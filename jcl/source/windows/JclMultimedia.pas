@@ -34,7 +34,11 @@ unit JclMultimedia;
 interface
 
 uses
-  Windows, Messages, Classes, Contnrs, MMSystem,
+  Windows, Messages, Classes,
+  {$IFDEF DELPHI5_UP}
+  Contnrs,
+  {$ENDIF DELPHI5_UP}
+  MMSystem,
   JclBase, JclSynch, JclStrings;
 
 type
@@ -302,28 +306,6 @@ implementation
 uses
   SysUtils,
   JclResources, JclSysUtils;
-
-resourcestring
-  RsMmMixerSource        = 'Source';
-  RsMmMixerDestination   = 'Destination';
-  RsMmMixerUndefined     = 'Undefined';
-  RsMmMixerDigital       = 'Digital';
-  RsMmMixerLine          = 'Line';
-  RsMmMixerMonitor       = 'Monitor';
-  RsMmMixerSpeakers      = 'Speakers';
-  RsMmMixerHeadphones    = 'Headphones';
-  RsMmMixerTelephone     = 'Telephone';
-  RsMmMixerWaveIn        = 'Waveform-audio input';
-  RsMmMixerVoiceIn       = 'Voice input';
-  RsMmMixerMicrophone    = 'Microphone';
-  RsMmMixerSynthesizer   = 'Synthesizer';
-  RsMmMixerCompactDisc   = 'Compact disc';
-  RsMmMixerPcSpeaker     = 'PC speaker';
-  RsMmMixerWaveOut       = 'Waveform-audio output';
-  RsMmMixerAuxiliary     = 'Auxiliary audio line';
-  RsMmMixerAnalog        = 'Analog';
-  RsMmMixerNoDevices     = 'No mixer device found';
-  RsMmMixerCtlNotFound   = 'Line control (%s, %.8x) not found';
 
 //==================================================================================================
 // TJclMultimediaTimer
