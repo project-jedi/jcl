@@ -40,78 +40,82 @@ uses
   Windows, Classes,
   JclBase;
 
+type
+  DelphiHKEY = LongWord;
+{$HPPEMIT '// BCB users must typecast the HKEY values to DelphiHKEY.'}  
+
 //--------------------------------------------------------------------------------------------------
 // Registry
 //--------------------------------------------------------------------------------------------------
 
-function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
-function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
-function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
+function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Longint;
+function RegDeleteEntry(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
+function RegDeleteKeyTree(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
-function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
-function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
+function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
+function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
+function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadCardinal(const RootKey: HKEY; const Key, Name: string): Cardinal;
+function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadCardinalDef(const RootKey: HKEY; const Key, Name: string; Def: Cardinal): Cardinal;
+function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadInt64(const RootKey: HKEY; const Key, Name: string): Int64;
+function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadInt64Def(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
+function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadUInt64(const RootKey: HKEY; const Key, Name: string): UInt64;
+function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadUInt64Def(const RootKey: HKEY; const Key, Name: string; Def: UInt64): UInt64;
+function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
+function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: string): string;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiString(const RootKey: HKEY; const Key, Name: string): string; overload;
+function RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string): string; overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegReadMultiString(const RootKey: HKEY; const Key, Name: string; out Value: TDynStringArray); overload;
+procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegReadMultiString(const RootKey: HKEY; const Key, Name: string; Value: TStrings); overload;
+procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; const Def: string): string; overload;
+function RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; const Def: string): string; overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray); overload;
+procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; Value, Def: TStrings); overload;
+procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings); overload;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
+function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
 { TODO -cHelp : Contributer: Peter J. Haas }
-function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
+function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
-procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
+procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; Value: Boolean);
 { TODO -cHelp : Contributer: Peter J. Haas }
-procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
+procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteCardinal(const RootKey: HKEY; const Key, Name: string; Value: Cardinal);
+procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; Value: Cardinal);
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteInt64(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteUInt64(const RootKey: HKEY; const Key, Name: string; Value: UInt64);
+procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64);
 { TODO -cHelp : Contributer: Peter J. Haas }
-procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
+procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: String); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: String); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: array of String); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: array of String); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TDynStringArray); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TStrings); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
 { TODO -cHelp : Contributer: Peter J. Haas }
-procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 
-function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
-function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
-function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
+function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
+function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 { TODO -cHelp : RegKeyExists }
 {
@@ -140,7 +144,7 @@ begin
   Assert(not RegKeyExists(HKEY_CURRENT_USER, '\Software\Microsoft2\Windows'));
 end;
 }
-function RegKeyExists(const RootKey: HKEY; const Key: string): Boolean;
+function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -151,11 +155,11 @@ type
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
 
-function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string;
+function RegSaveList(const RootKey: DelphiHKEY; const Key: string; const ListName: string;
   const Items: TStrings): Boolean;
-function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string;
+function RegLoadList(const RootKey: DelphiHKEY; const Key: string; const ListName: string;
   const SaveTo: TStrings): Boolean;
-function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName: string): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // obsolete functions
@@ -165,17 +169,17 @@ function RegDelList(const RootKey: HKEY; const Key: string; const ListName: stri
 { TODO -cHelp : Contributer: Peter J. Haas }
 { TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
                 Use RegReadInt64 instead. }
-function RegReadDWORD(const RootKey: HKEY; const Key, Name: string): Int64;
+function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 { TODO -cHelp : Contributer: Peter J. Haas }
 { TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
                 Use RegReadInt64 instead. }
-function RegReadDWORDDef(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
-{ TODO -cHelp : Obsolete, this function create invalid 8 byte REG_DWORD keys 
+function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
+{ TODO -cHelp : Obsolete, this function create invalid 8 byte REG_DWORD keys
                 Use RegWriteInt64 instead (this create REG_QWORD values). }
-procedure RegWriteDWORD(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 
 implementation
-                 
+
 uses
   SysUtils, RegStr,
   JclWin32, JclSysUtils, JclStrings, JclResources;
@@ -251,7 +255,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -oPJH : delete or realize }
-function InternalRegOpenKey(const RootKey: HKEY; const SubKey: string;
+function InternalRegOpenKey(const RootKey: DelphiHKEY; const SubKey: string;
   Desired: REGSAM; out ResultKey: HKEY): Boolean;
 begin
   Result := RegOpenKeyEx(RootKey, RelativeKey(SubKey), 0, Desired, ResultKey) = ERROR_SUCCESS; 
@@ -261,14 +265,14 @@ end;
 // Registry
 //==================================================================================================
 
-function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
+function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Longint;
 begin
   Result := RegSetValue(RootKey, RelativeKey(Key), REG_SZ, PChar(Value), Length(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
+function RegDeleteEntry(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 var
   RegKey: HKEY;
 begin
@@ -286,7 +290,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
+function RegDeleteKeyTree(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
   I: DWORD;
@@ -321,14 +325,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
+function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 begin
   Result := RegReadInteger(RootKey, Key, Name) <> 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
+function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
 begin
   Result := Boolean(RegReadIntegerDef(RootKey, Key, Name, Ord(Def)));
 end;
@@ -336,7 +340,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO : find a solution for HKEY_PERFORMANCE_DATA: 
-    If hKey specifies HKEY_PERFORMANCE_DATA and the lpData buffer is too small,
+    If DelphiHKEY specifies HKEY_PERFORMANCE_DATA and the lpData buffer is too small,
     RegQueryValueEx returns ERROR_MORE_DATA but lpcbData does not return the
     required buffer size. This is because the size of the performance data can
     change from one call to the next. In this case, you must increase the buffer
@@ -358,7 +362,7 @@ end;
 //   detect the needed size and allocate the buffer.
 // DataPtr <> Nil and DataSize = 0 is a invalid combination and raise a internal
 // exception.
-function InternalRegRead(const RootKey: HKEY; const Key, Name: string;
+function InternalRegRead(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; RaiseException: Boolean; var DataPtr: Pointer;
   var DataSize: DWord): Boolean;
 var
@@ -416,7 +420,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalRegReadFixedSize(const RootKey: HKEY; const Key, Name: string;
+function InternalRegReadFixedSize(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; DataPtr: Pointer; DataSize: DWord; RaiseException: Boolean): Boolean;
 var
   Size: DWord;
@@ -431,12 +435,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
+function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 begin
   InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), True);
 end;
 
-{function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
+{function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -467,13 +471,13 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 begin
   if not InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), False) then
     Result := Def;
 end;
 
-{function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+{function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -494,14 +498,14 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadCardinal(const RootKey: HKEY; const Key, Name: string): Cardinal;
+function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
 begin
   InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadCardinalDef(const RootKey: HKEY; const Key, Name: string; Def: Cardinal): Cardinal;
+function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
 begin
   if not InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), False) then
     Result := Def;
@@ -509,7 +513,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalRegRead64(const RootKey: HKEY; const Key, Name: string;
+function InternalRegRead64(const RootKey: DelphiHKEY; const Key, Name: string;
   RaiseException: Boolean; Signed: Boolean; out Value: Int64): Boolean;
 var
   DataPtr: Pointer;
@@ -532,14 +536,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadInt64(const RootKey: HKEY; const Key, Name: string): Int64;
+function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 begin
   InternalRegRead64(RootKey, Key, Name, True, True, Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadInt64Def(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
+function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 begin
   if not InternalRegRead64(RootKey, Key, Name, False, True, Result) then
     Result := Def;
@@ -547,14 +551,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadUInt64(const RootKey: HKEY; const Key, Name: string): UInt64;
+function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 begin
   InternalRegRead64(RootKey, Key, Name, True, False, Int64(Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadUInt64Def(const RootKey: HKEY; const Key, Name: string; Def: UInt64): UInt64;
+function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
 begin
   if not InternalRegRead64(RootKey, Key, Name, False, False, Int64(Result)) then
     Result := Def;
@@ -562,7 +566,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalRegReadString(const RootKey: HKEY; const Key, Name: string;
+function InternalRegReadString(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; RaiseException: Boolean; out Value: string): Boolean;
 var
   DataPtr: Pointer;
@@ -583,12 +587,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
+function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 begin
   InternalRegReadString(RootKey, Key, Name, [REG_SZ, REG_EXPAND_SZ], True, Result);
 end;
 
-{function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
+{function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -620,13 +624,13 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: string): string;
 begin
   if not InternalRegReadString(RootKey, Key, Name, [REG_SZ, REG_EXPAND_SZ], False, Result) then
     Result := Def;
 end;
 
-{function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+{function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: string): string;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -654,14 +658,14 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadMultiString(const RootKey: HKEY; const Key, Name: string): string;
+function RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 begin
   InternalRegReadString(RootKey, Key, Name, [REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ], True, Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegReadMultiString(const RootKey: HKEY; const Key, Name: string; out Value: TDynStringArray);
+procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray);
 var
   S: String;
 begin
@@ -671,7 +675,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegReadMultiString(const RootKey: HKEY; const Key, Name: string; Value: TStrings);
+procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
 var
   S: String;
 begin
@@ -681,7 +685,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalRegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string;
+function InternalRegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string;
   out Value: string): Boolean;
 begin
   Result := InternalRegReadString(RootKey, Key, Name, [REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ], False, Value);
@@ -689,7 +693,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; const Def: string): string;
+function RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; const Def: string): string;
 begin
   if not InternalRegReadMultiStringDef(RootKey, Key, Name, Result) then
     Result := Def;
@@ -697,7 +701,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray);
+procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray);
 var
   S: string;
 begin
@@ -709,7 +713,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegReadMultiStringDef(const RootKey: HKEY; const Key, Name: string; Value, Def: TStrings);
+procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings);
 var
   S: string;
 begin
@@ -721,7 +725,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalRegReadBinary(const RootKey: HKEY; const Key, Name: string;
+function InternalRegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string;
   RaiseException: Boolean; out Value; var ValueSize: Cardinal): Boolean;
 var
   DataPtr: Pointer;
@@ -735,7 +739,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value;
+function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value;
   const ValueSize: Cardinal): Cardinal;
 begin
   Result := ValueSize;
@@ -743,7 +747,7 @@ begin
     InternalRegReadBinary(RootKey, Key, Name, True, Value, Result);
 end;
 
-{function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
+{function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -774,7 +778,7 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
+function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
 begin
   Result := ValueSize;
@@ -786,7 +790,7 @@ begin
   end;
 end;
 
-{function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
+{function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
 var
   RegKey: HKEY;
@@ -817,12 +821,12 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadDWORD(const RootKey: HKEY; const Key, Name: string): Int64;
+function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 begin
   InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), True);
 end;
 
-{function RegReadDWORD(const RootKey: HKEY; const Key, Name: string): Int64;
+{function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -853,13 +857,13 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-function RegReadDWORDDef(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
+function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 begin
   if not InternalRegReadFixedSize(RootKey, Key, Name, [REG_DWORD], @Result, SizeOf(Result), False) then
     Result := Def;
 end;
 
-{function RegReadDWORDDef(const RootKey: HKEY; const Key, Name: string; Def: Int64): Int64;
+{function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 var
   RegKey: HKEY;
   Size: DWORD;
@@ -880,14 +884,14 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
+procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; Value: Boolean);
 begin
   RegWriteInteger(RootKey, Key, Name, Ord(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure InternalRegWrite(const RootKey: HKEY; const Key, Name: string;
+procedure InternalRegWrite(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKind: TRegKind; const Value; ValueSize: Cardinal);
 var
   RegKey: HKEY;
@@ -906,12 +910,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
+procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_DWORD, Value, SizeOf(Value));
 end;
 
-{procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
+{procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 var
   RegKey: HKEY;
   Ret: Longint;
@@ -929,33 +933,33 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteCardinal(const RootKey: HKEY; const Key, Name: string; Value: Cardinal);
+procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; Value: Cardinal);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_DWORD, Value, SizeOf(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteInt64(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_QWORD, Value, SizeOf(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteUInt64(const RootKey: HKEY; const Key, Name: string; Value: UInt64);
+procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_QWORD, Value, SizeOf(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
+procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_SZ, PChar(Value)^, Length(Value) + 1);
 end;
 
-{procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
+{procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 var
   RegKey: HKEY;
   Ret: Longint;
@@ -973,40 +977,40 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: String);
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: String);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_MULTI_SZ, PChar(Value)^, Length(Value) + 1);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: array of String);
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: array of String);
 begin
   RegWriteMultiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TDynStringArray); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 begin
   RegWriteMultiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TStrings);
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings);
 begin
   RegWriteMultiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_BINARY, Value, ValueSize);
 end;
 
-{procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
+{procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
 var
   RegKey: HKEY;
   Ret: Longint;
@@ -1024,12 +1028,12 @@ end;}
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteDWORD(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_DWORD, Value, SizeOf(Value));
 end;
 
-{procedure RegWriteDWORD(const RootKey: HKEY; const Key, Name: string; Value: Int64);
+{procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 var
   RegKey: HKEY;
   Ret: Longint;
@@ -1071,7 +1075,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 var
   RegKey: HKEY;
   I: DWORD;
@@ -1105,7 +1109,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 var
   RegKey: HKEY;
   I: DWORD;
@@ -1138,7 +1142,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
+function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
   NumSubKeys: Integer;
@@ -1156,7 +1160,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegKeyExists(const RootKey: HKEY; const Key: string): Boolean;
+function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
 begin
@@ -1166,7 +1170,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegSaveList(const RootKey: HKEY; const Key: string;
+function RegSaveList(const RootKey: DelphiHKEY; const Key: string;
   const ListName: string; const Items: TStrings): Boolean;
 var
   I: Integer;
@@ -1186,7 +1190,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegLoadList(const RootKey: HKEY; const Key: string;
+function RegLoadList(const RootKey: DelphiHKEY; const Key: string;
   const ListName: string; const SaveTo: TStrings): Boolean;
 var
   I, N: Integer;
@@ -1202,7 +1206,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName: string): Boolean;
 var
   I, N: Integer;
   Subkey: string;
@@ -1222,6 +1226,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/08 13:46:38  ahuser
+// BCB 6 compatible (no impact on Delphi)
+//
 // Revision 1.9  2004/04/08 10:34:58  rrossmair
 // revert to 1.7 (temporarily?)
 //
