@@ -286,7 +286,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function CopyFiles(Files: TStrings; const Ext, TargetDir: string): Boolean;
+function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
 var
   I: Integer;
   FileName: string;
@@ -294,8 +294,8 @@ begin
   Result := True;
   for I := 0 to Files.Count - 1 do
   begin
-    FileName := Format('%s.%s', [Files[I], Ext]);
-    Result := Result and FileCopy(PChar(FileName), PChar(TargetDir + FileName), True);
+    FileName := Files[I];
+    Result := Result and FileCopy(FileName, TargetDir + ExtractFileName(FileName), Overwrite);
   end;
 end;
 
@@ -383,10 +383,23 @@ var
   begin
     FileList := TStringList.Create;
     try
-      BuildFileList('*.res', faAnyFile, FileList);
-      CopyFiles(FileList, 'res', TargetDir);
+      if BuildFileList('*.res', faAnyFile, FileList) then
+        CopyFiles(FileList, TargetDir);
     finally
       FileList.Free;
+    end;
+  end;
+
+  function CopyHppFiles(Units: TStrings; const TargetDir: string): Boolean;
+  var
+    I: Integer;
+    FileName: string;
+  begin
+    Result := True;
+    for I := 0 to Units.Count - 1 do
+    begin
+      FileName := Units[I] + '.hpp';
+      Result := Result and FileCopy(FileName, TargetDir + FileName, True);
     end;
   end;
 
@@ -524,7 +537,7 @@ begin
         CopyResFiles(UnitOutputDir);
         if Tool.FeatureChecked(FID_JCL_CopyHppFiles, Installation) then
         begin
-          Result := Result and CopyFiles(Units, 'hpp', (Installation as TJclBCBInstallation).VclIncludeDir);
+          Result := Result and CopyHppFiles(Units, (Installation as TJclBCBInstallation).VclIncludeDir);
           WriteInstallLog('Copying .hpp files...');
         end;
         {$IFDEF KYLIX}
