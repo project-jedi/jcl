@@ -1556,6 +1556,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2004/11/06 02:13:31  mthoma
+// history cleaning.
+//
 // Revision 1.30  2004/10/25 15:05:13  marquardt
 // bugfix
 //
@@ -1610,7 +1613,7 @@ end;
 // Revision 1.12  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.11  2004/04/12 22:02:53  peterjhaas
+// Revision 1.11  2004/04/12 22:02:53  
 // Bugfix RegReadBinary for @Value = Nil or ValueSize = 0,
 // add some WideString support, add RegGetDataSize, RegGetDataType, add alternative RegReadBinary function
 //

@@ -299,6 +299,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/11/06 02:13:24  mthoma
+// history cleaning.
+//
 // Revision 1.21  2004/09/30 07:50:29  marquardt
 // remove PH contributions
 //
@@ -335,10 +338,10 @@ end;
 // Revision 1.10  2004/04/19 06:02:18  rrossmair
 // fixed QueryPerformanceCounter (FPC compatibility routine)
 //
-// Revision 1.9  2004/04/14 23:04:09  peterjhaas
+// Revision 1.9  2004/04/14 23:04:09  
 // add TDynLongWordArray, TDynBooleanArray
 //
-// Revision 1.8  2004/04/06 04:53:18  peterjhaas
+// Revision 1.8  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 
