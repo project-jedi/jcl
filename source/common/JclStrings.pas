@@ -645,7 +645,8 @@ begin
       if C in Chars then
       begin
         Chars := Chars - [C];
-        if Chars = [] then Break;
+        if Chars = [] then
+          Break;
       end;
     end;
     Result := (Chars = []);
@@ -998,7 +999,7 @@ asm
         SUB     EBX, FromIndex
         JLE     @@Skip
 
-        // make sure that count is less then # of chars availible.
+        // make sure that count is less then # of chars available.
         // if Count > Length(Source) then Count := Length(Source)
 
         CMP     EBX, Count
@@ -1203,7 +1204,7 @@ begin
   Dest := PChar(Result);
   while (Source <> nil) and (Source^ <> #0) do
   begin
-    if (Source^ in Chars) then
+    if Source^ in Chars then
     begin
       Dest^ := Source^;
       Inc(Dest);
@@ -1265,7 +1266,7 @@ end;
 
 procedure StrReplaceCS(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
-  Result: string;        { result string }
+  ResultStr: string;     { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
   SourceMatchPtr: PChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
@@ -1284,9 +1285,9 @@ begin
     ResultLength := Length(S)
   else
     ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
-  SetLength(Result, ResultLength);
+  SetLength(ResultStr, ResultLength);
   { get pointers to begin of source and result }
-  ResultPtr := PChar(Result);
+  ResultPtr := PChar(ResultStr);
   SourcePtr := PChar(S);
   C := Search[1];
   { while we haven't reached the end of the string }
@@ -1343,7 +1344,7 @@ begin
   end;
   { append null terminator, copy into S and reset the string length }
   ResultPtr^ := #0;
-  S := Result;
+  S := ResultStr;
   SetLength(S, StrLen(PChar(S)));
 end;
 
@@ -1351,7 +1352,7 @@ end;
 
 procedure StrReplaceCI(var S: AnsiString; Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
-  Result: string;        { result string }
+  ResultStr: string;     { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
   SourceMatchPtr: PChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
@@ -1371,9 +1372,9 @@ begin
     ResultLength := Length(S)
   else
     ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
-  SetLength(Result, ResultLength);
+  SetLength(ResultStr, ResultLength);
   { get pointers to begin of source and result }
-  ResultPtr := PChar(Result);
+  ResultPtr := PChar(ResultStr);
   SourcePtr := PChar(S);
   C := Search[1];
   { while we haven't reached the end of the string }
@@ -1430,7 +1431,7 @@ begin
   end;
   { append null terminator, copy into S and reset the string length }
   ResultPtr^ := #0;
-  S := Result;
+  S := ResultStr;
   SetLength(S, StrLen(PChar(S)));
 end;
 
@@ -1571,8 +1572,8 @@ var
 begin
   Result := S;
   for I := 1 to Length(S) do
-    if not(Result[I] in Chars)
-      then Result[I] := C;
+    if not (Result[I] in Chars) then
+      Result[I] := C;
 end;
 
 //------------------------------------------------------------------------------
@@ -2003,7 +2004,7 @@ begin
     Result := StrCharCount(S, SubS[1]);
     Exit;
   end;
-  I := StrSearch(SubS, S);
+  I := StrSearch(SubS, S, 1);
   while (I > 0) and (Length(S) > I+Length(SubS))
   do begin
     Inc(Result);
@@ -2694,79 +2695,86 @@ begin
   repeat
     repeat
       case PatternPtr^ of
-        #0: begin
-              Result:=StringPtr^=#0;
-              if Result or (StringRes=nil) or (PatternRes=nil) then
-                Exit;
-
-              StringPtr:=StringRes;
-              PatternPtr:=PatternRes;
-              Break;
-            end;
-        '*': begin
-               inc(PatternPtr);
-               PatternRes:=PatternPtr;
-               Break;
-             end;
-        '?': begin
-               if StringPtr^=#0 then
-                 Exit;
-               inc(StringPtr);
-               inc(PatternPtr);
-             end;
-        else
-        begin
-          if StringPtr^=#0 then
-            Exit;
-          if StringPtr^<>PatternPtr^ then
+        #0:
           begin
-            if (StringRes=nil) or (PatternRes=nil) then
+            Result := StringPtr^ = #0;
+            if Result or (StringRes = nil) or (PatternRes = nil) then
               Exit;
-            StringPtr:=StringRes;
-            PatternPtr:=PatternRes;
+
+            StringPtr := StringRes;
+            PatternPtr := PatternRes;
             Break;
-          end
-          else
-          begin
-            inc(StringPtr);
-            inc(PatternPtr);
           end;
-        end;
+        '*':
+          begin
+            Inc(PatternPtr);
+            PatternRes := PatternPtr;
+            Break;
+          end;
+        '?':
+          begin
+            if StringPtr^ = #0 then
+              Exit;
+            Inc(StringPtr);
+            Inc(PatternPtr);
+          end;
+        else
+          begin
+            if StringPtr^ = #0 then
+              Exit;
+            if StringPtr^ <> PatternPtr^ then
+            begin
+              if (StringRes = nil) or (PatternRes = nil) then
+                Exit;
+              StringPtr := StringRes;
+              PatternPtr := PatternRes;
+              Break;
+            end
+            else
+            begin
+              Inc(StringPtr);
+              Inc(PatternPtr);
+            end;
+          end;
       end;
-    until false;
+    until False;
 
     repeat
       case PatternPtr^ of
-        #0: begin
-          Result:=true;
-          Exit;
-        end;
-        '*': begin
-          inc(PatternPtr);
-          PatternRes:=PatternPtr;
-        end;
-        '?': begin
-          if StringPtr^=#0 then
+        #0:
+          begin
+            Result := True;
             Exit;
-          inc(StringPtr);
-          inc(PatternPtr);
-        end;
-        else begin
-          repeat
-            if StringPtr^=#0 then
+          end;
+        '*':
+          begin
+            Inc(PatternPtr);
+            PatternRes := PatternPtr;
+          end;
+        '?':
+          begin
+            if StringPtr^ = #0 then
               Exit;
-            if StringPtr^=PatternPtr^ then
-              Break;
-            inc(StringPtr);
-          until false;
-          inc(StringPtr);
-          StringRes:=StringPtr;
-          inc(PatternPtr);
-          Break;
-        end;
+            Inc(StringPtr);
+            Inc(PatternPtr);
+          end;
+        else
+          begin
+            repeat
+              if StringPtr^ = #0 then
+                Exit;
+              if StringPtr^ = PatternPtr^ then
+                Break;
+              Inc(StringPtr);
+            until False;
+            Inc(StringPtr);
+            StringRes := StringPtr;
+            Inc(PatternPtr);
+            Break;
+          end;
       end;
-    until false;
-  until false;
+    until False;
+  until False;
 end;
 
 //------------------------------------------------------------------------------
@@ -3703,11 +3711,16 @@ begin
   end;
   if Length(TempS) > 0 then
   begin
-    if TempS[1] = DecimalSeparator then TempS := '0' + TempS;
-    if TempS[length(TempS)] = DecimalSeparator then TempS := TempS + '0';
+    if TempS[1] = DecimalSeparator then
+      TempS := '0' + TempS;
+    if TempS[length(TempS)] = DecimalSeparator then
+      TempS := TempS + '0';
     Result := StrToFloat(TempS);
-    if IsNegative then Result := Result * -1;
-  end else Result := 0.0;
+    if IsNegative then
+      Result := Result * -1;
+  end
+  else
+    Result := 0.0;
 end;
 
 //------------------------------------------------------------------------------
