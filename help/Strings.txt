@@ -92,15 +92,15 @@ Determines whether a string contains a specified set of characters.
 [Description]
 StrContainsChars checks whether the specified string contains at least one character
 that matches one of the characters in the Chars set. If CheckAll is True, the
-function checks whether all characters in the Chars set appear at least ones in
+function checks whether all characters in the Chars set appear at least once in
 the specified string.
 [Parameters]
 Count=3
 1=S:AnsiString=The string to test.
 2=Chars:TSysCharSet=The characters for which to test.
-3=CheckAll:Boolean=If True, all characters from Chars must appear at least ones
+3=CheckAll:Boolean=If True, all characters from Chars must appear at least once
 in the specified string. If False, at least one of the characters in Chars must
-appear at least ones in the specified string.
+appear at least once in the specified string.
 [Result]
 Returns True if the condition is met, otherwise it returns False.
 [Quick Info]
@@ -188,7 +188,7 @@ otherwise the result is False.
 [Notes]
 Count=1
 1=If the supplied string is empty, the result is always True. If the supplied
-character set is empty, the result is always False.
+character set is empty, the result is always False. Empty string overules empty set.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -229,7 +229,7 @@ Centers a string.
 [Description]
 The StrCenter routine takes the specified string and pads it on both the left
 and right side with the specified character until the resulting string is of the
-specified lenght. While doing this the original string is kept centered. That is,
+specified length. While doing this the original string is kept centered. That is,
 there is the same amount of padding at the left side as there is on the right side.
 [Parameters]
 Count=3
@@ -327,8 +327,9 @@ Converts an escaped string to a string.
 [Description]
 StrEscapedToString converts a string which contains escape characters to a string
 without escape characters by replacing all escape characters with their string
-counterparts. For example, a string which contains a BELL character (#7) will
-have the BELL character replaced with '\a'. The supported escape characters are:
+counterparts. For example, a string which contains a '\a' sequence will
+have the '\a' sequence replaced with the BELL character #7.
+The supported escape characters are:
  <TABLE>
  <TR VALIGN="top">
  <TH align=left width=15%>Character</TH>
@@ -346,9 +347,9 @@ have the BELL character replaced with '\a'. The supported escape characters are:
  <TR VALIGN="top"><TD width=15%>\\</TD><TD width=15%>N/A</TD><TD width=15%>N/A</TD><TD width=70%>Backslash</TD></TR>
  <TR VALIGN="top"><TD width=15%>\"</TD><TD width=15%>N/A</TD><TD width=15%>N/A</TD><TD width=70%>Double quotes</TD></TR>
  </TABLE>
-All other characters whose ordinal value are smaller than Ord(' ') are escaped
-as a hexadecimal sequence. The <REF>StrStringToEscaped</REF> is the "inverse"
-of this function.
+In addition it supports hexadecimal escape sequences (sequences that start with \x)
+and octal escape sequences (sequences starting with '\0', '\1' ... '\9').
+The <REF>StrStringToEscaped</REF> is the "inverse" of this function.
 [Parameters]
 Count=1
 1=S:AnsiString=The "escaped" string to convert to a "normal" string.
@@ -408,19 +409,19 @@ Count=1
 [Declaration]
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex, FromIndex, Count: Integer);
 [ShortDescr]
-Copies a substring from one string to another.
+Copies a sub-string from one string to another.
 [Description]
 StrMove copies Count characters starting at FromIndex in the source string to
 the destination string starting at ToIndex. The function checks the passed
-parameters and if any are illegal the function does nothing. This includes
+parameters and if any is illegal the function does nothing. This includes
 illegal indices and, for example, a zero-length destination string.
 [Parameters]
 Count=5
-1=Dest:AnsiString=The destination string which the substring is copied to.
-2=Source:AnsiString=The source string from which the substring is copied.
-3=ToIndex:Integer=The index into the destination string at which the substring is copied.
+1=Dest:AnsiString=The destination string which the sub-string is copied to.
+2=Source:AnsiString=The source string from which the sub-string is copied.
+3=ToIndex:Integer=The index into the destination string at which the sub-string is copied.
 4=FromIndex:Integer=The starting index into the source string from which count characters are copied.
-5=Count:Integer=Length of the substring to copy in characters.
+5=Count:Integer=Length of the sub-string to copy in characters.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -452,8 +453,9 @@ SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=2
 1=StrPadRight
+2=StrCenter
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar = ' '): AnsiString;
@@ -478,8 +480,9 @@ SubCat=String Transformation Routines
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=2
 1=StrPadLeft
+2=StrCenter
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrProper(const S: AnsiString): AnsiString;
@@ -511,8 +514,6 @@ the first character.
 [Parameters]
 Count=1
 1=S:PAnsiChar=The string to transform.
-[Result]
-The transformed string.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -549,7 +550,7 @@ function StrRemoveChars(const S: AnsiString; Chars: TSysCharSet): AnsiString;
 Removes a set of characters from a string.
 [Description]
 StrRemoveChars removes all instances of the characters in the set from the source
-string. For example, if you pass in 'Joint Endeavor of Delphi Innovators' and
+string. For example, if you pass in 'Joint Endeavour of Delphi Innovators' and
 specify ['e', 'a', 'o', 'u', 'i'] the resulting string will be 'Jnt Endvr f Dlph Innvtrs'.
 [Parameters]
 Count=2
@@ -574,11 +575,11 @@ function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
 Repeats a string Count number of times.
 [Description]
 The StrRepeat routine returns a string consisting of the specified string, repeated
-Count number of time. For example, StrRepeat('He', 3) returns 'HeHeHe'.
+Count number of times. For example, StrRepeat('He', 3) returns 'HeHeHe'.
 [Parameters]
 Count=2
 1=S:AnsiString=The string to repeat.
-2=Count:Integer=The number of time to repeat the specified string.
+2=Count:Integer=The number of times to repeat the specified string.
 [Result]
 The specified string, repeated Count number of times.
 [Quick Info]
@@ -699,10 +700,10 @@ function StrStringToEscaped(S: AnsiString): AnsiString;
 [ShortDescr]
 Converts a string to an escaped string.
 [Description]
-StrStringToEscaped converts a string to an escaped string by replacing escape
+StrStringToEscaped converts a string to an escaped string by replacing non-visual
 character sequences with their escape characters. For example, if a string contains
-the sequence '\a' the resulting string will have the \a replaced with a BELL
-character (#7). This function is the inverse of <REF>StrEscapedToString</REF>.
+the character #7 the resulting string will have the #7 character replaced with the '\a'
+sequence. This function is the inverse of <REF>StrEscapedToString</REF>.
 The function supports the following escape characters:
  <TABLE>
  <TR VALIGN="top">
@@ -721,8 +722,9 @@ The function supports the following escape characters:
  <TR VALIGN="top"><TD width=15%>\\</TD><TD width=15%>N/A</TD><TD width=15%>N/A</TD><TD width=70%>Backslash</TD></TR>
  <TR VALIGN="top"><TD width=15%>\"</TD><TD width=15%>N/A</TD><TD width=15%>N/A</TD><TD width=70%>Double quotes</TD></TR>
  </TABLE>
-In addition it supports hexadecimal escape sequences (sequences that start with \x)
-and octal escape sequences (sequences starting with '\0', '\1' ... '\9').
+All other characters whose ordinal value are smaller than Ord(' ') are escaped
+as a hexadecimal sequence like '\x01'. The <REF>StrEscapedToString</REF> is the "inverse"
+of this function.
 [Parameters]
 Count=1
 1=S:AnsiString=The string to convert to an escaped string.
@@ -789,16 +791,20 @@ Count=2
 2=StrDoubleQuote
 <DECL>-------------------------------------------------------------------------
 [Declaration]
-function StrToHex(const S: AnsiString): AnsiString;
+function StrToHex(const Source: AnsiString): AnsiString;
 [ShortDescr]
-TODO
+Converts a string of hex digit pairs to the corresponding bytes.
 [Description]
-TODO
+The Source string is expected to contain pairs of hex digit characters
+['0'..'9', 'a'..'f', 'A'..'F']. Each pair is converted to a single
+byte thus converting '40' to '@'. Any character not from the hex set
+results in an empty string. If the string length of the Source is odd
+then a '0' is prepended internally to make up the first byte.
 [Parameters]
 Count=1
-1=S:AnsiString=TODO
+1=S:AnsiString=A string of hex digit pairs to be converted
 [Result]
-TODO
+The string of converted bytes.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -1022,7 +1028,8 @@ of used characters. This is particularly useful when passing strings to API
 functions which accept PChar's. These kind of functions do modify the string but
 since they are unaware of how Delphi manages strings, the length is not changed
 on return. Depending on how you use the string from that point on the results
-may be incorrect.
+may be incorrect if you do not apply StrResetLength.
+The function resets the length to the C string length, i. e. the length up to the first #0 byte.
 [Parameters]
 Count=1
 1=S:AnsiString=The string whose length to reset.
@@ -1047,7 +1054,7 @@ Count=2
 1=S:AnsiString=Source string.
 2=Len:Integer=The character whose occurrences to count.
 [Result]
-The number of occurrences of char in s.
+The number of occurrences of C in S.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -1064,7 +1071,7 @@ Compares two strings.
 StrCompare implements a case-insensitive comparison between the two supplied
 strings. If the two strings match the function returns 0 otherwise it returns
 the number of different characters. If the supplied strings are of equal length
-but are not identical the function returns the difference of the first miss-matched
+but are not identical the function returns the difference of the first mismatched
 character. The table below demonstrates this:
  <TABLE>
   <TR VALIGN="top">
@@ -1100,7 +1107,7 @@ function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer):
 [ShortDescr]
 Compares two (sub) strings.
 [Description]
-StrCompareRange compares a substring from the first supplied string with the
+StrCompareRange compares a sub-string from the first supplied string with the
 second string. If the two strings are identical the function returns 0 otherwise
 it returns an indication of difference between the two strings. See <REF>StrCompare</REF>
 for more information. This function is particularly useful to avoid code such as:
@@ -1111,10 +1118,10 @@ be rewritten to:
 Count=4
 1=S1:AnsiString=First string to compare.
 2=S2:AnsiString=Second string to compare.
-3=Index:Integer=Starting index of substring in S1 to.
-4=Count:Integer=Number of characters of the substring in S1 to compare to S2.
+3=Index:Integer=Starting index of sub-string in S1 to.
+4=Count:Integer=Number of characters of the sub-string in S1 to compare to S2.
 [Result]
-StrCompare returns 0 if the two strings match or the number of different characters
+StrCompareRange returns 0 if the two strings match or the number of different characters
 in case of a mismatch.
 [Quick Info]
 BCB=3,4,5
@@ -1151,13 +1158,13 @@ Delphi=3,4,5
 [Declaration]
 function StrFind(const Substr, Str: AnsiString; const Index: Integer = 1): Integer;
 [ShortDescr]
-Returns the index of the first character in a specified substring that occurs in a given string.
+Returns the index of the first character in a specified sub-string that occurs in a given string.
 [Description]
-StrFind returns the index of the first character in a specified substring that
+StrFind returns the index of the first character in a specified sub-string that
 occurs in a given string. The search starts at the supplied index and is case-insensitive.
 [Parameters]
 Count=3
-1=Substr:AnsiString=The substring to search for.
+1=Substr:AnsiString=The sub-string to search for.
 2=Str:AnsiString=The string in which to search.
 3=Index:Integer=The index in Str at which to start the search.
 [Result]
@@ -1207,9 +1214,9 @@ function StrIndex(const S: string; const List: array of string): Integer;
 Returns the index of a string in an array of strings.
 [Description]
 StrIndex returns the index into the List array at which S is positioned. This is
-particularly usefull to create a case statement based on string labels. For example:
+particularly useful to create a case statement based on string labels. For example:
   <PRE class=syntax>
-  case StrIndex(S, 'zero', 'one', 'two') of
+  case StrIndex(S, ['zero', 'one', 'two']) of
     0: // handle case where S = 'zero'
     1: // handle case where S = 'one'
     2: // handle case where S = 'two'
@@ -1224,7 +1231,7 @@ Count=2
 [Result]
 If the supplied string exists in the List array the zero based index of the position
 at which it appears is returned. If the string doesn't exist in the array -1 is
-returned. Note that the string comparison is case insensitive but is base on the
+returned. Note that the string comparison is case insensitive but is based on the
 current locale (ie it uses AnsiSameText).
 [Quick Info]
 BCB=3,4,5
@@ -1239,11 +1246,11 @@ function StrILastPos(const SubStr, S: AnsiString): Integer;
 [ShortDescr]
 Returns the index of the last occurrence of SubStr in S.
 [Description]
-StrLastPos scans the supplied string and returns the index of the first character
+StrILastPos scans the supplied string and returns the index of the first character
 of the last occurrence of the supplied sub-string. The comparison is case-insensitive.
 [Parameters]
 Count=2
-1=SubStr:AnsiString=The substring to find the last occurrence of.
+1=SubStr:AnsiString=The sub-string to find the last occurrence of.
 2=S:AnsiString=The string in which to search.
 [Result]
 The index of the last occurrence of SubStr in S. If the sub-string does not exist
@@ -1268,7 +1275,7 @@ StrLastPos scans the supplied string and returns the index of the first characte
 of the last occurrence of the supplied sub-string. The comparison is case-sensitive.
 [Parameters]
 Count=2
-1=SubStr:AnsiString=The substring to find the last occurrence of.
+1=SubStr:AnsiString=The sub-string to find the last occurrence of.
 2=S:AnsiString=The string in which to search.
 [Result]
 The index of the last occurrence of SubStr in S. If the sub-string does not exist
@@ -1293,7 +1300,7 @@ StrIPos scans the supplied string and returns the index of the first character
 of the first occurrence of the supplied sub-string. The comparison is case-insensitive.
 [Parameters]
 Count=2
-1=SubStr:AnsiString=The substring to find the last occurrence of.
+1=SubStr:AnsiString=The sub-string to find the first occurrence of.
 2=S:AnsiString=The string in which to search.
 [Result]
 The index of the first occurrence of SubStr in S. If the sub-string does not exist
@@ -1312,7 +1319,7 @@ function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boole
 Tests whether the supplied string exists in the list of strings.
 [Description]
 StrIsOneOf tests whether the supplied string exists in the list of strings. Note
-that the comparison is case insensitive.
+that the comparison is case-insensitive.
 [Parameters]
 Count=2
 1=S:AnsiString=The string to test.
@@ -1330,7 +1337,7 @@ Delphi=3,4,5
 [Declaration]
 function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
 [ShortDescr]
-Returns the position of the N-th occurence of a substring within a string.
+Returns the position of the N-th occurence of a sub-string within a string.
 [Description]
 StrNPos returns the index into S of the N-th occurence of the specified sub-string.
 This function is case-sensitive and does not work with multibyte character sets.
@@ -1360,7 +1367,7 @@ Count=1
 [Declaration]
 function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
 [ShortDescr]
-Returns the position of the N-th occurence of a substring within a string.
+Returns the position of the N-th occurence of a sub-string within a string.
 [Description]
 StrNPos returns the index into S of the N-th occurence of the specified sub-string.
 This function is case-insensitive and does not work with multibyte character sets.
@@ -1390,16 +1397,16 @@ Count=1
 [Declaration]
 function StrMatch(const Substr, Str: AnsiString; const Index: Integer = 1): Integer;
 [ShortDescr]
-Returns the index of the first character in a specified substring that occurs in a given string.
+Returns the index of the first character in a specified sub-string that occurs in a given string.
 [Description]
-StrMatch returns the index of the first character in a specified substring that
+StrMatch returns the index of the first character in a specified sub-string that
 occurs in a given string. The search starts at the supplied index and is case-insensitive.
 The specified sub-string may contain wildcards. The '?' wildcard matches 1 character
 while the '*' wildcard matches 0 or more occurrences of a character. For example, 'J?DI'
 will find 'JEDI', 'JZDI' and 'JODI' (and more) while 'J*I' will find 'JEDI' and 'JI'.
 [Parameters]
 Count=3
-1=Substr:AnsiString=The substring to search for. May contain wildcards.
+1=Substr:AnsiString=The sub-string to search for. May contain wildcards.
 2=Str:AnsiString=The string in which to search.
 3=Index:Integer=The index in Str at which to start the search.
 [Result]
@@ -1448,13 +1455,13 @@ Delphi=3,4,5
 [Declaration]
 function StrSearch(const Substr, Str: string; const Index: Integer = 1): Integer;
 [ShortDescr]
-Returns the index of the first character in a specified substring that occurs in a given string.
+Returns the index of the first character in a specified sub-string that occurs in a given string.
 [Description]
-StrSearch returns the index of the first character in a specified substring that
+StrSearch returns the index of the first character in a specified sub-string that
 occurs in a given string. The search starts at the supplied index and is case-sensitive.
 [Parameters]
 Count=3
-1=Substr:AnsiString=The substring to search for.
+1=Substr:AnsiString=The sub-string to search for.
 2=Str:AnsiString=The string in which to search.
 3=Index:Integer=The index in Str at which to start the search.
 [Result]
@@ -1474,17 +1481,17 @@ Count=1
 [Declaration]
 function StrAfter(const SubStr, S: AnsiString): AnsiString;
 [ShortDescr]
-Returns the portion of the string after a specific substring.
+Returns the portion of the string after a specific sub-string.
 [Description]
 The StrAfter routine returns that portion of the specified string that appears
-after a specified substring. For example, StrAfter('Hello', 'Hello world') returns
+after a specified sub-string. For example, StrAfter('Hello', 'Hello world') returns
 the string ' world'.
 [Parameters]
 Count=2
-1=SubStr:AnsiString=The substring to search for.
+1=SubStr:AnsiString=The sub-string to search for.
 2=S:AnsiString=The source string.
 [Result]
-The portion of the string after the specified substring. If the substring does
+The portion of the string after the specified sub-string. If the sub-string does
 not appear in the source string the result is an empty string.
 [Quick Info]
 BCB=3,4,5
@@ -1500,17 +1507,17 @@ Count=1
 [Declaration]
 function StrBefore(const SubStr, S: AnsiString): AnsiString;
 [ShortDescr]
-Returns the portion of the string before a specific substring.
+Returns the portion of the string before a specific sub-string.
 [Description]
 The StrBefore routine returns that portion of the specified string that appears
-before a specified substring. For example, StrBefore('world', 'Hello world') returns
+before a specified sub-string. For example, StrBefore('world', 'Hello world') returns
 the string 'Hello '.
 [Parameters]
 Count=2
-1=SubStr:AnsiString=The substring to search for.
+1=SubStr:AnsiString=The sub-string to search for.
 2=S:AnsiString=The source string.
 [Result]
-The portion of the string before the specified substring. If the substring does
+The portion of the string before the specified sub-string. If the sub-string does
 not appear in the source string the result is the source string.
 [Quick Info]
 BCB=3,4,5
@@ -1526,20 +1533,20 @@ Count=1
 [Declaration]
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
 [ShortDescr]
-Returns the substring between the first occurences of Start and Stop.
+Returns the sub-string between the first occurences of Start and Stop.
 [Description]
 The StrBetween routine returns the that portion of the string that appears between
 the first occurences of the Start and Stop characters. For example,
 StrBetween('Hello world', 'e', 'r') returns 'llo wo'. Note that if the position
-of Start is larger then Stop, or either of these characters is not found in the
+of Start is greater than Stop, or either of these characters is not found in the
 source string, the result is an empty string.
 [Parameters]
 Count=3
-1=S:AnsiString=The source string from which to extract the substring
-2=Start:AnsiChar=The character which denotes the start of the substring to extract.
-3=Stop:AnsiChar=The character which denotes the end of the substring to extract.
+1=S:AnsiString=The source string from which to extract the sub-string
+2=Start:AnsiChar=The character which denotes the start of the sub-string to extract.
+3=Stop:AnsiChar=The character which denotes the end of the sub-string to extract.
 [Result]
-If the function succeeds, it returns the substring between the first occurence of
+If the function succeeds, it returns the sub-string between the first occurence of
 Start and Stop, not including either of these characters. If the function fails
 it returns an empty string, for example if the Start and/or Stop character doesn't
 appear in the sources string.
@@ -1563,7 +1570,7 @@ Count=2
 1=S:AnsiString=The source string from which the characters are removed.
 2=N:Integer=The number of characters to remove from the end of the string.
 [Result]
-The string with the last N characters cut off. Note that when N is larger then
+The string with the last N characters cut off. Note that when N is larger than
 the string length, the result is an empty string.
 [Quick Info]
 BCB=3,4,5
@@ -1579,7 +1586,7 @@ function StrLeft(const S: AnsiString; Count: Integer): AnsiString;
 Returns the Count leftmost characters from the string.
 [Description]
 StrLeft returns the Count number of leftmost characters from the supplied string.
-Note that if the supplied string contains fewer then Count characters, the function
+Note that if the supplied string contains fewer than Count characters, the function
 returns the entire string.
 [Parameters]
 Count=2
@@ -1604,6 +1611,8 @@ function StrMid(const S: AnsiString; Start, Count: Integer): AnsiString;
 Copies part of a string.
 [Description]
 StrMid copies the part of the source string defined by Start and Count.
+If Start exceeds the length of the string then an empty string is returned.
+The extracted sub-string can be shorter than Count if Start+Count exceed the string length.
 [Parameters]
 Count=3
 1=S:AnsiString=Source string.
@@ -1624,8 +1633,7 @@ function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
 [ShortDescr]
 Returns a string composed of the last N characters of the source string.
 [Description]
-StrRestOf returns a string composed of the last (rightmost) N characters of the
-source string.
+StrRestOf returns a string composed of the last (rightmost) N characters of the string.
 [Parameters]
 Count=2
 1=S:AnsiString=The source string from which to copy the last N characters.
@@ -1646,7 +1654,7 @@ function StrRight(const S: AnsiString; Count: Integer): AnsiString;
 Returns the Count rightmost characters from the string.
 [Description]
 StrRight returns the Count number of rightmost characters from the supplied string.
-Note that if the supplied string contains fewer then Count characters, the function
+Note that if the supplied string contains fewer than Count characters, the function
 returns the entire string.
 [Parameters]
 Count=2
@@ -1846,7 +1854,7 @@ function CharIsNumber(const C: AnsiChar): Boolean;
 Tests whether C is a number.
 [Description]
 CharIsNumber returns whether or not the supplied character is a number. That is,
-if it comes from the ['0'..'9', '-', '.'] set where the dot is replaced by the
+if it comes from the ['0'..'9', '+', '-', '.'] set where the dot is replaced by the
 system's decimal separator character.
 [Parameters]
 Count=1
@@ -1876,7 +1884,7 @@ Tests whether a character is printable.
 [Description]
 CharIsPrintable returns whether the specified character is printable. A printable
 character is any character which is not a control character and as such has an
-ordinal value larger than 32.
+ordinal value larger than 31.
 [Parameters]
 Count=1
 1=C:AnsiChar=The character to test.
@@ -1917,7 +1925,7 @@ function CharIsReturn(const C: AnsiChar): Boolean;
 Tests whether C is a return character.
 [Description]
 CharIsReturn returns whether C is a return character. In this context both the
-carriage return (#13) as well as the linefeed (#10) are considered return
+carriage return (#13) as well as the linefeed (#10) are considered return.
 characters.
 [Parameters]
 Count=1
@@ -1944,7 +1952,7 @@ tab (#9) characters.
 Count=1
 1=C:AnsiChar=Character to test.
 [Result]
-If the character represents space(s) the result is True, otherwise the result is False.
+If the character represents a space the result is True, otherwise the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -1980,7 +1988,7 @@ function CharIsWhiteSpace(const C: AnsiChar): Boolean;
 [ShortDescr]
 Tests whether C represents space.
 [Description]
-CharIsWhiteSpace returns whether or not the C character represents space(s).
+CharIsWhiteSpace returns whether or not the C character represents a space.
 Unlike <REF>CharIsSpace</REF> this function returns True if the specified
 character comes from the AnsiWhiteSpace set which is defined as: <BR>
 AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
@@ -1988,7 +1996,7 @@ AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed, AnsiCarr
 Count=1
 1=C:AnsiChar=Character to test.
 [Result]
-If the character represents space(s) the result is True, otherwise the result is False.
+If the character represents a space the result is True, otherwise the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2037,6 +2045,9 @@ The type of the character, this can be one of the following values.
   <TR VALIGN="top"><TD width=20%>C1_ALPHA</TD><TD width=14%>0x0100</TD><TD width=66%>Any linguistic character: alphabetic, syllabary, or ideographic </TD>
   </TR>
   </TABLE>
+[Notes]
+Count=1
+1=In a future Linux version the values may differ.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2048,14 +2059,15 @@ Delphi=3,4,5
 [Declaration]
 function CharHex(const C: AnsiChar): Byte;
 [ShortDescr]
-TODO
+Converts a hex digit character to its binary value.
 [Description]
-TODO
+Converts a hex digit character to its binary value, ie $0 to $f.
+If the character is no hex digit then $ff is returned.
 [Parameters]
 Count=1
-1=C:AnsiChar=TODO
+1=C:AnsiChar=A hex digit to convert
 [Result]
-TODO
+The binary value of the hex digit or $ff if it was no hex digit.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2206,7 +2218,7 @@ function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PC
 Converts a stringlist into a PCharVector.
 [Description]
 A PCharVector is an array of PChar's where each PChar points to a null terminated
-string. The array is delimited by a nil pointer. In the Windows API this is
+string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
 usually typed as a PPSTR. This function takes a string list and builds a
 PCharVector from it. The memory allocated to store the PCharVector must eventually
 be released by the caller, preferably using <REF>FreePCharVector</REF>.
@@ -2215,7 +2227,7 @@ Count=2
 1=Dest:PCharVector=On return receives a pointer to the PCharVector.
 2=Source:TStrings=String list to convert to a PCharVector.
 [Result]
-A copy of Dest.
+The value placed in Dest to allow using the function on parameter position.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2235,12 +2247,12 @@ function PCharVectorCount(const Source: PCharVector): Integer;
 Returns the number of elements in a PCharVector.
 [Description]
 PCharVectorCount returns the number of items, PChar's, in the supplied PCharVector
-excluding the null terminator.
+excluding the NULL terminator.
 [Parameters]
 Count=1
 1=The PCharVector to count the elements in.
 [Result]
-The number of elements in the PCharVector excluding the null terminator.
+The number of elements in the PCharVector excluding the NULL terminator.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2260,13 +2272,13 @@ procedure PCharVectorToStrings(const Dest: TStrings; const Source: PCharVector);
 Converts a PCharVector to a stringlist.
 [Description]
 A PCharVector is an array of PChar's where each PChar points to a null terminated
-string. The array is delimited by a nil pointer. In the Windows API this is
+string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
 usually typed as a PPSTR. This function takes such a PCharVector and converts it
 to a stringlist. Note that the memory for the PCharVector is not freed by this
 function.
 [Parameters]
 Count=2
-1=Dest:TStrings=List which retrieves the elements in the PCharVector.
+1=Dest:TStrings=List which recieves the elements in the PCharVector.
 2=Source:PCharVector=PCharVector from which to retrieve the elements.
 [Quick Info]
 BCB=3,4,5
@@ -2287,6 +2299,8 @@ procedure FreePCharVector(var Dest: PCharVector);
 Frees a PCharVector
 [Description]
 FreePCharVector frees the memory pointed to by Dest and sets Dest to nil.
+Only hand in memory allocated by <REF>StringsToPCharVector</REF>.
+Freeing a PCharVector allocated by a Windows API function will crash your program.
 [Parameters]
 Count=1
 1=Dest:PCharVector=The PCharVector whose memory to free.
@@ -2317,9 +2331,9 @@ Count=2
 1=Dest:PChar=PChar receives a pointer to the resulting string.
 2=Source:TStrings=List of strings to pack into a single string.
 [Result]
-On success the function returns a copy of Dest. If the function fails to allocate
+On success the function returns the value of Dest. If the function fails to allocate
 memory for the result string it (implicitly) raises an EOutOfMemory exception. The
-caller is responsible for releasing the memory pointer to by Dest.
+caller is responsible for releasing the memory pointed to by Dest.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2392,9 +2406,9 @@ Converts a string into a list of strings using the specified separator character
 [Description]
 StrToStrings converts the supplied string, which supposedly is a list of strings
 packed into a single string variable, to a TStrings. The function uses the supplied
-separator string to separate the string into it's individual elements. For
+separator string to separate the string into its individual elements. For
 example, if you call the function like this:
-StrToStrings('Project JEDI Rules', ' ' List) then on return list will contain three
+StrToStrings('Project JEDI Rules', ' ', List) then on return list will contain three
 items, namely 'Project', 'JEDI', and 'Rules'. As this example shows, the last
 string doesn't have to be terminated by the separator string although it is allowed.
 [Parameters]
@@ -2423,7 +2437,7 @@ Converts a stringlist to a single string.
 [Description]
 StringsToStr concatenates the items in List, separating them with the specified
 separator string and returns the resulting string. The last element is not terminated
-with the separator.
+with the separator (its a separator not a terminator after all).
 [Parameters]
 Count=2
 1=List:TStrings=Stringlist which contains the strings to concatenate.
@@ -2458,20 +2472,21 @@ SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=2
 1=TrimStringsRight
+2=TrimStringsLeft
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure TrimStringsRight(const List: TStrings);
 [ShortDescr]
-Left trims all strings in a stringlist.
+Right trims all strings in a stringlist.
 [Description]
-TrimStringsRigth right trims all strings in the specified stringlist using the
+TrimStringsRight right trims all strings in the specified stringlist using the
 standard Delphi TrimRight procedure. If an entry in the list is empty or trimming
 it causes it to become empty, the entry is deleted from the list.
 [Parameters]
 Count=1
-1=List:TStrings=The stringlist whose contents to trim.
+1=List:TStrings=The stringlist whose contents to right trim.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2480,8 +2495,32 @@ SubCat=TStrings Manipulation
 Author=Anthony Steele;asteele@iafrica.com
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=2
 1=TrimStrings
+2=TrimStringsLeft
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TrimStringsLeft(const List: TStrings);
+[ShortDescr]
+Left trims all strings in a stringlist.
+[Description]
+TrimStringsLeft left trims all strings in the specified stringlist using the
+standard Delphi TrimLeft procedure. If an entry in the list is empty or trimming
+it causes it to become empty, the entry is deleted from the list.
+[Parameters]
+Count=1
+1=List:TStrings=The stringlist whose contents to left trim.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=TStrings Manipulation
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=TrimStrings
+2=TrimStringsRight
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function BooleanToStr(B: Boolean): string;
@@ -2512,14 +2551,14 @@ Breaks apart S using a specified delimiter into a StringList.
 [Description]
 Use StrTokenToStrings for breaking apart a string with parts delimited by a
 separator. For example, if you passed 'C:\Windows;C:\Delphi;C:\JEDI;' List would
-return C:\Windows   C:\Delphi   C:\JEDI
+contain 'C:\Windows', 'C:\Delphi', 'C:\JEDI'.
 You must create the StringList prior to passing it to StrTokenToString and
 Free the StringList once finished with it.
 [Parameters]
 Count=3
 1=S:AnsiString=A string which contains one or more Separators (see List parameter).
-2=Separator:AnsiChar=Any character you want to use to separate S, i.e. ;.\/-|
-3=List:TStrings=Returns separated parts or the entire string if no separator.
+2=Separator:AnsiChar=Any character you want to use to separate S.
+3=List:TStrings=Returns separated parts or the entire string if no separator occurs.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2534,11 +2573,14 @@ Count=1
 [Declaration]
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 [ShortDescr]
-Returns a substring from S which is preceded by Separator.
+Returns a sub-string from S which is followed by Separator and deletes the
+sub-string from S including the separator.
 [Description]
-Used to simplify obtaining a substring from a given string which begins with
-Separator. Note that S is returned with the section before Separator and the
-Separator is not returned at all (discarded).
+Splits a string into the part preceding the separator, which is returned
+as function result, and the part following the separator which is placed
+in S.
+If no separator is contained in the string then the string is returned
+as the function result and S becomes an empty string.
 [Parameters]
 Count=2
 1=S:AnsiString=The string you want to return the part after the Separator.
@@ -2548,7 +2590,6 @@ Any part of S in front of Separator, or the original string if Separator
 was not located in S.
 S returns the remaining portion of the string after (but not including) Separator.
 If Separator was not found, S is an empty string.
-the original string S.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2632,8 +2673,8 @@ procedure StringToFile(const FileName, Contents: AnsiString);
 Writes a string to a file.
 [Description]
 The StringToFile routine writes the contents of the specified string to a file.
-Note that only the actual content is written to the file, not the null terminating
-character. The string is considered a generic buffer and can contains anything.
+Note that the full content is written to the file, including any null terminating
+characters. The string is considered a generic buffer and can contains anything.
 [Parameters]
 Count=2
 1=FileName:AnsiString=Fully qualified name of the file.
