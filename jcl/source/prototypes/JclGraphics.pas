@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: July 7, 2002                                                                      }
+{ Last modified: September 30, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1723,6 +1723,7 @@ var
   IconInfo: TIconInfo;
 begin
   GetIconInfo(Icon, IconInfo);
+  DeleteObject(IconInfo.hbmMask);
   Result := IconInfo.hbmColor;
 end;
 
