@@ -34,6 +34,11 @@ type
     (
       ioTarget,
       ioJCL,
+      ioJclDefThreadSafe,
+      ioJclDefDropObsoleteCode,
+      ioJclDefMathPrecSingle,
+      ioJclDefMathPrecDouble,
+      ioJclDefMathPrecExtended,
       ioJclEnv,
       ioJclEnvLibPath,
       ioJclEnvBrowsingPath,
@@ -60,6 +65,15 @@ type
       ioJclHelpHlp,
       ioJclHelpChm              // = ioJclLast, see below.
     );
+
+  TJediInstallGUIOption =
+    (
+      goRadioButton,
+      goExpandable,
+      goStandaloneParent, // do not auto-uncheck when all child nodes are unchecked
+      goChecked
+    );
+  TJediInstallGUIOptions = set of TJediInstallGUIOption;
 
   TInstallOptionData = record
     Parent: TJediInstallOption;
@@ -91,7 +105,7 @@ type
     function GetBorRADToolInstallations: TJclBorRADToolInstallations;
     function OptionGUI(Installation: TJclBorRADToolInstallation): TObject;
     function GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption; const Text: string;
-      StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+      GUIOptions: TJediInstallGUIOptions): TObject;
     procedure SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
     procedure SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
     procedure SetReadme(const FileName: string);
@@ -112,7 +126,6 @@ type
     function Install: Boolean;
     function Uninstall: Boolean;
     function ReadmeFileName: string;
-    //function InitFailures: TJediInstallInitFailures;
     procedure SetTool(const Value: IJediInstallTool);
     procedure SetOnProgress(Value: TInstallationProgressEvent);
     function Supports(Installation: TJclBorRADToolInstallation): Boolean;
@@ -146,6 +159,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/03/05 06:33:17  rrossmair
+// - support for some conditional defines added.
+//
 // Revision 1.11  2005/02/28 20:19:07  uschuster
 // changes for Uses wizard
 //
