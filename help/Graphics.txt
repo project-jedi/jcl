@@ -16,7 +16,7 @@ The brightened channel.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -42,7 +42,7 @@ The darkened channel.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -68,7 +68,7 @@ The darkened color.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -94,7 +94,7 @@ The brightened color.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -121,7 +121,7 @@ Count=4
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -148,7 +148,7 @@ The TColor value initialized with the supplied values.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -171,7 +171,7 @@ Copy of the supplied color after the Red component has been modified.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -197,7 +197,7 @@ Copy of the supplied color after the Green component has been modified.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -223,7 +223,7 @@ Copy of the supplied color after the Blue component has been modified.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -265,7 +265,7 @@ Copy of the supplied color after the Flag component has been modified.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -290,7 +290,7 @@ The Red component from the supplied TColor. The value ranges from 0 to 255.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -315,7 +315,7 @@ The Blue component from the supplied TColor. The value ranges from 0 to 255.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -340,7 +340,7 @@ The Green component from the supplied TColor. The value ranges from 0 to 255.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -381,7 +381,7 @@ The Flag component from the supplied TColor. The value ranges from 0 to 2.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -566,7 +566,7 @@ The union of the two rectangles, or a null rectangle if the union is empty.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -585,7 +585,7 @@ If the rectangle is square the function returns True, otherwise it returns False
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -607,7 +607,7 @@ TPoint representing the center of the rectangle.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -627,7 +627,7 @@ If the rectangles are equal the function returns True, otherwise it returns Fals
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -648,7 +648,7 @@ If the rectangle is a null rectangle the function returns True, otherwise it ret
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -665,7 +665,7 @@ The null rectangle.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -686,7 +686,7 @@ If the rectangle is valid the function returns True, otherwise it returns False.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -710,7 +710,7 @@ If all rectangles are valid the function returns True, otherwise it returns Fals
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -737,7 +737,7 @@ If the two rectangles intersect the function returns True, otherwise it returns 
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -763,7 +763,7 @@ a null rectangle is returned.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -790,7 +790,7 @@ True, otherwise it returns False.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -816,7 +816,7 @@ otherwise it returns False.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -842,7 +842,7 @@ A TRect initialized with the specified coordinates/dimensions.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -870,7 +870,7 @@ A TRect initialized with the coordinates.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -896,7 +896,7 @@ A TRect initialized to the specified points.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -944,7 +944,7 @@ Count=3
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -967,7 +967,7 @@ Count=3
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -991,7 +991,7 @@ Count=2
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -1016,7 +1016,7 @@ Count=2
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -1041,7 +1041,7 @@ Count=2
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -1064,7 +1064,7 @@ The height of the rectangle in pixels.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -1086,7 +1086,7 @@ The width of the rectangle in pixels.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
-Author=Pelle F. S. Liljendal;pellelil@post4.tele.dk
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 [SeeAlso]
@@ -1464,7 +1464,7 @@ Count=4
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle Liljendal;pelle.liljendal@firstconcern.com
+Author=Pelle Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -1485,7 +1485,7 @@ The windows color.
 Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
-Author=Pelle Liljendal;pelle.liljendal@firstconcern.com
+Author=Pelle Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -1501,7 +1501,7 @@ functionality of the class.
 Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
-Author=Pelle Liljendal;pelle.liljendal@firstconcern.com
+Author=Pelle Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -1517,7 +1517,7 @@ Visibility=Public
 Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
-Author=Pelle Liljendal;pelle.liljendal@firstconcern.com
+Author=Pelle Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -1533,7 +1533,7 @@ Visibility=Public
 Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
-Author=Pelle Liljendal;pelle.liljendal@firstconcern.com
+Author=Pelle Liljendal;pelle@liljendal.dk
 Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
