@@ -220,14 +220,14 @@ function StrCompare(const S1, S2: AnsiString): Integer;
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
 function StrFillChar(const C: AnsiChar; const Count: Integer): AnsiString;
 function StrFind(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
-function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean; // TODOC Anthony
-function StrIndex(const S: string; const List: array of string): Integer; // TODOC Anthony
-function StrILastPos(const SubStr, S: AnsiString): Integer; // TODOC Anthony
-function StrIPos(const SubStr, S: AnsiString): Integer; // TODOC Anthony
-function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean; // TODOC Anthony
+function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
+function StrIndex(const S: string; const List: array of string): Integer;
+function StrILastPos(const SubStr, S: AnsiString): Integer;
+function StrIPos(const SubStr, S: AnsiString): Integer;
+function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
 function StrLastPos(const SubStr, S: AnsiString): Integer;
 function StrMatch(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
-function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer; // TODOC Anthony
+function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer;
 function StrSearch(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
 
 //------------------------------------------------------------------------------
@@ -247,22 +247,22 @@ function StrRight(const S: AnsiString; Count: Integer): AnsiString;
 // Character Test Routines
 //------------------------------------------------------------------------------
 
-function CharEqualNoCase(const C1, C2: AnsiChar): Boolean; // TODOC Anthony
+function CharEqualNoCase(const C1, C2: AnsiChar): Boolean;
 function CharIsAlpha(const C: AnsiChar): Boolean;
 function CharIsAlphaNum(const C: AnsiChar): Boolean;
-function CharIsBlank(const C: AnsiChar): Boolean; // TODOC ?
+function CharIsBlank(const C: AnsiChar): Boolean;
 function CharIsControl(const C: AnsiChar): Boolean;
-function CharIsDelete(const C: AnsiChar): Boolean; // TODOC Anthony
+function CharIsDelete(const C: AnsiChar): Boolean;
 function CharIsDigit(const C: AnsiChar): Boolean;
-function CharIsLower(const C: AnsiChar): Boolean; // TODOC
+function CharIsLower(const C: AnsiChar): Boolean;
 function CharIsNumber(const C: AnsiChar): Boolean;
-function CharIsPrint(const C: AnsiChar): Boolean; // TODOC
-function CharIsPunctuation(const C: AnsiChar): Boolean; // TODOC
+function CharIsPrint(const C: AnsiChar): Boolean;
+function CharIsPunctuation(const C: AnsiChar): Boolean;
 function CharIsReturn(const C: AnsiChar): Boolean;
 function CharIsSpace(const C: AnsiChar): Boolean;
-function CharIsUpper(const C: AnsiChar): Boolean; // TODOC
+function CharIsUpper(const C: AnsiChar): Boolean;
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
-function CharType(const C: AnsiChar): Word; // TODOC
+function CharType(const C: AnsiChar): Word;
 
 //------------------------------------------------------------------------------
 // Character Transformation Routines
