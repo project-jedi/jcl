@@ -12,11 +12,22 @@
 {                                                                                                  }
 { The Original Code is JclResources.pas.                                                           }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
+{   Alexei Koudinov                                                                                }
+{   Barry Kelly                                                                                    }
+{   Flier Lu (flier)                                                                               }
+{   Marcel Bestebroer                                                                              }
+{   Marcel van Brakel                                                                              }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Peter Friese                                                                                   }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Petr Vones                                                                                     }
+{   Raymond Alexander (rayspostbox3)                                                               }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1068,6 +1079,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/14 15:26:34  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/18 00:41:04  peterjhaas
 // remove unneeded OpenGL error messages
 //
