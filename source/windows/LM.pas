@@ -37,9 +37,13 @@
 
 unit LM;
 
+{$DEFINE LANMAN_DYNAMIC_LINK}
+
 {$ALIGN ON}
 {$MINENUMSIZE 4}
-{$WEAKPACKAGEUNIT}
+{$IFNDEF LANMAN_DYNAMIC_LINK}
+  {$WEAKPACKAGEUNIT}
+{$ENDIF LANMAN_DYNAMIC_LINK}
 
 interface
 
@@ -3309,7 +3313,7 @@ function NetShareGetInfo(servername: LPTSTR; netname: LPTSTR; level: DWORD;
   var butptr: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetShareGetInfo}
 
-function NetShareSetInfo(servername: LPTSTR; netname: LPTSTR; leve: DWORD;
+function NetShareSetInfo(servername: LPTSTR; netname: LPTSTR; level: DWORD;
   const buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetShareSetInfo}
 
@@ -9899,7 +9903,540 @@ const
   netapi32lib = 'netapi32.dll';
   {$NODEFINE netapi32lib}
 
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  NetApiLibHandle: THandle;
+
+function CheckNetAPILoaded(var ProcAddress: Pointer; const ProcName: string): Boolean;
+begin
+  Result := Assigned(ProcAddress);
+  if not Result then
+  begin
+    if NetApiLibHandle = 0 then
+      NetApiLibHandle := LoadLibrary(netapi32lib);
+    if NetApiLibHandle <> 0 then
+    begin
+      ProcAddress := GetProcAddress(NetApiLibHandle, PChar(ProcName));
+      Result := Assigned(ProcAddress);
+    end;
+  end;
+end;
+
+procedure UnloadNetApi;
+begin
+  if NetApiLibHandle <> 0 then
+  begin
+    FreeLibrary(NetApiLibHandle);
+    NetApiLibHandle := 0;
+  end;
+end;
+
+const
+  APINotPresentErrorCode = ERROR_CALL_NOT_IMPLEMENTED;
+  {$NODEFINE APINotPresentErrorCode}
+
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMACCESS.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetUserAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetUserEnum: function (servername: LPCWSTR; level: DWORD; filter: DWORD;
+    var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetUserGetInfo: function (servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+    var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetUserSetInfo: function (servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+    buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetUserDel: function (servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetUserGetGroups: function (servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+    var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetUserSetGroups: function (servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+    buf: Pointer; num_entries: DWORD): NET_API_STATUS; stdcall;
+  _NetUserGetLocalGroups: function (servername: LPCWSTR; username: LPCWSTR;
+    level: DWORD; flags: DWORD; var bufptr: Pointer; prefmaxlen: DWORD;
+    var entriesread: DWORD; var totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetUserModalsGet: function (servername: LPCWSTR; level: DWORD;
+    var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetUserModalsSet: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetUserChangePassword: function (domainname, username, oldpassword,
+    newpassword: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetGroupAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetGroupAddUser: function (servername: LPCWSTR; GroupName: LPCWSTR;
+    username: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetGroupEnum: function (servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetGroupGetInfo: function (servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+    var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetGroupSetInfo: function (servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+    buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetGroupDel: function (servername, groupname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetGroupDelUser: function (servername: LPCWSTR; GroupName: LPCWSTR;
+    Username: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetGroupGetUsers: function (servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+    var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; ResumeHandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetGroupSetUsers: function (servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+    buf: Pointer; totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupAddMember: function (servername: LPCWSTR; groupname: LPCWSTR;
+    membersid: PSID): NET_API_STATUS; stdcall;
+  _NetLocalGroupEnum: function (servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupGetInfo: function (servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetLocalGroupSetInfo: function (servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupDel: function (servername, groupname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetLocalGroupDelMember: function (servername: LPCWSTR; groupname: LPCWSTR;
+    membersid: PSID): NET_API_STATUS; stdcall;
+  _NetLocalGroupGetMembers: function (servername: LPCWSTR; localgroupname: LPCWSTR;
+    level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupSetMembers: function (servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupAddMembers: function (servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetLocalGroupDelMembers: function (servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS; stdcall;
+  _NetQueryDisplayInformation: function (ServerName: LPCWSTR; Level: DWORD;
+    Index: DWORD; EntriesRequested: DWORD; PreferredMaximumLength: DWORD;
+    var ReturnedEntryCount: DWORD; var SortedBuffer: Pointer): NET_API_STATUS; stdcall;
+  _NetGetDisplayInformationIndex: function (ServerName: LPCWSTR; Level: DWORD;
+    Prefix: LPCWSTR; var Index: DWORD): NET_API_STATUS; stdcall;
+  _NetAccessAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetAccessEnum: function (servername: LPCWSTR; BasePath: LPCWSTR; Recursive: DWORD;
+    level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetAccessGetInfo: function (servername: LPCWSTR; resource: LPCWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetAccessSetInfo: function (servername: LPCWSTR; resource: LPCWSTR; level: DWORD;
+    buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetAccessDel: function (servername, resource: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetAccessGetUserPerms: function (servername: LPCWSTR; UGname: LPCWSTR;
+    resource: LPCWSTR; var Perms: DWORD): NET_API_STATUS; stdcall;
+  _NetGetDCName: function (servername: LPCWSTR; domainname: LPCWSTR;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetGetAnyDCName: function (servername: LPCWSTR; domainname: LPCWSTR;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _I_NetLogonControl: function (ServerName: LPCWSTR; FunctionCode: DWORD;
+    QueryLevel: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _I_NetLogonControl2: function (ServerName: LPCWSTR; FunctionCode: DWORD;
+    QueryLevel: DWORD; Data: Pointer; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetEnumerateTrustedDomains: function (ServerName: LPWSTR; DomainNames: LPWSTR): NET_API_STATUS; stdcall;
+
+function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserAdd, 'NetUserAdd') then
+    Result := _NetUserAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserEnum(servername: LPCWSTR; level: DWORD; filter: DWORD;
+  var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserEnum, 'NetUserEnum') then
+    Result := _NetUserEnum(servername, level, filter, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserGetInfo(servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+  var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserGetInfo, 'NetUserGetInfo') then
+    Result := _NetUserGetInfo(servername, username, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserSetInfo(servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+  buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserSetInfo, 'NetUserSetInfo') then
+    Result := _NetUserSetInfo(servername, username, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserDel(servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserDel, 'NetUserDel') then
+    Result := _NetUserDel(servername, username)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserGetGroups(servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+  var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserGetGroups, 'NetUserGetGroups') then
+    Result := _NetUserGetGroups(servername, username, level, bufptr, prefmaxlen, entriesread, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserSetGroups(servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+  buf: Pointer; num_entries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserSetGroups, 'NetUserSetGroups') then
+    Result := _NetUserSetGroups(servername, username, level, buf, num_entries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserGetLocalGroups(servername: LPCWSTR; username: LPCWSTR;
+  level: DWORD; flags: DWORD; var bufptr: Pointer; prefmaxlen: DWORD;
+  var entriesread: DWORD; var totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserGetLocalGroups, 'NetUserGetLocalGroups') then
+    Result := _NetUserGetLocalGroups(servername, username, level, flags, bufptr, prefmaxlen, entriesread, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserModalsGet(servername: LPCWSTR; level: DWORD;
+  var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserModalsGet, 'NetUserModalsGet') then
+    Result := _NetUserModalsGet(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserModalsSet, 'NetUserModalsSet') then
+    Result := _NetUserModalsSet(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUserChangePassword(domainname, username, oldpassword,
+  newpassword: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUserChangePassword, 'NetUserChangePassword') then
+    Result := _NetUserChangePassword(domainname, username, oldpassword,  newpassword)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupAdd, 'NetGroupAdd') then
+    Result := _NetGroupAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupAddUser(servername: LPCWSTR; GroupName: LPCWSTR;
+  username: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupAddUser, 'NetGroupAddUser') then
+    Result := _NetGroupAddUser(servername, GroupName, username)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupEnum(servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupEnum, 'NetGroupEnum') then
+    Result := _NetGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupGetInfo(servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+  var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupGetInfo, 'NetGroupGetInfo') then
+    Result := _NetGroupGetInfo(servername, groupname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupSetInfo(servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+  buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupSetInfo, 'NetGroupSetInfo') then
+    Result := _NetGroupSetInfo(servername, groupname, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupDel(servername, groupname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupDel, 'NetGroupDel') then
+    Result := _NetGroupDel(servername, groupname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupDelUser(servername: LPCWSTR; GroupName: LPCWSTR;
+  Username: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupDelUser, 'NetGroupDelUser') then
+    Result := _NetGroupDelUser(servername, GroupName, Username)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupGetUsers(servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+  var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; ResumeHandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupGetUsers, 'NetGroupGetUsers') then
+    Result := _NetGroupGetUsers(servername, groupname, level, bufptr, prefmaxlen, entriesread, totalentries, ResumeHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGroupSetUsers(servername: LPCWSTR; groupname: LPCWSTR; level: DWORD;
+  buf: Pointer; totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGroupSetUsers, 'NetGroupSetUsers') then
+    Result := _NetGroupSetUsers(servername, groupname, level, buf, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupAdd, 'NetLocalGroupAdd') then
+    Result := _NetLocalGroupAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupAddMember(servername: LPCWSTR; groupname: LPCWSTR;
+  membersid: PSID): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupAddMember, 'NetLocalGroupAddMember') then
+    Result := _NetLocalGroupAddMember(servername, groupname, membersid)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupEnum(servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupEnum, 'NetLocalGroupEnum') then
+    Result := _NetLocalGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupGetInfo(servername: LPCWSTR; groupname: LPCWSTR;
+  level: DWORD; var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupGetInfo, 'NetLocalGroupGetInfo') then
+    Result := _NetLocalGroupGetInfo(servername, groupname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupSetInfo(servername: LPCWSTR; groupname: LPCWSTR;
+  level: DWORD; buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupSetInfo, 'NetLocalGroupSetInfo') then
+    Result := _NetLocalGroupSetInfo(servername, groupname, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupDel(servername, groupname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupDel, 'NetLocalGroupDel') then
+    Result := _NetLocalGroupDel(servername, groupname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupDelMember(servername: LPCWSTR; groupname: LPCWSTR;
+  membersid: PSID): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupDelMember, 'NetLocalGroupDelMember') then
+    Result := _NetLocalGroupDelMember(servername, groupname, membersid)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupGetMembers(servername: LPCWSTR; localgroupname: LPCWSTR;
+  level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupGetMembers, 'NetLocalGroupGetMembers') then
+    Result := _NetLocalGroupGetMembers(servername, localgroupname, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupSetMembers(servername: LPCWSTR; groupname: LPCWSTR;
+  level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupSetMembers, 'NetLocalGroupSetMembers') then
+    Result := _NetLocalGroupSetMembers(servername, groupname, level, buf, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupAddMembers(servername: LPCWSTR; groupname: LPCWSTR;
+  level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupAddMembers, 'NetLocalGroupAddMembers') then
+    Result := _NetLocalGroupAddMembers(servername, groupname, level, buf, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetLocalGroupDelMembers(servername: LPCWSTR; groupname: LPCWSTR;
+  level: DWORD; buf: Pointer; totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetLocalGroupDelMembers, 'NetLocalGroupDelMembers') then
+    Result := _NetLocalGroupDelMembers(servername, groupname, level, buf, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetQueryDisplayInformation(ServerName: LPCWSTR; Level: DWORD;
+  Index: DWORD; EntriesRequested: DWORD; PreferredMaximumLength: DWORD;
+  var ReturnedEntryCount: DWORD; var SortedBuffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetQueryDisplayInformation, 'NetQueryDisplayInformation') then
+    Result := _NetQueryDisplayInformation(ServerName, Level, Index, EntriesRequested, PreferredMaximumLength, ReturnedEntryCount, SortedBuffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGetDisplayInformationIndex(ServerName: LPCWSTR; Level: DWORD;
+  Prefix: LPCWSTR; var Index: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGetDisplayInformationIndex, 'NetGetDisplayInformationIndex') then
+    Result := _NetGetDisplayInformationIndex(ServerName, Level, Prefix, Index)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessAdd, 'NetAccessAdd') then
+    Result := _NetAccessAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessEnum(servername: LPCWSTR; BasePath: LPCWSTR; Recursive: DWORD;
+  level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessEnum, 'NetAccessEnum') then
+    Result := _NetAccessEnum(servername, BasePath, Recursive, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessGetInfo(servername: LPCWSTR; resource: LPCWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessGetInfo, 'NetAccessGetInfo') then
+    Result := _NetAccessGetInfo(servername, resource, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessSetInfo(servername: LPCWSTR; resource: LPCWSTR; level: DWORD;
+  buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessSetInfo, 'NetAccessSetInfo') then
+    Result := _NetAccessSetInfo(servername, resource, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessDel(servername, resource: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessDel, 'NetAccessDel') then
+    Result := _NetAccessDel(servername, resource)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAccessGetUserPerms(servername: LPCWSTR; UGname: LPCWSTR;
+  resource: LPCWSTR; var Perms: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAccessGetUserPerms, 'NetAccessGetUserPerms') then
+    Result := _NetAccessGetUserPerms(servername, UGname, resource, Perms)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGetDCName(servername: LPCWSTR; domainname: LPCWSTR;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGetDCName, 'NetGetDCName') then
+    Result := _NetGetDCName(servername, domainname, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGetAnyDCName(servername: LPCWSTR; domainname: LPCWSTR;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGetAnyDCName, 'NetGetAnyDCName') then
+    Result := _NetGetAnyDCName(servername, domainname, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_NetLogonControl(ServerName: LPCWSTR; FunctionCode: DWORD;
+  QueryLevel: DWORD; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_NetLogonControl, 'I_NetLogonControl') then
+    Result := _I_NetLogonControl(ServerName, FunctionCode, QueryLevel, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_NetLogonControl2(ServerName: LPCWSTR; FunctionCode: DWORD;
+  QueryLevel: DWORD; Data: Pointer; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_NetLogonControl2, 'I_NetLogonControl2') then
+    Result := _I_NetLogonControl2(ServerName, FunctionCode, QueryLevel, Data, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetEnumerateTrustedDomains(ServerName: LPWSTR; DomainNames: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetEnumerateTrustedDomains, 'NetEnumerateTrustedDomains') then
+    Result := _NetEnumerateTrustedDomains(ServerName, DomainNames)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetUserAdd; external netapi32lib name 'NetUserAdd';
 function NetUserEnum; external netapi32lib name 'NetUserEnum';
@@ -9946,6 +10483,8 @@ function I_NetLogonControl; external netapi32lib name 'I_NetLogonControl';
 function I_NetLogonControl2; external netapi32lib name 'I_NetLogonControl2';
 function NetEnumerateTrustedDomains; external netapi32lib name 'NetEnumerateTrustedDomains';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMALERT.H
 
 function ALERT_OTHER_INFO(x: Pointer): Pointer;
@@ -9958,10 +10497,221 @@ begin
   Result := PChar(p) + Sizeof(p);
 end;
 
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetAlertRaise: function (AlertEventName: LPCWSTR; Buffer: Pointer;
+    BufferSize: DWORD): NET_API_STATUS; stdcall;
+  _NetAlertRaiseEx: function (AlertEventName: LPCWSTR; VariableInfo: Pointer;
+    VariableInfoSize: DWORD; ServiceName: LPCWSTR): NET_API_STATUS; stdcall;
+
+function NetAlertRaise(AlertEventName: LPCWSTR; Buffer: Pointer;
+  BufferSize: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAlertRaise, 'NetAlertRaise') then
+    Result := _NetAlertRaise(AlertEventName, Buffer, BufferSize)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAlertRaiseEx(AlertEventName: LPCWSTR; VariableInfo: Pointer;
+  VariableInfoSize: DWORD; ServiceName: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAlertRaiseEx, 'NetAlertRaiseEx') then
+    Result := _NetAlertRaiseEx(AlertEventName, VariableInfo, VariableInfoSize, ServiceName)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
+
 function NetAlertRaise; external netapi32lib name 'NetAlertRaise';
 function NetAlertRaiseEx; external netapi32lib name 'NetAlertRaiseEx';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMSHARE.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetShareAdd: function (servername: LPTSTR; level: DWORD; const buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetShareEnum: function (servername: LPTSTR; level: DWORD; var butptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetShareEnumSticky: function (servername: LPTSTR; level: DWORD; var butptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetShareGetInfo: function (servername: LPTSTR; netname: LPTSTR; level: DWORD;
+    var butptr: Pointer): NET_API_STATUS; stdcall;
+  _NetShareSetInfo: function (servername: LPTSTR; netname: LPTSTR; leve: DWORD;
+    const buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetShareDel: function (servername: LPTSTR; netname: LPTSTR;
+    reserved: DWORD): NET_API_STATUS; stdcall;
+  _NetShareDelSticky: function (servername: LPTSTR; netname: LPTSTR;
+    reserved: DWORD): NET_API_STATUS; stdcall;
+  _NetShareCheck: function (servername: LPTSTR; device: LPTSTR;
+    var _type: DWORD): NET_API_STATUS; stdcall;
+  _NetSessionEnum: function (servername: LPTSTR; UncClientName: LPTSTR;
+    username: LPTSTR; level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD;
+    var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetSessionDel: function (servername: LPTSTR; UncClientName: LPTSTR;
+    username: LPTSTR): NET_API_STATUS; stdcall;
+  _NetSessionGetInfo: function (servername: LPTSTR; UncClientName: LPTSTR;
+    username: LPTSTR; level: DWORD; var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetConnectionEnum: function (servername: LPTSTR; qualifier: LPTSTR;
+    level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetFileClose: function (servername: LPTSTR; fileid: DWORD): NET_API_STATUS; stdcall;
+  _NetFileEnum: function (servername: LPTSTR; basepath: LPTSTR; username: LPTSTR;
+    level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetFileGetInfo: function (servername: LPTSTR; fileid: DWORD; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+
+function NetShareAdd(servername: LPTSTR; level: DWORD; const buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareAdd, 'NetShareAdd') then
+    Result := _NetShareAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareEnum(servername: LPTSTR; level: DWORD; var butptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareEnum, 'NetShareEnum') then
+    Result := _NetShareEnum(servername, level, butptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareEnumSticky(servername: LPTSTR; level: DWORD; var butptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareEnumSticky, 'NetShareEnumSticky') then
+    Result := _NetShareEnumSticky(servername, level, butptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareGetInfo(servername: LPTSTR; netname: LPTSTR; level: DWORD;
+  var butptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareGetInfo, 'NetShareGetInfo') then
+    Result := _NetShareGetInfo(servername, netname, level, butptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareSetInfo(servername: LPTSTR; netname: LPTSTR; level: DWORD;
+  const buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareSetInfo, 'NetShareSetInfo') then
+    Result := _NetShareSetInfo(servername, netname, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareDel(servername: LPTSTR; netname: LPTSTR;
+  reserved: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareDel, 'NetShareDel') then
+    Result := _NetShareDel(servername, netname, reserved)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareDelSticky(servername: LPTSTR; netname: LPTSTR;
+  reserved: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareDelSticky, 'NetShareDelSticky') then
+    Result := _NetShareDelSticky(servername, netname, reserved)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetShareCheck(servername: LPTSTR; device: LPTSTR;
+  var _type: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetShareCheck, 'NetShareCheck') then
+    Result := _NetShareCheck(servername, device, _type)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetSessionEnum(servername: LPTSTR; UncClientName: LPTSTR;
+  username: LPTSTR; level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD;
+  var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetSessionEnum, 'NetSessionEnum') then
+    Result := _NetSessionEnum(servername, UncClientName, username, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetSessionDel(servername: LPTSTR; UncClientName: LPTSTR;
+  username: LPTSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetSessionDel, 'NetSessionDel') then
+    Result := _NetSessionDel(servername, UncClientName, username)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetSessionGetInfo(servername: LPTSTR; UncClientName: LPTSTR;
+  username: LPTSTR; level: DWORD; var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetSessionGetInfo, 'NetSessionGetInfo') then
+    Result := _NetSessionGetInfo(servername, UncClientName, username, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetConnectionEnum(servername: LPTSTR; qualifier: LPTSTR;
+  level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetConnectionEnum, 'NetConnectionEnum') then
+    Result := _NetConnectionEnum(servername, qualifier, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetFileClose(servername: LPTSTR; fileid: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetFileClose, 'NetFileClose') then
+    Result := _NetFileClose(servername, fileid)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetFileEnum(servername: LPTSTR; basepath: LPTSTR; username: LPTSTR;
+  level: DWORD; var bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetFileEnum, 'NetFileEnum') then
+    Result := _NetFileEnum(servername, basepath, username, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetFileGetInfo(servername: LPTSTR; fileid: DWORD; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetFileGetInfo, 'NetFileGetInfo') then
+    Result := _NetFileGetInfo(servername, fileid, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetShareAdd; external netapi32lib name 'NetShareAdd';
 function NetShareEnum; external netapi32lib name 'NetShareEnum';
@@ -9979,7 +10729,68 @@ function NetFileClose; external netapi32lib name 'NetFileClose';
 function NetFileEnum; external netapi32lib name 'NetFileEnum';
 function NetFileGetInfo; external netapi32lib name 'NetFileGetInfo';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMMSG.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetMessageNameAdd: function (servername, msgname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetMessageNameEnum: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetMessageNameGetInfo: function (servername: LPCWSTR; msgname: LPCWSTR;
+    level: DWORD; var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetMessageNameDel: function (servername, msgname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetMessageBufferSend: function (servername: LPCWSTR; msgname: LPCWSTR;
+    fromname: LPCWSTR; buf: Pointer; buflen: DWORD): NET_API_STATUS; stdcall;
+
+function NetMessageNameAdd(servername, msgname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetMessageNameAdd, 'NetMessageNameAdd') then
+    Result := _NetMessageNameAdd(servername, msgname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetMessageNameEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetMessageNameEnum, 'NetMessageNameEnum') then
+    Result := _NetMessageNameEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetMessageNameGetInfo(servername: LPCWSTR; msgname: LPCWSTR;
+  level: DWORD; var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetMessageNameGetInfo, 'NetMessageNameGetInfo') then
+    Result := _NetMessageNameGetInfo(servername, msgname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetMessageNameDel(servername, msgname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetMessageNameDel, 'NetMessageNameDel') then
+    Result := _NetMessageNameDel(servername, msgname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetMessageBufferSend(servername: LPCWSTR; msgname: LPCWSTR;
+  fromname: LPCWSTR; buf: Pointer; buflen: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetMessageBufferSend, 'NetMessageBufferSend') then
+    Result := _NetMessageBufferSend(servername, msgname, fromname, buf, buflen)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetMessageNameAdd; external netapi32lib name 'NetMessageNameAdd';
 function NetMessageNameEnum; external netapi32lib name 'NetMessageNameEnum';
@@ -9987,12 +10798,207 @@ function NetMessageNameGetInfo; external netapi32lib name 'NetMessageNameGetInfo
 function NetMessageNameDel; external netapi32lib name 'NetMessageNameDel';
 function NetMessageBufferSend; external netapi32lib name 'NetMessageBufferSend';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMREMUTL.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetRemoteTOD: function (UncServerName: LPCWSTR; BufferPtr: Pointer): NET_API_STATUS; stdcall;
+  _NetRemoteComputerSupports: function (UncServerName: LPCWSTR; OptionsWanted: DWORD;
+    var OptionsSupported: DWORD): NET_API_STATUS; stdcall;
+
+function NetRemoteTOD(UncServerName: LPCWSTR; BufferPtr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetRemoteTOD, 'NetRemoteTOD') then
+    Result := _NetRemoteTOD(UncServerName, BufferPtr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetRemoteComputerSupports(UncServerName: LPCWSTR; OptionsWanted: DWORD;
+  var OptionsSupported: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetRemoteComputerSupports, 'NetRemoteComputerSupports') then
+    Result := _NetRemoteComputerSupports(UncServerName, OptionsWanted, OptionsSupported)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetRemoteTOD; external netapi32lib name 'NetRemoteTOD';
 function NetRemoteComputerSupports; external netapi32lib name 'NetRemoteComputerSupports';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMREPL.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetReplGetInfo: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetReplSetInfo: function (servername: LPCWSTR; level: DWORD; const buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplExportDirAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplExportDirDel: function (servername, dirname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetReplExportDirEnum: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplExportDirGetInfo: function (servername: LPCWSTR; dirname: LPCWSTR;
+    level: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetReplExportDirSetInfo: function (servername: LPCWSTR; dirname: LPCWSTR;
+    level: DWORD; const buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplExportDirLock: function (servername, dirname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetReplExportDirUnlock: function (servername: LPCWSTR; dirname: LPCWSTR;
+    unlockforce: DWORD): NET_API_STATUS; stdcall;
+  _NetReplImportDirAdd: function (servername: LPCWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplImportDirDel: function (servername, dirname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetReplImportDirEnum: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetReplImportDirGetInfo: function (servername, dirname: LPCWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetReplImportDirLock: function (servername, dirname: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetReplImportDirUnlock: function (servername: LPCWSTR; dirname: LPCWSTR;
+    unlockforce: DWORD): NET_API_STATUS; stdcall;
+
+function NetReplGetInfo(servername: LPCWSTR; level: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplGetInfo, 'NetReplGetInfo') then
+    Result := _NetReplGetInfo(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplSetInfo(servername: LPCWSTR; level: DWORD; const buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplSetInfo, 'NetReplSetInfo') then
+    Result := _NetReplSetInfo(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirAdd, 'NetReplExportDirAdd') then
+    Result := _NetReplExportDirAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirDel(servername, dirname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirDel, 'NetReplExportDirDel') then
+    Result := _NetReplExportDirDel(servername, dirname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirEnum, 'NetReplExportDirEnum') then
+    Result := _NetReplExportDirEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirGetInfo(servername: LPCWSTR; dirname: LPCWSTR;
+  level: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirGetInfo, 'NetReplExportDirGetInfo') then
+    Result := _NetReplExportDirGetInfo(servername, dirname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirSetInfo(servername: LPCWSTR; dirname: LPCWSTR;
+  level: DWORD; const buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirSetInfo, 'NetReplExportDirSetInfo') then
+    Result := _NetReplExportDirSetInfo(servername, dirname, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirLock(servername, dirname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirLock, 'NetReplExportDirLock') then
+    Result := _NetReplExportDirLock(servername, dirname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplExportDirUnlock(servername: LPCWSTR; dirname: LPCWSTR;
+  unlockforce: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplExportDirUnlock, 'NetReplExportDirUnlock') then
+    Result := _NetReplExportDirUnlock(servername, dirname, unlockforce)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirAdd(servername: LPCWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirAdd, 'NetReplImportDirAdd') then
+    Result := _NetReplImportDirAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirDel(servername, dirname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirDel, 'NetReplImportDirDel') then
+    Result := _NetReplImportDirDel(servername, dirname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirEnum, 'NetReplImportDirEnum') then
+    Result := _NetReplImportDirEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirGetInfo(servername, dirname: LPCWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirGetInfo, 'NetReplImportDirGetInfo') then
+    Result := _NetReplImportDirGetInfo(servername, dirname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirLock(servername, dirname: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirLock, 'NetReplImportDirLock') then
+    Result := _NetReplImportDirLock(servername, dirname)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetReplImportDirUnlock(servername: LPCWSTR; dirname: LPCWSTR;
+  unlockforce: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetReplImportDirUnlock, 'NetReplImportDirUnlock') then
+    Result := _NetReplImportDirUnlock(servername, dirname, unlockforce)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetReplGetInfo; external netapi32lib name 'NetReplGetInfo';
 function NetReplSetInfo; external netapi32lib name 'NetReplSetInfo';
@@ -10010,7 +11016,165 @@ function NetReplImportDirGetInfo; external netapi32lib name 'NetReplImportDirGet
 function NetReplImportDirLock; external netapi32lib name 'NetReplImportDirLock';
 function NetReplImportDirUnlock; external netapi32lib name 'NetReplImportDirUnlock';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMSERVER.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetServerEnum: function (servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    servertype: DWORD; domain: LPCWSTR; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetServerEnumEx: function (ServerName: LPCWSTR; Level: DWORD; Bufptr: Pointer;
+    PrefMaxlen: DWORD; var EntriesRead: DWORD; var totalentries: DWORD;
+    servertype: DWORD; domain, FirstNameToReturn: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetServerGetInfo: function (servername: LPWSTR; level: DWORD;
+    var bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServerSetInfo: function (servername: LPWSTR; level: DWORD; buf: Pointer;
+    ParmError: PDWORD): NET_API_STATUS; stdcall;
+  _NetServerSetInfoCommandLine: function (argc: Word; argv: LPWSTR): NET_API_STATUS; stdcall;
+  _NetServerDiskEnum: function (servername: LPWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetServerComputerNameAdd: function (ServerName: LPWSTR; EmulatedDomainName: LPWSTR;
+    EmulatedServerName: LPWSTR): NET_API_STATUS; stdcall;
+  _NetServerComputerNameDel: function (ServerName, EmulatedServerName: LPWSTR): NET_API_STATUS; stdcall;
+  _NetServerTransportAdd: function (servername: LPWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServerTransportAddEx: function (servername: LPWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServerTransportDel: function (servername: LPWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServerTransportEnum: function (servername: LPWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _SetServiceBits: function (hServiceStatus: SERVICE_STATUS_HANDLE;
+    dwServiceBits: DWORD; bSetBitsOn: BOOL; bUpdateImmediately: BOOL): BOOL; stdcall;
+
+function NetServerEnum(servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  servertype: DWORD; domain: LPCWSTR; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerEnum, 'NetServerEnum') then
+    Result := _NetServerEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, servertype, domain, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerEnumEx(ServerName: LPCWSTR; Level: DWORD; Bufptr: Pointer;
+  PrefMaxlen: DWORD; var EntriesRead: DWORD; var totalentries: DWORD;
+  servertype: DWORD; domain, FirstNameToReturn: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerEnumEx, 'NetServerEnumEx') then
+    Result := _NetServerEnumEx(ServerName, Level, Bufptr, PrefMaxlen, EntriesRead, totalentries, servertype, domain, FirstNameToReturn)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerGetInfo(servername: LPWSTR; level: DWORD;
+  var bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerGetInfo, 'NetServerGetInfo') then
+    Result := _NetServerGetInfo(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerSetInfo(servername: LPWSTR; level: DWORD; buf: Pointer;
+  ParmError: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerSetInfo, 'NetServerSetInfo') then
+    Result := _NetServerSetInfo(servername, level, buf, ParmError)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerSetInfoCommandLine(argc: Word; argv: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerSetInfoCommandLine, 'NetServerSetInfoCommandLine') then
+    Result := _NetServerSetInfoCommandLine(argc, argv)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerDiskEnum(servername: LPWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerDiskEnum, 'NetServerDiskEnum') then
+    Result := _NetServerDiskEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerComputerNameAdd(ServerName: LPWSTR; EmulatedDomainName: LPWSTR;
+  EmulatedServerName: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerComputerNameAdd, 'NetServerComputerNameAdd') then
+    Result := _NetServerComputerNameAdd(ServerName, EmulatedDomainName, EmulatedServerName)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerComputerNameDel(ServerName, EmulatedServerName: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerComputerNameDel, 'NetServerComputerNameDel') then
+    Result := _NetServerComputerNameDel(ServerName, EmulatedServerName)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerTransportAdd(servername: LPWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerTransportAdd, 'NetServerTransportAdd') then
+    Result := _NetServerTransportAdd(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerTransportAddEx(servername: LPWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerTransportAddEx, 'NetServerTransportAddEx') then
+    Result := _NetServerTransportAddEx(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerTransportDel(servername: LPWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerTransportDel, 'NetServerTransportDel') then
+    Result := _NetServerTransportDel(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServerTransportEnum(servername: LPWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServerTransportEnum, 'NetServerTransportEnum') then
+    Result := _NetServerTransportEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function SetServiceBits(hServiceStatus: SERVICE_STATUS_HANDLE;
+  dwServiceBits: DWORD; bSetBitsOn: BOOL; bUpdateImmediately: BOOL): BOOL;
+begin
+  if CheckNetAPILoaded(@_SetServiceBits, 'SetServiceBits') then
+    Result := _SetServiceBits(hServiceStatus, dwServiceBits, bSetBitsOn, bUpdateImmediately)
+  else
+  begin
+    SetLastError(APINotPresentErrorCode);
+    Result := False;
+  end;  
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetServerEnum; external netapi32lib name 'NetServerEnum';
 function NetServerEnumEx; external netapi32lib name 'NetServerEnumEx';
@@ -10025,6 +11189,8 @@ function NetServerTransportAddEx; external netapi32lib name 'NetServerTransportA
 function NetServerTransportDel; external netapi32lib name 'NetServerTransportDel';
 function NetServerTransportEnum; external netapi32lib name 'NetServerTransportEnum';
 function SetServiceBits; external netapi32lib name 'SetServiceBits';
+
+{$ENDIF LANMAN_DYNAMIC_LINK}
 
 // LMSVC.H
 
@@ -10055,19 +11221,223 @@ begin
     ((code and LOWER_GET_HINT_MASK) shr SERVICE_IP_WAITTIME_SHIFT);
 end;
 
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetServiceControl: function (servername: LPCWSTR; service: LPCWSTR; opcode: DWORD;
+    arg: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServiceEnum: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetServiceGetInfo: function (servername: LPCWSTR; service: LPCWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetServiceInstall: function (servername: LPCWSTR; service: LPCWSTR; argc: DWORD;
+    argv: LPCWSTR; bufptr: Pointer): NET_API_STATUS; stdcall;
+
+function NetServiceControl(servername: LPCWSTR; service: LPCWSTR; opcode: DWORD;
+  arg: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServiceControl, 'NetServiceControl') then
+    Result := _NetServiceControl(servername, service, opcode, arg, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServiceEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServiceEnum, 'NetServiceEnum') then
+    Result := _NetServiceEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServiceGetInfo(servername: LPCWSTR; service: LPCWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServiceGetInfo, 'NetServiceGetInfo') then
+    Result := _NetServiceGetInfo(servername, service, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetServiceInstall(servername: LPCWSTR; service: LPCWSTR; argc: DWORD;
+  argv: LPCWSTR; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetServiceInstall, 'NetServiceInstall') then
+    Result := _NetServiceInstall(servername, service, argc, argv, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
+
 function NetServiceControl; external netapi32lib name 'NetServiceControl';
 function NetServiceEnum; external netapi32lib name 'NetServiceEnum';
 function NetServiceGetInfo; external netapi32lib name 'NetServiceGetInfo';
 function NetServiceInstall; external netapi32lib name 'NetServiceInstall';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMUSE.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetUseAdd: function (UncServerName: LPWSTR; Level: DWORD; Buf: Pointer;
+    ParmError: PDWORD): NET_API_STATUS; stdcall;
+  _NetUseDel: function (UncServerName, UseName: LPWSTR; ForceCond: DWORD): NET_API_STATUS; stdcall;
+  _NetUseEnum: function (UncServerName: LPWSTR; Level: DWORD; BufPtr: Pointer;
+    PreferedMaximumSize: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+    ResumeHandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetUseGetInfo: function (UncServerName: LPWSTR; UseName: LPWSTR; Level: DWORD;
+    BufPtr: Pointer): NET_API_STATUS; stdcall;
+
+function NetUseAdd(UncServerName: LPWSTR; Level: DWORD; Buf: Pointer;
+  ParmError: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUseAdd, 'NetUseAdd') then
+    Result := _NetUseAdd(UncServerName, Level, Buf, ParmError)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUseDel(UncServerName, UseName: LPWSTR; ForceCond: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUseDel, 'NetUseDel') then
+    Result := _NetUseDel(UncServerName, UseName, ForceCond)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUseEnum(UncServerName: LPWSTR; Level: DWORD; BufPtr: Pointer;
+  PreferedMaximumSize: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+  ResumeHandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUseEnum, 'NetUseEnum') then
+    Result := _NetUseEnum(UncServerName, Level, BufPtr, PreferedMaximumSize, EntriesRead, TotalEntries, ResumeHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUseGetInfo(UncServerName: LPWSTR; UseName: LPWSTR; Level: DWORD;
+  BufPtr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUseGetInfo, 'NetUseGetInfo') then
+    Result := _NetUseGetInfo(UncServerName, UseName, Level, BufPtr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetUseAdd; external netapi32lib name 'NetUseAdd';
 function NetUseDel; external netapi32lib name 'NetUseDel';
 function NetUseEnum; external netapi32lib name 'NetUseEnum';
 function NetUseGetInfo; external netapi32lib name 'NetUseGetInfo';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMWKSTA.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetWkstaGetInfo: function (servername: LPWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetWkstaSetInfo: function (servername: LPWSTR; level: DWORD; buffer: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetWkstaUserGetInfo: function (reserved: LPWSTR; level: DWORD;
+    bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetWkstaUserSetInfo: function (reserved: LPWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetWkstaUserEnum: function (servername: LPWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetWkstaTransportAdd: function (servername: LPWSTR; level: DWORD; buf: Pointer;
+    parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetWkstaTransportDel: function (servername: LPWSTR; transportname: LPWSTR;
+    ucond: DWORD): NET_API_STATUS; stdcall;
+  _NetWkstaTransportEnum: function (servername: LPWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resumehandle: PDWORD): NET_API_STATUS; stdcall;
+
+function NetWkstaGetInfo(servername: LPWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaGetInfo, 'NetWkstaGetInfo') then
+    Result := _NetWkstaGetInfo(servername, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaSetInfo(servername: LPWSTR; level: DWORD; buffer: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaSetInfo, 'NetWkstaSetInfo') then
+    Result := _NetWkstaSetInfo(servername, level, buffer, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaUserGetInfo(reserved: LPWSTR; level: DWORD;
+  bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaUserGetInfo, 'NetWkstaUserGetInfo') then
+    Result := _NetWkstaUserGetInfo(reserved, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaUserSetInfo(reserved: LPWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaUserSetInfo, 'NetWkstaUserSetInfo') then
+    Result := _NetWkstaUserSetInfo(reserved, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaUserEnum(servername: LPWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaUserEnum, 'NetWkstaUserEnum') then
+    Result := _NetWkstaUserEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaTransportAdd(servername: LPWSTR; level: DWORD; buf: Pointer;
+  parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaTransportAdd, 'NetWkstaTransportAdd') then
+    Result := _NetWkstaTransportAdd(servername, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaTransportDel(servername: LPWSTR; transportname: LPWSTR;
+  ucond: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaTransportDel, 'NetWkstaTransportDel') then
+    Result := _NetWkstaTransportDel(servername, transportname, ucond)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetWkstaTransportEnum(servername: LPWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resumehandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetWkstaTransportEnum, 'NetWkstaTransportEnum') then
+    Result := _NetWkstaTransportEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetWkstaGetInfo; external netapi32lib name 'NetWkstaGetInfo';
 function NetWkstaSetInfo; external netapi32lib name 'NetWkstaSetInfo';
@@ -10078,7 +11448,62 @@ function NetWkstaTransportAdd; external netapi32lib name 'NetWkstaTransportAdd';
 function NetWkstaTransportDel; external netapi32lib name 'NetWkstaTransportDel';
 function NetWkstaTransportEnum; external netapi32lib name 'NetWkstaTransportEnum';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMAPIBUF.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetApiBufferAllocate: function (ByteCount: DWORD; var Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetApiBufferFree: function (Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetApiBufferReallocate: function (OldBuffer: Pointer; NewByteCount: DWORD;
+    var NewBuffer: Pointer): NET_API_STATUS; stdcall;
+  _NetApiBufferSize: function (Buffer: Pointer; var ByteCount: DWORD): NET_API_STATUS; stdcall;
+  _NetapipBufferAllocate: function (ByteCount: DWORD; var Buffer: Pointer): NET_API_STATUS; stdcall;
+
+function NetApiBufferAllocate(ByteCount: DWORD; var Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetApiBufferAllocate, 'NetApiBufferAllocate') then
+    Result := _NetApiBufferAllocate(ByteCount, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetApiBufferFree, 'NetApiBufferFree') then
+    Result := _NetApiBufferFree(Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetApiBufferReallocate(OldBuffer: Pointer; NewByteCount: DWORD;
+  var NewBuffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetApiBufferReallocate, 'NetApiBufferReallocate') then
+    Result := _NetApiBufferReallocate(OldBuffer, NewByteCount, NewBuffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetApiBufferSize(Buffer: Pointer; var ByteCount: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetApiBufferSize, 'NetApiBufferSize') then
+    Result := _NetApiBufferSize(Buffer, ByteCount)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetapipBufferAllocate(ByteCount: DWORD; var Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetapipBufferAllocate, 'NetapipBufferAllocate') then
+    Result := _NetapipBufferAllocate(ByteCount, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetApiBufferAllocate; external netapi32lib name 'NetApiBufferAllocate';
 function NetApiBufferFree; external netapi32lib name 'NetApiBufferFree';
@@ -10086,7 +11511,66 @@ function NetApiBufferReallocate; external netapi32lib name 'NetApiBufferRealloca
 function NetApiBufferSize; external netapi32lib name 'NetApiBufferSize';
 function NetapipBufferAllocate; external netapi32lib name 'NetapipBufferAllocate';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMCONFIG.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetConfigGet: function (server: LPCWSTR; component: LPCWSTR; parameter: LPCWSTR;
+    bufptr: Pointer; var totalavailable: DWORD): NET_API_STATUS; stdcall;
+  _NetConfigGetAll: function (server: LPCWSTR; component: LPCWSTR; bufptr: Pointer;
+    var totalavailable: DWORD): NET_API_STATUS; stdcall;
+  _NetConfigSet: function (server: LPCWSTR; reserved1: LPCWSTR; component: LPCWSTR;
+    level: DWORD; reserved2: DWORD; buf: Pointer; reserved3: DWORD): NET_API_STATUS; stdcall;
+  _NetRegisterDomainNameChangeNotification: function (NotificationEventHandle: PHandle): NET_API_STATUS; stdcall;
+  _NetUnregisterDomainNameChangeNotification: function (NotificationEventHandle: THandle): NET_API_STATUS; stdcall;
+
+function NetConfigGet(server: LPCWSTR; component: LPCWSTR; parameter: LPCWSTR;
+  bufptr: Pointer; var totalavailable: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetConfigGet, 'NetConfigGet') then
+    Result := _NetConfigGet(server, component, parameter, bufptr, totalavailable)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetConfigGetAll(server: LPCWSTR; component: LPCWSTR; bufptr: Pointer;
+  var totalavailable: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetConfigGetAll, 'NetConfigGetAll') then
+    Result := _NetConfigGetAll(server, component, bufptr, totalavailable)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetConfigSet(server: LPCWSTR; reserved1: LPCWSTR; component: LPCWSTR;
+  level: DWORD; reserved2: DWORD; buf: Pointer; reserved3: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetConfigSet, 'NetConfigSet') then
+    Result := _NetConfigSet(server, reserved1, component, level, reserved2, buf, reserved3)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetRegisterDomainNameChangeNotification(NotificationEventHandle: PHandle): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetRegisterDomainNameChangeNotification, 'NetRegisterDomainNameChangeNotification') then
+    Result := _NetRegisterDomainNameChangeNotification(NotificationEventHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUnregisterDomainNameChangeNotification(NotificationEventHandle: THandle): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUnregisterDomainNameChangeNotification, 'NetUnregisterDomainNameChangeNotification') then
+    Result := _NetUnregisterDomainNameChangeNotification(NotificationEventHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetConfigGet; external netapi32lib name 'NetConfigGet';
 function NetConfigGetAll; external netapi32lib name 'NetConfigGetAll';
@@ -10094,17 +11578,153 @@ function NetConfigSet; external netapi32lib name 'NetConfigSet';
 function NetRegisterDomainNameChangeNotification; external netapi32lib name 'NetRegisterDomainNameChangeNotification';
 function NetUnregisterDomainNameChangeNotification; external netapi32lib name 'NetUnregisterDomainNameChangeNotification';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMSTATS.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetStatisticsGet: function (server: LPWSTR; service: LPWSTR; level: DWORD;
+    options: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+
+function NetStatisticsGet(server: LPWSTR; service: LPWSTR; level: DWORD;
+  options: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetStatisticsGet, 'NetStatisticsGet') then
+    Result := _NetStatisticsGet(server, service, level, options, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetStatisticsGet; external netapi32lib name 'NetStatisticsGet';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMAUDIT.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetAuditClear: function (server, backupfile, service: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetAuditRead: function (server: LPCWSTR; service: LPCWSTR; auditloghandle: PHLog;
+    offset: DWORD; reserved1: PDWORD; reserved2: DWORD; offsetflag: DWORD;
+    bufptr: Pointer; prefmaxlen: DWORD; var bytesread: DWORD;
+    var totalavailable: DWORD): NET_API_STATUS; stdcall;
+  _NetAuditWrite: function (type_: DWORD; buf: Pointer; numbytes: DWORD;
+    service: LPCWSTR; reserved: Pointer): NET_API_STATUS; stdcall;
+
+function NetAuditClear(server, backupfile, service: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAuditClear, 'NetAuditClear') then
+    Result := _NetAuditClear(server, backupfile, service)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAuditRead(server: LPCWSTR; service: LPCWSTR; auditloghandle: PHLog;
+  offset: DWORD; reserved1: PDWORD; reserved2: DWORD; offsetflag: DWORD;
+  bufptr: Pointer; prefmaxlen: DWORD; var bytesread: DWORD;
+  var totalavailable: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAuditRead, 'NetAuditRead') then
+    Result := _NetAuditRead(server, service, auditloghandle, offset, reserved1, reserved2, offsetflag, bufptr, prefmaxlen, bytesread, totalavailable)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetAuditWrite(type_: DWORD; buf: Pointer; numbytes: DWORD;
+  service: LPCWSTR; reserved: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetAuditWrite, 'NetAuditWrite') then
+    Result := _NetAuditWrite(type_, buf, numbytes, service, reserved)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetAuditClear; external netapi32lib name 'NetAuditClear';
 function NetAuditRead; external netapi32lib name 'NetAuditRead';
 function NetAuditWrite; external netapi32lib name 'NetAuditWrite';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMJOIN.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetJoinDomain: function (lpServer, lpDomain, lpAccountOU, lpAccount,
+    lpPassword: LPCWSTR; fJoinOptions: DWORD): NET_API_STATUS; stdcall;
+  _NetUnjoinDomain: function (lpServer, lpAccount, lpPassword: LPCWSTR;
+    fUnjoinOptions: DWORD): NET_API_STATUS; stdcall;
+  _NetRenameMachineInDomain: function (lpServer, lpNewMachineName, lpAccount,
+    lpPassword: LPCWSTR; fRenameOptions: DWORD): NET_API_STATUS; stdcall;
+  _NetValidateName: function (lpServer, lpName, lpAccount, lpPassword: LPCWSTR;
+    NameType: TNetSetupNameType): NET_API_STATUS; stdcall;
+  _NetGetJoinInformation: function (lpServer: LPCWSTR; lpNameBuffer: LPWSTR;
+    var BufferType: TNetSetupNameType): NET_API_STATUS; stdcall;
+  _NetGetJoinableOUs: function (lpServer, lpDomain, lpAccount, lpPassword: LPCWSTR;
+    var OUCount: DWORD; OUs: Pointer): NET_API_STATUS; stdcall;
+
+function NetJoinDomain(lpServer, lpDomain, lpAccountOU, lpAccount,
+  lpPassword: LPCWSTR; fJoinOptions: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetJoinDomain, 'NetJoinDomain') then
+    Result := _NetJoinDomain(lpServer, lpDomain, lpAccountOU, lpAccount,  lpPassword, fJoinOptions)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetUnjoinDomain(lpServer, lpAccount, lpPassword: LPCWSTR;
+  fUnjoinOptions: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetUnjoinDomain, 'NetUnjoinDomain') then
+    Result := _NetUnjoinDomain(lpServer, lpAccount, lpPassword, fUnjoinOptions)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetRenameMachineInDomain(lpServer, lpNewMachineName, lpAccount,
+  lpPassword: LPCWSTR; fRenameOptions: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetRenameMachineInDomain, 'NetRenameMachineInDomain') then
+    Result := _NetRenameMachineInDomain(lpServer, lpNewMachineName, lpAccount,  lpPassword, fRenameOptions)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetValidateName(lpServer, lpName, lpAccount, lpPassword: LPCWSTR;
+  NameType: TNetSetupNameType): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetValidateName, 'NetValidateName') then
+    Result := _NetValidateName(lpServer, lpName, lpAccount, lpPassword, NameType)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGetJoinInformation(lpServer: LPCWSTR; lpNameBuffer: LPWSTR;
+  var BufferType: TNetSetupNameType): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGetJoinInformation, 'NetGetJoinInformation') then
+    Result := _NetGetJoinInformation(lpServer, lpNameBuffer, BufferType)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetGetJoinableOUs(lpServer, lpDomain, lpAccount, lpPassword: LPCWSTR;
+  var OUCount: DWORD; OUs: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetGetJoinableOUs, 'NetGetJoinableOUs') then
+    Result := _NetGetJoinableOUs(lpServer, lpDomain, lpAccount, lpPassword, OUCount, OUs)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetJoinDomain; external netapi32lib name 'NetJoinDomain';
 function NetUnjoinDomain; external netapi32lib name 'NetUnjoinDomain';
@@ -10113,20 +11733,249 @@ function NetValidateName; external netapi32lib name 'NetValidateName';
 function NetGetJoinInformation; external netapi32lib name 'NetGetJoinInformation';
 function NetGetJoinableOUs; external netapi32lib name 'NetGetJoinableOUs';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMERRLOG.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetErrorLogClear: function (server: LPCWSTR; backupfile: LPCWSTR;
+    reserved: Pointer): NET_API_STATUS; stdcall;
+  _NetErrorLogRead: function (server: LPCWSTR; reserved1: LPWSTR; errloghandle: PHLog;
+    offset: DWORD;  reserved2: PDWORD; reserved3: DWORD; offsetflag: DWORD;
+    bufptr: Pointer; prefmaxlen: DWORD; var bytesread: DWORD;
+    var totalbytes: DWORD): NET_API_STATUS; stdcall;
+  _NetErrorLogWrite: function (reserved1: Pointer; code: DWORD; component: LPCWSTR;
+    buffer: Pointer; numbytes: DWORD; msgbuf: Pointer; strcount: DWORD;
+    reserved2: Pointer): NET_API_STATUS; stdcall;
+
+function NetErrorLogClear(server: LPCWSTR; backupfile: LPCWSTR;
+  reserved: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetErrorLogClear, 'NetErrorLogClear') then
+    Result := _NetErrorLogClear(server, backupfile, reserved)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetErrorLogRead(server: LPCWSTR; reserved1: LPWSTR; errloghandle: PHLog;
+  offset: DWORD;  reserved2: PDWORD; reserved3: DWORD; offsetflag: DWORD;
+  bufptr: Pointer; prefmaxlen: DWORD; var bytesread: DWORD;
+  var totalbytes: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetErrorLogRead, 'NetErrorLogRead') then
+    Result := _NetErrorLogRead(server, reserved1, errloghandle, offset, reserved2, reserved3, offsetflag, bufptr, prefmaxlen, bytesread, totalbytes)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetErrorLogWrite(reserved1: Pointer; code: DWORD; component: LPCWSTR;
+  buffer: Pointer; numbytes: DWORD; msgbuf: Pointer; strcount: DWORD;
+  reserved2: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetErrorLogWrite, 'NetErrorLogWrite') then
+    Result := _NetErrorLogWrite(reserved1, code, component, buffer, numbytes, msgbuf, strcount, reserved2)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetErrorLogClear; external netapi32lib name 'NetErrorLogClear';
 function NetErrorLogRead; external netapi32lib name 'NetErrorLogRead';
 function NetErrorLogWrite; external netapi32lib name 'NetErrorLogWrite';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMAT.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetScheduleJobAdd: function (Servername: LPCWSTR; Buffer: Pointer;
+    var JobId: DWORD): NET_API_STATUS; stdcall;
+  _NetScheduleJobDel: function (Servername: LPCWSTR; MinJobId: DWORD;
+    MaxJobId: DWORD): NET_API_STATUS; stdcall;
+  _NetScheduleJobEnum: function ( Servername: LPCWSTR; PointerToBuffer: Pointer;
+    PrefferedMaximumLength: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+    ResumeHandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetScheduleJobGetInfo: function (Servername: LPCWSTR; JobId: DWORD;
+    PointerToBuffer: Pointer): NET_API_STATUS; stdcall;
+
+function NetScheduleJobAdd(Servername: LPCWSTR; Buffer: Pointer;
+  var JobId: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetScheduleJobAdd, 'NetScheduleJobAdd') then
+    Result := _NetScheduleJobAdd(Servername, Buffer, JobId)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetScheduleJobDel(Servername: LPCWSTR; MinJobId: DWORD;
+  MaxJobId: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetScheduleJobDel, 'NetScheduleJobDel') then
+    Result := _NetScheduleJobDel(Servername, MinJobId, MaxJobId)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetScheduleJobEnum( Servername: LPCWSTR; PointerToBuffer: Pointer;
+  PrefferedMaximumLength: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+  ResumeHandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetScheduleJobEnum, 'NetScheduleJobEnum') then
+    Result := _NetScheduleJobEnum(Servername, PointerToBuffer, PrefferedMaximumLength, EntriesRead, TotalEntries, ResumeHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetScheduleJobGetInfo(Servername: LPCWSTR; JobId: DWORD;
+  PointerToBuffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetScheduleJobGetInfo, 'NetScheduleJobGetInfo') then
+    Result := _NetScheduleJobGetInfo(Servername, JobId, PointerToBuffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetScheduleJobAdd; external netapi32lib name 'NetScheduleJobAdd';
 function NetScheduleJobDel; external netapi32lib name 'NetScheduleJobDel';
 function NetScheduleJobEnum; external netapi32lib name 'NetScheduleJobEnum';
 function NetScheduleJobGetInfo; external netapi32lib name 'NetScheduleJobGetInfo';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMBROWSR.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _I_BrowserServerEnum: function (servername, transport, clientname: LPCWSTR;
+    level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; servertype: DWORD; domain: LPCWSTR;
+    resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _I_BrowserServerEnumEx: function (servername, transport, clientname: LPCWSTR;
+    level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; servertype: DWORD; domain: LPCWSTR;
+    FirstNameToReturn: LPCWSTR): NET_API_STATUS; stdcall;
+  _I_BrowserQueryOtherDomains: function (servername: LPCWSTR; bufptr: Pointer;
+    var entriesread: DWORD; var totalentries: DWORD): NET_API_STATUS; stdcall;
+  _I_BrowserResetNetlogonState: function (servername: LPCWSTR): NET_API_STATUS; stdcall;
+  _I_BrowserSetNetlogonState: function (ServerName, DomainName, EmulatedServerName: LPWSTR;
+    Role: DWORD): NET_API_STATUS; stdcall;
+  _I_BrowserQueryEmulatedDomains: function (ServerName: LPWSTR;
+    var EmulatedDomains: TBrowserEmulatedDomain;
+    var EntriesRead: DWORD): NET_API_STATUS; stdcall;
+  _I_BrowserQueryStatistics: function (servername: LPCWSTR;
+    var statistics: TBrowserStatistics): NET_API_STATUS; stdcall;
+  _I_BrowserResetStatistics: function (servername: LPCWSTR): NET_API_STATUS; stdcall;
+  _I_BrowserServerEnumForXactsrv: function (TransportName, ClientName: LPCWSTR;
+    NtLevel: ULONG; ClientLevel: Word; Buffer: Pointer; BufferLength: WORD;
+    PreferedMaximumLength: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+    ServerType: DWORD; Domain: LPCWSTR; FirstNameToReturn: LPCWSTR;
+    Converter: PWord): Word; stdcall;
+  _I_BrowserDebugTrace: function (Server: PWideChar; Buffer: PChar): NET_API_STATUS; stdcall;
+
+function I_BrowserServerEnum(servername, transport, clientname: LPCWSTR;
+  level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; servertype: DWORD; domain: LPCWSTR;
+  resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserServerEnum, 'I_BrowserServerEnum') then
+    Result := _I_BrowserServerEnum(servername, transport, clientname, level, bufptr, prefmaxlen, entriesread, totalentries, servertype, domain, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserServerEnumEx(servername, transport, clientname: LPCWSTR;
+  level: DWORD; bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; servertype: DWORD; domain: LPCWSTR;
+  FirstNameToReturn: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserServerEnumEx, 'I_BrowserServerEnumEx') then
+    Result := _I_BrowserServerEnumEx(servername, transport, clientname, level, bufptr, prefmaxlen, entriesread, totalentries, servertype, domain, FirstNameToReturn)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserQueryOtherDomains(servername: LPCWSTR; bufptr: Pointer;
+  var entriesread: DWORD; var totalentries: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserQueryOtherDomains, 'I_BrowserQueryOtherDomains') then
+    Result := _I_BrowserQueryOtherDomains(servername, bufptr, entriesread, totalentries)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserResetNetlogonState(servername: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserResetNetlogonState, 'I_BrowserResetNetlogonState') then
+    Result := _I_BrowserResetNetlogonState(servername)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserSetNetlogonState(ServerName, DomainName, EmulatedServerName: LPWSTR;
+  Role: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserSetNetlogonState, 'I_BrowserSetNetlogonState') then
+    Result := _I_BrowserSetNetlogonState(ServerName, DomainName, EmulatedServerName, Role)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserQueryEmulatedDomains(ServerName: LPWSTR;
+  var EmulatedDomains: TBrowserEmulatedDomain;
+  var EntriesRead: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserQueryEmulatedDomains, 'I_BrowserQueryEmulatedDomains') then
+    Result := _I_BrowserQueryEmulatedDomains(ServerName, EmulatedDomains, EntriesRead)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserQueryStatistics(servername: LPCWSTR;
+  var statistics: TBrowserStatistics): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserQueryStatistics, 'I_BrowserQueryStatistics') then
+    Result := _I_BrowserQueryStatistics(servername, statistics)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserResetStatistics(servername: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserResetStatistics, 'I_BrowserResetStatistics') then
+    Result := _I_BrowserResetStatistics(servername)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserServerEnumForXactsrv(TransportName, ClientName: LPCWSTR;
+  NtLevel: ULONG; ClientLevel: Word; Buffer: Pointer; BufferLength: WORD;
+  PreferedMaximumLength: DWORD; var EntriesRead: DWORD; var TotalEntries: DWORD;
+  ServerType: DWORD; Domain: LPCWSTR; FirstNameToReturn: LPCWSTR;
+  Converter: PWord): Word;
+begin
+  if CheckNetAPILoaded(@_I_BrowserServerEnumForXactsrv, 'I_BrowserServerEnumForXactsrv') then
+    Result := _I_BrowserServerEnumForXactsrv(TransportName, ClientName, NtLevel, ClientLevel, Buffer, BufferLength, PreferedMaximumLength, EntriesRead, TotalEntries, ServerType, Domain, FirstNameToReturn, Converter)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function I_BrowserDebugTrace(Server: PWideChar; Buffer: PChar): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_I_BrowserDebugTrace, 'I_BrowserDebugTrace') then
+    Result := _I_BrowserDebugTrace(Server, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function I_BrowserServerEnum; external netapi32lib name 'I_BrowserServerEnum';
 function I_BrowserServerEnumEx; external netapi32lib name 'I_BrowserServerEnumEx';
@@ -10139,7 +11988,123 @@ function I_BrowserResetStatistics; external netapi32lib name 'I_BrowserResetStat
 function I_BrowserServerEnumForXactsrv; external netapi32lib name 'I_BrowserServerEnumForXactsrv';
 function I_BrowserDebugTrace; external netapi32lib name 'I_BrowserDebugTrace';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMCHDEV.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetCharDevEnum: function (servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+    prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+    resume_handle: DWORD): NET_API_STATUS; stdcall;
+  _NetCharDevGetInfo: function (servername: LPCWSTR; devname: LPCWSTR;
+    level: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetCharDevControl: function (servername: LPCWSTR; devname: LPCWSTR;
+    opcode: DWORD): NET_API_STATUS; stdcall;
+  _NetCharDevQEnum: function (servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+    bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+    var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS; stdcall;
+  _NetCharDevQGetInfo: function (servername, queuename, username: LPCWSTR;
+    level: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetCharDevQSetInfo: function (servername, queuename: LPCWSTR; level: DWORD;
+    buf: Pointer; parm_err: PDWORD): NET_API_STATUS; stdcall;
+  _NetCharDevQPurge: function (servername, queuename: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetCharDevQPurgeSelf: function (servername, queuename, computername: LPCWSTR): NET_API_STATUS; stdcall;
+  _NetHandleGetInfo: function (handle: THandle; level: DWORD; bufptr: Pointer): NET_API_STATUS; stdcall;
+  _NetHandleSetInfo: function (handle: THandle; level: DWORD; buf: Pointer;
+    parmnum: DWORD; parmerr: PDWORD): NET_API_STATUS; stdcall;
+
+function NetCharDevEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+  prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
+  resume_handle: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevEnum, 'NetCharDevEnum') then
+    Result := _NetCharDevEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevGetInfo(servername: LPCWSTR; devname: LPCWSTR;
+  level: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevGetInfo, 'NetCharDevGetInfo') then
+    Result := _NetCharDevGetInfo(servername, devname, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevControl(servername: LPCWSTR; devname: LPCWSTR;
+  opcode: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevControl, 'NetCharDevControl') then
+    Result := _NetCharDevControl(servername, devname, opcode)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevQEnum(servername: LPCWSTR; username: LPCWSTR; level: DWORD;
+  bufptr: Pointer; prefmaxlen: DWORD; var entriesread: DWORD;
+  var totalentries: DWORD; resume_handle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevQEnum, 'NetCharDevQEnum') then
+    Result := _NetCharDevQEnum(servername, username, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevQGetInfo(servername, queuename, username: LPCWSTR;
+  level: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevQGetInfo, 'NetCharDevQGetInfo') then
+    Result := _NetCharDevQGetInfo(servername, queuename, username, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevQSetInfo(servername, queuename: LPCWSTR; level: DWORD;
+  buf: Pointer; parm_err: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevQSetInfo, 'NetCharDevQSetInfo') then
+    Result := _NetCharDevQSetInfo(servername, queuename, level, buf, parm_err)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevQPurge(servername, queuename: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevQPurge, 'NetCharDevQPurge') then
+    Result := _NetCharDevQPurge(servername, queuename)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetCharDevQPurgeSelf(servername, queuename, computername: LPCWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetCharDevQPurgeSelf, 'NetCharDevQPurgeSelf') then
+    Result := _NetCharDevQPurgeSelf(servername, queuename, computername)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetHandleGetInfo(handle: THandle; level: DWORD; bufptr: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetHandleGetInfo, 'NetHandleGetInfo') then
+    Result := _NetHandleGetInfo(handle, level, bufptr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetHandleSetInfo(handle: THandle; level: DWORD; buf: Pointer;
+  parmnum: DWORD; parmerr: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetHandleSetInfo, 'NetHandleSetInfo') then
+    Result := _NetHandleSetInfo(handle, level, buf, parmnum, parmerr)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetCharDevEnum; external netapi32lib name 'NetCharDevEnum';
 function NetCharDevGetInfo; external netapi32lib name 'NetCharDevGetInfo';
@@ -10152,7 +12117,203 @@ function NetCharDevQPurgeSelf; external netapi32lib name 'NetCharDevQPurgeSelf';
 function NetHandleGetInfo; external netapi32lib name 'NetHandleGetInfo';
 function NetHandleSetInfo; external netapi32lib name 'NetHandleSetInfo';
 
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
 // LMDFS.H
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+
+var
+  _NetDfsAdd: function (DfsEntryPath, ServerName, ShareName, Comment: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsAddStdRoot: function (ServerName, RootShare, Comment: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsRemoveStdRoot: function (ServerName: LPWSTR; RootShare: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsAddFtRoot: function (ServerName, RootShare, FtDfsName, Comment: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsRemoveFtRoot: function (ServerName, RootShare, FtDfsName: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsRemoveFtRootForced: function (DomainName, ServerName, RootShare, FtDfsName: LPWSTR;
+    Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsManagerInitialize: function (ServerName: LPWSTR; Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsAddStdRootForced: function (ServerName, RootShare, Comment, Store: LPWSTR): NET_API_STATUS; stdcall;
+  _NetDfsGetDcAddress: function (ServerName: LPWSTR; DcIpAddress: LPWSTR;
+    var IsRoot: Boolean; var Timeout: ULONG): NET_API_STATUS; stdcall;
+  _NetDfsSetDcAddress: function (ServerName: LPWSTR; DcIpAddress: LPWSTR;
+    Timeout: ULONG; Flags: DWORD): NET_API_STATUS; stdcall;
+  _NetDfsRemove: function (DfsEntryPath, ServerName, ShareName: LPWSTR): NET_API_STATUS; stdcall;
+  _NetDfsEnum: function (DfsName: LPWSTR; Level: DWORD; PrefMaxLen: DWORD;
+    Buffer: Pointer; var EntriesRead: DWORD; ResumeHandle: PDWORD): NET_API_STATUS; stdcall;
+  _NetDfsGetInfo: function (DfsEntryPath, ServerName, ShareName: LPWSTR;
+    Level: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetDfsSetInfo: function (DfsEntryPath, ServerName, ShareName: LPWSTR;
+    Level: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetDfsGetClientInfo: function (DfsEntryPath, ServerName, ShareName: LPWSTR;
+    Level: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetDfsSetClientInfo: function (DfsEntryPath, ServerName, ShareName: LPWSTR;
+    Level: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
+  _NetDfsMove: function (DfsEntryPath, DfsNewEntryPath: LPWSTR): NET_API_STATUS; stdcall;
+  _NetDfsRename: function (Path, NewPath: LPWSTR): NET_API_STATUS; stdcall;
+
+function NetDfsAdd(DfsEntryPath, ServerName, ShareName, Comment: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsAdd, 'NetDfsAdd') then
+    Result := _NetDfsAdd(DfsEntryPath, ServerName, ShareName, Comment, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsAddStdRoot(ServerName, RootShare, Comment: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsAddStdRoot, 'NetDfsAddStdRoot') then
+    Result := _NetDfsAddStdRoot(ServerName, RootShare, Comment, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsRemoveStdRoot(ServerName: LPWSTR; RootShare: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsRemoveStdRoot, 'NetDfsRemoveStdRoot') then
+    Result := _NetDfsRemoveStdRoot(ServerName, RootShare, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsAddFtRoot(ServerName, RootShare, FtDfsName, Comment: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsAddFtRoot, 'NetDfsAddFtRoot') then
+    Result := _NetDfsAddFtRoot(ServerName, RootShare, FtDfsName, Comment, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsRemoveFtRoot(ServerName, RootShare, FtDfsName: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsRemoveFtRoot, 'NetDfsRemoveFtRoot') then
+    Result := _NetDfsRemoveFtRoot(ServerName, RootShare, FtDfsName, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsRemoveFtRootForced(DomainName, ServerName, RootShare, FtDfsName: LPWSTR;
+  Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsRemoveFtRootForced, 'NetDfsRemoveFtRootForced') then
+    Result := _NetDfsRemoveFtRootForced(DomainName, ServerName, RootShare, FtDfsName, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsManagerInitialize(ServerName: LPWSTR; Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsManagerInitialize, 'NetDfsManagerInitialize') then
+    Result := _NetDfsManagerInitialize(ServerName, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsAddStdRootForced(ServerName, RootShare, Comment, Store: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsAddStdRootForced, 'NetDfsAddStdRootForced') then
+    Result := _NetDfsAddStdRootForced(ServerName, RootShare, Comment, Store)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsGetDcAddress(ServerName: LPWSTR; DcIpAddress: LPWSTR;
+  var IsRoot: Boolean; var Timeout: ULONG): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsGetDcAddress, 'NetDfsGetDcAddress') then
+    Result := _NetDfsGetDcAddress(ServerName, DcIpAddress, IsRoot, Timeout)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsSetDcAddress(ServerName: LPWSTR; DcIpAddress: LPWSTR;
+  Timeout: ULONG; Flags: DWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsSetDcAddress, 'NetDfsSetDcAddress') then
+    Result := _NetDfsSetDcAddress(ServerName, DcIpAddress, Timeout, Flags)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsRemove(DfsEntryPath, ServerName, ShareName: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsRemove, 'NetDfsRemove') then
+    Result := _NetDfsRemove(DfsEntryPath, ServerName, ShareName)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsEnum(DfsName: LPWSTR; Level: DWORD; PrefMaxLen: DWORD;
+  Buffer: Pointer; var EntriesRead: DWORD; ResumeHandle: PDWORD): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsEnum, 'NetDfsEnum') then
+    Result := _NetDfsEnum(DfsName, Level, PrefMaxLen, Buffer, EntriesRead, ResumeHandle)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsGetInfo(DfsEntryPath, ServerName, ShareName: LPWSTR;
+  Level: DWORD; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsGetInfo, 'NetDfsGetInfo') then
+    Result := _NetDfsGetInfo(DfsEntryPath, ServerName, ShareName, Level, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsSetInfo(DfsEntryPath, ServerName, ShareName: LPWSTR;
+  Level: DWORD; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsSetInfo, 'NetDfsSetInfo') then
+    Result := _NetDfsSetInfo(DfsEntryPath, ServerName, ShareName, Level, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsGetClientInfo(DfsEntryPath, ServerName, ShareName: LPWSTR;
+  Level: DWORD; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsGetClientInfo, 'NetDfsGetClientInfo') then
+    Result := _NetDfsGetClientInfo(DfsEntryPath, ServerName, ShareName, Level, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsSetClientInfo(DfsEntryPath, ServerName, ShareName: LPWSTR;
+  Level: DWORD; Buffer: Pointer): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsSetClientInfo, 'NetDfsSetClientInfo') then
+    Result := _NetDfsSetClientInfo(DfsEntryPath, ServerName, ShareName, Level, Buffer)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsMove(DfsEntryPath, DfsNewEntryPath: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsMove, 'NetDfsMove') then
+    Result := _NetDfsMove(DfsEntryPath, DfsNewEntryPath)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+function NetDfsRename(Path, NewPath: LPWSTR): NET_API_STATUS;
+begin
+  if CheckNetAPILoaded(@_NetDfsRename, 'NetDfsRename') then
+    Result := _NetDfsRename(Path, NewPath)
+  else
+    Result := APINotPresentErrorCode;
+end;
+
+{$ELSE LANMAN_DYNAMIC_LINK}
 
 function NetDfsAdd; external netapi32lib name 'NetDfsAdd';
 function NetDfsAddStdRoot; external netapi32lib name 'NetDfsAddStdRoot';
@@ -10172,5 +12333,14 @@ function NetDfsGetClientInfo; external netapi32lib name 'NetDfsGetClientInfo';
 function NetDfsSetClientInfo; external netapi32lib name 'NetDfsSetClientInfo';
 function NetDfsMove; external netapi32lib name 'NetDfsMove';
 function NetDfsRename; external netapi32lib name 'NetDfsRename';
+
+{$ENDIF LANMAN_DYNAMIC_LINK}
+
+{$IFDEF LANMAN_DYNAMIC_LINK}
+initialization
+
+finalization
+  UnloadNetApi;
+{$ENDIF LANMAN_DYNAMIC_LINK}
 
 end.
