@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: January 12, 2002                                                                  }
+{ Last modified: January 14, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -346,6 +346,11 @@ resourcestring
 
   RsMmUnknownError     = 'Unknown MCI error No. %d';
   RsMmMciErrorPrefix   = 'MCI-Error: ';
+
+  RsMmCdTrackNo        = 'Track: %.2u';
+  RsMMCdTimeFormat     = '%2u:%.2u';
+  RsMMTrackAudio       = 'Audio';
+  RsMMTrackOther       = 'Other';
 
 //--------------------------------------------------------------------------------------------------
 // JclNTFS
