@@ -2109,7 +2109,7 @@ function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath,
 var
   BPLFileName, DCPFileName: string;
   BaseName, LibSuffix: string;
-  RunOnly: Boolean;
+  RunOnly, Success: Boolean;
 begin
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
   BaseName := PathExtractFileNameNoExt(PackageName);
@@ -2117,7 +2117,10 @@ begin
   DCPFileName := PathAddSeparator(DCPPath) + BaseName + '.dcp';
   Result := FileDelete(BPLFileName) and FileDelete(DCPFileName);
   if not RunOnly then
-    Result := Result and IdePackages.RemovePackage(BPLFileName);
+  begin
+    Success := IdePackages.RemovePackage(BPLFileName);
+    Result := Result and Success;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2683,6 +2686,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.33  2005/02/04 05:11:21  rrossmair
+// - fixed TJclBorRADToolInstallation.UninstallPackage
+//
 // Revision 1.32  2005/02/04 04:49:08  rrossmair
 // - fixed GetDPKFileInfo
 // - more uninstall support
