@@ -32,9 +32,6 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  {$IFDEF LINUX}
-  Types,
-  {$ENDIF}
   JclBase;
 
 type
@@ -64,24 +61,6 @@ implementation
 uses
   SysUtils,
   JclResources, JclSysUtils;
-
-{$IFDEF LINUX}
-
-function QueryPerformanceFrequency(var Frequency: Int64): LongBool;
-begin
-  // TODO implement Linux version
-  Result := False;
-end;
-
-//------------------------------------------------------------------------------
-
-function QueryPerformanceCounter(var Counter: Int64): LongBool;
-begin
-  // TODO implement Linux version
-  Result := False;
-end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
