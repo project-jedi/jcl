@@ -12,15 +12,20 @@
 {                                                                                                  }
 { The Original Code is OpenDlgFavAdapter.pas.                                                      }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) Petr Vones. All rights reserved.                }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Salvatore Besso                                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: June 12, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
 
 unit OpenDlgFavAdapter;
 
@@ -90,8 +95,10 @@ function InitializeFavOpenDialog: TFavOpenDialog;
 implementation
 
 uses
-  Forms, CommDlg, Dlgs,
-  JclFileUtils, JclStrings, JclSysInfo;
+  {$IFNDEF RTL140_UP}
+  Forms,
+  {$ENDIF ~RTL140_UP}
+  CommDlg, Dlgs, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 {$R FavDlg.res}
 
@@ -249,27 +256,28 @@ begin
   else
     GetDlgItemRect(cmb1, FileNameEditRect);
   GetDlgItemRect(1, OkButtonRect);
-  FFavoritePanel.Width := ParentRect.Right - ParentRect.Left;
-  FFavoriteComboBox.Width := FileNameEditRect.Right - FFavoriteComboBox.Left;
-  FAddButton.Left := OkButtonRect.Left;
+
+// Salvatore Besso: Changes to avoid truncation of Add button. I don't know why, but debugging I
+//   have discovered that ParentRect.Right was equal to 1024, ie Screen.Width. I also can't figure
+//   out why I can't preserve original help button that disappears using this expert.
+//   As visible in the changes, favorite panel width is just left of the original button column.
+
   if IsWin2k or IsWinXP then
     FAddButton.Width := 65;
+  FFavoritePanel.Width := OkButtonRect.Left - 1;
+  FFavoriteComboBox.Width := FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
+  FAddButton.Left := FFavoriteComboBox.Width + 14;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 constructor TFavOpenDialog.Create;
 begin
+  inherited Create;
   FFavoriteFolders := TStringList.Create;
   FHooks := TJclPeMapImgHooks.Create;
-  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FParentWndInstance := MakeObjectInstance(ParentWndProc);
   FWndInstance := MakeObjectInstance(WndProc);
-  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
-  {$WARN SYMBOL_DEPRECATED ON}
-  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FFavoritePanel := TPanel.Create(nil);
   with FFavoritePanel do
   begin
@@ -310,14 +318,8 @@ end;
 destructor TFavOpenDialog.Destroy;
 begin
   UnhookDialogs;
-  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FreeObjectInstance(FParentWndInstance);
   FreeObjectInstance(FWndInstance);
-  {$IFDEF SUPPORTS_DEPRECATED_WARNINGS}
-  {$WARN SYMBOL_DEPRECATED ON}
-  {$ENDIF SUPPORTS_DEPRECATED_WARNINGS}
   FreeAndNil(FFavoritePanel);
   FreeAndNil(FFavoriteFolders);
   FreeAndNil(FHooks);
@@ -566,5 +568,13 @@ initialization
 
 finalization
   FreeAndNil(FavOpenDialog);
+
+// History:
+
+// $Log$
+// Revision 1.5  2005/02/26 17:36:01  rrossmair
+// - applied Salvatore Besso's fix for truncation of Add button when using large fonts.
+// - some cleaning, module header updated.
+//
 
 end.
