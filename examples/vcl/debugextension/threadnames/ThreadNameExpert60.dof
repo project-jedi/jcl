@@ -1,5 +1,6 @@
 [Directories]
 UnitOutputDir=..\..\..\..\lib\d6
+SearchPath=..\..\..\..\source
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0

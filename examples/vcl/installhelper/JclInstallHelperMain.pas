@@ -13,9 +13,9 @@ const
 
 type
   TMainForm = class(TForm)
-    D4GroupBox: TGroupBox;
     D5GroupBox: TGroupBox;
     D6GroupBox: TGroupBox;
+    D7GroupBox: TGroupBox;
     InstallBtn: TButton;
     CloseBtn: TButton;
     JediImage: TImage;
@@ -26,37 +26,37 @@ type
     Checkall1: TMenuItem;
     Uncheckall1: TMenuItem;
     GroupBox1: TGroupBox;
-    D4InstallCheckBox: TCheckBox;
-    Label1: TLabel;
-    D4ReposPageComboBox: TComboBox;
-    GroupBox2: TGroupBox;
-    D4HlpHelpCheckBox: TCheckBox;
-    D4ChmHelpCheckBox: TCheckBox;
-    GroupBox3: TGroupBox;
-    D4SourceLibCheckBox: TCheckBox;
-    GroupBox4: TGroupBox;
     D5InstallCheckBox: TCheckBox;
-    Label2: TLabel;
+    Label1: TLabel;
     D5ReposPageComboBox: TComboBox;
-    GroupBox5: TGroupBox;
+    GroupBox2: TGroupBox;
     D5HlpHelpCheckBox: TCheckBox;
     D5ChmHelpCheckBox: TCheckBox;
-    GroupBox6: TGroupBox;
+    GroupBox3: TGroupBox;
     D5SourceLibCheckBox: TCheckBox;
-    GroupBox7: TGroupBox;
-    D6InstallVclCheckBox: TCheckBox;
-    D6InstallClxCheckBox: TCheckBox;
-    Label3: TLabel;
+    GroupBox4: TGroupBox;
+    D6InstallCheckBox: TCheckBox;
+    Label2: TLabel;
     D6ReposPageComboBox: TComboBox;
-    GroupBox8: TGroupBox;
+    GroupBox5: TGroupBox;
     D6HlpHelpCheckBox: TCheckBox;
     D6ChmHelpCheckBox: TCheckBox;
-    GroupBox9: TGroupBox;
+    GroupBox6: TGroupBox;
     D6SourceLibCheckBox: TCheckBox;
+    GroupBox7: TGroupBox;
+    D7InstallVclCheckBox: TCheckBox;
+    D7InstallClxCheckBox: TCheckBox;
+    Label3: TLabel;
+    D7ReposPageComboBox: TComboBox;
+    GroupBox8: TGroupBox;
+    D7HlpHelpCheckBox: TCheckBox;
+    D7ChmHelpCheckBox: TCheckBox;
+    GroupBox9: TGroupBox;
+    D7SourceLibCheckBox: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure CloseBtnClick(Sender: TObject);
-    procedure D4InstallCheckBoxClick(Sender: TObject);
+    procedure InstallCheckBoxClick(Sender: TObject);
     procedure InstallBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JediImageClick(Sender: TObject);
@@ -96,7 +96,7 @@ uses
   JclBase, JclFileUtils, JclStrings, JclSysUtils, JclShell;
 
 const
-  DialogsPath       = 'examples\debugextension\dialog\';
+  DialogsPath       = 'examples\vcl\debugextension\dialog\';
   ClxDialogFileName = 'ClxExceptDlg.pas';
   VclDialogFileName = 'ExceptDlg.pas';
   ClxDialogName     = 'CLX Exception Dialog';
@@ -104,9 +104,9 @@ const
   DialogDescription = 'JCL Application exception dialog';
   DialogAuthor      = 'Project JEDI';
 
-  JclChmHelpFile    = 'Help\JCLHelp.chm';
-  JclHlpHelpFile    = 'Help\JCLHelp.hlp';
-  JclHelpTitle      = 'JCL 1.20 Help';
+  JclChmHelpFile    = 'help\JCLHelp.chm';
+  JclHlpHelpFile    = 'help\JCLHelp.hlp';
+  JclHelpTitle      = 'JCL 1.90 Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
 
@@ -224,37 +224,13 @@ begin
   FileSetAttr(FVclDialogFileName, faArchive);
   FileSetAttr(ChangeFileExt(FVclDialogFileName, '.dfm'), faArchive);
   try
-    // Delphi 4
-    Installation := FDelphiInstallations.InstallationFromVersion[4];
-    if Assigned(Installation) and Installation.Valid then
-    begin
-      if D4InstallCheckBox.Checked then
-      begin
-        IniFile := TIniFile.Create(Installation.ObjectRepositoryFileName);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectType, DelphiRepositoryFormTemplate);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectName, VclDialogName);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectPage, D4ReposPageComboBox.Text);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectIcon, FVclDialogIconFileName);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectDescr, DialogDescription);
-        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectAuthor, DialogAuthor);
-        IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectNewForm, False);
-        IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectMainForm, False);
-        FreeAndNil(IniFile);
-      end;
-      if D4HlpHelpCheckBox.Checked then
-        AddHelpToDelphiHelp;
-      if D4ChmHelpCheckBox.Checked then
-        AddHelpToIdeTools;
-      if D4SourceLibCheckBox.Checked then
-        AddLibraryPath;
-    end;
     // Delphi 5
     Installation := FDelphiInstallations.InstallationFromVersion[5];
     if Assigned(Installation) and Installation.Valid then
     begin
       if D5InstallCheckBox.Checked then
       begin
-        IniFile := TIniFile.Create(Installation.ObjectRepositoryFileName);
+        IniFile := TIniFile.Create(Installation.Repository.FileName);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectType, DelphiRepositoryFormTemplate);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectName, VclDialogName);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectPage, D5ReposPageComboBox.Text);
@@ -276,12 +252,36 @@ begin
     Installation := FDelphiInstallations.InstallationFromVersion[6];
     if Assigned(Installation) and Installation.Valid then
     begin
-      IniFile := TIniFile.Create(Installation.ObjectRepositoryFileName);
-      if D6InstallVclCheckBox.Checked then
+      if D6InstallCheckBox.Checked then
       begin
+        IniFile := TIniFile.Create(Installation.Repository.FileName);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectType, DelphiRepositoryFormTemplate);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectName, VclDialogName);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectPage, D6ReposPageComboBox.Text);
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectIcon, FVclDialogIconFileName);
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectDescr, DialogDescription);
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectAuthor, DialogAuthor);
+        IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectNewForm, False);
+        IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectMainForm, False);
+        FreeAndNil(IniFile);
+      end;
+      if D6HlpHelpCheckBox.Checked then
+        AddHelpToDelphiHelp;
+      if D6ChmHelpCheckBox.Checked then
+        AddHelpToIdeTools;
+      if D6SourceLibCheckBox.Checked then
+        AddLibraryPath;
+    end;
+    // Delphi 7
+    Installation := FDelphiInstallations.InstallationFromVersion[7];
+    if Assigned(Installation) and Installation.Valid then
+    begin
+      IniFile := TIniFile.Create(Installation.Repository.FileName);
+      if D7InstallVclCheckBox.Checked then
+      begin
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectType, DelphiRepositoryFormTemplate);
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectName, VclDialogName);
+        IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectPage, D7ReposPageComboBox.Text);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectIcon, FVclDialogIconFileName);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectDescr, DialogDescription);
         IniFile.WriteString(FVclDialogFileName, DelphiRepositoryObjectAuthor, DialogAuthor);
@@ -289,11 +289,11 @@ begin
         IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectNewForm, False);
         IniFile.WriteBool(FVclDialogFileName, DelphiRepositoryObjectMainForm, False);
       end;
-      if D6InstallClxCheckBox.Checked then
+      if D7InstallClxCheckBox.Checked then
       begin
         IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectType, DelphiRepositoryFormTemplate);
         IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectName, ClxDialogName);
-        IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectPage, D6ReposPageComboBox.Text);
+        IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectPage, D7ReposPageComboBox.Text);
         IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectIcon, FClxDialogIconFileName);
         IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectDescr, DialogDescription);
         IniFile.WriteString(FClxDialogFileName, DelphiRepositoryObjectAuthor, DialogAuthor);
@@ -302,11 +302,11 @@ begin
         IniFile.WriteBool(FClxDialogFileName, DelphiRepositoryObjectMainForm, False);
       end;
       FreeAndNil(IniFile);
-      if D6HlpHelpCheckBox.Checked then
+      if D7HlpHelpCheckBox.Checked then
         AddHelpToDelphiHelp;
-      if D6ChmHelpCheckBox.Checked then
+      if D7ChmHelpCheckBox.Checked then
         AddHelpToIdeTools;
-      if D6SourceLibCheckBox.Checked then
+      if D7SourceLibCheckBox.Checked then
         AddLibraryPath;
     end;
     with Application do
@@ -334,7 +334,7 @@ end;
 procedure TMainForm.ReadDialogPath;
 begin
   FJclPath := PathAddSeparator(PathCanonicalize(PathExtractFileDirFixed(Application.ExeName) + '..'));
-  FJclSourcePath := FJclPath + 'Source';
+  FJclSourcePath := FJclPath + 'source';
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
   FVclDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDialogFileName);
   FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ICO');
@@ -350,7 +350,7 @@ begin
   begin
     with Application do
       MessageBox(PChar(RsCantFindFiles), PChar(Title), MB_OK or MB_ICONERROR);
-    Application.ShowMainForm := False;  
+    Application.ShowMainForm := False;
     Application.Terminate;
   end;
 end;
@@ -386,7 +386,7 @@ procedure TMainForm.UpdateControls;
     begin
       // Update Pack caption
       VersionGroupBox.Caption := Installation.Name;
-      IniFile := TIniFile.Create(Installation.ObjectRepositoryFileName);
+      IniFile := TIniFile.Create(Installation.Repository.FileName);
       try
         // Repository pages
         IniFile.ReadSection(DelphiRepositoryPagesSection, PagesCombo.Items);
@@ -399,9 +399,9 @@ procedure TMainForm.UpdateControls;
           HelpHelpCheckBox.Enabled := False;
         if FJclChmHelpFileName = '' then
           ChmHelpCheckBox.Enabled := False;
-        // D6 CLX Exception dialog on Delphi 6 Personal
+        // D7 CLX Exception dialog on Delphi 6 Personal
         if (Installation.VersionNumber = 6) and (Installation.Edition = deSTD) then
-          D6InstallClxCheckBox.Enabled := False;
+          D7InstallClxCheckBox.Enabled := False;
       finally
         IniFile.Free;
       end;
@@ -409,12 +409,12 @@ procedure TMainForm.UpdateControls;
   end;
 
 begin
-  UpdateForVersion(4, D4GroupBox, D4ReposPageComboBox, D4ChmHelpCheckBox, D4HlpHelpCheckBox);
   UpdateForVersion(5, D5GroupBox, D5ReposPageComboBox, D5ChmHelpCheckBox, D5HlpHelpCheckBox);
   UpdateForVersion(6, D6GroupBox, D6ReposPageComboBox, D6ChmHelpCheckBox, D6HlpHelpCheckBox);
-  D4SourceLibCheckBox.Hint := Format(RsSourceLibHint, [FJclSourcePath]);
+  UpdateForVersion(7, D7GroupBox, D7ReposPageComboBox, D7ChmHelpCheckBox, D7HlpHelpCheckBox);
   D5SourceLibCheckBox.Hint := Format(RsSourceLibHint, [FJclSourcePath]);
   D6SourceLibCheckBox.Hint := Format(RsSourceLibHint, [FJclSourcePath]);
+  D7SourceLibCheckBox.Hint := Format(RsSourceLibHint, [FJclSourcePath]);
   CheckAllCheckBoxes(True);
 end;
 
@@ -429,7 +429,7 @@ begin
   Close;
 end;
 
-procedure TMainForm.D4InstallCheckBoxClick(Sender: TObject);
+procedure TMainForm.InstallCheckBoxClick(Sender: TObject);
 begin
   UpdateButtons;
 end;

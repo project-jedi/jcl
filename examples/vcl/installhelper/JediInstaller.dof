@@ -1,4 +1,7 @@
 [Directories]
 OutputDir=..\..\..\bin
+UnitOutputDir=
+PackageDLLOutputDir=
+PackageDCPOutputDir=
 Conditionals=JCLINSTALL
 
