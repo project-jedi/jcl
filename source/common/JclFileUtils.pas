@@ -741,7 +741,7 @@ constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
 begin
   FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
-  FFileHandle := FileOpen(FileName, FileMode);
+  FFileHandle := THandle(FileOpen(FileName, FileMode));
   if FFileHandle = INVALID_HANDLE_VALUE then
     raise EJclFileMappingError.CreateResRec(@RsFileMappingOpenFile);
   InternalCreate(FFileHandle, Name, Protect, MaximumSize, SecAttr);
@@ -817,7 +817,7 @@ var
   BaseAddress: Pointer;
 begin
   inherited Create;
-  FFileHandle := FileOpen(FileName, FileMode);
+  FFileHandle := THandle(FileOpen(FileName, FileMode));
   if FFileHandle = INVALID_HANDLE_VALUE then
     RaiseLastOSError;
   if (FileMode and $0F) = fmOpenReadWrite then
