@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 28, 2003                                                                  }
+{ Last modified: October 30, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -3297,9 +3297,9 @@ begin
   begin
     FEDITransactionSet.SpecPointer := FEDITransactionSetSpec;
     FEDITransactionSet.SegmentST.SpecPointer := FEDITransactionSetSpec.SegmentST;
-    SetSpecificationPointers(FEDITransactionSet.SegmentST, FEDITransactionSetSpec.SegmentSE);
+    SetSpecificationPointers(FEDITransactionSet.SegmentST, FEDITransactionSetSpec.SegmentST);
     FEDITransactionSet.SegmentSE.SpecPointer := FEDITransactionSetSpec.SegmentSE;
-    SetSpecificationPointers(FEDITransactionSet.SegmentST, FEDITransactionSetSpec.SegmentSE);
+    SetSpecificationPointers(FEDITransactionSet.SegmentSE, FEDITransactionSetSpec.SegmentSE);
     if FEDITransactionSet.Parent <> nil then
     begin
       EDIFunctionalGroup := TEDIFunctionalGroup(FEDITransactionSet.Parent);
