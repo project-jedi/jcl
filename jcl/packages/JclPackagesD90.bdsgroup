@@ -8,11 +8,15 @@
 			<Option Name="GUID" Type="String">{7D3C6F18-762E-4A04-83D5-3C966D2D1A3C}</Option>
 		</Option>
 	</PersonalityInfo>
-	<Default.Personality>  <Projects ActiveProject="DJclVcl90.bpl">
-      <Projects Name="DJcl90.bpl" Type="String">d9\DJcl.bdsproj</Projects>
-      <Projects Name="DJclVcl90.bpl" Type="String">d9\DJclVcl.bdsproj</Projects>
-      <Projects Name="Targets" Type="String">DJcl90.bpl DJclVcl90.bpl</Projects>
+	<Default.Personality>  <Projects>
+      <Projects Name="DJcl90.bpl">d9\DJcl.bdsproj</Projects>
+      <Projects Name="DJclVcl90.bpl">d9\DJclVcl.bdsproj</Projects>
+      <Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl</Projects>
     </Projects>
-    <Dependencies/>
+    <Dependencies>
+      <Dependency GUID="{56BD28A4-80E6-467C-BD0E-CAC01DE0CE04}">
+        <Dependency GUID="{727821B9-CAC9-4A6B-8F7A-31B5E1CD3BC4}"/>
+      </Dependency>
+    </Dependencies>
   </Default.Personality>
 </BorlandProject>
