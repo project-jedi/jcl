@@ -6,68 +6,68 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="rtl" Targets="C6,D6,D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="C6,D6,D7,K3,D9" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5,D5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\source\common\JclUnitConv.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclBase.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclComplex.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclCounter.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclDateTime.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDISEF.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDIXML.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclExprEval.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclFileUtils.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclIniFiles.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclLogic.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMath.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMIDI.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMime.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclResources.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclRTTI.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSchedule.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStatistics.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStrHashMap.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStrings.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSysInfo.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSysUtils.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\Jcl8087.pas" Targets="c5,c6,d5,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclZlib.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclWideStrings.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclAppInst.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCIL.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCLR.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclCOM.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclConsole.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclDebug.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclHookExcept.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclLANMan.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclLocales.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMapi.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMetadata.pas" Targets="C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMiscel.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclMultimedia.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclNTFS.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclPeImage.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclRegistry.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclSecurity.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclShell.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclSvcCtrl.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclSynch.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclTD32.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclUnicode.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclWin32.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\Hardlinks.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\zlibh.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnitConv.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBase.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclComplex.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclCounter.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclDateTime.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDISEF.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDIXML.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclExprEval.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclFileUtils.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclIniFiles.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLogic.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMath.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMIDI.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMime.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclResources.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclRTTI.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSchedule.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStatistics.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStrHashMap.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStrings.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysInfo.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysUtils.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\Jcl8087.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclZlib.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclWideStrings.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclAppInst.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCIL.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCLR.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclCOM.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclConsole.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclDebug.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclHookExcept.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclLANMan.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclLocales.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMapi.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMetadata.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMiscel.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclMultimedia.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclNTFS.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclPeImage.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclRegistry.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclSecurity.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclShell.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclSvcCtrl.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclSynch.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclTD32.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclUnicode.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclWin32.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\Hardlinks.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\zlibh.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="C5,D5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="C5,D5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphics.pas" Targets="C5,D5" Formname="" Condition=""/>

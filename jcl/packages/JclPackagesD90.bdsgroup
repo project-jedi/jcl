@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality" Type="String">Default.Personality</Option>
+			<Option Name="ProjectType" Type="String"></Option>
+			<Option Name="Version" Type="String">1.0</Option>
+			<Option Name="GUID" Type="String">{7D3C6F18-762E-4A04-83D5-3C966D2D1A3C}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects ActiveProject="DJclVcl90.bpl">
+      <Projects Name="DJcl90.bpl" Type="String">d9\DJcl.bdsproj</Projects>
+      <Projects Name="DJclVcl90.bpl" Type="String">d9\DJclVcl.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">DJcl90.bpl DJclVcl90.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
