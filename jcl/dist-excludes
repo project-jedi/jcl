@@ -18,6 +18,7 @@ jcl/listtxtfiles.sh
 jcl/makedist.sh
 jcl/want.exe
 jcl/want.xml
+jcl/bin/JCL-install.ini
 jcl/bin/QJediInstaller*
 jcl/devtools
 jcl/dist
@@ -37,4 +38,5 @@ jcl/packages/k2
 jcl/packages/JclDev*.bpg
 jcl/source/*.bat
 jcl/source/Makefile.fpc
+jcl/source/common/*.int
 jcl/source/prototypes
