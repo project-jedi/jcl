@@ -76,7 +76,7 @@ interface
 (*$HPPEMIT '#include <lmwksta.h>'*)
 
 uses
-  Windows, WinSvcJ;
+  Windows, WinSvc;
 
 // Translated from LMERR.H
 
