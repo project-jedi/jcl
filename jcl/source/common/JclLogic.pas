@@ -148,10 +148,10 @@ function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overl
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 
-procedure BooleansToBits(var Dest: Byte; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
-procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
+procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Integer; const B: TBooleanArray); overload;
+procedure BooleansToBits(var Dest: Int64; const B: TBooleanArray); overload;
 
 procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
 procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
@@ -1117,7 +1117,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure BooleansToBits(var Dest: Byte; const B: array of Boolean);
+procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray);
 var
   I, H: Integer;
 begin
@@ -1130,7 +1130,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure BooleansToBits(var Dest: Word; const B: array of Boolean);
+procedure BooleansToBits(var Dest: Word; const B: TBooleanArray);
 var
   I, H: Integer;
 begin
@@ -1143,7 +1143,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure BooleansToBits(var Dest: Integer; const B: array of Boolean);
+procedure BooleansToBits(var Dest: Integer; const B: TBooleanArray);
 var
   I, H: Integer;
 begin
@@ -1156,7 +1156,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure BooleansToBits(var Dest: Int64; const B: array of Boolean);
+procedure BooleansToBits(var Dest: Int64; const B: TBooleanArray);
 var
   I, H: Integer;
 begin
