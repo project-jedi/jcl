@@ -29,7 +29,7 @@
 
 unit JclRTTI;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
