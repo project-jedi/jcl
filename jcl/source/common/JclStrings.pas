@@ -12,12 +12,15 @@
 {                                                                                                  }
 { The Original Code is JclStrings.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Azret Botash                                                                                   }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{  Jack N.A. Bakker, Azret Botash, Jean-Fabien Connault, Massimo Maria Ghisalberti,                }
+{  Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Nick Hodges, Barry Kelly, Martin Kimmings,         }
+{  Martin Kubecka, Robert Lee, Pelle F. S. Liljendal, Robert Marquardt, John C Molyneux,           }
+{  Alexander Radchenko, Robert Rossmair, Olivier Sannier, Anthony Steele, Matthias Thoma,          }
+{  Huanlin Tsai, Petr Vones, Leonard Wennekers, Michael Winter                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -4191,6 +4194,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.17  2004/05/05 00:11:24  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.16  2004/04/19 06:12:34  rrossmair
 // AddStringToStrings help TODO done
 //
