@@ -544,8 +544,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure _BlendMem(F: TColor32; var B: TColor32); assembler;
-asm
+procedure _BlendMem(F: TColor32; var B: TColor32);
+{asm
   // EAX <- F
   // [EDX] <- B
 
@@ -604,6 +604,9 @@ asm
 
 @1:     MOV     [EDX], EAX
 @2:     RET
+end;}
+begin
+  B := _BlendReg(F, B);
 end;
 
 //------------------------------------------------------------------------------
