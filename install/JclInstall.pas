@@ -87,6 +87,7 @@ type
     procedure AddHelpToOpenHelp(Installation: TJclBorRADToolInstallation);
     {$ENDIF MSWINDOWS}
     procedure CleanupRepository(Installation: TJclBorRADToolInstallation);
+    procedure CopyFiles(Units: TStrings; const Ext, TargetDir: string);
     function CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
     function DocFileName(const BaseFileName: string): string;
     procedure InstallationStarted(Installation: TJclBorRADToolInstallation);
@@ -202,6 +203,7 @@ const
   FID_JCL_ExpertAnalyzer   = FID_JCL + $00040102;
   FID_JCL_ExpertFavorite   = FID_JCL + $00040103;
   FID_JCL_ExpertsThrNames  = FID_JCL + $00040104;
+  FID_JCL_CopyHppFiles     = FID_JCL + $00050000;
   FID_JCL_ExcDialog        = FID_JCL + $00060000;
   FID_JCL_ExcDialogVCL     = FID_JCL + $00060100;
   FID_JCL_ExcDialogVCLSnd  = FID_JCL + $00060200;
@@ -227,6 +229,7 @@ const
   RsJCLPackages     = 'Packages';
   RsIdeHelpHlp      = 'Add help file to IDE help system';
   RsIdeHelpChm      = 'Add HTML help to the Tools menu';
+  RsCopyHppFiles    = 'Copy HPP files to %s';
 
   // Product specific features
   RsJCLExceptDlg    = 'Sample Exception Dialogs in the Object Reporitory';
@@ -256,6 +259,33 @@ function CreateJediInstall: IJediInstall;
 begin
   Result := TJclInstall.Create as IJediInstall;
 end;
+
+function FileCopy(const Source, Destination: string; Overwrite: Boolean = True): Boolean;
+{$IFDEF MSWINDOWS}
+begin
+  Result := CopyFile(PChar(Source), PChar(Destination), not Overwrite);
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  Src, Dst: TFileStream;
+begin
+  Result := False;
+  if not Overwrite and FileExists(Destination) then
+    Exit;
+  Src := nil;
+  Dst := nil;
+  try
+    Src := TFileStream.Create(Source, fmOpenRead);
+    Dst := TFileStream.Create(Source, fmOpenWrite);
+    Dst.CopyFrom(Src, 0);
+    Result := True;
+  finally
+    Src.Free;
+    Dst.Free;
+  end;
+end;
+{$ENDIF UNIX}
 
 function FullPackageFileName(Installation: TJclBorRADToolInstallation; const BaseName: string): string;
 const
@@ -334,6 +364,19 @@ var
   LibDescriptor: string;
   SaveDir, UnitOutputDir: string;
   Path: string;
+
+  procedure CopyResFiles(TargetDir: string);
+  var
+    FileList: TStringList;
+  begin
+    FileList := TStringList.Create;
+    try
+      BuildFileList('*.res', faAnyFile, FileList);
+      CopyFiles(FileList, 'res', TargetDir);
+    finally
+      FileList.Free;
+    end;
+  end;
 
   procedure GetUnits(const Path: string; Units: TStrings);
   var
@@ -461,6 +504,9 @@ begin
         WriteInstallLog('Compiling dpu files...');
         WriteInstallLog(Installation.DCC.Output);
         {$ENDIF KYLIX}
+        CopyResFiles(UnitOutputDir);
+        if Tool.FeatureChecked(FID_JCL_CopyHppFiles, Installation) then
+          CopyFiles(Units, 'hpp', (Installation as TJclBCBInstallation).VclIncludeDir);
       finally
         SetCurrentDir(SaveDir);
       end;
@@ -797,7 +843,9 @@ begin
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
-      if not (Installation is TJclBCBInstallation) then
+      if (Installation is TJclBCBInstallation) then
+        AddNode(MakeNode, Format(RsCopyHppFiles, [(Installation as TJclBCBInstallation).VclIncludeDir]), FID_JCL_CopyHppFiles, False)
+      else
       begin
         { TODO -orrossmair : 
 It has been reported that IDE experts don't work under Win98.  
@@ -905,6 +953,18 @@ begin
   Inc(FLogSize, N);
   ShowProgress;
   Tool.WriteInstallLog(Msg);
+end;
+
+procedure TJclInstall.CopyFiles(Units: TStrings; const Ext, TargetDir: string);
+var
+  I: Integer;
+  FileName: string;
+begin
+  for I := 0 to Units.Count - 1 do
+  begin
+    FileName := Format('%s.%s', [Units[I], Ext]);
+    FileCopy(PChar(FileName), PChar(TargetDir + FileName), False);
+  end;
 end;
 
 end.
