@@ -54,6 +54,7 @@ type
     function InitOptions: Boolean;
     procedure InstallationStarted;
     procedure InstallationFinished;
+    function InstallExpert(const BaseName: string): Boolean;
     procedure InstallFailedOn(const InstallObj: string);
     function InstallPackageSourceFile(const Name: string): Boolean;
     function InstallRunTimePackage(const BaseName: string): Boolean;
@@ -386,11 +387,11 @@ const
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
 
-  JclIdeDebugDpk    = 'examples\vcl\debugextension\JclDebugIde%d0.dpk';
-  JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%d0.dpk';
-  JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
-  JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
-  JclIdeUsesDpk     = 'examples\vcl\juw\JediUsesD%d0.dpk';  
+  JclIdeDebugDpk    = 'examples\vcl\debugextension\JclDebugIde%s%%d0%s';
+  JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%s%%d0%s';
+  JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%s%%d0%s';
+  JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%s%%d0%s';
+  JclIdeUsesDpk     = 'examples\vcl\juw\JediUses%s%%d0%s';
 
   ExpertPaths: array[ioJclExpertDebug..ioJclExpertUses] of string =
     (
@@ -492,6 +493,12 @@ begin
     FileName := Units[I] + '.hpp';
     Result := Result and FileCopy(FileName, TargetDir + FileName, True);
   end;
+end;
+
+function ExpertFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
+begin
+  with Target do
+    Result := Format(BaseName, [Prefixes[RADToolKind], PackageSourceFileExtension]);
 end;
 
 function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
@@ -1043,7 +1050,7 @@ begin
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
     ioJclExpertDebug..ioJclExpertUses:
-      Result := InstallPackageSourceFile(ExpertPaths[Option]);
+      Result := InstallExpert(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
     // ioJclExcDialog:
     ioJclExcDialogVCL:
@@ -1136,6 +1143,11 @@ begin
   with FDistribution do
     if Assigned(FOnEnding) then
       FOnEnding(Target);
+end;
+
+function TJclInstallation.InstallExpert(const BaseName: string): Boolean;
+begin
+  Result := InstallPackageSourceFile(ExpertFileName(Target, BaseName));
 end;
 
 procedure TJclInstallation.InstallFailedOn(const InstallObj: string);
@@ -1656,6 +1668,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.54  2005/03/14 02:21:34  rrossmair
+// - changed Expert naming convention to include Delphi/BCB infix (D|C)
+//
 // Revision 1.53  2005/03/05 06:33:17  rrossmair
 // - support for some conditional defines added.
 //
