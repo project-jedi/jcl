@@ -62,6 +62,7 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
+    {$IFDEF VisualCLX}
     {
     // Kylix 1
     D1TabSheet: TTabSheet;
@@ -73,6 +74,7 @@ type
     // Kylix 3 for Delphi
     D3TabSheet: TTabSheet;
     D3Product: TProductFrame;
+    {$ENDIF}
     //
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
