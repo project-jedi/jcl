@@ -21,6 +21,10 @@
 
 // $Id$
 
+// TODO/Issues:
+// - Uninstall functionality lacking 
+// - Progress display doesn't take unchecked features into account 
+
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJclInstall{$ELSE}JclInstall{$ENDIF};{$ENDIF}
 
 interface
@@ -31,7 +35,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF}
-  SysUtils, Classes,
+  SysUtils, Classes, IniFiles,
   {$IFDEF VisualCLX}
   Types,
   QComCtrls, QDialogs, QJediInstallIntf,
@@ -65,6 +69,19 @@ type
     FJclHlpHelpFileName: string;
     FJclReadmeFileName: string;
     FTool: IJediInstallTool;
+    FIniFile: TMemIniFile;
+    FTotalLogSize: Integer;
+    FVersionLogSize: Integer;
+    FLogSize: Integer;
+    FProgressPercent: Integer;
+    FOnStarting: TInstallationEvent;
+    FOnEnding: TInstallationEvent;
+    FOnProgress: TInstallationProgressEvent;
+    function AddLogSize(Installation: TJclBorRADToolInstallation): Boolean;
+    procedure InitProgress;
+    procedure WriteInstallLog(const Msg: string);
+  protected
+    constructor Create;
     {$IFDEF MSWINDOWS}
     procedure AddHelpToIdeTools(Installation: TJclBorRADToolInstallation);
     procedure AddHelpToOpenHelp(Installation: TJclBorRADToolInstallation);
@@ -72,13 +89,17 @@ type
     procedure CleanupRepository(Installation: TJclBorRADToolInstallation);
     function CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
     function DocFileName(const BaseFileName: string): string;
+    procedure InstallationStarted(Installation: TJclBorRADToolInstallation);
+    procedure InstallationFinished(Installation: TJclBorRADToolInstallation);
     procedure InstallFailedOn(const InstallObj: string);
     function InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
     function MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
     function MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean): Boolean;
+    procedure ShowProgress;
     property LibObjDir: string read FJclLibObjDir write FJclLibObjDir;
   public
+    destructor Destroy; override;
     function FeatureInfoFileName(FeatureID: Cardinal): string;
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
@@ -87,6 +108,9 @@ type
     function ReadmeFileName: string;
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
+    procedure SetOnEnding(Value: TInstallationEvent);
+    procedure SetOnProgress(Value: TInstallationProgressEvent);
+    procedure SetOnStarting(Value: TInstallationEvent);
     procedure SetTool(const Value: IJediInstallTool);
     function Supports(Installation: TJclBorRADToolInstallation): Boolean;
     property Tool: IJediInstallTool read FTool;
@@ -202,6 +226,7 @@ const
   RsJCLIdeThrNames  = 'Displaying thread names in Thread Status window';
 
 resourcestring
+  RsLogSize = 'Log Size';
   RsSourceLibHint   = 'Adds "%s" to the Library Path';
   RsStatusMessage   = 'Installing %s...';
   RsStatusDetailMessage = 'Installing %s for %s...';
@@ -212,6 +237,7 @@ resourcestring
   {$ELSE}
   RsReadmeFileName  = 'Readme.txt';
   {$ENDIF}
+  RsIniFileName = '%sJCL-install.ini';
 
 function CreateJediInstall: IJediInstall;
 begin
@@ -235,6 +261,22 @@ begin
 end;
 
 { TJclInstall }
+
+constructor TJclInstall.Create;
+begin
+  inherited;
+  FIniFile := TMemIniFile.Create(Format(RsIniFileName, [ExtractFilePath(ParamStr(0))]));
+end;
+
+destructor TJclInstall.Destroy;
+begin
+  if Assigned(FIniFile) then
+  begin
+    FIniFile.UpdateFile;
+    FreeAndNil(FIniFile);
+  end;
+  inherited;
+end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstall.AddHelpToIdeTools(Installation: TJclBorRADToolInstallation);
@@ -280,13 +322,11 @@ var
   LibDescriptor: string;
   SaveDir, UnitOutputDir: string;
   Path, ExcludeListFileName: string;
-  Success: Boolean;
 begin
-  Result := False;
   if Debug then
     UnitType := 'debug ';
   LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Installation.Name]);
-  Tool.WriteInstallLog(Format('Making %s', [LibDescriptor]));
+  WriteInstallLog(Format('Making %s', [LibDescriptor]));
   Units := TStringList.Create;
   try
     Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
@@ -373,24 +413,24 @@ begin
       end;
       AddPathOption('I', FJclSourceDir);
       SaveDir := GetCurrentDir;
-      Success := SetCurrentDir(Path);
+      Result := SetCurrentDir(Path);
       {$IFDEF WIN32}
-      Win32Check(Success);
+      Win32Check(Result);
       {$ELSE}
-      if Success then
+      if Result then
       {$ENDIF}
       try
         Result := Execute(StringsToStr(Units, ' ', False));
-        Tool.WriteInstallLog('');
-        Tool.WriteInstallLog('Compiling .dcu files...');
-        Tool.WriteInstallLog(Installation.DCC.Output);
+        WriteInstallLog('');
+        WriteInstallLog('Compiling .dcu files...');
+        WriteInstallLog(Installation.DCC.Output);
         {$IFDEF KYLIX}
         J := Options.Add('-P');   // generate position independent code (PIC)
         Result := Execute(StringsToStr(Units, ' ', False));
         Options.Delete(J);        // remove PIC option
-        Tool.WriteInstallLog('');
-        Tool.WriteInstallLog('Compiling dpu files...');
-        Tool.WriteInstallLog(Installation.DCC.Output);
+        WriteInstallLog('');
+        WriteInstallLog('Compiling dpu files...');
+        WriteInstallLog(Installation.DCC.Output);
         {$ENDIF KYLIX}
       finally
         SetCurrentDir(SaveDir);
@@ -467,10 +507,31 @@ begin
   end;
 end;
 
+function TJclInstall.AddLogSize(Installation: TJclBorRADToolInstallation): Boolean;
+var
+  LogSize: Integer;
+begin
+  Result := True;
+  if Tool.FeatureChecked(FID_JCL, Installation) then
+  begin
+    LogSize := FIniFile.ReadInteger(RsLogSize, Installation.Name, 0);
+    Inc(FTotalLogSize, LogSize);
+    Result := LogSize > 0;
+  end;
+end;
+
+procedure TJclInstall.InitProgress;
+begin
+  FTotalLogSize := 0;
+  FLogSize := 0;
+  Tool.BorRADToolInstallations.Iterate(AddLogSize);
+end;
+
 function TJclInstall.Install: Boolean;
 begin
-  Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
+  WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
+    InitProgress;
     Result := Tool.BorRADToolInstallations.Iterate(InstallFor);
   finally
     Tool.UpdateStatus('');
@@ -486,13 +547,14 @@ function TJclInstall.InstallFor(Installation: TJclBorRADToolInstallation): Boole
 
   procedure WriteBorRADToolVersionToLog;
   begin
-    Tool.WriteInstallLog(StrPadRight(Format('%s Build %s ', [Installation.Name, Installation.IdeExeBuildNumber]), 120, '='));
+    WriteInstallLog(StrPadRight(Format('%s Build %s ', [Installation.Name, Installation.IdeExeBuildNumber]), 120, '='));
   end;
 
 begin
   Result := True;
   if not Supports(Installation) then
     Exit;
+  InstallationStarted(Installation);
   Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
   WriteBorRADToolVersionToLog;
   CleanupRepository(Installation);
@@ -548,6 +610,8 @@ begin
       Result := Result and InstallPackage(Installation, JclIdeThrNamesDpk);
     {$ENDIF MSWINDOWS}
   end;
+  if Result then
+    InstallationFinished(Installation);
 end;
 
 function TJclInstall.InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
@@ -563,13 +627,13 @@ var
 begin
   Result := True;
   PackageFileName := FJclPath + Format(Name, [Installation.VersionNumber]);
-  Tool.WriteInstallLog(Format('Installing package %s', [PackageFileName]));
+  WriteInstallLog(Format('Installing package %s', [PackageFileName]));
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Installation.Name]));
   if IsDelphiPackage(Name) then
   begin
     Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
       Tool.DCPPath(Installation));
-    Tool.WriteInstallLog(Installation.DCC.Output);
+    WriteInstallLog(Installation.DCC.Output);
   end
   else
     if Installation is TJclBCBInstallation then
@@ -588,11 +652,11 @@ begin
       {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));
-      Tool.WriteInstallLog(Installation.DCC.Output);
-      Tool.WriteInstallLog(Bpr2Mak.Output);
-      Tool.WriteInstallLog(Make.Output);
+      WriteInstallLog(Installation.DCC.Output);
+      WriteInstallLog(Bpr2Mak.Output);
+      WriteInstallLog(Make.Output);
     end;
-  Tool.WriteInstallLog('');
+  WriteInstallLog('');
   if not Result then
     InstallFailedOn(PackageFileName);
 end;
@@ -727,9 +791,54 @@ begin
   Result := False;
 end;
 
+procedure TJclInstall.SetOnEnding(Value: TInstallationEvent);
+begin
+  FOnEnding := Value;
+end;
+
+procedure TJclInstall.SetOnProgress(Value: TInstallationProgressEvent);
+begin
+  FOnProgress := Value;
+end;
+
+procedure TJclInstall.SetOnStarting(Value: TInstallationEvent);
+begin
+  FOnStarting := Value;
+end;
+
 procedure TJclInstall.SetTool(const Value: IJediInstallTool);
 begin
   FTool := Value;
+end;
+
+procedure TJclInstall.InstallationStarted(Installation: TJclBorRADToolInstallation);
+begin
+  FVersionLogSize := 0;
+  if Assigned(FOnStarting) then
+    FOnStarting(Installation);
+end;
+
+procedure TJclInstall.InstallationFinished(Installation: TJclBorRADToolInstallation);
+begin
+  if FVersionLogSize > FIniFile.ReadInteger(RsLogSize, Installation.Name, 0) then
+    FIniFile.WriteInteger(RsLogSize, Installation.Name, FVersionLogSize);
+  if Assigned(FOnEnding) then
+    FOnEnding(Installation);
+end;
+
+procedure TJclInstall.ShowProgress;
+var
+  Percent: Integer;
+begin
+  if (FTotalLogSize > 0) and Assigned(FOnProgress) then
+  begin
+    Percent := (FLogSize * 100) div FTotalLogSize;
+    if Percent <> FProgressPercent then
+    begin
+      FProgressPercent := Percent;
+      FOnProgress(Percent);
+    end;
+  end;
 end;
 
 function TJclInstall.Supports(Installation: TJclBorRADToolInstallation): Boolean;
@@ -742,6 +851,17 @@ begin
   else
     Result := Installation.VersionNumber in [5..7];
   {$ENDIF}
+end;
+
+procedure TJclInstall.WriteInstallLog(const Msg: string);
+var
+  N: Integer;
+begin
+  N := Length(Msg);
+  Inc(FVersionLogSize, N);
+  Inc(FLogSize, N);
+  ShowProgress;
+  Tool.WriteInstallLog(Msg);
 end;
 
 end.

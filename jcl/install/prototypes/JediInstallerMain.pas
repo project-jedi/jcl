@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VisualCLX}
   Types, 
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QImgList,
+  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QButtons, QComCtrls, QImgList,
   QProductFrames, QJediInstallIntf,
   {$ELSE}
-  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls, ImgList,
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
   ProductFrames, JediInstallIntf,
   {$ENDIF}
   JclBorlandTools;
@@ -51,8 +51,8 @@ const
 
 type
   TMainForm = class(TForm, IJediInstallTool)
-    InstallBtn: TButton;
-    CloseBtn: TButton;
+    InstallBtn: TBitBtn;
+    QuitBtn: TBitBtn;
     JediImage: TImage;
     TitlePanel: TPanel;
     Title: TLabel;
@@ -60,10 +60,11 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
+    ProgressBar: TProgressBar;
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure CloseBtnClick(Sender: TObject);
+    procedure QuitBtnClick(Sender: TObject);
     procedure InstallBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JediImageClick(Sender: TObject);
@@ -84,6 +85,9 @@ type
     function CheckUpdatePack(Installation: TJclBorRADToolInstallation): Boolean;
     function CreateView(Installation: TJclBorRADToolInstallation): Boolean;
     function InfoFile(Node: TTreeNode): string;
+    procedure InstallationStarted(Installation: TJclBorRADToolInstallation);
+    procedure InstallationFinished(Installation: TJclBorRADToolInstallation);
+    procedure InstallationProgress(Percent: Cardinal);
     procedure ReadSystemPaths;
     function View(Installation: TJclBorRADToolInstallation): TProductFrame; overload;
     function View(RADToolKind: TJclBorRADToolKind; Version: Integer): TProductFrame; overload;
@@ -247,6 +251,8 @@ var
   Res: Boolean;
   LogFileName: string;
 begin
+  ProgressBar.Position := 0;
+  ProgressBar.Visible := True;
   Screen.Cursor := crHourGlass;
   try
     LogFileName := ChangeFileExt(Application.ExeName, '.log');
@@ -267,8 +273,14 @@ begin
       ShellExecEx(LogFileName);
       {$ENDIF MSWINDOWS}
   finally
+    ProgressBar.Visible := False;
     Screen.Cursor := crDefault;
   end;
+end;
+
+procedure TMainForm.InstallationProgress(Percent: Cardinal);
+begin
+  ProgressBar.Position := Percent;
 end;
 
 function TMainForm.View(RADToolKind: TJclBorRADToolKind; Version: Integer): TProductFrame;
@@ -410,6 +422,9 @@ begin
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJediInstall := CreateJediInstall;
+  FJediInstall.SetOnProgress(InstallationProgress);
+  FJediInstall.SetOnStarting(InstallationStarted);
+  FJediInstall.SetOnEnding(InstallationFinished);
   FBorRADToolInstallations.Iterate(CreateView);
   FJediInstall.SetTool(Self);
   UpdateStatus('');
@@ -458,7 +473,7 @@ begin
   Message.Result := 0;
 end;
 {$ENDIF VCL}
-procedure TMainForm.CloseBtnClick(Sender: TObject);
+procedure TMainForm.QuitBtnClick(Sender: TObject);
 begin
   Close;
 end;
@@ -469,7 +484,7 @@ begin
     (MessageBox(RsConfirmInstall, mtConfirmation, [mbYes, mbNo]{$IFDEF VisualCLX}, mbNo{$ENDIF}) = mrYes) then
   begin
     Install;
-    CloseBtn.SetFocus;
+    QuitBtn.SetFocus;
   end;
 end;
 
@@ -499,6 +514,14 @@ end;
 function TMainForm.GetBorRADToolInstallations: TJclBorRADToolInstallations;
 begin
   Result := FBorRADToolInstallations;
+end;
+
+procedure TMainForm.InstallationStarted(Installation: TJclBorRADToolInstallation);
+begin
+end;
+
+procedure TMainForm.InstallationFinished(Installation: TJclBorRADToolInstallation);
+begin
 end;
 
 function TMainForm.MessageBox(const Text: string; DlgType: TMsgDlgType = mtInformation;

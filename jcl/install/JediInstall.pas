@@ -50,6 +50,9 @@ const
   IcoUnchecked             = 3;
 
 type
+  TInstallationEvent = procedure (Installation: TJclBorRADToolInstallation) of object;
+  TInstallationProgressEvent = procedure (Percent: Cardinal) of object;
+
   IJediInstallTool = interface
     ['{CB8A2F3A-9E7C-4646-9E1F-60102A8F957D}']
     function BPLPath(Installation: TJclBorRADToolInstallation): string;
@@ -75,7 +78,10 @@ type
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);
+    procedure SetOnProgress(Value: TInstallationProgressEvent);
     function Supports(Installation: TJclBorRADToolInstallation): Boolean;
+    procedure SetOnStarting(Value: TInstallationEvent);
+    procedure SetOnEnding(Value: TInstallationEvent); // OnEnding called on success only
   end;
 
 implementation
