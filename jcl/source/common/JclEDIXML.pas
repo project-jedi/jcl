@@ -145,7 +145,7 @@ type
 
   TEDIXMLAttributes = class(TEDIXMLObject)
   private
-    FAttributes: TStrings;
+    FAttributes: TStringList;
     FDelimiters: TEDIXMLDelimiters;
   public
     constructor Create;

@@ -188,10 +188,15 @@ var
 begin
   with IniFile do
   begin
-    Strings.Clear;
-    Count := ReadInteger(Section, ItemCountName, 0);
-    for I := 0 to Count - 1 do
-      Strings.Add(ReadString(Section, IntToStr(I), ''));
+    Strings.BeginUpdate;
+    try
+      Strings.Clear;
+      Count := ReadInteger(Section, ItemCountName, 0);
+      for I := 0 to Count - 1 do
+        Strings.Add(ReadString(Section, IntToStr(I), ''));
+    finally
+      Strings.EndUpdate;
+    end;
   end;
 end;
 
@@ -300,6 +305,9 @@ end;
 //  - add TJclISOMemIniFile, TJclISOIniFile
 
 // $Log$
+// Revision 1.7  2004/07/30 07:20:25  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate
+//
 // Revision 1.6  2004/06/02 03:23:46  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

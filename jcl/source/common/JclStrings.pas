@@ -3244,9 +3244,14 @@ begin
     Count := PCharVectorCount(Source);
     SetLength(List, Count);
     Move(Source^, List[0], Count * SizeOf(PChar));
-    Dest.Clear;
-    for I := 0 to Count - 1 do
-      Dest.Add(List[I]);
+    Dest.BeginUpdate;
+    try
+      Dest.Clear;
+      for I := 0 to Count - 1 do
+        Dest.Add(List[I]);
+    finally
+      Dest.EndUpdate;
+    end;
   end;
 end;
 
@@ -3442,16 +3447,21 @@ var
   P: PChar;
 begin
   Assert(Dest <> nil);
-  Dest.Clear;
-  if Source <> nil then
-  begin
-    P := Source;
-    while P^ <> #0 do
+  Dest.BeginUpdate;
+  try
+    Dest.Clear;
+    if Source <> nil then
     begin
-      Dest.Add(P);
-      P := StrEnd(P);
-      Inc(P);
+      P := Source;
+      while P^ <> #0 do
+      begin
+        Dest.Add(P);
+        P := StrEnd(P);
+        Inc(P);
+      end;
     end;
+  finally
+    Dest.EndUpdate;
   end;
 end;
 
@@ -3777,19 +3787,24 @@ var
   Left: AnsiString;
 begin
   Assert(List <> nil);
-  List.Clear;
-  L := Length(Sep);
-  I := Pos(Sep, S);
-  while (I > 0) do
-  begin
-    Left := StrLeft(S, I - 1);
-    if (Left <> '') or AllowEmptyString then
-      List.Add(Left);
-    System.Delete(S, 1, I + L - 1);
+  List.BeginUpdate;
+  try
+    List.Clear;
+    L := Length(Sep);
     I := Pos(Sep, S);
+    while I > 0 do
+    begin
+      Left := StrLeft(S, I - 1);
+      if (Left <> '') or AllowEmptyString then
+        List.Add(Left);
+      System.Delete(S, 1, I + L - 1);
+      I := Pos(Sep, S);
+    end;
+    if S <> '' then
+      List.Add(S);  // Ignore empty strings at the end.
+  finally
+    List.EndUpdate;
   end;
-  if S <> '' then
-    List.Add(S);  // Ignore empty strings at the end.
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3803,20 +3818,25 @@ begin
   Assert(List <> nil);
   LowerCaseStr := StrLower(S);
   Sep := StrLower(Sep);
-  List.Clear;
   L := Length(Sep);
   I := Pos(Sep, LowerCaseStr);
-  while (I > 0) do
-  begin
-    Left := StrLeft(S, I - 1);
-    if (Left <> '') or AllowEmptyString then
-      List.Add(Left);
-    System.Delete(S, 1, I + L - 1);
-    System.Delete(LowerCaseStr, 1, I + L - 1);
-    I := Pos(Sep, LowerCaseStr);
+  List.BeginUpdate;
+  try
+    List.Clear;
+    while I > 0 do
+    begin
+      Left := StrLeft(S, I - 1);
+      if (Left <> '') or AllowEmptyString then
+        List.Add(Left);
+      System.Delete(S, 1, I + L - 1);
+      System.Delete(LowerCaseStr, 1, I + L - 1);
+      I := Pos(Sep, LowerCaseStr);
+    end;
+    if S <> '' then
+      List.Add(S);  // Ignore empty strings at the end.
+  finally
+    List.EndUpdate;
   end;
-  if S <> '' then
-    List.Add(S);  // Ignore empty strings at the end.
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3850,11 +3870,16 @@ var
   I: Integer;
 begin
   Assert(List <> nil);
-  for I := List.Count - 1 downto 0 do
-  begin
-    List[I] := Trim(List[I]);
-    if (List[I] = '') and DeleteIfEmpty then
-      List.Delete(I);
+  List.BeginUpdate;
+  try
+    for I := List.Count - 1 downto 0 do
+    begin
+      List[I] := Trim(List[I]);
+      if (List[I] = '') and DeleteIfEmpty then
+        List.Delete(I);
+    end;
+  finally
+    List.EndUpdate;
   end;
 end;
 
@@ -3865,11 +3890,16 @@ var
   I: Integer;
 begin
   Assert(List <> nil);
-  for I := List.Count - 1 downto 0 do
-  begin
-    List[I] := TrimRight(List[I]);
-    if (List[I] = '') and DeleteIfEmpty then
-      List.Delete(I);
+  List.BeginUpdate;
+  try
+    for I := List.Count - 1 downto 0 do
+    begin
+      List[I] := TrimRight(List[I]);
+      if (List[I] = '') and DeleteIfEmpty then
+        List.Delete(I);
+    end;
+  finally
+    List.EndUpdate;
   end;
 end;
 
@@ -3880,11 +3910,16 @@ var
   I: Integer;
 begin
   Assert(List <> nil);
-  for I := List.Count - 1 downto 0 do
-  begin
-    List[I] := TrimLeft(List[I]);
-    if (List[I] = '') and DeleteIfEmpty then
-      List.Delete(I);
+  List.BeginUpdate;
+  try
+    for I := List.Count - 1 downto 0 do
+    begin
+      List[I] := TrimLeft(List[I]);
+      if (List[I] = '') and DeleteIfEmpty then
+        List.Delete(I);
+    end;
+  finally
+    List.EndUpdate;
   end;
 end;
 
@@ -3894,7 +3929,8 @@ function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Bo
 begin
   Assert(Strings <> nil);
   Result := Unique and (Strings.IndexOf(S) <> -1);
-  if not Result then Result := Strings.Add(S) > -1;
+  if not Result then
+    Result := Strings.Add(S) > -1;
 end;
 
 //==================================================================================================
@@ -3971,17 +4007,21 @@ var
   Done: Boolean;
 begin
   Assert(List <> nil);
-  
   if List = nil then
     Exit;
 
-  List.Clear;
-  Start := Pointer(S);
-  repeat
-    Done := StrWord(Start, Token);
-    if Token <> '' then
-      List.Add(Token);
-  until Done;
+  List.BeginUpdate;
+  try
+    List.Clear;
+    Start := Pointer(S);
+    repeat
+      Done := StrWord(Start, Token);
+      if Token <> '' then
+        List.Add(Token);
+    until Done;
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3995,11 +4035,16 @@ begin
   if List = nil then
     Exit;
 
-  List.Clear;
-  while S <> '' do
-  begin
-    Token := StrToken(S, Separator);
-    List.Add(Token);
+  List.BeginUpdate;
+  try
+    List.Clear;
+    while S <> '' do
+    begin
+      Token := StrToken(S, Separator);
+      List.Add(Token);
+    end;
+  finally
+    List.EndUpdate;
   end;
 end;
 
@@ -4176,6 +4221,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.23  2004/07/30 07:20:25  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate
+//
 // Revision 1.22  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //
