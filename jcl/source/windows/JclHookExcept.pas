@@ -20,7 +20,7 @@
 { Exception hooking routines                                                                       }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 15, 2001                                                                     }
+{ Last modified: March 02, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -59,6 +59,12 @@ function JclHookExceptions: Boolean;
 function JclUnhookExceptions: Boolean;
 function JclExceptionsHooked: Boolean;
 
+//--------------------------------------------------------------------------------------------------
+// Hooking routines location info helper
+//--------------------------------------------------------------------------------------------------
+
+function JclBelongsHookedCode(Addr: Pointer): Boolean;
+
 implementation
 
 uses
@@ -90,6 +96,8 @@ var
     nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
   SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
   Notifiers: TThreadList;
+
+{$STACKFRAMES OFF}
 
 threadvar
   Recursive: Boolean;
@@ -171,10 +179,6 @@ begin
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
 
-{$IFNDEF STACKFRAMES_ON}
-{$STACKFRAMES OFF}
-{$ENDIF STACKFRAMES_ON}
-
 //--------------------------------------------------------------------------------------------------
 
 function HookedExceptObjProc(P: PExceptionRecord): Exception;
@@ -186,6 +190,20 @@ begin
   NewResultExcCache := NewResultExc;
   if NewResultExcCache <> nil then
     Result := NewResultExcCache;
+end;
+
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
+
+//--------------------------------------------------------------------------------------------------
+
+// Do not change ordering of HookedRaiseException, HookedExceptObjProc and JclBelongsHookedCode routines
+function JclBelongsHookedCode(Addr: Pointer): Boolean;
+begin
+  Result := (Cardinal(@HookedRaiseException) < Cardinal(@JclBelongsHookedCode)) and
+    (Cardinal(@HookedRaiseException) <= Cardinal(Addr)) and
+    (Cardinal(@JclBelongsHookedCode) > Cardinal(Addr));
 end;
 
 //--------------------------------------------------------------------------------------------------
