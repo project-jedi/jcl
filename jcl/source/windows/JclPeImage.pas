@@ -3330,7 +3330,7 @@ begin
   Header := FLoadedImage.Sections;
   for I := 0 to FLoadedImage.NumberOfSections - 1 do
   begin
-    FImageSections.AddObject(Copy(PChar(@Header.Name), 1, 8), Pointer(Header));
+    FImageSections.AddObject(Copy(PChar(@Header.Name), 1, IMAGE_SIZEOF_SHORT_NAME), Pointer(Header));
     Inc(Header);
   end;
 end;
@@ -4394,7 +4394,7 @@ begin
     Header := PeMapImgSections(NtHeaders);
     with NtHeaders^ do
       for I := 1 to FileHeader.NumberOfSections do
-        if StrIComp(PChar(@Header^.Name), P) = 0 then
+        if StrLComp(PChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
         begin
           Result := Header;
           Break;
