@@ -188,6 +188,7 @@ function Signe(const X, Y: Float): Float;
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean;
 function IsPrime(N: Integer): Boolean;
+function IsPrimeRM(N: Cardinal): Boolean;
 function IsPrimeFactor(const F, N: Integer): Boolean;
 function PrimeFactors(N: Integer): TDynIntegerArray;
 
@@ -434,8 +435,6 @@ function CheckCrc16_P(X: PByteArray; N: Integer; Crc: Word): Integer;
 function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer;
 function CheckCrc16_A(var X: array of Byte; Crc: Word): Integer;
 
-
-
 function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
@@ -444,10 +443,10 @@ function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
-  {$IFDEF CRCINIT}
-  procedure InitCrc32 (Polynom, Start: Cardinal);
-  procedure InitCrc16 (Polynom, Start: Word);
-  {$ENDIF}
+{$IFDEF CRCINIT}
+procedure InitCrc32 (Polynom, Start: Cardinal);
+procedure InitCrc16 (Polynom, Start: Word);
+{$ENDIF}
 
 
 implementation
@@ -1956,7 +1955,7 @@ begin
   begin
     for F := 0 to FSetListEntries - 1 do
       if FSetList^[F] <> nil then
-        Release(PDelphiSet(FSetList^[F]));
+        Dispose(PDelphiSet(FSetList^[F]));
     FreeMem(FSetList, FSetListEntries * SizeOf(Pointer));
     FSetList := nil;
     FSetListEntries := 0;
@@ -2178,7 +2177,7 @@ begin
     end;
     I := 3;                  // test all odd factors
     repeat
-      if isprime (I) and (N mod I = 0) then
+      if IsPrime(I) and (N mod I = 0) then
       begin // I is a prime factor
         Inc(L);
         SetLength(Result, L);
@@ -2197,6 +2196,95 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+{ Rabin-Miller Strong Primality Test }
+
+function IsPrimeRM(N: Cardinal): Boolean;
+asm
+       TEST  EAX,1            // Odd(N) ??
+       JNZ   @@1
+       CMP   EAX,2            // N == 2 ??
+       SETE  AL
+       RET
+@@1:   CMP   EAX,73
+       JBE   @@C
+       PUSH  ESI
+       PUSH  EDI
+       PUSH  EBX
+       PUSH  EBP
+       PUSH  EAX              // save N as Param for @@5
+       LEA   EBP,[EAX - 1]    // M == N -1, Exponent
+       MOV   ECX,32           // calc remaining Bits of M and shift M'
+       MOV   ESI,EBP
+@@2:   DEC   ECX
+       SHL   ESI,1
+       JNC   @@2
+       PUSH  ECX              // save Bits as Param for @@5
+       PUSH  ESI              // save M' as Param for @@5
+       CMP   EAX,08A8D7Fh     // N >= 9080191 ??
+       JAE   @@3
+// now if (N < 9080191) and SPP(31, N) and SPP(73, N) then N is prime
+       MOV   EAX,31
+       CALL  @@5
+       JC    @@4
+       MOV   EAX,73
+       PUSH  OFFSET @@4
+       JMP   @@5
+// now if (N < 4759123141) and SPP(2, N) and SPP(7, N) and SPP(61, N) then N is prime
+@@3:   MOV   EAX,2
+       CALL  @@5
+       JC    @@4
+       MOV   EAX,7
+       CALL  @@5
+       JC    @@4
+       MOV   EAX,61
+       CALL  @@5
+@@4:   SETNC AL
+       ADD   ESP,4 * 3
+       POP   EBP
+       POP   EBX
+       POP   EDI
+       POP   ESI
+       RET
+// do a Strong Pseudo Prime Test
+@@5:   MOV   EBX,[ESP + 12]   // N on stack
+       MOV   ECX,[ESP +  8]   // remaining Bits
+       MOV   ESI,[ESP +  4]   // M'
+       MOV   EDI,EAX          // T = b, temp. Base
+@@6:   DEC   ECX
+       MUL   EAX
+       DIV   EBX
+       MOV   EAX,EDX
+       SHL   ESI,1
+       JNC   @@7
+       MUL   EDI
+       DIV   EBX
+       AND   ESI,ESI
+       MOV   EAX,EDX
+@@7:   JNZ   @@6
+       CMP   EAX,1            // b^((N -1)(2^s)) mod N ==  1 mod N ??
+       JE    @@A
+@@8:   CMP   EAX,EBP          // b^((N -1)(2^s)) mod N == -1 mod N ??
+       JE    @@A
+       DEC   ECX              // second part to 2^s
+       JNG   @@9
+       MUL   EAX
+       DIV   EBX
+       CMP   EDX,1
+       MOV   EAX,EDX
+       JNE   @@8
+@@9:   STC
+@@A:   RET
+@@B:   DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
+@@C:   MOV   EDX,OFFSET @@B
+       MOV   ECX,19
+@@D:   CMP   AL,[EDX + ECX]
+       JE    @@E
+       DEC   ECX
+       JNL   @@D
+@@E:   SETE  AL
+end;
 
 //------------------------------------------------------------------------------
 
@@ -3297,31 +3385,39 @@ begin
   Result := CheckCrc16_P(@X, Length(X), Crc);
 end;
 
-
+//------------------------------------------------------------------------------
 
 {$IFDEF CRCINIT}
-
 // The CRC Table can be generated like this:
 // const crc16start0 = 0;  !!
 
-function crc16_bitwise (x: PByteArray; n: integer; crc: Word; Polynom: Word) : Word;
-var i, j           : integer;
-    sr, srhighbit  : Word;
-    b              : byte;
-const crc16start0 = 0;   //Generating the table
+function crc16_bitwise(x: PByteArray; n: integer; crc: Word; Polynom: Word) : Word;
+var
+  i, j: integer;
+  sr, srhighbit: Word;
+  b: Byte;
+
+const
+  crc16start0 = 0;   //Generating the table
 
 begin
    sr := crc16start0;
    srhighbit := 0;
-   for i := 0 to n-1+crc16bytes do begin
-      if i>=n then begin
+   for i := 0 to n-1+crc16bytes do
+   begin
+      if i>=n then
+      begin
          b := crc shr (crc16bits-8);
          crc := crc shl 8;
-        end else begin
+        end
+        else
+        begin
          b := x[i]
       end;
-      for j := 1 to 8 do begin
-         if (srhighbit <> 0)  then begin
+      for j := 1 to 8 do
+      begin
+         if (srhighbit <> 0) then
+         begin
            sr := sr xor polynom;
          end;
          srhighbit := sr and crc16highbit ;
@@ -3329,19 +3425,24 @@ begin
          b := byte (b shl 1);
       end
    end;
-   if (srhighbit <> 0) then begin
+   if (srhighbit <> 0) then
+   begin
       sr := sr xor polynom;
    end;
    crc16_bitwise := sr;
 end;
 
+//------------------------------------------------------------------------------
+
 procedure InitCrc16 (Polynom, Start: Word);
-var x: array [0..0] of byte;
-    i: integer;
+var
+  x: array [0..0] of byte;
+  i: integer;
 begin
-   for i := 0 to 255 do begin
+   for i := 0 to 255 do
+   begin
      x[0] := i;
-      crc16table [i] := crc16_bitwise (@x, 1, 0, Polynom); { nur mit crcstart=0 !!!!}
+     crc16table [i] := crc16_bitwise (@x, 1, 0, Polynom); { nur mit crcstart=0 !!!!}
    end;
    Crc16Start := Start;
 end;
@@ -3504,50 +3605,65 @@ begin
   Result := CheckCrc32_P(@X, Length(X), Crc);
 end;
 
-{$IFDEF CRCINIT}
+//------------------------------------------------------------------------------
 
+{$IFDEF CRCINIT}
 // The CRC Table can be generated like this:
 // const crc32start0 = 0;  !!
 
 function crc32_bitwise (x: PByteArray; n: integer; crc: Cardinal; Polynom: Cardinal) : Cardinal;
-var i, j           : integer;
-    sr, srhighbit  : Cardinal;
-    b              : byte;
-const crc32start0 = 0;   //Generating the table
+var
+ i, j: Integer;
+ sr, srhighbit: Cardinal;
+ b: Byte;
+
+const
+  crc32start0 = 0;   //Generating the table
 
 begin
-   sr := crc32start0;
-   srhighbit := 0;
-   for i := 0 to n-1+crc32bytes do begin
-      if i>=n then begin
-         b := crc shr (crc32bits-8);
-         crc := crc shl 8;
-        end else begin
-         b := x[i]
-      end;
-      for j := 1 to 8 do begin
-         if (srhighbit <> 0)  then begin
-           sr := sr xor polynom;
-         end;
-         srhighbit := sr and crc32highbit ;
-         sr := (sr shl 1) or ((b shr 7) and 1);
-         b := byte (b shl 1);
-      end
-   end;
-   if (srhighbit <> 0) then begin
-      sr := sr xor polynom;
-   end;
-   crc32_bitwise := sr;
+  sr := crc32start0;
+  srhighbit := 0;
+  for i := 0 to n-1+crc32bytes do begin
+    if i > =n then
+    begin
+      b := crc shr (crc32bits-8);
+      crc := crc shl 8;
+    end
+    else
+    begin
+       b := x[i]
+    end;
+    for j := 1 to 8 do
+    begin
+       if (srhighbit <> 0) then
+       begin
+         sr := sr xor polynom;
+       end;
+       srhighbit := sr and crc32highbit ;
+       sr := (sr shl 1) or ((b shr 7) and 1);
+       b := byte (b shl 1);
+    end
+  end;
+
+  if (srhighbit <> 0) then
+  begin
+    sr := sr xor polynom;
+  end;
+  crc32_bitwise := sr;
 end;
 
+//------------------------------------------------------------------------------
 
 procedure InitCrc32 (Polynom, Start: Cardinal);
-var x: array [0..0] of byte;
-    i: integer;
+var
+  x: array [0..0] of byte;
+  i: integer;
+
 begin
-   for i := 0 to 255 do begin
+   for i := 0 to 255 do
+   begin
      x[0] := i;
-      crc32table [i] := crc32_bitwise (@x, 1, 0, Polynom); { nur mit crcstart=0 !!!!}
+     crc32table [i] := crc32_bitwise (@x, 1, 0, Polynom);
    end;
    Crc32Start := Start;
 end;
