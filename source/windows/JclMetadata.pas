@@ -515,8 +515,8 @@ type
                                  fvAssembly, fvFamily, fvFamORAssem, fvPublic);
 
   TJclClrTableFieldDefFlag = (ffStatic, ffInitOnly, ffLiteral, ffNotSerialized,
-                           ffSpecialName, ffPinvokeImpl, ffRTSpecialName,
-                           ffHasFieldMarshal, ffHasDefault, ffHasFieldRVA);
+                              ffSpecialName, ffPinvokeImpl, ffRTSpecialName,
+                              ffHasFieldMarshal, ffHasDefault, ffHasFieldRVA);
   TJclClrTableFieldDefFlags = set of TJclClrTableFieldDefFlag;
 
   TJclClrTableFieldDefRow = class(TJclClrTableRow)
@@ -1007,6 +1007,15 @@ type
     property Blob: TJclClrBlobRecord read FBlob;
   end;
 
+  TJclClrArrayData = (adSize, adLowBound);
+
+  TJclClrArraySign = class(TJclClrSignature)
+  private
+    FBounds: array of array[TJclClrArrayData] of Integer;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+  end;
+
   TJclClrLocalVarFlag = (lvfPinned, lvfByRef);
   TJclClrLocalVarFlags = set of TJclClrLocalVarFlag;
 
@@ -1058,6 +1067,7 @@ type
     function GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
     function GetExceptionHandlerCount: Integer;
     function GetLocalVarSign: TJclClrLocalVarSign;
+    function GetLocalVarSignData: TJclClrBlobRecord;
   public
     constructor Create(const AMethod: TJclClrTableMethodDefRow);
     destructor Destroy; override;
@@ -1069,10 +1079,88 @@ type
 
     property MaxStack: DWORD read FMaxStack;
     property LocalVarSignToken: TJclClrToken read FLocalVarSignToken;
+    property LocalVarSignData: TJclClrBlobRecord read GetLocalVarSignData;
     property LocalVarSign: TJclClrLocalVarSign read GetLocalVarSign;
     property ExceptionHandlers[const Idx: Integer]: TJclClrExceptionHandler read GetExceptionHandler;
     property ExceptionHandlerCount: Integer read GetExceptionHandlerCount;
   end;
+
+  TJclClrCustomModifierSign = class(TJclClrSignature)
+  private
+    FRequired: Boolean;
+    FToken: TJclClrToken;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+
+    property Required: Boolean read FRequired;
+    property Token: TJclClrToken read FToken;
+  end;
+
+  TJclClrMethodSign = class;
+
+  TJclClrMethodParam = class(TJclClrSignature)
+  private
+    FCustomMods: TObjectList;
+    FByRef: Boolean;
+    FElementType: TJclClrElementType;
+    FToken: TJclClrToken;
+    FMethodSign: TJclClrMethodSign;
+    FArraySign: TJclClrArraySign;
+    function GetCustomModifier(const Idx: Integer): TJclClrCustomModifierSign;
+    function GetCustomModifierCount: Integer;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+    destructor Destroy; override;
+
+    property CustomModifiers[const Idx: Integer]: TJclClrCustomModifierSign read GetCustomModifier;
+    property CustomModifierCount: Integer read GetCustomModifierCount;
+
+    property ElementType: TJclClrElementType read FElementType;
+    property ByRef: Boolean read FByRef;
+    property Token: TJclClrToken read FToken;
+    property MethodSign: TJclClrMethodSign read FMethodSign;
+    property ArraySign: TJclClrArraySign read FArraySign;
+  end;
+
+  TJclClrMethodRetType = class(TJclClrMethodParam)
+  end;
+
+  TJclClrMethodSignFlag = (mfHasThis, mfExplicitThis, mfDefault, mfVarArg);
+  TJclClrMethodSignFlags = set of TJclClrMethodSignFlag;
+
+  TJclClrMethodSign = class(TJclClrSignature)
+  private
+    FFlags: TJclClrMethodSignFlags;
+    FParams: TObjectList;
+    FRetType: TJclClrMethodRetType;
+    function GetParam(const Idx: Integer): TJclClrMethodParam;
+    function GetParamCount: Integer;
+  public
+    constructor Create(const ABlob: TJclClrBlobRecord);
+    destructor Destroy; override;
+
+    property Flags: TJclClrMethodSignFlags read FFlags;
+
+    property Params[const Idx: Integer]: TJclClrMethodParam read GetParam;
+    property ParamCount: Integer read GetParamCount;
+
+    property RetType: TJclClrMethodRetType read FRetType;
+  end;
+
+  TJclClrMemberAccess = (maCompilercontrolled, maPrivate, maFamilyAndAssembly,
+                         maAssembly, maFamily, maFamilyOrAssembly, maPublic);
+
+  TJclClrMethodFlag = (mfStatic, mfFinal, mfVirtual, mfHideBySig,
+                       mfCheckAccessOnOverride, mfAbstract, mfSpecialName,
+                       mfPInvokeImpl, mfUnmanagedExport,
+                       mfRTSpcialName, mfHasSecurity, mfRequireSecObject);
+  TJclClrMethodFlags = set of TJclClrMethodFlag;
+
+  TJclClrMethodCodeType = (ctIL, ctNative, ctOptIL, ctRuntime);
+
+  TJclClrMethodImplFlag = (mifForwardRef, mifPreserveSig, mifInternalCall,
+                           mifSynchronized, mifNoInlining);
+  TJclClrMethodImplFlags = set of TJclClrMethodImplFlag;
 
   TJclClrTableMethodDefRow = class(TJclClrTableRow)
   private
@@ -1085,13 +1173,21 @@ type
     FParentToken: TJclClrTableTypeDefRow;
     FParams: TList;
     FMethodBody: TJclClrMethodBody;
+    FSignature: TJclClrMethodSign;
     function GetName: WideString;
-    function GetSignature: TJclClrBlobRecord;
+    function GetSignatureData: TJclClrBlobRecord;
     function GetParam(const Idx: Integer): TJclClrTableParamDefRow;
     function GetParamCount: Integer;
     function GetHasParam: Boolean;
     procedure UpdateParams;
     function GetFullName: WideString;
+    function GetSignature: TJclClrMethodSign;
+    function GetMemberAccess: TJclClrMemberAccess;
+    function GetMethodFlags: TJclClrMethodFlags;
+    function GetNewSlot: Boolean;
+    function GetCodeType: TJclClrMethodCodeType;
+    function GetManaged: Boolean;
+    function GetMethodImplFlags: TJclClrMethodImplFlags;
   protected
     constructor Create(const ATable: TJclClrTable); override;
 
@@ -1099,7 +1195,7 @@ type
 
     procedure SetParentToken(const ARow: TJclClrTableTypeDefRow);
   public
-    function DumpIL: String; override;
+    function DumpIL: string; override;
 
     destructor Destroy; override;
 
@@ -1112,7 +1208,17 @@ type
 
     property Name: WideString read GetName;
     property FullName: WideString read GetFullName;
-    property Signature: TJclClrBlobRecord read GetSignature;
+
+    property MethodFlags: TJclClrMethodFlags read GetMethodFlags;
+    property MethodImplFlags: TJclClrMethodImplFlags read GetMethodImplFlags;
+
+    property MemberAccess: TJclClrMemberAccess read GetMemberAccess;
+    property NewSlot: Boolean read GetNewSlot;
+    property CodeType: TJclClrMethodCodeType read GetCodeType;
+    property Managed: Boolean read GetManaged;
+
+    property Signature: TJclClrMethodSign read GetSignature;
+    property SignatureData: TJclClrBlobRecord read GetSignatureData;
     property ParentToken: TJclClrTableTypeDefRow read FParentToken;
     property HasParam: Boolean read GetHasParam;
     property Params[const Idx: Integer]: TJclClrTableParamDefRow read GetParam;
@@ -1410,7 +1516,7 @@ type
     property Name: WideString read GetName;
     property Namespace: WideString read GetNamespace;
     property FullName: WideString read GetFullName;
-    property Extends: TJclClrTableRow read GetExtends; 
+    property Extends: TJclClrTableRow read GetExtends;
 
     property Attributes: TJclClrTypeAttributes read GetAttributes;
 
@@ -1530,7 +1636,7 @@ type
 implementation
 
 uses
-  JclStrings, JclCIL;
+  Math, JclStrings, JclCIL;
 
 { TODO : Move resourcestring to JclResources }
 resourcestring
@@ -1571,6 +1677,76 @@ const
   mrPrivate               =   $0002;     // The Resource is private to the Assembly.
 
   ManifestResourceVisibilityMapping: array[TJclClrTableManifestResourceVisibility] of DWORD = (mrPublic, mrPrivate);
+
+//==================================================================================================
+// MethodDef attr bits, Used by DefineMethod.
+//==================================================================================================
+
+  // member access mask - Use this mask to retrieve accessibility information.
+  mdMemberAccessMask          =   $0007;
+  mdPrivateScope              =   $0000;     // Member not referenceable.
+  mdPrivate                   =   $0001;     // Accessible only by the parent type.
+  mdFamANDAssem               =   $0002;     // Accessible by sub-types only in this Assembly.
+  mdAssem                     =   $0003;     // Accessibly by anyone in the Assembly.
+  mdFamily                    =   $0004;     // Accessible only by type and sub-types.
+  mdFamORAssem                =   $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
+  mdPublic                    =   $0006;     // Accessibly by anyone who has visibility to this scope.
+  // end member access mask
+
+  // method contract attributes.
+  mdStatic                    =   $0010;     // Defined on type, else per instance.
+  mdFinal                     =   $0020;     // Method may not be overridden.
+  mdVirtual                   =   $0040;     // Method virtual.
+  mdHideBySig                 =   $0080;     // Method hides by name+sig, else just by name.
+
+  // vtable layout mask - Use this mask to retrieve vtable attributes.
+  mdVtableLayoutMask          =   $0100;
+  mdReuseSlot                 =   $0000;     // The default.
+  mdNewSlot                   =   $0100;     // Method always gets a new slot in the vtable.
+  // end vtable layout mask
+
+  // method implementation attributes.
+  mdCheckAccessOnOverride     =   $0200;     // Overridability is the same as the visibility.
+  mdAbstract                  =   $0400;     // Method does not provide an implementation.
+  mdSpecialName               =   $0800;     // Method is special.  Name describes how.
+
+  // interop attributes
+  mdPinvokeImpl               =   $2000;     // Implementation is forwarded through pinvoke.
+  mdUnmanagedExport           =   $0008;     // Managed method exported via thunk to unmanaged code.
+
+  // Reserved flags for runtime use only.
+  mdReservedMask              =   $d000;
+  mdRTSpecialName             =   $1000;     // Runtime should check name encoding.
+  mdHasSecurity               =   $4000;     // Method has security associate with it.
+  mdRequireSecObject          =   $8000;     // Method calls another method containing security code.
+
+//==================================================================================================
+// MethodImpl attr bits, used by DefineMethodImpl.
+//==================================================================================================
+
+  // code impl mask
+  miCodeTypeMask      =   $0003;   // Flags about code type.
+  miIL                =   $0000;   // Method impl is IL.
+  miNative            =   $0001;   // Method impl is native.
+  miOPTIL             =   $0002;   // Method impl is OPTIL
+  miRuntime           =   $0003;   // Method impl is provided by the runtime.
+  // end code impl mask
+
+  // managed mask
+  miManagedMask       =   $0004;   // Flags specifying whether the code is managed or unmanaged.
+  miUnmanaged         =   $0004;   // Method impl is unmanaged, otherwise managed.
+  miManaged           =   $0000;   // Method impl is managed.
+  // end managed mask
+
+  // implementation info and interop
+  miForwardRef        =   $0010;   // Indicates method is defined; used primarily in merge scenarios.
+  miPreserveSig       =   $0080;   // Indicates method sig is not to be mangled to do HRESULT conversion.
+
+  miInternalCall      =   $1000;   // Reserved for internal use.
+
+  miSynchronized      =   $0020;   // Method is single threaded through the body.
+  miNoInlining        =   $0008;   // Method may not be inlined.
+  miMaxMethodImplVal  =   $ffff;   // Range check value
 
 //==================================================================================================
 // Calling convention flags.
@@ -1759,6 +1935,14 @@ const
      ELEMENT_TYPE_MAX, ELEMENT_TYPE_MODIFIER, ELEMENT_TYPE_SENTINEL,
      ELEMENT_TYPE_PINNED);
 
+  ClrMethodFlagMapping: array[TJclClrMethodFlag] of Word =
+    (mdStatic, mdFinal, mdVirtual, mdHideBySig, mdCheckAccessOnOverride,
+     mdAbstract, mdSpecialName, mdPinvokeImpl, mdUnmanagedExport,
+     mdRTSpecialName, mdHasSecurity, mdRequireSecObject);
+
+  ClrMethodImplFlagMapping: array[TJclClrMethodImplFlag] of Word =
+    (miForwardRef, miPreserveSig, miInternalCall, miSynchronized, miNoInlining);
+
 ////////////////////////////////////////////////
 // Property attr bits, used by DefineProperty.
 //
@@ -1827,7 +2011,8 @@ begin
     Result := 4;
   end
   else
-    raise EJclError.Create('Invalid compressed signature data');
+    raise EJclError.CreateFmt('Invalid compressed signature data - %.2x %.2x %.2x %.2x',
+      [pData[0], pData[1], pData[2], pData[3]]);
 end;
 
 function TJclClrSignature.UncompressToken(const pData: PByteArray; var Token: TJclClrToken): Integer;
@@ -1852,9 +2037,9 @@ begin
   if (Data and 1) <> 0 then
   begin
     case Result of
-      1: Value := DWord(Value shr 1) or $ffffffc0;
-      2: Value := DWord(Value shr 1) or $ffffe000;
-    else Value := DWord(Value shr 1) or $f0000000;
+      1: Value := Integer(DWord(Data shr 1) or $ffffffc0);
+      2: Value := Integer(DWord(Data shr 1) or $ffffe000);
+    else Value := Integer(DWord(Data shr 1) or $f0000000);
     end;
   end;
 end;
@@ -1953,6 +2138,27 @@ function TJclClrSignature.ReadByte: Byte;
 begin
   Result := Blob.Data[0];
   FBlob.Seek(1, soFromCurrent);
+end;
+
+{ TJclClrArraySign }
+
+constructor TJclClrArraySign.Create(const ABlob: TJclClrBlobRecord);
+var
+  I: Integer;
+begin
+  inherited Create(ABlob);
+
+  SetLength(FBounds, ReadInteger);
+
+  for I:=0 to Length(FBounds)-1 do
+  begin
+    FBounds[I][adSize] := 0;
+    FBounds[I][adLowBound] := 0;
+  end;
+  for I:=0 to ReadInteger-1 do
+    FBounds[I][adSize] := ReadInteger;
+  for I:=0 to ReadInteger-1 do
+    FBounds[I][adLowBound] := ReadInteger;
 end;
 
 { TJclClrTableModuleRow }
@@ -3428,9 +3634,14 @@ end;
 function TJclClrMethodBody.GetLocalVarSign: TJclClrLocalVarSign;
 begin
   if not Assigned(FLocalVarSign) and (FLocalVarSignToken <> 0) then
-    FLocalVarSign := TJclClrLocalVarSign.Create(TJclClrTableStandAloneSigRow(FMethod.Table.Stream.Metadata.Tokens[FLocalVarSignToken]).Signature);
+    FLocalVarSign := TJclClrLocalVarSign.Create(LocalVarSignData);
 
   Result := FLocalVarSign;
+end;
+
+function TJclClrMethodBody.GetLocalVarSignData: TJclClrBlobRecord;
+begin
+  Result := TJclClrTableStandAloneSigRow(FMethod.Table.Stream.Metadata.Tokens[FLocalVarSignToken]).Signature;
 end;
 
 { TJclClrTableMethodDefRow }
@@ -3448,6 +3659,7 @@ begin
   
   FParentToken  := nil;
   FParams       := nil;
+  FSignature    := nil;
 
   if FRVA <> 0 then
     FMethodBody := TJclClrMethodBody.Create(Self)
@@ -3459,6 +3671,8 @@ destructor TJclClrTableMethodDefRow.Destroy;
 begin
   FreeAndNil(FParams);
 
+  if Assigned(FSignature) then FreeAndNil(FSignature);
+
   inherited;
 end;
 
@@ -3467,7 +3681,7 @@ begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-function TJclClrTableMethodDefRow.GetSignature: TJclClrBlobRecord;
+function TJclClrTableMethodDefRow.GetSignatureData: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
@@ -3522,7 +3736,7 @@ begin
   Result := FParams.Count;
 end;
 
-function TJclClrTableMethodDefRow.DumpIL: String;
+function TJclClrTableMethodDefRow.DumpIL: string;
   function LocalVarToString(LocalVar: TJclClrLocalVar): string;
   var
     Row: TJclClrTableRow;
@@ -3545,18 +3759,81 @@ function TJclClrTableMethodDefRow.DumpIL: String;
       Result := LocalVar.Name;
     end;
   end;
+  function GetMethodFlagDescription: string;
+  const
+    MethodFlagName: array[TJclClrMethodFlag] of string =
+    ('static', 'final', 'virtual', 'hidebysig', '', 'abstract',
+     'specialname', 'pinvokeimpl', 'unmanagedexp', 'rtspecialname', '', '');
+  var
+    AFlag: TJclClrMethodFlag;
+  begin
+    for AFlag:=Low(TJclClrMethodFlag) to High(TJclClrMethodFlag) do
+      if AFlag in MethodFlags then
+        Result := Result + MethodFlagName[AFlag] + ' ';
+  end;
+  function GetMethodImplFlagDescription: string;
+  const
+    MethodImplFlagName: array[TJclClrMethodImplFlag] of string =
+    ('forwardref', '', 'internalcall', 'synchronized', 'noinlining');
+  var
+    AFlag: TJclClrMethodImplFlag;
+  begin
+    for AFlag:=Low(TJclClrMethodImplFlag) to High(TJclClrMethodImplFlag) do
+      if AFlag in MethodImplFlags then
+        Result := Result + ' ' + MethodImplFlagName[AFlag];
+  end;
+  function GetParamTypeName(Param: TJclClrMethodParam): string;
+  const
+    BuildInTypeNames:array[etVoid..etString] of string =
+    ('void', 'bool', 'char', 'sbyte', 'byte', 'short', 'ushort',
+     'int', 'uint', 'long', 'ulong', 'float', 'double', 'string');
+  var
+    Row: TJclClrTableRow;
+  begin
+    case Param.ElementType of
+    etVoid, etBoolean, etChar,
+    etI1, etU1, etI2, etU2, etI4, etU4,
+    etI8, etU8, etR4, etR8, etString:
+              Result := BuildInTypeNames[Param.ElementType];
+    etI:      Result := 'System.IntPtr';
+    etU:      Result := 'System.UIntPtr';
+    etObject: Result := 'object';
+    etClass:
+    begin
+      Row := Table.Stream.Metadata.Tokens[Param.Token];
+      if Row is TJclClrTableTypeDefRow then
+        Result := TJclClrTableTypeDefRow(Row).FullName
+      else if Row is TJclClrTableTypeRefRow then
+        Result := TJclClrTableTypeRefRow(Row).FullName;
+
+      Result := Result + ' /* ' + IntToHex(Param.Token, 8) + ' */';
+    end;
+    etSzArray:Result := 'char *';
+    end;
+    if Param.ByRef then
+      Result := 'ref ' + Result;
+  end;
+const
+  MemberAccessNames: array[TJclClrMemberAccess] of string =
+  ('compilercontrolled', 'private', 'famandassem',
+   'assembly', 'family', 'famorassem', 'public');
+  CodeTypeNames: array[TJclClrMethodCodeType] of string =
+  ('cil', 'native', 'optil', 'runtime');
+  ManagedNames: array[Boolean] of string = ('unmanaged', 'managed');
 var
   I: Integer;
 begin
-  Result := Format('.method /*%.8x*/ %s(', [Token, Name]);
+  Result := Format('.method /*%.8x*/ %s %s%s %s(', [Token,
+    MemberAccessNames[MemberAccess], GetMethodFlagDescription,
+    GetParamTypeName(Signature.RetType), Name]);
   if HasParam then
-  for I:=0 to ParamCount-1 do
+  for I:=0 to Min(ParamCount, Signature.ParamCount)-1 do
   begin
-    Result := Result + Params[I].Name;
+    Result := Result + GetParamTypeName(Signature.Params[I]) + ' ' + Params[I].Name;
     if I <> ParamCount-1 then
       Result := Result + ', ';
   end;
-  Result := Result + ')';
+  Result := Result + ') ' + CodeTypeNames[CodeType] + ' ' + ManagedNames[Managed] + GetMethodImplFlagDescription;
 
   if Assigned(MethodBody) then
   begin
@@ -3589,6 +3866,52 @@ end;
 function TJclClrTableMethodDefRow.GetFullName: WideString;
 begin
   Result := ParentToken.FullName + '.' + Name;
+end;
+
+function TJclClrTableMethodDefRow.GetSignature: TJclClrMethodSign;
+begin
+  if not Assigned(FSignature) then
+    FSignature := TJclClrMethodSign.Create(SignatureData);
+
+  Result := FSignature;
+end;
+
+function TJclClrTableMethodDefRow.GetMemberAccess: TJclClrMemberAccess;
+begin
+  Result := TJclClrMemberAccess(FFlags and mdMemberAccessMask)
+end;
+
+function TJclClrTableMethodDefRow.GetMethodFlags: TJclClrMethodFlags;
+var
+  AFlag: TJclClrMethodFlag;
+begin
+  for AFlag:=Low(TJclClrMethodFlag) to High(TJclClrMethodFlag) do
+    if (FFlags and ClrMethodFlagMapping[AFlag]) = ClrMethodFlagMapping[AFlag] then
+      Include(Result, AFlag);
+end;
+
+function TJclClrTableMethodDefRow.GetNewSlot: Boolean;
+begin
+  Result := (FFlags and mdVtableLayoutMask) = mdNewSlot;
+end;
+
+function TJclClrTableMethodDefRow.GetCodeType: TJclClrMethodCodeType;
+begin
+  Result := TJclClrMethodCodeType(FImplFlags and miCodeTypeMask);
+end;
+
+function TJclClrTableMethodDefRow.GetManaged: Boolean;
+begin
+  Result := (FImplFlags and miManagedMask) = miManaged;
+end;
+
+function TJclClrTableMethodDefRow.GetMethodImplFlags: TJclClrMethodImplFlags;
+var
+  AFlag: TJclClrMethodImplFlag;
+begin
+  for AFlag:=Low(TJclClrMethodImplFlag) to High(TJclClrMethodImplFlag) do
+    if (FFlags and ClrMethodImplFlagMapping[AFlag]) = ClrMethodImplFlagMapping[AFlag] then
+      Include(Result, AFlag);
 end;
 
 { TJclClrTableMethodDef }
@@ -4131,7 +4454,7 @@ const
       Result := 'Unknown Extends ' + Row.ClassName;
   end;
 const
-  Indent = '       ';
+  Indent = '  ';
   IntfPrefix: array[Boolean] of string = ('           ', 'implements ');
 var
   I, J: Integer;
@@ -4430,6 +4753,126 @@ end;
 function TJclClrLocalVarSign.GetLocalVarCount: Integer;
 begin
   Result := FLocalVars.Count;
+end;
+
+{ TJclClrMethodSign }
+
+constructor TJclClrMethodSign.Create(const ABlob: TJclClrBlobRecord);
+var
+  Sign: Byte;
+  I, ParamCount: Integer;
+begin
+  inherited Create(ABlob);
+
+  FParams := TObjectList.Create;
+
+  Sign := ReadByte;
+
+  if IsBitSet(Sign, IMAGE_CEE_CS_CALLCONV_HASTHIS) then
+    Include(FFlags, mfHasThis);
+
+  if IsBitSet(Sign, IMAGE_CEE_CS_CALLCONV_EXPLICITTHIS) then
+    Include(FFlags, mfExplicitThis);
+
+  case Sign and IMAGE_CEE_CS_CALLCONV_MASK of
+    IMAGE_CEE_CS_CALLCONV_DEFAULT: Include(FFlags, mfDefault);
+    IMAGE_CEE_CS_CALLCONV_VARARG:  Include(FFlags, mfVarArg);
+  end;
+
+  ParamCount := ReadValue;
+
+  FRetType := TJclClrMethodRetType.Create(Blob);
+
+  for I:=0 to ParamCount-1 do
+    FParams.Add(TJclClrMethodParam.Create(Blob));
+end;
+
+destructor TJclClrMethodSign.Destroy;
+begin
+  FreeAndNil(FParams);
+
+  inherited;
+end;
+
+function TJclClrMethodSign.GetParam(const Idx: Integer): TJclClrMethodParam;
+begin
+  Result := TJclClrMethodParam(FParams.Items[Idx]);
+end;
+
+function TJclClrMethodSign.GetParamCount: Integer;
+begin
+  Result := FParams.Count;
+end;
+
+{ TJclClrCustomModifierSign }
+
+constructor TJclClrCustomModifierSign.Create(const ABlob: TJclClrBlobRecord);
+begin
+  inherited Create(ABlob);
+
+  FRequired := ReadByte = ELEMENT_TYPE_CMOD_REQD;
+  FToken    := ReadToken;
+end;
+
+{ TJclClrMethodParam }
+
+constructor TJclClrMethodParam.Create(const ABlob: TJclClrBlobRecord);
+var
+  By: Byte;
+  Finished: Boolean;
+begin
+  inherited Create(ABlob);
+
+  FCustomMods  := TObjectList.Create;
+  FByRef       := False;
+  FElementType := etEnd;
+  FToken       := 0;
+  FMethodSign  := nil;
+
+  Finished := False;
+  while not Finished and (Blob.Position < Blob.Size) do
+  begin
+    By := ReadByte;
+    case By of
+    ELEMENT_TYPE_CMOD_REQD,
+    ELEMENT_TYPE_CMOD_OPT:
+    begin
+      Blob.Seek(-SizeOf(Byte), soFromCurrent);
+      FCustomMods.Add(TJclClrCustomModifierSign.Create(Blob));
+    end;
+    ELEMENT_TYPE_BYREF:
+      FByRef := True;
+    else
+      FElementType := TJclClrElementType(By);
+      case FElementType of
+      etPtr,
+      etTypedByRef,
+      etValueType,
+      etClass: FToken := ReadToken;
+      etFnPtr: FMethodSign := TJclClrMethodSign.Create(Blob);
+      etArray: FArraySign := TJclClrArraySign.Create(Blob);
+      end;
+      Finished := True;
+    end;
+  end;
+end;
+
+destructor TJclClrMethodParam.Destroy;
+begin
+  FreeAndNil(FCustomMods);
+  if Assigned(FMethodSign) then FreeAndNil(FMethodSign);
+
+  inherited;
+end;
+
+function TJclClrMethodParam.GetCustomModifier(const Idx: Integer): TJclClrCustomModifierSign;
+begin
+  Result := TJclClrCustomModifierSign(FCustomMods.Items[Idx]);
+end;
+
+function TJclClrMethodParam.GetCustomModifierCount: Integer;
+begin
+  Result := FCustomMods.Count;
 end;
 
 end.
