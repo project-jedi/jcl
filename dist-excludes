@@ -8,6 +8,7 @@
 *.ddp
 *.desk
 *.hpp
+template.*
 CVS
 jcl/build.sh
 jcl/convert.sh
@@ -18,6 +19,7 @@ jcl/want.xml
 jcl/bin/QJediInstaller*
 jcl/dist
 jcl/dist-excludes
+jcl/docs/Contributors.txt
 jcl/install/Makefile
 jcl/install/prototypes.mak
 jcl/install/prototypes
@@ -26,6 +28,7 @@ jcl/packages/*.dev
 jcl/packages/*.mak
 jcl/packages/k1
 jcl/packages/k2
+jcl/packages/JclDev*.bpg
 jcl/source/*.bat
 jcl/source/Makefile.fpc
 jcl/source/prototypes
