@@ -36,7 +36,7 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
-{   (Dejoy)                                                                                        }
+{   Dejoy Den (dejoy)                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -51,8 +51,7 @@ interface
 uses
   Windows,
   Classes, SysUtils,
-  Controls,
-  Graphics, JclGraphUtils,
+  Graphics, JclGraphUtils, Controls,
   JclBase;
 
 type
@@ -491,6 +490,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
 
 // PolyLines and Polygons
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
@@ -2061,6 +2061,12 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
+function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+begin
+  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
+  Result := ARect;
+end;
+
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
 var
@@ -2108,12 +2114,6 @@ begin
     DeleteObject(Brush);
   end;
   Result := True;
-end;
-
-function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
-begin
-  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
-  Result := ARect;
 end;
 
 //=== { TJclDesktopCanvas } ==================================================
