@@ -1996,7 +1996,7 @@ begin
   try
     // Kylix bpr2mak doesn't like full file names
     Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName));
-    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), ChangeFileExt(PackageName, '.mak')]));
+    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(StrTrimQuotes(ChangeFileExt(PackageName, '.mak')))]));
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -2277,7 +2277,7 @@ const
   S = '"%s" %s';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  S = '%s %s';
+  S = '"%s" %s';
   {$ENDIF UNIX}
 begin
   Result := ExecAndRedirectOutput(Format(S, [ExeName, CommandLine]), FOutput) = 0;
@@ -2309,6 +2309,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/05/13 16:38:45  rrossmair
+// fixed for paths w/ spaces
+//
 // Revision 1.10  2004/05/11 11:55:43  rrossmair
 // added TJclBCBInstallation.VclIncludeDir
 //
