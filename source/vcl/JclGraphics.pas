@@ -39,24 +39,18 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-
 // For history, see end of file
 
 unit  JclGraphics ;
-
 
 {$I jcl.inc}
 
 interface
 
 uses
-  
   Windows,
-  
   Classes, SysUtils,
-  
   Graphics, JclGraphUtils,
-  
   JclBase;
 
 type
@@ -129,7 +123,6 @@ var
 //--------------------------------------------------------------------------------------------------
 
 type
-  
   TJclDesktopCanvas = class(TCanvas)
   private
     FDesktop: HDC;
@@ -202,8 +195,6 @@ type
     property Handle: HRGN read GetHandle;
     property RegionType: TJclRegionKind read GetRegionType;
   end;
-  
-  
   { TJclThreadPersistent }
   { TJclThreadPersistent is an ancestor for TJclBitmap32 object. In addition to
     TPersistent methods, it provides thread-safe locking and change notification }
@@ -425,7 +416,6 @@ type
     property ValPtr[X, Y: Integer]: PByte read GetValPtr;
     property Value[X, Y: Integer]: Byte read GetValue write SetValue; default;
   end;
-  
   TJclTransformation = class(TObject)
   public
     function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
@@ -467,14 +457,11 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Bitmap: TBitmap); overload;
 
-
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
-
-
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
 
@@ -485,8 +472,6 @@ procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
-
-
 procedure BlockTransfer( Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
@@ -495,18 +480,12 @@ procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32;
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
-
-
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
-
-
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-
-
 //--------------------------------------------------------------------------------------------------
 // PolyLines and Polygons
 //--------------------------------------------------------------------------------------------------
@@ -538,18 +517,13 @@ procedure ColorToGrayscale(Dst, Src: TJclBitmap32);
 procedure ApplyLUT(Dst, Src: TJclBitmap32; const LUT: TLUT8);
 procedure SetGamma(Gamma: Single = 0.7);
 
-
 implementation
 
 uses
   Math,
-  
   CommCtrl, ShellApi,
-  
   ClipBrd, JPeg, TypInfo,
   JclResources,
-  
-  
   JclLogic;
 
 type
@@ -613,7 +587,6 @@ begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
-
 //--------------------------------------------------------------------------------------------------
 
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
@@ -636,7 +609,6 @@ begin
     raise EJclGraphicsError.CreateResRec(@RsSourceBitmapInvalid);
   Result := True;
 end;
-
 //==================================================================================================
 // Internal low level routines
 //==================================================================================================
@@ -1378,7 +1350,6 @@ begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
 
 procedure StretchNearest(Dst: TJclBitmap32; DstRect: TRect;
@@ -1644,8 +1615,6 @@ begin
     MapY := nil;
   end;
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
@@ -1659,8 +1628,6 @@ begin
   SelectObject(MemDC, OldBitmap);
   DeleteObject(MemDC);
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
@@ -1743,8 +1710,6 @@ begin
     FreeAndNil(JPeg);
   end;
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 function ExtractIconCount(const FileName: string): Integer;
@@ -1781,8 +1746,6 @@ begin
     Result := IconInfo.hbmColor;
   end;
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
@@ -1917,8 +1880,6 @@ begin
     Stream.Free;
   end;
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
@@ -2048,8 +2009,6 @@ begin
     ABitmap.Changed;
   end;
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
@@ -2188,8 +2147,6 @@ begin
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
-
-
 //--------------------------------------------------------------------------------------------------
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
@@ -2240,8 +2197,6 @@ begin
   end;
   Result := True;
 end;
-
-
 //==================================================================================================
 // TJclDesktopCanvas
 //==================================================================================================
@@ -2319,7 +2274,7 @@ end;
 constructor TJclRegion.Create(RegionHandle: HRGN);
 begin
   inherited Create;
-  if FHandle = 0 then
+  if RegionHandle = 0 then
     raise EJclGraphicsError.CreateResRec(@RsInvalidHandleForRegion);
   FHandle := RegionHandle;
   GetBox;
@@ -5029,7 +4984,6 @@ begin
     Dest.Changed;
   end;
 end;
-
 //==================================================================================================
 // Matrices
 //==================================================================================================
@@ -5293,7 +5247,6 @@ end;
 //==================================================================================================
 // PolyLines and Polygons
 //==================================================================================================
-
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
 var
@@ -5366,7 +5319,6 @@ begin
   Bitmap.Changed;
 end;
 //--------------------------------------------------------------------------------------------------
-
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -5540,7 +5492,6 @@ begin
       AddEdgePoint(X1, Y1);
   end;
 end;
-
 //--------------------------------------------------------------------------------------------------
 
 procedure FillLines(Bitmap: TJclBitmap32; BaseY: Integer;
@@ -6088,7 +6039,6 @@ begin
   end;
   Dst.Changed;
 end;
-
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
@@ -6127,7 +6077,6 @@ initialization
   SetGamma(0.7);
 
 // History:
-
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //

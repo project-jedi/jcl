@@ -2319,7 +2319,7 @@ end;
 constructor TJclRegion.Create(RegionHandle: HRGN);
 begin
   inherited Create;
-  if FHandle = 0 then
+  if RegionHandle = 0 then
     raise EJclGraphicsError.CreateResRec(@RsInvalidHandleForRegion);
   FHandle := RegionHandle;
   GetBox;
@@ -6149,6 +6149,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.12  2004/07/12 02:54:33  rrossmair
+// TJclRegion.Create fixed
+//
 // Revision 1.11  2004/06/14 13:05:19  marquardt
 // style cleaning ENDIF, Tabs
 //
