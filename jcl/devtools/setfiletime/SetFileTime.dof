@@ -1,0 +1,6 @@
+[Directories]
+OutputDir=..\..\Bin
+UnitOutputDir=..\..\Dcu
+Packages=vcl;rtl;vclx
+UsePackages=1
+
