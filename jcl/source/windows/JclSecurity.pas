@@ -12,12 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclSecurity.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All Rights Reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Robert Marquardt (marquardt)                                                                   }
+{   John C Molyneux                                                                                }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -26,11 +32,11 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 
-// Comments to Win9x compatibility of the functions used in this unit
+// Comments regarding Win9x compatibility of the functions used in this unit
 
 // At least under Win98 SE the following functions return always 1 (wrong value)
 // and GetLastError = ERROR_CALL_NOT_IMPLEMENTED:
@@ -110,8 +116,10 @@ function GetInteractiveUserName: string;
 implementation
 
 uses
-{$IFNDEF FPC}
-  AccCtrl, 
+{$IFDEF FPC}
+  JwaAccCtrl,
+{$ELSE}
+  AccCtrl,
 {$ENDIF}
   JclStrings, JclSysInfo, JclWin32;
 
@@ -217,16 +225,19 @@ begin
       HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, Token);
     if HaveToken then
     begin
+      {$IFDEF FPC}
       Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
         SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
         psidAdmin));
-      {$IFDEF FPC}
       if GetTokenInformation(Token, TokenGroups, nil, 0, @Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
          RaiseLastOSError;
       TokenInfo := PTokenGroups(AllocMem(Count));
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, @Count));
       {$ELSE FPC}
+      Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
+        SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+        psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
          RaiseLastOSError;
@@ -514,11 +525,14 @@ begin
   end;
 end;
 
-{$ENDIF not FPC}
+{$ENDIF ~FPC}
 
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 07:30:54  rrossmair
+// Changes for FPC compatibility; header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.7  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
