@@ -20,7 +20,7 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: October 24, 2003                                                                 }
+{ Last modified: January 20, 2004                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1080,6 +1080,7 @@ begin
   if (FromIndex <= 0) or (FromIndex > Length(Source)) or
      (ToIndex <= 0) or (ToIndex > Length(Dest)) or
      ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
+     { TODO -orr : Is failure without notice the proper thing to do here? }
      Exit;
 
   // Move
@@ -3698,38 +3699,66 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-Function StrToFloatSafe(const S: AnsiString): Float;
+function StrToFloatSafe(const S: AnsiString): Float;
+{ TODOc: Contributors: Robert Rossmair }
 var
-  TempS: AnsiString;
-  PosL, PosR: Integer;
-  IsNegative: Boolean;
+  Temp: AnsiString;
+  I, K: Integer;
+  SwapSeparators, IsNegative: Boolean;
 begin
-  TempS := StrReplaceChar(S, ThousandSeparator, DecimalSeparator);
-  IsNegative   := False;
-  PosL := Pos('-', TempS);
-  while (PosL > 0) do
+  Temp := S;
+  SwapSeparators := False;
+
+  IsNegative := False;
+  for I := 1 to Length(Temp) do
   begin
-    IsNegative := True;
-    Delete(TempS, PosL, 1);
-    PosL := Pos('-', TempS);
+    if Temp[I] = '-' then
+      IsNegative := not IsNegative
+    else
+      if not (Temp[I] in [' ', '+']) then
+      begin
+        // if it appears prior to any digit, it has to be a decimal separator
+        SwapSeparators := Temp[I] = ThousandSeparator;
+        Break;
+      end;
   end;
-  TempS := StrKeepChars(TempS, ['0'..'9',DecimalSeparator]);
-  PosR := StrLastPos(DecimalSeparator, TempS);
-  PosL := Pos(DecimalSeparator, TempS);
-  while (PosL <> PosR) and (PosL > 0) do
+
+  if not SwapSeparators then
   begin
-    Delete(TempS, PosL, 1);
-    PosL := Pos(DecimalSeparator, TempS);
+    K := CharPos(Temp, DecimalSeparator);
+    SwapSeparators :=
+      // if it appears prior to any digit, it has to be a decimal separator
+      (K > 1) and
+      // if it appears multiple times, it has to be a thousand separator
+      ((StrCharCount(Temp, DecimalSeparator) > 1) or
+      // we assume (consistent with Windows Platform SDK documentation),
+      // that thousand separators appear only to the left of the decimal
+      (K < CharPos(Temp, ThousandSeparator)));
   end;
-  if Length(TempS) > 0 then
+
+  if SwapSeparators then
   begin
-    if TempS[1] = DecimalSeparator then
-      TempS := '0' + TempS;
-    if TempS[length(TempS)] = DecimalSeparator then
-      TempS := TempS + '0';
-    Result := StrToFloat(TempS);
+    // assume a numerical string from a different locale,
+    // where DecimalSeparator and ThousandSeparator are exchanged
+    for I := 1 to Length(Temp) do
+      if Temp[I] = DecimalSeparator then
+        Temp[I] := ThousandSeparator
+      else
+        if Temp[I] = ThousandSeparator then
+          Temp[I] := DecimalSeparator;
+  end;
+
+  Temp := StrKeepChars(Temp, ['0'..'9', DecimalSeparator]);
+
+  if Length(Temp) > 0 then
+  begin
+    if Temp[1] = DecimalSeparator then
+      Temp := '0' + Temp;
+    if Temp[length(Temp)] = DecimalSeparator then
+      Temp := Temp + '0';
+    Result := StrToFloat(Temp);
     if IsNegative then
-      Result := Result * -1;
+      Result := -Result;
   end
   else
     Result := 0.0;
