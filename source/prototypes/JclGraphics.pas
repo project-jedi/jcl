@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: April 12, 2003                                                                     }
+{ Last modified: April 12, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -30,11 +30,21 @@ unit JclGraphics;
 
 {$I jcl.inc}
 
+{$DEFINE Bitmap32}
+
 interface
 
 uses
-  SysUtils, Classes, {$IFDEF MSWINDOWS} Windows, {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}Graphics, JclSynch, {$ENDIF VCL}{$IFDEF VisualCLX}Types, QGraphics, {$ENDIF VisualCLX}
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Graphics, JclSynch,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics,
+  {$ENDIF VisualCLX}
   JclBase, JclGraphUtils;
 
 type
