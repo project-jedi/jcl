@@ -297,7 +297,6 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
       ParentNode := N.Parent;
       while Assigned(ParentNode) do
       begin
-        ParentChecked := False;
         N := ParentNode.getFirstChild;
         ParentChecked := IsStandAloneParent(ParentNode);
         while Assigned(N) do
