@@ -33,7 +33,7 @@ unit JclLANMan;
 interface
 
 uses
-  Windows;
+  Windows, Classes;
 
 //------------------------------------------------------------------------------
 // User Management
@@ -60,6 +60,12 @@ function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
+
+function GetLocalGroups(const Server: string; const Groups: TStrings): boolean;
+function GetGlobalGroups(const Server: string; const Groups: TStrings): boolean;
+function LocalGroupExists(const Group: string): boolean;
+function GlobalGroupExists(const Group: string): boolean;
+
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
@@ -70,7 +76,7 @@ function GetFileOwner(FileName: string; var Domain, Username: string): Boolean;
 implementation
 
 uses
-  Classes, SysUtils,
+  SysUtils,
   LM, JclStrings, JclWin32;
 
 //------------------------------------------------------------------------------
@@ -195,6 +201,94 @@ end;
 
 //------------------------------------------------------------------------------
 
+function GetLocalGroups(const Server: string; const Groups: TStrings): boolean;
+var
+  err: NET_API_STATUS;
+  wServername: WideString;
+  buffer: Pointer;
+  details: PLocalGroupInfo0;
+  entriesread, totalentries: Cardinal;
+  i: integer;
+begin
+  wServername := Server;
+  err := NetLocalGroupEnum(PWideChar(wServername), 0, buffer, MAX_PREFERRED_LENGTH,
+    entriesread, totalentries, nil);
+
+  if err = NERR_SUCCESS then begin
+    details := PLocalGroupInfo0(buffer);
+    for i := 0 to entriesread - 1 do begin
+      Groups.Add(details^.lgrpi0_name);
+      Inc(details);
+    end;
+  end;
+
+  NetApiBufferFree(@details);
+  Result := (err = NERR_SUCCESS);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetGlobalGroups(const Server: string; const Groups: TStrings): boolean;
+var
+  err: NET_API_STATUS;
+  wServername: WideString;
+  buffer: Pointer;
+  details: PGroupInfo0;
+  entriesread, totalentries: Cardinal;
+  i: integer;
+begin
+  wServername := Server;
+  err := NetGroupEnum(PWideChar(wServername), 0, buffer, MAX_PREFERRED_LENGTH,
+    entriesread, totalentries, nil);
+
+  if err = NERR_SUCCESS then begin
+    details := PGroupInfo0(buffer);
+    if (entriesread <> 1) or (details^.grpi0_name <> 'None') then
+      for i := 0 to entriesread - 1 do begin
+        Groups.Add(details^.grpi0_name);
+        Inc(details);
+      end;
+  end
+  else
+    RaiseLastWin32Error;
+
+  NetApiBufferFree(@details);
+  Result := (err = NERR_SUCCESS);
+end;
+
+//------------------------------------------------------------------------------
+
+function LocalGroupExists(const Group: string): boolean;
+var
+  groups: TStrings;
+begin
+  Result := false;
+  groups := TStringList.Create;
+  try
+    GetLocalGroups('', groups);
+    Result := (groups.IndexOf(Group) >= 0);
+  finally
+    groups.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GlobalGroupExists(const Group: string): boolean;
+var
+  groups: TStrings;
+begin
+  Result := false;
+  groups := TStringList.Create;
+  try
+    GetGlobalGroups('\\NTSHAMANDCT01', groups);
+    Result := (groups.IndexOf(Group) >= 0);
+  finally
+    groups.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
 function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
@@ -384,6 +478,8 @@ begin
    end;
    GetFileOwner := True;
 end;
+
+
 
 
 end.
