@@ -23,7 +23,7 @@
 { conversion to user displayable values and 'is'/'as' operator hooking.        }
 {                                                                              }
 { Unit owner: Marcel Bestebroer                                                }
-{ Last modified: July 20, 2001                                                 }
+{ Last modified: July 21, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -2504,6 +2504,9 @@ function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 var
   Conv: TIdentToInt;
   HaveConversion: Boolean;
+  Info: IJclTypeInfo;
+  RangeInfo: IJclOrdinalRangeTypeInfo;
+  TmpVal: Int64;
 begin
   if TypeInfo <> nil then
     Conv := FindIdentToInt(TypeInfo)
@@ -2512,8 +2515,17 @@ begin
   HaveConversion := (@Conv <> nil) and Conv(Value, Result);
   if not HaveConversion then
   begin
-    if (TypeInfo <> nil) and (GetTypeData(TypeInfo).OrdType = otULong) then
-      Result := StrToInt64(Value)
+    if (TypeInfo <> nil) then
+    begin
+      Info := JclTypeInfo(TypeInfo);
+      if Info.QueryInterface(IJclOrdinalRangeTypeInfo, RangeInfo) <> S_OK then
+        RangeInfo := nil;
+      TmpVal := StrToInt64(Value);
+      if (RangeInfo <> nil) and ((TmpVal < RangeInfo.MinValue) or
+          (TmpVal > RangeInfo.MaxValue)) then
+        raise EConvertError.CreateFmt(LoadResString(@SInvalidInteger), [Value]);
+      Result := Integer(TmpVal);
+    end
     else
       Result := StrToInt(Value)
   end;
