@@ -27,6 +27,11 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+// $Log$
+// Revision 1.4  2004/03/12 04:59:56  rrossmair
+// BCB/Win32 support basically working now
+//
+
 unit BorRADToolInstall;
 
 {$I jcl.inc}
@@ -165,22 +170,40 @@ type
     property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
   end;
 
-  TJclBorRADToolCompiler = class (TJclBorRADToolInstallationObject)
+  TJclBorlandCommandLineTool = class (TJclBorRADToolInstallationObject)
   private
-    FDCCLocation: string;
-    FDCCOutput: string;
+    FLocation: string;
+    FOutput: string;
     FOptions: TStrings;
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
+    constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
+    class function FileName: string; virtual;
   public
     destructor Destroy; override;
     procedure AddPathOption(const Option, Path: string);
-    function Compile(const CommandLine: string): Boolean;
+    function Execute(const CommandLine: string): Boolean; virtual;
+    property Location: string read FLocation;
+    property Output: string read FOutput;
+    property Options: TStrings read FOptions;
+  end;
+
+  TJclDCC = class (TJclBorlandCommandLineTool)
+  protected
+    class function FileName: string; override;
+  public
+    function Execute(const CommandLine: string): Boolean; override;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
     function SupportsLibSuffix: Boolean;
-    property DCCLocation: string read FDCCLocation;
-    property DCCOutput: string read FDCCOutput;
-    property Options: TStrings read FOptions;
+  end;
+
+  TJclBpr2Mak = class (TJclBorlandCommandLineTool)
+  protected
+    class function FileName: string; override;
+  end;
+
+  TJclBorlandMake = class (TJclBorlandCommandLineTool)
+  protected
+    class function FileName: string; override;
   end;
 
   TJclBorRADToolPalette = class (TJclBorRADToolInstallationObject)
@@ -233,7 +256,7 @@ type
     FGlobals: TStrings;
     FRootDir: string;
     FBinFolderName: string;
-    FCompiler: TJclBorRADToolCompiler;
+    FDCC: TJclDCC;
     FEdition: TJclBorRADToolEdition;
     FEnvironmentVariables: TStrings;
     FIdeExeFileName: string;
@@ -248,7 +271,7 @@ type
     FRepository: TJclBorRADToolRepository;
     FVersionNumber: Integer;
     function GetBPLOutputPath: string;
-    function GetCompiler: TJclBorRADToolCompiler;
+    function GetDCC: TJclDCC;
     function GetDCPOutputPath: string;
     function GetDebugDCUPath: string;
     function GetDescription: string;
@@ -273,17 +296,19 @@ type
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
+    class function PackageSourceFileExtension: string; virtual;
     class function RadToolKind: TJclBorRadToolKind;
     function AnyInstanceRunning: Boolean;
     function AddToDebugDCUPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
+    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function SubstitutePath(const Path: string): string;
     function SupportsVisualCLX: Boolean;
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
-    property Compiler: TJclBorRADToolCompiler read GetCompiler;
+    property DCC: TJclDCC read GetDCC;
     property DebugDCUPath: string read GetDebugDCUPath write SetDebugDCUPath;
     property DCPOutputPath: string read GetDCPOutputPath;
     property Description: string read GetDescription;
@@ -313,13 +338,27 @@ type
   end;
 
   TJclBCBInstallation = class (TJclBorRADToolInstallation)
+  private
+    FMake: TJclBorlandMake;
+    FBpr2Mak: TJclBpr2Mak;
+  protected
+    constructor Create(const AConfigDataLocation: string);
+  public
+    destructor Destroy; override;
+    class function PackageSourceFileExtension: string; override;
+    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
+    property Bpr2Mak: TJclBpr2Mak read FBpr2Mak;
+    property Make: TJclBorlandMake read FMake;
   end;
 
   TJclDelphiInstallation = class (TJclBorRADToolInstallation)
+  public
+    class function PackageSourceFileExtension: string; override;
+    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
   end;
 
   TTraverseMethod = function (Installation: TJclBorRADToolInstallation): Boolean of object;
-  
+
   TJclBorRADToolInstallations = class (TObject)
   private
     FList: TObjectList;
@@ -348,6 +387,7 @@ type
 implementation
 
 uses
+  SysConst,
   {$IFDEF MSWINDOWS}
   Registry,
   JclRegistry,
@@ -422,13 +462,11 @@ const
   DelphiOptionsFileExtension = '.dof';
   BorRADToolRepositoryFileName   = 'Bin\delphi32.dro';
   DCCFileName                = 'Bin\dcc32.exe';
-  DelphiHelpContentFileName  = 'Help\%s.ohc';
-  DelphiHelpIndexFileName    = 'Help\%s.ohi';
-  DelphiHelpLinkFileName     = 'Help\%s.ohl';
-  DelphiHelpProjectFileName  = 'Help\%s.ohp';
-  DelphiHelpGidFileName      = 'Help\%s.gid';
-  DelphiHelpNamePart1        = 'delphi%d';
-  DelphiHelpNamePart2        = 'd%d';
+  HelpContentFileName        = '%s\Help\%s%d.ohc';
+  HelpIndexFileName          = '%s\Help\%s%d.ohi';
+  HelpLinkFileName           = '%s\Help\%s%d.ohl';
+  HelpProjectFileName        = '%s\Help\%s%d.ohp';
+  HelpGidFileName            = '%s\Help\%s%d.gid';
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
@@ -584,46 +622,55 @@ end;
 
 function TJclBorlandOpenHelp.GetContentFileName: string;
 begin
-  Result := ReadFileName(DelphiHelpContentFileName);
+  Result := ReadFileName(HelpContentFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetGidFileName: string;
 begin
-  Result := ReadFileName(DelphiHelpGidFileName);
+  Result := ReadFileName(HelpGidFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetIndexFileName: string;
 begin
-  Result := ReadFileName(DelphiHelpIndexFileName);
+  Result := ReadFileName(HelpIndexFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetLinkFileName: string;
 begin
-  Result := ReadFileName(DelphiHelpLinkFileName);
+  Result := ReadFileName(HelpLinkFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetProjectFileName: string;
 begin
-  Result := ReadFileName(DelphiHelpProjectFileName);
+  Result := ReadFileName(HelpProjectFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.ReadFileName(const FormatName: string): string;
+var
+  S: string;
 begin
   with Installation do
   begin
-    Result := PathAddSeparator(RootDir) + Format(FormatName, [Format(DelphiHelpNamePart1, [VersionNumber])]);
-    if not FileExists(Result) then
-      Result := PathAddSeparator(RootDir) + Format(FormatName, [Format(DelphiHelpNamePart2, [VersionNumber])]);
+    if RADToolKind = brDelphi then
+    begin
+      if VersionNumber <= 6 then
+        S := 'delphi'
+      else
+        S := 'd';
+    end
+    else
+      S := 'bcb';
+    Result := Format(FormatName, [RootDir, S, VersionNumber]);
   end;
 end;
 
@@ -857,27 +904,57 @@ begin
 end;
 
 //==================================================================================================
-// TJclBorRADToolCompiler
+// TJclBorlandCommandLineTool
 //==================================================================================================
 
-procedure TJclBorRADToolCompiler.AddPathOption(const Option, Path: string);
+procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
 begin
   Options.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBorRADToolCompiler.Compile(const CommandLine: string): Boolean;
+constructor TJclBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited;
+  FOptions := TStringList.Create;
+  FLocation := Installation.BinFolderName + FileName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorlandCommandLineTool.Destroy;
+begin
+  FreeAndNil(FOptions);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
+begin
+  Result := WinExec32AndRedirectOutput(Format('"%s" "%s"', [Location, CommandLine]), FOutput) = 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclBorlandCommandLineTool.FileName: string;
+begin
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+end;
+
+//==================================================================================================
+// TJclDCC
+//==================================================================================================
+
+function TJclDCC.Execute(const CommandLine: string): Boolean;
 {$IFDEF WIN32}
 const
   DCC32CFGFileName = 'DCC32.CFG';
-var
-  Cmd: string;
 begin
-  FDCCOutput := '';
+  FOutput := '';
   FOptions.SaveToFile(DCC32CFGFileName);
-  Cmd := Format('"%s" "%s"', [DCCLocation, CommandLine]);
-  Result := WinExec32AndRedirectOutput(Cmd, FDCCOutput) = 0;
+  Result := inherited Execute(CommandLine);
   DeleteFile(DCC32CFGFileName);
 end;
 {$ENDIF WIN32}
@@ -913,24 +990,19 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclBorRADToolCompiler.Create(AInstallation: TJclBorRADToolInstallation);
+class function TJclDCC.FileName: string;
 begin
-  inherited;
-  FOptions := TStringList.Create;
-  FDCCLocation := PathAddSeparator(Installation.RootDir) + DCCFileName;
+  {$IFDEF MSWINDOWS}
+  Result := 'dcc32.exe';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := 'dcc';
+  {$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-destructor TJclBorRADToolCompiler.Destroy;
-begin
-  FreeAndNil(FOptions);
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclBorRADToolCompiler.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+function TJclDCC.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 const
   DOFDirectoriesSection = 'Directories';
   UnitOutputDirName     = 'UnitOutputDir';
@@ -962,7 +1034,7 @@ begin
     finally
       OptionsFile.Free;
     end;
-    Result := Compile(PackageName);
+    Result := Execute(PackageName);
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -990,7 +1062,7 @@ begin
       begin
         BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
         Result := Installation.IdePackages.AddPackage(BPLFileName, Description);
-      end;  
+      end;
     finally
       DPKFile.Free;
     end;
@@ -999,9 +1071,37 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBorRADToolCompiler.SupportsLibSuffix: Boolean;
+function TJclDCC.SupportsLibSuffix: Boolean;
 begin
   Result := Installation.VersionNumber >= 6;
+end;
+
+//==================================================================================================
+// TJclBorlandMake
+//==================================================================================================
+
+class function TJclBorlandMake.FileName: string;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := 'make.exe';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := 'make';
+  {$ENDIF UNIX}
+end;
+
+//==================================================================================================
+// TJclBpr2Mak
+//==================================================================================================
+
+class function TJclBpr2Mak.FileName: string;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := 'bpr2mak.exe';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := 'bpr2mak';
+  {$ENDIF UNIX}
 end;
 
 //==================================================================================================
@@ -1349,7 +1449,7 @@ destructor TJclBorRADToolInstallation.Destroy;
 begin
   FreeAndNil(FGlobals);
   FreeAndNil(FRepository);
-  FreeAndNil(FCompiler);
+  FreeAndNil(FDCC);
   FreeAndNil(FIdePackages);
   FreeAndNil(FIdeTools);
   {$IFDEF MSWINDOWS}
@@ -1424,11 +1524,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBorRADToolInstallation.GetCompiler: TJclBorRADToolCompiler;
+function TJclBorRADToolInstallation.GetDCC: TJclDCC;
 begin
-  if not Assigned(FCompiler) then
-    FCompiler := TJclBorRADToolCompiler.Create(Self);
-  Result := FCompiler;
+  if not Assigned(FDCC) then
+    FDCC := TJclDCC.Create(Self);
+  Result := FDCC;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1594,6 +1694,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+begin
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
+begin
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class function TJclBorRADToolInstallation.RADToolKind: TJclBorRADToolKind;
 begin
   if InheritsFrom(TJclBCBInstallation) then
@@ -1711,6 +1825,66 @@ begin
   {$ELSE}
   Result := (Edition <> deSTD) and (VersionNumber >= 6);
   {$ENDIF}
+end;
+
+//==================================================================================================
+// TJclBCBInstallation
+//==================================================================================================
+
+constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
+begin
+  inherited Create(AConfigDataLocation);
+  FMake := TJclBorlandMake.Create(Self);
+  FBpr2Mak := TJclBpr2Mak.Create(Self);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBCBInstallation.Destroy;
+begin
+  FBpr2Mak.Free;
+  FMake.Free;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBCBInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+var
+  SaveDir, PackagePath: string;
+begin
+  PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
+  SaveDir := GetCurrentDir;
+  SetCurrentDir(PackagePath);
+  try
+    Result := Bpr2Mak.Execute(PackageName);
+    Result := Result and Make.Execute(Format('-f%s', [ChangeFileExt(PackageName, '.mak')]));
+  finally
+    SetCurrentDir(SaveDir);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclBCBInstallation.PackageSourceFileExtension: string;
+begin
+  Result := 'bpk';
+end;
+
+//==================================================================================================
+// TJclDelphiInstallation
+//==================================================================================================
+
+function TJclDelphiInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+begin
+  Result := DCC.InstallPackage(PackageName, BPLPath, DCPPath);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclDelphiInstallation.PackageSourceFileExtension: string;
+begin
+  Result := 'dpk';
 end;
 
 //==================================================================================================

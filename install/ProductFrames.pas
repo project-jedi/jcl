@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {**************************************************************************************************}
@@ -22,10 +22,11 @@
 { Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: March 9, 2004                                                                     }
-{                                                                                                  }
-{**************************************************************************************************}
+
+// $Log$
+// Revision 1.4  2004/03/12 04:59:56  rrossmair
+// BCB/Win32 support basically working now
+//
 
 unit ProductFrames;
 
@@ -228,7 +229,13 @@ var
   I: Integer;
   Button: TButton;
   Edit: TEdit;
-  Directory:  string; 
+  
+  {$IFDEF USE_WIDESTRING}
+  Directory: WideString;
+  {$UNDEF USE_WIDESTRING}
+  {$ELSE}
+  Directory: string;
+  {$ENDIF}
 begin
   Button := Sender as TButton;
   Edit := nil;

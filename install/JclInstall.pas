@@ -18,10 +18,11 @@
 { Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: March 9, 2004                                                                     }
-{                                                                                                  }
-{**************************************************************************************************}
+
+// $Log$
+// Revision 1.7  2004/03/12 04:59:56  rrossmair
+// BCB/Win32 support basically working now
+//
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJclInstall{$ELSE}JclInstall{$ENDIF};{$ENDIF}
 
@@ -44,14 +45,14 @@ uses
 
 const
   Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
-  
+
 type
   TJclInstall = class (TInterfacedObject, IJediInstall)
   private
     FJclPath: string;
-    FJclUnitOutputDir: string;
-    FJclDCUPath: string;
-    FJclDebugDCUPath: string;
+    FLibDirMask: string;
+    FLibDebugDirMask: string;
+    FLibObjDirMask: string;
     FJclSourceDir: string;
     FJclSourcePath: string;
     FClxDialogFileName: string;
@@ -111,14 +112,18 @@ const
   VclDlgSndFileName = 'ExceptDlgMail.pas';
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
-  
-  JclVclDpk         = 'packages\d%d\DJclVcl.dpk';
-  JclD5RuntimeDpk   = 'packages\d5\DJcl50.dpk';
+
   JclIdeDebugDpk    = 'examples\vcl\debugextension\JclDebugIde%d0.dpk';
   JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%d0.dpk';
   JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
   JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
+
+  JclSourcePath     = '%0:s\common;%0:s\windows;%0:s\vcl;%0:s\visclx';
+  BCBIncludePath    = '%s;%s;$(BCB)\include;$(BCB)\include\vcl';
   {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  JclSourcePath     = '%0:s/common:%0:s/unix:%0:s/visclx';
+  {$ENDIF UNIX}
 
   DialogsPath       = 'examples' + PathSeparator + 'vcl' + PathSeparator + 'debugextension'
                       + PathSeparator + 'dialog' + PathSeparator;
@@ -133,9 +138,6 @@ const
   JclHelpTitle      = 'JCL %d.%d Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
-
-  JclRuntimeDpk     = 'packages' + VersionDir + PathSeparator + 'DJcl.dpk';
-  JclVClxDpk        = 'packages' + VersionDir + PathSeparator + 'DJclVClx.dpk';
 
   // Feature IDs
   FID_JCL                  = $02000000;
@@ -213,13 +215,18 @@ end;
 
 function FullPackageFileName(Installation: TJclBorRADToolInstallation; const BaseName: string): string;
 const
-  S = 'packages' + VersionDir + PathSeparator + '%0:s%2:s';
+  S = 'packages' + VersionDir + PathSeparator + '%s%s';
+var
+  Prefix: string;
 begin
   with Installation do
-    if Compiler.SupportsLibSuffix then
-      Result := Format(S + '.dpk', [Prefixes[RADToolKind], VersionNumber, BaseName])
+  begin
+    Prefix := Prefixes[RADToolKind];
+    if DCC.SupportsLibSuffix then
+      Result := Format(S + '.%s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
     else
-      Result := Format(S + '%1:d0.dpk', [Prefixes[RADToolKind], VersionNumber, BaseName]);
+      Result := Format(S + '%1:d0.%4:s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension]);
+  end;
 end;
 
 { TJclInstall }
@@ -269,7 +276,7 @@ var
   Units: TStringList;
   UnitType: string;
   LibDescriptor: string;
-  SaveDir, UnitOutputDir: string;
+  SaveDir, UnitOutputDir, LibObjDir: string;
   Success: Boolean;
 begin
   Result := True;
@@ -282,33 +289,64 @@ begin
     Tool.UpdateStatus(Format('Compiling %s ...', [LibDescriptor]));
     BuildFileList(Format('%ssource' + PathSeparator + '%s' + PathSeparator + '*.pas',
       [FJclPath, SubDir]), faAnyFile, Units);
-    with Installation.Compiler do
+    with Installation.DCC do
     begin
       Options.Clear;
       Options.Add('-M');
-      if Debug then
+      if Installation.RADToolKind = brCBuilder then
       begin
-        Options.Add('-$O-');
-        Options.Add('-$R+');
-        Options.Add('-$Q+');
-        Options.Add('-$D+');
-        Options.Add('-$L+');
-        Options.Add('-$Y+');
-        UnitOutputDir := MakePath(Installation, FJclDebugDCUPath);
+        Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
+        if Debug then
+        begin
+          Options.Add('-$Y+');
+          Options.Add('-$W');
+          Options.Add('-$O-');
+          Options.Add('-v');
+          UnitOutputDir := MakePath(Installation, FLibDebugDirMask);
+        end
+        else
+        begin
+          Options.Add('-$YD');
+          Options.Add('-$W+');
+          Options.Add('-$O+');
+          UnitOutputDir := MakePath(Installation, FLibDirMask);
+        end;
+        Options.Add('-v');
+        Options.Add('-JPHNE');
+        Options.Add('--BCB');
+        LibObjDir := MakePath(Installation, FLibObjDirMask);
+        AddPathOption('N2', UnitOutputDir + PathSeparator + 'obj'); // .obj files
+        AddPathOption('N0', UnitOutputDir + PathSeparator + 'obj'); // .dcu files
+        AddPathOption('O', Format(BCBIncludePath, [FJclSourceDir, FJclSourcePath]));
+        AddPathOption('U', Format(BCBIncludePath, [FJclSourceDir, FJclSourcePath]));
       end
-      else
+      else // Delphi
       begin
-        Options.Add('-$O+');
-        Options.Add('-$R-');
-        Options.Add('-$Q-');
-        Options.Add('-$C-');
-        Options.Add('-$D-');
-        UnitOutputDir := MakePath(Installation, FJclDCUPath);
+        if Debug then
+        begin
+          Options.Add('-$O-');
+          Options.Add('-$W+');
+          Options.Add('-$R+');
+          Options.Add('-$Q+');
+          Options.Add('-$D+');
+          Options.Add('-$L+');
+          Options.Add('-$Y+');
+          UnitOutputDir := MakePath(Installation, FLibDebugDirMask);
+        end
+        else
+        begin
+          Options.Add('-$O+');
+          Options.Add('-$R-');
+          Options.Add('-$Q-');
+          Options.Add('-$C-');
+          Options.Add('-$D-');
+          UnitOutputDir := MakePath(Installation, FLibDirMask);
+        end;
+        AddPathOption('N', UnitOutputDir);
+        AddPathOption('U', FJclSourcePath);
+        AddPathOption('R', FJclSourcePath);
       end;
-      AddPathOption('N', UnitOutputDir);
       AddPathOption('I', FJclSourceDir);
-      AddPathOption('R', FJclSourcePath);
-      AddPathOption('U', FJclSourcePath);
       SaveDir := GetCurrentDir;
       Success := SetCurrentDir(Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]));
       {$IFDEF WIN32}
@@ -319,13 +357,13 @@ begin
       try
         for I := 0 to Units.Count - 1 do
         begin
-          Compile(Units[I]);
-          Tool.WriteInstallLog(Installation.Compiler.DCCOutput);
+          Execute(Units[I]);
+          Tool.WriteInstallLog(Installation.DCC.Output);
           {$IFDEF KYLIX}
           J := Options.Add('-P');   // generate position independent code (PIC)
-          Compile(Units[I]);
+          Execute(Units[I]);
           Options.Delete(J);        // remove PIC option
-          Tool.WriteInstallLog(Installation.Compiler.DCCOutput);
+          Tool.WriteInstallLog(Installation.DCC.Output);
           {$ENDIF KYLIX}
         end;
       finally
@@ -347,12 +385,11 @@ var
   ReadmeText: string;
 begin
   FJclPath := PathAddSeparator(PathCanonicalize(PathExtractFileDirFixed(ApplicationFileName) + '..'));
-  FJclUnitOutputDir := Format('%slib' + VersionDirExp, [FJclPath]);
-  FJclDCUPath := Format('%slib' + VersionDirExp, [FJclPath]);
-  FJclDebugDCUPath := FJclDCUPath + PathSeparator + 'debug';
+  FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
+  FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
+  FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
   FJclSourceDir := FJclPath + 'source';
-  FJclSourcePath := Format('%0:scommon' + PathSep + '%0:swindows' + PathSep + '%0:svcl' + PathSep
-    + '%0:svisclx', [FJclSourceDir + PathSeparator]);
+  FJclSourcePath := Format(JclSourcePath, [FJclSourceDir]);
   {$IFDEF MSWINDOWS}
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
   {$ENDIF MSWINDOWS}
@@ -419,11 +456,11 @@ begin
   CleanupRepository(Installation);
   if Tool.FeatureChecked(FID_JCL_EnvLibPath, Installation) then
   begin
-    Installation.AddToLibrarySearchPath(MakePath(Installation, FJclDCUPath));
+    Installation.AddToLibrarySearchPath(MakePath(Installation, FLibDirMask));
     Installation.AddToLibrarySearchPath(FJclSourceDir);
   end;
   if Tool.FeatureChecked(FID_JCL_EnvDebugDCUPath, Installation) then
-    Installation.AddToDebugDCUPath(MakePath(Installation, FJclDebugDCUPath));
+    Installation.AddToDebugDCUPath(MakePath(Installation, FLibDebugDirMask));
   if Tool.FeatureChecked(FID_JCL_EnvBrowsingPath, Installation) then
     Installation.AddToLibraryBrowsingPath(FJclSourcePath);
   if Tool.FeatureChecked(FID_JCL_Make, Installation) then
@@ -446,7 +483,8 @@ begin
       Installation.Repository.FindPage(DialogPage, 1), VclDialogNameSend, FVclDialogSendIconFileName,
       DialogDescription, DialogAuthor, BorRADToolRepositoryDesignerDfm, FVclDialogFileName);
   {$ENDIF MSWINDOWS}
-  if Tool.FeatureChecked(FID_JCL_Experts, Installation) then
+  if Tool.FeatureChecked(FID_JCL_Packages, Installation)
+  or Tool.FeatureChecked(FID_JCL_Experts, Installation) then
   begin
     Result := Result and InstallRunTimePackage(Installation, 'Jcl');
     {$IFDEF MSWINDOWS}
@@ -477,9 +515,15 @@ begin
   PackageFileName := FJclPath + Format(Name, [Installation.VersionNumber]);
   Tool.WriteInstallLog(Format('Installing package %s', [PackageFileName]));
   Tool.UpdateStatus(Format(RsStatusMessage, [ExtractFileName(PackageFileName)]));
-  Result := Installation.Compiler.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
+  Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
     Tool.DCPPath(Installation));
-  Tool.WriteInstallLog(Installation.Compiler.DCCOutput);
+  Tool.WriteInstallLog(Installation.DCC.Output);
+  if Installation is TJclBCBInstallation then
+  with TJclBCBInstallation(Installation) do
+  begin
+    Tool.WriteInstallLog(Bpr2Mak.Output);
+    Tool.WriteInstallLog(Make.Output);
+  end;
   Tool.WriteInstallLog('');
   Tool.UpdateStatus('');
   if not Result then
@@ -493,7 +537,7 @@ end;
 
 function TJclInstall.MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
 begin
-  Result := Format(FormatStr, [AnsiLowerCase(Prefixes[Installation.RADToolKind]), Installation.VersionNumber]);
+  Result := Format(FormatStr, [Prefixes[Installation.RADToolKind], Installation.VersionNumber]);
 end;
 
 procedure TJclInstall.MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
