@@ -102,9 +102,9 @@ function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapp
 // Junction Points
 //------------------------------------------------------------------------------
 
-function NtfsCreateJunctionPoint(const MountDir, Destination: string): Boolean;
-function NtfsDeleteJunctionPoint(const MountDir: string): Boolean;
-function NtfsGetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
+function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
+function NtfsDeleteJunctionPoint(const Source: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 
 type
   EJclNtfsError = class (EJclWin32Error);
@@ -564,10 +564,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-function NtfsCreateJunctionPoint(const MountDir, Destination: string): Boolean;
+function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 var
   Dest: array [0..1024] of Char;
-  WideDest: WideString;
+  WideSrc: WideString;
   FullDir: array [0..1024] of Char;
   FilePart: PChar;
   Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
@@ -581,7 +581,10 @@ begin
   begin
     if (GetFullPathName(PChar(Destination), 1024, FullDir, FilePart) = 0) or
       (GetFileAttributes(FullDir) = $FFFFFFFF) then
+    begin
+      SetLastError(ERROR_PATH_NOT_FOUND);
       Exit;
+    end;
     StrPCopy(Dest, '\??\' + Destination);
   end;
   FillChar(ReparseData, SizeOf(ReparseData), #0);
@@ -590,17 +593,17 @@ begin
   ReparseData.ReparseDataLength := NameLength + 12;
   ReparseData.SubstituteNameLength := NameLength;
   ReparseData.PrintNameOffset := NameLength + 2;
-  WideDest := WideString(Dest); // TODO User MultiByte....
-  StrPCopyW(ReparseData.PathBuffer, WideDest);
-  Result := NtfsSetReparsePoint(MountDir, ReparseData,
+  WideSrc := WideString(Dest); // TODO User MultiByte....
+  StrPCopyW(ReparseData.PathBuffer, WideSrc);
+  Result := NtfsSetReparsePoint(Source, ReparseData,
     ReparseData.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
 
 //------------------------------------------------------------------------------
 
-function NtfsDeleteJunctionPoint(const MountDir: string): Boolean;
+function NtfsDeleteJunctionPoint(const Source: string): Boolean;
 begin
-  Result := NtfsDeleteReparsePoint(MountDir, IO_REPARSE_TAG_MOUNT_POINT);
+  Result := NtfsDeleteReparsePoint(Source, IO_REPARSE_TAG_MOUNT_POINT);
 end;
 
 //------------------------------------------------------------------------------
@@ -608,7 +611,7 @@ end;
 const
   CP_THREAD_ACP = 3;           // current thread's ANSI code page
 
-function NtfsGetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 var
   Handle: THandle;
   Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
@@ -616,9 +619,9 @@ var
   BytesReturned: DWORD;
 begin
   Result := False;
-  if NtfsFileHasReparsePoint(MountDir) then
+  if NtfsFileHasReparsePoint(Source) then
   begin
-    Handle := CreateFile(PChar(MountDir), GENERIC_READ, 0, nil,
+    Handle := CreateFile(PChar(Source), GENERIC_READ, 0, nil,
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
     if Handle <> INVALID_HANDLE_VALUE then
     try
