@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 27, 2000                                                 }
+{ Last modified: September 18, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -59,6 +59,7 @@ type
     class procedure KillInstance;
     class function SetForegroundWindow98(const Wnd: HWND): Boolean;
     function CheckInstance(const MaxInstances: Word): Boolean;
+    procedure CheckMultipleInstances(const MaxInstances: Word);
     procedure CheckSingleInstance;
     function SwitchTo(const Index: Integer): Boolean;
     procedure UserNotify(const Param: Longint);
@@ -130,13 +131,20 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclAppInstances.CheckSingleInstance;
+procedure TJclAppInstances.CheckMultipleInstances(const MaxInstances: Word);
 begin
-  if not CheckInstance(1) then
+  if not CheckInstance(MaxInstances) then
   begin
     SwitchTo(0);
     KillInstance;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclAppInstances.CheckSingleInstance;
+begin
+  CheckMultipleInstances(1);
 end;
 
 //------------------------------------------------------------------------------
