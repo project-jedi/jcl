@@ -1,0 +1,258 @@
+{******************************************************************************}
+{                                                                              }
+{ Project JEDI Code Library (JCL)                                              }
+{                                                                              }
+{ The contents of this file are subject to the Mozilla Public License Version  }
+{ 1.0 (the "License"); you may not use this file except in compliance with the }
+{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
+{                                                                              }
+{ Software distributed under the License is distributed on an "AS IS" basis,   }
+{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
+{ the specific language governing rights and limitations under the License.    }
+{                                                                              }
+{ The Original Code is JclMiscel.pas.                                          }
+{                                                                              }
+{ The Initial Developer of the Original Code is documented in the accompanying }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
+{ 2000 of these individuals.                                                   }
+{                                                                              }
+{ Last modified: June 8, 2000                                                  }
+{                                                                              }
+{******************************************************************************}
+
+unit JclMiscel;
+
+{$I JCL.INC}
+
+{$WEAKPACKAGEUNIT ON}
+
+interface
+
+uses
+  Windows, Classes;
+
+//------------------------------------------------------------------------------
+// StrLstLoadSave
+//------------------------------------------------------------------------------
+
+const
+  HKCR: HKEY = HKEY_CLASSES_ROOT;
+  HKCU: HKEY = HKEY_CURRENT_USER;
+  HKLM: HKEY = HKEY_LOCAL_MACHINE;
+  HKUS: HKEY = HKEY_USERS;
+  HKCC: HKEY = HKEY_CURRENT_CONFIG;
+  HKPD: HKEY = HKEY_PERFORMANCE_DATA;
+
+function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
+
+function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
+function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
+
+function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string;
+  Items:TStringList):Boolean;
+function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string;
+  SaveTo: TStringList):Boolean;
+function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+
+implementation
+
+uses
+  Dialogs, Registry, SysUtils,
+  JclRegistry, JclResources, JclSecurity, JclSysUtils;
+
+//==============================================================================
+
+function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecAtrrs: TSecurityAttributes;
+  hInputFile, hOutputFile: THandle;
+begin
+  Result := False;
+  hInputFile := CreateFile(PChar(InputFile), GENERIC_READ, FILE_SHARE_READ,
+    CreateInheritable(SecAtrrs), OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY, 0);
+  if hInputFile <> INVALID_HANDLE_VALUE then
+  begin
+    hOutputFile := CreateFile(PChar(OutPutFile), GENERIC_READ or GENERIC_WRITE,
+      FILE_SHARE_READ, CreateInheritable(SecAtrrs), CREATE_ALWAYS,
+      FILE_ATTRIBUTE_TEMPORARY, 0);
+    if hOutputFile <> INVALID_HANDLE_VALUE then
+    begin
+      FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+      StartupInfo.cb := SizeOf(StartupInfo);
+      StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      StartupInfo.wShowWindow := SW_HIDE;
+      StartupInfo.hStdOutput := hOutputFile;
+      StartupInfo.hStdInput := hInputFile;
+      Result := CreateProcess(nil, PChar(CommandLine), nil, nil, True,
+        CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+        ProcessInfo);
+      if Result then
+      begin
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        CloseHandle(ProcessInfo.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+      end;
+      CloseHandle(hOutputFile);
+    end;
+    CloseHandle(hInputFile);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+begin
+  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  StartupInfo.cb := SizeOf(TStartupInfo);
+  StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
+  StartupInfo.wShowWindow := CmdShow;
+  Result := CreateProcess(nil, PChar(Cmd), nil, nil, False,
+    NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
+  if Result then
+  begin
+    WaitForInputIdle(ProcessInfo.hProcess, Infinite);
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+begin
+  Result := Cardinal($FFFFFFFF);
+  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  StartupInfo.cb := SizeOf(TStartupInfo);
+  StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
+  StartupInfo.wShowWindow := CmdShow;
+  if CreateProcess(nil, PChar(Cmd), nil, nil, False, NORMAL_PRIORITY_CLASS,
+    nil, nil, StartupInfo, ProcessInfo) then
+  begin
+    WaitForInputIdle(ProcessInfo.hProcess, Infinite);
+    if WaitForSingleObject(ProcessInfo.hProcess, Infinite) = WAIT_OBJECT_0 then
+    begin
+      {$IFDEF DELPHI3}
+      if not GetExitCodeProcess(ProcessInfo.hProcess, Integer(Result)) then
+      {$ELSE}
+      if not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
+      {$ENDIF}
+        Result := Cardinal($FFFFFFFF);
+    end;
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
+var
+  DevMode: TDeviceMode;
+begin
+  Result := DISP_CHANGE_FAILED;
+  FillChar(DevMode, SizeOf(DevMode), #0);
+  DevMode.dmSize := SizeOf(DevMode);
+  if EnumDisplaySettings(nil, 0, DevMode) then
+  begin
+    DevMode.dmFields := DM_PELSWIDTH or DM_PELSHEIGHT;
+    DevMode.dmPelsWidth := XRes;
+    DevMode.dmPelsHeight := YRes;
+    Result := ChangeDisplaySettings(DevMode, 0);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegSaveList(const RootKey: HKEY; const Key: string;
+  const ListName: string; Items: TStringList): Boolean;
+var
+  I: Integer;
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create;
+  try
+    try
+      Reg.RootKey := RootKey;
+      Reg.CreateKey(Key + '\' + ListName);
+    finally
+      Reg.Free;
+    end;
+    // Save Number of strings
+    RegWriteString(RootKey, Key + '\' + ListName, 'Items', IntToStr(Items.Count - 1));
+    for I := 0 to Items.Count - 1 do
+      RegWriteString(RootKey, Key + '\' + ListName, IntToStr(I), Items[I]);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegLoadList(const RootKey: HKEY; const Key: string;
+  const ListName: string; SaveTo: TStringList): Boolean;
+var
+  Reg: TRegistry;
+  I: Integer;
+begin
+  Reg := TRegistry.Create;
+  try
+    try
+      Reg.RootKey := RootKey;
+      if Reg.KeyExists(Key + '\' + ListName) then
+      begin
+        for I := 0 to StrToInt(RegReadString(RootKey, Key + '\' + ListName, 'Items')) do
+          SaveTo.Add(RegReadString(RootKey, Key + '\' + ListName, IntToStr(I)));
+        Result := True;
+      end
+      else
+      begin
+        Result := False;
+        ShowMessage(Format(RsErrNotExist, [ListName]));
+      end;
+    finally
+      Reg.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+var
+  Reg:TRegistry;
+begin
+  Reg := TRegistry.Create;
+  try
+    try
+      Reg.RootKey := RootKey;
+      if Reg.KeyExists(Key + '\' + ListName) then
+      begin
+        Reg.DeleteKey(Key + '\' + ListName);
+        Result := True;
+      end
+      else
+      begin
+        Result := False;
+        ShowMessage(Format(RsErrNotExist, [ListName]));
+      end;
+    finally
+      Reg.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+end.
