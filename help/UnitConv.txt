@@ -26,8 +26,9 @@ Lessons in good programming or how a one liner can bite you</A>" available at th
 Unit=JclUnitConv
 Category=Unit Conversions
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CelsiusToKelvin(const T: Float): Float;
@@ -45,8 +46,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CelsiusToFahrenheit(const T: Float): Float;
@@ -65,8 +67,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KelvinToCelsius(const T: Float): Float;
@@ -84,8 +87,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KelvinToFahrenheit(const T: Float): Float;
@@ -103,8 +107,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FahrenheitToCelsius(const T: Float): Float;
@@ -123,8 +128,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FahrenheitToKelvin(const T: Float): Float;
@@ -142,8 +148,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Temperature Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CycleToDeg(const Cycles: Float): Float;
@@ -161,8 +168,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CycleToGrad(const Cycles: Float): Float;
@@ -180,8 +188,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CycleToRad(const Cycles: Float): Float;
@@ -199,8 +208,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DegToCycle(const Degrees: Float): Float;
@@ -218,8 +228,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DegToGrad(const Degrees: Float): Float;
@@ -237,8 +248,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DegToRad(const Degrees: Float): Float;
@@ -256,8 +268,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GradToCycle(const Grads: Float): Float;
@@ -275,8 +288,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GradToDeg(const Grads: Float): Float;
@@ -294,8 +308,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GradToRad(const Grads: Float): Float;
@@ -313,8 +328,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RadToCycle(const Radians: Float): Float;
@@ -332,8 +348,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RadToDeg(const Radians: Float): Float;
@@ -351,8 +368,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RadToGrad(const Radians: Float): Float;
@@ -370,8 +388,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Angle Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CartesianToPolar(const X, Y: Float; var Rho, Theta: Float);
@@ -387,12 +406,13 @@ Count=4
 3=Rho:Float=Receives the Rho part of the converted coordinate
 4=Theta:Float=Receives the Theta part of the converted coordinate
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PolarToCartesian
@@ -411,12 +431,13 @@ Count=4
 3=X:Float=Receives the X element of the converted coordinate
 4=Y:Float=Receives the Y element of the converted coordinate
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CartesianToPolar
@@ -437,12 +458,13 @@ Count=6
 5=Phi:Float=TODO
 6=Zeta:Float=TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
@@ -460,12 +482,13 @@ Count=6
 5=Theta:Float=TODO
 6=Phi:Float=TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CylinderToCartesian(const R, Phi, Zeta: Float; var X, Y, Z: Float);
@@ -483,12 +506,13 @@ Count=6
 5=Y:Float=TODO
 6=Z:Float=TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
@@ -506,12 +530,13 @@ Count=6
 5=Y:Float=TODO
 6=Z:Float=TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Coordinate Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CmToInch(const Cm: Float): Float;
@@ -529,8 +554,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function InchToCm(const Inch: Float): Float;
@@ -548,8 +574,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FeetToMetre(const Feet: Float): Float;
@@ -567,8 +594,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MetreToFeet(const Metre: Float): Float;
@@ -586,8 +614,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function YardToMetre(const Yard: Float): Float;
@@ -605,8 +634,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MetreToYard(const Metre: Float): Float;
@@ -624,8 +654,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NmToKm(const Nm: Float): Float;
@@ -643,8 +674,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KmToNm(const Km: Float): Float;
@@ -662,8 +694,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KmToSm(const Km: Float): Float;
@@ -681,8 +714,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SmToKm(const Sm: Float): Float;
@@ -700,8 +734,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Length Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PascalToBar(const Pa: Float): Float;
@@ -719,8 +754,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PascalToAt(const Pa: Float): Float;
@@ -738,8 +774,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PascalToTorr(const Pa: Float): Float;
@@ -757,8 +794,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function BarToPascal(const Bar: Float): Float;
@@ -776,8 +814,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function AtToPascal(const At: Float): Float;
@@ -795,8 +834,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TorrToPascal(const Torr: Float): Float;
@@ -814,8 +854,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Pressure Conversion
 Author=Matthias Thoma;ma.thoma@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LitreToGalUs(const Litre: Float): Float;
@@ -833,8 +874,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalUsToLitre(const GalUs: Float): Float;
@@ -852,8 +894,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalUsToGalCan(const GalUs: Float): Float;
@@ -871,8 +914,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalCanToGalUs(const GalCan: Float): Float;
@@ -890,8 +934,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalUsToGalUk(const GalUs: Float): Float;
@@ -909,8 +954,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalUkToGalUs(const GalUk: Float): Float;
@@ -928,8 +974,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LitreToGalCan(const Litre: Float): Float;
@@ -947,8 +994,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Allan Lyons;lyons@cadvision.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalCanToLitre(const GalCan: Float): Float;
@@ -966,8 +1014,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Allan Lyons;lyons@cadvision.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LitreToGalUk(const Litre: Float): Float;
@@ -985,8 +1034,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Allan Lyons;lyons@cadvision.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GalUkToLitre(const GalUs: Float): Float;
@@ -1004,8 +1054,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Volume Conversion
 Author=Allan Lyons;lyons@cadvision.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToLb(const nKg: Float): Float;
@@ -1023,8 +1074,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LbToKg(const nLb: Float): Float;
@@ -1042,8 +1094,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToOz(const nKg: Float): Float;
@@ -1061,8 +1114,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function OzToKg(const nOz: Float): Float;
@@ -1080,8 +1134,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QrUsToKg(const nQr : Float) : Float;
@@ -1099,8 +1154,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QrUkToKg(const nQr : Float) : Float;
@@ -1118,8 +1174,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KaratToKg(const nKarat : Float) : Float;
@@ -1137,8 +1194,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CwtUsToKg(const nCwt: Float): Float;
@@ -1156,8 +1214,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CwtUkToKg(const nCwt: Float): Float;
@@ -1175,8 +1234,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StonToKg(const nSTon: Float): Float;
@@ -1194,8 +1254,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LtonToKg(const nLTon: Float): Float;
@@ -1213,8 +1274,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToCwtUs(const nKg: Float): Float;
@@ -1232,8 +1294,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToCwtUk(const nKg: Float): Float;
@@ -1251,8 +1314,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToQrUs(const nKg: Float): Float;
@@ -1270,8 +1334,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToQrUk(const nKg: Float): Float;
@@ -1289,8 +1354,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToSton(const nKg: Float): Float;
@@ -1308,8 +1374,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KgToLton(const nKg: Float): Float;
@@ -1327,8 +1394,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KnotToMs(const Knot: Float): Float;
@@ -1346,8 +1414,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Velocity
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HpElectricToWatt(const HpE: Float): Float;
@@ -1365,8 +1434,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Power
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HpMetricToWatt(const HpM: Float): Float;
@@ -1384,8 +1454,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Power
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MsToKnot(const ms: Float): Float;
@@ -1403,8 +1474,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Velocity
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WattToHpElectric(const W: Float): Float;
@@ -1422,8 +1494,9 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Power
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WattToHpMetric(const W: Float): Float;
@@ -1441,5 +1514,6 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Power
 Author=Manlio Laschena;lasc@iol.it
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
