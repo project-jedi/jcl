@@ -22,7 +22,7 @@
 { formatting numbers and dates.                                                                    }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: January 29, 2000                                                                  }
+{ Last modified: March 31, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -39,7 +39,7 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase;
+  JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // System locales
@@ -52,12 +52,17 @@ type
 
   TJclLocaleInfo = class (TObject)
   private
+    FCalendars: TStringList;
     FDateFormats: array [TJclLocaleDateFormats] of TStringList;
     FLocaleID: LCID;
     FTimeFormats: TStringList;
     FUseSystemACP: Boolean;
+    FValidCalendars: Boolean;
     FValidDateFormatLists: set of TJclLocaleDateFormats;
     FValidTimeFormatLists: Boolean;
+    function GetCalendars: TStrings;
+    function GetCalendarIntegerInfo(Calendar: CALID; InfoType: Integer): Integer;
+    function GetCalendarStringInfo(Calendar: CALID; InfoType: Integer): string;
     function GetIntegerInfo(InfoType: Integer): Integer;
     function GetStringInfo(InfoType: Integer): string;
     function GetLangID: LANGID;
@@ -108,6 +113,7 @@ type
     // Codepages
     property DefaultLanguageId: Integer index LOCALE_IDEFAULTLANGUAGE read GetIntegerInfo;
     property DefaultCountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
+    property DefaultCodePageEBCDIC: Integer index LOCALE_IDEFAULTEBCDICCODEPAGE read GetIntegerInfo;
     property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
     property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE read GetIntegerInfo;
     property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE read GetIntegerInfo;
@@ -121,6 +127,7 @@ type
     property LeadingZeros: Integer index LOCALE_ILZERO read GetIntegerInfo write SetIntegerInfo;
     property NegativeNumberMode: Integer index LOCALE_INEGNUMBER read GetIntegerInfo write SetIntegerInfo;
     property NativeDigits: string index LOCALE_SNATIVEDIGITS read GetStringInfo;
+    property DigitSubstitution: Integer index LOCALE_IDIGITSUBSTITUTION read GetIntegerInfo;
     // Monetary
     property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo write SetStringInfo;
     property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL read GetStringInfo;
@@ -131,6 +138,8 @@ type
     property NumberOfIntlMonetaryDigits: Integer index LOCALE_IINTLCURRDIGITS read GetIntegerInfo;
     property PositiveCurrencyMode: string index LOCALE_ICURRENCY read GetStringInfo write SetStringInfo;
     property NegativeCurrencyMode: string index LOCALE_INEGCURR read GetStringInfo write SetStringInfo;
+    property EnglishCurrencyName: string index LOCALE_SENGCURRNAME read GetStringInfo;
+    property NativeCurrencyName: string index LOCALE_SNATIVECURRNAME read GetStringInfo;
     // Date and time
     property DateSeparator: Char index LOCALE_SDATE read GetCharInfo write SetCharInfo;
     property TimeSeparator: Char index LOCALE_STIME read GetCharInfo write SetCharInfo;
@@ -147,6 +156,7 @@ type
     property LeadZerosInMonth: Integer index LOCALE_IMONLZERO read GetIntegerInfo;
     property AMDesignator: string index LOCALE_S1159 read GetStringInfo write SetStringInfo;
     property PMDesignator: string index LOCALE_S2359 read GetStringInfo write SetStringInfo;
+    property YearMonthFormat: string index LOCALE_SYEARMONTH read GetStringInfo write SetStringInfo;
     // Calendar
     property CalendarType: Integer index LOCALE_ICALENDARTYPE read GetIntegerInfo write SetIntegerInfo;
     property AdditionalCaledarTypes: Integer index LOCALE_IOPTIONALCALENDAR read GetIntegerInfo;
@@ -167,7 +177,14 @@ type
     property PosOfNegativeMonetarySymbol: Integer index LOCALE_INEGSYMPRECEDES read GetIntegerInfo;
     property SepOfNegativeMonetarySymbol: Integer index LOCALE_INEGSEPBYSPACE read GetIntegerInfo;
     // Misc
+    property DefaultPaperSize: Integer index LOCALE_IPAPERSIZE read GetIntegerInfo;
     property FontSignature: string index LOCALE_FONTSIGNATURE read GetStringInfo;
+    property LocalizedSortName: string index LOCALE_SSORTNAME read GetStringInfo;
+    // Calendar Info
+    property Calendars: TStrings read GetCalendars;
+    property CalendarIntegerInfo[Calendar: CALID; InfoType: Integer]: Integer read GetCalendarIntegerInfo;
+    property CalendarStringInfo[Calendar: CALID; InfoType: Integer]: string read GetCalendarStringInfo;
+    property CalTwoDigitYearMax[Calendar: CALID]: Integer index CAL_ITWODIGITYEARMAX read GetCalendarIntegerInfo;
   end;
 
   TJclLocalesKind = (lkInstalled, lkSupported);
@@ -289,7 +306,7 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE
 implementation
 
 uses
-  JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
+  JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   JclMaxKeyboardLayouts = 16;
@@ -346,6 +363,7 @@ destructor TJclLocaleInfo.Destroy;
 var
   DateFormat: TJclLocaleDateFormats;
 begin
+  FreeAndNil(FCalendars);
   for DateFormat := Low(DateFormat) to High(DateFormat) do
     FreeAndNil(FDateFormats[DateFormat]);
   FreeAndNil(FTimeFormats);
@@ -370,6 +388,96 @@ begin
   else
     Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
   Result := GetStringInfo(Param);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclLocaleInfo.GetCalendarIntegerInfo(Calendar: CALID; InfoType: Integer): Integer;
+var
+  Ret: DWORD;
+begin
+  InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]) or CAL_RETURN_NUMBER;
+  Ret := GetCalendarInfoW(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+  if Ret = 0 then
+    Ret := GetCalendarInfoA(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+  if Ret = 0 then
+    Result := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclLocaleInfo.GetCalendars: TStrings;
+var
+  C: CALTYPE;
+
+  function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+  begin
+    ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
+    Result := True;
+  end;
+
+  function EnumCalendarInfoProcName(lpCalendarInfoString: PChar): BOOL; stdcall;
+  begin
+    ProcessedLocaleInfoList.Add(lpCalendarInfoString);
+    Result := True;
+  end;
+
+begin
+  if not FValidCalendars then
+  begin
+    if FCalendars = nil then
+      FCalendars := TStringList.Create
+    else
+      FCalendars.Clear;
+    ProcessedLocaleInfoList := FCalendars;
+    try
+      C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
+      if not EnumCalendarInfoEx(@EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
+        EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
+      FValidCalendars := True;
+    finally
+      ProcessedLocaleInfoList := nil;
+    end;
+  end;
+  Result := FCalendars;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclLocaleInfo.GetCalendarStringInfo(Calendar: CALID; InfoType: Integer): string;
+var
+  Buffer: Pointer;
+  BufferSize: Integer;
+  Ret: DWORD;
+begin
+  Result := '';
+  InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]);
+  Buffer := nil;
+  try
+    BufferSize := 128;
+    repeat
+      ReallocMem(Buffer, BufferSize);
+      Ret := GetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+      if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
+        BufferSize := GetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, 0, nil) * 2;
+    until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
+    if Ret > 0 then
+      Result := PWideChar(Buffer)
+    else
+    begin
+      BufferSize := 64;
+      repeat
+        ReallocMem(Buffer, BufferSize);
+        Ret := GetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+        if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
+          BufferSize := GetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, 0, nil);
+      until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
+      if Ret > 0 then
+        Result := PChar(Buffer);
+    end;
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -593,6 +701,7 @@ begin
   if FUseSystemACP <> Value then
   begin
     FUseSystemACP := Value;
+    FValidCalendars := False;
     FValidDateFormatLists := [];
     FValidTimeFormatLists := False;
   end;
@@ -1006,5 +1115,6 @@ begin
     Free;
   end;
 end;
+
 
 end.
