@@ -1052,9 +1052,10 @@ PathBuildRoot creates a root path for the gives drive number. That is, if you
 pass in 0, 1, 2, you'll get back 'a:\', 'b:\' and 'c:\' respectively.
 [Parameters]
 Count=1
-1=Drive:Byte=Drive number. Must be in the range 0..25.
+1=Drive:Byte=Drive number. Must be in the range 0..25 or an EJclPathError exception
+is raised. 
 [Result]
-The root path for the given drive, or an empty string if Drive is out of range.
+The root path for the given drive.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1087,14 +1088,17 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PathCompactPath(DC: HDC; const Path: string; Width: Integer; CmpFmt: Boolean = True): string;
+function PathCompactPath(DC: HDC; const Path: string; Width: Integer; CmpFmt: Boolean = True): string; overload;
+function PathCompactPath(Canvas: TCanvas; const Path: string; Width: Integer; CmpFmt: Boolean = True): string; overload;
 [ShortDescr]
 Compacts a path to fit within the given pixel width.
 [Description]
 PathCompactPath compacts, or truncates, the path to fit within the given pixel
 width by replacing part of the string with an ellipses. The specified device
 context is used to retrieve the font metrics which determine how a string maps
-to a pixel width.
+to a pixel width. Note the existence of two overloads allowing you to pass in
+either an HDC or TCanvas (descendent). The TCanvas overload simply delegates the
+work to the first overload passing in Canvas.Handle for the DC parameter.
 [Parameters]
 Count=4
 1=DC:HDC=Device context used for retrieving font metrics. This should be the
