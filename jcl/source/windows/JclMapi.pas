@@ -27,7 +27,7 @@
 
 unit JclMapi;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
