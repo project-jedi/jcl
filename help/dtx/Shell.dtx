@@ -11,6 +11,8 @@ Parameters:
 Result:
   If the function succeeds the result is True, otherwise it is False. You can call
   GetLastError to get more detailed information about the reason of failure.
+See also:
+  OpenSpecialFolder
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -34,6 +36,8 @@ Parameters:
   Parent - Handle of the window to serve as the parent of any dialogs displayed
 Result:
   If the function succeeds the result is True, otherwise it is False.
+See also:
+  OpenFolder
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -60,6 +64,9 @@ Parameters:
   Options - Set of options that control the behavior of this function. See TSHDeleteOptions for more information.
 Result:
   If the function succeeds the result is True, otherwise it is False.
+See also:
+  TSHDeleteOptions
+  SHDeleteFiles
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -87,6 +94,9 @@ Parameters:
   Options - Set of options that control the behavior of this function. See TSHDeleteOptions for more information.
 Result:
   If the function succeeds the result is True, otherwise it is False.
+See also:
+  TSHDeleteOptions
+  SHDeleteFolder
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -115,6 +125,8 @@ Result:
   If the function succeeds the result is True, otherwise it is False.
 Notes:
   Use this function only to rename a single file.
+See also:
+  TSHDeleteOptions
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -132,6 +144,8 @@ Summary:
   Enumeration used by SHRenameFile to specify the rename options.
 Description:
   Enumeration used by SHRenameFile to specify the rename options.
+See also:
+  SHRenameFile
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -153,6 +167,9 @@ Summary:
   Enumeration used by SHDeleteFiles and SHDeleteFolder to specify the deletion options.
 Description:
   Enumeration used by SHDeleteFiles and SHDeleteFolder to specify the deletion options.
+See also:
+  SHDeleteFiles
+  SHDeleteFolder
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -209,6 +226,10 @@ Summary:
   Enumeration used by SHEnumFolderFirst to specify the type of items to include in the enumeration.
 Description:
   Enumeration used by SHEnumFolderFirst to specify the type of items to include in the enumeration.
+See also:
+  SHEnumFolderFirst
+  SHEnumFolderNext
+  SHEnumFolderClose
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -257,6 +278,10 @@ Result:
 Notes:
   If SHEnumFolderFirst returns False there is no need to call SHEnumFolderClose.
   Passing an empty string as the Folder parameter will enumerate 'My Computer'.
+See also:
+  SHEnumFolderNext
+  SHEnumFolderClose
+  TEnumFolderRec
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -278,6 +303,9 @@ Description:
   that it is only necessary to call this function if SHEnumFolderFirst returned True.
 Parameters:
   F - The TEnumFolderRec used during the enumeration.
+See also:
+  SHEnumFolderFirst
+  SHEnumFolderNext
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -305,6 +333,9 @@ Parameters:
 Result:
   If the function finds a next item it returns True. If there is no next item or
   an error occurred it returns False.
+See also:
+  SHEnumFolderFirst
+  SHEnumFolderClose
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -359,6 +390,8 @@ Parameters:
   Pos - Position, in client coordinates relative to the window identified by Handle, of the top, left corner of the context menu.
 Result:
   If the function succeeds the result is True, if it fails the result is False.
+See also:
+  DisplayContextMenuPidl
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -385,6 +418,8 @@ Parameters:
   Pos - Position, in client coordinates relative to the window identified by Handle, of the top, left corner of the context menu.
 Result:
   If the function succeeds the result is True, if it fails the result is False.
+See also:
+  DisplayContextMenu
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -414,6 +449,9 @@ Result:
   overlayed version. If the function fails the return value is False.
 Notes:
   The dimensions of large and small are determined by using the GetSystemMetrics function with SM_CXICON, SM_CXSMICON respectively.
+See also:
+  OverlayIconShortcut
+  OverlayIconShared
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -437,6 +475,9 @@ Parameters:
   Small - On input this must be a valid handle to a small icon. On exit this will be the handle of that same icon, overlayed with the shortcut icon.
 Result:
   If the function succeeds it returns True, if it fails it returns False.
+See also:
+  OverlayIcon
+  OverlayIconShared
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -460,6 +501,9 @@ Parameters:
   Small - On input this must be a valid handle to a small icon. On exit this will be the handle of that same icon, overlayed with the shared folder icon.
 Result:
   If the function succeeds it returns True, if it fails it returns False.
+See also:
+  OverlayIcon
+  OverlayIconShortCut
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -511,6 +555,8 @@ Summary:
   This record is used by SHDllGetVersion to return version information about a specified DLL.
 Description:
   This record is used by SHDllGetVersion to return version information about a specified DLL.
+See also:
+  SHDllGetVersion
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -550,6 +596,8 @@ Result:
   If the function succeeds the return value is True and the Version record is filled
   with the version information. If the function fails the return value is False and
   the Version record contains whatever it contained on entry.
+See also:
+  TDllVersionInfo
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -579,6 +627,8 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
+See also:
+  ShellExecAndWait
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -611,6 +661,8 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
+See also:
+  ShellExec
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -785,6 +837,10 @@ Parameters:
 Result:
   If the function succeeds it returns True and P contains the address of the reallocated
   memory block. If the function fails it returns False, and P will retain its value.
+See also:
+  SHAllocMem
+  SHGetMem
+  SHFreeMem
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -812,6 +868,9 @@ Parameters:
 Result:
   If the function succeeds it returns True and P contains the address of the allocated
   memory block. If the function fails then it returns False and P will be set to nil.
+See also:
+  SHAllocMem
+  SHFreeMem
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -838,6 +897,9 @@ Parameters:
 Result:
   If the function succeeds it returns True and P contains the address of the allocated
   memory block. If the function fails it returns False and P will be set to nil.
+See also:
+  SHGetMem
+  SHFreeMem
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -865,6 +927,9 @@ Result:
   case means that either the shell's memory allocator couldn't be retrieved or that
   the memory block wasn't allocated by the shell. Either case, the memory is not
   freed and the P parameter retains its value.
+See also:
+  SHAllocMem
+  SHGetMem
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -886,6 +951,10 @@ Notes:
   To avoid problems you should set the IdList field to nil before using this record.
   You must call ShellLinkFree when you no longer need the ShellLink record.
   The shell shortcut functions rely on COM internally and as such you should ensure COM is propertly initialized by calling the Win32 CoInitialize(nil) function before using these functions.
+See also:
+  ShellLinkCreate
+  ShellLinkCreateSystem
+  ShellLinkResolve
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -925,6 +994,11 @@ Description:
   otherwise your application leaks memory.
 Parameters:
   ShellLink - The TShellLink record used earlier in ShellLinkCreate, ShellLinkCreateSystem or ShellLinkResolve.
+See also:
+  ShellLinkResolve
+  ShellLinkCreate
+  ShellLinkCreateSystem
+  TShellLink
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -951,6 +1025,11 @@ Result:
   If the function succeeds it returns S_OK. If it fails it returns an OLE error code.
 Notes:
   You must free the TShellLink record by calling ShellLinkFree
+See also:
+  ShellLinkCreate
+  ShellLinkCreateSystem
+  ShellLinkFree
+  TShellLink
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -979,6 +1058,11 @@ Result:
   the function fails the return value is an OLE error code.
 Notes:
   You must free the TShellLink record by calling ShellLinkFree
+See also:
+  ShellLinkCreateSystem
+  ShellLinkResolve
+  ShellLinkFree
+  TShellLink
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1008,6 +1092,11 @@ Result:
   the function fails the return value is an OLE error code.
 Notes:
   You must free the TShellLink record by calling ShellLinkFree
+See also:
+  ShellLinkCreate
+  ShellLinkResolve
+  ShellLinkFree
+  TShellLink
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1083,6 +1172,8 @@ Parameters:
 Result:
   If the function releases the memory it returns True. If it fails to free the
   memory or the StrRet record is not of STRRET_WSTR type then the return value is False.
+See also:
+  StrRetToString
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1113,6 +1204,8 @@ Result:
   If it fails the return value is an empty string.
 Notes:
   Windows 2000 introduced StrRetToStr and StrRetToBuf which can be used instead.
+See also:
+  StrRetFreeMem
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1137,6 +1230,9 @@ Parameters:
 Result:
   If the function succeeds it returns the path of the specified pidl. If it fails
   it returns an empty string.
+See also:
+  PathToPidl
+  PathToPidlBind
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1165,6 +1261,9 @@ Result:
   specified path, relative to the specified Folder. If the function fails the
   return value is nil. Note that the caller is responsible for eventually releasing
   the memory associated with the returned pidl by calling PidlFree
+See also:
+  PidlToPath
+  PathToPidlBind
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1195,6 +1294,10 @@ Result:
   the memory associated with the returned pidl by calling PidlFree.
 Notes:
   This function will correctly handle drives but you should use DriveToPidlBind
+See also:
+  PathToPidl
+  PidlToPath
+  DriveToPidlBind
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1223,6 +1326,8 @@ Result:
   specified drive, relative to the returned Folder. On failure the return value
   is nil. Note that the caller is responsible for eventually releasing the returned
   pidl by calling PidlFree.
+See also:
+  PathToPidlBind
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1250,6 +1355,8 @@ Parameters:
 Result:
   If the function succeeds the return value is True, otherwise the return value is
   False. In this latter case the Folder and Last parameter will contain nil on return.
+See also:
+  PathToPidlBind
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1356,6 +1463,8 @@ Result:
   The depth of the item identifier list. If the supplied pidl is either unassigned
   or empty the function returns 0. If the pidl is invalid (depth is greater than
   MAX_PATH) the function returns -1.
+See also:
+  PidlGetLength
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1382,6 +1491,8 @@ Result:
   The length, in bytes, of the item identifier list. If the supplied pidl is either
   unassigned or empty the result value is 0. If the pidl is invalid (depth greater
   than MAX_PATH) the function returns -1.
+See also:
+  PidlGetDepth
 Quick info:
   Unit: JclShell
   Category: Shell
@@ -1406,6 +1517,9 @@ Parameters:
   Pidl - Item identifier list for which to retrieve the next element.
 Result:
   The next element in the supplied item identifier list, or nil if there is no next element.
+See also:
+  PidlGetDepth
+  PidlGetLength
 Quick info:
   Unit: JclShell
   Category: Shell
