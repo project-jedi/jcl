@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 18, 2000                                            }
+{ Last modified: November 19, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -452,11 +452,15 @@ type
 // Export section related classes
 //------------------------------------------------------------------------------
 
-  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded, esAddrOrFwd);
+  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded,
+    esAddrOrFwd, esSection);
+
+  TJclPeExportFuncList = class;
 
   TJclPeExportFuncItem = class (TObject)
   private
     FAddress: DWORD;
+    FExportList: TJclPeExportFuncList;
     FForwardedName: PChar;
     FForwardedDotPos: PChar;
     FHint: Word;
@@ -470,6 +474,7 @@ type
     function GetForwardedName: string;
     function GetName: string;
     function GetAddressOrForwardStr: string;
+    function GetSectionName: string;
   protected
     procedure FindForwardedDotPos;
   public
@@ -484,6 +489,7 @@ type
     property Name: string read GetName;
     property Ordinal: DWORD read FOrdinal;
     property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
+    property SectionName: string read GetSectionName;
   end;
 
   TJclPeExportFuncList = class (TJclPeImageBaseList)
@@ -794,7 +800,9 @@ type
     function CalculateCheckSum: DWORD;
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
+    function GetSectionName(const Header: PImageSectionHeader): string;
     function IsSystemImage: Boolean;
+    function RvaToSection(Rva: DWORD): PImageSectionHeader;
     function RvaToVa(Rva: DWORD): Pointer;
     function StatusOK: Boolean;
     procedure TryGetNamesForOrdinalImports;
@@ -979,8 +987,8 @@ type
   public
     function HookImport(Base: Pointer; const ModuleName, FunctionName: string;
       NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
-    class function IsWin9xDebugThunk(P: Pointer): Boolean;
-    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
+    class function IsWin9xDebugThunk(P: Pointer): Boolean; { TODO -cDOC : Hallvard Vassbotn }
+    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean; { TODO -cDOC : Hallvard Vassbotn }
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
     property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
@@ -998,6 +1006,37 @@ function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
 
 function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
   var Name: string): Boolean;
+
+//------------------------------------------------------------------------------
+// Borland name unmangling for Delphi packages
+//------------------------------------------------------------------------------
+
+type
+  TJclBorUmSymbolKind = (skData, skConstructor, skDestructor, skRTTI, skVTable);
+  TJclBorUmSymbolModifier = (smQualified, smLinkProc);
+  TJclBorUmSymbolModifiers = set of TJclBorUmSymbolModifier;
+  TJclBorUmDescription = record
+    Kind: TJclBorUmSymbolKind;
+    Modifiers: TJclBorUmSymbolModifiers;
+  end;
+  TJclBorUmResult = (urOk, urNotMangled, urMicrosoft, urError);
+  TJclPeUmResult = (umNotMangled, umBorland, umMicrosoft);
+
+{$IFDEF SUPPORTS_OVERLOAD}
+function PeBorUnmangleName(const Name: string; var Unmangled: string;
+  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; var Unmangled: string;
+  var Description: TJclBorUmDescription): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string): string; overload;
+{$ELSE}
+function PeBorUnmangleName(const Name: string; var Unmangled: string;
+  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
+{$ENDIF}
+
+function PeIsNameMangled(const Name: string): TJclPeUmResult;
+
+function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 
 //------------------------------------------------------------------------------
 
@@ -1642,7 +1681,6 @@ begin
         I := FUniqueNamesList.IndexOf(S);
         if I >= 0 then
           TJclPeImportLibItem(FUniqueNamesList.Objects[I]).FImportKind := ikBoundImport;
-{ TODO : All imports with the same name should be marked as Bound }
         for I := 1 to BoundImport^.NumberOfModuleForwarderRefs do
           Inc(PImageBoundForwarderRef(BoundImport)); // skip forward information
         Inc(BoundImport);
@@ -1930,6 +1968,17 @@ begin
   Result := FName;
 end;
 
+//------------------------------------------------------------------------------
+
+function TJclPeExportFuncItem.GetSectionName: string;
+begin
+  if IsForwarded then
+    Result := ''
+  else
+    with FExportList.FImage do
+      Result := GetSectionName(RvaToSection(Address));
+end;
+
 //==============================================================================
 // Export sort functions
 //==============================================================================
@@ -1976,6 +2025,15 @@ end;
 function ExportSortByAddrOrFwd(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareStr(TJclPeExportFuncItem(Item1).AddressOrForwardStr, TJclPeExportFuncItem(Item2).AddressOrForwardStr);
+end;
+
+//------------------------------------------------------------------------------
+
+function ExportSortBySection(Item1, Item2: Pointer): Integer;
+begin
+  Result := CompareStr(TJclPeExportFuncItem(Item1).SectionName, TJclPeExportFuncItem(Item2).SectionName);
+  if Result = 0 then
+    Result := ExportSortByName(Item1, Item2);
 end;
 
 //==============================================================================
@@ -2092,6 +2150,7 @@ begin
       for I := 0 to FExportDir^.NumberOfNames - 1 do
       begin
         ExportItem := TJclPeExportFuncItem.Create;
+        ExportItem.FExportList := Self;
         ExportItem.FOrdinal := NameOrdinals^ + FBase;
         ExportItem.FAddress := PDWORD(Functions + NameOrdinals^ * SizeOf(DWORD))^;
         ExportItem.FHint := I;
@@ -2278,7 +2337,7 @@ procedure TJclPeExportFuncList.SortList(SortType: TJclPeExportSort; Descending: 
 const
   SortFunctions: array [TJclPeExportSort] of TListSortCompare =
     (ExportSortByName, ExportSortByOrdinal, ExportSortByHint, ExportSortByAddress,
-     ExportSortByForwarded, ExportSortByAddrOrFwd);
+     ExportSortByForwarded, ExportSortByAddrOrFwd, ExportSortBySection);
 begin
   if not FSorted or (SortType <> FLastSortType) or (Descending <> FLastSortDescending) then
   begin
@@ -3138,6 +3197,19 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeImage.GetSectionName(const Header: PImageSectionHeader): string;
+var
+  I: Integer;
+begin
+  I := FImageSections.IndexOfObject(TObject(Header));
+  if I = -1 then
+    Result := ''
+  else
+    Result := FImageSections[I];
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
   Result.VirtualAddress := GetImageUnusedHeaderBytes(@FLoadedImage, Result.Size);
@@ -3249,6 +3321,32 @@ begin
     FImageSections.AddObject(Copy(PChar(@Header.Name), 1, 8), Pointer(Header));
     Inc(Header);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.RvaToSection(Rva: DWORD): PImageSectionHeader;
+var
+  I: Integer;
+  SectionHeader: PImageSectionHeader;
+  EndRVA: DWORD;
+begin
+  Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
+  if Result = nil then // Borland seems to have missed physical size in some sections ?
+    for I := 0 to FImageSections.Count - 1 do
+    begin
+      SectionHeader := PImageSectionHeader(FImageSections.Objects[I]);
+      if SectionHeader^.SizeOfRawData = 0 then
+        EndRVA := SectionHeader^.Misc.VirtualSize
+      else
+        EndRVA := SectionHeader^.SizeOfRawData;
+      Inc(EndRVA, SectionHeader^.VirtualAddress);
+      if (SectionHeader^.VirtualAddress <= Rva) and (EndRVA >= Rva) then
+      begin
+        Result := SectionHeader;
+        Break;
+      end;
+    end;      
 end;
 
 //------------------------------------------------------------------------------
@@ -4275,8 +4373,238 @@ begin
     Name := '';    
 end;
 
+//==============================================================================
+// Borland name unmangling for Delphi packages
+//==============================================================================
+
+function PeBorUnmangleName(const Name: string; var Unmangled: string;
+  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
+const
+  ValidSymbolName = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
+var
+  NameP, NameU, NameUFirst: PChar;
+  QualifierFound, LinkProcFound: Boolean;
+
+  procedure MarkQualifier;
+  begin
+    if not QualifierFound then
+    begin
+      QualifierFound := True;
+      BasePos := NameU - NameUFirst + 2;
+    end;
+  end;
+
+  procedure ReadSpecialSymbol;
+  var
+    SymbolLength: Integer;
+  begin
+    SymbolLength := 0;
+    while NameP^ in ['0'..'9'] do
+    begin
+      SymbolLength := SymbolLength * 10 + Ord(NameP^) - 48;
+      Inc(NameP);
+    end;
+    while (SymbolLength > 0) and (NameP^ <> #0) do
+    begin
+      if NameP^ = '@' then
+      begin
+        MarkQualifier;
+        NameU^ := '.';
+      end else
+        NameU^ := NameP^;
+      Inc(NameP);
+      Inc(NameU);
+      Dec(SymbolLength);
+    end;
+  end;
+
+  procedure ReadRTTI;
+  begin
+    if StrLComp(NameP, '$xp$', 4) = 0 then
+    begin
+      Inc(NameP, 4);
+      Description.Kind := skRTTI;
+      QualifierFound := False;
+      ReadSpecialSymbol;
+      if QualifierFound then
+        Include(Description.Modifiers, smQualified);
+    end else
+      Result := urError;
+  end;
+
+  procedure ReadNameSymbol;
+  begin
+    if NameP^ = '@' then
+    begin
+      LinkProcFound := True;
+      Inc(NameP);
+    end;
+    while NameP^ in ValidSymbolName do
+    begin
+      NameU^ := NameP^;
+      Inc(NameP);
+      Inc(NameU);
+    end;
+  end;
+
+  procedure ReadName;
+  begin
+    Description.Kind := skData;
+    QualifierFound := False;
+    LinkProcFound := False;
+    repeat
+      ReadNameSymbol;
+      if LinkProcFound and not QualifierFound then
+        LinkProcFound := False;
+      case NameP^ of
+        '@':
+          case (NameP + 1)^ of
+            #0:
+              begin
+                Description.Kind := skVTable;
+                Break;
+              end;
+            '$':
+              if (NameP + 2)^ = 'b' then
+              begin
+                case (NameP + 3)^ of
+                  'c':
+                    Description.Kind := skConstructor;
+                  'd':
+                    Description.Kind := skDestructor;
+                end;
+                Inc(NameP, 6);
+              end;
+          else
+            MarkQualifier;
+            NameU^ := '.';
+            Inc(NameU);
+            Inc(NameP);
+          end;
+      else
+        Break;
+      end;
+    until False;
+    if QualifierFound then
+      Include(Description.Modifiers, smQualified);
+    if LinkProcFound then
+      Include(Description.Modifiers, smLinkProc);
+  end;
+
+begin
+  NameP := PChar(Name);
+  Result := urError;
+  case NameP^ of
+    '@':
+      Result := urOk;
+    '?':
+      Result := urMicrosoft;
+    '_', 'A'..'Z', 'a'..'z':
+      Result := urNotMangled;
+  end;
+  if Result <> urOk then
+    Exit;
+  Inc(NameP);
+  SetLength(UnMangled, 1024);
+  NameU := Pointer(UnMangled);
+  NameUFirst := NameU;
+  Description.Modifiers := [];
+  BasePos := 1;
+  case NameP^ of
+    '$':
+      ReadRTTI;
+    '_', 'A'..'Z', 'a'..'z':
+      ReadName;
+  else
+    Result := urError;
+  end;
+  NameU^ := #0;
+  StrResetLength(Unmangled);
+end;
+
 //------------------------------------------------------------------------------
 
+{$IFDEF SUPPORTS_OVERLOAD}
+function PeBorUnmangleName(const Name: string; var Unmangled: string;
+  var Description: TJclBorUmDescription): TJclBorUmResult;
+var
+  BasePos: Integer;
+begin
+  Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
+end;
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_OVERLOAD}
+function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult;
+var
+  Description: TJclBorUmDescription;
+  BasePos: Integer;
+begin
+  Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
+end;
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_OVERLOAD}
+function PeBorUnmangleName(const Name: string): string;
+var
+  Unmangled: string;
+  Description: TJclBorUmDescription;
+  BasePos: Integer;
+begin
+  if PeBorUnmangleName(Name, Unmangled, Description, BasePos) = urOk then
+    Result := Unmangled
+  else
+    Result := '';
+end;
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+function PeIsNameMangled(const Name: string): TJclPeUmResult;
+begin
+  Result := umNotMangled;
+  if Length(Name) > 0 then
+    case Name[1] of
+      '@':
+        Result := umBorland;
+      '?':
+        Result := umMicrosoft;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
+var
+  Res: DWORD;
+  Description: TJclBorUmDescription;
+  BasePos: Integer;
+begin
+  Result := umNotMangled;
+  case PeBorUnmangleName(Name, Unmangled, Description, BasePos) of
+    urOk:
+      Result := umBorland;
+    urMicrosoft:
+      begin
+        SetLength(Unmangled, 2048);
+        Res := UnDecorateSymbolName(PChar(Name), PChar(Unmangled), 2048, UNDNAME_NAME_ONLY);
+        if Res > 0 then
+        begin
+          StrResetLength(Unmangled);
+          Result := umMicrosoft;
+        end else
+          Unmangled := '';
+      end;
+  end;
+  if Result = umNotMangled then
+    Unmangled := Name;
+end;
+
+//------------------------------------------------------------------------------
 
 initialization
   GlobalCritSection := TJclCriticalSection.Create;
@@ -4285,5 +4613,5 @@ finalization
   FreeAndNil(GlobalPeImage);
   FreeAndNil(GlobalCritSection);
   FreeAndNil(GlobalImportHooks);
-  
+
 end.
