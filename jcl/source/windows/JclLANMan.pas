@@ -1,30 +1,29 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclLANMan.pas.                                          }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains routines and classes to handle user and group management  }
-{ tasks. As the name implies, it uses the LAN Manager API.                     }
-{                                                                              }
-{ Unit owner: Peter Friese                                                     }
-{ Last modified: August 24, 2001                                               }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclLANMan.pas.                                                              }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains routines and classes to handle user and group management tasks. As the name   }
+{ implies, it uses the LAN Manager API.                                                            }
+{                                                                                                  }
+{ Unit owner: Peter Friese                                                                         }
+{ Last modified: August 24, 2001                                                                   }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclLANMan;
 
@@ -37,9 +36,9 @@ interface
 uses
   Windows, Classes;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // User Management
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TNetUserFlag = (ufAccountDisable, ufHomedirRequired, ufLockout,
@@ -57,10 +56,10 @@ type
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string;
-  const PasswordNeverExpires: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+  const PasswordNeverExpires: Boolean = True): Boolean;
 function CreateLocalAccount(const Username, Fullname, Password, Description,
   Homedir, Script: string;
-  const PasswordNeverExpires: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+  const PasswordNeverExpires: Boolean = True): Boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
@@ -83,9 +82,9 @@ uses
   SysUtils,
   LM, JclBase, JclStrings, JclWin32;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // User Management
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
@@ -124,7 +123,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateLocalAccount(const Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
@@ -133,7 +132,7 @@ begin
     Script, PassWordNeverExpires);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DeleteAccount(const Servername, Username: string): Boolean;
 var
@@ -146,14 +145,14 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DeleteLocalAccount(Username: string): Boolean;
 begin
   Result := DeleteAccount('', Username);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 var
@@ -174,7 +173,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 var
@@ -195,7 +194,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 var
@@ -208,7 +207,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
@@ -237,7 +236,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
@@ -269,7 +268,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LocalGroupExists(const Group: string): Boolean;
 var
@@ -284,7 +283,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GlobalGroupExists(const Server, Group: string): Boolean;
 var
@@ -299,7 +298,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
@@ -312,7 +311,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 var
@@ -328,7 +327,7 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RIDToDWORD(const RID: TNetWellKnownRID): DWORD;
 begin
@@ -350,7 +349,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DWORDToRID(const RID: DWORD): TNetWellKnownRID;
 begin
@@ -372,7 +371,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 var
@@ -417,7 +416,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 var
@@ -438,7 +437,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsLocalAccount(const AccountName: string): Boolean;
 var
