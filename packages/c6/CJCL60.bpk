@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="..\dcu\CJCL60.bpl"/>
+    <PROJECT value="CJCL60.bpl"/>
     <OBJFILES value="..\dcu\CJCL60.obj ..\dcu\Jcl8087.obj ..\dcu\JclAppInst.obj 
       ..\dcu\JclBase.obj ..\dcu\JclCOM.obj ..\dcu\JclComplex.obj 
       ..\dcu\JclConsole.obj ..\dcu\JclCounter.obj ..\dcu\JclDateTime.obj 
@@ -26,17 +26,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib nmfast.lib 
-      dbexpress.lib inetdbxpress.lib inetdbbde.lib bcbsmp.lib dsnapcon.lib 
-      dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib 
-      teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib bdertl.lib 
-      adortl.lib vcldb.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vcljpg.bpi bcbie.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="rtl.bpi bcbie.bpi vcl.bpi vcljpg.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\source"/>
     <PATHRC value=".;"/>
@@ -47,20 +39,20 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJCL60.cpp"/>
-    <INCLUDEPATH value="..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\lib\debug;..\..\..\..\cbuilder6\lib\debug;..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\source;..\dcu;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\source -I..\..\..\..\CBuilder6\Projects -I$(BCB)\include 
-      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG 
+      -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
     <PFLAGS value="-N2..\dcu -N0..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-l..\dcu -I..\dcu -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\dcu -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -73,8 +65,6 @@
       <FILE FILENAME="CJCL60.res" FORMNAME="" UNITNAME="CJCL60.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.cpp" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JclAppInst.pas" FORMNAME="" UNITNAME="JclAppInst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -124,6 +114,8 @@
       <FILE FILENAME="..\source\JclWinMIDI.pas" FORMNAME="" UNITNAME="JclWinMidi" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\LM.pas" FORMNAME="" UNITNAME="LM" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\Snmp.pas" FORMNAME="" UNITNAME="Snmp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -157,12 +149,14 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=1
-Item0=..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Count=2
+Item0=..\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=1
-Item0=..\..\..\..\cbuilder6\lib\debug;..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=2
+Item0=..\source;..\dcu;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\..\..\..\cbuilder6\lib\debug;..\source;..\..\..\..\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -177,8 +171,9 @@ Count=1
 Item0=..\dcu
 
 [HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=..\dcu
+Count=2
+Item0=..\dcu\
+Item1=..\dcu
 
 [HistoryLists\hIBPIOutputDir]
 Count=1
