@@ -63,7 +63,6 @@
 unit JclMath;
 
 {$I jcl.inc}
-{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -105,7 +104,7 @@ const
   inv2Pi: Float    = 0.159154943091895;                  // 0.5 / Pi
   TwoToPower63: Float = 9223372036854775808.0;           // 2^63
   GoldenMean: Float   = 1.618033988749894848204586834365638;  // GoldenMean
-  EulerMascheroni: Foat = 0.5772156649015328606065120900824;  // Euler GAMMA
+  EulerMascheroni: Float = 0.5772156649015328606065120900824;  // Euler GAMMA
 
 
 const
