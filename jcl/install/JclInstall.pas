@@ -30,6 +30,7 @@
 interface
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 uses
   {$IFDEF MSWINDOWS}
