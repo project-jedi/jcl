@@ -46,8 +46,6 @@ type
   TBitRange = Byte;
   TBooleanArray = array of Boolean;
 
-// TODOC TOTEST Added new overloads
-
 function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
 function BitsHighest(X: SmallInt): Integer; overload;
@@ -67,8 +65,6 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 
-// TODOC TOTEST Added new overloads
-
 function CountBitsSet(X: Byte): Integer; assembler; overload;
 function CountBitsSet(X: Word): Integer; assembler; overload;
 function CountBitsSet(X: Smallint): Integer; overload;
@@ -80,6 +76,7 @@ function CountBitsSet(X: Int64): Integer; overload;
 function CountBitsCleared(X: Byte): Integer; overload;
 function CountBitsCleared(X: Word): Integer; overload;
 function CountBitsCleared(X: Integer): Integer; overload;
+function CountBitsCleared(X: Cardinal): Integer; overload;
 function CountBitsCleared(X: Int64): Integer; overload;
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
@@ -502,19 +499,26 @@ end;
 
 function CountBitsCleared(X: Byte): Integer; overload;
 begin
-  Result := 8 - CountBitsSet(Cardinal(X));
+  Result := 8 - CountBitsSet(Byte(X));
 end;
 
 //------------------------------------------------------------------------------
 
 function CountBitsCleared(X: Word): Integer; overload;
 begin
-  Result := 16 - CountBitsSet(Cardinal(X));
+  Result := 16 - CountBitsSet(Word(X));
 end;
 
 //------------------------------------------------------------------------------
 
 function CountBitsCleared(X: Integer): Integer; overload;
+begin
+  Result := 32 - CountBitsSet(Integer(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsCleared(X: Cardinal): Integer; overload;
 begin
   Result := 32 - CountBitsSet(Cardinal(X));
 end;
@@ -523,7 +527,7 @@ end;
 
 function CountBitsCleared(X: Int64): Integer; overload;
 begin
-  Result := 64 - CountBitsSet(Cardinal(X));
+  Result := 64 - CountBitsSet(Int64(X));
 end;
 
 //------------------------------------------------------------------------------
