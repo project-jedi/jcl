@@ -1,3 +1,4 @@
 [Directories]
-UnitOutputDir=..\..\lib\D7
-SearchPath=..\..\Source\Common;..\..\Source\Windows
+UnitOutputDir=..\..\lib\d7
+SearchPath=..\..\source\common;..\..\source\windows
+
