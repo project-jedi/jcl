@@ -372,7 +372,7 @@ type
   TModuleHandle = HINST;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-  TModuleHandle = THandle;
+  TModuleHandle = Pointer;
 {$ENDIF LINUX}
 
 const
@@ -414,7 +414,9 @@ uses
   {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF HAS_UNIT_LIBC}
+  {$ELSE ~HAS_UNIT_LIBC}
+  dl,
+  {$ENDIF ~HAS_UNIT_LIBC}
   SysUtils,
   JclResources, JclStrings, JclMath;
 
@@ -1966,7 +1968,7 @@ begin
   if Base = 2 then
     FPrecision := BinaryPrecision
   else
-  FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
+    FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
   if Value < FPrecision then
     FPrecision := Value;
 end;
@@ -2108,53 +2110,94 @@ end;
 //==================================================================================================
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
+{$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
     Module := LoadLibrary(PChar(FileName));
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  if Module = INVALID_MODULEHANDLE_VALUE then
+    Module := dlopen(PChar(FileName), RTLD_NOW);
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
 function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
-begin
 {$IFDEF MSWINDOWS}
+begin
   if Module = INVALID_MODULEHANDLE_VALUE then
     Module := LoadLibraryEx(PChar(FileName), 0, Flags);
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-  Result := LoadModule(Module, Filename); // ignore Flags
-{$ENDIF LINUX}
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  if Module = INVALID_MODULEHANDLE_VALUE then
+    Module := dlopen(PChar(FileName), Flags);
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
 procedure UnloadModule(var Module: TModuleHandle);
+{$IFDEF MSWINDOWS}
 begin
   if Module <> INVALID_MODULEHANDLE_VALUE then
     FreeLibrary(Module);
   Module := INVALID_MODULEHANDLE_VALUE;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    dlclose(Pointer(Module));
+  Module := INVALID_MODULEHANDLE_VALUE;
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
+{$IFDEF MSWINDOWS}
 begin
   Result := nil;
   if Module <> INVALID_MODULEHANDLE_VALUE then
     Result := GetProcAddress(Module, PChar(SymbolName));
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  Result := nil;
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    Result := dlsym(Module, PChar(SymbolName));
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+{$IFDEF MSWINDOWS}
 begin
   Result := nil;
   if Module <> INVALID_MODULEHANDLE_VALUE then
     Result := GetProcAddress(Module, PChar(SymbolName));
   Accu := Accu and (Result <> nil);
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  Result := nil;
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    Result := dlsym(Module, PChar(SymbolName));
+  Accu := Accu and (Result <> nil);
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2259,6 +2302,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/05/09 03:01:57  rrossmair
+// module loader code made FPC compatible
+//
 // Revision 1.14  2004/05/08 22:06:30  rrossmair
 // revert mistaken removal of COMPILER6_UP condition (v. 1.12)
 //
