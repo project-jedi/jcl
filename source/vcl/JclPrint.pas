@@ -21,7 +21,6 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -156,14 +155,9 @@ function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 //procedure PrintTextRotation(X, Y: Integer; Rotation: Word; Text: string);
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
-function GetDefaultPrinterName: AnsiString;
+function GetDefaultPrinterName: string;
 
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
-
-// DPSetDefaultPrinter
-// Parameters:
-//   PrinterName: Valid name of existing printer to make default.
-// Returns: True for success, False for failure.
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
 implementation
@@ -1127,10 +1121,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetDefaultPrinterName: AnsiString;
+function GetDefaultPrinterName: string;
 begin
-  if not DPGetDefaultPrinter(Result) then
-    Result := '';
+  DPGetDefaultPrinter(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1163,8 +1156,8 @@ begin
   if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
   begin
     SetLastError(0);
-    EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
-    if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0) then
+    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
+    if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
       Exit;
     GetMem(PI2, Needed);
     try
@@ -1210,7 +1203,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
+{ TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft }
 // DPSetDefaultPrinter
 // Parameters:
 //   PrinterName: Valid name of existing printer to make default.
@@ -1219,136 +1212,99 @@ end;
 // Source of the original code: Microsoft Knowledge Base Article - 246772
 //   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
-
-function SetDefaultPrinter9x(const PrinterName: string): Boolean;
+type
+  TSetDefaultPrinter = function(APrinterName: PChar): BOOL; stdcall;
 var
-  PrinterHandle: THandle;
-  NeededSize: DWord;
-  Info2Ptr: PPrinterInfo2;
-begin
-  Result := False;
-  // Open this printer so you can get information about it.
-  if not OpenPrinter(PChar(PrinterName), PrinterHandle, nil) then
-    Exit;
-  if PrinterHandle = 0 then
-    Exit;
-  try
-    // The first GetPrinter() tells you how big our buffer must
-    // be to hold ALL of PRINTER_INFO_2. Note that this will
-    // typically return FALSE. This only means that the buffer (the 3rd
-    // parameter) was not filled in. You do not want it filled in here.
-    SetLastError(0);
-    if not GetPrinter(PrinterHandle, 2, nil, 0, @NeededSize) then
-    begin
-      if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
-        Exit;
-    end;
-    // Allocate enough space for PRINTER_INFO_2.
-    GetMem(Info2Ptr, NeededSize);
-    try
-      // The second GetPrinter() will fill in all the current information
-      // so that all you have to do is modify what you are interested in.
-      if not GetPrinter(PrinterHandle, 2, Info2Ptr, NeededSize, @NeededSize) then
-        Exit;
-      // Set default printer attribute for this printer.
-      Info2Ptr^.Attributes := Info2Ptr^.Attributes or PRINTER_ATTRIBUTE_DEFAULT;
-      if not SetPrinter(PrinterHandle, 2, Info2Ptr, 0) then
-        Exit;
-      // Tell all open programs that this change occurred.
-      // Allow each program 1 second to handle this message.
-      SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-        LParam(PChar(WindowsIdent)), SMTO_NORMAL, 1000, PDWord(nil)^);
-    finally
-      FreeMem(Info2Ptr);
-    end;
-  finally
-    ClosePrinter(PrinterHandle);
-  end;
-end;
-
-function SetDefaultPrinterNT(const PrinterName: string): Boolean;
-var
-  PrinterHandle: THandle;
-  NeededSize: DWord;
-  Info2Ptr: PPrinterInfo2;
-  S: string;
-begin
-  Result := False;
-  // Open this printer so you can get information about it.
-  if not OpenPrinter(PChar(PrinterName), PrinterHandle, nil) then
-    Exit;
-  if PrinterHandle = 0 then
-    Exit;
-  try
-    // The first GetPrinter() tells you how big our buffer must
-    // be to hold ALL of PRINTER_INFO_2. Note that this will
-    // typically return FALSE. This only means that the buffer (the 3rd
-    // parameter) was not filled in. You do not want it filled in here.
-    SetLastError(0);
-    if not GetPrinter(PrinterHandle, 2, nil, 0, @NeededSize) then
-    begin
-      if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
-        Exit;
-    end;
-    // Allocate enough space for PRINTER_INFO_2.
-    GetMem(Info2Ptr, NeededSize);
-    try
-      // The second GetPrinter() fills in all the current information.
-      if not GetPrinter(PrinterHandle, 2, Info2Ptr, NeededSize, @NeededSize) then
-        Exit;
-      if (Info2Ptr^.pDriverName = nil) or (Info2Ptr^.pPortName = nil) then
-        Exit;
-      // Allocate buffer big enough for concatenated string.
-      // string will be in form "printername,drivername,portname".
-      // Build string in form "printername,drivername,portname".
-      S := Format('%s,%s,%s', [PrinterName, Info2Ptr^.pDriverName, Info2Ptr^.pPortName]);
-      // Set the default printer in Win.ini and registry.
-      if not WriteProfileString(WindowsIdent, DeviceIdent, PChar(S)) then
-        Exit;
-    finally
-      FreeMem(Info2Ptr);
-    end;
-  finally
-    ClosePrinter(PrinterHandle);
-  end;
-end;
-
-function SetDefaultPrinter2k(const PrinterName: string): Boolean;
-begin
-  // You are explicitly linking to SetDefaultPrinter because implicitly
-  // linking on Windows 95/98 or NT4 results in a runtime error.
-  Result := RtdlSetDefaultPrinter(PChar(PrinterName));
-end;
-
+  Needed: DWORD;
+  PI2: PPrinterInfo2;
+  WinVer: TWindowsVersion;
+  hPrinter: THandle;
+  hWinSpool: HMODULE;
+  SetDefPrint: TSetDefaultPrinter;
+  PrinterStr: string;
 begin
   Result := False;
   if PrinterName = '' then
     Exit;
-  // If Windows 95 or 98, use SetPrinter.
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+  WinVer := GetWindowsVersion;
+  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
   begin
-    Result := SetDefaultPrinter9x(PrinterName);
+    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
+    if Result and (hPrinter <> 0) then
+      try
+        SetLastError(0);
+        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+          Exit;
+        GetMem(PI2, Needed);
+        try
+          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
+          if Result then
+          begin
+            PI2^.Attributes := PI2^.Attributes or PRINTER_ATTRIBUTE_DEFAULT;
+            Result := SetPrinter(hPrinter, 2, PI2, 0);
+            if Result then
+              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
+                LPARAM(PChar('windows')), SMTO_NORMAL, 1000, Needed);
+          end;
+        finally
+          FreeMem(PI2);
+        end;
+      finally
+        ClosePrinter(hPrinter);
+      end;
   end
-  // If Windows NT, use the SetDefaultPrinter API for Windows 2000,
-  // or WriteProfileString for version 4.0 and earlier.
   else
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  // Win NT uses WIN.INI (registry)
+  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
   begin
-    if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
-      Result := SetDefaultPrinter2k(PrinterName)
-    else // NT4.0 or earlier
-      Result := SetDefaultPrinterNT(PrinterName);
-    if Result then
-      // Tell all open programs that this change occurred.
-      // Allow each app 1 second to handle this message.
-      SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0, SMTO_NORMAL,
-        1000, PDWord(nil)^);
+    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
+    if Result and (hPrinter <> 0) then
+      try
+        SetLastError(0);
+        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+          Exit;
+        GetMem(PI2, Needed);
+        try
+          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
+          if Result and (PI2^.pDriverName <> nil) and (PI2^.pPortName <> nil) then
+          begin
+            PrinterStr := PrinterName + ',' + PI2^.pDriverName + ',' + PI2^.pPortName;
+            Result := WriteProfileString('windows', 'device', PChar(PrinterStr));
+            if Result then
+              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0,
+                SMTO_NORMAL, 1000, Needed);
+          end;
+        finally
+          FreeMem(PI2);
+        end;
+      finally
+        ClosePrinter(hPrinter);
+      end;
+  end
+  else
+  // >= Win 2000 uses SetDefaultPrinter
+  begin
+    hWinSpool := LoadLibrary('winspool.drv');
+    if hWinSpool <> 0 then
+      try
+        @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');
+        if not Assigned(SetDefPrint) then
+          Exit;
+        Result := SetDefPrint(PChar(PrinterName));
+      finally
+        FreeLibrary(hWinSpool);
+      end;
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.15  2004/10/09 06:17:27  marquardt
+// PH cleaning DPSetDefaultPrinter reimplemented from scratch
+//
 // Revision 1.14  2004/10/08 16:45:31  marquardt
 // PH cleaning DPGetDefaultPrinter reimplemented from scratch
 //
