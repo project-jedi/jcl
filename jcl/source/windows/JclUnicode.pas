@@ -22,7 +22,7 @@
 
 unit JclUnicode;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 //
