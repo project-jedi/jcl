@@ -24,7 +24,7 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: May 05, 2004                                                                      }
+{ Last modified: June 14, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,7 +35,7 @@ Todo:
   - insert markers
 - support Aborted and set current dir in ...ExecAndCapture
 - IFDEF OS specific compiler switches and defines
-- get settings from .cfg or .dof
+*almost done*- get settings from .cfg or .dof
 
 - move ExecAndCapture to a unit where it fit's more
   (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)  
@@ -50,22 +50,24 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc, Types,
-  {$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Classes, IniFiles, Contnrs;
 
 type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);
   TJclDCCMapFileLevel = (mfloff, mflsegments, mflpublics, mfldetailed);
 
-  //(usc) need optionen "MakeModifiedUnits" (-M) ?
+  //(usc) need option "MakeModifiedUnits" (-M) ?
   //   I guess -M is opposite of -B
   TJclCustomDCCConfig = class(TObject)
   private
     FBPLOutputDirectory: string;
     FBuildAllUnits: Boolean;
+    FCompilerSwitches: string;
+    FCompileWithPackages: Boolean;
     FConditionalDefines: string;
     FConsoleApplication: Boolean;
     FDCPOutputDirectory: string;
@@ -74,15 +76,19 @@ type
     FImageBaseAddr: DWord;
     FIncludeDirectories: string;
     FMapFileLevel: TJclDCCMapFileLevel;
-    FMaxStackSize: Integer;
-    FMinStackSize: Integer;
+    FMaxStackSize: DWord;
+    FMinStackSize: DWord;
     FObjectDirectories: string;
     FOutputHints: Boolean;
     FOutputWarnings: Boolean;
     FPackages: string;
+    FRemoteDebugSymbols: Boolean;
     FResourceDirectories: string;
+    FSearchPaths: string;
+    FTD32DebugInfo: Boolean;
     FUnitAliases: string;
     FUnitDirectories: string;
+    procedure SetSearchPaths(ASearchPaths: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -91,23 +97,32 @@ type
 
     property BPLOutputDirectory: string read FBPLOutputDirectory write FBPLOutputDirectory;
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
-    //(usc) TJclDCCEx name is Defines only
+    //(usc) better as TJclDCCSwitches
+    property CompilerSwitches: string read FCompilerSwitches write FCompilerSwitches;
+    property CompileWithPackages: Boolean read FCompileWithPackages write FCompileWithPackages;
+    //(usc) TJclDCCEx name was Defines only
     property ConditionalDefines: string read FConditionalDefines write FConditionalDefines;
     property ConsoleApplication: Boolean read FConsoleApplication write FConsoleApplication;
     property DCPOutputDirectory: string read FDCPOutputDirectory write FDCPOutputDirectory;
-    //(usc) DCU & EXE dir are named DCU/EXEOutputDir in TJclDCCEx!
+    //(usc) DCU & EXE dir were named DCU/EXEOutputDir in TJclDCCEx!
     property DCUOutputDirectory: string read FDCUOutputDir write FDCUOutputDir;
     property EXEOutputDirectory: string read FEXEOutputDir write FEXEOutputDir;
+    //(usc) was only ImageBase in TJclDCCEx
     property ImageBaseAddr: DWord read FImageBaseAddr write FImageBaseAddr;
     property IncludeDirectories: string read FIncludeDirectories write FIncludeDirectories;
     property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
-    property MaxStackSize: Integer read FMaxStackSize write FMaxStackSize;
-    property MinStackSize: Integer read FMinStackSize write FMinStackSize;
+    property MaxStackSize: DWord read FMaxStackSize write FMaxStackSize;
+    property MinStackSize: DWord read FMinStackSize write FMinStackSize;
     property ObjectDirectories: string read FObjectDirectories write FObjectDirectories;
     property OutputHints: Boolean read FOutputHints write FOutputHints;
     property OutputWarnings: Boolean read FOutputWarnings write FOutputWarnings;
+    //(usc) better as StringList
     property Packages: string read FPackages write FPackages;
+    property RemoteDebugSymbols: Boolean read FRemoteDebugSymbols write FRemoteDebugSymbols;
     property ResourceDirectories: string read FResourceDirectories write FResourceDirectories;
+    //(usc) better as StringList
+    property SearchPaths: string read FSearchPaths write SetSearchPaths;
+    property TD32DebugInfo: Boolean read FTD32DebugInfo write FTD32DebugInfo;
     property UnitAliases: string read FUnitAliases write FUnitAliases;
     property UnitDirectories: string read FUnitDirectories write FUnitDirectories;
   end;
@@ -166,27 +181,10 @@ type
     FCurrentLineNo: Integer;
     FMessages: TJclDCCMessages;
 
-    FEXEOutputDir: string;
-    FDCUOutputDir: string;
-    FSearchPaths: string;
-    FCompileWithPackages: Boolean;
-    FPackages: string;
-    FDefines: string;
-    FMapFileLevel: TJclDCCMapFileLevel;
-    FCompilerSwitches: string;
-    FUnitAliases: string;
-    FOutputWarnings: Boolean;
-    FOutputHints: Boolean;
-    FConsoleApplication: Boolean;
-    FTD32DebugInfo: Boolean;
-    FRemoteDebugSymbols: Boolean;
-    FMinStackSize: DWord;
-    FMaxStackSize: DWord;
-    FImageBase: DWord;
     FOnCompileProgress: TNotifyEvent;
-    FBuildAllUnits: Boolean;
     FQuietCompile: Boolean;
     FOnMessage: TNotifyEvent;
+    FConfig: TJclCustomDCCConfig;
     procedure CaptureLine(const Line: string; var Aborted: Boolean);
     procedure ClearValues;
   public
@@ -195,36 +193,14 @@ type
 
     function Compile: Boolean;
 
-    //(usc) replace several property by TJclCustomDCCConfig
-    property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
     property QuietCompile: Boolean read FQuietCompile write FQuietCompile;
     property ExeName: string read FExeName write FExeName;
     property CurrentFile: string read FCurrentFile;
     property CurrentLineNo: Integer read FCurrentLineNo;
-    property CompileWithPackages: Boolean read FCompileWithPackages write FCompileWithPackages;
-    property DCUOutputDir: string read FDCUOutputDir write FDCUOutputDir;
-    property Defines: string read FDefines write FDefines;
-    property EXEOutputDir: string read FEXEOutputDir write FEXEOutputDir;
+    property Config: TJclCustomDCCConfig read FConfig;
     property FileToCompile: string read FFileToCompile write FFileToCompile;
     property PlainOutput: TStringList read FPlainOutput;
-    //(usc) better as StringList
-    property SearchPaths: string read FSearchpaths write FSearchPaths;
-    property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
     property Messages: TJclDCCMessages read FMessages;
-    //(usc) better as StringList
-    property Packages: string read FPackages write FPackages;
-    //(usc) better as TJclDCCSwitches
-    property CompilerSwitches: string read FCompilerSwitches write FCompilerSwitches;
-    property UnitAliases: string read FUnitAliases write FUnitAliases;
-    property OutputWarnings: Boolean read FOutputWarnings;
-    property OutputHints: Boolean read FOutputHints;
-    property ConsoleApplication: Boolean read FConsoleApplication write FConsoleApplication;
-    property TD32DebugInfo: Boolean read FTD32DebugInfo write FTD32DebugInfo;
-    property RemoteDebugSymbols: Boolean read FRemoteDebugSymbols write FRemoteDebugSymbols;
-    property MinStackSize: DWord read FMinStackSize write FMinStackSize;
-    property MaxStackSize: DWord read FMaxStackSize write FMaxStackSize;
-    property ImageBase: DWord read FImageBase write FImageBase;
-    //(usc) better split into OnCompileProgress and OnMessage
     property OnCompileProgress: TNotifyEvent read FOnCompileProgress write FOnCompileProgress;
     property OnMessage: TNotifyEvent read FOnMessage write FOnMessage;
   end;
@@ -242,6 +218,8 @@ begin
   inherited Create;
   FBPLOutputDirectory := '';
   FBuildAllUnits := True;
+  FCompilerSwitches := '';
+  FCompileWithPackages := False;
   FConditionalDefines := '';
   FConsoleApplication := False;
   FDCPOutputDirectory := '';
@@ -250,13 +228,16 @@ begin
   FImageBaseAddr := $400000;
   FIncludeDirectories := '';
   FMapFileLevel := mfloff;
-  FMaxStackSize := 1048576;
-  FMinStackSize := 16384;
+  FMaxStackSize := 1048576; //old TJclDCCExValue $100000 (same value as hex)
+  FMinStackSize := 16384; //old TJclDCCExValue $4000 (same value as hex)
   FObjectDirectories := '';
-  FOutputHints := True;
-  FOutputWarnings := True;
+  FOutputHints := True; //old TJclDCCExValue False
+  FOutputWarnings := True; //old TJclDCCExValue False
   FPackages := '';
+  FRemoteDebugSymbols := False;
   FResourceDirectories := '';
+  FSearchPaths := '';
+  FTD32DebugInfo := False;
   FUnitAliases := '';
   FUnitDirectories := '';
 end;
@@ -264,6 +245,18 @@ end;
 destructor TJclCustomDCCConfig.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TJclCustomDCCConfig.SetSearchPaths(ASearchPaths: string);
+begin
+  if FSearchPaths <> ASearchPaths then
+  begin
+    FSearchPaths := ASearchPaths;
+    FUnitDirectories := FSearchPaths;
+    FObjectDirectories := FSearchPaths;
+    FIncludeDirectories := FSearchPaths;
+    FResourceDirectories := FSearchPaths;
+  end;
 end;
 
 procedure TJclDCCConfigFile.LoadFromFile(AFileName: string);
@@ -288,9 +281,18 @@ begin
     //(usc) do FileExists check ?
     ConfigStrings.LoadFromFile(AFileName);
     MapFileLevel := mfloff; //(usc) set to off ?
+    CompilerSwitches := '';
     for I := 0 to Pred(ConfigStrings.Count) do
     begin
       S := ConfigStrings[I];
+      //(usc) read compiler switches
+      if (Pos('-$', S) = 1) and (Length(S) = 4) and (Pos(S, CompilerSwitches) = 0) then
+      begin
+        if CompilerSwitches <> '' then
+          CompilerSwitches := CompilerSwitches + ' ';
+        CompilerSwitches := CompilerSwitches + S;
+      end
+      else
       if Pos('-GS', S) = 1 then
         MapFileLevel := mflsegments
       else
@@ -309,10 +311,12 @@ begin
       if Pos('-cg', S) = 1 then
         ConsoleApplication := False
       else
-
-      // VN (TD32 debug info)
-      // VR (remote debug symbols)
-
+      if Pos('-vn', S) = 1 then
+        TD32DebugInfo := True
+      else
+      if Pos('-vr', S) = 1 then
+        RemoteDebugSymbols := True
+      else
       if Pos('-A', S) = 1 then
       begin
         Delete(S, 1, 2);
@@ -382,6 +386,7 @@ begin
       begin
         Delete(S, 1, 3);
         Packages := S;
+        CompileWithPackages := S <> '';
       end;
     end;
   finally
@@ -408,12 +413,11 @@ const
 
 var
   DOFFile: TIniFile;
-  SearchPath: string;
 begin
   //(usc) do FileExists check ?
   DOFFile := TIniFile.Create(AFileName);
   try
-    //todo Usepackages
+    //(usc) read compiler switches
     case DOFFile.ReadInteger(LinkerSection, 'MapFile', 0) of
       0: MapFileLevel := mfloff;
       1: MapFileLevel := mflsegments;
@@ -422,8 +426,9 @@ begin
     end;
     // JPNE (linker output)
     ConsoleApplication := DOFFile.ReadInteger(LinkerSection, 'ConsoleApp', 0) = 1;
-    // VN (TD32 debug info)
-    // VR (remote debug symbols)
+    TD32DebugInfo := DOFFile.ReadInteger(LinkerSection, 'DebugInfo', 0) = 1;
+    RemoteDebugSymbols := DOFFile.ReadInteger(LinkerSection, 'RemoteSymbols', 0) = 1;
+
     UnitAliases := DOFFile.ReadString(CompilerSection, 'UnitAliases', '');
     OutputHints := DOFFile.ReadInteger(CompilerSection, 'ShowHints', 0) = 1;
     OutputWarnings := DOFFile.ReadInteger(CompilerSection, 'ShowWarnings', 0) = 1;
@@ -444,14 +449,11 @@ begin
     BPLOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'PackageDLLOutputDir', '');
     DCPOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'PackageDCPOutputDir', '');
 
-    SearchPath := DOFFile.ReadString(DirectoriesSection, 'SearchPath', '');
-    UnitDirectories := SearchPath;
-    ObjectDirectories := SearchPath;
-    IncludeDirectories := SearchPath;
-    ResourceDirectories := SearchPath;
+    SearchPaths := DOFFile.ReadString(DirectoriesSection, 'SearchPath', '');
 
     ConditionalDefines := DOFFile.ReadString(DirectoriesSection, 'Conditionals', '');
     Packages := DOFFile.ReadString(DirectoriesSection, 'Packages', '');
+    CompileWithPackages := DOFFile.ReadInteger(LinkerSection, 'UsePackages', 0) = 1;
   finally
     DOFFile.Free;
   end;
@@ -510,7 +512,8 @@ begin
           ACaptureLine(LineOut, Aborted);
           LineOut := '';
         end
-        else if TempOutput[I] <> #10 then
+        else
+        if TempOutput[I] <> #10 then
           LineOut := LineOut + TempOutput[I];
       end;
     end;
@@ -526,7 +529,7 @@ begin
     CloseHandle(PipeWrite);
   CloseHandle(PipeRead);
 end;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
 //(usc) this is a modified version of JclBorlandTools.ExecAndRedirectOutput
@@ -556,7 +559,8 @@ begin
           ACaptureLine(LineOut, Aborted);
           LineOut := '';
         end
-        else if TempOutput[I] <> #13 then
+        else
+        if TempOutput[I] <> #13 then
           LineOut := LineOut + TempOutput[I];
       end;
     end;
@@ -728,31 +732,15 @@ begin
   FPlainOutput := TStringList.Create;
   FMessages := TJclDCCMessages.Create;
   ClearValues;
-  FEXEOutputDir := '';
-  FDCUOutputDir := '';
-  FSearchPaths := '';
-  FCompileWithPackages := False;
-  FPackages := '';
-  FDefines := '';
-  FMapFileLevel := mfloff;
-  FCompilerSwitches := '';
-  FUnitAliases := '';
-  FOutputWarnings := False;
-  FOutputHints := False;
-  FConsoleApplication := False;
-  FTD32DebugInfo := False;
-  FRemoteDebugSymbols := False;
-  FMinStackSize := $4000;
-  FMaxStackSize := $100000;
-  FImageBase := $400000;
   FOnCompileProgress := nil;
-  FBuildAllUnits := True;
   FQuietCompile := False;
   FOnMessage := nil;
+  FConfig := TJclCustomDCCConfig.Create;
 end;
 
 destructor TJclDCCEx.Destroy;
 begin
+  FConfig.Free;
   FMessages.Free;
   FPlainOutput.Free;
   inherited Destroy;
@@ -824,48 +812,48 @@ begin
   if FileExists(FFileToCompile) and (FExeName <> '') then
   begin
     Arguments := FFileToCompile;
-    if DirectoryExists(FEXEOutputDir) then
-      Arguments := Arguments + Format(' -E%s', [FEXEOutputDir]);
-    if DirectoryExists(FDCUOutputDir) then
-      Arguments := Arguments + Format(' -N%s', [FDCUOutputDir]);
-    Arguments := Arguments + Format(' -O%s', [FSearchPaths]);      
-    Arguments := Arguments + Format(' -I%s', [FSearchPaths]);
-    Arguments := Arguments + Format(' -R%s', [FSearchPaths]);
-    Arguments := Arguments + Format(' -U%s', [FSearchPaths]);
-    if FCompileWithPackages and (FPackages <> '') then
-      Arguments := Arguments + Format(' -LU%s', [FPackages]);
-    if FDefines <> '' then
-      Arguments := Arguments + Format(' -D%s', [FDefines]);
-    case FMapFileLevel of
+    if DirectoryExists(FConfig.EXEOutputDirectory) then
+      Arguments := Arguments + Format(' -E%s', [FConfig.EXEOutputDirectory]);
+    if DirectoryExists(FConfig.DCUOutputDirectory) then
+      Arguments := Arguments + Format(' -N%s', [FConfig.DCUOutputDirectory]);
+    Arguments := Arguments + Format(' -O%s', [FConfig.ObjectDirectories]);
+    Arguments := Arguments + Format(' -I%s', [FConfig.IncludeDirectories]);
+    Arguments := Arguments + Format(' -R%s', [FConfig.ResourceDirectories]);
+    Arguments := Arguments + Format(' -U%s', [FConfig.UnitDirectories]);
+    if FConfig.CompileWithPackages and (FConfig.Packages <> '') then
+      Arguments := Arguments + Format(' -LU%s', [FConfig.Packages]);
+    if FConfig.ConditionalDefines <> '' then
+      Arguments := Arguments + Format(' -D%s', [FConfig.ConditionalDefines]);
+    case FConfig.MapFileLevel of
       mflsegments: Arguments := Arguments + ' -GS';
       mflpublics: Arguments := Arguments + ' -GP';
       mfldetailed: Arguments := Arguments + ' -GD';
     end;
-    if FBuildAllUnits then
+    if FConfig.BuildAllUnits then
       Arguments := Arguments + ' -B'
     else
       Arguments := Arguments + ' -M';  //(usc) is this necessary ?
-    Arguments := Arguments + ' ' + FCompilerSwitches;
-    if FUnitAliases <> '' then
-      Arguments := Arguments + ' -A' + FUnitAliases;
-    if FOutputWarnings then
+    Arguments := Arguments + ' ' + FConfig.CompilerSwitches;
+    if FConfig.UnitAliases <> '' then
+      Arguments := Arguments + ' -A' + FConfig.UnitAliases;
+    if FConfig.OutputWarnings then
       Arguments := Arguments + ' -W'; //(usc) test - is enabled by default ?
-    if FOutputHints then
+    if FConfig.OutputHints then
       Arguments := Arguments + ' -H'; //(usc) test - is enabled by default ?
-    if FConsoleApplication then
+    if FConfig.ConsoleApplication then
       Arguments := Arguments + ' -CC'
     else
       Arguments := Arguments + ' -CG';
-    if FTD32DebugInfo then
+    if FConfig.TD32DebugInfo then
       Arguments := Arguments + ' -V'; //(usc) check
-    if FRemoteDebugSymbols then
+    if FConfig.RemoteDebugSymbols then
       Arguments := Arguments + ' -VR';
 
                                         //(usc) no violation with -$M+ / -$M- ?
     //values must be decimal
-    Arguments := Arguments + Format(' -$M%d,%d', [FMinStackSize, FMaxStackSize]);
+    Arguments := Arguments + Format(' -$M%d,%d', [FConfig.MinStackSize, FConfig.MaxStackSize]);
     //value must be hexadecimal
-    Arguments := Arguments + Format(' -K%.8x', [FImageBase]);
+    Arguments := Arguments + Format(' -K%.8x', [FConfig.ImageBaseAddr]);
 
     if FQuietCompile then
       Arguments := Arguments + ' -Q';
