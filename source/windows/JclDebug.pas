@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 16, 2001                                              }
+{ Last modified: January 19, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -125,7 +125,8 @@ type
 //------------------------------------------------------------------------------
 
   TJclMapSegment = record
-    StartAddr, EndAddr: DWORD;
+    StartAddr: DWORD;
+    EndAddr: DWORD;
     UnitName: PJclMapString;
   end;
 
@@ -145,7 +146,8 @@ type
     FProcNames: array of TJclMapProcName;
     FSegments: array of TJclMapSegment;
     FSourceNames: array of TJclMapProcName;
-    FLineNumbersCnt, FProcNamesCnt: Integer;
+    FLineNumbersCnt: Integer;
+    FProcNamesCnt: Integer;
     FNewUnitFileName: PJclMapString;
   protected
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
@@ -196,7 +198,8 @@ type
 
   TJclBinDbgNameCache = record
     Addr: Integer;
-    FirstWord, SecondWord: Integer;
+    FirstWord: Integer;
+    SecondWord: Integer;
   end;
 
   TJclBinDebugScanner = class (TObject)
@@ -367,6 +370,7 @@ type
   TJclStackInfoList = class (TObjectList)
   private
     FIgnoreLevels: DWORD;
+    FThreadID: DWORD;
     FTimeStamp: TDateTime;
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
@@ -374,6 +378,7 @@ type
     procedure AddToStrings(Strings: TStrings);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
+    property ThreadID: DWORD read FThreadID;
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
@@ -438,10 +443,10 @@ type
     FIgnoreLevels: Integer;
     function GetItems(Index: Integer): TJclExceptFrame;
   protected
-    function AddFrame(AFrame: PExcFrame): TJclExceptFrame; 
+    function AddFrame(AFrame: PExcFrame): TJclExceptFrame;
   public
     constructor Create(AIgnoreLevels: Integer);
-    procedure TraceExceptionFrames; 
+    procedure TraceExceptionFrames;
     property Items[Index: Integer]: TJclExceptFrame read GetItems;
     property IgnoreLevels: Integer read FIgnoreLevels write FIgnoreLevels;
   end;
@@ -747,7 +752,7 @@ var
     begin
       Result := False;
       Exit;
-    end;  
+    end;
     SkipWhiteSpace;
     I := Length(Prefix);
     P := CurrPos;
@@ -1284,7 +1289,7 @@ begin
       begin
         FirstWord := 0;
         SecondWord := 0;
-      end else  
+      end else
       if D = 0 then
       begin
         FirstWord := AddWord(S);
@@ -1437,7 +1442,7 @@ begin
       begin
         LineNumber := FLineNumbers[Value].LineNumber;
         Break;
-      end;  
+      end;
   end
   else
   begin
@@ -1525,7 +1530,7 @@ begin
         Inc(SecondWord, Value);
       end;
     end;
-  end;  
+  end;
   if FirstWord <> 0 then
   begin
     Result := DataToStr(FirstWord);
@@ -1820,7 +1825,7 @@ begin
                 Info.UnitName := Copy(Unmangled, 1, BasePos - 2);
                 Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
                 if smLinkProc in Desc.Modifiers then
-                  Info.ProcedureName := '@' + Info.ProcedureName; 
+                  Info.ProcedureName := '@' + Info.ProcedureName;
                 Result := True;
               end;
             urNotMangled:
@@ -2298,7 +2303,7 @@ begin
       // remeber to callers address so that we don't report it repeatedly
       PrevCaller := StackPtr^;
 
-      // increase the stack level 
+      // increase the stack level
       Inc(StackInfo.Level);
 
       // then report it back to our caller
@@ -2330,6 +2335,7 @@ begin
   inherited Create;
   FIgnoreLevels := AIgnoreLevels;
   FTimeStamp := Now;
+  FThreadID := GetCurrentThreadId;
   InitGlobalVar;
   if FirstCaller <> nil then
   begin
@@ -2553,7 +2559,7 @@ var
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
-  if not Recursive and (StackTrackingEnable or
+  if not Recursive and (StackTrackingEnable or ExceptionFrameTrackingEnable or
     Assigned(ExceptNotifyProc) or Assigned(ExceptNotifyMethod)) then
   begin
     Recursive := True;
@@ -2603,12 +2609,16 @@ begin
   else
   begin
     Recursive := False;
-    SysUtils_ExceptObjProc := System.ExceptObjProc;
-    System.ExceptObjProc := @HookedExceptObjProc;
     if PeImportHooks = nil then
       PeImportHooks := TJclPeMapImgHooks.Create;
     Result := PeImportHooks.HookImport(Pointer(FindClassHInstance(System.TObject)),
       kernel32, 'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
+    if Result then
+    begin
+      SysUtils_ExceptObjProc := System.ExceptObjProc;
+      System.ExceptObjProc := @HookedExceptObjProc;
+    end;
+    ExceptionsHooked := Result;
   end;
 end;
 
@@ -2618,10 +2628,12 @@ function JclUnhookExceptions: Boolean;
 begin
   if ExceptionsHooked then
   begin
-    Result := PeImportHooks.UnhookByNewAddress(@HookedRaiseException);
+    PeImportHooks.UnhookByNewAddress(@HookedRaiseException);
     System.ExceptObjProc := @SysUtils_ExceptObjProc;
     @SysUtils_ExceptObjProc := nil;
     @Kernel32_RaiseException := nil;
+    Result := True;
+    ExceptionsHooked := False;
   end else
     Result := False;
 end;
@@ -2638,9 +2650,10 @@ end;
 initialization
 
 finalization
+  JclUnhookExceptions;
   FreeAndNil(DebugInfoList);
   FreeAndNil(ExceptStackInfo);
-  FreeAndNil(PeImportHooks);
   FreeAndNil(LastExceptFrameList);
+  FreeAndNil(PeImportHooks);
 
 end.
