@@ -121,8 +121,8 @@ type
     property Items[Index: Integer]: TUnitVersion read GetItems; default;
   end;
 
-procedure RegisterUnitVersion(hInstance: THandle; const Info: TUnitVersionInfo);
-procedure UnregisterUnitVersion(hInstance: THandle);
+procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
+procedure UnregisterUnitVersion(Instance: THandle);
 
 function GetUnitVersioning: TUnitVersioning;
 
@@ -510,15 +510,20 @@ end;
 
 function TUnitVersioning.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 var
-  I: Integer;
+  I, Cnt, Index: Integer;
 begin
+  Result := -1;
+  Cnt := 0;
   for I := 0 to FModules.Count - 1 do
   begin
-    Result := Modules[I].IndexOf(RCSfile, LogPath);
-    if Result <> -1 then
-      Exit;
+    Index := Modules[I].IndexOf(RCSfile, LogPath);
+    if Index <> -1 then
+    begin
+      Result := Cnt + Index;
+      Break;
+    end;
+    Inc(Cnt, Modules[I].Count);
   end;
-  Result := -1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -732,24 +737,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegisterUnitVersion(hInstance: THandle; const Info: TUnitVersionInfo);
+procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
 var
   UnitVersioning: TUnitVersioning;
 begin
   UnitVersioning := GetUnitVersioning;
   if Assigned(UnitVersioning) then
-    UnitVersioning.Add(hInstance, @Info);
+    UnitVersioning.Add(Instance, @Info);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure UnregisterUnitVersion(hInstance: THandle);
+procedure UnregisterUnitVersion(Instance: THandle);
 var
   UnitVersioning: TUnitVersioning;
 begin
   UnitVersioning := GetUnitVersioning;
   if Assigned(UnitVersioning) then
-    UnitVersioning.UnregisterModule(hInstance);
+    UnitVersioning.UnregisterModule(Instance);
 end;
 
 const
@@ -769,6 +774,10 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.5  2004/09/05 12:46:02  uschuster
+// fixed TUnitVersioning.IndexOf
+// changed the module handle parameter name in (Un)registerUnitVersion to Instance to avoid scope confusion
+//
 // Revision 1.4  2004/09/02 16:16:13  marquardt
 // fixed a bug from style cleaning
 //
