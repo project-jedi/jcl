@@ -23,11 +23,11 @@
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Peter Friese                                                                                   }
-{   Petr Vones                                                                                     }
+{   Petr Vones (pvones)                                                                            }
 {   Raymond Alexander (rayspostbox3)                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
-{   Scott Price (scottprice)                                                                       }                                                                       
+{   Scott Price (scottprice)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1081,51 +1081,31 @@ resourcestring
   RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
 //--------------------------------------------------------------------------------------------------
-// JclZlib
+// JclCompression
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  // zlib
-  RsZLibNeedDict     = 'need dictionary';
-  RsZLibStreamEnd    = 'stream end';
-  RsZLibOK           = '';
-  RsZLibErrNo        = 'file error';
-  RsZLibStreamError  = 'stream error';
-  RsZLibDataError    = 'data error';
-  RsZLibMemError     = 'insufficient memory';
-  RsZLibBufError     = 'buffer error';
-  RsZLibVersionError = 'incompatible version';
-  RsZLibUnknownError = 'unknown zlib error';
-  RsZLibNoSetSize    = 'TZLibStream cannot perform set size';
-  RsZLibNoSeek       = 'TZLibStream cannot perform seek';
-  RsZLibNoWrite      = 'TZLibReader cannot write';
-  RsZLibNoRead       = 'TZLibWriter cannot read';
-
-  // gzip
-  RsGzipNoSetSize = 'gzip stream cannot perform set size';
-  RsGzipNoSeek    = 'gzip stream cannot perform seek';
-  RsGzipNoWrite   = 'gzip reader cannot write';
-  RsGzipNoRead    = 'gzip writer cannot read';
-
-  RsGzipNoGZipStream          = 'no gzip stream';
-  RsGzipNoDeflate             = 'no deflate compression';
-  RsGzipMultipartNotSupported = 'multipart gzip files are not supported';
-  RsGzipEncryptedNotSupported = 'encrypted gzip files are not supported';
-  RsGzipUnknownFlags          = 'unknown flags';
-  RsGzipCRCError              = 'checksum error';
-  RsGzipSizeError             = 'uncompressed size error';
-
-  // Tar
-  RsTarOctalToIntInvalidCharacters = 'OctalToInt invalid characters: "%s"';
-  RsTarOctalToIntOutOfRange        = 'OctalToInt out of range: "%s"';
-  RsTarChecksumError               = 'TAR Checksum Error';
-  RsTarSetOctalOutOfRange          = 'SetOctal: out of range';
+  RsCompressionOperationNotSupported  = 'Operation is not supported.';
+  RsCompressionReadNotSupported       = 'read is not an supported operation.';
+  RsCompressionWriteNotSupported      = 'write is not an supported operation.';
+  RsCompressionResetNotSupported      = 'reset is not an supported operation.';
+  RsCompressionSeekNotSupported       = 'seek is not an supported operation.';
+  RsCompressionZLibZErrNo             = 'zlib returned: ERRNO';
+  RsCompressionZLibZStreamError       = 'zlib returned: Stream error';
+  RsCompressionZLibZDataError         = 'zlib returned: data error';
+  RsCompressionZLibZMemError          = 'zlib returned: memory error';
+  RsCompressionZLibZBufError          = 'zlib returned: buffer error';
+  RsCompressionZLibZVersionError      = 'zlib returned: Version error';
+  RsCompressionZLibError              = 'ZLib error';
 
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.23  2004/11/15 04:16:06  mthoma
+// JclCompression resource strings added.
+//
 // Revision 1.22  2004/11/09 07:53:07  rrossmair
 // - JclPCRE string extracted to JclResources
 //
@@ -1177,10 +1157,10 @@ implementation
 // Revision 1.6  2004/05/14 15:26:34  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.5  2004/04/18 00:41:04  
+// Revision 1.5  2004/04/18 00:41:04
 // remove unneeded OpenGL error messages
 //
-// Revision 1.4  2004/04/06 04:38:57  
+// Revision 1.4  2004/04/06 04:38:57
 // Add resources for DIT and ZLib
 //
 
