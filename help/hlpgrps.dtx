@@ -28,10 +28,127 @@ Note: This documentation has been created using Doc-O-Matic Professional 3.10.
 Many thanks to <EXTLINK http://www.toolsfactory.com/>toolsfactory</EXTLINK> for
 generously granting free licenses to the JEDI team!
 --------------------------------------------------------------------------------
-@@LibrariesProcessesandThreads
+@@Algorithms
 <GROUP JCL>
-<TITLE Libraries\, Processes and Threads>
-<TOPICORDER 1300>
+<TITLE Algorithms>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@Algorithms.Searching
+<GROUP Algorithms>
+<TITLE Searching>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@Algorithms.Sorting
+<GROUP Algorithms>
+<TITLE Sorting>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
+@@Containers
+<GROUP JCL>
+<TITLE Containers>
+<TOPICORDER 300>
+--------------------------------------------------------------------------------
+@@Containers.Interfaces
+<GROUP Containers>
+<TITLE Container interfaces>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@Containers.Sequence
+<GROUP Containers>
+<TITLE Sequence containers>
+<TOPICORDER 200>
+These containers hold sequences of data elements.
+--------------------------------------------------------------------------------
+@@Containers.Sequence.Vectors
+<GROUP Containers.Sequence>
+<TITLE Vectors>
+<TOPICORDER 100>
+Vectors provide a dynamic array structure with fast random access to any element.
+Inserting and deleting elements at the end is fast. Can do subscript bounds checking.
+--------------------------------------------------------------------------------
+@@Containers.Sequence.LinkedLists
+<GROUP Containers.Sequence>
+<TITLE Linked Lists>
+<TOPICORDER 200>
+Doubly linked list. There is no random access to the elements.
+Insertion and deletion anywhere is fast.
+--------------------------------------------------------------------------------
+@@Containers.Associative
+<GROUP Containers>
+<TITLE Associative containers>
+<TOPICORDER 300>
+Associative containers contain key/value pairs, providing access to each value
+using a key. The elements are sorted by the key. Usually implemented as a
+balanced binary tree.
+--------------------------------------------------------------------------------
+@@Containers.Associative.Maps
+<GROUP Containers.Associative>
+<TITLE Maps>
+<TOPICORDER 100>
+Maps provide access to elements using any type of key. This is a generalization
+of the idea of accessing a vector with an integer subscript.
+--------------------------------------------------------------------------------
+@@Containers.Associative.Multimaps
+<GROUP Containers.Associative>
+<TITLE Multimaps>
+<TOPICORDER 200>
+Multimaps are maps which allow a key to map into more than one element.
+--------------------------------------------------------------------------------
+@@Containers.OrderedSets
+<GROUP Containers>
+<TITLE Ordered sets>
+<TOPICORDER 400>
+The set containers keep the elements in them in order, and are usually
+implemented as balanced binary trees. They implement standard set
+operations (union, intersection, ...) as you might expect from the name.
+--------------------------------------------------------------------------------
+@@Containers.Adapters
+<GROUP Containers>
+<TITLE Container adapters>
+<TOPICORDER 500>
+These are based on other containers, and are used only to enforce access rules.
+Because there are special access restrictions, they have no iterators.
+--------------------------------------------------------------------------------
+@@Containers.Adapters.Stacks
+<GROUP Containers.Adapters>
+<TITLE Stacks>
+<TOPICORDER 100>
+Stacks allow only LIFO (Last In, First Out) access.
+--------------------------------------------------------------------------------
+@@Containers.Adapters.Queues
+<GROUP Containers.Adapters>
+<TITLE Queues>
+<TOPICORDER 200>
+Queues allow only FIFO (First In, First Out) access.
+--------------------------------------------------------------------------------
+@@Containers.Specialized
+<GROUP Containers>
+<TITLE Specialized containers>
+<TOPICORDER 600>
+The following containers are specialized in some ways: specific data type,
+special utility routines, limited, but fast, implementations.
+--------------------------------------------------------------------------------
+@@Containers.Specialized.Arrays
+<GROUP Containers.Specialized>
+<TITLE Arrays>
+<TOPICORDER 100>
+valarray is an especially efficient implementation of arrays, but it doesn't
+have all the standard container behavior.
+--------------------------------------------------------------------------------
+@@BaseServices
+<GROUP JCL>
+<TITLE Base Services>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
+@@DateandTime
+<GROUP JCL>
+<TITLE Date and Time>
+<TOPICORDER 400>
+--------------------------------------------------------------------------------
+@@Debugging
+<GROUP JCL>
+<TITLE Debugging>
+<TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@EDI
 <GROUP JCL>
@@ -42,7 +159,92 @@ generously granting free licenses to the JEDI team!
 <GROUP JCL>
 <TITLE Expression Evaluation>
 <TOPICORDER 700>
+--------------------------------------------------------------------------------
+@@FilesandIO
+<GROUP JCL>
+<TITLE Files and IO>
+<TOPICORDER 800>
+--------------------------------------------------------------------------------
+@@Graphics
+<GROUP JCL>
+<TITLE Graphics>
+<TOPICORDER 900>
+--------------------------------------------------------------------------------
+@@Internationalisation
+<GROUP JCL>
+<TITLE Internationalisation>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
+@@InternetandE-mail
+<GROUP JCL>
+<TITLE Internet and E-mail>
+<TOPICORDER 1100>
+--------------------------------------------------------------------------------
+@@LibrariesProcessesandThreads
+<GROUP JCL>
+<TITLE Libraries\, Processes and Threads>
+<TOPICORDER 1300>
 ------------------------------------------------------------------------------
+@@MathRoutines
+<GROUP JCL>
+<TITLE Math Routines>
+<TOPICORDER 1400>
+--------------------------------------------------------------------------------
+@@MemoryClassesandObjects
+<GROUP JCL>
+<TITLE Memory\, Classes and Objects>
+<TOPICORDER 1500>
+--------------------------------------------------------------------------------
+@@MIME
+<GROUP JCL>
+<TITLE MIME>
+<TOPICORDER 1600>
+--------------------------------------------------------------------------------
+@@Miscellaneous
+<GROUP JCL>
+<TITLE Miscellaneous>
+<TOPICORDER 1700>
+--------------------------------------------------------------------------------
+@@MultiMedia
+<GROUP JCL>
+<TITLE MultiMedia>
+<TOPICORDER 1800>
+--------------------------------------------------------------------------------
+@@OrdinalMathandLogic
+<GROUP JCL>
+<TITLE Ordinal Math and Logic>
+<TOPICORDER 1900>
+--------------------------------------------------------------------------------
+@@RegistryandInifiles
+<GROUP JCL>
+<TITLE Registry and Ini files>
+<TOPICORDER 2000>
+--------------------------------------------------------------------------------
+@@RuntimeTypeInformation
+<GROUP JCL>
+<TITLE Runtime Type Information>
+<TOPICORDER 2100>
+--------------------------------------------------------------------------------
+@@Stringmanipulation
+<GROUP JCL>
+<TITLE String manipulation>
+<TOPICORDER 2400>
+--------------------------------------------------------------------------------
+@@SystemInformationRoutines
+<GROUP JCL>
+<TITLE System Information Routines>
+<TOPICORDER 2500>
+--------------------------------------------------------------------------------
+@@Unicode
+<GROUP JCL>
+<TITLE Unicode>
+<TOPICORDER 2600>
+--------------------------------------------------------------------------------
+@@UnitConversions
+<GROUP JCL>
+<TITLE Unit Conversions>
+<TOPICORDER 2700>
+--------------------------------------------------------------------------------
 @@Windows
 <GROUP JCL>
 <TITLE Windows>
