@@ -1017,6 +1017,10 @@ Parameters:
   Code - The unicode codepoint (character) to locate number equivalent of.
 Result:
   True if a number could be found.
+See also:
+  UnicodeToUpper
+  UnicodeToLower
+  UnicodeToTitle
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1035,6 +1039,10 @@ Parameters:
   Code - The codepoint to convert.
 Result:
   The uppercased codepoint(s).
+See also:
+  UnicodeNumberLookup
+  UnicodeToLower
+  UnicodeToTitle
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1053,6 +1061,10 @@ Parameters:
   Code - The codepoint to convert.
 Result:
   The lowercased codepoint(s).
+See also:
+  UnicodeNumberLookup
+  UnicodeToUpper
+  UnicodeToTitle
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1071,6 +1083,10 @@ Parameters:
   Code - The codepoint to convert.
 Result:
   The title cased codepoint(s).
+See also:
+  UnicodeNumberLookup
+  UnicodeToUpper
+  UnicodeToLower
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1092,6 +1108,12 @@ Parameters:
 Result:
   If the specified unicode character has right-to-left directionality the function
   returns True, otherwise the function returns False.
+See also:
+  UnicodeIsLeftToRight
+  UnicodeIsStrong
+  UnicodeIsWeak
+  UnicodeIsNeutral
+  UnicodeIsSeparator
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1113,6 +1135,12 @@ Parameters:
 Result:
   If the specified unicode character has left-to-right directionality the function
   returns True, otherwise the function returns False.
+See also:
+  UnicodeIsRightToLeft
+  UnicodeIsStrong
+  UnicodeIsWeak
+  UnicodeIsNeutral
+  UnicodeIsSeparator
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1136,6 +1164,12 @@ Parameters:
 Result:
   If the specified unicode character has strong directionality the function returns
   True, otherwise the function returns False.
+See also:
+  UnicodeIsRightToLeft
+  UnicodeIsLeftToRight
+  UnicodeIsWeak
+  UnicodeIsNeutral
+  UnicodeIsSeparator
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1158,6 +1192,12 @@ Parameters:
 Result:
   If the specified unicode character has weak directionality the function returns
   True, otherwise the function returns False.
+See also:
+  UnicodeIsRightToLeft
+  UnicodeIsLeftToRight
+  UnicodeIsStrong
+  UnicodeIsNeutral
+  UnicodeIsSeparator
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1179,6 +1219,12 @@ Parameters:
 Result:
   If the specified unicode character has neutral directionality the function returns
   True, otherwise the function returns False.
+See also:
+  UnicodeIsRightToLeft
+  UnicodeIsLeftToRight
+  UnicodeIsStrong
+  UnicodeIsWeak
+  UnicodeIsSeparator
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1200,6 +1246,12 @@ Parameters:
 Result:
   If the specified unicode character is a block or segment separator the function
   returns True, otherwise the function returns False.
+See also:
+  UnicodeIsRightToLeft
+  UnicodeIsLeftToRight
+  UnicodeIsStrong
+  UnicodeIsWeak
+  UnicodeIsNeutral
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1285,6 +1337,9 @@ Parameters:
   S - The string to trim.
 Result:
   Copy of the supplied string without leading and trailing spaces and control characters.
+See also:
+  WideTrimLeft
+  WideTrimRight
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1305,6 +1360,9 @@ Parameters:
   S - The string to trim.
 Result:
   Copy of the supplied string without trailing spaces and control characters.
+See also:
+  WideTrimLeft
+  WideTrim
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1325,6 +1383,9 @@ Parameters:
   S - The string to trim.
 Result:
   Copy of the supplied string without leading spaces and control characters.
+See also:
+  WideTrim
+  WideTrimRight
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1496,6 +1557,8 @@ Description:
 Parameters:
   S1 - Pointer to the end of the source string which must have have a #0 character at the start.
   S2 - The sequence (set) of characters to test against.
+See also:
+  StrNScan
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1518,6 +1581,8 @@ Description:
 Parameters:
   S1 - The source string.
   S2 - The sequence (set) of characters to test against.
+See also:
+  StrRNScan
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1633,6 +1698,8 @@ Parameters:
 Result:
   Pointer to the first character of the first occurrence of SubStr in Str or nil if
   SubStr does not occur in Str.
+See also:
+  StrRScanW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1654,6 +1721,9 @@ Parameters:
 Result:
   Pointer to the last occurrence of Chr in Str or nil if the character does not
   occur in Str.
+See also:
+  StrPosW
+  StrScanW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1680,6 +1750,9 @@ Parameters:
 Result:
   Pointer to the first occurrence of Chr in Str or nil if the specified character
   does not occur in Str.
+See also:
+  StrPosW
+  StrRScanW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1822,6 +1895,8 @@ Parameters:
   MaxLen - Maximum length of the resulting string.
 Result:
   Pointer to the destination string.
+See also:
+  StrCatW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1843,6 +1918,8 @@ Parameters:
   Source - The string which is appended to Dest.
 Result:
   Pointer to the Destination string.
+See also:
+  StrLCatW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1865,6 +1942,8 @@ Parameters:
   MaxLen - Maximum number of characters to copy from Source to Dest.
 Result:
   Pointer to the destination string.
+See also:
+  StrPCopyW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1885,6 +1964,8 @@ Parameters:
   Source - Source string to copy into Dest.
 Result:
   Pointer to the destination string.
+See also:
+  StrPLCopyW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1927,6 +2008,9 @@ Parameters:
   Source - Source string to copy.
 Result:
   Pointer to the null terminating character at the end of the destination string.
+See also:
+  StrCopyW
+  StrMoveW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1949,6 +2033,9 @@ Parameters:
   Source - The string to copy.
 Result:
   Pointer to the Dest string.
+See also:
+  StrMoveW
+  StrECopyW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1970,6 +2057,8 @@ Parameters:
   Count - The number of characters to copy from Source to Dest.
 Result:
   Copy of the Dest pointer.
+See also:
+  StrCopyW
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2029,6 +2118,8 @@ Parameters:
   Language - The locale for which to retrieve character set information.
 Result:
   A TFontCharSet record which describes the character set.
+See also:
+  CodePageFromLocale
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2093,6 +2184,8 @@ Description:
   speech-to-text converter.
 Result:
   Codepage for the calling thread, based on the keyboard layout.
+See also:
+  CodePageFromLocale
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2111,6 +2204,8 @@ Parameters:
   C - The character to convert.
 Result:
   The converted character.
+See also:
+  KeyboardCodePage
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2129,20 +2224,23 @@ Description:
   function.
 Parameters:
   S - The string to convert to unicode
-  CodePage - The code page to be used by the conversion. You can specify the value 
-             of any available code page or one of the following values:  
-             <TABLE>
-               <TR VALIGN="top"><TH align=left width=30%>Value</TH><TH align=left width=70%>Meaning</TH></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_ACP</TD><TD width=70%>ANSI code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_MACCP</TD><TD width=70%>Macintosh code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_OEMCP</TD><TD width=70%>OEM code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_SYMBOL</TD><TD width=70%><B>Windows&nbsp;2000:</B> Symbol code page (42)</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_THREAD_ACP</TD><TD width=70%>The current thread's ANSI code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_UTF7</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_UTF8</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.</TD></TR>  
-             </TABLE>
+  CodePage - The code page to be used by the conversion. You can specify the value of any available code page or one of the following values:  <TABLE>
+Value          Meaning
+-------------  -------------------------------------------------------------------------------------------------------------
+CP_ACP         ANSI code page
+CP_MACCP       Macintosh code page
+CP_OEMCP       OEM code page
+CP_SYMBOL      <B>Windows&nbsp;2000:</B> Symbol code page (42)
+CP_THREAD_ACP  The current thread's ANSI code page
+CP_UTF7        <B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7
+CP_UTF8        <B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.
+</TABLE>
+
 Result:
   The converted string.
+See also:
+  WideStringToStringEx
+  TranslateString
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2182,20 +2280,23 @@ Description:
   WideStringToStringEx maps a WideString to a string based on the specified codepage.
 Parameters:
   WS - The WideString to convert.
-  CodePage - The code page to be used by the conversion. You can specify the value of 
-             any available code page or one of the following values:  
-             <TABLE>  
-               <TR VALIGN="top"><TH align=left width=30%>Value</TH><TH align=left width=70%>Meaning</TH></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_ACP</TD><TD width=70%>ANSI code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_MACCP</TD><TD width=70%>Macintosh code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_OEMCP</TD><TD width=70%>OEM code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_SYMBOL</TD><TD width=70%><B>Windows&nbsp;2000:</B> Symbol code page (42)</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_THREAD_ACP</TD><TD width=70%>The current thread's ANSI code page</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_UTF7</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7</TD></TR>  
-               <TR VALIGN="top"><TD width=30%>CP_UTF8</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.</TD></TR>  
-             </TABLE>
+  CodePage - The code page to be used by the conversion. You can specify the value of any available code page or one of the following values:  <TABLE>
+Value          Meaning
+-------------  -------------------------------------------------------------------------------------------------------------
+CP_ACP         ANSI code page
+CP_MACCP       Macintosh code page
+CP_OEMCP       OEM code page
+CP_SYMBOL      <B>Windows&nbsp;2000:</B> Symbol code page (42)
+CP_THREAD_ACP  The current thread's ANSI code page
+CP_UTF7        <B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7
+CP_UTF8        <B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.
+</TABLE>
+
 Result:
   The converted string.
+See also:
+  StringToWideStringEx
+  TranslateString
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2215,6 +2316,8 @@ Parameters:
   S - The unciode string to convert
 Result:
   The string in UTF8 format.
+See also:
+  UTF8ToWideString
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2233,6 +2336,8 @@ Parameters:
   S - The UTF8 based AnsiString to convert to a WideString
 Result:
   The string converted to a WideString.
+See also:
+  WideStringToUTF8
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2247,6 +2352,8 @@ Summary:
   Flags used in the search class.
 Description:
   Flags used in the search class.
+See also:
+  TSearchEngine
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2350,7 +2457,7 @@ Quick info:
   
 @@TCharacterCategory.ccRightToLeftEmbedding
   
-@@TCharacterCategory.ccRightToLeftoverride
+@@TCharacterCategory.ccRightToLeftOverride
   
 @@TCharacterCategory.ccPopDirectionalFormat
   
@@ -2549,6 +2656,8 @@ Parameters:
 Result:
   True is the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindAll
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2570,6 +2679,9 @@ Parameters:
 Result:
   True is the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindFirst
+  GetResult
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2588,6 +2700,9 @@ Parameters:
   Index - Index (0-based) of match result to return.
   Start - Start position of match result.
   Start - End position of match result.
+See also:
+  FindAll
+  Count
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2785,6 +2900,8 @@ Parameters:
 Result:
   True if the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindAll
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2806,6 +2923,9 @@ Parameters:
 Result:
   True is the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindFirst
+  GetResult
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2918,6 +3038,8 @@ Parameters:
 Result:
   True if the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindAll
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -2939,6 +3061,9 @@ Parameters:
 Result:
   True is the pattern provided in FindPrepare was found in the Text parameter,
   False otherwise.
+See also:
+  FindFirst
+  GetResult
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -3039,6 +3164,8 @@ Summary:
 Description:
   TUcNumber is a record used for number-related Unicode functions. '1/6' (U+2159)
   would be converted to Numerator=1 and Denominator=6 by the UnicodeNumberLookup function
+See also:
+  UnicodeNumberLookup
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -3057,6 +3184,8 @@ Summary:
   Normalization form to use.
 Description:
   Normalization form used in WideNormalize.
+See also:
+  WideNormalize
 Quick info:
   Unit: JclUnicode
   Category: Unicode
