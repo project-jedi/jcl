@@ -121,7 +121,7 @@
     <delete file="${bin.dir}/*.bpl" />
     <delete file="${bin.dir}/*.dll" />
     <!-- BCB generated files -->
-    <delete file="**/*.obj" />
+    <delete file="${lib.dir}/**/*.obj" />
     <delete file="**/*.lib" />
     <delete file="**/*.bpi" />
     <!-- fpc generated files -->
@@ -150,6 +150,7 @@
           <exclude name="${lib.dir}/k2/**" />
           <exclude name="${pack.dir}/*.dev/**" />
           <exclude name="${pack.dir}/JclDevPackages*.bpg" />
+          <exclude name="${pack.dir}/**/*.mak" />
           <exclude name="${pack.dir}/k1/**" />
           <exclude name="${pack.dir}/k2/**" />
           <exclude name="${pack.dir}/JclPackagesDK1.bpg" />
@@ -169,6 +170,7 @@
           <include name="${lib.dir}/**/*.exc" />
           <include name="${pack.dir}/**/*.bmk" />
           <include name="${pack.dir}/**/*.gmk" />
+          <include name="${src.dir}/**/*.obj" />
           <include name="${basedir}/**/*.pas" />
           <include name="${basedir}/**/*.dfm" />
           <include name="${basedir}/**/*.xfm" />
