@@ -21,7 +21,7 @@
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -134,7 +134,7 @@ type
 
   {$IFNDEF COMPILER6_UP}
   PBoolean = ^Boolean;
-  {$ENDIF not def COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
 
 //--------------------------------------------------------------------------------------------------
@@ -191,25 +191,6 @@ type
   TDynStringArray   = array of string;
 
 //--------------------------------------------------------------------------------------------------
-// TObjectList
-//--------------------------------------------------------------------------------------------------
-
-{$IFNDEF COMPILER5_UP}
-type
-  TObjectList = class (TList)
-  private
-    FOwnsObjects: Boolean;
-    function GetItems(Index: Integer): TObject;
-    procedure SetItems(Index: Integer; const Value: TObject);
-  public
-    procedure Clear; override;
-    constructor Create(AOwnsObjects: Boolean = False);
-    property Items[Index: Integer]: TObject read GetItems write SetItems; default;
-    property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
-  end;
-{$ENDIF COMPILER5_UP}
-
-//--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
 //--------------------------------------------------------------------------------------------------
 
@@ -229,19 +210,6 @@ type
 
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_INTERFACE}
-
-//--------------------------------------------------------------------------------------------------
-// TStringList.CustomSort compatibility
-//--------------------------------------------------------------------------------------------------
-
-{$IFDEF COMPILER4}
-
-type
-  TStringListCustomSortCompare = function(List: TStringList; Index1, Index2: Integer): Integer;
-
-procedure StringListCustomSort(StringList: TStringList; SortFunc: TStringListCustomSortCompare);
-
-{$ENDIF COMPILER4}
 
 implementation
 
@@ -389,46 +357,6 @@ begin
 end;
 
 //==================================================================================================
-// TObjectList
-//==================================================================================================
-
-{$IFNDEF COMPILER5_UP}
-
-procedure TObjectList.Clear;
-var
-  I: Integer;
-begin
-  if OwnsObjects then
-    for I := 0 to Count - 1 do
-      Items[I].Free;
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TObjectList.Create(AOwnsObjects: Boolean);
-begin
-  inherited Create;
-  FOwnsObjects := AOwnsObjects;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TObjectList.GetItems(Index: Integer): TObject;
-begin
-  Result := TObject(Get(Index));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TObjectList.SetItems(Index: Integer; const Value: TObject);
-begin
-  Put(Index, Value);
-end;
-
-{$ENDIF COMPILER5_UP}
-
-//==================================================================================================
 // Cross=Platform Compatibility
 //==================================================================================================
 
@@ -440,50 +368,5 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-
-//==================================================================================================
-// TStringList.CustomSort compatibility
-//==================================================================================================
-
-{$IFDEF COMPILER4}
-
-procedure StringListCustomSort(StringList: TStringList; SortFunc: TStringListCustomSortCompare);
-
-  procedure QuickSort(L, R: Integer);
-  var
-    I, J, P: Integer;
-  begin
-    repeat
-      I := L;
-      J := R;
-      P := (L + R) shr 1;
-      repeat
-        while SortFunc(StringList, I, P) < 0 do
-          Inc(I);
-        while SortFunc(StringList, J, P) > 0 do
-          Dec(J);
-        if I <= J then
-        begin
-          StringList.Exchange(I, J);
-          if P = I then
-            P := J
-          else
-          if P = J then
-            P := I;
-          Inc(I);
-          Dec(J);
-        end;
-      until I > J;
-      if L < J then
-        QuickSort(L, J);
-      L := I;
-    until I >= R;
-  end;
-
-begin
-  QuickSort(0, StringList.Count - 1);
-end;
-
-{$ENDIF COMPILER4}
 
 end.
