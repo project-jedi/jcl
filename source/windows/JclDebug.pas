@@ -163,7 +163,8 @@ type
     procedure Scan;
   public
     constructor Create(const MapFileName: TFileName); override;
-    function LineNumberFromAddr(Addr: DWORD): Integer;
+    function LineNumberFromAddr(Addr: DWORD): Integer; overload;
+    function LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer; overload;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function ProcNameFromAddr(Addr: DWORD): string; overload;
@@ -235,7 +236,8 @@ type
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
-    function LineNumberFromAddr(Addr: DWORD): Integer;
+    function LineNumberFromAddr(Addr: DWORD): Integer; overload;
+    function LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer; overload;
     function ProcNameFromAddr(Addr: DWORD): string; overload;
     function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
     function ModuleNameFromAddr(Addr: DWORD): string;
@@ -267,6 +269,7 @@ type
     ProcedureName: string;          // Procedure name
     OffsetFromProcName: Integer;    // Offset from Address to ProcedureName symbol location
     LineNumber: Integer;            // Line number
+    OffsetFromLineNumber: Integer;  // Offset from Address to LineNumber symbol location
     SourceName: string;             // Module file name
     DebugInfo: TJclDebugInfoSource; // Location object
   end;
@@ -356,7 +359,7 @@ function Caller(Level: Integer = 0): Pointer;
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
-  IncludeProcNameOffset: Boolean = False): string;
+  IncludeOffset: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
@@ -1098,16 +1101,29 @@ end;
 
 function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
+  Dummy: Integer;
+begin
+  Result := LineNumberFromAddr(Addr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMapScanner.LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer;
+var
   I: Integer;
   ModuleStartAddr: DWORD;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := 0;
+  Offset := 0;
   for I := Length(FLineNumbers) - 1 downto 0 do
     if FLineNumbers[I].Addr <= Addr then
     begin
       if FLineNumbers[I].Addr >= ModuleStartAddr then
+      begin
         Result := FLineNumbers[I].LineNumber;
+        Offset := Addr - FLineNumbers[I].Addr;
+      end;  
       Break;
     end;
 end;
@@ -1890,12 +1906,22 @@ end;
 
 function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
+  Dummy: Integer;
+begin
+  Result := LineNumberFromAddr(Addr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer;
+var
   P: Pointer;
   Value, LineNumber: Integer;
   CurrAddr, ModuleStartAddr, ItemAddr: DWORD;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   LineNumber := 0;
+  Offset := 0;
   if FCacheData then
   begin
     CacheLineNumbers;
@@ -1903,7 +1929,10 @@ begin
       if FLineNumbers[Value].Addr <= Addr then
       begin
         if FLineNumbers[Value].Addr >= ModuleStartAddr then
+        begin
           LineNumber := FLineNumbers[Value].LineNumber;
+          Offset := Addr - FLineNumbers[Value].Addr;
+        end;
         Break;
       end;
   end
@@ -1918,7 +1947,10 @@ begin
       if Addr < CurrAddr then
       begin
         if ItemAddr < ModuleStartAddr then
+        begin
           LineNumber := 0;
+          Offset := 0;
+        end;
         Break;
       end
       else
@@ -1926,6 +1958,7 @@ begin
         ItemAddr := CurrAddr;
         ReadValue(P, Value);
         Inc(LineNumber, Value);
+        Offset := Addr - CurrAddr;
       end;
     end;
   end;
@@ -2248,7 +2281,7 @@ begin
     begin
       Info.Address := Addr;
       Info.ProcedureName := ProcNameFromAddr(VA, Info.OffsetFromProcName);
-      Info.LineNumber := LineNumberFromAddr(VA);
+      Info.LineNumber := LineNumberFromAddr(VA, Info.OffsetFromLineNumber);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
     end;
@@ -2293,7 +2326,7 @@ begin
     begin
       Info.Address := Addr;
       Info.ProcedureName := ProcNameFromAddr(VA, Info.OffsetFromProcName);
-      Info.LineNumber := LineNumberFromAddr(VA);
+      Info.LineNumber := LineNumberFromAddr(VA, Info.OffsetFromLineNumber);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
     end;
@@ -2353,6 +2386,7 @@ begin
   VA := DWORD(Addr) - FModule;
   RawName := not FBorImage.IsPackage;
   Info.OffsetFromProcName := 0;
+  Info.OffsetFromLineNumber := 0;
   with FBorImage.ExportList do
   begin
     SortList(esAddress, False);
@@ -2431,7 +2465,7 @@ begin
     begin
       Address := Addr;
       ProcedureName := FImage.TD32Scanner.ProcNameFromAddr(VA, OffsetFromProcName);
-      LineNumber := FImage.TD32Scanner.LineNumberFromAddr(VA);
+      LineNumber := FImage.TD32Scanner.LineNumberFromAddr(VA, OffsetFromLineNumber);
       SourceName := FImage.TD32Scanner.SourceNameFromAddr(VA);
       DebugInfo := Self;
     end;
@@ -2548,26 +2582,31 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeProcNameOffset: Boolean): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeOffset: Boolean): string;
 var
   Info: TJclLocationInfo;
-  ProcNameOffsetStr: string;
+  OffsetStr: string;
 begin
   if GetLocationInfo(Addr, Info) then
   with Info do
   begin
-    if IncludeProcNameOffset then
-      ProcNameOffsetStr := Format(' + %x', [OffsetFromProcName])
-    else
-      ProcNameOffsetStr := '';
+    OffsetStr := '';
     if LineNumber > 0 then
+    begin
+      if IncludeOffset then
+        OffsetStr := Format(' + %x', [OffsetFromLineNumber]);
       Result := Format('[%p] %s.%s (Line %u, "%s"%s)', [Addr, UnitName, ProcedureName, LineNumber,
-        SourceName, ProcNameOffsetStr])
+        SourceName, OffsetStr]);
+    end
     else
-    if UnitName <> '' then
-      Result := Format('[%p] %s.%s%s', [Addr, UnitName, ProcedureName, ProcNameOffsetStr])
-    else
-      Result := Format('[%p] %s%s', [Addr, ProcedureName, ProcNameOffsetStr]);
+    begin
+      if IncludeOffset then
+        OffsetStr := Format(' + %x', [OffsetFromProcName]);
+      if UnitName <> '' then
+        Result := Format('[%p] %s.%s%s', [Addr, UnitName, ProcedureName, OffsetStr])
+      else
+        Result := Format('[%p] %s%s', [Addr, ProcedureName, OffsetStr]);
+    end;
   end
   else
     Result := Format('[%p]', [Addr]);
@@ -3798,6 +3837,9 @@ initialization
   GlobalStackList := TJclGlobalStackList.Create;
 
 finalization
+  { TODO -oPV -cInvestigate : Calling JclStopExceptionTracking causes linking of various classes to
+    the code without a real need. Although there doesn't seem to be a way to unhook exceptions
+    safely because we need to be covered by JclHookExcept.Notifiers critical section }
   JclStopExceptionTracking;
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
