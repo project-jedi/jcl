@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: July 8, 2000                                                  }
+{ Last modified: December 17, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -147,6 +147,15 @@ function PascalToTorr(const Pa: Float): Float;
 function BarToPascal(const Bar: Float): Float;
 function AtToPascal(const At: Float): Float;
 function TorrToPascal(const Torr: Float): Float;
+
+{ Other conversion }
+
+function KnotToMs(const Knot: Float): Float;
+function HpElectricToWatt(const HpE: Float): Float;
+function HpMetricToWatt(const HpM: Float): Float;
+function MsToKnot(const ms: Float): Float;
+function WattToHpElectric(const W: Float): Float;
+function WattToHpMetric(const W: Float): Float;
 
 implementation
 
@@ -554,56 +563,56 @@ end;
 
 function CwtUsToKg(const Cwt : Float) : Float;
 begin
-  Result := Cwt * 45.359;
+  Result := Cwt * 45.35924;
 end;
 
 //------------------------------------------------------------------------------
 
 function CwtUkToKg(const Cwt : Float) : Float;
 begin
-  Result := Cwt * 50.802;
+  Result := Cwt * 50.80235;
 end;
 
 //------------------------------------------------------------------------------
 
 function KgToCwtUs(const Kg : Float) : Float;
 begin
-  Result := Kg / 45.359;
+  Result := Kg / 45.35924;
 end;
 
 //------------------------------------------------------------------------------
 
 function KgToCwtUk(const Kg : Float) : Float;
 begin
-  Result := Kg / 50.802;
+  Result := Kg / 50.80235;
 end;
 
 //------------------------------------------------------------------------------
 
 function LtonToKg(const Lton : Float) : Float;
 begin
-  Result := Lton * 1016.05;
+  Result := Lton * 1016.047;
 end;
 
 //------------------------------------------------------------------------------
 
 function StonToKg(const Ston : Float) : Float;
 begin
-  Result := Ston * 907.185;
+  Result := Ston * 907.1847;
 end;
 
 //------------------------------------------------------------------------------
 
 function KgToLton(const Kg : Float) : Float;
 begin
-  Result := Kg / 1016.05;
+  Result := Kg / 1016.047;
 end;
 
 //------------------------------------------------------------------------------
 
 function KgToSton(const Kg : Float) : Float;
 begin
-  Result := Kg / 907.185;
+  Result := Kg / 907.1847;
 end;
 
 //------------------------------------------------------------------------------
@@ -634,14 +643,14 @@ end;
 
 function PascalToAt(const Pa: Float): Float;
 begin
-  Result := Pa / (9.81 * 10000.0);
+  Result := Pa / (9.80665 * 10000.0);
 end;
 
 //------------------------------------------------------------------------------
 
 function PascalToTorr(const Pa: Float): Float;
 begin
-  Result := Pa / 133.32;
+  Result := Pa / 133.3224;
 end;
 
 //------------------------------------------------------------------------------
@@ -655,14 +664,60 @@ end;
 
 function AtToPascal(const At: Float): Float;
 begin
-  Result := At * (9.81 * 10000.0);
+  Result := At * (9.80665 * 10000.0);
 end;
 
 //------------------------------------------------------------------------------
 
 function TorrToPascal(const Torr: Float): Float;
 begin
-  Result := Torr * 133.32;
+  Result := Torr * 133.3224;
 end;
+
+//==============================================================================
+// Other conversion
+//==============================================================================
+
+function KnotToMs(const Knot: Float): Float;
+begin
+  Result := Knot * 0.514444444444;
+end;
+
+//------------------------------------------------------------------------------
+
+function HpElectricToWatt(const HpE: Float): Float;
+begin
+  Result := HpE * 746.0;
+end;
+
+//------------------------------------------------------------------------------
+
+function HpMetricToWatt(const HpM: Float): Float;
+begin
+  Result := HpM * 735.4988;
+end;
+
+//------------------------------------------------------------------------------
+
+function MsToKnot(const ms: Float): Float;
+begin
+  Result := ms * 1.94384449244;
+end;
+
+//------------------------------------------------------------------------------
+
+function WattToHpElectric(const W: Float): Float;
+begin
+  Result := W / 746.0;
+end;
+
+//------------------------------------------------------------------------------
+
+function WattToHpMetric(const W: Float): Float;
+begin
+  Result := W / 735.4988;
+end;
+
+//------------------------------------------------------------------------------
 
 end.
