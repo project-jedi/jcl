@@ -42,7 +42,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF}
   Classes, Graphics, SysUtils,
   JclBase, JclSysInfo;
 
@@ -57,13 +57,13 @@ uses
 const
   {$IFDEF LINUX}
   PathSeparator    = '/';
-  {$ENDIF LINUX}
+  {$ENDIF}
   {$IFDEF WIN32}
   DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
   PathSeparator    = '\';
   PathUncPrefix    = '\\';
-  {$ENDIF WIN32}
+  {$ENDIF}
 
 type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
@@ -100,8 +100,14 @@ function PathRemoveExtension(const Path: string): string;
 
 type
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
+  TFileListOption  = (flFullNames, flRecursive, flMaskedSubfolders);
+  TFileListOptions = set of TFileListOption;
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
+function AdvBuildFileList(const Path: string; const Attr: Integer;
+           Files: TStrings; Options: TFileListOptions
+           {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
+           SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DelTree(const Path: string): Boolean;
@@ -194,7 +200,7 @@ type
     function GetVersionKeyValue(Index: Integer): string;
   public
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
-    constructor Create(const FileName: string);
+    constructor Create(const FileName: string); 
     destructor Destroy; override;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
@@ -402,8 +408,8 @@ implementation
 uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
-  {$ENDIF WIN32}
-  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
+  {$ENDIF}
+  JclResources, JclSecurity, JclSysUtils, JclWin32, JclStrings;
 
 { Some general notes:
 
@@ -634,7 +640,7 @@ var
   I: Integer;
 begin
   // Note that the view destructor removes the view object from the FViews
-  // list so we must loop downwards from count to 0
+  // list so we must loop downwards from count to 0 
   for I := FViews.Count - 1 downto 0 do
     TJclFileMappingView(FViews[I]).Free;
 end;
@@ -939,14 +945,14 @@ function PathBuildRoot(const Drive: Byte): string;
 begin
   {$IFDEF LINUX}
   Result := PathSeparator;
-  {$ENDIF LINUX}
+  {$ENDIF}
   {$IFDEF WIN32}
   // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
     raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
-  {$ENDIF WIN32}
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -1169,24 +1175,23 @@ function PathIsAbsolute(const Path: string): Boolean;
 {$IFDEF WIN32}
 var
   I: Integer;
-{$ENDIF WIN32}
+{$ENDIF}
 begin
   Result := False;
   if Path <> '' then
   begin
     {$IFDEF LINUX}
     Result := (Path[1] = PathSeparator);
-    {$ENDIF LINUX}
+    {$ENDIF}
     {$IFDEF WIN32}
     I := 0;
     if PathIsUnc(Path) then
       I := Length(PathUncPrefix)
-    else
-    if PathIsDiskDevice(Path) then
+    else if PathIsDiskDevice(Path) then
       I := Length(PathDevicePrefix);
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
-    {$ENDIF WIN32}
+    {$ENDIF}
   end;
 end;
 
@@ -1205,7 +1210,7 @@ begin
   Result := AnsiSameText(StrLeft(Path, L), Base);
   {$ELSE}
   Result := AnsiSameStr(StrLeft(Path, L), Base);
-  {$ENDIF WIN32}
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -1213,11 +1218,11 @@ end;
 function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  NotImplemented('PathIsDiskDevice');
-  {$ENDIF LINUX}
+  NotImplemented('PathIsDiskDevice'); 
+  {$ENDIF}
   {$IFDEF WIN32}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
-  {$ENDIF WIN32}
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -1226,7 +1231,7 @@ function PathIsUNC(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
   Result := False;
-  {$ENDIF LINUX}
+  {$ENDIF}
   {$IFDEF WIN32}
   // Format of a valid UNC path is: "\\machine\sharename[\filename]"
   Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
@@ -1237,7 +1242,7 @@ begin
      \\<x>:[whatever]         is not valid
      \\machine\<x>:[<\pathname>|<\drivename>] is not valid
      \\machine\<x>$[<\pathname>|<\drivename>] _is_ valid }
-  {$ENDIF WIN32}
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -2210,8 +2215,7 @@ var
       TempKey := PWideChar(P);
       Inc(P, (lstrlenW(TempKey) + 1) * SizeOf(WideChar)); // length + #0#0
       Key := TempKey;
-    end
-    else
+    end else
     begin
       DataType := 1;
       Key := PAnsiChar(P);
@@ -2507,8 +2511,7 @@ begin
   begin
     NamePart := NameExt;
     ExtPart := '';
-  end
-  else
+  end else
   begin
     NamePart := Copy(NameExt, 1, I - 1);
     ExtPart := Copy(NameExt, I + 1, Length(NameExt));
@@ -2562,8 +2565,7 @@ begin
       begin
         NS := List[I];
         ES := '';
-      end
-      else
+      end else
       begin
         NS := Copy(List[I], 1, N - 1);
         ES := Copy(List[I], N + 1, 255);
@@ -2625,6 +2627,83 @@ begin
     FSeparator := Value;
     CreateMultiMasks;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function AdvBuildFileList(const Path: string; const Attr: Integer;
+           Files: TStrings; Options: TFileListOptions
+           {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
+           SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
+
+var
+  FileMask: string;
+  RootDir: string;
+  Folders: TStringList;
+  CurrentItem: Integer;
+  Counter: Integer;
+  LocAttr: Integer;
+
+  procedure FillFolderList;
+  Var FindInfo: TSearchRec;
+      Result: Integer;
+      CurrentFolder: String;
+  Begin
+    CurrentFolder := Folders[CurrentItem];
+    Result := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
+    try
+      While Result = 0 Do Begin
+        if (LocAttr and FindInfo.Attr = FindInfo.Attr) then
+          if flFullNames in Options then
+            Files.Add(CurrentFolder + FindInfo.Name)
+          else
+            Files.Add(FindInfo.Name);
+        Result := FindNext(FindInfo);
+      End;
+    finally
+      FindClose(FindInfo);
+    end;
+
+    // searching for subfolders
+    if flRecursive in Options then begin
+      Result := FindFirst(CurrentFolder + '*.*', faDirectory, FindInfo);
+      try
+        While Result = 0 Do Begin
+          If (FindInfo.Name <> '.') And (FindInfo.Name <> '..') Then
+            if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, FindInfo.Name)<>0)) or
+                 (not (flMaskedSubfolders in Options))) Then
+              Folders.Add(CurrentFolder + FindInfo.Name + '\');
+          Result := FindNext(FindInfo);
+        End;
+      finally
+        FindClose(FindInfo);
+      end;
+    end;
+  End;
+
+begin
+  FileMask := ExtractFileName(Path);
+  RootDir := ExtractFilePath(Path);
+
+  Folders := TStringList.Create;
+  Folders.Add(RootDir);
+
+  if Attr = faAnyFile then
+    LocAttr := faReadOnly + faHidden + faSysFile + faArchive
+  else
+    LocAttr := Attr;
+
+  // here's the recursive search for nested folders
+  CurrentItem := 0;
+  Counter := Folders.Count - 1;
+  While CurrentItem <= Counter Do Begin
+    FillFolderList;
+    Inc(CurrentItem);
+    Counter := Folders.Count - 1;
+  end;
+  Folders.Free;
+
+  Result := True;
 end;
 
 end.
