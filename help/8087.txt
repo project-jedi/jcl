@@ -24,6 +24,22 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+All8087Exceptions = [Low(T8087Exception)..High(T8087Exception)];
+[ShortDescr]
+A set containing all FPU exception flags.
+[Description]
+The All8087Exceptions is a pre-initialized set which contains all of the
+available FPU exception flags (from the T8087Exception enumeration).
+[Quick Info]
+Kind=Constant
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function ClearPending8087Exceptions: T8087Exceptions;
 [ShortDescr]
 Clears all pending FPU exceptions.
@@ -453,7 +469,9 @@ Returns the 80x87 control word.
 Get8087ControlWord returns the 80x87 control word (register). This is the FPU's
 register that controls how the FPU operates with regard to things such as precision,
 rounding and infinity control. See the table below for the meaning of the individual
-bits.
+bits. Note that althought this routine might be handy at times, you should prefer
+the usage of the Get8087Inifinity, Get8087Precision and Get8087Rounding instead
+as they shield you from the low level bit manipulation. 
  <TABLE>
  <TR VALIGN="top">
  <TH align=left width=20%>Bit(s)</TH>
