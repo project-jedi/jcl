@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -568,7 +568,7 @@ end;
 
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 const
-  RegLocalEnvironment = '\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\';
+  RegLocalEnvironment = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
   RegUserEnvironment = '\Environment\';
 var
   KeyNames, TempList: TStrings;
@@ -1106,7 +1106,7 @@ end;
 
 function GetBIOSDate : TDateTime;
 const
-  REGSTR_PATH_SYSTEM = '\HARDWARE\DESCRIPTION\System\';
+  REGSTR_PATH_SYSTEM = '\HARDWARE\DESCRIPTION\System';
   REGSTR_SYSTEMBIOSDATE = 'SystemBiosDate';
 var
   RegStr, RegFormat: string;
