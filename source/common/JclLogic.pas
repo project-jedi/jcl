@@ -30,7 +30,7 @@
 unit JclLogic;
 
 {$I jcl.inc}
-
+{$R-}
 {$WEAKPACKAGEUNIT ON}
 
 interface
@@ -60,14 +60,14 @@ function BitsHighest(X: ShortInt): Integer; overload;
 function BitsHighest(X: SmallInt): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
 function BitsHighest(X: Integer): Integer; overload;
-function BitsHighest(X: Cardinal): Integer; assembler; overload;
+function BitsHighest(X: Cardinal): Integer; overload;
 function BitsHighest(X: Int64): Integer; overload;
 
 function BitsLowest(X: Byte): Integer; overload;
 function BitsLowest(X: Shortint): Integer; overload;
 function BitsLowest(X: Smallint): Integer; overload;
 function BitsLowest(X: Word): Integer; overload;
-function BitsLowest(X: Cardinal): Integer; assembler; overload;
+function BitsLowest(X: Cardinal): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
 function BitsLowest(X: Int64): Integer; overload;
 
