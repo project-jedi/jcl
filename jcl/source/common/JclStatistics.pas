@@ -16,7 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: May 25, 2000                                                  }
+{******************************************************************************}
+{                                                                              }
+{ Various common statistics routines to calculate, for example, the arithmetic }
+{ mean, geometric meanor median of a set of numbers.                           }
+{                                                                              }
+{ Unit owner:                                                                  }
+{ Last modified: January 31, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -112,7 +118,6 @@ begin
   begin
     if R > N div 2 then
     R := N - R;
-
     K := 2;
     try
       for I := N - R + 1 to N do
@@ -170,12 +175,10 @@ begin
     {$IFDEF SUPPORTS_DYNAMICARRAYS}
     if X[I] <= PrecisionTolerance then
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
-
     Result := Result + 1 / X[I];
     {$ELSE}
     if X^[I] <= PrecisionTolerance then
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
-
     Result := Result + 1 / X^[I];
     {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
@@ -571,10 +574,8 @@ var
   Sum: Float;
 begin
   L := GetDynLengthNotNull(X);
-
   Result := Sqr(X[0]);
   Sum := X[0];
-
   for I := 1 to L - 1 do
   begin
     Result := Result + Sqr(X[I]);
