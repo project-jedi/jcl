@@ -1,7 +1,22 @@
+@@JclFileUtils.pas
+<GROUP FilesandIO>
+
+This unit contains routines and classes for working with
+files, directories and path strings. Additionally it contains
+wrapper classes for file mapping objects and version
+resources.
+
+Generically speaking, everything that has to do with files
+and directories. Note that filesystem specific functionality
+has been extracted into external units, for example JclNTFS
+which contains NTFS specific utility routines, and that the
+JclShell unit contains some file related routines as well but
+they are specific to the Windows shell.
+--------------------------------------------------------------------------------
 @@$FilesandIO
 <GROUP JCL>
 <TITLE Files and IO>
-<TOPICORDER 600>
+<TOPICORDER 800>
 --------------------------------------------------------------------------------
 @@$FilesandIO.FilesandDirectories
 <GROUP FilesandIO>
@@ -58,21 +73,6 @@
 <TITLE TJclTempFileStream>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
-@@JclFileUtils.pas
-<GROUP FilesandIO>
-
-This unit contains routines and classes for working with
-files, directories and path strings. Additionally it contains
-wrapper classes for file mapping objects and version
-resources.
-
-Generically speaking, everything that has to do with files
-and directories. Note that filesystem specific functionality
-has been extracted into external units, for example JclNTFS
-which contains NTFS specific utility routines, and that the
-JclShell unit contains some file related routines as well but
-they are specific to the Windows shell.
---------------------------------------------------------------------------------
 @@DriveLetters
 <GROUP FilesandIO.Pathmanipulation>
 Summary:
@@ -80,8 +80,7 @@ Summary:
 Description:
   DriveLetters is a set of characters which can be used to designate a drive under
   the Windows operating system.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathDevicePrefix
 <GROUP FilesandIO.Pathmanipulation>
@@ -91,8 +90,7 @@ Description:
   PathDevicePrefix is the character string used in Windows to specify a physical
   device such as a harddisk. To be precise its a prefix to indicate the "path name"
   of any driver.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathSeparator
 <GROUP FilesandIO.Pathmanipulation>
@@ -103,8 +101,7 @@ Description:
   of a path such as the drive, directories and the filename. The value of this
   constant is conditionally defined as a forward or backward slash depening on the
   targetted operating system (Linux and Windows respectively).
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathUncPrefix
 <GROUP FilesandIO.Pathmanipulation>
@@ -113,8 +110,7 @@ Summary:
 Description:
   Character string used a prefix for UNC paths. A full UNC path is of the
   form: \\Server\Share or \\?\UNC\Server\Share.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetSizeOfFile
 <GROUP FilesandIO.FilesandDirectories>
@@ -130,8 +126,7 @@ Parameters:
 Result:
   The size of the file, in bytes. If the function fails to determine the size of
   the file it raises an exception.
-Quick info:
-  Donator: David Hervieux
+Donator: David Hervieux
 --------------------------------------------------------------------------------
 @@TJclFileMappingView
 <GROUP FilesandIO.Streams.TJclFileMappingView>
@@ -148,8 +143,7 @@ Description:
   memory using pointers. TJclFileMappingView takes this a bit further by allowing
   you to use the familiar TStream interface to manipulate the view. If you so desire
   you can still use the 'memory' directly by using the Memory property.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.Create
 Summary:
@@ -161,8 +155,7 @@ Description:
   map directly to the Access, Count, Offset and Address parameters of the AddAt
   method. The FileMap parameter specifies the TJclCustomFileMapping object for
   which the view is created and cannot be nil.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.Flush
 Summary:
@@ -175,8 +168,7 @@ Parameters:
   Count - The number of bytes to flush. Specifying 0 causes the entire view to be flushed.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.Write
 Summary:
@@ -192,8 +184,7 @@ Parameters:
   Cound - Number of bytes to write from Buffer.
 Result:
   The number of bytes that were actually written to the view.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.LoadFromStream
 Summary:
@@ -204,8 +195,7 @@ Description:
   hold an exception is raised (a view will not expand in size).
 Parameters:
   Stream - The stream from which to copy the contents. The contents are read starting at position 0 up to the end of the stream. The stream's size must be smaller than or equal to the view's size or an exception is raised.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.LoadFromFile
 Summary:
@@ -216,8 +206,7 @@ Description:
   hold an exception is raised (a view will not expand in size).
 Parameters:
   FileName - Name of the file whose contents to copy into the view.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.Index
 Summary:
@@ -225,8 +214,7 @@ Summary:
 Description:
   Index contains the Index into the owning TJclCustomFileMapping object's Views list.
   Do not cache this index since it may change when other views are added or deleted.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.FileMapping
 Summary:
@@ -234,8 +222,7 @@ Summary:
 Description:
   Reference to the TJclCustomFileMapping object that this View was created from. The
   View remains owned by that object until it is destroyed.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.Offset
 Summary:
@@ -244,8 +231,7 @@ Description:
   Offset contains the Offset into the filemapping that this view was created for.
   Since the offset must always be a multiple of the system's allocation granularity
   this value may not be the same value you specified when the view was created.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping
 <GROUP FilesandIO.Streams.TJclCustomFileMapping>
@@ -266,8 +252,7 @@ Description:
   not use this class directly. Instead use the derived TJclFileMapping and
   TJclSwapFileMapping classes. These two classes only differ in their constructors
   but do prevent you from a common mistake (related to the return value of CreateFile).
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Open
 Summary:
@@ -288,8 +273,7 @@ FILE_MAP_ALL_ACCESS  Same as FILE_MAP_WRITE.
 FILE_MAP_COPY        Copy-on-write access. The target file-mapping object must have been created with PAGE_WRITECOPY protection. A copy-on-write view of the file is mapped.
 </TABLE>
 
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Add
 Summary:
@@ -305,8 +289,7 @@ Result:
   The Index into the Views array of the newly created View object.
 See also:
   AddAt
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.AddAt
 Summary:
@@ -327,8 +310,7 @@ Result:
   The Index into the Views array of the newly created View object.
 See also:
   Add
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Delete
 Summary:
@@ -340,8 +322,7 @@ Description:
   the function raises an exception.
 Parameters:
   Index - Index into the Views array of the View object to destroy. Must be a valid index or an exception is raised.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.IndexOf
 Summary:
@@ -354,8 +335,8 @@ Parameters:
 Result:
   The Index into the Views array property of the specified View. If the View does
   not exist in the array the function returns -1.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Count
 Summary:
@@ -366,8 +347,7 @@ Description:
   or the AddAt method.
   The individual TJclFileMappingView objects can be accessed using the Views array
   property.
-Quick info:
-  Donator: Wim De Cleen
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Existed
 Summary:
@@ -377,8 +357,8 @@ Description:
   creation. This only applies if you used the Open constructor or specified a name
   in the constructor and another process had already created the filemapping with
   the same name.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Handle
 Summary:
@@ -388,8 +368,8 @@ Description:
   use it, for example, to share the filemapping with another process through
   handle inheritance. Never close the handle manually, this is done automatically
   at destruction.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Name
 Summary:
@@ -397,8 +377,8 @@ Summary:
 Description:
   The Name property contains the name of the filemapping object as specified during
   construction.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.RoundViewOffset
 Summary:
@@ -410,8 +390,8 @@ Description:
   granularity. The RoundViewOffset determines how the TJclFileMappingView class
   rounds the supplied offset and/or base address values when these conditions are
   not met. You can have the class automatically round upwards or downwards.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping.Views
 Summary:
@@ -421,8 +401,8 @@ Description:
   using the Add or AddAt method. The number of Views in this list can be determined
   using the Count property. When a View is created it is automatically
   added to the list and when a view is destroyed is is removed from the list.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping
 <GROUP FilesandIO.Streams.TJclFileMapping>
@@ -432,8 +412,8 @@ Description:
   TJclFileMapping is a specification of a filemapping object. It only differs from
   TJclCustomFileMapping in the implementation of its constructor. Use this class
   when you want to map an actual disk file.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping.Create
 Summary:
@@ -451,8 +431,8 @@ Parameters:
   Protect - Protection attributes for the filemapping object. See the Win32 help file or Platform SDK for the allowed values (look at the description of the CreateFileMapping function, flProtect parameter).
   MaximumSize - Maximum size of the filemapping object. If you specify 0 the filemapping will be the same size as the underlying disk file (which is not allowed to have a size of 0 itself).
   SecAttr - Security attributes for the filemapping. See the Win32 help file or Platform SDK for details.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping.FileHandle
 Summary:
@@ -467,8 +447,8 @@ Description:
   use the handle after the TJclFileMapping class has been destroyed then you must
   copy it using DuplicateHandle. Note that if you decide to use the Handle as such
   you are still required to close the original handle using CloseHandle!
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclSwapFileMapping
 <GROUP FilesandIO.Streams.TJclSwapFileMapping>
@@ -479,8 +459,8 @@ Description:
   from TJclCustomFileMapping in the implementation of its constructor. Use this
   class when you want to create a filemapping backed by the systems swap file (ideal
   for cross-process communication).
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclSwapFileMapping.Create
 Summary:
@@ -493,8 +473,8 @@ Parameters:
   Protect - Protection attributes for the filemapping object. See the Win32 help file or Platform SDK for the allowed values (look at the description of the CreateFileMapping function, flProtect parameter).
   MaximumSize - Maximum size of the filemapping object. Cannot be 0.
   SecAttr - Security attributes for the filemapping. See the Win32 help file or Platform SDK for details.
-Quick info:
-  Donator: Wim De Cleen
+
+Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclTempFileStream
 <GROUP FilesandIO.Streams.TJclTempFileStream>
@@ -505,8 +485,8 @@ Description:
   in a system defined folder reserved for temporary files and is automatically
   deleted when the object is freed. The stream object is opened with full access
   rights and in such manner that the stream cannot be opened by another thread.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclTempFileStream.FileName
 Summary:
@@ -515,8 +495,8 @@ Description:
   FileName returns the fully qualified name of the file that is used by the
   TJclTempFileStream object. This is mostly for informational purposes since the
   file cannot be opened again using CreateFile.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclTempFileStream.Create
 Summary:
@@ -531,8 +511,8 @@ Description:
   is automatically deleted when the object is destroyed.
 Parameters:
   Prefix - On input the first three characters of the string are used to form the name of the temporary file (can be empty). On return, assuming the function succeeded, the FileName property contains the actual name of the temporary file, including the path.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileGetTypeName
 <GROUP FilesandIO.FilesandDirectories>
@@ -550,8 +530,8 @@ Result:
   String that describes the file type.
 See also:
   PathGetDisplayName
-Quick info:
-  Donator: Pelle F. S. Liljendal
+
+Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FindUnusedFileName
 <GROUP FilesandIO.FilesandDirectories>
@@ -572,8 +552,8 @@ Parameters:
   Suffix - Optional suffix to be appended to FileName
 Result:
   A unique filename composed of the specified parts and a number to make it unique.
-Quick info:
-  Donator: Anthony Steele
+
+Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@ForceDirectories
 <GROUP FilesandIO.FilesandDirectories>
@@ -590,8 +570,8 @@ Result:
   False if it could not create a needed directory.
 Notes:
   Do not call ForceDirectories with an empty string. Doing so causes ForceDirectories to raise an exception.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileGetDisplayName
 <GROUP FilesandIO.FilesandDirectories>
@@ -611,8 +591,8 @@ See also:
   PathGetShortName
   PathGetLongName
   FileGetTypeName
-Quick info:
-  Donator: Pelle F. S. Liljendal
+
+Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@PathGetLongName
 <GROUP $FilesandIO.Pathmanipulation>
@@ -630,13 +610,9 @@ Parameters:
 Result:
   If the function succeeds it returns the long name of the supplied path. If the
   function fails the result is a copy of the supplied Path.
-QuickInfo:
- Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Rudy Velthuis
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Rudy Velthuis
+Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
@@ -657,8 +633,8 @@ Result:
 See also:
   PathGetLongName
   PathGetDisplayName
-Quick info:
-  Donator: Rudy Velthuis
+
+Donator: Rudy Velthuis
 --------------------------------------------------------------------------------
 @@PathIsChild
 <GROUP FilesandIO.Pathmanipulation>
@@ -676,8 +652,8 @@ Result:
 See also:
   PathIsDiskDevice
   PathIsUnc
-Quick info:
-  Donator: Anthony Steele
+
+Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@PathIsAbsolute
 <GROUP FilesandIO.Pathmanipulation>
@@ -694,8 +670,8 @@ Result:
 See also:
   PathIsDiskDevice
   PathIsUnc
-Quick info:
-  Donator: Robert Marquardt
+
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathIsDiskDevice
 <GROUP FilesandIO.Pathmanipulation>
@@ -712,8 +688,8 @@ Result:
 See also:
   PathIsUnc
   PathIsAbsolute
-Quick info:
-  Donator: Robert Marquardt
+
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathIsUNC
 <GROUP FilesandIO.Pathmanipulation>
@@ -734,8 +710,8 @@ Result:
 See also:
   PathIsDiskDevice
   PathIsAbsolute
-Quick info:
-  Donator: Robert Marquardt
+
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathExtractElements
 <GROUP FilesandIO.Pathmanipulation>
@@ -751,8 +727,8 @@ Parameters:
   Path - Path of the file, without drive or filename. Leading and trailing directory separators are trimmed.
   FileName - Name of the file, without the extension part.
   Ext - File extension including the dot (.).
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAddSeparator
 <GROUP FilesandIO.Pathmanipulation>
@@ -769,8 +745,8 @@ Result:
   The resulting string is the path, ending in a directory separator.
 See also:
   PathRemoveSeparator
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAddExtension
 <GROUP FilesandIO.Pathmanipulation>
@@ -787,8 +763,8 @@ Result:
   The Path with extension appended or Path if it already had an extension.
 See also:
   PathRemoveExtension
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAppend
 <GROUP FilesandIO.Pathmanipulation>
@@ -802,8 +778,8 @@ Parameters:
   Append - The path to append to the base path. This path may start with a backslash.
 Result:
   The concatenation of the two paths.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathBuildRoot
 <GROUP FilesandIO.Pathmanipulation>
@@ -816,8 +792,8 @@ Parameters:
   Drive - Drive number. Must be in the range 0..25 or an EJclPathError exception is raised.
 Result:
   The root path for the given drive.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathCommonPrefix
 <GROUP FilesandIO.Pathmanipulation>
@@ -833,8 +809,8 @@ Parameters:
   Path2 - The second path name
 Result:
   The number of common prefix characters.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathCompactPath
 <GROUP FilesandIO.Pathmanipulation>
@@ -860,8 +836,8 @@ Result:
   The compacted path or an empty string if the function fails.
 Notes:
   If Width is smaller than the most compacted path then the result is the most compacted path, even though it does not fit within the specified width.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathExtractFileDirFixed
 <GROUP FilesandIO.Pathmanipulation>
@@ -878,8 +854,8 @@ Result:
   The drive and directory part of the specified filename, terminated with a
   PathSeparator. If the filename does not contain a drive and directory specification
   the resulting string is a single PathSeparator character.
-Quick info:
-  Donator: Anthony Steele
+
+Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@PathExtractFileNameNoExt
 <GROUP FilesandIO.Pathmanipulation>
@@ -893,8 +869,8 @@ Result:
   The filename part of the path, without extension.
 See also:
   PathRemoveExtension
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathRemoveExtension
 <GROUP FilesandIO.Pathmanipulation>
@@ -908,8 +884,8 @@ Result:
   Path without the extension part.
 See also:
   PathExtractFileNameNoExt
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathRemoveSeparator
 <GROUP FilesandIO.Pathmanipulation>
@@ -926,8 +902,8 @@ Notes:
   The function only removes one trailing directory separator.
 See also:
   PathAddSeparator
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetModulePath
 <GROUP FilesandIO.FilesandDirectories>
@@ -940,8 +916,8 @@ Parameters:
   Module - Handle of the module whose path you are querying for. This, for example, is the handle returned by LoadLibrary (or LoadLibraryEx) or the address at which the module is loaded (in Win32 a module handle is the base address at which a module is loaded).
 Result:
   The fully qualified filename of the specified module, or an empty string on failure.
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@FileGetTempName
 <GROUP FilesandIO.FilesandDirectories>
@@ -957,8 +933,8 @@ Parameters:
 Result:
   If the function succeeds it returns a fully qualified filename. If it fails it
   returns an empty string.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileCreateTemp
 <GROUP FilesandIO.FilesandDirectories>
@@ -976,8 +952,8 @@ Parameters:
 Result:
   If the function succeeds the result is a handle to the temporary file, on failure
   the function returns INVALID_HANDLE_VALUE.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileExists
 <GROUP FilesandIO.FilesandDirectories>
@@ -991,8 +967,8 @@ Parameters:
   FileName - The fully qualified name of the file whose existence to test.
 Result:
   If the file exists the function returns True, otherwise it returns False.
-Quick info:
-  Donator: Pelle F. S. Liljendal
+
+Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@ShredFile
 <GROUP FilesandIO.FilesandDirectories>
@@ -1005,8 +981,8 @@ Description:
 Parameters:
   FileName - The fully qualified name of the file to shred.
   Times - Number of file overwrites. Defaults to 1.
-Quick info:
-  Donator: Pelle F. S. Liljendal
+
+Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FileGetSize
 <GROUP FilesandIO.FilesandDirectories>
@@ -1021,8 +997,8 @@ Result:
   If the function succeeds it returns the size, in bytes, of the specified file.
   If the function fails, for example because the file does not exist, the result
   is -1.
-Quick info:
-  Donator: Pelle F. S. Liljendal
+
+Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetFileAttributeListEx
 <GROUP FilesandIO.FilesandDirectories>
@@ -1039,8 +1015,8 @@ Parameters:
   Attr - Attributes of a file, for example retrieved by GetFileAttributes.
 See also:
   GetFileAttributeList
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetFileAttributeList
 <GROUP FilesandIO.FilesandDirectories>
@@ -1055,8 +1031,8 @@ Parameters:
   Attr - Attributes of a file, usually you'll pass in TSearchRec.Attr.
 See also:
   GetFileAttributeListEx
-Quick info:
-  Donator: Charlie Calvert
+
+Donator: Charlie Calvert
 --------------------------------------------------------------------------------
 @@GetDirectorySize
 <GROUP FilesandIO.FilesandDirectories>
@@ -1071,8 +1047,8 @@ Result:
   The combined size, in bytes, of all the files contained in the directory. If the
   function fails, for example because the specified directory doesn't exists, it
   returns -1.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetDriveTypeStr
 <GROUP FilesandIO.FilesandDirectories>
@@ -1085,8 +1061,8 @@ Parameters:
   Drive - Drive letter of the drive for which to query the type, e.g. 'a'.
 Result:
   String representation of the type of the specified drive.
-Quick info:
-  Donator: John C Molyneux
+
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@SetFileLastWrite
 <GROUP FilesandIO.FilesandDirectories>
@@ -1107,8 +1083,8 @@ See also:
   GetFileLastAccess
   GetFileLastWrite
   GetFileCreation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetFileLastAccess
 <GROUP FilesandIO.FilesandDirectories>
@@ -1129,8 +1105,8 @@ See also:
   GetFileLastAccess
   GetFileLastWrite
   GetFileCreation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetFileCreation
 <GROUP FilesandIO.FilesandDirectories>
@@ -1151,8 +1127,8 @@ See also:
   GetFileLastAccess
   GetFileLastWrite
   GetFileCreation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirLastWrite
 <GROUP FilesandIO.FilesandDirectories>
@@ -1172,8 +1148,8 @@ Result:
 See also:
   SetDirLastAccess
   SetDirCreation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirLastAccess
 <GROUP FilesandIO.FilesandDirectories>
@@ -1193,8 +1169,8 @@ Result:
 See also:
   SetDirLastWrite
   SetDirCreation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirCreation
 <GROUP FilesandIO.FilesandDirectories>
@@ -1214,8 +1190,8 @@ Result:
 See also:
   SetDirLastAccess
   SetDirLastWrite
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsDirectory
 <GROUP FilesandIO.FilesandDirectories>
@@ -1229,8 +1205,8 @@ Result:
   If the specified file is a directory the function returns True, otherwise it
   returns False. Note that if the specified file is the root of a drive (e.g. 'c:\')
   the function returns True, if the file does not exist the function returns False.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LockVolume
 <GROUP FilesandIO.FilesandDirectories>
@@ -1255,8 +1231,8 @@ Notes:
   The device is, according to Microsoft recommendations, opened with no buffering. This action imposes a number of 'limitations' for subsequent access to the device. For example the alignment of buffers must be on a multiple of the volume's sector size. See the Platform SDK for details.
 See also:
   UnlockVolume
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OpenVolume
 <GROUP FilesandIO.FilesandDirectories>
@@ -1276,8 +1252,8 @@ Notes:
   This action imposes a number of 'limitations' for subsequent access to the volume. For example the alignment of buffers must be on a multiple of the volume's sector size. See the Platform SDK on CreateFile for details.
 See also:
   CloseVolume
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CloseVolume
 <GROUP FilesandIO.FilesandDirectories>
@@ -1294,8 +1270,8 @@ Result:
   retains its value.
 See also:
   OpenVolume
-Quick info:
-  Donator: Massimo Maria Ghisalberti
+
+Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@CreateEmptyFile
 <GROUP FilesandIO.FilesandDirectories>
@@ -1308,8 +1284,8 @@ Description:
   same name already exists but is opened.
 Parameters:
   FileName - Name of the file to create.
-Quick info:
-  Donator: Anthony Steele
+
+Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@GetFileInformation
 <GROUP FilesandIO.FilesandDirectories>
@@ -1326,8 +1302,8 @@ Result:
   for example because it can't find the file, it raises an EWin32Error exception.
 See also:
   GetStandardFileInfo
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetStandardFileInfo
 <GROUP FilesandIO.FilesandDirectories>
@@ -1345,8 +1321,8 @@ Result:
   EFileUtilsError exception.
 See also:
   GetFileInformation
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetFileAgeCoherence
 <GROUP FilesandIO.FilesandDirectories>
@@ -1364,8 +1340,8 @@ See also:
   GetFileLastWrite
   GetFileLastAccess
   GetFileCreation
-Quick info:
-  Donator: Massimo Maria Ghisalberti
+
+Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileLastWrite
 <GROUP FilesandIO.FilesandDirectories>
@@ -1384,8 +1360,8 @@ See also:
   GetFileAgeCoherence
   GetFileLastAccess
   GetFileCreation
-Quick info:
-  Donator: Massimo Maria Ghisalberti
+
+Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileLastAccess
 <GROUP FilesandIO.FilesandDirectories>
@@ -1403,8 +1379,8 @@ See also:
   GetFileAgeCoherence
   GetFileLastWrite
   GetFileCreation
-Quick info:
-  Donator: Massimo Maria Ghisalberti
+
+Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileCreation
 <GROUP FilesandIO.FilesandDirectories>
@@ -1422,8 +1398,8 @@ See also:
   GetFileAgeCoherence
   GetFileLastAccess
   GetFileLastWrite
-Quick info:
-  Donator: Massimo Maria Ghisalberti
+
+Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@BuildFileList
 <GROUP FilesandIO.FilesandDirectories>
@@ -1443,8 +1419,8 @@ Result:
   failure.
 See also:
   AdvBuildFileList
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AdvBuildFileList
 <GROUP FilesandIO.FilesandDirectories>
@@ -1465,8 +1441,8 @@ Result:
   failure.
 See also:
   BuildFileList
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TFileListOptions
 <GROUP $FilesandIO.FilesandDirectories>
@@ -1512,8 +1488,8 @@ Notes:
   Returning False will abort the entire deletion process, not just for the specified file only.
 See also:
   DelTreeEx
-Quick info:
-  Donator: John C Molyneux
+
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@DelTree
 <GROUP FilesandIO.FilesandDirectories>
@@ -1536,8 +1512,8 @@ Notes:
   The deletions are permanent! Deletions are not recoverable through the recycle bin.
 See also:
   DelTreeEx
-Quick info:
-  Donator: John C Molyneux
+
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@DelTreeEx
 <GROUP FilesandIO.FilesandDirectories>
@@ -1565,8 +1541,8 @@ Notes:
   The deletions are permanent! Deletions are not recoverable through the recycle bin.
 See also:
   DelTree
-Quick info:
-  Donator: John C Molyneux
+
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@DirectoryExists
 <GROUP FilesandIO.FilesandDirectories>
@@ -1580,7 +1556,7 @@ Result:
   If the directory exists the function returns True, otherwise it returns False.
 Notes:
   This function is a replacement for the FileUtils.DirectoryExists function from the Delphi RTL to avoid dependency on that particular unit. There's nothing wrong with that function except that the unit uses Forms etc. which add significant resources and startup time to your application (if it doesn't use these units already).
-Quick info:
+
 --------------------------------------------------------------------------------
 @@DiskInDrive
 <GROUP FilesandIO.FilesandDirectories>
@@ -1597,8 +1573,8 @@ Parameters:
 Result:
   If the drive is accessible, a disk is present, and the result is True. If the drive
   is not accessible or an error occurred the function returns False.
-Quick info:
-  Donator: John C Molyneux
+
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@TFileFlags
 <GROUP FilesandIO.FilesandDirectories.TJclFileVersionInfo>
@@ -1617,8 +1593,8 @@ Description:
   The file was built by the original company using standard release procedures but is a variation of the normal file of the same version number.
 See also:
   TJclFileVersionInfo
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@VersionResourceAvailable
 <GROUP FilesandIO.FilesandDirectories.TJclFileVersionInfo>
@@ -1635,8 +1611,8 @@ Result:
   not or the file could not be found the result is False.
 See also:
   TJclFileVersionInfo
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OSIdentToString
 <GROUP FilesandIO.FilesandDirectories.TJclFileVersionInfo>
@@ -1649,8 +1625,8 @@ Parameters:
   OSIdent - An OS identifier returned by FileOS property of TJclFileVersionInfo.
 Result:
   String representation of the OS identifier.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageCount
 Summary:
@@ -1662,8 +1638,8 @@ See also:
   LanguageIndex
   LanguageIds
   LanguageNames
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageIndex
 Summary:
@@ -1675,8 +1651,8 @@ See also:
   LanguageCount
   LanguageIds
   LanguageNames
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageIds
 Summary:
@@ -1690,8 +1666,8 @@ See also:
   LanguageCount
   LanguageIndex
   LanguageNames
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageNames
 Summary:
@@ -1704,32 +1680,32 @@ See also:
   LanguageCount
   LanguageIndex
   LanguageIds
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Comments
 Summary:
   Returns the comment string.
 Description:
   Comments returns the value of the comments string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.CompanyName
 Summary:
   Returns the company name string.
 Description:
   CompanyName returns the value of the company name string key.
-Quick info:
-  Donator: Marcel van Brake
+
+Donator: Marcel van Brake
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileDescription
 Summary:
   Returns the file description string.
 Description:
   FileDescription returns the value of the file description string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileFlags
 Summary:
@@ -1738,8 +1714,8 @@ Description:
   FileFlags is a set of flags that specify the attributes of the file such as debug
   and special build. See TFileFlags for more information on all the
   possible values in this set.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileOS
 Summary:
@@ -1773,8 +1749,8 @@ VOS_OS216_PM16     The file was designed for 16-bit Presentation Manager running
 VOS_OS232_PM32     The file was designed for 32-bit Presentation Manager running on 32-bit OS/2.
 </TABLE>
 
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileSubType
 Summary:
@@ -1811,8 +1787,8 @@ VFT2_FONT_TRUETYPE  The file contains a TrueType font.
 
     <P>If <B>dwFileType</B> is VFT_VXD, <B>dwFileSubtype</B> contains the virtual device identifier included in the virtual device control block.
     <P>All <B>dwFileSubtype</B> values not listed here are reserved for future use by Microsoft.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileType
 Summary:
@@ -1833,80 +1809,80 @@ VFT_STATIC_LIB  The file contains a static-link library.
 </TABLE>
 
     <P>All other values are reserved for future use by Microsoft.</P>
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileVersion
 Summary:
   Returns the FileVersion string.
 Description:
   FileVersion returns the value of the file version string key.
-Quick info:
-  Donator: Marcel van Brake
+
+Donator: Marcel van Brake
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.InternalName
 Summary:
   Returns the internal name string.
 Description:
   InternalName returns the value of the internal name string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.VersionLanguageId
 Summary:
   Returns the language identifier of the version resource.
 Description:
   VersionLanguage returns the language identifier of the version resource.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.VersionLanguageName
 Summary:
   Returns the language name of the version resource.
 Description:
   VersionLanguage returns the language name of the version resource.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LegalCopyright
 Summary:
   Returns the legal copyright string.
 Description:
   LegalCopyright returns the value of the legal copyright string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LegalTradeMarks
 Summary:
   Returns the LegalTradeMarks string.
 Description:
   LegalTradeMarks returns the value of the legal trademarks string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.OriginalFilename
 Summary:
   OriginalFileName returns the value of the original filename string key.
 Description:
   Returns the original filename string.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.ProductName
 Summary:
   Returns the product name string.
 Description:
   ProductName returns the value of the product name string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.ProductVersion
 Summary:
   Returns the product version string.
 Description:
   ProductVersion returns the value of the product version string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.SpecialBuild
 Summary:
@@ -1917,8 +1893,8 @@ Description:
 See also:
   PrivateBuild
   FileFlags
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.PrivateBuild
 Summary:
@@ -1929,8 +1905,8 @@ Description:
 See also:
   SpecialBuild
   FileFlags
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Items
 Summary:
@@ -1940,24 +1916,24 @@ Description:
   resource. This is implemented as an array with a string index. The key you
   want to read is used as an index into this array. For example:
   S := V.UserKeys['MyKey']; The property returns the value of the key 'MyKey'.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinFileVersion
 Summary:
   Returns the binary file version string.
 Description:
   BinFileVersion returns the value of the binary file version string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinProductVersion
 Summary:
   Returns the binary product string.
 Description:
   The BinProductVersion returns the value of the binary product version string key.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Attach
 Summary:
@@ -1972,8 +1948,8 @@ Parameters:
   Buffer - Buffer containing the version info resource.
 Notes:
   To include version information in your own projects select "Project | Options" and go to the "Version Info" tab.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Create
 Summary:
@@ -1994,8 +1970,8 @@ Notes:
   To include version information in your own projects select "Project | Options" and go to the "Version Info" tab.
 See also:
   Attach
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo
 <GROUP FilesandIO.FilesandDirectories.TJclFileVersionInfo>
@@ -2007,8 +1983,7 @@ Description:
   have a version resource linked in. Besides allowing you to read standard version
   key such as ProductName and FileVersion this class also allows you to read custom
   keys through the UserKeys property.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DeleteDirectory
 <GROUP FilesandIO.FilesandDirectories>
@@ -2023,13 +1998,9 @@ Parameters
   MoveToRecycleBin -   If <B>True</B> the directory will be moved to
                        the system Recycle Bin instead of being
                        deleted.
-QuickInfo
-  Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Anthony Steele
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Anthony Steele
+Quick info:
   Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
@@ -2045,13 +2016,8 @@ Description
 Parameters
   FileName :   File name that is used to construct file name of
                backup file.
-QuickInfo
-  Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OSFileTypeToString
 <GROUP FilesandIO.FileSystems>
@@ -2070,13 +2036,8 @@ Parameters
 Result:
   If there is no an appropriate value for FileType passed the
   function returns an empty string.
-QuickInfo
-  Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathExtractPathDepth
 Summary
@@ -2087,13 +2048,8 @@ Description
 Parameters
   Depth :   Specify the depts of path's parts to return.
   Path :    Path to extract parts from.
-QuickInfo
-  Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Marcel van Brakel
 See Also
   PathGetDepth
 --------------------------------------------------------------------------------
@@ -2107,13 +2063,8 @@ Parameters
   Path :   Path to count the depth of.
 See Also
    PathExtractPathDepth
-QuickInfo
-  Unit: JclFileUtils
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathGetLongName2
 <GROUP $FilesandIO.Pathmanipulation>
@@ -2135,12 +2086,9 @@ Result
   If the function succeeds it returns the long name of the
   supplied path. If the function fails the result is a copy of
   the supplied Path.
+Category: Files and IO
+Donator: Rudy Velthuis
 QuickInfo
-  Category: Files and IO
-  Donator: Rudy Velthuis
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
@@ -2173,12 +2121,9 @@ Parameters
              function directly.
 Result
   Returns <B>True </B>if the function succeeded, <B>False </B>otherwise.
+Category: Files and IO
+Donator: Rudy Velthuis
 QuickInfo
-  Category: Files and IO
-  Donator: Rudy Velthuis
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
@@ -2199,12 +2144,8 @@ Parameters
 Result
   Function returns <B>True</B> if version information resources
   was retrieved successfully, <B>False</B> otherwise.
-QuickInfo
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
+Category: Files and IO
+Donator: Marcel van Brakel
 See Also
   VersionResourceAvailable, TJclFileVersionInfo
 --------------------------------------------------------------------------------
@@ -2212,8 +2153,46 @@ See Also
 <GROUP FilesandIO.FilesandDirectories.>
 
 Description
+  TODO
 
 Summary
+  TODO
+Donator: Robert Rossmair
+--------------------------------------------------------------------------------
+@@TAttributeInterest
+<GROUP $FilesandIO.FilesandDirectories>
+
+Description
+Specifies how a given file attribute shall affect file search results.
+
+Summary
+Defines the interest a file search operation may have in
+specific file attributes.
 
 QuickInfo
+Category: Files and Directories
 Donator: Robert Rossmair
+
+@@TAttributeInterest.aiIgnored
+File search matching is not affected by this attribute
+
+@@TAttributeInterest.aiRequired
+The attribute is required for a file to be included in the search result set.
+
+@@TAttributeInterest.aiRejected
+The attribute causes a file to be excluded from the search result set.
+--------------------------------------------------------------------------------
+
+
+@@IJclFileEnumerator
+<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+
+Description
+
+Summary
+<COLOR 00000E>Interface for thread-based file search</COLOR>
+
+QuickInfo
+Category: File search
+Donator: Robert Rossmair
+Platforms: Win32/Unix

@@ -16,10 +16,9 @@ Description:
   screen. TJclThreadPersistent, however, does not use or implement automatic change notification
   itself. This is done in descendants.
 Quick info:
-  Unit: JclGraphics
   Category: Graphics
-  Donator: Alex Denissov
-  Platform: VCL
+Donator: Alex Denissov
+Platform: VCL
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.LockCount
 Summary
@@ -32,8 +31,7 @@ Description
   The object is unlocked only when LockCount is 0 and only one
   thread can lock the object at the time. Call Lock to increase
   LockCount value and Unlock to decrease it.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 See Also
   Lock, Unlock
 --------------------------------------------------------------------------------
@@ -46,8 +44,8 @@ Description
   UpdateCount is increased each time you call the BeginUpdate method and is
   decreased with EndUpdate calls. The object does not generate OnChange as long
   as its UpdateCount is greater than 0.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 See Also
   BeginUpdate, EndUpdate, OnChange
 --------------------------------------------------------------------------------
@@ -59,8 +57,8 @@ Description
 
   BeginUpdate increases the UpdateCount property, which disables generation of OnChange events. Calls to BeginUpdate must be
   paired with EndUpdate and they may be safely nested.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   EndUpdate
 --------------------------------------------------------------------------------
@@ -76,8 +74,8 @@ Description
   after calling EndUpdate in case the change notification is required.
 SeeAlso
   BeginUpdate
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.Changing
 Summary
@@ -85,8 +83,8 @@ Summary
 Description
   Changing is called every time before a change is about to be made to the object. If the object is
   being updated Changing does nothing, otherwise it fires the OnChanging event.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.Changed
 Summary
@@ -100,8 +98,8 @@ Description
   BeginUpdate... EndUpdate block since EndUpdate itself does not internally call Changed.
 See Also
   BeginUpdate, EndUpdate, OnChange
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.Lock
 Summary
@@ -110,16 +108,16 @@ Description
   Blocks other execution threads from locking the object until the Unlock method is called. If another thread tryes to call the Lock method of an object which is already locked, its execution will be stalled until the lock is released with Unlock method.
 
   Once a thread has locked the object, it can make additional calls to Lock method without blocking its own execution. This prevents the thread from deadlocking itself while waiting for releasing of a lock that it already owns. LockCount is increased each time Lock is called.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.Unlock
 Summary
   Decreases the LockCount property, allowing other threads to execute when LockCount reaches 0.
 Description
   Call Unlock at the end of a critical section begun with a call to the Lock method. Every call to Lock must be matched by a call to Unlock.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.OnChanging
 Summary
@@ -127,8 +125,8 @@ Summary
 Description
   Changing is called every time before a change is about to be made to the object. If the object is
   being updated Changing does nothing, otherwise it fires the OnChanging event.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclThreadPersistent.OnChange
 Summary
@@ -141,8 +139,8 @@ Description
   Generation of OnChange events can be prevented by calling BeginUpdate.
 See Also
   BeginUpdate, Changed, TJclBitmap32, TJclThreadPersistent
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@IdentityMatrix
 <GROUP Graphics.Bitmaps>
@@ -151,9 +149,8 @@ Summary:
 Description:
   Identity matrix to use with TJclLinearTransformation.
 Quick info:
-  Unit: JclGraphics
   Category: Graphics
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclCustomMap
 <GROUP Graphics.Bitmaps>
@@ -162,10 +159,9 @@ Summary
 Description
   <B>TJclCustomMap</B> is a common ancestor for objects that hold 2D arrays of data.
 QuickInfo
-  Unit: JclGraphics
   Category: Graphics
-  Platform: VCL
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclCustomMap.Delete
 Summary
@@ -173,8 +169,8 @@ Summary
 Description
   By default, Delete calls SetSize(0, 0). In descendants this implies deletion
   of stored data and freeing of the occupied memory.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclCustomMap.Empty
 Summary
@@ -184,8 +180,8 @@ Description
   In general a result of True means that Width or Height is 0.
 Result
   False, if the instance contains data, True otherwise.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclCustomMap.SetSize@TPersistent
 Summary
@@ -197,8 +193,8 @@ Description
 Parameters
   Height - New value for Height.
   Width - New value for Width.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   SetSize@Integer@Integer
 --------------------------------------------------------------------------------
@@ -211,8 +207,8 @@ Description
 Parameters
   Height - New value for Height.
   Width - New value for Width.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   SetSize@TPersistent
 --------------------------------------------------------------------------------
@@ -223,8 +219,8 @@ Description
   Specifies the width of the contained data array.
   Writing into the Width property will resize the data array.
   Use the SetSize method to change both width and height simultaneously.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   SetSize@Integer@Integer
 --------------------------------------------------------------------------------
@@ -234,8 +230,8 @@ Summary
 Description
   Specifies the height of the contained data array.
   Use the SetSize method to change both width and height simultaneously.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   SetSize@Integer@Integer
 --------------------------------------------------------------------------------
@@ -265,10 +261,9 @@ Description
   Since TJclBitmap32 is a descendant of TJclThreadPersistent, it inherits its
   locking mechanism and it may be used in multi-threaded applications.
 QuickInfo
-  Unit: JclGraphics
   Category: Graphics
-  Platform: VCL
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclBitmap32.BitmapHandle
 Summary
@@ -277,8 +272,8 @@ Description
   Provides access to the Windows GDI bitmap handle for accessing the GDI bitmap object.
 Note
   This property is not the same as Handle, which returns a device context handle (HDC).
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Handle, PixelPtr, ScanLine
 --------------------------------------------------------------------------------
@@ -287,8 +282,8 @@ Summary
   Bitmap information record.
 Description
   Returns a BITMAPINFO record corresponding to a current DIB data. See BITMAPINFO in Windows SDK documentation for more information.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   PixelPtr, ScanLine
 --------------------------------------------------------------------------------
@@ -319,8 +314,7 @@ Description
 Summary
   Pointer to the pixel data.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 See Also
   Height, Width, PixelPtr, ScanLine, TColor32, TColor32Array
@@ -339,8 +333,8 @@ Description
   blending functions using the OnPixelCombine call-back event.
 
   Blending in dmBlend mode, is performed using Blend or BlendEx functions.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Blend, BlendEx, Draw, DrawTo, OnPixelCombine, TDrawMode
 --------------------------------------------------------------------------------
@@ -351,8 +345,8 @@ Description
   Set Font to specify the font to use for writing text on the image. The value of Font is a TFont object. Set the properties of the TFont object to specify the font face, color, size, style, and any other aspects of the font.
 Note
   Setting the Font property assigns the specified TFont object, rather than replacing the current TFont object.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   RenderText, TextOut, UpdateFont
 --------------------------------------------------------------------------------
@@ -380,8 +374,8 @@ Description
   end;
   </CODE>
   Handle contains zero, if the bitmap is empty (width or height is zero), and its value can change after resizing.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclBitmap32.MasterAlpha
 Summary
@@ -390,8 +384,8 @@ Description
   When blending a bitmap to the screen or to another bitmap, MasterAlpha normally controls the blending factor. The per-pixel opacity, stored in the blended bitmap, is premultiplied with MasterAlpha. If the MasterAlpha property is $00, the bitmap will be fully transparent, if it is equal to $FF, only per-pixel opacity, stored in bitmap’s alpha channel is used. This property is used only for bitmap blending, it does not affect pixel/line drawing and other similar routines.
   When blending bitmaps in dmCustom draw mode, this property may be used for other purposes. Custom combining routine may use all 32 bits of MasterAlpha.
   If the bitmap is in dmBlend draw mode and MasterAlpha is not in the [0…255] range, the blending result is not specified, it is your responsibility to keep MasterAlpha consistent with current draw mode.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   DrawMode, TColor32
 --------------------------------------------------------------------------------
@@ -403,8 +397,8 @@ Description
   pixel with coordinates that lie outside the bitmap. The default value is
   $00000000, which corresponds to a fully transparent black. It is also used
   when performing linear transformations of a bitmap.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Pixel, TColor32
 --------------------------------------------------------------------------------
@@ -414,8 +408,8 @@ Summary
 Description
   Use PenColor to specify the color used to draw lines.
   PenColor is used exclusively in MoveTo/LineTo functions.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   LineTo, MoveTo, TColor32
 --------------------------------------------------------------------------------
@@ -437,8 +431,8 @@ Description
   outside the bitmap boundary, the value specified by OuterColor is returned.
   Writing with invalid coordinates will have no effect.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   OuterColor, SetPixel, TColor32
 
@@ -454,8 +448,8 @@ Description
   TColor32 values, starting at the top left corner.
 
   Pixel with (0, 0) coordinates has the same address as specified in Bits property.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Bits, Pixel, ScanLine, TJclBitmap32, TColor32
 --------------------------------------------------------------------------------
@@ -471,8 +465,8 @@ Description
   The <B>Scanline</B> property provides indexed access to each line of pixels.
   Returns the same address as PixelPtr[0, Y].
   This property acts similar to TBitmap.ScanLine.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Bits, PixelPtr, TColor32Array
 --------------------------------------------------------------------------------
@@ -481,8 +475,8 @@ Summary
   The current value of the stipple counter.
 Description
   Use StippleCounter property to get the current value of the stipple counter.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   GetStippleColor, Line Patterns, SetStipple, StippleStep
 --------------------------------------------------------------------------------
@@ -495,8 +489,8 @@ Description
 Summary
   The current stipple step value.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 
 See Also
   GetStippleColor, Line Patterns, SetStipple, StippleCounter
@@ -511,8 +505,8 @@ Description
   (transformations, for example) do not distinguish sfSpline filter, even if it
   is specified, instead they will use sfLinear.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Draw, TStretchFilter
 --------------------------------------------------------------------------------
@@ -521,8 +515,8 @@ Summary
   Clears the bitmap.
 Description
   Fills the entire bitmap with clBlack32.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Clear@TColor32
 --------------------------------------------------------------------------------
@@ -531,8 +525,8 @@ Summary
   Fills the bitmap with FillColor.
 Description
   Clear fills the entire bitmap with FillColor.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Delete, TColor32
 --------------------------------------------------------------------------------
@@ -553,8 +547,8 @@ Description
 Summary
   Creates and initializes an instance of TJclBitmap32.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclBitmap32.Destroy
 Summary
@@ -562,8 +556,8 @@ Summary
 Description
   Destroys the bitmap object and frees all associated memory.
   Do not call Destroy directly, use Free method instead.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Create
 --------------------------------------------------------------------------------
@@ -593,7 +587,7 @@ Description
   However, in this case, if source and destination areas intersect, the result is
   not specified (this is a limitation of the current version).
 
-QuickInfo
+
 Donator: Alex Denissov
 
 SeeAlso
@@ -609,7 +603,7 @@ Description
   similar to Draw method but instead of copying data from some other source, the
   bitmap renders itselt to destination object. See the Draw description for
   details.
-QuickInfo
+
 Donator: Alex Denissov
 
 SeeAlso
@@ -624,8 +618,8 @@ Description
   If the bitmap is empty, it has no device context (Handle property) allocated.
 Result
   True, if the bitmap doesn't contain an image.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Handle, Height, Width
 --------------------------------------------------------------------------------
@@ -640,8 +634,8 @@ Description
   The function fills the rectangle up to, but not including the right column and
   bottom row. When X2 <= X1 or Y2 <= Y1, nothing is drawn.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   FrameRect, Graphics_Naming_Conventions, TColor32
 @@TJclBitmap32.FillRectS
@@ -662,8 +656,8 @@ Description
 
   FrameRectTSP version supports line patterns.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   FillRect, LineTo, Graphics_Naming_Conventions, TColor32
 
@@ -689,8 +683,7 @@ Description
 
   DrawHorzLineTSP uses a stipple pattern to vary the color along the line.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   DrawLine, Line Patterns, Graphics_Naming_Conventions, TColor32, DrawVertLine
 
@@ -719,8 +712,8 @@ Description
 
   DrawVertLineTSP uses a stipple pattern to vary the color along the line.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   DrawLine, Line Patterns, Graphics_Naming_Conventions, TColor32, DrawHorzLine
 
@@ -758,8 +751,8 @@ Description
 
   LineXP/FP/XSP/FXP draw antialiased lines with support for color patterns.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   LineTo, MoveTo, Graphics_Naming_Conventions, TColor32, DrawHorzLine, DrawVertLine
 
@@ -810,8 +803,8 @@ Description
 
   To start a new line or sequence of lines, use MoveTo methods.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   DrawLine, Line Patterns, MoveTo, Graphics_Naming_Conventions, PenColor, TFixed
 
@@ -835,8 +828,8 @@ Description
   TPicture object to load data and will succeed with any format supported by
   TPicture.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   LoadFromStream, SaveToFile
 --------------------------------------------------------------------------------
@@ -848,8 +841,8 @@ Description
   temporary TPicture object to load data and will succeed with any format
   supported by TPicture.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   LoadFromFile, SaveToStream
 --------------------------------------------------------------------------------
@@ -872,8 +865,8 @@ Parameters
   X - Specifies the x-coordinate of the new position.
   Y - Specifies the y-coordinate of the new position.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   DrawLine, LineTo, Graphics_Naming_Conventions, TFixed
 
@@ -897,8 +890,8 @@ Parameters
   Y2 - y-coordinate of bounding rectangle's lower-right corner
   Contrast - Specifies how the rectangle shall contrast to the background.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 
 SeeAlso
   FrameRect, Graphics_Naming_Conventions
@@ -925,8 +918,8 @@ Parameters
   AALevel - level of antialiasing to apply.
   Color - The color to use when drawing the string.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 
 SeeAlso
   Font, TColor32, TextExtent, TextOut
@@ -943,8 +936,8 @@ Description
 Result
   Stipple pattern color at position specified by StippleCounter.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 
 SeeAlso
   Line Patterns, SetStipple, StippleCounter, StippleStep, TColor32
@@ -954,8 +947,8 @@ Summary
   Resets the alpha channel.
 Description
   Resets the alpha channel of the entire bitmap to complete opacity.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   DrawMode, MasterAlpha
 --------------------------------------------------------------------------------
@@ -974,7 +967,7 @@ Description
 Parameters
   FileName - the name of the file to write to.
 
-QuickInfo
+
 Donator: Alex Denissov
 
 SeeAlso
@@ -987,8 +980,8 @@ Description
   SaveToStream stores the bitmap image to a stream specified by the Stream paramter.
 Parameters
   Stream - the stream to write the bitmap to.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TJclBitmap32.SetPixel
@@ -1018,8 +1011,8 @@ Description
   SetPixelF/SetPixelFS methods provide antialiased rendering of points.
 
   <IMAGE TJclBitmap32_SetPixel>
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 
 SeeAlso
   Graphics_Naming_Conventions, Pixel, TColor32, TFixed
@@ -1058,8 +1051,8 @@ Description
 
   After calling SetSize the bitmap image should be completely redrawn.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Handle, Height, Width, TJclCustomMap
 --------------------------------------------------------------------------------
@@ -1068,8 +1061,8 @@ Summary
   Sets a new stipple pattern.
 Description
   Use SetStipple to set a new stipple pattern.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   GetStippleColor, Line Patterns, TArrayOfColor32, TColor32
 --------------------------------------------------------------------------------
@@ -1092,8 +1085,8 @@ Note
   The size returned by this function may differ from the actual width of the text
   produced by RenderText function, especially when using raster fonts.
 
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Font, RenderText, TextHeight, TextOut, TextWidth, TSize
 --------------------------------------------------------------------------------
@@ -1106,8 +1099,8 @@ Description
   positioned to accommodate the height of the text.
 
   TextHeight returns the same value as TextExtent(Text).cy.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Font, RenderText, TextExtent, TextOut, TextWidth
 --------------------------------------------------------------------------------
@@ -1121,8 +1114,8 @@ Description
   be positioned to accommodate the width of the text.
 
   TextWidth returns the same value as TextExtent(Text).cx.
-QuickInfo
-  Donator: Alex Denissov
+
+Donator: Alex Denissov
 SeeAlso
   Font, RenderText, TextExtent, TextHeight, TextOut
 --------------------------------------------------------------------------------
@@ -1140,8 +1133,7 @@ Description
   function in 'Win32 Developer Reference' help file for information on Flags and
   their function.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   Font, RenderText, TextExtent, TextHeight, TextWidth, TRect
 --------------------------------------------------------------------------------
@@ -1155,8 +1147,7 @@ Description
   have to call UpdateFont when using text output methods of TJclBitmap32 since
   they call UpdateFont automatically.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   Font
 --------------------------------------------------------------------------------
@@ -1169,8 +1160,7 @@ Description
   Use this event to customize handling of colors. Note, however, that this event
   is called for every pixel, so the event handler should be kept small and fast.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   DrawMode, TColor32, TPixelCombineEvent
@@ -1249,8 +1239,11 @@ See Also
   TJclBitmap32.StippleCounter, TJclBitmap32.StippleStep
 --------------------------------------------------------------------------------
 @@TDrawMode
+<GROUP Graphics.Bitmaps>
+
 Summary
   TDrawMode defines how the bitmap is combined with the backgrownd.
+
 Description
   This is the type for DrawMode property of TJclBitmap32 class, and it is also
   passed as parameter in BlockTransfer and StretchTransfer functions.
@@ -1264,7 +1257,6 @@ foreground and background colors are blended together using
 per-pixel opacity of the foreground bitmap (stored in its
 alpha channel), multiplied by its MasterAlpha.
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -1275,7 +1267,6 @@ SeeAlso
 Description
 3 x 3 Matrix as used by TJclLinearTransformation.
 
-QuickInfo
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TStretchFilter
@@ -1286,7 +1277,6 @@ Description
 
   In some functions, however, sfSpline mode may not be supported, if this is the
   case, sfSpline will be substituted with sfLinear.
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -1307,7 +1297,6 @@ Description
   TJclByteMap is an descendat of TJclCustomMap and assignment compatible with
   TJclBitmap32 in both directions.
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -1321,8 +1310,7 @@ Description
   Returns the pointer to the internal array of bytes. Data is stored in row-major
   order, top-left "pixel" comes first.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 --------------------------------------------------------------------------------
 @@TJclByteMap.ValPtr
@@ -1332,8 +1320,7 @@ Summary
 Description
   Returns a pointer to a specific byte in the array.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Byte, Bytes
@@ -1347,8 +1334,7 @@ Description
   perform any range checking of its arguments. Ensure that the byte map is not
   empty and that both X and Y are in a valid range.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   ValPtr, Bytes
@@ -1373,8 +1359,7 @@ Description
     Bitmap32.Assign(ByteMap); // an analog to B32 := Gray32(BM);
   </CODE>
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   TJclBitmap32, ReadFrom
 --------------------------------------------------------------------------------
@@ -1383,8 +1368,7 @@ Summary
   Fills the byte map with the specified value.
 Description
   Fills the entire byte map with the specified value.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclByteMap.Destroy
 Description
@@ -1392,8 +1376,7 @@ Description
 
   Do not call Destroy directly, use the Free method instead.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclByteMap.Empty
 Summary
@@ -1401,8 +1384,7 @@ Summary
 Description
   Returns True if the byte map contains no data, which implies that either Width
   or Height is 0.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   Height, Width
 --------------------------------------------------------------------------------
@@ -1424,8 +1406,7 @@ ctAlpha         Copies alpha channel
 ctUniformRGB    Copies averaged value: (R + G + B) / 3
 ctWeightedRGB   Copies intensity: R * 0.21 + G * 0.71 + B * 0.08
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   TJclBitmap32, TConversionType
 --------------------------------------------------------------------------------
@@ -1442,8 +1423,7 @@ Description
   If you pass another bitmap, byte map or control as an argument, the byte map
   will be sized to corresponding dimensions.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Bytes, TJclCustomMap, Height, Width
@@ -1478,8 +1458,7 @@ Note
   This method alters only the specified color channels, other channels remain
   intact.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   TJclBitmap32, TConversionType, TPalette32
@@ -1490,8 +1469,7 @@ Description
   Specifies how data is converted from 32-bit ARGB bitmap to 8-bit bytemap and
   back.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   TJclByteMap.ReadFrom, TJclByteMap.WriteTo
@@ -1503,8 +1481,7 @@ Summary
 Description
   TJclTransformation objects are passed as parameter in the Transform function,
   which actually performs the bitmap transformation.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   TJclLinearTransformation, Transform
 --------------------------------------------------------------------------------
@@ -1514,16 +1491,14 @@ Description
   the transformation. The coordinates of the rectangle are specified relative to
   the destination bitmap origin.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation
 <GROUP Graphics.Bitmaps>
 Description
   The transformation is defined by a 3x3 homogeneous matrix.
   <IMAGE TJclLinearTransformation>
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   TMatrix3d
 --------------------------------------------------------------------------------
@@ -1533,24 +1508,21 @@ Summary
 Description
   The matrix is accessed as a field instead of a property in order to make it
   Borland C++ Builder compatible.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation.Clear
 Summary
   Resets the transformation to identity.
 Description
   Loads IdentityMatrix into the Matrix field.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation.Create
 Summary
   Creates and initializes an instance of TJclLinearTransformation.
 Description
   Upon creation, the Matrix field is initialized to IdentityMatrix.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   Clear, Matrix
 --------------------------------------------------------------------------------
@@ -1561,8 +1533,7 @@ Description
   the destination bitmap origin.
 
   <IMAGE TJclLinearTransformation_GetTransformedBounds>
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation.Rotate
 Summary
@@ -1574,8 +1545,7 @@ Description
   <IMAGE TJclLinearTransformation_Rotate>
 
   and finally, the origin is shifted back.
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
   Translate, Rotate, Scale, Skew
 --------------------------------------------------------------------------------
@@ -1585,8 +1555,7 @@ Description
 
   <IMAGE TJclLinearTransformation_Scale>
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Translate, Rotate, Scale, Skew
@@ -1597,8 +1566,7 @@ Description
 
   <IMAGE TJclLinearTransformation_Skew>
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Translate, Rotate, Scale, Skew
@@ -1609,8 +1577,7 @@ Description
 
   <IMAGE TJclLinearTransformation_Translate>
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Translate, Rotate, Scale, Skew
@@ -1628,7 +1595,6 @@ Description
   This function is useful when it is necessary to visualize the alpha channel, or
   when you want to store it as standard bitmap into a file.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1652,7 +1618,6 @@ Description
 
   This function supports in-place operation, that is Dst may be the same as Src.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1685,7 +1650,6 @@ Description
 
   This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1701,7 +1665,6 @@ Description
 
   This function supports in-place operation, that is Dst may be the same as Src.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1725,7 +1688,6 @@ Description
 
   The in-place operation is fully supported, that is Dst may be the same as Src.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1739,7 +1701,6 @@ Description
 
   This function supports in-place operation, that is Dst may be the same as Src.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1754,7 +1715,6 @@ Description
 
   This function supports in-place operation, that is Dst may be the same as Src.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1775,10 +1735,9 @@ Description
 
   PolygonFS provides full antialiasing and does not perform rounding of vertex
   coordinates.
-  
+
   All functions perform clipping.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1812,7 +1771,6 @@ Description
 
   All functions perform clipping.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1835,7 +1793,6 @@ Description
   constructed from several contours, which are specified in Points parameter.
   The filling is performed according to Mode parameter.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1858,8 +1815,7 @@ Description
   PolyPolyline is the same as Polyline, but takes array of polylines as
   parameter. The Closed parameter influences all polylines in the array.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
   Graphics_Naming_Conventions, Polyline, PolyPolygon, TJclBitmap32, TColor32
@@ -1880,7 +1836,6 @@ Description
   specified rectangle to zero. It may be used on a bitmap before passing it to
   Transform function as a workarownd to the edge antialiasing problem.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1901,7 +1856,6 @@ Description
 
   The default value of 0.7 works fine in most cases.
 
-QuickInfo
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@StretchTransfer
@@ -1930,7 +1884,6 @@ Description
 
   This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1969,7 +1922,6 @@ Description
   In case the bitmap is transformed in dmOpaque mode, it might be better to keep
   the color on the edge close to the color of the background.
 
-QuickInfo
 Platform: VCL
 Donator: Alex Denissov
 
@@ -1982,7 +1934,6 @@ SeeAlso
 Description
 The TPointF type defines a location in pixel space.
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -1994,7 +1945,6 @@ SeeAlso
 Description
 TDynPointArrayF defines a one-dimensional dynamic array of TPointF.
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -2007,7 +1957,6 @@ Description
 TDynDynPointArrayArrayF defines a two-dimensional dynamic array of TPointF,
 respectively a one-dimensional array of TDynPointArrayF, which means the same.
 
-QuickInfo
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TDynPointArray
@@ -2016,7 +1965,6 @@ Donator: Alex Denissov
 Description
 TDynPointArray defines a one-dimensional dynamic array of TPoint.
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -2029,7 +1977,6 @@ Description
 TDynDynPointArrayArray defines a two-dimensional dynamic array of TPoint,
 respectively a one-dimensional array of TDynPointArray, which means the same.
 
-QuickInfo
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TDynDynIntegerArrayArray
@@ -2039,7 +1986,6 @@ Description
 TDynDynIntegerArrayArray defines a two-dimensional dynamic array of Integer,
 respectively a one-dimensional array of TDynIntegerArray, which means the same.
 
-QuickInfo
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TGamma
@@ -2049,8 +1995,7 @@ Description
 Internal Gamma bias table type as used for line/pixel antialiasing/shape
 correction.
 
-QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TLUT8
@@ -2060,14 +2005,12 @@ A look-up table of 256 values, each ranging from 0 to 255.
 
 TLUT8 is used to transform color data with ApplyLUT procedure.
 
-QuickInfo
 Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TScanLine
 <GROUP Graphics.Types>
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso
@@ -2076,7 +2019,6 @@ TScanLines
 @@TScanLines
 <GROUP Graphics.Types>
 
-QuickInfo
 Donator: Alex Denissov
 
 SeeAlso

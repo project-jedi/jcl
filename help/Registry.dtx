@@ -1,7 +1,13 @@
+@@JclRegistry.pas
+Summary
+Unit <B>JclRegistry </B>contains useful routines for registry
+manipulation in addition to standard routines provided by
+several Delphi classes.
+--------------------------------------------------------------------------------
 @@$RegistryandInifiles
 <GROUP JCL>
 <TITLE Registry and Ini files>
-<TOPICORDER 1800>
+<TOPICORDER 2000>
 --------------------------------------------------------------------------------
 @@$RegistryandInifiles.Inifiles
 <GROUP RegistryandInifiles>
@@ -29,8 +35,7 @@ Result:
   only some remaining keys.
   Think twice before using this function. It will happily delete vital parts
   of the registry without complaining.
-Quick info:
-  Donator: Charlie Calvert
+Donator: Charlie Calvert
 --------------------------------------------------------------------------------
 @@RegCreateKey
 <GROUP RegistryandInifiles.Registry>
@@ -46,8 +51,7 @@ Result:
   If the function succeeds it returns ERROR_SUCCESS as defined in Windows.pas. If
   it fails it returns a non-zero error code. You can use the Windows FormatMessage
   API call to get a description for the error code.
-Quick info:
-  Donator: Charlie Calvert
+Donator: Charlie Calvert
 --------------------------------------------------------------------------------
 @@RegReadBoolDef
 <GROUP RegistryandInifiles.Registry>
@@ -68,8 +72,7 @@ See also:
   RegReadIntegerDef
   RegReadStringDef
   RegReadBinaryDef
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RegReadIntegerDef
 <GROUP RegistryandInifiles.Registry>
@@ -90,8 +93,8 @@ See also:
   RegReadBoolDef
   RegReadStringDef
   RegReadBinaryDef
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegReadStringDef
 <GROUP RegistryandInifiles.Registry>
@@ -112,8 +115,8 @@ See also:
   RegReadBoolDef
   RegReadIntegerDef
   RegReadBinaryDef
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegReadBinaryDef
 <GROUP RegistryandInifiles.Registry>
@@ -139,8 +142,8 @@ See also:
   RegReadBoolDef
   RegReadIntegerDef
   RegReadStringDef
-Quick info:
-  Donator: Stephane Fillon
+Donator: Stephane Fillon
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegDeleteEntry
 <GROUP RegistryandInifiles.Registry>
@@ -156,8 +159,7 @@ Result:
   The function return True if it succeeds else False. The most probable
   failure reasons are a nonexistent key or name or insufficient permissions
   on Windows NT.
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@RegWriteBool
 <GROUP RegistryandInifiles.Registry>
@@ -176,8 +178,7 @@ See also:
   RegWriteInteger
   RegWriteString
   RegWriteBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@RegWriteInteger
 <GROUP RegistryandInifiles.Registry>
@@ -195,8 +196,8 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegWriteString
 <GROUP RegistryandInifiles.Registry>
@@ -214,8 +215,7 @@ See also:
   RegWriteBool
   RegWriteInteger
   RegWriteBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@RegWriteBinary
 <GROUP RegistryandInifiles.Registry>
@@ -234,8 +234,8 @@ See also:
   RegWriteBool
   RegWriteInteger
   RegWriteString
-Quick info:
-  Donator: Stephane Fillon
+Donator: Stephane Fillon
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegReadBool
 <GROUP RegistryandInifiles.Registry>
@@ -254,8 +254,7 @@ See also:
   RegReadInteger
   RegReadString
   RegReadBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@RegReadInteger
 <GROUP RegistryandInifiles.Registry>
@@ -274,8 +273,8 @@ See also:
   RegReadBool
   RegReadString
   RegReadBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegReadString
 <GROUP RegistryandInifiles.Registry>
@@ -294,8 +293,8 @@ See also:
   RegReadBool
   RegReadInteger
   RegReadBinary
-Quick info:
-  Donator: John C Molyneux
+Donator: John C Molyneux
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegReadBinary
 <GROUP RegistryandInifiles.Registry>
@@ -319,8 +318,8 @@ See also:
   RegReadBool
   RegReadInteger
   RegReadString
-Quick info:
-  Donator: Stephane Fillon
+Donator: Stephane Fillon
+Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@UnregisterAutoExec
 <GROUP RegistryandInifiles.Registry>
@@ -342,8 +341,7 @@ Result:
 See also:
   RegisterAutoExec
   TExecKind
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RegisterAutoExec
 <GROUP RegistryandInifiles.Registry>
@@ -372,8 +370,7 @@ Result:
 See also:
   UnregisterAutoExec
   TExecKind
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TExecKind
 <GROUP RegistryandInifiles.Registry>
@@ -384,8 +381,7 @@ Description:
 See also:
   UnregisterAutoExec
   RegisterAutoExec
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 @@TExecKind.ekMachineRun
   Register under HKLM\..\Run. This will execute the specified file each time at logon for each user, until it is unregistered.
 @@TExecKind.ekMachineRunOnce
@@ -417,8 +413,7 @@ Result:
   No values gives success not failure.
 See also:
   RegGetKeyNames
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@RegGetKeyNames
 <GROUP RegistryandInifiles.Registry>
@@ -439,8 +434,7 @@ Result:
 See also:
   RegGetValueNames
   RegHasSubKeys
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@RegHasSubKeys
 <GROUP RegistryandInifiles.Registry>
@@ -458,8 +452,7 @@ Result:
 See also:
   RegGetKeyNames
   RegGetValueNames
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@RegSaveList
 <GROUP RegistryandInifiles.Registry>
@@ -480,8 +473,7 @@ Result:
   created False otherwise.
 See also:
   RegLoadList
-Quick info:
-  Donator: Robert Marquardt
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@RegLoadList
 <GROUP RegistryandInifiles.Registry>
@@ -503,8 +495,7 @@ Result:
 See also:
   RegSaveList
   RegDelList
-Quick info:
-  Donator: Robert Marquardt
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@RegDelList
 <GROUP RegistryandInifiles.Registry>
@@ -527,10 +518,8 @@ Result:
 See also:
   RegSaveList
   RegLoadList
-Quick info:
-  Donator: Robert Marquardt
+Donator: Robert Marquardt
 --------------------------------------------------------------------------------
-
 @@RegKeyExists@HKEY@string
 Description
 The function <B>RegKeyExists</B> checks if the specified
@@ -551,15 +540,9 @@ If the key specified the function returns <B>True</B>,
 \otherwise it returns <B>False</B>.
 
 QuickInfo
- Unit: JclRegistry
   Category: Registry and Ini files
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Requires Windows 95 or later.
-
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
 @@EJclRegistryError
 Description
 Error class, the instance of which is raised by functions
@@ -569,20 +552,10 @@ Summary
 Error class, the instance of which is raised by functions
 from Registry.pas JCL unit.
 
-
+Donator: Marcel van Brakel
 
 QuickInfo
- Unit: JclRegistry
   Category: Registry and Ini files
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 
-@@JclRegistry.pas
-Summary
-Unit <B>JclRegistry </B>contains useful routines for registry
-manipulation in addition to standard routines provided by
-several Delphi classes.
