@@ -995,10 +995,6 @@ const
   DebugSectionName    = '.debug';
   ReadOnlySectionName = '.rdata';
 
-  {$IFNDEF COMPILER7_UP}
-  UnixDateDelta = 25569;  { TODO : Move to more appropriate unit }
-  {$ENDIF ~COMPILER7_UP}
-
 // Helper routines
 function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Integer): Boolean;
 begin
@@ -3557,7 +3553,7 @@ end;
 
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
 begin
-  Result := TimeDateStamp / SecsPerDay + UnixDateDelta
+  Result := TimeDateStamp / SecsPerDay + UnixTimeStart
 end;
 
 procedure TJclPeImage.TryGetNamesForOrdinalImports;
@@ -4240,7 +4236,7 @@ begin
     Headers := PeMapImgNtHeaders(View.Memory);
     Result := (Headers <> nil);
     if Result then
-      Headers^.FileHeader.TimeDateStamp := Round((Time - UnixDateDelta) * SecsPerDay);
+      Headers^.FileHeader.TimeDateStamp := Round((Time - UnixTimeStart) * SecsPerDay);
   finally
     Mapping.Free;
   end;
@@ -4255,7 +4251,7 @@ begin
   try
     Headers := PeMapImgNtHeaders(Mapping.Memory);
     if Headers <> nil then
-      Result := Headers^.FileHeader.TimeDateStamp / SecsPerDay + UnixDateDelta
+      Result := Headers^.FileHeader.TimeDateStamp / SecsPerDay + UnixTimeStart
     else
       Result := -1;
   finally
@@ -5384,6 +5380,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2005/03/09 23:52:19  rrossmair
+// - replaced constant UnixDateDelta by JclDateTime.UnixTimeStart
+//
 // Revision 1.23  2005/03/08 16:10:10  marquardt
 // standard char sets extended and used, some optimizations for string literals
 //
