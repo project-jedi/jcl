@@ -2,48 +2,48 @@
 ## Doc-O-Matic groups                                                                             ##
 ####################################################################################################
 
-@@$DateandTime.Scheduling
-<GROUP $DateandTime>
+@@DateandTime.Scheduling
+<GROUP DateandTime>
 <TITLE Scheduling>
 <TOPICORDER 180>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.Types
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.Types
+<GROUP DateandTime.Scheduling>
 <TITLE Types>
 <TOPICORDER 90>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclSchedule
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclSchedule
+<GROUP DateandTime.Scheduling>
 <TITLE IJclSchedule>
 <TOPICORDER 100>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclScheduleDayFrequency
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclScheduleDayFrequency
+<GROUP DateandTime.Scheduling>
 <TITLE IJclScheduleDayFrequency>
 <TOPICORDER 200>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclDailySchedule
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclDailySchedule
+<GROUP DateandTime.Scheduling>
 <TITLE IJclDailySchedule>
 <TOPICORDER 300>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclWeeklySchedule
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclWeeklySchedule
+<GROUP DateandTime.Scheduling>
 <TITLE IJclWeeklySchedule>
 <TOPICORDER 400>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclMonthlySchedule
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclMonthlySchedule
+<GROUP DateandTime.Scheduling>
 <TITLE IJclMonthlySchedule>
 <TOPICORDER 500>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.IJclYearlySchedule
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.IJclYearlySchedule
+<GROUP DateandTime.Scheduling>
 <TITLE IJclYearlySchedule>
 <TOPICORDER 600>
 ----------------------------------------------------------------------------------------------------
-@@$DateandTime.Scheduling.Aux
-<GROUP $DateandTime.Scheduling>
+@@DateandTime.Scheduling.Aux
+<GROUP DateandTime.Scheduling>
 <TITLE Auxilary routines>
 <TOPICORDER 600>
 ####################################################################################################
@@ -51,7 +51,7 @@
 ####################################################################################################
 
 @@TScheduleRecurringKind
-<GROUP $DateandTime.Scheduling.Types>
+<GROUP DateandTime.Scheduling.Types>
 Summary
   Type to specify the schedule recurring type.
 Description
@@ -77,7 +77,7 @@ Quick info:
   supports both the IJclScheduleDayFrequency as well as the IJclYearlySchedule interface.
 ----------------------------------------------------------------------------------------------------
 @@TScheduleEndKind
-<GROUP $DateandTime.Scheduling.Types>
+<GROUP DateandTime.Scheduling.Types>
 Summary
   Type used to specify the schedule end type.
 Description
@@ -98,7 +98,7 @@ Quick info:
   IJclSchedule.EndCount.
 ----------------------------------------------------------------------------------------------------
 @@TScheduleWeekDay
-<GROUP $DateandTime.Scheduling.Types>
+<GROUP DateandTime.Scheduling.Types>
 Summary
   Type used when specifying on which days an event should be generated whn using a weekly schedule.
 Description
@@ -127,7 +127,7 @@ Quick info:
 <COMBINEWITH TScheduleWeekDay>
 ----------------------------------------------------------------------------------------------------
 @@TScheduleIndexKind
-<GROUP $DateandTime.Scheduling.Types>
+<GROUP DateandTime.Scheduling.Types>
 Summary
   Type used to specify the index kind of the month and year schedules.
 Description
@@ -160,7 +160,7 @@ Quick info:
   The index specifies the <I>n</I>th sunday.
 ----------------------------------------------------------------------------------------------------
 @@ESchedule
-<GROUP $DateandTime.Scheduling.Types>
+<GROUP DateandTime.Scheduling.Types>
 Summary
   Exception raised for schedule related errors.
 Description
@@ -172,7 +172,7 @@ Quick info:
 ## Interfaces                                                                                     ##
 ####################################################################################################
 @@IJclSchedule
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Main schedule interface.
 Description
@@ -186,7 +186,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.DayCount
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Number of days on which events are generated.
 Description
@@ -199,7 +199,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.EndCount
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Determines the number of days or events after which the schedule stops.
 Description
@@ -212,7 +212,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.EndDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Determines the date and time after which the schedule stops.
 Description
@@ -224,7 +224,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.EndType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Determines how the end of the schedule is determined.
 Description
@@ -236,7 +236,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.GetEndCount
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property getter for EndCount.
 Description
@@ -247,7 +247,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.GetEndDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property getter for EndDate.
 Description
@@ -258,7 +258,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.GetEndType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property getter for EndType.
 Description
@@ -269,7 +269,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.GetRecurringType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property getter for RecurringType.
 Description
@@ -280,7 +280,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.GetStartDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property getter for StartDate.
 Description
@@ -291,7 +291,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.InitToSavedState
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Initializes the schedule to a specific (saved) state.
 Description
@@ -311,7 +311,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.LastTriggered
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Retrieves the time stamp of the last event.
 Description
@@ -324,7 +324,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.NextEvent
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Retrieves the timestamp for the next event.
 Description
@@ -341,7 +341,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.NextEventFrom
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Retrieves the timestamp for the next event given a starting timestamp.
 Description
@@ -357,7 +357,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.NextEventFromNow
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Retrieves the timestamp for the next event starting from the current date/time.
 Description
@@ -372,7 +372,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.RecurringType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Indicates the schedules recurring type.
 Description
@@ -382,7 +382,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.Reset
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Resets the schedule.
 Description
@@ -395,7 +395,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.SetEndCount
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property setter for EndCount.
 Description
@@ -406,7 +406,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.SetEndDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property setter for EndDate.
 Description
@@ -417,7 +417,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.SetEndType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property setter for EndType.
 Description
@@ -428,7 +428,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.SetRecurringType
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property setter for RecurringType.
 Description
@@ -439,7 +439,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.SetStartDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Property Setter for StartDate.
 Description
@@ -450,7 +450,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.StartDate
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Indicates the starting date of the schedule.
 Description
@@ -465,7 +465,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclSchedule.TriggerCount
-<GROUP $DateandTime.Scheduling.IJclSchedule>
+<GROUP DateandTime.Scheduling.IJclSchedule>
 Summary
   Number of events generated.
 Description
@@ -477,7 +477,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclScheduleDayFrequency
-<GROUP $DateandTime.Scheduling.IJclScheduleDayFrequency>
+<GROUP DateandTime.Scheduling.IJclScheduleDayFrequency>
 Summary
   Interface to the daily frequency.
 Description
@@ -493,7 +493,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclScheduleDayFrequency.StartTime
-<GROUP $DateandTime.Scheduling.IJclScheduleDayFrequency>
+<GROUP DateandTime.Scheduling.IJclScheduleDayFrequency>
 Summary
   The start time in milliseconds.
 Description
@@ -505,7 +505,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclScheduleDayFrequency.EndTime
-<GROUP $DateandTime.Scheduling.IJclScheduleDayFrequency>
+<GROUP DateandTime.Scheduling.IJclScheduleDayFrequency>
 Summary
   The end time in milliseconds.
 Description
@@ -519,7 +519,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclScheduleDayFrequency.Interval
-<GROUP $DateandTime.Scheduling.IJclScheduleDayFrequency>
+<GROUP DateandTime.Scheduling.IJclScheduleDayFrequency>
 Summary
   The interval in milliseconds.
 Description
@@ -534,7 +534,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclDailySchedule
-<GROUP $DateandTime.Scheduling.IJclDailySchedule>
+<GROUP DateandTime.Scheduling.IJclDailySchedule>
 Summary
   Interface to the daily schedule.
 Description
@@ -547,7 +547,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclDailySchedule.EveryWeekDay
-<GROUP $DateandTime.Scheduling.IJclDailySchedule>
+<GROUP DateandTime.Scheduling.IJclDailySchedule>
 Summary
   Specifies if events should be generated on every weekday.
 Description
@@ -564,7 +564,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclDailySchedule.Interval
-<GROUP $DateandTime.Scheduling.IJclDailySchedule>
+<GROUP DateandTime.Scheduling.IJclDailySchedule>
 Summary
   Specifies the number of days between events.
 Description
@@ -577,7 +577,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclWeeklySchedule
-<GROUP $DateandTime.Scheduling.IJclWeeklySchedule>
+<GROUP DateandTime.Scheduling.IJclWeeklySchedule>
 Summary
   Interface to the weekly schedule.
 Description
@@ -590,7 +590,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclWeeklySchedule.DaysOfWeek
-<GROUP $DateandTime.Scheduling.IJclWeeklySchedule>
+<GROUP DateandTime.Scheduling.IJclWeeklySchedule>
 Summary
   Specifies on which days of the week an event should be generated.
 Description
@@ -602,7 +602,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclWeeklySchedule.Interval
-<GROUP $DateandTime.Scheduling.IJclWeeklySchedule>
+<GROUP DateandTime.Scheduling.IJclWeeklySchedule>
 Summary
   Specifies the number of weeks between events.
 Description
@@ -613,7 +613,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclMonthlySchedule
-<GROUP $DateandTime.Scheduling.IJclMonthlySchedule>
+<GROUP DateandTime.Scheduling.IJclMonthlySchedule>
 Summary
   Interface to the monthly schedule.
 Description
@@ -629,7 +629,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclMonthlySchedule.Day
-<GROUP $DateandTime.Scheduling.IJclMonthlySchedule>
+<GROUP DateandTime.Scheduling.IJclMonthlySchedule>
 Summary
   Specifies the day of the month on which the event is to be generated.
 Description
@@ -645,7 +645,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclMonthlySchedule.IndexKind
-<GROUP $DateandTime.Scheduling.IJclMonthlySchedule>
+<GROUP DateandTime.Scheduling.IJclMonthlySchedule>
 Summary
   Specifies the meaning of IndexValue.
 Description
@@ -661,7 +661,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclMonthlySchedule.IndexValue
-<GROUP $DateandTime.Scheduling.IJclMonthlySchedule>
+<GROUP DateandTime.Scheduling.IJclMonthlySchedule>
 Summary
   Specifies the day, weekday, weekendday or day of the week.
 Description
@@ -684,7 +684,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclMonthlySchedule.Interval
-<GROUP $DateandTime.Scheduling.IJclMonthlySchedule>
+<GROUP DateandTime.Scheduling.IJclMonthlySchedule>
 Summary
   Specifies the number of months between two events.
 Description
@@ -693,7 +693,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Interface to the yearly schedule.
 Description
@@ -709,7 +709,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule.Day
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Specifies the day of the month on which the event is to be generated.
 Description
@@ -725,7 +725,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule.IndexKind
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Specifies the meaning of IndexValue.
 Description
@@ -741,7 +741,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule.IndexValue
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Specifies the day, weekday, weekendday or day of the week.
 Description
@@ -764,7 +764,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule.Interval
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Specifies the number of months between two events.
 Description
@@ -773,7 +773,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IJclYearlySchedule.Month
-<GROUP $DateandTime.Scheduling.IJclYearlySchedule>
+<GROUP DateandTime.Scheduling.IJclYearlySchedule>
 Summary
   Specifies on which month an event is to be generated.
 Description
@@ -785,7 +785,7 @@ Quick info:
 ## Functions                                                                                      ##
 ####################################################################################################
 @@CreateSchedule
-<GROUP $DateandTime.Scheduling>
+<GROUP DateandTime.Scheduling>
 Summary
   Creates and initializes a new schedule instance.
 Description
@@ -799,7 +799,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@NullStamp
-<GROUP $DateandTime.Scheduling.Aux>
+<GROUP DateandTime.Scheduling.Aux>
 Summary
   Creates a null time stamp
 Description
@@ -812,7 +812,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@CompareTimeStamps
-<GROUP $DateandTime.Scheduling.Aux>
+<GROUP DateandTime.Scheduling.Aux>
 Summary
   Compares two time stamps.
 Description
@@ -834,7 +834,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@EqualTimeStamps
-<GROUP $DateandTime.Scheduling.Aux>
+<GROUP DateandTime.Scheduling.Aux>
 Summary
   Determines if two timestamps are equal.
 Description
@@ -848,7 +848,7 @@ Quick info:
   Donator: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@IsNullTimeStamp
-<GROUP $DateandTime.Scheduling.Aux>
+<GROUP DateandTime.Scheduling.Aux>
 Summary
   Determines if a time stamp is a null stamp.
 Description

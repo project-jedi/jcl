@@ -1,40 +1,40 @@
-@@$InternetandE-mail
-<GROUP $JCL>
+@@InternetandE-mail
+<GROUP JCL>
 <TITLE Internet and E-mail>
 <TOPICORDER 1100>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI
-<GROUP $InternetandE-mail>
+@@InternetandE-mail.MAPI
+<GROUP InternetandE-mail>
 <TITLE MAPI>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI.EJclMapiError
-<GROUP $InternetandE-mail.MAPI>
+@@InternetandE-mail.MAPI.EJclMapiError
+<GROUP InternetandE-mail.MAPI>
 <TITLE EJclMapiError>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI.TJclEmail
-<GROUP $InternetandE-mail.MAPI>
+@@InternetandE-mail.MAPI.TJclEmail
+<GROUP InternetandE-mail.MAPI>
 <TITLE TJclEmail>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI.TJclEmailRecip
-<GROUP $InternetandE-mail.MAPI>
+@@InternetandE-mail.MAPI.TJclEmailRecip
+<GROUP InternetandE-mail.MAPI>
 <TITLE TJclEmailRecip>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI.TJclEmailRecips
-<GROUP $InternetandE-mail.MAPI>
+@@InternetandE-mail.MAPI.TJclEmailRecips
+<GROUP InternetandE-mail.MAPI>
 <TITLE TJclEmailRecips>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$InternetandE-mail.MAPI.TJclSimpleMapi
-<GROUP $InternetandE-mail.MAPI>
+@@InternetandE-mail.MAPI.TJclSimpleMapi
+<GROUP InternetandE-mail.MAPI>
 <TITLE TJclSimpleMapi>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@EJclMapiError
-<GROUP $InternetandE-mail.MAPI.EJclMapiError>
+<GROUP InternetandE-mail.MAPI.EJclMapiError>
 Summary:
   Exception class for MAPI-errors
 Description:
@@ -51,7 +51,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapiClient
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   MAPI-Client record
 Description:
@@ -68,7 +68,7 @@ Quick info:
   Validity of client (i.e. does it actually support Simple MAPI calls?)
 --------------------------------------------------------------------------------
 @@TJclMapiClientConnect
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   MAPI-Client type
 Description:
@@ -83,7 +83,7 @@ Quick info:
   Always use the client library (Simple MAPI is not required).
 --------------------------------------------------------------------------------
 @@TJclSimpleMapi
-<GROUP $InternetandE-mail.MAPI.TJclSimpleMapi>
+<GROUP InternetandE-mail.MAPI.TJclSimpleMapi>
 Summary:
   Simple MAPI class.
 Description:
@@ -312,7 +312,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclEmailRecipKind
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   E-mail recipient type
 Description:
@@ -329,7 +329,7 @@ Quick info:
   Address is of a blind copy recipient.
 --------------------------------------------------------------------------------
 @@TJclEmailRecip
-<GROUP $InternetandE-mail.MAPI.TJclEmailRecip>
+<GROUP InternetandE-mail.MAPI.TJclEmailRecip>
 Summary:
   E-mail recipient object
 Description:
@@ -389,7 +389,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclEmailRecips
-<GROUP $InternetandE-mail.MAPI.TJclEmailRecips>
+<GROUP InternetandE-mail.MAPI.TJclEmailRecips>
 Summary:
   E-mail recipients list object
 Description:
@@ -449,7 +449,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclEmailFindOption
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   MAPI search options
 Description:
@@ -461,11 +461,11 @@ Quick info:
 @@TJclEmailFindOption.foUnreadOnly
   Only unread messages of the specified type are returned. If this flag is not set, any message of the specified type can be returned.
 @@TJclEmailFindOptions
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 <COMBINE TJclEmailFindOption>
 --------------------------------------------------------------------------------
 @@TJclEmailLogonOption
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Logon options
 Description:
@@ -479,11 +479,11 @@ Quick info:
 @@TJclEmailLogonOption.loForceDownload
   Force mails and attachments to be downloaded.
 @@TJclEmailLogonOptions
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 <COMBINE TJclEmailLogonOption>
 --------------------------------------------------------------------------------
 @@TJclEmailReadOption
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Read options
 Description:
@@ -497,11 +497,11 @@ Quick info:
 @@TJclEmailReadOption.roMarkAsRead
   Mark the message as read.
 @@TJclEmailReadOptions
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 <COMBINE TJclEmailReadOption>
 --------------------------------------------------------------------------------
 @@TJclEmailReadMsg
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Message information record
 Description:
@@ -518,7 +518,7 @@ Quick info:
   Message flags as specified by MAPI
 --------------------------------------------------------------------------------
 @@TJclEmail
-<GROUP $InternetandE-mail.MAPI.TJclEmail>
+<GROUP InternetandE-mail.MAPI.TJclEmail>
 Summary:
   E-mail class
 Description:
@@ -772,7 +772,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@JclSimpleSendMail
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Sends an email to a recipient.
 Description:
@@ -792,7 +792,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@JclSimpleBringUpSendMailDialog
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Brings up the send mail dialog
 Description:
@@ -809,7 +809,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@MapiCheck
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Checks the MAPI result code
 Description:
@@ -826,7 +826,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@MapiErrorMessage
-<GROUP $InternetandE-mail.MAPI>
+<GROUP InternetandE-mail.MAPI>
 Summary:
   Retrieves the MAPI error message for a given MAPI result code.
 Description:

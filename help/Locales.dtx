@@ -1,20 +1,20 @@
-@@$Internationalisation
-<GROUP $JCL>
+@@Internationalisation
+<GROUP JCL>
 <TITLE Internationalisation>
 <TOPICORDER 1000>
 --------------------------------------------------------------------------------
-@@$Internationalisation.KeyboardInput
-<GROUP $Internationalisation>
+@@Internationalisation.KeyboardInput
+<GROUP Internationalisation>
 <TITLE Keyboard Input>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$Internationalisation.NationalLanguageSupport
-<GROUP $Internationalisation>
+@@Internationalisation.NationalLanguageSupport
+<GROUP Internationalisation>
 <TITLE National Language Support>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo
-<GROUP $Internationalisation.NationalLanguageSupport>
+<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   TJclLocaleInfo represents an installed or supported locale.
 Description:
@@ -489,7 +489,7 @@ Description:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclLocalesKind
-<GROUP $Internationalisation.NationalLanguageSupport>
+<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   TJclLocalesKind is used by the TJclLocalesList class to specify whether the list contains elements for all supported or all installed locales and codepages.
 Description:
@@ -503,7 +503,7 @@ Donator: Petr Vones
   All supported locales and codepages.
 --------------------------------------------------------------------------------
 @@TJclLocalesList
-<GROUP $Internationalisation.NationalLanguageSupport>
+<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Maintains information about supported locales and codepages.
 Description:
@@ -594,7 +594,7 @@ Description:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList
-<GROUP $Internationalisation.KeyboardInput>
+<GROUP Internationalisation.KeyboardInput>
 Summary:
   Maintains a list of input locale identifiers.
 Description:
@@ -731,7 +731,7 @@ Description:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout
-<GROUP $Internationalisation.KeyboardInput>
+<GROUP Internationalisation.KeyboardInput>
 Summary:
   Wrapper for a loaded input locale identifier.
 Description:
@@ -837,7 +837,7 @@ Description:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclKeybLayoutFlag
-<GROUP $Internationalisation.KeyboardInput>
+<GROUP Internationalisation.KeyboardInput>
 Summary:
   Set of flags which describe how to load, unload or activate an input locale identifier.[Description]
 Description:
@@ -860,11 +860,11 @@ Donator: Petr Vones
 @@TJclKeybLayoutFlag.klSubstituteOK
   Substitutes the specified input locale identifier with another locale preferred by the user. The system starts with this flag set, and it is recommended that your application always use this flag. The substitution occurs only if the registry key HKEY_CURRENT_USER\Keyboard Layout\Substitutes explicitly defines a substitution locale. For example, if the key includes the value name "00000409" with value "00010409", loading the U.S. English layout ("00000409") causes the Dvorak U.S. English layout ("00010409") to be loaded instead. The system uses KLF_SUBSTITUTE_OK when booting, and it is recommended that all applications use this value when loading input locale identifiers to ensure that the user's preference is selected.
 @@TJclKeybLayoutFlags
-<GROUP $Internationalisation.KeyboardInput>
+<GROUP Internationalisation.KeyboardInput>
 <COMBINE TJclKeybLayoutFlag>
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout
-<GROUP $Internationalisation.KeyboardInput>
+<GROUP Internationalisation.KeyboardInput>
 Summary:
   Describes an available keyboard layout.
 Description:

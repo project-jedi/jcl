@@ -10696,7 +10696,7 @@ Topic=topic
 TopicTitle=title
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Frames]
-FrameOption=2
+FrameOption=0
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General]
 ClearDirectoryBeforeExport=1
@@ -10771,7 +10771,7 @@ InfoHTML=
 InfoImage=dmlogo.png
 Kind=0
 LayoutOption=0
-LinkConfigOptions=112
+LinkConfigOptions=127
 LinkSeparatorCode=' | '
 LinkSeparatorMode=0
 ProjectInfo=2
@@ -11132,7 +11132,7 @@ HeaderShowing_5=1
 HeaderShowing_6=1
 HeaderShowing_7=0
 HeaderShowing_8=0
-HeaderShowing_9=2
+HeaderShowing_9=0
 ID_0=1
 ID_1=35
 ID_10=21

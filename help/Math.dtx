@@ -1,16 +1,16 @@
-@@$MathRoutines
-<GROUP $JCL>
+@@MathRoutines
+<GROUP JCL>
 <TITLE Math Routines>
 <TOPICORDER 1400>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Conversion
-<GROUP $MathRoutines>
+@@MathRoutines.Conversion
+<GROUP MathRoutines>
 <TITLE Conversion>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$MathRoutines.CRC
+@@MathRoutines.CRC
 <TITLE CRC>
-<GROUP $MathRoutines>
+<GROUP MathRoutines>
 <TOPICORDER 300>
   The CRC method used here is a quite "native" translation of a
   hardware CRC generator to software. The data array is
@@ -46,43 +46,43 @@
   additional m steps as done here. E.g. as far as I know the
   CRC result used by "ZIP" is our CRC32 result xor $FFFFFFFF.
 --------------------------------------------------------------------------------
-@@$MathRoutines.Exponential
-<GROUP $MathRoutines>
+@@MathRoutines.Exponential
+<GROUP MathRoutines>
 <TITLE Exponential>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Floatsupport
-<GROUP $MathRoutines>
+@@MathRoutines.Floatsupport
+<GROUP MathRoutines>
 <TITLE Float support>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Hyperbolic
-<GROUP $MathRoutines>
+@@MathRoutines.Hyperbolic
+<GROUP MathRoutines>
 <TITLE Hyperbolic>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Logarithmic
-<GROUP $MathRoutines>
+@@MathRoutines.Logarithmic
+<GROUP MathRoutines>
 <TITLE Logarithmic>
 <TOPICORDER 800>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Miscellaneous
-<GROUP $MathRoutines>
+@@MathRoutines.Miscellaneous
+<GROUP MathRoutines>
 <TITLE Miscellaneous>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Statistics
-<GROUP $MathRoutines>
+@@MathRoutines.Statistics
+<GROUP MathRoutines>
 <TITLE Statistics>
 <TOPICORDER 1000>
 --------------------------------------------------------------------------------
-@@$MathRoutines.Transcendental
-<GROUP $MathRoutines>
+@@MathRoutines.Transcendental
+<GROUP MathRoutines>
 <TITLE Transcendental>
 <TOPICORDER 1100>
 --------------------------------------------------------------------------------
 @@ISqrt
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the integral part of the square root.
 Description:
@@ -97,7 +97,7 @@ Result:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@ModFloat
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Returns the modulus of two floating point numbers.
 Description:
@@ -114,7 +114,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@RemainderFloat
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Returns the remainder of two floating point numbers.
 Description:
@@ -131,7 +131,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@DegMinSecToFloat
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts degrees, minutes, seconds to a float.
 Description:
@@ -155,7 +155,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatToDegMinSec
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts a float to degrees, minutes and seconds.
 Description:
@@ -177,7 +177,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatIsZero
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Tests if a float is zero.
 Description:
@@ -196,7 +196,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatsEqual
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Compares two floats for equality.
 Description:
@@ -217,7 +217,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@SwapFloats
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Swaps two floating point values.
 Description:
@@ -230,7 +230,7 @@ Parameters:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Pythagoras
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Computes Sqrt(X^2 + Y^2)
 Description:
@@ -244,7 +244,7 @@ Result:
 Donator: J. Debord
 --------------------------------------------------------------------------------
 @@NormalizeAngle
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Normalizes the given angle
 Description:
@@ -258,7 +258,7 @@ Result:
 Donator: J. Debord
 --------------------------------------------------------------------------------
 @@TenToY
-<GROUP $MathRoutines.Exponential>
+<GROUP MathRoutines.Exponential>
 Summary:
   Raises 10 to the power Y.
 Description:
@@ -275,7 +275,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@TwoToY
-<GROUP $MathRoutines.Exponential>
+<GROUP MathRoutines.Exponential>
 Summary:
   Raises 2 to the power Y.
 Description:
@@ -292,7 +292,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@PowerInt
-<GROUP $MathRoutines.Exponential>
+<GROUP MathRoutines.Exponential>
 Summary:
   Returns X to the power N.
 Description:
@@ -313,7 +313,7 @@ See also:
 Donator: J. Debord
 --------------------------------------------------------------------------------
 @@IsRelativePrime
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Tests if two numbers are relatively prime.
 Description:
@@ -333,7 +333,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@LCM
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the Least Common Multiple of two integers.
 Description:
@@ -351,7 +351,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@GCD
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the greatest common divisor.
 Description:
@@ -370,7 +370,7 @@ See also:
 Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@CycleToGrad
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts cycles to grads.
 Description:
@@ -383,7 +383,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DegToGrad
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts degrees to grads.
 Description:
@@ -396,7 +396,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GradToCycle
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts grads to cycles.
 Description:
@@ -409,7 +409,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GradToDeg
-<GROUP $MathRoutines.Conversion>
+<GROUP MathRoutines.Conversion>
 Summary:
   Converts grads to degrees.
 Description:
@@ -422,7 +422,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LogBaseN
-<GROUP $MathRoutines.Logarithmic>
+<GROUP MathRoutines.Logarithmic>
 Summary:
   Returns log base N.
 Description:
@@ -439,7 +439,7 @@ See also:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@LogBase2
-<GROUP $MathRoutines.Logarithmic>
+<GROUP MathRoutines.Logarithmic>
 Summary:
   Returns log base 2.
 Description:
@@ -455,7 +455,7 @@ See also:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@LogBase10
-<GROUP $MathRoutines.Logarithmic>
+<GROUP MathRoutines.Logarithmic>
 Summary:
   Returns log base 10.
 Description:
@@ -471,7 +471,7 @@ See also:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCos
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse cosine of X.
 Description:
@@ -485,7 +485,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCosH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Calculates the inverse hyperbolic cosine.
 Description:
@@ -499,7 +499,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCot
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse of cotangent.
 Description:
@@ -513,7 +513,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCotH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Calculates the inverse hyperbolic cotangent.
 Description:
@@ -527,7 +527,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCsc
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse cosecant.
 Description:
@@ -541,7 +541,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCscH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Calculates the inverse hyperbolic cosecant.
 Description:
@@ -555,7 +555,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSec
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse Sec.
 Description:
@@ -569,7 +569,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSecH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Calculates the inverse hyperbolic secant.
 Description:
@@ -583,7 +583,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSin
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 
 Description
 ArcSin calculates the inverse sine. Meaning it returns the
@@ -603,7 +603,7 @@ QuickInfo:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSinH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Calculates the inverse hyperbolic sine.
 Description:
@@ -617,7 +617,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTan
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse tangent
 Description:
@@ -631,7 +631,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTan2
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse tangent of Y / X
 Description:
@@ -646,7 +646,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTanH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the inverse hyperbolic tangent of X
 Description:
@@ -659,7 +659,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Cos
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the cosine of X
 Description:
@@ -672,7 +672,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@CosH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the hyperbolic cosine of X.
 Description:
@@ -685,7 +685,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Cot
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the cotangent of the argument.
 Description:
@@ -698,7 +698,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@CotH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the hyperbolic cotangent of X.
 Description:
@@ -710,7 +710,7 @@ Parameters:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Csc
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the reciprocal of the sine of X.
 Description:
@@ -723,7 +723,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@CscH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Hyperbolic Cosecant (csc).
 Description:
@@ -736,7 +736,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Sec
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the reciprocal of the cosine of the argument.
 Description:
@@ -749,7 +749,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@SecH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the hyperbolic secant of the argument.
 Description:
@@ -762,7 +762,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Haversine
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the haversine of the argument.
 Description:
@@ -775,7 +775,7 @@ Result:
 Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@Coversine
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the coversine of the argument.
 Description:
@@ -788,7 +788,7 @@ Result:
 Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@Versine
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the versine of the argument.
 Description:
@@ -801,7 +801,7 @@ Result:
 Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@Sin
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the sine of the argument.
 Description:
@@ -814,7 +814,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@SinCos
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the sine and cosine of the argument.
 Description:
@@ -828,7 +828,7 @@ Parameters:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@SinH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the hyperbolic sine of the argument.
 Description:
@@ -841,7 +841,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Tan
-<GROUP $MathRoutines.Transcendental>
+<GROUP MathRoutines.Transcendental>
 Summary:
   Returns the tangent of the argument.
 Description:
@@ -854,7 +854,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@TanH
-<GROUP $MathRoutines.Hyperbolic>
+<GROUP MathRoutines.Hyperbolic>
 Summary:
   Returns the hyperbolic tangent of the argument.
 Description:
@@ -868,7 +868,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Power
-<GROUP $MathRoutines.Exponential>
+<GROUP MathRoutines.Exponential>
 Summary:
   Returns Base to the power Exponent.
 Description:
@@ -888,7 +888,7 @@ See also:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Ceiling
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Return the nearest integer value above X.
 Description:
@@ -901,7 +901,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@CommercialRound
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Performs symmetic arithmetic rounding.
 Description:
@@ -916,7 +916,7 @@ Result:
 Donator: Ernesto Benestante
 --------------------------------------------------------------------------------
 @@Floor
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Return the nearest integer value below X.
 Description:
@@ -929,7 +929,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Factorial
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the factorial of the argument.
 Description:
@@ -944,7 +944,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@MinFloat
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Returns the smaller of the arguments
 Description:
@@ -959,7 +959,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@MaxFloat
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Returns the larger of the two arguments.
 Description:
@@ -974,7 +974,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Sgn
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the sign of the argument.
 Description:
@@ -988,7 +988,7 @@ Result:
 Donator: Clayton Collie
 --------------------------------------------------------------------------------
 @@Signe
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Returns the value of X with the same sign as Y.
 Description:
@@ -1003,7 +1003,7 @@ Donator: Clayton Collie
 --------------------------------------------------------------------------------
 
 @@CheckCrc32
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Checks and, if possible, corrects the data protected by a 32 bit CRC.
 Description:
@@ -1038,7 +1038,7 @@ Donator: Michael Schnell
 --------------------------------------------------------------------------------
 
 @@Crc32
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Calculates or checks a 32 Bit CRC.
 Description:
@@ -1080,7 +1080,7 @@ Donator: Michael Schnell
 
 --------------------------------------------------------------------------------
 @@InitCrc32
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Defines a new polynomial and starting value for the 32 bit CRC functions.
 Description:
@@ -1105,7 +1105,7 @@ See also:
 Donator: Michael Schnell
 --------------------------------------------------------------------------------
 @@CheckCrc16
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Checks and, if possible, corrects the data protected by a 16 bit CRC.
 Description:
@@ -1139,7 +1139,7 @@ Donator: Michael Schnell
 
 --------------------------------------------------------------------------------
 @@Crc16
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Calculates or checks a 16 Bit CRC.
 Description:
@@ -1179,7 +1179,7 @@ Donator: Michael Schnell
 
 --------------------------------------------------------------------------------
 @@InitCrc16
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
 Summary:
   Defines a new polynomial and starting value for the 16 bit CRC functions.
 Description:
@@ -1203,7 +1203,7 @@ See also:
 Donator: Michael Schnell
 --------------------------------------------------------------------------------
 @@TFloatingPointClass
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Describes the hierarchy of floating point classes.
 Description:
@@ -1254,7 +1254,7 @@ Donator: Robert Rossmair
   unsupported floating point format
 --------------------------------------------------------------------------------
 @@FloatingPointClass
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Classifies the supplied floating point value.
 Description:
@@ -1268,7 +1268,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsInfinite
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Determines whether <I>Value</I> is infinite.
 Description:
@@ -1283,7 +1283,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsNaN
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Determines whether <I>Value</I> is a NaN.
 Description:
@@ -1301,7 +1301,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@TNaNTag
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   The data type used by JCL routines for tagging numeric information to NaN values.
 Description:
@@ -1313,7 +1313,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetNaNTag
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Retrieves some numeric information tagged to the NaN value.
 Description:
@@ -1329,7 +1329,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@MakeQuietNaN
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Makes X a quiet NaN.
 Description:
@@ -1348,7 +1348,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@MakeSignalingNaN
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Makes X a signaling NaN.
 Description:
@@ -1370,7 +1370,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@MineSingleBuffer
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   MineSingleBuffer fills the buffer with consecutive tagged signaling NaNs.
 Description:
@@ -1392,7 +1392,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@MineDoubleBuffer
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   MineDoubleBuffer fills the buffer with consecutive tagged signaling NaNs.
 Description:
@@ -1414,7 +1414,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@CalcMachineEps
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Calculates the Machine Epsilon value for the current precision.
 Description:
@@ -1432,7 +1432,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsSingle
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Calculates the Machine Epsilon value for single precision.
 Description:
@@ -1448,7 +1448,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsDouble
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Calculates the Machine Epsilon value for double precision.
 Description:
@@ -1464,7 +1464,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsExtended
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Calculates the Machine Epsilon value for extended precision.
 Description:
@@ -1481,7 +1481,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@Exp
-<GROUP $MathRoutines.Exponential>
+<GROUP MathRoutines.Exponential>
 Summary:
   Calculates e raised to a power x.
 Description:
@@ -1491,7 +1491,7 @@ Parameters:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@IsFloatZero
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Determines whether value X is zero.
 Description:
@@ -1506,7 +1506,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeFactor
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Determines if a specific value is a prime factor of another value.
 Description:
@@ -1524,7 +1524,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeRM
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Determines whether a value is a prime number according the Rabin-Miller Strong
   Primality Test.
@@ -1541,7 +1541,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeTD
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Determines whether a Value is a prime number according the Trial Division primality
   test.
@@ -1555,7 +1555,7 @@ Parameters:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@IsSpecialValue
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Determines of a value is either NaN or infinite.
 Description:
@@ -1569,7 +1569,7 @@ See also:
 Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@PrimeFactors
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Determines all prime factors of a value.
 Description:
@@ -1581,7 +1581,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@SetPrecisionTolerance
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Set the precision tolerance to a new value.
 Description:
@@ -1595,7 +1595,7 @@ See also:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@SetPrecisionToleranceToEpsilon
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Set the PrecisionTolerance variable to Epsilon.
 Description:
@@ -1607,7 +1607,7 @@ Parameters:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@SetPrimalityTest
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary
   Set the primality test to use within the JCL.
 Description
@@ -1658,7 +1658,7 @@ Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@MathConstants
 <TITLE Constants used in JclMath>
-<GROUP $MathRoutines>
+<GROUP MathRoutines>
 Description
   The JCL provides many mathematical constants. Some to speed
   up a function and some just because they are common within
@@ -1802,7 +1802,7 @@ Description
 <ALIAS MathConstants>
 --------------------------------------------------------------------------------
 @@IsPrime
-<GROUP $MathRoutines.Miscellaneous>
+<GROUP MathRoutines.Miscellaneous>
 Summary:
   Determines whether a value is a prime number.
 Description:
@@ -1816,7 +1816,7 @@ See also:
 Donator: Matthias Thoma
 --------------------------------------------------------------------------------
 @@Epsilon
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   Epsilon and related variables hold the calculated machine Epsilon.
 Description:
@@ -1844,7 +1844,7 @@ Description:
 <COMBINE Epsilon>
 --------------------------------------------------------------------------------
 @@PrecisionTolerance
-<GROUP $MathRoutines.Floatsupport>
+<GROUP MathRoutines.Floatsupport>
 Summary:
   PrecisionTolerance holds the value of the tolerance used within the JCL.
 Description:

@@ -4,13 +4,13 @@ Summary
   This includes such things as querying and setting the rounding precision of
   floating point operations and retrieving the coprocessor's status word.                                                        }
 --------------------------------------------------------------------------------
-@@$MathRoutines.Hardware
-<GROUP $MathRoutines>
+@@MathRoutines.Hardware
+<GROUP MathRoutines>
 <TITLE Hardware>
 <TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@T8087Exception
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   An enumeration describing the set of available FPU exception masks.
 Description:
@@ -33,10 +33,10 @@ Quick info:
   Precision error mask.
 @@T8087Exceptions
 <COMBINE T8087Exception>
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 --------------------------------------------------------------------------------
 @@All8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   A set containing all FPU exception flags.
 Description:
@@ -46,7 +46,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@ClearPending8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Clears all pending FPU exceptions.
 Description:
@@ -61,7 +61,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetPending8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns a set of pending FPU exception flags.
 Description:
@@ -78,7 +78,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetMasked8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the set of masked FPU exceptions.
 Description:
@@ -95,7 +95,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@SetMasked8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Sets the FPU exception mask.
 Description:
@@ -118,7 +118,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@Mask8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Masks additional exceptions.
 Description:
@@ -141,7 +141,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@Unmask8087Exceptions
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Unmasks the specified exceptions.
 Description:
@@ -164,7 +164,7 @@ Quick info:
   Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@T8087Precision
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Used for retrieving and setting the FPU precision control.
 Description:
@@ -181,7 +181,7 @@ Quick info:
   Extended precision (temporary)
 --------------------------------------------------------------------------------
 @@T8087Rounding
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Enumeration used for retrieving and setting the FPU rounding control.
 Description:
@@ -201,7 +201,7 @@ Quick info:
   Chops or truncates towards zero
 --------------------------------------------------------------------------------
 @@T8087Infinity
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Enumeration used for retrieving and setting the FPU infinity control.
 Description:
@@ -216,7 +216,7 @@ Quick info:
   Allows positive and negative infinity.
 --------------------------------------------------------------------------------
 @@Set8087Infinity
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 
 Description
 Set8087Infinity adjusts the infinity control setting of the
@@ -248,7 +248,7 @@ Set8087Precision, Set8087Rounding, Get8087Infinity, Get8087Precision,
 Get8087Rounding, Get8087ControlWord, Set8087ControlWord
 --------------------------------------------------------------------------------
 @@Set8087Precision
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Sets the precision control of the FPU.
 Description:
@@ -270,7 +270,7 @@ Quick info:
   Donator: Marcel van Brakel  
 --------------------------------------------------------------------------------
 @@Set8087Rounding
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Sets the rounding control of the FPU.
 Description:
@@ -292,7 +292,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Get8087Infinity
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the infinity setting of the FPU.
 Description:
@@ -314,7 +314,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Get8087Precision
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the precision setting of the FPU.
 Description:
@@ -335,7 +335,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Get8087Rounding
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the rounding setting of the FPU.
 Description:
@@ -356,7 +356,7 @@ Quick Info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Set8087ControlWord
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Sets the 80x87 control word
 Description:
@@ -373,7 +373,7 @@ Quick Info:
   Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@Get8087ControlWord
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the 80x87 control word.
 Description:
@@ -404,7 +404,7 @@ Quick Info:
   Donator: ESB Consultancy
 --------------------------------------------------------------------------------
 @@Get8087StatusWord
-<GROUP $MathRoutines.Hardware>
+<GROUP MathRoutines.Hardware>
 Summary:
   Returns the 80x87 status word.
 Description:

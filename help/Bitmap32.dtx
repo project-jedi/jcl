@@ -1,5 +1,5 @@
 @@TJclThreadPersistent
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary:
   Ancestor class for TJclBitmap32.
 Description:
@@ -143,7 +143,7 @@ See Also
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@IdentityMatrix
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary:
   A 3x3 identity matrix.
 Description:
@@ -153,7 +153,7 @@ Quick info:
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclCustomMap
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary
   Ancestor for objects that hold 2D arrays of data.
 Description
@@ -236,7 +236,7 @@ SeeAlso
   SetSize@Integer@Integer
 --------------------------------------------------------------------------------
 @@TJclBitmap32
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary
   32 bit color depth bitmap class.
 Description
@@ -982,7 +982,7 @@ Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TJclBitmap32.SetPixel
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary
   Blends the pixel at position (X, Y) using the specified color.
 Description
@@ -1164,7 +1164,7 @@ SeeAlso
 --------------------------------------------------------------------------------
 @@Graphics_Naming_Conventions
 <TITLE Function naming conventions>
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 
 JclGraphics introduces several routines (as well as some class
 properties and methods) which have similar action but may
@@ -1199,7 +1199,7 @@ See Also
 Line Patterns
 --------------------------------------------------------------------------------
 @@Line Patterns
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 
 JclGraphics defines several functions to support non-uniform
 lines. This includes gradient lines, dashed lines etc.
@@ -1236,7 +1236,7 @@ See Also
   TJclBitmap32.StippleCounter, TJclBitmap32.StippleStep
 --------------------------------------------------------------------------------
 @@TDrawMode
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 
 Summary
   TDrawMode defines how the bitmap is combined with the backgrownd.
@@ -1260,14 +1260,14 @@ SeeAlso
   TJclBitmap32.DrawMode
 --------------------------------------------------------------------------------
 @@TMatrix3d
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
 3 x 3 Matrix as used by TJclLinearTransformation.
 
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TStretchFilter
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   When the bitmap is scaled, three different methods may be employed to
   interpolate colors in stretched fragment.
@@ -1461,7 +1461,7 @@ SeeAlso
   TJclBitmap32, TConversionType, TPalette32
 --------------------------------------------------------------------------------
 @@TConversionKind
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Specifies how data is converted from 32-bit ARGB bitmap to 8-bit bytemap and
   back.
@@ -1472,7 +1472,7 @@ SeeAlso
   TJclByteMap.ReadFrom, TJclByteMap.WriteTo
 --------------------------------------------------------------------------------
 @@TJclTransformation
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Summary
   TJclTransformation is an abstract ancestor for bitmap transformation classes.
 Description
@@ -1491,7 +1491,7 @@ Description
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   The transformation is defined by a 3x3 homogeneous matrix.
   <IMAGE TJclLinearTransformation>
@@ -1580,7 +1580,7 @@ SeeAlso
   Translate, Rotate, Scale, Skew
 --------------------------------------------------------------------------------
 @@AlphaToGrayscale
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   This function transforms an alpha channel from Src bitmap into grayscale (R=A,
   G=A, B=A) color in Dst bitmap. If necessary, Dst bitmap is resized to fit Src
@@ -1599,7 +1599,7 @@ SeeAlso
   IntensityToAlpha, TJclBitmap32
 --------------------------------------------------------------------------------
 @@ApplyLUT
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Converts color from Src to Dst using a look-up table (LUT parameter) to map
   the color components. The alpha channel of the result is automatically set to
@@ -1622,7 +1622,7 @@ SeeAlso
 TJclBitmap32, TLUT8
 --------------------------------------------------------------------------------
 @@BlockTransfer
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   BlockTransfer is similar to the BitBlt function from Windows GDI. It
   performs copying of a bitmap fragment specified by SrcRect into location
@@ -1655,7 +1655,7 @@ TJclBitmap32.Draw, TJclBitmap32.DrawTo, TJclBitmap32.MasterAlpha, StretchTransfe
 TDrawMode, TPixelCombineEvent, TRect
 --------------------------------------------------------------------------------
 @@ColorToGrayscale
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Calculates color intensity from Src and writes it as a grayscale image into
   Dst. The alpha channel in Dst will be set to $FF.
@@ -1669,7 +1669,7 @@ SeeAlso
   AlphaToGrayscale, TJclBitmap32
 --------------------------------------------------------------------------------
 @@IntensityToAlpha
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   This function transforms the color intensity, stored in RGB channels of Src
   bitmap into the alpha channel in Dst. If necessary, the Dst bitmap is resized
@@ -1692,7 +1692,7 @@ SeeAlso
   AlphaToGrayscale, Intensity, TJclBitmap32
 --------------------------------------------------------------------------------
 @@Invert
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Inverts all color channels, including the alpha channel.
 
@@ -1705,7 +1705,7 @@ SeeAlso
   InvertRGB, TJclBitmap32
 --------------------------------------------------------------------------------
 @@InvertRGB
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Inverts RGB color channels, and copies the alpha channel without inversion. If
   necessary, the Dst bitmap is resized to fit Src dimensions.
@@ -1719,7 +1719,7 @@ SeeAlso
 Invert, TJclBitmap32
 --------------------------------------------------------------------------------
 @@Polygon
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Fills the shape defined by the Points parameter with specified color. Unlike
   GDI polygons, this function allows for transparency and optional antialiasing.
@@ -1751,7 +1751,7 @@ SeeAlso
 <COMBINE Polygon>
 --------------------------------------------------------------------------------
 @@PolyLine
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Draws a series of lines, connecting points passed in. If Closed is True, the
   polygon is closed automatically by drawing a line from the last vertex to the
@@ -1775,19 +1775,19 @@ SeeAlso
   Graphics_Naming_Conventions, TJclBitmap32, TColor32
 
 @@PolyLineAS
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 <COMBINE PolyLine>
 
 @@PolyLineFS
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 <COMBINE PolyLine>
 
 @@PolyLineTS
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 <COMBINE PolyLine>
 --------------------------------------------------------------------------------
 @@PolyPolygon
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Fills the shape similar to that done by Polygon function. The shape is
   constructed from several contours, which are specified in Points parameter.
@@ -1810,7 +1810,7 @@ SeeAlso
 <COMBINE Polygon>
 --------------------------------------------------------------------------------
 @@PolyLine
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   PolyLine is the same as Polyline, but takes array of polylines as
   parameter. The Closed parameter influences all polylines in the array.
@@ -1830,7 +1830,7 @@ SeeAlso
 <COMBINE PolyLine>
 --------------------------------------------------------------------------------
 @@SetBorderTransparent
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   This is an auxiliary function that sets the alpha channel along the edges of
   specified rectangle to zero. It may be used on a bitmap before passing it to
@@ -1843,7 +1843,7 @@ SeeAlso
   TJclBitmap32, Transform, TRect
 --------------------------------------------------------------------------------
 @@SetGamma
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Updates gamma/shape correction table.
 
@@ -1859,7 +1859,7 @@ Description
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@StretchTransfer
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   StretchTransfer is similar to StretchBlt or StretchDIBits functions from
   Windows GDI. This procedure performs copying and, if necessary, stretching of
@@ -1891,7 +1891,7 @@ SeeAlso
   BlockTransfer, TJclBitmap32, TDrawMode, TPixelCombineEvent, TRect, TStretchFilter
 --------------------------------------------------------------------------------
 @@Transform
-<GROUP $Graphics.Bitmaps>
+<GROUP Graphics.Bitmaps>
 Description
   Transform is responsible for arbitrary geometrical transformations of bitmaps
   or their fragments. The current version supports only linear transformations.
@@ -1930,7 +1930,7 @@ SeeAlso
   TJclLinearTransformation
 --------------------------------------------------------------------------------
 @@TPointF
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 Description
 The TPointF type defines a location in pixel space.
 
@@ -1940,7 +1940,7 @@ SeeAlso
   TDynPointArrayF, TDynDynPointArrayArrayF
 --------------------------------------------------------------------------------
 @@TDynPointArrayF
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 TDynPointArrayF defines a one-dimensional dynamic array of TPointF.
@@ -1951,7 +1951,7 @@ SeeAlso
 TDynDynPointArrayArrayF, TDynPointArray
 --------------------------------------------------------------------------------
 @@TDynDynPointArrayArrayF
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 TDynDynPointArrayArrayF defines a two-dimensional dynamic array of TPointF,
@@ -1960,7 +1960,7 @@ respectively a one-dimensional array of TDynPointArrayF, which means the same.
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TDynPointArray
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 TDynPointArray defines a one-dimensional dynamic array of TPoint.
@@ -1971,7 +1971,7 @@ SeeAlso
 TDynPointArrayF, TDynDynPointArrayArray
 --------------------------------------------------------------------------------
 @@TDynDynPointArrayArray
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 TDynDynPointArrayArray defines a two-dimensional dynamic array of TPoint,
@@ -1980,7 +1980,7 @@ respectively a one-dimensional array of TDynPointArray, which means the same.
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TDynDynIntegerArrayArray
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 TDynDynIntegerArrayArray defines a two-dimensional dynamic array of Integer,
@@ -1989,7 +1989,7 @@ respectively a one-dimensional array of TDynIntegerArray, which means the same.
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TGamma
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Description
 Internal Gamma bias table type as used for line/pixel antialiasing/shape
@@ -1999,7 +1999,7 @@ Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TLUT8
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 Description
 A look-up table of 256 values, each ranging from 0 to 255.
 
@@ -2009,7 +2009,7 @@ Donator: Alex Denissov
 SeeAlso
 --------------------------------------------------------------------------------
 @@TScanLine
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Donator: Alex Denissov
 
@@ -2017,7 +2017,7 @@ SeeAlso
 TScanLines
 --------------------------------------------------------------------------------
 @@TScanLines
-<GROUP $Graphics.Types>
+<GROUP Graphics.Types>
 
 Donator: Alex Denissov
 

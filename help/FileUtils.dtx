@@ -1,50 +1,50 @@
-@@$FilesandIO
-<GROUP $JCL>
+@@FilesandIO
+<GROUP JCL>
 <TITLE Files and IO>
 <TOPICORDER 800>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FilesandDirectories
-<GROUP $FilesandIO>
+@@FilesandIO.FilesandDirectories
+<GROUP FilesandIO>
 <TITLE Files and Directories>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FilesandDirectories.FileSearch
-<GROUP $FilesandIO.FilesandDirectories>
+@@FilesandIO.FilesandDirectories.FileSearch
+<GROUP FilesandIO.FilesandDirectories>
 <TITLE File Search>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FilesandDirectories.FileVersionInfo
-<GROUP $FilesandIO.FilesandDirectories>
+@@FilesandIO.FilesandDirectories.FileVersionInfo
+<GROUP FilesandIO.FilesandDirectories>
 <TITLE File Version Information>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FileSystems
-<GROUP $FilesandIO>
+@@FilesandIO.FileSystems
+<GROUP FilesandIO>
 <TITLE File Systems>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FileSystems.NTFS
-<GROUP $FilesandIO.FileSystems>
+@@FilesandIO.FileSystems.NTFS
+<GROUP FilesandIO.FileSystems>
 <TITLE NTFS>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$FilesandIO.Pathmanipulation
-<GROUP $FilesandIO>
+@@FilesandIO.Pathmanipulation
+<GROUP FilesandIO>
 <TITLE Path manipulation>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
-@@$FilesandIO.Streams
-<GROUP $FilesandIO>
+@@FilesandIO.Streams
+<GROUP FilesandIO>
 <TITLE Streams>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$FilesandIO.Streams.FileMapping
-<GROUP $FilesandIO.Streams>
+@@FilesandIO.Streams.FileMapping
+<GROUP FilesandIO.Streams>
 <TITLE File Mapping>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@DriveLetters
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Set of valid characters to use as drive letters.
 Description:
@@ -55,7 +55,7 @@ Platform:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathDevicePrefix
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Prefix used to specify a physical device under Windows.
 Description:
@@ -67,7 +67,7 @@ Platform:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathSeparator
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Character used as path element separator.
 Description:
@@ -78,7 +78,7 @@ Description:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathUncPrefix
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Prefix for UNC path names.
 Description:
@@ -87,7 +87,7 @@ Description:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetSizeOfFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the size of a file.
 Description:
@@ -104,7 +104,7 @@ Donator: David Hervieux (Win32 code)
 Contributor: Robert Rossmair (Unix code)
 --------------------------------------------------------------------------------
 @@TJclFileMappingView
-<GROUP $FilesandIO.Streams.FileMapping>
+<GROUP FilesandIO.Streams.FileMapping>
 Summary:
   Implements a file mapping view object.
 Description:
@@ -209,7 +209,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping
-<GROUP $FilesandIO.Streams.FileMapping>
+<GROUP FilesandIO.Streams.FileMapping>
 Summary:
   Wrapper for Win32 filemapping object.
 Description:
@@ -377,7 +377,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping
-<GROUP $FilesandIO.Streams.FileMapping>
+<GROUP FilesandIO.Streams.FileMapping>
 Summary:
   Implements a filemapping object backed by an actual disk file.
 Description:
@@ -422,7 +422,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclSwapFileMapping
-<GROUP $FilesandIO.Streams.FileMapping>
+<GROUP FilesandIO.Streams.FileMapping>
 Summary:
   Implements a filemapping object backed by the swap file.
 Description:
@@ -448,7 +448,7 @@ Parameters:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclTempFileStream
-<GROUP $FilesandIO.Streams>
+<GROUP FilesandIO.Streams>
 Summary:
   Implements a temporary file-stream.
 Description:
@@ -486,7 +486,7 @@ Parameters:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileGetTypeName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns a string that describes the file's type.
 Description:
@@ -506,7 +506,7 @@ See also:
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FindUnusedFileName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns a unique filename composed of the specified parts and a unique number.
 Description:
@@ -528,7 +528,7 @@ Result:
 Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@ForceDirectories
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Creates all the directories along a directory path if they do not already exist.
 Description:
@@ -546,7 +546,7 @@ Notes:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FileGetDisplayName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the display name of a path.
 Description:
@@ -567,7 +567,7 @@ See also:
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FileGetOwnerName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the name of the owner of a file.
 Description:
@@ -582,14 +582,14 @@ Note:
 Platforms:
   Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
 See also:
-  PathGetGroupName
+  FileGetGroupName
 Donator:
   Scott Price
 Contributor:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileGetGroupName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the name of the owner of a file.
 Description:
@@ -604,7 +604,7 @@ Note:
 Platforms:
   Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
 See also:
-  PathGetOwnerName
+  FileGetOwnerName
 Donator:
   Scott Price
 Contributor:
@@ -639,7 +639,7 @@ Donator:
   Jeff
 --------------------------------------------------------------------------------
 @@PathGetLongName
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Returns the long name of a path.
 Description:
@@ -660,7 +660,7 @@ See Also
   PathGetShortName
 --------------------------------------------------------------------------------
 @@PathGetLongName2
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary
   Returns the long name of a path.
 Description
@@ -680,7 +680,7 @@ See Also
   PathGetLongName
 --------------------------------------------------------------------------------
 @@PathGetShortName
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Returns the short name of a path.
 Description:
@@ -699,7 +699,7 @@ Donator:
   Rudy Velthuis
 --------------------------------------------------------------------------------
 @@PathGetRelativePath
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary: TODO
 Description: TODO
 Result: TODO
@@ -707,7 +707,7 @@ Donator: Olivier Sannier
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@PathGetTempPath
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary: Retrieves the path of the directory designated for temporary files.
 Description: The <i>GetTempPath</i> function retrieves the path of the directory
   designated for temporary files.
@@ -718,7 +718,7 @@ Platforms:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@PathIsChild
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Checks whether Path is a child of Base.
 Description:
@@ -737,7 +737,7 @@ See also:
 Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@PathIsAbsolute
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Tests if a path is an absolute path.
 Description:
@@ -754,7 +754,7 @@ See also:
 Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathIsDiskDevice
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Tests whether a path denotes a disk device.
 Description:
@@ -772,7 +772,7 @@ Donators: Robert Marquardt (Win32), André Snepvangers (Unix)
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@PathIsUNC
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Tests whether a path is a UNC path.
 Description:
@@ -794,7 +794,7 @@ See also:
 Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathExtractElements
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Extracts all elements from a path.
 Description:
@@ -811,7 +811,7 @@ Parameters:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAddSeparator
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Forces the string to end with a directory separator.
 Description:
@@ -829,7 +829,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAddExtension
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Adds the extension to a path.
 Description:
@@ -847,7 +847,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathAppend
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Concatenates two paths.
 Description:
@@ -862,7 +862,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathBuildRoot
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Creates a root path for the given drive number.
 Description:
@@ -876,7 +876,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathCommonPrefix
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Compares two paths for a common prefix.
 Description:
@@ -893,7 +893,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathCompactPath
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Compacts a path to fit within the given pixel width.
 Description:
@@ -922,7 +922,7 @@ Donator: Marcel van Brakel
 Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@PathExtractFileDirFixed
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Extracts drive and directory parts from a filename.
 Description:
@@ -940,7 +940,7 @@ Result:
 Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@PathExtractFileNameNoExt
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Extracts the filename without the extension.
 Description:
@@ -955,7 +955,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathRemoveExtension
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Removes the extension from a path.
 Description:
@@ -970,7 +970,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathRemoveSeparator
-<GROUP $FilesandIO.Pathmanipulation>
+<GROUP FilesandIO.Pathmanipulation>
 Summary:
   Removes a trailing directory separator from a path.
 Description:
@@ -988,7 +988,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetModulePath
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the filename of a module.
 Description:
@@ -1002,7 +1002,7 @@ Result:
 Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@FileGetTempName
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the name for a temporary file.
 Description:
@@ -1027,7 +1027,7 @@ Donators:
   Marcel van Brakel (Windows), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@FileCreateTemp
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Creates a temporary file.
 Description:
@@ -1047,7 +1047,7 @@ Platforms:
 Donators: Marcel van Brakel (Windows), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@FileBackup
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -1062,7 +1062,7 @@ Donator: ?
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileCopy
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Copies a file.
 Description:
@@ -1084,7 +1084,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileDelete
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -1101,7 +1101,7 @@ Contributor:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileExists
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Tests whether a file exists.
 Description:
@@ -1115,7 +1115,7 @@ Result:
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FileMove
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -1129,7 +1129,7 @@ Platforms:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileRestore
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -1144,7 +1144,7 @@ Donator: ?
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@ShredFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Shreds the contents of the file and then deletes it.
 Description:
@@ -1158,7 +1158,7 @@ Donator:
   Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@FileGetSize
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the size of the specified file.
 Description:
@@ -1173,7 +1173,7 @@ Result:
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetFileAttributeListEx
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Converts attributes flag to a stringlist.
 Description:
@@ -1191,7 +1191,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetFileAttributeList
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Converts attributes flag to a stringlist.
 Description:
@@ -1207,7 +1207,7 @@ Donator:
   Charlie Calvert
 --------------------------------------------------------------------------------
 @@GetDirectorySize
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the size of a directory.
 Description:
@@ -1223,7 +1223,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetDriveTypeStr
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the type of drive.
 Description:
@@ -1237,7 +1237,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@SetFileLastWrite
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the file's last-write time stamp.
 Description:
@@ -1259,7 +1259,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetFileLastAccess
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the file's last-access time stamp.
 Description:
@@ -1281,7 +1281,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetFileCreation
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the file's creation time stamp.
 Description:
@@ -1303,7 +1303,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirLastWrite
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the directory's last-write time stamp.
 Description:
@@ -1324,7 +1324,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirLastAccess
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the directory's last-write time stamp.
 Description:
@@ -1345,7 +1345,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetDirCreation
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Sets the directory's last-write time stamp.
 Description:
@@ -1366,7 +1366,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsDirectory
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Tests if the file is a directory.
 Description:
@@ -1381,7 +1381,7 @@ Result:
 Donators: Marcel van Brakel (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@LockVolume
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Locks the specified volume.
 Description:
@@ -1408,7 +1408,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OpenVolume
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Opens a handle to the specified volume.
 Description:
@@ -1431,7 +1431,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CloseVolume
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Closes a handle for a previously opened volume.
 Description:
@@ -1451,7 +1451,7 @@ See also:
 Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@CreateEmptyFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Creates a new file with a zero length.
 Description:
@@ -1467,7 +1467,7 @@ Platform:
 Donator: Anthony Steele
 --------------------------------------------------------------------------------
 @@GetFileInformation
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns information about a file.
 Description:
@@ -1485,7 +1485,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetStandardFileInfo
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns information about a file.
 Description:
@@ -1505,7 +1505,7 @@ Donator: Marcel van Brakel
 Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@GetFileAgeCoherence
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Tests the file age coherence of a file.
 Description:
@@ -1524,7 +1524,7 @@ See also:
 Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileLastWrite
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the date/time that the file was last written to.
 Description:
@@ -1544,7 +1544,7 @@ See also:
 Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileLastAccess
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the date/time that the file was last accessed.
 Description:
@@ -1563,7 +1563,7 @@ See also:
 Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@GetFileCreation
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Returns the date/time that the file was created.
 Description:
@@ -1584,7 +1584,7 @@ See also:
 Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@BuildFileList
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Builds a list of files and folders in a directory.
 Description:
@@ -1605,7 +1605,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AdvBuildFileList
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   AdvBuildFileList works like BuildFileList if called with only three parameters, but it accepts two optional parameters for extended functionality.
 Description:
@@ -1627,7 +1627,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TFileListOptions
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 
 
 <TABLE>
@@ -1652,7 +1652,7 @@ QuickInfo
  Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TDelTreeProgress
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Progress callback routine for the DelTreeEx function.
 Description:
@@ -1674,7 +1674,7 @@ Donator:
   John C Molyneux
 --------------------------------------------------------------------------------
 @@DelTree
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Recursively deletes a folder.
 Description:
@@ -1699,7 +1699,7 @@ Donator:
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DelTreeEx
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Recursively deletes a folder.
 Description:
@@ -1729,7 +1729,7 @@ Donator: John C Molyneux
 Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DirectoryExists
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Determines whether a directory exists.
 Description:
@@ -1744,7 +1744,7 @@ Donator: Unknown (Win32)
 Contributor: Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@DiskInDrive
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
   Tests whether there is a disk in the specified drive.
 Description:
@@ -1764,7 +1764,7 @@ Platform:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@TFileFlags
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Description:
 * ffDebug
   Included if the file contains debugging information or is compiled with debugging features enabled.
@@ -1786,7 +1786,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@VersionResourceAvailable
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Tests if a file has a version resource.
 Description:
@@ -1806,7 +1806,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OSIdentToString
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Maps an OS identifier as to a string.
 Description:
@@ -1822,7 +1822,7 @@ Platform:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Enables reading of version information from executables.
 Description:
@@ -2181,7 +2181,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DeleteDirectory
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary
   Deletes specified file or moves it to recycle bin.
 Description
@@ -2200,7 +2200,7 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@GetBackupFileName
-<GROUP $FilesandIO.PathManipulation>
+<GROUP FilesandIO.PathManipulation>
 Summary
   Returns a file name that can be used for backup purposes.
 Description
@@ -2215,7 +2215,7 @@ Category: Files and IO
 Donator: Marcel van Brakel (Jeff?)
 --------------------------------------------------------------------------------
 @@OSFileTypeToString
-<GROUP $FilesandIO.FileSystems>
+<GROUP FilesandIO.FileSystems>
 Summary
   Maps a file type identifier to a string.
 Description
@@ -2263,7 +2263,7 @@ Donator:
   Jeff
 --------------------------------------------------------------------------------
 @@UnlockVolume
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary
   Tries to unlock the volume represented by the handle passed.
 Description
@@ -2294,7 +2294,7 @@ Platforms:
 Donator: Rudy Velthuis
 --------------------------------------------------------------------------------
 @@Win32DeleteFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -2307,7 +2307,7 @@ Donator:
   Jeff
 --------------------------------------------------------------------------------
 @@Win32MoveFileReplaceExisting
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary: TODO
 Description: TODO
 Parameters:
@@ -2323,7 +2323,7 @@ Donator:
   Anonymous
 --------------------------------------------------------------------------------
 @@Win32BackupFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -2341,7 +2341,7 @@ Donator:
   ?
 --------------------------------------------------------------------------------
 @@Win32RestoreFile
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Summary:
 Description:
 Parameters:
@@ -2358,7 +2358,7 @@ Donator:
   ?
 --------------------------------------------------------------------------------
 @@VersionFixedFileInfo
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary
   Retrieves the root block of version information resource from the specified
   file.
@@ -2380,7 +2380,7 @@ See Also
   VersionResourceAvailable, TJclFileVersionInfo
 --------------------------------------------------------------------------------
 @@CreateSymbolicLink
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Parameters:
   Name - The name of the symbolic link.
   Target - The file the link points to.
@@ -2390,7 +2390,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@SymbolicLinkTarget
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Parameters:
   Name - The name of the symbolic link
 Result:
@@ -2401,7 +2401,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@TFileSearchOptions
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   TODO
 Description:
@@ -2409,7 +2409,7 @@ Description:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@TAttributeInterest
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   Defines the interest a file search operation may have in specific file
   attributes.
@@ -2428,7 +2428,7 @@ The attribute is required for a file to be included in the search result set.
 The attribute causes a file to be excluded from the search result set.
 --------------------------------------------------------------------------------
 @@VerifyFileAttributeMask
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Parameters:
   RejectedAttributes - TODO
   RequiredAttributes - TODO
@@ -2438,7 +2438,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsFileAttributeMatch
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Parameters:
   FileAttributes - TODO
   RejectedAttributes - TODO
@@ -2449,7 +2449,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileAttributesStr
-<GROUP $FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories>
 Parameters:
   FileInfo - TODO
 Result:
@@ -2458,7 +2458,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsFileNameMatch
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Parameters:
   FileName - TODO
   Mask - TODO
@@ -2469,7 +2469,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@EnumFiles
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Parameters:
   Path - TODO
   HandleFile - TODO
@@ -2480,7 +2480,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@EnumDirectories
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Parameters:
   Root - TODO
   HandleDirectory - TODO
@@ -2492,7 +2492,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@TJclCustomFileAttrMask
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   TODO
 Description:
@@ -2503,7 +2503,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@TJclFileAttributeMask
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   TODO
 Description:
@@ -2514,7 +2514,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@TJclFileEnumerator
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   TODO
 Description:
@@ -2525,7 +2525,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@IJclFileEnumerator
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   <COLOR 00000E>Interface for thread-based file search</COLOR>
 Description:
@@ -2536,7 +2536,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@FileSearch
-<GROUP $FilesandIO.FilesandDirectories.FileSearch>
+<GROUP FilesandIO.FilesandDirectories.FileSearch>
 Summary:
   TODO
 Description:

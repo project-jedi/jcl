@@ -1,10 +1,10 @@
-@@$ExprEval
-<GROUP $JCL>
+@@ExprEval
+<GROUP JCL>
 <TITLE Expression Evaluation>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
 @@JclExprEval.pas
-<GROUP $ExprEval>
+<GROUP ExprEval>
 <TOPICORDER 100>
 Brief: This unit contains three expression evaluators, each tailored for
   different usage patterns. It also contains the component objects, so that a
@@ -31,25 +31,25 @@ Contributors
 Barry Kelly, Matthias Thoma, Petr Vones, Robert Marquardt, Robert Rossmair
 --------------------------------------------------------------------------------
 @@cExprEvalHashSize
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Initial size of internal hash lists created by TEasyEvaluator
   descendants, and also TExpressionCompiler.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@EJclExprEvalError
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Exception class used by the expression evaluator.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@ExprWhiteSpace
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Set of characters that will be skipped before a token read
   commences.
 See Also: TExprLexer
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TFloat
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Floating-point type used by TLexer and TParser.Evaluate.
 Donator: Barry Kelly
 
@@ -57,7 +57,7 @@ Donator: Barry Kelly
 <COMBINE TFloat>
 --------------------------------------------------------------------------------
 @@TFloat32
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: 32-bit IEEE standard floating-point value.
 Donator: Barry Kelly
 
@@ -65,7 +65,7 @@ Donator: Barry Kelly
 <COMBINE TFloat32>
 --------------------------------------------------------------------------------
 @@TFloat64
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: 64-bit IEEE standard floating-point value.
 Donator: Barry Kelly
 
@@ -73,7 +73,7 @@ Donator: Barry Kelly
 <COMBINE TFloat64>
 --------------------------------------------------------------------------------
 @@TFloat80
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: 80-bit Intel extended precision floating-point value.
 Donator: Barry Kelly
 
@@ -81,7 +81,7 @@ Donator: Barry Kelly
 <COMBINE TFloat80>
 --------------------------------------------------------------------------------
 @@TFloatFunc
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A function type taking no parameters.
 Donator: Barry Kelly
 
@@ -93,7 +93,7 @@ Donator: Barry Kelly
 <COMBINE TFloatFunc>
 --------------------------------------------------------------------------------
 @@TUnaryFunc
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A function type taking a single parameter.
 Donator: Barry Kelly
 
@@ -105,7 +105,7 @@ Donator: Barry Kelly
 <COMBINE TUnaryFunc>
 --------------------------------------------------------------------------------
 @@TBinaryFunc
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A function type taking two parameters.
 Donator: Barry Kelly
 
@@ -117,7 +117,7 @@ Donator: Barry Kelly
 <COMBINE TBinaryFunc>
 --------------------------------------------------------------------------------
 @@TTernaryFunc
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A function type taking three parameters.
 Donator: Barry Kelly
 
@@ -129,7 +129,7 @@ Donator: Barry Kelly
 <COMBINE TTernaryFunc>
 --------------------------------------------------------------------------------
 @@TExprContext
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Finds a symbol corresponding to an identifier.
 Description:
   Expressions composed solely of numbers and operators may be
@@ -165,7 +165,7 @@ Returns: The symbol object, or nil if not found.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprHashContext
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A context class that uses a hash map for its implementation.
 Description:
   This is a concrete context class that uses a hash map for symbol
@@ -223,7 +223,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprSetContext
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A compound context object for combining multiple contexts.
 Description:
   A context class that contains a set of other contexts, which it
@@ -283,7 +283,7 @@ Brief: Access to the internal list of contexts for advanced
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Represents a symbol that may be found in an input stream.
 Description:
   An instance of this class is responsible for turning input lexemes
@@ -383,12 +383,12 @@ See Also: TExprSym.Lexer, TExprSym.CompileParser, TExprSym.Compile,
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprToken
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: The type of token found by TExprLexer. }
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprLexer
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A lexical analyser.
 Description:
   An object of this class breaks up an input stream into lexemes -
@@ -487,7 +487,7 @@ See Also: NextTok, TokenAsString, TokenAsNumber
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprNode
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A node in an expression DAG (directed acyclic graph).
 Description:
   This is the abstract object from which all expression DAG nodes
@@ -534,7 +534,7 @@ Brief: Access to the internal dependancy list for advanced
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprNodeFactory
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A factory class for TExprNode objects.
 Description:
   When compiling an expression, the expression must be broken down
@@ -692,7 +692,7 @@ Donator: Barry Kelly
 <COMBINE TExprNodeFactory.LoadVar@PFloat32>
 --------------------------------------------------------------------------------
 @@TExprCompileParser
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A compiling parser.
 Description:
   This is a compiling parser. It analyses the input stream of tokens
@@ -767,7 +767,7 @@ Brief: Looks up the symbol corresponding to an identifier and
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprEvalParser
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: An evaluating parser.
 Description:
   This is an evaluating parser. It evaluates the result of an expression
@@ -833,7 +833,7 @@ Brief: Looks up the symbol corresponding to an identifier and
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprSimpleLexer
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A simple expression lexical analyser.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -864,7 +864,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVirtMachOp
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: An operation that can be executed by a TExprVirtMach instance.
 Description:
   TExprVirtMachOp is the kernel of TExprVirtMach's operation. The
@@ -907,7 +907,7 @@ See Also: FOutput
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVirtMach
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A virtual machine for evaluating expressions relatively quickly.
 See Also: TExprVirtMachNodeFactory, TExprVirtMachOp
 Donator: Barry Kelly
@@ -947,7 +947,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVirtMachNodeFactory
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A node factory for virtual machine instructions.
 Description:
   This is a factory class for the default virtual machine.
@@ -972,7 +972,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprConstSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Symbol for a constant of type TFloat.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -984,22 +984,22 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprConst32Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Symbol for a constant of type TFloat32.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprConst64Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Symbol for a constant of type TFloat64.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprConst80Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Symbol for a constant of type TFloat80.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVar32Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: This class evaluates and / or compiles code for a 32-bit FP variable.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1011,7 +1011,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVar64Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: This class evaluates and / or compiles code for a 64-bit FP variable.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1023,7 +1023,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprVar80Sym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: This class evaluates and / or compiles code for an 80-bit FP variable.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1035,7 +1035,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprAbstractFuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A helper ancestor for function symbols.
 Description:
   This is a useful class to use as an ancestor for function symbols
@@ -1086,7 +1086,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprFuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TFloatFunc.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1098,7 +1098,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprFloat32FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TFloat32Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1110,7 +1110,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprFloat64FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TFloat64Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1122,7 +1122,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprFloat80FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TFloat80Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1134,7 +1134,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprUnaryFuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TUnaryFunc.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1146,7 +1146,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprUnary32FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TUnary32Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1158,7 +1158,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprUnary64FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TUnary64Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1170,7 +1170,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprUnary80FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TUnary80Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1182,7 +1182,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprBinaryFuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TBinaryFunc.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1194,7 +1194,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprBinary32FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TBinary32Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1206,7 +1206,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprBinary64FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TBinary64Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1218,7 +1218,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprBinary80FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TBinary80Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1230,7 +1230,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprTernaryFuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TTernaryFunc.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1242,7 +1242,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprTernary32FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TTernary32Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1254,7 +1254,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprTernary64FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TTernary64Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1266,7 +1266,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExprTernary80FuncSym
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Function symbol for TTernary80Func.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
@@ -1278,7 +1278,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TEasyEvaluator
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: This is an abstract class that provides friendly methods for
   adding constanst, variables, functions and external contexts.
 Description:
@@ -1426,7 +1426,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TEvaluator
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: Quick evaluator shell object.
 Description:
 This is an encapsulation of a simple lexer and an evaluating
@@ -1489,7 +1489,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TCompiledEvaluator
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: An evaluator that first compiles an expression into an
   intermediate form, then evaluates it on demand.
 Description:
@@ -1523,12 +1523,12 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TCompiledExpression
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: A compiled expression, which may be called directly to evaluate.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TExpressionCompiler
-<GROUP $ExprEval>
+<GROUP ExprEval>
 Brief: An expression compiler, for multiple expressions.
 Description:
   This is a multiple expression compiler. It compiles expressions into

@@ -1,62 +1,62 @@
 @@JclSysInfo.pas
-<GROUP $SystemInformationRoutines>
+<GROUP SystemInformationRoutines>
 Summary
   This unit contains routines and classes to retrieve various pieces of system information.
   Examples are the location of standard folders, settings of environment variables,
   processor details and the OS version.
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines
-<GROUP $JCL>
+@@SystemInformationRoutines
+<GROUP JCL>
 <TITLE System Information Routines>
 <TOPICORDER 2500>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.CommonFolders
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.CommonFolders
+<GROUP SystemInformationRoutines>
 <TITLE Common Folders>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.Environment
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.Environment
+<GROUP SystemInformationRoutines>
 <TITLE Environment>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.Hardware
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.Hardware
+<GROUP SystemInformationRoutines>
 <TITLE Hardware>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.Identification
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.Identification
+<GROUP SystemInformationRoutines>
 <TITLE Identification>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.Keyboard
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.Keyboard
+<GROUP SystemInformationRoutines>
 <TITLE Keyboard>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.Memory
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.Memory
+<GROUP SystemInformationRoutines>
 <TITLE Memory>
 <TOPICORDER 600>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.PowerManagement
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.PowerManagement
+<GROUP SystemInformationRoutines>
 <TITLE Power Management>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.ProcessesTasksandModules
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.ProcessesTasksandModules
+<GROUP SystemInformationRoutines>
 <TITLE Processes\, Tasks and Modules>
 <TOPICORDER 800>
 --------------------------------------------------------------------------------
-@@$SystemInformationRoutines.VersionInformation
-<GROUP $SystemInformationRoutines>
+@@SystemInformationRoutines.VersionInformation
+<GROUP SystemInformationRoutines>
 <TITLE Version Information>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
 @@RunningProcessesList
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns a list of all running processes.
 Description:
@@ -73,7 +73,7 @@ Notes:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@LoadedModulesList
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the list of modules loaded by a process.
 Description:
@@ -89,7 +89,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetTasksList
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns a list of running tasks.
 Description:
@@ -106,7 +106,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@IsWindowResponding
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Determines whether a windows is responding to messages.
 Description:
@@ -125,7 +125,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowIcon
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the icon of a window.
 Description:
@@ -140,7 +140,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TerminateTask
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Terminates the application which owns the specified window.
 Description:
@@ -158,7 +158,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TerminateApp
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Terminates the application specified by ProcessID.
 Description:
@@ -182,7 +182,7 @@ Result:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetProcessNameFromWnd
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the name of the process which owns a specific window.
 Description:
@@ -202,7 +202,7 @@ See also:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetProcessNameFromPid
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the name of the process which is identified by PID.
 Description:
@@ -220,7 +220,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetShellProcessName
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the name of the shell process.
 Description:
@@ -235,7 +235,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetShellProcessHandle
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns a handle to the shell process.
 Description:
@@ -251,7 +251,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetPidFromProcessName
-<GROUP $SystemInformationRoutines.ProcessesTasksandModules>
+<GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
   Returns the process identifier (PID) for the process identified by processname.
 Description:
@@ -273,7 +273,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RoundToAllocGranularityPtr
-<GROUP $SystemInformationRoutines>
+<GROUP SystemInformationRoutines>
 Summary:
   Rounds an address to an allocation boundary.
 Description:
@@ -290,7 +290,7 @@ Parameters:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@ProcessorCount
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Number of processors.
 Description:
@@ -300,7 +300,7 @@ Description:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AllocGranularity
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Systems memory allocation granularity.
 Description:
@@ -309,7 +309,7 @@ Description:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PageSize
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Holds the value of the system's virtual memory page size
 Description:
@@ -319,7 +319,7 @@ Platform:
   Windows
 --------------------------------------------------------------------------------
 @@GetCommonAppdataFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the application data folder for all users.
 Description:
@@ -362,7 +362,7 @@ See also:
 Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetCurrentFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the current directory.
 Description:
@@ -373,7 +373,7 @@ Result:
 Donators: Robert Marquardt (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@DelEnvironmentVar
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Deletes a environment variable.
 Description:
@@ -392,7 +392,7 @@ See also:
 Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@ExpandEnvironmentVar
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Expands the environment variable.
 Description:
@@ -414,7 +414,7 @@ See also:
 Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVar
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Retrieves the value of an environment variable.
 Description:
@@ -438,7 +438,7 @@ See also:
 Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVars
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Retrieves a list of all environment variables.
 Description:
@@ -465,7 +465,7 @@ See also:
 Donators: Marcel van Brakel (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@SetEnvironmentVar
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Sets the value of an environment variable.
 Description:
@@ -485,7 +485,7 @@ See also:
 Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@TWindowsVersion
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Enumeration of Windows versions. Used as function result by GetWindowsVersion
 Description:
@@ -522,7 +522,7 @@ Donator: Marcel van Brakel
   Windows Server 2003
 --------------------------------------------------------------------------------
 @@GetWindowsVersion
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the Windows version.
 Description:
@@ -542,7 +542,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetOSVersionString
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the operation system version as a string.
 Description:
@@ -557,7 +557,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetWindowsVersionString
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the Windows version as a string.
 Description:
@@ -570,7 +570,7 @@ See also:
 Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsServicePackVersion
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the installed service pack
 Description:
@@ -597,7 +597,7 @@ See Also:
 Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TestFDIVInstruction
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Tests the processor for the flawed FDIV instruction.
 Description:
@@ -616,7 +616,7 @@ See also:
 Donator: Bryan Coutch
 --------------------------------------------------------------------------------
 @@CPUID
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Returns information about the processor.
 Description:
@@ -635,7 +635,7 @@ See also:
 Donator: Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetCpuSpeed
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Returns information about the processor speed.
 Description:
@@ -654,7 +654,7 @@ See also:
 Donator: Bryan Coutch
 --------------------------------------------------------------------------------
 @@RoundFrequency
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Normalizes a frequency.
 Description:
@@ -669,7 +669,7 @@ Result:
 Donator: Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetMacAddresses
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Retrieves the MAC addresses for a computer.
 Description:
@@ -690,7 +690,7 @@ Notes:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ReadTimeStampCounter
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Reads the time stamp counter.
 Description:
@@ -709,7 +709,7 @@ Notes:
 Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@GetVolumeSerialNumber
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the volume serial number for the specified drive.
 Description:
@@ -724,7 +724,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@GetVolumeFileSystem
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name of the filesystem of the specified volume.
 Description:
@@ -740,7 +740,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@GetVolumeName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name for the specified drive.
 Description:
@@ -755,7 +755,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@GetIPAddress
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the IP address of a host.
 Description:
@@ -774,7 +774,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@TIntelSpecific
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Describes the cache of an Intel processor.
 Description:
@@ -787,7 +787,7 @@ Donator: Bryan Coutch
   Detailed information about the data and instruction caches. You can map these entries to a descriptive string by using the IntelCacheDescription global variable. The entry in that array for which the D member matches the value in the CacheDescriptors array is the entry who's I member contains the descriptive string. You can use the IntelCacheDescription function to get that string.
 --------------------------------------------------------------------------------
 @@TCyrixSpecific
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Describes the cache of a Cyrix processor.
 Description:
@@ -800,7 +800,7 @@ Donator: Bryan Coutch
   Describes the TLB. If an entry contains the value $70 it denotes a 'TLB, 4Kb pages, 4-way set associative, 32 entries' TLB.
 --------------------------------------------------------------------------------
 @@TAMDSpecific
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Describes the cache of an AMD processor.
 Description:
@@ -817,7 +817,7 @@ Donator: Bryan Coutch
   Describes the level 1 instruction cache. The entries have the following meaning:    * L1ICache[0] Line size in bytes  * L1ICache[1] Lines per tag  * L1ICache[2] Associativity ($FF is fully associative)  * L1ICache[3] Size in Kb  
 --------------------------------------------------------------------------------
 @@TCacheInfo
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   The IntelCacheDescription global variable uses this type to provide a mapping from a cache descriptor to a cache entry description.
 Description:
@@ -830,7 +830,7 @@ Donator: Bryan Coutch
   Description of cache.
 --------------------------------------------------------------------------------
 @@TFreqInfo
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Record used as a field in the TCpuInfo record which contains frequency information about the CPU. This information is calculated when you call GetCpuInfo.
 Description:
@@ -847,7 +847,7 @@ Donator: Bryan Coutch
   The time, in microseconds, that elapsed during the test.
 --------------------------------------------------------------------------------
 @@TCpuInfo
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   The TCpuInfo record is used by GetCpuInfo and returns the requested processor information.
 Description:
@@ -892,7 +892,7 @@ Donator: Bryan Coutch
   Contains AMD processor specific information. Only valid if HasCacheInfo is True.
 --------------------------------------------------------------------------------
 @@GetCpuInfo
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Returns information about the CPU.
 Description:
@@ -907,7 +907,7 @@ Parameters:
 Donator: Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetIntelCacheDescription
-<GROUP $SystemInformationRoutines.Hardware>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Returns a descriptive string for an Intel cache descriptor.
 Description:
@@ -924,7 +924,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetCommonFilesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the Windows Common Files directory.
 Description:
@@ -941,7 +941,7 @@ See also:
 Donator: Carl Clark
 --------------------------------------------------------------------------------
 @@GetLocalComputerName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name of the local computer.
 Description:
@@ -959,7 +959,7 @@ See also:
 Donators: Nick Hodges (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetLocalUserName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name of the current user.
 Description:
@@ -976,7 +976,7 @@ See also:
 Donators: Nick Hodges (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetProgramFilesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the Windows Program Files directory.
 Description:
@@ -993,7 +993,7 @@ See also:
 Donator: Carl Clark
 --------------------------------------------------------------------------------
 @@GetRegisteredCompany
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the registered company.
 Description:
@@ -1007,7 +1007,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@GetRegisteredOwner
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the registered owner.
 Description:
@@ -1020,7 +1020,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@GetBIOSDate
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the BIOS date.
 Description:
@@ -1038,7 +1038,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetBIOSName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the BIOS name.
 Description:
@@ -1058,7 +1058,7 @@ See also:
 Donator: James Azarja
 --------------------------------------------------------------------------------
 @@GetBIOSCopyright
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the BIOS copyright string.
 Description:
@@ -1073,7 +1073,7 @@ See also:
 Donator: James Azarja
 --------------------------------------------------------------------------------
 @@GetBIOSExtendedInfo
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns extended information on the BIOS.
 Description:
@@ -1088,7 +1088,7 @@ See also:
 Donator: James Azarja
 --------------------------------------------------------------------------------
 @@GetWindowsFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the Windows folder.
 Description:
@@ -1103,7 +1103,7 @@ See also:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowsSystemFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the Windows system directory.
 Description:
@@ -1118,7 +1118,7 @@ See also:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowsTempFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the Windows temp folder.
 Description:
@@ -1133,7 +1133,7 @@ Result:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinXP
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows XP
 Description:
@@ -1146,7 +1146,7 @@ See also:
   IsWinNT4
 --------------------------------------------------------------------------------
 @@IsWin95
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows 95
 Description:
@@ -1161,7 +1161,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin95OSR2
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows 95 OSR 2
 Description:
@@ -1176,7 +1176,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows 98
 Description:
@@ -1192,7 +1192,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98SE
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows 98 SE
 Description:
@@ -1208,7 +1208,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinME
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows Millenium
 Description:
@@ -1224,7 +1224,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT
 Description:
@@ -1245,7 +1245,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT3
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT 3
 Description:
@@ -1263,7 +1263,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT31
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT 3.1
 Description:
@@ -1278,7 +1278,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT35
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT 3.5
 Description:
@@ -1293,7 +1293,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT351
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT 3.5.1
 Description:
@@ -1308,7 +1308,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT4
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows NT 4.
 Description:
@@ -1326,7 +1326,7 @@ See also:
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin2K
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows 2000
 Description:
@@ -1345,7 +1345,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsWin2003
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns whether the system is running Windows Server 2003.
 Description:
@@ -1364,7 +1364,7 @@ See also:
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@NtProductType
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the Windows NT product type.
 Description:
@@ -1392,7 +1392,7 @@ Donator: Marcel van Brakel
   Contributors: Scott Price, Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@NtProductTypeString
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the Windows NT product type as a string.
 Description:
@@ -1405,7 +1405,7 @@ See also:
 Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@CreateEnvironmentBlock
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   Prepares a new environment block for CreateProcAsUserEx
 Description:
@@ -1431,7 +1431,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@TEnvironmentOption
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 Summary:
   This set of options for CreateEnvironmentBlock will determine which environment variables will be copied to the new environemt block.
 Description:
@@ -1447,11 +1447,11 @@ Donator:
 @@TEnvironmentOption.eoAdditional
   Copy additional name / value pairs to the new environment block. These additional pairs must be passed in the AdditionalVars parameter of the CreateEnvironmentBlock function.
 @@TEnvironmentOptions
-<GROUP $SystemInformationRoutines.Environment>
+<GROUP SystemInformationRoutines.Environment>
 <COMBINE TEnvironmentOption>
 --------------------------------------------------------------------------------
 @@GetUserDomainName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name of the domain where a user account resides.
 Description:
@@ -1472,7 +1472,7 @@ Donator:
   Peter Friese
 --------------------------------------------------------------------------------
 @@GetDomainName
-<GROUP $SystemInformationRoutines.Identification>
+<GROUP SystemInformationRoutines.Identification>
 Summary:
   Returns the name of the domain where the current user account resides.
 Description:
@@ -1493,7 +1493,7 @@ Donators:
   Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetDesktopFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the virtual folder representing the Windows desktop.
 Description:
@@ -1534,7 +1534,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetProgramsFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory containing the current user's program groups.
 Description:
@@ -1578,7 +1578,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetPersonalFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the directory that serves as a common repository for documents.
 Description:
@@ -1619,7 +1619,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFavoritesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the directory that serves as a common repository for the user's favorite items.
 Description:
@@ -1660,7 +1660,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetStartupFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the directory that corresponds to the user's Startup program group.
 Description:
@@ -1703,7 +1703,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetRecentFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains the user's most recently used documents.
 Description:
@@ -1745,7 +1745,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetSendToFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains Send To menu items.
 Description:
@@ -1787,7 +1787,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetStartmenuFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory containing Start menu items.
 Description:
@@ -1829,7 +1829,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetDesktopDirectoryFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory used to physically store file objects on the desktop.
 Description:
@@ -1872,7 +1872,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetNethoodFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory containing objects that appear in the network neighborhood.
 Description:
@@ -1914,7 +1914,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetFontsFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory containing fonts.
 Description:
@@ -1956,7 +1956,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonStartmenuFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains the programs and folders that appear on the Start menu for all users.
 Description:
@@ -1999,7 +1999,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonProgramsFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains the directories for the common program groups that appear on the Start menu for all users.
 Description:
@@ -2042,7 +2042,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonStartupFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains the programs that appear in the Startup folder for all users.
 Description:
@@ -2085,7 +2085,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonDesktopdirectoryFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that contains files and folders that appear on the desktop for all users.
 Description:
@@ -2128,7 +2128,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetAppdataFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for application-specific data.
 Description:
@@ -2169,7 +2169,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetPrinthoodFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for printer links.
 Description:
@@ -2210,7 +2210,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonFavoritesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for all users' favorite items.
 Description:
@@ -2250,7 +2250,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetTemplatesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for document templates.
 Description:
@@ -2290,7 +2290,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetInternetCacheFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for temporary Internet files.
 Description:
@@ -2330,7 +2330,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCookiesFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for Internet cookies.
 Description:
@@ -2370,7 +2370,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetHistoryFolder
-<GROUP $SystemInformationRoutines.CommonFolders>
+<GROUP SystemInformationRoutines.CommonFolders>
 Summary:
   Returns the name of the file system directory that serves as a common repository for Internet history items.
 Description:
@@ -2410,7 +2410,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMLineStatus
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Returns the line status of the APM system.
 Description:
@@ -2426,7 +2426,7 @@ Donator:
   Peter Friese
 --------------------------------------------------------------------------------
 @@TAPMLineStatus
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Enumeration of APM line stati. Used as function result by
 Description:
@@ -2445,7 +2445,7 @@ Donator:
   The PC is not connected to a power plug. That is, it is using the built-in battery.
 --------------------------------------------------------------------------------
 @@TAPMBatteryFlag
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Enumeration of APM battery flags. Used as function result by
 Description:
@@ -2470,7 +2470,7 @@ Donator: Peter Friese
   No battery present. Under normal circumstances, the system is attached to a power plug when you get this result.
 --------------------------------------------------------------------------------
 @@GetAPMBatteryFlag
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Returns the charge status of the system battery.
 Description:
@@ -2485,7 +2485,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryLifePercent
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Returns the percentage of full battery charge remaining.
 Description:
@@ -2497,7 +2497,7 @@ Result:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryLifeTime
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Returns the number of seconds of battery life reamining, or -1 if this time is unknown.
 Description:
@@ -2509,7 +2509,7 @@ Result:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryFullLifeTime
-<GROUP $SystemInformationRoutines.PowerManagement>
+<GROUP SystemInformationRoutines.PowerManagement>
 Summary:
   Returns the number of seconds of battery life minutes when at full charge, or -1 if full batery lifetime is unknown.
 Description:
@@ -2521,7 +2521,7 @@ Result:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetMaxAppAddress
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns a pointer to the highest memory address available to applications and DLLs.
 Description:
@@ -2537,7 +2537,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetMinAppAddress
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns a pointer to the lowest memory address available to applications and DLLs.
 Description:
@@ -2553,7 +2553,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetMemoryLoad
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the current system memory load.
 Description:
@@ -2567,7 +2567,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileSize
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the current pagefile size.
 Description:
@@ -2580,7 +2580,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileUsage
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the percentage of swap file space occupied.
 Description:
@@ -2594,7 +2594,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPhysicalMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the total size of physical memory.
 Description:
@@ -2607,7 +2607,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFreePhysicalMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the size of free physical memory.
 Description:
@@ -2620,7 +2620,7 @@ See also:
 Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPageFileMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the amount of pagefile memory.
 Description:
@@ -2633,7 +2633,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetFreePageFileMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the amount of free pagefile memory.
 Description:
@@ -2646,7 +2646,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetTotalVirtualMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the amount of virtual memory.
 Description:
@@ -2659,7 +2659,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetFreeVirtualMemory
-<GROUP $SystemInformationRoutines.Memory>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Returns the amount of free virtual memory.
 Description:
@@ -2672,7 +2672,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetKeyState
-<GROUP $SystemInformationRoutines.Keyboard>
+<GROUP SystemInformationRoutines.Keyboard>
 Summary:
   Returns the state of a key.
 Description:
@@ -2690,7 +2690,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetNumLockKeyState
-<GROUP $SystemInformationRoutines.Keyboard>
+<GROUP SystemInformationRoutines.Keyboard>
 Summary:
   Returns the state of the Numlock key.
 Description:
@@ -2706,7 +2706,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetScrollLockKeyState
-<GROUP $SystemInformationRoutines.Keyboard>
+<GROUP SystemInformationRoutines.Keyboard>
 Summary:
   Returns the state of the ScrollLock key.
 Description:
@@ -2722,7 +2722,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetCapsLockKeyState
-<GROUP $SystemInformationRoutines.Keyboard>
+<GROUP SystemInformationRoutines.Keyboard>
 Summary:
   Returns the state of the CapsLock key.
 Description:
@@ -2738,7 +2738,7 @@ See also:
 Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetOpenGLVersion
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the current OpenGL library version string (for window rendering)
 Description:
@@ -2757,7 +2757,7 @@ Donator: Scott Price
   Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@GetOpenGLVersionBitmapRendering
-<GROUP $SystemInformationRoutines.VersionInformation>
+<GROUP SystemInformationRoutines.VersionInformation>
 Summary:
   Returns the current OpenGL library version string
 Description:

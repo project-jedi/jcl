@@ -1,10 +1,10 @@
-@@$Windows.ServiceControl>
-<GROUP $Windows>
+@@Windows.ServiceControl
+<GROUP Windows>
 <TITLE Windows NT Service control>
 <TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@TJclServiceType
-<GROUP $Windows.ServiceControl>
+<GROUP Windows.ServiceControl>
 Description: Type of service.
 Donator: Flier Lu
 
@@ -30,7 +30,7 @@ The service shares a process with other services.
 The service can interact with the desktop.
 --------------------------------------------------------------------------------
 @@TJclServiceState
-<GROUP $Windows.ServiceControl>
+<GROUP Windows.ServiceControl>
 Description:
   Current state of the service.
 Donator: Flier Lu
@@ -60,50 +60,66 @@ The service pause is pending.
 The service is paused.
 --------------------------------------------------------------------------------
 @@TJclServiceStartType
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
+
+@@TJclServiceStartType.sstBoot
+// SERVICE_BOOT_START
+
+@@TJclServiceStartType.sstSystem
+// SERVICE_SYSTEM_START
+
+@@TJclServiceStartType.sstAuto
+// SERVICE_AUTO_START
+
+@@TJclServiceStartType.sstDemand
+// SERVICE_DEMAND_START
+
+@@TJclServiceStartType.sstDisabled
+// SERVICE_DISABLED
+
 --------------------------------------------------------------------------------
 @@TJclNtService
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 --------------------------------------------------------------------------------
 @@TJclServiceGroup
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 --------------------------------------------------------------------------------
 @@TJclSCManager
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 --------------------------------------------------------------------------------
 @@GetServiceStatus@SC_HANDLE
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 SeeAlso:
   GetServiceStatusWaitingIfPending
 Donator: Anonymous
 --------------------------------------------------------------------------------
 @@GetServiceStatusWaitingIfPending@SC_HANDLE
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Anonymous
 --------------------------------------------------------------------------------
 @@TJclServiceSortOrderType
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 --------------------------------------------------------------------------------
 @@TJclServiceErrorControlType
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 --------------------------------------------------------------------------------
 @@TJclServiceControlAccepted
-<GROUP $Windows.ServiceControl>
-Description: TODO
+<GROUP Windows.ServiceControl>
+Description: \TODO
 Donator: Flier Lu
 See Also: TJclServiceControlAccepteds
 
@@ -117,7 +133,7 @@ The service is notified when system shutdown occurs.
 The service can be stopped.
 --------------------------------------------------------------------------------
 @@TJclServiceControlAccepteds
-<GROUP $Windows.ServiceControl>
+<GROUP Windows.ServiceControl>
 Description: TODO
 Donator: Flier Lu
 See Also: TJclServiceControlAccepted, TJclNtService.ControlsAccepted

@@ -1,5 +1,5 @@
 @@TStreamId
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   NTFS file stream IDs which denote the kind of data stored in an NTFS stream.
 Description:
@@ -27,11 +27,11 @@ Donator: Marcel van Brakel
 @@TStreamId.siSparseFile
   Sparse file.
 @@TStreamIds
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 <COMBINE TStreamId>
 --------------------------------------------------------------------------------
 @@TFindStreamData
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Record type used by the NtfsFindFirstStream, NtfsFindNextStream and NtfsFindStreamClose functions which contains information about the streams in a NTFS file.
 Description:
@@ -50,7 +50,7 @@ Donator: Marcel van Brakel
   Size, in bytes, of the data part of the stream.
 --------------------------------------------------------------------------------
 @@NtfsFindFirstStream
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Starts the enumeration of streams in a file.
 Description:
@@ -83,7 +83,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsFindNextStream
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns the next stream in a file.
 Description:
@@ -108,7 +108,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsFindStreamClose
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Terminates the enumeration of streams.
 Description:
@@ -131,7 +131,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsCreateJunctionPoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Creates an NTFS junction point.
 Description:
@@ -157,7 +157,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsDeleteJunctionPoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Deletes a junction point.
 Description:
@@ -177,7 +177,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsGetJunctionPointDestination
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns the destination directory of a junction point.
 Description:
@@ -197,7 +197,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsZeroDataByName
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Decommits storage for a specified range within a sparse file.
 Description:
@@ -218,7 +218,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsZeroDataByHandle
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Decommits storage for a specified range within a sparse file.
 Description:
@@ -239,7 +239,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsSparseStreamsSupported
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Test if the volume supports sparse streams.
 Description:
@@ -255,7 +255,7 @@ Result:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TNtfsAllocRanges
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   TNtfsAllocRanges is initialized by a call to NtfsQueryAllocRanges. It holds the data that describes the allocated ranges in the file within the boundaries that the file was queried for. You can use the NtfsGetAllocRangeEntry to extract the individual entries from this record. WARNING: After you're done with this record you are responsible for freeing the memory associated with the Data member, i.e. you must call: FreeMem(Ranges.Data).
 Description:
@@ -273,7 +273,7 @@ Donator: Marcel van Brakel
   True if there was more data than could be returned in this buffer.
 --------------------------------------------------------------------------------
 @@NtfsGetAllocRangeEntry
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Extracts an entry from the ranges record.
 Description:
@@ -298,7 +298,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsQueryAllocRanges
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Queries the specified sparse file for the ranges that are actually allocated.
 Description:
@@ -334,7 +334,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsGetSparse
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Tests whether the file is a sparse file.
 Description:
@@ -355,7 +355,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsSetSparse
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the sparse file attribute.
 Description:
@@ -378,7 +378,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsDeleteReparsePoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Deletes a reparse point.
 Description:
@@ -395,7 +395,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsSetReparsePoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets a reparse point for a file or directory.
 Description:
@@ -412,7 +412,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsGetReparsePoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns the reparse point data associated with the specified file or directory.
 Description:
@@ -434,7 +434,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsGetReparseTag
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns the reparse tag of a file or directory.
 Description:
@@ -454,7 +454,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsReparsePointsSupported
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns whether a filesystem supports reparse points.
 Description:
@@ -473,7 +473,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsFileHasReparsePoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns whether a specified file or directory has an associated reparse point.
 Description:
@@ -495,7 +495,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsIsFolderMountPoint
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Returns whether a directory is a mount point.
 Description:
@@ -513,7 +513,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsMountDeviceAsDrive
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Mounts a device as a drive.
 Description:
@@ -543,7 +543,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsMountVolume
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Mounts a volume to a specified directory.
 Description:
@@ -563,7 +563,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsSetCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the compression state of a file.
 Description:
@@ -589,7 +589,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NtfsSetFileCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the compression state of a file.
 Description:
@@ -612,7 +612,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@NtfsSetDirectoryTreeCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the compression state of a directory and its contents.
 Description:
@@ -636,7 +636,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@NtfsSetPathCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the compression state for all files specified by Path.
 Description:
@@ -662,7 +662,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@NtfsSetDefaultFileCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Sets the default compression state of a directory.
 Description:
@@ -688,7 +688,7 @@ See also:
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@NtfsGetCompression
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Obtains the compression state of a file.
 Description:
@@ -714,7 +714,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TFileCompressionState
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   Enumeration which describes possible file compression states.
 Description:
@@ -739,7 +739,7 @@ Donator: Robert Rossmair
   LZNT1 compression.
 --------------------------------------------------------------------------------
 @@_REPARSE_GUID_DATA_BUFFER
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 Summary:
   TGenericReparseBuffer is a generic record type used for reparse point operations on an NTFS volume.
 Description:
@@ -763,10 +763,10 @@ Donator:
 @@_REPARSE_GUID_DATA_BUFFER.GenericReparseBuffer
   User defined data for the reparse point.
 @@TReparseGuidDataBuffer
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 <COMBINE _REPARSE_GUID_DATA_BUFFER>
 @@PReparseGuidDataBuffer
-<GROUP $FilesandIO.FileSystems.NTFS>
+<GROUP FilesandIO.FileSystems.NTFS>
 <COMBINE _REPARSE_GUID_DATA_BUFFER>
 --------------------------------------------------------------------------------
 @@NtfsCreateHardLink

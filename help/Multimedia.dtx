@@ -1,22 +1,22 @@
-@@$MultiMedia
-<GROUP $JCL>
+@@MultiMedia
+<GROUP JCL>
 <TITLE MultiMedia>
 <TOPICORDER 1800>
 --------------------------------------------------------------------------------
-@@$MultiMedia.AudioMixers
+@@MultiMedia.AudioMixers
 <TITLE Audio Mixers>
 <TOPICORDER 100>
-<GROUP $MultiMedia>
+<GROUP MultiMedia>
 --------------------------------------------------------------------------------
-@@$MultiMedia.MCI
+@@MultiMedia.MCI
 <TITLE MCI>
 <TOPICORDER 200>
-<GROUP $MultiMedia>
+<GROUP MultiMedia>
 --------------------------------------------------------------------------------
-@@$MultiMedia.MIDI
+@@MultiMedia.MIDI
 <TITLE MIDI>
 <TOPICORDER 300>
-<GROUP $MultiMedia>
+<GROUP MultiMedia>
 Summary:
 MIDI is an acronym for <B>Musical Instrument Digital
 Interface</B>, a standard to communicate musical information.
@@ -34,18 +34,18 @@ For more information about MIDI, look up the MMA's <EXTLINK http://www.midi.org>
 We also recommend George Hansper's MIDI
 <EXTLINK http://crystal.apana.org.au/ghansper/midi_introduction/contents.html>introduction</EXTLINK>.
 --------------------------------------------------------------------------------
-@@$MultiMedia.WaveformAudio
+@@MultiMedia.WaveformAudio
 <TITLE Waveform Audio>
 <TOPICORDER 400>
-<GROUP $MultiMedia>
+<GROUP MultiMedia>
 --------------------------------------------------------------------------------
-@@$MultiMedia.CDDrive
-<GROUP $MultiMedia>
+@@MultiMedia.CDDrive
+<GROUP MultiMedia>
 <TITLE CD-Drive Functions>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer
-<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Wrapper for a Win32 multi-media timer 'object'.
 Description:
@@ -224,7 +224,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TMmTimerKind
-<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Determines the kind of timer, periodic or one-shot.
 Description:
@@ -237,7 +237,7 @@ Quick info:
   The timer is a periodic timer. After calling BeginTimer the timer will 'fire' after the specified interval until you call EndTimer. Note that when you use the nkSetEvent notification type you must call Event.ResetEvent manually!
 --------------------------------------------------------------------------------
 @@TMmNotificationKind
-<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Determines the method of notification when the timer's interval elapses. You can choose between using kernel events or callbacks.
 Description:
@@ -253,7 +253,7 @@ Quick info:
   Same as nkSetEvent with the difference that the event is automatically reset to the non-signaled state and therefore there is no need to manually call the ResetEvent method.
 --------------------------------------------------------------------------------
 @@OpenCloseCdDrive
-<GROUP $MultiMedia.CDDrive>
+<GROUP MultiMedia.CDDrive>
 Description:
   OpenCloseCdDrive opens or closes the CD drive. If an error
   \occurs an EJclMciError exception is raised.
@@ -267,7 +267,7 @@ Quick Info:
   Donator: Bernhard Berger
 --------------------------------------------------------------------------------
 @@GetMciErrorMessage
-<GROUP $MultiMedia.MCI>
+<GROUP MultiMedia.MCI>
 Summary:
   Wrapper for mciGetErrorString API.
 Description:
