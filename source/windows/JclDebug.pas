@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: July 2, 2001                                                  }
+{ Last modified: July 15, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -363,17 +363,17 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer;
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
-function __FILE_OF_ADDR__(const Addr: Pointer): string;
-function __MODULE_OF_ADDR__(const Addr: Pointer): string;
-function __PROC_OF_ADDR__(const Addr: Pointer): string;
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
+function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean;
+  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
 
 //------------------------------------------------------------------------------
 // Info routines base list
@@ -522,31 +522,19 @@ function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 function JclLastExceptFrameList: TJclExceptFrameList;
 
 //------------------------------------------------------------------------------
-// Exception hooking
+// Global exceptional stack tracker enable routines and variables
 //------------------------------------------------------------------------------
 
 type
-  TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-  TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
-
-function JclHookExceptions: Boolean;
-function JclUnhookExceptions: Boolean;
-function JclExceptionsHooked: Boolean;
+  TJclStackTrackingOption = (stStack, stExceptFrame, stRawMode, stAllModules);
+  TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 var
-  ExceptNotifyProc: TJclExceptNotifyProc;
-  ExceptNotifyMethod: TJclExceptNotifyMethod;
+  JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
 
-//------------------------------------------------------------------------------
-// Global exceptional stack trackers enable variables
-//------------------------------------------------------------------------------
-
-var
-  StackTrackingEnable: Boolean;
-  RawStackTracking: Boolean;
-  ExceptionFrameTrackingEnable: Boolean;
-
-  TrackAllModules: Boolean;
+function JclStartExceptionTracking: Boolean;
+function JclStopExceptionTracking: Boolean;
+function JclExceptionTrackingActive: Boolean;
 
 //------------------------------------------------------------------------------
 // Thread exception tracking support
@@ -601,7 +589,7 @@ uses
   {$IFDEF WIN32}
   JclRegistry,
   {$ENDIF WIN32}
-  JclStrings, JclSynch, JclSysInfo, JclSysUtils;
+  JclHookExcept, JclStrings, JclSynch, JclSysInfo, JclSysUtils;
 
 //==============================================================================
 // Helper assembler routines
@@ -2815,13 +2803,6 @@ end;
 
 {$STACKFRAMES OFF}
 
-type
-  PExceptionArguments = ^TExceptionArguments;
-  TExceptionArguments = record
-    ExceptAddr: Pointer;
-    ExceptObj: TObject;
-  end;
-
 threadvar
   TopOfStack: DWORD;
   BaseOfStack: DWORD;
@@ -2837,7 +2818,7 @@ end;
 
 function ValidCodeAddr(CodeAddr: DWORD): Boolean;
 begin
-  if TrackAllModules then
+  if stAllModules in JclStackTrackingOptions then
     Result := (ModuleFromAddr(Pointer(CodeAddr)) <> 0)
   else
     Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
@@ -2931,16 +2912,18 @@ procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSExcep
 var
   IgnoreLevels: Integer;
   FirstCaller: Pointer;
+  RawMode: Boolean;
 begin
-  if RawStackTracking then
-    IgnoreLevels := 8
+  RawMode := stRawMode in JclStackTrackingOptions;
+  if RawMode then
+    IgnoreLevels := 11
   else
-    IgnoreLevels := 4;
+    IgnoreLevels := 6;
   if OSException then
     FirstCaller := ExceptAddr
   else
     FirstCaller := nil;
-  JclCreateStackList(RawStackTracking, IgnoreLevels, FirstCaller);
+  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller);
 end;
 
 //------------------------------------------------------------------------------
@@ -3119,7 +3102,7 @@ begin
   // Ignore first 2 levels; the First level is an undefined frame (I haven't a
   // clue as to where it comes from. The second level is the try..finally block
   // in DoExceptNotify.
-  JclCreateExceptFrameList(2);
+  JclCreateExceptFrameList(4);
 end;
 
 //------------------------------------------------------------------------------
@@ -3306,98 +3289,39 @@ end;
 //==============================================================================
 
 var
-  Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
-    nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
-  SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
-  ExceptionsHooked: Boolean;
-  PeImportHooks: TJclPeMapImgHooks;
+  TrackingActive: Boolean;
 
 //------------------------------------------------------------------------------
-
-threadvar
-  Recursive: Boolean;
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
-  if not Recursive and (StackTrackingEnable or ExceptionFrameTrackingEnable or
-    Assigned(ExceptNotifyProc) or Assigned(ExceptNotifyMethod)) then
-  begin
-    Recursive := True;
-    try
-      if StackTrackingEnable then
-        DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
-      if ExceptionFrameTrackingEnable then
-        DoExceptFrameTrace;
-      if Assigned(ExceptNotifyProc) then
-        ExceptNotifyProc(ExceptObj, ExceptAddr, OSException);
-      if Assigned(ExceptNotifyMethod) then
-        ExceptNotifyMethod(ExceptObj, ExceptAddr, OSException);
-    finally
-      Recursive := False;
-    end;
-  end;
+  if stStack in JclStackTrackingOptions then
+    DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
+  if stExceptFrame in JclStackTrackingOptions then
+    DoExceptFrameTrace;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
-  Arguments: PExceptionArguments); stdcall;
-const
-  {$IFDEF DELPHI2}
-  cDelphiException = $0EEDFACE;
-  {$ELSE}
-  cDelphiException = $0EEDFADE;
-  {$ENDIF DELPHI2}
-  cNonContinuable = 1;
+function JclStartExceptionTracking: Boolean;
 begin
-  if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
-      DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False);
-  Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
-end;
-
-//------------------------------------------------------------------------------
-
-function HookedExceptObjProc(P: PExceptionRecord): Exception;
-begin
-  Result := SysUtils_ExceptObjProc(P);
-  DoExceptNotify(Result, P^.ExceptionAddress, True);
-end;
-
-//------------------------------------------------------------------------------
-
-function JclHookExceptions: Boolean;
-begin
-  if ExceptionsHooked then
+  if TrackingActive then
     Result := False
   else
   begin
-    Recursive := False;
-    if PeImportHooks = nil then
-      PeImportHooks := TJclPeMapImgHooks.Create;
-    Result := PeImportHooks.HookImport(PeImportHooks.SystemBase, kernel32,
-      'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
-    if Result then
-    begin
-      SysUtils_ExceptObjProc := System.ExceptObjProc;
-      System.ExceptObjProc := @HookedExceptObjProc;
-    end;
-    ExceptionsHooked := Result;
+    Result := JclHookExceptions and JclAddExceptNotifier(DoExceptNotify, npFirstChain);
+    TrackingActive := Result;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function JclUnhookExceptions: Boolean;
+function JclStopExceptionTracking: Boolean;
 begin
-  if ExceptionsHooked then
+  if TrackingActive then
   begin
-    PeImportHooks.UnhookByNewAddress(@HookedRaiseException);
-    System.ExceptObjProc := @SysUtils_ExceptObjProc;
-    @SysUtils_ExceptObjProc := nil;
-    @Kernel32_RaiseException := nil;
-    Result := True;
-    ExceptionsHooked := False;
+    Result := JclRemoveExceptNotifier(DoExceptNotify);
+    TrackingActive := False;
   end
   else
     Result := False;
@@ -3405,9 +3329,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-function JclExceptionsHooked: Boolean;
+function JclExceptionTrackingActive: Boolean;
 begin
-  Result := ExceptionsHooked;
+  Result := TrackingActive;
 end;
 
 //==============================================================================
@@ -3648,10 +3572,9 @@ initialization
   GlobalStackList := TJclGlobalStackList.Create;
 
 finalization
-  JclUnhookExceptions;
+  JclStopExceptionTracking;
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
-  FreeAndNil(PeImportHooks);
   FreeAndNil(RegisteredThreads);
   FreeAndNil(DebugInfoCritSect);
 
