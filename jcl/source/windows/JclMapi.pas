@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 26, 2000                                                 }
+{ Last modified: September 18, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -30,15 +30,30 @@ uses
   Windows, Classes, Mapi, SysUtils,
   {$IFDEF DELPHI5_UP}
   Contnrs,
-  {$ENDIF}
+  {$ENDIF DELPHI5_UP}
   JclBase;
+
+type
+  EJclMapiError = EJclError;
+
+//------------------------------------------------------------------------------
+// Task windows store/restore
+//------------------------------------------------------------------------------
+
+  TJclMapiTaskWindows = class (TObject)
+  private
+    FTaskActiveWindow: HWND;
+    FTaskWindowsList: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RestoreTaskWindowsState;
+    procedure SaveTaskWindowsState;
+  end;
 
 //------------------------------------------------------------------------------
 // Simple MAPI interface
 //------------------------------------------------------------------------------
-
-type
-  EJclMapiError = EJclError;
 
   TJclMapiClient = record
     ClientName: string;
@@ -62,8 +77,6 @@ type
     FSelectedClientIndex: Integer;
     FSelectedClientType: TJclMapiClientType;
     FBeforeUnloadClient: TNotifyEvent;
-    FTaskActiveWindow: HWND;
-    FTaskWindowsList: TList;
     FMapiAddress: TFNMapiAddress;
     FMapiDeleteMail: TFNMapiDeleteMail;
     FMapiDetails: TFNMapiDetails;
@@ -91,8 +104,6 @@ type
     destructor Destroy; override;
     function ClientLibLoaded: Boolean;
     procedure LoadClientLib;
-    procedure RestoreTaskWindowsState;
-    procedure SaveTaskWindowsState;
     procedure UnloadClientLib;
     property AnyClientInstalled: Boolean read FAnyClientInstalled;
     property ClientCount: Integer read GetClientCount;
@@ -143,7 +154,7 @@ implementation
 
 uses
   Consts, Registry,
-  JclPeImage, JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   mapidll = 'mapi32.dll';
@@ -212,6 +223,63 @@ begin
 end;
 
 //==============================================================================
+// TJclMapiTaskWindows
+//==============================================================================
+
+constructor TJclMapiTaskWindows.Create;
+begin
+  FTaskWindowsList := TList.Create;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclMapiTaskWindows.Destroy;
+begin
+  FreeAndNil(FTaskWindowsList);
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+function RestoreTaskWnds(Wnd: HWND; Data: TList): BOOL; stdcall;
+begin
+  if IsWindowVisible(Wnd) then
+    EnableWindow(Wnd, False);
+  Result := True;
+end;
+
+procedure TJclMapiTaskWindows.RestoreTaskWindowsState;
+var
+  I: Integer;
+begin
+  EnumThreadWindows(MainThreadID, @RestoreTaskWnds, Integer(FTaskWindowsList));
+  for I := 0 to FTaskWindowsList.Count - 1 do
+    EnableWindow(HWND(FTaskWindowsList[I]), True);
+  FTaskWindowsList.Clear;
+  SetFocus(FTaskActiveWindow);
+  FTaskActiveWindow := 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function SaveTaskWnds(Wnd: HWND; Data: TList): BOOL; stdcall;
+begin
+  if IsWindowVisible(Wnd) and IsWindowEnabled(Wnd) then
+  begin
+    Data.Add(Pointer(Wnd));
+    EnableWindow(Wnd, False);
+  end;
+  Result := True;
+end;
+
+procedure TJclMapiTaskWindows.SaveTaskWindowsState;
+begin
+  FTaskWindowsList.Clear;
+  FTaskActiveWindow := GetFocus;
+  EnumThreadWindows(MainThreadID, @SaveTaskWnds, Integer(FTaskWindowsList));
+end;
+
+//==============================================================================
 // TJclSimpleMapi
 //==============================================================================
 
@@ -232,8 +300,7 @@ end;
 
 constructor TJclSimpleMapi.Create;
 begin
-  FTaskWindowsList := TList.Create;
-  SetLength(FFunctions, 12);
+  SetLength(FFunctions, Length(MapiExportNames));
   FFunctions[0] := @@FMapiAddress;
   FFunctions[1] := @@FMapiDeleteMail;
   FFunctions[2] := @@FMapiDetails;
@@ -257,7 +324,6 @@ end;
 destructor TJclSimpleMapi.Destroy;
 begin
   UnloadClientLib;
-  FreeAndNil(FTaskWindowsList);
   inherited;
 end;
 
@@ -338,14 +404,20 @@ var
   function CheckValid(var Client: TJclMapiClient): Boolean;
   var
     I: Integer;
+    LibHandle: THandle;
   begin
-    Result := True;
-    for I := Low(MapiExportNames) to High(MapiExportNames) do
-      if not PeDoesExportFunction(Client.ClientPath, MapiExportNames[I], [scSimpleCompare]) then
-      begin
-        Result := False;
-        Break;
-      end;
+    LibHandle := LoadLibraryEx(PChar(Client.ClientPath), 0, DONT_RESOLVE_DLL_REFERENCES);
+    Result := (LibHandle <> 0);
+    if Result then
+    begin
+      for I := Low(MapiExportNames) to High(MapiExportNames) do
+        if GetProcAddress(LibHandle, MapiExportNames[I]) = nil then
+        begin
+          Result := False;
+          Break;
+        end;
+      FreeLibrary(LibHandle);
+    end;
     Client.Valid := Result;
   end;
 
@@ -387,51 +459,10 @@ begin
       FDefaultClientIndex := SL.IndexOf(DefaultClient);
       FSelectedClientIndex := FDefaultClientIndex;
     end;
-    PeClearGlobalImage;
   finally
     Free;
     SL.Free;
   end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RestoreTaskWnds(Wnd: HWND; Data: TList): BOOL; stdcall;
-begin
-  if IsWindowVisible(Wnd) then
-    EnableWindow(Wnd, False);
-  Result := True;
-end;
-
-procedure TJclSimpleMapi.RestoreTaskWindowsState;
-var
-  I: Integer;
-begin
-  EnumThreadWindows(MainThreadID, @RestoreTaskWnds, Integer(FTaskWindowsList));
-  for I := 0 to FTaskWindowsList.Count - 1 do
-    EnableWindow(HWND(FTaskWindowsList[I]), True);
-  FTaskWindowsList.Clear;
-  SetFocus(FTaskActiveWindow);
-  FTaskActiveWindow := 0;
-end;
-
-//------------------------------------------------------------------------------
-
-function SaveTaskWnds(Wnd: HWND; Data: TList): BOOL; stdcall;
-begin
-  if IsWindowVisible(Wnd) and IsWindowEnabled(Wnd) then
-  begin
-    Data.Add(Pointer(Wnd));
-    EnableWindow(Wnd, False);
-  end;
-  Result := True;
-end;
-
-procedure TJclSimpleMapi.SaveTaskWindowsState;
-begin
-  FTaskWindowsList.Clear;
-  FTaskActiveWindow := GetFocus;
-  EnumThreadWindows(MainThreadID, @SaveTaskWnds, Integer(FTaskWindowsList));
 end;
 
 //------------------------------------------------------------------------------
@@ -499,6 +530,7 @@ procedure TJclEmail.SendMail(const Recipient, Name, Subject, Body: string;
 var
   MapiMessage: TMapiMessage;
   Recip: TMapiRecipDesc;
+  TaskWindows: TJclMapiTaskWindows;
 begin
   FillChar(Recip, SizeOf(Recip), #0);
   Recip.ulRecipClass := MAPI_TO;
@@ -509,12 +541,14 @@ begin
   MapiMessage.lpszNoteText := PChar(Body);
   MapiMessage.lpRecips := @Recip;
   MapiMessage.nRecipCount := 1;
-  SaveTaskWindowsState;
+  TaskWindows := TJclMapiTaskWindows.Create;
+  TaskWindows.SaveTaskWindowsState;
   try
     MapiCheck(MapiSendMail(0, ParentWND, MapiMessage,
       MAPI_DIALOG or MAPI_LOGON_UI or MAPI_NEW_SESSION, 0), True);
   finally
-    RestoreTaskWindowsState;
+    TaskWindows.RestoreTaskWindowsState;
+    TaskWindows.Free;
   end;
 end;
 
