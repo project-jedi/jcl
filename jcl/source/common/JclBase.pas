@@ -28,7 +28,7 @@
 
 unit JclBase;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 
 interface
