@@ -23,28 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Log$
-// Revision 1.11  2004/03/20 18:01:30  rrossmair
-// *** empty log message ***
-//
-// Revision 1.12  2004/03/18 20:30:58  rrossmair
-// *** empty log message ***
-//
-// Revision 1.11  2004/03/17 17:39:03  rrossmair
-// Win32 installation fixed
-//
-// Revision 1.10  2004/03/15 01:22:42  rrossmair
-// compilation speed-up, minor improvements
-//
-// Revision 1.9  2004/03/13 09:06:23  rrossmair
-// minor fixes
-//
-// Revision 1.8  2004/03/13 07:46:49  rrossmair
-// Kylix/Delphi installation fixed; C++ incomplete
-//
-// Revision 1.7  2004/03/12 04:59:56  rrossmair
-// BCB/Win32 support basically working now
-//
+// $Id$
 
 unit QJclInstall;
 
@@ -75,6 +54,7 @@ type
     FLibObjDirMask: string;
     FJclSourceDir: string;
     FJclSourcePath: string;
+    FJclLibObjDir: string;
     FClxDialogFileName: string;
     FClxDialogIconFileName: string;
     {$IFDEF MSWINDOWS}
@@ -98,6 +78,7 @@ type
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
     function MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
     procedure MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
+    property LibObjDir: string read FJclLibObjDir write FJclLibObjDir;
   public
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
@@ -106,6 +87,7 @@ type
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);
+    function Supports(Installation: TJclBorRADToolInstallation): Boolean;
     property Tool: IJediInstallTool read FTool;
   end;
 
@@ -243,9 +225,9 @@ begin
   begin
     Prefix := Prefixes[RADToolKind];
     if DCC.SupportsLibSuffix then
-      Result := Format(S + '.%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
+      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
     else
-      Result := Format(S + '%1:d0.%4:s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension]);
+      Result := Format(S + '%1:d0%4:s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension]);
   end;
 end;
 
@@ -296,7 +278,7 @@ var
   Units: TStringList;
   UnitType: string;
   LibDescriptor: string;
-  SaveDir, UnitOutputDir, LibObjDir: string;
+  SaveDir, UnitOutputDir: string;
   Path, ListFileName: string;
   Success: Boolean;
 begin
@@ -320,7 +302,7 @@ begin
     begin
       Options.Clear;
       Options.Add('-M');
-      if Installation.RADToolKind = brCBuilder then
+      if Installation.RADToolKind = brCppBuilder then
       begin
         Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
         if Debug then
@@ -460,7 +442,6 @@ end;
 
 function TJclInstall.Install: Boolean;
 begin
-  Result := True;
   Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
     Result := Tool.BorRADToolInstallations.Iterate(InstallFor);
@@ -483,6 +464,8 @@ function TJclInstall.InstallFor(Installation: TJclBorRADToolInstallation): Boole
 
 begin
   Result := True;
+  if not Supports(Installation) then
+    Exit;
   Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
   WriteBorRADToolVersionToLog;
   CleanupRepository(Installation);
@@ -543,43 +526,70 @@ end;
 function TJclInstall.InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
 const
   {$IFDEF MSWINDOWS}
-  BcbBmk = '\BCB.bmk';
+  Bcb2MakTemplate = '\BCB.bmk';
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
-  BcbGmk = '/bcb.gmk';
+  Bcb2MakTemplate = '/bcb.gmk';
+
+  procedure WorkAroundLinkerBug;
+  var
+    ObjFiles: TStringList;
+    ObjPath: string;
+    Name, NewName: string;
+    I: Integer;
+  begin
+    ObjFiles := TStringList.Create;
+    ObjPath := LibObjDir + PathSeparator;
+    try
+      BuildFileList(ObjPath + 'Jcl*.o', faAnyFile, ObjFiles);
+      for I := 0 to ObjFiles.Count - 1 do
+      begin
+        Name := ObjFiles[I];
+        NewName := LowerCase(Name);
+        NewName[1] := UpCase(NewName[1]);
+        CreateSymbolicLink(ObjPath + NewName, ObjPath + Name);
+        ObjFiles.ValueFromIndex[I] := NewName;
+      end;
+    finally
+      ObjFiles.Free;
+    end;
+  end;
   {$ENDIF KYLIX}
 var
   PackageFileName: string;
 begin
+  Result := True;
   PackageFileName := FJclPath + Format(Name, [Installation.VersionNumber]);
   Tool.WriteInstallLog(Format('Installing package %s', [PackageFileName]));
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Installation.Name]));
-  if Installation is TJclBCBInstallation then
+  if IsDelphiPackage(Name) then
+  begin
+    Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
+      Tool.DCPPath(Installation));
+    Tool.WriteInstallLog(Installation.DCC.Output);
+  end
+  else
+    if Installation is TJclBCBInstallation then
     with TJclBCBInstallation(Installation) do
     begin
       Bpr2Mak.Options.Clear;
-      Bpr2Mak.Options.Add('-t..' + BcbGmk);
-      {$IFDEF MSWINDOWS}
+      Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
+      {$IFDEF KYLIX}
+      SetEnvironmentVar('OBJDIR', LibObjDir);
+      SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
+      WorkAroundLinkerBug;
+      {$ELSE}
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
       Make.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
-      {$ELSE}
-      SetEnvironmentVar('OBJDIR', Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
       {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));
       Tool.WriteInstallLog(Installation.DCC.Output);
       Tool.WriteInstallLog(Bpr2Mak.Output);
       Tool.WriteInstallLog(Make.Output);
-    end
-  else
-  begin
-    Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
-      Tool.DCPPath(Installation));
-    Tool.WriteInstallLog(Installation.DCC.Output);
-  end;
+    end;
   Tool.WriteInstallLog('');
   if not Result then
     InstallFailedOn(PackageFileName);
@@ -679,12 +689,15 @@ begin
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
-      TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
-      AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug);
-      AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer);
-      AddNode(TempNode, RsJCLIdeFavorite, FID_JCL_ExpertFavorite);
-      if Installation.VersionNumber <= 6 then
-        AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
+      if not (Installation is TJclBCBInstallation) then
+      begin
+        TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
+        AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug);
+        AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer);
+        AddNode(TempNode, RsJCLIdeFavorite, FID_JCL_ExpertFavorite);
+        if Installation.VersionNumber <= 6 then
+          AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
+      end;
       {$ENDIF MSWINDOWS}
       InstallationNode.Expand(True);
       
@@ -706,6 +719,18 @@ end;
 procedure TJclInstall.SetTool(const Value: IJediInstallTool);
 begin
   FTool := Value;
+end;
+
+function TJclInstall.Supports(Installation: TJclBorRADToolInstallation): Boolean;
+begin
+  {$IFDEF KYLIX}
+  Result := Installation.VersionNumber = 3;
+  {$ELSE}
+  if Installation.RADToolKind = brCppBuilder then
+    Result := Installation.VersionNumber in [5..6]
+  else
+    Result := Installation.VersionNumber in [5..7];
+  {$ENDIF}
 end;
 
 end.

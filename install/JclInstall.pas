@@ -52,6 +52,7 @@ type
     FLibObjDirMask: string;
     FJclSourceDir: string;
     FJclSourcePath: string;
+    FJclLibObjDir: string;
     FClxDialogFileName: string;
     FClxDialogIconFileName: string;
     {$IFDEF MSWINDOWS}
@@ -75,6 +76,7 @@ type
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
     function MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
     procedure MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
+    property LibObjDir: string read FJclLibObjDir write FJclLibObjDir;
   public
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
@@ -276,7 +278,7 @@ var
   Units: TStringList;
   UnitType: string;
   LibDescriptor: string;
-  SaveDir, UnitOutputDir, LibObjDir: string;
+  SaveDir, UnitOutputDir: string;
   Path, ListFileName: string;
   Success: Boolean;
 begin
@@ -372,7 +374,7 @@ begin
         Execute(StringsToStr(Units, ' ', False));
         Options.Delete(J);        // remove PIC option
         Tool.WriteInstallLog('');
-        Tool.WriteInstallLog('Compiling dpu...');
+        Tool.WriteInstallLog('Compiling dpu files...');
         Tool.WriteInstallLog(Installation.DCC.Output);
         {$ENDIF KYLIX}
       finally
@@ -462,6 +464,8 @@ function TJclInstall.InstallFor(Installation: TJclBorRADToolInstallation): Boole
 
 begin
   Result := True;
+  if not Supports(Installation) then
+    Exit;
   Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
   WriteBorRADToolVersionToLog;
   CleanupRepository(Installation);
@@ -526,6 +530,30 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
   Bcb2MakTemplate = '/bcb.gmk';
+
+  procedure WorkAroundLinkerBug;
+  var
+    ObjFiles: TStringList;
+    ObjPath: string;
+    Name, NewName: string;
+    I: Integer;
+  begin
+    ObjFiles := TStringList.Create;
+    ObjPath := LibObjDir + PathSeparator;
+    try
+      BuildFileList(ObjPath + 'Jcl*.o', faAnyFile, ObjFiles);
+      for I := 0 to ObjFiles.Count - 1 do
+      begin
+        Name := ObjFiles[I];
+        NewName := LowerCase(Name);
+        NewName[1] := UpCase(NewName[1]);
+        CreateSymbolicLink(ObjPath + NewName, ObjPath + Name);
+        ObjFiles.ValueFromIndex[I] := NewName;
+      end;
+    finally
+      ObjFiles.Free;
+    end;
+  end;
   {$ENDIF KYLIX}
 var
   PackageFileName: string;
@@ -546,14 +574,15 @@ begin
     begin
       Bpr2Mak.Options.Clear;
       Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
-      {$IFDEF MSWINDOWS}
+      {$IFDEF KYLIX}
+      SetEnvironmentVar('OBJDIR', LibObjDir);
+      SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
+      WorkAroundLinkerBug;
+      {$ELSE}
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
       Make.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
-      {$ELSE}
-      SetEnvironmentVar('OBJDIR', Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
       {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));

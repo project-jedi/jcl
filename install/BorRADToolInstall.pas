@@ -19,8 +19,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Routines for getting information about installed versions of Delphi and performing basic         }
-{ installation tasks.                                                                              }
+{ Routines for getting information about installed versions of Delphi/C++Builder and performing    }
+{ basic installation tasks.                                                                        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
 {                                                                                                  }
@@ -229,7 +229,7 @@ type
     function GetExeName: string; override;
   end;
 
-  TJclBorlandMake = class (TJclBorlandCommandLineTool, IJclCommandLineTool)
+  TJclBorlandMake = class (TJclBorlandCommandLineTool)
   protected
     function GetExeName: string; override;
   end;
@@ -285,6 +285,7 @@ type
     FRootDir: string;
     FBinFolderName: string;
     FDCC: TJclDCC;
+    FMake: IJclCommandLineTool;
     FEdition: TJclBorRADToolEdition;
     FEnvironmentVariables: TStrings;
     FIdeExeFileName: string;
@@ -360,6 +361,7 @@ type
     {$ENDIF}
     property ConfigData: TCustomIniFile read FConfigData;
     property Globals: TStrings read FGlobals;
+    property Make: IJclCommandLineTool read FMake;
     property Name: string read GetName;
     property Palette: TJclBorRADToolPalette read GetPalette;
     property Repository: TJclBorRADToolRepository read GetRepository;
@@ -371,7 +373,6 @@ type
 
   TJclBCBInstallation = class (TJclBorRADToolInstallation)
   private
-    FMake: IJclCommandLineTool;
     FBpr2Mak: TJclBpr2Mak;
   protected
     constructor Create(const AConfigDataLocation: string);
@@ -384,7 +385,6 @@ type
     {$ENDIF KYLIX}
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
     property Bpr2Mak: TJclBpr2Mak read FBpr2Mak;
-    property Make: IJclCommandLineTool read FMake;
   end;
 
   TJclDelphiInstallation = class (TJclBorRADToolInstallation)
@@ -522,7 +522,7 @@ const
   Bpr2MakExeName             = 'bpr2mak';
   DelphiOptionsFileExtension = '.kof';
 
-  LibSuffixes: array[TKylixVersion] of Integer = (60, 65, 69);
+  LibSuffixes: array[TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
   DCCFileName              = 'bin/dcc';
   KylixHelpNamePart          = 'k%d';
@@ -1529,8 +1529,10 @@ constructor TJclBorRADToolInstallation.Create;
 begin
   {$IFDEF KYLIX}
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
+  FMake := TJclCommandLineTool.Create('make');
   {$ELSE}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
+  FMake := TJclBorlandMake.Create(Self);
   {$ENDIF}
   FGlobals := TStringList.Create;
   ReadInformation;
@@ -1961,11 +1963,6 @@ end;
 constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
 begin
   inherited Create(AConfigDataLocation);
-  {$IFDEF KYLIX}
-  FMake := TJclCommandLineTool.Create('make');
-  {$ELSE}
-  FMake := TJclBorlandMake.Create(Self);
-  {$ENDIF}
   FBpr2Mak := TJclBpr2Mak.Create(Self);
 end;
 

@@ -231,7 +231,7 @@ begin
       MessageBox(RsInstallSuccess)
     else
       {$IFDEF UNIX}
-      Libc.system(PChar(Format('xterm -e less %s', [LogFileName])));
+      Libc.system(PChar(Format('xterm -e less %s&', [LogFileName])));
       {$ENDIF}
       {$IFDEF MSWINDOWS}
       ShellExecEx(LogFileName);
