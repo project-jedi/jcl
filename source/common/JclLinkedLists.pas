@@ -131,7 +131,7 @@ type
   end;
 
   TJclLinkedList = class(TJclAbstractContainer, IJclCollection, IJclList,
-      IJclCloneable)
+    IJclCloneable)
   private
     FStart: PJclLinkedListItem;
     FEnd: PJclLinkedListItem;
@@ -177,6 +177,8 @@ uses
   SysUtils,
   JclResources;
 
+//=== { TIntfItr } ===========================================================
+
 type
   TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
   private
@@ -201,54 +203,6 @@ type
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
-  private
-    FCursor: PJclStrLinkedListItem;
-    FOwnList: TJclStrLinkedList;
-    FLastRet: PJclStrLinkedListItem;
-    FSize: Integer;
-  protected
-    { IJclStrIterator}
-    procedure Add(const AString: string);
-    function GetString: string;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Next: string;
-    function NextIndex: Integer;
-    function Previous: string;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure SetString(const AString: string);
-  public
-    constructor Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
-    destructor Destroy; override;
-  end;
-
-  TItr = class(TJclAbstractContainer, IJclIterator)
-  private
-    FCursor: PJclLinkedListItem;
-    FOwnList: TJclLinkedList;
-    FLastRet: PJclLinkedListItem;
-    FSize: Integer;
-  public
-    { IJclIterator}
-    procedure Add(AObject: TObject);
-    function GetObject: TObject;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Next: TObject;
-    function NextIndex: Integer;
-    function Previous: TObject;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure SetObject(AObject: TObject);
-  public
-    constructor Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
-    destructor Destroy; override;
-  end;
-
-  //=== { TIntfItr } ===========================================================
-
 constructor TIntfItr.Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
 begin
   inherited Create;
@@ -268,13 +222,13 @@ end;
 procedure TIntfItr.Add(AInterface: IInterface);
 var
   NewItem: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if AInterface = nil then
     Exit;
   New(NewItem);
@@ -299,9 +253,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
 end;
 
@@ -313,7 +267,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.Next: IInterface;
@@ -322,9 +276,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   FCursor := FCursor.Next;
@@ -333,31 +287,31 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
 var
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FCursor = nil then
     Exit;
   Current := FCursor;
@@ -379,13 +333,37 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   FCursor.Obj := AInterface;
 end;
 
 //=== { TStrItr } ============================================================
+
+type
+  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
+  private
+    FCursor: PJclStrLinkedListItem;
+    FOwnList: TJclStrLinkedList;
+    FLastRet: PJclStrLinkedListItem;
+    FSize: Integer;
+  protected
+    { IJclStrIterator}
+    procedure Add(const AString: string);
+    function GetString: string;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Next: string;
+    function NextIndex: Integer;
+    function Previous: string;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetString(const AString: string);
+  public
+    constructor Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
+    destructor Destroy; override;
+  end;
 
 constructor TStrItr.Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
 begin
@@ -406,13 +384,13 @@ end;
 procedure TStrItr.Add(const AString: string);
 var
   NewItem: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if AString = '' then
     Exit;
   New(NewItem);
@@ -437,9 +415,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Str;
 end;
 
@@ -451,7 +429,7 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TStrItr.Next: string;
@@ -460,9 +438,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Str;
   FLastRet := FCursor;
   FCursor := FCursor.Next;
@@ -471,31 +449,31 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
 var
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FCursor = nil then
     Exit;
   Current := FCursor;
@@ -517,13 +495,37 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   FCursor.Str := AString;
 end;
 
 //=== { TItr } ===============================================================
+
+type
+  TItr = class(TJclAbstractContainer, IJclIterator)
+  private
+    FCursor: PJclLinkedListItem;
+    FOwnList: TJclLinkedList;
+    FLastRet: PJclLinkedListItem;
+    FSize: Integer;
+  public
+    { IJclIterator}
+    procedure Add(AObject: TObject);
+    function GetObject: TObject;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Next: TObject;
+    function NextIndex: Integer;
+    function Previous: TObject;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetObject(AObject: TObject);
+  public
+    constructor Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
+    destructor Destroy; override;
+  end;
 
 constructor TItr.Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
 begin
@@ -544,13 +546,13 @@ end;
 procedure TItr.Add(AObject: TObject);
 var
   NewItem: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
   New(NewItem);
@@ -575,9 +577,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
 end;
 
@@ -589,7 +591,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TItr.Next: TObject;
@@ -598,9 +600,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   FCursor := FCursor.Next;
@@ -609,31 +611,31 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No Index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
   // No Index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
 var
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FCursor = nil then
     Exit;
   Current := FCursor;
@@ -657,9 +659,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   FCursor.Obj := AObject;
 end;
 
@@ -692,15 +694,15 @@ var
   I: Integer;
   Current: PJclIntfLinkedListItem;
   NewItem: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if AInterface = nil then
     Exit;
   if FStart = nil then
@@ -731,13 +733,13 @@ end;
 function TJclIntfLinkedList.Add(AInterface: IInterface): Boolean;
 var
   NewItem: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AInterface = nil then
     Exit;
@@ -758,13 +760,13 @@ end;
 function TJclIntfLinkedList.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -779,16 +781,16 @@ var
   It: IJclIntfIterator;
   Current: PJclIntfLinkedListItem;
   NewItem: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -836,13 +838,13 @@ procedure TJclIntfLinkedList.Clear;
 var
   I: Integer;
   Old, Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
@@ -871,13 +873,13 @@ function TJclIntfLinkedList.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AInterface = nil then
     Exit;
@@ -896,35 +898,31 @@ end;
 function TJclIntfLinkedList.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclIntfLinkedList.Equals(ACollection: IJclIntfCollection): Boolean;
 var
   It, ItSelf: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -942,13 +940,13 @@ function TJclIntfLinkedList.GetObject(Index: Integer): IInterface;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FStart = nil then
     Exit;
@@ -962,13 +960,13 @@ function TJclIntfLinkedList.IndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AInterface = nil then
     Exit;
@@ -1005,13 +1003,13 @@ function TJclIntfLinkedList.LastIndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AInterface = nil then
     Exit;
@@ -1030,13 +1028,13 @@ function TJclIntfLinkedList.Remove(AInterface: IInterface): Boolean;
 var
   I: Integer;
   Old, Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AInterface = nil then
     Exit;
@@ -1071,13 +1069,13 @@ function TJclIntfLinkedList.Remove(Index: Integer): IInterface;
 var
   I: Integer;
   Old, Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FStart = nil then
     Exit;
@@ -1104,13 +1102,13 @@ end;
 function TJclIntfLinkedList.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1122,13 +1120,13 @@ end;
 function TJclIntfLinkedList.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1142,13 +1140,13 @@ procedure TJclIntfLinkedList.SetObject(Index: Integer; AInterface: IInterface);
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FStart = nil then
     Exit;
   Current := FStart;
@@ -1167,13 +1165,13 @@ var
   I: Integer;
   It: IJclIntfIterator;
   Last: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
@@ -1222,15 +1220,15 @@ var
   I: Integer;
   Current: PJclStrLinkedListItem;
   NewItem: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1261,13 +1259,13 @@ end;
 function TJclStrLinkedList.Add(const AString: string): Boolean;
 var
   NewItem: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1288,13 +1286,13 @@ end;
 function TJclStrLinkedList.AddAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1309,13 +1307,13 @@ var
   It: IJclStrIterator;
   Current: PJclStrLinkedListItem;
   NewItem: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1364,13 +1362,13 @@ procedure TJclStrLinkedList.Clear;
 var
   I: Integer;
   Old, Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
@@ -1399,13 +1397,13 @@ function TJclStrLinkedList.Contains(const AString: string): Boolean;
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1424,35 +1422,31 @@ end;
 function TJclStrLinkedList.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclStrLinkedList.Equals(ACollection: IJclStrCollection): Boolean;
 var
   It, ItSelf: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1475,13 +1469,13 @@ function TJclStrLinkedList.GetString(Index: Integer): string;
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := '';
   if FStart = nil then
     Exit;
@@ -1495,13 +1489,13 @@ function TJclStrLinkedList.IndexOf(const AString: string): Integer;
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AString = '' then
     Exit;
@@ -1533,13 +1527,13 @@ function TJclStrLinkedList.LastIndexOf(const AString: string): Integer;
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AString = '' then
     Exit;
@@ -1558,13 +1552,13 @@ function TJclStrLinkedList.Remove(Index: Integer): string;
 var
   I: Integer;
   Old, Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := '';
   if FStart = nil then
     Exit;
@@ -1592,13 +1586,13 @@ function TJclStrLinkedList.Remove(const AString: string): Boolean;
 var
   I: Integer;
   Old, Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1632,13 +1626,13 @@ end;
 function TJclStrLinkedList.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1650,13 +1644,13 @@ end;
 function TJclStrLinkedList.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1670,13 +1664,13 @@ procedure TJclStrLinkedList.SetString(Index: Integer; const AString: string);
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FStart = nil then
     Exit;
   Current := FStart;
@@ -1695,13 +1689,13 @@ var
   I: Integer;
   It: IJclStrIterator;
   Last: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
@@ -1751,15 +1745,15 @@ var
   I: Integer;
   Current: PJclLinkedListItem;
   NewItem: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1789,13 +1783,13 @@ end;
 function TJclLinkedList.Add(AObject: TObject): Boolean;
 var
   NewItem: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1816,13 +1810,13 @@ end;
 function TJclLinkedList.AddAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1838,16 +1832,16 @@ var
   It: IJclIterator;
   Current: PJclLinkedListItem;
   NewItem: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -1895,13 +1889,13 @@ procedure TJclLinkedList.Clear;
 var
   I: Integer;
   Old, Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
@@ -1930,13 +1924,13 @@ function TJclLinkedList.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1955,35 +1949,31 @@ end;
 function TJclLinkedList.ContainsAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclLinkedList.Equals(ACollection: IJclCollection): Boolean;
 var
   It, ItSelf: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2010,13 +2000,13 @@ function TJclLinkedList.GetObject(Index: Integer): TObject;
 var
   I: Integer;
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FStart = nil then
     Exit;
@@ -2030,13 +2020,13 @@ function TJclLinkedList.IndexOf(AObject: TObject): Integer;
 var
   I: Integer;
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AObject = nil then
     Exit;
@@ -2073,13 +2063,13 @@ function TJclLinkedList.LastIndexOf(AObject: TObject): Integer;
 var
   I: Integer;
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := -1;
   if AObject = nil then
     Exit;
@@ -2098,13 +2088,13 @@ function TJclLinkedList.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
   Old, Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -2139,13 +2129,13 @@ function TJclLinkedList.Remove(Index: Integer): TObject;
 var
   I: Integer;
   Old, Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FStart = nil then
     Exit;
@@ -2172,13 +2162,13 @@ end;
 function TJclLinkedList.RemoveAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -2190,13 +2180,13 @@ end;
 function TJclLinkedList.RetainAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2210,13 +2200,13 @@ procedure TJclLinkedList.SetObject(Index: Integer; AObject: TObject);
 var
   I: Integer;
   Current: PJclLinkedListItem;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   if FStart = nil then
     Exit;
   Current := FStart;
@@ -2235,13 +2225,13 @@ var
   I: Integer;
   It: IJclIterator;
   Last: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
@@ -2332,6 +2322,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/03/03 08:02:57  marquardt
+// various style cleanings, bugfixes and improvements
+//
 // Revision 1.5  2005/03/02 17:51:24  rrossmair
 // - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
 //

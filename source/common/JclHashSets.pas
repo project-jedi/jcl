@@ -37,7 +37,7 @@ uses
 
 type
   TJclIntfHashSet = class(TJclAbstractContainer, IJclIntfCollection,
-      IJclIntfSet, IJclIntfCloneable)
+    IJclIntfSet, IJclIntfCloneable)
   private
     FMap: IJclIntfIntfMap;
   protected
@@ -121,7 +121,8 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObject: Boolean = False);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity;
+      AOwnsObject: Boolean = False);
     destructor Destroy; override;
   end;
 
@@ -134,7 +135,7 @@ const
 var
   IRefUnique: IInterface = nil;
 
-  //=== { TJclIntfHashSet } ====================================================
+//=== { TJclIntfHashSet } ====================================================
 
 constructor TJclIntfHashSet.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
@@ -197,12 +198,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclIntfHashSet.Equals(ACollection: IJclIntfCollection): Boolean;
@@ -349,12 +346,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclStrHashSet.Equals(ACollection: IJclStrCollection): Boolean;
@@ -409,11 +402,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    //Result := Remove(It.Next) and Result;
-
-    //Daniele Teti 28/12/2004
-    if not Remove(It.Next) then
-      Result := False;
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclStrHashSet.RetainAll(ACollection: IJclStrCollection): Boolean;
@@ -506,12 +495,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclHashSet.Equals(ACollection: IJclCollection): Boolean;
@@ -600,6 +585,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/03 08:02:57  marquardt
+// various style cleanings, bugfixes and improvements
+//
 // Revision 1.6  2005/03/02 17:51:24  rrossmair
 // - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
 //
