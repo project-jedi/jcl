@@ -37,9 +37,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   JclBase, JclSysUtils, JclFileUtils, JclPeImage;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -106,11 +106,11 @@ type
     ttModule,               //  $00
     ttTypeRef,              //  $01
     ttTypeDef,              //  $02
-    ttUnknown03,            //  $03
+    ttFieldPtr,             //  $03
     ttFieldDef,             //  $04
-    ttUnknown05,            //  $05
+    ttMethodPtr,            //  $05
     ttMethodDef,            //  $06
-    ttUnknown07,            //  $07
+    ttParamPtr,             //  $07
     ttParamDef,             //  $08
     ttInterfaceImpl,        //  $09
     ttMemberRef,            //  $0a
@@ -122,19 +122,19 @@ type
     ttFieldLayout,          //  $10
     ttSignature,            //  $11
     ttEventMap,             //  $12
-    ttUnknown13,            //  $13
-    ttEvent,                //  $14
+    ttEventPtr,             //  $13
+    ttEventDef,             //  $14
     ttPropertyMap,          //  $15
-    ttUnknown16,            //  $16
-    ttProperty,             //  $17
+    ttPropertyPtr,          //  $16
+    ttPropertyDef,          //  $17
     ttMethodSemantics,      //  $18
     ttMethodImpl,           //  $19
     ttModuleRef,            //  $1a
     ttTypeSpec,             //  $1b
     ttImplMap,              //  $1c
     ttFieldRVA,             //  $1d
-    ttUnknown1e,            //  $1e
-    ttUnknown1f,            //  $1f
+    ttENCLog,               //  $1e
+    ttENCMap,               //  $1f
     ttAssembly,             //  $20
     ttAssemblyProcessor,    //  $21
     ttAssemblyOS,           //  $22
@@ -145,8 +145,8 @@ type
     ttExportedType,         //  $27
     ttManifestResource,     //  $28
     ttNestedClass,          //  $29
-    ttUnknown2a,            //  $2a
-    ttUnknown2b);           //  $2b
+    ttTypeTyPar,            //  $2a
+    ttMethodTyPar);         //  $2b
 
 type
   TJclClrHeaderEx = class;
@@ -1520,50 +1520,50 @@ const
   mdtBaseType             = $72000000; // Leave this on the high end value. This does not correspond to metadata table
 
   ValidTableMapping: array[TJclClrTableKind] of TJclClrTableClass = (
-    TJclClrTableModule,               //  $00
-    TJclClrTableTypeRef,              //  $01
-    TJclClrTableTypeDef,              //  $02
-    TJclClrTable,                     //  $03
-    TJclClrTableField,                //  $04
-    TJclClrTable,                     //  $05
-    TJclClrTableMethodDef,            //  $06
-    TJclClrTable,                     //  $07
-    TJclClrTableParamDef,             //  $08
-    TJclClrTableInterfaceImpl,        //  $09
-    TJclClrTableMemberRef,            //  $0a
-    TJclClrTableConstant,             //  $0b
-    TJclClrTableCustomAttribute,      //  $0c
-    TJclClrTableFieldMarshal,         //  $0d
-    TJclClrTableDeclSecurity,         //  $0e
-    TJclClrTableClassLayout,          //  $0f
-    TJclClrTableFieldLayout,          //  $10
-    TJclClrTableStandAloneSig,        //  $11
-    TJclClrTableEventMap,             //  $12
-    TJclClrTable,                     //  $13
-    TJclClrTableEvent,                //  $14
-    TJclClrTablePropertyMap,          //  $15
-    TJclClrTable,                     //  $16
-    TJclClrTableProperty,             //  $17
-    TJclClrTableMethodSemantics,      //  $18
-    TJclClrTableMethodImpl,           //  $19
-    TJclClrTableModuleRef,            //  $1a
-    TJclClrTableTypeSpec,             //  $1b
-    TJclClrTableImplMap,              //  $1c
-    TJclClrTableFieldRVA,             //  $1d
-    TJclClrTable,                     //  $1e
-    TJclClrTable,                     //  $1f
-    TJclClrTableAssembly,             //  $20
-    TJclClrTableAssemblyProcessor,    //  $21
-    TJclClrTableAssemblyOS,           //  $22
-    TJclClrTableAssemblyRef,          //  $23
-    TJclClrTableAssemblyRefProcessor, //  $24
-    TJclClrTableAssemblyRefOS,        //  $25
-    TJclClrTableFile,                 //  $26
-    TJclClrTableExportedType,         //  $27
-    TJclClrTableManifestResource,     //  $28
-    TJclClrTableNestedClass,          //  $29
-    TJclClrTable,                     //  $2A
-    TJclClrTable);                    //  $2B
+    TJclClrTableModule,               //  $00 ttModule
+    TJclClrTableTypeRef,              //  $01 ttTypeRef
+    TJclClrTableTypeDef,              //  $02 ttTypeDef
+    TJclClrTable,                     //  $03 ttFieldPtr
+    TJclClrTableField,                //  $04 ttFieldDef
+    TJclClrTable,                     //  $05 ttMethodPtr
+    TJclClrTableMethodDef,            //  $06 ttMethodDef
+    TJclClrTable,                     //  $07 ttParamPtr
+    TJclClrTableParamDef,             //  $08 ttParamDef
+    TJclClrTableInterfaceImpl,        //  $09 ttInterfaceImpl
+    TJclClrTableMemberRef,            //  $0a ttMemberRef
+    TJclClrTableConstant,             //  $0b ttConstant
+    TJclClrTableCustomAttribute,      //  $0c ttCustomAttribute
+    TJclClrTableFieldMarshal,         //  $0d ttFieldMarshal
+    TJclClrTableDeclSecurity,         //  $0e ttDeclSecurity
+    TJclClrTableClassLayout,          //  $0f ttClassLayout
+    TJclClrTableFieldLayout,          //  $10 ttFieldLayout
+    TJclClrTableStandAloneSig,        //  $11 ttSignature
+    TJclClrTableEventMap,             //  $12 ttEventMap
+    TJclClrTable,                     //  $13 ttEventPtr
+    TJclClrTableEvent,                //  $14 ttEventDef
+    TJclClrTablePropertyMap,          //  $15 ttPropertyMap
+    TJclClrTable,                     //  $16 ttPropertyPtr
+    TJclClrTableProperty,             //  $17 ttPropertyDef
+    TJclClrTableMethodSemantics,      //  $18 ttMethodSemantics
+    TJclClrTableMethodImpl,           //  $19 ttMethodImpl
+    TJclClrTableModuleRef,            //  $1a ttModuleRef
+    TJclClrTableTypeSpec,             //  $1b ttTypeSpec
+    TJclClrTableImplMap,              //  $1c ttImplMap
+    TJclClrTableFieldRVA,             //  $1d ttFieldRVA
+    TJclClrTable,                     //  $1e ttENCLog
+    TJclClrTable,                     //  $1f ttENCMap
+    TJclClrTableAssembly,             //  $20 ttAssembly
+    TJclClrTableAssemblyProcessor,    //  $21 ttAssemblyProcessor
+    TJclClrTableAssemblyOS,           //  $22 ttAssemblyOS
+    TJclClrTableAssemblyRef,          //  $23 ttAssemblyRef
+    TJclClrTableAssemblyRefProcessor, //  $24 ttAssemblyRefProcessor
+    TJclClrTableAssemblyRefOS,        //  $25 ttAssemblyRefOS
+    TJclClrTableFile,                 //  $26 ttFile
+    TJclClrTableExportedType,         //  $27 ttExportedType
+    TJclClrTableManifestResource,     //  $28 ttManifestResource
+    TJclClrTableNestedClass,          //  $29 ttNestedClass
+    TJclClrTable,                     //  $2A ttTypeTyPar
+    TJclClrTable);                    //  $2B ttMethodTyPar         
 
 //==================================================================================================
 // CLR Header entry point flags.
@@ -2656,7 +2656,7 @@ begin
 
   FKind      := Table.ReadByte;
   Table.ReadByte; // padding zero
-  FParentIdx := Table.ReadIndex([ttParamDef, ttFieldDef, ttProperty]);
+  FParentIdx := Table.ReadIndex([ttParamDef, ttFieldDef, ttPropertyDef]);
   FValueOffset  := Table.ReadIndex(hkBlob);
 end;
 
@@ -2682,7 +2682,7 @@ begin
   FParentIdx   := Table.ReadIndex([ttModule, ttTypeRef, ttTypeDef, ttFieldDef,
     ttMethodDef, ttParamDef, ttInterfaceImpl, ttMemberRef, ttConstant,
     ttFieldMarshal, ttDeclSecurity, ttClassLayout, ttFieldLayout, ttSignature,
-    ttEventMap, ttEvent, ttPropertyMap, ttProperty, ttMethodSemantics,
+    ttEventMap, ttEventDef, ttPropertyMap, ttPropertyDef, ttMethodSemantics,
     ttMethodImpl, ttModuleRef, ttTypeSpec, ttImplMap, ttFieldRVA, ttAssembly,
     ttAssemblyProcessor, ttAssemblyOS, ttAssemblyRef, ttAssemblyRefProcessor,
     ttAssemblyRefOS, ttFile, ttExportedType, ttManifestResource, ttNestedClass]);
@@ -2694,7 +2694,7 @@ function TJclClrTableCustomAttributeRow.GetParent: TJclClrTableRow;
 const
   MapTagToTable: array[0..18] of TJclClrTableKind =
   (ttMethodDef, ttFieldDef, ttTypeRef, ttTypeDef, ttParamDef, ttInterfaceImpl,
-   ttMemberRef, ttModule, ttDeclSecurity, ttProperty, ttEvent, ttSignature,
+   ttMemberRef, ttModule, ttDeclSecurity, ttPropertyDef, ttEventDef, ttSignature,
    ttModuleRef, ttTypeSpec, ttAssembly, ttAssemblyRef, ttFile, ttExportedType,
    ttManifestResource);
 var
@@ -2703,7 +2703,7 @@ begin
   WideIndex := Table.IsWideIndex([ttModule, ttTypeRef, ttTypeDef, ttFieldDef,
     ttMethodDef, ttParamDef, ttInterfaceImpl, ttMemberRef, ttConstant,
     ttFieldMarshal, ttDeclSecurity, ttClassLayout, ttFieldLayout, ttSignature,
-    ttEventMap, ttEvent, ttPropertyMap, ttProperty, ttMethodSemantics,
+    ttEventMap, ttEventDef, ttPropertyMap, ttPropertyDef, ttMethodSemantics,
     ttMethodImpl, ttModuleRef, ttTypeSpec, ttImplMap, ttFieldRVA, ttAssembly,
     ttAssemblyProcessor, ttAssemblyOS, ttAssemblyRef, ttAssemblyRefProcessor,
     ttAssemblyRefOS, ttFile, ttExportedType, ttManifestResource, ttNestedClass]);
@@ -2774,7 +2774,7 @@ begin
   inherited;
 
   FParentIdx := Table.ReadIndex([ttTypeDef]);
-  FEventListIdx := Table.ReadIndex([ttEvent]);
+  FEventListIdx := Table.ReadIndex([ttEventDef]);
 end;
 
 { TJclClrTableEventMap }
@@ -3314,7 +3314,7 @@ begin
 
   FSemantics      := Table.ReadWord;
   FMethodIdx      := Table.ReadIndex([ttMethodDef]);
-  FAssociationIdx := Table.ReadIndex([ttEvent, ttProperty]);
+  FAssociationIdx := Table.ReadIndex([ttEventDef, ttPropertyDef]);
 end;
 
 { TJclClrTableMethodSemantics }
@@ -3388,7 +3388,7 @@ begin
   inherited;
 
   FParentIdx       := Table.ReadIndex([ttTypeDef]);
-  FPropertyListIdx := Table.ReadIndex([ttProperty]);
+  FPropertyListIdx := Table.ReadIndex([ttPropertyDef]);
 end;
 
 { TJclClrTablePropertyMap }
