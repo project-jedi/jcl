@@ -32,6 +32,7 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Dejoy Den (dejoy)                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -59,7 +60,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QGraphics, JclQGraphUtils,
   {$ELSE}
-  Graphics, JclGraphUtils,
+  Graphics, JclGraphUtils, Controls,
   {$ENDIF VisualCLX}
   JclBase;
 
@@ -182,6 +183,8 @@ type
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
+    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; ControlFrom, ControlTo: TWinControl); overload;
     destructor Destroy; override;
     procedure Clip(Canvas: TCanvas);
     procedure Combine(DestRegion, SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
@@ -514,6 +517,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
 {$ENDIF VCL}
 
 {$IFDEF Bitmap32}
@@ -2105,6 +2109,12 @@ begin
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
+
+function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+begin
+  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
+  Result := ARect;
+end;
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
@@ -2297,6 +2307,42 @@ begin
   if RegionInfo = nil then
     raise EJclGraphicsError.CreateRes(@RsInvalidRegionInfo);
   Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
+end;
+
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND);
+var
+  RectRegion: HRGN;
+  CurrentRegionInfo : TJclRegionInfo;
+  SimpleRect: TRect;
+  Index:integer;
+begin
+  Create(CreateRectRgn(0, 0, 0, 0), True);
+  if (hWndFrom <> 0) or (hWndTo <> 0 ) then
+  begin
+    CurrentRegionInfo := InitialRegion.GetRegionInfo;
+    try
+      for Index := 0 to CurrentRegionInfo.Count-1 do
+      begin
+        SimpleRect := CurrentRegionInfo.Rectangles[Index];
+        SimpleRect := MapWindowRect(hWndFrom,hWndTo,SimpleRect);
+        RectRegion := CreateRectRgnIndirect(SimpleRect);
+        if RectRegion <> 0 then
+        begin
+          CombineRgn(Handle, Handle, RectRegion, RGN_OR);
+          DeleteObject(RectRegion);
+        end;
+      end;
+    finally
+      CurrentRegionInfo.Free;
+      GetBox;
+    end;
+  end;
+end;
+
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion;
+  ControlFrom, ControlTo: TWinControl);
+begin
+  CreateMapWindow(InitialRegion,ControlFrom.Handle,ControlTo.Handle);
 end;
 
 destructor TJclRegion.Destroy;
@@ -5639,6 +5685,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.23  2005/04/03 14:53:11  outchy
+// Donation of Dejoy, modifications of prototypes
+//
 // Revision 1.22  2005/03/14 08:46:54  rrossmair
 // - check-in in preparation for release 1.95
 //
