@@ -23,13 +23,24 @@
 { can also be detected.                                                                            }
 {                                                                                                  }
 { Unit owner:    Raymond Alexander                                                                 }
-{ Last modified: July 10, 2002                                                                     }
+{ Last modified: September 5, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Notes:                                                                                           }
 {                                                                                                  }
-{ 5/21/2002                                                                                        }
+{ 9/30/2002 (R.A.)                                                                                 }
+{                                                                                                  }
+{   - Added new derived TEDIElementSpec & TEDISegmentSpec classes for                              }
+{       EDI Specification Manager Demo (work in progress)                                          }
+{       EDI Data Tree Demo (not yet released)                                                      }
+{                                                                                                  }
+{   - Added TEDIDataUsageType to TEDITransactionSet class.  This variable is used to control the   }
+{     behavior of the TEDITransactionSet depending if is used to store data or specifications.     }
+{                                                                                                  }
+{   - TEDIFile now uses TFileStream File I/O instead of BlockRead/BlockWrite File I/O              }
+{                                                                                                  }
+{ 5/21/2002 (R.A.)                                                                                 }
 {                                                                                                  }
 {   - Re-Tested with ANSI X12 Documents                                                            }
 {                                                                                                  }
@@ -41,9 +52,9 @@
 {                                                                                                  }
 {   - Currently working on some help file information and a demo                                   }
 {                                                                                                  }
-{ 5/14/2002                                                                                        }
+{ 5/14/2002 (R.A.)                                                                                 }
 {                                                                                                  }
-{   - Tested with ANSI X12 Documents (R.A 5/14/2002)                                               }
+{   - Tested with ANSI X12 Documents                                                               }
 {                                                                                                  }
 { Additional Notes:                                                                                }
 {                                                                                                  }
@@ -77,7 +88,7 @@ type
   EJclEDIError = EJclError;
   TEDIDataObjectType = (ediUnknown, ediElement, ediSegment, ediTransactionSet, ediFunctionalGroup,
     ediInterchangeControl, ediFile, ediCustom);
-
+  TEDIDataUsageType = (ediUseAsData, ediUseAsSpec);
   //TODO:  Work in progress
   //TEDIStandardType = (stCustom, stANSIX12, stEDIFACT);
 
@@ -152,6 +163,29 @@ type
   TEDIElement = class(TEDIDataObject)
   public
     constructor Create(Parent: TEDIDataObject); reintroduce;
+    function Assemble: string; virtual;
+    procedure Dissassemble; virtual;
+  end;
+
+  TEDIElementSpec = class(TEDIElement)
+  private
+    FId: string;
+    FPosition: Integer;
+    FDescription: string;
+    FRequirementDesignator: string;
+    FType: string;
+    FMinimumLength: Integer;
+    FMaximumLength: Integer;
+  public
+    function Assemble: string; override;
+    procedure Dissassemble; override;
+    property Id: string read FId write FId;
+    property Position: Integer read FPosition write FPosition;
+    property Description: string read FDescription write FDescription;
+    property RequirementDesignator: string read FRequirementDesignator write FRequirementDesignator;
+    property ElementType: string read FType write FType;
+    property MinimumLength: Integer read FMinimumLength write FMinimumLength;
+    property MaximumLength: Integer read FMaximumLength write FMaximumLength;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -173,28 +207,62 @@ type
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
     destructor Destroy; override;
     //
-    function AddElement: Integer;
+    function AddElement: Integer; virtual;
     function AppendElement(Element: TEDIElement): Integer;
-    function InsertElement(InsertIndex: Integer): Integer; overload;
+    function InsertElement(InsertIndex: Integer): Integer; overload; virtual;
     function InsertElement(InsertIndex: Integer; Element: TEDIElement): Integer; overload;
     procedure DeleteElement(Index: Integer);
     //
-    function AddElements(Count: Integer): Integer;
+    function AddElements(Count: Integer): Integer; virtual;
     function AppendElements(ElementArray: TEDIElementArray): Integer;
-    function InsertElements(InsertIndex, Count: Integer): Integer; overload;
+    function InsertElements(InsertIndex, Count: Integer): Integer; overload; virtual;
     function InsertElements(InsertIndex: Integer;
       ElementArray: TEDIElementArray): Integer; overload;
     procedure DeleteElements; overload;
     procedure DeleteElements(Index, Count: Integer); overload;
     //
-    function Assemble: string;
-    procedure Dissassemble;
+    function Assemble: string; virtual;
+    procedure Dissassemble; virtual;
     property SegmentID: string read FSegmentID write FSegmentID;
     property Elements: TEDIElementArray read FElements write FElements;
     property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
   end;
 
+  TEDISegmentSpec = class(TEDISegment)
+  private
+    FPosition: Integer;
+    FDescription: string;
+    FSection: string;
+    FRequirementDesignator: string;
+    FMaximumUsage: Integer;
+    FOwnerLoopId: string;
+    FParentLoopId: string;
+  public
+    function AddElement: Integer; override;
+    function InsertElement(InsertIndex: Integer): Integer; override;
+    function AddElements(Count: Integer): Integer; override;
+    function InsertElements(InsertIndex, Count: Integer): Integer; override;
+
+    function Assemble: string; override;
+    procedure Dissassemble; override;
+    property Position: Integer read FPosition write FPosition;
+    property Description: string read FDescription write FDescription;
+    property Section: string read FSection write FSection;
+    property RequirementDesignator: string read FRequirementDesignator write FRequirementDesignator;
+    property MaximumUsage: Integer read FMaximumUsage write FMaximumUsage;
+    property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
+    property ParentLoopId: string read FParentLoopId write FParentLoopId;
+  end;
+
   TEDIInterchangeControlSegment = class(TEDISegment)
+  public
+    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
+    function InternalAssignDelimiters: TEDIDelimiters; override;
+  end;
+
+  TEDIInterchangeControlSegmentSpec = class(TEDISegmentSpec)
+  public
     constructor Create(Parent: TEDIDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
     function InternalAssignDelimiters: TEDIDelimiters; override;
@@ -207,21 +275,26 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
-  TEDITransactionSetSegment = class(TEDISegment)
+  TEDIFunctionalGroupSegmentSpec = class(TEDISegmentSpec)
+  public
     constructor Create(Parent: TEDIDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
-//  TEDITransactionSetSegmentST = class(TEDITransactionSetSegment)
-//    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-//    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
-//  end;
-//
-//  TEDITransactionSetSegmentSE = class(TEDITransactionSetSegment)
-//    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-//    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
-//  end;
+  TEDITransactionSetSegment = class(TEDISegment)
+  public
+    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
+    function InternalAssignDelimiters: TEDIDelimiters; override;
+  end;
+
+  TEDITransactionSetSegmentSpec = class(TEDISegmentSpec)
+  public
+    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); overload;
+    function InternalAssignDelimiters: TEDIDelimiters; override;
+  end;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Transaction Set
@@ -318,11 +391,14 @@ type
     FISASegment: TEDIInterchangeControlSegment;
     FFunctionalGroups: TEDIFunctionalGroupArray; //Dissassembled raw data
     FIEASegment: TEDIInterchangeControlSegment;
+    FEDIDUT: TEDIDataUsageType;    
     function GetFunctionalGroup(Index: Integer): TEDIFunctionalGroup;
     procedure SetFunctionalGroup(Index: Integer; FunctionalGroup: TEDIFunctionalGroup);
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer); overload;
+    constructor Create(Parent: TEDIDataObject; EDIDUT: TEDIDataUsageType = ediUseAsData);
+      reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer;
+      EDIDUT: TEDIDataUsageType = ediUseAsData); overload;
     destructor Destroy; override;
 
     function AddFunctionalGroup: Integer;
@@ -479,8 +555,6 @@ begin
   if Assigned(Parent) then
   begin
     FParent := Parent;
-    //TODO:  option to pre-assign delimiter?
-    //FDelimiters := FParent.Delimiters;
   end
   else
   begin
@@ -495,7 +569,10 @@ destructor TEDIDataObject.Destroy;
 begin
   if not Assigned(FParent) then
   begin
-    FDelimiters.Free;
+    if Assigned(FDelimiters) then
+    begin
+      FDelimiters.Free;
+    end;
   end;
   FDelimiters := nil;
   inherited Destroy;
@@ -531,6 +608,16 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediElement;
+end;
+
+function TEDIElement.Assemble: string;
+begin
+  Result := FData;
+end;
+
+procedure TEDIElement.Dissassemble;
+begin
+  //Override in decendant class
 end;
 
 //==================================================================================================
@@ -617,7 +704,7 @@ begin
     begin
       if Assigned(FElements[I]) then
       begin
-        FData := FData + FDelimiters.ED + FElements[I].Data;
+        FData := FData + FDelimiters.ED + FElements[I].Assemble;
       end
       else
       begin
@@ -782,6 +869,7 @@ begin
     begin
       FElements[I].Data := Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
         (SearchResult - StartPos));
+      FElements[I].Dissassemble;
     end;
     StartPos := SearchResult + 1;
     SearchResult := StrSearch(FDelimiters.ED, FData, StartPos);
@@ -795,6 +883,7 @@ begin
       I := AddElement;
       FElements[I].Data := Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
         (SearchResult - StartPos));
+      FElements[I].Dissassemble;
     end;
   end;
   FData := '';
@@ -1008,7 +1097,28 @@ end;
 function TEDITransactionSet.AddSegment: Integer;
 begin
   SetLength(FSegments, Length(FSegments) + 1);
-  FSegments[High(FSegments)] := TEDISegment.Create(Self);
+  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
+    if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+    begin
+      if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+      begin
+        FSegments[High(FSegments)] := TEDISegmentSpec.Create(Self);
+      end
+      else
+      begin
+        FSegments[High(FSegments)] := TEDISegment.Create(Self);
+      end;
+    end
+    else
+    begin
+      FSegments[High(FSegments)] := TEDISegment.Create(Self);
+    end;
+  end
+  else
+  begin
+    FSegments[High(FSegments)] := TEDISegment.Create(Self);
+  end;
   Result := High(FSegments);
 end;
 
@@ -1025,7 +1135,28 @@ begin
   //Add
   for J := I to High(FSegments) do
   begin
-    FSegments[J]:= TEDISegment.Create(Self);
+    if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+    begin
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+      begin
+        if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+        begin
+          FSegments[J]:= TEDISegmentSpec.Create(Self);
+        end
+        else
+        begin
+          FSegments[J]:= TEDISegment.Create(Self);
+        end;
+      end
+      else
+      begin
+        FSegments[J]:= TEDISegment.Create(Self);
+      end;
+    end
+    else
+    begin
+      FSegments[J]:= TEDISegment.Create(Self);
+    end;
   end;
 end;
 
@@ -1071,7 +1202,7 @@ begin
   if not Assigned(FDelimiters) then //Attempt to assign the delimiters
   begin
     FDelimiters := InternalAssignDelimiters;
-    if Assigned(FDelimiters) then
+    if not Assigned(FDelimiters) then
     begin
       raise EJclEDIError.CreateResRec(@EDIError063);
     end;
@@ -1079,7 +1210,6 @@ begin
 
   FData := FSTSegment.Assemble;
   FSTSegment.Data := '';
-  FSTSegment.DeleteElements;
 
   if Length(FSegments) > 0 then
   begin
@@ -1091,11 +1221,11 @@ begin
       end;
     end;
   end;
+
   DeleteSegments;
 
   FData := FData + FSESegment.Assemble;
   FSESegment.Data := '';
-  FSESegment.DeleteElements;
 
   FLength := Length(FData);
   Result := FData;
@@ -1114,8 +1244,32 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediTransactionSet;
-  FSTSegment := TEDITransactionSetSegment.Create(Self);
-  FSESegment := TEDITransactionSetSegment.Create(Self);
+  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
+    if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+    begin
+      if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+      begin
+        FSTSegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSpec.Create(Self));
+        FSESegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSpec.Create(Self));
+      end
+      else
+      begin
+        FSTSegment := TEDITransactionSetSegment.Create(Self);
+        FSESegment := TEDITransactionSetSegment.Create(Self);
+      end;
+    end
+    else
+    begin
+      FSTSegment := TEDITransactionSetSegment.Create(Self);
+      FSESegment := TEDITransactionSetSegment.Create(Self);
+    end;
+  end
+  else
+  begin
+    FSTSegment := TEDITransactionSetSegment.Create(Self);
+    FSESegment := TEDITransactionSetSegment.Create(Self);
+  end;
   SetLength(FSegments, 0);
   AddSegments(SegmentCount);
 end;
@@ -1133,8 +1287,32 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediTransactionSet;
-  FSTSegment := TEDITransactionSetSegment.Create(Self);
-  FSESegment := TEDITransactionSetSegment.Create(Self);
+  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
+    if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+    begin
+      if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+      begin
+        FSTSegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSpec.Create(Self));
+        FSESegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSpec.Create(Self));
+      end
+      else
+      begin
+        FSTSegment := TEDITransactionSetSegment.Create(Self);
+        FSESegment := TEDITransactionSetSegment.Create(Self);
+      end;
+    end
+    else
+    begin
+      FSTSegment := TEDITransactionSetSegment.Create(Self);
+      FSESegment := TEDITransactionSetSegment.Create(Self);
+    end;
+  end
+  else
+  begin
+    FSTSegment := TEDITransactionSetSegment.Create(Self);
+    FSESegment := TEDITransactionSetSegment.Create(Self);
+  end;
   SetLength(FSegments, 0);
 end;
 
@@ -1326,7 +1504,28 @@ begin
     end;
     //Insert
     FSegments[InsertIndex] := nil;
-    FSegments[InsertIndex] := TEDISegment.Create(Self);
+    if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+    begin
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+      begin
+        if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+        begin
+          FSegments[InsertIndex] := TEDISegmentSpec.Create(Self);
+        end
+        else
+        begin
+          FSegments[InsertIndex] := TEDISegment.Create(Self);
+        end;
+      end
+      else
+      begin
+        FSegments[InsertIndex] := TEDISegment.Create(Self);
+      end;
+    end
+    else
+    begin
+      FSegments[InsertIndex] := TEDISegment.Create(Self);
+    end;
   end
   else
   begin
@@ -1383,7 +1582,28 @@ begin
     //Insert
     for I := InsertIndex to (InsertIndex + Count) - 1 do
     begin
-      FSegments[I] := TEDISegment.Create(Self);
+      if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+      begin
+        if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+        begin
+          if TEDIInterchangeControl(Parent.Parent).FEDIDUT = ediUseAsSpec then
+          begin
+            FSegments[I] := TEDISegmentSpec.Create(Self);
+          end
+          else
+          begin
+            FSegments[I] := TEDISegment.Create(Self);
+          end;
+        end
+        else
+        begin
+          FSegments[I] := TEDISegment.Create(Self);
+        end;
+      end
+      else
+      begin
+        FSegments[I] := TEDISegment.Create(Self);
+      end;
     end;
   end
   else
@@ -1546,14 +1766,13 @@ begin
   if not Assigned(FDelimiters) then //Attempt to assign the delimiters
   begin
     FDelimiters := InternalAssignDelimiters;
-    if Assigned(FDelimiters) then
+    if not Assigned(FDelimiters) then
     begin
       raise EJclEDIError.CreateResRec(@EDIError052);
     end;
   end;
   FData := FGSSegment.Assemble;
   FGSSegment.Data := '';
-  FGSSegment.DeleteElements;
 
   if (Length(FTransactionSets) > 0) then
   begin
@@ -1565,11 +1784,11 @@ begin
       end;
     end;
   end;
+
   DeleteTransactionSets;
 
   FData := FData + FGESegment.Assemble;
   FGESegment.Data := '';
-  FGESegment.DeleteElements;
 
   FLength := Length(FData);
   Result := FData;
@@ -1588,8 +1807,24 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediFunctionalGroup;
-  FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
-  FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
+    if TEDIInterchangeControl(Parent).FEDIDUT = ediUseAsSpec then
+    begin
+      FGSSegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentSpec.Create(Self));
+      FGESegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentSpec.Create(Self));
+    end
+    else
+    begin
+      FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
+      FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+    end;
+  end
+  else
+  begin
+    FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
+    FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+  end;
   SetLength(FTransactionSets, 0);
 end;
 
@@ -1606,8 +1841,24 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediFunctionalGroup;
-  FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
-  FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
+    if TEDIInterchangeControl(Parent).FEDIDUT = ediUseAsSpec then
+    begin
+      FGSSegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentSpec.Create(Self));
+      FGESegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentSpec.Create(Self));
+    end
+    else
+    begin
+      FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
+      FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+    end;
+  end
+  else
+  begin
+    FGSSegment := TEDIFunctionalGroupSegment.Create(Self);
+    FGESegment := TEDIFunctionalGroupSegment.Create(Self);
+  end;
   SetLength(FTransactionSets, 0);
   AddTransactionSets(TransactionSetCount);
 end;
@@ -2086,10 +2337,11 @@ begin
       end;
     end;
   end;
+
   DeleteFunctionalGroups;
 
   FData := FData + FIEASegment.Assemble;
-  FISASegment.Data := '';
+  FIEASegment.Data := '';
   FIEASegment.DeleteElements;
 
   FLength := Length(FData);
@@ -2098,7 +2350,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject);
+constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject;
+  EDIDUT: TEDIDataUsageType = ediUseAsData);
 begin
   if Assigned(Parent) and (Parent is TEDIFile) then
   begin
@@ -2109,14 +2362,24 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediInterchangeControl;
-  FISASegment := TEDIInterchangeControlSegment.Create(Self);
-  FIEASegment := TEDIInterchangeControlSegment.Create(Self);
+  FEDIDUT := EDIDUT;
+  if FEDIDUT = ediUseAsSpec then
+  begin
+    FISASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentSpec.Create(Self));
+    FIEASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentSpec.Create(Self));
+  end
+  else
+  begin
+    FISASegment := TEDIInterchangeControlSegment.Create(Self);
+    FIEASegment := TEDIInterchangeControlSegment.Create(Self);
+  end;
   SetLength(FFunctionalGroups, 0);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer);
+constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer;
+  EDIDUT: TEDIDataUsageType = ediUseAsData);
 begin
   if Assigned(Parent) and (Parent is TEDIFile) then
   begin
@@ -2127,9 +2390,18 @@ begin
     inherited Create(nil);
   end;
   FEDIDOT := ediInterchangeControl;
+  FEDIDUT := EDIDUT;
   SetLength(FFunctionalGroups, 0);
-  FISASegment := TEDIInterchangeControlSegment.Create(Self);
-  FIEASegment := TEDIInterchangeControlSegment.Create(Self);
+  if FEDIDUT = ediUseAsSpec then
+  begin
+    FISASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentSpec.Create(Self));
+    FIEASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentSpec.Create(Self));
+  end
+  else
+  begin
+    FISASegment := TEDIInterchangeControlSegment.Create(Self);
+    FIEASegment := TEDIInterchangeControlSegment.Create(Self);
+  end;
   AddFunctionalGroups(FunctionalGroupCount);
 end;
 
@@ -2221,6 +2493,7 @@ begin
   if Assigned(FDelimiters) then
   begin
     FDelimiters.Free;
+    FDelimiters := nil;
   end;
   inherited Destroy;
 end;
@@ -2941,22 +3214,33 @@ end;
 
 procedure TEDIFile.InternalLoadFromFile;
 var
-  EDIFile: file;
-  Buffer: PChar;
+//Old code
+//  EDIFile: file;
+//  Buffer: PChar;
+  EDIFileStream: TFileStream;
 begin
   FData := '';
   if FFileName <> '' then
   begin
-    AssignFile(EDIFile, FFileName);
+    EDIFileStream := TFileStream.Create(FFileName, fmOpenReadWrite or fmShareDenyNone);
     try
-      Reset(EDIFile, 1);
-      Buffer := StrAlloc(FileSize(EDIFile));
-      BlockRead(EDIFile, Buffer^, FileSize(EDIFile));
-      FData := Buffer;
-      FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
+      SetLength(FData, EDIFileStream.Size);
+      EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
     finally
-      CloseFile(EDIFile);
+      EDIFileStream.Free;
     end;
+    FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
+//Old code      
+//    AssignFile(EDIFile, FFileName);
+//    try
+//      Reset(EDIFile, 1);
+//      Buffer := StrAlloc(FileSize(EDIFile));
+//      BlockRead(EDIFile, Buffer^, FileSize(EDIFile));
+//      FData := Buffer;
+//      FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
+//    finally
+//      CloseFile(EDIFile);
+//    end;
   end
   else
   begin
@@ -2983,18 +3267,27 @@ end;
 
 procedure TEDIFile.SaveAsToFile(const FileName: string);
 var
-  EDIFile: file;
+//Old code
+//  EDIFile: file;
+  EDIFileStream: TFileStream;
 begin
   FFileName := FileName;
   if FFileName <> '' then
   begin
-    AssignFile(EDIFile, FileName);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
-      ReWrite(EDIFile, 1);
-      BlockWrite(EDIFile, FData, Length(FData));
+      EDIFileStream.Write(Pointer(FData)^, Length(FData));
     finally
-      CloseFile(EDIFile);
+      EDIFileStream.Free;
     end;
+//Old code
+//    AssignFile(EDIFile, FileName);
+//    try
+//      ReWrite(EDIFile, 1);
+//      BlockWrite(EDIFile, FData, Length(FData));
+//    finally
+//      CloseFile(EDIFile);
+//    end;
   end
   else
   begin
@@ -3006,17 +3299,26 @@ end;
 
 procedure TEDIFile.SaveToFile;
 var
-  EDIFile: file;
+//Old code
+//  EDIFile: file;
+  EDIFileStream: TFileStream;
 begin
   if FFileName <> '' then
   begin
-    AssignFile(EDIFile, FFileName);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
-      ReWrite(EDIFile, 1);
-      BlockWrite(EDIFile, FData, Length(FData));
+      EDIFileStream.Write(Pointer(FData)^, Length(FData));
     finally
-      CloseFile(EDIFile);
+      EDIFileStream.Free;
     end;
+//Old code
+//    AssignFile(EDIFile, FFileName);
+//    try
+//      ReWrite(EDIFile, 1);
+//      BlockWrite(EDIFile, FData, Length(FData));
+//    finally
+//      CloseFile(EDIFile);
+//    end;
   end
   else
   begin
@@ -3055,7 +3357,9 @@ constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject);
 begin
   inherited;
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
     FParent := Parent;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3064,7 +3368,9 @@ constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject; Element
 begin
   inherited;
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
     FParent := Parent;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3094,7 +3400,9 @@ constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject);
 begin
   inherited;
   if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
     FParent := Parent;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3103,7 +3411,9 @@ constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject; ElementCou
 begin
   inherited;
   if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
     FParent := Parent;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3142,7 +3452,9 @@ constructor TEDITransactionSetSegment.Create(Parent: TEDIDataObject);
 begin
   inherited;
   if Assigned(Parent) and (Parent is TEDITransactionSet) then
+  begin
     FParent := Parent;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3163,32 +3475,302 @@ begin
   Result := inherited InternalAssignDelimiters;
 end;
 
-//{ TEDITransactionSetSegmentST }
-//
-//constructor TEDITransactionSetSegmentST.Create(Parent: TEDIDataObject);
-//begin
-//  inherited;
-//  FSegmentID := TSHSegmentId;
-//end;
-//
-//constructor TEDITransactionSetSegmentST.Create(Parent: TEDIDataObject; ElementCount: Integer);
-//begin
-//  inherited;
-//  FSegmentID := TSHSegmentId;
-//end;
-//
-//{ TEDITransactionSetSegmentSE }
-//
-//constructor TEDITransactionSetSegmentSE.Create(Parent: TEDIDataObject);
-//begin
-//  inherited;
-//  FSegmentID := TSTSegmentId;
-//end;
-//
-//constructor TEDITransactionSetSegmentSE.Create(Parent: TEDIDataObject; ElementCount: Integer);
-//begin
-//  inherited;
-//  FSegmentID := TSTSegmentId;
-//end;
+//==================================================================================================
+// TEDIElementSpec
+//==================================================================================================
+
+function TEDIElementSpec.Assemble: string;
+var
+  Data: TStrings;
+begin
+  Data := TStringList.Create;
+  if FId <> 'Reserved' then
+  begin
+    Data.Values['Id'] := FId;
+    Data.Values['Position'] := IntToStr(FPosition);
+    Data.Values['Description'] := FDescription;
+    Data.Values['RequirementDesignator'] := FRequirementDesignator;
+    Data.Values['Type'] := FType;
+    Data.Values['MinimumLength'] := IntToStr(FMinimumLength);
+    Data.Values['MaximumLength'] := IntToStr(FMaximumLength);
+    FData := Data.Text;    
+  end;
+  Result := FData;
+  Data.Free;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIElementSpec.Dissassemble;
+var
+  Data: TStrings;
+begin
+  Data := TStringList.Create;
+  Data.Text := FData;
+  if Data.Values['Id'] <> 'Reserved' then
+  begin
+    FId := Data.Values['Id'];
+    FPosition := StrToInt(Data.Values['Position']);
+    FDescription := Data.Values['Description'];
+    FRequirementDesignator := Data.Values['RequirementDesignator'];
+    FType := Data.Values['Type'];
+    FMinimumLength := StrToInt(Data.Values['MinimumLength']);
+    FMaximumLength := StrToInt(Data.Values['MaximumLength']);
+  end;
+  Data.Free;
+end;
+
+//==================================================================================================
+// TEDISegmentSpec
+//==================================================================================================
+
+function TEDISegmentSpec.AddElement: Integer;
+begin
+  SetLength(FElements, Length(FElements) + 1);
+  FElements[High(FElements)] := TEDIElementSpec.Create(Self);
+  Result := High(FElements); //Return position of element
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegmentSpec.AddElements(Count: Integer): Integer;
+var
+  I, J: Integer;
+begin
+  I := Length(FElements);
+  Result := I; //Return position of 1st element
+  //Resize
+  SetLength(FElements, Length(FElements) + Count);
+  //Add
+  for J := I to High(FElements) do
+  begin
+    FElements[J]:= TEDIElementSpec.Create(Self);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegmentSpec.Assemble: string;
+var
+  ReservedData: TStrings;
+begin
+  //Insert Segment Spec as Element[0]
+  InsertElement(0);
+  TEDIElementSpec(FElements[0]).Id := 'Reserved';
+  ReservedData := TStringList.Create;
+  ReservedData.Values['Id'] := 'Reserved';
+  ReservedData.Values['Position'] := IntToStr(FPosition);
+  ReservedData.Values['Description'] := FDescription;
+  ReservedData.Values['Section'] := FSection;
+  ReservedData.Values['RequirementDesignator'] := FRequirementDesignator;
+  ReservedData.Values['MaximumUsage'] := IntToStr(FMaximumUsage);
+  FElements[0].Data := ReservedData.Text;
+  ReservedData.Free;
+  //
+  Result := inherited Assemble;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDISegmentSpec.Dissassemble;
+var
+  ReservedData: TStrings;
+begin
+  inherited Dissassemble;
+  //Element[0] is always the Segment Spec
+  ReservedData := TStringList.Create;
+  ReservedData.Text := FElements[0].Data;
+  //FSegmentId already set by the inherited Dissassemble
+  FPosition := StrToInt(ReservedData.Values['Position']);
+  FDescription := ReservedData.Values['Description'];
+  FSection := ReservedData.Values['Section'];
+  FRequirementDesignator := ReservedData.Values['RequirementDesignator'];
+  FMaximumUsage := StrToInt(ReservedData.Values['MaximumUsage']);
+  ReservedData.Free;
+  DeleteElement(0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegmentSpec.InsertElement(InsertIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := InsertIndex;
+  if (Length(FElements) > 0) and (InsertIndex >= Low(FElements)) and
+    (InsertIndex <= High(FElements)) then
+  begin
+    //Resize
+    SetLength(FElements, Length(FElements) + 1);
+    //Shift
+    for I := High(FElements) downto InsertIndex + 1 do
+    begin
+      FElements[I] := FElements[I-1];
+    end;
+    //Insert
+    FElements[InsertIndex] := nil;
+    FElements[InsertIndex] := TEDIElementSpec.Create(Self);
+  end
+  else
+  begin
+    Result := AddElement;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegmentSpec.InsertElements(InsertIndex, Count: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := InsertIndex;
+  if (Length(FElements) > 0) and (InsertIndex >= Low(FElements)) and
+    (InsertIndex <= High(FElements)) then
+  begin
+    //Resize
+    SetLength(FElements, Length(FElements) + Count);
+    //Shift
+    for I := High(FElements) downto InsertIndex + Count do
+    begin
+      FElements[I] := FElements[I-Count];
+      FElements[I-Count] := nil;
+    end;
+    //Insert
+    for I := InsertIndex to (InsertIndex + Count) - 1 do
+    begin
+      FElements[I] := TEDIElementSpec.Create(Self);
+    end;
+  end
+  else
+  begin
+    Result := AddElements(Count);
+  end;
+end;
+
+//==================================================================================================
+// TEDIInterchangeControlSegmentSpec
+//==================================================================================================
+
+constructor TEDIInterchangeControlSegmentSpec.Create(Parent: TEDIDataObject);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIInterchangeControlSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIInterchangeControlSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
+begin
+  Result := nil;
+  //Attempt to assign the delimiters
+  if not Assigned(FDelimiters) then
+  begin
+    //Get the delimiters from the interchange control
+    if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
+    begin
+      if Assigned(Parent.Delimiters) then
+      begin
+        Result := Parent.Delimiters;
+      end;
+    end;
+  end;
+end;
+
+//==================================================================================================
+// TEDIFunctionalGroupSegmentSpec
+//==================================================================================================
+
+constructor TEDIFunctionalGroupSegmentSpec.Create(Parent: TEDIDataObject);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIFunctionalGroupSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIFunctionalGroupSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
+begin
+  Result := nil;
+  //Attempt to assign the delimiters
+  if not Assigned(FDelimiters) then
+  begin
+    //Get the delimiters from the functional group
+    if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
+    begin
+      if Assigned(Parent.Delimiters) then
+      begin
+        Result := Parent.Delimiters;
+        Exit;
+      end;
+      //Get the delimiters from the interchange control
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
+      begin
+        if Assigned(Parent.Parent.Delimiters) then
+        begin
+          Result := Parent.Parent.Delimiters;
+        end;
+      end;
+    end;
+  end;
+end;
+
+//==================================================================================================
+// TEDITransactionSetSegmentSpec
+//==================================================================================================
+
+constructor TEDITransactionSetSegmentSpec.Create(Parent: TEDIDataObject);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDITransactionSet) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDITransactionSetSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
+begin
+  inherited;
+  if Assigned(Parent) and (Parent is TEDITransactionSet) then
+  begin
+    FParent := Parent;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDITransactionSetSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
+begin
+  Result := inherited InternalAssignDelimiters;
+end;
 
 end.
