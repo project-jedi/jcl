@@ -45,11 +45,14 @@ Known Issues:
       'This unit is only supported on Windows!'
     {$ENDIF XPLATFORM_RTL}
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
-{$ENDIF MSWINDOWS}
+{$ENDIF ~MSWINDOWS}
 
 // History:
 
 // $Log$
+// Revision 1.4  2004/07/30 07:16:47  marquardt
+// added a tilde
+//
 // Revision 1.3  2004/07/29 07:58:21  marquardt
 // inc files updated
 //
