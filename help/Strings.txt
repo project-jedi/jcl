@@ -2442,7 +2442,8 @@ a double NULL character. For example, if Source contains the items 'Project',
 [Parameters]
 Count=2
 1=Dest:PChar=PChar receives a pointer to the resulting string.
-2=Source:TStrings=List of strings to pack into a single string.
+2=Source:TStrings=List of strings to pack into a single string. This list may not contain
+empty items (items with the value '') or an EJclStringError is raised.
 [Result]
 On success the function returns the value of Dest. If the function fails to allocate
 memory for the result string it (implicitly) raises an EOutOfMemory exception. The
