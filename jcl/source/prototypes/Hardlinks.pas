@@ -43,7 +43,7 @@
  ***  This implementation should be fully compatible with the Windows 2000  ***
  ***  implementation (including last error and so on).                      ***
  ***                                                                        ***
- ***  Version [1.13]                                {Last mod 2005-03-03}   ***
+ ***  Version [1.13a]                               {Last mod 2005-03-06}   ***
  ***                                                                        ***
  ******************************************************************************
  ******************************************************************************
@@ -384,7 +384,7 @@ function RtlFreeHeap(HeapHandle: Pointer; Flags: ULONG;
 
 function RtlDosPathNameToNtPathName_U(DosName: PWideChar;
   var NtName: UNICODE_STRING; DosFilePath: PPWideChar;
-  var NtFilePath: UNICODE_STRING): Boolean; stdcall; external szNtDll;
+  NtFilePath: PUNICODE_STRING): Boolean; stdcall; external szNtDll;
 
 function RtlInitUnicodeString(var DestinationString: UNICODE_STRING;
   const SourceString: PWideChar): NTSTATUS; stdcall; external szNtDll;
@@ -425,7 +425,7 @@ type
 
   TRtlDosPathNameToNtPathName_U = function(DosName: PWideChar;
     var NtName: UNICODE_STRING; DosFilePath: PPWideChar;
-    var NtFilePath: UNICODE_STRING): Boolean; stdcall;
+    NtFilePath: PUNICODE_STRING): Boolean; stdcall;
 
   TRtlInitUnicodeString = function(var DestinationString: UNICODE_STRING;
     const SourceString: PWideChar): NTSTATUS; stdcall;
@@ -460,6 +460,12 @@ asm
   MOV    EAX, FS:$30    // FS points to TEB/TIB which has a pointer to the PEB
 //MOV    EAX, [EAX]._PEB.ProcessHeap
   MOV    EAX, [EAX+$18] // Get the process heap's handle
+(*
+An alternative way to achieve exactly the same (at least in usermode) as above:
+  MOV    EAX, FS:$18
+  MOV    EAX, [EAX+$30]
+  MOV    EAX, [EAX+$18]
+*)
 end;
 
 (******************************************************************************
@@ -560,7 +566,7 @@ const
 // ShareAccess flags
   dwShareAccessHL = FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE;
 var
-  usNtName_LinkName, usNtName_LinkTarget, usNtFilePath: UNICODE_STRING;
+  usNtName_LinkName, usNtName_LinkTarget: UNICODE_STRING;
   usCheckDrive, usSymLinkDrive, usLanMan: UNICODE_STRING;
   wcsNtName_LinkTarget, wcsFilePart_LinkTarget: PWideChar;
   oaMisc: OBJECT_ATTRIBUTES;
@@ -595,7 +601,7 @@ begin
     Exit;
   end;
   // Convert the link target into a UNICODE_STRING
-  if not RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, usNtFilePath) then
+  if not RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, nil) then
   begin
     SetLastError(ERROR_PATH_NOT_FOUND);
     Exit;
@@ -674,7 +680,7 @@ begin
                         if Status = STATUS_SUCCESS then
                           try
                             // Wow ... target opened ... let's try to
-                            if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, usNtFilePath) then
+                            if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, nil) then
                               try
                                 // Initialise the length members
                                 RtlInitUnicodeString(usNtName_LinkName, usNtName_LinkName.Buffer);
@@ -884,6 +890,9 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.11  2005/03/06 11:03:29  assarbad
+// - Changed prototype of RtlDosPathNameToNtPathName_U()
+//
 // Revision 1.10  2005/03/03 13:47:04  assarbad
 // - Dividing lines now enclosed by a preprocessor statement to still show in the author's version.
 // - Removed PEB/TEB/TIB declarations and renamed one function (see author's version comments for details v1.13)
@@ -933,6 +942,10 @@ initialization
 {$ENDIF PROTOTYPE}
 
 {
+   Version 1.13a - 2005-03-06
+   + Minor correction in the prototype of RtlDosPathNameToNtPathName_U()
+     to easier pass NIL as the 4th parameter.
+     
    Version 1.13 - 2005-03-03
    + NtMyGetProcessHeap() renamed to NtpGetProcessHeap()
    + Removed declarations for TEB/PEB/TIB and supplement. As they depend
