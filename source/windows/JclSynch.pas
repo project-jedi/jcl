@@ -202,7 +202,7 @@ type
     SpinCount: Integer;      // number of times to try and enter the optex before
                              // waiting on kernel event, 0 on single processor
     LockCount: Integer;      // count of enter attempts
-    ThreadId: Integer;       // id of thread that owns the optex, 0 if free
+    ThreadId: Longword;      // id of thread that owns the optex, 0 if free
     RecursionCount: Integer; // number of times the optex is owned, 0 if free
   end;
 
@@ -237,7 +237,7 @@ type
   TMrewPreferred = (mpReaders, mpWriters, mpEqual);
 
   TMrewThreadInfo = record
-    ThreadId: Integer;       // client-id of thread
+    ThreadId: Longword;      // client-id of thread
     RecursionCount: Integer; // number of times a thread accessed the mrew
     Reader: Boolean;         // true if reader, false if writer
   end;
@@ -253,9 +253,9 @@ type
     FThreads: TMrewThreadInfoArray;
     FWaitingReaders: Integer;
     FWaitingWriters: Integer;
-    procedure AddToThreadList(ThreadId: Integer; Reader: Boolean);
+    procedure AddToThreadList(ThreadId: Longword; Reader: Boolean);
     procedure RemoveFromThreadList(Index: Integer);
-    function FindThread(ThreadId: Integer): Integer;
+    function FindThread(ThreadId: Longword): Integer;
     procedure ReleaseWaiters(WasReading: Boolean);
   protected
     procedure Release;
@@ -928,7 +928,7 @@ end;
 
 procedure TJclOptex.Enter;
 var
-  ThreadId: Integer;
+  ThreadId: Longword;
 begin
   if TryEnter then
     Exit;
@@ -1001,7 +1001,7 @@ end;
 
 function TJclOptex.TryEnter: Boolean;
 var
-  ThreadId: Integer;
+  ThreadId: Longword;
   ThreadOwnsOptex: Boolean;
   SpinCount: Integer;
 begin
@@ -1036,7 +1036,7 @@ end;
 // TJclMultiReadExclusiveWrite
 //==============================================================================
 
-procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Integer;
+procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Longword;
   Reader: Boolean);
 var
   L: Integer;
@@ -1053,7 +1053,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.BeginRead;
 var
-  ThreadId: Integer;
+  ThreadId: Longword;
   Index: Integer;
   MustWait: Boolean;
 begin
@@ -1102,7 +1102,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.BeginWrite;
 var
-  ThreadId: Integer;
+  ThreadId: Longword;
   Index: Integer;
   MustWait: Boolean;
 begin
@@ -1199,7 +1199,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMultiReadExclusiveWrite.FindThread(ThreadId: Integer): Integer;
+function TJclMultiReadExclusiveWrite.FindThread(ThreadId: Longword): Integer;
 var
   I: Integer;
 begin
@@ -1217,7 +1217,7 @@ end;
 
 procedure TJclMultiReadExclusiveWrite.Release;
 var
-  ThreadId: Integer;
+  ThreadId: Longword;
   Index: Integer;
   WasReading: Boolean;
 begin
