@@ -3,14 +3,14 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplCJclK3.so.1.91.1"/>
+    <PROJECT value="bplCJclK3.so.1.93.1"/>
     <OBJFILES value="../../lib/k3/obj/Jcl8087.o 
       ../../lib/k3/obj/JclBase.o 
       ../../lib/k3/obj/JclComplex.o 
-      ../../lib/k3/obj/JclCounter.o 
+      ../../lib/k3/obj/JclCounter.o
       ../../lib/k3/obj/JclDateTime.o 
       ../../lib/k3/obj/JclEDI_ANSIX12.o 
-      ../../lib/k3/obj/JclEDI_ANSIX12_Ext.o 
+      ../../lib/k3/obj/JclEDI_ANSIX12_Ext.o
       ../../lib/k3/obj/JclEDI.o 
       ../../lib/k3/obj/JclEDISEF.o 
       ../../lib/k3/obj/JclEDITranslators.o 
@@ -24,6 +24,7 @@
       ../../lib/k3/obj/JclMath.o 
       ../../lib/k3/obj/JclMIDI.o 
       ../../lib/k3/obj/JclMime.o 
+      ../../lib/k3/obj/JclPCRE.o 
       ../../lib/k3/obj/JclResources.o 
       ../../lib/k3/obj/JclRTTI.o
       ../../lib/k3/obj/JclSchedule.o 
@@ -35,7 +36,8 @@
       ../../lib/k3/obj/JclUnitConv.o
       ../../lib/k3/obj/JclValidation.o
       ../../lib/k3/obj/JclWideStrings.o
-      ../../lib/k3/obj/JclUnitVersioning.o"/>
+      ../../lib/k3/obj/JclUnitVersioning.o
+      ../../lib/k3/obj/pcre.o"/>
     <RESFILES value="CJcl.res"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -50,7 +52,7 @@
     <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
     <RELEASELIBPATH value="$(BCB)/lib/release"/>
     <LINKER value="ilink"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value="_DEBUG:ZLIB_DLL"/>
     <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
     <MAINSOURCE value="CJcl.bpf"/>
     <INCLUDEPATH value="../../source:../../source/unix:../../source/common:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
@@ -81,6 +83,7 @@
       <FILE FILENAME="../../source/common/Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclCompression.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -98,6 +101,7 @@
       <FILE FILENAME="../../source/common/JclMath.pas" FORMNAME="" UNITNAME="JclMath" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclPCRE.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclRTTI.pas" FORMNAME="" UNITNAME="JclRTTI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -109,6 +113,8 @@
       <FILE FILENAME="../../source/common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclWideStrings.pas" FORMNAME="" UNITNAME="JclWideStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitVersioning.pas" FORMNAME="" UNITNAME="JclUnitVersioning" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/pcre.pas" FORMNAME="" UNITNAME="pcre" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/zlibh.pas" FORMNAME="" UNITNAME="zlibh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -132,6 +138,6 @@ LinkDebugVcl=0
 LibPrefix=
 LibPrefixDefined=0
 LibSuffix=K3
-LibVersion=1.90.0
+LibVersion=1.93.1
   </IDEOPTIONS>
 </PROJECT>

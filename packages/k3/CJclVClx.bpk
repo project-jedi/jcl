@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplCJclVClxK3.so.1.91.1"/>
+    <PROJECT value="bplCJclVClxK3.so.1.93.1"/>
     <OBJFILES value="../../lib/k3/obj/JclQGraphics.o ../../lib/k3/obj/JclQGraphUtils.o"/>
     <RESFILES value="CJclVClx.res"/>
     <DEFFILE value=""/>
@@ -73,6 +73,6 @@ LinkDebugVcl=0
 LibPrefix=
 LibPrefixDefined=0
 LibSuffix=K3
-LibVersion=1.90.0
+LibVersion=1.93.1
   </IDEOPTIONS>
 </PROJECT>

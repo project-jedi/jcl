@@ -15,4 +15,3 @@ FILES="ProductFrames.pas JediInstallerMain.pas"
 chmod a+x $JPP >/dev/null 2>/dev/null
 $JPP $CLXOPTIONS $FILES
 $JPP $VCLOPTIONS $FILES
-
