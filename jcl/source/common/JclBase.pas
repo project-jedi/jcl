@@ -105,9 +105,9 @@ type
   {$ENDIF ~RTL140_UP}
   {$ENDIF FPC}
   PCardinal = ^Cardinal;
-  {$IFNDEF COMPILER7}
+  {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
-  {$ENDIF ~COMPILER7}
+  {$ENDIF ~COMPILER7_UP}
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
@@ -258,6 +258,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.34  2005/03/09 23:56:45  rrossmair
+// - fixed compilation condition for UInt64 declaration ($IFDEF COMPILER7_UP instead of $IFDEF COMPILER7)
+//
 // Revision 1.33  2005/03/08 16:10:07  marquardt
 // standard char sets extended and used, some optimizations for string literals
 //
