@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclUnitVersioning.pas.                                                               }
+{ The Original Code is JclUnitVersioning.pas.                                                      }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Andreas Hausladen.                                 }
 { Portions created by Andreas Hausladen are Copyright (C) Andreas Hausladen. All rights reserved.  }
@@ -173,7 +173,8 @@ var
   I: Integer;
 begin
   Result := Trim(FInfo.RCSfile);
-  if StartsWith('$RCSfile: ', Result) then // a CVS command
+  // the + is to have CVS not touch the string
+  if StartsWith('$' + 'RCSfile: ', Result) then // a CVS command
   begin
     Delete(Result, 1, 10);
     Delete(Result, Length(Result) - 1, 2);
@@ -191,7 +192,7 @@ end;
 function TUnitVersion.Revision: string;
 begin
   Result := Trim(FInfo.Revision);
-  if StartsWith('$Revision: ', Result) then // a CVS command
+  if StartsWith('$' + 'Revision: ', Result) then // a CVS command
     Result := Copy(Result, 12, Length(Result) - 11 - 2);
 end;
 
@@ -200,7 +201,7 @@ end;
 function TUnitVersion.Date: string;
 begin
   Result := Trim(FInfo.Date);
-  if StartsWith('$Date: ', Result) then // a CVS command
+  if StartsWith('$' + 'Date: ', Result) then // a CVS command
   begin
     Delete(Result, 1, 7);
     Delete(Result, Length(Result) - 1, 2);
@@ -768,6 +769,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.4  2004/09/02 16:16:13  marquardt
+// fixed a bug from style cleaning
+//
 // Revision 1.3  2004/09/02 06:16:09  marquardt
 // style cleaning
 //
