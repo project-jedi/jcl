@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: December 13, 2000                                             }
+{ Last modified: December 17, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -25,6 +25,16 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 15..17-DEC-2000 ml:
+//   - normalization conformance tests
+//   - bug fixes
+// 14-DEC-2000 ml:
+//   - bug fixes
+//   - normalization support
+// 12-DEC-2000 ml:
+//   composition support
+// 10-DEC-2000 ml:
+//   optimized decomposition
 // 09-DEC-2000 ml:
 //   - bug fixes
 //   - special case folding data included into the *.res file and load routines adjusted
@@ -56,27 +66,18 @@ unit JclUnicode;
 //   - low level Unicode UCS4 data import and functions
 //   - helper functions
 //
-//  Version 2.5
+//  Version 2.6
 //----------------------------------------------------------------------------------------------------------------------
 // This unit contains routines and classes to manage and work with Unicode/WideString strings.
 // You need Delphi 4 or higher to compile this code.
 //
-// Unicode encodings and wide strings:
-// Currently there are several encoding schemes defined which describe (among others)
-// the code size and (resulting from this) the usable value pool. Delphi supports the
-// wide character data type for Unicode which corresponds to UCS2 (UTF-16 coding scheme).
-// This scheme uses 2 bytes to store character values and can thus handle up to
-// 65536 characters. Another scheme is UCS4 (UTF-32 coding scheme) which uses 4 bytes
-// per character. The first 65536 code points correspond directly to those of UCS2.
-// Other code points are mainly used for character surrogates. To provide support
-// for UCS2 (WideChar in Delphi) as well as UCS4 the library is splitted into two
-// parts. The low level part accepts and returns UCS4 characters while the high level
-// part deals directly with WideChar/WideString data types. Additionally, UCS2 is
-// defined as being WideChar to retain maximum compatibility.
-//
 // Publicly available low level functions are all preceded by "Unicode..." (e.g.
 // in UnicodeToUpper) while the high level functions use the Str... or Wide...
 // naming scheme (e.g. WideUpperCase and WideUpperCase).
+//
+// The normalization implementation in this unit has successfully and completely passed the
+// official normative conformance testing as of Annex 9 in Technical Report #15
+// (Unicode Standard Annex #15, http://www.unicode.org/unicode/reports/tr15, from 2000-08-31).
 //
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Open issues:
@@ -90,11 +91,6 @@ unit JclUnicode;
 //           \S     any character that is not a whitespace character
 //           \w     any "word" character
 //           \W     any "non-word" character
-//   - For a perfect text search both the text to be searched through as well as
-//     the pattern must be normalized to allow to match, say, accented and unaccented
-//     characters or the ligature fi with the letter combination fi etc. Normalization
-//     is usually done by decomposing the string and optionally compose it again,
-//     but I had not yet the opportunity to go through the composition stuff.
 //   - The wide string classes still compare text with functions provided by the
 //     particular system. This works usually fine under WinNT/W2K (although also
 //     there are limitations like maximum text lengths). Under Win9x conversions
@@ -106,15 +102,15 @@ unit JclUnicode;
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows,
-  {$ENDIF}
-  Classes;
+  {$ifdef WIN32}
+    Windows,
+  {$endif}
+    Classes;
 
 const
   // definitions of often used characters:
   // Note: Use them only for tests of a certain character not to determine character
-  //       classes like white spaces as in Unicode are often many code points defined
+  //       classes (like white spaces) as in Unicode are often many code points defined
   //       being in a certain class. Hence your best option is to use the various
   //       UnicodeIs* functions.
   WideNull = WideChar(#0);
@@ -133,9 +129,9 @@ const
   WideParagraphSeparator = WideChar($2029);
 
   // byte order marks for Unicode files
-  // Unicode text files should contain $FFFE as first character to identify such
-  // a file clearly. Depending on the system where the file was created on this
-  // appears either in big endian or little endian style.
+  // Unicode text files (in UTF-16 format) should contain $FFFE as first character to
+  // identify such a file clearly. Depending on the system where the file was created
+  // on this appears either in big endian or little endian style.
   BOM_LSB_FIRST = WideChar($FEFF); // this is how the BOM appears on x86 systems
                                    // when written by a x86 system
   BOM_MSB_FIRST = WideChar($FFFE);
@@ -207,7 +203,7 @@ type
     ccSymbolModifier,
     ccSymbolOther,
     // bidirectional categories
-    ccleftToRight,
+    ccLeftToRight,
     ccLeftToRightEmbedding,
     ccLeftToRightOverride,
     ccRightToLeft,
@@ -237,6 +233,14 @@ type
   );
   TCharacterCategories = set of TCharacterCategory;
 
+  // four forms of normalization are defined:
+  TNormalizationForm = (
+    nfC,  // canonical decomposition followed by canonical composition
+    nfD,  // canonical decomposition
+    nfKC, // compatibility decomposition followed by a canonical composition
+    nfKD  // compatibility decomposition
+  );
+
   TWideStrings = class;
 
   TSearchFlags = set of (
@@ -244,7 +248,8 @@ type
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
-    sfWholeWordOnly);   // match only text at end/start and/or surrounded by white spaces
+    sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
+  );
 
   // a generic search class defininition used for tuned Boyer-Moore and Unicode
   // regular expression searches
@@ -727,8 +732,8 @@ procedure StrSwapByteOrder(Str: PWideChar);
 function WideAdjustLineBreaks(const S: WideString): WideString;
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;  //az
 function WideCompose(const S: WideString): WideString;
-function WideComposeHangul(Source: WideString): WideString;
-function WideDecompose(const S: WideString): WideString;
+function WideComposeHangul(const Source: WideString): WideString;
+function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
@@ -736,6 +741,7 @@ function WideCaseFolding(C: WideChar): WideString; overload;
 function WideCaseFolding(const S: WideString): WideString; overload;
 function WideLowerCase(C: WideChar): WideString; overload;
 function WideLowerCase(const S: WideString): WideString; overload;
+function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
 function WideTitleCase(C: WideChar): WideString; overload;
 function WideTitleCase(const S: WideString): WideString; overload;
 function WideUpperCase(C: WideChar): WideString; overload;
@@ -746,6 +752,7 @@ function WideTrimRight(const S: WideString): WideString;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
+function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
@@ -847,8 +854,7 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  Consts, SyncObjs, SysUtils,
-  JclResources;
+  Consts, SyncObjs, SysUtils, JclResources;
 
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
@@ -862,16 +868,7 @@ const
   ClassEuropeanNumber = [ccEuropeanNumber, ccEuropeanNumberSeparator, ccEuropeanNumberTerminator];
 
   // used to negate a set of categories
-  ClassAll = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccMarkNonSpacing, ccMarkSpacingCombining,
-    ccMarkEnclosing, ccNumberDecimalDigit, ccNumberLetter, ccNumberOther, ccSeparatorSpace, ccSeparatorLine,
-    ccSeparatorParagraph, ccOtherControl, ccOtherFormat, ccOtherSurrogate, ccOtherPrivate, ccOtherUnassigned,
-    ccLetterModifier, ccLetterOther, ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
-    ccPunctuationInitialQuote, ccPunctuationFinalQuote, ccPunctuationOther, ccSymbolMath, ccSymbolCurrency,
-    ccSymbolModifier, ccSymbolOther, ccleftToRight, ccLeftToRightEmbedding, ccLeftToRightOverride, ccRightToLeft,
-    ccRightToLeftArabic, ccRightToLeftEmbedding, ccRightToLeftoverride, ccPopDirectionalFormat, ccEuropeanNumber,
-    ccEuropeanNumberSeparator, ccEuropeanNumberTerminator, ccArabicNumber, ccCommonNumberSeparator, ccBoundaryNeutral,
-    ccSegmentSeparator, ccWhiteSpace, ccOtherNeutrals, ccComposed, ccNonBreaking, ccSymmetric, ccHexDigit,
-    ccQuotationMark, ccMirroring, ccSpaceOther, ccAssigned];     
+  ClassAll = [ccLetterUppercase..ccLetterUniqueUpper];
 
 type
   TCompareFunc = function (W1, W2: WideString; Locale: LCID): Integer;
@@ -1085,8 +1082,8 @@ end;
 function CaseLookup(Code: Cardinal; Mapping: Cardinal): TUCS4Array;
 
 // Performs a lookup of the given code and returns its case mapping if found.
-// Mapping must be 0 for lower case, 1 for title case and 2 for upper case, respectively.
-// If Code could not be found then the result is a mapping of length 1 with the Code itself.
+// Mapping must be 0 for case folding, 1 for lower case, 2 for title case and 3 for upper case, respectively.
+// If Code could not be found then the result is a mapping of length 1 with the code itself.
 // Otherwise an array of code points is returned which represent the mapping
 // (e.g. title case for ß (german es-zed) is Ss (two characters)).
 
@@ -1251,66 +1248,60 @@ var
   Rest: Integer;
   
 begin
-  if not UnicodeIsHangul(Code) then
-    Result := nil
+  Dec(Code, SBase);
+  Rest := Code mod TCount;
+  if Rest = 0 then
+    SetLength(Result, 2)
   else
-  begin
-    Dec(Code, SBase);
-    Rest := Code mod TCount;
-    if Rest = 0 then
-      SetLength(Result, 2)
-    else
-      SetLength(Result, 3);
-    Result[0] := LBase + (Code div NCount);
-    Result[1] := VBase + ((Code mod NCount) div TCount);
-    if Rest <> 0 then
-      Result[2] := TBase + Rest;
-  end;
+    SetLength(Result, 3);
+  Result[0] := LBase + (Code div NCount);
+  Result[1] := VBase + ((Code mod NCount) div TCount);
+  if Rest <> 0 then
+    Result[2] := TBase + Rest;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeDecompose(Code: UCS4): TUCS4Array;
+function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 
 var
-  L, R, M: Integer;
+  L, R,
+  M, C: Integer;
 
 begin
   // load decomposition data if not already done
   if Decompositions = nil then
     LoadUnicodeDecompositionData;
 
-  if not UnicodeIsComposed(Code) then
-  begin
-    // return the code itself if it is not a composite
-    SetLength(Result, 1);
-    Result[0] := Code;
-  end
+  Result := nil;
+
+  // if the code is hangul then decomposition is algorithmically
+  if UnicodeIsHangul(Code) then
+    Result := UnicodeDecomposeHangul(Code)
   else
   begin
-    // if the code is hangul then decomposition is algorithmically
-    Result := UnicodeDecomposeHangul(Code);
-    if Result = nil then
-    begin
-      L := 0;
-      R := High(Decompositions);
+    L := 0;
+    R := High(Decompositions);
 
-      while L <= R do
-      begin
-        M := (L + R) shr 1;
-        if Code > Decompositions[M].Code then
-          L := M + 1
+    // Compatibility decompositions are marked by a set second MSB in Code.
+    // The codes in the list are sorted without taking the flag into account.
+    while L <= R do
+    begin
+      M := (L + R) shr 1;
+      C := Integer(Decompositions[M].Code and not $40000000) - Integer(Code);
+      if C < 0 then
+        L := M + 1
+      else
+        if C > 0 then
+          R := M - 1
         else
-          if Code < Decompositions[M].Code then
-            R := M - 1
-          else
-          begin
-            // found a decomposition, return the codes
+        begin
+          // found a decomposition, return the codes if types correspond
+          if Compatible or ((Decompositions[M].Code and $40000000) = 0) then
             with Decompositions[M] do
               Result := Decompositions;
-            Break;
-          end;
-      end;
+          Break;
+        end;
     end;
   end;
 end;
@@ -1339,6 +1330,7 @@ begin
   try
     if not CCCsLoaded then
     begin
+      CCCsLoaded := True;
       Stream := TResourceStream.Create(HInstance, 'COMBINING', 'UNICODEDATA');
       try
         while Stream.Position < Stream.Size do
@@ -1354,7 +1346,6 @@ begin
             Stream.ReadBuffer(CCCs[I][0], Size * SizeOf(TRange));
           end;
         end;
-        CCCsLoaded := True;
       finally
         Stream.Free;
       end;
@@ -1382,10 +1373,10 @@ begin
   if CategoryLookup(Code, ClassMark) then
   begin
     // case 0 is already handled above
-    I := 1;
-    repeat
+    for I := 255 downto 1 do
+    begin
       // go through all defined combining classes
-      if Assigned(CCCs[I]) and (CCCs[I][0].Start <= Code) and (CCCs[I][0].Stop >= Code) then
+      if Assigned(CCCs[I]) and (CCCs[I][0].Start <= Code) and (CCCs[I][High(CCCs[I])].Stop >= Code) then
       begin
         L := 0;
         R := High(CCCs[I]);
@@ -1406,8 +1397,7 @@ begin
               L := M + 1;
         end;
       end;
-      Inc(I);
-    until I = 256;
+    end;
   end;
 end;
 
@@ -1501,6 +1491,89 @@ begin
       end;
     end;
   end;
+end;
+
+//----------------- support for composition ----------------------------------------------------------------------------
+
+type
+  // maps between a pair of code points to a composite code point
+  // Note: the source pair is packed into one 4 byte value to speed up search. 
+  TCompositionPair = record
+    Code: Cardinal;
+    Composition: UCS4;
+  end;
+
+var
+  // list of composition mappings
+  Compositions: array of TCompositionPair;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure LoadCompositionData;
+
+var
+  Stream: TResourceStream;
+  Size: Cardinal;
+
+begin
+  // make sure no other code is currently modifying the global data area
+  if LoadInProgress = nil then
+    LoadInProgress := TCriticalSection.Create;
+  LoadInProgress.Enter;
+
+  try
+    if Compositions = nil then
+    begin
+      Stream := TResourceStream.Create(HInstance, 'COMPOSITION', 'UNICODEDATA');
+      // a) determine size of compositions array
+      Stream.ReadBuffer(Size, 4);
+      SetLength(Compositions, Size);
+      // b) read data
+      Stream.ReadBuffer(Compositions[0], Size * SizeOf(TCompositionPair));
+      Stream.Free;
+    end;
+  finally
+    LoadInProgress.Leave;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
+
+// Maps the sequence of First and Second to a composite.
+// Result is True if there was a mapping otherwise it is False.
+
+var
+  L, R, M, C: Integer;
+  Pair: Integer;
+
+begin
+  if Compositions = nil then
+    LoadCompositionData;
+
+  Result := False;
+  L := 0;
+  R := High(Compositions);
+  Pair := Integer((First shl 16) or Word(Second));
+  while L <= R do
+  begin
+    M := (L + R) shr 1;
+    C := Integer(Compositions[M].Code) - Pair;
+    if C < 0  then
+      L := M + 1
+    else
+    begin
+      R := M - 1;
+      if C = 0 then
+      begin
+        Result := True;
+        L := M;
+      end;
+    end;
+  end;
+  if Result then
+    Composite := Compositions[L].Composition;
 end;
 
 //----------------- TSearchEngine --------------------------------------------------------------------------------------
@@ -2956,7 +3029,8 @@ begin
 
   // Last, make sure any _URE_CHAR type symbols are changed to lower if the
   // 'Casefold' flag is set.
-  // TODO: use the entire mapping, not only the first character
+  // TODO: use the entire mapping, not only the first character and use the
+  //       case fold abilities of the unit.
   if ((FUREBuffer.Flags and _URE_DFA_CASEFOLD) <> 0) and (Symbol.AType = _URE_CHAR) then
     Symbol.Symbol.Chr := UnicodeToLower(Symbol.Symbol.Chr)[0];
 
@@ -4163,6 +4237,7 @@ var
   Start, Stop: Cardinal;
   Run: PWideChar;
   RunLen: Cardinal;
+  
 begin
   ClearResults;
   Run := Text;
@@ -6445,38 +6520,71 @@ end;
 
 function WideCompose(const S: WideString): WideString;
 
-// returns a string with all characters of S but if there is a possibility to
-// combine characters then they are composed
+// Returns canonical composition of characters in S.
 
 var
-  I: Integer;
-  
+  StarterPos,
+  CompPos,
+  DecompPos: Integer;
+  Composite: UCS4;
+  Ch,
+  StarterChar: WideChar;
+  LastClass,
+  CurrentClass: Cardinal;
+
 begin
-  for I := 1 to Length(S) do
+  // set an arbitrary length for the result, will be adjusted before return
+  //SetLength(Result, Length(S));
+  Result := WideComposeHangul(S);
+  StarterPos := 1;
+  CompPos := 2;
+  StarterChar := Result[StarterPos];
+  LastClass := CanonicalCombiningClass(UCS4(StarterChar));
+  if LastClass <> 0 then
+    LastClass := 256; // fix for irregular combining sequence
+
+  // Loop on the (decomposed) characters, combining where possible.
+  for DecompPos := 2 to Length(Result) do
   begin
-    //UnicodeCompose TODO implementation
+    Ch := Result[DecompPos];
+    CurrentClass := CanonicalCombiningClass(Word(Ch));
+    if UnicodeComposePair(Word(StarterChar), Word(Ch), Composite) and
+      ((LastClass < CurrentClass) or (LastClass = 0)) then
+    begin
+      Result[StarterPos] := UCS2(Composite);
+      StarterChar := UCS2(Composite);
+    end
+    else
+    begin
+      if CurrentClass = 0 then
+      begin
+        StarterPos := CompPos;
+        StarterChar := Ch;
+      end;
+      LastClass := CurrentClass;
+      Result[CompPos] := Ch;
+      Inc(CompPos);
+    end;
   end;
+  SetLength(Result, CompPos - 1);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function WideComposeHangul(Source: WideString): WideString;
+function WideComposeHangul(const Source: WideString): WideString;
 
 var
   Len: Integer;
   Ch, Last: WideChar;
-  I, J: Integer;
+  I: Integer;
   LIndex, VIndex, SIndex, TIndex: Integer;
 
 begin
-  // copy first char
+  Result := '';
   Len := Length(Source);
   if Len > 0 then
   begin
-    // allocate memory only once and shorten the result when done
-    SetLength(Result, Len);
-    J := 1;
-    Last := Source[J];
+    Last := Source[1];
     Result := Last;
 
     for I := 2 to Len do
@@ -6492,7 +6600,7 @@ begin
         begin
           // make syllable of form LV
           Last := WideChar((SBase + (LIndex * VCount + VIndex) * TCount));
-          Result[J] := Last; // reset last
+          Result[Length(Result)] := Last; // reset last
           Continue; // discard Ch
         end;
       end;
@@ -6506,64 +6614,113 @@ begin
         begin
           // make syllable of form LVT
           Inc(Word(Last), TIndex);
-          Result[J] := Last; // reset last
+          Result[Length(Result)] := Last; // reset last
           Continue; // discard ch
         end;
       end;
 
       // if neither case was true, just add the character
       Last := Ch;
-      Inc(J);
-      Result[J] := Ch;
+      Result := Result + Ch;
     end;
-    // shorten the result to real length
-    SetLength(Result, J);
-  end
-  else
-    Result := '';
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function WideDecompose(const S: WideString): WideString;
+procedure FixCanonical(var S: WideString);
+
+// Examines S and reorders all combining marks in the string so that they are in canonical order.
+
+var
+  I: Integer;
+  Temp: WideChar;
+  CurrentClass,
+  LastClass: Cardinal;
+
+begin
+  I := Length(S);
+  if I > 1 then
+  begin
+    CurrentClass := CanonicalCombiningClass(Word(S[I]));
+    repeat
+      Dec(I);
+      LastClass := CurrentClass;
+      CurrentClass := CanonicalCombiningClass(Word(S[I]));
+
+      // A swap is presumed to be rare (and a double-swap very rare),
+      // so don't worry about efficiency here.
+      if (CurrentClass > LastClass) and (LastClass > 0) then
+      begin                                        
+        // swap characters
+        Temp := S[I];
+        S[I] := S[I + 1];
+        S[I + 1] := Temp;
+
+        // if not at end, backup (one further, to compensate for loop)
+        if I < Length(S) - 1 then
+          Inc(I, 2);
+        // reset type, since we swapped.
+        CurrentClass := CanonicalCombiningClass(Word(S[I]));
+      end;
+    until I = 1;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure GetDecompositions(Compatible: Boolean; Code: UCS4; var Buffer: TUCS4Array);
+
+// helper function to recursively decompose a code point
+
+var
+  Decomp: TUCS4Array;
+  I: Integer;
+
+begin
+  Decomp := UnicodeDecompose(Code, Compatible);
+  if Assigned(Decomp) then
+  begin
+    for I := 0 to High(Decomp) do
+      GetDecompositions(Compatible, Decomp[I], Buffer);
+  end
+  else // if no decomp, append
+  begin
+    I := Length(Buffer);
+    SetLength(Buffer, I + 1);
+    Buffer[I] := Code;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 
 // returns a string with all characters of S but decomposed, e.g. Ê is returned
 // as E^ etc.
 
 var
-  I, J, K: Integer;
-  CClass: Cardinal;
+  I, J: Integer;
   Decomp: TUCS4Array;
 
 begin
   Result := '';
   Decomp := nil;
-  
+
+  // iterate through each source code point
   for I := 1 to Length(S) do
   begin
-    // No need to dive iteratively into decompositions as this is already done
-    // on creation of the data in the Unicode data extractor.
-    Decomp := UnicodeDecompose(UCS4(S[I]));
-    // We need to sort the returned values according to their canonical class.
-    for J := 0 to High(Decomp) do
-    begin
-      CClass := CanonicalCombiningClass(Decomp[J]);
-      if CClass = 0 then
-        Result := Result + WideChar(Decomp[J])
-      else
-      begin
-        K := Length(Result);
-        // bubble-sort combining marks as necessary
-        while K > 1 do
-        begin
-          if CanonicalCombiningClass(Word(Result[K])) <= CClass then
-            Break;
-          Dec(K);
-        end;
-        Insert(WideChar(Decomp[J]), Result, K + 1);
-      end;
-    end;
+    Decomp := nil;
+    GetDecompositions(Compatible, UCS4(S[I]), Decomp);
+    if Decomp = nil then
+      Result := Result + S[I]
+    else
+      for J := 0 to High(Decomp) do
+        Result := Result + WideChar(Decomp[J]);
   end;
+  
+  // combining marks must be sorted according to their canonical combining class
+  FixCanonical(Result);
 end;
 
 //----------------- general purpose case mapping -----------------------------------------------------------------------
@@ -6627,6 +6784,25 @@ begin
   Result := '';
   for I := 1 to Length(S) do
     Result := Result + WideLowerCase(S[I]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
+
+var
+  Temp: WideString;
+  Compatible: Boolean;
+
+begin
+  Compatible := Form in [nfKC, nfKD];
+  if Form in [nfD, nfKD] then
+    Result := WideDecompose(S, Compatible)
+  else
+  begin
+    Temp := WideDecompose(S, Compatible);
+    Result := WideCompose(Temp);
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7249,7 +7425,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-// I need to fix a problem introduced by MS here. The first parameter can be a pointer
+// I need to fix a problem (introduced by MS) here. The first parameter can be a pointer
 // (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
 // As usual, lpSrc has been translated to a var parameter. But this does not work in
 // our case, hence the redeclaration of the function with a pointer as first parameter. 
