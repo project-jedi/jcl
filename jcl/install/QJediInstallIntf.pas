@@ -19,11 +19,11 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform support)                                          }
+{ Contributor(s): Robert Rossmair (crossplatform & BCB support)                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: February 13, 2004                                                                 }
+{ Last modified: March 9, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -33,7 +33,7 @@ interface
 
 uses
   QComCtrls, QDialogs,
-  DelphiInstall;
+  BorRADToolInstall;
 
 const
   // Feature masks
@@ -56,24 +56,24 @@ const
 type
   IJediInstallTool = interface
     ['{CB8A2F3A-9E7C-4646-9E1F-60102A8F957D}']
-    function ActiveVersionNumberPage: Integer;
-    function BPLPath(VersionNumber: Integer): string;
-    function DCPPath(VersionNumber: Integer): string;
-    function FeatureChecked(FeatureID: Cardinal; VersionNumber: Integer): Boolean;
-    function GetDelphiInstallations: TJclDelphiInstallations;
+    function BPLPath(Installation: TJclBorRADToolInstallation): string;
+    function DCPPath(Installation: TJclBorRADToolInstallation): string;
+    function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
+    function GetBorRADToolInstallations: TJclBorRADToolInstallations;
     function MessageBox(const Text: string; DlgType: TMsgDlgType = mtInformation;
       Buttons: TMsgDlgButtons = [mbOK]; DefaultBtn: TMsgDlgBtn = mbNone): Integer;
-    procedure UpdateInfo(VersionNumber: Integer; const InfoText: string);
+    procedure UpdateInfo(Installation: TJclBorRADToolInstallation; const InfoText: string);
     procedure UpdateStatus(const Text: string);
     procedure WriteInstallLog(const Text: string);
-    property DelphiInstallations: TJclDelphiInstallations read GetDelphiInstallations;
+    property BorRADToolInstallations: TJclBorRADToolInstallations read GetBorRADToolInstallations;
   end;
 
   IJediInstall = interface
     ['{BE0A7968-9003-40DD-99F0-250CAC8B2D85}']
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
-    function PopulateTreeView(Nodes: TTreeNodes; VersionNumber: Integer; Page: TTabSheet): Boolean;
+    function InstallFor(Installation: TJclBorRADToolInstallation): Boolean;
+    function PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);

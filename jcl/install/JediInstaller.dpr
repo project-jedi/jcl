@@ -12,7 +12,7 @@ uses
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
   
-  DelphiInstall in 'DelphiInstall.pas';
+  BorRADToolInstall in 'BorRADToolInstall.pas';
 
 {$R *.res}
 

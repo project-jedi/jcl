@@ -1,8 +1,8 @@
 object MainForm: TMainForm
-  Left = 308
-  Top = 236
-  Width = 840
-  Height = 583
+  Left = 348
+  Top = 208
+  Width = 800
+  Height = 611
   VertScrollBar.Range = 49
   ActiveControl = CloseBtn
   AutoScroll = False
@@ -27,23 +27,23 @@ object MainForm: TMainForm
   TextHeight = 14
   object StatusBevel: TBevel
     Left = 8
-    Top = 525
-    Width = 639
+    Top = 553
+    Width = 599
     Height = 19
     Anchors = [akLeft, akRight, akBottom]
   end
   object Bevel1: TBevel
     Left = 8
-    Top = 509
-    Width = 815
+    Top = 537
+    Width = 775
     Height = 9
     Anchors = [akLeft, akRight, akBottom]
     Shape = bsTopLine
   end
   object StatusLabel: TLabel
     Left = 16
-    Top = 527
-    Width = 623
+    Top = 555
+    Width = 583
     Height = 14
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
@@ -52,7 +52,7 @@ object MainForm: TMainForm
   object TitlePanel: TPanel
     Left = 0
     Top = 0
-    Width = 832
+    Width = 792
     Height = 49
     Align = alTop
     BevelWidth = 2
@@ -60,7 +60,7 @@ object MainForm: TMainForm
     Color = clCaptionText
     TabOrder = 2
     object JediImage: TImage
-      Left = 702
+      Left = 662
       Top = 7
       Width = 116
       Height = 31
@@ -220,9 +220,9 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 8
       Top = 13
-      Width = 202
+      Width = 153
       Height = 16
-      Caption = 'Project JEDI Delphi Installer'
+      Caption = 'Project JEDI Installer'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = 16
@@ -233,8 +233,8 @@ object MainForm: TMainForm
     end
   end
   object InstallBtn: TButton
-    Left = 663
-    Top = 520
+    Left = 623
+    Top = 548
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -243,8 +243,8 @@ object MainForm: TMainForm
     OnClick = InstallBtnClick
   end
   object CloseBtn: TButton
-    Left = 747
-    Top = 520
+    Left = 707
+    Top = 548
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -255,152 +255,11 @@ object MainForm: TMainForm
   object ProductsPageControl: TPageControl
     Left = 8
     Top = 56
-    Width = 815
-    Height = 440
-    ActivePage = D7TabSheet
+    Width = 775
+    Height = 468
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
     TabOrder = 3
-    object D5TabSheet: TTabSheet
-      Tag = 5
-      Caption = 'Delphi 5'
-      ImageIndex = 3
-      inline D5Product: TProductFrame
-        Height = 411
-        Align = alClient
-        inherited Splitter: TSplitter
-          Height = 411
-        end
-        inherited ComponentsTreePanel: TPanel
-          Height = 411
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          Height = 411
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
-          inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
-            inherited BplPathEdit: TEdit
-              Height = 22
-              OnChange = BplPathEditChange
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-            end
-          end
-        end
-      end
-    end
-    object D6TabSheet: TTabSheet
-      Tag = 6
-      Caption = 'Delphi 6'
-      ImageIndex = 3
-      inline D6Product: TProductFrame
-        Height = 411
-        Align = alClient
-        inherited Splitter: TSplitter
-          Height = 411
-        end
-        inherited ComponentsTreePanel: TPanel
-          Height = 411
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          Height = 411
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
-          inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
-            inherited BplPathEdit: TEdit
-              OnChange = BplPathEditChange
-            end
-          end
-        end
-      end
-    end
-    object D7TabSheet: TTabSheet
-      Tag = 7
-      Caption = 'Delphi 7'
-      ImageIndex = 3
-      inline D7Product: TProductFrame
-        Height = 411
-        Align = alClient
-        inherited Splitter: TSplitter
-          Height = 411
-        end
-        inherited ComponentsTreePanel: TPanel
-          Height = 411
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          Height = 411
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
-          inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
-            inherited BplPathEdit: TEdit
-              Height = 22
-              OnChange = BplPathEditChange
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-            end
-          end
-        end
-      end
-    end
   end
   object ImageList: TImageList
     Left = 32

@@ -99,6 +99,15 @@ object ProductFrame: TProductFrame
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
       end
+      object DcpPathEdit: TEdit
+        Left = 68
+        Top = 48
+        Width = 300
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 2
+        OnChange = DcpPathEditChange
+      end
       object Button1: TButton
         Left = 373
         Top = 16
@@ -117,18 +126,9 @@ object ProductFrame: TProductFrame
         Height = 22
         Anchors = [akTop, akRight]
         Caption = '...'
-        TabOrder = 2
+        TabOrder = 3
         TabStop = False
         OnClick = PathSelectBtnClick
-      end
-      object DcpPathEdit: TEdit
-        Left = 68
-        Top = 48
-        Width = 300
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 5
-        OnChange = DcpPathEditChange
       end
     end
   end

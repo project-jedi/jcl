@@ -1,16 +1,16 @@
 object ProductFrame: TProductFrame
   Left = 0
   Top = 0
-  Width = 807
-  Height = 410
+  Width = 791
+  Height = 424
   HorzScrollBar.Range = 398
   AutoScroll = False
   TabOrder = 0
   object Splitter: TSplitter
-    Left = 393
+    Left = 360
     Top = 0
     Width = 5
-    Height = 410
+    Height = 424
     Cursor = crHSplit
     MinSize = 150
     ResizeStyle = rsUpdate
@@ -19,8 +19,8 @@ object ProductFrame: TProductFrame
   object ComponentsTreePanel: TPanel
     Left = 0
     Top = 0
-    Width = 393
-    Height = 410
+    Width = 360
+    Height = 424
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
@@ -34,8 +34,8 @@ object ProductFrame: TProductFrame
     object TreeView: TTreeView
       Left = 8
       Top = 24
-      Width = 381
-      Height = 378
+      Width = 348
+      Height = 392
       Anchors = [akLeft, akTop, akRight, akBottom]
       Indent = 19
       ReadOnly = True
@@ -46,10 +46,10 @@ object ProductFrame: TProductFrame
     end
   end
   object InfoPanel: TPanel
-    Left = 398
+    Left = 365
     Top = 0
-    Width = 409
-    Height = 410
+    Width = 426
+    Height = 424
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -63,15 +63,15 @@ object ProductFrame: TProductFrame
     object InfoDisplay: TMemo
       Left = 4
       Top = 24
-      Width = 395
-      Height = 291
+      Width = 412
+      Height = 305
       Anchors = [akLeft, akTop, akRight, akBottom]
       TabOrder = 0
     end
     object OptionsGroupBox: TGroupBox
       Left = 4
-      Top = 322
-      Width = 397
+      Top = 336
+      Width = 412
       Height = 81
       Anchors = [akLeft, akRight, akBottom]
       Caption = '&Advanced Options'
@@ -93,13 +93,22 @@ object ProductFrame: TProductFrame
       object BplPathEdit: TEdit
         Left = 68
         Top = 16
-        Width = 300
+        Width = 315
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
       end
+      object DcpPathEdit: TEdit
+        Left = 68
+        Top = 48
+        Width = 315
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 2
+        OnChange = DcpPathEditChange
+      end
       object Button1: TButton
-        Left = 373
+        Left = 388
         Top = 16
         Width = 17
         Height = 22
@@ -110,24 +119,15 @@ object ProductFrame: TProductFrame
         OnClick = PathSelectBtnClick
       end
       object Button2: TButton
-        Left = 373
+        Left = 388
         Top = 48
         Width = 17
         Height = 22
         Anchors = [akTop, akRight]
         Caption = '...'
-        TabOrder = 2
+        TabOrder = 3
         TabStop = False
         OnClick = PathSelectBtnClick
-      end
-      object DcpPathEdit: TEdit
-        Left = 68
-        Top = 48
-        Width = 300
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 3
-        OnChange = DcpPathEditChange
       end
     end
   end
