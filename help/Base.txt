@@ -124,7 +124,7 @@ FPC=1.x
 [Declaration]
 constructor CreateRes(Ident: Integer);
 [ShortDescr]
-Instantiates an instance of EJclWin32Error with a string loaded from the apps resources.
+Instantiates an instance of EJclWin32Error with a string loaded from the application's resource.
 [Description]
 CreateRes instantiates an EJclWin32Error exception class. Ident must be the unique
 ID of a string resource which is displayed in the exception dialog box and is
@@ -149,7 +149,7 @@ Count=1
 [Declaration]
 constructor CreateResRec(ResStringRec: PResStringRec);
 [ShortDescr]
-Instantiates an instance of EJclWin32Error with a string loaded from the apps resources.
+Instantiates an instance of EJclWin32Error with a string loaded from the application's resource.
 [Description]
 CreateRes instantiates an EJclWin32Error exception class. ResStringRec is a pointer
 to a message which is loaded from the application's resource.
@@ -233,19 +233,19 @@ FPC=1.x
 [Declaration]
 constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
 [ShortDescr]
-Creates an instance of EJclError with a message loaded from the app's resource and then formatted.
+Creates an instance of EJclError with a message loaded from the application's resource and then formatted.
 [Description]
 Creates an instance of EJclError with a message loaded from the application's
 resource and then formatted with additional information. The message is specified
 using the ResStringRec parameter and is used as:<BR>
   <P class="syntax">
   resourcestring<BR>
-    RsMyResource = 'Oeps, an error occured with code %u';<BR>
+    RsMyResource = 'Oops, an error occurred with code %u';<BR>
   raise EJclError.CreateResRecFmt(@RsMyResource, [GetLastError]);<BR>
   </P>
 [Parameters]
 Count=2
-1=ResStringRec:PResStringRec=Pointer to a resource string. See the exmple above.
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
 2=Args:array of const=Array of value used to format the message string with. See
 the Format function for more information on how to use these parameters (internally
 Format is used to do the formatting).
@@ -266,18 +266,18 @@ Count=1
 [Declaration]
 constructor CreateResRec(ResStringRec: PResStringRec);
 [ShortDescr]
-Creates an instance of EJclError with a simple message loaded from the app's resource.
+Creates an instance of EJclError with a simple message loaded from the application's resource.
 [Description]
 Creates an instance of EJclError with a simple message loaded from the application's
 resource. The message is specified using the ResStringRec parameter and is used as:<BR>
   <P class="syntax">
   resourcestring<BR>
-    RsMyResource = 'Oeps, an error occured';<BR>
+    RsMyResource = 'Oops, an error occurred';<BR>
   raise EJclError.CreateResRec(@RsMyResource);<BR>
   </P>
 [Parameters]
 Count=1
-1=ResStringRec:PResStringRec=Pointer to a resource string. See the exmple above.
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -513,7 +513,7 @@ declaration of the dynamic array types. When the compiler natively supports
 dynamic arrays you can work with types just as if they were declared using the
 array of Type syntax. <P>If the compiler doesn't support dynamic arrays you
 must use the various DynArrayXxx routines. Before you can use a TDynArray you
-must intialize it using <REF Target"..\DynArrayInitialize">DynArrayInitialize</REF>.
+must initialize it using <REF Target"..\DynArrayInitialize">DynArrayInitialize</REF>.
 To query or change the length of the array you use <REF Target"..\DynArrayLength">DynArrayLength</REF>
 and <REF Target"..\DynArraySetLength">DynArraySetLength</REF> respectively. To
 reference an element of the array you use MyArray^[Index] where Index is the index
@@ -616,7 +616,7 @@ FPC=1.x
 [Declaration]
 function DynArrayAllocSize(const A): Longint;
 [ShortDescr]
-Returns the allocation size for a dynamic array
+Returns the allocation size for a dynamic array.
 [Description]
 DynArrayAllocSize returns the amount of memory, in bytes, that are allocated for
 the supplied dynamic array. Since dynamic arrays are allocated with some additional
@@ -648,7 +648,7 @@ Count=5
 [Declaration]
 function DynArrayLength(const A): Longint;
 [ShortDescr]
-Returns the length of a dynamic array
+Returns the length of a dynamic array.
 [Description]
 DynArrayLength returns the length of the supplied dynamic array in terms of the
 number of elements contained in the array. This is always the value supplied to
@@ -721,7 +721,7 @@ Count=3
 2=ElementSize:Longint=Size, in bytes, of the elements contained in the dynamic
 array. Always use the SizeOf operator for this parameter. For example, if A is
 declared as a TDynIntegerArray then use SizeOf(Integer) for this parameter.
-3=InitialLengt:Longint=Initial size of the array. That is, the number of elements
+3=InitialLength:Longint=Initial size of the array. That is, the number of elements
 in the array. The function allocates enough memory to hold at least InitialLength
 number of elements and initializes them to 0. You can immediately start to use
 them without the need to call <REF>DynArraySetLength</REF>. You can pass 0 if you
@@ -749,7 +749,7 @@ Releases the memory reserved for the dynamic array.
 [Description]
 DynArrayFinalize releases the memory reserved for the dynamic array. You must
 always call this function when done using the dynamic array. Note that setting
-the arrays length to 0 with <REF>DynArraySetLength</REF> does not release all
+the array's length to 0 with <REF>DynArraySetLength</REF> does not release all
 memory associated with the dynamic array.
 [Parameters]
 Count=1
@@ -805,13 +805,13 @@ Count=5
 [Declaration]
 TObjectList = class (TList)
 [ShortDescr]
-TList descendent to maintain a list of TObject descendents.
+TList descendent to maintain a list of TObject descendants.
 [Description]
 TObjectList is a TList descendant adapted to maintain a list of TObject descendants
-which can optionally be owned by the class. The class owning its items, means
-that it will automatically free the objects when the list is cleared. This class
-is only provided for backward compatibility and is not a full-fledged implementation
-of TObjectList as found in Delphi 5 and up.
+which can optionally be owned by the class. If the class owns the items, it will 
+automatically free the objects when the list is cleared. This class is only provided 
+for backward compatibility and is not a full-fledged implementation of TObjectList 
+as found in Delphi 5 and up.
 [Quick Info]
 Unit=JclBase
 Category=Base Services
