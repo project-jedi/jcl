@@ -36,6 +36,7 @@ unit JclTask;
 interface
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 uses
   Windows, Messages, Classes, SysUtils, Contnrs,
@@ -1044,6 +1045,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2005/02/24 07:36:24  marquardt
+// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
+//
 // Revision 1.18  2004/10/25 08:51:23  marquardt
 // PH cleaning
 //

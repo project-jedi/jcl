@@ -7194,7 +7194,8 @@ end;
 
 function CharSetFromLocale(Language: LCID): TFontCharSet;
 begin
-  Win32Check(GetCharSetFromLocale(Language, Result));
+  if not GetCharSetFromLocale(Language, Result) then
+    RaiseLastOSError;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -7692,6 +7693,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.19  2005/02/24 07:36:25  marquardt
+// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
+//
 // Revision 1.18  2005/02/14 03:20:59  rrossmair
 // - fixed issues #0000713 ( make CompareTextWin95/NT functions use const string parameters) and #0001909 (JclUnicode.CharSetFromLocale - result ignored)
 //
