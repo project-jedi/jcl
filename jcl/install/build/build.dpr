@@ -1025,7 +1025,7 @@ begin
         WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
       else
         WriteLn(f, '-u"', Edition.RootDir, '\lib"');
-      if Edition.Typ = BCB then
+      if (Edition.Typ = BCB) and (Edition.Version = 5) then
         WriteLn(f, '-LUvcl50');
       CloseFile(f);
     end
@@ -1038,7 +1038,7 @@ begin
   else
   begin
     FoundU := False;
-    FoundLU := Edition.Typ <> BCB;
+    FoundLU := (Edition.Typ <> BCB) and (Edition.Version = 5);
     Reset(f);
     while not EOF(f) and not (FoundU and FoundLU) do
     begin
@@ -1051,7 +1051,7 @@ begin
         FoundU := FoundU or SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
                   SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
                   SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
-      if Edition.Typ = BCB then
+      if (Edition.Typ = BCB) and (Edition.Version = 5) then
         FoundLU := FoundLU or SameText(S, '-LUvcl50');
     end;
     CloseFile(f);
@@ -1070,7 +1070,7 @@ begin
           else
             WriteLn(f, '-u"', Edition.RootDir, '\lib"');
         end;
-        if not FoundLU and (Edition.Typ = BCB) then
+        if not FoundLU and (Edition.Typ = BCB) and (Edition.Version = 5) then
           WriteLn(f, '-LUvcl50');
         CloseFile(f);
       end
