@@ -15,14 +15,22 @@
 { The Initial Developer of the Original Code is Peter J. Haas. Portions created by Peter J. Haas   }
 { are Copyright (C) 2001 Peter J. Haas. All Rights Reserved.                                       }
 {                                                                                                  }
-{ The Original Code Version 2.0 is: JclDITs.pas.                                                   } 
+{ The Original Code Version 2.0 is: JclDITs.pas.                                                   }
 { The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
 { Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
 { You may retrieve the latest version of the Original Code at the homepage                         }
 { of Peter J. Haas (delphi@pjh2.de) located at http://delphi.pjh2.de/                              }
 {                                                                                                  }
+{--------------------------------------------------------------------------------------------------}
+{                                                                                                  }
+{ NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he donated to the JCL.        }
+{       He is not to be held responsible for modifications applied after this date.                }
+{       Peter J. Haas no longer wants to be associated with Project JEDI.                          }
+{                                                                                                  }
+{--------------------------------------------------------------------------------------------------}
+{                                                                                                  }
 {  Contributor(s):                                                                                 }
-{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{    Peter J. Haas (peterjhaas)                                                                    }
 {    Robert Rossmair (rrossmair)                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
@@ -39,7 +47,7 @@
 {  http://www.gnu.org/copyleft/lesser.html                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
-{$ELSE JCL}
+{$ELSE ~JCL}
 {******************************************************************************}
 {                                                                              }
 {  JclDITs V2.0 -  Data Interchange per Text                                   }
@@ -85,8 +93,7 @@
 {  http://www.gnu.org/copyleft/lesser.html                                     }
 {                                                                              }
 {******************************************************************************}
-{$ENDIF JCL}
-
+{$ENDIF ~JCL}
 
 // Last modified: $Date$
 // For history see end of file
@@ -779,6 +786,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.5  2004/05/31 22:14:23  rrossmair
+//   added PJH disclaimer; last check-in before removal (prototype not longer in use).
+//
 //   Revision 1.4  2004/05/05 05:50:40  rrossmair
 //   fixed typo: '}' instead of ')'
 //

@@ -32,6 +32,15 @@
 {                                                                              }
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI, located at http://www.delphi-jedi.org/                                }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he       }
+{        donated to the JCL. He is not to be held responsible for              }
+{        modifications applied after this date.                                }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.     }
+{                                                                              }
+{------------------------------------------------------------------------------}
 {$ELSE JCL}
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
@@ -2081,6 +2090,9 @@ end;
 //  History:                                                                  
 {$IFDEF PROTOTYPE}
 //  $Log$
+//  Revision 1.9  2004/05/31 22:14:23  rrossmair
+//  added PJH disclaimer; last check-in before removal (prototype not longer in use).
+//
 //  Revision 1.8  2004/05/09 00:18:21  peterjhaas
 //  - old history in reverse order like CVS log
 //  - change interface crc32 to avoid FPC compatibility problems
