@@ -9,7 +9,7 @@ Copyright=Project JEDI (http://www.delphi-jedi.org)
 Type=1
 
 [Source Files]
-Count=40
+Count=39
 File0=..\source\Jcl8087.pas
 File1=..\source\JclAppInst.pas
 File2=..\source\JclBase.pas
@@ -42,14 +42,13 @@ File28=..\source\JclSecurity.pas
 File29=..\source\JclShell.pas
 File30=..\source\JclSscanf.pas
 File31=..\source\JclStatistics.pas
-File32=..\source\JclStrHashMap.pas
-File33=..\source\JclStrings.pas
-File34=..\source\JclSynch.pas
-File35=..\source\JclSysInfo.pas
-File36=..\source\JclSysUtils.pas
-File37=..\source\JclUnicode.pas
-File38=..\source\JclUnitConv.pas
-File39=..\source\JclWin32.pas
+File32=..\source\JclStrings.pas
+File33=..\source\JclSynch.pas
+File34=..\source\JclSysInfo.pas
+File35=..\source\JclSysUtils.pas
+File36=..\source\JclUnicode.pas
+File37=..\source\JclUnitConv.pas
+File38=..\source\JclWin32.pas
 
 [Source Include Directories]
 Count=0
