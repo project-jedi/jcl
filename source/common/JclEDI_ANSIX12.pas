@@ -56,7 +56,8 @@ unit JclEDI_ANSIX12;
 interface
 
 uses
-  SysUtils, Classes, JclEDI;
+  SysUtils, Classes,
+  JclEDI;
 
 //--------------------------------------------------------------------------------------------------
 //  ANSI X12 Segment Id's
@@ -2696,7 +2697,7 @@ procedure TEDIFunctionalGroupSegmentGSSpec.DisassembleReservedData(ReservedData:
 var
   Spec: TEDIFunctionalGroupSpec;
 begin
-  inherited;
+  inherited DisassembleReservedData(ReservedData);
 
   if Parent is TEDIFunctionalGroupSpec then
   begin
