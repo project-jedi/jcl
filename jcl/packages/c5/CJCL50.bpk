@@ -86,7 +86,7 @@
        vcljpg50.bpi 
     "/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
+    <PATHPAS value=".;..\..\source\windows;..\..\source\common;..\..\source\vcl"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -95,13 +95,13 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJcl50.cpp"/>
-    <INCLUDEPATH value=".\..\source;..\..\source\windows;..\..\source\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\source\windows;..\..\source\common;..\..\lib\c5\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\common;..\..\source\vcl;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\source\windows;..\..\source\common;..\..\lib\c5\obj;..\..\source\vcl;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\common -I$(BCB)\include
+    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\common -I..\..\source\vcl -I$(BCB)\include
       -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
