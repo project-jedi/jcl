@@ -4,11 +4,11 @@ TJclRegion = class(TObject);
 [ShortDescr]
 Class to be used as a wrapper for windows regions.
 [Description]
-This class is a wrapper for windows regions. It has a lot of overloaded constructors
-to make it easy to create different kind of regions. It even has a constructor to create
-a region from a bitmap.<p>Regions are a powerfull part of the windows GDI, they are not as known
+This class is a wrapper for Windows regions. It has a lot of overloaded constructors
+to make it easy to create different kinds of regions. It even has a constructor to create
+a region from a bitmap.<p>Regions are a powerful part of the Windows GDI, they are not as known
 as the other objects on the canvas but they can create real beauty. Or maybe you ever dreamed
-of making custom forms, then this is your change.<p>Note for Delphi 3 users, this class is
+of making custom forms, then this is your chance.<p>Note for Delphi 3 users, this class is
 not compatible with Delphi 3.
 [Quick Info]
 Unit=JclGraphics
@@ -23,11 +23,11 @@ constructor Create(RegionHandle: HRgn);
 [ShortDescr]
 Creates a wrapper for the region.
 [Description]
-This function can be used to create a handy wrapper for a Regionhandle aquired by
-a windows function.
+This function can be used to create a handy wrapper for a region handle aquired by
+a Windows function.
 [Parameters]
 Count=1
-1=RegionHandle:HRgn=The windows regionhandle.
+1=RegionHandle:HRgn=The Windows region handle.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -40,7 +40,7 @@ BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateElliptic(const ARect: TRect); overload;
-constructor CreateElliptic(Top, Left, Bottom, Right: integer); overload;
+constructor CreateElliptic(Top, Left, Bottom, Right: Integer); overload;
 [ShortDescr]
 Create an elliptic region
 [Description]
@@ -48,10 +48,10 @@ Creates an elliptic region defined by a rectangle.
 [Parameters]
 Count=5
 1=ARect:TRect=The rectangle surronding the elliptic region.
-2=Top:integer=X-coordinate of the upper left point.
-3=Left:integer=Y-coordinate of the upper left point.
-4=Bottom:integer=X-coordinate of the bottom right point.
-5=Right:integer=Y-coordinate of the bottom right point.
+2=Top:Integer=X-coordinate of the upper left point.
+3=Left:Integer=Y-coordinate of the upper left point.
+4=Bottom:Integer=X-coordinate of the bottom right point.
+5=Right:Integer=Y-coordinate of the bottom right point.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -63,16 +63,16 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor CreatePoly(const Points: TArrayOfPoint; Count: integer; FillMode: TPolyFillMode);
+constructor CreatePoly(const Points: TArrayOfPoint; Count: Integer; FillMode: TPolyFillMode);
 [ShortDescr]
-Create an poly region
+Create an polygon region
 [Description]
-Creates an poly region defined by an array of points.
+Creates an polygon region defined by an array of points.
 [Parameters]
 Count=3
 1=Points:TArrayOfPoint=An array containing the TPoint structures which define the vertices of the
 polygon, in device units. The polygon should be closed.
-2=Count:integer=The number of points in the Points array.
+2=Count:Integer=The number of points in the Points array.
 3=FillMode:TPolyFillMode=Specifies the fillmode of polygon, which pixels will be included in the
 region.
 [Quick Info]
@@ -89,8 +89,8 @@ Count=1
 1=TPolyFillMode;..\..\Types\TPolyFillMode
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor CreateRect(Top, Left, Bottom, Right: integer); overload;
 constructor CreateRect(const ARect: TRect); overload;
+constructor CreateRect(Top, Left, Bottom, Right: Integer); overload;
 [ShortDescr]
 Create a rectangle region
 [Description]
@@ -98,10 +98,10 @@ Creates a rectangele region defined by a rectangle or Top, Left, Bottom, Right.
 [Parameters]
 Count=5
 1=ARect:TRect=The rectangle describing the region.
-2=Top:integer=X-coordinate of the upper left point.
-3=Left:integer=Y-coordinate of the upper left point.
-4=Bottom:integer=X-coordinate of the bottom right point.
-5=Right:integer=Y-coordinate of the bottom right point.
+2=Top:Integer=X-coordinate of the upper left point.
+3=Left:Integer=Y-coordinate of the upper left point.
+4=Bottom:Integer=X-coordinate of the bottom right point.
+5=Right:Integer=Y-coordinate of the bottom right point.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -113,19 +113,21 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: integer); overload;
-constructor CreateRoundRect(Top, Left, Bottom, Right: integer; CornerWidth, CornerHeight: integer); overload;
+constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
+constructor CreateRoundRect(Top, Left, Bottom, Right: Integer; CornerWidth, CornerHeight: Integer); overload;
 [ShortDescr]
 Create a rounded rectangle region
 [Description]
-Creates a rounded rectangele region defined by a rectangle or Top, Left, Bottom, Right.
+Creates a rounded rectangle region defined by a rectangle or Top, Left, Bottom, Right.
 [Parameters]
-Count=5
+Count=7
 1=ARect:TRect=The rectangle describing the region.
-2=Top:integer=X-coordinate of the upper left point.
-3=Left:integer=Y-coordinate of the upper left point.
-4=Bottom:integer=X-coordinate of the bottom right point.
-5=Right:integer=Y-coordinate of the bottom right point.
+2=Top:Integer=X-coordinate of the upper left point.
+3=Left:Integer=Y-coordinate of the upper left point.
+4=Bottom:Integer=X-coordinate of the bottom right point.
+5=Right:Integer=Y-coordinate of the bottom right point.
+6=CornerWidth:Integer=X-size of the quarter ellipse for the rounded corners.
+7=CornerHeight:Integer=Y-size of the quarter ellipse for the rounded corners.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -138,19 +140,19 @@ BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreatePolyPolygon(const Points: TArrayOfPoint; const Vertex: TArrayOfInteger;
-  Count: integer; FillMode: TPolyFillMode);
+  Count: Integer; FillMode: TPolyFillMode);
 [ShortDescr]
-Create a rounded rectangle region
+TODO
 [Description]
-Creates a rounded rectangele region defined by a rectangle or Top, Left, Bottom, Right.
+TODO
 [Parameters]
 Count=4
 1=Points:TArrayOfPoint=An array containing the TPoint structures which define the vertices of the
 polygon, in device units. The polygon should be closed.
-2=Vertex:TArrayOfinteger=An array containing the number of vertices of each polygon. There is one
+2=Vertex:TArrayOfInteger=An array containing the number of vertices of each polygon. There is one
 entry for every polygon in the Points array.
-3=Count:integer=The number of polygons.
-4=FillMode:TPolyFillMode=Specifies the fillmode of polygon, which pixels will be included in the
+3=Count:Integer=The number of polygons.
+4=FillMode:TPolyFillMode=Specifies the fillmode of the polygon, which pixels will be included in the
 region.
 [Quick Info]
 Kind=Method
@@ -168,12 +170,12 @@ Count=1
 [Declaration]
 constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
 [ShortDescr]
-Creates a region from a bitmap.
+Creates the region from a bitmap.
 [Description]
-Creates a region from a bitmap by using a color as mask.
+Creates the region from a bitmap by using a color as mask.
 [Parameters]
 Count=3
-1=Bitmap:TBitmap=A bitmap used as input to create a region.
+1=Bitmap:TBitmap=A bitmap used as input to create the region.
 2=RegionColor:TColor=The color for the mask.
 3=RegionBitmapMode:TJclRegionBitmapMode=This flag specifies if the RegionColor is included or excluded.
 [Quick Info]
@@ -192,9 +194,9 @@ Count=1
 [Declaration]
 constructor CreatePath(Canvas: TCanvas);
 [ShortDescr]
-Creates a region from a Path.
+Creates the region from a Path.
 [Description]
-Creates a region from a path currenly selected in a canvas.
+Creates the region from a path currently selected in a canvas.
 [Parameters]
 Count=1
 1=Canvas:TCanvas=A canvas that contains a path.
@@ -211,9 +213,9 @@ BCB=3,4,5
 [Declaration]
 constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
 [ShortDescr]
-Creates a region from a RegionInfo class.
+Creates the region from a RegionInfo class.
 [Description]
-Creates a region from a RegionInfo class, this function is included so you can make regions
+Creates the region from a RegionInfo class, this function is included so you can make regions
 persistent.
 [Parameters]
 Count=1
@@ -236,7 +238,7 @@ destructor Destroy; override;
 [ShortDescr]
 Destroys the region class.
 [Description]
-Destroys the region class, this will also delete the regionhandle.
+Destroys the region class, this will also delete the region handle.
 [Parameters]
 Count=1
 1=RegionInfo:TJclRegionInfo=A regioninfo class.
@@ -276,7 +278,7 @@ procedure Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); 
 Combines two regions.
 [Description]
 Combines two regions using or, and, xor or difference operator. If the destination region
-is not specified then the regionclass is the result.
+is not specified then the region class is the result.
 [Parameters]
 Count=3
 1=DestRegion:TJclRegion=The destination region class, this should be a valid region class.
@@ -298,9 +300,9 @@ Count=1
 [Declaration]
 function Copy: TJclRegion;
 [ShortDescr]
-Copies the current region into another regionclass.
+Copies the current region into another region class.
 [Description]
-Copies the current region into another regionclass, the class is created for you and you should
+Copies the current region into another region class, the class is created for you and you should
 destroy it if you don't need it anymore.
 [Result]
 The copy of the region.
@@ -315,11 +317,11 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function Equals(CompareRegion: TJclRegion): boolean;
+function Equals(CompareRegion: TJclRegion): Boolean;
 [ShortDescr]
 Checks if two regions are completely equal.
 [Description]
-Checks if the current regions is completely equal with the compareregion.
+Checks if the current region is completely equal with the CompareRegion.
 [Parameters]
 Count=1
 1=CompareRegion:TJclRegion=The region which will be compared.
@@ -338,9 +340,9 @@ BCB=3,4,5
 [Declaration]
 procedure Fill(Canvas: TCanvas);
 [ShortDescr]
-Fills the area defined by a region with the current brush.
+Fills the area defined by the region with the current brush.
 [Description]
-Fills the area defined by a region with the current brush.
+Fills the area defined by the region with the current brush.
 [Parameters]
 Count=1
 1=Canvas:TCanvas=The canvas on which the region will be filled.
@@ -358,14 +360,14 @@ BCB=3,4,5
 procedure FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
 [ShortDescr]
-Fills the area defined by a region with a gradient pattern.
+Fills the area defined by the region with a gradient pattern.
 [Description]
-Fills the area defined by a region with a gradient pattern.
+Fills the area defined by the region with a gradient pattern.
 [Parameters]
 Count=5
 1=Canvas:TCanvas=The canvas on which the region will be filled.
-2=ColorCount:integer=The number of gradiations between the startcolor and the endcolor,
-this should be a least 1. The higher the number, the smoother the gradiant fill.
+2=ColorCount:Integer=The number of gradiations between the StartColor and the EndColor,
+this should be a least 1. The higher the number, the smoother the gradient fill.
 3=StartColor:TColor=The starting color.
 4=EndColor:TColor=The ending color.
 5=ADirection:TGradientDirection=The direction of the gradient, horizontial or vertical.
@@ -383,7 +385,7 @@ Count=1
 1=TGradientDirection;..\..\Types\TGradientDirection
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: integer);
+procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
 [ShortDescr]
 Draws a frame around the region.
 [Description]
@@ -391,8 +393,8 @@ Draws a frame around the region with the current brush.
 [Parameters]
 Count=3
 1=Canvas:TCanvas=The canvas on which the border will be drawn.
-2=FrameWidth:integer=The width of horizontial brush strokes.
-3=FrameHeight:integer=The height of vertical brush strokes.
+2=FrameWidth:Integer=The width of horizontial brush strokes.
+3=FrameHeight:Integer=The height of vertical brush strokes.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -423,16 +425,16 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure Offset(X, Y: integer);
+procedure Offset(X, Y: Integer);
 [ShortDescr]
 Offsets the region.
 [Description]
 Moves the region a certain number of logical units.
 [Parameters]
 Count=2
-1=X:integer=Specifies the number of logical units to move left or right, this value can
+1=X:Integer=Specifies the number of logical units to move left or right, this value can
 be negative to move left.
-2=Y:integer=Specifies the number of logical units to move up or down, this value can be
+2=Y:Integer=Specifies the number of logical units to move up or down, this value can be
 negative to move up.
 [Quick Info]
 Kind=Method
@@ -464,16 +466,16 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PointIn(X, Y: integer): boolean; overload;
-function PointIn(const Point: TPoint): boolean; overload;
+function PointIn(X, Y: Integer): Boolean; overload;
+function PointIn(const Point: TPoint): Boolean; overload;
 [ShortDescr]
 Check if a point is in the region.
 [Description]
 Check if a point is in the region.
 [Parameters]
 Count=3
-1=X:integer=X-coordinate of the point.
-2=Y:integer=Y-coordinate of the point.
+1=X:Integer=X-coordinate of the point.
+2=Y:Integer=Y-coordinate of the point.
 3=Point:TPoint=The point to check.
 [Result]
 Is the point in the region.
@@ -488,8 +490,8 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RectIn(const ARect: TRect): boolean; overload;
-function RectIn(Top, Left, Bottom, Right: integer): boolean; overload;
+function RectIn(const ARect: TRect): Boolean; overload;
+function RectIn(Top, Left, Bottom, Right: Integer): Boolean; overload;
 [ShortDescr]
 Check if a rectangle is in the region.
 [Description]
@@ -498,10 +500,10 @@ the region.
 [Parameters]
 Count=5
 1=ARect:TRect=The rectangle describing the region.
-2=Top:integer=X-coordinate of the upper left point.
-3=Left:integer=Y-coordinate of the upper left point.
-4=Bottom:integer=X-coordinate of the bottom right point.
-5=Right:integer=Y-coordinate of the bottom right point.
+2=Top:Integer=X-coordinate of the upper left point.
+3=Left:Integer=Y-coordinate of the upper left point.
+4=Bottom:Integer=X-coordinate of the bottom right point.
+5=Right:Integer=Y-coordinate of the bottom right point.
 [Result]
 Is the rectangle in the region.
 [Quick Info]
@@ -515,7 +517,7 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SetWindow(Window: HWND; Redraw: boolean);
+procedure SetWindow(Window: HWND; Redraw: Boolean);
 [ShortDescr]
 Specifies the region of a window that will be drawn.
 [Description]
@@ -525,9 +527,7 @@ combination with the TJclRegion.CreateBitmap constructor.
 [Parameters]
 Count=2
 1=Window:HWND=The handle of the window.
-2=Redraw:boolean=Should there be a repaint of the window.
-[Result]
-Is the rectangle in the region.
+2=Redraw:Boolean=Should there be a repaint of the window.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -548,7 +548,7 @@ Returns a TJclRegionInfo class that describes the region.
 [Description]
 Returns a TJclRegionInfo class that describes the region. When no longer needed
 the class should be destroyed. The TJclRegionInfo is a snapshot of the region, when
-the region changes after this function the changes are not reflected in the
+the region changes after this function call the changes are not reflected in the
 TJclRegionInfo class.
 [Result]
 The TJclRegionInfo class.
@@ -584,10 +584,10 @@ BCB=3,4,5
 [Declaration]
 property Handle: HRgn;
 [ShortDescr]
-Returns the windows handle of the region.
+Returns the Windows handle of the region.
 [Description]
-Returns the windows handle of the region. Keep in mind that when you destroy the
-TJClRegion class this handle gets out of scope.
+Returns the Windows handle of the region. Keep in mind that when you destroy the
+TJclRegion class this handle gets also destroyed.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -620,10 +620,11 @@ Count=1
 [Declaration]
 TJclRegionInfo = class(TObject)
 [ShortDescr]
-Class that contains a description of a region.
+Class that contains a description of the region.
 [Description]
-Class that contains a description of a region, the class exposes the info of the
-region by a collection of rectangles. The class is mostly created by a TJclRegion.
+Class that contains a description of the region, the class exposes the info of the
+region by a collection of rectangles. The class is normally created by a TJclRegion
+method call.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -652,12 +653,12 @@ Delphi=4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property Rectangles[index: integer]: TRect read GetRect;
+property Rectangles[Index: Integer]: TRect read GetRect;
 [ShortDescr]
 Returns the rectangle at the current index.
 [Description]
 Returns the rectangle at the current index. The index starts at 0 and ends at
-count - 1.
+Count - 1.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -672,7 +673,7 @@ Count=1
 1=Count
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property Count: integer read GetCount;
+property Count: Integer read GetCount;
 [ShortDescr]
 Returns the number of rectangles that describe the region.
 [Description]
@@ -736,13 +737,13 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 Fills a rectangle with a gradient pattern.
 [Description]
 Fills a rectangle with a gradient pattern. You can specify the smoothness of the gradient
-the direction.
+and the direction.
 [Parameters]
 Count=5
 1=DC:HDC=The handle of the device context where the rectangle will be drawn.
 2=ARect:Rect=The rectangle that defines the area that will be filled.
-2=ColorCount:integer=The number of gradiations between the startcolor and the endcolor,
-this should be a least 1. The higher the number, the smoother the gradiant fill.
+2=ColorCount:Integer=The number of gradiations between the StartColor and the EndColor,
+this should be a least 1. The higher the number, the smoother the gradient fill.
 3=StartColor:TColor=The starting color.
 4=EndColor:TColor=The ending color.
 5=ADirection:TGradientDirection=The direction of the gradient, horizontial or vertical.
@@ -760,17 +761,17 @@ Count=1
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRgn;
 [ShortDescr]
-Creates a region from the specified bitmap.
+Creates the region from the specified bitmap.
 [Description]
-This function creates a region from a bitmap by specifing a color. You can use
+This function creates the region from a bitmap by specifing a color. You can use
 this function to make custom forms of bitmaps, or hotspots on your bitmap, like
 a map of europe for instance with every country in a different color. Create the
 regions for every color. The RegionBitmapMode can be rmInclude or rmExclude, with
-rmInclude all pixels of regioncolor will be in the region, with rmExclude all
-pixels of not regioncolor will be in the region.
+rmInclude all pixels of RegionColor will be in the region, with rmExclude all
+pixels except those of RegionColor will be in the region.
 [Parameters]
 Count=3
-1=Bitmap:TBitmap=A bitmap used as input to create a region.
+1=Bitmap:TBitmap=A bitmap used as input to create the region.
 2=RegionColor:TColor=The color for the mask.
 3=RegionBitmapMode:TJclRegionBitmapMode=This flag specifies if the RegionColor is included or excluded.
 [Result]
@@ -809,7 +810,7 @@ TJclRegionBitmapMode = (rmInclude, rmExclude);
 [ShortDescr]
 Specifies the operation on the color.
 [Description]
-Specifies the operation on the color when creating a region from a bitmap.
+Specifies the operation on the color when creating the region from a bitmap.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -829,7 +830,7 @@ Specifies the fillmode of a poly region.
 [Description]
 Specifies the fillmode of a poly region. If this parameter is set to fmAlternate then
 the region is filled between odd-numbered and even-numbered sides of the polygon. Specifing
-fmWinding will fill any part of the polyregion with a non-zero winding value.
+fmWinding will fill any part of the poly region with a non-zero winding value.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
