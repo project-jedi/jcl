@@ -2116,15 +2116,14 @@ begin
   else
   begin
     SetLength(Result, MAX_PATH);
-    _GetLongPathName(PChar(Path), PChar(Result), MAX_PATH);
-    StrResetLength(Result);
+    SetLength(Result, _GetLongPathName(PChar(Path), PChar(Result), MAX_PATH));
   end;
 end;
 
 function PathGetLongName(const Path: string): string;
 begin
   if Pos('::', Path) > 0 then // Path contains '::{<GUID>}'
-    ShellGetLongPathName(Path)
+    Result := ShellGetLongPathName(Path)
   else
     Result := RtdlGetLongPathName(Path);
 end;
@@ -5930,6 +5929,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2004/10/17 21:40:17  rrossmair
+// fixed PathGetLongName
+//
 // Revision 1.31  2004/10/17 17:26:57  rrossmair
 // restored Unix compatibility
 //
