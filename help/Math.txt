@@ -1211,7 +1211,9 @@ Author=Clayton Collie;ccollie@cau.edu
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CheckCrc32(X: array of Byte; N: Integer; Crc: Cardinal): Integer;
+function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
+function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
+function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 [ShortDescr]
 Checks and, if possible, corrects the data.
 [Description]
@@ -1239,8 +1241,9 @@ Count=1
 1=Crc32
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0):
-Cardinal;
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
+function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
+function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 [ShortDescr]
 Calculates or checks a CRC.
 [Description]
