@@ -40,7 +40,7 @@ Build are merely placeholders, you can lookup the actual value in JclBase.pas.
   <TD width=70%>If set to 1 this is an official release. If 0 this is a preview
     or beta version.</TD>
   </TR>
-  </TABLE>  
+  </TABLE>
 [Quick Info]
 Kind=Constant
 Unit=JclBase
@@ -51,14 +51,135 @@ Kylix=1
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+PResStringRec = ^string;
+[ShortDescr]
+ResStringRec is a pointer to a resource string.
+[Description]
+ResStringRec is a pointer to a resource string used with the creation of exceptions.
+This type is provided for compatibility with FPC. When compiling with Delphi or
+Kylix use the type defined in SysUtils.pas instead.
+[Quick Info]
+Kind=Type
+Unit=JclBase
+Category=Base Services
+SubCat=FPC Compatibility
+Author=JCL Team;jcl@delphi-jedi.org
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SysErrorMessage(ErrNo: Integer): string;
+[ShortDescr]
+Converts OS error codes into strings.
+[Description]
+SysErrorMessage returns an error message string that corresponds to the specified
+OS error code. This routine is provided for compatibility with FPC. When compiling
+with Delphi or Kylix use the SysErrorMessage from the RTL instead (SysUtils.pas).
+[Parameters]
+Count=1
+1=ErrNo:Integer=The Windows API error code for which to retrieve the associated
+error message.
+[Result]
+The error message string associated with the specified Windows API error code.
+[Quick Info]
+Unit=JclBase
+Category=Base Services
+SubCat=FPC Compatibility
+Author=JCL Team;jcl@delphi-jedi.org
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+EJclError = class (Exception);
+[ShortDescr]
+Base exception class for all JCL exceptions.
+[Description]
+EJclError is the base class used for all exception classes in the JCL. It inherits
+directly from Exception without adding any new functionality. It only exists to
+provide a distinction between exceptions raised by the JCL and those raised by
+the RTL/VCL and 3rd parties. It does introduce two constructors, CreateResRec and
+CreateResRecFmt, which are replacements for the Exception class methods CreateRes
+and CreateResFmt respectively (to remove the need for overloads and backwards
+compatibility).
+[Quick Info]
+Kind=Type
+Unit=JclBase
+Category=Base Services
+SubCat=EJclError
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
+[ShortDescr]
+Creates an instance of EJclError with a message loaded from the application's resource and then formatted.
+[Description]
+Creates an instance of EJclError with a message loaded from the application's
+resource and then formatted with additional information. The message is specified
+using the ResStringRec parameter and is used as:<br>
+  <p class="syntax">
+  resourcestring<br>
+    RsMyResource = 'Oops, an error occurred with code %u';<br>
+  raise EJclError.CreateResRecFmt(@RsMyResource, [GetLastError]);<br>
+  </p>
+[Parameters]
+Count=2
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
+2=Args:array of const=Array of value used to format the message string with. See
+the Format function for more information on how to use these parameters (internally
+Format is used to do the formatting so the semantics are identical).
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=EJclError
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=1
+1=CreateResRec
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateResRec(ResStringRec: PResStringRec);
+[ShortDescr]
+Creates an instance of EJclError with a simple message loaded from the application's resource.
+[Description]
+Creates an instance of EJclError with a simple message loaded from the application's
+resource. The message is specified using the ResStringRec parameter and is used as:<BR>
+  <p class="syntax">
+  resourcestring<br>
+    RsMyResource = 'Oops, an error occurred';<br>
+  raise EJclError.CreateResRec(@RsMyResource);<br>
+  </p>
+[Parameters]
+Count=1
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=EJclError
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=1
+1=CreateResRecFmt
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 EJclWin32Error = class (<REF Target"..\Types\EJclError">EJclError</REF>)
 [ShortDescr]
 Base class for exceptions raised in response to Win32 errors.
 [Description]
 The EJclWin32Error exception class is used as the base class for exceptions that
-are raised in response to the failure of a Win32 API function which sets LastError.
-The EJclWin32Error constructors automatically call GetLastError which is made
-available to the programmer through the LastError property. Additionally it
+are raised in response to the failure of a Win32 API function that sets LastError.
+The EJclWin32Error constructors automatically call GetLastError, the result of which
+is made available to the programmer through the LastError property. Additionally it
 appends a human-readable string to the passed in exception Msg corresponding to
 the last error. This message is separated from the passed in Msg by a carriage
 return and is made available through the LastErrorMsg property.
@@ -120,6 +241,11 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Kylix=1
 FPC=1.x
+[SeeAlso]
+Count=3
+1=Create
+2=CreateRes
+3=CreateResRec
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateRes(Ident: Integer);
@@ -143,8 +269,10 @@ Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
-Count=1
-1=CreateResRec
+Count=3
+1=Create
+2=CreateFmt
+3=CreateResRec
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateResRec(ResStringRec: PResStringRec);
@@ -167,8 +295,10 @@ Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
-Count=1
-1=CreateRes
+Count=3
+1=Create
+2=CreateFmt
+3=CreateRes
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LastError: DWORD read FLastError;
@@ -196,7 +326,8 @@ property LastErrorMsg: string read FLastErrorMsg;
 [ShortDescr]
 Error string corresponding to LastError.
 [Description]
-The LastErrorMsg property contains an error string corresponding to the LastError.
+The LastErrorMsg property contains the error message string associated with the last
+error code.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -207,90 +338,9 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Kylix=1
 FPC=1.x
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-EJclError = class (Exception);
-[ShortDescr]
-Base exception class for all JCL exceptions.
-[Description]
-EJclError is the base class used for all exception classes in the JCL. It inherits
-directly from Exception without adding any new functionality. It only exists to
-provide a distinction between exceptions raised by the JCL and those raised by
-the RTL/VCL and 3rd parties. It does introduce two constructors, CreateResRec and
-CreateResRecFmt, which are replacements for the Exception class methods CreateRes
-and CreateResFmt respectively (to remove the need for overloads and backwards
-compatibility).
-[Quick Info]
-Kind=Type
-Unit=JclBase
-Category=Base Services
-SubCat=EJclError
-Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
-[ShortDescr]
-Creates an instance of EJclError with a message loaded from the application's resource and then formatted.
-[Description]
-Creates an instance of EJclError with a message loaded from the application's
-resource and then formatted with additional information. The message is specified
-using the ResStringRec parameter and is used as:<BR>
-  <P class="syntax">
-  resourcestring<BR>
-    RsMyResource = 'Oops, an error occurred with code %u';<BR>
-  raise EJclError.CreateResRecFmt(@RsMyResource, [GetLastError]);<BR>
-  </P>
-[Parameters]
-Count=2
-1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
-2=Args:array of const=Array of value used to format the message string with. See
-the Format function for more information on how to use these parameters (internally
-Format is used to do the formatting).
-[Quick Info]
-Kind=Method
-Visibility=Public
-Unit=JclBase
-Category=Base Services
-SubCat=EJclError
-Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
 [SeeAlso]
 Count=1
-1=CreateResRec
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor CreateResRec(ResStringRec: PResStringRec);
-[ShortDescr]
-Creates an instance of EJclError with a simple message loaded from the application's resource.
-[Description]
-Creates an instance of EJclError with a simple message loaded from the application's
-resource. The message is specified using the ResStringRec parameter and is used as:<BR>
-  <P class="syntax">
-  resourcestring<BR>
-    RsMyResource = 'Oops, an error occurred';<BR>
-  raise EJclError.CreateResRec(@RsMyResource);<BR>
-  </P>
-[Parameters]
-Count=1
-1=ResStringRec:PResStringRec=Pointer to a resource string. See the example above.
-[Quick Info]
-Kind=Method
-Visibility=Public
-Unit=JclBase
-Category=Base Services
-SubCat=EJclError
-Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
-[SeeAlso]
-Count=1
-1=CreateResRecFmt
+1=LastError
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 Float = Extended
@@ -299,8 +349,8 @@ Generic floating point type.
 [Description]
 Float represents a generic floating point type and is used mostly in JclMath.
 Float is conditionally defined as either Extended, Double or Single with Extended
-being the default. You can change the type that Float is defined as on a global
-scale by using the MATH_PRECISION_X compiler directives.
+being the default. You can change the type that Float is defined as globally
+by using the MATH_PRECISION_X compiler directives.
 See <REF Target"..\..\About JCL\Compiler Directives">Compiler Directives</REF>
 for more information.
 [Quick Info]
@@ -359,7 +409,7 @@ Int64 = packed record
 end;
 [ShortDescr]
 Int64 is used to simulate an unsigned 64-bit value in compilers which do not
-natively support this type. All supported compilers except Delphi3 and
+natively support this type. All supported compilers except Delphi 3 and
 C++ Builder 3 natively support Int64 in which case Int64 is not redefined. Various
 support routines have been defined to assist manipulating an Int64.
 [RecordFields]
@@ -441,8 +491,8 @@ Count=2
 2=I2:Int64=Second Int64
 [Result]
 If I1 equals I2 the result is 0, if I1 is larger than I2 the result is greater than
-0 (more specifically 1) and if I1 is smaller than I2 the result is smaller than 0
-(more specifically -1).
+0 (specifically 1) and if I1 is smaller than I2 the result is smaller than 0
+(specifically -1).
 [Quick Info]
 Unit=JclBase
 Category=Base Services
@@ -461,7 +511,8 @@ procedure CardinalsToI64(var I: Int64; LowPart, HighPart: Cardinal);
 [ShortDescr]
 Packs the supplied 32 bit values in an Int64
 [Description]
-CardinalsToInt64 packs the two supplied 32 bit values into a single Int64.
+CardinalsToInt64 packs the two supplied 32 bit values into a single Int64. Note
+that this routine is only available for compilers that natively support Int64.
 [Parameters]
 Count=3
 1=I:Int64=The 64 bit value into which to pack the high and low parts.
@@ -485,6 +536,7 @@ procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 Extracts the high and low 32 bit values from an Int64.
 [Description]
 I64ToCardinals extracts the high and low 32 bit values from the supplied Int64.
+Note that this routine is only available for compilers that natively support Int64.
 [Parameters]
 Count=3
 1=I:Int64=The 64 bit value from which to extract the high and low parts.
@@ -520,8 +572,8 @@ reference an element of the array you use MyArray^[Index] where Index is the ind
 of the element between 0 and the length of the array minus 1. When you are done
 with the array you must release it's memory by calling <REF Target"..\DynArrayFinalize">DynArrayFinalize</REF>.
   <P><B>Compiler supports dynamic arrays</B> (Note that routines that take a TDynArray
-  as a parameter need an actual TDynArray so you can't declare the variable using
-  the "array of Type" construct):
+  as a parameter need an actual TDynArray so you can't declare the parameter using
+  the "array of Type" syntax):
   <TABLE>
   <TR VALIGN="top">
   <TH align=left width=50%>Type</TH>
@@ -808,9 +860,9 @@ TObjectList = class (TList)
 TList descendent to maintain a list of TObject descendants.
 [Description]
 TObjectList is a TList descendant adapted to maintain a list of TObject descendants
-which can optionally be owned by the class. If the class owns the items, it will 
+which can optionally be owned by the class. If the class owns the items, it will
 automatically free the objects when the list is cleared. This class is only provided 
-for backward compatibility and is not a full-fledged implementation of TObjectList 
+for backward compatibility and is not a full-fledged implementation of TObjectList
 as found in Delphi 5 and up.
 [Quick Info]
 Unit=JclBase
@@ -878,5 +930,45 @@ Category=Base Services
 SubCat=TObjectList
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure RaiseLastOSError;
+[ShortDescr]
+Raises an exception for the last occurring OS or system library error.
+[Description]
+Call RaiseLastOSError to raise an EWin32Error exception for the last OS API call that
+failed. RaiseLastOSError retrieves the code for the last occurring API call error,
+if any. If this belongs to a previously occurring error, RaiseLastOSError raises an
+EWin32Error exception with the error code and message associated with that error.
+This routine is provided for backwards compatibility.
+[Quick Info]
+Unit=JclBase
+Category=Base Services
+SubCat=Compatibility
+Author=JCL Team;jcl@delphi-jedi.org
+Delphi=4,5
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+IInterface = IUnknown;
+[ShortDescr]
+IInterface is the base class for all Object Pascal interfaces.
+[Description]
+IInterface is the base class for all Object Pascal interfaces. This interface
+declaration is provided for backwards compatibility. When compiling with a pre
+Delphi 6 compiler it is declared as an alias for IUnknown. In Delphi 6 and above,
+this interface is declared in the System.pas unit and IUnknown is declared as an
+alias for IInterface. For more information see the Delphi for IUnknown or IInterface
+depending on your Delphi version.
+[Quick Info]
+Kind=Type
+Unit=JclBase
+Category=Base Services
+SubCat=Compatibility
+Author=JCL Team;jcl@delphi-jedi.org
+Delphi=4,5
 Kylix=1
 FPC=1.x
