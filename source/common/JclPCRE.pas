@@ -187,13 +187,17 @@ var
 begin
   Result := 0;
   if RunTime then
+  begin
     for I := Low(TJclAnsiRegExOption) to High(TJclAnsiRegExOption) do
       if I in Options then
-        Result := Result or cRunOptions[I]
+        Result := Result or cRunOptions[I];
+  end
   else
+  begin
     for I := Low(TJclAnsiRegExOption) to High(TJclAnsiRegExOption) do
       if I in Options then
-        Result := Result or cDesignOptions[I]
+        Result := Result or cDesignOptions[I];
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -261,6 +265,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.4  2004/07/28 00:14:12  rrossmair
+// fixed TJclAnsiRegEx.GetAPIOptions bug introduced in 1.3
+//
 // Revision 1.3  2004/07/27 06:42:23  marquardt
 // style cleaning of pcre files
 //
