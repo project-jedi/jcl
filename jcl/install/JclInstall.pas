@@ -87,7 +87,6 @@ type
     procedure AddHelpToOpenHelp(Installation: TJclBorRADToolInstallation);
     {$ENDIF MSWINDOWS}
     procedure CleanupRepository(Installation: TJclBorRADToolInstallation);
-    procedure CopyFiles(Units: TStrings; const Ext, TargetDir: string);
     function CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
     function DocFileName(const BaseFileName: string): string;
     procedure InstallationStarted(Installation: TJclBorRADToolInstallation);
@@ -277,7 +276,7 @@ begin
   Dst := nil;
   try
     Src := TFileStream.Create(Source, fmOpenRead);
-    Dst := TFileStream.Create(Source, fmOpenWrite);
+    Dst := TFileStream.Create(Destination, fmCreate);
     Dst.CopyFrom(Src, 0);
     Result := True;
   finally
@@ -286,6 +285,19 @@ begin
   end;
 end;
 {$ENDIF UNIX}
+
+function CopyFiles(Files: TStrings; const Ext, TargetDir: string): Boolean;
+var
+  I: Integer;
+  FileName: string;
+begin
+  Result := True;
+  for I := 0 to Files.Count - 1 do
+  begin
+    FileName := Format('%s.%s', [Files[I], Ext]);
+    Result := Result and FileCopy(PChar(FileName), PChar(TargetDir + FileName), True);
+  end;
+end;
 
 function FullPackageFileName(Installation: TJclBorRADToolInstallation; const BaseName: string): string;
 const
@@ -416,6 +428,19 @@ var
       Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
   end;
 
+  function CompileUnits: Boolean;
+  var
+    I: Integer;
+  begin
+    Result := True;
+    with Installation.DCC do
+      for I := 0 to Units.Count - 1 do
+      begin
+        Result := Result and Execute(Units[I]);
+        WriteInstallLog(Installation.DCC.Output);
+      end;
+  end;
+
 begin
   if Debug then
     UnitType := 'debug ';
@@ -493,20 +518,21 @@ begin
       if Result then
       {$ENDIF}
       try
-        Result := Execute(StringsToStr(Units, ' ', False));
         WriteInstallLog('');
         WriteInstallLog('Compiling .dcu files...');
-        WriteInstallLog(Installation.DCC.Output);
-        {$IFDEF KYLIX}
-        Options.Add('-P');   // generate position independent code (PIC)
-        Result := Execute(StringsToStr(Units, ' ', False));
-        WriteInstallLog('');
-        WriteInstallLog('Compiling dpu files...');
-        WriteInstallLog(Installation.DCC.Output);
-        {$ENDIF KYLIX}
+        Result := Result and CompileUnits;
         CopyResFiles(UnitOutputDir);
         if Tool.FeatureChecked(FID_JCL_CopyHppFiles, Installation) then
-          CopyFiles(Units, 'hpp', (Installation as TJclBCBInstallation).VclIncludeDir);
+        begin
+          Result := Result and CopyFiles(Units, 'hpp', (Installation as TJclBCBInstallation).VclIncludeDir);
+          WriteInstallLog('Copying .hpp files...');
+        end;
+        {$IFDEF KYLIX}
+        Options.Add('-P');   // generate position independent code (PIC)
+        WriteInstallLog('');
+        WriteInstallLog('Compiling dpu files...');
+        Result := Result and CompileUnits;
+        {$ENDIF KYLIX}
       finally
         SetCurrentDir(SaveDir);
       end;
@@ -824,6 +850,8 @@ begin
       MakeNode := AddNode(ProductNode, RsMake, FID_JCL_Make);
       AddMakeNodes(MakeNode, False);
       AddMakeNodes(MakeNode, True);
+      if (Installation is TJclBCBInstallation) then
+        AddNode(MakeNode, Format(RsCopyHppFiles, [(Installation as TJclBCBInstallation).VclIncludeDir]), FID_JCL_CopyHppFiles, False);
 
       {$IFDEF KYLIX}
       AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
@@ -843,11 +871,9 @@ begin
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
-      if (Installation is TJclBCBInstallation) then
-        AddNode(MakeNode, Format(RsCopyHppFiles, [(Installation as TJclBCBInstallation).VclIncludeDir]), FID_JCL_CopyHppFiles, False)
-      else
+      if not (Installation is TJclBCBInstallation) then
       begin
-        { TODO -orrossmair : 
+        { TODO -orrossmair :
 It has been reported that IDE experts don't work under Win98.  
 Leave these options unchecked for Win9x/WinME until that has been examined. }
         TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts, IsWinNT);
@@ -953,18 +979,6 @@ begin
   Inc(FLogSize, N);
   ShowProgress;
   Tool.WriteInstallLog(Msg);
-end;
-
-procedure TJclInstall.CopyFiles(Units: TStrings; const Ext, TargetDir: string);
-var
-  I: Integer;
-  FileName: string;
-begin
-  for I := 0 to Units.Count - 1 do
-  begin
-    FileName := Format('%s.%s', [Units[I], Ext]);
-    FileCopy(PChar(FileName), PChar(TargetDir + FileName), False);
-  end;
 end;
 
 end.
