@@ -8,7 +8,8 @@
   <Requires>
     <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="visualclx" Targets="all" Condition=""/>
-    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="DJcl" Targets="D5,D6,D7" Condition=""/>
+    <Package Name="CJcl" Targets="C5,C6" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="c6,d6,d7,k3" Formname="" Condition=""/>
