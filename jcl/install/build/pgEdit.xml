@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Configuration>
+  <!-- These are the values stored by jaxStore -->
+  <pgEdit>
+  </pgEdit>
+  <!--
+    The nodes below are read by the generation process.
+    Packages are generated according to a model. The models are defined
+    below and contain generic informations such as the prefix, the format,
+    the location of packages and the location of the include file that
+    contains conditional directives (only used for BCB)
+    Then each model defines Targets and Aliases as described below:
+
+    First, the targets:
+
+       The format of each target node is:
+          name dir pname pdir env ver defines
+
+       name     The name of the target, compulsory
+       dir      The directory where to generate the packages. Defaults to name
+       pname    The name of the associated Perso target. A perso target
+                is the target that will be considered to allow the generation
+                of a different package for a version of the target that do not
+                support some features (Database generally). Leave empty if there
+                are no reason to use this feature.
+       pdir     The directory for the associated perso target. Defaults to pname
+       env      A character to identify the development environment. Defaults to
+                the first character of name
+       ver      A character to identify the version of the environment. Defaults
+                to the second character of name
+       defines  A comma separated string to indicate which Conditional
+                Compilation symbols are defined as the result of using this
+                target so that your include file can enclose some $DEFINE in
+                $IFDEF that relate to the compiler being used
+       PathSep  Indicates which character is to be used as a path separator for 
+                the target. If not specified, this value defaults to "\"
+       IsClx    If set to 1 (True), then the target is a CLX target
+
+    Then aliases:
+
+       The format for each alias node is:
+          name value
+
+       name   the name of the alias
+       value  the comma separated list of targets this alias will expand to.
+              No recursion is done. You don't have to specify the 'all' alias,
+              it will be derived from the target list. If you defined some Perso
+              target, do not forget to include them in the value for your alias
+              
+    Finally, CLX filename replacements (see accompanying doc for more details)
+       
+       The format for each filename node is:
+          original replacement
+          
+       original     the prefix to be replaced in file names
+       replacement  the value to use as a replacement
+
+    Be careful, all properties of the model node must exist and the targets and
+    aliases children must exist too. If there is no target specified, none will
+    be available.
+  -->
+  <models>
+    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
+      <targets>
+        <target name="c5" pname="c5s" pdir="c5std"/>
+        <target name="c6" pname="c6p" pdir="c6per"/>
+        <target name="d5" pname="d5s" pdir="d5std"/>
+        <target name="d6" pname="d6p" pdir="d6per"/>
+        <target name="d7" pname="d7p" pdir="d7per"/>
+        <target name="d7clx" IsClx="1"/>
+        <target name="k3" pname="k3p" pdir="k3per" pathsep="/" IsClx="1"/>
+        <target name="d9"/>
+      </targets>
+      <aliases>
+        <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9"/>
+        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p,d9"/>
+        <alias name="Bcb" value="c5,c5s,c6,c6p"/>
+        <alias name="Kylix" value="k3,k3p"/>
+        <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9"/>
+        <alias name="Linux" value="k3,k3p"/>
+        <alias name="allclx" value="d7clx,k3,k3p"/>
+        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9"/>
+        <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9"/>
+      </aliases>
+      <ClxReplacements>
+        <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
+        <replacement original="\design\Jv" replacement="\qdesign\JvQ"/>
+        <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
+      </ClxReplacements>
+    </model>
+    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
+      <targets>
+        <target name="c5"/>
+        <target name="c6"/>
+        <target name="d5"/>
+        <target name="d5.dev"/>
+        <target name="d6"/>
+        <target name="d6.dev"/>
+        <target name="d7"/>
+        <target name="d7.dev"/>
+        <target name="d9"/>
+        <target name="k3" PathSep="/"/>
+        <target name="k3.dev" PathSep="/"/>
+      </targets>
+      <aliases>
+        <alias name="Delphi" value="d5,d6,d7,d9"/>
+        <alias name="Bcb" value="c5,c6"/>
+        <alias name="Kylix" value="k2,k3,k3p"/>
+        <alias name="Windows" value="c5,c6,d5,d6,d7,d9"/>
+        <alias name="Linux" value="k2,k3,k3p"/>
+      </aliases>
+    </Model>
+  </models>
+</Configuration>
