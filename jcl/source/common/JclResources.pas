@@ -518,8 +518,9 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
-  RsUnableToOpenKeyRead  = 'Unable to open the "%s" key for read';
-  RsUnableToOpenKeyWrite = 'Unable to open the "%s" key for write';
+  RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
+  RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
+  RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
 
 //------------------------------------------------------------------------------
 // JclSscanf
