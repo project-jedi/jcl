@@ -18,7 +18,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: November 16, 2001                                                                 }
+{ Last modified: May 26, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -29,6 +29,9 @@ unit JclIniFiles;
 {$WEAKPACKAGEUNIT ON}
 
 interface
+
+uses
+  Classes, IniFiles, SysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files
@@ -41,10 +44,14 @@ procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);
 procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);
 procedure IniWriteString(const FileName, Section, Line, Value: string);
 
-implementation
+//--------------------------------------------------------------------------------------------------
+// Initialization (ini) Files helper routines
+//--------------------------------------------------------------------------------------------------
 
-uses
-  IniFiles;
+procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+
+implementation
 
 //==================================================================================================
 // Initialization Files
@@ -131,5 +138,44 @@ begin
     Ini.Free;
   end;
 end;
+
+//==================================================================================================
+// Initialization (ini) Files helper routines
+//==================================================================================================
+
+const
+  ItemCountName = 'Count';
+
+//--------------------------------------------------------------------------------------------------
+
+procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+var
+  Count, I: Integer;
+begin
+  with IniFile do
+  begin
+    Strings.Clear;
+    Count := ReadInteger(Section, ItemCountName, 0);
+    for I := 0 to Count - 1 do
+      Strings.Add(ReadString(Section, IntToStr(I), ''));
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+var
+  I: Integer;
+begin
+  with IniFile do
+  begin
+    EraseSection(Section);
+    WriteInteger(Section, ItemCountName, Strings.Count);
+    for I := 0 to Strings.Count - 1 do
+      WriteString(Section, IntToStr(I), Strings[I]);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
