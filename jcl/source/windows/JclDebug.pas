@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 31, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ Various debugging support routines and classes. This includes: Diagnostics   }
+{ routines, Trace routines, Stack tracing and Source Locations a la the C/C++  }
+{ __FILE__ and __LINE__ macro's.                                               }
+{                                                                              }
+{ Unit owner: Petr Vones                                                       }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -35,14 +42,6 @@ uses
   Contnrs,
   {$ENDIF DELPHI5_UP}
   JclBase, JclFileUtils, JclPeImage;
-
-//------------------------------------------------------------------------------
-// Crash
-//------------------------------------------------------------------------------
-
-{$IFDEF WIN32}
-function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
-{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Diagnostics
@@ -345,7 +344,8 @@ function LineOfAddr(const Addr: Pointer): Integer;
 function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 
-// Original function names
+// Original function names, deprecated will be removed in V2.0; do not use!
+
 function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
@@ -418,35 +418,35 @@ function JclLastExceptStackList: TJclStackInfoList;
 type
   PJmpInstruction = ^TJmpInstruction;
   TJmpInstruction = packed record // from System.pas
-    opCode: Byte;
-    distance: Longint;
+    OpCode: Byte;
+    Distance: Longint;
   end;
 
   TExcDescEntry = record // from System.pas
-    vTable: Pointer;
-    handler: Pointer;
+    VTable: Pointer;
+    Handler: Pointer;
   end;
 
   PExcDesc = ^TExcDesc;
   TExcDesc = packed record // from System.pas
-    jmp: TJmpInstruction;
+    JMP: TJmpInstruction;
     case Integer of
       0: (
-        instructions: array [0..0] of Byte);
+        Instructions: array [0..0] of Byte);
       1: (
-        cnt: Integer;
-        excTab: array [0..0] of TExcDescEntry);
+        Cnt: Integer;
+        ExcTab: array [0..0] of TExcDescEntry);
   end;
 
   PExcFrame = ^TExcFrame;
   TExcFrame =  record // from System.pas
-    next: PExcFrame;
-    desc: PExcDesc;
-    hEBP: Pointer;
+    Next: PExcFrame;
+    Desc: PExcDesc;
+    HEBP: Pointer;
     case Integer of
-    0:  ( );
-    1:  ( ConstructedObject: Pointer );
-    2:  ( SelfOfMethod: Pointer );
+      0: ();
+      1: (ConstructedObject: Pointer);
+      2: (SelfOfMethod: Pointer);
   end;
 
   TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
@@ -508,13 +508,25 @@ var
   RawStackTracking: Boolean;
   ExceptionFrameTrackingEnable: Boolean;
 
+//------------------------------------------------------------------------------
+// Miscellanuous
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+
+function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
+function IsDebuggerAttached: Boolean;
+function IsHandleValid(Handle: THandle): Boolean;
+
+{$ENDIF WIN32}
+
 implementation
 
 uses
   {$IFDEF WIN32}
   JclRegistry,
   {$ENDIF WIN32}
-  JclStrings, JclSysUtils;
+  JclStrings, JclSysInfo, JclSysUtils;
 
 {$UNDEF StackFramesWasOn}
 {$IFOPT W+}
@@ -522,32 +534,10 @@ uses
 {$ENDIF W+}
 
 //==============================================================================
-// Crash
-//==============================================================================
-
-{$IFDEF WIN32}
-
-function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
-const
-  CrashCtrlScrollKey = 'System\CurrentControlSet\Services\i8042prt\Parameters';
-  CrashCtrlScrollName = 'CrashOnCtrlScroll';
-var
-  Enabled: Integer;
-begin
-  Enabled := 0;
-  if Enable then
-    Enabled := 1;
-  RegWriteInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName, Enabled);
-  Result := RegReadInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName) = Enabled;
-end;
-
-{$ENDIF WIN32}
-
-//==============================================================================
 // Diagnostics
 //==============================================================================
 
-procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
+procedure AssertKindOf(const ClassName: string; const Obj: TObject);
 var
   C: TClass;
 begin
@@ -562,7 +552,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure AssertKindOf(const ClassType: TClass; const Obj: TObject); overload;
+procedure AssertKindOf(const ClassType: TClass; const Obj: TObject);
 begin
   Assert(Obj.InheritsFrom(ClassType));
 end;
@@ -810,66 +800,67 @@ var
   end;
 
 begin
-  if FStream = nil then
-    Exit;
-  CurrPos := FStream.Memory;
-  EndPos := CurrPos + FStream.Size;
-  if SyncToHeader(TableHeader) then
-    while IsDecDigit do
-    begin
-      A := ReadAddress;
-      SkipWhiteSpace;
-      L := ReadHexValue;
-      P1 := ReadString;
-      P2 := ReadString;
-      SkipEndLine;
-      ClassTableItem(A, L, P1, P2);
-    end;
-  if SyncToHeader(SegmentsHeader) then
-    while IsDecDigit do
-    begin
-      A := ReadAddress;
-      SkipWhiteSpace;
-      L := ReadHexValue;
-      FindParam('C');
-      P1 := ReadString;
-      FindParam('M');
-      P2 := ReadString;
-      SkipEndLine;
-      SegmentItem(A, L, P1, P2);
-    end;
-  if SyncToHeader(PublicsByNameHeader) then
-    while IsDecDigit do
-    begin
-      A := ReadAddress;
-      P1 := ReadString;
-      SkipWhiteSpace;
-      PublicsByNameItem(A, P1);
-    end;
-  if SyncToHeader(PublicsByValueHeader) then
-    while IsDecDigit do
-    begin
-      A := ReadAddress;
-      P1 := ReadString;
-      SkipWhiteSpace;
-      PublicsByValueItem(A, P1);
-    end;
-  while SyncToPrefix(LineNumbersPrefix) do
+  if FStream <> nil then
   begin
-    FLastUnitName := CurrPos;
-    FLastUnitFileName := CurrPos;
-    while FLastUnitFileName^ <> '(' do
-      Inc(FLastUnitFileName);
-    SkipEndLine;
-    LineNumberUnitItem(FLastUnitName, FLastUnitFileName);
-    repeat
-      SkipWhiteSpace;
-      L := ReadDecValue;
-      SkipWhiteSpace;
-      A := ReadAddress;
-      SkipWhiteSpace;
-      LineNumbersItem(L, A);
-    until not IsDecDigit;
+    CurrPos := FStream.Memory;
+    EndPos := CurrPos + FStream.Size;
+    if SyncToHeader(TableHeader) then
+      while IsDecDigit do
+      begin
+        A := ReadAddress;
+        SkipWhiteSpace;
+        L := ReadHexValue;
+        P1 := ReadString;
+        P2 := ReadString;
+        SkipEndLine;
+        ClassTableItem(A, L, P1, P2);
+      end;
+    if SyncToHeader(SegmentsHeader) then
+      while IsDecDigit do
+      begin
+        A := ReadAddress;
+        SkipWhiteSpace;
+        L := ReadHexValue;
+        FindParam('C');
+        P1 := ReadString;
+        FindParam('M');
+        P2 := ReadString;
+        SkipEndLine;
+        SegmentItem(A, L, P1, P2);
+      end;
+    if SyncToHeader(PublicsByNameHeader) then
+      while IsDecDigit do
+      begin
+        A := ReadAddress;
+        P1 := ReadString;
+        SkipWhiteSpace;
+        PublicsByNameItem(A, P1);
+      end;
+    if SyncToHeader(PublicsByValueHeader) then
+      while IsDecDigit do
+      begin
+        A := ReadAddress;
+        P1 := ReadString;
+        SkipWhiteSpace;
+        PublicsByValueItem(A, P1);
+      end;
+    while SyncToPrefix(LineNumbersPrefix) do
+    begin
+      FLastUnitName := CurrPos;
+      FLastUnitFileName := CurrPos;
+      while FLastUnitFileName^ <> '(' do
+        Inc(FLastUnitFileName);
+      SkipEndLine;
+      LineNumberUnitItem(FLastUnitName, FLastUnitFileName);
+      repeat
+        SkipWhiteSpace;
+        L := ReadDecValue;
+        SkipWhiteSpace;
+        A := ReadAddress;
+        SkipWhiteSpace;
+        LineNumbersItem(L, A);
+      until not IsDecDigit;
+    end;
   end;
 end;
 
@@ -881,8 +872,7 @@ procedure TJclMapParser.ClassTableItem(const Address: TJclMapAddress;
   Len: Integer; SectionName, GroupName: PJclMapString);
 begin
   if Assigned(FOnClassTable) then
-    FOnClassTable(Self, Address, Len, MapStringToStr(SectionName),
-    MapStringToStr(GroupName));
+    FOnClassTable(Self, Address, Len, MapStringToStr(SectionName), MapStringToStr(GroupName));
 end;
 
 //------------------------------------------------------------------------------
@@ -925,8 +915,7 @@ procedure TJclMapParser.SegmentItem(const Address: TJclMapAddress;
   Len: Integer; GroupName, UnitName: PJclMapString);
 begin
   if Assigned(FOnSegmentItem) then
-    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName),
-    MapStringToStr(UnitName));
+    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToStr(UnitName));
 end;
 
 //==============================================================================
@@ -966,8 +955,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclMapScanner.LineNumbersItem(LineNumber: Integer;
-  const Address: TJclMapAddress);
+procedure TJclMapScanner.LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress);
 var
   C: Integer;
 begin
@@ -1305,20 +1293,21 @@ var
   CheckSum: Integer;
 begin
   Result := DataStream.Size >= SizeOf(TJclDbgHeader);
-  if not Result then
-    Exit;
-  P := DataStream.Memory;
-  EndData := P + DataStream.Size;
-  Header := PJclDbgHeader(P);
-  CheckSum := 0;
-  Header^.CheckSum := 0;
-  Header^.CheckSumValid := True;
-  while P < EndData do
+  if Result then
   begin
-    Inc(CheckSum, PInteger(P)^);
-    Inc(PInteger(P));
+    P := DataStream.Memory;
+    EndData := P + DataStream.Size;
+    Header := PJclDbgHeader(P);
+    CheckSum := 0;
+    Header^.CheckSum := 0;
+    Header^.CheckSumValid := True;
+    while P < EndData do
+    begin
+      Inc(CheckSum, PInteger(P)^);
+      Inc(PInteger(P));
+    end;
+    Header^.CheckSum := CheckSum;
   end;
-  Header^.CheckSum := CheckSum;
 end;
 
 //------------------------------------------------------------------------------
@@ -2333,20 +2322,28 @@ begin
   Result := FileOfAddr(Addr);
 end;
 
+//------------------------------------------------------------------------------
+
 function __MODULE_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := ModuleOfAddr(Addr);
 end;
+
+//------------------------------------------------------------------------------
 
 function __PROC_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := ProcOfAddr(Addr);
 end;
 
+//------------------------------------------------------------------------------
+
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
 begin
   Result := LineOfAddr(Addr);
 end;
+
+//------------------------------------------------------------------------------
 
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
@@ -2426,9 +2423,9 @@ end;
 
 function ValidCodeAddr(CodeAddr: DWORD): Boolean;
 begin
-//!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
+  //!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
   Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
-//!  Result := FindHInstance(Pointer(CodeAddr)) <> 0;
+  //!  Result := FindHInstance(Pointer(CodeAddr)) <> 0;
 end;
 
 //------------------------------------------------------------------------------
@@ -2436,8 +2433,8 @@ end;
 // Validate that the code address is a valid code site
 //
 // Information from Intel Manual 24319102(2).pdf, Download the 6.5 MBs from:
-//  http://developer.intel.com/design/pentiumii/manuals/243191.htm
-//  Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
+//   http://developer.intel.com/design/pentiumii/manuals/243191.htm
+//   Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
 
 function ValidCallSite(CodeAddr: DWORD): Boolean;
 var
@@ -2446,7 +2443,7 @@ var
   C4P, C8P: PDWORD;
 begin
   // First check that the address is within range of our code segment!
-//!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
+  // ! Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
   Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P)) and
@@ -2459,22 +2456,21 @@ begin
     // Check the instruction prior to the potential call site.
     // We consider it a valid call site if we find a CALL instruction there
     // Check the most common CALL variants first
-//!    CodeDWORD8 := PDWORD(CodeAddr-8)^;
-//!    CodeDWORD4 := PDWORD(CodeAddr-4)^;
+    // ! CodeDWORD8 := PDWORD(CodeAddr-8)^;
+    // ! CodeDWORD4 := PDWORD(CodeAddr-4)^;
     CodeDWORD8 := C8P^;
     CodeDWORD4 := C4P^;
 
     Result :=
-          ((CodeDWORD8 and $FF000000) = $E8000000) // 5-byte, CALL [-$1234567]
-       or ((CodeDWORD4 and $38FF0000) = $10FF0000) // 2 byte, CALL EAX
-       or ((CodeDWORD4 and $0038FF00) = $0010FF00) // 3 byte, CALL [EBP+0x8]
-       or ((CodeDWORD4 and $000038FF) = $000010FF) // 4 byte, CALL ??
-       or ((CodeDWORD8 and $38FF0000) = $10FF0000) // 6-byte, CALL ??
-       or ((CodeDWORD8 and $0038FF00) = $0010FF00) // 7-byte, CALL [ESP-0x1234567]
+      ((CodeDWORD8 and $FF000000) = $E8000000) or // 5-byte, CALL [-$1234567]
+      ((CodeDWORD4 and $38FF0000) = $10FF0000) or // 2 byte, CALL EAX
+      ((CodeDWORD4 and $0038FF00) = $0010FF00) or // 3 byte, CALL [EBP+0x8]
+      ((CodeDWORD4 and $000038FF) = $000010FF) or // 4 byte, CALL ??
+      ((CodeDWORD8 and $38FF0000) = $10FF0000) or // 6-byte, CALL ??
+      ((CodeDWORD8 and $0038FF00) = $0010FF00) or // 7-byte, CALL [ESP-0x1234567]
     // It is possible to simulate a CALL by doing a PUSH followed by RET,
     // so we check for a RET just prior to the return address
-       or ((CodeDWORD4 and $FF000000) = $C3000000);// PUSH XX, RET
-
+      ((CodeDWORD4 and $FF000000) = $C3000000);   // PUSH XX, RET
     // Because we're not doing a complete disassembly, we will potentially report
     // false positives. If there is odd code that uses the CALL 16:32 format, we
     // can also get false negatives.
@@ -2582,15 +2578,12 @@ var
 begin
   // Start at level 0
   StackInfo.Level := 0;
-
   // Get the current stack fram from the EBP register
   StackFrame := GetEBP;
-
   // We define the bottom of the valid stack to be the current EBP Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
   // stack than what would define valid stack frames.
   BaseOfStack := DWORD(StackFrame) - 1;
-
   // Loop over and report all valid stackframes
   while NextStackFrame(StackFrame, StackInfo) do
     StoreToList(List, StackInfo);
@@ -2606,38 +2599,29 @@ var
 begin
   // We define the bottom of the valid stack to be the current ESP pointer
   BaseOfStack := DWORD(GetESP);
-
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
   FillChar(StackInfo, SizeOf(StackInfo), 0);
-
   // Clear the previous call address
   PrevCaller := 0;
-
   // Get a pointer to the current bottom of the stack
   StackPtr := PDWORD(BaseOfStack);
-
   // Loop through all of the valid stack space
   while DWORD(StackPtr) < TopOfStack do
   begin
-
     // If the current DWORD on the stack,
     // refers to a valid call site...
     if ValidCallSite(StackPtr^) and (StackPtr^ <> PrevCaller) then
     begin
       // then pick up the callers address
       StackInfo.CallerAdr := StackPtr^;
-
       // remember to callers address so that we don't report it repeatedly
       PrevCaller := StackPtr^;
-
       // increase the stack level
       Inc(StackInfo.Level);
-
       // then report it back to our caller
       StoreToList(List, StackInfo);
     end;
-
     // Look at the next DWORD on the stack
     Inc(StackPtr);
   end;
@@ -2798,36 +2782,36 @@ function TJclExceptFrame.HandlerInfo(ExceptObj: TObject;
   var HandlerAt: Pointer): Boolean;
 var
   I: Integer;
-  vTable: Pointer;
+  VTable: Pointer;
 begin
   Result := FrameKind in [efkAnyException, efkAutoException];
   if not Result and (FrameKind = efkOnException) then
   begin
     I := 0;
-    vTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
-    while (I < ExcFrame.desc.cnt) and not Result and (vTable <> nil) do
+    VTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+    while (I < ExcFrame.Desc.Cnt) and not Result and (VTable <> nil) do
     begin
-      Result := (ExcFrame.desc.excTab[I].vTable = nil) or
-        (ExcFrame.desc.excTab[I].vTable = vTable);
+      Result := (ExcFrame.Desc.ExcTab[I].VTable = nil) or
+        (ExcFrame.Desc.ExcTab[I].VTable = VTable);
       if not Result then
       begin
-        Move(PChar(vTable)[vmtParent - vmtSelfPtr], vTable, 4);
-        if vTable = nil then
+        Move(PChar(VTable)[vmtParent - vmtSelfPtr], VTable, 4);
+        if VTable = nil then
         begin
-          vTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+          VTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
           Inc(I);
         end;
       end;
     end;
     if Result then
-      HandlerAt := ExcFrame.desc.excTab[I].handler;
+      HandlerAt := ExcFrame.Desc.ExcTab[I].Handler;
   end
   else
   if Result then
   begin
-    HandlerAt := Pointer(GetJmpDest(@ExcFrame.desc.instructions));
+    HandlerAt := Pointer(GetJmpDest(@ExcFrame.Desc.Instructions));
     if HandlerAt = nil then
-      HandlerAt := @ExcFrame.desc.instructions;
+      HandlerAt := @ExcFrame.Desc.Instructions;
   end
   else
     HandlerAt := nil;
@@ -2839,15 +2823,15 @@ function TJclExceptFrame.CodeLocation: Pointer;
 begin
   if FrameKind <> efkUnknown then
   begin
-    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc.instructions))));
+    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc.Instructions))));
       if Result = nil then
-        Result := @ExcFrame.desc.instructions;
+        Result := @ExcFrame.Desc.Instructions;
   end
   else
   begin
-    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc))));
+    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc))));
       if Result = nil then
-        Result := @ExcFrame.desc;
+        Result := @ExcFrame.Desc;
   end;
 end;
 
@@ -3011,8 +2995,76 @@ begin
   Result := ExceptionsHooked;
 end;
 
+//==============================================================================
+// Miscellanuous
+//==============================================================================
+
+{$IFDEF WIN32}
+
+function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
+const
+  CrashCtrlScrollKey = 'System\CurrentControlSet\Services\i8042prt\Parameters';
+  CrashCtrlScrollName = 'CrashOnCtrlScroll';
+var
+  Enabled: Integer;
+begin
+  Enabled := 0;
+  if Enable then
+    Enabled := 1;
+  RegWriteInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName, Enabled);
+  Result := RegReadInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName) = Enabled;
+end;
+
 //------------------------------------------------------------------------------
 
+function IsDebuggerAttached: Boolean;
+var
+  IsDebuggerPresent: function: Boolean; stdcall;
+  KernelHandle: THandle;
+  P: Pointer;
+begin
+  KernelHandle := GetModuleHandle(kernel32);
+  @IsDebuggerPresent := GetProcAddress(KernelHandle, 'IsDebuggerPresent');
+  if @IsDebuggerPresent <> nil then
+  begin
+    // Win98+ / NT4+
+    Result := IsDebuggerPresent
+  end
+  else
+  begin
+    // Win9x uses thunk pointer outside the module when under a debugger
+    P := GetProcAddress(KernelHandle, 'GetProcAddress');
+    Result := DWORD(P) < KernelHandle;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsHandleValid(Handle: THandle): Boolean;
+var
+  Duplicate: THandle;
+  Flags: DWORD;
+begin
+  if IsWinNT then
+    Result := GetHandleInformation(Handle, Flags)
+  else
+    Result := False;  
+  if not Result then
+  begin
+    // DuplicateHandle is used as an additional check for those object types not
+    // supported by GetHandleInformation (e.g. according to the documentation,
+    // GetHandleInformation doesn't support window stations and desktop although
+    // tests show that it does). GetHandleInformation is tried first because its
+    // much faster. Additionally GetHandleInformation is only supported on NT...
+    Result := DuplicateHandle(GetCurrentProcess, Handle, GetCurrentProcess,
+      @Duplicate, 0, False, DUPLICATE_SAME_ACCESS);
+    if Result then Result := CloseHandle(Duplicate);
+  end;
+end;
+
+{$ENDIF WIN32}
+
+//------------------------------------------------------------------------------
 
 initialization
 
