@@ -376,7 +376,7 @@ Count=1
 calling RaiseLastOSException.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
+function LookupGroupName(const Server: string; const RID: <REF Target"Types\TNetWellKnownRID">TNetWellKnownRID</REF>): string;
 [ShortDescr]
 Returns the textual representation of a well-know account.
 [Description]
@@ -395,6 +395,9 @@ Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=TNetWellKnownRID;Types\TNetWellKnownRID
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
@@ -441,3 +444,27 @@ Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
 Windows NT/2000=Yes
 Windows 95/98=Yes
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TNetWellKnownRID = (wkrAdmins, wkrUsers, wkrGuests, wkrPowerUsers, wkrBackupOPs, wkrReplicator, wkrEveryone);
+[ShortDescr]
+Well-known group accounts.
+[Description]
+TNetWellKnownRID is an enumeration of well-known group accounts on Windows NT and
+Windows 2000 machines. It is used in conjunction with <REF Target"..\LookupGroupName">LookupGroupName</REF>.
+[Enumeration]
+Count=7
+1=wkrAdmins=The administrators' group.
+2=wkrUsers=The users' group.
+3=wkrGuests=The guests' group.
+4=wkrPowerUsers=The power users' group.
+5=wkrBackupOPs=The backup operators' group.
+6=wkrReplicator=The replicators' group.
+7=wkrEveryone=All users belong to the everyone group.
+[Quick Info]
+Kind=Type
+Unit=JclLANMan
+Category=LAN MAnager
+SubCat=Group Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
