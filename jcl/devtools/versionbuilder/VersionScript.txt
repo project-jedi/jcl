@@ -2,34 +2,40 @@
 Folder=..\..\
 
 [GLOBAL]
-FileVersion=1.22.1.964
-ProductVersion=1.22.1.964 Release 1.22
+FileVersion=1.22.1.965
+ProductVersion=1.22.1.965 Release 1.22
 CompanyName=Project JEDI
 LegalCopyright=Copyright (C) 1999, 2002 Project JEDI
 
 
 [packages\DJCL40.RES]
-FileDescription=D4 package for JCL
+FileDescription=JCL runtime package for Delphi 4
 InternalName=DJCL40
 OriginalFilename=DJCL40.dpk
 ProductName=JEDI Code Library
 
 [packages\DJCL50.RES]
-FileDescription=D5 package for JCL
+FileDescription=JCL runtime package for Delphi 5
 InternalName=DJCL50
 OriginalFilename=DJCL50.dpk
 ProductName=JEDI Code Library
 
 [packages\DJCL60.RES]
-FileDescription=D6 package for JCL
+FileDescription=JCL runtime package for Delphi 6
 InternalName=DJCL60
 OriginalFilename=DJCL60.dpk
 ProductName=JEDI Code Library
 
 [packages\DJCL70.RES]
-FileDescription=D7 package for JCL
+FileDescription=JCL runtime package for Delphi 7
 InternalName=DJCL70
 OriginalFilename=DJCL70.dpk
+ProductName=JEDI Code Library
+
+[packages\CJCL50.RES]
+FileDescription=JCL runtime package for C++ Builder 5
+InternalName=CJCL50
+OriginalFilename=CJCL50.bpk
 ProductName=JEDI Code Library
 
 [examples\debugextension\JclDebugIde40.res]
