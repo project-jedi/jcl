@@ -31,7 +31,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   Classes, SysUtils;
 
 //------------------------------------------------------------------------------
@@ -54,14 +54,12 @@ const
 type
   PResStringRec = ^string;
 
-function SysErrorMessage(ErrNo : Integer) : string;
-{$ENDIF}
-
+function SysErrorMessage(ErrNo: Integer): string;
+{$ENDIF FPC}
 
 //------------------------------------------------------------------------------
 // EJclError
 //------------------------------------------------------------------------------
-
 
 type
   EJclError = class (Exception)
@@ -90,7 +88,7 @@ type
     property LastErrorMsg: string read FLastErrorMsg;
   end;
 
-{$ENDIF}
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Types
@@ -99,13 +97,13 @@ type
 type
   {$IFDEF MATH_EXTENDED_PRECISION}
   Float = Extended;
-  {$ENDIF}
+  {$ENDIF MATH_EXTENDED_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
   Float = Double;
-  {$ENDIF}
+  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   Float = Single;
-  {$ENDIF}
+  {$ENDIF MATH_SINGLE_PRECISION}
 
 {$IFNDEF COMPILER4_UP}
 
@@ -115,9 +113,9 @@ type
   LongWord = Cardinal;
   TSysCharSet = set of Char;
 
-{$ENDIF}
+{$ENDIF FPC}
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 type
   PPointer = ^Pointer;
@@ -149,21 +147,21 @@ type
   {$IFNDEF BCB3}
     1: (
       QuadPart: LONGLONG);
-  {$ENDIF}
+  {$ENDIF BCB3}
   end;
 
 procedure I64Assign(var I: Int64; const Low, High: Longint);
 procedure I64Copy(var Dest: Int64; const Source: Int64);
 function I64Compare(const I1, I2: Int64): Integer;
 
-{$ENDIF} // SUPPORTS_INT64
+{$ENDIF SUPPORTS_INT64}
 
 {$IFDEF SUPPORTS_INT64}
 
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 
-{$ENDIF} // SUPPORTS_INT64
+{$ENDIF SUPPORTS_INT64}
 
 // Redefinition of TLargeInteger to relieve dependency on Windows.pas
 
@@ -228,13 +226,13 @@ const
   DynSingleArrayHigh   = 536870908;  // 2^31 / SizeOf(Single)
   {$IFDEF MATH_EXTENDED_PRECISION}
   DynFloatArrayHigh    = 214748363;  // 2^31 / SizeOf(Extended)
-  {$ENDIF}
+  {$ENDIF MATH_EXTENDED_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
   DynFloatArrayHigh    = 536870908;  // 2^31 / SizeOf(Double)
-  {$ENDIF}
+  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_SINGLE_PRECISION}
   DynFloatArrayHigh    = 268435448;  // 2^31 / SizeOf(Single)
-  {$ENDIF}
+  {$ENDIF MATH_SINGLE_PRECISION}
   DynPointerArrayHigh  = 536870908;  // 2^31 / SizeOf(Pointer)
 
 type
@@ -273,7 +271,7 @@ procedure DynArrayInitialize(var A; ElementSize, InitialLength: Longint);
 procedure DynArrayFinalize(var A);
 procedure DynArraySetLength(var A; NewLength: Integer);
 
-{$ENDIF} // SUPPORTS_DYNAMICARRAYS
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 // TObjectList
@@ -294,7 +292,7 @@ type
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
   end;
 
-{$ENDIF}
+{$ENDIF DELPHI5_UP}
 
 implementation
 
@@ -311,7 +309,7 @@ begin
   inherited Create(LoadResString(ResStringRec));
   {$ELSE}
   inherited Create(ResStringRec^);
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec;
@@ -321,7 +319,7 @@ begin
   inherited CreateFmt(LoadResString(ResStringRec), Args);
   {$ELSE}
   inherited CreateFmt(ResStringRec^, Args);
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 
@@ -331,12 +329,12 @@ end;
 
 {$IFDEF FPC}
 
-function SysErrorMessage(ErrNo : Integer) : string;  // TODO: Better Implementation
+function SysErrorMessage(ErrNo: Integer): string;  // TODO: Better Implementation
 begin
   Result := 'Win32 Error';
 end;
 
-{$ENDIF}
+{$ENDIF FPC}
 
 //==============================================================================
 // EJclWin32Error
@@ -379,11 +377,10 @@ begin
   inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ELSE}
   inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ENDIF}
-
+  {$ENDIF FPC}
 end;
 
-{$ENDIF}
+{$ENDIF WIN32}
 
 //==============================================================================
 // Dynamic array support
@@ -485,7 +482,7 @@ begin
   Pointer(A) := Pointer(Longint(P) + DynArrayRecSize);
 end;
 
-{$ENDIF} // SUPPORTS_DYNAMICARRAYS
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //==============================================================================
 // Int64 support
@@ -526,7 +523,7 @@ begin
     Result := 0;
 end;
 
-{$ENDIF} // SUPPORTS_INT64
+{$ENDIF SUPPORTS_INT64}
 
 //------------------------------------------------------------------------------
 
@@ -546,7 +543,7 @@ begin
   TULargeInteger(I).HighPart := HighPart;
 end;
 
-{$ENDIF} // SUPPORTS_INT64
+{$ENDIF SUPPORTS_INT64}
 
 //==============================================================================
 // TObjectList
@@ -586,6 +583,6 @@ begin
   Put(Index, Value);
 end;
 
-{$ENDIF}
+{$ENDIF DELPHI5_UP}
 
 end.
