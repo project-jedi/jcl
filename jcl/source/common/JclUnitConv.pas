@@ -52,18 +52,23 @@ const
 
   { Mathematical constants }
 
-  DegPerCycle: Float  = 360.0;
-  DegPerGrad: Float   = 0.9;
-  DegPerRad: Float    = 57.295779513082320876798154814105;
-  GradPerCycle: Float = 400.0;
-  GradPerDeg: Float   = 1.1111111111111111111111111111111;
-  GradPerRad: Float   = 63.661977236758134307553505349006;
-  RadPerCycle: Float  = 6.283185307179586476925286766559;
-  RadPerDeg: Float    = 0.017453292519943295769236907684886;
-  RadPerGrad: Float   = 0.015707963267948966192313216916398;
-  CyclePerDeg: Float  = 0.0027777777777777777777777777777778;
-  CyclePerGrad: Float = 0.0025;
-  CyclePerRad: Float  = 0.15915494309189533576888376337251;
+  DegPerCycle: Float      = 360.0;
+  DegPerGrad: Float       = 0.9;
+  DegPerRad: Float        = 57.295779513082320876798154814105;
+  GradPerCycle: Float     = 400.0;
+  GradPerDeg: Float       = 1.1111111111111111111111111111111;
+  GradPerRad: Float       = 63.661977236758134307553505349006;
+  RadPerCycle: Float      = 6.283185307179586476925286766559;
+  RadPerDeg: Float        = 0.017453292519943295769236907684886;
+  RadPerGrad: Float       = 0.015707963267948966192313216916398;
+  CyclePerDeg: Float      = 0.0027777777777777777777777777777778;
+  CyclePerGrad: Float     = 0.0025;
+  CyclePerRad: Float      = 0.15915494309189533576888376337251;
+  ArcMinutesPerDeg        = 60.0;
+  ArcSecondsPerArcMinute  = 60.0;
+  ArcSecondsPerDeg        = ArcSecondsPerArcMinute * ArcMinutesPerDeg;
+  DegPerArcMinute         = 1/ArcMinutesPerDeg;
+  DegPerArcSecond         = 1/ArcSecondsPerDeg;
 
 function HowAOneLinerCanBiteYou(const Step, Max: Longint): Longint;
 function MakePercentage(const Step, Max: Longint): Longint;
@@ -91,6 +96,10 @@ function GradToRad(const Grads: Float): Float;
 function RadToCycle(const Radians: Float): Float;
 function RadToDeg(const Radians: Float): Float;
 function RadToGrad(const Radians: Float): Float;
+function DmsToDeg(const D, M: Integer; const S: Float): Float;
+function DmsToRad(const D, M: Integer; const S: Float): Float;
+procedure DegToDms(const Deg: Float; out D, M: Integer; out S: Float);
+function DegToDmsStr(const Deg: Float; const SecondPrecision: Cardinal = 3): string;
 
 { Coordinate conversion }
 
@@ -169,7 +178,7 @@ function WattToHpMetric(const W: Float): Float;
 implementation
 
 uses
-  JclMath;
+  SysUtils, JclResources, JclMath;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -313,6 +322,47 @@ end;
 function RadToGrad(const Radians: Float): Float;
 begin
   Result := Radians * GradPerRad;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DmsToDeg(const D, M: Integer; const S: Float): Float;
+begin
+  DomainCheck((M < 0) or (S < 0));
+  Result := Abs(D) + M * DegPerArcMinute + S * DegPerArcSecond;
+  if D < 0 then Result := -Result;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DmsToRad(const D, M: Integer; const S: Float): Float;
+begin
+  Result := DegToRad(DmsToDeg(D, M, S));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure DegToDms(const Deg: Float; out D, M: Integer; out S: Float);
+var
+  DD, MM: Float;
+begin
+  DD := Abs(Deg);
+  MM := Frac(DD) * ArcMinutesPerDeg;
+  D := Trunc(DD);
+  M := Trunc(MM);
+  S := Frac(MM) * ArcSecondsPerArcMinute;
+  if Deg < 0 then D := -D;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DegToDmsStr(const Deg: Float; const SecondPrecision: Cardinal = 3): string;
+var
+  D, M: Integer;
+  S: Float;
+begin
+  DegToDMS(Deg, D, M, S);
+  Result := Format('%d° %d'' %.*f"', [D, M, SecondPrecision, S]);
 end;
 
 //==================================================================================================
