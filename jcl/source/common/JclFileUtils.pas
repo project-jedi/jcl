@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 26, 2003                                                                    }
+{ Last modified: October 29, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -4351,7 +4351,7 @@ var
   Folders: TStringList;
   CurrentItem: Integer;
   Counter: Integer;
-  LocAttr: Integer;
+  FindAttr: Integer;
 
   procedure BuildFolderList;
   var
@@ -4388,10 +4388,10 @@ var
     Rslt: Integer;
     CurrentFolder: String;
     Matches: Boolean;
-
   begin
     CurrentFolder := Folders[CurrentCounter];
-    Rslt := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
+
+    Rslt := FindFirst(CurrentFolder + FileMask, FindAttr, FindInfo);
 
     try
       while Rslt = 0 do
@@ -4402,14 +4402,14 @@ var
            amAny:
              Matches := True;
            amExact:
-             Matches := LocAttr = FindInfo.Attr;
+             Matches := Attr = FindInfo.Attr;
            amSubSetOf:
-             Matches := (LocAttr and FindInfo.Attr) = LocAttr;
+             Matches := (Attr and FindInfo.Attr) = Attr;
            amSuperSetOf:
-             Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
+             Matches := (Attr and FindInfo.Attr) = FindInfo.Attr;
            amCustom:
              if Assigned(FileMatchFunc) then
-               Matches := FileMatchFunc(LocAttr,  FindInfo);
+               Matches := FileMatchFunc(Attr,  FindInfo);
          end;
 
          if Matches then
@@ -4434,10 +4434,12 @@ begin
   try
     Folders.Add(RootDir);
 
-    if Attr = faAnyFile then
-      LocAttr := faReadOnly + faHidden + faSysFile + faArchive
+    case AttributeMatch of
+      amExact, amSuperSetOf:
+        FindAttr := Attr;
     else
-      LocAttr := Attr;
+      FindAttr := faAnyFile;
+    end;
 
     // here's the recursive search for nested folders
 
@@ -4536,12 +4538,19 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function IsFileNameMatch(FileName: string; const Mask: string;
-  const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
+  const CaseSensitive: Boolean): Boolean;
 begin
+  Result := True;
   {$IFDEF MSWINDOWS}
+  if (Mask = '') or (Mask = '*') or (Mask = '*.*') then
+    Exit;
   if Pos('.', FileName) = 0 then
     FileName := FileName + '.';  // file names w/o extension match '*.'
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  if (Mask = '') or (Mask = '*') then
+    Exit;
+  {$ENDIF UNIX}
   if CaseSensitive then
     Result := StrMatches(Mask, FileName)
   else
