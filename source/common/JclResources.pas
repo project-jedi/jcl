@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: February 27, 2002                                                                 }
+{ Last modified: March 07, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -230,6 +230,10 @@ resourcestring
   // TJclFileMapping.Create
 
   RsFileMappingOpenFile = 'Unable to open the file';
+
+  // TJclMappedTextReader
+
+  RsFileIndexOutOfRange = 'Index of out range';
 
   // FileGetTypeName()
 
