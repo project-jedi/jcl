@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: October 13, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1328,16 +1328,6 @@ begin
     Result := FLineNumbers[I].LineNumber;
     Offset := Addr - FLineNumbers[I].Addr;
   end;
-{  for I := Length(FLineNumbers) - 1 downto 0 do
-    if FLineNumbers[I].Addr <= Addr then
-    begin
-      if FLineNumbers[I].Addr >= ModuleStartAddr then
-      begin
-        Result := FLineNumbers[I].LineNumber;
-        Offset := Addr - FLineNumbers[I].Addr;
-      end;
-      Break;
-    end;}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1431,21 +1421,11 @@ begin
   Result := '';
   Offset := 0;
   I := SearchDynArray(FProcNames, SizeOf(FProcNames[0]), Search_MapProcName, @Addr, True);
-  if (I <> -1) and (FProcNames[I].Addr > ModuleStartAddr) then
+  if (I <> -1) and (FProcNames[I].Addr >= ModuleStartAddr) then
   begin
     Result := MapStringToStr(FProcNames[I].ProcName);
     Offset := Addr - FProcNames[I].Addr;
   end;
-{  for I := Length(FProcNames) - 1 downto 0 do
-    if FProcNames[I].Addr <= Addr then
-    begin
-      if FProcNames[I].Addr >= ModuleStartAddr then
-      begin
-        Result := MapStringToStr(FProcNames[I].ProcName);
-        Offset := Addr - FProcNames[I].Addr;
-      end;
-      Break;
-    end;}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1509,15 +1489,8 @@ begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
   I := SearchDynArray(FSourceNames, SizeOf(FSourceNames[0]), Search_MapProcName, @Addr, True);
-  if (I <> -1) and (FSourceNames[I].Addr > ModuleStartAddr) then
+  if (I <> -1) and (FSourceNames[I].Addr >= ModuleStartAddr) then
     Result := MapStringToStr(FSourceNames[I].ProcName);
-{  for I := Length(FSourceNames) - 1 downto 0 do
-    if FSourceNames[I].Addr <= Addr then
-    begin
-      if FSourceNames[I].Addr >= ModuleStartAddr then
-        Result := MapStringToStr(FSourceNames[I].ProcName);
-      Break;
-    end;}
 end;
 
 //==================================================================================================
