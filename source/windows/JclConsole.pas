@@ -20,7 +20,7 @@
 { This unit contains classes and routines to support windows Character-Mode Applications           }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: July 11, 2002                                                                     }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,10 +36,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Classes, SysUtils, Contnrs,
   JclBase;
 
 //--------------------------------------------------------------------------------------------------
