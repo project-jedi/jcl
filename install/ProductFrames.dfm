@@ -39,7 +39,7 @@ object ProductFrame: TProductFrame
       Height = 298
       Anchors = [akLeft, akTop, akRight, akBottom]
       Color = clInfoBk
-      Font.Charset = DEFAULT_CHARSET
+      Font.Charset = OEM_CHARSET
       Font.Color = clInfoText
       Font.Height = -11
       Font.Name = 'Lucida Console'
