@@ -1,31 +1,29 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclDebug.pas.                                           }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Various debugging support routines and classes. This includes: Diagnostics   }
-{ routines, Trace routines, Stack tracing and Source Locations a la the C/C++  }
-{ __FILE__ and __LINE__ macros.                                                }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: July 15, 2001                                                 }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclDebug.pas.                                                               }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Various debugging support routines and classes. This includes: Diagnostics routines, Trace       }
+{ routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: February 14, 2002                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclDebug;
 
@@ -43,9 +41,9 @@ uses
   {$ENDIF DELPHI5_UP}
   JclBase, JclFileUtils, JclPeImage, JclSynch;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Diagnostics
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
 procedure AssertKindOf(const ClassType: TClass; const Obj: TObject); overload;
@@ -55,9 +53,9 @@ procedure TraceFmt(const Fmt: string; const Args: array of const);
 procedure TraceLoc(const Msg: string);
 procedure TraceLocFmt(const Fmt: string; const Args: array of const);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // MAP file abstract parser
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclMapAddress = packed record
@@ -92,9 +90,9 @@ type
     property Stream: TJclFileMappingStream read FStream;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // MAP file parser
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclMapClassTableEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Len: Integer; const SectionName, GroupName: string) of object;
   TJclMapSegmentEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Len: Integer; const GroupName, UnitName: string) of object;
@@ -126,9 +124,9 @@ type
     property OnLineNumbers: TJclMapLineNumbersEvent read FOnLineNumbers write FOnLineNumbers;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // MAP file scanner
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclMapSegment = record
     StartAddr: DWORD;
@@ -172,14 +170,17 @@ type
     function SourceNameFromAddr(Addr: DWORD): string;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JCL binary debug data generator and scanner
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   JclDbgDataSignature = $4742444A; // JDBG
   JclDbgDataResName = 'JCLDEBUG';
   JclDbgFileExtension = '.jdbg';
+
+  MapFileExtension    = '.map';
+  DrcFileExtension    = '.drc';
 
 type
   PJclDbgHeader = ^TJclDbgHeader;
@@ -251,9 +252,9 @@ function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
   BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Source Locations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclDebugInfoSource = class;
@@ -295,9 +296,9 @@ type
     property Items[Index: Integer]: TJclDebugInfoSource read GetItems;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Various source location implementations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclDebugInfoMap = class (TJclDebugInfoSource)
   private
@@ -330,25 +331,25 @@ type
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Source location functions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 function IsSystemModule(const Module: HMODULE): Boolean;
 
-function Caller(Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Pointer;
+function Caller(Level: Integer = 0): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
-function FileByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function ModuleByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function ProcByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
-function LineByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer;
+function FileByLevel(const Level: Integer = 0): string;
+function ModuleByLevel(const Level: Integer = 0): string;
+function ProcByLevel(const Level: Integer = 0): string;
+function LineByLevel(const Level: Integer = 0): Integer;
 function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
 
 function FileOfAddr(const Addr: Pointer): string;
@@ -363,10 +364,10 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __FILE__(const Level: Integer = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __MODULE__(const Level: Integer = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __PROC__(const Level: Integer  = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __LINE__(const Level: Integer = 0): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
@@ -375,9 +376,9 @@ function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP} dep
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Info routines base list
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclStackBaseList = class (TObjectList)
@@ -390,9 +391,9 @@ type
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Stack info routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PDWORDArray = ^TDWORDArray;
@@ -431,7 +432,7 @@ type
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
-    procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean = False);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
@@ -439,11 +440,11 @@ type
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
-function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Exception frame info routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PJmpInstruction = ^TJmpInstruction;
@@ -519,9 +520,9 @@ type
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 function JclLastExceptFrameList: TJclExceptFrameList;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Global exceptional stack tracker enable routines and variables
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclStackTrackingOption = (stStack, stExceptFrame, stRawMode, stAllModules);
@@ -534,9 +535,9 @@ function JclStartExceptionTracking: Boolean;
 function JclStopExceptionTracking: Boolean;
 function JclExceptionTrackingActive: Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Thread exception tracking support
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclDebugThread = class (TThread)
@@ -550,7 +551,7 @@ type
     procedure DoSyncHandleException; dynamic;
     procedure HandleException;
   public
-    constructor Create(Suspended: Boolean; const AThreadName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
+    constructor Create(Suspended: Boolean; const AThreadName: string = '');
     destructor Destroy; override;
     property SyncException: Exception read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
@@ -595,9 +596,9 @@ type
 
 function JclDebugThreadList: TJclDebugThreadList;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Miscellanuous
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
 
@@ -615,9 +616,9 @@ uses
   {$ENDIF WIN32}
   JclHookExcept, JclStrings, JclSysInfo, JclSysUtils;
 
-//==============================================================================
+//==================================================================================================
 // Helper assembler routines
-//==============================================================================
+//==================================================================================================
 
 {$STACKFRAMES OFF}
 
@@ -626,14 +627,14 @@ asm
   MOV EAX, EBP
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetESP: Pointer;
 asm
   MOV EAX, ESP
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFS: Pointer;
 asm
@@ -641,7 +642,7 @@ asm
   MOV EAX, FS:[EAX]
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
 // http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
@@ -655,9 +656,9 @@ end;
 {$STACKFRAMES ON}
 {$ENDIF STACKFRAMES_ON}
 
-//==============================================================================
+//==================================================================================================
 // Diagnostics
-//==============================================================================
+//==================================================================================================
 
 procedure AssertKindOf(const ClassName: string; const Obj: TObject);
 var
@@ -672,28 +673,28 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AssertKindOf(const ClassType: TClass; const Obj: TObject);
 begin
   Assert(Obj.InheritsFrom(ClassType));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Trace(const Msg: string);
 begin
   OutputDebugString(PChar(StrDoubleQuote(Msg)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TraceFmt(const Fmt: string; const Args: array of const);
 begin
   OutputDebugString(PChar(Format(StrDoubleQuote(Fmt), Args)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TraceLoc(const Msg: string);
 begin
@@ -701,7 +702,7 @@ begin
     ProcByLevel(1), Msg])));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TraceLocFmt(const Fmt: string; const Args: array of const);
 var
@@ -712,9 +713,9 @@ begin
   OutputDebugString(PChar(S));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclAbstractMapParser
-//==============================================================================
+//==================================================================================================
 
 constructor TJclAbstractMapParser.Create(const MapFileName: TFileName);
 begin
@@ -722,7 +723,7 @@ begin
     FStream := TJclFileMappingStream.Create(MapFileName, fmOpenRead or fmShareDenyWrite);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclAbstractMapParser.Destroy;
 begin
@@ -730,14 +731,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAbstractMapParser.GetLinkerBugUnitName: string;
 begin
   Result := MapStringToStr(FLinkerBugUnitName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclAbstractMapParser.MapStringToStr(MapString: PJclMapString): string;
 var
@@ -764,7 +765,7 @@ begin
   SetString(Result, MapString, P - MapString);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAbstractMapParser.Parse;
 const
@@ -1009,9 +1010,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclMapParser
-//==============================================================================
+//==================================================================================================
 
 procedure TJclMapParser.ClassTableItem(const Address: TJclMapAddress;
   Len: Integer; SectionName, GroupName: PJclMapString);
@@ -1020,7 +1021,7 @@ begin
     FOnClassTable(Self, Address, Len, MapStringToStr(SectionName), MapStringToStr(GroupName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapParser.LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress);
 begin
@@ -1028,7 +1029,7 @@ begin
     FOnLineNumbers(Self, LineNumber, Address);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapParser.LineNumberUnitItem(UnitName, UnitFileName: PJclMapString);
 begin
@@ -1036,7 +1037,7 @@ begin
     FOnLineNumberUnit(Self, MapStringToStr(UnitName), MapStringToStr(UnitFileName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapParser.PublicsByNameItem(const Address: TJclMapAddress;
   Name: PJclMapString);
@@ -1045,7 +1046,7 @@ begin
     FOnPublicsByName(Self, Address, MapStringToStr(Name));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapParser.PublicsByValueItem(const Address: TJclMapAddress;
   Name: PJclMapString);
@@ -1054,7 +1055,7 @@ begin
     FOnPublicsByValue(Self, Address, MapStringToStr(Name));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapParser.SegmentItem(const Address: TJclMapAddress;
   Len: Integer; GroupName, UnitName: PJclMapString);
@@ -1063,16 +1064,16 @@ begin
     FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToStr(UnitName));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclMapScanner
-//==============================================================================
+//==================================================================================================
 
 procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress;
   Len: Integer; SectionName, GroupName: PJclMapString);
 begin
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclMapScanner.Create(const MapFileName: TFileName);
 begin
@@ -1080,7 +1081,7 @@ begin
   Scan;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
@@ -1098,7 +1099,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress);
 var
@@ -1119,14 +1120,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.LineNumberUnitItem(UnitName, UnitFileName: PJclMapString);
 begin
   FNewUnitFileName := UnitFileName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclMapScanner.ModuleNameFromAddr(Addr: DWORD): string;
 var
@@ -1141,7 +1142,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclMapScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
 var
@@ -1156,7 +1157,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
 var
@@ -1174,14 +1175,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;
   Name: PJclMapString);
 begin
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.PublicsByValueItem(const Address: TJclMapAddress;
   Name: PJclMapString);
@@ -1196,7 +1197,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.Scan;
 begin
@@ -1205,7 +1206,7 @@ begin
   SetLength(FProcNames, FProcNamesCnt);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress;
   Len: Integer; GroupName, UnitName: PJclMapString);
@@ -1222,7 +1223,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclMapScanner.SourceNameFromAddr(Addr: DWORD): string;
 var
@@ -1240,24 +1241,24 @@ begin
     end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // JCL binary debug format string encoding/decoding routines
-//==============================================================================
+//==================================================================================================
 
-{ Strings are compressed to following 6bit format (A..D represents characters) }
-{ and terminated with 6bit #0 char. First char = #1 indicates non compressed   }
-{ text, #2 indicates compressed text with leading '@' character                }
-{                                                                              }
-{ 7   6   5   4   3   2   1   0  |                                             }
-{---------------------------------                                             }
-{ B1  B0  A5  A4  A3  A2  A1  A0 | Data byte 0                                 }
-{---------------------------------                                             }
-{ C3  C2  C1  C0  B5  B4  B3  B2 | Data byte 1                                 }
-{---------------------------------                                             }
-{ D5  D4  D3  D2  D1  D0  C5  C4 | Data byte 2                                 }
-{---------------------------------                                             }
+{ Strings are compressed to following 6bit format (A..D represents characters) and terminated with }
+{ 6bit #0 char. First char = #1 indicates non compressed text, #2 indicates compressed text with   }
+{ leading '@' character                                                                            }
+{                                                                                                  }
+{ 7   6   5   4   3   2   1   0  |                                                                 }
+{---------------------------------                                                                 }
+{ B1  B0  A5  A4  A3  A2  A1  A0 | Data byte 0                                                     }
+{---------------------------------                                                                 }
+{ C3  C2  C1  C0  B5  B4  B3  B2 | Data byte 1                                                     }
+{---------------------------------                                                                 }
+{ D5  D4  D3  D2  D1  D0  C5  C4 | Data byte 2                                                     }
+{---------------------------------                                                                 }
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SimpleCryptString(const S: string): string;
 var
@@ -1277,7 +1278,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DecodeNameString(const S: PChar): string;
 var
@@ -1341,7 +1342,7 @@ begin
   until False;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EncodeNameString(const S: string): string;
 const
@@ -1409,7 +1410,7 @@ begin
   SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
 var
@@ -1427,7 +1428,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
   MapFileName: TFileName; var LinkerBugUnit: string;
@@ -1444,7 +1445,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
   BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
@@ -1542,9 +1543,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclBinDebugGenerator
-//==============================================================================
+//==================================================================================================
 
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
 var
@@ -1570,7 +1571,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
 begin
@@ -1581,7 +1582,7 @@ begin
     CreateData;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBinDebugGenerator.CreateData;
 var
@@ -1728,7 +1729,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclBinDebugGenerator.Destroy;
 begin
@@ -1736,9 +1737,9 @@ begin
   inherited;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclBinDebugScanner
-//==============================================================================
+//==================================================================================================
 
 procedure TJclBinDebugScanner.CacheLineNumbers;
 var
@@ -1765,7 +1766,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBinDebugScanner.CacheProcNames;
 var
@@ -1796,7 +1797,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBinDebugScanner.CheckFormat;
 var
@@ -1823,7 +1824,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
 begin
@@ -1832,7 +1833,7 @@ begin
   CheckFormat;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.DataToStr(A: Integer): string;
 var
@@ -1847,21 +1848,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.GetModuleName: string;
 begin
   Result := DataToStr(PJclDbgHeader(FStream.Memory)^.ModuleName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.IsModuleNameValid(const Name: TFileName): Boolean;
 begin
   Result := AnsiSameText(ModuleName, PathExtractFileNameNoExt(Name));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
@@ -1907,14 +1908,14 @@ begin
   Result := LineNumber;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.MakePtr(A: Integer): Pointer;
 begin
   Result := Pointer(DWORD(FStream.Memory) + DWORD(A));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.ModuleNameFromAddr(Addr: DWORD): string;
 var
@@ -1939,7 +1940,7 @@ begin
   Result := DataToStr(Name);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
 var
@@ -1964,7 +1965,7 @@ begin
   Result := ModuleStartAddr;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD): string;
 var
@@ -2026,7 +2027,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
 var
@@ -2046,7 +2047,7 @@ begin
   Result := (Value <> MaxInt);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
 var
@@ -2078,38 +2079,38 @@ begin
   Result := DataToStr(Name);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugInfoSource
-//==============================================================================
+//==================================================================================================
 
 constructor TJclDebugInfoSource.Create(AModule: HMODULE);
 begin
   FModule := AModule;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoSource.GetFileName: TFileName;
 begin
   Result := GetModulePath(FModule);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
 begin
   Result := DWORD(Addr) - FModule - $1000;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugInfoList
-//==============================================================================
+//==================================================================================================
 
 var
   DebugInfoList: TJclDebugInfoList;
   DebugInfoCritSect: TJclCriticalSection;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure NeedDebugInfoList;
 begin
@@ -2117,7 +2118,7 @@ begin
     DebugInfoList := TJclDebugInfoList.Create;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
 const
@@ -2141,7 +2142,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoList.GetItemFromModule(const Module: HMODULE): TJclDebugInfoSource;
 var
@@ -2164,14 +2165,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoList.GetItems(Index: Integer): TJclDebugInfoSource;
 begin
   Result := TJclDebugInfoSource(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoList.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
@@ -2185,9 +2186,9 @@ begin
     Result := False;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugInfoMap
-//==============================================================================
+//==================================================================================================
 
 destructor TJclDebugInfoMap.Destroy;
 begin
@@ -2195,7 +2196,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoMap.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
@@ -2217,21 +2218,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoMap.InitializeSource: Boolean;
 var
   MapFileName: TFileName;
 begin
-  MapFileName := ChangeFileExt(FileName, '.map');
+  MapFileName := ChangeFileExt(FileName, MapFileExtension);
   Result := FileExists(MapFileName);
   if Result then
     FScanner := TJclMapScanner.Create(MapFileName);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugInfoBinary
-//==============================================================================
+//==================================================================================================
 
 destructor TJclDebugInfoBinary.Destroy;
 begin
@@ -2240,7 +2241,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoBinary.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
@@ -2262,7 +2263,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoBinary.InitializeSource: Boolean;
 var
@@ -2291,9 +2292,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugInfoExports
-//==============================================================================
+//==================================================================================================
 
 destructor TJclDebugInfoExports.Destroy;
 begin
@@ -2301,7 +2302,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer;
   var Info: TJclLocationInfo): Boolean;
@@ -2357,7 +2358,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugInfoExports.InitializeSource: Boolean;
 begin
@@ -2366,9 +2367,9 @@ begin
   Result := FBorImage.StatusOK and (FBorImage.ExportList.Count > 0);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Source location functions
-//==============================================================================
+//==================================================================================================
 
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 var
@@ -2381,7 +2382,7 @@ begin
     Result := HMODULE(MI.AllocationBase);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsSystemModule(const Module: HMODULE): Boolean;
 var
@@ -2403,7 +2404,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -2428,7 +2429,7 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF STACKFRAMES_ON}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 begin
@@ -2445,7 +2446,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 begin
@@ -2462,7 +2463,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean): string;
 var
@@ -2486,7 +2487,7 @@ begin
     Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(ModuleFromAddr(Addr)))]), Result, 11);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 begin
@@ -2499,7 +2500,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ClearLocationData;
 begin
@@ -2512,7 +2513,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -2521,28 +2522,28 @@ begin
   Result := GetLocationInfo(Caller(Level + 1)).SourceName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ModuleByLevel(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).UnitName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ProcByLevel(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).ProcedureName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LineByLevel(const Level: Integer): Integer;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).LineNumber;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
@@ -2550,7 +2551,7 @@ begin
   Result := MapOfAddr(Caller(Level + 1), _File, _Module, _Proc, _Line);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExtractClassName(const ProcedureName: string): string;
 var
@@ -2563,42 +2564,42 @@ begin
     Result := Copy(ProcedureName, 1, D - 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExtractMethodName(const ProcedureName: string): string;
 begin
   Result := Copy(ProcedureName, Pos('.', ProcedureName) + 1, Length(ProcedureName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __FILE__(const Level: Integer): string;
 begin
   Result := FileByLevel(Level + 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __MODULE__(const Level: Integer): string;
 begin
   Result := ModuleByLevel(Level + 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __PROC__(const Level: Integer): string;
 begin
   Result := ProcByLevel(Level + 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __LINE__(const Level: Integer): Integer;
 begin
   Result := LineByLevel(Level + 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
 begin
@@ -2609,35 +2610,35 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF STACKFRAMES_ON}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).SourceName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ModuleOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).UnitName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ProcOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).ProcedureName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LineOfAddr(const Addr: Pointer): Integer;
 begin
   Result := GetLocationInfo(Addr).LineNumber;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
@@ -2655,35 +2656,35 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __FILE_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := FileOfAddr(Addr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __MODULE_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := ModuleOfAddr(Addr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __PROC_OF_ADDR__(const Addr: Pointer): string;
 begin
   Result := ProcOfAddr(Addr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
 begin
   Result := LineOfAddr(Addr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
@@ -2691,9 +2692,9 @@ begin
   Result := MapOfAddr(Addr, _File, _Module, _Proc, _Line);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Info routines base list
-//==============================================================================
+//==================================================================================================
 
 constructor TJclStackBaseList.Create;
 begin
@@ -2702,9 +2703,9 @@ begin
   FTimeStamp := Now;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclGlobalStackList
-//==============================================================================
+//==================================================================================================
 
 type
   TJclGlobalStackList = class (TThreadList)
@@ -2726,7 +2727,7 @@ type
 var
   GlobalStackList: TJclGlobalStackList;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclGlobalStackList.AddObject(AObject: TJclStackBaseList);
 var
@@ -2746,7 +2747,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclGlobalStackList.Destroy;
 var
@@ -2762,7 +2763,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclGlobalStackList.FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
 var
@@ -2788,21 +2789,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclGlobalStackList.GetExceptStackInfo: TJclStackInfoList;
 begin
   Result := TJclStackInfoList(FindObject(GetCurrentThreadId, TJclStackInfoList));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclGlobalStackList.GetLastExceptFrameList: TJclExceptFrameList;
 begin
   Result := TJclExceptFrameList(FindObject(GetCurrentThreadId, TJclExceptFrameList));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclGlobalStackList.LockThreadID(TID: DWORD);
 begin
@@ -2820,7 +2821,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclGlobalStackList.UnlockThreadID;
 begin
@@ -2832,9 +2833,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Stack info routines
-//==============================================================================
+//==================================================================================================
 
 {$STACKFRAMES OFF}
 
@@ -2842,14 +2843,14 @@ threadvar
   TopOfStack: DWORD;
   BaseOfStack: DWORD;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ValidStackAddr(StackAddr: DWORD): Boolean;
 begin
   Result := (BaseOfStack < StackAddr) and (StackAddr < TopOfStack);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ValidCodeAddr(CodeAddr: DWORD): Boolean;
 begin
@@ -2859,7 +2860,7 @@ begin
     Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Validate that the code address is a valid code site
 //
@@ -2913,7 +2914,7 @@ end;
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$OVERFLOWCHECKS OFF}
 
@@ -2949,7 +2950,7 @@ end;
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -2971,14 +2972,14 @@ begin
   JclCreateStackList(RawMode, IgnoreLevels, FirstCaller);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclLastExceptStackList: TJclStackInfoList;
 begin
   Result := GlobalStackList.ExceptStackInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean): Boolean;
 var
@@ -2990,7 +2991,7 @@ begin
     List.AddToStrings(Strings, IncludeModuleName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 begin
@@ -2998,18 +2999,18 @@ begin
   GlobalStackList.AddObject(Result);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclStackInfoItem
-//==============================================================================
+//==================================================================================================
 
 function TJclStackInfoItem.GetLogicalAddress: DWORD;
 begin
   Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(Pointer(FStackInfo.CallerAdr)));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclStackInfoList
-//==============================================================================
+//==================================================================================================
 
 procedure StoreToList(List: TJclStackInfoList; const StackInfo: TStackInfo);
 var
@@ -3024,7 +3025,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TraceStackFrames(List: TJclStackInfoList);
 var
@@ -3044,7 +3045,7 @@ begin
     StoreToList(List, StackInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TraceStackRaw(List: TJclStackInfoList);
 var
@@ -3082,7 +3083,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclStackInfoList.AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean);
 var
@@ -3092,7 +3093,7 @@ begin
     Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD;
   FirstCaller: Pointer);
@@ -3114,7 +3115,7 @@ begin
     TraceStackFrames(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclStackInfoList.GetItems(Index: Integer): TJclStackInfoItem;
 begin
@@ -3125,9 +3126,9 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF STACKFRAMES_ON}
 
-//==============================================================================
+//==================================================================================================
 // Exception frame info routines
-//==============================================================================
+//==================================================================================================
 
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 begin
@@ -3135,14 +3136,14 @@ begin
   GlobalStackList.AddObject(Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclLastExceptFrameList: TJclExceptFrameList;
 begin
   Result := GlobalStackList.LastExceptFrameList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DoExceptFrameTrace;
 begin
@@ -3152,7 +3153,7 @@ begin
   JclCreateExceptFrameList(4);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetJmpDest(Jmp: PJmpInstruction): DWORD;
 begin
@@ -3169,9 +3170,9 @@ begin
       Result := PDWORD(PJmpTable(Result).Ptr)^;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclExceptFrame
-//==============================================================================
+//==================================================================================================
 
 procedure TJclExceptFrame.DoDetermineFrameKind;
 var
@@ -3203,7 +3204,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
 begin
@@ -3212,7 +3213,7 @@ begin
   DoDetermineFrameKind;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclExceptFrame.Handles(ExceptObj: TObject): Boolean;
 var
@@ -3221,7 +3222,7 @@ begin
   Result := HandlerInfo(ExceptObj, Handler);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclExceptFrame.HandlerInfo(ExceptObj: TObject;
   var HandlerAt: Pointer): Boolean;
@@ -3262,7 +3263,7 @@ begin
     HandlerAt := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclExceptFrame.CodeLocation: Pointer;
 begin
@@ -3280,9 +3281,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclExceptFrameList
-//==============================================================================
+//==================================================================================================
 
 function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
 begin
@@ -3296,14 +3297,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclExceptFrameList.GetItems(Index: Integer): TJclExceptFrame;
 begin
   Result := TJclExceptFrame(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclExceptFrameList.Create(AIgnoreLevels: Integer);
 begin
@@ -3312,7 +3313,7 @@ begin
   TraceExceptionFrames;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclExceptFrameList.TraceExceptionFrames;
 var
@@ -3331,14 +3332,14 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Exception hooking
-//==============================================================================
+//==================================================================================================
 
 var
   TrackingActive: Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
@@ -3348,7 +3349,7 @@ begin
     DoExceptFrameTrace;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclStartExceptionTracking: Boolean;
 begin
@@ -3361,7 +3362,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclStopExceptionTracking: Boolean;
 begin
@@ -3374,21 +3375,21 @@ begin
     Result := False;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclExceptionTrackingActive: Boolean;
 begin
   Result := TrackingActive;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Thread exception tracking support
-//==============================================================================
+//==================================================================================================
 
 var
   RegisteredThreadList: TJclDebugThreadList;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclDebugThreadList: TJclDebugThreadList;
 begin
@@ -3397,9 +3398,9 @@ begin
   Result := RegisteredThreadList;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugThread
-//==============================================================================
+//==================================================================================================
 
 constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
 begin
@@ -3409,7 +3410,7 @@ begin
     Resume;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclDebugThread.Destroy;
 begin
@@ -3417,7 +3418,7 @@ begin
   JclDebugThreadList.UnregisterThread(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThread.DoHandleException;
 begin
@@ -3429,14 +3430,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThread.DoNotify;
 begin
   RegisteredThreadList.DoSyncException(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThread.DoSyncHandleException;
 begin
@@ -3448,21 +3449,21 @@ begin
   DoNotify;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugThread.GetThreadInfo: string;
 begin
   Result := JclDebugThreadList.ThreadInfos[ThreadID];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugThread.GetThreadName: string;
 begin
   Result := JclDebugThreadList.ThreadNames[ThreadID];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThread.HandleException;
 begin
@@ -3475,9 +3476,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDebugThreadList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclDebugThreadList.Create;
 begin
@@ -3485,7 +3486,7 @@ begin
   FList := TStringList.Create;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclDebugThreadList.Destroy;
 begin
@@ -3494,7 +3495,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.DoSyncException(Thread: TJclDebugThread);
 begin
@@ -3502,7 +3503,7 @@ begin
     FOnSyncException(Thread);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.DoThreadRegistered(ThreadID: DWORD);
 begin
@@ -3510,7 +3511,7 @@ begin
     FOnThreadRegistered(ThreadID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.DoThreadUnregistered(ThreadID: DWORD);
 begin
@@ -3518,21 +3519,21 @@ begin
     FOnThreadUnregistered(ThreadID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugThreadList.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugThreadList.GetThreadIDs(Index: Integer): DWORD;
 begin
   Result := DWORD(FList.Objects[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDebugThreadList.GetThreadNames(ThreadID: DWORD; Index: Integer): string;
 var
@@ -3566,7 +3567,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.InternalRegisterThread(ThreadID: DWORD; const ThreadName, ThreadClassName: string);
 var
@@ -3591,21 +3592,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.RegisterThread(ThreadID: DWORD; const ThreadName: string);
 begin
   InternalRegisterThread(ThreadID, ThreadName, '');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.RegisterThread(Thread: TThread; const ThreadName: string);
 begin
   InternalRegisterThread(Thread.ThreadID, ThreadName, Thread.ClassName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.UnregisterThread(ThreadID: DWORD);
 var
@@ -3624,16 +3625,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugThreadList.UnregisterThread(Thread: TThread);
 begin
   UnregisterThread(Thread.ThreadID);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Miscellanuous
-//==============================================================================
+//==================================================================================================
 
 {$IFDEF WIN32}
 
@@ -3651,7 +3652,7 @@ begin
   Result := RegReadInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName) = Enabled;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsDebuggerAttached: Boolean;
 var
@@ -3674,7 +3675,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsHandleValid(Handle: THandle): Boolean;
 var
@@ -3701,7 +3702,7 @@ end;
 
 {$ENDIF WIN32}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 
 initialization
