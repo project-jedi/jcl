@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 23, 2000                                            }
+{ Last modified: October 05, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -60,10 +60,12 @@ function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
   CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
+function PathExtractFileDirFixed(const S: AnsiString): AnsiString; // TODOC Anthony
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathGetLongName(const Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
+function PathIsChild(const Path, Base: AnsiString): Boolean; // TODOC Anthony
 function PathIsDiskDevice(const Path: string): Boolean;
 function PathIsUNC(const Path: string): Boolean;
 function PathRemoveSeparator(const Path: string): string;
@@ -100,6 +102,7 @@ function GetFileCreation(const FileName: string): TFileTime;
 function GetModulePath(const Module: HMODULE): string;
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
+function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData; // TODOC Anthony
 function IsDirectory(const FileName: string): Boolean;
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): DWORD; // TODO DOC MASSIMO
@@ -832,6 +835,13 @@ end;
 
 //------------------------------------------------------------------------------
 
+function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
+begin
+  Result := PathAddSeparator(ExtractFileDir(S));
+end;
+
+//------------------------------------------------------------------------------
+
 function PathExtractFileNameNoExt(const Path: string): string;
 begin
   Result := PathRemoveExtension(ExtractFileName(Path));
@@ -907,6 +917,25 @@ begin
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
     {$ENDIF}
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PathIsChild(const Path, Base: AnsiString): Boolean;
+var
+  L: Integer;
+begin
+  Result := False;
+  // an empty path or one that's shorter then base cannot be a subdirectory
+  L := Length(Base);
+  if (Path = '') or (L > Length(Path)) then
+    Exit;
+  {$IFDEF WIN32}
+  Result := AnsiSameText(StrLeft(Path, L), Base);
+  {$ENDIF}
+  {$IFDEF}
+  Result := AnsiSameStr(StrLeft(Path, L), Base);
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -1392,6 +1421,43 @@ var
   Size: TULargeInteger absolute Result;
 begin
   Size.LowPart := GetFileSize(Handle, @Size.HighPart);
+end;
+
+//------------------------------------------------------------------------------
+
+resourcestring // TODO MOVE TO RESOURCES
+  RsFileUtilsAttrUnavailable = 'Unable to retrieve attributes of %s';
+
+function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
+var
+  Handle: THandle;
+  FileInfo: TByHandleFileInformation;
+begin
+  Assert(FileName <> '');
+  if IsWin95 or IsWin95OSR2 or IsWinNT3 then
+  begin
+    Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    try
+      if not GetFileInformationByHandle(Handle, FileInfo) then
+        raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+      Result.dwFileAttributes := FileInfo.dwFileAttributes;
+      Result.ftCreationTime := FileInfo.ftCreationTime;
+      Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
+      Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
+      Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
+      Result.nFileSizeLow := FileInfo.nFileSizeLow;
+    finally
+      CloseHandle(Handle);
+    end
+    else
+      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+  end
+  else
+  begin
+    if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
+      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+  end;
 end;
 
 //------------------------------------------------------------------------------
