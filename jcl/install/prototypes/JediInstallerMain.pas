@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: February 13, 2004                                                                 }
+{ Last modified: February 17, 2004                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -62,24 +62,27 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
-    {$IFDEF KYLIX}
+    {
     // Kylix 1
     D1TabSheet: TTabSheet;
     D1Product: TProductFrame;
     // Kylix 2
     D2TabSheet: TTabSheet;
     D2Product: TProductFrame;
+    }
     // Kylix 3 for Delphi
     D3TabSheet: TTabSheet;
     D3Product: TProductFrame;
-    {$ELSE}
+    //
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
+    //
     D6TabSheet: TTabSheet;
     D6Product: TProductFrame;
+    //
     D7TabSheet: TTabSheet;
     D7Product: TProductFrame;
-    {$ENDIF}
+    //
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -293,15 +296,13 @@ end;
 
 procedure TMainForm.UpdateInfo(VersionNumber: Integer; const InfoText: String);
 var
-  {$IFDEF VisualCLX}
-  InfoDisplay: TTextBrowser;
-  {$ELSE}
-  InfoDisplay: TMemo;
-  {$ENDIF}
+  P: TProductFrame;
 begin
-  InfoDisplay := Product(VersionNumber).InfoDisplay;
-  if Assigned(InfoDisplay) then
-    InfoDisplay.Text := InfoText;
+  P := Product(VersionNumber);
+  if Assigned(P) then
+  begin
+    P.InfoDisplay.Text := InfoText;
+  end;
 end;
 
 procedure TMainForm.UpdateStatus(const Text: string);
@@ -440,12 +441,10 @@ end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
+  { TODO : implement for Unix }
   {$IFDEF MSWINDOWS}
   ShellExecEx(DelphiJediURL);
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  { TODO : implement }
-  {$ENDIF UNIX}
 end;
 
 procedure TMainForm.TreeViewCollapsing(Sender: TObject; Node: TTreeNode;
