@@ -28,7 +28,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
@@ -52,7 +54,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTasksList(const List: TStrings): Boolean;
@@ -74,7 +78,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
@@ -102,7 +108,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
@@ -127,7 +135,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
@@ -152,7 +162,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
@@ -183,7 +195,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetProcessNameFromWnd(Wnd: HWND): string;
@@ -206,7 +220,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetPidFromProcessName
@@ -230,7 +246,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetProcessNameFromWnd
@@ -259,7 +277,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Processes, Tasks and Modules
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetProcessNameFromWnd
@@ -287,7 +307,9 @@ multiple of the allocation granularity.
 Unit=JclSysInfo
 Category=System Information Routines
 Author=Wim De Cleen;jones-jr@skynet.be
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 ProcessorCount: Cardinal;
@@ -301,10 +323,11 @@ Kind=Variable
 Unit=JclSysInfo
 Category=System Information Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 AllocGranularity: Cardinal;
@@ -317,10 +340,11 @@ Kind=Variable
 Unit=JclSysInfo
 Category=System Information Routines
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCurrentFolder: string;
@@ -331,14 +355,15 @@ GetCurrentFolder returns the current directory (folder) for the calling process.
 [Result]
 The current directory for the calling process or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DelEnvironmentVar(const Name: string): Boolean;
@@ -353,14 +378,15 @@ Count=1
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ExpandEnvironmentVar
@@ -386,14 +412,15 @@ replaced by their system defined value, if they exist.
 If the function succeeds it returns True, otherwise it returns False. In the latter
 case the content of Value is undefined.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=DelEnvironmentVar
@@ -421,14 +448,15 @@ expanded. If False these string are left unexpanded.
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=DelEnvironmentVar
@@ -459,14 +487,15 @@ If the function succeeds in retrieving the environment strings it returns True,
 on failure it returns False. Note that a result of True does not necessarily mean
 that environment string expansion was successful for all variables.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=DelEnvironmentVar
@@ -488,14 +517,15 @@ Count=2
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=DelEnvironmentVar
@@ -522,13 +552,14 @@ build number then expected. For example a beta version.
 8=wvWinNT3=Windows NT 3.x
 9=wvWinNT4=Windows NT 4.0
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetWindowsVersion;..\GetWindowsVersion
@@ -542,12 +573,13 @@ GetWindowsVersion returns the Windows version as an enumerated type.
 [Result]
 The Windows version, see <REF Target"Types\TWindowsVersion">TWindowsVersion</REF> for the possible values.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=IsWin95
@@ -570,12 +602,13 @@ results under specific circumstances. Modern processors do not exhibit this bug.
 If the FDIV instruction is OK the function returns True, if it is flawed the
 function returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetCpuInfo
@@ -595,14 +628,15 @@ and MMX fields of the returned <REF Target"Types\TCpuInfo">TCpuInfo</REF> record
 [Result]
 CPUID returns information about the processor through a <REF Target"Types\TCpuInfo">TCpuInfo</REF> record.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetCpuInfo
@@ -626,14 +660,15 @@ the members of this record.
 If the function succeeds it returns True, otherwise it returns False. In the latter
 case the content of the CpuSpeed parameter is undefined.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetCpuInfo
@@ -653,12 +688,13 @@ Count=1
 [Result]
 The normalized frequency in MHz.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
@@ -684,14 +720,15 @@ Count=1
 1=This function is an adapted conversion from the Platform SDK example described
 in knowledge base article Q118623.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ReadTimeStampCounter: Int64;
@@ -711,12 +748,13 @@ The current value of the time stamp counter.
 Count=1
 1=This instruction is only available on Pentium (and higher) processors.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Azret Botash;azret@attglobal.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetVolumeSerialNumber(const Drive: string): string;
@@ -734,14 +772,15 @@ you must follow it with an additional backslash.
 If the function succeeds it returns the serial number of the specified volume.
 If the function fails it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetVolumeFileSystem(const Drive: string): string;
@@ -760,14 +799,15 @@ you must follow it with an additional backslash.
 If the function succeeds it returns the name of the filesystem of the specified
 volume. If the function fails it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetVolumeName(const Drive: string): string;
@@ -785,14 +825,15 @@ you must follow it with an additional backslash.
 If the function succeeds it returns the name of the specified volume.
 If the function fails it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetIPAddress(const HostName: string): string;
@@ -813,15 +854,16 @@ empty string is passed the function returns the IP address of the local computer
 If the function succeeds it returns the IP address of the specified host in the
 dotted decimal notation. If the function fails it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Requires Windows sockets 1.1 or higher
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TIntelSpecific = record
@@ -841,15 +883,16 @@ member contains the descriptive string. You can use
 the <REF Target"..\IntelCacheDescription">IntelCacheDescription</REF>
 function to get that string.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TCyrixSpecific = record
@@ -867,15 +910,16 @@ associative, 16 byte line size' cache.
 If an entry contains the value $70 it denotes a 'TLB, 4Kb pages, 4-way set
 associative, 32 entries' TLB.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TAMDSpecific = record
@@ -917,15 +961,16 @@ entries have the following meaning:
  <LI>L1ICache[3] Size in Kb
  </UL>
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TCacheInfo = record
@@ -940,15 +985,16 @@ Count=2
 1=D:Byte=Descriptor used to match a cache descriptor to it's representative string.
 2=I:string[74]=Description of cache.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TFreqInfo = record
@@ -967,15 +1013,16 @@ Count=4
 3=InCycles:Cardinal=The elapsed, internal clock cycles during the test.
 4=ExTicks:Cardinal=The time, in microseconds, that elapsed during the test.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TCpuInfo = record
@@ -1037,15 +1084,16 @@ for more information.
 17=CyrixSpecific:<REF>TCyrixSpecific</REF>=Contains Cyrix processor specific information. Only valid if HasCacheInfo is True.
 18=AMDSpecific:<REF>TAMDSpecific</REF>=Contains AMD processor specific information. Only valid if HasCacheInfo is True.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
@@ -1061,14 +1109,15 @@ Cyrix Media GX to 6x86MX.
 Count=1
 1=CpuInfo:<REF>TCpuInfo</REF>=Record to receive processor information.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Bryan Coutch;oracle@bmts.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetIntelCacheDescription(const D: Byte): string;
@@ -1085,14 +1134,15 @@ one of the entries in the <REF Target"Types\TIntelSpecific">TIntelSpecific</REF>
 The descriptive string for the specified descriptor. If a description isn't
 available the function returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TIntelSpecific;Types\TIntelSpecific
@@ -1111,14 +1161,15 @@ The Windows Common Files folder. If the function fails it returns an empty strin
 Count=1
 1=You can use the SHGetFolderPath API function to get many more common directories.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Carl Clark;carl@caztec.co.za
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetProgramFilesFolder
@@ -1139,14 +1190,15 @@ Count=1
 1=If you're running Windows 2000 you can use the GetComputerNameEx function for more
 detailed control over exactly which name you want.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetLocalUserName
@@ -1166,14 +1218,15 @@ Count=1
 1=If you're running Windows 2000 you can use the GetUserNameEx function to control
 the format of the returned name.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetLocalComputerName
@@ -1192,14 +1245,15 @@ The Windows Program Files folder. If the function fails it returns an empty stri
 Count=1
 1=You can use the SHGetFolderPath API function to get many more common directories.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Carl Clark;carl@caztec.co.za
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetCommonFilesFolder
@@ -1214,14 +1268,15 @@ registry.
 [Result]
 The registered company string or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetRegisteredOwner
@@ -1235,14 +1290,15 @@ Returns the registered owner string for the local computer as read from the regi
 [Result]
 The registered owner string or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetRegisteredCompany
@@ -1257,14 +1313,15 @@ Returns the date the BIOS release date.
 The BIOS release date, if successful. The system base date (12/30/1899), if
 there has been a problem.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.51 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetBIOSName
@@ -1280,13 +1337,14 @@ Returns the name of the BIOS.
 [Result]
 The BIOS name, if successful. An empty string otherwise.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=James Azarja;support@jazarsoft.cjb.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetBIOSDate
@@ -1302,13 +1360,14 @@ Returns the BIOS copyright string.
 [Result]
 The BIOS copyright, if successful. An  empty string otherwise.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=James Azarja;support@jazarsoft.cjb.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetBIOSDate
@@ -1324,13 +1383,14 @@ Returns extended information on the BIOS.
 [Result]
 The BIOS extended information, if successful. An  empty string otherwise.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=James Azarja;support@jazarsoft.cjb.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetBIOSDate
@@ -1348,14 +1408,15 @@ files, and help files. On a default installation of Windows 2000 this is c:\winn
 [Result]
 The Windows directory or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetWindowsSystemFolder
@@ -1371,14 +1432,15 @@ files. On a default installation of Windows 2000 this is c:\winnt\system32.
 [Result]
 The Windows system directory or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetWindowsFolder
@@ -1396,14 +1458,15 @@ directory.
 [Result]
 The Windows folder designated for temporary files.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsWin95: Boolean;
@@ -1414,14 +1477,15 @@ IsWin95 returns whether or not the system is running Windows 95.
 [Result]
 If the system is running Windows 95 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IsWin2K
@@ -1437,14 +1501,15 @@ IsWin95OSR2 returns whether or not the system is running Windows 95 OSR 2.
 [Result]
 If the system is running Windows 95 OSR 2 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IsWin2K
@@ -1460,14 +1525,15 @@ IsWin98 returns whether or not the system is running Windows 98.
 [Result]
 If the system is running Windows 98 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IsWin2K
@@ -1483,14 +1549,15 @@ IsWin98SE returns whether or not the system is running Windows 98 Second Edition
 [Result]
 If the system is running Windows 98 SE the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IsWin2K
@@ -1506,14 +1573,15 @@ IsWin98SE returns whether or not the system is running Windows Millenium.
 [Result]
 If the system is running Windows Millenium the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IsWin2K
@@ -1531,14 +1599,15 @@ If the system is running Windows NT the result is True otherwise the result is F
 You can use the <REF>IsWinNT3</REF>, <REF>IsWinNT4</REF> and <REF>IsWin2K</REF>
 to further distinguish between the different NT versions.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=6
 1=IsWin2K
@@ -1557,14 +1626,15 @@ IsWinNT3 returns whether or not the system is running Windows NT 3.
 [Result]
 If the system is running Windows NT 3 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IsWin2K
@@ -1582,14 +1652,15 @@ IsWinNT4 returns whether or not the system is running Windows NT 4.
 [Result]
 If the system is running Windows NT 4 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IsWin2K
@@ -1607,14 +1678,15 @@ IsWin2K returns whether or not the system is running Windows 2000.
 [Result]
 If the system is running Windows 2000 the result is True otherwise the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IsWinNT3
@@ -1643,14 +1715,15 @@ TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
 Count=1
 1=On platforms other then Windows NT/2000 this function always returns ptUnknown.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Version Information
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=IsWinNT
@@ -1686,9 +1759,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Not tested.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=CreateProcAsUserEx;..\..\Miscellaneous\CreateProcAsUserEx
@@ -1713,7 +1788,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Environment
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateEnvironmentBlock;..\CreateEnvironmentBlock
@@ -1740,9 +1817,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Not tested.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetDomainName;GetDomainName
@@ -1769,9 +1848,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Identification
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Not tested.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetUserDomainName;GetUserDomainName
@@ -1792,9 +1873,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -1846,9 +1929,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -1894,9 +1979,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -1943,9 +2030,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -1993,9 +2082,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder1
@@ -2042,9 +2133,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2090,9 +2183,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2138,9 +2233,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2188,9 +2285,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2237,9 +2336,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2285,9 +2386,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2335,9 +2438,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2385,9 +2490,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2435,9 +2542,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2485,9 +2594,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2534,9 +2645,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2583,9 +2696,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2631,9 +2746,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2679,9 +2796,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2727,9 +2846,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2775,9 +2896,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2823,9 +2946,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Common Folders
 Author=Peter Friese;freter@gmx.net
-Delphi=5
+Delphi=5,6
 Windows NT/2000=Requires NT 4.0
 Windows 95/98=Requires Windows 95 or higher.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=27
 1=GetCommonFilesFolder;GetCommonFilesFolder
@@ -2870,9 +2995,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=TAPMLineStatus;Types\TAPMLineStatus
@@ -2897,7 +3024,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetAPMLineStatus;..\GetAPMLineStatus
@@ -2925,7 +3054,9 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetAPMLineStatus;..\GetAPMLineStatus
@@ -2945,9 +3076,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=TAPMBatteryFlag;Types\TAPMBatteryFlag
@@ -2968,9 +3101,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetAPMBatteryLifeTime: DWORD;
@@ -2987,9 +3122,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetAPMBatteryFullLifeTime: DWORD;
@@ -3006,9 +3143,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMaxAppAddress: Integer;
@@ -3026,9 +3165,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetMinAppAddress
@@ -3049,9 +3190,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetMaxAppAddress
@@ -3070,9 +3213,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetSwapFileUsage
@@ -3090,9 +3235,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetSwapFileUsage
@@ -3111,9 +3258,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetMemoryLoad
@@ -3132,9 +3281,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetFreePhysicalMemory
@@ -3152,9 +3303,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetTotalPhysicalMemory
@@ -3172,9 +3325,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetFreePageFileMemory
@@ -3192,9 +3347,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetTotalPageFileMemory
@@ -3212,9 +3369,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetFreeVirtualMemory
@@ -3232,9 +3391,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Memory
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetTotalVirtualMemory
@@ -3257,9 +3418,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Keyboard
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetNumLockKeyState
@@ -3280,9 +3443,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Keyboard
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetKeyState
@@ -3303,9 +3468,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Keyboard
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetKeyState
@@ -3326,9 +3493,11 @@ Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Keyboard
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GetKeyState
