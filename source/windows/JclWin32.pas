@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: March 31, 2002                                                                    }
+{ Last modified: May 26, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1088,6 +1088,32 @@ type
 const
   DLLVER_PLATFORM_WINDOWS = $00000001;
   DLLVER_PLATFORM_NT      = $00000002;
+
+type
+  PDllVersionInfo = ^TDllVersionInfo;
+  _DllVersionInfo = packed record
+    cbSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformId: DWORD;
+  end;
+  TDllVersionInfo = _DllVersionInfo;
+
+  PRasDialDlg = ^TRasDialDlg;
+  TRasDialDlg = packed record
+    dwSize: DWORD;
+    hwndOwner: HWND;
+    dwFlags: DWORD;
+    xDlg: Longint;
+    yDlg: Longint;
+    dwSubEntry: DWORD;
+    dwError: DWORD;
+    reserved: Longword;
+    reserved2: Longword;
+  end;
+
+  TRasDialDlgA = function (lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
 
 //==================================================================================================
 // JclSysInfo
