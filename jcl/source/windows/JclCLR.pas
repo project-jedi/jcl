@@ -56,7 +56,7 @@ const
 // Flag	Value	Description
 //==================================================================================================
 const  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
-  COMIMAGE_FLAGS_STRONGNAMESIGNED	= $00000008;	// Image has a strong name signature.
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
   COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
 type
   TClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
@@ -622,7 +622,32 @@ type
     property Rows[const Idx: TJclIndex]: TJclPeCLRTableInterfaceImplRow read GetRow; default;
   end;
 
-  TJclPeCLRTableManifestResource = class(TJclPeCLRTable);
+  TJclPeCLRTableManifestResourceRow = class(TJclPeCLRTableRow)
+  private
+    FOffset: DWORD;
+    FFlags: DWORD;
+    FImplementationIdx: DWORD;
+    FNameOffset: DWORD;
+    function GetName: WideString;
+  protected
+    constructor Create(const ATable: TJclPeCLRTable); override;
+  public
+    property Offset: DWORD read FOffset;
+    property Flags: DWORD read FFlags;
+    property NameOffset: DWORD read FNameOffset;
+    property ImplementationIdx: DWORD read FImplementationIdx;
+
+    property Name: WideString read GetName;
+  end;
+
+  TJclPeCLRTableManifestResource = class(TJclPeCLRTable)
+  private
+    function GetRow(const Idx: TJclIndex): TJclPeCLRTableManifestResourceRow;
+  protected
+    class function TableRowClass: TJclPeCLRTableRowClass; override;
+  public
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableManifestResourceRow read GetRow; default;
+  end;
 
   TJclPeCLRTableMemberRefRow = class(TJclPeCLRTableRow)
   private
@@ -689,8 +714,50 @@ type
     property Rows[const Idx: TJclIndex]: TJclPeCLRTableMethodDefRow read GetRow; default;
   end;
 
-  TJclPeCLRTableMethodImpl = class(TJclPeCLRTable);
-  TJclPeCLRTableMethodSemantics = class(TJclPeCLRTable);
+  TJclPeCLRTableMethodImplRow = class(TJclPeCLRTableRow)
+  private
+    FClassIdx: DWORD;
+    FMethodBodyIdx: DWORD;
+    FMethodDeclarationIdx: DWORD;
+  protected
+    constructor Create(const ATable: TJclPeCLRTable); override;
+  public
+    property ClassIdx: DWORD read FClassIdx;
+    property MethodBodyIdx: DWORD read FMethodBodyIdx;
+    property MethodDeclarationIdx: DWORD read FMethodDeclarationIdx;    
+  end;
+
+  TJclPeCLRTableMethodImpl = class(TJclPeCLRTable)
+  private
+    function GetRow(const Idx: TJclIndex): TJclPeCLRTableMethodImplRow;
+  protected
+    class function TableRowClass: TJclPeCLRTableRowClass; override;
+  public
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMethodImplRow read GetRow; default;
+  end;
+
+  TJclPeCLRTableMethodSemanticsRow = class(TJclPeCLRTableRow)
+  private
+    FSemantics: Word;
+    FMethodIdx: DWORD;
+    FAssociationIdx: DWORD;
+  protected
+    constructor Create(const ATable: TJclPeCLRTable); override;
+  public
+    property Semantics: Word read FSemantics;
+    property MethodIdx: DWORD read FMethodIdx;
+    property AssociationIdx: DWORD read FAssociationIdx;  
+  end;
+
+  TJclPeCLRTableMethodSemantics = class(TJclPeCLRTable)
+  private
+    function GetRow(const Idx: TJclIndex): TJclPeCLRTableMethodSemanticsRow;
+  protected
+    class function TableRowClass: TJclPeCLRTableRowClass; override;
+  public
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMethodSemanticsRow read GetRow; default;
+  end;
+
   TJclPeCLRTableNestedClass = class(TJclPeCLRTable);
 
   TJclPeCLRTableParamDefRow = class(TJclPeCLRTableRow)
@@ -718,8 +785,50 @@ type
     property Rows[const Idx: TJclIndex]: TJclPeCLRTableParamDefRow read GetRow; default;
   end;
 
-  TJclPeCLRTableProperty = class(TJclPeCLRTable);
-  TJclPeCLRTablePropertyMap = class(TJclPeCLRTable);
+  TJclPeCLRTablePropertyRow = class(TJclPeCLRTableRow)
+  private
+    FKindIdx: DWORD;
+    FNameOffset: DWORD;
+    FFlags: Word;
+    function GetName: WideString;
+  protected
+    constructor Create(const ATable: TJclPeCLRTable); override;
+  public
+    property Flags: Word read FFlags;
+    property NameOffset: DWORD read FNameOffset;
+    property KindIdx: DWORD read FKindIdx;
+
+    property Name: WideString read GetName;
+  end;
+
+  TJclPeCLRTableProperty = class(TJclPeCLRTable)
+  private
+    function GetRow(const Idx: TJclIndex): TJclPeCLRTablePropertyRow;
+  protected
+    class function TableRowClass: TJclPeCLRTableRowClass; override;
+  public
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTablePropertyRow read GetRow; default;
+  end;
+
+  TJclPeCLRTablePropertyMapRow = class(TJclPeCLRTableRow)
+  private
+    FParentIdx: DWORD;
+    FPropertyListIdx: DWORD;
+  protected
+    constructor Create(const ATable: TJclPeCLRTable); override;
+  public
+    property ParentIdx: DWORD read FParentIdx;
+    property PropertyListIdx: DWORD read FPropertyListIdx;
+  end;
+
+  TJclPeCLRTablePropertyMap = class(TJclPeCLRTable)
+  private
+    function GetRow(const Idx: TJclIndex): TJclPeCLRTablePropertyMapRow;
+  protected
+    class function TableRowClass: TJclPeCLRTableRowClass; override;
+  public
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTablePropertyMapRow read GetRow; default;
+  end;
 
   TJclPeCLRTableStandAloneSigRow = class(TJclPeCLRTableRow)
   private
@@ -869,6 +978,7 @@ type
     function GetBlobCount: TJclIndex;
     function GetTable(const AKind: TJclPeCLRTableKind): TJclPeCLRTable;
     function GetTableCount: TJclIndex;
+    function GetToken(const AToken: TJclCLRToken): TJclPeCLRTableRow;
   protected
     constructor Create(const AImage: TJclPeImage);
   public
@@ -879,9 +989,9 @@ type
 
     function StringAt(const Offset: DWORD): WideString;
 
-    class function TokenTable(const Token: DWORD): TJclPeCLRTableKind;
-    class function TokenIndex(const Token: DWORD): TJclIndex;
-    class function TokenCode(const Token: DWORD): Integer;
+    class function TokenTable(const Token: TJclCLRToken): TJclPeCLRTableKind;
+    class function TokenIndex(const Token: TJclCLRToken): TJclIndex;
+    class function TokenCode(const Token: TJclCLRToken): Integer;
 
     property Image: TJclPeImage read FImage;
     property Header: PCLRMetadataHeader read FHeader;
@@ -899,6 +1009,7 @@ type
     property BlobCount: TJclIndex read GetBlobCount;
     property Tables[const AKind: TJclPeCLRTableKind]: TJclPeCLRTable read GetTable;
     property TableCount: TJclIndex read GetTableCount;
+    property Tokens[const AToken: TJclCLRToken]: TJclPeCLRTableRow read GetToken;
   end;
 
   TJclPeCLRHeaderEx = class(TJclPeCLRHeader)
@@ -924,7 +1035,7 @@ type
     property Metadata: TJclPeMetadata read GetMetadata;
 
     property Flags: TClrImageFlags read FFlags;
-    property EntryPointToken: TJclPeCLRTableRow read GetEntryPointToken; 
+    property EntryPointToken: TJclPeCLRTableRow read GetEntryPointToken;
     property Resources: TCustomMemoryStream read GetResources;
     property StrongNameSignature: TCustomMemoryStream read GetStrongNameSignature;
   end;
@@ -1665,6 +1776,37 @@ begin
   Result := TJclPeCLRTableInterfaceImplRow;
 end;
 
+{ TJclPeCLRTableManifestResourceRow }
+
+constructor TJclPeCLRTableManifestResourceRow.Create(
+  const ATable: TJclPeCLRTable);
+begin
+  inherited;
+
+  FOffset            := Table.ReadDWord;
+  FFlags             := Table.ReadDWord;
+  FImplementationIdx := Table.ReadIndex(hkString);
+  FNameOffset        := Table.ReadIndex([ttFile, ttAssemblyRef]);
+end;
+
+function TJclPeCLRTableManifestResourceRow.GetName: WideString;
+begin
+  Result := Table.Stream.Metadata.StringAt(FNameOffset);
+end;
+
+{ TJclPeCLRTableManifestResource }
+
+function TJclPeCLRTableManifestResource.GetRow(
+  const Idx: TJclIndex): TJclPeCLRTableManifestResourceRow;
+begin
+  Result := TJclPeCLRTableManifestResourceRow(inherited GetRow(Idx));
+end;
+
+class function TJclPeCLRTableManifestResource.TableRowClass: TJclPeCLRTableRowClass;
+begin
+  Result := TJclPeCLRTableManifestResourceRow;
+end;
+
 { TJclPeCLRTableMemberRefRow }
 
 constructor TJclPeCLRTableMemberRefRow.Create(
@@ -1741,6 +1883,56 @@ begin
   Result := TJclPeCLRTableMethodDefRow;
 end;
 
+{ TJclPeCLRTableMethodImplRow }
+
+constructor TJclPeCLRTableMethodImplRow.Create(
+  const ATable: TJclPeCLRTable);
+begin
+  inherited;
+
+  FClassIdx             := Table.ReadIndex([ttTypeDef]);
+  FMethodBodyIdx        := Table.ReadIndex([ttMethodDef, ttMemberRef]);
+  FMethodDeclarationIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
+end;
+
+{ TJclPeCLRTableMethodImpl }
+
+function TJclPeCLRTableMethodImpl.GetRow(
+  const Idx: TJclIndex): TJclPeCLRTableMethodImplRow;
+begin
+  Result := TJclPeCLRTableMethodImplRow(inherited GetRow(Idx));
+end;
+
+class function TJclPeCLRTableMethodImpl.TableRowClass: TJclPeCLRTableRowClass;
+begin
+  Result := TJclPeCLRTableMethodImplRow;
+end;
+
+{ TJclPeCLRTableMethodSemanticsRow }
+
+constructor TJclPeCLRTableMethodSemanticsRow.Create(
+  const ATable: TJclPeCLRTable);
+begin
+  inherited;
+
+  FSemantics      := Table.ReadWord;
+  FMethodIdx      := Table.ReadIndex([ttMethodDef]);
+  FAssociationIdx := Table.ReadIndex([ttEvent, ttProperty]);
+end;
+
+{ TJclPeCLRTableMethodSemantics }
+
+function TJclPeCLRTableMethodSemantics.GetRow(
+  const Idx: TJclIndex): TJclPeCLRTableMethodSemanticsRow;
+begin
+  Result := TJclPeCLRTableMethodSemanticsRow(inherited GetRow(Idx));
+end;
+
+class function TJclPeCLRTableMethodSemantics.TableRowClass: TJclPeCLRTableRowClass;
+begin
+  Result := TJclPeCLRTableMethodSemanticsRow;
+end;
+
 { TJclPeCLRTableParamDefRow }
 
 constructor TJclPeCLRTableParamDefRow.Create(const ATable: TJclPeCLRTable);
@@ -1748,7 +1940,7 @@ begin
   inherited;
 
   FFlags      := Table.ReadWord;
-  FSequence   := Table.ReadDWord;
+  FSequence   := Table.ReadWord;
   FNameOffset := Table.ReadIndex(hkString);
 end;
 
@@ -1767,6 +1959,59 @@ end;
 class function TJclPeCLRTableParamDef.TableRowClass: TJclPeCLRTableRowClass;
 begin
   Result := TJclPeCLRTableParamDefRow;
+end;
+
+
+{ TJclPeCLRTablePropertyRow }
+
+constructor TJclPeCLRTablePropertyRow.Create(const ATable: TJclPeCLRTable);
+begin
+  inherited;
+
+  FFlags      := Table.ReadWord;
+  FNameOffset := Table.ReadIndex(hkString);
+  FKindIdx    := Table.ReadIndex(hkBlob);
+end;
+
+function TJclPeCLRTablePropertyRow.GetName: WideString;
+begin
+  Result := Table.Stream.Metadata.StringAt(FNameOffset);
+end;
+
+{ TJclPeCLRTableProperty }
+
+function TJclPeCLRTableProperty.GetRow(const Idx: TJclIndex): TJclPeCLRTablePropertyRow;
+begin
+  Result := TJclPeCLRTablePropertyRow(inherited GetRow(Idx));
+end;
+
+class function TJclPeCLRTableProperty.TableRowClass: TJclPeCLRTableRowClass;
+begin
+  Result := TJclPeCLRTablePropertyRow;
+end;
+
+{ TJclPeCLRTablePropertyMapRow }
+
+constructor TJclPeCLRTablePropertyMapRow.Create(
+  const ATable: TJclPeCLRTable);
+begin
+  inherited;
+
+  FParentIdx       := Table.ReadIndex([ttTypeDef]);
+  FPropertyListIdx := Table.ReadIndex([ttProperty]);
+end;
+
+{ TJclPeCLRTablePropertyMap }
+
+function TJclPeCLRTablePropertyMap.GetRow(
+  const Idx: TJclIndex): TJclPeCLRTablePropertyMapRow;
+begin
+  Result := TJclPeCLRTablePropertyMapRow(inherited GetRow(Idx));
+end;
+
+class function TJclPeCLRTablePropertyMap.TableRowClass: TJclPeCLRTableRowClass;
+begin
+  Result := TJclPeCLRTablePropertyMapRow;
 end;
 
 { TJclPeCLRTableStandAloneSigRow }
@@ -2091,7 +2336,7 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
                  (((StrLen(@pStream.Name[0])+1)+3) and (not $3)));
     end;
     if FindStream(TJclPeCLRTableStream, TJclPeCLRStream(TableStream)) then
-      TableStream.Update;
+      //TableStream.Update;
   end;
 begin
   Assert(AImage.IsCLR and AImage.CLRHeader.HasMetadata);
@@ -2179,6 +2424,16 @@ begin
   Stream := nil;
 end;
 
+
+function TJclPeMetadata.GetToken(const AToken: TJclCLRToken): TJclPeCLRTableRow;
+begin
+  try
+    Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken)];
+  except
+    Result := nil;
+  end;
+end;
+
 function TJclPeMetadata.GetString(const Idx: TJclIndex): WideString;
 begin
   if Assigned(FStringStream) or
@@ -2254,17 +2509,17 @@ begin
     Result := 0;
 end;
 
-class function TJclPeMetadata.TokenTable(const Token: DWORD): TJclPeCLRTableKind;
+class function TJclPeMetadata.TokenTable(const Token: TJclCLRToken): TJclPeCLRTableKind;
 begin
   Result := TJclPeCLRTableKind(Token shr 24);
 end;
 
-class function TJclPeMetadata.TokenIndex(const Token: DWORD): TJclIndex;
+class function TJclPeMetadata.TokenIndex(const Token: TJclCLRToken): TJclIndex;
 begin
-  Result := (Token and $FFFFFF) - 1;
+  Result := (Token and DWORD($FFFFFF)) - 1;
 end;
 
-class function TJclPeMetadata.TokenCode(const Token: DWORD): Integer;
+class function TJclPeMetadata.TokenCode(const Token: TJclCLRToken): Integer;
 begin
   Result := Token and $FF000000;
 end;
@@ -2349,7 +2604,7 @@ begin
   if not Assigned(FResources) and HasResources then
   with Header.Resources do
   begin
-    Assert(PDWord(Image.RvaToVa(VirtualAddress))^ = (Size - SizeOf(DWORD)));
+    //Assert(PDWord(Image.RvaToVa(VirtualAddress))^ = (Size - SizeOf(DWORD)));
     FResources := TJclReferenceMemoryStream.Create(
       Image.RvaToVa(VirtualAddress{+SizeOf(DWORD)}), Size{-SizeOf(DWORD)});
   end;
@@ -2358,12 +2613,7 @@ end;
 
 function TJclPeCLRHeaderEx.GetEntryPointToken: TJclPeCLRTableRow;
 begin
-  try
-    Result := Metadata.Tables[Metadata.TokenTable(Header.EntryPointToken)].
-      Rows[Metadata.TokenIndex(Header.EntryPointToken)];
-  except
-    Result := nil;
-  end;
+  Result := Metadata.Tokens[Header.EntryPointToken];
 end;
 
 end.
