@@ -1141,10 +1141,11 @@ Count=9
 3=WorkingDirectory:string=Working directory of the shell link
 4=IdList:PItemIdList=List of item identifiers (pidl's)
 5=Target:string=Target (fully qualified) of the shell link
-6=Description:string=Description of the shell link
+6=Description:string=Description of the shell link (also used as a popup hint in shell version 5 and up).
 7=IconLocation:string=Location (fully qualified filename) of the file that contains the icon for this shell link
 8=IconIndex:Integer=Index of the icon in the file specified by IconLocation
-9=HotKey:Word=Hotkey that activates the shell link
+9=HotKey:Word=Hotkey that activates the shell link. Modifiers, such as CTRL, ALT and SHIFT can be assigned as the high 
+byte of the hotkey field (used 1, 2 and 4 for shift, control and alt respectively).
 [Notes]
 Count=2
 1=To avoid problems you should set the IdList field to nil before using this record.
@@ -1161,6 +1162,10 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 Kylix=1
 FPC=1.x
+[Notes]
+Count=1
+1=The shell shortcut functions rely on COM internally and as such you should ensure COM is propertly initialized
+by calling the Win32 CoInitialize(nil) function before using these functions.
 [SeeAlso]
 Count=3
 1=ShellLinkCreate;..\ShellLinkCreate
