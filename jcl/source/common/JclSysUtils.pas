@@ -358,6 +358,17 @@ type
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
 //--------------------------------------------------------------------------------------------------
+// Child processes
+//--------------------------------------------------------------------------------------------------
+
+type
+  // e.g. TStrings.Append
+  TTextHandler = procedure(const Text: string) of object;
+
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False): Cardinal; overload;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False): Cardinal; overload;
+
+//--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
 //--------------------------------------------------------------------------------------------------
 
@@ -2049,6 +2060,177 @@ begin
 end;
 
 //==================================================================================================
+// Child processes
+//==================================================================================================
+
+// MuteCRTerminatedLines was "outsourced" from Win32ExecAndRedirectOutput
+
+function MuteCRTerminatedLines(const RawOutput: string): string;
+const
+  Delta = 1024;
+var
+  BufPos, OutPos, LfPos, EndPos: Integer;
+  C: Char;
+begin
+  SetLength(Result, Length(RawOutput));
+  OutPos := 1;
+  LfPos := OutPos;
+  EndPos := OutPos;
+  for BufPos := 1 to Length(RawOutput) do
+  begin
+    if OutPos >= Length(Result)-2 then
+      SetLength(Result, Length(Result) + Delta);
+    C := RawOutput[BufPos];
+    case C of
+      AnsiCarriageReturn:
+        OutPos := LfPos;
+      AnsiLineFeed:
+        begin
+          OutPos := EndPos;
+          Result[OutPos] := AnsiCarriageReturn;
+          Inc(OutPos);
+          Result[OutPos] := C;
+          Inc(OutPos);
+          EndPos := OutPos;
+          LfPos := OutPos;
+        end;
+    else
+      Result[OutPos] := C;
+      Inc(OutPos);
+      EndPos := OutPos;
+    end;
+  end;
+  SetLength(Result, OutPos - 1);
+end;
+
+function InternalExecute(const CommandLine: string; var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal;
+const
+  BufferSize = 255;
+var
+  Buffer: array [0..BufferSize] of Char;
+  TempOutput: string;
+  PipeBytesRead: Cardinal;
+
+  procedure ProcessLine(LineEnd: Integer);
+  begin
+    if RawOutput or (TempOutput[LineEnd] <> AnsiCarriageReturn) then
+    begin
+      while (LineEnd > 0) and (TempOutput[LineEnd] in [AnsiLineFeed, AnsiCarriageReturn]) do
+        Dec(LineEnd);
+      OutputLineCallback(Copy(TempOutput, 1, LineEnd));
+    end;
+  end;
+
+  procedure ProcessBuffer;
+  var
+    CR, LF: Integer;
+  begin
+    Buffer[PipeBytesRead] := #0;
+    TempOutput := TempOutput + Buffer;
+    if Assigned(OutputLineCallback) then
+    repeat
+      CR := Pos(AnsiCarriageReturn, TempOutput);
+      if CR = Length(TempOutput) then
+        CR := 0;        // line feed at CR + 1 might be missing
+      LF := Pos(AnsiLineFeed, TempOutput);
+      if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
+        LF := CR;       // accept CR as line end
+      if LF > 0 then
+      begin
+        ProcessLine(LF);
+        Delete(TempOutput, 1, LF);
+      end;
+    until LF = 0;
+  end;
+
+{$IFDEF MSWINDOWS}
+// "outsourced" from Win32ExecAndRedirectOutput
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  SecurityAttr: TSecurityAttributes;
+  PipeRead, PipeWrite: THandle;
+begin
+  Result := $FFFFFFFF;
+  SecurityAttr.nLength := SizeOf(SecurityAttr);
+  SecurityAttr.lpSecurityDescriptor := nil;
+  SecurityAttr.bInheritHandle := True;
+  if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
+  begin
+    Result := GetLastError;
+    Exit;
+  end;
+  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  StartupInfo.cb := SizeOf(TStartupInfo);
+  StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+  StartupInfo.wShowWindow := SW_HIDE;
+  StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+  StartupInfo.hStdOutput := PipeWrite;
+  StartupInfo.hStdError := PipeWrite;
+  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
+    ProcessInfo) then
+  begin
+    CloseHandle(PipeWrite);
+    while ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
+      ProcessBuffer;
+    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
+      not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
+        Result := $FFFFFFFF;
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+  end
+  else
+    CloseHandle(PipeWrite);
+  CloseHandle(PipeRead);
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  Pipe: PIOFile;
+  Cmd: string;
+begin
+  Cmd := Format('%s 2>&1', [CommandLine]);
+  Pipe := Libc.popen(PChar(Cmd), 'r');
+  repeat
+    PipeBytesRead := fread_unlocked(@Buffer, 1, BufferSize, Pipe);
+    if PipeBytesRead > 0 then
+      ProcessBuffer;
+  until PipeBytesRead = 0;
+  Result := pclose(Pipe);
+  wait(nil);
+{$ENDIF UNIX}
+  if TempOutput <> '' then
+    if Assigned(OutputLineCallback) then
+      // output wasn't terminated by a line feed...
+      // (shouldn't happen, but you never know)
+      ProcessLine(Length(TempOutput))
+    else
+      if RawOutput then
+        Output := Output + TempOutput
+      else
+        Output := Output + MuteCRTerminatedLines(Output);
+end;
+
+{ TODO -cHelp :
+RawOutput: Do not process isolated carriage returns (#13).
+That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
+
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean): Cardinal;
+begin
+  Result := InternalExecute(CommandLine, Output, nil, RawOutput);
+end;
+
+{ TODO -cHelp :
+Author: Robert Rossmair
+OutputLineCallback called once per line of output. }
+
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal; overload;
+var
+  Dummy: string;
+begin
+  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput);
+end;
+
+//==================================================================================================
 // Loading of modules (DLLs)
 //==================================================================================================
 
@@ -2246,6 +2428,12 @@ end;
 // History:
 
 // $Log$
+// Revision 1.25  2004/10/25 06:58:44  rrossmair
+// - fixed bug #0002065
+// - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()
+// - refactored this code
+// - added overload to supply callback capability per line of output
+//
 // Revision 1.24  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //

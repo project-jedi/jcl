@@ -41,7 +41,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, IniFiles, Contnrs,
-  JclBase;
+  JclBase, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Various definitions
@@ -177,22 +177,30 @@ type
     function GetExeName: string;
     function GetOptions: TStrings;
     function GetOutput: string;
+    function GetOutputCallback: TTextHandler;
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean;
+    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     property ExeName: string read GetExeName;
     property Options: TStrings read GetOptions;
+    property OutputCallback: TTextHandler write SetOutputCallback;
     property Output: string read GetOutput;
   end;
+
+  EJclCommandLineToolError = class(EJclError);
 
   TJclCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
   private
     FExeName: string;
     FOptions: TStringList;
     FOutput: string;
+    FOutputCallback: TTextHandler;
   protected
     function GetExeName: string;
     function GetOutput: string;
     function GetOptions: TStrings;
+    function GetOutputCallback: TTextHandler;
+    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     constructor Create(const AExeName: string);
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean;
@@ -205,19 +213,24 @@ type
   TJclBorlandCommandLineTool = class(TJclBorRADToolInstallationObject, IJclCommandLineTool)
   private
     FOptions: TStringList;
+    FOutputCallback: TTextHandler;
     FOutput: string;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
+    procedure CheckOutputValid;
     function GetExeName: string; virtual;
     function GetFileName: string;
     function GetOptions: TStrings;
+    function GetOutputCallback: TTextHandler;
+    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     function GetOutput: string;
   public
     destructor Destroy; override;
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean; virtual;
     property FileName: string read GetFileName;
-    property Output: string read FOutput;
+    property Output: string read GetOutput;
+    property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
     property Options: TStrings read GetOptions;
   end;
 
@@ -442,12 +455,12 @@ uses
   SysConst,
   {$IFDEF MSWINDOWS}
   Registry,
-  JclRegistry, JclMiscel,
+  JclRegistry,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo;
 
 //==================================================================================================
 // Internal
@@ -556,6 +569,9 @@ const
 const
   RsToolNames: array [TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
 
+resourcestring
+  RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
+
 //--------------------------------------------------------------------------------------------------
 
 function IsDelphiPackage(const FileName: string): Boolean;
@@ -600,37 +616,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
-
-function ExecAndRedirectOutput(const CommandLine: string; var Output: string): Integer;
-{$IFDEF MSWINDOWS}
-begin
-  Result := WinExec32AndRedirectOutput(CommandLine, Output);
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-var
-  Pipe: PIOFile;
-  Count: Integer;
-  Buffer: array [Byte] of Char;
-  Cmd, TempOutput: string;
-begin
-  Cmd := Format('%s 2>&1', [CommandLine]);
-  Pipe := Libc.popen(PChar(Cmd), 'r');
-  repeat
-    Count := fread_unlocked(@Buffer, 1, Length(Buffer) - 1, Pipe);
-    if Count > 0 then
-    begin
-      Buffer[Count] := #0;
-      TempOutput := TempOutput + Buffer;
-    end;
-  until Count < Length(Buffer) - 1;
-  Output := AdjustLineBreaks(Output + TempOutput);
-  Result := pclose(Pipe);
-  wait(nil);
-end;
-{$ENDIF UNIX}
 
 //==================================================================================================
 // TJclBorRADToolInstallationObject
@@ -1019,9 +1004,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclBorlandCommandLineTool.CheckOutputValid;
+begin
+  if Assigned(FOutputCallback) then
+    raise EJclCommandLineToolError.CreateResFmt(@RsCmdLineToolOutputInvalid, [GetExeName]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
 begin
-  Result := ExecAndRedirectOutput(Format('%s %s', [FileName, CommandLine]), FOutput) = 0;
+  if Assigned(FOutputCallback) then
+    Result := JclSysUtils.Execute(Format('%s %s', [FileName, CommandLine]), FOutputCallback) = 0
+  else
+    Result := JclSysUtils.Execute(Format('%s %s', [FileName, CommandLine]), FOutput) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1054,7 +1050,22 @@ end;
 
 function TJclBorlandCommandLineTool.GetOutput: string;
 begin
+  CheckOutputValid;
   Result := FOutput;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorlandCommandLineTool.GetOutputCallback: TTextHandler;
+begin
+  Result := FOutputCallback;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclBorlandCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
+begin
+  FOutputCallback := CallbackMethod;
 end;
 
 //==================================================================================================
@@ -1942,6 +1953,8 @@ begin
       end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
 begin
   {$IFDEF KYLIX}
@@ -2014,6 +2027,8 @@ class function TJclBCBInstallation.RADToolName: string;
 begin
   Result := RsBCBName;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclBCBInstallation.GetVclIncludeDir: string;
 begin
@@ -2202,7 +2217,7 @@ begin
     CheckForInstallation(brDelphi, I);
   CheckForInstallation(brCppBuilder, 3);
 end;
-{$ELSE KYLIX}
+{$ELSE ~KYLIX}
 const
   KeyNames: array [TJclBorRADToolKind] of string = (DelphiKeyName, BCBKeyName);
 var
@@ -2240,7 +2255,7 @@ begin
     VersionNumbers.Free;
   end;
 end;
-{$ENDIF KYLIX}
+{$ENDIF ~KYLIX}
 
 //==================================================================================================
 // TJclCommandLineTool
@@ -2271,15 +2286,11 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclCommandLineTool.Execute(const CommandLine: string): Boolean;
-const
-  {$IFDEF MSWINDOWS}
-  S = '"%s" %s';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  S = '"%s" %s';
-  {$ENDIF UNIX}
 begin
-  Result := ExecAndRedirectOutput(Format(S, [ExeName, CommandLine]), FOutput) = 0;
+  if Assigned(FOutputCallback) then
+    Result := JclSysUtils.Execute(Format('"%s" %s', [ExeName, CommandLine]), FOutputCallback) = 0
+  else
+    Result := JclSysUtils.Execute(Format('"%s" %s', [ExeName, CommandLine]), FOutput) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2305,9 +2316,29 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclCommandLineTool.GetOutputCallback: TTextHandler;
+begin
+  Result := FOutputCallback;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
+begin
+  FOutputCallback := CallbackMethod;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 // History:
 
 // $Log$
+// Revision 1.20  2004/10/25 06:58:44  rrossmair
+// - fixed bug #0002065
+// - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()
+// - refactored this code
+// - added overload to supply callback capability per line of output
+//
 // Revision 1.19  2004/10/17 05:23:06  rrossmair
 // replaced PathGetLongName2() by PathGetLongName()
 //
