@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: April 28, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -50,9 +50,9 @@ uses
 // Pointer manipulation
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
 procedure FreeAndNil(var Obj);
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
@@ -329,7 +329,7 @@ uses
 // Pointer manipulation
 //==================================================================================================
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
 
 procedure FreeAndNil(var Obj);
 var
@@ -340,7 +340,7 @@ begin
   O.Free;
 end;
 
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1542,11 +1542,11 @@ end;
 
 function SystemTObjectInstance: LongWord;
 begin
-  {$IFDEF DELPHI4}
+  {$IFDEF COMPILER4}
   Result := LongWord(FindClassHInstance(System.TObject));
-  {$ELSE DELPHI4}
+  {$ELSE COMPILER4}
   Result := FindClassHInstance(System.TObject);
-  {$ENDIF DELPHI4}
+  {$ENDIF COMPILER4}
 end;
 
 //--------------------------------------------------------------------------------------------------
