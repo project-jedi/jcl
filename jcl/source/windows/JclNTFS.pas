@@ -102,9 +102,9 @@ function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapp
 // Junction Points
 //------------------------------------------------------------------------------
 
-function CreateJunctionPoint(const MountDir, Destination: string): Boolean;
-function DeleteJunctionPoint(const MountDir: string): Boolean;
-function GetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
+function NtfsCreateJunctionPoint(const MountDir, Destination: string): Boolean;
+function NtfsDeleteJunctionPoint(const MountDir: string): Boolean;
+function NtfsGetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
 
 type
   EJclNtfsError = class (EJclWin32Error);
@@ -113,7 +113,7 @@ implementation
 
 uses
   FileCtrl, SysUtils,
-  JclResources;
+  JclResources, JclUnicode;
 
 //==============================================================================
 // NTFS - Compression
@@ -562,38 +562,12 @@ begin
     (Tag > IO_REPARSE_TAG_RESERVED_RANGE);
 end;
 
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
-// copies characters from a Pascal-style string into a null-terminated wide string
-asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     EDI, EAX
-        MOV     ESI, EDX
-        MOV     EDX, EAX
-        XOR     AX, AX
-@@1:
-        LODSB
-        STOSW
-        DEC     ECX
-        JNZ     @@1
-        MOV     EAX, EDX
-        POP     ESI
-        POP     EDI
-end;
-
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
-// copies a Pascal-style string to a null-terminated wide string
-begin
-  Result := StrPLCopyW(Dest, Source, Length(Source));
-  Result[Length(Source)] := WideChar(#0);
-end;
-
 //------------------------------------------------------------------------------
 
-function CreateJunctionPoint(const MountDir, Destination: string): Boolean;
+function NtfsCreateJunctionPoint(const MountDir, Destination: string): Boolean;
 var
   Dest: array [0..1024] of Char;
-  WideDest: WideString;  
+  WideDest: WideString;
   FullDir: array [0..1024] of Char;
   FilePart: PChar;
   Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
@@ -624,7 +598,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DeleteJunctionPoint(const MountDir: string): Boolean;
+function NtfsDeleteJunctionPoint(const MountDir: string): Boolean;
 begin
   Result := NtfsDeleteReparsePoint(MountDir, IO_REPARSE_TAG_MOUNT_POINT);
 end;
@@ -634,7 +608,7 @@ end;
 const
   CP_THREAD_ACP = 3;           // current thread's ANSI code page
 
-function GetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
 var
   Handle: THandle;
   Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
