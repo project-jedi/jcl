@@ -65,10 +65,7 @@ VclUnits:       JclInstall.pas \
                 ProductFrames.pas \
                 JediInstallerMain.pas
 
-ClxUnits:       QJclInstall.pas \
-                QJediInstallIntf.pas \
-                QProductFrames.pas \
-                QJediInstallerMain.pas
+ClxUnits:       
 	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak
 
 {prototypes}.pas{.}.pas:
