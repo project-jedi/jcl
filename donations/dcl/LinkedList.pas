@@ -38,8 +38,7 @@ type
     FSize: Integer;
   protected
     procedure AddFirst(AObject: IInterface);
-  protected
-  { IIntfCollection }
+    { IIntfCollection }
     function Add(AObject: IInterface): Boolean; overload;
     function AddAll(ACollection: IIntfCollection): Boolean; overload;
     procedure Clear;
@@ -53,8 +52,7 @@ type
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
-  protected
-  { IIntfList }
+    { IIntfList }
     procedure Add(Index: Integer; AObject: IInterface); overload;
     function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
@@ -63,12 +61,10 @@ type
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; AObject: IInterface);
     function SubList(First, Count: Integer): IIntfList;
-  protected
-  { IIntfCloneable }
+    { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(ACollection: IIntfCollection); overload;
+    constructor Create(ACollection: IIntfCollection = nil);
     destructor Destroy; override;
   end;
 
@@ -79,8 +75,7 @@ type
     FSize: Integer;
   protected
     procedure AddFirst(const AString: string);
-  protected
-  { IIntfCollection }
+    { IIntfCollection }
     function Add(const AString: string): Boolean; overload;
     function AddAll(ACollection: IStrCollection): Boolean; overload;
     procedure Clear;
@@ -94,8 +89,7 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
-  protected
-  { IIntfList }
+    { IIntfList }
     procedure Add(Index: Integer; const AString: string); overload;
     function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
@@ -104,12 +98,10 @@ type
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IStrList;
-  protected
-  { ICloneable }
+    { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(ACollection: IStrCollection); overload;
+    constructor Create(ACollection: IStrCollection = nil);
     destructor Destroy; override;
   end;
 
@@ -122,8 +114,7 @@ type
   protected
     procedure AddFirst(AObject: TObject);
     procedure FreeObject(AObject: TObject);
-  protected
-  { ICollection }
+    { ICollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
     procedure Clear;
@@ -137,8 +128,7 @@ type
     function RemoveAll(ACollection: ICollection): Boolean;
     function RetainAll(ACollection: ICollection): Boolean;
     function Size: Integer;
-  protected
-  { IList }
+    { IList }
     procedure Add(Index: Integer; AObject: TObject); overload;
     function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
@@ -147,19 +137,17 @@ type
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IList;
-  protected
-  { ICloneable }
+    { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(AOwnsObjects: Boolean); overload;
-    constructor Create(ACollection: ICollection; AOwnsObjects: Boolean); overload;
+    constructor Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
   end;
 
 implementation
 
-uses SysUtils, DCLUtil;
+uses
+  DCLUtil;
 
 type
   TIntfItr = class(TAbstractContainer, IIntfIterator)
@@ -169,7 +157,7 @@ type
     FLastRet: PIntfLinkedListItem;
     FSize: Integer;
   protected
-  { IIterator}
+    { IIterator}
     procedure Add(AObject: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
@@ -192,7 +180,7 @@ type
     FLastRet: PStrLinkedListItem;
     FSize: Integer;
   protected
-  { IStrIterator}
+    { IStrIterator}
     procedure Add(const AString: string);
     function GetString: string;
     function HasNext: Boolean;
@@ -215,7 +203,7 @@ type
     FLastRet: PLinkedListItem;
     FSize: Integer;
   public
-  { IIterator}
+    { IIterator}
     procedure Add(AObject: TObject);
     function GetObject: TObject;
     function HasNext: Boolean;
@@ -231,7 +219,23 @@ type
     destructor Destroy; override;
   end;
 
-{ TIntfItr }
+//=== { TIntfItr } ===========================================================
+
+constructor TIntfItr.Create(OwnList: TIntfLinkedList; Start: PIntfLinkedListItem);
+begin
+  inherited Create;
+  FCursor := Start;
+  FOwnList := OwnList;
+  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  FLastRet := nil;
+  FSize := FOwnList.Size;
+end;
+
+destructor TIntfItr.Destroy;
+begin
+  FOwnList._Release;
+  inherited Destroy;
+end;
 
 procedure TIntfItr.Add(AObject: IInterface);
 var
@@ -261,27 +265,11 @@ begin
   Inc(FSize);
 end;
 
-constructor TIntfItr.Create(OwnList: TIntfLinkedList; Start: PIntfLinkedListItem);
-begin
-  inherited Create;
-  FCursor := Start;
-  FOwnList := OwnList;
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
-  FSize := FOwnList.Size;
-end;
-
-destructor TIntfItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-
 function TIntfItr.GetObject: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -296,7 +284,7 @@ end;
 
 function TIntfItr.HasPrevious: Boolean;
 begin
- // Unidirectional
+  // Unidirectional
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
@@ -304,7 +292,7 @@ function TIntfItr.Next: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -361,7 +349,7 @@ procedure TIntfItr.SetObject(AObject: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -369,7 +357,23 @@ begin
   FCursor.Obj := AObject;
 end;
 
-{ TStrItr }
+//=== { TStrItr } ============================================================
+
+constructor TStrItr.Create(OwnList: TStrLinkedList; Start: PStrLinkedListItem);
+begin
+  inherited Create;
+  FCursor := Start;
+  FOwnList := OwnList;
+  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  FLastRet := nil;
+  FSize := FOwnList.Size;
+end;
+
+destructor TStrItr.Destroy;
+begin
+  FOwnList._Release;
+  inherited Destroy;
+end;
 
 procedure TStrItr.Add(const AString: string);
 var
@@ -399,28 +403,11 @@ begin
   Inc(FSize);
 end;
 
-constructor TStrItr.Create(OwnList: TStrLinkedList;
-  Start: PStrLinkedListItem);
-begin
-  inherited Create;
-  FCursor := Start;
-  FOwnList := OwnList;
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
-  FSize := FOwnList.Size;
-end;
-
-destructor TStrItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-
 function TStrItr.GetString: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -435,7 +422,7 @@ end;
 
 function TStrItr.HasPrevious: Boolean;
 begin
- // Unidirectional
+  // Unidirectional
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
@@ -443,7 +430,7 @@ function TStrItr.Next: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -500,7 +487,7 @@ procedure TStrItr.SetString(const AString: string);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -508,7 +495,23 @@ begin
   FCursor.Str := AString;
 end;
 
-{ TItr }
+//=== { TItr } ===============================================================
+
+constructor TItr.Create(OwnList: TLinkedList; Start: PLinkedListItem);
+begin
+  inherited Create;
+  FCursor := Start;
+  FOwnList := OwnList;
+  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  FLastRet := nil;
+  FSize := FOwnList.Size;
+end;
+
+destructor TItr.Destroy;
+begin
+  FOwnList._Release;
+  inherited Destroy;
+end;
 
 procedure TItr.Add(AObject: TObject);
 var
@@ -538,27 +541,11 @@ begin
   Inc(FSize);
 end;
 
-constructor TItr.Create(OwnList: TLinkedList; Start: PLinkedListItem);
-begin
-  inherited Create;
-  FCursor := Start;
-  FOwnList := OwnList;
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
-  FSize := FOwnList.Size;
-end;
-
-destructor TItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-
 function TItr.GetObject: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -573,7 +560,7 @@ end;
 
 function TItr.HasPrevious: Boolean;
 begin
- // Unidirectional
+  // Unidirectional
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
@@ -581,7 +568,7 @@ function TItr.Next: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -593,19 +580,19 @@ end;
 
 function TItr.NextIndex: Integer;
 begin
- // No Index
+  // No Index
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
- // Unidirectional
+  // Unidirectional
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
- // No Index
+  // No Index
   raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
@@ -640,7 +627,7 @@ procedure TItr.SetObject(AObject: TObject);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -648,7 +635,29 @@ begin
   FCursor.Obj := AObject;
 end;
 
-{ TIntfLinkedList }
+//=== { TIntfLinkedList } ====================================================
+
+constructor TIntfLinkedList.Create(ACollection: IIntfCollection = nil);
+var
+  It: IIntfIterator;
+begin
+  inherited Create;
+  FStart := nil;
+  FEnd := nil;
+  FSize := 0;
+  if ACollection <> nil then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+      Add(It.Next);
+  end;
+end;
+
+destructor TIntfLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TIntfLinkedList.Add(Index: Integer; AObject: IInterface);
 var
@@ -756,7 +765,7 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  if (FStart = nil) and (It.HasNext) then
+  if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
@@ -767,7 +776,7 @@ begin
   I := 0;
   while (Current <> nil) and (I <> Index) do
     Current := Current.Next;
-  while (It.HasNext) do
+  while It.HasNext do
   begin
     New(NewItem);
     NewItem.Obj := It.Next;
@@ -854,8 +863,7 @@ begin
   end;
 end;
 
-function TIntfLinkedList.ContainsAll(
-  ACollection: IIntfCollection): Boolean;
+function TIntfLinkedList.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -870,41 +878,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Exit;
-  end;
-end;
-end;
-
-constructor TIntfLinkedList.Create;
-begin
-  FStart := nil;
-  FEnd := nil;
-  FSize := 0;
-end;
-
-constructor TIntfLinkedList.Create(ACollection: IIntfCollection);
-var
-  It: IIntfIterator;
-begin
-  inherited Create;
-  FStart := nil;
-  FEnd := nil;
-  FSize := 0;
-  if ACollection = nil then
-    raise Exception.Create('Collection = nil');
-  It := ACollection.First;
-  while it.HasNext do
-    Add(It.Next);
-end;
-
-destructor TIntfLinkedList.Destroy;
-begin
-  Clear;
-  inherited Destroy;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TIntfLinkedList.Equals(ACollection: IIntfCollection): Boolean;
@@ -972,7 +950,7 @@ begin
     if Current.Obj = AObject then
     begin
       Result := I;
-      Exit;
+      Break;
     end;
     Current := Current.Next;
   end;
@@ -1129,8 +1107,7 @@ begin
       It.Remove;
 end;
 
-procedure TIntfLinkedList.SetObject(Index: Integer;
-  AObject: IInterface);
+procedure TIntfLinkedList.SetObject(Index: Integer; AObject: IInterface);
 var
   I: Integer;
   Current: PIntfLinkedListItem;
@@ -1172,20 +1149,42 @@ begin
   Result := TIntfLinkedList.Create;
   I := 0;
   It := Self.First;
-  while (It.HasNext) and (I < First) do
+  while (I < First) and It.HasNext do
   begin
     It.Next;
     Inc(I);
   end;
   I := 0;
-  while (It.HasNext) and (I <= Last) do
+  while (I <= Last) and It.HasNext do
   begin
     Result.Add(It.Next);
     Inc(I);
   end;
 end;
 
-{ TStrLinkedList }
+//=== { TStrLinkedList } =====================================================
+
+constructor TStrLinkedList.Create(ACollection: IStrCollection = nil);
+var
+  It: IStrIterator;
+begin
+  inherited Create;
+  FStart := nil;
+  FEnd := nil;
+  FSize := 0;
+  if ACollection <> nil then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+      Add(It.Next);
+  end;
+end;
+
+destructor TStrLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TStrLinkedList.Add(Index: Integer; const AString: string);
 var
@@ -1275,8 +1274,7 @@ begin
   Result := True;
 end;
 
-function TStrLinkedList.AddAll(Index: Integer;
-  ACollection: IStrCollection): Boolean;
+function TStrLinkedList.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   I: Integer;
   It: IStrIterator;
@@ -1293,7 +1291,7 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  if (FStart = nil) and (It.HasNext) then
+  if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
@@ -1304,7 +1302,7 @@ begin
   I := 0;
   while (Current <> nil) and (I <> Index) do
     Current := Current.Next;
-  while (It.HasNext) do
+  while It.HasNext do
   begin
     New(NewItem);
     NewItem.Str := It.Next;
@@ -1406,41 +1404,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Exit;
-  end;
-end;
-end;
-
-constructor TStrLinkedList.Create;
-begin
-  FStart := nil;
-  FEnd := nil;
-  FSize := 0;
-end;
-
-constructor TStrLinkedList.Create(ACollection: IStrCollection);
-var
-  It: IStrIterator;
-begin
-  inherited Create;
-  FStart := nil;
-  FEnd := nil;
-  FSize := 0;
-  if ACollection = nil then
-    raise Exception.Create('Collection = nil');
-  It := ACollection.First;
-  while it.HasNext do
-    Add(It.Next);
-end;
-
-destructor TStrLinkedList.Destroy;
-begin
-  Clear;
-  inherited Destroy;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TStrLinkedList.Equals(ACollection: IStrCollection): Boolean;
@@ -1513,7 +1481,7 @@ begin
     if Current.Str = AString then
     begin
       Result := I;
-      Exit;
+      Break;
     end;
     Current := Current.Next;
   end;
@@ -1707,20 +1675,43 @@ begin
   Result := TStrLinkedList.Create;
   I := 0;
   It := Self.First;
-  while (It.HasNext) and (I < First) do
+  while (I < First) and It.HasNext do
   begin
     It.Next;
     Inc(I);
   end;
   I := 0;
-  while (It.HasNext) and (I <= Last) do
+  while (I <= Last) and It.HasNext do
   begin
     Result.Add(It.Next);
     Inc(I);
   end;
 end;
 
-{ TLinkedList }
+//=== { TLinkedList } ========================================================
+
+constructor TLinkedList.Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
+var
+  It: IIterator;
+begin
+  inherited Create;
+  FStart := nil;
+  FEnd := nil;
+  FSize := 0;
+  FOwnsObjects := AOwnsObjects;
+  if ACollection <> nil then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+      Add(It.Next);
+  end;
+end;
+
+destructor TLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TLinkedList.Add(Index: Integer; AObject: TObject);
 var
@@ -1807,8 +1798,7 @@ begin
   Result := True;
 end;
 
-function TLinkedList.AddAll(Index: Integer;
-  ACollection: ICollection): Boolean;
+function TLinkedList.AddAll(Index: Integer; ACollection: ICollection): Boolean;
 var
   I: Integer;
   It: IIterator;
@@ -1825,7 +1815,7 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  if (FStart = nil) and (It.HasNext) then
+  if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
@@ -1836,7 +1826,7 @@ begin
   I := 0;
   while (Current <> nil) and (I <> Index) do
     Current := Current.Next;
-  while (It.HasNext) do
+  while It.HasNext do
   begin
     New(NewItem);
     NewItem.Obj := It.Next;
@@ -1917,7 +1907,7 @@ begin
     if Current.Obj = AObject then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
     Current := Current.Next;
   end;
@@ -1938,45 +1928,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Exit;
-  end;
-end;
-end;
-
-constructor TLinkedList.Create;
-begin
-  Create(True);
-end;
-
-constructor TLinkedList.Create(AOwnsObjects: Boolean);
-begin
-  inherited Create;
-  FStart := nil;
-  FEnd := nil;
-  FSize := 0;
-  FOwnsObjects := AOwnsObjects;
-end;
-
-constructor TLinkedList.Create(ACollection: ICollection; AOwnsObjects: Boolean);
-var
-  It: IIterator;
-begin
-  Create(AOwnsObjects);
-  if ACollection = nil then
-    raise Exception.Create('Collection = nil');
-  It := ACollection.First;
-  while it.HasNext do
-    Add(It.Next);
-end;
-
-destructor TLinkedList.Destroy;
-begin
-  Clear;
-  inherited Destroy;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TLinkedList.Equals(ACollection: ICollection): Boolean;
@@ -2050,7 +2006,7 @@ begin
     if Current.Obj = AObject then
     begin
       Result := I;
-      Exit;
+      Break;
     end;
     Current := Current.Next;
   end;
@@ -2251,12 +2207,12 @@ begin
   Result := TLinkedList.Create;
   I := 0;
   It := Self.First;
-  while (It.HasNext) and (I < First) do
+  while (I < First) and It.HasNext do
   begin
     It.Next;
     Inc(I);
   end;
-  while (It.HasNext) and (I <= Last) do
+  while (I <= Last) and It.HasNext do
   begin
     Result.Add(It.Next);
     Inc(I);
