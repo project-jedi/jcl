@@ -1,30 +1,29 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclMime.pas.                                            }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf  }
-{ Junker (ralfjunker@gmx.de).                                                  }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2001                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclMime.pas.                                                                }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf Junker               }
+{ (ralfjunker@gmx.de).                                                                             }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: January 29, 2001                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclMime;
 
@@ -124,9 +123,9 @@ type
     B3: Byte;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Wrapper functions & procedures
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeEncodeString(const S: AnsiString): AnsiString;
 var
@@ -142,7 +141,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeDecodeString(const S: AnsiString): AnsiString;
 var
@@ -161,7 +160,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
@@ -178,7 +177,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
@@ -198,25 +197,25 @@ begin
   OutputStream.Write(OutputBuffer, MimeDecodePartialEnd(OutputBuffer, ByteBuffer, ByteBufferSpace));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Helper functions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeEncodedSize(const I: Cardinal): Cardinal;
 begin
   Result := (I + 2) div 3 * 4;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeDecodedSize(const I: Cardinal): Cardinal;
 begin
   Result := (I + 3) div 4 * 3;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Primary functions & procedures
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal; var OutputBuffer);
 var
@@ -282,7 +281,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal; var OutputBuffer): Cardinal;
 var
@@ -294,7 +293,7 @@ begin
   Inc(Result, MimeDecodePartialEnd(PChar(Cardinal(OutputBuffer) + Result)^, ByteBuffer, ByteBufferSpace));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
   var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
@@ -340,7 +339,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal;
