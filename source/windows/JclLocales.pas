@@ -311,6 +311,9 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE
 implementation
 
 uses
+  {$IFDEF FPC}
+  WinSysUt,
+  {$ENDIF FPC}
   SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
 
 const
@@ -1148,6 +1151,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/13 07:46:06  rrossmair
+// changes for FPC 1.9.3+ compatibility
+//
 // Revision 1.6  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //

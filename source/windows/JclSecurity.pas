@@ -117,6 +117,7 @@ implementation
 
 uses
 {$IFDEF FPC}
+  WinSysUt,
   JwaAccCtrl,
 {$ELSE}
   AccCtrl,
@@ -530,6 +531,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/05/13 07:46:06  rrossmair
+// changes for FPC 1.9.3+ compatibility
+//
 // Revision 1.8  2004/05/05 07:30:54  rrossmair
 // Changes for FPC compatibility; header updated according to new policy: initial developers & contributors listed
 //
