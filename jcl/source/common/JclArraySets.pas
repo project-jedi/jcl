@@ -36,7 +36,7 @@ uses
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfSet,
-    IJclIntfCloneable)
+      IJclIntfCloneable)
   private
     function BinarySearch(AInterface: IInterface): Integer;
   protected
@@ -52,15 +52,14 @@ type
     procedure Union(ACollection: IJclIntfCollection);
   end;
 
-  TJclStrArraySet = class(TJclStrArrayList, IJclStrCollection, IJclStrSet,
-    IJclCloneable)
+  TJclStrArraySet = class(TJclStrArrayList, IJclStrSet, IJclCloneable)
   private
     function BinarySearch(const AString: string): Integer;
   protected
     { IJclStrCollection }
-    function Add(const AString: string): Boolean;
-    function AddAll(ACollection: IJclStrCollection): Boolean;
-    function Contains(const AString: string): Boolean;
+    function Add(const AString: string): Boolean; override;
+    function AddAll(ACollection: IJclStrCollection): Boolean; override;
+    function Contains(const AString: string): Boolean; override;
     { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
     { IJclStrSet }
@@ -95,8 +94,7 @@ function ObjectCompare(Obj1, Obj2: TObject): Integer;
 begin
   if Cardinal(Obj1) < Cardinal(Obj2) then
     Result := -1
-  else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
+  else if Cardinal(Obj1) > Cardinal(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -106,8 +104,7 @@ function InterfaceCompare(Obj1, Obj2: IInterface): Integer;
 begin
   if Cardinal(Obj1) < Cardinal(Obj2) then
     Result := -1
-  else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
+  else if Cardinal(Obj1) > Cardinal(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -131,13 +128,13 @@ end;
 function TJclIntfArraySet.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -159,8 +156,7 @@ begin
     Comp := InterfaceCompare(GetObject(CompPos), AInterface);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else
-    if Comp > 0 then
+    else if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -221,13 +217,13 @@ end;
 function TJclStrArraySet.AddAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -249,8 +245,7 @@ begin
     Comp := CompareStr(GetString(CompPos), AString);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else
-    if Comp > 0 then
+    else if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -311,13 +306,13 @@ end;
 function TJclArraySet.AddAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -339,8 +334,7 @@ begin
     Comp := ObjectCompare(GetObject(CompPos), AObject);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else
-    if Comp > 0 then
+    else if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -386,6 +380,17 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/02 09:59:30  dade2004
+// Added
+//  -TJclStrCollection in JclContainerIntf
+//        Every common methods for IJclStrCollection are implemented here
+//
+// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
+// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
+//
+// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
+// relative method in TJclStrCollection
+//
 // Revision 1.3  2005/02/27 11:36:20  marquardt
 // fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
 //
