@@ -36,12 +36,12 @@
 (******************************************************************************
  ******************************************************************************
  ***                                                                        ***
- ***  Hardlink. Implementation of the CreateHardLink() API introduced in    ***
+ ***  Hardlinks. Implementation of the CreateHardLink() API introduced in   ***
  ***  Windows 2000 - BUT ALSO COMPATIBLE with Windows NT 4.0!               ***
  ***  This implementation should be fully compatible with the Windows 2000  ***
  ***  implementation (including last error and so on).                      ***
  ***                                                                        ***
- ***  Version [1.12]                                {Last mod 2004-10-18}   ***
+ ***  Version [1.12a]                               {Last mod 2004-10-21}   ***
  ***                                                                        ***
  ******************************************************************************
  ******************************************************************************
@@ -82,8 +82,8 @@
  ***                                                                        ***
  ***~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~***
  ***              May the source be with you, stranger ... ;)               ***
- ***    Snizhok, eto ne tolko fruktovij kefir, snizhok, eto stil zhizn.     ***
- ***                     Vsem Privet iz Germanii                            ***
+ ***    Snizhok, eto ne tolko fruktovij kefir, snizhok, eto stil zhizni.    ***
+ ***                     Vsekh Privet iz Germanii                           ***
  ***                                                                        ***
  *** Greets from -=Assarbad=- fly to YOU =)                                 ***
  *** Special greets fly 2 Nico, Casper, SA, Pizza, Navarion, Eugen, Zhenja, ***
@@ -145,10 +145,8 @@
 // Last modified: $Date$
 // For history see end of file
 
-unit Hardlinks;
-{$ELSE ~JCL}
-unit HardLink;
 {$ENDIF ~JCL}
+unit Hardlinks;
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
@@ -1088,16 +1086,32 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.3  2004/10/21 21:58:03  assarbad
+// - minimal changes in the prototype
+//   (change of the filename for the release version on assarbad.net
+//    Hardlink.pas -> Hardlinks.pas
+//    The JCL prototype is now reference for "my" release version)
+// - creation of new unit from style-cleaned prototype
+//
 // Revision 1.2  2004/10/21 17:53:03  marquardt
 // style cleaning
 //
 // Revision 1.1  2004/10/20 19:49:00  rrossmair
-// - added protptype unit Hardlinks (formerly known as Hardlink)
+// - added prototype unit Hardlinks (formerly known as Hardlink)
 // - modified makefile accordingly
 //
 {$ENDIF PROTOTYPE}
 
 {
+   Version 1.12a - 2004-10-21
+   + "Original" file renamed according to the change in the JCL prototype
+     Hardlink.pas -> Hardlinks.pas
+   + The original version is now being created using:
+     jpp -c -uJCL -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -x..\ Hardlinks.pas
+   + Changes will first occur in this prototype and the output of the
+     preprocessor undefining the "JCL" symbol will be mirrored to my site
+     afterwards. The prototype at the JCL is the reference from now on.
+
    Version 1.12 - 2004-10-18
    + Code-cleaning (removal of the currently not working softlink stuff from 1.10)
    + Comments for Project JEDI (JCL)
