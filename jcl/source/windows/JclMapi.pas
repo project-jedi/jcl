@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 27, 2000                                             }
+{ Last modified: November 28, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -168,13 +168,17 @@ type
     FBody: string;
     FSubject: string;
     FRecipients: TJclEmailRecips;
+  protected
+    function FindParentWindow: HWND;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Send(ShowDialog: Boolean; ParentWND: HWND);
-    class procedure SimpleSendMail(const Recipient, Name, ASubject, ABody: string;
-      ShowDialog: Boolean; ParentWND: HWND);
+    function Send(ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
+      ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+    class function SimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
+      ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
+      ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
     procedure SortAttachments;
     property Attachments: TStrings read FAttachments write FAttachments;
     property Body: string read FBody write FBody;
@@ -611,7 +615,7 @@ end;
 
 function TJclEmailRecips.GetItems(Index: Integer): TJclEmailRecip;
 begin
-  Result := TJclEmailRecip(GetItem(Index));
+  Result := TJclEmailRecip(inherited Items[Index]);
 end;
 
 //------------------------------------------------------------------------------
@@ -668,7 +672,29 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclEmail.Send(ShowDialog: Boolean; ParentWND: HWND);
+function TJclEmail.FindParentWindow: HWND;
+var
+  FoundWnd: HWND;
+
+  function EnumThreadWndProc(Wnd: HWND; Param: LPARAM): Boolean; stdcall;
+  begin
+    if IsWindowVisible(Wnd) and (GetWindowLong(Wnd, GWL_STYLE) and WS_POPUP <> 0) then
+    begin
+      PDWORD(Param)^ := Wnd;
+      Result := False;
+    end else
+      Result := True;
+  end;
+
+begin
+  FoundWnd := 0;
+  EnumThreadWindows(MainThreadID, @EnumThreadWndProc, Integer(@FoundWnd));
+  Result := FoundWnd;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.Send(ShowDialog: Boolean; ParentWND: HWND): Boolean;
 const
   RecipClasses: array [TJclEmailRecipKind] of DWORD =
     (MAPI_TO, MAPI_CC, MAPI_BCC);
@@ -676,7 +702,7 @@ var
   AttachArray: array of TMapiFileDesc;
   RecipArray: array of TMapiRecipDesc;
   MapiMessage: TMapiMessage;
-  Flags: DWORD;
+  Flags, Res: DWORD;
   I: Integer;
   TaskWindows: TJclMapiTaskWindows;
 begin
@@ -689,29 +715,36 @@ begin
         MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
       FAttachments[I] := ExpandFileName(FAttachments[I]);
       FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
-      AttachArray[I].nPosition := $FFFFFFFF;
-      AttachArray[I].lpszFileName := PChar(FAttachments[I]);
+      AttachArray[I].nPosition := DWORD(-1);
+      AttachArray[I].lpszFileName := nil;
       AttachArray[I].lpszPathName := PChar(FAttachments[I]);
     end;
   end else
     AttachArray := nil;
 
-  if Recipients.Count = 0 then
-    MapiCheck(MAPI_E_INVALID_RECIPS, False);
-  SetLength(RecipArray, Recipients.Count);
-  for I := 0 to Recipients.Count - 1 do
+  if Recipients.Count > 0 then
   begin
-    FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
-    with RecipArray[I], Recipients[I] do
+    SetLength(RecipArray, Recipients.Count);
+    for I := 0 to Recipients.Count - 1 do
     begin
-      ulRecipClass := RecipClasses[Kind];
-      if Name = '' then // some clients requires Name item always filled
-        lpszName := PChar(FAddress)
-      else
-        lpszName := PChar(FName);
-      lpszAddress := PChar(FAddress);
+      FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
+      with RecipArray[I], Recipients[I] do
+      begin
+        ulRecipClass := RecipClasses[Kind];
+        if Name = '' then // some clients requires Name item always filled
+          lpszName := PChar(FAddress)
+        else
+          lpszName := PChar(FName);
+        lpszAddress := PChar(FAddress);
+      end;
     end;
-  end;
+  end else
+  begin
+    if ShowDialog then
+      RecipArray := nil
+    else
+      MapiCheck(MAPI_E_INVALID_RECIPS, False);
+  end;    
 
   LoadClientLib;
 
@@ -723,29 +756,35 @@ begin
   MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
   MapiMessage.nFileCount := Length(AttachArray);
   TaskWindows := TJclMapiTaskWindows.Create;
-  TaskWindows.SaveTaskWindowsState;
   try
     Flags := MAPI_LOGON_UI or MAPI_NEW_SESSION;
     if ShowDialog then
+    begin
       Flags := Flags or MAPI_DIALOG;
-    MapiCheck(MapiSendMail(0, ParentWND, MapiMessage, Flags, 0), True);
+      if ParentWND = 0 then
+        ParentWND := FindParentWindow;
+      TaskWindows.SaveTaskWindowsState;
+    end;
+    Res := MapiCheck(MapiSendMail(0, ParentWND, MapiMessage, Flags, 0), True);
+    Result := (Res = SUCCESS_SUCCESS);
   finally
-    TaskWindows.RestoreTaskWindowsState;
+    if ShowDialog then
+      TaskWindows.RestoreTaskWindowsState;
     TaskWindows.Free;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-class procedure TJclEmail.SimpleSendMail(const Recipient, Name, ASubject,
-  ABody: string; ShowDialog: Boolean; ParentWND: HWND);
+class function TJclEmail.SimpleSendMail(const ARecipient, AName, ASubject,
+  ABody: string; ShowDialog: Boolean; ParentWND: HWND): Boolean;
 begin
   with Create do
   try
-    Recipients.Add(Recipient, Name, rkTO);
+    Recipients.Add(ARecipient, AName, rkTO);
     Subject := ASubject;
     Body := ABody;
-    Send(ShowDialog, ParentWND);
+    Result := Send(ShowDialog, ParentWND);
   finally
     Free;
   end;
