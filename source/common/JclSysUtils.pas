@@ -201,7 +201,7 @@ uses
   Windows,
   {$ENDIF WIN32}
   SysUtils,
-  JclResources;
+  JclResources, JclStrings;
 
 //==============================================================================
 // Pointer manipulation
