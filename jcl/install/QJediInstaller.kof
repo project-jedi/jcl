@@ -24,7 +24,7 @@ S=0
 T=0
 U=0
 V=1
-W=0
+W=1
 X=1
 Y=1
 Z=1
@@ -46,8 +46,12 @@ DynamicLoader=/lib/ld-linux.so.2
 [Directories]
 OutputDir=../bin
 UnitOutputDir=
-SearchPath=$(DELPHI)/lib/debug:../source/common
+PackageDLLOutputDir=
+PackageDCPOutputDir=
+SearchPath=$(DELPHI)/lib/debug:/home/robert/kylix/jedi/jcl/lib/k3/debug:/home/robert/kylix/jedi/jcl/install
+Packages=rtl:visualclx:visualdbclx:dataclx:xmlrtl:netdataclx:netclx:indy:soaprtl
 Conditionals=JCLINSTALL
+DebugSourceDirs=
 UsePackages=0
 
 [Parameters]
@@ -56,4 +60,18 @@ HostApplication=
 Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
 UseLauncher=0
 DebugCWD=
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=JCLINSTALL
+
+[HistoryLists\hlSearchPath]
+Count=3
+Item0=$(DELPHI)/lib/debug:/home/robert/kylix/jedi/jcl/lib/k3/debug:/home/robert/kylix/jedi/jcl/install
+Item1=$(DELPHI)/lib/debug:/home/robert/kylix/jedi/jcl/install
+Item2=$(DELPHI)/lib/debug
+
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=../bin
 
