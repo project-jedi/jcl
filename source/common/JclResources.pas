@@ -16,7 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: December 13, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ Unit which provides a central place for all resource strings used in the JCL }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -188,6 +193,10 @@ resourcestring
   // TJclFileMapping.Create
 
   RsFileMappingOpenFile = 'Unable to open the file';
+
+  // FileGetTypeName()
+
+  RsDefaultFileTypeName = ' File';
 
 //------------------------------------------------------------------------------
 // JclGraphics, JclGraphUtils
