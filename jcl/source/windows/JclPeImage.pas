@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 30, 2001                                              }
+{ Last modified: February 11, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -387,6 +387,7 @@ type
   public
     constructor Create(AImage: TJclPeImage; AParentItem: TJclPeResourceItem;
       ADirectory: PImageResourceDirectory);
+    function FindName(const Name: string): TJclPeResourceItem;
     property Directory: PImageResourceDirectory read FDirectory;
     property Items[Index: Integer]: TJclPeResourceItem read GetItems; default;
     property ParentItem: TJclPeResourceItem read FParentItem;
@@ -396,6 +397,7 @@ type
   public
     function FindResource(ResourceType: TJclPeResourceKind;
       const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem;
+    function ListResourceNames(ResourceType: TJclPeResourceKind; const Strings: TStrings): Boolean;
   end;
 
 //------------------------------------------------------------------------------
@@ -590,9 +592,7 @@ type
     class function HeaderNames(Index: TJclPeHeader): string;
     class function LoadConfigNames(Index: TJclLoadConfig): string;
     class function ShortSectionInfo(Characteristics: DWORD): string;
-    {$IFDEF SUPPORTS_INT64}
     class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
-    {$ENDIF SUPPORTS_INT64}
     property AttachedImage: Boolean read FAttachedImage;
     property DebugList: TJclPeDebugList read GetDebugList;
     property Description: string read GetDescription;
@@ -654,20 +654,49 @@ type
     property RequiresNames[Index: Integer]: string read GetRequiresNames;
   end;
 
+  TJclPeBorForm = class (TObject)
+  private
+    FFormFlags: TFilerFlags;
+    FFormClassName: string;
+    FFormObjectName: string;
+    FFormPosition: Integer;
+    FResItem: TJclPeResourceItem;
+    function GetDisplayName: string;
+  public
+    procedure ConvertFormToText(const Stream: TStream); overload;
+    procedure ConvertFormToText(const Strings: TStrings); overload;
+    property FormClassName: string read FFormClassName;
+    property FormFlags: TFilerFlags read FFormFlags;
+    property FormObjectName: string read FFormObjectName;
+    property FormPosition: Integer read FFormPosition;
+    property DisplayName: string read GetDisplayName;
+    property ResItem: TJclPeResourceItem read FResItem;
+  end;
+
   TJclPeBorImage = class (TJclPeImage)
   private
+    FForms: TObjectList;
     FIsPackage: Boolean;
     FIsBorlandImage: Boolean;
     FLibHandle: THandle;
     FPackageInfo: TJclPePackageInfo;
+    function GetFormCount: Integer;
+    function GetForms(Index: Integer): TJclPeBorForm;
+    function GetFormFromName(const FormClassName: string): TJclPeBorForm;
     function GetIsTD32DebugPresent: Boolean;
     function GetLibHandle: THandle;
     function GetPackageInfo: TJclPePackageInfo;
   protected
     procedure AfterOpen; override;
     procedure Clear; override;
+    procedure CreateFormsList;
   public
+    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    destructor Destroy; override;
     function FreeLibHandle: Boolean;
+    property Forms[Index: Integer]: TJclPeBorForm read GetForms;
+    property FormCount: Integer read GetFormCount;
+    property FormFromName[const FormClassName: string]: TJclPeBorForm read GetFormFromName; 
     property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
     property IsBorlandImage: Boolean read FIsBorlandImage;
     property IsPackage: Boolean read FIsPackage;
@@ -757,22 +786,27 @@ function PeDoesImportFunction(const FileName: TFileName; const FunctionName: str
 function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
-function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings;
+function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
-function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
+function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
-function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings): Boolean;
+function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
+
+function PeResourceKindNames(const FileName: TFileName;
+  ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
+
+function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 
@@ -885,16 +919,11 @@ implementation
 
 uses
   Consts,
-  JclResources, JclSysUtils;
+  JclLogic, JclResources, JclSysUtils;
 
-//------------------------------------------------------------------------------
-
-function IMAGE_ORDINAL(Ordinal: DWORD): Word;
-begin
-  Result := Ordinal and $FFFF;
-end;
-
-//------------------------------------------------------------------------------
+//==============================================================================
+// Helper routines
+//==============================================================================
 
 function GetVersionString(HiV, LoV: Word): string;
 begin
@@ -1813,7 +1842,7 @@ end;
 
 function ExportSortByAddress(Item1, Item2: Pointer): Integer;
 begin
-  Result := TJclPeExportFuncItem(Item1).Address - TJclPeExportFuncItem(Item2).Address;
+  Result := Integer(TJclPeExportFuncItem(Item1).Address) - Integer(TJclPeExportFuncItem(Item2).Address);
   if Result = 0 then
     Result := ExportSortByName(Item1, Item2);
 end;
@@ -2395,6 +2424,21 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeResourceList.FindName(const Name: string): TJclPeResourceItem;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if StrSame(Items[I].Name, Name) then
+    begin
+      Result := Items[I];
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeResourceList.GetItems(Index: Integer): TJclPeResourceItem;
 begin
   Result := TJclPeResourceItem(inherited Items[Index]);
@@ -2433,6 +2477,22 @@ begin
             Break;
           end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeRootResourceList.ListResourceNames(ResourceType: TJclPeResourceKind;
+  const Strings: TStrings): Boolean;
+var
+  ResTypeItem: TJclPeResourceItem;
+  I: Integer;
+begin
+  ResTypeItem := FindResource(ResourceType, '');
+  Result := (ResTypeItem <> nil);
+  if Result then
+    with ResTypeItem.List do
+      for I := 0 to Count - 1 do
+        Strings.Add(Items[I].Name);
 end;
 
 //==============================================================================
@@ -3423,19 +3483,20 @@ end;
 
 class function TJclPeImage.ShortSectionInfo(Characteristics: DWORD): string;
 type
-  TSectionCharacteristics = record
+  TSectionCharacteristics = packed record
     Mask: DWORD;
     InfoChar: Char;
   end;
 const
-  Info: array [1..7] of TSectionCharacteristics = (
+  Info: array [1..8] of TSectionCharacteristics = (
     (Mask: IMAGE_SCN_CNT_CODE; InfoChar: 'C'),
+    (Mask: IMAGE_SCN_MEM_EXECUTE; InfoChar: 'E'),
+    (Mask: IMAGE_SCN_MEM_READ; InfoChar: 'R'),
+    (Mask: IMAGE_SCN_MEM_WRITE; InfoChar: 'W'),
     (Mask: IMAGE_SCN_CNT_INITIALIZED_DATA; InfoChar: 'I'),
     (Mask: IMAGE_SCN_CNT_UNINITIALIZED_DATA; InfoChar: 'U'),
     (Mask: IMAGE_SCN_MEM_SHARED; InfoChar: 'S'),
-    (Mask: IMAGE_SCN_MEM_EXECUTE; InfoChar: 'E'),
-    (Mask: IMAGE_SCN_MEM_READ; InfoChar: 'R'),
-    (Mask: IMAGE_SCN_MEM_WRITE; InfoChar: 'W')
+    (Mask: IMAGE_SCN_MEM_DISCARDABLE; InfoChar: 'D')
   );
 var
   I: Integer;
@@ -3457,26 +3518,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
 var
-  ST: TSystemTime;
-  FT: Int64;
+  Days: DWORD;
+  Hour, Min, Sec: Word;
 begin
-  if TimeDateStamp = 0 then
-    Result := 0
-  else
-  begin
-    FillChar(ST, SizeOf(ST), #0);
-    ST.wYear := 1970;
-    ST.wMonth := 1;
-    ST.wDay := 1;
-    Windows.SystemTimeToFileTime(ST, TFileTime(FT));
-    FT := FT + Int64(TimeDateStamp) * 10000000;
-    Result := FileTimeToDateTime(TFileTime(FT));
-  end;
+  Days := TimeDateStamp div 86400;
+  TimeDateStamp := TimeDateStamp mod 86400;
+  Hour := TimeDateStamp div 3600;
+  TimeDateStamp := TimeDateStamp mod 3600;
+  Min := TimeDateStamp div 60;
+  Sec := TimeDateStamp mod 60;
+  Result := EncodeTime(Hour, Min, Sec, 0) + EncodeDate(1970, 1, 1) + Days;
 end;
-{$ENDIF SUPPORTS_INT64}
 
 //------------------------------------------------------------------------------
 
@@ -3642,6 +3696,49 @@ begin
 end;
 
 //==============================================================================
+// TJclPeBorForm
+//==============================================================================
+
+procedure TJclPeBorForm.ConvertFormToText(const Stream: TStream);
+var
+  SourceStream: TJclPeResourceRawStream;
+begin
+  SourceStream := TJclPeResourceRawStream.Create(ResItem);
+  try
+    ObjectBinaryToText(SourceStream, Stream);
+  finally
+    SourceStream.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeBorForm.ConvertFormToText(const Strings: TStrings);
+var
+  TempStream: TMemoryStream;
+begin
+  TempStream := TMemoryStream.Create;
+  try
+    ConvertFormToText(TempStream);
+    TempStream.Seek(0, soFromBeginning);
+    Strings.LoadFromStream(TempStream);
+  finally
+    TempStream.Free;
+  end;    
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorForm.GetDisplayName: string;
+begin
+  if FFormObjectName <> '' then
+    Result := FFormObjectName + ': '
+  else
+    Result := '';
+  Result := Result + FFormClassName;
+end;
+
+//==============================================================================
 // TJclPeBorImage
 //==============================================================================
 
@@ -3665,11 +3762,96 @@ end;
 
 procedure TJclPeBorImage.Clear;
 begin
+  FForms.Clear;
   FreeAndNil(FPackageInfo);
   FreeLibHandle;
   inherited;
   FIsBorlandImage := False;
   FIsPackage := False;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclPeBorImage.Create(ANoExceptions: Boolean);
+begin
+  FForms := TObjectList.Create(True);
+  inherited Create(ANoExceptions);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeBorImage.CreateFormsList;
+var
+  ResTypeItem: TJclPeResourceItem;
+  I: Integer;
+
+  function CheckStreamFormat(Stream: TStream): Boolean;
+  {$IFDEF DELPHI5_UP}
+  begin
+    Result := (TestStreamFormat(Stream) = sofBinary);
+  end;
+  {$ELSE}
+  const
+    FilerSignature: array[1..4] of Char = 'TPF0';
+  var
+    Signature: Integer;
+  begin
+    Result := (Stream.Size >= SizeOf(Signature));
+    if Result then
+    begin
+      Stream.ReadBuffer(Signature, SizeOf(Signature));
+      Stream.Seek(0, soFromBeginning);
+      Result := (Signature = Integer(FilerSignature));
+    end
+  end;
+  {$ENDIF DELPHI5_UP}
+
+  procedure ProcessListItem(DfmResItem: TJclPeResourceItem);
+  var
+    SourceStream: TJclPeResourceRawStream;
+    DfmItem: TJclPeBorForm;
+    Reader: TReader;
+  begin
+    SourceStream := TJclPeResourceRawStream.Create(DfmResItem);
+    try
+      if CheckStreamFormat(SourceStream) then
+      begin
+        Reader := TReader.Create(SourceStream, 4096);
+        try
+          DfmItem := TJclPeBorForm.Create;
+          DfmItem.FResItem := DfmResItem;
+          Reader.ReadSignature;
+          Reader.ReadPrefix(DfmItem.FFormFlags, DfmItem.FFormPosition);
+          DfmItem.FFormClassName := Reader.ReadStr;
+          DfmItem.FFormObjectName := Reader.ReadStr;
+          FForms.Add(DfmItem);
+        finally
+          Reader.Free;
+        end;
+      end;
+    finally
+      SourceStream.Free;
+    end;
+  end;
+
+begin
+  if StatusOK then
+    with ResourceList do
+    begin
+      ResTypeItem := FindResource(rtRCData, '');
+      if ResTypeItem <> nil then
+        with ResTypeItem.List do
+          for I := 0 to Count - 1 do
+            ProcessListItem(Items[I].List[0]);
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclPeBorImage.Destroy;
+begin
+  inherited;
+  FreeAndNil(FForms);
 end;
 
 //------------------------------------------------------------------------------
@@ -3683,6 +3865,37 @@ begin
   end
   else
     Result := True;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetFormCount: Integer;
+begin
+  if FForms.Count = 0 then
+    CreateFormsList;
+  Result := FForms.Count;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetFormFromName(const FormClassName: string): TJclPeBorForm;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to FormCount - 1 do
+    if StrSame(FormClassName, Forms[I].FormClassName) then
+    begin
+      Result := Forms[I];
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetForms(Index: Integer): TJclPeBorForm;
+begin
+  Result := TJclPeBorForm(FForms[Index]);
 end;
 
 //------------------------------------------------------------------------------
@@ -4132,7 +4345,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings; Recursive, FullPathName: Boolean): Boolean;
+function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
+  Recursive, FullPathName: Boolean): Boolean;
 var
   SL: TStringList;
 begin
@@ -4181,7 +4395,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
+function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string; IncludeLibNames: Boolean): Boolean;
 var
   I: Integer;
@@ -4247,7 +4461,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings): Boolean;
+function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
   I: Integer;
 begin
@@ -4286,6 +4500,42 @@ end;
 
 //------------------------------------------------------------------------------
 
+function PeResourceKindNames(const FileName: TFileName;
+  ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
+begin
+  with CreatePeImage(FileName) do
+  try
+    Result := StatusOK and ResourceList.ListResourceNames(ResourceType, NamesList);
+  finally
+    Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
+var
+  I: Integer;
+  BorImage: TJclPeBorImage;
+  BorForm: TJclPeBorForm;
+begin
+  BorImage := TJclPeBorImage.Create(True);
+  try
+    BorImage.FileName := FileName;
+    Result := BorImage.IsBorlandImage;
+    if Result then
+      for I := 0 to BorImage.FormCount - 1 do
+      begin
+        BorForm := BorImage.Forms[I];
+        NamesList.AddObject(BorForm.DisplayName, Pointer(BorForm.ResItem.RawEntryDataSize));
+      end;  
+  finally
+    BorImage.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 var
   FileHandle: THandle;
@@ -4294,7 +4544,7 @@ var
   HeadersPtr: PImageNtHeaders;
 begin
   Result := False;
-  FillChar(NtHeaders, SizeOf(NtHeaders), 0);
+  FillChar(NtHeaders, SizeOf(NtHeaders), #0);
   FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
   if FileHandle = INVALID_HANDLE_VALUE then
     Exit;
@@ -4423,6 +4673,7 @@ procedure TJclPeSectionStream.Initialize(Instance: HMODULE; const ASectionName: 
 var
   Header: PImageSectionHeader;
   NtHeaders: PImageNtHeaders;
+  DataSize: Integer;
 begin
   FInstance := Instance;
   NtHeaders := PeMapImgNtHeaders(Pointer(Instance));
@@ -4431,7 +4682,9 @@ begin
   Header := PeMapImgFindSection(NtHeaders, ASectionName);
   if Header = nil then
     raise EJclPeImageError.CreateResRecFmt(@RsPeSectionNotFound, [ASectionName]);
-  SetPointer(Pointer(FInstance + Header^.VirtualAddress), Header^.SizeOfRawData);
+  // Borland and Microsoft seems to have swapped the meaning of this items.
+  DataSize := Min(Header^.SizeOfRawData, Header^.Misc.VirtualSize);
+  SetPointer(Pointer(FInstance + Header^.VirtualAddress), DataSize);
   FSectionHeader := Header^;
 end;
 
