@@ -15,7 +15,7 @@
 { The Initial Developer of the Original Code is ESB Consultancy.                                   }
 { Portions created by ESB Consultancy are Copyright ESB Consultancy. All rights reserved.          }
 {                                                                                                  }
-{ Contributors (in alphabetical order):                                                           }
+{ Contributors (in alphabetical order):                                                            }
 {   ESB Consultancy                                                                                }
 {   Fred Hovey                                                                                     }
 {   Marcel van Brakel                                                                              }
@@ -539,6 +539,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/12/17 05:33:02  marquardt
+// updates for DCL
+//
 // Revision 1.12  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
