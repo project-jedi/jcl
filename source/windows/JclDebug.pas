@@ -480,6 +480,12 @@ type
       2: (SelfOfMethod: Pointer);
   end;
 
+  PJmpTable = ^TJmpTable;
+  TJmpTable = packed record
+    OPCode: Word; // FF 25 = JMP DWORD PTR [$xxxxxxxx], encoded as $25FF
+    Ptr: Pointer;
+  end;
+
   TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
     efkAutoException);
 
@@ -3034,6 +3040,10 @@ begin
     Result := Longint(Jmp) + ShortInt(jmp.distance) + 2
   else
     Result := 0;
+  if (Result <> 0) and (PJmpTable(Result).OPCode = $25FF) then
+//    Result := pointer(pinteger(PJmpTable(Result))^);
+    if not IsBadReadPtr(PJmpTable(Result).Ptr, 4) then
+      Result := PDWORD(PJmpTable(Result).Ptr)^;
 end;
 
 //==============================================================================
