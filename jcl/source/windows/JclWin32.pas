@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: January 22, 2002                                              }
+{ Last modified: January 31, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -686,14 +686,16 @@ function NetBios(P: PNCB): Byte;
 //==============================================================================
 
 //------------------------------------------------------------------------------
-// Missing winnt.h translations
+// Missing WinNT.h translations
 //------------------------------------------------------------------------------
 
 const
   IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   = 13; // Delay load import descriptors
-  IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14; // COM run-time descriptor
-  RT_HTML     = MakeIntResource(23);
-  RT_MANIFEST = MakeIntResource(24);
+  IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14; // COM run-time descriptor -> .NET
+
+  IMAGE_DLLCHARACTERISTICS_NO_BIND               = $0800;
+  IMAGE_DLLCHARACTERISTICS_WDM_DRIVER            = $2000;
+  IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = $8000;
 
 type
 
@@ -921,6 +923,20 @@ const
   IMAGE_DEBUG_TYPE_BORLAND = 9;
 
 //------------------------------------------------------------------------------
+// Missing WinUser.h translations
+//------------------------------------------------------------------------------
+
+const
+  RT_HTML     = MakeIntResource(23);
+  RT_MANIFEST = MakeIntResource(24);
+
+  CREATEPROCESS_MANIFEST_RESOURCE_ID                 = MakeIntResource(1);
+  ISOLATIONAWARE_MANIFEST_RESOURCE_ID                = MakeIntResource(2);
+  ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID = MakeIntResource(3);
+  MINIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(1);
+  MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(16);
+
+//------------------------------------------------------------------------------
 // CorHdr.h translations (part of CLR)
 //------------------------------------------------------------------------------
 
@@ -934,22 +950,17 @@ const
 type
   PImageCor20Header = ^TImageCor20Header;
   IMAGE_COR20_HEADER = record
-    // Header versioning
     cb: Cardinal;
     MajorRuntimeVersion: Word;
     MinorRuntimeVersion: Word;
-    // Symbol table and startup information
     MetaData: TImageDataDirectory;
     Flags: Cardinal;
     EntryPointToken: Cardinal;
-    // Binding information
     Resources: TImageDataDirectory;
     StrongNameSignature: TImageDataDirectory;
-    // Regular fixup and binding information
     CodeManagerTable: TImageDataDirectory;
     VTableFixups: TImageDataDirectory;
     ExportAddressTableJumps: TImageDataDirectory;
-    // Precompiled image info (internal use only - set to zero)
     ManagedNativeHeader: TImageDataDirectory;
   end;
   TImageCor20Header = IMAGE_COR20_HEADER;
@@ -959,8 +970,10 @@ type
 //------------------------------------------------------------------------------
 
 type
-  // possibly Borland's header translation bug
+{$IFNDEF DELPHI6_UP}
+  // possibly Borland's header translation bug, fixed in Delphi 6
   TLoadedImage = LoadedImage;
+{$ENDIF DELPHI6_UP}
 
   PPImageSectionHeader = ^PImageSectionHeader;
 
@@ -1218,8 +1231,10 @@ type
 
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT}
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR}
-  {$EXTERNALSYM RT_HTML}
-  {$EXTERNALSYM RT_MANIFEST}
+  {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_NO_BIND}
+  {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_WDM_DRIVER}
+  {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE}
+
 {$IFNDEF DELPHI5_UP}
   {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
   {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
@@ -1267,6 +1282,15 @@ type
   {$EXTERNALSYM IMAGE_REL_BASED_DIR64}
   {$EXTERNALSYM IMAGE_REL_BASED_HIGH3ADJ}
   {$EXTERNALSYM IMAGE_DEBUG_TYPE_BORLAND}
+
+  {$EXTERNALSYM RT_HTML}
+  {$EXTERNALSYM RT_MANIFEST}
+  {$EXTERNALSYM CREATEPROCESS_MANIFEST_RESOURCE_ID}
+  {$EXTERNALSYM ISOLATIONAWARE_MANIFEST_RESOURCE_ID}
+  {$EXTERNALSYM ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID}
+  {$EXTERNALSYM MINIMUM_RESERVED_MANIFEST_RESOURCE_ID}
+  {$EXTERNALSYM MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID}
+
   {$EXTERNALSYM COMIMAGE_FLAGS_ILONLY}
   {$EXTERNALSYM COMIMAGE_FLAGS_32BITREQUIRED}
   {$EXTERNALSYM COMIMAGE_FLAGS_IL_LIBRARY}
