@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: November 29, 2002                                                                 }
+{ Last modified: February 22, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -38,11 +38,21 @@ unit JclFileUtils;
 interface
 
 uses
+  JclBase,
+  {$IFDEF LINUX}
+  Types, Libc,
+  {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Windows,
+  JclSysInfo,
   {$ENDIF MSWINDOWS}
-  Classes, Graphics, SysUtils,
-  JclBase, JclSysInfo;
+  {$IFDEF VCL}
+  Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics,
+  {$ENDIF VisualCLX}
+  Classes, SysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Path Manipulation
@@ -72,19 +82,25 @@ function PathAppend(const Path, Append: string): string;
 function PathBuildRoot(const Drive: Byte): string;
 function PathCanonicalize(const Path: string): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
+{$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
+{$ENDIF MSWINDOWS}
+{$IFDEF VCL}
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
+{$ENDIF VCL}
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 function PathGetDepth(const Path: string): Integer;
+{$IFDEF MSWINDOWS}
 function PathGetLongName(const Path: string): string;
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
+{$ENDIF MSWINDOWS}
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
 function PathIsUNC(const Path: string): Boolean;
@@ -99,48 +115,81 @@ function PathRemoveExtension(const Path: string): string;
 //--------------------------------------------------------------------------------------------------
 
 type
+  {$IFNDEF COMPILER6_UP}
+  PBoolean = ^Boolean;
+  {$ENDIF not def COMPILER6_UP}
+
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
   TFileListOption  = (flFullNames, flRecursive, flMaskedSubfolders);
   TFileListOptions = set of TFileListOption;
   TJclAttributeMatch = (amAny, amExact, amSubSetOf, amSuperSetOf, amCustom);
   TFileMatchFunc = function(const Attr: Integer; const FileInfo: TSearchRec): Boolean;
+  TFileHandler = procedure (const FileName: string) of object;
+  TFileHandlerEx = procedure (const Directory: string; const FileInfo: TSearchRec) of object;
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
   const AttributeMatch: TJclAttributeMatch = amSubsetOf; const Options: TFileListOptions = [];
   const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
+procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
+  const Attributes: Integer = faAnyFile; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
+  const Abort: PBoolean = nil);
+procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
+  const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
+  const Abort: PBoolean = nil);
+{$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
-{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
-{$ENDIF MSWINDOWS}
 function FileCreateTemp(var Prefix: string): THandle;
+{$ENDIF MSWINDOWS}
 function FileExists(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
+{$IFDEF MSWINDOWS}
 function FileGetDisplayName(const FileName: string): string;
+{$ENDIF MSWINDOWS}
 function FileGetSize(const FileName: string): Integer;
+{$IFDEF MSWINDOWS}
 function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
+{$ENDIF MSWINDOWS}
 function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
 function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
+{$IFDEF MSWINDOWS}
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
+{$ENDIF MSWINDOWS}
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
+{$IFDEF MSWINDOWS}
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
+{$ENDIF MSWINDOWS}
 function GetFileInformation(const FileName: string): TSearchRec;
+{$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 function GetFileLastAccess(const FileName: string): TFileTime;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 function GetFileCreation(const FileName: string): TFileTime;
 function GetModulePath(const Module: HMODULE): string;
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
+{$ENDIF MSWINDOWS}
 function IsDirectory(const FileName: string): Boolean;
+{$IFDEF MSWINDOWS}
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): THandle;
 function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
@@ -155,11 +204,97 @@ function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boo
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
 
+{$ENDIF def MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+// TJclFileEnumerator
+//
+// Class for thread-based file search, crossplatform-capable.
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFileEnumeratorSyncMode = (smPerDirectory, smPerFile);
+  
+  // for internal use by TJclFileEnumerator only
+  TEnumFileThread = class (TThread)
+  private
+    FFileMask: TStringList;
+    FDirectory: string;
+    FSubDirectoryMask: string;
+    FOnEnterDirectory: TFileHandler;
+    FFileHandlerEx: TFileHandlerEx;
+    FFileHandler: TFileHandler;
+    FInternalDirHandler: TFileHandler;
+    FInternalFileHandler: TFileHandlerEx;
+    FFileInfo: TSearchRec;
+    FAttributes: Integer;
+    FAttributeMatch: TJclAttributeMatch;
+    FSynchronizationMode: TFileEnumeratorSyncMode;
+    FIncludeSubDirectories: Boolean;
+    FIncludeHiddenSubDirectories: Boolean;
+    procedure EnterDirectory;
+    procedure AsyncProcessDirectory(const Directory: string);
+    procedure SyncProcessDirectory(const Directory: string);
+    procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    procedure SetFileMask(const Value: string);
+  protected
+    procedure Execute; override;
+    procedure ProcessDirectory;
+    procedure ProcessDirFiles;
+    procedure ProcessFile;
+    property FileMask: string write SetFileMask;
+    property Directory: string read FDirectory;
+    property SynchronizationMode: TFileEnumeratorSyncMode read FSynchronizationMode
+      write FSynchronizationMode;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TJclFileEnumerator = class (TPersistent)
+  private
+    FFileMask: string;
+    FDirectory: string;
+    FSubDirectoryMask: string;
+    FOnEnterDirectory: TFileHandler;
+    FOnTerminateTask: TNotifyEvent;
+    FAttributes: Integer;
+    FAttributeMatch: TJclAttributeMatch;
+    FSynchronizationMode: TFileEnumeratorSyncMode;
+    FIncludeSubDirectories: Boolean;
+    FIncludeHiddenSubDirectories: Boolean;
+  protected
+    function CreateTask: TEnumFileThread;
+  public
+    constructor Create;
+    function Run(Handler: TFileHandler): TThread; overload;
+    function Run(Handler: TFileHandlerEx): TThread; overload;
+  published
+    property FileMask: string read FFileMask write FFileMask;
+    property Directory: string read FDirectory write FDirectory;
+    property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
+    property Attributes: Integer read FAttributes write FAttributes
+      default faAnyFile;
+    property AttributeMatch: TJclAttributeMatch read FAttributeMatch write FAttributeMatch
+      default amSuperSetOf;
+    property IncludeSubDirectories: Boolean read FIncludeSubDirectories write FIncludeSubDirectories
+      default True;
+    property IncludeHiddenSubDirectories: Boolean read FIncludeHiddenSubDirectories write FIncludeHiddenSubDirectories
+      default False;
+    property SynchronizationMode: TFileEnumeratorSyncMode read FSynchronizationMode write FSynchronizationMode
+      default smPerDirectory;
+    property OnEnterDirectory: TFileHandler read FOnEnterDirectory write FOnEnterDirectory;
+    property OnTerminateTask: TNotifyEvent read FOnTerminateTask write FOnTerminateTask;
+  end;
+
 //--------------------------------------------------------------------------------------------------
 // TFileVersionInfo
 //
 // Class that enables reading the version information stored in a PE file.
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 type
   TFileFlag = (ffDebug, ffInfoInferred, ffPatched, ffPreRelease, ffPrivateBuild, ffSpecialBuild);
@@ -247,6 +382,8 @@ function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD 
 
 function VersionResourceAvailable(const FileName: string): Boolean;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 // Version Info formatting
 //--------------------------------------------------------------------------------------------------
@@ -256,6 +393,7 @@ type
 
 function FormatVersionString(const HiV, LoV: Word): string; overload;
 function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
+{$IFDEF MSWINDOWS}
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string; overload;
 
 //--------------------------------------------------------------------------------------------------
@@ -273,6 +411,8 @@ function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFil
 function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFileVersionFormat = vfFull;
   const NotAvailableText: string = ''): string;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 // Streams
 //
@@ -281,7 +421,9 @@ function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFile
 
 { TTempFileStream }
 
+{$IFDEF MSWINDOWS}
 type
+
   TJclTempFileStream = class (THandleStream)
   private
     FFileName: string;
@@ -290,6 +432,7 @@ type
     destructor Destroy; override;
     property FileName: string read FFileName;
   end;
+
 
   TJclCustomFileMapping = class;
 
@@ -449,6 +592,8 @@ type
     property Size: Integer read FSize;
   end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 // TJclFileMaskComparator
 //--------------------------------------------------------------------------------------------------
@@ -487,17 +632,20 @@ type
 
   EJclPathError = class (EJclError);
   EJclFileUtilsError = class (EJclError);
+  {$IFDEF MSWINDOWS}
   EJclTempFileStreamError = class (EJclWin32Error);
   EJclFileMappingError = class (EJclWin32Error);
   EJclFileMappingViewError = class (EJclWin32Error);
+  {$ENDIF MSWINDOWS}
 
 implementation
 
 uses
   {$IFDEF MSWINDOWS}
   ActiveX, ShellApi, ShlObj,
+  JclWin32, JclSecurity, JclShell,
   {$ENDIF MSWINDOWS}
-  JclDateTime, JclResources, JclSecurity, JclShell, JclStrings, JclSysUtils, JclWin32;
+  JclDateTime, JclResources, JclStrings, JclSysUtils;
 
 { Some general notes:
 
@@ -511,6 +659,13 @@ uses
   eventhough there may be easier ways to get at the required information. This is because FindFirst
   is about the only routine which doesn't cause the file's last modification/accessed time to be
   changed which is usually an undesired side-effect. }
+
+{$IFDEF LINUX}
+const
+  ERROR_NO_MORE_FILES = -1;
+{$ENDIF LINUX}
+
+{$IFDEF MSWINDOWS}
 
 //==================================================================================================
 // TJclTempFileStream
@@ -1256,6 +1411,8 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //==================================================================================================
 // Path manipulation
 //==================================================================================================
@@ -1418,6 +1575,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
+
 function PathCompactPath(const DC: HDC; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string;
 const
@@ -1447,13 +1606,19 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF VCL}
 
 function PathCompactPath(const Canvas: TCanvas; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string; overload;
 begin
   Result := PathCompactPath(Canvas.Handle, Path, Width, CmpFmt);
 end;
+
+{$ENDIF VCL}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1487,6 +1652,24 @@ function PathExtractFileNameNoExt(const Path: string): string;
 begin
   Result := PathRemoveExtension(ExtractFileName(Path));
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFNDEF COMPILER6_UP}
+
+function IncludeTrailingPathDelimiter(const Path: string): string;
+begin
+  Result := IncludeTrailingBackSlash(Path);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ExcludeTrailingPathDelimiter(const Path: string): string;
+begin
+  Result := ExcludeTrailingBackSlash(Path);
+end;
+
+{$ENDIF not def COMPILER6_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1561,6 +1744,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function PathGetLongName2(Path: string): string;
 var
@@ -1653,6 +1838,8 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function PathIsAbsolute(const Path: string): Boolean;
@@ -1707,7 +1894,7 @@ end;
 function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  NotImplemented('PathIsDiskDevice');
+  //NotImplemented('PathIsDiskDevice');
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
@@ -1862,6 +2049,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
+
 function CloseVolume(var Volume: THandle): Boolean;
 begin
   Result := False;
@@ -1979,8 +2168,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -2003,8 +2190,6 @@ begin
   end;
 end;
 
-{$ENDIF MSWINDOWS}
-
 //--------------------------------------------------------------------------------------------------
 
 function FileCreateTemp(var Prefix: string): THandle;
@@ -2024,6 +2209,8 @@ begin
     Prefix := TempName;
   end;
 end;
+
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2059,6 +2246,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
+
 function FileGetDisplayName(const FileName: string): string;
 var
   FileInfo: TSHFileInfo;
@@ -2070,27 +2259,37 @@ begin
     Result := FileName;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function FileGetSize(const FileName: string): Integer;
 var
   SearchRec: TSearchRec;
+{$IFDEF MSWINDOWS}
   OldMode: Cardinal;
+{$ENDIF MSWINDOWS}
 begin
   Result := -1;
+{$IFDEF MSWINDOWS}
   OldMode := SetErrorMode(SEM_FAILCRITICALERRORS);
   try
+{$ENDIF MSWINDOWS}
     if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
     begin
       Result := SearchRec.Size;
       SysUtils.FindClose(SearchRec);
     end;
+{$IFDEF MSWINDOWS}
   finally
     SetErrorMode(OldMode);
   end;
+{$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function FileGetTempName(const Prefix: string): string;
 var
@@ -2134,6 +2333,8 @@ begin
     Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
   end;
 end;
+
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2188,11 +2389,16 @@ function GetDirectorySize(const Path: string): Int64;
           if (F.Attr and faDirectory) = faDirectory then
             Inc(Result, RecurseFolder(Path + F.Name + '\'))
           else
+          {$IFDEF MSWINDOWS}
           begin
             TempSize.LowPart := F.FindData.nFileSizeLow;
             TempSize.HighPart := F.FindData.nFileSizeHigh;
             Inc(Result, TempSize.QuadPart);
           end;
+          {$ENDIF MSWINDOWS}
+          {$IFDEF LINUX}
+            Inc(Result, Int64(F.Size));
+          {$ENDIF LINUX}
         end;
         R := SysUtils.FindNext(F);
       end;
@@ -2215,6 +2421,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function GetDriveTypeStr(const Drive: Char): string;
 var
@@ -2257,6 +2465,8 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
@@ -2279,6 +2489,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 begin
@@ -2309,6 +2521,8 @@ begin
     Items.Add(RsAttrSparseFile);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetFileInformation(const FileName: string): TSearchRec;
@@ -2321,19 +2535,72 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF LINUX}
+
+function GetFileStatus(const FileName: string; out Buf: TStatBuf; DereferenceSymLinks: Boolean = True): Integer;
+begin
+  if DereferenceSymLinks then
+    Result := stat(PChar(FileName), Buf)
+  else
+    Result := lstat(PChar(FileName), Buf);
+end;
+
+{$ENDIF LINUX}
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
+
 function GetFileLastWrite(const FileName: string): TFileTime;
 begin
   Result := GetFileInformation(FileName).FindData.ftLastWriteTime;
 end;
 
+{$ENDIF MSWINDOWS}
+
+{$IFDEF LINUX}
+
+function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+var
+  Buf: TStatBuf;
+begin
+  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+    Result := Buf.st_mtime
+  else
+    Result := -1;
+end;
+
+{$ENDIF LINUX}
+
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function GetFileLastAccess(const FileName: string): TFileTime;
 begin
   Result := GetFileInformation(FileName).FindData.ftLastAccessTime;
 end;
 
+{$ENDIF MSWINDOWS}
+
+
+{$IFDEF LINUX}
+
+function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+var
+  Buf: TStatBuf;
+begin
+  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+    Result := Buf.st_atime
+  else
+    Result := -1;
+end;
+
+{$ENDIF LINUX}
+
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function GetFileCreation(const FileName: string): TFileTime;
 begin
@@ -2417,17 +2684,28 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function IsDirectory(const FileName: string): Boolean;
+{$IFDEF MSWINDOWS}
 var
   R: DWORD;
 begin
   R := GetFileAttributes(PChar(FileName));
   Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
+  Result := DirectoryExists(FileName);
+end;
+{$ENDIF LINUX}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 var
@@ -2685,7 +2963,7 @@ begin
 
    if MoveFileEx(PChar(GetBackupFileName(FileName)), PChar(TempFileName), MOVEFILE_REPLACE_EXISTING) then
      if Win32BackupFile(FileName, False) then
-       Result := MoveFileEx(PChar(TempFileName), PChar(FileName), MOVEFILE_REPLACE_EXISTING); 
+       Result := MoveFileEx(PChar(TempFileName), PChar(FileName), MOVEFILE_REPLACE_EXISTING);
 end;
 
 //==================================================================================================
@@ -2827,6 +3105,8 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //==================================================================================================
 // Version Info formatting
 //==================================================================================================
@@ -2844,6 +3124,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat): string;
 begin
@@ -3301,7 +3583,7 @@ begin
         Result := False;
         Break;
       end;
-    end;  
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3322,6 +3604,8 @@ begin
   R := VerLanguageName(LangId, PChar(Result), MAX_PATH);
   SetLength(Result, R);
 end;
+
+{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // TJclFileMaskComparator
@@ -3463,6 +3747,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function AttributesMatch(FileAttributes, AttributeMask: Integer;
+  const AttributeMatch: TJclAttributeMatch): Boolean;
+begin
+  case AttributeMatch of
+    amAny: Result := (AttributeMask and FileAttributes) <> 0;
+    amExact: Result := AttributeMask = FileAttributes;
+    amSubSetOf: Result := (AttributeMask and FileAttributes) = AttributeMask;
+    amSuperSetOf: Result := (AttributeMask and FileAttributes) = FileAttributes;
+  else
+    Result := True;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
   const AttributeMatch: TJclAttributeMatch; const Options: TFileListOptions;
   const SubfoldersMask: string; const FileMatchFunc: TFileMatchFunc): Boolean;
@@ -3523,8 +3822,8 @@ var
          case AttributeMatch of
            amAny: Matches := (LocAttr and FindInfo.Attr) <> 0;
            amExact: Matches := LocAttr = FindInfo.Attr;
-           amSuperSetOf: Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
            amSubSetOf: Matches := (LocAttr and FindInfo.Attr) = LocAttr;
+           amSuperSetOf: Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
            amCustom: if @FileMatchFunc <> nil then
                        Matches := FileMatchFunc(LocAttr,  FindInfo);
          end;
@@ -3573,5 +3872,301 @@ begin
   Result := True;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
+  const Attributes: Integer = faAnyFile; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
+  const Abort: PBoolean = nil);
+var
+  Directory: string;
+  FileInfo: TSearchRec;
+  Attr: Integer;
+  Found: Boolean;
+begin
+  Assert(Assigned(HandleFile));
+
+  Directory := ExtractFilePath(Path);
+
+  if Attributes = faAnyFile then
+    Attr := faReadOnly + faHidden + faSysFile + faArchive
+  else
+    Attr := Attributes;
+
+  Found := FindFirst(Path, Attr, FileInfo) = 0;
+  try
+    while Found do
+    begin
+      if (Abort <> nil) and Abort^ then
+        Exit;
+      if AttributesMatch(FileInfo.Attr, Attr, AttributeMatch) then
+        HandleFile(Directory, FileInfo);
+      Found := FindNext(FileInfo) = 0;
+    end;
+  finally
+    FindClose(FileInfo);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
+  const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
+  const Abort: PBoolean = nil);
+var
+  RootDir: string;
+  Attr: Integer;
+
+  procedure Process(const Directory: string);
+  var
+    DirInfo: TSearchRec;
+    SubDir: string;
+    Found: Boolean;
+  begin
+    HandleDirectory(Directory);
+
+    Found := FindFirst(Directory + '*', Attr, DirInfo) = 0;
+    try
+      while Found do
+      begin
+        if (Abort <> nil) and Abort^ then
+          Exit;
+        if ((DirInfo.Name <> '.') and (DirInfo.Name <> '..') and
+          {$IFDEF UNIX}
+          (IncludeHiddenDirectories or (Pos('.', DirInfo.Name) <> 1)) and
+          {$ENDIF UNIX}
+          (DirInfo.Attr and faDirectory = faDirectory)) then
+        begin
+          SubDir := Directory + DirInfo.Name + PathSeparator;
+          if (SubDirectoriesMask = '') or StrMatches(SubDirectoriesMask, SubDir, Length(RootDir)) then
+            Process(SubDir);
+        end;
+        Found := FindNext(DirInfo) = 0;
+      end;
+    finally
+      FindClose(DirInfo);
+    end;
+  end;
+
+begin
+  Assert(Assigned(HandleDirectory));
+
+  RootDir := PathAddSeparator(Root);
+
+  if IncludeHiddenDirectories then
+    Attr := faDirectory + faHidden  // no effect on Linux
+  else
+    Attr := faDirectory;
+
+  Process(RootDir);
+end;
+
+//==================================================================================================
+// internal class TEnumFileThread
+//==================================================================================================
+
+constructor TEnumFileThread.Create;
+begin
+  inherited Create(True);
+  FFileMask := TStringList.Create;
+  {$IFDEF COMPILER6_UP}
+  FFileMask.Delimiter := ';';
+  {$ENDIF def COMPILER6_UP}
+  FreeOnTerminate := True;
+  {$IFDEF MSWINDOWS}
+  Priority := tpIdle;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Priority := 0;
+  {$ENDIF LINUX}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEnumFileThread.Destroy;
+begin
+  FFileMask.Free;
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.Execute;
+begin
+  if FSynchronizationMode = smPerDirectory then
+  begin
+    FInternalDirHandler := SyncProcessDirectory;
+    FInternalFileHandler := AsyncProcessFile;
+  end
+  else
+  begin
+    FInternalDirHandler := AsyncProcessDirectory;
+    FInternalFileHandler := SyncProcessFile;
+  end;
+
+  if FIncludeSubDirectories then
+    EnumDirectories(Directory, FInternalDirHandler, FIncludeHiddenSubDirectories,
+      FSubDirectoryMask, @Terminated)
+  else
+    FInternalDirHandler(PathAddSeparator(Directory));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.EnterDirectory;
+begin
+  FOnEnterDirectory(Directory);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.ProcessDirectory;
+begin
+  if Assigned(FOnEnterDirectory) then
+    EnterDirectory;
+  ProcessDirFiles;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.AsyncProcessDirectory(const Directory: string);
+begin
+  FDirectory := Directory;
+  if Assigned(FOnEnterDirectory) then
+    Synchronize(EnterDirectory);
+  ProcessDirFiles;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.SyncProcessDirectory(const Directory: string);
+begin
+  FDirectory := Directory;
+  Synchronize(ProcessDirectory);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.ProcessDirFiles;
+var
+  I: Integer;
+begin
+  for I := 0 to FFileMask.Count - 1 do
+    EnumFiles(Directory + FFileMask[I], FInternalFileHandler, FAttributes, FAttributeMatch,
+      @Terminated);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.ProcessFile;
+begin
+  if Assigned(FFileHandler) then
+    FFileHandler(Directory + FFileInfo.Name)
+  else
+    FFileHandlerEx(Directory, FFileInfo);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+begin
+  FFileInfo := FileInfo;
+  ProcessFile;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+begin
+  FFileInfo := FileInfo;
+  Synchronize(ProcessFile);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.SetFileMask(const Value: string);
+{$IFDEF COMPILER6_UP}
+begin
+  FFileMask.DelimitedText := Value;
+end;
+{$ELSE}
+var
+  I: Integer;
+  Temp: string;
+begin
+  if Value = '' then
+    FFileMask.Text := '*'
+  else
+  begin
+    Temp := Value;
+    for I := 1 to Length(Temp) do
+      if Temp[I] = ';' then
+        Temp[I] := ',';
+    FFileMask.CommaText := Temp;
+  end;
+end;
+{$ENDIF def COMPILER6_UP}
+
+//==================================================================================================
+// TJclFileEnumerator
+//==================================================================================================
+
+constructor TJclFileEnumerator.Create;
+begin
+  inherited;
+  {$IFDEF MSWINDOWS}
+  FDirectory := ExtractFileDrive(ExpandFileName('.')) + PathSeparator;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  FDirectory := PathSeparator;
+  {$ENDIF UNIX}
+  FFileMask := '*';
+  FAttributes := faAnyFile;
+  FAttributeMatch := amSuperSetOf;
+  FSubDirectoryMask := '*';
+  FIncludeSubDirectories := True;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclFileEnumerator.CreateTask: TEnumFileThread;
+var
+  Task: TEnumFileThread;
+begin
+  Task := TEnumFileThread.Create;
+  Task.FileMask := FileMask;
+  Task.FDirectory := Directory;
+  Task.FAttributes := Attributes;
+  Task.FAttributeMatch := AttributeMatch;
+  Task.FIncludeSubDirectories := IncludeSubDirectories;
+  Task.FIncludeHiddenSubDirectories := IncludeHiddenSubDirectories;
+  Task.FSynchronizationMode := SynchronizationMode;
+  Task.FOnEnterDirectory := OnEnterDirectory;
+  Task.OnTerminate := OnTerminateTask;
+  Result := Task;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclFileEnumerator.Run(Handler: TFileHandlerEx): TThread;
+var
+  Task: TEnumFileThread;
+begin
+  Task := CreateTask;
+  Task.FFileHandlerEx := Handler;
+  Result := Task;
+  Task.Resume;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclFileEnumerator.Run(Handler: TFileHandler): TThread;
+var
+  Task: TEnumFileThread;
+begin
+  Task := CreateTask;
+  Task.FFileHandler := Handler;
+  Result := Task;
+  Task.Resume;
+end;
 
 end.
