@@ -22,7 +22,7 @@
 { versions of Delphi as well as FPC.                                           }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: Februari 13, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -48,7 +48,7 @@ const
   JclVersionMajor   = 1;   // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 0;   // third minor release
   JclVersionRelease = 1;   // 0=pre-release|beta/1=release
-  JclVersionBuild   = 337; // days since march 1, 2000
+  JclVersionBuild   = 351; // days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -512,7 +512,7 @@ end;
 procedure I64Copy(var Dest: Int64; const Source: Int64);
 begin
   Dest.LowPart := Source.LowPart;
-  Dest.HighPart := Source.LowPart;
+  Dest.HighPart := Source.HighPart;
 end;
 
 //------------------------------------------------------------------------------
