@@ -21,7 +21,7 @@
 { Various classes and support routines for sending e-mail through MAPI         }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 30, 2001                                              }
+{ Last modified: February 07, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -166,7 +166,7 @@ type
   end;
 
   TJclEmailFindOptions = set of (foFifo, foUnreadOnly);
-  TJclEmailLogonOptions = set of (loLogonUI, loNewSession);
+  TJclEmailLogonOptions = set of (loLogonUI, loNewSession, loForceDownload);
   TJclEmailReadOptions = set of (roAttachments, roHeaderOnly, roMarkAsRead);
 
   TJclEmailReadMsg = record
@@ -738,7 +738,7 @@ begin
   FAttachments := TStringList.Create;
   FLogonOptions := [loLogonUI];
   FFindOptions := [foFifo];
-  FRecipients := TJclEmailRecips.Create(False);
+  FRecipients := TJclEmailRecips.Create(True);
   FRecipients.AddressesType := 'SMTP';
 end;
 
@@ -987,7 +987,9 @@ begin
       Inc(Result, MAPI_LOGON_UI);
     if loNewSession in FLogonOptions then
       Inc(Result, MAPI_NEW_SESSION);
-  end;    
+    if loForceDownload in FLogonOptions then
+      Inc(Result, MAPI_FORCE_DOWNLOAD);
+  end;
   if ShowDialog then
     Inc(Result, MAPI_DIALOG);
 end;
