@@ -181,7 +181,7 @@ function ShellExecAndWait(const FileName: string;
   const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
 
-//TODOC   
+//TODOC
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
 function ShellRunControlPanel(const NameOrFileName: string;
