@@ -9,11 +9,11 @@ BrightColorChannel brightens one channel of a color by a certain percentage.
 Count=2
 1=Channel:Byte=Value of the color channel to brighten.
 2=Pct:Extended=The percentage with which to brighten the channel. Percentage should
-be between 0 and 1.0.
+be between 0 and 100.0.
 [Result]
 The brightened channel.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -36,11 +36,11 @@ DarkColorChannel darkens one channel of a color by a certain percentage.
 Count=2
 1=Channel:Byte=Value of the color channel to darken.
 2=Pct:Extended=The percentage with which to darken the channel. Percentage should
-be between 0 and 1.0.
+be between 0 and 100.0.
 [Result]
 The darkened channel.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -63,11 +63,11 @@ DarkColor darkens a color by a certain percentage.
 Count=2
 1=Color:TColor=The color to darken.
 2=Pct:Extended=The percentage with which to darken the color. Percentage should
-be between 0 and 1.0.
+be between 0 and 100.0.
 [Result]
 The darkened color.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -90,11 +90,11 @@ BrightColor brightens a color by a certain percentage.
 Count=2
 1=Color:TColor=The color to brighten.
 2=Pct:Extended=The percentage with which to brighten the color. Percentage should
-be between 0 and 1.0.
+be between 0 and 100.0.
 [Result]
 The brightened color.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -122,7 +122,7 @@ Count=4
 3=Green:Byte=The intensity of the Green component.
 4=Blue:Byte=The intensity of the Blue component.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -150,7 +150,7 @@ Count=3
 [Result]
 The TColor value initialized with the supplied values.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -174,7 +174,7 @@ Count=2
 [Result]
 Copy of the supplied color after the Red component has been modified.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -201,7 +201,7 @@ Count=2
 [Result]
 Copy of the supplied color after the Green component has been modified.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -228,7 +228,7 @@ Count=2
 [Result]
 Copy of the supplied color after the Blue component has been modified.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -271,7 +271,7 @@ Count=2
 [Result]
 Copy of the supplied color after the Flag component has been modified.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -297,7 +297,7 @@ Count=1
 [Result]
 The Red component from the supplied TColor. The value ranges from 0 to 255.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -323,7 +323,7 @@ Count=1
 [Result]
 The Blue component from the supplied TColor. The value ranges from 0 to 255.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -349,7 +349,7 @@ Count=1
 [Result]
 The Green component from the supplied TColor. The value ranges from 0 to 255.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -391,7 +391,7 @@ Count=1
 [Result]
 The Flag component from the supplied TColor. The value ranges from 0 to 2.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -418,7 +418,7 @@ Count=2
 [Result]
 A TPoint initialized with X and Y.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -438,7 +438,7 @@ Count=2
 1=Dest:TPoint=Destination point.
 2=Source:TPoint=Source point from which the values are copied.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -460,7 +460,7 @@ Count=2
 If the two points are equal (identical values for X and Y) the function returns
 True otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -481,7 +481,7 @@ Count=1
 If the supplied point equals the null point (a TPoint with both X and Y set to 0)
 the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -503,7 +503,7 @@ Count=3
 [Result]
 The moved point (P.X = P.X + DeltaX, P.Y = P.Y + DeltaY).
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -520,7 +520,7 @@ NullPoint returns a TPoint with both it's X and Y member initialized to 0.
 [Result]
 A TPoint initialized to (X, Y) = (0, 0).
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -541,7 +541,7 @@ Count=1
 [Result]
 If the rectangle is empty the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -562,7 +562,7 @@ the rectangle by swapping Left with Right and/or Top with Bottom.
 Count=1
 1=R:TRect=The rectangle to normalize.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -585,7 +585,7 @@ Count=2
 [Result]
 The union of the two rectangles, or a null rectangle if the union is empty.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -605,7 +605,7 @@ Count=1
 [Result]
 If the rectangle is square the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -628,7 +628,7 @@ Count=1
 [Result]
 TPoint representing the center of the rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -649,7 +649,7 @@ Count=2
 [Result]
 If the rectangles are equal the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -671,7 +671,7 @@ Count=1
 [Result]
 If the rectangle is a null rectangle the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -689,7 +689,7 @@ members initialized to 0. Some functions return a null rectangle to indicate fai
 [Result]
 The null rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -711,7 +711,7 @@ Count=1
 [Result]
 If the rectangle is valid the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -736,7 +736,7 @@ Count=1
 [Result]
 If all rectangles are valid the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -764,7 +764,7 @@ Count=2
 [Result]
 If the two rectangles intersect the function returns True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -791,7 +791,7 @@ Count=2
 The intersection of the two rectangles. If the two rectangles don't intersect
 a null rectangle is returned.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -819,7 +819,7 @@ Count=2
 If the point lies inside the rectangle (excluding the borders) the function returns
 True, otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -846,7 +846,7 @@ Count=2
 If the first rectangle is embedded inside the second the function returns True,
 otherwise it returns False.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -873,7 +873,7 @@ Count=4
 [Result]
 A TRect initialized with the specified coordinates/dimensions.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -902,7 +902,7 @@ Count=4
 [Result]
 A TRect initialized with the coordinates.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -929,7 +929,7 @@ Count=2
 [Result]
 A TRect initialized to the specified points.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -953,7 +953,7 @@ Count=2
 1=Dest:TRect=Destination rectangle which receives a copy of Source.
 2=Source:TRect=Source rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -979,7 +979,7 @@ Count=3
 2=DeltaX:Integer=The amount to move the rectangle in the horizontal direction.
 3=DeltaY:Integer=The amount to move the rectangle in the vertical direction.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1003,7 +1003,7 @@ Count=3
 2=X:Integer=The new X coordinate of the top-left corner of the rectangle.
 3=Y:Integer=The new Y coordinate of the top-left corner of the rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1028,7 +1028,7 @@ Count=2
 1=R:TRect=The rectangle to expand.
 2=Delta:Integer=The amount with which to expand the rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1054,7 +1054,7 @@ Count=2
 1=R:TRect=The rectangle to expand.
 2=Delta:Integer=The amount with which to expand the rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1080,7 +1080,7 @@ Count=2
 1=R:TRect=The rectangle to expand.
 2=Delta:Integer=The amount with which to expand the rectangle.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1104,7 +1104,7 @@ Count=1
 [Result]
 The height of the rectangle in pixels.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1127,7 +1127,7 @@ Count=1
 [Result]
 The width of the rectangle in pixels.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
@@ -1383,7 +1383,7 @@ Count=3
 2=Y:Extended=Y Color D65.
 3=Z:Extended=Z Color D65.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1404,7 +1404,7 @@ Count=3
 2=Target:Pointer=The target pointer to a stream of 8 bit colors.
 4=Count:Cardinal=Number of samples to convert.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1429,7 +1429,7 @@ BGR colors
 3=BitsPerSample:Byte=The bits per color component of the source stream, this can be 8 or 16 bits.
 4=Count:Cardinal=Number of samples to convert.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1453,7 +1453,7 @@ always 3 bytes per record.
 2=Target:Pointer=The target pointer to a stream of BGR records, the size is always 3 bytes per record.
 3=Count:Cardinal=Number of samples to convert.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1476,7 +1476,7 @@ words. This can also be a separate R, G and B stream of single byte or word colo
 3=BitsPerSample:Byte=The bits per sample of the source stream, this can be 8 or 16 bits.
 4=Count:Cardinal=Number of samples to convert.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1500,7 +1500,7 @@ is 4 bytes or 4 words.
 3=BitsPerSample:Byte=The bits per sample of the source stream, this can be 8 or 16 bits.
 4=Count:Cardinal=Number of samples to convert.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
@@ -1521,7 +1521,7 @@ Count=4
 3=Green:Float=The Green OpenGLColor channel between 0.0 and 1.0.
 4=Blue:Float=The Blue OpenGLColor channel between 0.0 and 1.0.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle Liljendal;pelle@liljendal.dk
@@ -1543,7 +1543,7 @@ Count=3
 [Result]
 The windows color.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Colors
 Author=Pelle Liljendal;pelle@liljendal.dk
@@ -1618,7 +1618,7 @@ complete transparency, and the value of 255 corresponds to completely opaque pix
 e.g.:
 <P>Bitmap32.SetPixel(10, 10, Color32(clBtnFace));
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
@@ -1637,7 +1637,7 @@ TColor32 Arrays.
 <P>Do not confuse PColor32Array and TArrayOfColor32 types; while the first holds the pointer
 to a memory location, the second is a fully functional dynamic array.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
@@ -1653,7 +1653,7 @@ TPalette32 types are mostly used to simulate palette-based operations.
 [Description]
 TPalette32 types are mostly used to simulate palette-based operations.
 [Quick Info]
-Unit=JclGraphics
+Unit=JclGraphUtils
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
