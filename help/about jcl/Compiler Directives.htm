@@ -112,6 +112,15 @@ possible the features directives are used instead.<BR>
 <TD width=75%>Defined if compiling with Delphi 5 or higher.</TD>
 </TR>
 
+<TR VALIGN="top">
+<TD width=25%>DELPHI6</TD>
+<TD width=75%>Defined if compiling with Delphi 6.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI6_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 6 or higher.</TD>
+</TR>
+
 </TABLE>
 
 <H4>CBuilder versions</H4>
@@ -164,6 +173,15 @@ possible the features directives are used instead.<BR>
 <TR VALIGN="top">
 <TD width=25%>BCB5_UP</TD>
 <TD width=75%>Defined if compiling with CBuilder 5 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB6</TD>
+<TD width=75%>Defined if compiling with CBuilder 6.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>BCB6_UP</TD>
+<TD width=75%>Defined if compiling with CBuilder 6 or higher.</TD>
 </TR>
 
 </TABLE>
@@ -236,6 +254,16 @@ and C++ Builder versions to the underlying compiler.
 </TR>
 </TABLE>
 
+<TR VALIGN="top">
+<TD width=25%>COMPILER6</TD>
+<TD width=75%>Defined when compiling with Delphi 6 or C++ Builder 6</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER6_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 6 or C++ Builder 6 or higher</TD>
+</TR>
+</TABLE>
+
 <H4>Features</H4>
 
 <P>
@@ -288,6 +316,18 @@ directive is defined if the compiler equals at least Delphi 3 or C++ Builder 3.<
 directive is defined if the compiler equals at least Delphi 3 or C++ Builder 3.</TD>
 </TR>
 
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_EXTSYM</TD>
+<TD width=75%>Defined if the compiler supports the $EXTERNALSYM directive. Currently this
+directive is defined if the compiler equals at least Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_NODEFINE</TD>
+<TD width=75%>Defined if the compiler supports the $NODEFINE directive. Currently this
+directive is defined if the compiler equals at least Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
 </TABLE>
 
 <H4>Math Precision</H4>
@@ -331,50 +371,119 @@ the smallest precision but uses the least memory (4 bytes per variable).</TD>
 
 </TABLE>
 
-<H4>Math Angles</H4>
+<H4>Compiler Settings</H4>
 
 <P>
-The following two directives, which are mutually exclusive, determine how angles
-in the JclMath unit are interpreted. Since the math coprocessor only accepts
-radians all angles must be converted to radians before being passed to the FPU.
-This must be done by software since the coprocessor has no provisions for this.
-The default for JclMath is radians but this can be changed to degrees or grads.
-However, this is not recommended. If MATH_ANGLES_DEGREES is defined all the math
-routines convert angles on entry and convert them back on exit. This takes significant
-overhead in terms of processing cycles and slows down execution. This is especially
-true when you do extensive math calling several routines one after another. In
-this case it is recommended you convert to radians once before the calculation
-using the DegToRad or GradToRad function, perform the calculation and then convert
-back to degrees or grads - if necessary - by using RadToDeg or RadToGrad. If you
-only occasionally call a math routine you have nothing to worry about.
+The compiler settings directives indicate whether a specific compiler setting
+is in effect. This facilitates changing compiler settings locally in a more
+compact and readible manner.
 </P>
 
 <TABLE>
 
-<TR VALIGN="top">
-<TH align=left width=25%>Directive</TH>
-<TH align=left width=75%>Description</TH>
+<TR VALING="top">
+<TH width=25%>Directive</TD>
+<TH width=75%>Description</TD>
 </TR>
 
-<TR VALIGN="top">
-<TD width=25%>MATH_ANGLES_RADIANS</TD>
-<TD width=75%>If defined all angles are assumed to be in radians. This is the default.</TD>
+<TR VALING="top">
+<TD width=25%>ALIGN_ON</TD>
+<TD width=75%>Compiling in the A+ state (no alignment)</TD>
+</TR>
+                 
+<TR VALING="top">
+<TD width=25%>BOOLEVAL_ON</TD>
+<TD width=75%>Compiling in the B+ state (complete boolean evaluation)</TD>
+</TR>
+              
+<TR VALING="top">
+<TD width=25%>ASSERTIONS_ON</TD>
+<TD width=75%>Compiling in the C+ state (assertions on)</TD>
+</TR>
+            
+<TR VALING="top">
+<TD width=25%>DEBUGINFO_ON</TD>
+<TD width=75%>Compiling in the D+ state (debug info generation on)</TD>
 </TR>
 
-<TR VALIGN="top">
-<TD width=25%>MATH_ANGLES_DEGREES</TD>
-<TD width=75%>If defined all angles are assumed to be in degrees. Conversion is
-automatic but not without a price, see above.</TD>
+<TR VALING="top">
+<TD width=25%>IMPORTEDDATA_ON</TD>
+<TD width=75%>Compiling in the G+ state (creation of imported data references)</TD>
 </TR>
-
-<TR VALIGN="top">
-<TD width=25%>MATH_ANGLES_GRADS</TD>
-<TD width=75%>If defined all angles are assumed to be in grads. Conversion is
-automatic but not without a price, see above.</TD>
+          
+<TR VALING="top">
+<TD width=25%>LONGSTRINGS_ON</TD>
+<TD width=75%>Compiling in the H+ state (string defined as AnsiString)</TD>
 </TR>
+           
+<TR VALING="top">
+<TD width=25%>IOCHECKS_ON</TD>
+<TD width=75%>Compiling in the I+ state (I/O checking enabled)</TD>
+</TR>
+              
+<TR VALING="top">
+<TD width=25%>WRITEABLECONST_ON</TD>
+<TD width=75%>Compiling in the J+ state (typed constants can be modified)</TD>
+</TR>
+        
+<TR VALING="top">
+<TD width=25%>LOCALSYMBOLS</TD>
+<TD width=75%>Compiling in the L+ state (local symbol generation)</TD>
+</TR>
+             
+<TR VALING="top">
+<TD width=25%>TYPEINFO_ON</TD>
+<TD width=75%>Compiling in the M+ state (RTTI generation on)</TD>
+</TR>
+              
+<TR VALING="top">
+<TD width=25%>OPTIMIZATION_ON</TD>
+<TD width=75%>Compiling in the O+ state (code optimization on)</TD>
+</TR>
+          
+<TR VALING="top">
+<TD width=25%>OPENSTRINGS_ON</TD>
+<TD width=75%>Compiling in the P+ state (variable string parameters are openstrings)</TD>
+</TR>
+           
+<TR VALING="top">
+<TD width=25%>OVERFLOWCHECKS_ON</TD>
+<TD width=75%>Compiling in the Q+ state (overflow checing on)</TD>
+</TR>
+        
+<TR VALING="top">
+<TD width=25%>RANGECHECKS_ON</TD>
+<TD width=75%>Compiling in the R+ state (range checking on)</TD>
+</TR>
+           
+<TR VALING="top">
+<TD width=25%>TYPEDADDRESS_ON</TD>
+<TD width=75%>Compiling in the T+ state (pointers obtained using the @ operator are typed)</TD>
+</TR>
+          
+<TR VALING="top">
+<TD width=25%>SAFEDIVIDE_ON</TD>
+<TD width=75%>Compiling in the U+ state (save FDIV instruction through RTL emulation)</TD>
+</TR>
+            
+<TR VALING="top">
+<TD width=25%>VARSTRINGCHECKS_ON</TD>
+<TD width=75%>Compiling in the V+ state (type checking of shortstrings)</TD>
+</TR>
+       
+<TR VALING="top">
+<TD width=25%>STACKFRAMES_ON</TD>
+<TD width=75%>Compiling in the W+ state (generation of stack frames)</TD>
+</TR>
+           
+<TR VALING="top">
+<TD width=25%>EXTENDEDSYNTAX_ON</TD>
+<TD width=75%>Compiling in the X+ state (Delphi extended syntax enabled)</TD>
+</TR>
+        
 
 </TABLE>
 
-<DIV CLASS="footer">Built on Wednesday, January 31, 2001</DIV>
+<DIV CLASS="footer">Built on Saterday, April 28, 2001</DIV>
 </BODY>
 </HTML>
