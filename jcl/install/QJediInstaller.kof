@@ -24,7 +24,7 @@ S=0
 T=0
 U=0
 V=1
-W=1
+W=0
 X=1
 Y=1
 Z=1
@@ -45,12 +45,9 @@ DynamicLoader=/lib/ld-linux.so.2
 
 [Directories]
 OutputDir=../bin
-UnitOutputDir=.
-PackageDLLOutputDir=
-PackageDCPOutputDir=
-SearchPath=$(DELPHI)/lib/debug
+UnitOutputDir=
+SearchPath=$(DELPHI)/lib/debug:../source/common
 Conditionals=JCLINSTALL
-DebugSourceDirs=
 UsePackages=0
 
 [Parameters]
@@ -59,3 +56,4 @@ HostApplication=
 Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
 UseLauncher=0
 DebugCWD=
+
