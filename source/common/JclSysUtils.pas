@@ -26,7 +26,7 @@
 { floating point operations and retrieving the coprocessor's status word.      }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: Februari 10, 2001                                             }
+{ Last modified: May 03, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -452,22 +452,34 @@ procedure ClearObjectList(List: TList);
 var
   I: Integer;
 begin
-  for I := 0 to List.Count-1 do
+  if List <> nil then
   begin
-    if TObject(List[I]) is TList then
-      ClearObjectList(TList(List[I]));
-    TObject(List[I]).Free;
-    List[I] := nil;
+    for I := 0 to List.Count - 1 do
+    begin
+      if List[I] <> nil then
+      begin
+        if TObject(List[I]) is TList then
+        begin
+          // recursively delete TList sublists
+          ClearObjectList(TList(List[I]));
+        end;
+        TObject(List[I]).Free;
+        List[I] := nil;
+      end;
+    end;
+    List.Clear;
   end;
-  List.Clear;
 end;
 
 //------------------------------------------------------------------------------
 
 procedure FreeObjectList(var List: TList);
 begin
-  ClearObjectList(List);
-  FreeAndNil(List);
+  if List <> nil then
+  begin
+    ClearObjectList(List);
+    FreeAndNil(List);
+  end;
 end;
 
 //==============================================================================
