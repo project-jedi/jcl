@@ -38,8 +38,9 @@ interface
 //------------------------------------------------------------------------------
 
 resourcestring
-  RsWin32Prefix   = 'Win32: %s (%u)';
-  RsDynArrayError = 'DynArrayInitialize: ElementSize out of bounds';
+  RsWin32Prefix        = 'Win32: %s (%u)';
+  RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
+  RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
 
 //------------------------------------------------------------------------------
 // JclClasses
@@ -245,6 +246,9 @@ resourcestring
   RsRegionCouldNotCreated    = 'Region could not be created';
   RsInvalidHandleForRegion   = 'Invalid handle for region';
   RsInvalidRegionInfo        = 'Invalid RegionInfo';
+
+  RsBitmapExtension          = '.bmp';
+  RsJpegExtension            = '.jpg';
 
 //------------------------------------------------------------------------------
 // JclMapi
@@ -547,6 +551,21 @@ resourcestring
   RsPSUser        = 'User Defined Size';
   RsPSUnknown     = 'Unknown Paper Size';
 
+  RsPrintIniPrinterName   = 'PrinterName';
+  RsPrintIniPrinterPort   = 'PrinterPort';
+  RsPrintIniOrientation   = 'Orientation';
+  RsPrintIniPaperSize     = 'PaperSize';
+  RsPrintIniPaperLength   = 'PaperLength';
+  RsPrintIniPaperWidth    = 'PaperWidth';
+  RsPrintIniScale         = 'Scale';
+  RsPrintIniCopies        = 'Copies';
+  RsPrintIniDefaultSource = 'DefaultSource';
+  RsPrintIniPrintQuality  = 'PrintQuality';
+  RsPrintIniColor         = 'Color';
+  RsPrintIniDuplex        = 'Duplex';
+  RsPrintIniYResolution   = 'YResolution';
+  RsPrintIniTTOption      = 'TTOption';
+
 //------------------------------------------------------------------------------
 // JclRegistry
 //------------------------------------------------------------------------------
@@ -656,6 +675,21 @@ resourcestring
 resourcestring
   RsSystemProcess = 'System Process';
   RsSystemIdleProcess = 'System Idle Process';
+
+  RsIntelCacheDescr01 = 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries';
+  RsIntelCacheDescr02 = 'Instruction TLB, 4Mb pages, fully associative, 2 entries';
+  RsIntelCacheDescr03 = 'Data TLB, 4Kb pages, 4-way set associative, 64 entries';
+  RsIntelCacheDescr04 = 'Data TLB, 4Mb pages, 4-way set associative, 8 entries';
+  RsIntelCacheDescr06 = '8KB instruction cache, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr08 = '16KB instruction cache, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr0A = '8KB data cache 2-way set associative, 32 byte line size';
+  RsIntelCacheDescr0C = '16KB data cache, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr40 = 'No L2 cache';
+  RsIntelCacheDescr41 = 'Unified cache, 32 byte cache line, 4-way set associative, 128Kb';
+  RsIntelCacheDescr42 = 'Unified cache, 32 byte cache line, 4-way set associative, 256Kb';
+  RsIntelCacheDescr43 = 'Unified cache, 32 byte cache line, 4-way set associative, 512Kb';
+  RsIntelCacheDescr44 = 'Unified cache, 32 byte cache line, 4-way set associative, 1Mb';
+  RsIntelCacheDescr45 = 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb';
 
 //------------------------------------------------------------------------------
 // JclUnicode
