@@ -13,7 +13,7 @@ Count=1
 The TFileTime converted to local TDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -44,7 +44,7 @@ Count=1
 The TFileTime converted to TDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -97,7 +97,7 @@ function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
 Converts a TFileTime to a TDateTime.
 [Description]
 FileTimeToDateTime converts the supplied TFileTime to a TDateTime, ignoring whether
-the supplied datetime is UNC based or local.
+the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=FileTime:TFileTime=The TFileTime to convert.
@@ -105,7 +105,7 @@ Count=1
 The TFileTime converted to TDateTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -129,7 +129,7 @@ function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
 Converts a TDoaDateTime to a TSystemTime.
 [Description]
 DosDateTimeToSystemTime converts the supplied TDosDateTime to a TSystemTime,
-ignoring whether the supplied datetime is UNC based or local.
+ignoring whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DosTime:TDosDateTime=The TDosDateTime to convert.
@@ -137,7 +137,7 @@ Count=1
 The TDosDateTime converted to TSystemTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -160,7 +160,7 @@ function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 Converts a TSystemTime to a TDosDateTime.
 [Description]
 SystemTimeToDosDateTime converts the supplied TSystemTime to a TDosDateTime,
-ignoring whether the supplied datetime is UNC based or local.
+ignoring whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=SystemTime:TSystemTime=The TSystemTime to convert.
@@ -168,7 +168,7 @@ Count=1
 The TSystemTime converted to TDosDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -226,7 +226,7 @@ Count=1
 String representation of the supplied SystemTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -249,7 +249,7 @@ function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
 Converts a TDosDateTime to a TDateTime.
 [Description]
 DosDateTimeToDateTime converts the supplied TDosDateTime to a TDateTime, ignoring
-whether the supplied datetime is UNC based or local.
+whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DosTime:TDosDateTime=The TDosDateTime to convert.
@@ -278,7 +278,7 @@ function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime;
 Converts a TDosDateTime to a TFileTime.
 [Description]
 DosDateTimeToFileTime converts the supplied TDosDateTime to a TFileTime, ignoring
-whether the supplied datetime is UNC based or local.
+whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DosTime:TDosDateTime=The TDosDateTime to convert.
@@ -286,7 +286,7 @@ Count=1
 The TDosDateTime converted to TFileTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -309,7 +309,7 @@ function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 Converts a TDateTime to a TDosDateTime.
 [Description]
 DateTimeToDosDateTime converts the supplied TDateTime to a TDosDateTime, ignoring
-whether the supplied datetime is UNC based or local.
+whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The TDateTime to convert.
@@ -338,7 +338,7 @@ function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 Converts a TDateTime to a TFileTime.
 [Description]
 DateTimeToFileTime converts the supplied TDateTime to a TFileTime, ignoring
-whether the supplied datetime is UNC based or local.
+whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The TDateTime to convert.
@@ -346,7 +346,7 @@ Count=1
 The TDateTime converted to TFileTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion functions supplement routines found in the Delphi
+1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -369,7 +369,7 @@ function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;
 Converts a TDateTime to a TSystemTime.
 [Description]
 DateTimeToSystemTime converts the supplied TDateTime to a TSystemTime, ignoring
-whether the supplied datetime is UNC based or local.
+whether the supplied DateTime is UNC based or local.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The TDateTime to convert.
@@ -378,7 +378,7 @@ The TDateTime converted to TSystemTime.
 [Notes]
 Count=2
 1=DateTimeToSystemTime just calls the VCL procedure DateTimeToSystemTime
-2=The JCL datetime conversion functions supplement routines found in the Delphi
+2=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
@@ -410,7 +410,7 @@ Count=1
 The UNC based TDateTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -434,7 +434,7 @@ Count=1
 The UNC based TFileTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -458,7 +458,7 @@ Count=1
 The local TDateTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -489,14 +489,14 @@ Delphi=3,4,5
 [Declaration]
 function DosDateTimeToStr(DateTime: Integer): string;
 [ShortDescr]
-Converts a DOS datetime to a string.
+Converts a DOS DateTime to a string.
 [Description]
-Converts a DOS datetime to a string.
+Converts a DOS DateTime to a string.
 [Parameters]
 Count=1
-1=DateTime:Integer=The DOS datetime to convert.
+1=DateTime:Integer=The DOS DateTime to convert.
 [Result]
-String representation of the DOS datetime or an empty string on failure.
+String representation of the DOS DateTime or an empty string on failure.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -510,19 +510,19 @@ Windows 95/98=Requires Windows 95 or later.
 [Declaration]
 function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
 [ShortDescr]
-Returns the number of seconds in a datetime.
+Returns the number of seconds in a DateTime.
 [Description]
-Returns the number of seconds in a datetime. Basically it extracts the hour, minutes
+Returns the number of seconds in a DateTime. Basically it extracts the hour, minutes
 and seconds from the date time and returns the result of the formula
 (3600 * Hours) + (60 * Minutes) + Seconds, but is much faster than doing it this way.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The DateTime for which you want to know the number of seconds.
 [Result]
-The number of seconds in the specified datetime.
+The number of seconds in the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -534,19 +534,19 @@ Delphi=3,4,5
 [Declaration]
 function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
 [ShortDescr]
-Returns the number of milliseconds in a datetime.
+Returns the number of milliseconds in a DateTime.
 [Description]
-Returns the number of milliseconds in a datetime. Basically it extracts the hour, minutes
+Returns the number of milliseconds in a DateTime. Basically it extracts the hour, minutes
 and seconds from the date time and returns the result of the formula
 (3600 * Hours) + (60 * Minutes) + (1000 * Seconds), but is much faster than doing it this way.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The DateTime for which you want to know the number of milliseconds.
 [Result]
-The number of milliseconds in the specified datetime.
+The number of milliseconds in the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -629,15 +629,15 @@ week of a year is the one which includes the first Thursday. The function return
 the weeknumber as the function result and the year through the var parameter.
 [Parameters]
 Count=3
-1=DateTime:TDateTime=The datetime for which to retrieve the year and week number.
-2=YearOfWeekNumber:Integer=(Optionally) The year the returned week belong to.
-3=WeekDay:Integer=(Optionally) The day in this week.
+1=DateTime:TDateTime=The DateTime for which to retrieve the year and week number.
+2=YearOfWeekNumber:Integer=(Optional) The year the returned week belong to.
+3=WeekDay:Integer=(Optional) The day in this week.
 [Result]
-The function returns the weeknumber of the specified datetime. The year this
+The function returns the weeknumber of the specified DateTime. The year this
 week belongs to and the Day in this week are returned through the var parameters.
 [Notes]
 Count=3
-1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
+1=The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 2=According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
 3=The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility.
 Other values might be useful in some instances and can be set in the sourcecode.
@@ -649,6 +649,9 @@ Author=Peter J. Haas;PeterJHaas@t-online.de
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=ISOWeekToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ISOWeekToDateTime(Year, Week, Day:Integer):TDateTime;
@@ -678,6 +681,58 @@ Author=Peter J. Haas;PeterJHaas@t-online.de
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=ISOWeekNumber
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;
+function DayOfTheYear(DateTime: TDateTime): Integer;
+[ShortDescr]
+Returns the day of the year (1... 365) and optionally the year. 
+[Description]
+Returns the day of the year (1... 365) and optionally the year. 
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The DateTime for which to retrieve the year and the number of the day in that year.
+2=Year:Integer=(Optional) The year of the date.
+[Result]
+The function returns the number of the day in that year.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;mschnell@marianne.gihub.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=DayOfTheYearToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
+[ShortDescr]
+encodes the DateTime denoted by a year and the number of a day in that year. 
+[Description]
+DayOfTheYearToDateTime encodes the DateTime denoted by a year and the number of a day in that year. 
+[Parameters]
+Count=2
+1=Year:Integer=The year of the date.
+2=Day:Integer=The number of a day in that year.
+[Result]
+The function returns the DateTime denoted by a year and the number of a day in that year. 
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;mschnell@marianne.gihub.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=DayOfTheYear
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function EasterSunday(Year: Integer): TDateTime;
@@ -701,19 +756,19 @@ Delphi=3,4,5
 [Declaration]
 function CenturyOfDate(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the century from a datetime.
+Extracts the century from a DateTime.
 [Description]
-CenturyOfDate returns the century of the specified datetime.
+CenturyOfDate returns the century of the specified DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then CenturyOfDate(D) returns 21
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the century.
+1=DateTime:TDateTime=The DateTime from which to extract the century.
 [Result]
-The century of the specified datetime.
+The century of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -737,12 +792,12 @@ For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then CenturyBaseYear(D) returns 2000.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the year "00" of the century.
+1=DateTime:TDateTime=The DateTime from which to extract the year "00" of the century.
 [Result]
 The year "00" of the century of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -759,19 +814,19 @@ Count=4
 [Declaration]
 function YearOfDate(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the year from a datetime.
+Extracts the year from a DateTime.
 [Description]
-YearOfDate returns the year of the specified datetime.
+YearOfDate returns the year of the specified DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then YearOfDate(D) returns 2000.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the year.
+1=DateTime:TDateTime=The DateTime from which to extract the year.
 [Result]
-The year of the specified datetime.
+The year of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -788,19 +843,19 @@ Count=4
 [Declaration]
 function MonthOfDate(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the month from a datetime.
+Extracts the month from a DateTime.
 [Description]
-Extracts the month from a datetime.
+Extracts the month from a DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then MonthOfDate(D) returns 2.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the month.
+1=DateTime:TDateTime=The DateTime from which to extract the month.
 [Result]
-The month of the specified datetime.
+The month of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -817,19 +872,19 @@ Count=4
 [Declaration]
 function DayOfDate(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the day from a datetime.
+Extracts the day from a DateTime.
 [Description]
-Extracts the day from a datetime.
+Extracts the day from a DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then DayOfDate(D) returns 17.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the day.
+1=DateTime:TDateTime=The DateTime from which to extract the day.
 [Result]
-The day of the specified datetime.
+The day of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -846,19 +901,19 @@ Count=4
 [Declaration]
 function HourOfTime(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the hour from a datetime.
+Extracts the hour from a DateTime.
 [Description]
-Extracts the hour from a datetime.
+Extracts the hour from a DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then HourOfTime(D) returns 12.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the hour.
+1=DateTime:TDateTime=The DateTime from which to extract the hour.
 [Result]
-The hour of the specified datetime.
+The hour of the specified DateTime.
 [Notes]
 Count=2
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 2=12:00:00 AM evaluates to 0.
 [Quick Info]
 BCB=3,4,5
@@ -870,19 +925,19 @@ Delphi=3,4,5
 [Declaration]
 function MinuteOfTime(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the minutes from a datetime.
+Extracts the minutes from a DateTime.
 [Description]
-Extracts the minutes from a datetime.
+Extracts the minutes from a DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then MinuteOfTime(D) returns 37.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the minutes.
+1=DateTime:TDateTime=The DateTime from which to extract the minutes.
 [Result]
-The minutes of the specified datetime.
+The minutes of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -893,19 +948,19 @@ Delphi=3,4,5
 [Declaration]
 function SecondOfTime(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the seconds from a datetime.
+Extracts the seconds from a DateTime.
 [Description]
-Extracts the seconds from a datetime.
+Extracts the seconds from a DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
 then SecondOfTime(D) returns 21.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the seconds.
+1=DateTime:TDateTime=The DateTime from which to extract the seconds.
 [Result]
-The seconds of the specified datetime.
+The seconds of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -927,7 +982,7 @@ Count=1
 True if DateTime is a leap year or False if it's not.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
+1=The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 2=The overloaded function avoids an erroneous result if the user thinks he calls SysUtils.IsLeapYear
 [Quick Info]
 BCB=3,4,5
@@ -939,7 +994,7 @@ Delphi=3,4,5
 [Declaration]
 function DaysInMonth(DateTime: TDateTime): Integer;
 [ShortDescr]
-Returns the number of days in the month represent by a datetime.
+Returns the number of days in the month represent by a DateTime.
 [Description]
 [Parameters]
 Count=1
@@ -949,7 +1004,7 @@ the number of days.
 The number of days in the month in which DateTime lies.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
+1=The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -1027,10 +1082,12 @@ Count=3
 [Result]
 The date converted to TDateTime.
 [Notes]
-Count=2
+Count=4
 1=With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
 2=As people did not use 12 Months before year 0001, and supposedly will not after 9999, 
 we just use the solar year and a month = 1/12 of a solar year in such years.
+3=Year 0 does not exist.
+4=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.EncodeDate.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -1056,10 +1113,12 @@ Count=4
 3=Month:Word=Month of the converted date.
 4=Day:Word=Day of the converted date.
 [Notes]
-Count=2
+Count=4
 1=With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
 2=As people did not use 12 Months before year 0001, and supposedly will not after 9999, 
 we just use the solar year and a month = 1/12 of a solar year in such years.
+3=Year 0 does not exist.
+4=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.DecodeDate.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -1135,3 +1194,52 @@ Delphi=3,4,5
 Count=2
 1=CreationDateTimeOfFile
 2=LastAccessDateTimeOfFile
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FormatDateTime(Form: String; DateTime: TDateTime): String;
+[ShortDescr]
+Enhences FormatDateTime by the additional Format tokens w, i, e and f.
+[Description]
+Enhences FormatDateTime by additional Format tokens:
+  <TABLE>
+  <TR VALIGN="top">
+  <TH align=left width=23%>Token</TH><TH align=left width=77%>Meaning</TH>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>w or W</TD><TD width=77%>Week no according to ISO</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>ww or WW</TD><TD width=77%>Week no according to ISO forced two digits</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>ii or II</TD><TD width=77%>Year of the ISO-week denoted by w forced two digits</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>iiii or IIII</TD><TD width=77%>Year of the ISO-week denoted by w (4 digits for 0001..9999)</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>e or E</TD><TD width=77%>Number of the Day in the ISO-week denoted by w (ISO-Notation 1=Monday...)</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>f or F</TD><TD width=77%>Number of the Day in the year denoted by y</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=23%>fff or FFF</TD><TD width=77%> Number of the Day in the year denoted by y forced three digits</TD>
+  </TR>
+  </TABLE>
+[Parameters]
+Count=2
+1=Form: String: Format String.
+2=DateTime: TDateTime: Date to be formatted
+[Result]
+String holding the formatted date.
+[Notes]
+Count=2
+1=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.FormatDateTime.
+2=The help for SysUtils.FormatDateTime does not state that unrecognized characters in the format string are passed unchanged. If this feature was erroneously used, JCLDateTime.FormatDateTime is not 100% compatible, as it defines additional tokens.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
