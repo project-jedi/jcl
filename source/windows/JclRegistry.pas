@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclRegistry;
@@ -549,14 +549,14 @@ end;
 
 function RegReadUInt64(const RootKey: HKEY; const Key, Name: string): UInt64;
 begin
-  InternalRegRead64(RootKey, Key, Name, True, False, Result);
+  InternalRegRead64(RootKey, Key, Name, True, False, Int64(Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function RegReadUInt64Def(const RootKey: HKEY; const Key, Name: string; Def: UInt64): UInt64;
 begin
-  if not InternalRegRead64(RootKey, Key, Name, False, False, Result) then
+  if not InternalRegRead64(RootKey, Key, Name, False, False, Int64(Result)) then
     Result := Def;
 end;
 
@@ -1222,6 +1222,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/04/06 05:56:10  rrossmair
+// fixed RegReadUInt64 & RegReadUInt64Def
+//
 // Revision 1.6  2004/04/06 04:45:57  peterjhaas
 // Unite the single read functions and the single write functions, add Cardinal, Int64, UInt64 and Multistring support
 //
