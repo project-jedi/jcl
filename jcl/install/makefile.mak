@@ -16,15 +16,17 @@ MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $**
+DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-default: \
-  JediInstaller.exe
+default:	JediInstaller.exe
 #---------------------------------------------------------------------------------------------------
 
-JediInstaller.exe: JediInstaller.dpr
-  $(DCC) 
+JediInstaller.exe: \
+		JediInstaller.dpr
+  $(DCC)
+  del *.dcu
   del $(SRC)\common\*.dcu
   del $(SRC)\windows\*.dcu
+
 
