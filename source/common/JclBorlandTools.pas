@@ -606,10 +606,6 @@ const
   KylixHelpNamePart          = 'k%d';
   {$ENDIF KYLIX}
 
-resourcestring
-  RsBorlandStudioProjects = 'Borland Studio Projects';
-  RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
-
 procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
   const LibSuffix: PString = nil; const Description: PString = nil);
 const
@@ -2409,6 +2405,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.36  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.35  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -105,7 +105,8 @@ type
   // Hash Function
   TJclHashFunction = function(Key: Cardinal): Cardinal of object;
 
-  TJclIntfIntfHashMap = class(TJclAbstractContainer, IIntfIntfMap, IIntfCloneable)
+  TJclIntfIntfHashMap = class(TJclAbstractContainer, IJclIntfIntfMap,
+    IJclIntfCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -114,29 +115,29 @@ type
     function HashMul(Key: Cardinal): Cardinal;
   protected
     procedure GrowEntries(BucketIndex: Integer); virtual;
-    { IIntfIntfMap }
+    { IJclIntfIntfMap }
     procedure Clear;
     function ContainsKey(Key: IInterface): Boolean;
     function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IIntfIntfMap): Boolean;
+    function Equals(AMap: IJclIntfIntfMap): Boolean;
     function GetValue(Key: IInterface): IInterface;
     function IsEmpty: Boolean;
-    function KeySet: IIntfSet;
-    procedure PutAll(AMap: IIntfIntfMap);
+    function KeySet: IJclIntfSet;
+    procedure PutAll(AMap: IJclIntfIntfMap);
     procedure PutValue(Key, Value: IInterface);
     function Remove(Key: IInterface): IInterface;
     function Size: Integer;
-    function Values: IIntfCollection;
-    { IIntfCloneable }
+    function Values: IJclIntfCollection;
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
   end;
 
-  TJclStrIntfHashMap = class(TJclAbstractContainer, IStrIntfMap, IIntfCloneable)
+  TJclStrIntfHashMap = class(TJclAbstractContainer, IJclStrIntfMap, IJclIntfCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -146,29 +147,29 @@ type
     function HashString(const Key: string): Cardinal;
   protected
     procedure GrowEntries(BucketIndex: Integer); virtual;
-    { IIntfMap }
+    { IJclIntfMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IStrIntfMap): Boolean;
+    function Equals(AMap: IJclStrIntfMap): Boolean;
     function GetValue(const Key: string): IInterface;
     function IsEmpty: Boolean;
-    function KeySet: IStrSet;
-    procedure PutAll(AMap: IStrIntfMap);
+    function KeySet: IJclStrSet;
+    procedure PutAll(AMap: IJclStrIntfMap);
     procedure PutValue(const Key: string; Value: IInterface);
     function Remove(const Key: string): IInterface;
     function Size: Integer;
-    function Values: IIntfCollection;
-    { IIntfCloneable }
+    function Values: IJclIntfCollection;
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
   end;
 
-  TJclStrStrHashMap = class(TJclAbstractContainer, IStrStrMap, IIntfCloneable)
+  TJclStrStrHashMap = class(TJclAbstractContainer, IJclStrStrMap, IJclIntfCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -178,31 +179,31 @@ type
     function HashString(const Key: string): Cardinal;
   protected
     procedure GrowEntries(BucketIndex: Integer); virtual;
-    { IStrStrMap }
+    { IJclStrStrMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(const Value: string): Boolean;
-    function Equals(AMap: IStrStrMap): Boolean;
+    function Equals(AMap: IJclStrStrMap): Boolean;
     function GetValue(const Key: string): string;
     function IsEmpty: Boolean;
-    function KeySet: IStrSet;
-    procedure PutAll(AMap: IStrStrMap);
+    function KeySet: IJclStrSet;
+    procedure PutAll(AMap: IJclStrStrMap);
     procedure PutValue(const Key, Value: string);
     function Remove(const Key: string): string;
     function Size: Integer;
-    function Values: IStrCollection;
+    function Values: IJclStrCollection;
     // Daniele Teti
     function KeyOfValue(const Value: string): string;
-    { IIntfCloneable }
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
   end;
 
-  TJclStrHashMap = class(TJclAbstractContainer, IStrMap, ICloneable)
+  TJclStrHashMap = class(TJclAbstractContainer, IJclStrMap, IJclCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -214,23 +215,23 @@ type
   protected
     procedure GrowEntries(BucketIndex: Integer); virtual;
     procedure FreeObject(var AObject: TObject);
-    { IStrMap }
+    { IJclStrMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IStrMap): Boolean;
+    function Equals(AMap: IJclStrMap): Boolean;
     function GetValue(const Key: string): TObject;
     function IsEmpty: Boolean;
-    function KeySet: IStrSet;
-    procedure PutAll(AMap: IStrMap);
+    function KeySet: IJclStrSet;
+    procedure PutAll(AMap: IJclStrMap);
     procedure PutValue(const Key: string; Value: TObject);
     function Remove(const Key: string): TObject;
     function Size: Integer;
-    function Values: ICollection;
-    { ICloneable }
+    function Values: IJclCollection;
+    { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects:
+    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects:
       Boolean = True);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
@@ -238,7 +239,7 @@ type
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
-  TJclHashMap = class(TJclAbstractContainer, IMap, ICloneable)
+  TJclHashMap = class(TJclAbstractContainer, IJclMap, IJclCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -249,26 +250,25 @@ type
   protected
     procedure GrowEntries(BucketIndex: Integer); virtual;
     procedure FreeObject(var AObject: TObject);
-    { ICloneable }
+    { IJclCloneable }
     function Clone: TObject;
   public
-    { IMap }
+    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects:
+      Boolean = True);
+    destructor Destroy; override;
+    { IJclMap }
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IMap): Boolean;
+    function Equals(AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
-    function KeySet: ISet;
-    procedure PutAll(AMap: IMap);
+    function KeySet: IJclSet;
+    procedure PutAll(AMap: IJclMap);
     procedure PutValue(Key, Value: TObject);
     function Remove(Key: TObject): TObject;
     function Size: Integer;
-    function Values: ICollection;
-
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects:
-      Boolean = True);
-    destructor Destroy; override;
+    function Values: IJclCollection;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
@@ -277,11 +277,11 @@ implementation
 
 uses
   SysUtils,
-  JclArrayLists, JclArraySets;
+  JclArrayLists, JclArraySets, JclResources;
 
 //=== { TJclIntfIntfHashMap } ================================================
 
-constructor TJclIntfIntfHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfIntfHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
@@ -397,7 +397,7 @@ begin
   end;
 end;
 
-function TJclIntfIntfHashMap.Equals(AMap: IIntfIntfMap): Boolean;
+function TJclIntfIntfHashMap.Equals(AMap: IJclIntfIntfMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -478,7 +478,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclIntfIntfHashMap.KeySet: IIntfSet;
+function TJclIntfIntfHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -494,9 +494,9 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclIntfIntfHashMap.PutAll(AMap: IIntfIntfMap);
+procedure TJclIntfIntfHashMap.PutAll(AMap: IJclIntfIntfMap);
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   Key: IInterface;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -579,7 +579,7 @@ begin
   Result := FCount;
 end;
 
-function TJclIntfIntfHashMap.Values: IIntfCollection;
+function TJclIntfIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -597,7 +597,7 @@ end;
 
 //=== { TJclStrIntfHashMap } =================================================
 
-constructor TJclStrIntfHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrIntfHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
@@ -713,7 +713,7 @@ begin
   end;
 end;
 
-function TJclStrIntfHashMap.Equals(AMap: IStrIntfMap): Boolean;
+function TJclStrIntfHashMap.Equals(AMap: IJclStrIntfMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -811,7 +811,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclStrIntfHashMap.KeySet: IStrSet;
+function TJclStrIntfHashMap.KeySet: IJclStrSet;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -827,9 +827,9 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrIntfHashMap.PutAll(AMap: IStrIntfMap);
+procedure TJclStrIntfHashMap.PutAll(AMap: IJclStrIntfMap);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   Key: string;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -912,7 +912,7 @@ begin
   Result := FCount;
 end;
 
-function TJclStrIntfHashMap.Values: IIntfCollection;
+function TJclStrIntfHashMap.Values: IJclIntfCollection;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -930,7 +930,7 @@ end;
 
 //=== { TJclStrStrHashMap } ==================================================
 
-constructor TJclStrStrHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrStrHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
@@ -1046,7 +1046,7 @@ begin
   end;
 end;
 
-function TJclStrStrHashMap.Equals(AMap: IStrStrMap): Boolean;
+function TJclStrStrHashMap.Equals(AMap: IJclStrStrMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1150,10 +1150,10 @@ begin
         Exit;
       end;
   end;
-  raise EDCLError.CreateFmt(RsEValueNotFound, [Value]);
+  raise EJclError.CreateFmt(RsEValueNotFound, [Value]);
 end;
 
-function TJclStrStrHashMap.KeySet: IStrSet;
+function TJclStrStrHashMap.KeySet: IJclStrSet;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1169,9 +1169,9 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrStrHashMap.PutAll(AMap: IStrStrMap);
+procedure TJclStrStrHashMap.PutAll(AMap: IJclStrStrMap);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   Key: string;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1254,7 +1254,7 @@ begin
   Result := FCount;
 end;
 
-function TJclStrStrHashMap.Values: IStrCollection;
+function TJclStrStrHashMap.Values: IJclStrCollection;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1287,7 +1287,7 @@ end;
 
 //=== { TJclStrHashMap } =====================================================
 
-constructor TJclStrHashMap.Create(Capacity: Integer = DCLDefaultCapacity;
+constructor TJclStrHashMap.Create(Capacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 var
   I: Integer;
@@ -1406,7 +1406,7 @@ begin
   end;
 end;
 
-function TJclStrHashMap.Equals(AMap: IStrMap): Boolean;
+function TJclStrHashMap.Equals(AMap: IJclStrMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1513,7 +1513,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclStrHashMap.KeySet: IStrSet;
+function TJclStrHashMap.KeySet: IJclStrSet;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1529,9 +1529,9 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrHashMap.PutAll(AMap: IStrMap);
+procedure TJclStrHashMap.PutAll(AMap: IJclStrMap);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   Key: string;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1617,7 +1617,7 @@ begin
   Result := FCount;
 end;
 
-function TJclStrHashMap.Values: ICollection;
+function TJclStrHashMap.Values: IJclCollection;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1635,7 +1635,7 @@ end;
 
 //=== { TJclHashMap } ========================================================
 
-constructor TJclHashMap.Create(Capacity: Integer = DCLDefaultCapacity;
+constructor TJclHashMap.Create(Capacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 var
   I: Integer;
@@ -1753,7 +1753,7 @@ begin
   end;
 end;
 
-function TJclHashMap.Equals(AMap: IMap): Boolean;
+function TJclHashMap.Equals(AMap: IJclMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1845,7 +1845,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclHashMap.KeySet: ISet;
+function TJclHashMap.KeySet: IJclSet;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1861,9 +1861,9 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclHashMap.PutAll(AMap: IMap);
+procedure TJclHashMap.PutAll(AMap: IJclMap);
 var
-  It: IIterator;
+  It: IJclIterator;
   Key: TObject;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1951,7 +1951,7 @@ begin
   Result := FCount;
 end;
 
-function TJclHashMap.Values: ICollection;
+function TJclHashMap.Values: IJclCollection;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1970,6 +1970,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

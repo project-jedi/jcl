@@ -36,72 +36,72 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-  TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
-    IIntfArray, IIntfCloneable)
+  TJclIntfVector = class(TJclAbstractContainer, IJclIntfCollection, IJclIntfList,
+    IJclIntfArray, IJclIntfCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-    { ICloneable }
+    { IJclCloneable }
     function Clone: IInterface;
   public
     Items: TDynIInterfaceArray;
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean; overload;
-    function AddAll(ACollection: IIntfCollection): Boolean; overload;
+    function AddAll(ACollection: IJclIntfCollection): Boolean; overload;
     procedure Clear;
     function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IIntfCollection): Boolean;
-    function Equals(ACollection: IIntfCollection): Boolean;
-    function First: IIntfIterator;
+    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
+    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function First: IJclIntfIterator;
     function IsEmpty: Boolean;
-    function Last: IIntfIterator;
+    function Last: IJclIntfIterator;
     function Remove(AInterface: IInterface): Boolean; overload;
-    function RemoveAll(ACollection: IIntfCollection): Boolean;
-    function RetainAll(ACollection: IIntfCollection): Boolean;
+    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
-    { IIntfList }
+    { IJclIntfList }
     procedure Insert(Index: Integer; AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AInterface: IInterface): Integer;
     function LastIndexOf(AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; AInterface: IInterface);
-    function SubList(First, Count: Integer): IIntfList;
+    function SubList(First, Count: Integer): IJclIntfList;
 
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
-  TJclStrVector = class(TJclAbstractContainer, IStrCollection, IStrList,
-    IStrArray, ICloneable)
+  TJclStrVector = class(TJclAbstractContainer, IJclStrCollection, IJclStrList,
+    IJclStrArray, IJclCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-    { ICloneable }
+    { IJclCloneable }
     function Clone: TObject;
   public
     Items: TDynStringArray;
-    { IStrCollection }
+    { IJclStrCollection }
     function Add(const AString: string): Boolean; overload;
-    function AddAll(ACollection: IStrCollection): Boolean; overload;
+    function AddAll(ACollection: IJclStrCollection): Boolean; overload;
     procedure Clear;
     function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IStrCollection): Boolean;
-    function Equals(ACollection: IStrCollection): Boolean;
-    function First: IStrIterator;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean;
+    function Equals(ACollection: IJclStrCollection): Boolean;
+    function First: IJclStrIterator;
     function IsEmpty: Boolean;
-    function Last: IStrIterator;
+    function Last: IJclStrIterator;
     function Remove(const AString: string): Boolean; overload;
-    function RemoveAll(ACollection: IStrCollection): Boolean;
-    function RetainAll(ACollection: IStrCollection): Boolean;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean;
+    function RetainAll(ACollection: IJclStrCollection): Boolean;
     function Size: Integer;
     //Daniele Teti 27/12/2004
     procedure LoadFromStrings(Strings: TStrings);
@@ -112,24 +112,25 @@ type
     function GetAsDelimited(Separator: string = AnsiLineBreak): string;
     procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
-    { IStrList }
+    { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
-    function SubList(First, Count: Integer): IStrList;
+    function SubList(First, Count: Integer): IJclStrList;
 
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
-  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray, ICloneable)
+  TJclVector = class(TJclAbstractContainer, IJclCollection, IJclList, IJclArray,
+    IJclCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -139,33 +140,33 @@ type
     procedure FreeObject(var AObject: TObject);
   public
     Items: TDynObjectArray;
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TObject): Boolean; overload;
-    function AddAll(ACollection: ICollection): Boolean; overload;
+    function AddAll(ACollection: IJclCollection): Boolean; overload;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: ICollection): Boolean;
-    function Equals(ACollection: ICollection): Boolean;
-    function First: IIterator;
+    function ContainsAll(ACollection: IJclCollection): Boolean;
+    function Equals(ACollection: IJclCollection): Boolean;
+    function First: IJclIterator;
     function IsEmpty: Boolean;
-    function Last: IIterator;
+    function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean; overload;
-    function RemoveAll(ACollection: ICollection): Boolean;
-    function RetainAll(ACollection: ICollection): Boolean;
+    function RemoveAll(ACollection: IJclCollection): Boolean;
+    function RetainAll(ACollection: IJclCollection): Boolean;
     function Size: Integer;
-    { IList }
+    { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
-    function SubList(First, Count: Integer): IList;
-    { ICloneable }
+    function SubList(First, Count: Integer): IJclList;
+    { IJclCloneable }
     function Clone: TObject;
 
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
@@ -176,17 +177,17 @@ type
 implementation
 
 uses
-  JclAlgorithms;
+  JclAlgorithms, JclResources;
 
 type
-  TIntfItr = class(TJclAbstractContainer, IIntfIterator)
+  TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
   private
     FCursor: Integer;
     FOwnList: TJclIntfVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
-    { IIntfIterator}
+    { IJclIntfIterator}
     procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
@@ -202,14 +203,14 @@ type
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TJclAbstractContainer, IStrIterator)
+  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
   private
     FCursor: Integer;
     FOwnList: TJclStrVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
-    { IStrIterator}
+    { IJclStrIterator}
     procedure Add(const AString: string);
     function GetString: string;
     function HasNext: Boolean;
@@ -225,14 +226,14 @@ type
     destructor Destroy; override;
   end;
 
-  TItr = class(TJclAbstractContainer, IIterator)
+  TItr = class(TJclAbstractContainer, IJclIterator)
   private
     FCursor: Integer;
     FOwnList: TJclVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
-    { IIterator}
+    { IJclIterator}
     procedure Add(AObject: TObject);
     function GetObject: TObject;
     function HasNext: Boolean;
@@ -425,7 +426,7 @@ procedure TStrItr.SetString(const AString: string);
 begin
   {
   if FLastRet = -1 then
-    raise EDCLIllegalState.Create(SIllegalState);
+    raise EJclIllegalState.Create(SIllegalState);
   }
   FOwnList.Items[FCursor] := AString;
 end;
@@ -518,14 +519,14 @@ procedure TItr.SetObject(AObject: TObject);
 begin
   {
   if FLastRet = -1 then
-    raise EDCLIllegalState.Create(SIllegalState);
+    raise EJclIllegalState.Create(SIllegalState);
   }
   FOwnList.Items[FCursor] := AObject;
 end;
 
 //=== { TJclIntfVector } =====================================================
 
-constructor TJclIntfVector.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfVector.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -542,7 +543,7 @@ end;
 procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
@@ -559,14 +560,14 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   Size: Integer;
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -580,9 +581,9 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -604,7 +605,7 @@ end;
 
 function TJclIntfVector.Clone: IInterface;
 var
-  NewList: IIntfList;
+  NewList: IJclIntfList;
 begin
   NewList := TJclIntfVector.Create(FCapacity);
   NewList.AddAll(Self);
@@ -626,9 +627,9 @@ begin
     end;
 end;
 
-function TJclIntfVector.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -642,10 +643,10 @@ begin
     end;
 end;
 
-function TJclIntfVector.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.Equals(ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -690,7 +691,7 @@ begin
     end;
 end;
 
-function TJclIntfVector.First: IIntfIterator;
+function TJclIntfVector.First: IJclIntfIterator;
 begin
   Result := TIntfItr.Create(Self);
 end;
@@ -700,7 +701,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclIntfVector.Last: IIntfIterator;
+function TJclIntfVector.Last: IJclIntfIterator;
 var
   NewIterator: TIntfItr;
 begin
@@ -728,7 +729,7 @@ end;
 function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := nil;
   System.Move(Items[Index + 1], Items[Index],
@@ -753,9 +754,9 @@ begin
     end;
 end;
 
-function TJclIntfVector.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -765,7 +766,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclIntfVector.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
 begin
@@ -780,7 +781,7 @@ end;
 procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AInterface;
 end;
 
@@ -789,7 +790,7 @@ begin
   Result := FCount;
 end;
 
-function TJclIntfVector.SubList(First, Count: Integer): IIntfList;
+function TJclIntfVector.SubList(First, Count: Integer): IJclIntfList;
 var
   I: Integer;
   Last: Integer;
@@ -812,7 +813,7 @@ end;
 
 //=== { TJclStrVector } ======================================================
 
-constructor TJclStrVector.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrVector.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -829,7 +830,7 @@ end;
 procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
@@ -845,9 +846,9 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.AddAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -858,14 +859,14 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.InsertAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrVector.InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   Size: Integer;
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -920,9 +921,9 @@ begin
     end;
 end;
 
-function TJclStrVector.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -936,10 +937,10 @@ begin
     end;
 end;
 
-function TJclStrVector.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrVector.Equals(ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -953,7 +954,7 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.First: IStrIterator;
+function TJclStrVector.First: IJclStrIterator;
 begin
   Result := TStrItr.Create(Self);
 end;
@@ -994,7 +995,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclStrVector.Last: IStrIterator;
+function TJclStrVector.Last: IJclStrIterator;
 var
   NewIterator: TStrItr;
 begin
@@ -1039,7 +1040,7 @@ end;
 function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := '';
   System.Move(Items[Index + 1], Items[Index],
@@ -1047,9 +1048,9 @@ begin
   Dec(FCount);
 end;
 
-function TJclStrVector.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -1059,7 +1060,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclStrVector.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1074,7 +1075,7 @@ end;
 procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
@@ -1083,7 +1084,7 @@ begin
   Result := FCount;
 end;
 
-function TJclStrVector.SubList(First, Count: Integer): IStrList;
+function TJclStrVector.SubList(First, Count: Integer): IJclStrList;
 var
   I: Integer;
   Last: Integer;
@@ -1098,7 +1099,7 @@ end;
 
 //=== { TJclVector } =========================================================
 
-constructor TJclVector.Create(Capacity: Integer = DCLDefaultCapacity;
+constructor TJclVector.Create(Capacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 begin
   inherited Create;
@@ -1117,7 +1118,7 @@ end;
 procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(Items);
@@ -1134,14 +1135,14 @@ begin
   Result := True;
 end;
 
-function TJclVector.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclVector.InsertAll(Index: Integer; ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   Size: Integer;
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1155,9 +1156,9 @@ begin
   Result := True;
 end;
 
-function TJclVector.AddAll(ACollection: ICollection): Boolean;
+function TJclVector.AddAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -1201,9 +1202,9 @@ begin
     end;
 end;
 
-function TJclVector.ContainsAll(ACollection: ICollection): Boolean;
+function TJclVector.ContainsAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -1217,10 +1218,10 @@ begin
     end;
 end;
 
-function TJclVector.Equals(ACollection: ICollection): Boolean;
+function TJclVector.Equals(ACollection: IJclCollection): Boolean;
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -1274,7 +1275,7 @@ begin
     end;
 end;
 
-function TJclVector.First: IIterator;
+function TJclVector.First: IJclIterator;
 begin
   Result := TItr.Create(Self);
 end;
@@ -1284,7 +1285,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclVector.Last: IIterator;
+function TJclVector.Last: IJclIterator;
 var
   NewIterator: TItr;
 begin
@@ -1329,16 +1330,16 @@ end;
 function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
   System.Move(Items[Index + 1], Items[Index], (FCount - Index) * SizeOf(TObject));
   Dec(FCount);
 end;
 
-function TJclVector.RemoveAll(ACollection: ICollection): Boolean;
+function TJclVector.RemoveAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -1348,7 +1349,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclVector.RetainAll(ACollection: ICollection): Boolean;
+function TJclVector.RetainAll(ACollection: IJclCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1363,7 +1364,7 @@ end;
 procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -1372,7 +1373,7 @@ begin
   Result := FCount;
 end;
 
-function TJclVector.SubList(First, Count: Integer): IList;
+function TJclVector.SubList(First, Count: Integer): IJclList;
 var
   I: Integer;
   Last: Integer;
@@ -1412,7 +1413,7 @@ end;
 
 procedure TJclStrVector.AppendToStrings(Strings: TStrings);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Strings.BeginUpdate;
@@ -1440,7 +1441,7 @@ end;
 
 function TJclStrVector.GetAsDelimited(Separator: string): string;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Result := '';
@@ -1450,20 +1451,23 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
+procedure TJclStrVector.AppendDelimited(AString, Separator: string);
+begin
+  DCLAppendDelimited(Self, AString, Separator);
+end;
+
 procedure TJclStrVector.LoadDelimited(AString, Separator: string);
 begin
   Clear;
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclStrVector.AppendDelimited(AString, Separator: string);
-begin
-  DCLAppendDelimited(Self, AString, Separator);
-end;
-
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.2  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

@@ -35,62 +35,62 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-  TJclIntfQueue = class(TJclAbstractContainer, IIntfQueue)
+  TJclIntfQueue = class(TJclAbstractContainer, IJclIntfQueue)
   private
     FCapacity: Integer;
     FElements: TDynIInterfaceArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    { IIntfQueue }
+    { IJclIntfQueue }
     function Contains(AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
     procedure Enqueue(AInterface: IInterface);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
-  TJclStrQueue = class(TJclAbstractContainer, IStrQueue)
+  TJclStrQueue = class(TJclAbstractContainer, IJclStrQueue)
   private
     FCapacity: Integer;
     FElements: TDynStringArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    { IStrQueue }
+    { IJclStrQueue }
     function Contains(const AString: string): Boolean;
     function Dequeue: string;
     function Empty: Boolean;
     procedure Enqueue(const AString: string);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
-  TJclQueue = class(TJclAbstractContainer, IQueue)
+  TJclQueue = class(TJclAbstractContainer, IJclQueue)
   private
     FCapacity: Integer;
     FElements: TDynObjectArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    { IQueue }
+    { IJclQueue }
     function Contains(AObject: TObject): Boolean;
     function Dequeue: TObject;
     function Empty: Boolean;
     procedure Enqueue(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
 implementation
 
 //=== { TJclIntfQueue } ======================================================
 
-constructor TJclIntfQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfQueue.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FHead := 0;
@@ -168,7 +168,7 @@ end;
 
 //=== { TJclStrQueue } =======================================================
 
-constructor TJclStrQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrQueue.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FHead := 0;
@@ -246,7 +246,7 @@ end;
 
 //=== { TJclQueue } ==========================================================
 
-constructor TJclQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclQueue.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCapacity := Capacity;
@@ -323,6 +323,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

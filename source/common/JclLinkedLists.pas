@@ -54,63 +54,65 @@ type
     Next: PJclLinkedListItem;
   end;
 
-  TJclIntfLinkedList = class(TJclAbstractContainer, IIntfCollection, IIntfList, IIntfCloneable)
+  TJclIntfLinkedList = class(TJclAbstractContainer, IJclIntfCollection,
+    IJclIntfList, IJclIntfCloneable)
   private
     FStart: PJclIntfLinkedListItem;
     FEnd: PJclIntfLinkedListItem;
     FSize: Integer;
   protected
     procedure AddFirst(AInterface: IInterface);
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean; overload;
-    function AddAll(ACollection: IIntfCollection): Boolean; overload;
+    function AddAll(ACollection: IJclIntfCollection): Boolean; overload;
     procedure Clear;
     function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IIntfCollection): Boolean;
-    function Equals(ACollection: IIntfCollection): Boolean;
-    function First: IIntfIterator;
+    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
+    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function First: IJclIntfIterator;
     function IsEmpty: Boolean;
-    function Last: IIntfIterator;
+    function Last: IJclIntfIterator;
     function Remove(AInterface: IInterface): Boolean; overload;
-    function RemoveAll(ACollection: IIntfCollection): Boolean;
-    function RetainAll(ACollection: IIntfCollection): Boolean;
+    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
-    { IIntfList }
+    { IJclIntfList }
     procedure Insert(Index: Integer; AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AInterface: IInterface): Integer;
     function LastIndexOf(AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; AInterface: IInterface);
-    function SubList(First, Count: Integer): IIntfList;
-    { IIntfCloneable }
+    function SubList(First, Count: Integer): IJclIntfList;
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(ACollection: IIntfCollection = nil);
+    constructor Create(ACollection: IJclIntfCollection = nil);
     destructor Destroy; override;
   end;
 
-  TJclStrLinkedList = class(TJclAbstractContainer, IStrCollection, IStrList, ICloneable)
+  TJclStrLinkedList = class(TJclAbstractContainer, IJclStrCollection,
+    IJclStrList, IJclCloneable)
   private
     FStart: PJclStrLinkedListItem;
     FEnd: PJclStrLinkedListItem;
     FSize: Integer;
   protected
     procedure AddFirst(const AString: string);
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(const AString: string): Boolean; overload;
-    function AddAll(ACollection: IStrCollection): Boolean; overload;
+    function AddAll(ACollection: IJclStrCollection): Boolean; overload;
     procedure Clear;
     function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IStrCollection): Boolean;
-    function Equals(ACollection: IStrCollection): Boolean;
-    function First: IStrIterator;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean;
+    function Equals(ACollection: IJclStrCollection): Boolean;
+    function First: IJclStrIterator;
     function IsEmpty: Boolean;
-    function Last: IStrIterator;
+    function Last: IJclStrIterator;
     function Remove(const AString: string): Boolean; overload;
-    function RemoveAll(ACollection: IStrCollection): Boolean;
-    function RetainAll(ACollection: IStrCollection): Boolean;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean;
+    function RetainAll(ACollection: IJclStrCollection): Boolean;
     function Size: Integer;
     //Daniele Teti 27/12/2004
     procedure LoadFromStrings(Strings: TStrings);
@@ -121,23 +123,24 @@ type
     function GetAsDelimited(Separator: string = AnsiLineBreak): string;
     procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
-    { IIntfList }
+    { IJclIntfList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
-    function SubList(First, Count: Integer): IStrList;
-    { ICloneable }
+    function SubList(First, Count: Integer): IJclStrList;
+    { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(ACollection: IStrCollection = nil);
+    constructor Create(ACollection: IJclStrCollection = nil);
     destructor Destroy; override;
   end;
 
-  TJclLinkedList = class(TJclAbstractContainer, ICollection, IList, ICloneable)
+  TJclLinkedList = class(TJclAbstractContainer, IJclCollection, IJclList,
+    IJclCloneable)
   private
     FStart: PJclLinkedListItem;
     FEnd: PJclLinkedListItem;
@@ -146,33 +149,33 @@ type
   protected
     procedure AddFirst(AObject: TObject);
     procedure FreeObject(var AObject: TObject);
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TObject): Boolean; overload;
-    function AddAll(ACollection: ICollection): Boolean; overload;
+    function AddAll(ACollection: IJclCollection): Boolean; overload;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: ICollection): Boolean;
-    function Equals(ACollection: ICollection): Boolean;
-    function First: IIterator;
+    function ContainsAll(ACollection: IJclCollection): Boolean;
+    function Equals(ACollection: IJclCollection): Boolean;
+    function First: IJclIterator;
     function IsEmpty: Boolean;
-    function Last: IIterator;
+    function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean; overload;
-    function RemoveAll(ACollection: ICollection): Boolean;
-    function RetainAll(ACollection: ICollection): Boolean;
+    function RemoveAll(ACollection: IJclCollection): Boolean;
+    function RetainAll(ACollection: IJclCollection): Boolean;
     function Size: Integer;
-    { IList }
+    { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    function InsertAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
-    function SubList(First, Count: Integer): IList;
-    { ICloneable }
+    function SubList(First, Count: Integer): IJclList;
+    { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
+    constructor Create(ACollection: IJclCollection = nil; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
@@ -181,17 +184,17 @@ implementation
 
 uses
   SysUtils,
-  JclAlgorithms;
+  JclAlgorithms, JclResources;
 
 type
-  TIntfItr = class(TJclAbstractContainer, IIntfIterator)
+  TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
   private
     FCursor: PJclIntfLinkedListItem;
     FOwnList: TJclIntfLinkedList;
     FLastRet: PJclIntfLinkedListItem;
     FSize: Integer;
   protected
-    { IIterator}
+    { IJclIterator}
     procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
@@ -207,14 +210,14 @@ type
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TJclAbstractContainer, IStrIterator)
+  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
   private
     FCursor: PJclStrLinkedListItem;
     FOwnList: TJclStrLinkedList;
     FLastRet: PJclStrLinkedListItem;
     FSize: Integer;
   protected
-    { IStrIterator}
+    { IJclStrIterator}
     procedure Add(const AString: string);
     function GetString: string;
     function HasNext: Boolean;
@@ -230,14 +233,14 @@ type
     destructor Destroy; override;
   end;
 
-  TItr = class(TJclAbstractContainer, IIterator)
+  TItr = class(TJclAbstractContainer, IJclIterator)
   private
     FCursor: PJclLinkedListItem;
     FOwnList: TJclLinkedList;
     FLastRet: PJclLinkedListItem;
     FSize: Integer;
   public
-    { IIterator}
+    { IJclIterator}
     procedure Add(AObject: TObject);
     function GetObject: TObject;
     function HasNext: Boolean;
@@ -319,7 +322,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Next: IInterface;
@@ -339,19 +342,19 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -457,7 +460,7 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Next: string;
@@ -477,19 +480,19 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -595,7 +598,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Next: TObject;
@@ -615,19 +618,19 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No Index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
   // No Index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -671,9 +674,9 @@ end;
 
 //=== { TJclIntfLinkedList } =================================================
 
-constructor TJclIntfLinkedList.Create(ACollection: IIntfCollection = nil);
+constructor TJclIntfLinkedList.Create(ACollection: IJclIntfCollection = nil);
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   inherited Create;
   FStart := nil;
@@ -706,7 +709,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if AInterface = nil then
     Exit;
   if FStart = nil then
@@ -761,9 +764,9 @@ begin
   Inc(FSize);
 end;
 
-function TJclIntfLinkedList.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -779,10 +782,10 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
-function TJclIntfLinkedList.InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   Current: PJclIntfLinkedListItem;
   NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
@@ -794,7 +797,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -866,7 +869,7 @@ end;
 
 function TJclIntfLinkedList.Clone: IInterface;
 var
-  NewList: IIntfList;
+  NewList: IJclIntfList;
 begin
   NewList := TJclIntfLinkedList.Create;
   NewList.AddAll(Self);
@@ -899,9 +902,9 @@ begin
   end;
 end;
 
-function TJclIntfLinkedList.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -921,9 +924,9 @@ begin
     end;
 end;
 
-function TJclIntfLinkedList.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.Equals(ACollection: IJclIntfCollection): Boolean;
 var
-  It, ItSelf: IIntfIterator;
+  It, ItSelf: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -992,7 +995,7 @@ begin
   end;
 end;
 
-function TJclIntfLinkedList.First: IIntfIterator;
+function TJclIntfLinkedList.First: IJclIntfIterator;
 begin
   Result := TIntfItr.Create(Self, FStart);
 end;
@@ -1002,7 +1005,7 @@ begin
   Result := FSize = 0;
 end;
 
-function TJclIntfLinkedList.Last: IIntfIterator;
+function TJclIntfLinkedList.Last: IJclIntfIterator;
 begin
   Result := TIntfItr.Create(Self, FStart);
 end;
@@ -1107,9 +1110,9 @@ begin
   Dec(FSize);
 end;
 
-function TJclIntfLinkedList.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1125,9 +1128,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfLinkedList.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1168,10 +1171,10 @@ begin
   Result := FSize;
 end;
 
-function TJclIntfLinkedList.SubList(First, Count: Integer): IIntfList;
+function TJclIntfLinkedList.SubList(First, Count: Integer): IJclIntfList;
 var
   I: Integer;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   Last: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1201,9 +1204,9 @@ end;
 
 //=== { TJclStrLinkedList } ==================================================
 
-constructor TJclStrLinkedList.Create(ACollection: IStrCollection = nil);
+constructor TJclStrLinkedList.Create(ACollection: IJclStrCollection = nil);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   inherited Create;
   FStart := nil;
@@ -1236,7 +1239,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1291,9 +1294,9 @@ begin
   Inc(FSize);
 end;
 
-function TJclStrLinkedList.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.AddAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1309,10 +1312,10 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
-function TJclStrLinkedList.InsertAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
-  It: IStrIterator;
+  It: IJclStrIterator;
   Current: PJclStrLinkedListItem;
   NewItem: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
@@ -1427,9 +1430,9 @@ begin
   end;
 end;
 
-function TJclStrLinkedList.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1449,9 +1452,9 @@ begin
     end;
 end;
 
-function TJclStrLinkedList.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.Equals(ACollection: IJclStrCollection): Boolean;
 var
-  It, ItSelf: IStrIterator;
+  It, ItSelf: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1472,7 +1475,7 @@ begin
   Result := True;
 end;
 
-function TJclStrLinkedList.First: IStrIterator;
+function TJclStrLinkedList.First: IJclStrIterator;
 begin
   Result := TStrItr.Create(Self, FStart);
 end;
@@ -1530,7 +1533,7 @@ begin
   Result := FSize = 0;
 end;
 
-function TJclStrLinkedList.Last: IStrIterator;
+function TJclStrLinkedList.Last: IJclStrIterator;
 begin
   Result := TStrItr.Create(Self, FStart);
 end;
@@ -1635,9 +1638,9 @@ begin
   end;
 end;
 
-function TJclStrLinkedList.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1653,9 +1656,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrLinkedList.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1696,10 +1699,10 @@ begin
   Result := FSize;
 end;
 
-function TJclStrLinkedList.SubList(First, Count: Integer): IStrList;
+function TJclStrLinkedList.SubList(First, Count: Integer): IJclStrList;
 var
   I: Integer;
-  It: IStrIterator;
+  It: IJclStrIterator;
   Last: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1729,9 +1732,9 @@ end;
 
 //=== { TJclLinkedList } =====================================================
 
-constructor TJclLinkedList.Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
+constructor TJclLinkedList.Create(ACollection: IJclCollection = nil; AOwnsObjects: Boolean = True);
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   inherited Create;
   FStart := nil;
@@ -1765,7 +1768,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1819,9 +1822,9 @@ begin
   Inc(FSize);
 end;
 
-function TJclLinkedList.AddAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.AddAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1838,10 +1841,10 @@ begin
   Result := True;
 end;
 
-function TJclLinkedList.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclLinkedList.InsertAll(Index: Integer; ACollection: IJclCollection): Boolean;
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
   Current: PJclLinkedListItem;
   NewItem: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
@@ -1853,7 +1856,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -1958,9 +1961,9 @@ begin
   end;
 end;
 
-function TJclLinkedList.ContainsAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.ContainsAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1980,9 +1983,9 @@ begin
     end;
 end;
 
-function TJclLinkedList.Equals(ACollection: ICollection): Boolean;
+function TJclLinkedList.Equals(ACollection: IJclCollection): Boolean;
 var
-  It, ItSelf: IIterator;
+  It, ItSelf: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2060,7 +2063,7 @@ begin
   end;
 end;
 
-function TJclLinkedList.First: IIterator;
+function TJclLinkedList.First: IJclIterator;
 begin
   Result := TItr.Create(Self, FStart);
 end;
@@ -2070,7 +2073,7 @@ begin
   Result := FSize = 0;
 end;
 
-function TJclLinkedList.Last: IIterator;
+function TJclLinkedList.Last: IJclIterator;
 begin
   Result := TItr.Create(Self, FStart);
 end;
@@ -2175,9 +2178,9 @@ begin
   Dec(FSize);
 end;
 
-function TJclLinkedList.RemoveAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.RemoveAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2193,9 +2196,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclLinkedList.RetainAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.RetainAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2236,10 +2239,10 @@ begin
   Result := FSize;
 end;
 
-function TJclLinkedList.SubList(First, Count: Integer): IList;
+function TJclLinkedList.SubList(First, Count: Integer): IJclList;
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
   Last: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -2285,7 +2288,7 @@ end;
 
 procedure TJclStrLinkedList.AppendToStrings(Strings: TStrings);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Strings.BeginUpdate;
@@ -2313,7 +2316,7 @@ end;
 
 function TJclStrLinkedList.GetAsDelimited(Separator: string): string;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Result := '';
@@ -2323,20 +2326,23 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
+procedure TJclStrLinkedList.AppendDelimited(AString, Separator: string);
+begin
+  DCLAppendDelimited(Self, AString, Separator);
+end;
+
 procedure TJclStrLinkedList.LoadDelimited(AString, Separator: string);
 begin
   Clear;
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclStrLinkedList.AppendDelimited(AString, Separator: string);
-begin
-  DCLAppendDelimited(Self, AString, Separator);
-end;
-
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.2  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

@@ -61,7 +61,7 @@ type
     procedure btnSortClick(Sender: TObject);
   private
   public
-    List: IList;
+    List: IJclList;
   end;
 
 var
@@ -76,7 +76,7 @@ uses JclAlgorithms;
 procedure TMainForm.btnApplyGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   List.Clear;
   for I := 1 to 10 do
@@ -99,7 +99,7 @@ end;
 
 procedure TMainForm.btnApplyClick(Sender: TObject);
 var
-  It: IIterator;
+  It: IJclIterator;
   Value: Integer;
 begin
   Value := StrToIntDef(edtApply.Text, 0);
@@ -113,7 +113,7 @@ end;
 procedure TMainForm.btnFindGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   List.Clear;
   for I := 1 to 10 do
@@ -126,7 +126,7 @@ end;
 
 procedure TMainForm.btnFindClick(Sender: TObject);
 var
-  It: IIterator;
+  It: IJclIterator;
   Value: Integer;
 begin
   Value := StrToIntDef(edtFind.Text, 0);
@@ -140,7 +140,7 @@ end;
 procedure TMainForm.btnCountGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   Randomize;
   List.Clear;
@@ -165,7 +165,7 @@ end;
 procedure TMainForm.btnCopyGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   Randomize;
   List.Clear;
@@ -179,8 +179,8 @@ end;
 
 procedure TMainForm.btnCopyClick(Sender: TObject);
 var
-  AnotherList: IList;
-  It: IIterator;
+  AnotherList: IJclList;
+  It: IJclIterator;
 begin
   AnotherList := TJclArrayList.Create(16, False);
   JclAlgorithms.Generate(AnotherList, 10, TObject(0));
@@ -194,7 +194,7 @@ end;
 procedure TMainForm.btnReverseGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   List.Clear;
   for I := 1 to 10 do
@@ -207,7 +207,7 @@ end;
 
 procedure TMainForm.btnReverseClick(Sender: TObject);
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   JclAlgorithms.Reverse(List.First, List.Last);
   lbxReverse.Items.Clear;
@@ -219,7 +219,7 @@ end;
 procedure TMainForm.btnSortGenerateClick(Sender: TObject);
 var
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   Randomize;
   List.Clear;
@@ -233,7 +233,7 @@ end;
 
 procedure TMainForm.btnSortClick(Sender: TObject);
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   JclAlgorithms.Sort(List, 0, 9, IntegerCompare);
   lbxSort.Items.Clear;

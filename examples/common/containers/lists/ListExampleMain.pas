@@ -123,10 +123,10 @@ end;
 
 procedure TMainForm.btnIntfArrayListClick(Sender: TObject);
 var
-  List, Sub: IIntfList;
-  MyArray: IIntfArray;
+  List, Sub: IJclIntfList;
+  MyArray: IJclIntfArray;
   MyObject: IIntfMyObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
@@ -154,7 +154,7 @@ begin
     memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
   end;
   // use [] default of Items[]
-  MyArray := List as IIntfArray;
+  MyArray := List as IJclIntfArray;
   for I := 0 to MyArray.Size - 1 do
   begin
     MyObject := IIntfMyObject(MyArray[I]);
@@ -164,9 +164,9 @@ end;
 
 procedure TMainForm.btnIntfLinkedListClick(Sender: TObject);
 var
-  List, Sub: IIntfList;
+  List, Sub: IJclIntfList;
   MyObject: IIntfMyObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   memResult.Lines.Clear;
   List := TJclIntfLinkedList.Create;
@@ -196,7 +196,7 @@ procedure TMainForm.btnIntfVectorClick(Sender: TObject);
 var
   List: TJclIntfVector;
   MyObject: IIntfMyObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
@@ -234,9 +234,9 @@ end;
 
 procedure TMainForm.btnArrayListClick(Sender: TObject);
 var
-  List: IList;
+  List: IJclList;
   MyObject: TMyObject;
-  It: IIterator;
+  It: IJclIterator;
 begin
   memResult.Lines.Clear;
   List := TJclArrayList.Create;
@@ -265,9 +265,9 @@ end;
 
 procedure TMainForm.btnLinkedListClick(Sender: TObject);
 var
-  List: IList;
+  List: IJclList;
   MyObject: TMyObject;
-  It: IIterator;
+  It: IJclIterator;
 begin
   memResult.Lines.Clear;
   List := TJclLinkedList.Create;
@@ -295,7 +295,7 @@ procedure TMainForm.btnVectorClick(Sender: TObject);
 var
   List: TJclVector;
   MyObject: TMyObject;
-  It: IIterator;
+  It: IJclIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
@@ -349,9 +349,9 @@ end;
 
 procedure TMainForm.btnStrArrayListClick(Sender: TObject);
 var
-  List, Sub: IStrList;
-  MyArray: IStrArray;
-  It: IStrIterator;
+  List, Sub: IJclStrList;
+  MyArray: IJclStrArray;
+  It: IJclStrIterator;
   I: Integer;
   S: string;
 begin
@@ -373,7 +373,7 @@ begin
     memResult.Lines.Add(S);
   end;
   // use [] default of Items[]
-  MyArray := List as IStrArray;
+  MyArray := List as IJclStrArray;
   for I := 0 to MyArray.Size - 1 do
   begin
     S := MyArray[I];
@@ -415,9 +415,9 @@ end;
 
 procedure TMainForm.btnStrLinkedListClick(Sender: TObject);
 var
-  List, Sub: IStrList;
+  List, Sub: IJclStrList;
   S: string;
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   memResult.Lines.Clear;
   List := TJclStrLinkedList.Create;
@@ -440,7 +440,7 @@ procedure TMainForm.btnStrVectorClick(Sender: TObject);
 var
   List: TJclStrVector;
   S: string;
-  It: IStrIterator;
+  It: IJclStrIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;

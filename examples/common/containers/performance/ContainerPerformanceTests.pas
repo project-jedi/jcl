@@ -72,8 +72,8 @@ end;
 
 procedure TestJclArrayList(Results: TStrings);
 var
-  List: IList;
-  It: IIterator;
+  List: IJclList;
+  It: IJclIterator;
   I, Res: Integer;
   Start: TDateTime;
 begin
@@ -89,7 +89,7 @@ begin
     // Fast but Specific ArrayList
     //for I := 0 to List.Size - 1 do
     //  Res := Integer(List.GetObject(I));
-    // Slower but same for every IList
+    // Slower but same for every IJclList
     It := List.First;
     while It.HasNext do
       I := Integer(It.Next);
@@ -115,9 +115,9 @@ end;
 
 procedure TestJclLinkedList(Results: TStrings);
 var
-  List: IList;
+  List: IJclList;
   I, Res: Integer;
-  It: IIterator;
+  It: IJclIterator;
   Start: TDateTime;
 begin
   Randomize;
@@ -229,7 +229,7 @@ end;
 
 procedure TestJclHashMap(Results: TStrings);
 var
-  Map: IMap;
+  Map: IJclMap;
   I, Res: Integer;
   Start: TDateTime;
 begin
@@ -276,9 +276,7 @@ begin
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
-    begin
       Index := List.IndexOf(GenId(123));
-    end;
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
@@ -299,7 +297,7 @@ end;
 
 procedure TestJclStrStrHashMap(Results: TStrings);
 var
-  Map: IStrStrMap;
+  Map: IJclStrStrMap;
   I: Integer;
   Res: string;
   Start: TDateTime;

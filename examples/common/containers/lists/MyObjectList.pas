@@ -19,34 +19,34 @@ type
   IMyObjectList = interface
     ['{DB2B366E-2CA6-4AFC-A2C9-3285D252DC3E}']
     function Add(AObject: TMyObject): Boolean; overload;
-    function AddAll(ACollection: ICollection): Boolean; overload;
+    function AddAll(ACollection: IJclCollection): Boolean; overload;
     procedure Clear;
     function Contains(AObject: TMyObject): Boolean;
-    function ContainsAll(ACollection: ICollection): Boolean;
-    function Equals(ACollection: ICollection): Boolean;
-    function First: IIterator;
+    function ContainsAll(ACollection: IJclCollection): Boolean;
+    function Equals(ACollection: IJclCollection): Boolean;
+    function First: IJclIterator;
     function IsEmpty: Boolean;
-    function Last: IIterator;
+    function Last: IJclIterator;
     function Remove(AObject: TMyObject): Boolean; overload;
-    function RemoveAll(ACollection: ICollection): Boolean;
-    function RetainAll(ACollection: ICollection): Boolean;
+    function RemoveAll(ACollection: IJclCollection): Boolean;
+    function RetainAll(ACollection: IJclCollection): Boolean;
     function Size: Integer;
 
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
     function Remove(Index: Integer): TMyObject; overload;
     procedure SetObject(Index: Integer; AObject: TMyObject);
-    function SubList(First, Count: Integer): IList;
+    function SubList(First, Count: Integer): IJclList;
   end;
 
   TMyObjectList = class(TJclArrayList, IMyObjectList)
   protected
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TMyObject): Boolean; overload;
-    function AddAll(ACollection: ICollection): Boolean; overload;
+    function AddAll(ACollection: IJclCollection): Boolean; overload;
     procedure IMyObjectList.Clear = Clear;
     function Contains(AObject: TMyObject): Boolean;
     function IMyObjectList.ContainsAll = ContainsAll;
@@ -59,9 +59,9 @@ type
     function IMyObjectList.RetainAll = RetainAll;
     function IMyObjectList.Size = Size;
   protected
-    { IList }
+    { IJclList }
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
@@ -84,13 +84,13 @@ begin
   Result := inherited Add(AObject);
 end;
 
-function TMyObjectList.AddAll(ACollection: ICollection): Boolean;
+function TMyObjectList.AddAll(ACollection: IJclCollection): Boolean;
 begin
   Result := inherited AddAll(ACollection);
 end;
 
 function TMyObjectList.AddAll(Index: Integer;
-  ACollection: ICollection): Boolean;
+  ACollection: IJclCollection): Boolean;
 begin
   Result := inherited InsertAll(Index, ACollection);
 end;

@@ -36,52 +36,54 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
 
 type
-  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
+  TJclIntfHashSet = class(TJclAbstractContainer, IJclIntfCollection,
+    IJclIntfSet, IJclIntfCloneable)
   private
-    FMap: IIntfIntfMap;
+    FMap: IJclIntfIntfMap;
   protected
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IIntfCollection): Boolean;
+    function AddAll(ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
     function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IIntfCollection): Boolean;
-    function Equals(ACollection: IIntfCollection): Boolean;
-    function First: IIntfIterator;
+    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
+    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function First: IJclIntfIterator;
     function IsEmpty: Boolean;
-    function Last: IIntfIterator;
+    function Last: IJclIntfIterator;
     function Remove(AInterface: IInterface): Boolean;
-    function RemoveAll(ACollection: IIntfCollection): Boolean;
-    function RetainAll(ACollection: IIntfCollection): Boolean;
+    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
-    { IIntfSet }
-    procedure Intersect(ACollection: IIntfCollection);
-    procedure Subtract(ACollection: IIntfCollection);
-    procedure Union(ACollection: IIntfCollection);
-    { IIntfCloneable }
+    { IJclIntfSet }
+    procedure Intersect(ACollection: IJclIntfCollection);
+    procedure Subtract(ACollection: IJclIntfCollection);
+    procedure Union(ACollection: IJclIntfCollection);
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
   end;
 
-  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet, ICloneable)
+  TJclStrHashSet = class(TJclAbstractContainer, IJclStrCollection,
+    IJclStrSet, IJclCloneable)
   private
-    FMap: IStrMap;
+    FMap: IJclStrMap;
   protected
-    { IStrCollection }
+    { IJclStrCollection }
     function Add(const AString: string): Boolean;
-    function AddAll(ACollection: IStrCollection): Boolean;
+    function AddAll(ACollection: IJclStrCollection): Boolean;
     procedure Clear;
     function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IStrCollection): Boolean;
-    function Equals(ACollection: IStrCollection): Boolean;
-    function First: IStrIterator;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean;
+    function Equals(ACollection: IJclStrCollection): Boolean;
+    function First: IJclStrIterator;
     function IsEmpty: Boolean;
-    function Last: IStrIterator;
+    function Last: IJclStrIterator;
     function Remove(const AString: string): Boolean;
-    function RemoveAll(ACollection: IStrCollection): Boolean;
-    function RetainAll(ACollection: IStrCollection): Boolean;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean;
+    function RetainAll(ACollection: IJclStrCollection): Boolean;
     function Size: Integer;
     //Daniele Teti 27/12/2004
     procedure LoadFromStrings(Strings: TStrings);
@@ -92,43 +94,43 @@ type
     function GetAsDelimited(Separator: string = AnsiLineBreak): string;
     procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
-    { IIntfSet }
-    procedure Intersect(ACollection: IStrCollection);
-    procedure Subtract(ACollection: IStrCollection);
-    procedure Union(ACollection: IStrCollection);
-    { IIntfCloneable }
+    { IJclIntfSet }
+    procedure Intersect(ACollection: IJclStrCollection);
+    procedure Subtract(ACollection: IJclStrCollection);
+    procedure Union(ACollection: IJclStrCollection);
+    { IJclIntfCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
   end;
 
-  TJclHashSet = class(TJclAbstractContainer, ICollection, ISet, ICloneable)
+  TJclHashSet = class(TJclAbstractContainer, IJclCollection, IJclSet, IJclCloneable)
   private
-    FMap: IMap;
+    FMap: IJclMap;
   protected
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: ICollection): Boolean;
+    function AddAll(ACollection: IJclCollection): Boolean;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: ICollection): Boolean;
-    function Equals(ACollection: ICollection): Boolean;
-    function First: IIterator;
+    function ContainsAll(ACollection: IJclCollection): Boolean;
+    function Equals(ACollection: IJclCollection): Boolean;
+    function First: IJclIterator;
     function IsEmpty: Boolean;
-    function Last: IIterator;
+    function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean;
-    function RemoveAll(ACollection: ICollection): Boolean;
-    function RetainAll(ACollection: ICollection): Boolean;
+    function RemoveAll(ACollection: IJclCollection): Boolean;
+    function RetainAll(ACollection: IJclCollection): Boolean;
     function Size: Integer;
-    { ISet }
-    procedure Intersect(ACollection: ICollection);
-    procedure Subtract(ACollection: ICollection);
-    procedure Union(ACollection: ICollection);
-    { ICloneable }
+    { IJclSet }
+    procedure Intersect(ACollection: IJclCollection);
+    procedure Subtract(ACollection: IJclCollection);
+    procedure Union(ACollection: IJclCollection);
+    { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObject: Boolean = False);
     destructor Destroy; override;
   end;
 
@@ -146,7 +148,7 @@ var
 
 //=== { TJclIntfHashSet } ====================================================
 
-constructor TJclIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfHashSet.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FMap := TJclIntfIntfHashMap.Create(Capacity);
@@ -167,9 +169,9 @@ begin
     FMap.PutValue(AInterface, IRefUnique);
 end;
 
-function TJclIntfHashSet.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := ACollection <> nil;
   if Result then
@@ -190,7 +192,7 @@ var
   NewSet: TJclIntfHashSet;
 begin
   NewSet := TJclIntfHashSet.Create;
-  NewSet.FMap := IIntfIntfMap(IIntfCloneable(FMap).Clone);
+  NewSet.FMap := IJclIntfIntfMap(IJclIntfCloneable(FMap).Clone);
   Result := NewSet;
 end;
 
@@ -199,9 +201,9 @@ begin
   Result := FMap.ContainsKey(AInterface);
 end;
 
-function TJclIntfHashSet.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -215,10 +217,10 @@ begin
     end;
 end;
 
-function TJclIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.Equals(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
-  ItMap: IIntfIterator;
+  It: IJclIntfIterator;
+  ItMap: IJclIntfIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -233,12 +235,12 @@ begin
   Result := True;
 end;
 
-function TJclIntfHashSet.First: IIntfIterator;
+function TJclIntfHashSet.First: IJclIntfIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclIntfHashSet.Intersect(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Intersect(ACollection: IJclIntfCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -248,7 +250,7 @@ begin
   Result := FMap.IsEmpty;
 end;
 
-function TJclIntfHashSet.Last: IIntfIterator;
+function TJclIntfHashSet.Last: IJclIntfIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
@@ -258,9 +260,9 @@ begin
   Result := FMap.Remove(AInterface) = IInterface(IRefUnique);
 end;
 
-function TJclIntfHashSet.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -270,9 +272,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfHashSet.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
-  ItMap: IIntfIterator;
+  ItMap: IJclIntfIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -288,19 +290,19 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclIntfHashSet.Subtract(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Subtract(ACollection: IJclIntfCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclIntfHashSet.Union(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Union(ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
 end;
 
 //=== { TJclStrHashSet } =====================================================
 
-constructor TJclStrHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrHashSet.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FMap := TJclStrHashMap.Create(Capacity, False);
@@ -320,9 +322,9 @@ begin
     FMap.PutValue(AString, RefUnique);
 end;
 
-function TJclStrHashSet.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.AddAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -342,7 +344,7 @@ var
   NewSet: TJclStrHashSet;
 begin
   NewSet := TJclStrHashSet.Create;
-  NewSet.FMap := TJclStrHashMap(ICloneable(FMap).Clone);
+  NewSet.FMap := TJclStrHashMap(IJclCloneable(FMap).Clone);
   Result := NewSet;
 end;
 
@@ -351,9 +353,9 @@ begin
   Result := FMap.ContainsKey(AString);
 end;
 
-function TJclStrHashSet.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -367,10 +369,10 @@ begin
     end;
 end;
 
-function TJclStrHashSet.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.Equals(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
-  ItMap: IStrIterator;
+  It: IJclStrIterator;
+  ItMap: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -385,12 +387,12 @@ begin
   Result := True;
 end;
 
-function TJclStrHashSet.First: IStrIterator;
+function TJclStrHashSet.First: IJclStrIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclStrHashSet.Intersect(ACollection: IStrCollection);
+procedure TJclStrHashSet.Intersect(ACollection: IJclStrCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -400,7 +402,7 @@ begin
   Result := FMap.IsEmpty;
 end;
 
-function TJclStrHashSet.Last: IStrIterator;
+function TJclStrHashSet.Last: IJclStrIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
@@ -410,9 +412,9 @@ begin
   Result := FMap.Remove(AString) = RefUnique;
 end;
 
-function TJclStrHashSet.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -426,9 +428,9 @@ begin
       Result := False;
 end;
 
-function TJclStrHashSet.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -444,19 +446,19 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclStrHashSet.Subtract(ACollection: IStrCollection);
+procedure TJclStrHashSet.Subtract(ACollection: IJclStrCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclStrHashSet.Union(ACollection: IStrCollection);
+procedure TJclStrHashSet.Union(ACollection: IJclStrCollection);
 begin
   AddAll(ACollection);
 end;
 
 //=== { TJclHashSet } ========================================================
 
-constructor TJclHashSet.Create(Capacity: Integer = DCLDefaultCapacity;
+constructor TJclHashSet.Create(Capacity: Integer = DefaultContainerCapacity;
   AOwnsObject: Boolean = False);
 begin
   inherited Create;
@@ -477,9 +479,9 @@ begin
     FMap.PutValue(AObject, RefUnique);
 end;
 
-function TJclHashSet.AddAll(ACollection: ICollection): Boolean;
+function TJclHashSet.AddAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -499,7 +501,7 @@ var
   NewSet: TJclHashSet;
 begin
   NewSet := TJclHashSet.Create;
-  NewSet.FMap := TJclHashMap(ICloneable(FMap).Clone);
+  NewSet.FMap := TJclHashMap(IJclCloneable(FMap).Clone);
   Result := NewSet;
 end;
 
@@ -508,9 +510,9 @@ begin
   Result := FMap.ContainsKey(AObject);
 end;
 
-function TJclHashSet.ContainsAll(ACollection: ICollection): Boolean;
+function TJclHashSet.ContainsAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -524,10 +526,10 @@ begin
     end;
 end;
 
-function TJclHashSet.Equals(ACollection: ICollection): Boolean;
+function TJclHashSet.Equals(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
-  ItMap: IIterator;
+  It: IJclIterator;
+  ItMap: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -542,12 +544,12 @@ begin
   Result := True;
 end;
 
-function TJclHashSet.First: IIterator;
+function TJclHashSet.First: IJclIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclHashSet.Intersect(ACollection: ICollection);
+procedure TJclHashSet.Intersect(ACollection: IJclCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -557,7 +559,7 @@ begin
   Result := FMap.IsEmpty;
 end;
 
-function TJclHashSet.Last: IIterator;
+function TJclHashSet.Last: IJclIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
@@ -567,9 +569,9 @@ begin
   Result := FMap.Remove(AObject) = RefUnique;
 end;
 
-function TJclHashSet.RemoveAll(ACollection: ICollection): Boolean;
+function TJclHashSet.RemoveAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
 begin
   Result := True;
   if ACollection = nil then
@@ -579,9 +581,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclHashSet.RetainAll(ACollection: ICollection): Boolean;
+function TJclHashSet.RetainAll(ACollection: IJclCollection): Boolean;
 var
-  ItMap: IIterator;
+  ItMap: IJclIterator;
 begin
   Result := False;
   if ACollection = nil then
@@ -597,12 +599,12 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclHashSet.Subtract(ACollection: ICollection);
+procedure TJclHashSet.Subtract(ACollection: IJclCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclHashSet.Union(ACollection: ICollection);
+procedure TJclHashSet.Union(ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;
@@ -626,7 +628,7 @@ end;
 
 procedure TJclStrHashSet.AppendToStrings(Strings: TStrings);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Strings.BeginUpdate;
@@ -654,7 +656,7 @@ end;
 
 function TJclStrHashSet.GetAsDelimited(Separator: string): string;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Result := '';
@@ -678,6 +680,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.2  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //
