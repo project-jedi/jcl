@@ -1,0 +1,1 @@
+This directory is inteded as a common place for DCU files of Delphi 7 design-time packages.
