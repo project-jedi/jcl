@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Robert Rossmair                                                                                }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Platform-independent MIDI declarations                                                           }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMIDI;
 
@@ -892,5 +896,12 @@ begin
   SendControlChange(Channel, MIDICCPolyModeOn, 0);
   FActiveNotes[Channel] := []; // implicite All Notes Off
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

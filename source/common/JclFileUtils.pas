@@ -15,6 +15,11 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Rudy Velthuis                                                                                  }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes for working with files, directories and path strings.    }
@@ -24,19 +29,14 @@
 { contains NTFS specific utility routines, and that the JclShell unit contains some file related   }
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclFileUtils;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -247,7 +247,11 @@ function UnlockVolume(var Handle: THandle): Boolean;
 {$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 {$ENDIF FPC}
+{ TODO -cHelp : Win32MoveFileReplaceExisting }
+function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
+{ TODO -cHelp : Win32BackupFile }
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
+{ TODO -cHelp : Win32RestoreFile }
 function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
 
@@ -841,7 +845,7 @@ type
 // TJclFileMaskComparator
 //--------------------------------------------------------------------------------------------------
 
-// TODO UNTESTED/UNDOCUMENTED
+{ TODO : UNTESTED/UNDOCUMENTED }
 
 type
   TJclFileMaskComparator = class(TObject)
@@ -907,11 +911,11 @@ uses
   is about the only routine which doesn't cause the file's last modification/accessed time to be
   changed which is usually an undesired side-effect. }
 
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF RTL140_UP}
 const
-  MinDateTime: TDateTime = -657434.0;      { 01/01/0100 12:00:00.000 AM }
-  MaxDateTime: TDateTime =  2958465.99999; { 12/31/9999 11:59:59.999 PM }
-{$ENDIF not def COMPILER6_UP}
+  MinDateTime: TDateTime = -657434.0;      { 0100-01-01T00:00:00.000 }
+  MaxDateTime: TDateTime =  2958465.99999; { 9999-12-31T23:59:59.999 }
+{$ENDIF not def RTL140_UP}
 
 {$IFDEF UNIX}
 const
@@ -1795,9 +1799,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ todoc
-
-  Canonicalizes a path. Meaning, it parses the specified path for the character
+{ TODO -cHelp : PathCanonicalize }
+{ Canonicalizes a path. Meaning, it parses the specified path for the character
   sequences '.' and '..' where '.' means skip over the next path part and '..'
   means remove the previous path part.
 
@@ -1906,13 +1909,13 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function PathCompactPath(const DC: HDC; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string;
 const
   Compacts: array [TCompactPath] of Cardinal = (DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
 var
   TextRect: TRect;
-  P: PChar;
   Fmt: Cardinal;
 begin
   Result := '';
@@ -1922,19 +1925,16 @@ begin
     "If dwDTFormat includes DT_MODIFYSTRING, the function could add up to four additional characters
     to this string. The buffer containing the string should be large enough to accommodate these
     extra characters." }
-    P := StrAlloc(Length(Path) + 5);
-    try
-      StrPCopy(P, Path);
-      TextRect := Rect(0, 0, Width, 255);
-      Fmt := DT_MODIFYSTRING + DT_CALCRECT + Compacts[CmpFmt];
-      if DrawTextEx(DC, P, -1, TextRect, Fmt, nil) <> 0 then
-        Result := P;
-    finally
-      StrDispose(P);
-    end;
+    SetString(Result, PChar(Path), Length(Path) + 4);
+    TextRect := Rect(0, 0, Width, 255);
+    Fmt := DT_MODIFYSTRING or DT_CALCRECT or Compacts[CmpFmt];
+    if DrawTextEx(DC, PChar(Result), -1, TextRect, Fmt, nil) <> 0 then
+      StrResetLength(Result)
+    else
+      Result := '';  // in case of error
   end;
 end;
-
+                             
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -1972,9 +1972,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ todoc
-
-  Returns the first Depth path parts of the specified path exclusing drive.
+{ TODO -cHelp : PathExtractPathDepth }
+{ Returns the first Depth path parts of the specified path exclusing drive.
   Example: PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
   Path: the path to extract from
   Depth: the depth of the path to return (i.e. the number of directory parts).
@@ -2007,9 +2006,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ todoc
-
-  Returns the depth of a path. That is the number of subdirectories in the path.
+{ TODO -cHelp : PathGetDepth }
+{ Returns the depth of a path. That is the number of subdirectories in the path.
   Path: the path for which to return the depth
   Result: depth of the path
   Author: Jeff
@@ -2143,7 +2141,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODOc Author: Olivier Sannier}
+{ TODO -cHelp : Author: Olivier Sannier }
 
 function PathGetRelativePath(Origin, Destination: string): string;
 var
@@ -2193,12 +2191,12 @@ begin
       {$ENDIF}
         Inc(DiffIndex);
 
-      Result := StrRepeat('..'+PathSeparator, OrigList.Count - DiffIndex);
+      Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
       if DiffIndex < DestList.Count then
       begin
         for I := DiffIndex to DestList.Count - 2 do
           Result := Result + DestList[i] + PathSeparator;
-        Result := Result + DestList[DestList.Count-1];
+        Result := Result + DestList[DestList.Count - 1];
       end;
     end;
   finally
@@ -2260,7 +2258,7 @@ end;
 
 function PathIsDiskDevice(const Path: string): Boolean;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers, contributor: Robert Rossmair }
+  { TODO -cHelp : Author: André Snepvangers, contributor: Robert Rossmair }
   procedure GetAvailableFileSystems(const List: TStrings);
   var
     F: TextFile;
@@ -2496,7 +2494,7 @@ end;
 
 {$IFNDEF FPC}  // needs JclShell
 
-// todoc author Jeff
+{ TODO -cHelp : Author: Jeff }
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -2598,7 +2596,7 @@ end;
 
 {$IFDEF UNIX}
 function DirectoryExists(const Name: string; ResolveSymLinks: Boolean): Boolean;
-{TODOc Author: Robert Rossmair}
+{ TODO -cHelp : Author: Robert Rossmair }
 begin
   Result := IsDirectory(Name, ResolveSymLinks);
 end;
@@ -2662,9 +2660,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ todoc
-
-  returns a filename that can be used for backup purposes. this is similar to
+{ TODO -cHelp : GetBackupFileName }
+{ returns a filename that can be used for backup purposes. this is similar to
   how delphi uses backup's: it simply prepends a tilde (~) to the extension.
   filename: the filename for which to return a backup filename
   result: the filename used for backup purposes
@@ -2704,6 +2701,7 @@ begin
 end;
 {$ELSE}
 begin
+  { TODO -cHelp : mention this reduced solution }
   Result := FileName;
 end;
 {$ENDIF MSWINDOWS}
@@ -2747,6 +2745,7 @@ begin
   Result := '';
   R := GetTempPath(0, nil);
   SetLength(TempPath, R);
+  { TODO : Check length (-1 or not) }
   R := GetTempPath(R, PChar(TempPath));
   if R <> 0 then
   begin
@@ -2885,7 +2884,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{ TODO : UNC Version }
 function GetDriveTypeStr(const Drive: Char): string;
+const
+  DriveTypeIdents: array[DRIVE_REMOVABLE..DRIVE_RAMDISK] of String = (
+    RsRemovableDrive, RsHardDisk, RsRemoteDrive, RsCDRomDrive, RsRamDisk);
 var
   DriveType: Integer;
   DriveStr: string;
@@ -2895,18 +2898,10 @@ begin
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
-    DRIVE_REMOVABLE:
-      Result := RsRemovableDrive;
-    DRIVE_FIXED:
-      Result := RsHardDisk;
-    DRIVE_REMOTE:
-      Result := RsRemoteDrive;
-    DRIVE_CDROM:
-      Result := RsCDRomDrive;
-    DRIVE_RAMDISK:
-      Result := RsRamDisk;
-    else
-      Result := RsUnknownDrive;
+    Low(DriveTypeIdents)..High(DriveTypeIdents):
+      Result := DriveTypeIdents[DriveType];
+  else
+    Result := RsUnknownDrive;
   end;
 end;
 
@@ -2936,7 +2931,12 @@ end;
 
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 begin
-  Assert(Items <> nil);
+  { TODO : why const? }
+  { TODO : clear list? }
+  Assert(Assigned(Items));
+  if not Assigned(Items) then
+    Exit;
+  { TODO : differentiate Windows/UNIX idents }
   if Attr and faDirectory = faDirectory then
     Items.Add(RsAttrDirectory);
   if Attr and faReadOnly = faReadOnly then
@@ -2957,8 +2957,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{ TODO : GetFileAttributeListEx - Unix version }
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 begin
+  { TODO : why const? }
+  { TODO : clear list? }
   Assert(Items <> nil);
   if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
     Items.Add(RsAttrReadOnly);
@@ -3007,7 +3010,7 @@ end;
 
 {$IFDEF UNIX}
 
-{TODOc Author: Robert Rossmair}
+{ TODO -cHelp : Author: Robert Rossmair }
 
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
   const ResolveSymLinks: Boolean): Integer;
@@ -3271,34 +3274,35 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
   Handle: THandle;
   FileInfo: TByHandleFileInformation;
 begin
   Assert(FileName <> '');
-  if IsWin95 or IsWin95OSR2 or IsWinNT3 then
+  if not RtdlGetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
   begin
-    Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
-    if Handle <> INVALID_HANDLE_VALUE then
-    try
-      if not GetFileInformationByHandle(Handle, FileInfo) then
+    if GetLastError = ERROR_CALL_NOT_IMPLEMENTED then
+    begin
+      Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+      if Handle <> INVALID_HANDLE_VALUE then
+      try
+        if not GetFileInformationByHandle(Handle, FileInfo) then
+          raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+        Result.dwFileAttributes := FileInfo.dwFileAttributes;
+        Result.ftCreationTime := FileInfo.ftCreationTime;
+        Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
+        Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
+        Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
+        Result.nFileSizeLow := FileInfo.nFileSizeLow;
+      finally
+        CloseHandle(Handle);
+      end
+      else
         raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
-      Result.dwFileAttributes := FileInfo.dwFileAttributes;
-      Result.ftCreationTime := FileInfo.ftCreationTime;
-      Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
-      Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
-      Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
-      Result.nFileSizeLow := FileInfo.nFileSizeLow;
-    finally
-      CloseHandle(Handle);
     end
     else
-      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
-  end
-  else
-  begin
-    if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
       raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
@@ -3318,7 +3322,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 function IsDirectory(const FileName: string; ResolveSymLinks: Boolean): Boolean;
-{TODOc Author: Robert Rossmair}
+{ TODO -cHelp : Author: Robert Rossmair }
 var
   Buf: TStatBuf64;
 begin
@@ -3610,7 +3614,7 @@ end;
 
 {$IFNDEF FPC}  // needs JclShell
 
-// todoc Author: Jeff
+{ TODO -cHelp : Author: Jeff }
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -3624,26 +3628,37 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Author: Peter J. Haas }
+function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
+begin
+  Result := RtdlMoveFileEx(PChar(SrcFilename), PChar(DstFilename), MOVEFILE_REPLACE_EXISTING);
+  if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
+  begin
+    Result := CopyFile(PChar(SrcFilename), PChar(DstFilename), False);
+    if Result then
+      DeleteFile(PChar(SrcFilename));   { TODO : return the result of deleting? }
+  end;
+end;
+
+{ TODO -cHelp : Win9x and Move = True, the function return True, if the file is
+  copied, but not deleted }
+{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Error code -> GetLastError }
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 begin
   if Move then
-    Result := MoveFileEx(PChar(FileName), PChar(GetBackupFileName(FileName)), MOVEFILE_REPLACE_EXISTING)
+    Result := Win32MoveFileReplaceExisting(Filename, GetBackupFileName(FileName))
   else
     Result := CopyFile(PChar(FileName), PChar(GetBackupFileName(FileName)), False)
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Error code -> GetLastError }
 function Win32RestoreFile(const FileName: string): Boolean;
-var
-  TempFileName: string;
 begin
-  Result := False;
-  TempFileName := FileGetTempName('');
-
-   if MoveFileEx(PChar(GetBackupFileName(FileName)), PChar(TempFileName), MOVEFILE_REPLACE_EXISTING) then
-     if Win32BackupFile(FileName, False) then
-       Result := MoveFileEx(PChar(TempFileName), PChar(FileName), MOVEFILE_REPLACE_EXISTING);
+  Result := CopyFile(PChar(GetBackupFileName(FileName)), PChar(FileName), False);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -5578,6 +5593,7 @@ end;
 
 procedure TJclFileEnumerator.SetFileMask(const Value: string);
 begin
+  { TODO : UNIX : ? }
   StrToStrings(Value, ';', FFileMasks, False);
 end;
 
@@ -5686,5 +5702,12 @@ function FileSearch: IJclFileEnumerator;
 begin
   Result := TJclFileEnumerator.Create;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.11  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

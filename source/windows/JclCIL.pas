@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Microsoft .Net CIL Instruction Set information support routines and classes.                     }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclCIL;
 
@@ -33,12 +37,12 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, 
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF COMPILER5_UP}
+  {$ENDIF RTL130_UP}
   JclBase, JclSysUtils, JclClr, JclMetadata;
 
 type
@@ -204,6 +208,7 @@ type
 const
   STP1 = $FE;
 
+  { TODO : localize? }
   // (rom) changed from string to PChar to avoid implicit initialization section
   // (rom) best find a way to allow localization for the texts
   OpCodeInfos: array [TJclOpCode, TJclOpCodeInfoType] of PChar =
@@ -761,7 +766,7 @@ end;
 procedure TJclInstruction.Load(Stream: TStream);
 var
   Code: Byte;
-  I, ArraySize, Value: DWORD;
+  I, ArraySize, Value: DWORD;   { TODO : I, ArraySize = DWORD create a serious problem }
 begin
   FOffset := Stream.Position;
   try
@@ -778,11 +783,6 @@ begin
 
     with TVarData(FParam) do
     case ParamType of
-      ptSOff, ptI1:
-        begin
-          Stream.Read(VShortInt, SizeOf(ShortInt));
-          VType := varShortInt;
-        end;
       ptU1:
         begin
           Stream.Read(VByte, SizeOf(Byte));
@@ -793,26 +793,10 @@ begin
           Stream.Read(VSmallInt, SizeOf(SmallInt));
           VType := varSmallInt;
         end;
-      ptU2:
-        begin
-          Stream.Read(VWord, SizeOf(Word));
-          VType := varWord;
-        end;
       ptLOff, ptI4:
         begin
           Stream.Read(VInteger, SizeOf(Integer));
           VType := varInteger;
-        end;
-      ptToken,
-      ptU4:
-        begin
-          Stream.Read(VLongWord, SizeOf(LongWord));
-          VType := varLongWord;
-        end;
-      ptI8, ptU8:
-        begin
-          Stream.Read(VInt64, SizeOf(Int64));
-          VType := varInt64;
         end;
       ptR4:
         begin
@@ -828,12 +812,34 @@ begin
         begin
           Stream.Read(ArraySize, SizeOf(ArraySize));
           FParam := VarArrayCreate([0, ArraySize-1], varInteger);
-          for I := 0 to ArraySize-1 do
+          for I := 0 to ArraySize-1 do  { TODO : ArraySize = 0 and we have a nearly endless loop }
           begin
             Stream.Read(Value, SizeOf(Value));
             FParam[I] := Value;
           end;
         end;
+      {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
+      ptSOff, ptI1:
+        begin
+          Stream.Read(VShortInt, SizeOf(ShortInt));
+          VType := varShortInt;
+        end;
+      ptU2:
+        begin
+          Stream.Read(VWord, SizeOf(Word));
+          VType := varWord;
+        end;
+      ptToken, ptU4:
+        begin
+          Stream.Read(VLongWord, SizeOf(LongWord));
+          VType := varLongWord;
+        end;
+      ptI8, ptU8:
+        begin
+          Stream.Read(VInt64, SizeOf(Int64));
+          VType := varInt64;
+        end;
+      {$ENDIF RTL140_UP}
     end;
   except
     Stream.Position := FOffset;
@@ -846,8 +852,10 @@ end;
 procedure TJclInstruction.Save(Stream: TStream);
 var
   Code: Byte;
+  {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
   ArraySize: DWORD;
   I, Value: Integer;
+  {$ENDIF RTL140_UP}
 begin
   if WideOpCode then
   begin
@@ -859,35 +867,37 @@ begin
   Stream.Write(Code, SizeOf(Code));
 
   case ParamType of
-    ptSOff,
-    ptI1:
-      Stream.Write(TVarData(FParam).VShortInt, SizeOf(ShortInt));
     ptU1:
       Stream.Write(TVarData(FParam).VByte, SizeOf(Byte));
     ptI2:
       Stream.Write(TVarData(FParam).VSmallInt, SizeOf(SmallInt));
-    ptU2:
-      Stream.Write(TVarData(FParam).VWord, SizeOf(Word));
     ptLOff, ptI4:
       Stream.Write(TVarData(FParam).VInteger, SizeOf(Integer));
-    ptToken, ptU4:
-      Stream.Write(TVarData(FParam).VLongWord, SizeOf(LongWord));
-    ptI8, ptU8:
-      Stream.Write(TVarData(FParam).VInt64, SizeOf(Int64));
     ptR4:
       Stream.Write(TVarData(FParam).VSingle, SizeOf(Single));
     ptR8:
       Stream.Write(TVarData(FParam).VDouble, SizeOf(Double));
+    {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
+    ptSOff, ptI1:
+      Stream.Write(TVarData(FParam).VShortInt, SizeOf(ShortInt));
+    ptU2:
+      Stream.Write(TVarData(FParam).VWord, SizeOf(Word));
+    ptToken, ptU4:
+      Stream.Write(TVarData(FParam).VLongWord, SizeOf(LongWord));
+    ptI8, ptU8:
+      Stream.Write(TVarData(FParam).VInt64, SizeOf(Int64));
     ptArray:
       begin
         ArraySize := VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) + 1;
         Stream.Write(ArraySize, SizeOf(ArraySize));
+        { TODO : VarArrayHighBound to VarArrayLowBound very likely wrong }
         for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
         begin
           Value := VarArrayGet(FParam, [I]);
           Stream.Write(Value, SizeOf(Value));
         end;
       end;
+    {$ENDIF RTL140_UP}
   end;
 end;
 
@@ -924,9 +934,11 @@ function TJclInstruction.DumpILOption(Option: TJclInstructionDumpILOption): stri
   end;
 
 var
+  {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
   I: Integer;
-  CodeStr, ParamStr: string;
   Row: TJclClrTableRow;
+  {$ENDIF RTL140_UP}
+  CodeStr, ParamStr: string;
 begin
   case Option of
     doLineNo:
@@ -942,16 +954,18 @@ begin
         case ParamType of
           ptSOff, ptI1, ptU1:
             ParamStr := IntToHex(TVarData(FParam).VByte, 2);
+          ptArray:
+            ParamStr := 'Array';
+          {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
           ptI2, ptU2:
             ParamStr := IntToHex(TVarData(FParam).VWord, 4);
           ptLOff, ptI4, ptU4, ptR4:
             ParamStr := IntToHex(TVarData(FParam).VLongWord, 8);
           ptI8, ptU8, ptR8:
             ParamStr := IntToHex(TVarData(FParam).VInt64, 16);
-          ptArray:
-            ParamStr := 'Array';
           ptToken:
             ParamStr := TokenToString(TVarData(FParam).VLongWord);
+          {$ENDIF RTL140_UP}
         else
           ParamStr := '';
         end;
@@ -963,6 +977,9 @@ begin
         case ParamType of
         ptVoid:
           ; // do nothing
+        ptLOff:
+          Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
+        {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
         ptToken:
           begin
             if Byte(TJclPeMetadata.TokenTable(TVarData(Param).VLongWord)) = $70 then
@@ -1000,8 +1017,6 @@ begin
           end;
         ptSOff:
           Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VShortInt - 1);
-        ptLOff:
-          Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
         ptArray:
           begin
             for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
@@ -1012,6 +1027,7 @@ begin
             end;
             Result := ' (' + Result + ')';
           end;
+        {$ENDIF RTL140_UP}
         else
           Result := VarToStr(Param);
         end;
@@ -1030,5 +1046,12 @@ begin
         Result := FullName + ' - ' + Description;
   end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

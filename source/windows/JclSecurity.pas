@@ -15,24 +15,55 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Peter Friese                                                                                   }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various NT security related routines to perform commen asks such as enabling and disabling       }
 { privileges.                                                                                      }
 {                                                                                                  }
-{ Unit owner: Peter Friese                                                                         }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
+
+
+// Comments to Win9x compatibility of the functions used in this unit
+
+// At least under Win98 SE the following functions return always 1 (wrong value)
+// and GetLastError = ERROR_CALL_NOT_IMPLEMENTED:
+//   InitializeSecurityDescriptor, SetSecurityDescriptorDacl
+
+// At least under Win98 SE the following functions return always 0 and
+// GetLastError = ERROR_CALL_NOT_IMPLEMENTED:
+//  Advapi32.dll
+//   OpenThreadToken, OpenProcessToken, AllocateAndInitializeSid,
+//   GetTokenInformation, EqualSid, FreeSid, AdjustTokenPrivileges,
+//   LookupPrivilegeValue, PrivilegeCheck, LookupPrivilegeDisplayName,
+//   LookupAccountSid, LookupAccountName,
+//  User32.dll
+//   GetUserObjectInformation, SetUserObjectSecurity
+
+// At least under Win98 SE the following functions return always
+// ERROR_CALL_NOT_IMPLEMENTED and GetLastError = ERROR_CALL_NOT_IMPLEMENTED
+//  User32.dll
+//   SetNamedSecurityInfoW
+
+// The following functions don't exists under Win95C:
+//  User32.dll
+//   SetNamedSecurityInfoW
+// This functions need to be linked per run time dynamic linking
 
 unit JclSecurity;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{ TODO : Several functions that use the SECURITY_DESCRIPTOR structure require
+  that this structure be on a valid pointer boundary in memory. These boundaries
+  vary depending on the type of processor used. Memory allocation functions,
+  such as malloc and LocalAlloc, return properly aligned pointers. }
 
 {$HPPEMIT '#define TTokenInformationClass TOKEN_INFORMATION_CLASS'}
 
@@ -70,11 +101,11 @@ function GetUserObjectName(hUserObject: THandle): string;
 // Account Information
 //--------------------------------------------------------------------------------------------------
 
-procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
 {$IFNDEF FPC}
 function GetInteractiveUserName: string;
-{$ENDIF}  
+{$ENDIF}
 
 implementation
 
@@ -88,11 +119,15 @@ uses
 // Access Control
 //==================================================================================================
 
+{ TODO -cHelp : Win9x: return always True }
 function AllowRegKeyForEveryone(Key: HKEY; Path: string): Boolean;
 var
   WidePath: PWideChar;
   Len: Integer;
 begin
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT; 
+  if Result then  // if Win9x, then function return True
+    Exit;
   case Key of
     HKEY_LOCAL_MACHINE:
       Path := 'MACHINE\' + Path;
@@ -103,44 +138,64 @@ begin
     HKEY_USERS:
       Path := 'USERS\' + Path;
   end;
-  Len := (Length(Path)+1)*SizeOf(WideChar);
+  Len := (Length(Path) + 1) * SizeOf(WideChar);
   GetMem(WidePath,Len);
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WidePath, Len);
-  Result := SetNamedSecurityInfoW(WidePath, SE_REGISTRY_KEY,
+  Result := RtdlSetNamedSecurityInfoW(WidePath, SE_REGISTRY_KEY,
     DACL_SECURITY_INFORMATION, nil, nil, nil, nil) = ERROR_SUCCESS;
   FreeMem(WidePath);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always Nil }
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 var
   Sd: PSecurityDescriptor;
 begin
-  Sd := AllocMem(SizeOf(TSecurityDescriptor));
-  Win32Check(InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION));
-  Win32Check(SetSecurityDescriptorDacl(Sd, True, nil, False));
-  Sa.nLength := SizeOf(Sa);
-  Sa.lpSecurityDescriptor := Sd;
-  Sa.bInheritHandle := Inheritable;
-  Result := @Sa;
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    Sd := AllocMem(SizeOf(TSecurityDescriptor));
+    try
+      Win32Check(InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION));
+      Win32Check(SetSecurityDescriptorDacl(Sd, True, nil, False));
+      Sa.nLength := SizeOf(Sa);
+      Sa.lpSecurityDescriptor := Sd;
+      Sa.bInheritHandle := Inheritable;
+      Result := @Sa;
+    except
+      FreeMem(Sd);
+      Sa.lpSecurityDescriptor := nil;
+      raise;
+    end;
+  end
+  else
+  begin
+    Sa.lpSecurityDescriptor := nil;
+    Result := nil;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always Nil }
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 begin
   Sa.nLength := SizeOf(Sa);
   Sa.lpSecurityDescriptor := nil;
   Sa.bInheritHandle := True;
-  Result := @Sa;
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := @Sa
+  else
+    Result := nil;
 end;
 
 //==================================================================================================
 // Privileges
 //==================================================================================================
 
+{ TODO -cHelp : Win9x: return always True }
 function IsAdministrator: Boolean;
 var
   psidAdmin: Pointer;
@@ -150,7 +205,9 @@ var
   HaveToken: Boolean;
   I: Integer;
 begin
-  Result := False;
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if Result then  // if Win9x, then function return True
+    Exit;
   psidAdmin := nil;
   TokenInfo := nil;
   HaveToken := False;
@@ -173,7 +230,7 @@ begin
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
          RaiseLastOSError;
-      TokenInfo := PTokenGroups(AllocMem(Count));
+      TokenInfo := PTokenGroups(AllocMem(Count));  
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       {$ENDIF FPC}
       for I := 0 to TokenInfo^.GroupCount - 1 do
@@ -199,6 +256,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always True }
 function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 const
@@ -207,14 +265,15 @@ var
   Token: THandle;
   TokenPriv: TTokenPrivileges;
 begin
-  Result := False;
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if Result then  // if Win9x, then function return True
+    Exit;
   if OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token) then
   begin
     TokenPriv.PrivilegeCount := 1;
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
-    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
-      nil, nil);
+    AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv), nil, nil);
     Result := GetLastError = ERROR_SUCCESS;
     CloseHandle(Token);
   end;
@@ -222,6 +281,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always True }
 function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 const
@@ -231,7 +291,9 @@ var
   TokenPriv: TTokenPrivileges;
   HaveToken: Boolean;
 begin
-  Result := False;
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if Result then  // if Win9x, then function return True
+    Exit;
   Token := 0;
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_ADJUST_PRIVILEGES,
     False, Token);
@@ -243,8 +305,7 @@ begin
     TokenPriv.PrivilegeCount := 1;
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
-    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
-      nil, nil);
+    AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv), nil, nil);
     Result := GetLastError = ERROR_SUCCESS;
     CloseHandle(Token);
   end;
@@ -252,6 +313,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always True }
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
 var
   Token: THandle;
@@ -259,7 +321,9 @@ var
   Res: LongBool;
   HaveToken: Boolean;
 begin
-  Result := False;
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if Result then  // if Win9x, then function return True
+    Exit;
   Token := 0;
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, False, Token);
   if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
@@ -276,32 +340,43 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always '' }
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 var
   Count: DWORD;
   LangID: DWORD;
 begin
-  Count  := 0;
-  LangID := 0; // li := DWORD(MAKELANGID(LANG_DEFAULT, LANG_USER));
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    Count  := 0;
+    LangID := 0;  // li := DWORD(MAKELANGID(LANG_DEFAULT, LANG_USER));
 
-  // have the the API function determine the required string length
-  if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
-    Count := 256;
-  SetLength(Result, Count + 1);
+    // have the the API function determine the required string length
+    if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
+      Count := 256;
+    SetLength(Result, Count + 1);
 
-  if LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
-    StrResetLength(Result)
+    if LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
+      StrResetLength(Result)
+    else
+      Result := '';
+  end
   else
-    Result:= '';
+    Result := '';  // if Win9x, then function return ''
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always True }
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 var
   Sd: PSecurity_Descriptor;
   Si: Security_Information;
 begin
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if Result then  // if Win9x, then function return True
+    Exit;
+  { TODO : Check the success of called functions }
   Sd := PSecurity_Descriptor(LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH));
   InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION);
   SetSecurityDescriptorDacl(Sd, True, nil, False);
@@ -314,16 +389,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always '' }
 function GetUserObjectName(hUserObject: THandle): string;
 var
   Count: DWORD;
 begin
-  // have the the API function determine the required string length
-  GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
-  SetLength(Result, Count + 1);
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    // have the the API function determine the required string length
+    GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
+    SetLength(Result, Count + 1);
 
-  if GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), Count, Count) then
-    StrResetLength(Result)
+    if GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), Count, Count) then
+      StrResetLength(Result)
+    else
+      Result := '';
+  end
   else
     Result := '';
 end;
@@ -332,23 +413,34 @@ end;
 // Account Information
 //==================================================================================================
 
-procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
+{ TODO -cHelp : Win9x: return always '' }
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 var
   NameSize, DomainSize: DWORD;
   Use: SID_NAME_USE;
 begin
-  NameSize := 0;
-  DomainSize := 0;
-  LookupAccountSid(nil, Sid, nil, NameSize, nil, DomainSize, Use);
-  SetLength(Name, NameSize);
-  SetLength(Domain, DomainSize);
-  Win32Check(LookupAccountSid(nil, Sid, PChar(Name), NameSize, PChar(Domain), DomainSize, Use));
-  SetLength(Domain, StrLen(PChar(Domain)));
-  SetLength(Name, StrLen(PChar(Name)));
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    NameSize := 0;
+    DomainSize := 0;
+    { TODO : Check the success }
+    LookupAccountSid(nil, Sid, nil, NameSize, nil, DomainSize, Use);
+    SetLength(Name, NameSize);
+    SetLength(Domain, DomainSize);
+    Win32Check(LookupAccountSid(nil, Sid, PChar(Name), NameSize, PChar(Domain), DomainSize, Use));
+    SetLength(Domain, StrLen(PChar(Domain)));
+    SetLength(Name, StrLen(PChar(Name)));
+  end
+  else
+  begin             // if Win9x, then function return ''
+    Name := '';
+    Domain := '';
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always Nil }
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
   var Buffer: Pointer);
 var
@@ -356,6 +448,8 @@ var
   Length, LastError: DWORD;
 begin
   Buffer := nil;
+  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // if Win9x, then function return Nil
+    Exit;
   Length := 0;
   LastError := 0;
   {$IFDEF FPC}
@@ -376,7 +470,11 @@ begin
   end;
   if not B then
   begin
-    FreeMem(Buffer);
+    if Buffer <> Nil then
+    begin
+      FreeMem(Buffer);
+      Buffer := Nil;
+    end;
     SetLastError(LastError);
     RaiseLastOSError;
   end;
@@ -386,6 +484,7 @@ end;
 
 {$IFNDEF FPC} // JclSysInfo.GetShellProcessHandle not available
 
+{ TODO -cHelp : Win9x: return always '' }
 function GetInteractiveUserName: string;
 var
   Handle: THandle;
@@ -393,6 +492,9 @@ var
   User: PTokenUser;
   Name, Domain: string;
 begin
+  Result := '';
+  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // if Win9x, then function return ''
+    Exit;
   Handle := GetShellProcessHandle;
   try
     Win32Check(OpenProcessToken(Handle, TOKEN_QUERY, Token));
@@ -413,5 +515,12 @@ begin
 end;
 
 {$ENDIF not FPC}
+
+// History:
+
+// $Log$
+// Revision 1.7  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,16 +15,18 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Barry Kelly                                                                                    }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains a string-pointer associative map. It works by hashing the added strings using }
 { a passed-in traits object.                                                                       }
 {                                                                                                  }
-{ Unit owner: Barry Kelly                                                                          }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclStrHashMap;
 
@@ -490,7 +492,7 @@ const
 var
   temp: Cardinal;
 begin
-  {TODO I should really be processing 4 bytes at once... }
+  { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
   p := PChar(s);
 
@@ -520,7 +522,7 @@ const
 var
   temp: Cardinal;
 begin
-  {TODO I should really be processing 4 bytes at once... }
+  { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
   p := PChar(s);
 
@@ -549,7 +551,7 @@ const
 var
   temp: Cardinal;
 begin
-  {TODO I should really be processing 4 bytes at once... }
+  { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
   p := @AValue;
 
@@ -1112,5 +1114,13 @@ finalization
 
   if @_CaseSensitiveTraits <> nil then
     _CaseSensitiveTraits.Free;
+
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
 end.
 

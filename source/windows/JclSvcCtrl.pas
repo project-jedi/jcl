@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to control NT service                                    }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclSvcCtrl;
 
@@ -31,15 +35,11 @@ interface
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF COMPILER5_UP}
+  {$ENDIF RTL130_UP}
   WinSvc,
   JclBase, JclSysUtils;
 
@@ -357,7 +357,7 @@ type
 implementation
 
 uses
-  Math,
+  RegStr, Math,
   JclRegistry, JclSysInfo;
 
 const
@@ -370,10 +370,6 @@ const
 
   ServiceControlAcceptedMapping: array[TJclServiceControlAccepted] of DWORD =
     (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN);
-
-resourcestring
-  RsInvalidSvcState = 'Invalid service state: %.8x';
-{ TODO -cRES : Move to JclResources }  
 
 //==================================================================================================
 // TJclNtService
@@ -785,6 +781,7 @@ begin
       else
       begin
         if TimeOut <> INFINITE then
+          { TODO : Do we need to disable RangeCheck? }
           if (GetTickCount - StartTickCount) > Max(SvcStatus.dwWaitHint, TimeOut) then
             Break;
       end;
@@ -1257,6 +1254,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Standard Rtdl }
 function TJclSCManager.GetQueryServiceConfig2A: TQueryServiceConfig2AFunction;
 const
   cQueryServiceConfig2 = 'QueryServiceConfig2A'; // don't localize
@@ -1301,7 +1299,7 @@ begin
   CloseServiceHandle(Svc);
 
   if (Description <> '') and (IsWin2K or IsWinXP) then
-    RegWriteString(HKEY_LOCAL_MACHINE, '\SYSTEM\CurrentControlSet\Services\' + ServiceName, 'Description', Description);
+    RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName, 'Description', Description);
 
   EnumServiceStatus.lpServiceName := PChar(ServiceName);
   EnumServiceStatus.lpDisplayName := PChar(DisplayName);
@@ -1357,5 +1355,12 @@ begin
     if (CtrlAccepted and ServiceControlAcceptedMapping[ACtrl]) <> 0 then
       Include(Result, ACtrl);
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

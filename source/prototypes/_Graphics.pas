@@ -22,9 +22,12 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 {$IFNDEF Develop}
 unit {$IFDEF VisualCLX} JclQGraphics {$ELSE} JclGraphics {$ENDIF};
@@ -38,13 +41,11 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes,
+  Classes, SysUtils,
   {$IFDEF VisualCLX}
-  Types, QGraphics,
-  JclQGraphUtils, 
+  Types, QGraphics, JclQGraphUtils,
   {$ELSE}
-  SysUtils, Graphics,
-  JclGraphUtils,
+  Graphics, JclGraphUtils,
   {$ENDIF VisualCLX}
   JclBase;
 
@@ -534,8 +535,10 @@ uses
   Math,
   {$IFDEF MSWINDOWS}
   CommCtrl, ShellApi,
-  {$IFDEF VCL}ClipBrd, JPeg, TypInfo,
-  JclResources, {$ENDIF}
+  {$IFDEF VCL}
+  ClipBrd, JPeg, TypInfo,
+  JclResources,
+  {$ENDIF VCL}
   {$ENDIF MSWINDOWS}
   JclLogic;
 
@@ -6112,5 +6115,12 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
+
+// History:
+
+// $Log$
+// Revision 1.6  2004/04/06 05:01:54  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

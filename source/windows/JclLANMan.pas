@@ -15,24 +15,29 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Peter Friese                                                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to handle user and group management tasks. As the name   }
 { implies, it uses the LAN Manager API.                                                            }
 {                                                                                                  }
-{ Unit owner: Peter Friese                                                                         }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
+
+
+// Comments to Win9x compatibility of the functions used in this unit
+
+// The following function exist at last since Win95C, but return always
+// the error ERROR_CALL_NOT_IMPLEMENTED
+//   AllocateAndInitializeSid, LookupAccountSID, FreeSID
 
 unit JclLANMan;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -82,7 +87,7 @@ function IsLocalAccount(const AccountName: string): Boolean;
 implementation
 
 uses
-  LM, JclBase, JclStrings, JclWin32;
+  JclBase, JclStrings, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // User Management
@@ -121,7 +126,7 @@ begin
     usri2_acct_expires := TIMEQ_FOREVER;
   end;
 
-  Err := NetUserAdd(PWideChar(wServer), 2, @Details, @ParmErr);
+  Err := RtdlNetUserAdd(PWideChar(wServer), 2, @Details, @ParmErr);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -143,7 +148,7 @@ var
 begin
   wServername := Servername;
   wUsername := Username;
-  Err := NetUserDel(PWideChar(wServername), PWideChar(wUsername));
+  Err := RtdlNetUserDel(PWideChar(wServername), PWideChar(wUsername));
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -171,7 +176,7 @@ begin
   Details.grpi1_name := PWideChar(wGroupName);
   Details.grpi1_comment := PWideChar(wDescription);
 
-  Err := NetGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
+  Err := RtdlNetGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -192,7 +197,7 @@ begin
   Details.lgrpi1_name := PWideChar(wGroupName);
   Details.lgrpi1_comment := PWideChar(wDescription);
 
-  Err := NetLocalGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
+  Err := RtdlNetLocalGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -205,7 +210,7 @@ var
 begin
   wServername := Server;
   wUsername := Groupname;
-  Err := NetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Err := RtdlNetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -215,13 +220,13 @@ function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
   Err: NET_API_STATUS;
   wServername: WideString;
-  Buffer: Pointer;
+  Buffer: PByte;
   Details: PLocalGroupInfo0;
   EntriesRead, TotalEntries: Cardinal;
   I: Integer;
 begin
   wServername := Server;
-  Err := NetLocalGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+  Err := RtdlNetLocalGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
     EntriesRead, TotalEntries, nil);
 
   if Err = NERR_SUCCESS then
@@ -234,7 +239,7 @@ begin
     end;
   end;
 
-  NetApiBufferFree(Buffer);
+  RtdlNetApiBufferFree(Buffer);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -244,13 +249,13 @@ function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
   Err: NET_API_STATUS;
   wServername: WideString;
-  Buffer: Pointer;
+  Buffer: PByte;
   Details: PGroupInfo0;
   EntriesRead, TotalEntries: Cardinal;
   I: Integer;
 begin
   wServername := Server;
-  Err := NetGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+  Err := RtdlNetGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
     EntriesRead, TotalEntries, nil);
 
   if Err = NERR_SUCCESS then
@@ -267,7 +272,7 @@ begin
   else
     RaiseLastOSError;
 
-  NetApiBufferFree(Buffer);
+  RtdlNetApiBufferFree(Buffer);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -310,7 +315,7 @@ var
 begin
   wServername := Server;
   wUsername := Groupname;
-  Err := NetGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Err := RtdlNetGroupDel(PWideChar(wServername), PWideChar(wUsername));
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -326,7 +331,7 @@ begin
   wAccountname := AccountName;
 
   Details.lgrmi3_domainandname := PWideChar(wAccountname);
-  Err := NetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @Details, 1);
+  Err := RtdlNetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @Details, 1);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -450,5 +455,12 @@ begin
   ParseAccountName(AccountName, Domain, Username);
   Result := (Domain = '');
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

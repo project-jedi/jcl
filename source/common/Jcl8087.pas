@@ -15,31 +15,23 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains various routine for manipulating the math coprocessor. This includes such     }
 { things as querying and setting the rounding precision of  floating point operations and          }
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
-
-// rr 2003-10-12:
-//   Removed references to Default8087CW because of compiler problems when including Jcl8087 in
-//   package (D7, I remember having seen that with D5, too; Kylix 3 however went smoothly). Error
-//   message was, in spite of {$IMPORTEDDATA ON}:
-//   "Need imported data reference ($G) to access Default8087CW".
+// Last modified: $Data$
+// For history see end of file
 
 unit Jcl8087;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -255,5 +247,18 @@ begin
   Exceptions := Result - Exceptions;
   SetMasked8087Exceptions(Exceptions, ClearBefore);
 end;
+
+// History:
+
+// rr 2003-10-12:
+//   Removed references to Default8087CW because of compiler problems when including Jcl8087 in
+//   package (D7, I remember having seen that with D5, too; Kylix 3 however went smoothly). Error
+//   message was, in spite of {$IMPORTEDDATA ON}:
+//   "Need imported data reference ($G) to access Default8087CW".
+
+// $Log$
+// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,13 +15,13 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Peter J. Haas (PJH), jediplus@pjh2.de                                                          }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This include file defines various JCL specific defines. The more generic defines are defined in  }
 { the jedi.inc file which is shared with the JEDI VCL.                                             }
-{                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -51,15 +51,20 @@
 
 {.$DEFINE HOOK_DLL_EXCEPTIONS}
 
-{$IFDEF DELPHI6_UP}
+{$IFDEF SUPPORTS_PLATFORM}
   // Platform warnings off
   {$WARN SYMBOL_PLATFORM OFF}
   {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 
-{$IFDEF DELPHI7_UP}
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
+
+// $Log$
+// Revision 1.4  2004/04/06 05:04:53  peterjhaas
+// adapt compiler conditions, add log entry
+//
 

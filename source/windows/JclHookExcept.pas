@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Petr Vones                                                                                     }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Exception hooking routines                                                                       }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclHookExcept;
 
@@ -616,5 +620,12 @@ finalization
   FinalizeLibrariesHookExcept;
   {$ENDIF HOOK_DLL_EXCEPTIONS}
   FreeNotifiers;
+
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

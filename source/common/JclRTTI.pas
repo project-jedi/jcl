@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel Bestebroer                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various RunTime Type Information routines. Includes retrieving RTTI information for different    }
@@ -22,9 +25,11 @@
 { operator hooking.                                                                                }
 {                                                                                                  }
 { Unit owner: Marcel Bestebroer                                                                    }
-{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// Last modified: $Data$
+// For history see end of file
 
 unit JclRTTI;
 
@@ -384,7 +389,7 @@ uses
   RtlConsts,
   {$ENDIF}
   SysConst,
-  JclLogic, JclResources, JclStrings;
+  JclLogic, JclResources, JclStrings;     
 
 //--------------------------------------------------------------------------------------------------
 // TJclInfoWriter
@@ -593,6 +598,7 @@ end;
 
 procedure TJclTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
+  { TODO : localize? }
   Dest.Write('// Declaration for ''' + Name + ''' not supported.');
 end;
 
@@ -2830,5 +2836,12 @@ initialization
 finalization
   ClearInfoList;
   FreeAndNil(TypeList);
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Petr Vones                                                                                     }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various debugging support routines and classes. This includes: Diagnostics routines, Trace       }
@@ -24,7 +27,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclDebug;
 
@@ -435,17 +439,17 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __MODULE__(const Level: Integer = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __PROC__(const Level: Integer  = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __LINE__(const Level: Integer = 0): Integer; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __FILE__(const Level: Integer = 0): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __MODULE__(const Level: Integer = 0): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __PROC__(const Level: Integer  = 0): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __LINE__(const Level: Integer = 0): Integer; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+  var _Line: Integer): Boolean; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 // Stack info routines base list
@@ -1445,6 +1449,7 @@ end;
 
 procedure TJclMapScanner.PublicsByNameItem(const Address: TJclMapAddress;  Name: PJclMapString);
 begin
+  { TODO : What to do? }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1717,7 +1722,7 @@ begin
     if Result then
       Generator.DataStream.SaveToFile(JDbgFileName);
     LinkerBugUnit := Generator.LinkerBugUnitName;
-    LineNumberErrors := Generator.LineNumberErrors;  
+    LineNumberErrors := Generator.LineNumberErrors;
   finally
     Generator.Free;
   end;
@@ -4352,5 +4357,12 @@ finalization
   FreeAndNil(GlobalStackList);
   FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Microsoft .Net framework support routines and classes.                                           }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclDotNet;
 
@@ -47,9 +51,9 @@ uses
   Windows, ActiveX,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF RTL130_UP}
   JclBase,
   mscoree_TLB, mscorlib_TLB;
 
@@ -850,5 +854,12 @@ begin
   inherited Create;
   FDefaultInterface := Intf;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,6 +15,10 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Matthias Thoma                                                                                 }
+{   Robert Rossmair                                                                                }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various mathematics classes and routines. Includes prime numbers, rational                       }
@@ -25,42 +29,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
-
-// - Added functions: Versine, Coversine, Haversine, exsecand
-// - Added TruncPower function (Truncated Power)
-//   A: MT
-//   D: TruncPower(Base, Exponent)  Power(Base, Exponent) for Base >= 0, 0 for Base < 0
-// - Added Exp function
-// - Added special value handling to sin
-// - Added function IsSpecialValue
-// - Added new Power function. Author: Mark Vaughan
-// - Added dynamic switching of IsPrime function. The old IsPrime is now IsPrimeTD
-// - Added new define: MATH_EXT_SPECIALVALUES;
-// - Added new function: Ackermann
-// - Added new function: Fibonacci
-// - Fixed a bug: LCD throws a divby zero when result should be 0.
-// - Fixed a bug: Rational.Add(TRational) was buggy and delivered wrong results.
-// - Fixed a bug: Rational.Subtract(TRational) was buggy and delivered wrong results.
-
-// rr, April 2003:
-// - Made assembler code PIC-ready where necessary (Linux)
-// - Fixed a bug: So-called "CotH" function was CosH
-// - Added functions: CommercialRound, CotH
-
-// mt, October 2003:
-// - Added EulerMascheroni constant.
-// - Added GoldenMean constant
-// - Added Bernstein constant
-// - Added Catalan constant
-// -
-// rr, November 2003:
-// - Changes to make it compile with free pascal compiler v1.9
-// - Removed "uses JclUnitConv"
-// -
-// -
-// -
-
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMath;
 
@@ -832,7 +802,7 @@ function Cot(X: Float): Float;
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
-  // TODO Cot = 1 / Tan -> Tan(X) <> 0.0
+  { TODO : Cot = 1 / Tan -> Tan(X) <> 0.0 }
   Result := FCot(X);
 end;
 
@@ -885,7 +855,7 @@ function Sec(X: Float): Float;
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
-  // TODO Sec = 1 / Cos -> Cos(X) <> 0!
+  { TODO : Sec = 1 / Cos -> Cos(X) <> 0! }
   Result := FSec(X);
 end;
 
@@ -1055,7 +1025,7 @@ asm
 {$IFDEF PIC}
         CALL    GetGOT
 {$ENDIF PIC}
-        FLD     X  // TODO Legal values for X?
+        FLD     X    { TODO : Legal values for X? }
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
@@ -1124,7 +1094,7 @@ asm
 {$IFDEF PIC}
         CALL    GetGOT
 {$ENDIF PIC}
-        FLD     X // TODO Legal values for X?
+        FLD     X  { TODO : Legal values for X? }
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
@@ -1654,7 +1624,7 @@ begin
     if N <= PreCompFactsCount then
       Result := PreCompFacts[N]
     else
-    begin // TODO Change following by: Gamma(N + 1)
+    begin  { TODO : Change following by: Gamma(N + 1) }
       Result := PreCompFacts[PreCompFactsCount];
       for I := PreCompFactsCount + 1 to N do
         Result := Result * I;
@@ -3295,6 +3265,8 @@ end;
 // CRC
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : check for the correct polynom and init, exit values }
+
 {$IFDEF CRCINIT}
 {$J+ to have the Polynomial changable}
 {$ENDIF}
@@ -3743,4 +3715,45 @@ begin
    Crc32Start := Start;
 end;
 {$ENDIF}
+
+// History:
+
+// ????-??-??:
+//  - Added functions: Versine, Coversine, Haversine, exsecand
+//  - Added TruncPower function (Truncated Power)
+
+// ????-??-??, Matthias Thoma:
+//  - D: TruncPower(Base, Exponent)  Power(Base, Exponent) for Base >= 0, 0 for Base < 0
+//  - Added Exp function
+//  - Added special value handling to sin
+//  - Added function IsSpecialValue
+//  - Added new Power function. Author: Mark Vaughan
+//  - Added dynamic switching of IsPrime function. The old IsPrime is now IsPrimeTD
+//  - Added new define: MATH_EXT_SPECIALVALUES;
+//  - Added new function: Ackermann
+//  - Added new function: Fibonacci
+//  - Fixed a bug: LCD throws a divby zero when result should be 0.
+//  - Fixed a bug: Rational.Add(TRational) was buggy and delivered wrong results.
+//  - Fixed a bug: Rational.Subtract(TRational) was buggy and delivered wrong results.
+
+// 2003-04, Robert Rossmair:
+//  - Made assembler code PIC-ready where necessary (Linux)
+//  - Fixed a bug: So-called "CotH" function was CosH
+//  - Added functions: CommercialRound, CotH
+
+// 2003-10, Matthias Thoma:
+//  - Added EulerMascheroni constant.
+//  - Added GoldenMean constant
+//  - Added Bernstein constant
+//  - Added Catalan constant
+
+// 2003-11, Robert Rossmair:
+//  - Changes to make it compile with free pascal compiler v1.9
+//  - Removed "uses JclUnitConv"
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
 end.

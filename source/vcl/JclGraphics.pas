@@ -26,9 +26,12 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 
 unit  JclGraphics ;
@@ -42,10 +45,9 @@ uses
   
   Windows,
   
-  Classes,
+  Classes, SysUtils,
   
-  SysUtils, Graphics,
-  JclGraphUtils,
+  Graphics, JclGraphUtils,
   
   JclBase;
 
@@ -535,8 +537,10 @@ uses
   Math,
   
   CommCtrl, ShellApi,
+  
   ClipBrd, JPeg, TypInfo,
-  JclResources, 
+  JclResources,
+  
   
   JclLogic;
 
@@ -6113,5 +6117,12 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 05:00:10  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

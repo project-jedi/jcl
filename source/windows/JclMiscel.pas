@@ -15,23 +15,21 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Jeroen Speldekamp                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various miscellanuous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
-{ Unit owner: Jeroen Speldekamp                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMiscel;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -267,7 +265,7 @@ end;
 function LogOffOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := ExitWindows(EWX_LOGOFF);
+  Result := JclMiscel.ExitWindows(EWX_LOGOFF);
   {$ENDIF}
 end;
 
@@ -276,7 +274,7 @@ end;
 function PowerOffOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := ExitWindows(EWX_POWEROFF);
+  Result := JclMiscel.ExitWindows(EWX_POWEROFF);
   {$ENDIF}
 end;
 
@@ -285,7 +283,7 @@ end;
 function ShutDownOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := ExitWindows(EWX_SHUTDOWN);
+  Result := JclMiscel.ExitWindows(EWX_SHUTDOWN);
   {$ENDIF}
 end;
 
@@ -294,7 +292,7 @@ end;
 function RebootOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := ExitWindows(EWX_Reboot);
+  Result := JclMiscel.ExitWindows(EWX_Reboot);
   {$ENDIF}
 end;
 
@@ -302,6 +300,7 @@ end;
 
 function ExitWindows(ExitCode: Cardinal): Boolean;
 begin
+  { TODO -cTest : Check for Win9x }
   if (Win32Platform = VER_PLATFORM_WIN32_NT) and not EnableProcessPrivilege(True, SE_SHUTDOWN_NAME) then
     Result := False
   else
@@ -345,6 +344,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cTest : Check for Win9x }
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
   const Environment: PChar);
 const
@@ -451,5 +451,12 @@ begin
   CloseHandle(ProcInfo.hThread);
   CloseHandle(ProcInfo.hProcess);
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

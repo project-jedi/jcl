@@ -15,6 +15,10 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Contains routines to perform filesystem related tasks available only with NTFS. These are mostly }
@@ -22,19 +26,21 @@
 { reparse points, volume mount points and so forth. Note that some functions require NTFS 5 or     }
 { higher!                                                                                          }
 {                                                                                                  }
-{ Unit Owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
+
+
+// Comments to Win9x compatibility of the functions used in this unit
+
+// The following function exist at last since Win95C, but return always
+// the error ERROR_CALL_NOT_IMPLEMENTED
+//   BackupSeek, BackupRead, BackupWrite
 
 unit JclNTFS;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -516,8 +522,8 @@ begin
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
     begin
-      ZeroDataInfo.FileOffset := First;
-      ZeroDataInfo.BeyondFinalZero := Last;
+      ZeroDataInfo.FileOffset.QuadPart := First;
+      ZeroDataInfo.BeyondFinalZero.QuadPart := Last;
       Result := DeviceIoControl(Handle, FSCTL_SET_ZERO_DATA, @ZeroDataInfo,
         SizeOf(ZeroDataInfo), nil, 0, BytesReturned, nil);
     end;
@@ -561,8 +567,8 @@ var
   SearchRange: TFileAllocatedRangeBuffer;
   BufferSize: Cardinal;
 begin
-  SearchRange.FileOffset := Offset;
-  SearchRange.Length := Count;
+  SearchRange.FileOffset.QuadPart := Offset;
+  SearchRange.Length.QuadPart := Count;
   BufferSize := 4 * 64 * SizeOf(TFileAllocatedRangeBuffer);
   Ranges := AllocMem(BufferSize);
   Result := DeviceIoControl(Handle, FSCTL_QUERY_ALLOCATED_RANGES, @SearchRange,
@@ -783,7 +789,7 @@ begin
   if Result then
   begin
     SetLength(VolumeName, 1024);
-    Result := GetVolumeNameForVolumeMountPoint(PChar(DriveStr + '\'),
+    Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(DriveStr + '\'),
       PChar(VolumeName), 1024);
     // Attempt to delete the symbolic link, if it fails then don't attempt to
     // set the mountpoint either but raise an exception instead, there's something
@@ -791,7 +797,7 @@ begin
     if not DefineDosDevice(DDD_FLAGS, PChar(DriveStr), PChar(Device)) then
       raise EJclNtfsError.CreateResRec(@RsNtfsUnableToDeleteSymbolicLink);
     if Result then
-      Result := SetVolumeMountPoint(PChar(DriveStr + '\'), PChar(VolumeName));
+      Result := RtdlSetVolumeMountPoint(PChar(DriveStr + '\'), PChar(VolumeName));
   end;
 end;
 
@@ -804,12 +810,12 @@ var
 begin
   SetLength(VolumeName, 1024);
   VolumeStr := Volume + ':\';
-  Result := GetVolumeNameForVolumeMountPoint(PChar(VolumeStr), PChar(VolumeName), 1024);
+  Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(VolumeStr), PChar(VolumeName), 1024);
   if Result then
   begin
-    if not DirectoryExists(MountPoint) then
-      ForceDirectories(MountPoint);
-    Result := SetVolumeMountPoint(PChar(MountPoint), PChar(VolumeName));
+    if not JclFileUtils.DirectoryExists(MountPoint) then
+      JclFileUtils.ForceDirectories(MountPoint);
+    Result := RtdlSetVolumeMountPoint(PChar(MountPoint), PChar(VolumeName));
   end;
 end;
 
@@ -1004,7 +1010,7 @@ begin
   begin
     // Read stream header
     BytesToRead := DWORD(@Header.cStreamName[0]) - DWORD(@Header.dwStreamId);
-    if not BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
+    if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then
     begin
       SetLastError(ERROR_READ_FAULT);
@@ -1024,7 +1030,7 @@ begin
         SetLastError(ERROR_OUTOFMEMORY);
         Exit;
       end;
-      if not BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
+      if not Windows.BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
         Header.dwStreamNameSize, BytesRead, False, True, Data.Internal.Context) then
       begin
         HeapFree(GetProcessHeap, 0, StreamName);
@@ -1055,11 +1061,11 @@ begin
     // Move past data part to beginning of next stream (or EOF)
     {$IFDEF FPC}
     BytesToSeek.QuadPart := Header.Size.QuadPart;
-    if (Header.Size.QuadPart <> 0) and (not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
-      BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
+    if (Header.Size.QuadPart <> 0) and (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+         BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
     {$ELSE}
     BytesToSeek.QuadPart := Header.Size;
-    if (Header.Size <> 0) and (not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+    if (Header.Size <> 0) and (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
       BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
     {$ENDIF FPC}
     begin
@@ -1117,18 +1123,24 @@ end;
 function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 var
   BytesRead: DWORD;
+  LastError: DWORD;
 begin
   Result := Data.Internal.FileHandle <> INVALID_HANDLE_VALUE;
   if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
-    BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
+    Result := Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
+    if Result then
+      LastError := ERROR_SUCCESS
+    else
+      LastError := GetLastError;
     CloseHandle(Data.Internal.FileHandle);
     Data.Internal.FileHandle := INVALID_HANDLE_VALUE;
     Data.Internal.Context := nil;
   end
   else
-    SetLastError(ERROR_INVALID_HANDLE);
+    LastError := ERROR_INVALID_HANDLE;
+  SetLastError(LastError);
 end;
 
 //==================================================================================================
@@ -1186,20 +1198,20 @@ begin
       {$ENDIF}
       BytesToWrite := DWORD(@StreamId.cStreamName[0]) - DWORD(@StreamId.dwStreamId);
       Context := nil;
-      Win32Check(BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, @Context));
+      Win32Check(Windows.BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, Context));
       if BytesToWrite <> BytesWritten then
         RaiseLastOSError;
       // now write the hard link name
       {$IFDEF FPC}
-      Win32Check(BackupWrite(HardLink, @HardLinkName[1], StreamId.Size.QuadPart, BytesWritten, False, False, @Context));
+      Win32Check(Windows.BackupWrite(HardLink, @HardLinkName[1], StreamId.Size.QuadPart, BytesWritten, False, False, Context));
       if BytesWritten <> StreamId.Size.QuadPart then
       {$ELSE}
-      Win32Check(BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, @Context));
+      Win32Check(Windows.BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, Context));
       if BytesWritten <> StreamId.Size then
       {$ENDIF}
         RaiseLastOSError;
       // and finally release the context
-      BackupWrite(HardLink, nil, 0, BytesWritten, True, False, @Context);
+      Windows.BackupWrite(HardLink, nil, 0, BytesWritten, True, False, Context);
       Result := True;
     finally
       CloseHandle(HardLink);
@@ -1215,21 +1227,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer Peter J. Haas }
 function CreateHardLink2000(const LinkFileName, ExistingFileName: string): BOOL;
-type
-  TCreateHardLink = function (lpFileName, lpExistingFileName: LPCSTR; lpSecurityAttributes: Pointer): BOOL; stdcall;
-var
-  Kernel32Module: HMODULE;
-  CreateHardLink: TCreateHardLink;
 begin
-  Result := False;
-  Kernel32Module := GetModuleHandle(kernel32);
-  if Kernel32Module <> 0 then
-  begin
-    @CreateHardLink := GetProcAddress(Kernel32Module, 'CreateHardLinkA');
-    if @CreateHardLink <> nil then
-      Result := CreateHardLink(PChar(LinkFileName), PChar(ExistingFileName), nil);
-  end;
+  Result := RtdlCreateHardLink(PChar(LinkFileName), PChar(ExistingFileName), nil);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1350,7 +1351,7 @@ begin
         I := 0;
         while I < Files.Count do
         begin
-          if not DeleteFile(PChar(Files[I])) then
+          if not DeleteFile(Files[I]) then
             Break;
           Inc(I);
         end;
@@ -1358,7 +1359,7 @@ begin
         begin
           // all hard links succesfully deleted, now delete the originally specified file. if this fails we set
           // I to Files.Count - 1 so that the next code block will restore all hard links we just deleted.
-          Result := DeleteFile(PChar(FullPathName));
+          Result := DeleteFile(FullPathName);
           if not Result then
             I := Files.Count - 1;
         end;
@@ -1376,7 +1377,7 @@ begin
       else
       begin
         // there are no hard links, just delete the file
-        Result := DeleteFile(PChar(FullPathName));
+        Result := DeleteFile(FullPathName);
       end;
     finally
       Files.Free;
@@ -1385,5 +1386,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

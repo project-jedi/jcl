@@ -15,6 +15,10 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Petr Vones                                                                                     }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
@@ -23,15 +27,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMapi;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -60,6 +61,10 @@ type
 
   TJclMapiClientConnect = (ctAutomatic, ctMapi, ctDirect);
 
+  TMapiFunction = (mfAddress, mfDeleteMail, mfDetails, mfFindNext, mfFreeBuffer,
+    mfLogoff, mfLogon, mfReadMail, mfResolveName, mfSaveMail, mfSendDocuments,
+    mfSendMail);
+
   TJclSimpleMapi = class(TObject)
   private
     FAnyClientInstalled: Boolean;
@@ -69,12 +74,13 @@ type
     FClientLibHandle: THandle;
     FDefaultClientIndex: Integer;
     FDefaultProfileName: string;
-    FFunctions: array of ^Pointer;
+    FFunctions: array[TMapiFunction] of ^Pointer;
     FMapiInstalled: Boolean;
     FMapiVersion: string;
     FProfiles: array of string;
     FSelectedClientIndex: Integer;
     FSimpleMapiInstalled: Boolean;
+    { TODO : consider to move this to a internal single instance class with smart linking }
     FMapiAddress: TFNMapiAddress;
     FMapiDeleteMail: TFNMapiDeleteMail;
     FMapiDetails: TFNMapiDetails;
@@ -285,8 +291,7 @@ uses
 
 const
   MapiDll = 'mapi32.dll';
-  MapiExportNames: array [0..11] of PChar =
-   (
+  MapiExportNames: array[TMapiFunction] of PChar = (
     'MAPIAddress',
     'MAPIDeleteMail',
     'MAPIDetails',
@@ -298,8 +303,7 @@ const
     'MAPIResolveName',
     'MAPISaveMail',
     'MAPISendDocuments',
-    'MAPISendMail'
-   );
+    'MAPISendMail');
   AddressTypeDelimiter = ':';
 
 //--------------------------------------------------------------------------------------------------
@@ -323,62 +327,27 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
+const
+  Messages: array[MAPI_E_USER_ABORT..MAPI_E_NOT_SUPPORTED] of String = (
+    RsMapiErrUSER_ABORT, RsMapiErrFAILURE, RsMapiErrLOGIN_FAILURE,
+    RsMapiErrDISK_FULL, RsMapiErrINSUFFICIENT_MEMORY, RsMapiErrACCESS_DENIED,
+    '', RsMapiErrTOO_MANY_SESSIONS, RsMapiErrTOO_MANY_FILES,
+    RsMapiErrTOO_MANY_RECIPIENTS, RsMapiErrATTACHMENT_NOT_FOUND,
+    RsMapiErrATTACHMENT_OPEN_FAILURE, RsMapiErrATTACHMENT_WRITE_FAILURE,
+    RsMapiErrUNKNOWN_RECIPIENT, RsMapiErrBAD_RECIPTYPE, RsMapiErrNO_MESSAGES,
+    RsMapiErrINVALID_MESSAGE, RsMapiErrTEXT_TOO_LARGE, RsMapiErrINVALID_SESSION,
+    RsMapiErrTYPE_NOT_SUPPORTED, RsMapiErrAMBIGUOUS_RECIPIENT,
+    RsMapiErrMESSAGE_IN_USE, RsMapiErrNETWORK_FAILURE,
+    RsMapiErrINVALID_EDITFIELDS, RsMapiErrINVALID_RECIPS,
+    RsMapiErrNOT_SUPPORTED);
 begin
   case ErrorCode of
-    MAPI_E_USER_ABORT:
-      Result := RsMapiErrUSER_ABORT;
-    MAPI_E_FAILURE:
-      Result := RsMapiErrFAILURE;
-    MAPI_E_LOGIN_FAILURE:
-      Result := RsMapiErrLOGIN_FAILURE;
-    MAPI_E_DISK_FULL:
-      Result := RsMapiErrDISK_FULL;
-    MAPI_E_INSUFFICIENT_MEMORY:
-      Result := RsMapiErrINSUFFICIENT_MEMORY;
-    MAPI_E_ACCESS_DENIED:
-      Result := RsMapiErrACCESS_DENIED;
-    MAPI_E_TOO_MANY_SESSIONS:
-      Result := RsMapiErrTOO_MANY_SESSIONS;
-    MAPI_E_TOO_MANY_FILES:
-      Result := RsMapiErrTOO_MANY_FILES;
-    MAPI_E_TOO_MANY_RECIPIENTS:
-      Result := RsMapiErrTOO_MANY_RECIPIENTS;
-    MAPI_E_ATTACHMENT_NOT_FOUND:
-      Result := RsMapiErrATTACHMENT_NOT_FOUND;
-    MAPI_E_ATTACHMENT_OPEN_FAILURE:
-      Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
-    MAPI_E_ATTACHMENT_WRITE_FAILURE:
-      Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
-    MAPI_E_UNKNOWN_RECIPIENT:
-      Result := RsMapiErrUNKNOWN_RECIPIENT;
-    MAPI_E_BAD_RECIPTYPE:
-      Result := RsMapiErrBAD_RECIPTYPE;
-    MAPI_E_NO_MESSAGES:
-      Result := RsMapiErrNO_MESSAGES;
-    MAPI_E_INVALID_MESSAGE:
-      Result := RsMapiErrINVALID_MESSAGE;
-    MAPI_E_TEXT_TOO_LARGE:
-      Result := RsMapiErrTEXT_TOO_LARGE;
-    MAPI_E_INVALID_SESSION:
-      Result := RsMapiErrINVALID_SESSION;
-    MAPI_E_TYPE_NOT_SUPPORTED:
-      Result := RsMapiErrTYPE_NOT_SUPPORTED;
-    MAPI_E_AMBIGUOUS_RECIPIENT:
-      Result := RsMapiErrAMBIGUOUS_RECIPIENT;
-    MAPI_E_MESSAGE_IN_USE:
-      Result := RsMapiErrMESSAGE_IN_USE;
-    MAPI_E_NETWORK_FAILURE:
-      Result := RsMapiErrNETWORK_FAILURE;
-    MAPI_E_INVALID_EDITFIELDS:
-      Result := RsMapiErrINVALID_EDITFIELDS;
-    MAPI_E_INVALID_RECIPS:
-      Result := RsMapiErrINVALID_RECIPS;
-    MAPI_E_NOT_SUPPORTED:
-      Result := RsMapiErrNOT_SUPPORTED;
+    Low(Messages)..High(Messages):
+      Result := Messages[ErrorCode];
   else
     Result := '';
   end;
-end;
+end; 
 
 //--------------------------------------------------------------------------------------------------
 
@@ -445,19 +414,18 @@ end;
 constructor TJclSimpleMapi.Create;
 begin
   inherited Create;
-  SetLength(FFunctions, Length(MapiExportNames));
-  FFunctions[0] := @@FMapiAddress;
-  FFunctions[1] := @@FMapiDeleteMail;
-  FFunctions[2] := @@FMapiDetails;
-  FFunctions[3] := @@FMapiFindNext;
-  FFunctions[4] := @@FMapiFreeBuffer;
-  FFunctions[5] := @@FMapiLogOff;
-  FFunctions[6] := @@FMapiLogOn;
-  FFunctions[7] := @@FMapiReadMail;
-  FFunctions[8] := @@FMapiResolveName;
-  FFunctions[9] := @@FMapiSaveMail;
-  FFunctions[10] := @@FMapiSendDocuments;
-  FFunctions[11] := @@FMapiSendMail;
+  FFunctions[mfAddress] := @@FMapiAddress;
+  FFunctions[mfDeleteMail] := @@FMapiDeleteMail;
+  FFunctions[mfDetails] := @@FMapiDetails;
+  FFunctions[mfFindNext] := @@FMapiFindNext;
+  FFunctions[mfFreeBuffer] := @@FMapiFreeBuffer;
+  FFunctions[mfLogoff] := @@FMapiLogOff;
+  FFunctions[mfLogon] := @@FMapiLogOn;
+  FFunctions[mfReadMail] := @@FMapiReadMail;
+  FFunctions[mfResolveName] := @@FMapiResolveName;
+  FFunctions[mfSaveMail] := @@FMapiSaveMail;
+  FFunctions[mfSendDocuments] := @@FMapiSendDocuments;
+  FFunctions[mfSendMail] := @@FMapiSendMail;
   FDefaultClientIndex := -1;
   FClientConnectKind := ctAutomatic;
   FSelectedClientIndex := -1;
@@ -552,7 +520,7 @@ end;
 
 procedure TJclSimpleMapi.LoadClientLib;
 var
-  I: Integer;
+  Idx: TMapiFunction;
   P: Pointer;
 begin
   if ClientLibLoaded then
@@ -560,16 +528,16 @@ begin
   FClientLibHandle := LoadLibrary(PChar(GetClientLibName));
   if FClientLibHandle = 0 then
     RaiseLastOSError;
-  for I := 0 to Length(FFunctions) - 1 do
+  for Idx := Low(FFunctions) to High(FFunctions) do
   begin
-    P := GetProcAddress(FClientLibHandle, PChar(MapiExportNames[I]));
+    P := GetProcAddress(FClientLibHandle, PChar(MapiExportNames[Idx]));
     if P = nil then
     begin
       UnloadClientLib;
-      raise EJclMapiError.CreateResRecFmt(@RsMapiMissingExport, [MapiExportNames[I]]);
+      raise EJclMapiError.CreateResRecFmt(@RsMapiMissingExport, [MapiExportNames[Idx]]);
     end
     else
-      FFunctions[I]^ := P;
+      FFunctions[Idx]^ := P;
   end;
 end;
 
@@ -596,15 +564,15 @@ var
 
   function CheckValid(var Client: TJclMapiClient): Boolean;
   var
-    I: Integer;
+    Idx: TMapiFunction;
     LibHandle: THandle;
   begin
     LibHandle := LoadLibraryEx(PChar(Client.ClientPath), 0, DONT_RESOLVE_DLL_REFERENCES);
     Result := (LibHandle <> 0);
     if Result then
     begin
-      for I := Low(MapiExportNames) to High(MapiExportNames) do
-        if GetProcAddress(LibHandle, PChar(MapiExportNames[I])) = nil then
+      for Idx := Low(MapiExportNames) to High(MapiExportNames) do
+        if GetProcAddress(LibHandle, PChar(MapiExportNames[Idx])) = nil then
         begin
           Result := False;
           Break;
@@ -694,15 +662,15 @@ end;
 
 procedure TJclSimpleMapi.UnloadClientLib;
 var
-  I: Integer;
+  Idx: TMapiFunction;
 begin
   if ClientLibLoaded then
   begin
     BeforeUnloadClientLib;
     FreeLibrary(FClientLibHandle);
     FClientLibHandle := 0;
-    for I := 0 to Length(FFunctions) - 1 do
-      FFunctions[I]^ := nil;
+    for Idx := Low(FFunctions) to High(FFunctions) do
+      FFunctions[Idx]^ := nil;
   end;
 end;
 
@@ -740,17 +708,16 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 class function TJclEmailRecip.RecipKindToString(const AKind: TJclEmailRecipKind): string;
+const
+  Idents: array[TJclEmailRecipKind] of String = (
+    RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
 begin
   case AKind of
-    rkOriginator:
-      Result := RsMapiMailORIG;
-    rkTO:
-      Result := RsMapiMailTO;
-    rkCC:
-      Result := RsMapiMailCC;
-    rkBCC:
-      Result := RsMapiMailBCC;
-  end;    
+    Low(Idents)..High(Idents):
+      Result := Idents[AKind];
+  else
+    Result := '';  { TODO : maybe exception? }
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -896,6 +863,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
+const
+  RecipClassToRecipKind: array[MAPI_ORIG..MAPI_BCC] of TJclEmailRecipKind = (
+    rkOriginator, rkTO, rkCC, rkBCC);
 var
   S: string;
   N, I: Integer;
@@ -909,14 +879,8 @@ begin
     with RecipDesc^ do
     begin
       case ulRecipClass of
-        MAPI_ORIG:
-          Kind := rkOriginator;
-        MAPI_TO:
-          Kind := rkTO;
-        MAPI_CC:
-          Kind := rkCC;
-        MAPI_BCC:
-          Kind := rkBCC;
+        Low(RecipClassToRecipKind)..High(RecipClassToRecipKind):
+          Kind := RecipClassToRecipKind[ulRecipClass];
         $FFFFFFFF:  // Eudora client version 5.2.0.9 bug
           Kind := rkOriginator;
       else
@@ -998,7 +962,7 @@ end;
 
 function TJclEmail.InternalSendOrSave(Save, ShowDialog: Boolean): Boolean;
 const
-  RecipClasses: array [TJclEmailRecipKind] of DWORD =
+  RecipClasses: array[TJclEmailRecipKind] of DWORD =
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
 var
   AttachArray: array of TMapiFileDesc;
@@ -1007,7 +971,7 @@ var
   MapiMessage: TMapiMessage;
   Flags, Res: DWORD;
   I: Integer;
-  MsgID: array [0..512] of AnsiChar;
+  MsgID: array[0..512] of AnsiChar;
   HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
@@ -1390,5 +1354,12 @@ begin
   Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
     ProfileName, Password, MapiAddressTypeSMTP);
 end;
+
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel Bestebroer                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains scheduler classes.                                                            }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclSchedule;
 
@@ -174,9 +178,9 @@ function IsNullTimeStamp(const Stamp: TTimeStamp): Boolean;
 implementation
 
 uses
-  JclDateTime, JclResources;
+  JclDateTime, JclResources;  
 
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF RTL140_UP}
 const
   S_OK    = $00000000;
   E_NOINTERFACE = HRESULT($80004002);
@@ -1779,5 +1783,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

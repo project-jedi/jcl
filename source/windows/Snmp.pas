@@ -1,41 +1,40 @@
-{******************************************************************}
-{                                                                  }
-{ Borland Delphi Runtime Library                                   }
-{ SNMP functions interface unit                                    }
-{                                                                  }
-{ Portions created by Microsoft are                                }
-{ Copyright (C) 1992-1999 Microsoft Corporation.                   }
-{ All Rights Reserved.                                             }
-{                                                                  }
-{ The original file is: snmp.h                                     }
-{ The original Pascal code is: Snmp.pas, released 05 Oct 2001.     }
-{ The initial developer of the Pascal code is Petr Vones           }
-{ (petr.v@mujmail.cz).                                             }
-{                                                                  }
-{ Portions created by Petr Vones are                               }
-{ Copyright (C) 2001 Petr Vones                                    }
-{                                                                  }
-{ Obtained through:                                                }
-{                                                                  }
-{ Joint Endeavour of Delphi Innovators (Project JEDI)              }
-{                                                                  }
-{ You may retrieve the latest version of this file at the Project  }
-{ JEDI home page, located at http://delphi-jedi.org                }
-{                                                                  }
-{ The contents of this file are used with permission, subject to   }
-{ the Mozilla Public License Version 1.1 (the "License"); you may  }
-{ not use this file except in compliance with the License. You may }
-{ obtain a copy of the License at                                  }
-{ http://www.mozilla.org/MPL/MPL-1.1.html                          }
-{                                                                  }
-{ Software distributed under the License is distributed on an      }
-{ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   }
-{ implied. See the License for the specific language governing     }
-{ rights and limitations under the License.                        }
-{                                                                  }
-{******************************************************************}
+{******************************************************************************}
+{                                                                              }
+{  Borland Delphi Runtime Library                                              }
+{  SNMP functions interface unit                                               }
+{                                                                              }
+{  The contents of this file are subject to the Mozilla Public License         }
+{  Version 1.1 (the "License"); you may not use this file except in            }
+{  compliance with the License. You may obtain a copy of the License at        }
+{  http://www.mozilla.org/MPL/                                                 }
+{                                                                              }
+{  Software distributed under the License is distributed on an "AS IS" basis,  }
+{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
+{  for the specific language governing rights and limitations under the        }
+{  License.                                                                    }
+{                                                                              }
+{  The Original Code is: snmp.h.                                               }
+{  The Initial Developer of the Original Code is Microsoft. Portions created   }
+{  by Microsoft are Copyright (C) 1992-1999 Microsoft Corporation. All Rights  }
+{  Reserved.                                                                   }
+{                                                                              }
+{  The Original Pascal code is: Snmp.pas, released 2001-10-05.                 }
+{  The Initial Developer of the Original Pascal code is Petr Vones             }
+{  (petr.v@mujmail.cz). Portions created by Petr Vones are Copyright (C) 2001  }
+{  Petr Vones. All Rights Reserved.                                            }
+{                                                                              }
+{  Obtained through:                                                           }
+{    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
+{                                                                              }
+{  You may retrieve the latest version of this file at the Project JEDI home   }
+{  page, located at http://delphi-jedi.org                                     }
+{                                                                              }
+{  Contributor(s):                                                             }
+{                                                                              }
+{******************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit Snmp;
 
@@ -47,12 +46,13 @@ interface
 {$DEFINE SNMP_DYNAMIC_LINK_EXPLICIT}
 {$DEFINE SNMPSTRICT}
 
+{$ALIGN ON}
+{$MINENUMSIZE 4}
+{$IFNDEF SNMP_DYNAMIC_LINK}
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
   {$WEAKPACKAGEUNIT ON}
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
-{$ALIGN ON}
-{$MINENUMSIZE 4}
+{$ENDIF SNMP_DYNAMIC_LINK}
 
 uses
   Windows;
@@ -892,5 +892,12 @@ finalization
   UnloadSnmp;
 {$ENDIF SNMP_DYNAMIC_LINK_EXPLICIT}
 {$ENDIF SNMP_DYNAMIC_LINK}
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:59:07  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

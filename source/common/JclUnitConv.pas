@@ -15,24 +15,22 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Contains routines to perform conversion between various units such as length coordinate,         }
 { temperature, angle, mass and pressure conversions.                                               }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclUnitConv;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -800,5 +798,12 @@ function WattToHpMetric(const W: Float): Float;
 begin
   Result := W / 735.4988;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:19  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

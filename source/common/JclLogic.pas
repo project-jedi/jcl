@@ -15,26 +15,24 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various routines to perform various arithmetic and logical operations on one or more ordinal     }
 { values (integer numbers). This includes various bit manipulation routines, min/max testing and   }
 { conversion to string.                                                                            }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclLogic;
 
 {$I jcl.inc}
 {$RANGECHECKS OFF}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -81,7 +79,7 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ClearBitBuffer(var Value; const Bit: TBitRange); // todo document
+procedure ClearBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
@@ -127,7 +125,7 @@ function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure SetBitBuffer(var Value; const Bit: TBitRange); // todo document
+procedure SetBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean; overload;
@@ -136,7 +134,7 @@ function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
-function TestBitBuffer(const Value; const Bit: TBitRange): Boolean; // todo document
+function TestBitBuffer(const Value; const Bit: TBitRange): Boolean; { TODO -cHelp : document }
 
 function TestBits(const Value, Mask: Byte): Boolean; overload;
 function TestBits(const Value, Mask: Shortint): Boolean; overload;
@@ -153,7 +151,7 @@ function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ToggleBitBuffer(var Value; const Bit: TBitRange); // todo document
+procedure ToggleBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
 
 procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
@@ -1910,5 +1908,12 @@ begin
   else
     Result := B2;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.
