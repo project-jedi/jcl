@@ -19,6 +19,7 @@
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Flier Lu (flier)                                                                               }
+{   Florent Ouchet (outchy)
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
@@ -123,6 +124,7 @@ type
     destructor Destroy; override;
     procedure Parse;
     class function MapStringToStr(MapString: PJclMapString): string;
+    class function MapStringToFileName(MapString: PJclMapString): string;
     property LinkerBug: Boolean read FLinkerBug;
     property LinkerBugUnitName: string read GetLinkerBugUnitName; 
     property Stream: TJclFileMappingStream read FStream;
@@ -890,6 +892,40 @@ begin
   Result := MapStringToStr(FLinkerBugUnitName);
 end;
 
+class function TJclAbstractMapParser.MapStringToFileName(
+  MapString: PJclMapString): string;
+var
+  PStart, PEnd, PExtension: PChar;
+begin
+  if MapString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+  PEnd := MapString;
+  while not (PEnd^ in [AnsiCarriageReturn, '=']) do
+    Inc(PEnd);
+  if (PEnd^ = '=') then
+  begin
+    while not (PEnd^ = AnsiSpace) do
+      Dec(PEnd);
+    while ((PEnd-1)^ = AnsiSpace) do
+      Dec(PEnd);
+  end;
+  PExtension := PEnd;
+  while (not (PExtension^ in ['.', '|'])) and (PExtension >= MapString) do
+    Dec(PExtension);
+  if (PExtension^ = '.') then
+    PEnd := PExtension;
+  PExtension := PEnd;
+  while (not (PExtension^ in ['|','\'])) and (PExtension >= MapString) do
+    Dec(PExtension);
+  if (PExtension^ in ['|','\']) then
+    PStart := PExtension + 1
+  else PStart := MapString;
+  SetString(Result, PStart, PEnd - PStart);
+end;
+
 class function TJclAbstractMapParser.MapStringToStr(MapString: PJclMapString): string;
 var
   P: PChar;
@@ -917,12 +953,12 @@ end;
 
 procedure TJclAbstractMapParser.Parse;
 const
-  TableHeader          = 'Start         Length     Name                   Class';
-  SegmentsHeader       = 'Detailed map of segments';
-  PublicsByNameHeader  = 'Address         Publics by Name';
-  PublicsByValueHeader = 'Address         Publics by Value';
+  TableHeader          : array [0..3] of string = ('Start', 'Length', 'Name', 'Class');
+  SegmentsHeader       : array [0..3] of string = ('Detailed', 'map', 'of', 'segments');
+  PublicsByNameHeader  : array [0..3] of string = ('Address', 'Publics', 'by', 'Name');
+  PublicsByValueHeader : array [0..3] of string = ('Address', 'Publics', 'by', 'Value');
   LineNumbersPrefix    = 'Line numbers for';
-  ResourceFilesHeader  = 'Bound resource files';
+  ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
   CurrPos, EndPos: PChar;
   A, PreviousA: TJclMapAddress;
@@ -1041,15 +1077,30 @@ var
     Inc(CurrPos, 2);
   end;
 
-  function SyncToHeader(const Header: string): Boolean;
+  function SyncToHeader(const Header: array of string): Boolean;
   var
     S: string;
+    TokenIndex, OldPosition, CurrentPosition: Integer;
   begin
     Result := False;
     while not Eof do
     begin
       S := Trim(ReadTextLine);
-      Result := Pos(Header, S) = 1;
+      TokenIndex := Low(Header);
+      CurrentPosition := 0;
+      OldPosition := 0;
+      while (TokenIndex <= High(Header)) do
+      begin
+        CurrentPosition := Pos(Header[TokenIndex],S);
+        if (CurrentPosition <= OldPosition) then
+        begin
+          CurrentPosition := 0;
+          Break;
+        end;
+        OldPosition := CurrentPosition;
+        Inc(TokenIndex);
+      end;
+      Result := CurrentPosition <> 0;
       if Result then
         Break;
       SkipEndLine;
@@ -1197,7 +1248,7 @@ procedure TJclMapParser.SegmentItem(const Address: TJclMapAddress;
   Len: Integer; GroupName, UnitName: PJclMapString);
 begin
   if Assigned(FOnSegmentItem) then
-    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToStr(UnitName));
+    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToFileName(UnitName));
 end;
 
 //=== { TJclMapScanner } =====================================================
@@ -3914,6 +3965,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.16  2005/03/23 04:10:22  rrossmair
+// - TJclMapParser fixed for BCB6 (by outchy)
+//
 // Revision 1.15  2005/03/08 16:10:09  marquardt
 // standard char sets extended and used, some optimizations for string literals
 //
