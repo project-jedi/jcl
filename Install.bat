@@ -6,3 +6,5 @@
 @%1
 :Finis
 @CD ..
+@ECHO.
+@PAUSE
