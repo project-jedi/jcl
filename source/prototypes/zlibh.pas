@@ -60,7 +60,7 @@
 {                                                                              }
 {******************************************************************************}
 
-// Last modified: $Id$
+// Last modified: $Date$
 // For history see end of file
 
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
@@ -105,12 +105,12 @@ unit zlibh;
     {$DEFINE ZLIB_DYNAMIC}
     {$DEFINE ZLIB_CDECL}
     {$UNDEF ZLIB_STDCALL}
-  {$ELSE}
+  {$ELSE ~ZLIB_WIN32DLL}
     {$UNDEF INCLUDE_GZIO}
     {$UNDEF ZLIB_DYNAMIC}
     {$UNDEF ZLIB_CDECL      // the object files use Borland's __fastcall }
     {$UNDEF ZLIB_STDCALL    // (except gzprintf) }
-  {$ENDIF ZLIB_WIN32DLL}
+  {$ENDIF ~ZLIB_WIN32DLL}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX                // don't change this section }
@@ -130,7 +130,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows;
-  {$ENDIF MSWINDOWS}                        
+  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc;
   {$ENDIF HAS_UNIT_LIBC}
@@ -208,7 +208,7 @@ type
   {$EXTERNALSYM PCRCTable}
   PCRCTable = ^TCRCTable;
   {$EXTERNALSYM TCRCTable}
-  TCRCTable = array[0..255] of ULong;
+  TCRCTable = array [0..255] of ULong;
 
 const
   {$EXTERNALSYM ZLIB_VERSION}
@@ -392,7 +392,7 @@ const
 
   // for initializing zalloc, zfree, opaque
   {$EXTERNALSYM Z_NULL}
-  Z_NULL = Nil;
+  Z_NULL = nil;
 
 
 //                         basic functions
@@ -1482,12 +1482,12 @@ implementation
 {$IFDEF UNIX}
 const
   ZLibModuleName = 'libz.so';
-{$ELSE}
+{$ELSE ~UNIX}
 {$IFDEF ZLIB_WIN32DLL}
 const
   ZLibModuleName = 'zlib1.dll';
-{$ENDIF UNIX}
 {$ENDIF ZLIB_DYNAMIC}
+{$ENDIF ~UNIX}
 
 
 // **************************  zutil.c  *****************************
@@ -1622,15 +1622,19 @@ end;
 // ****************************************************************************
 
 //  History:
+
 {$IFDEF PROTOTYPE}
 //   $Log$
+//   Revision 1.11  2004/06/27 23:38:07  rrossmair
+//   some style cleaning (case, spaces, $ENDIF)
+//
+{$ENDIF PROTOTYPE}
 //   Revision 1.10  2004/06/14 13:05:19  marquardt
 //   style cleaning ENDIF, Tabs
 //
 //   Revision 1.9  2004/06/06 01:57:03  rrossmair
 //   check-in in preparation of build #1558 release
 //
-{$ENDIF PROTOTYPE}
 //   Revision 1.8  2004/05/31 22:38:51  rrossmair
 //   added PJH disclaimer; resolved $IFDEF JCL
 //
