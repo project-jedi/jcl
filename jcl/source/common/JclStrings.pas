@@ -25,33 +25,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
-
-// - StrIToStrings default parameter now true
-// - StrToStrings default parameter now true
-// - Rewrote StrSmartCase to fix a bug.
-// - Fixed a bug in StrIsAlphaNumUnderscore
-// - Fixed a bug in StrIsSubset
-// - Simplified StrLower
-// - Fixed a bug in StrRepeatLength
-// - Fixed a bug in StrLastPos
-// - Added function StrTrimCharsRight (Leonard Wennekers)
-// - Added function StrTrimCharsLeft (Leonard Wennekers)
-// - Added StrNormIndex function (Alexander Radchenko)
-// - Changed Assert in StrTokens/ to If List <> nil
-// - Deleted an commented out version of StrReplace. If anyone ever want to finish the old
-//   version please go the archive version 0.39
-// - Modified StrFillChar a little bit (added an if for count > 0)
-// - StrCharPosLower (Jean-Fabien Connault)
-// - StrCharPosUpper (Jean-Fabien Connault)
-// - Changed to 100 chars per line style
-// - Note to Marcel:  Have a look at StrToStrings and StrItoStrings. They are untested but
-//                    should work more or less equal to the BreakApart functions by JFC.
-// - Changed StrNPos for special case
-// - Changed StrIPos for special case
-// - Fixed a bug in CharPos : didn'T work if index = length(s)
-// - Fixed a bug in CharIPos : didn'T work if index = length(s)
 
 unit JclStrings;
 
@@ -300,6 +275,7 @@ function CharToggleCase(const C: AnsiChar): AnsiChar;
 //--------------------------------------------------------------------------------------------------
 
 function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
+function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
 function CharIPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1 ): Integer;
 function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
 
@@ -3299,6 +3275,31 @@ end;
 // Character Search and Replace
 //==================================================================================================
 
+function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
+var
+  P: PAnsiChar;
+begin
+  Result := 0;
+  if (Index > 0) and (Index <= Length(S)) then
+  begin
+    P := PAnsiChar(S);
+    Result := Length(S);
+    Inc(P, Result-1);
+    while Result > Index do
+    begin
+      if P^ = C then
+        Break;
+
+      Dec(Result);
+      Dec(P);
+    end;
+    if P^ <> C then
+      Result := 0;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
 var
   P: PAnsiChar;
@@ -3956,6 +3957,33 @@ initialization
 
 // History:
 
+// MT:
+
+// - StrIToStrings default parameter now true
+// - StrToStrings default parameter now true
+// - Rewrote StrSmartCase to fix a bug.
+// - Fixed a bug in StrIsAlphaNumUnderscore
+// - Fixed a bug in StrIsSubset
+// - Simplified StrLower
+// - Fixed a bug in StrRepeatLength
+// - Fixed a bug in StrLastPos
+// - Added function StrTrimCharsRight (Leonard Wennekers)
+// - Added function StrTrimCharsLeft (Leonard Wennekers)
+// - Added StrNormIndex function (Alexander Radchenko)
+// - Changed Assert in StrTokens/ to If List <> nil
+// - Deleted an commented out version of StrReplace. If anyone ever want to finish the old
+//   version please go the archive version 0.39
+// - Modified StrFillChar a little bit (added an if for count > 0)
+// - StrCharPosLower (Jean-Fabien Connault)
+// - StrCharPosUpper (Jean-Fabien Connault)
+// - Changed to 100 chars per line style
+// - Note to Marcel:  Have a look at StrToStrings and StrItoStrings. They are untested but
+//                    should work more or less equal to the BreakApart functions by JFC.
+// - Changed StrNPos for special case
+// - Changed StrIPos for special case
+// - Fixed a bug in CharPos : didn'T work if index = length(s)
+// - Fixed a bug in CharIPos : didn'T work if index = length(s)
+
 // 2003-02-25, Robert Rossmair
 //  - Linux port (implemented LoadCharTypes & LoadCaseMap)
 
@@ -3965,6 +3993,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.12  2004/04/09 20:35:14  mthoma
+// Added StrLastPos. changed $Data$ to $Date$
+//
 // Revision 1.11  2004/04/08 19:40:26  mthoma
 // Fixed 0000947, 0001060 (StrBetween with same start/end symbol problem). Added a note to the docs.
 //
