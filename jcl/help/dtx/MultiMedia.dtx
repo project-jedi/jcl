@@ -203,10 +203,10 @@ Quick info:
 Summary:
   Waits for the event to become signaled.
 Description:
-  WaitFor is only used when the timer's notification method is set to either nkSetTimer
+  WaitFor is only used when the timer's notification method is set to either nkSetEvent
   or nkPulseEvent. After calling BeginTimer the timer will set an event when the
   interval expires. You wait for the interval to expire by waiting on that event using
-  this method. Note that in case of an nkSetTimer timer you must use the Event
+  this method. Note that in case of an nkSetEvent timer you must use the Event
   property to call the ResetEvent when the event becomes signaled. For all other
   purposes you should leave the Event property alone.
 Parameters:
@@ -230,7 +230,7 @@ Quick info:
 @@TMmTimerKind.tkOneShot
   The timer is a one-shot timer. After calling BeginTimer and the specified interval has elapsed, the timer will 'fire' once and once only. Note that even for a one-shot timer you still need to call EndTimer.
 @@TMmTimerKind.tkPeriodic
-  The timer is a periodic timer. After calling BeginTimer the timer will 'fire' after the specified interval until you call EndTimer. Note that when you use the nkSetTimer notification type you must call Event.ResetEvent manually!
+  The timer is a periodic timer. After calling BeginTimer the timer will 'fire' after the specified interval until you call EndTimer. Note that when you use the nkSetEvent notification type you must call Event.ResetEvent manually!
 --------------------------------------------------------------------------------
 @@TMmNotificationKind
 <GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
