@@ -2307,7 +2307,7 @@ begin
       Result := Char(getchar);
     end
     else
-      raise EJclError.CreateResRec(RsReadKeyError);
+      raise EJclError.CreateResRec(@RsReadKeyError);
   finally
     //Restore Original Terminal Settings
     tcsetattr(stdin, TCSANOW, SaveTerminalSettings);
@@ -2513,6 +2513,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.29  2004/12/05 17:08:59  rrossmair
+// - fixed call to EJclError.CreateResRec in ReadKey function
+//
 // Revision 1.28  2004/12/05 04:58:47  rrossmair
 // added ReadKey donation by Wayne Sherman
 //
