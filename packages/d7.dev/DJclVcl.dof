@@ -1,4 +1,4 @@
 [Directories]
 UnitOutputDir=..\..\lib\d7
-SearchPath=..\..\source\common;..\..\source\prototypes
+SearchPath=..\..\source;..\..\source\common
 
