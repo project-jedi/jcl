@@ -301,7 +301,6 @@ begin
   // (it shouldn't happen due to the use of exceptions in the above lines)
   CloseHandle(ProcInfo.hThread);
   CloseHandle(ProcInfo.hProcess);
-
-end;
+end;
 
 end.
