@@ -1,3 +1,0 @@
-[Directories]
-OutputDir=..\..\..\..\bin
-Conditionals=HOOK_DLL_EXCEPTIONS
