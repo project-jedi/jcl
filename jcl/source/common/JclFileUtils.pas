@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 07, 2002                                                                    }
+{ Last modified: March 10, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -173,6 +173,8 @@ type
       Pair: DWORD);
   end;
 
+  EJclFileVersionInfoError = class (EJclError);
+
   TJclFileVersionInfo = class (TObject)
   private
     FBuffer: string;
@@ -238,12 +240,14 @@ type
     property Translations[Index: Integer]: TLangIdRec read GetTranslations;
   end;
 
-  EJclFileVersionInfoError = class (EJclError);
-
 function OSIdentToString(const OSIdent: DWORD): string;
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD = 0): string;
+
 function VersionResourceAvailable(const FileName: string): Boolean;
 function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
+
+function FormatVersionString(const HiV, LoV: Word): string; overload;
+function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Streams
@@ -2614,7 +2618,7 @@ begin
 end;
 
 //==================================================================================================
-// TJclFileVersionInfo
+// File Version info routines
 //==================================================================================================
 
 const
@@ -2777,6 +2781,22 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+function FormatVersionString(const HiV, LoV: Word): string;
+begin
+  Result := Format('%u.%.2u', [HiV, LoV]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function FormatVersionString(const Major, Minor, Build, Revision: Word): string;
+begin
+  Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
+end;
+
+//==================================================================================================
+// TJclFileVersionInfo
+//==================================================================================================
 
 constructor TJclFileVersionInfo.Attach(VersionInfoData: Pointer; Size: Integer);
 begin
