@@ -1294,9 +1294,9 @@ var
 begin
   Result := X / Y;
   Z := System.Int(Result);
-  if Result < 0.0 then
+  if Frac(Result) < 0 then
     Z := Z - 1.0;
-  Result := X - Z * Y;
+  Result := X - Y * Z;
 end;
 
 //--------------------------------------------------------------------------------------------------
