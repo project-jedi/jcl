@@ -535,7 +535,7 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, Winsock,
+  Messages, SysUtils, TLHelp32, PsApi, Winsock,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
