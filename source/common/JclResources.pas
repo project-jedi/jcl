@@ -349,6 +349,7 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
+  RsInvalidArgument = '%s: Invalid argument <%s>';
   RsNtfsUnableToDeleteSymbolicLink = 'Unable to delete temporary symbolic link';
 
 //------------------------------------------------------------------------------
