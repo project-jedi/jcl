@@ -350,7 +350,9 @@ type
     procedure SetDebugDCUPath(const Value: string);
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
+    {$IFDEF MSWINDOWS}
     function GetBorlandStudioProjectsDir: string;
+    {$ENDIF MSWINDOWS}
     procedure ReadInformation;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
   public
@@ -2508,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.29  2004/12/20 05:15:48  rrossmair
+// - fixed for Kylix ($IFDEFed GetBorlandStudioProjectsDir)
+//
 // Revision 1.28  2004/12/18 04:03:30  rrossmair
 // - more D2005 support
 //
