@@ -122,7 +122,7 @@ begin
     NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
   if Result then
   begin
-    WaitForInputIdle(ProcessInfo.hProcess, Infinite);
+    WaitForInputIdle(ProcessInfo.hProcess, INFINITE);
     CloseHandle(ProcessInfo.hThread);
     CloseHandle(ProcessInfo.hProcess);
   end;
@@ -143,8 +143,8 @@ begin
   if CreateProcess(nil, PChar(Cmd), nil, nil, False, NORMAL_PRIORITY_CLASS,
     nil, nil, StartupInfo, ProcessInfo) then
   begin
-    WaitForInputIdle(ProcessInfo.hProcess, Infinite);
-    if WaitForSingleObject(ProcessInfo.hProcess, Infinite) = WAIT_OBJECT_0 then
+    WaitForInputIdle(ProcessInfo.hProcess, INFINITE);
+    if WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0 then
     begin
       {$IFDEF DELPHI3}
       if not GetExitCodeProcess(ProcessInfo.hProcess, Integer(Result)) then
