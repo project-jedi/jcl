@@ -1133,7 +1133,12 @@ function PathIsUNC(const Path: string): Boolean;
 Tests whether a path is a UNC path.
 [Description]
 PathIsUNC tests whether or not the supplied path is a valid UNC path. That is,
-it tests whether the path is prepended with '\\'.
+it tests whether the path is prepended with '\\', and whether the machine and share
+components are valid, if present. Note that a machine is considered valid if it's 
+constructed using characters from the set [a-z, A-Z, 0-9, -, _]. Other charactes, 
+technically including the underscore, result in non-standard machine names which 
+cannot be found on a network unless Microsoft DNS is in use (which is why PathIsUNC
+considers them as invalid and returns False for such paths).
 [Parameters]
 Count=1
 1=Path:string=The path to test.
