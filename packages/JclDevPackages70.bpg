@@ -23,4 +23,15 @@ DJclVcl70.bpl: D7.dev\DJclVcl.dpk
 DJclVClx70.bpl: D7.dev\DJclVClx.dpk
   $(DCC)
 
+JclDebugIde70.bpl: ..\examples\vcl\debugextension\JclDebugIde70.dpk
+  $(DCC)
+
+ThreadNameExpert70.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpert70.dpk
+  $(DCC)
+
+ProjectAnalyzer70.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzer70.dpk
+  $(DCC)
+
+IdeOpenDlgFavorite70.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavorite70.dpk
+  $(DCC)
 
