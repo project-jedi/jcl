@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclClr.pas.                                                                }
+{ The Original Code is JclMetadata.pas.                                                            }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -3591,7 +3591,7 @@ begin
   for Result := Low(TJclClrTableManifestResourceVisibility) to High(TJclClrTableManifestResourceVisibility) do
     if (FFlags and mrVisibilityMask) = ManifestResourceVisibilityMapping[Result] then
       Exit;
-  raise EJclMetadataError.CreateResRecFmt(RsUnknownManifestResource, [FFlags and mrVisibilityMask]);
+  raise EJclMetadataError.CreateResRecFmt(@RsUnknownManifestResource, [FFlags and mrVisibilityMask]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5260,11 +5260,11 @@ begin
   Sign := ReadByte;
 
   if (Sign and IMAGE_CEE_CS_CALLCONV_MASK) <> IMAGE_CEE_CS_CALLCONV_LOCAL_SIG then
-    raise EJclMetadataError.CreateResRecFmt(RsNoLocalVarSig, [IntToHex(Sign, 2)]);
+    raise EJclMetadataError.CreateResRecFmt(@RsNoLocalVarSig, [IntToHex(Sign, 2)]);
 
   VarCount := ReadValue;
   if (VarCount < 1) or ($FFFE < VarCount) then
-    raise EJclMetadataError.CreateResRecFmt(RsLocalVarSigOutOfRange, [VarCount]);
+    raise EJclMetadataError.CreateResRecFmt(@RsLocalVarSigOutOfRange, [VarCount]);
 
   FLocalVars := TObjectList.Create;
 
