@@ -547,7 +547,7 @@ end;
 
 function TJclInstall.PopulateTreeView(Nodes: TTreeNodes; VersionNumber: Integer; Page: TTabSheet): Boolean;
 var
-  InstallationNode, ProductNode, MakeNode, TempNode: TTreeNode;
+  InstallationNode, ProductNode, TempNode, MakeNode: TTreeNode;
   Installation: TJclDelphiInstallation;
 
   function AddNode(Parent: TTreeNode; const Caption: string; FeatureID: Cardinal): TTreeNode;
@@ -556,6 +556,27 @@ var
     Result := Nodes.AddChildObject(Parent, Caption, Pointer(FeatureID));
     Result.ImageIndex := IcoChecked;
     Result.SelectedIndex := IcoChecked;
+  end;
+
+  procedure AddMakeNodes(Parent: TTreeNode; DebugSettings: Boolean);
+  const
+    Caption: array[Boolean] of string = (RsMakeRelease, RsMakeDebug);
+    Feature: array[Boolean] of Cardinal = (FID_JCL_MakeRelease, FID_JCL_MakeDebug);
+  var
+    Node: TTreeNode;
+  begin
+    Node := AddNode(Parent, Caption[DebugSettings], Feature[DebugSettings]);
+    {$IFDEF KYLIX}
+    AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
+    {$ELSE}
+    if Installation.VersionNumber >= 6 then
+    begin
+      AddNode(Node, RsMakeWindows, Feature[DebugSettings] or FID_JCL_Windows);
+      AddNode(Node, RsMakeVcl, Feature[DebugSettings] or FID_JCL_Vcl);
+      if Installation.SupportsVisualCLX then
+        AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
+    end;
+    {$ENDIF}
   end;
 
 begin
@@ -573,27 +594,12 @@ begin
       AddNode(TempNode, RsEnvLibPath, FID_JCL_EnvLibPath);
       AddNode(TempNode, RsEnvBrowsingPath, FID_JCL_EnvBrowsingPath);
       AddNode(TempNode, RsEnvDebugDCUPath, FID_JCL_EnvDebugDCUPath);
+
       MakeNode := AddNode(ProductNode, RsMake, FID_JCL_Make);
-      TempNode := AddNode(MakeNode, RsMakeRelease, FID_JCL_MakeRelease);
-      {$IFDEF KYLIX}
-      AddNode(TempNode, RsMakeVClx, FID_JCL_MakeRelease or FID_JCL_VClx);
-      TempNode := AddNode(MakeNode, RsMakeDebug, FID_JCL_MakeDebug);
-      AddNode(TempNode, RsMakeVClx, FID_JCL_MakeDebug or FID_JCL_VClx);
-      {$ELSE}
-      if Installation.VersionNumber >= 6 then
-      begin
-        AddNode(TempNode, RsMakeWindows, FID_JCL_MakeRelease or FID_JCL_Windows);
-        AddNode(TempNode, RsMakeVcl, FID_JCL_MakeRelease or FID_JCL_Vcl);
-        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeRelease or FID_JCL_VClx);
-      end;
-      TempNode := AddNode(MakeNode, RsMakeDebug, FID_JCL_MakeDebug);
-      if Installation.VersionNumber >= 6 then
-      begin
-        AddNode(TempNode, RsMakeWindows, FID_JCL_MakeDebug or FID_JCL_Windows);
-        AddNode(TempNode, RsMakeVcl, FID_JCL_MakeDebug or FID_JCL_Vcl);
-        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeDebug or FID_JCL_VClx);
-      end;
-      {.$ENDIF}
+      AddMakeNodes(MakeNode, False);
+      AddMakeNodes(MakeNode, True);
+
+      {$IFNDEF KYLIX}
       if (FJclHlpHelpFileName <> '') or (FJclChmHelpFileName <> '') then
       begin
         TempNode := AddNode(ProductNode, RsHelpFiles, FID_JCL_Help);
@@ -603,10 +609,10 @@ begin
           AddNode(TempNode, RsIdeHelpChm, FID_JCL_HelpChm);
       end;
       TempNode := AddNode(ProductNode, RsJCLExceptDlg, FID_JCL_ExcDialog);
-      {.$IFNDEF KYLIX}
+
       AddNode(TempNode, RsJCLDialogVCL, FID_JCL_ExcDialogVCL);
       AddNode(TempNode, RsJCLDialogVCLSnd, FID_JCL_ExcDialogVCLSnd);
-      if (Installation.VersionNumber >= 6) and (Installation.Edition <> deSTD) then
+      if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       {$ENDIF}
       AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
