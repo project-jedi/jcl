@@ -382,7 +382,12 @@ function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 implementation
 
 uses
-  Consts, SysConst,
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RtlConsts,
+  {$ELSE}
+  Consts,
+  {$ENDIF}
+  SysConst,
   JclLogic, JclResources, JclStrings, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
