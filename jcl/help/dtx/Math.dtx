@@ -3,14 +3,12 @@
 Summary:
   Returns the integral part of the square root.
 Description:
-
   ISqrt calculates the integral part of the square root of the argument. That is,
   it returns Int(Sqrt(I)). Valid values for I are 0..32767. The function does not
   check the validity of the argument, i.e. it must be within the aforementioned range.
 Parameters:
   I - The value for which to calculate ISqrt(I). Must be greater than or equal to 0.
 Result:
-
   The integral part of the square root of the argument.
 Quick info:
   Unit: JclMath
@@ -25,14 +23,12 @@ Quick info:
 Summary:
   Returns the modulus of two floating point numbers.
 Description:
-
   ModFloat calculates the modulus of the two floating point numbers. For floating
   point numbers the modulus is calculated as: X - Floor(X / Y) * Y
 Parameters:
   X - The first float
   Y - The second float
 Result:
-
   Modulus of the two floating point numbers.
 Quick info:
   Unit: JclMath
@@ -47,14 +43,12 @@ Quick info:
 Summary:
   Returns the remainder of two floating point numbers.
 Description:
-
   RemainderFloat calculates the remainder of the two floating point numbers. For
   floating point numbers the remainder is calculated as: X - Int(X / Y) * Y
 Parameters:
   X - The first float
   Y - The second float
 Result:
-
   The remainder of the two floating point numbers.
 Quick info:
   Unit: JclMath
@@ -69,7 +63,6 @@ Quick info:
 Summary:
   Converts degrees, minutes, seconds to a float.
 Description:
-
   DegMinSecToFloat converts, or packs, the supplied degrees, minutes and seconds
   to a float.
 Parameters:
@@ -77,7 +70,6 @@ Parameters:
   Min - Minutes
   Sec - Seconds
 Result:
-
   Degrees, Minutes and Seconds converted to a float.
 Quick info:
   Unit: JclMath
@@ -92,7 +84,6 @@ Quick info:
 Summary:
   Converts a float to degrees, minutes and seconds.
 Description:
-
   FloatToDegMinSec converts a float to degrees, minutes and seconds.
 Parameters:
   X - The float to convert to degrees, minutes and seconds.
@@ -112,14 +103,12 @@ Quick info:
 Summary:
   Tests if a float is zero.
 Description:
-
   FloatIsZero tests whether the supplied floating point value equals zero within
   the precision as specified by the PrecisionTolerance.
   Thus the function returns True if (X &gt; -PT) and (X &lt; +PT).
 Parameters:
   X - The floating point value to test.
 Result:
-
   If the supplied floating point value equals zero within the precision as defined
   by the PrecisionTolerance
   global variable, the function returns True, otherwise it returns False.
@@ -136,7 +125,6 @@ Quick info:
 Summary:
   Compares two floats for equality.
 Description:
-
   FloatsEqual compares the two supplied floating point values for equality within
   the precision defined by the PrecisionTolerance
   global variable. Thus the two values are considered to be equal if the absolute
@@ -145,7 +133,6 @@ Parameters:
   X1 - First value to compare
   X2 - Second value to compare
 Result:
-
   If the two supplied values are equal within the precision defined by
   the PrecisionTolerance
   global variable, the function returns True, otherwise it returns False.
@@ -162,7 +149,6 @@ Quick info:
 Summary:
   Swaps two floating point values.
 Description:
-
   SwapFloat swaps the two supplied floating point values. That is, at return from
   this subroutine X contains the value of Y and Y contains the value of X.
 Parameters:
@@ -181,13 +167,11 @@ Quick info:
 Summary:
   Computes Sqrt(X^2 + Y^2)
 Description:
-
   Computes Sqrt(X^2 + Y^2) without destructive underflow or overflow.
 Parameters:
   X - First float
   Y - Second float
 Result:
-
   Sqrt(X^2 + Y^2)
 Quick info:
   Unit: JclMath
@@ -202,13 +186,11 @@ Quick info:
 Summary:
   Normalizes the given angle
 Description:
-
   NormalizeAngle normalizes the given angle. That is, it makes sure that the angle
   falls in the interval -PI..PI by iteratively adding or subtracting 2*PI.
 Parameters:
   Angle - The angle to normalize.
 Result:
-
   The normalized angle.
 Quick info:
   Unit: JclMath
@@ -223,12 +205,10 @@ Quick info:
 Summary:
   Raises 10 to the power Y.
 Description:
-
   TenToY calculates 10 to the power Y.
 Parameters:
   Y - The exponent to raise 10 to.
 Result:
-
   10 to the power Y.
 Quick info:
   Unit: JclMath
@@ -243,12 +223,10 @@ Quick info:
 Summary:
   Raises 2 to the power Y.
 Description:
-
   TenToY calculates 2 to the power Y.
 Parameters:
   Y - The exponent to raise 2 to.
 Result:
-
   2 to the power Y.
 Quick info:
   Unit: JclMath
@@ -263,7 +241,6 @@ Quick info:
 Summary:
   Returns X to the power N.
 Description:
-
   PowerInt calculates X to the power N where N is an integer. This function uses
   multiplication to raise X to the power N which is faster than using the
   formal formula for Power (which uses Exp and Ln) and therefore you should favor
@@ -272,7 +249,6 @@ Parameters:
   X - Base value
   N - Exponent
 Result:
-
   X to the power N
 Quick info:
   Unit: JclMath
@@ -287,7 +263,6 @@ Quick info:
 Summary:
   Tests if two numbers are relatively prime.
 Description:
-
   RelativePrime returns whether the two supplied numbers are relatively prime to each
   other. Two numbers are said to be relatively prime if their greatest common divisor
   equals 1. Another term used for relative prime is coprime.
@@ -295,7 +270,6 @@ Parameters:
   X - First of the two values.
   Y - Second of the two values.
 Result:
-
   If the two numbers are relatively prime the result is True, otherwise the result is
   False.
 Quick info:
@@ -311,14 +285,12 @@ Quick info:
 Summary:
   Returns the Least Common Multiple of two integers.
 Description:
-
   The LCM function returns the Least Common Multiple (LCM) of the two supplied
   integers.
 Parameters:
   X - First of the two values.
   Y - Second of the two values.
 Result:
-
   The least common multiple of X and Y.
 Quick info:
   Unit: JclMath
@@ -333,7 +305,6 @@ Quick info:
 Summary:
   Returns the greatest common divisor.
 Description:
-
   The GCD function returns the greatest common divisor (GCD) of the two supplied
   integers. This is also sometimes referred to as the Highest Common Factor (HCF).
   The function is implemented using Euclid's algorithm.
@@ -341,7 +312,6 @@ Parameters:
   X - First of the two values.
   Y - Second of the two values.
 Result:
-
   The greatest common divisor of X and Y.
 Quick info:
   Unit: JclMath
@@ -356,12 +326,10 @@ Quick info:
 Summary:
   Converts cycles to grads.
 Description:
-
   CycleToGrad converts a given angle, in cycles, to the corresponding angle in grads.
 Parameters:
   Cycles - The angle, in cycles, to convert.
 Result:
-
   The angle in cycles.
 Quick info:
   Unit: JclMath
@@ -376,12 +344,10 @@ Quick info:
 Summary:
   Converts degrees to grads.
 Description:
-
   DegToGrad converts a given angle, in degrees, to the corresponding angle in grads.
 Parameters:
   Degrees - The angle, in degrees, to convert.
 Result:
-
   The angle in grads.
 Quick info:
   Unit: JclMath
@@ -396,12 +362,10 @@ Quick info:
 Summary:
   Converts grads to cycles.
 Description:
-
   GradToCycle converts a given angle, in grads, to the corresponding angle in cycles.
 Parameters:
   Grads - The angle, in grads, to convert.
 Result:
-
   The angle in cycles.
 Quick info:
   Unit: JclMath
@@ -416,12 +380,10 @@ Quick info:
 Summary:
   Converts grads to degrees.
 Description:
-
   GradToDeg converts a given angle, in grads, to the corresponding angle in degrees.
 Parameters:
   Grads - The angle, in grads, to convert.
 Result:
-
   The angle in degrees.
 Quick info:
   Unit: JclMath
@@ -436,13 +398,11 @@ Quick info:
 Summary:
   Returns log base N.
 Description:
-
   LogBaseN returns the log base N of X. This is calculated as LogN(X) := Log.2(X) / Log.2(N)
 Parameters:
   Base - Base of log (N). Base must be larger than 0.0 and cannot be 1.0 or an exception is raised.
   X - Value whose log base N to calculate. N must be larger than 0.0.
 Result:
-
   Log base N of X.
 Quick info:
   Unit: JclMath
@@ -457,12 +417,10 @@ Quick info:
 Summary:
   Returns log base 2.
 Description:
-
   LogBase2 returns the log base 2 of X.
 Parameters:
   X - Value whose log base 2 to calculate. X must be larger than 0.0.
 Result:
-
   Log base 2 of X.
 Quick info:
   Unit: JclMath
@@ -477,12 +435,10 @@ Quick info:
 Summary:
   Returns log base 10.
 Description:
-
   LogBase10 returns the log base 10 of X. This is calculated as Log10(X) := Log.2(X) * Log.10(2)
 Parameters:
   X - Value whose log base 10 to calculate. X must be larger than 0.0.
 Result:
-
   Log base 10 of X.
 Quick info:
   Unit: JclMath
@@ -497,13 +453,11 @@ Quick info:
 Summary:
   Calculates the inverse cosine of X.
 Description:
-
   ArcCos calculates the inverse cosine of X. Meaning it returns the angle whose
   cosine equals X. ArcCos is defined as ArcTan2(Sqrt(1.0 - X*X), X).
 Parameters:
   X - Value for which to calculate the inverse cosine. Absolute value of X must be smaller than 1.0.
 Result:
-
   The inverse cosine of X in radians.
 Quick info:
   Unit: JclMath
@@ -518,13 +472,11 @@ Quick info:
 Summary:
   Calculates the inverse hyperbolic cosine.
 Description:
-
   ArcCosH calculates the inverse hyperbolic cosine of X. ArcCosH is defined as
   Ln(X + Sqrt(X * X - 1).
 Parameters:
   X - Value for which to calculate the inverse hyperbolic cosine. Must be greater than or equal to 1.0.
 Result:
-
   The inverse hyperbolic cosine of X.
 Quick info:
   Unit: JclMath
@@ -539,13 +491,11 @@ Quick info:
 Summary:
   Calculates the inverse of cotangent.
 Description:
-
   ArcCot calculates the inverse cotangent. Meaning it returns the angle whose
   cotangent equals X. ArcCot is calculated as -Arctan(X) + PI_2.
 Parameters:
   X - Value whose ArcCot to calculate
 Result:
-
   The angle whose cotangent equals X in radians.
 Quick info:
   Unit: JclMath
@@ -560,13 +510,11 @@ Quick info:
 Summary:
   Calculates the inverse hyperbolic cotangent.
 Description:
-
   ArcCotH calculates the inverse hyperbolic CotH. Meaning it returns the value
   whose hyperbolic cotangent equals X. It is defined as Ln((X + 1.0) / (X - 1.0)) / 2.0.
 Parameters:
   X - The value whose ArcCotH to calculate. Absolute value of X must be inequal to 1.0.
 Result:
-
   ArcCoth of X.
 Quick info:
   Unit: JclMath
@@ -581,13 +529,11 @@ Quick info:
 Summary:
   Calculates the inverse cosecant.
 Description:
-
   ArcCsc calculates the inverse cosecant. Meaning it returns the angle whose cosecant equals X.
   ArcCsc is calculated as ArcTan(1.0 / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PI_2.
 Parameters:
   X - Value whose ArcCsc to calculate. Absolute value of X must be smaller than 1.0.
 Result:
-
   The angle, in radians, whose cosecant equals X.
 Quick info:
   Unit: JclMath
@@ -602,13 +548,11 @@ Quick info:
 Summary:
   Calculates the inverse hyperbolic cosecant.
 Description:
-
   ArcCscH calculates the inverse hyperbolic cosecant. Meaning, it returns the value
   whose hyperbolic cosecant equals X. ArcCscH is calculates as Ln((Sgn(X) * Sqrt (Sqr(X) + 1.0) + 1.0) / X)
 Parameters:
   X - Value whose ArcCscH to calculate, cannot be 0.0.
 Result:
-
   ArcCscH of X.
 Quick info:
   Unit: JclMath
@@ -623,13 +567,11 @@ Quick info:
 Summary:
   Calculates the inverse Sec.
 Description:
-
   ArcSec calculates the inverse secant of X. Meaning it returns the angle whose
   secant equals X.
 Parameters:
   X - Value whose ArcSec to calculate. Absolute value of X must be smaller than 1.0.
 Result:
-
   ArcSec of X in radians.
 Quick info:
   Unit: JclMath
@@ -644,13 +586,11 @@ Quick info:
 Summary:
   Calculates the inverse hyperbolic secant.
 Description:
-
   Calculates the inverse hyperbolic secant. Meaning it returns the value whose hyperbolic
   secant equals X. ArcSecH is calculated as Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X).
 Parameters:
   X - Value whose ArcSecH to calculate. X must be smaller than or equal to 1.0.
 Result:
-
   Inverse hyperbolic secant of X.
 Quick info:
   Unit: JclMath
@@ -665,13 +605,11 @@ Quick info:
 Summary:
   Calculates the inverse sine.
 Description:
-
   ArcSin calculates the inverse sine. Meaning it returns the angle whose sine
   equals X.
 Parameters:
   X - The value whose inverse sine to calculate. X must be smaller than or equal to 1.0.
 Result:
-
   ArcSin of X in radians.
 Quick info:
   Unit: JclMath
@@ -686,13 +624,11 @@ Quick info:
 Summary:
   Calculates the inverse hyperbolic sine.
 Description:
-
   ArcSinH calculates the inverse hyperbolic sine of X. Meaning it returns the value
   whose hyperbolic sine equals X.
 Parameters:
   X - Value whose ArcSinH to calculate.
 Result:
-
   ArcSinH of X
 Quick info:
   Unit: JclMath
@@ -707,13 +643,11 @@ Quick info:
 Summary:
   Calculates the inverse tangent
 Description:
-
   ArcTan calculates the inverse tangent of X. Meaning it returns the angle whose
   tangent equals X.
 Parameters:
   X - Value whose inverse tangent to calculate.
 Result:
-
   Inverse tangent of X.
 Quick info:
   Unit: JclMath
@@ -728,14 +662,12 @@ Quick info:
 Summary:
   Calculates the inverse tangent of Y / X
 Description:
-
   ArcTan2 calculates the inverse tangent of Y / X. Meaning it returns the angle
   whose tangent equals Y / X.
 Parameters:
   Y - The value of Y in Y / X.
   X - The value of X in Y / X.
 Result:
-
   The inverse tangent of Y / X in radians.
 Quick info:
   Unit: JclMath
@@ -750,12 +682,10 @@ Quick info:
 Summary:
   Returns the inverse hyperbolic tangent of X
 Description:
-
   Returns the inverse hyperbolic tangent of X.
 Parameters:
   X - Value whose inverse hyperbolic tangent to calculate.
 Result:
-
   Inverse hyperbolic tangent of X.
 Quick info:
   Unit: JclMath
@@ -770,12 +700,10 @@ Quick info:
 Summary:
   Calculates the cosine of X
 Description:
-
   Calculates the cosine of X.
 Parameters:
   X - Angle, in radians, whose cosine to calculate.
 Result:
-
   Cosine of X.
 Quick info:
   Unit: JclMath
@@ -790,12 +718,10 @@ Quick info:
 Summary:
   Returns the hyperbolic cosine of X.
 Description:
-
   Returns the hyperbolic cosine of X. CosH is calculated as [Exp(X) + Exp(-X)] / 2.0.
 Parameters:
   X - Value whose CosH to calculate.
 Result:
-
   Hyperbolic cosine of X.
 Quick info:
   Unit: JclMath
@@ -810,12 +736,10 @@ Quick info:
 Summary:
   Returns the cotangent of the argument.
 Description:
-
   Cot returns the cotangent of X. Cot(X) is defined as 1.0 / Tan(X).
 Parameters:
   X - Angle, in radians, whose cotangent to calculate.
 Result:
-
   Cotangent of X.
 Quick info:
   Unit: JclMath
@@ -830,12 +754,10 @@ Quick info:
 Summary:
   Returns the hyperbolic cotangent of X.
 Description:
-
   Returns the hyperbolic cotangent of X. TODO add formula
 Parameters:
   X - Value whose hyperbolic cotangent to calculate.
 Result:
-
   TODO
 Quick info:
   Unit: JclMath
@@ -850,12 +772,10 @@ Quick info:
 Summary:
   Returns the reciprocal of the sine of X.
 Description:
-
   Returns the reciprocal of the sine of X (cosecant). Meaning, Csc(X) := 1.0 / Sin(X).
 Parameters:
   X - Angle, in radians, whose Csc to calculate.
 Result:
-
   Cosecant of X.
 Quick info:
   Unit: JclMath
@@ -870,12 +790,10 @@ Quick info:
 Summary:
   Hyperbolic Cosecant (csc).
 Description:
-
   Returns the hyperbolic cosecant of X. This is defined as 2.0 / (Exp(X) - Exp(-X)).
 Parameters:
   X - Value whose hyperbolic cosecant to calculate.
 Result:
-
   Hyperbolic cosecant of X.
 Quick info:
   Unit: JclMath
@@ -890,12 +808,10 @@ Quick info:
 Summary:
   Returns the reciprocal of the cosine of the argument.
 Description:
-
   Returns the reciprocal of the cosine of X, meaning: Sec(X) = 1.0 / Cos(X).
 Parameters:
   X - Angle, in radians, whose Sec to calculate.
 Result:
-
   Secant of X.
 Quick info:
   Unit: JclMath
@@ -910,12 +826,10 @@ Quick info:
 Summary:
   Returns the hyperbolic secant of the argument.
 Description:
-
   SecH calculates the hyperbolic secant of X, which is defined as 2.0 / (Exp(X) + Exp(-X))
 Parameters:
   X - Value whose hyperbolic secant to calculate.
 Result:
-
   Hyperbolic secant of X.
 Quick info:
   Unit: JclMath
@@ -930,12 +844,10 @@ Quick info:
 Summary:
   Returns the sine of the argument.
 Description:
-
   Sin calculates the sine of X.
 Parameters:
   X - Angle, in radians, whose sine to calculate.
 Result:
-
   Sine of X.
 Quick info:
   Unit: JclMath
@@ -950,7 +862,6 @@ Quick info:
 Summary:
   Calculates the sine and cosine of the argument.
 Description:
-
   SinCos calculates both the sine and cosine of the angle X in one call. This is
   much faster than calling Sin() and Cos() separately.
 Parameters:
@@ -970,12 +881,10 @@ Quick info:
 Summary:
   Returns the hyperbolic sine of the argument.
 Description:
-
   SinH returns the hyperbolic sine of X. This is defined as [Exp(X) - Exp(-X)] / 2.0.
 Parameters:
   X - Value whose hyperbolic sine to calculate.
 Result:
-
   Hyperbolic sine of X.
 Quick info:
   Unit: JclMath
@@ -990,12 +899,10 @@ Quick info:
 Summary:
   Returns the tangent of the argument.
 Description:
-
   Tan calculates the tangent of X. The tangent is defines as Sin(X) / Cos(X).
 Parameters:
   X - Angle, in radians, whose tangent to calculate.
 Result:
-
   Tangent of X.
 Quick info:
   Unit: JclMath
@@ -1010,13 +917,11 @@ Quick info:
 Summary:
   Returns the hyperbolic tangent of the argument.
 Description:
-
   TanH calculates the hyperbolic tangent of X which is defined
   as [Sqr(Exp(X)) - 1.0] / [Sqr(Exp(X)) + 1.0].
 Parameters:
   X - Value whose hyperbolic tangent to calculate.
 Result:
-
   Hyperbolic tangent of X.
 Quick info:
   Unit: JclMath
@@ -1031,7 +936,6 @@ Quick info:
 Summary:
   Returns Base to the power Exponent.
 Description:
-
   Power calculates Base to the power Exponent. If Base equals 0 the result is 0,
   if Exponent equals 0 the result is 1. If the exponent is an integer as opposed to
   a floating point value you should use PowerInt instead.
@@ -1039,7 +943,6 @@ Parameters:
   Base - Base value.
   Exponent - Exponent value.
 Result:
-
   Base to the power Exponent.
 Quick info:
   Unit: JclMath
@@ -1054,12 +957,10 @@ Quick info:
 Summary:
   Return the nearest integer value above X.
 Description:
-
   Return the nearest integer value above X.
 Parameters:
   X - The value to return the ceiling of.
 Result:
-
   Nearest integer value above X.
 Quick info:
   Unit: JclMath
@@ -1074,12 +975,10 @@ Quick info:
 Summary:
   Return the nearest integer value below X.
 Description:
-
   Return the nearest integer value below X.
 Parameters:
   X - The value to floor.
 Result:
-
   Nearest integer value below X.
 Quick info:
   Unit: JclMath
@@ -1094,14 +993,12 @@ Quick info:
 Summary:
   Returns the factorial of the argument.
 Description:
-
   Factorial returns the factorial of N. Factorial is defined as the product of 1..N,
   or 1 * 2 * 3 ... N. This value grows very rapidly; to avoid an
   overflow N must be smaller than 14.
 Parameters:
   X - The value whose factorial to calculate. N must be smaller than 14.
 Result:
-
   Factorial of N.
 Quick info:
   Unit: JclMath
@@ -1116,14 +1013,12 @@ Quick info:
 Summary:
   Returns the smaller of the arguments
 Description:
-
   MinFloat returns the smaller value of the two arguments. I.e. if X &lt; Y the result
   is X, otherwise the result is Y.
 Parameters:
   X - Value 1.
   Y - Value 2.
 Result:
-
   The smaller of the two arguments.
 Quick info:
   Unit: JclMath
@@ -1138,14 +1033,12 @@ Quick info:
 Summary:
   Returns the larger of the two arguments.
 Description:
-
   MaxFloat returns the larger value of the two arguments. I.e. if X &gt; Y the result
   is X, otherwise it's Y.
 Parameters:
   X - Value 1.
   Y - Value 2.
 Result:
-
   The larger of the two arguments.
 Quick info:
   Unit: JclMath
@@ -1160,13 +1053,11 @@ Quick info:
 Summary:
   Returns the sign of the argument.
 Description:
-
   Sgn returns the sign of X. If X &gt; 0 the result is 1, if X &lt; 0 the result is -1,
   and finally if X = 0 the result is 0.
 Parameters:
   X - Value whose sign to determine.
 Result:
-
   Sign of X expressed as -1, 0 or +1.
 Quick info:
   Unit: JclMath
@@ -1181,13 +1072,11 @@ Quick info:
 Summary:
   Returns the value of X with the same sign as Y.
 Description:
-
   The result is the value of X with the same sign (positive or negative) as Y. If Y is zero, the result will be -X (the value of X with the sign reversed). If X is zero, the result will always be 0.
 Parameters:
   X - The value you wish to assign a sign to.
   Y - The value that has the desired sign to assign to X.
 Result:
-
   The value of X with the sign (positive or negative) of Y.
 Quick info:
   Unit: JclMath
@@ -1202,7 +1091,6 @@ Quick info:
 Summary:
   Comments on the CRC method used here
 Description:
-
   The CRC method used here is a quite "native" translation of a hardware CRC generator to software.
   The data array is interpreted as a bit stream with Byte 0 Bit 7 sent first.
   Mathematically when calculating an m-Bit CRC on a n Byte data-array, this is like calculating the "modulus" of an
@@ -1231,7 +1119,6 @@ Quick info:
 Summary:
   Checks and, if possible, corrects the data protected by a 32 bit CRC.
 Description:
-
   Checks and, if possible, corrects the data protected by the same 32 bit CRC the function Crc32 uses.
   With  a 32 bit CRC a single bit error in 2^31-32 bit (2^28-4 = 268435454 byte) of data can be corrected.
   Beware that when trying to correct an error in a greater array of bytes, you will not get an error indicator but
@@ -1242,7 +1129,6 @@ Parameters:
   N - The number of elements in X. CheckCrc32_A uses all bytes in the array X.
   Crc - Transmitted CRC value to check the data against.
 Result:
-
    
    * 0 No CRC error.
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
@@ -1261,7 +1147,6 @@ Quick info:
 Summary:
   Calculates or checks a 32 Bit CRC.
 Description:
-
   32 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
   with a 32 bit CRC any single and double bit error can be detected. By far most multiple bit errors
   are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
@@ -1277,7 +1162,6 @@ Parameters:
   N - The number of elements in X. Crc32_A calculates the checksum of all bytes in the array X.
   Crc - (optional) if not defined or = 0: Crc32 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
 Result:
-
    
    * If on input CRC not defined or = 0: The result is the created CRC.
    * If on input CRC is defined: The result is 0 if the CRC was OK,
@@ -1297,7 +1181,6 @@ Quick info:
 Summary:
   Defines a new polynomial and starting value for the 32 bit CRC functions.
 Description:
-
   Defines a new "generator polynomial" and starting value for the 32 bit CRC functions. Beware that the check and the correction
   only works if the polynomial is "appropriate". Two of these polynomials are predefined: Crc32PolynomCCITT = $04C11DB7
   represents the polynomial x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1 that is
@@ -1310,7 +1193,6 @@ Parameters:
   polynomial - Generator polynomial to be used with subsequent calls to 32 bit CRC functions. The polynomial is given without the highest bit (bit x^32)
   Start - 32 bit starting value to be used with subsequent calls to 32 bit CRC functions
 Notes:
-
   As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, which temporarily sets {$J+} for the CRC functions.
 Quick info:
   Unit: JclMath
@@ -1325,7 +1207,6 @@ Quick info:
 Summary:
   Checks and, if possible, corrects the data protected by a 16 bit CRC.
 Description:
-
   Checks and, if possible, corrects the data protected by the same 16 bit CRC the function Crc16 uses.
   With  a 16 bit CRC a single bit error in 2^15-16 bit (2^12-2 = 4094 byte) of data can be corrected.
   Beware that when trying to correct an error in a greater array of bytes, you will not get an error indicator but
@@ -1336,7 +1217,6 @@ Parameters:
   N - The number of elements in X. CheckCrc16_A uses all bytes in the array X.
   Crc - Transmitted CRC value to check the data against.
 Result:
-
    
    * 0 No CRC error.
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
@@ -1355,7 +1235,6 @@ Quick info:
 Summary:
   Calculates or checks a 16 Bit CRC.
 Description:
-
   16 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
   with a 16 bit CRC any single and double bit error can be detected. By far most multiple bit errors
   are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
@@ -1371,7 +1250,6 @@ Parameters:
   N - The number of elements in X. Crc16_A calculates the checksum of all bytes in the array X.
   Crc - (optional) if not defined or = 0: Crc16 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
 Result:
-
    
    * If on input CRC not defined or = 0: The result is the created CRC.
    * If on input CRC is defined: The result is 0 if the CRC was OK,
@@ -1391,7 +1269,6 @@ Quick info:
 Summary:
   Defines a new polynomial and starting value for the 16 bit CRC functions.
 Description:
-
   Defines a new "generator polynomial" and starting value for the 16 bit CRC functions. Beware that the check and the correction
   only works if the polynomial is "appropriate". Two of these polynomials are predefined: Crc16PolynomCCITT = $1021
   represents the polynomial x^16 + x^12 + x^5 + 1 that is
@@ -1403,7 +1280,6 @@ Parameters:
   polynomial - Generator polynomial to be used with subsequent calls to 16 bit CRC functions. The polynomial is given without the highest bit (bit x^16)
   Start - 16 bit starting value to be used with subsequent calls to 16 bit CRC functions
 Notes:
-
   As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, which temporarily sets {$J+} for the CRC functions.
 Quick info:
   Unit: JclMath
@@ -1418,7 +1294,6 @@ Quick info:
 Summary:
   Describes the hierarchy of floating point classes.
 Description:
-
   Enumeration which describes the classes into which floating point encodings can
   be divided. Their relations are as follows: A floating point encoding can be
   either supported by the hardware or unsupported (<I>fpInvalid</I>). Supported
@@ -1471,12 +1346,10 @@ Quick info:
 Summary:
   Classifies the supplied floating point value.
 Description:
-
   Classifies the supplied floating point value.
 Parameters:
   Value - The value to classify.
 Result:
-
   The result is the class to which <I>Value</I> belongs.
 Quick info:
   Unit: JclMath
@@ -1491,12 +1364,10 @@ Quick info:
 Summary:
   Determines whether <I>Value</I> is infinite.
 Description:
-
   Determines whether <I>Value</I> is infinite.
 Parameters:
   Value - The floating point value to examine.
 Result:
-
   The result is True when <I>Value</I> is infinite, False otherwise.
 Quick info:
   Unit: JclMath
@@ -1511,12 +1382,10 @@ Quick info:
 Summary:
   Determines whether <I>Value</I> is a NaN.
 Description:
-
   Determines whether <I>Value</I> is a NaN.
 Parameters:
   Value - The floating point value to examine.
 Result:
-
   The result is True when <I>Value</I> is a NaN, False otherwise.
 Quick info:
   Unit: JclMath
@@ -1531,7 +1400,6 @@ Quick info:
 Summary:
   The data type used by JCL routines for tagging numeric information to NaN values.
 Description:
-
   The data type used by JCL routines for tagging numeric information to NaN values.
 Quick info:
   Unit: JclMath
@@ -1546,12 +1414,10 @@ Quick info:
 Summary:
   Retrieves some numeric information tagged to the NaN value.
 Description:
-
   Retrieves some numeric information tagged to the NaN value.
 Parameters:
   NaN - The NaN value to evaluate.
 Result:
-
   The value encoded in the NaN.
 Quick info:
   Unit: JclMath
@@ -1566,7 +1432,6 @@ Quick info:
 Summary:
   Makes X a quiet NaN.
 Description:
-
   Makes a floating point variable X a quiet NaN (QNaN).
   A QNaN is a NaN with the most significant fraction bit set.
   QNaNs, in contrast to signaling NaNs (SNaNs), are allowed to propagate
@@ -1587,7 +1452,6 @@ Quick info:
 Summary:
   Makes X a signaling NaN.
 Description:
-
   Makes a floating point variable X a signaling NaN (SNaN). An SNaN is a NaN with
   the most significant fraction bit clear.
   SNaNs generally signal an floating-point invalidoperation exception whenever
@@ -1611,7 +1475,6 @@ Quick info:
 Summary:
   MineSingleBuffer fills the buffer with consecutive tagged signaling NaNs.
 Description:
-
   MineSingleBuffer fills the buffer with consecutive tagged signaling NaNs. This
   allows for real number arrays which enforce initialization: any attempt to load
   an uninitialized array element into the FPU will raise an exception either of
@@ -1635,7 +1498,6 @@ Quick info:
 Summary:
   MineDoubleBuffer fills the buffer with consecutive tagged signaling NaNs.
 Description:
-
   MineDoubleBuffer fills the buffer with consecutive tagged signaling NaNs. This
   allows for real number arrays which enforce initialization: any attempt to load
   an uninitialized array element into the FPU will raise an exception either of
