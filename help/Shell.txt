@@ -243,10 +243,15 @@ Count=7
 [Notes]
 Count=1
 1=The returned icons are the 'plain' icons. You can use code such as below to
-transform them into how the shell displays them:
-if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then OverlayIconShared(F.IconLarge, F.IconSmall);
-You can also use the Folder member to get additional info about the found item:
-S := GetItemInfoTip(F.Folder, F.Item);
+transform them into how the shell displays them:<BR>
+  <P class="syntax">
+  if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then<BR>
+    OverlayIconShared(F.IconLarge, F.IconSmall);<BR>
+  </P>
+You can also use the Folder member to get additional info about the found item:<BR>
+  <P class="syntax">
+  S := GetItemInfoTip(F.Folder, F.Item);
+  </P>
 [Quick Info]
 BCB=3,4,5
 Kind=Type
@@ -696,6 +701,91 @@ Requirements=Shell32 Version 4.71 or later.
 [SeeAlso]
 Count=1
 1=TDllVersionInfo;Types\TDllVersionInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellExec(const FileName: string; const Parameters: string; const Verb: string; CmdShow: Integer): Boolean;
+[ShortDescr]
+Performs an action on a file.
+[Description]
+ShellExex is a wrapper for the Win32 API function ShellExecuteEx which alleviates
+removes some of the complexities of this function by providing defaults for some
+of it's lesser used parameters. This function performs an action specified on a
+file which can be anything from executing the file to opening it using the associated
+editor.
+[Parameters]
+Count=4
+1=FileName:string=Name of the file or object on which to perform the action.
+2=Parameters:string=Application parameters. The parameters must be separated by
+spaces. To include double quotation marks, enclose each mark in a pair of quotation
+marks. This parameter defaults to an empty string.
+3=Verb:string=Specifies the action to be performed. The available verbs
+depend on the type of object specified in the FileName parameter but some of the
+more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK
+documentation for more information. This parameter defaults to an empty string
+which causes the default verb to be executed (usually 'open').
+4=CmdShow:Integer=Flags that specify how the application should display when it's
+opened. See the Platform SDK documentation on ShellExecute for more information.
+Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. You can call
+GetLastError to get more detailed information about the reason of failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Shell32 Version 4.00 or later.
+[SeeAlso]
+Count=1
+1=ShellExecAndWait
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellExecAndWait(const FileName: string; const Parameters: string; const Verb: string; CmdShow: Integer): Boolean;
+[ShortDescr]
+Performs an action on a file.
+[Description]
+ShellExexAndWait is a wrapper for the Win32 API function ShellExecuteEx which alleviates
+removes some of the complexities of this function by providing defaults for some
+of it's lesser used parameters. This function performs an action specified on a
+file which can be anything from executing the file to opening it using the associated
+editor. This routine is identical to ShellExec except that this function waits
+for the action to be completed. For example, when using this file to open a html
+document, the function will launch the default webbrowser and then wait until the
+browser is terminated, only then will this function return to it's caller.
+[Parameters]
+Count=4
+1=FileName:string=Name of the file or object on which to perform the action.
+2=Parameters:string=Application parameters. The parameters must be separated by
+spaces. To include double quotation marks, enclose each mark in a pair of quotation
+marks. This parameter defaults to an empty string.
+3=Verb:string=Specifies the action to be performed. The available verbs
+depend on the type of object specified in the FileName parameter but some of the
+more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK
+documentation for more information. This parameter defaults to an empty string
+which causes the default verb to be executed (usually 'open').
+4=CmdShow:Integer=Flags that specify how the application should display when it's
+opened. See the Platform SDK documentation on ShellExecute for more information.
+Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. You can call
+GetLastError to get more detailed information about the reason of failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Shell32 Version 4.00 or later.
+[SeeAlso]
+Count=1
+1=ShellExec
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
