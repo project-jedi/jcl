@@ -276,6 +276,7 @@
   SUPPORTS_PLATFORM             Compiler supports the platform directive (D6+/BCB6+)
   SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
   SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
+  SUPPORTS_INLINE               Compiler supports the inline directive (D9+)
   ACCEPT_DEPRECATED             Compiler supports or ignore the deprecated directive (D6/BCB6/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignore the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignore the library directive (D6+/BCB6+)
@@ -942,6 +943,10 @@
   {$DEFINE SUPPORTS_UNSAFE_WARNINGS}
 {$ENDIF COMPILER7_UP}
 
+{$IFDEF COMPILER9_UP}
+  {$DEFINE SUPPORTS_INLINE}
+{$ENDIF COMPILER9_UP}
+
 {$IFDEF RTL140_UP}
   {$IFDEF LINUX}
     {$DEFINE HAS_UNIT_LIBC}
@@ -1019,6 +1024,9 @@
 // History:
 
 // $Log$
+// Revision 1.21  2005/02/22 07:36:46  marquardt
+// introduced SUPPORTS_INLINE
+//
 // Revision 1.20  2004/11/18 00:57:13  rrossmair
 // - check-in for release 1.93
 //
