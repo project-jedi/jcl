@@ -1,134 +1,133 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclDateTime.pas.                                        }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Routines for working with dates and times. Mostly conversion between the     }
-{ different formats but also some date testing routines (is leap year? etc)    }
-{                                                                              }
-{ Unit Owner: Michael Schnell                                                  }
-{ Last modified: June 18, 2000                                                 }
-{                                                                              }
-{******************************************************************************}
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclDateTime.pas.                                                                }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C)                       }
+{ of these individuals.                                                                            }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Routines for working with dates and times. Mostly conversion between the                         }
+{ different formats but also some date testing routines (is leap year? etc)                        }
+{                                                                                                  }
+{ Unit Owner: Michael Schnell                                                                      }
+{ Last modified: June 18, 2000                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
 
-{******************************************************************************}
-{                                                                              }
-{ Modifications by MSchnell:                                                   }
-{ 000622:                                                                      }
-{                                                                              }
-{ Name changed GetCenturyOfDate -> CenturyOfDate                               }
-{                                                                              }
-{ Name changed GetCenturyBaseYear -> CenturyBaseYear                           }
-{                                                                              }
-{ function GetWeekNumber(Today: TDateTime): string;  ->                        }
-{ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;}
-{                                                                              }
-{ Added overload function IsLeapYear(Year: Integer): Boolean;                  }
-{ to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear       }
-{ IsLeapYear is now using SysUtils.IsLeapYear                                  }
-{                                                                              }
-{ Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->        }
-{ function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;              }
-{ now not calling DecodeTime any more                                          }
-{                                                                              }
-{ Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer           }
-{                                                                              }
-{ 000624:                                                                      }
-{ DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate}
-{  so let's have Delphi do the work here                                       }
-{ DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime}
-{  so let's have Delphi do the work here                                       }
-{                                                                              }
-{ DosDateTimeToStr does not use FileTime any more                              }
-{                                                                              }
-{ Added function DateTimeToFileTime                                            }
-{ Added function LocalDateTimeToFileTime                                       }
-{ Changed function  FileTimeToDateTime                                         }
-{           not using TSystemDate and avoid systemcalls                        }
-{ Changed function  FileTimeToLocalDateTime                                    }
-{           not using TSystemDate and avoid systemcalls                        }
-{                                                                              }
-{ 000625:                                                                      }
-{ Added function SystemTimeToFileTime                                          }
-{ Added function FieTimeToSystemTime                                           }
-{ Added function Datetimetosystemtime                                          }
-{ Added function DosDateTimeToFileTime                                         }
-{ Added function FileTimeToDosDateTime                                         }
-{ Added function SystemTimeToStr                                               }
-{                                                                              }
-{ 000706:                                                                      }
-{ Formatted according to style rules                                           }
-{                                                                              }
-{ 000708:                                                                      }
-{ Swapped function names CenturyOfDate and CenturyBaseYear                     }
-{ those were obviously called wrong before                                     }
-{ Attention: must be done in the Help, too                                     }
-{                                                                              }
-{ 000716:                                                                      }
-{ Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate}
-{                                                                              }
-{ 000809:                                                                      }
-{ added functions                                                              }
-{ CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile }
-{                                                                              }
-{ 000828:                                                                      }
-{ added function MakeYear4Digit                                                }
-{                                                                              }
-{ 000907:                                                                      }
-{ added ISOWeekNumber with 1 and 3 parameters                                  }
-{                                                                              }
-{ 000912:                                                                      }
-{ more elegant code for ISOWeekNumber                                          }
-{ added ISOWeekToDateTime                                                      }
-{ added overload for ISOWeekNumber with three integer parameters               }
-{                                                                              }
-{ 000914                                                                       }
-{ added functions DayOfTheYear and DayOfTheYearToDateTime                      }
-{                                                                              }
-{ 000918                                                                       }
-{ added function FormatDateTime                                                }
-{                                                                              }
-{ 001015                                                                       }
-{ avoiding "absolute" (in locations where stated)                              }
-{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate}
-{ added function FATDatesEqual                                                 }
-{                                                                              }
-{ 001019                                                                       }
-{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
-{                                                                              }
-{ 010210                                                                       }
-{ added overload procedures for compatibility:                                 }
-{    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,       }
-{    FileTimeToSystemTime, SystemTimeToFileTime                                }
-
-
-{ TODO:                                                                        }
-{ Help for FATDatesEqual                                                       }
-
-
-{ in Help:                                                                     }
-{  We do all conversions (but thoses provided by Delphi anyway)  between       }
-{  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus             }
-{  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                   }
-{                                                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Modifications by MSchnell:                                                                       }
+{ 000622:                                                                                          }
+{                                                                                                  }
+{ Name changed GetCenturyOfDate -> CenturyOfDate                                                   }
+{                                                                                                  }
+{ Name changed GetCenturyBaseYear -> CenturyBaseYear                                               }
+{                                                                                                  }
+{ function GetWeekNumber(Today: TDateTime): string;  ->                                            }
+{ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;                }
+{                                                                                                  }
+{ Added overload function IsLeapYear(Year: Integer): Boolean;                                      }
+{ to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear                           }
+{ IsLeapYear is now using SysUtils.IsLeapYear                                                      }
+{                                                                                                  }
+{ Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->                            }
+{ function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;                                  }
+{ now not calling DecodeTime any more                                                              }
+{                                                                                                  }
+{ Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer                               }
+{                                                                                                  }
+{ 000624:                                                                                          }
+{ DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate                    }
+{  so let's have Delphi do the work here                                                           }
+{ DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime                    }
+{  so let's have Delphi do the work here                                                           }
+{                                                                                                  }
+{ DosDateTimeToStr does not use FileTime any more                                                  }
+{                                                                                                  }
+{ Added function DateTimeToFileTime                                                                }
+{ Added function LocalDateTimeToFileTime                                                           }
+{ Changed function  FileTimeToDateTime                                                             }
+{           not using TSystemDate and avoid systemcalls                                            }
+{ Changed function  FileTimeToLocalDateTime                                                        }
+{           not using TSystemDate and avoid systemcalls                                            }
+{                                                                                                  }
+{ 000625:                                                                                          }
+{ Added function SystemTimeToFileTime                                                              }
+{ Added function FieTimeToSystemTime                                                               }
+{ Added function Datetimetosystemtime                                                              }
+{ Added function DosDateTimeToFileTime                                                             }
+{ Added function FileTimeToDosDateTime                                                             }
+{ Added function SystemTimeToStr                                                                   }
+{                                                                                                  }
+{ 000706:                                                                                          }
+{ Formatted according to style rules                                                               }
+{                                                                                                  }
+{ 000708:                                                                                          }
+{ Swapped function names CenturyOfDate and CenturyBaseYear                                         }
+{ those were obviously called wrong before                                                         }
+{ Attention: must be done in the Help, too                                                         }
+{                                                                                                  }
+{ 000716:                                                                                          }
+{ Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate                 }
+{                                                                                                  }
+{ 000809:                                                                                          }
+{ added functions                                                                                  }
+{ CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile                     }
+{                                                                                                  }
+{ 000828:                                                                                          }
+{ added function MakeYear4Digit                                                                    }
+{                                                                                                  }
+{ 000907:                                                                                          }
+{ added ISOWeekNumber with 1 and 3 parameters                                                      }
+{                                                                                                  }
+{ 000912:                                                                                          }
+{ more elegant code for ISOWeekNumber                                                              }
+{ added ISOWeekToDateTime                                                                          }
+{ added overload for ISOWeekNumber with three integer parameters                                   }
+{                                                                                                  }
+{ 000914                                                                                           }
+{ added functions DayOfTheYear and DayOfTheYearToDateTime                                          }
+{                                                                                                  }
+{ 000918                                                                                           }
+{ added function FormatDateTime                                                                    }
+{                                                                                                  }
+{ 001015                                                                                           }
+{ avoiding "absolute" (in locations where stated)                                                  }
+{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate              }
+{ added function FATDatesEqual                                                                     }
+{                                                                                                  }
+{ 001019                                                                                           }
+{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)                      }
+{                                                                                                  }
+{ 010210                                                                                           }
+{ added overload procedures for compatibility:                                                     }
+{    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,                           }
+{    FileTimeToSystemTime, SystemTimeToFileTime                                                    }
+{                                                                                                  }
+{                                                                                                  }
+{ TODO:                                                                                            }
+{ Help for FATDatesEqual                                                                           }
+{                                                                                                  }
+{                                                                                                  }
+{ in Help:                                                                                         }
+{  We do all conversions (but thoses provided by Delphi anyway)  between                           }
+{  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus                                 }
+{  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                                       }
+{                                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclDateTime;
 
@@ -141,6 +140,8 @@ interface
 uses
   Windows, SysUtils,
   JclBase, JclResources;
+
+{ Encode / Decode functions }
 
 function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime;
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
@@ -155,15 +156,19 @@ function YearOfDate(const DateTime: TDateTime): Integer;
 function DayOfTheYear(const DateTime: TDateTime; var Year: Integer): Integer; overload;
 function DayOfTheYear(const DateTime: TDateTime): Integer; overload;
 function DayOfTheYearToDateTime(const Year, Day: Integer): TDateTime;
-
 function HourOfTime(const DateTime: TDateTime): Integer;
 function MinuteOfTime(const DateTime: TDateTime): Integer;
 function SecondOfTime(const DateTime: TDateTime): Integer;
+
+{ ISO 8601 support }
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime): Integer; overload;
 function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
+
+{ Miscellanous }
+
 function IsLeapYear(const Year: Integer): Boolean; overload;
 function IsLeapYear(const DateTime: TDateTime): Boolean; overload;
 function DaysInMonth(const DateTime: TDateTime): Integer;
@@ -174,9 +179,9 @@ function FormatDateTime(Form: string; DateTime: TDateTime): string;
 function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean; overload;
 function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean; overload;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Conversion
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TDosDateTime = Integer;
@@ -216,9 +221,9 @@ function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overloa
 procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime : TFileTime); overload;
 function SystemTimeToStr(const SystemTime: TSystemTime): string;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Filedates
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
@@ -256,7 +261,7 @@ const
   //   7 : first full week
   ISOFirstWeekMinDays = 4;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 begin
@@ -277,14 +282,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word);
 begin
   SysUtils.DecodeDate(Date, Year, Month, Day);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer);
 var
@@ -295,7 +300,7 @@ begin
   Day := WDay;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); 
 var
@@ -314,12 +319,12 @@ begin
       Year := Year - 1
               // for some historical reason year 0 does not exist so we switch from
               // the last day of year -1 (-693594) to the first days of year 1
-    else                                      // Year >= 10000
-      Date := Date - SolarDifference;         // guarantee a smooth transition at 1/1/10000
+    else                                    // Year >= 10000
+      Date := Date - SolarDifference;       // guarantee a smooth transition at 1/1/10000
     RDays := Date - DateTimeBaseDay;        // Days relative to 1/1/0001
-    RMonths := RDays / DaysPerMonth;          // "Months" relative to 1/1/0001
-    RMonths := RMonths - Year * 12.0;         // 12 "Months" per Year
-    if RMonths < 0 then                       // possible truncation glitches
+    RMonths := RDays / DaysPerMonth;        // "Months" relative to 1/1/0001
+    RMonths := RMonths - Year * 12.0;       // 12 "Months" per Year
+    if RMonths < 0 then                     // possible truncation glitches
     begin
       RMonths := 11;
       Year := Year - 1;
@@ -330,12 +335,12 @@ begin
     RDays := RDays - Year * DaysPerYear;    // subtract Base Day ot the year
     RDays := RDays - RMonths * DaysPerMonth;// subtract Base Day of the month
     Day := Trunc (RDays)+ 1;
-    if Year > 0 then                          // Year >= 10000
-      Year := Year + 1;                      // BaseDate is 1/1/1
+    if Year > 0 then                        // Year >= 10000
+      Year := Year + 1;                     // BaseDate is 1/1/1
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ResultCheck(Val: LongBool);
 begin
@@ -343,7 +348,7 @@ begin
     raise EJclDateTimeError.Create(RsDateConversion);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CenturyBaseYear(const DateTime: TDateTime): Integer;
 var
@@ -355,7 +360,7 @@ begin
     Result := Result - 100;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CenturyOfDate(const DateTime: TDateTime): Integer;
 var
@@ -368,7 +373,7 @@ begin
     Result := (Y div 100) - 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DayOfDate(const DateTime: TDateTime): Integer;
 var
@@ -379,7 +384,7 @@ begin
   Result := D;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MonthOfDate(const DateTime: TDateTime): Integer;
 var
@@ -390,7 +395,7 @@ begin
   Result := M;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function YearOfDate(const DateTime: TDateTime): Integer;
 var
@@ -399,7 +404,7 @@ begin
   DecodeDate(DateTime, Result, M, D);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DayOfTheYear(const DateTime: TDateTime; var Year: Integer): Integer;
 var
@@ -412,7 +417,7 @@ begin
   Result := Result - Trunc(DT) + 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DayOfTheYear(const DateTime: TDateTime): Integer;
 var
@@ -421,14 +426,14 @@ begin
   Result := DayOfTheYear(DateTime, Year);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DayOfTheYearToDateTime(const Year, Day: Integer): TDateTime;
 begin
   Result := EncodeDate(Year, 1, 1) + Day - 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function HourOfTime(const DateTime: TDateTime): Integer;
 var
@@ -438,7 +443,7 @@ begin
   Result := H;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MinuteOfTime(const DateTime: TDateTime): Integer;
 var
@@ -448,7 +453,7 @@ begin
   Result := M;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SecondOfTime(const DateTime: TDateTime): Integer;
 var
@@ -458,21 +463,21 @@ begin
   Result := S;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
 begin
   Result := Round(Frac(DateTime) * SecondsPerDay);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
 begin
   Result := Round(Frac(DateTime) * MSecsPerDay);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DaysInMonth(const DateTime: TDateTime): Integer;
 var
@@ -480,12 +485,11 @@ var
 begin
   M := MonthOfDate(DateTime);
   Result := DaysInMonths[M];
-  if M = 2 then
-    if IsLeapYear(DateTime) then
-      Result := 29;
+  if (M = 2) and IsLeapYear(DateTime) then
+    Result := 29;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // DayOfWeek function returns integer 1..7 equivalent to Sunday..Saturday.
 // ISO 8601 weeks start with Monday and the first week of a year is the one which
@@ -501,7 +505,7 @@ begin
   Result := (Trunc(DateTime - EncodeDate(YearOfWeekNumber, 1, 1)) div 7) + 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
 var
@@ -510,7 +514,7 @@ begin
   Result := ISOWeekNumber(DateTime, YearOfWeekNumber, Dummy);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime): Integer;
 var
@@ -519,7 +523,7 @@ begin
   Result := ISOWeekNumber(DateTime, Dummy1, Dummy2);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
 begin
@@ -527,7 +531,7 @@ begin
   Result := Result + (Week - 1) * 7 - ((DayOfWeek(Result) + (7 - ISOFirstWeekDay)) mod 7) + Day - 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // The original Gregorian rule for all who want to learn it
 // Result := (Year mod 4 = 0) and ((Year mod 100 <> 0) or (Year mod 400 = 0));
@@ -537,14 +541,14 @@ begin
   Result := SysUtils.IsLeapYear(Year);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsLeapYear(const DateTime: TDateTime): Boolean;
 begin
   Result := IsLeapYear(YearOfDate(DateTime));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function Make4DigitYear(Year, Pivot: Integer): Integer;
 begin
@@ -560,7 +564,7 @@ begin
     Result := 1900 + Year;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // "window" technique for years to translate 2 digits to 4 digits.
 // The window is 100 years wide
@@ -586,7 +590,7 @@ begin
     Assert(Year = Result);  // Assert: no unwanted century translation
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Calculates and returns Easter Day for specified year.
 // Originally from Mark Lussier, AppVision <MLussier@best.com>.
@@ -654,7 +658,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
@@ -671,7 +675,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function HoursToMSecs(Hours: Integer): Integer;
 begin
@@ -679,7 +683,7 @@ begin
   Result := Hours * MsecsPerHour;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MinutesToMSecs(Minutes: Integer): Integer;
 begin
@@ -687,7 +691,7 @@ begin
   Result := Minutes * MsecsPerMinute;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SecondsToMSecs(Seconds: Integer): Integer;
 begin
@@ -695,7 +699,7 @@ begin
   Result := Seconds * 1000;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // using system calls this can be done like this:
 // var
@@ -710,7 +714,7 @@ begin
   Result := Result + FileTimeBase;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 var
@@ -720,7 +724,7 @@ begin
   Result := FileTimeToDateTime(LocalFileTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
 var
@@ -730,7 +734,7 @@ begin
   ResultCheck(LocalFileTimeToFileTime(LocalFileTime, Result));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 var
@@ -742,7 +746,7 @@ begin
   Result := TFileTime(F64);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
 var
@@ -752,7 +756,7 @@ begin
   Result := FileTimeToSystemTime(FileTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 var
@@ -762,7 +766,7 @@ begin
   Result := FileTimeToDosDateTime(FileTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime
 // not using SysUtils.FileDateToDateTime this can be done like that:
@@ -779,7 +783,7 @@ begin
   Result := SysUtils.FileDateToDateTime(DosTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate
 // not using SysUtils.DateTimeToDosDateTime this can be done like that:
@@ -798,63 +802,63 @@ begin
   Result := SysUtils.DateTimeToFileDate(DateTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 begin
   ResultCheck(Windows.FileTimeToSystemTime(FileTime, Result));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
 begin
   Windows.FileTimeToSystemTime(FileTime, ST);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime;  overload;
 begin
   ResultCheck(Windows.SystemTimeToFileTime(SystemTime, Result));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime: TFileTime); overload;
 begin
   Windows.SystemTimeToFileTime(SystemTime, FTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;  overload;
 begin
   SysUtils.DateTimeToSystemTime(DateTime, Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
 begin
   SysUtils.DateTimeToSystemTime(DateTime, SysTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 begin
   ResultCheck(Windows.DosDateTimeToFileTime(HiWord(DosTime), LoWord(DosTime), Result));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
 begin
   Windows.DosDateTimeToFileTime(DTH, DTL, FT);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
 var
@@ -864,14 +868,14 @@ begin
   Result := (Date shl 16) or Time;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word); overload;
 begin
   Windows.FileTimeToDosDateTime(FileTime, Date, Time);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileTimeToStr(const FileTime: TFileTime): string;
 var
@@ -881,14 +885,14 @@ begin
   Result := DateTimeToStr(DateTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DosDateTimeToStr(DateTime: Integer): string;
 begin
   Result := DateTimeToStr(DosDateTimeToDateTime(DateTime));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // we can't do this better without copying Borland-owned code from the Delphi VCL,
 // as the straight forward conversion doing exactly this task is hidden
@@ -901,28 +905,28 @@ begin
   Result := DateTimeToStr(SystemTimeToDateTime(SystemTime));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
   Result := FileTimeToDateTime(Sr.FindData.ftCreationTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
   Result := FileTimeToDateTime(Sr.FindData.ftLastAccessTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
   Result := FileTimeToDateTime(Sr.FindData.ftLastWriteTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Additional format tokens (also available in upper case):
 // w: Week no according to ISO
@@ -1096,7 +1100,7 @@ begin
   Result := SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // FAT has a granularity of 2 seconds
 // The intervals are /10 of a second
@@ -1108,7 +1112,7 @@ begin
   Result := Abs(FileTime1 - FileTime2) <= ALLOWED_FAT_FILE_TIME_VARIATION;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean;
 begin
