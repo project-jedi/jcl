@@ -575,10 +575,13 @@ property AddressType: string read FAddressType write FAddressType;
 [ShortDescr]
 Determines the address type of a recipient.
 [Description]
-AddressType holds the address type of a recipient. Do not confuse AddressType with
-the <REF>Kind</REF> property. Kind tells you wether the recipient is a primairy 
-recipient, a copy recipient, while AddressType tells you the type of e-mail 
-address used.
+AddressType holds the address type of a recipient. When left empty, the default 
+address type will be used (usually this is SMPT) but it can be overriden by 
+setting the <REF Target"..\..\TJclEmailRecips\Properties\AddressesType">AddressesType</REF> property 
+of <REF Target"..\..\TJclEmailRecips\TJclEmailRecips">TJclEmailRecips</REF>.</P><P>
+Do not confuse AddressType with the <REF>Kind</REF> property. Kind tells you 
+wether the recipient is a primairy recipient, a copy recipient or such, while 
+AddressType tells you the type of e-mail address used.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -669,7 +672,7 @@ Count=4
 3=Kind:TJclEmailRecipKind=Type of recipient (defaults to rkTO).
 4=AddressType:string=Type of address (optional).
 [Result]
-If the recipient was succesfully added, the function returns the index.
+If the recipient was succesfully added the function returns its index.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -700,9 +703,11 @@ Delphi=4,5
 [Declaration]
 property AddressesType: string read FAddressesType write FAddressesType;
 [ShortDescr]
-TODO
+Default address type override
 [Description]
-TODO
+Set AddressesType to override the default address type of any recipient with an
+empty <REF Target"..\..\TJclEmailRecip\Properties\AddressType">AddressType</REF> 
+property.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -716,9 +721,9 @@ Delphi=4,5
 [Declaration]
 property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
 [ShortDescr]
-TODO
+List of recipients.
 [Description]
-TODO
+Items is an array of recipients added to the list.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -748,13 +753,17 @@ Delphi=4,5
 [Declaration]
 TJclEmailFindOptions = set of (foFifo, foUnreadOnly);
 [ShortDescr]
-Search options
+MAPI search options
 [Description]
-Search options
+TJclEmailFindOptions is the type that correspond to the MAPI search flags.
 [Enumeration]
 Count=2
-1=foFifo=First in first out.
-2=foUnreadOnly=Find unread messages only
+1=foFifo=The message identifiers returned should be in the order of time received.
+FindFirstMessage and FindNextMessage calls can take longer if this flag is set. 
+Some MAPI implementations cannot honor this request and return the MAPI_E_NO_SUPPORT 
+value.
+2=foUnreadOnly=Only unread messages of the specified type are returned. If this flag
+is not set, any message of the specified type can be returned.
 [Quick Info]
 Kind=Type
 BCB=4,5
@@ -816,9 +825,11 @@ Message information record
 TjcEmailReadMsg holds messages information of a read message.
 [RecordFields]
 Count=4
-1=ConversationID:string=Conversation ID.
+1=ConversationID:string=ID of thread the message belongs to. Some MAPI 
+implementations do not support this member.
 2=DateReceived:TDateTime=Date and time of reception.
-3=MessageType:string=Kind of message
+3=MessageType:string=Type of a non-IPM message. Most clients can just set it an
+empty string when sending messages, or ignore it when reading messages.
 4=Flags:FLAGS=Message flags as specified by MAPI
 [Quick Info]
 Kind=Type
@@ -834,7 +845,7 @@ TJclEmail = class (<REF Target"..\TJclSimpleMapi\TJclSimpleMapi">TJclSimpleMapi<
 [ShortDescr]
 E-mail class
 [Description]
-TJclEmail is an e-mail reading class.
+TJclEmail is an e-mail class, capable of both reading and sending messages.
 [Quick Info]
 BCB=4,5
 Unit=JclMapi
@@ -846,11 +857,17 @@ Delphi=4,5
 [Declaration]
 function Address(const Caption: string  = ''; EditFields: Integer  = 3): Boolean;
 [ShortDescr]
-TODO
+Shows address-book dialog.
 [Description]
-TODO
+Address shows the address book so that a user can select addresses to be added to
+the recipient list.
+{Parameters]
+Count=2
+1=Caption:string=Caption of dialog. When left empty, the default caption is shown.
+2=EditFields:Integer=Number of edits to show. Defaults to 3.
 [Result]
-TODO
+When the address book was succesfully shown and closed the function returns True,
+otherwise it generates an exception.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -864,11 +881,9 @@ Delphi=4,5
 [Declaration]
 procedure Clear;
 [ShortDescr]
-TODO
+Removes all recipients, messages and attachments from the internal buffer.
 [Description]
-TODO
-[Result]
-TODO
+Clear removes all recipients, messages and attachments from the internal buffer.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -882,11 +897,11 @@ Delphi=4,5
 [Declaration]
 function Delete(const MessageID: string): Boolean;
 [ShortDescr]
-TODO
+Deletes a messages given it's ID.
 [Description]
-TODO
+Delete deletes the messages specified by it's ID.
 [Result]
-TODO
+If the message was successfully deleted the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -900,11 +915,11 @@ Delphi=4,5
 [Declaration]
 function FindFirstMessage: Boolean;
 [ShortDescr]
-TODO
+Finds the first message
 [Description]
-TODO
+FindFirstMessage finds the first message according to the <REF Target"..\Properties\FindOptions">FindOptions</REF> property.
 [Result]
-TODO
+If a message was found the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -918,11 +933,11 @@ Delphi=4,5
 [Declaration]
 function FindNextMessage: Boolean;
 [ShortDescr]
-TODO
+Finds the next message
 [Description]
-TODO
+FindNextMessage finds the next message according to the <REF Target"..\Properties\FindOptions">FindOptions</REF> property.
 [Result]
-TODO
+If a message was found the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -936,11 +951,9 @@ Delphi=4,5
 [Declaration]
 procedure LogOff;
 [ShortDescr]
-TODO
+Logs off from the MAPI client.
 [Description]
-TODO
-[Result]
-TODO
+LogOff logs off from the MAPI client.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -954,11 +967,13 @@ Delphi=4,5
 [Declaration]
 procedure LogOn(const ProfileName: string = ''; const Password: string = '');
 [ShortDescr]
-TODO
+Logs on to the MAPI client
 [Description]
-TODO
-[Result]
-TODO
+LogOn logs on to the MAPI client, optionally using a profile and specifying a password.
+[Parameters]
+Count=2
+1=ProfileName:string=Name of profile to use when logging on.
+2=Password:string=Password to use when logging on.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -972,11 +987,20 @@ Delphi=4,5
 [Declaration]
 function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
 [ShortDescr]
-TODO
+Generates a text report for the current message.
 [Description]
-TODO
+MessageReport generates a text report of the current messages, optionally 
+including the addresses for recipient names. The report is <B>added</B> to the 
+current Strings contents.
+[Parameters]
+Count=3
+1=Strings:TStrings=TStrings descendant that is to receive the report. Note that 
+the list is not cleared in the method.
+2=MaxWidth:Integer=Number of columns before text is wrapped. Defaults to 80
+3=IncludeAddesses:Boolean=When set to True addresses for recipients are included,
+otherwise only the names are given. Defaults to False.
 [Result]
-TODO
+Number of lines added that belong to the header.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -990,11 +1014,18 @@ Delphi=4,5
 [Declaration]
 function Read(const Options: TJclEmailReadOptions = []): Boolean;
 [ShortDescr]
-TODO
+Read the last found message.
 [Description]
-TODO
+Read reads the last found message (ie. the message found after a call to 
+FindFirstMessage or FindNextMessage). You can specify how a message is read by
+setting the options parameter. See TJclEmailReadOptions for more information on
+the possible options.
+[Parameters]
+Count=1
+1=Options:TJclEmailReadOptions=Options for reading. See TJclEmailReadOptions 
+for more information on the possible options.
 [Result]
-TODO
+If the message was read succesfully the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -1008,11 +1039,21 @@ Delphi=4,5
 [Declaration]
 function ResolveName(var Name, Address: string; ShowDialog: Boolean = False): Boolean;
 [ShortDescr]
-TODO
+Resolves a name into an address.
 [Description]
-TODO
+ResolveName tries to convert the given name and / or address to a known name and 
+address in the address book. Optionally a dialog will be shown to confirm the
+resolve.
+[Parameters]
+Count=3
+1=Name:string=Name of a recipient
+2=Address:string=Address of a recipient
+3=ShowDialog=Boolean=When set to True a dialog will be shown to confirm the resolve. 
+Defaults to False.
 [Result]
-TODO
+If the name was succesfully resolved the function returns True and the Name and
+Address parameters hold the correct information. If resolving failed the function
+returns False while Name and Address are left unchanged.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -1026,11 +1067,11 @@ Delphi=4,5
 [Declaration]
 function Save: Boolean;
 [ShortDescr]
-TODO
+Save the message as concept.
 [Description]
-TODO
+Save saves the current message as a concept message.
 [Result]
-TODO
+If saved succesfully the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -1044,11 +1085,17 @@ Delphi=4,5
 [Declaration]
 function Send(ShowDialog: Boolean = True): Boolean;
 [ShortDescr]
-TODO
+Sends the message.
 [Description]
-TODO
+Send sends the current message, optionally showing dialogs (eg. for logging on
+or resolving/choosing a recipient).
+[Parameters]
+Count=1
+1=ShowDialog:Boolean=When set to True a dialogs are shown as needed (eg. for 
+loggin on or resolving/choosing recipients). When set to False you must assure
+that recipients are defined, otherwise an error occurs.
 [Result]
-TODO
+If sent succesfully the function returns True.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -1062,11 +1109,9 @@ Delphi=4,5
 [Declaration]
 procedure SortAttachments;
 [ShortDescr]
-TODO
+Sorts attachments alphabetically on file name
 [Description]
-TODO
-[Result]
-TODO
+SortAttachments will sort the list of attachments based on the filename.
 [Quick Info]
 Kind=Method
 Visiblity=Public
@@ -1080,9 +1125,10 @@ Delphi=4,5
 [Declaration]
 property Attachments: TStrings read FAttachments;
 [ShortDescr]
-TODO
+List of attachments for the current message
 [Description]
-TODO
+Attachments is a TStrings descendant holding the list of attachments for the
+current message.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1096,9 +1142,9 @@ Delphi=4,5
 [Declaration]
 property Body: string read FBody write SetBody;
 [ShortDescr]
-TODO
+Body of the current message
 [Description]
-TODO
+Body holds the text of the current message.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1112,9 +1158,9 @@ Delphi=4,5
 [Declaration]
 property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
 [ShortDescr]
-TODO
+Options to use when finding/iterating through messages.
 [Description]
-TODO
+FindOptions are the options to use when finding/iterating through messages.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1128,9 +1174,9 @@ Delphi=4,5
 [Declaration]
 property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
 [ShortDescr]
-TODO
+Options to use when loggin on.
 [Description]
-TODO
+LogonOptions are the options to use when logging on to the MAPI client.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1144,9 +1190,11 @@ Delphi=4,5
 [Declaration]
 property ParentWnd: HWND read GetParentWnd write FParentWnd;
 [ShortDescr]
-TODO
+Handle of parent window.
 [Description]
-TODO
+ParentWnd is the handle of the parent window when MAPI dialogs are to be shown.
+ParentWnd gets initialized to the first top-level window of the main thread, but
+can be set to another window if needed.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1160,9 +1208,9 @@ Delphi=4,5
 [Declaration]
 property ReadMsg: TJclEmailReadMsg read FReadMsg;
 [ShortDescr]
-TODO
+Info on last message read.
 [Description]
-TODO
+ReadMsg holds information of the last message read by a call to the Read method.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1176,9 +1224,9 @@ Delphi=4,5
 [Declaration]
 property Recipients: TJclEmailRecips read FRecipients;
 [ShortDescr]
-TODO
+List of recipient for the current message.
 [Description]
-TODO
+Recipients is a list of recipients defined for the current message.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1192,9 +1240,10 @@ Delphi=4,5
 [Declaration]
 property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
 [ShortDescr]
-TODO
+Seed to use when finding next message.
 [Description]
-TODO
+SeedMessageID is the ID of the last message read or saved and is also the
+seed used for the FindNextMessage method.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1208,9 +1257,9 @@ Delphi=4,5
 [Declaration]
 property SessionHandle: THandle read FSessionHandle;
 [ShortDescr]
-TODO
+Handle of current MAPI session.
 [Description]
-TODO
+SessionHandle is the handle of the current MAPI session that is logged on to.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1224,9 +1273,9 @@ Delphi=4,5
 [Declaration]
 property Subject: string read FSubject write FSubject;
 [ShortDescr]
-TODO
+Subject of current message.
 [Description]
-TODO
+Subject holds the subject of the current message.
 [Quick Info]
 Kind=Property
 Visiblity=Public
@@ -1240,9 +1289,9 @@ Delphi=4,5
 [Declaration]
 property UserLogged: Boolean read GetUserLogged;
 [ShortDescr]
-TODO
+Flag if user is logged on.
 [Description]
-TODO
+UserLogged is True when the user is currently logged on to the MAPI client.
 [Quick Info]
 Kind=Property
 Visiblity=Public
