@@ -46,7 +46,8 @@ unit JclEDIXML;
 interface
 
 uses
-  SysUtils, Classes, JclEDI, JclEDI_ANSIX12;
+  SysUtils, Classes,
+  JclEDI, JclEDI_ANSIX12;
 
 const
   XMLTag_Element = 'Element';
@@ -74,12 +75,11 @@ const
   XMLAttribute_OwnerLoopId = 'OwnerLoopId';
   XMLAttribute_ParentLoopId = 'ParentLoopId';
 
-type
-
 //--------------------------------------------------------------------------------------------------
 //  EDI Forward Class Declarations
 //--------------------------------------------------------------------------------------------------
 
+type
   TEDIXMLObject = class(TEDIObject);
   TEDIXMLDataObject = class;
   TEDIXMLElement = class;
@@ -477,6 +477,8 @@ implementation
 
 uses
   JclResources, JclStrings;
+
+// (rom) contains too many string literals better make them constants
 
 //==================================================================================================
 // TEDIXMLDelimiters
