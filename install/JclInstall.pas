@@ -604,12 +604,12 @@ end;
 
 function TJclInstallation.BplPath: string;
 begin
-  Result := Tool.BPLPath[Target];
+  Result := PathGetShortName(Tool.BPLPath[Target]);
 end;
 
 function TJclInstallation.DcpPath: string;
 begin
-  Result := Tool.DCPPath[Target];
+  Result := PathGetShortName(Tool.DCPPath[Target]);
 end;
 
 function TJclInstallation.CheckDirectories: Boolean;
@@ -720,14 +720,6 @@ begin
       Options.Add('-v');
       Options.Add('-JPHNE');
       Options.Add('--BCB');
-      {$IFDEF KYLIX}
-      //Options.Add('-LUrtl -LUvisualclx');
-      {$ELSE ~KYLIX}
-      if Target.VersionNumber = 5 then
-        Options.Add('-LUvcl50')
-      else
-        Options.Add('-LUrtl');
-      {$ENDIF ~KYLIX}
       AddPathOption('N0', UnitOutputDir); // .dcu files
       AddPathOption('O', Format(BCBIncludePath, [Distribution.SourceDir, Distribution.SourcePath]));
       AddPathOption('U', Format(BCBObjectPath, [Distribution.SourceDir, Distribution.SourcePath]));
@@ -1189,12 +1181,12 @@ begin
     begin
       // to satisfy JVCL (and eventually other libraries), create a .dcp file;
       // Note: it is put out to .bpl path to make life easier for JVCL
+      {$IFDEF MSWINDOWS}
       // Note: We must call make with the makefile below to ensure that the required
-      //       dcc32.cfg file is available. Further, we must ensure that the 
-      //       appropriate folders are set so that the file is put in the correct place
-      SetEnvironmentVar('ROOT', Target.RootDir);
-      SetEnvironmentVar('MAKEDIR', Target.RootDir+'\bin');
-      Make.Execute('"-f' + Distribution.Path+'install\BCB5-dcc32.cfg.mak"');
+      //       dcc32.cfg file is available.
+      if Target.VersionNumber = 5 then
+        Make.Execute('"-f' + Distribution.Path + 'install\BCB5-dcc32.cfg.mak"');
+      {$ENDIF MSWINDOWS}
       Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
       // now create .bpi & .lib
       Bpr2Mak.Options.Clear;
@@ -1705,6 +1697,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.61  2005/03/22 03:23:18  rrossmair
+// - fixed recent changes
+//
 // Revision 1.60  2005/03/21 11:09:49  obones
 // Now calls BCB5-dcc32.cfg.mak if required
 //
