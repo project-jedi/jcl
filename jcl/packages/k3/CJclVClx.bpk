@@ -3,15 +3,15 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="$(HOME)/bin/bplCJclVClxK3.so.1.90"/>
+    <PROJECT value="bplCJclVClxK3.so.1.90"/>
     <OBJFILES value="../../lib/k3/obj/JclQGraphics.o ../../lib/k3/obj/JclQGraphUtils.o"/>
     <RESFILES value="CJclVClx.res"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="CJcl.a"/>
+    <LIBRARIES value=""/>
     <SPARELIBS value="rtl.a visualclx.a CJcl.a"/>
-    <PACKAGES value="rtl.bpi visualclx.bpi"/>
+    <PACKAGES value="rtl.bpi visualclx.bpi CJcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;../../source/visclx"/>
     <PATHRC value=".;"/>
@@ -33,8 +33,7 @@
     <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; 
-      -D&quot;JEDI Code Library Visual CLX package for Kylix/C++&quot; -aa -Tpp -Gpr -x 
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot; -aa -Tpp -Gpr -x 
       -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
@@ -50,33 +49,12 @@
       <FILE FILENAME="../../source/visclx/JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
 
   <IDEOPTIONS>
-[HistoryLists\hlIncludePath]
-Count=1
-Item0=../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include
-
-[HistoryLists\hlLibraryPath]
-Count=2
-Item0=../../source/visclx:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin
-Item1=../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin
-
-[HistoryLists\hlIntOutputDir]
-Count=2
-Item0=../../lib/k3/obj
-Item1=../../lib/k3
-
-[HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=$(HOME)/bin/
-
-[HistoryLists\hIBPIOutputDir]
-Count=1
-Item0=../../lib/k3
-
 [Debugging]
 DebugSourceDirs=
 

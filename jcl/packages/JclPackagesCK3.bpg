@@ -20,5 +20,3 @@ bplCJclK3.so.1.90: k3/CJcl.bpk
 bplCJclVClxK3.so.1.90: k3/CJclVClx.bpk
 	$(ROOT)/bin/bpr2mak $<
 	make -$(MAKEFLAGS) -f$(basename $<).mak
-
-
