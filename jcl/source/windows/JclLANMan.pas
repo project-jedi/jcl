@@ -467,14 +467,19 @@ function IsLocalAccount(const AccountName: string): Boolean;
 var
   Domain: string;
   Username: string;
+  LocalServerName: string;
 begin
+  ServerName := GetLocalComputerName;
   ParseAccountName(AccountName, Domain, Username);
-  Result := (Domain = '');
+  Result := (Domain = '') or (Domain = LocalServerName);
 end;
 
 // History:
 
 // $Log$
+// Revision 1.9  2005/02/06 03:36:50  mthoma
+// Added feature [Code Library 0000805]: IsLocalAccount does not work with names like serveruser.
+//
 // Revision 1.8  2004/10/17 21:00:15  mthoma
 // cleaning
 //
