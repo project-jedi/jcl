@@ -80,8 +80,8 @@ function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width:
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
-function PathGetLongName(Path: string): string;
-function PathGetLongName2(const Path: string): string;
+function PathGetLongName(const Path: string): string;
+function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
@@ -1060,7 +1060,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PathGetLongName2(Path: String): String;
+function PathGetLongName2(Path: string): string;
 var
   I : Integer;
   SearchHandle : THandle;
