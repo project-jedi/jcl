@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: August 9, 2000                                                 }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -306,6 +306,8 @@ resourcestring
   RsPeNotPE = 'This is not a PE format';
   RsPeUnexpected = 'Unexpected error';
   RsPeNotResDir = 'Not a resource directory';
+  RsPeNotAvailableForAttached = 'Feature is not available for attached images';
+  RsPeSectionNotFound = 'Section "%s" not found';
 
   // PE directory names
 
