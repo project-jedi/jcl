@@ -28,6 +28,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.5  2004/03/13 07:46:49  rrossmair
+// Kylix/Delphi installation fixed; C++ incomplete
+//
 // Revision 1.4  2004/03/12 04:59:56  rrossmair
 // BCB/Win32 support basically working now
 //
@@ -93,7 +96,7 @@ type
 
   TJclBorRADToolInstallation = class;
 
-  TJclBorRADToolInstallationObject = class (TObject)
+  TJclBorRADToolInstallationObject = class (TInterfacedObject)
   private
     FInstallation: TJclBorRADToolInstallation;
   protected
@@ -170,40 +173,63 @@ type
     property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
   end;
 
-  TJclBorlandCommandLineTool = class (TJclBorRADToolInstallationObject)
+  IJclCommandLineTool = interface
+    ['{A0034B09-A074-D811-847D-0030849E4592}']
+    function GetExeName: string;
+    function GetOutput: string;
+    function Execute(const CommandLine: string): Boolean;
+    property ExeName: string read GetExeName;
+    property Output: string read GetOutput;
+  end;
+
+  TJclCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
   private
-    FLocation: string;
+    FExeName: string;
+    FOutput: string;
+  protected
+    function GetExeName: string;
+    function GetOutput: string;
+    constructor Create(const AExeName: string);
+    function Execute(const CommandLine: string): Boolean;
+    property ExeName: string read GetExeName;
+    property Output: string read GetOutput;
+  end;
+
+  TJcBorlandCommandLineTool = class (TJclBorRADToolInstallationObject)
+  private
     FOutput: string;
     FOptions: TStrings;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
-    class function FileName: string; virtual;
+    function GetExeName: string; virtual;
+    function GetFileName: string;
   public
     destructor Destroy; override;
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean; virtual;
-    property Location: string read FLocation;
+    property FileName: string read GetFileName;
     property Output: string read FOutput;
     property Options: TStrings read FOptions;
   end;
 
-  TJclDCC = class (TJclBorlandCommandLineTool)
+  TJclDCC = class (TJcBorlandCommandLineTool)
   protected
-    class function FileName: string; override;
+    function GetExeName: string; override;
   public
     function Execute(const CommandLine: string): Boolean; override;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
     function SupportsLibSuffix: Boolean;
   end;
 
-  TJclBpr2Mak = class (TJclBorlandCommandLineTool)
+  TJclBpr2Mak = class (TJcBorlandCommandLineTool)
   protected
-    class function FileName: string; override;
+    function GetExeName: string; override;
   end;
 
-  TJclBorlandMake = class (TJclBorlandCommandLineTool)
+  TJclBorlandMake = class (TJcBorlandCommandLineTool, IJclCommandLineTool)
   protected
-    class function FileName: string; override;
+    function GetOutput: string;
+    function GetExeName: string; override;
   end;
 
   TJclBorRADToolPalette = class (TJclBorRADToolInstallationObject)
@@ -302,6 +328,9 @@ type
     function AddToDebugDCUPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
+    {$IFDEF KYLIX}
+    function ConfigFileName(const Extension: string): string; virtual;
+    {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function SubstitutePath(const Path: string): string;
@@ -339,21 +368,27 @@ type
 
   TJclBCBInstallation = class (TJclBorRADToolInstallation)
   private
-    FMake: TJclBorlandMake;
+    FMake: IJclCommandLineTool;
     FBpr2Mak: TJclBpr2Mak;
   protected
     constructor Create(const AConfigDataLocation: string);
   public
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
+    {$IFDEF KYLIX}
+    function ConfigFileName(const Extension: string): string; override;
+    {$ENDIF KYLIX}
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
     property Bpr2Mak: TJclBpr2Mak read FBpr2Mak;
-    property Make: TJclBorlandMake read FMake;
+    property Make: IJclCommandLineTool read FMake;
   end;
 
   TJclDelphiInstallation = class (TJclBorRADToolInstallation)
   public
     class function PackageSourceFileExtension: string; override;
+    {$IFDEF KYLIX}
+    function ConfigFileName(const Extension: string): string; override;
+    {$ENDIF KYLIX}
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
   end;
 
@@ -456,9 +491,9 @@ const
   PaletteKeyName             = 'Palette';
   PaletteHiddenTag           = '.Hidden';
 
-  BCBIdeFileName             = 'Bin\bcb.exe';
   {$IFDEF MSWINDOWS}
   DelphiIdeFileName          = 'Bin\delphi32.exe';
+  BCBIdeFileName             = 'Bin\bcb.exe';
   DelphiOptionsFileExtension = '.dof';
   BorRADToolRepositoryFileName   = 'Bin\delphi32.dro';
   DCCFileName                = 'Bin\dcc32.exe';
@@ -470,23 +505,14 @@ const
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
+  IDs: array[1..3] of Integer = (60, 65, 69);
+
   DelphiIdeFileName          = 'bin/delphi';
+  BCBIdeFileName             = 'bin/bcblin';
   DelphiOptionsFileExtension = '.kof';
 
   LibSuffixes: array[TKylixVersion] of Integer = (60, 65, 69);
 
-  BorRADToolRcFileNames: array[TKylixVersion] of string =
-    (
-      'delphi60rc',
-      'delphi65rc',
-      'delphi69rc'
-    );
-  BorRADToolRepositoryFileNames: array[TKylixVersion] of string =
-    (
-      'delphi60dro',
-      'delphi65dro',
-      'delphi69dro'
-    );
   DCCFileName              = 'bin/dcc';
   KylixHelpNamePart          = 'k%d';
   {$ENDIF KYLIX}
@@ -552,6 +578,37 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+
+function ExecAndRedirectOutput(const CommandLine: string; var Output: string): Integer;
+{$IFDEF MSWINDOWS}
+begin
+  Result := WinExec32AndRedirectOutput(CommandLine, Output);
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  Pipe: PIOFile;
+  Count: Integer;
+  Buffer: array[Byte] of Char;
+  Cmd, TempOutput: string;
+begin
+  Cmd := Format('%s 2>&1', [CommandLine]);
+  Pipe := Libc.popen(PChar(Cmd), 'r');
+  repeat
+    Count := fread_unlocked(@Buffer, 1, Length(Buffer) - 1, Pipe);
+    if Count > 0 then
+    begin
+      Buffer[Count] := #0;
+      TempOutput := TempOutput + Buffer;
+    end;
+  until Count < Length(Buffer) - 1;
+  Output := Output + TempOutput;
+  Result := pclose(Pipe);
+  wait(nil);
+end;
+{$ENDIF UNIX}
 
 //==================================================================================================
 // TJclBorRADToolInstallationObject
@@ -904,26 +961,25 @@ begin
 end;
 
 //==================================================================================================
-// TJclBorlandCommandLineTool
+// TJcBorlandCommandLineTool
 //==================================================================================================
 
-procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
+procedure TJcBorlandCommandLineTool.AddPathOption(const Option, Path: string);
 begin
   Options.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
+constructor TJcBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited;
   FOptions := TStringList.Create;
-  FLocation := Installation.BinFolderName + FileName;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-destructor TJclBorlandCommandLineTool.Destroy;
+destructor TJcBorlandCommandLineTool.Destroy;
 begin
   FreeAndNil(FOptions);
   inherited;
@@ -931,16 +987,33 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
+function TJcBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
+const
+  {$IFDEF MSWINDOWS}
+  S = '"%s" "%s"';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  S = '%s %s';
+  {$ENDIF UNIX}
 begin
-  Result := WinExec32AndRedirectOutput(Format('"%s" "%s"', [Location, CommandLine]), FOutput) = 0;
+  Result := ExecAndRedirectOutput(Format(S, [FileName, CommandLine]), FOutput) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-class function TJclBorlandCommandLineTool.FileName: string;
+function TJcBorlandCommandLineTool.GetExeName: string;
 begin
+  Result := '';
+  {$IFDEF MSWINDOWS}
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ENDIF MSWINDOWS}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJcBorlandCommandLineTool.GetFileName: string;
+begin
+  Result := Installation.BinFolderName + GetExeName;
 end;
 
 //==================================================================================================
@@ -961,36 +1034,17 @@ end;
 {$IFDEF KYLIX}
 const
   DCCConfFileName = 'dcc.conf';
-var
-  Cmd: string;
-  Output: PIOFile;
-  Count, ResultCode: Integer;
-  Buffer: array[Byte] of Char;
-  TempOutput: string;
 begin
-  FDCCOutput := '';
+  FOutput := '';
   FOptions.SaveToFile(DCCConfFileName);
-  Cmd := Format('"%s" "%s" 2>&1', [DCCLocation, CommandLine]);
-  Output := Libc.popen(PChar(Cmd), 'r');
-  repeat
-    Count := fread_unlocked(@Buffer, 1, Length(Buffer) - 1, Output);
-    if Count > 0 then
-    begin
-      Buffer[Count] := #0;
-      TempOutput := TempOutput + Buffer;
-    end;
-  until Count < Length(Buffer) - 1;
-  FDCCOutput := FDCCOutput + TempOutput;
-  ResultCode := pclose(Output);
-  wait(nil);
-  Result := ResultCode = 0;
+  Result := inherited Execute(CommandLine);
   DeleteFile(DCCConfFileName);
 end;
 {$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 
-class function TJclDCC.FileName: string;
+function TJclDCC.GetExeName: string;
 begin
   {$IFDEF MSWINDOWS}
   Result := 'dcc32.exe';
@@ -1073,14 +1127,18 @@ end;
 
 function TJclDCC.SupportsLibSuffix: Boolean;
 begin
+  {$IFDEF KYLIX}
+  Result := True;
+  {$ELSE}
   Result := Installation.VersionNumber >= 6;
+  {$ENDIF}
 end;
 
 //==================================================================================================
 // TJclBorlandMake
 //==================================================================================================
 
-class function TJclBorlandMake.FileName: string;
+function TJclBorlandMake.GetExeName: string;
 begin
   {$IFDEF MSWINDOWS}
   Result := 'make.exe';
@@ -1090,11 +1148,18 @@ begin
   {$ENDIF UNIX}
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorlandMake.GetOutput: string;
+begin
+  Result := FOutput;
+end;
+
 //==================================================================================================
 // TJclBpr2Mak
 //==================================================================================================
 
-class function TJclBpr2Mak.FileName: string;
+function TJclBpr2Mak.GetExeName: string;
 begin
   {$IFDEF MSWINDOWS}
   Result := 'bpr2mak.exe';
@@ -1293,7 +1358,7 @@ constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstall
 begin
   inherited;
   {$IFDEF KYLIX}
-  FFileName := Format('%s/.borland/%s', [GetPersonalFolder, BorRADToolRepositoryFileNames[Installation.VersionNumber]]);
+  FFileName := AInstallation.ConfigFileName('dro');
   {$ELSE}
   FFileName := PathAddSeparator(Installation.RootDir) + BorRADToolRepositoryFileName;
   {$ENDIF}
@@ -1425,6 +1490,15 @@ begin
     Processes.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF KYLIX}
+function TJclBorRADToolInstallation.ConfigFileName(const Extension: string): string;
+begin
+  Result := '';
+end;
+{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1696,14 +1770,20 @@ end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 begin
+  Result := False;
+  {$IFDEF MSWINDOWS}
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
 begin
+  Result := '';
+  {$IFDEF MSWINDOWS}
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1738,13 +1818,6 @@ begin
   {$IFDEF KYLIX}
   ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
   FRootDir := Globals.Values[RootDirValueName];
-
-  for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
-    if DelphiRcFileNames[I] = ExtractFileName(ConfigData.FileName) then
-    begin
-      FVersionNumber := I;
-      Break;
-    end;
   {$ELSE KYLIX}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
   FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, ConfigData.FileName, RootDirValueName, '');
@@ -1773,9 +1846,9 @@ begin
   end;
 
   for I := 1 to 3 do
-    if LatestUpdatePacks[brCBuilder, I].Version = VersionNumber then
+    if LatestUpdatePacks[I].Version = VersionNumber then
     begin
-      FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
+      FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
       Break;
     end;
 end;
@@ -1831,10 +1904,23 @@ end;
 // TJclBCBInstallation
 //==================================================================================================
 
+{$IFDEF KYLIX}
+function TJclBCBInstallation.ConfigFileName(const Extension: string): string;
+begin
+  Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
+end;
+{$ENDIF KYLIX}
+
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
 begin
   inherited Create(AConfigDataLocation);
+  {$IFDEF KYLIX}
+  FMake := TJclCommandLineTool.Create('make');
+  {$ELSE}
   FMake := TJclBorlandMake.Create(Self);
+  {$ENDIF}
   FBpr2Mak := TJclBpr2Mak.Create(Self);
 end;
 
@@ -1843,7 +1929,6 @@ end;
 destructor TJclBCBInstallation.Destroy;
 begin
   FBpr2Mak.Free;
-  FMake.Free;
   inherited Destroy;
 end;
 
@@ -1857,7 +1942,8 @@ begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(PackagePath);
   try
-    Result := Bpr2Mak.Execute(PackageName);
+    // Kylix bprmak doesn't like full file names
+    Result := Bpr2Mak.Execute(ExtractFileName(PackageName));
     Result := Result and Make.Execute(Format('-f%s', [ChangeFileExt(PackageName, '.mak')]));
   finally
     SetCurrentDir(SaveDir);
@@ -1874,6 +1960,15 @@ end;
 //==================================================================================================
 // TJclDelphiInstallation
 //==================================================================================================
+
+{$IFDEF KYLIX}
+function TJclDelphiInstallation.ConfigFileName(const Extension: string): string;
+begin
+  Result := Format('%s/.borland/delphi%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
+end;
+{$ENDIF KYLIX}
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclDelphiInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 begin
@@ -2010,14 +2105,22 @@ end;
 procedure TJclBorRADToolInstallations.ReadInstallations;
 {$IFDEF KYLIX}
 
-  procedure CheckForInstallation(RcBaseFileName: string; IsBCB: Boolean);
-  Item: TJclBorRADToolInstallation;
-  RcFileName: string;
+  procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
+  const
+    RcBaseFileNames: array[TJclBorRADToolKind] of string = ('delphi', 'bcb');
+    IDs: array[1..3] of Integer = (60, 65, 69);
+  var
+    Item: TJclBorRADToolInstallation;
+    RcFileName: string;
   begin
-    RcFileName := Format('%s/.borland/%s', [GetPersonalFolder, DelphiRcFileNames[I]]);
+    RcFileName := Format('%s/.borland/%s%drc', [GetPersonalFolder, RcBaseFileNames[RADToolKind], IDs[VersionNumber]]);
     if FileExists(RcFileName) then
     begin
-      Item := TJclBorRADToolInstallation.Create(RcFileName, IsBCB);
+      if RADToolKind = brCBuilder then
+        Item := TJclBCBInstallation.Create(RcFileName)
+      else
+        Item := TJclDelphiInstallation.Create(RcFileName);
+      Item.FVersionNumber := VersionNumber;
       FList.Add(Item);
     end;
   end;
@@ -2026,9 +2129,9 @@ var
   I: Integer;
 begin
   FList.Clear;
-  for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
-    CheckForInstallation(DelphiRcFileNames[I], False);
-  CheckForInstallation('bcb69rc', True)
+  for I := 1 to 3 do
+    CheckForInstallation(brDelphi, I);
+  CheckForInstallation(brCBuilder, 3);
 end;
 {$ELSE KYLIX}
 const
@@ -2068,6 +2171,44 @@ begin
   end;
 end;
 {$ENDIF KYLIX}
+
+//==================================================================================================
+// TJclCommandLineTool
+//==================================================================================================
+
+constructor TJclCommandLineTool.Create(const AExeName: string);
+begin
+  inherited Create;
+  FExeName := AExeName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclCommandLineTool.Execute(const CommandLine: string): Boolean;
+const
+  {$IFDEF MSWINDOWS}
+  S = '"%s" "%s"';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  S = '%s %s';
+  {$ENDIF UNIX}
+begin
+  Result := ExecAndRedirectOutput(Format(S, [ExeName, CommandLine]), FOutput) = 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclCommandLineTool.GetExeName: string;
+begin
+  Result := FExeName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclCommandLineTool.GetOutput: string;
+begin
+  Result := FOutput;
+end;
 
 //--------------------------------------------------------------------------------------------------
 

@@ -20,6 +20,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.5  2004/03/13 07:46:49  rrossmair
+// Kylix/Delphi installation fixed; C++ incomplete
+//
 // Revision 1.4  2004/03/12 04:59:56  rrossmair
 // BCB/Win32 support basically working now
 //
@@ -140,7 +143,7 @@ procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
 const
   Prefixes: array[TJclBorRADToolKind] of Char = ('D', 'C');
 
-  function GetPathForEdit(const Path: string): string;
+  function GetPathForEdit(Path: string): string;
   begin
     if DirectoryExists(Path) then
       Result := Path
@@ -244,6 +247,9 @@ var
       {$DEFINE USE_WIDESTRING}
     {$ENDIF}
   {$ENDIF}
+  {$IFDEF KYLIX}
+    {$DEFINE USE_WIDESTRING}
+  {$ENDIF KYLIX}
   {$IFDEF USE_WIDESTRING}
   Directory: WideString;
   {$UNDEF USE_WIDESTRING}
