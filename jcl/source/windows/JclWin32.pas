@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: Februari 10, 2001                                             }
+{ Last modified: Februari 17, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -365,17 +365,9 @@ const
                             (FILE_ANY_ACCESS shl 14) or
                             (20 shl 2) or METHOD_BUFFERED;
 
-function GetVolumeNameForVolumeMountPointA(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR; lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
-function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-
-function SetVolumeMountPointA(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
-function SetVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR; lpszVolumeName: LPCWSTR): BOOL; stdcall;
-function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
-
-function DeleteVolumeMountPointA(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
-function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
-function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
+function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL;
+function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL;
+function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL;
 
 //------------------------------------------------------------------------------
 // NTFS Reparse Points
@@ -961,16 +953,8 @@ type
   {$EXTERNALSYM FSCTL_OPLOCK_BREAK_NOTIFY}
   {$EXTERNALSYM FSCTL_OPLOCK_BREAK_ACK_NO_2}
 
-  {$EXTERNALSYM GetVolumeNameForVolumeMountPointA}
-  {$EXTERNALSYM GetVolumeNameForVolumeMountPointW}
   {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
-
-  {$EXTERNALSYM SetVolumeMountPointA}
-  {$EXTERNALSYM SetVolumeMountPointW}
   {$EXTERNALSYM SetVolumeMountPoint}
-
-  {$EXTERNALSYM DeleteVolumeMountPointA}
-  {$EXTERNALSYM DeleteVolumeMountPointW}
   {$EXTERNALSYM DeleteVolumeMountPoint}
 
   {$EXTERNALSYM _MODULEINFO}
@@ -1094,17 +1078,55 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetVolumeNameForVolumeMountPointA; external kernel32 name 'GetVolumeNameForVolumeMountPointA';
-function GetVolumeNameForVolumeMountPointW; external kernel32 name 'GetVolumeNameForVolumeMountPointW';
-function GetVolumeNameForVolumeMountPoint; external kernel32 name 'GetVolumeNameForVolumeMountPointA';
+var
+  _GetVolumeNameForVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
+  _SetVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
+  _DeleteVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
 
-function SetVolumeMountPointA; external kernel32 name 'SetVolumeMountPointA';
-function SetVolumeMountPointW; external kernel32 name 'SetVolumeMountPointW';
-function SetVolumeMountPoint; external kernel32 name 'SetVolumeMountPointA';
+function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL;
+var
+  Kernel32: THandle;
+begin
+  if not Assigned(_GetVolumeNameForVolumeMountPoint) then
+  begin
+    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
+    if Kernel32 <> 0 then @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
+  end;
+  if Assigned(_GetVolumeNameForVolumeMountPoint) then
+    Result := _GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength)
+  else
+    Result := False;
+end;
 
-function DeleteVolumeMountPointA; external kernel32 name 'DeleteVolumeMountPointA';
-function DeleteVolumeMountPointW; external kernel32 name 'DeleteVolumeMountPointW';
-function DeleteVolumeMountPoint; external kernel32 name 'DeleteVolumeMountPointA';
+function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL;
+var
+  Kernel32: THandle;
+begin
+  if not Assigned(_SetVolumeMountPoint) then
+  begin
+    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
+    if Kernel32 <> 0 then @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
+  end;
+  if Assigned(_SetVolumeMountPoint) then
+    Result := _SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName)
+  else
+    Result := False;
+end;
+
+function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; 
+var
+  Kernel32: THandle;
+begin
+  if not Assigned(_DeleteVolumeMountPoint) then
+  begin
+    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
+    if Kernel32 <> 0 then @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
+  end;
+  if Assigned(_DeleteVolumeMountPoint) then
+    Result := _DeleteVolumeMountPoint(lpszVolumeMountPoint)
+  else
+    Result := False;
+end;
 
 function GetVersionEx; external kernel32 name 'GetVersionExA';
 
@@ -1349,3 +1371,4 @@ end;
 
 
 end.
+
