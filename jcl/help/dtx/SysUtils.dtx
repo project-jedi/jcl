@@ -3,7 +3,6 @@
 Summary:
   Explicit replacement for PWideChar typecast.
 Description:
-
   PWideCharOrNil returns a pointer to the first character of the specified string
   or nil of the string is empty. This is identical to simply typecasting to
   PWideChar except that this function makes the behaviour of the typecast explicit
@@ -11,7 +10,6 @@ Description:
 Parameters:
   S - The string for which to return a PWideChar.
 Result:
-
   If the specified string is empty the funtion returns nil, otherwise it returns
   a pointer to the first character of the string.
 Quick info:
@@ -27,7 +25,6 @@ Quick info:
 Summary:
   Explicit replacement for PChar typecast.
 Description:
-
   PCharOrNil returns a pointer to the first character of the specified string or
   nil if the string is empty. This is identical to simply typecasting to PChar
   except that this function makes the behaviour of the typecast explicit (and
@@ -35,7 +32,6 @@ Description:
 Parameters:
   S - The string for which to return a PChar.
 Result:
-
   If the specified string is empty the funtion returns nil, otherwise it returns
   a pointer to the first character of the string.
 Quick info:
@@ -51,7 +47,6 @@ Quick info:
 Summary:
   Converts an integer to a string an left pads it with zero's.
 Description:
-
   IntToStrZeroPad converts the specified integer value to a string containing the
   decimal representation of that number and left pads it with zero's if the
   resulting string is less than the specified number of characters.
@@ -59,7 +54,6 @@ Parameters:
   Value - The integer value to convert to a string.
   Count - The number of characters in the resulting string. If the string is less than the specified number, the string is left padded with zero's until the string is the specified number of characters long.
 Result:
-
   The string representation of the specified integer value, left padded with zero's.
   I don't know of any input that can cause this function to fail, but in the
   unlikely event that it does, it does so by raising an exception.
@@ -72,10 +66,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@Iff
+<GROUP BaseServices>
 Summary:
   Replacement for the C++ ternary conditional operator.
 Description:
-
   Iff is a replacement for the C/C++ ternary conditional operator ?:. It evaluates
   the specified boolean expression and depending on the outcome returns either
   the specified TruePart or FalsePart parameter.
@@ -85,7 +79,6 @@ Parameters:
   TruePart - The function result if Condition evaluates to True.
   FalsePart - The function result if Condition evaluates to False.
 Result:
-
   If Condition evaluates to True TruePart is returned, otherwise FalsePart is returned.
 Quick info:
   Unit: JclSysUtils
@@ -100,7 +93,6 @@ Quick info:
 Summary:
   Returns the size of a memory block given a pointer.
 Description:
-
   SizeOfMem returns the size of the memory block pointed to by the specified pointer.
   This routine depends on information peeked from the standard Delphi memory manager
   implemention (in GetMem.inc) and will not work when a custom memory manager
@@ -109,7 +101,6 @@ Description:
 Parameters:
   P - Pointer to the memory block whose size to retrieve.
 Result:
-
   The total size of the memory block pointed to by P. Note that the current
   implementation uses a 4 byte header to store some additonal information (such as
   the size) about the memory block. These 4 bytes are included in the result. To get
@@ -130,7 +121,6 @@ Quick info:
 Summary:
   Frees an object reference and replaces it with nil.
 Description:
-
   FreeAndNil frees the object instance pointed to by Obj and replaces the reference
   with nil. This ensures that the reference is nil after the object has been
   destroyed and helps debugging. Do not use this routine on objects or generic
@@ -151,7 +141,6 @@ Quick info:
 Summary:
   Frees a block of memory and sets the reference to nil.
 Description:
-
   FreeMemAndNil frees the memory pointed to by P and replaces the reference
   with nil. This ensures that the reference is nil after the memory has been
   released and helps debugging. Do not use this routine on objects or TObject
@@ -171,7 +160,6 @@ Quick info:
 Summary:
   Allocates memory and fills it with the specified value.
 Description:
-
   GetAndFillMem allocates a block of memory from the heap of the specified size
   and fills each byte in that block with the specified value.
 Parameters:
@@ -191,7 +179,6 @@ Quick info:
 Summary:
   Returns the number of virtual methods of a class.
 Description:
-
   GetVirtualMethodCount returns the number of virtual methods of the specified
   class. This includes the methods declared in the class itself and all its
   parent classes. However, the result does not include the virtual methods declared
@@ -199,7 +186,6 @@ Description:
 Parameters:
   AClass - The class for which to get the number of virtual methods.
 Result:
-
   The number of virtual methods of the given class.
 Quick info:
   Unit: JclSysUtils
@@ -214,7 +200,6 @@ Quick info:
 Summary:
   Returns a pointer to the virtual method from the specified class with the given index.
 Description:
-
   Returns the virtual method from the specified class with the given index. There
   is no checking performed that the given index actually is a virtual method, and the
   return value is undefined for invalid indices.
@@ -222,7 +207,6 @@ Parameters:
   AClass - The class for which to get a virtual method.
   Index - The index of the virtual method to be retrieved. If the index is invalid the result is undefined. Valid indices are 0 to GetVirtualMethodCount - 1.
 Result:
-
   The result is a pointer to the virtual method. If the method is an abstract
   method the value returned is a pointer to System._AbstractError.
 Quick info:
@@ -238,7 +222,6 @@ Quick info:
 Summary:
   Changes a virtual method to the given method.
 Description:
-
   Changes a virtual method to the given method.<P><FONT color=red>Do <B>NOT</B>
   use this function.</FONT> There should be no need to use this function
   unless your implementing a very dirty hack. <P>There is no checking
@@ -265,14 +248,12 @@ Quick info:
 Summary:
   Returns the number of dynamic methods of a class.
 Description:
-
   GetDynamicMethodCount returns the number of dynamic methods for the specified
   class (including abstract methods). This only includes dynamic methods declared
   in the class itself, not the methods delcared in ancestor classes.
 Parameters:
   AClass - The class for which to get the number of dynamic methods.
 Result:
-
   The number of dynamic methods of the specified class.
 Quick info:
   Unit: JclSysUtils
@@ -287,7 +268,6 @@ Quick info:
 Summary:
   Returns the list of indices of the dynamic methods.
 Description:
-
   Returns the list of indices for the dynamic methods, not including the indices
   of the dynamic methods from inherited classes.
   Use this list in combination with GetDynamicAddressList
@@ -298,7 +278,6 @@ Description:
 Parameters:
   AClass - The class for which to get dynamic method index list.
 Result:
-
   Pointer to an array containing the indices. Do not modify this array!
 Quick info:
   Unit: JclSysUtils
@@ -313,7 +292,6 @@ Quick info:
 Summary:
   List of valid indices in a dynamic method table.
 Description:
-
   List of indices of valid entries in a dynamic method table. Use GetDynamicMethodCount
   to get the count of valid entries in this list.
 Quick info:
@@ -329,7 +307,6 @@ Quick info:
 Summary:
   Returns the list of addresses for the dynamic methods of a class.
 Description:
-
   Returns the list of addresses for the dynamic methods of the specified class.
   Use this list in combination with GetDynamicIndexList
   and GetDynamicMethodCount to get all dynamic methods and their indices.
@@ -339,7 +316,6 @@ Description:
 Parameters:
   AClass - The class for which to get dynamic method address list.
 Result:
-
   Pointer to an array containing the addresses. Do not modify this array!
 Quick info:
   Unit: JclSysUtils
@@ -354,7 +330,6 @@ Quick info:
 Summary:
   List of addresses of a dynamic methods
 Description:
-
   List of addresses of the dynamic methods, use GetDynamicMethodCount
   to get the indices of valid entries in the list.
 Quick info:
@@ -370,13 +345,11 @@ Quick info:
 Summary:
   Test if the class (or one of its ancestors) has a dynamic method with the given index.
 Description:
-
   Test if the class (or one of its ancestors) has a dynamic method with the given index.
 Parameters:
   AClass - The class for which to test for the dynamic method.
   Index - The index for which to test.
 Result:
-
   If the class contains a dynamic method with the given index the result is True,
   otherwise the result is False.
 Quick info:
@@ -390,7 +363,6 @@ Quick info:
 Summary:
   Returns a pointer to a specific dynamic method.
 Description:
-
   Returns (the most recent version of) the dynamic method with the given index.
   If there is no dynamic method with the given index an abstract error will be
   raised, however, if the dynamic method is an abstract method,
@@ -399,7 +371,6 @@ Parameters:
   AClass - The class for which to get the dynamic method.
   Index - The index for which to get.
 Result:
-
   Returns a pointer to the dynamic method, or System._AbstractError if the
   dynamic method is an abstract method.
 Quick info:
@@ -415,7 +386,6 @@ Quick info:
 Summary:
   Returns the initialization table of a class.
 Description:
-
   GetInitTable returns the initialization table of the specified class.
   TODO This is abracadabra to me :-) Need to contact author for further explanation
   about this (eg what does the init table look like).
@@ -426,7 +396,6 @@ Description:
 Parameters:
   AClass - The class for which to get the initialization table.
 Result:
-
   The result is a pointer to the initialization table. Do not modify this structure!
 Quick info:
   Unit: JclSysUtils
@@ -441,13 +410,11 @@ Quick info:
 Summary:
   Returns the field table of a class.
 Description:
-
   GetFieldTable returns a pointer to the field table of the specified class.
   A field table contains information about the published fields in a class.
 Parameters:
   AClass - The class for which to retrieve the field table.
 Result:
-
   Pointer to the field table. Do not modify this structure!
 Quick info:
   Unit: JclSysUtils
@@ -462,7 +429,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclSysUtils
@@ -483,7 +449,6 @@ Quick info:
 Summary:
   List of classes used by the fields entries.
 Description:
-
   List of classes used by the fields entries.
 Quick info:
   Unit: JclSysUtils
@@ -502,7 +467,6 @@ Quick info:
 Summary:
   TFieldEntry contains information about a field of a class.
 Description:
-
   TFieldEntry contains information about a field of a class.
 Quick info:
   Unit: JclSysUtils
@@ -523,14 +487,12 @@ Quick info:
 Summary:
   Returns the method table of a class.
 Description:
-
   GetMethodTable returns a pointer to the method table of the specified class.
   The method table contains information about the published methods declared in the
   class.
 Parameters:
   AClass - The class for which to retrieve the method table.
 Result:
-
   Pointer to the method table. Do not modify this structure!
 Quick info:
   Unit: JclSysUtils
@@ -545,7 +507,6 @@ Quick info:
 Summary:
   Structure for the Method Table
 Description:
-
   Method Table Structure. Gives a description of method, with Count the number
   of methods, followed by count numbers of a variable length structure for each
   entry.
@@ -566,14 +527,12 @@ Quick info:
 Summary:
   Returns an entry from the method table.
 Description:
-
   GetMethodEntry returns the entry with the given index from the method table.
   There is no checking performed that the given Index is valid.
 Parameters:
   MethodTable - The method table to get the entry from
   Index - The index of the entry to retrieve.
 Result:
-
   Pointer to the method table entry from the method table with
   the given index. Do not modify this structure!
 Quick info:
@@ -589,7 +548,6 @@ Quick info:
 Summary:
   Entry of a method table use by TMethodTable.
 Description:
-
   Entry of a method table use by TMethodTable.
 Quick info:
   Unit: JclSysUtils
@@ -610,7 +568,6 @@ Quick info:
 Summary:
   Modifies the class parent for the given class.
 Description:
-
   Changes the parent of AClass to become NewClassParent. <P><FONT color=red>
   Do <B>NOT</B> use this function.</FONT> There should be
   no need to use this function unless you are implementing a very dirty hack.<P>
@@ -633,13 +590,11 @@ Quick info:
 Summary:
   Returns the parent of the class.
 Description:
-
   Returns the parent class of the given class. That is, it returns the type of the
   immediate ancestor of the specified class. This is the same as TObject.ClassParent.
 Parameters:
   AClass - The class for which to retrieve the parent class.
 Result:
-
   The parent class (type of the immediate ancestor) of the specified class or nil
   of the specified class is TObject.
 Quick info:
@@ -655,13 +610,11 @@ Quick info:
 Summary:
   Returns whether a pointer points to a class.
 Description:
-
   IsClass tests whether the specified pointer points to a class. Currently the
   implementation only test whether the Self pointer actually points to the class itself.
 Parameters:
   Address - The address to test. Note that this should be the equivalent of Obj.ClassType where Obj is an instance of TObject or descendant class.
 Result:
-
   The result is True if the Address is a class otherwise it is False.
 Quick info:
   Unit: JclSysUtils
@@ -676,13 +629,11 @@ Quick info:
 Summary:
   Returns whether a pointer points to an object.
 Description:
-
   IsObject tests whether the specified pointer points to an object. Currently the
   implementation only test whether the Self pointer actually points to the object itself.
 Parameters:
   Address - The address to test. Note that this should be a TObject or TObject descendant.
 Result:
-
   The result is True if the Address is an object otherwise it is False.
 Quick info:
   Unit: JclSysUtils
@@ -693,11 +644,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISafeGuard
-<GROUP MemoryClassesandObjects.Guards>
+<GROUP MemoryClassesandObjects.Guards.ISafeGuard>
 Summary:
   Interface used to provide automatic resource destruction.
 Description:
-
   ISafeGuard is the interface used by the Guard functions to provide automatic
   resource destruction. A safeguard is an interface which gets associated with the
   resource and ensures that when execution leaves the scope at which the safeguard
@@ -730,18 +680,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISafeGuard.ReleaseItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Disassociates the resource from the safeguard.
 Description:
-
   ReleaseItem returns a pointer to the associated resource and then disassociates it
   with the safeguard. This means that when execution leaves the scope in which
   the interface variable is declared, the resource will not be automatically freed.
   By using ReleaseItem you are handed back the responsibility to explicitly release
   the resource.
 Result:
-
   Pointer to the resource associated with the safeguard.
 Quick info:
   Unit: JclSysUtils
@@ -753,16 +700,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISafeGuard.GetItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Returns a pointer to the resource associated with the safeguard.
 Description:
-
   The GetItem method returns a pointer to the resource associated with the safeguard.
   Usually you will hold on to this pointer when you associated it with the safeguard,
   however you can use the safeguard as the storage for the resource pointer itself.
 Result:
-
   Pointer to the resource associated with the safeguard.
 Quick info:
   Unit: JclSysUtils
@@ -774,11 +718,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISafeGuard.FreeItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Frees the memory of the associated resource.
 Description:
-
   The FreeItem method frees the resource associated with the safeguard. You should
   never call this method directly, it is called automatically when execution leaves
   the scope in which the interface variable is declared.
@@ -792,11 +734,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISafeGuard.Item
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Returns a pointer to the protected resource.
 Description:
-
   The Item property returns a pointer to the associated resource protected by the
   safeguard. You'll have to cast the pointer to the appropriate type.
 Quick info:
@@ -809,11 +749,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard
-<GROUP MemoryClassesandObjects.Guards>
+<GROUP MemoryClassesandObjects.Guards.IMultiSafeGuard>
 Summary:
   Interface used to provide automatic resource destruction for multiple resources.
 Description:
-
   IMultiSafeGuard is the interface used by the Guard functions to provide automatic
   resource destruction for multiple resources. A safeguard is an interface which gets
   associated with the resources and ensures that when execution leaves the scope at
@@ -838,7 +777,6 @@ Description:
   in a variable at the appropriate scope and forget about it. However, the ISafeGuard
   interface does provide some additional functionality which may be useful at times.
 Notes:
-
   You can use IMultiSafeGuard to guard multiple memory allocations or multiple objects. However, a single IMultiSafeGuard interface can only store one or the other, you can not mix memory and objects in a single IMultiSafeGuard.
 Quick info:
   Unit: JclSysUtils
@@ -849,18 +787,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.ReleaseItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Disassociates the resource from the safeguard.
 Description:
-
   ReleaseItem returns a pointer to the associated resource and then disassociates it
   with the safeguard. This means that when execution leaves the scope in which
   the interface variable is declared, the resource will not be automatically freed.
   By using ReleaseItem you are handed back the responsibility to explicitly release
   the resource.
 Result:
-
   Pointer to the resource associated with the safeguard.
 Quick info:
   Unit: JclSysUtils
@@ -872,16 +807,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.GetItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Returns a pointer to the resource associated with the safeguard.
 Description:
-
   The GetItem method returns a pointer to the resource associated with the safeguard.
   Usually you will hold on to this pointer when you associated it with the safeguard,
   however you can use the safeguard as the storage for the resource pointer itself.
 Result:
-
   Pointer to the resource associated with the safeguard.
 Quick info:
   Unit: JclSysUtils
@@ -893,11 +825,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.FreeItem
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Frees the memory of the associated resource.
 Description:
-
   The FreeItem method frees the resource associated with the safeguard. You should
   never call this method directly, it is called automatically when execution leaves
   the scope in which the interface variable is declared.
@@ -911,11 +841,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.Count
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Returns the number of items guarded by the interface.
 Description:
-
   The Count property returns the number of items guarded by the interface.
 Quick info:
   Unit: JclSysUtils
@@ -927,11 +855,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.Items
-<GROUP MemoryClassesandObjects.Guards>
 Summary:
   Returns a pointer to the protected resource.
 Description:
-
   The Items property provides zero-based indexed access to the items guarded by the
   interface. The total numer of items can be learned from the Count property.
   You'll have to cast the pointer to the appropriate type.
@@ -949,7 +875,6 @@ Quick info:
 Summary:
   Associates a resource, pointer or object reference, with a safeguard.
 Description:
-
   Associates a resource, pointer or object reference, with a safeguard. A safeguard
   is an interface which gets associated with the resource and ensures that when
   execution leaves the scope at which the safeguard variable is declared, the
@@ -978,7 +903,6 @@ Parameters:
   Mem - The pointer (or object in the case of the overloaded Guard function) which to associate with the safeguard.
   SafeGuard - The guard variable to associate the resource with.
 Result:
-
   Copy of the Mem (or Obj) parameter. This is merely a convenience which allows
   you to create the resource embedded inside the function call as demonstrated above.
 Quick info:
@@ -994,7 +918,6 @@ Quick info:
 Summary:
   Allocates a specified amount of memory and associates it with a safeguard.
 Description:
-
   GuardGetMem allocates the specified amount of memory and associates it with a
   safeguard. A pointer to the allocated memory is returned as the function result.
   By using GuardGetMem you ensure that no matter how the scope in which the memory
@@ -1004,7 +927,6 @@ Parameters:
   Size - Size, in bytes, of the memory to allocate. This memory is allocated using the standard GetMem function and as such is uninitialized.
   SafeGuard - Receives a pointer to the ISafeGuard interface which is associated with the allocated memory.
 Result:
-
   Pointer to the block of allocated memory.
 Quick info:
   Unit: JclSysUtils
@@ -1019,7 +941,6 @@ Quick info:
 Summary:
   Allocates a specified amount of memory and associates it with a safeguard.
 Description:
-
   GuardGetMem allocates the specified amount of memory and associates it with a
   safeguard. This function is identical to GuardGetMem except that the function
   uses AllocMem internally, as opposed to GetMem. As such the allocated memory is
@@ -1031,7 +952,6 @@ Parameters:
   Size - Size, in bytes, of the memory to allocate. This memory is allocated using the standard AllocMem function and as such is initialized to all zeros.
   SafeGuard - Receives a pointer to the ISafeGuard interface which is associated with the allocated memory.
 Result:
-
   Pointer to the block of allocated memory.
 Quick info:
   Unit: JclSysUtils
@@ -1046,7 +966,6 @@ Quick info:
 Summary:
   Clears the contents of a TList which contains objects.
 Description:
-
   ClearObjectList clears the contents of the specified list. The routine assumes that each
   item in the list is a TObject descendant and frees these objects before removing
   them from the list. If the list contains items other than TObject descendants,
@@ -1066,7 +985,6 @@ Quick info:
 Summary:
   Clears the contents of a TList which contains objects.
 Description:
-
   FreeObjectList clears the contents of the specified list and then frees the list itself.
   The routine assumes that each item in the list is a TObject descendant and frees
   these objects before removing them from the list. If the list contains items other
@@ -1087,7 +1005,6 @@ Quick info:
 Summary:
   OS independent type for loaded modules.
 Description:
-
   OS independent type for loaded modules.
 Quick info:
   Unit: JclSysUtils
@@ -1102,7 +1019,6 @@ Quick info:
 Summary:
   OS independent value for variables of type TModuleHandle.
 Description:
-
   OS independent value for variables of type TModuleHandle.
   Denotes that the variable does not contain a valid handle to a module.
 Quick info:
@@ -1118,7 +1034,6 @@ Quick info:
 Summary:
   Loads the dynamic module (DLL) from file FileName.
 Description:
-
   The dynamic module (DLL) is loaded into memory and its initialization code
   is executed. This is an OS independent replacement for LoadLibrary.
   The function does nothing but reports success if Module is not initialized
@@ -1127,7 +1042,6 @@ Parameters:
   Module - Receives the handle of the loaded module.
   FileName - File name of the module to load.
 Result:
-
   The function returns True if the module could be loaded False otherwise.
 Quick info:
   Unit: JclSysUtils
@@ -1142,7 +1056,6 @@ Quick info:
 Summary:
   Loads the dynamic module (DLL) from file FileName.
 Description:
-
   The dynamic module (DLL) is loaded into memory and its initialization code
   is executed if the flags allow that.
   This is an OS independent replacement for LoadLibraryEx.
@@ -1166,7 +1079,6 @@ Quick info:
 Summary:
   Unloads a dynamic module (DLL) from memory.
 Description:
-
   Unloads a dynamic module (DLL) loaded with LoadModule or
 Parameters:
   Module - Contains the handle of the module to unload.
@@ -1183,14 +1095,12 @@ Quick info:
 Summary:
   Gives access to the exported symbol SymbolName from the loaded module Module.
 Description:
-
   Gives access to the exported symbol SymbolName from the loaded module Module.
   Normally this is the name of an exported function.
 Parameters:
   Module - Handle to the loaded module.
   SymbolName - Name of the exported symbol to access.
 Result:
-
   The pointer to the exported symbol. Normally this is a "pointer to function"
   as C calls it. In Pascal its a function type. nil is returned for symbols
   not contained in the module.
@@ -1207,7 +1117,6 @@ Quick info:
 Summary:
   Gives access to the exported symbol SymbolName from the loaded module Module.
 Description:
-
   Gives access to the exported symbol SymbolName from the loaded module Module.
   Normally this is the name of an exported function.
   Accu is updated by "Accu := Accu and (Result <> nil);". This allows to
@@ -1218,7 +1127,6 @@ Parameters:
   SymbolName - Name of the exported symbol to access.
   Accu - Success accumulator to be updated.
 Result:
-
   The pointer to the exported symbol. Normally this is a "pointer to function"
   as C calls it. In Pascal its a function type. nil is returned for symbols
   not contained in the module and Accu will contain False.
@@ -1235,7 +1143,6 @@ Quick info:
 Summary:
   Reads the data of an exported variable.
 Description:
-
   ReadModuleData copies the contents of the exported variable SymbolName to
   Buffer. Size tells the amount of bytes to be copied.
   This function allows to access variables in dynamic modules which are
@@ -1261,7 +1168,6 @@ Quick info:
 Summary:
   Writes the data of an exported variable.
 Description:
-
   WriteModuleData copies the contents of Buffer to the exported variable SymbolName.
   Size tells the amount of bytes to be copied.
   This function allows to set variables in dynamic modules which are
