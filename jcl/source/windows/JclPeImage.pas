@@ -17,7 +17,6 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
@@ -5918,6 +5917,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/09/30 13:11:27  marquardt
+// remove PH contributions
+//
 // Revision 1.14  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //
