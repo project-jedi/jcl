@@ -1024,6 +1024,7 @@ end;
 
 function CloseVolume(var Volume: THandle): Boolean;
 begin
+  Result := False;
   if Volume <> INVALID_HANDLE_VALUE then
   begin
     Result := CloseHandle(Volume);
@@ -1454,7 +1455,7 @@ begin
   else
   begin
     if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
-      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
 
