@@ -33,13 +33,19 @@
 // Last modified: $Date$
 // For history see end of file
 
-{ TODO : Replacing the calls to MultibytetoWideChar is all what's needed to make this crossplatform }
+{ TODO : Replacing the calls to MultiBytetoWideChar is all what's needed to make this crossplatform }
 { TODO : Fix Internal Error DBG1384 in BCB 6 compilation }
 
 unit JclWideFormat;
 
 {$I jcl.inc}
 {$I windowsonly.inc}
+
+{$IFDEF COMPILER9}
+{ Delphi 2005 compiler fails with "Fatal: F2084 Internal error: C6662" if
+  optimization is off. }
+{$O+}
+{$ENDIF COMPILER9}
 
 interface
 
@@ -75,7 +81,7 @@ function WideFormat(const Format: WideString; const Args: array of const): WideS
 implementation
 
 uses
-  Windows,              // for MultibytetoWideChar
+  Windows,              // for MultiBytetoWideChar
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF ~HAS_UNIT_VARIANTS}
@@ -551,7 +557,7 @@ begin
               if (not Wide) and (CharCount > 0) then
               begin
                 AnsiCount := CharCount;
-                CharCount := MultibyteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
+                CharCount := MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
               end;
               // For strings, Prec can only truncate, never lengthen.
               if Prec < CharCount then
@@ -577,7 +583,7 @@ begin
           if Wide then
             MoveWideChar(P^, Result[Dest], CharCount)
           else
-            MultibyteToWideChar(DefaultCodePage, 0, P, AnsiCount, @Result[Dest], CharCount);
+            MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, @Result[Dest], CharCount);
           Inc(Dest, CharCount);
           CharCount := 0;
           if (SpacesNeeded > 0) and LeftAlign then
@@ -775,8 +781,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/03/01 00:55:50  ahuser
+// Delphi 2005 compiler bug workaround
+//
 // Revision 1.5  2005/02/27 07:27:47  marquardt
-// moved resourcestrings to JclResource.pas
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
 // Revision 1.4  2005/02/25 07:20:16  marquardt
 // add section lines
