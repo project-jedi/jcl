@@ -23,7 +23,7 @@
 { conversion to user displayable values and 'is'/'as' operator hooking.        }
 {                                                                              }
 { Unit owner: Marcel Bestebroer                                                }
-{ Last modified: July 19, 2001                                                 }
+{ Last modified: July 20, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -932,7 +932,7 @@ begin
   LastBit := BaseInfo.MaxValue - (BaseInfo.MinValue - FirstBit);
   Bit := FirstBit;
   StartBit := -1;
-  while Bit < LastBit do
+  while Bit <= LastBit do
   begin
     if TestBitBuffer(Value, Bit) then
     begin
@@ -2503,18 +2503,20 @@ end;
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 var
   Conv: TIdentToInt;
+  HaveConversion: Boolean;
 begin
   if TypeInfo <> nil then
-  begin
-    Conv := FindIdentToInt(TypeInfo);
-    if @Conv = nil then
-      Result := StrToInt(Value)
-    else
-    if not Conv(Value, Result) then
-      Result := StrToInt(Value);
-  end
+    Conv := FindIdentToInt(TypeInfo)
   else
-    Result := StrToInt(Value);
+    Conv := nil;
+  HaveConversion := (@Conv <> nil) and Conv(Value, Result);
+  if not HaveConversion then
+  begin
+    if (TypeInfo <> nil) and (GetTypeData(TypeInfo).OrdType = otULong) then
+      Result := StrToInt64(Value)
+    else
+      Result := StrToInt(Value)
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -2522,31 +2524,20 @@ end;
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
 var
   Conv: TIntToIdent;
+  HaveConversion: Boolean;
 begin
   if TypeInfo <> nil then
-  begin
-    Conv := FindIntToIdent(TypeInfo);
-    if @Conv = nil then
-    begin
-      if GetTypeData(TypeInfo).OrdType < otULong then
-        Result := IntToStr(Value)
-      else
-        Result := IntToStr(Int64(Cardinal(Value)));
-    end
-    else
-    begin
-      Conv(Value, Result);
-      if Result = '' then
-      begin
-        if GetTypeData(TypeInfo).OrdType < otULong then
-          Result := IntToStr(Value)
-        else
-          Result := IntToStr(Int64(Cardinal(Value)));
-      end;
-    end;
-  end
+    Conv := FindIntToIdent(TypeInfo)
   else
-    Result := IntToStr(Value);
+    Conv := nil;
+  HaveConversion := (@Conv <> nil) and Conv(Value, Result);
+  if not HaveConversion then
+  begin
+    if (TypeInfo <> nil) and (GetTypeData(TypeInfo).OrdType = otULong) then
+      Result := IntToStr(Int64(Cardinal(Value)))
+    else
+      Result := IntToStr(Value)
+  end;
 end;
 {$ENDIF COMPILER_5_UP}
 
