@@ -60,7 +60,7 @@ begin
   //Result := @CoCreateInstanceEx <> nil;
   //if Result then
   //begin
-  RegValue := ResgReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE\', 'EnableDCOM');
+  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE\', 'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
   //end;
 end;
