@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: July 28, 2003                                                                     }
+{ Last modified: July 31, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -46,6 +46,9 @@ unit JclEDI;
 
 {$WEAKPACKAGEUNIT ON}
 
+//Add the following directive in project options for debugging.
+//{$DEFINE ENABLE_EDI_DEBUGGING}
+
 interface
 
 uses
@@ -54,6 +57,12 @@ uses
 const
   NA_LoopId = 'N/A'; //Constant used for loop id comparison
   ElementSpecId_Reserved = 'Reserved';
+
+{$IFDEF ENABLE_EDI_DEBUGGING}
+var
+  Debug_EDIDataObjectsCreated: Int64;
+  Debug_EDIDataObjectsDestroyed: Int64;
+{$ENDIF}
 
 type
 
@@ -318,12 +327,18 @@ begin
   FSpecPointer := nil;
   FCustomData1 := nil;
   FCustomData2 := nil;
+{$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectsCreated);
+{$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TEDIDataObject.Destroy;
 begin
+{$IFDEF ENABLE_EDI_DEBUGGING}
+  Inc(Debug_EDIDataObjectsDestroyed);
+{$ENDIF}
   if not Assigned(FParent) then
   begin
     if Assigned(FDelimiters) then
@@ -876,13 +891,13 @@ end;
 
 function TEDIDataObjectLinkedListHeader.GetCount: Integer;
 var
-  EDIDataObjectLinkedListItem: TEDIDataObjectLinkedListItem;
+  ListItem: TEDIDataObjectLinkedListItem;
 begin
   Result := 0;
-  EDIDataObjectLinkedListItem := FFirstItem;
-  while EDIDataObjectLinkedListItem <> nil do
+  ListItem := FFirstItem;
+  while ListItem <> nil do
   begin
-    EDIDataObjectLinkedListItem := EDIDataObjectLinkedListItem.NextItem;
+    ListItem := ListItem.NextItem;
     Inc(Result);
   end;
 end;
