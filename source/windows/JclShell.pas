@@ -170,10 +170,11 @@ function OverlayIconShortCut(var Large, Small: HICON): Boolean;
 function OverlayIconShared(var Large, Small: HICON): Boolean;
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
 
-function ShellExec(const FileName: string;
+function ShellExecEx(const FileName: string;
   const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 function ShellExecAndWait(const FileName: string;
   const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
@@ -1247,7 +1248,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ShellExec(const FileName: string; const Parameters: string;
+function ShellExecEx(const FileName: string; const Parameters: string;
   const Verb: string; CmdShow: Integer): Boolean;
 var
   Sei: TShellExecuteInfo;
@@ -1260,6 +1261,15 @@ begin
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
   Result := ShellExecuteEx(@Sei);
+end;
+
+//------------------------------------------------------------------------------
+
+// TODOC author Jeff note, ShellExecEx() above used to be ShellExec()...
+
+function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
+begin
+  Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory), ShowCommand) > 32;
 end;
 
 //------------------------------------------------------------------------------
@@ -1289,7 +1299,7 @@ end;
 
 function ShellOpenAs(const FileName: string): Boolean;
 begin
-  Result := ShellExec('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
+  Result := ShellExecEx('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
 end;
 
 //------------------------------------------------------------------------------
@@ -1338,7 +1348,7 @@ begin
     end;
   end
   else
-    Result := ShellExec('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]),'',SW_SHOWNORMAL);
+    Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]),'',SW_SHOWNORMAL);
 end;
 
 //------------------------------------------------------------------------------
@@ -1355,7 +1365,7 @@ begin
   else
     FileName := NameOrFileName;
   if FileExists(FileName) then
-    Result := ShellExec('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
+    Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
       [FileName, AppletNumber]), '', SW_SHOWNORMAL)
   else
   begin
