@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: July 28, 2003                                                                     }
+{ Last modified: July 31, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -1156,7 +1156,8 @@ begin
     FData := '';
 {$IFDEF OPTIMIZED_DISASSEMBLE}
     //Add the objects in a chunk
-    AddSegments(LLHeader.ItemCount);
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+    //AddSegments(LLHeader.ItemCount);
     I := 0;
     LLItem := LLHeader.FirstItem;
     while LLItem <> nil do
@@ -1566,7 +1567,8 @@ begin
     FData := '';
 {$IFDEF OPTIMIZED_DISASSEMBLE}
     //Add the objects in a chunk
-    AddMessages(LLHeader.ItemCount);
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+    //AddMessages(LLHeader.ItemCount);
     I := 0;
     LLItem := LLHeader.FirstItem;
     while LLItem <> nil do
@@ -1920,7 +1922,8 @@ begin
       end; //while
 {$IFDEF OPTIMIZED_DISASSEMBLE}
       //Add the objects in a chunk
-      AddFunctionalGroups(LLHeader.ItemCount);
+      SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+      //AddFunctionalGroups(LLHeader.ItemCount);
 {$ENDIF}
     end
     else //Search for Message Header
@@ -1979,7 +1982,8 @@ begin
       end; //while
 {$IFDEF OPTIMIZED_DISASSEMBLE}
       //Add the objects in a chunk
-      AddMessages(LLHeader.ItemCount);
+      SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+      //AddMessages(LLHeader.ItemCount);
 {$ENDIF}
     end;
     //Verify the next record is a Interchange Control Trailer
@@ -2443,7 +2447,8 @@ begin
     FData := '';
 {$IFDEF OPTIMIZED_DISASSEMBLE}
     //Add the objects in a chunk
-    AddInterchanges(LLHeader.ItemCount);
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+    //AddInterchanges(LLHeader.ItemCount);
     I := 0;
     LLItem := LLHeader.FirstItem;
     while LLItem <> nil do
@@ -2855,7 +2860,8 @@ begin
     end;
 {$IFDEF OPTIMIZED_DISASSEMBLE}
     //Add the objects in a chunk
-    AddElements(LLHeader.ItemCount);
+    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + LLHeader.ItemCount);
+    //AddElements(LLHeader.ItemCount);
     I := 0;
     LLItem := LLHeader.FirstItem;
     while LLItem <> nil do
