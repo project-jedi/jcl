@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: December 24s, 2000                                             }
+{ Last modified: January 03, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -103,18 +103,20 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
-procedure CreateEmptyFile(const FileName: string); // TODOC Anthony
+procedure CreateEmptyFile(const FileName: string);
 function DelTree(const Path: string): Boolean;
-function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
+function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
+{$IFDEF WIN32}
 function DiskInDrive(Drive: Char): Boolean;
+{$ENDIF WIN32}
 function FileCreateTemp(var Prefix: string): THandle;
 function FileExists(const FileName: string): Boolean;
 function FileGetDisplayName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
-function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString; // TODOC Anthony
+function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
 function ForceDirectories(Name: string): Boolean;
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
@@ -1044,14 +1046,16 @@ function PathGetShortName(const Path: string): string;
 var
   Required: Integer;
 begin
-  // TODO empty result string on failure is inconsistent with PathGetLongName
-  Result := '';
+  Result := Path;
   Required := GetShortPathName(PChar(Path), nil, 0);
   if Required <> 0 then
   begin
     SetLength(Result, Required);
     Required := GetShortPathName(PChar(Path), PChar(Result), Required);
-    SetLength(Result, Required);
+    if (Required <> 0) and (Required = Length(Result) - 1) then
+      SetLength(Result, Required)
+    else
+      Result := Path;
   end;
 end;
 
@@ -1104,7 +1108,7 @@ end;
 function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  NotImplemented('PathIsDiskDevice'); // TODO
+  NotImplemented('PathIsDiskDevice'); 
   {$ENDIF}
   {$IFDEF WIN32}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
@@ -1122,10 +1126,10 @@ begin
   // Format of a valid UNC path is: "\\machine\sharename[\filename]"
   Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
   { TODO further verification tests:
-     \\.\whatever is not valid
-     \\?\whatever is not valid unless \\?\UNC\sharename[\filename]
+     \\.\whatever             is not valid
+     \\?\whatever             is not valid unless \\?\UNC\sharename[\filename]
      \\[sharename\][filename] is not valid
-     \\<x>:[whatever] is not valid
+     \\<x>:[whatever]         is not valid
      \\machine\<x>:[<\pathname>|<\drivename>] is not valid
      \\machine\<x>$[<\pathname>|<\drivename>] _is_ valid }
   {$ENDIF}
@@ -1205,10 +1209,7 @@ begin
   if Handle <> INVALID_HANDLE_VALUE then
     CloseHandle(Handle)
   else
-  begin
-    CloseHandle(Handle);
     RaiseLastWin32Error;
-  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1220,25 +1221,23 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
+function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 var
   Files: TStrings;
+  LPath: string; // writable copy of Path
   FileName: string;
   I: Integer;
   PartialResult: Boolean;
   Attr: DWORD;
 begin
-
   Result := True;
   Files := TStringList.Create;
   try
-    // TODO Path parameter used as local variable: bad practise
-    // Setup enumeration of all files in the direcrory
-    Path := PathRemoveSeparator(Path);
-    BuildFileList(Path + '\*.*', faAnyFile, Files);
+    LPath := PathRemoveSeparator(Path);
+    BuildFileList(LPath + '\*.*', faAnyFile, Files);
     for I := 0 to Files.Count - 1 do
     begin
-      FileName := Path + '\' + Files[I];
+      FileName := LPath + '\' + Files[I];
       PartialResult := True;
       // If the current file is itself a directory then recursively delete it
       Attr := GetFileAttributes(PChar(FileName));
@@ -1269,11 +1268,11 @@ begin
   if Result then
   begin
     // Finally remove the directory itself
-    Result := SetFileAttributes(PChar(Path), FILE_ATTRIBUTE_NORMAL);
+    Result := SetFileAttributes(PChar(LPath), FILE_ATTRIBUTE_NORMAL);
     if Result then
     begin
       {$I-}
-      RmDir(Path);
+      RmDir(LPath);
       {$I+}
       Result := IOResult = 0;
     end;
@@ -1292,6 +1291,8 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
+
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -1299,6 +1300,7 @@ begin
   Result := False;
   if Drive in ['a'..'z'] then
     Dec(Drive, $20);
+  Assert(Drive in ['A'..'Z']);
   if Drive in ['A'..'Z'] then
   begin
   { try to access the drive, it doesn't really matter how we access the drive
@@ -1313,6 +1315,8 @@ begin
     end;
   end;
 end;
+
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
@@ -1428,7 +1432,7 @@ var
   I: Integer;
 begin
   Result := FileName + '.' + FileExt;
-  I := 1;
+  I := 0;
   while FileExists(Result) do
   begin
     Inc(I);
