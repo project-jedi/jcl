@@ -26,7 +26,7 @@
 { expression evaluator can be assembled relatively easily.                     }
 {                                                                              }
 { Unit owner: Barry Kelly                                                      }
-{ Last modified: June 6, 2001                                                  }
+{ Last modified: June 14, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -995,9 +995,6 @@ type
     FOutput: TFloat;
   public
     { Brief: Executes this instruction.
-      Returns:
-        True if the instruction stream should continue to execute,
-        False if the virtual machine should terminate.
       Description:
         This method executes this instruction, reading from its inputs
         and writing to its output location. It returns False to terminate
