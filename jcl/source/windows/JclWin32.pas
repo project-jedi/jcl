@@ -39,7 +39,8 @@ uses
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
-  ShlObj;
+  ShlObj,
+  JclBase;
 
 //--------------------------------------------------------------------------------------------------
 // Locales related
