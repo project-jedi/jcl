@@ -24,7 +24,7 @@
 { these instance including a notifaction mechanism.                            }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: March 31, 2001                                                }
+{ Last modified: August 28, 2001                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -39,13 +39,18 @@ uses
   JclBase, JclFileUtils, JclSynch;
 
 //------------------------------------------------------------------------------
-// Message constants
+// Message constants and types
 //------------------------------------------------------------------------------
+
+type
+  TJclAppInstDataKind = Integer;
 
 const
   AI_INSTANCECREATED = $0001;
   AI_INSTANCEDESTROYED = $0002;
   AI_USERMSG = $0003;
+
+  AppInstDataKindNoData = -1;
 
 //------------------------------------------------------------------------------
 // Application instances manager class
@@ -77,11 +82,11 @@ type
     function CheckInstance(const MaxInstances: Word): Boolean;
     procedure CheckMultipleInstances(const MaxInstances: Word);
     procedure CheckSingleInstance;
-    function SendData(const WindowClassName: string; const DataKind: DWORD;
+    function SendData(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       const Data: Pointer; const Size: Integer; const OriginatorWnd: HWND): Boolean;
-    function SendString(const WindowClassName: string; const DataKind: DWORD;
+    function SendString(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       const S: string; const OriginatorWnd: HWND): Boolean;
-    function SendStrings(const WindowClassName: string; const DataKind: DWORD;
+    function SendStrings(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
     function SwitchTo(const Index: Integer): Boolean;
     procedure UserNotify(const Param: Longint);
@@ -99,11 +104,10 @@ function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; ov
 // Interprocess communication routines
 //------------------------------------------------------------------------------
 
-function JclReadMessageCheck(var Message: TMessage; const DataKind: DWORD;
-  const IgnoredOriginatorWnd: HWND): Boolean;
-procedure JclReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
-procedure JclReadMessageString(const Message: TMessage; var S: string);
-procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
+function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
+procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
+procedure ReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
 implementation
 
@@ -413,7 +417,7 @@ end;
 //------------------------------------------------------------------------------
 
 function TJclAppInstances.SendData(const WindowClassName: string;
-  const DataKind: DWORD; const Data: Pointer; const Size: Integer;
+  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer;
   const OriginatorWnd: HWND): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
@@ -457,6 +461,7 @@ var
   end;
 
 begin
+  Assert(DataKind <> AppInstDataKindNoData);
   EnumWinRec.WindowClassName := PChar(WindowClassName);
   EnumWinRec.OriginatorWnd := OriginatorWnd;
   EnumWinRec.CopyData.dwData := DataKind;
@@ -469,7 +474,7 @@ end;
 //------------------------------------------------------------------------------
 
 function TJclAppInstances.SendString(const WindowClassName: string;
-  const DataKind: DWORD; const S: string; const OriginatorWnd: HWND): Boolean;
+  const DataKind: TJclAppInstDataKind; const S: string; const OriginatorWnd: HWND): Boolean;
 begin
   Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
     OriginatorWnd);
@@ -478,7 +483,7 @@ end;
 //------------------------------------------------------------------------------
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
-  const DataKind: DWORD; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
 var
   S: string;
 begin
@@ -547,20 +552,23 @@ end;
 // Interprocess communication routines
 //==============================================================================
 
-function JclReadMessageCheck(var Message: TMessage; const DataKind: DWORD;
-  const IgnoredOriginatorWnd: HWND): Boolean;
+function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
 begin
-  if Message.Msg = WM_COPYDATA then
-    Result := (TWMCopyData(Message).From <> IgnoredOriginatorWnd) and
-      (TWMCopyData(Message).CopyDataStruct^.dwData = DataKind)
+  if (Message.Msg = WM_COPYDATA) and (TWMCopyData(Message).From <> IgnoredOriginatorWnd) then
+  begin
+    Message.Result := 1;
+    Result := TJclAppInstDataKind(TWMCopyData(Message).CopyDataStruct^.dwData);
+  end
   else
-    Result := False;
-  Message.Result := Integer(Result);
+  begin
+    Message.Result := 0;
+    Result := AppInstDataKindNoData;
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure JclReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
+procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
@@ -573,7 +581,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure JclReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageString(const Message: TMessage; var S: string);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
@@ -582,7 +590,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
+procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 var
   S: string;
 begin
@@ -591,7 +599,7 @@ begin
     begin
       SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
       Strings.Text := S;
-    end;  
+    end;
 end;
 
 //------------------------------------------------------------------------------
