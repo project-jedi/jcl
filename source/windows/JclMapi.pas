@@ -150,9 +150,9 @@ type
     function GetItems(Index: Integer): TJclEmailRecip;
   public
     function Add(const Address: string;
-      const Name: string{$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-      const Kind: TJclEmailRecipKind{$IFDEF SUPPORTS_DEFAULTPARAMS} = rkTO {$ENDIF};
-      const AddressType: string{$IFDEF SUPPORTS_DEFAULTPARAMS} = ''{$ENDIF}): Integer;
+      const Name: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+      const Kind: TJclEmailRecipKind {$IFDEF SUPPORTS_DEFAULTPARAMS} = rkTO {$ENDIF};
+      const AddressType: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Integer;
     procedure SortRecips;
     property AddressesType: string read FAddressesType write FAddressesType;
     property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
@@ -189,12 +189,12 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure LogOff(ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+    procedure LogOff(ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
     procedure LogOn(const ProfileName, Password: string;
-      ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
-    procedure MessageReport(Strings: TStrings; MaxWidth: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 80{$ENDIF});
-    function Send(ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
-      ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+      ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+    procedure MessageReport(Strings: TStrings; MaxWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF});
+    function Send(ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
+      ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
     procedure SortAttachments;
     property Attachments: TStrings read FAttachments;
     property Body: string read FBody write FBody;
@@ -216,9 +216,9 @@ type
 //------------------------------------------------------------------------------
 
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName{$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
-  ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+  const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+  ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
+  ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
 
 //------------------------------------------------------------------------------
 // MAPI Errors
