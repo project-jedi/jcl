@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 27, 2000                                              }
+{ Last modified: November 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -92,7 +92,7 @@ function GetCookiesFolder: string;
 function GetHistoryFolder: string;
 
 //------------------------------------------------------------------------------
-// APM (Advanced Power Management)
+// Advanced Power Management (APM)
 //------------------------------------------------------------------------------
 
 type
@@ -120,7 +120,12 @@ function GetDomainName: string;
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
 
-function RunningProcessesList(List: TStrings): Boolean;
+function GetBIOSName: string;
+function GetBIOSCopyright: string;
+function GetBIOSExtendedInfo: string;
+function GetBIOSDate : TDateTime;
+
+function RunningProcessesList(const List: TStrings): Boolean;
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
@@ -422,11 +427,36 @@ function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
 
 //------------------------------------------------------------------------------
+// Memory Information
+//------------------------------------------------------------------------------
+
+function GetMaxAppAddress: Integer;
+function GetMinAppAddress: Integer;
+function GetMemoryLoad: Byte;
+function GetSwapFileSize: Integer;
+function GetSwapFileUsage: Integer;
+function GetTotalPhysicalMemory: Integer;
+function GetFreePhysicalMemory: Integer;
+function GetTotalPageFileMemory: Integer;
+function GetFreePageFileMemory: Integer;
+function GetTotalVirtualMemory: Integer;
+function GetFreeVirtualMemory: Integer;
+
+//------------------------------------------------------------------------------
 // Alloc granularity
 //------------------------------------------------------------------------------
 
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
+
+//------------------------------------------------------------------------------
+// Keyboard Information
+//------------------------------------------------------------------------------
+
+function GetKeyState(const VirtualKey: Cardinal): boolean;
+function GetNumLockKeyState: boolean;
+function GetScrollLockKeyState: boolean;
+function GetCapsLockKeyState: boolean;
 
 //------------------------------------------------------------------------------
 // Public global variables
@@ -435,6 +465,7 @@ procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 var
   ProcessorCount: Cardinal = 0;
   AllocGranularity: Cardinal = 0;
+  PageSize: Cardinal = 0;
   SHMalloc: IMalloc;
 
 implementation
@@ -524,6 +555,69 @@ function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
 end;
+
+//------------------------------------------------------------------------------
+
+function CreateEnvironmentBlock(const Options: TEnvironmentOptions;
+  const AdditionalVars: TStrings): PChar;
+const
+  RegLocalEnvironment = '\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\';
+  RegUserEnvironment = '\Environment\';
+var
+  KeyNames, stlTemp: TStrings;
+  strTemp, strName, strValue: string;
+  I: Integer;
+begin
+  stlTemp := TStringList.Create;
+
+  // get additional environment strings
+  if eoAdditional in Options then
+    for I := 0 to AdditionalVars.Count - 1 do
+    begin
+      strTemp := AdditionalVars[I];
+      ExpandEnvironmentVar(strTemp);
+      stlTemp.Add(strTemp);
+    end;
+
+  // get environment strings from local machine
+  if eoLocalMachine in Options then
+  begin
+    KeyNames := TStringList.Create;
+    if RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment, KeyNames) then
+    begin
+      for I := 0 to KeyNames.Count - 1 do
+      begin
+        strName := KeyNames[I];
+        strValue := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, strName);
+        ExpandEnvironmentVar(strValue);
+        stlTemp.Add(strName + '=' + strValue);
+      end;
+      KeyNames.Free;
+    end;
+  end;
+
+  // get environment strings from current user
+  if eoCurrentUser in Options then
+  begin
+    KeyNames := TStringLIst.Create;
+    if RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment, KeyNames) then
+    begin
+      for I := 0 to KeyNames.Count - 1 do
+      begin
+        strName := KeyNames[I];
+        strValue := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, strName);
+        ExpandEnvironmentVar(strValue);
+        stlTemp.Add(strName + '=' + strValue);
+      end;
+      KeyNames.Free;
+    end;
+  end;
+
+  // transform stringlist into multi-PChar
+  StringsToMultiSz(Result, stlTemp);
+  stlTemp.Free;
+end;
+
 
 //==============================================================================
 // Common Folders
@@ -632,6 +726,198 @@ begin
     Result := PathRemoveSeparator(Result);
   end;
 end;
+
+//------------------------------------------------------------------------------
+
+function GetSpecialFolderLocation(const Folder: Integer): string;
+var
+  shBuff: PChar;
+  idRoot: PItemIDList;
+begin
+  Result  := '';
+  SetLength(Result, MAX_PATH);
+  shBuff := PChar(SHMalloc.Alloc(MAX_PATH));
+  if Assigned(shBuff) then begin
+    CoInitialize(nil);
+    try
+      SHGetSpecialFolderLocation(0, Folder, idRoot);
+      try
+        if SHGetPathFromIDList(idRoot, shBuff) then
+          Result := shBuff;
+      finally
+        SHMalloc.Free(idRoot);
+      end;
+    finally
+      SHMalloc.Free(shBuff);
+      CoUninitialize;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetDesktopFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetProgramsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetPersonalFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFavoritesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetStartupFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_STARTUP);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetRecentFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_RECENT);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSendToFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_SENDTO);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetStartmenuFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetDesktopDirectoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetNethoodFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFontsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_FONTS);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCommonStartmenuFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCommonProgramsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCommonStartupFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCommonDesktopdirectoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetAppdataFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_APPDATA);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetPrinthoodFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCommonFavoritesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetTemplatesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetInternetCacheFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCookiesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COOKIES);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetHistoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_HISTORY);
+end;
+
+// the following special folders are pure virtual and cannot be
+// mapped to a directory path:
+// CSIDL_INTERNET
+// CSIDL_CONTROLS
+// CSIDL_PRINTERS
+// CSIDL_BITBUCKET
+// CSIDL_DRIVES
+// CSIDL_NETWORK
+// CSIDL_ALTSTARTUP
+// CSIDL_COMMON_ALTSTARTUP
 
 //==============================================================================
 // Identification
@@ -779,7 +1065,113 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RunningProcessesList(List: TStrings): Boolean;
+function GetUserDomainName(const CurUser: string): string;
+var
+  Count1, Count2: DWORD;
+  Sd: PSecurityDescriptor;
+  Snu: SID_Name_Use;
+begin
+  Count1 := 0;
+  Count2 := 0;
+  Sd := nil;
+  Snu := SIDTypeUser;
+
+  // have the API function determine the required buffer sizes
+  LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
+  SetLength(Result, Count2 + 1);
+
+  Sd := AllocMem(Count1);
+
+  if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
+    StrResetLength(Result)
+  else
+    Result := EmptyStr;
+
+  FreeMem(Sd);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetDomainName: string;
+begin
+  Result := GetUserDomainName(GetLocalUserName);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetBIOSName: string;
+const
+  ADR_BIOSNAME = $FE061;
+begin
+  try
+    Result := string(PChar(Ptr(ADR_BIOSNAME)));
+  except
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetBIOSCopyright: string;
+const
+  ADR_BIOSCOPYRIGHT = $FE091;
+begin
+  try
+    Result := string(PChar(Ptr(ADR_BIOSCOPYRIGHT)));
+  except
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetBIOSExtendedInfo: string;
+const
+  ADR_BIOSEXTENDEDINFO = $FEC71;
+begin
+  try
+    Result := string(PChar(Ptr(ADR_BIOSEXTENDEDINFO)));
+  except
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetBIOSDate : TDateTime;
+const
+  REGSTR_PATH_SYSTEM = '\HARDWARE\DESCRIPTION\System\';
+  REGSTR_SYSTEMBIOSDATE = 'SystemBiosDate';
+var
+  RegStr, RegFormat: string;
+  RegSeparator: char;
+begin
+  Result := 0;
+  RegStr := RegReadString(HKEY_LOCAL_MACHINE, REGSTR_PATH_SYSTEM, REGSTR_SYSTEMBIOSDATE);
+
+  RegFormat := ShortDateFormat;
+  RegSeparator := DateSeparator;
+  try
+    DateSeparator   := '/';
+    try
+      ShortDateFormat := 'm/d/y';
+      Result := StrToDate(RegStr);
+    except
+      try
+        ShortDateFormat := 'y/m/d';
+        Result := StrToDate(RegStr);
+      except
+      end;
+    end;
+  finally
+    ShortDateFormat := RegFormat;
+    DateSeparator   := RegSeparator;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RunningProcessesList(const List: TStrings): Boolean;
 
   function BuildListTH: Boolean;
   var
@@ -1774,283 +2166,8 @@ begin
 end;
 
 //==============================================================================
-// Initialization
+// Advanced Power Management (APM)
 //==============================================================================
-
-procedure InitSysInfo;
-var
-  SystemInfo: TSystemInfo;
-begin
-  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
-  GetSystemInfo(SystemInfo);
-  ProcessorCount := SystemInfo.dwNumberOfProcessors;
-  AllocGranularity := SystemInfo.dwAllocationGranularity;
-
-  //  added per MVB request                ESF    2000/06/04
-  IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
-
-  case GetWindowsVersion of
-    wvUnknown: ;
-    wvWin95:
-      IsWin95 := True;
-    wvWin95OSR2:
-      IsWin95OSR2 := True;
-    wvWin98:
-      IsWin98 := True;
-    wvWin98SE:
-      IsWin98SE := True;
-    wvWinNT3:
-      IsWinNT3 := True;
-    wvWinNT4:
-      IsWinNT4 := True;
-    wvWin2000:
-      IsWin2K := True;
-  end;
-
-  SHGetMalloc(SHMalloc);  
-end;
-
-//------------------------------------------------------------------------------
-
-function GetUserDomainName(const CurUser: string): string;
-var
-  Count1, Count2: DWORD;
-  Sd: PSecurityDescriptor;
-  Snu: SID_Name_Use;
-begin
-  Count1 := 0;
-  Count2 := 0;
-  Sd := nil;
-  Snu := SIDTypeUser;
-
-  // have the API function determine the required buffer sizes
-  LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
-  SetLength(Result, Count2 + 1);
-
-  Sd := AllocMem(Count1);
-
-  if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
-    StrResetLength(Result)
-  else
-    Result := EmptyStr;
-
-  FreeMem(Sd);
-end;
-
-//------------------------------------------------------------------------------
-
-function GetDomainName: string;
-begin
-  Result := GetUserDomainName(GetLocalUserName);
-end;
-
-//------------------------------------------------------------------------------
-
-function CreateEnvironmentBlock(const Options: TEnvironmentOptions;
-  const AdditionalVars: TStrings): PChar;
-const
-  RegLocalEnvironment = '\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\';
-  RegUserEnvironment = '\Environment\';
-var
-  KeyNames, stlTemp: TStrings;
-  strTemp, strName, strValue: string;
-  I: Integer;
-begin
-  stlTemp := TStringList.Create;
-
-  // get additional environment strings
-  if eoAdditional in Options then
-    for I := 0 to AdditionalVars.Count - 1 do
-    begin
-      strTemp := AdditionalVars[I];
-      ExpandEnvironmentVar(strTemp);
-      stlTemp.Add(strTemp);
-    end;
-
-  // get environment strings from local machine
-  if eoLocalMachine in Options then
-  begin
-    KeyNames := TStringList.Create;
-    if RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment, KeyNames) then
-    begin
-      for I := 0 to KeyNames.Count - 1 do
-      begin
-        strName := KeyNames[I];
-        strValue := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, strName);
-        ExpandEnvironmentVar(strValue);
-        stlTemp.Add(strName + '=' + strValue);
-      end;
-      KeyNames.Free;
-    end;
-  end;
-
-  // get environment strings from current user
-  if eoCurrentUser in Options then
-  begin
-    KeyNames := TStringLIst.Create;
-    if RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment, KeyNames) then
-    begin
-      for I := 0 to KeyNames.Count - 1 do
-      begin
-        strName := KeyNames[I];
-        strValue := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, strName);
-        ExpandEnvironmentVar(strValue);
-        stlTemp.Add(strName + '=' + strValue);
-      end;
-      KeyNames.Free;
-    end;
-  end;
-
-  // transform stringlist into multi-PChar
-  StringsToMultiSz(Result, stlTemp);
-  stlTemp.Free;
-end;
-
-function GetSpecialFolderLocation(const Folder: Integer): string;
-var
-  shBuff: PChar;
-  idRoot: PItemIDList;
-begin
-  Result  := '';
-  SetLength(Result, MAX_PATH);
-  shBuff := PChar(SHMalloc.Alloc(MAX_PATH));
-  if Assigned(shBuff) then begin
-    CoInitialize(nil);
-    try
-      SHGetSpecialFolderLocation(0, Folder, idRoot);
-      try
-        if SHGetPathFromIDList(idRoot, shBuff) then
-          Result := shBuff;
-      finally
-        SHMalloc.Free(idRoot);
-      end;
-    finally
-      SHMalloc.Free(shBuff);
-      CoUninitialize;
-    end;
-  end;
-end;
-
-function GetDesktopFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
-end;
-
-function GetProgramsFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
-end;
-
-function GetPersonalFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
-end;
-
-function GetFavoritesFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
-end;
-
-function GetStartupFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_STARTUP);
-end;
-
-function GetRecentFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_RECENT);
-end;
-
-function GetSendToFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_SENDTO);
-end;
-
-function GetStartmenuFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
-end;
-
-function GetDesktopDirectoryFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
-end;
-
-function GetNethoodFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
-end;
-
-function GetFontsFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_FONTS);
-end;
-
-function GetCommonStartmenuFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
-end;
-
-function GetCommonProgramsFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
-end;
-
-function GetCommonStartupFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
-end;
-
-function GetCommonDesktopdirectoryFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
-end;
-
-function GetAppdataFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_APPDATA);
-end;
-
-function GetPrinthoodFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
-end;
-
-function GetCommonFavoritesFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
-end;
-
-function GetTemplatesFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
-end;
-
-function GetInternetCacheFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
-end;
-
-function GetCookiesFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_COOKIES);
-end;
-
-function GetHistoryFolder: string;
-begin
-  Result := GetSpecialFolderLocation(CSIDL_HISTORY);
-end;
-
-// the following special folders are pure virtual and cannot be
-// mapped to a directory path:
-// CSIDL_INTERNET
-// CSIDL_CONTROLS
-// CSIDL_PRINTERS
-// CSIDL_BITBUCKET
-// CSIDL_DRIVES
-// CSIDL_NETWORK
-// CSIDL_ALTSTARTUP
-// CSIDL_COMMON_ALTSTARTUP
 
 function GetAPMLineStatus: TAPMLineStatus;
 var
@@ -2071,6 +2188,8 @@ begin
     end;
   end;
 end;
+
+//------------------------------------------------------------------------------
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
@@ -2098,6 +2217,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function GetAPMBatteryLifePercent: Integer;
 var
  SystemPowerstatus:_System_Power_Status;
@@ -2108,6 +2229,8 @@ begin
   else
     Result := SystemPowerStatus.BatteryLifePercent;
 end;
+
+//------------------------------------------------------------------------------
 
 function GetAPMBatteryLifeTime: Integer;
 var
@@ -2120,6 +2243,8 @@ begin
     Result := SystemPowerStatus.BatteryLifeTime;
 end;
 
+//------------------------------------------------------------------------------
+
 function GetAPMBatteryFullLifeTime: Integer;
 var
  SystemPowerstatus:_System_Power_Status;
@@ -2129,6 +2254,202 @@ begin
     RaiseLastWin32Error
   else
     Result := SystemPowerStatus.BatteryFullLifeTime;
+end;
+
+//==============================================================================
+// Memory Information
+//==============================================================================
+
+function GetMaxAppAddress: Integer;
+var
+  SystemInfo: TSystemInfo;
+begin
+  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
+  GetSystemInfo(SystemInfo);
+  Result := LongInt(SystemInfo.lpMaximumApplicationAddress);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetMinAppAddress: Integer;
+var
+  SystemInfo: TSystemInfo;
+begin
+  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
+  GetSystemInfo(SystemInfo);
+  Result := LongInt(SystemInfo.lpMinimumApplicationAddress);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetMemoryLoad: Byte;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwMemoryLoad;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSwapFileSize: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ with MemoryStatus do
+   Result := Trunc(dwTotalPageFile - dwAvailPageFile);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSwapFileUsage: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ with MemoryStatus do
+   Result := 100-trunc(dwAvailPageFile/dwTotalPageFile*100);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetTotalPhysicalMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwTotalPhys;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFreePhysicalMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwAvailPhys;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetTotalPageFileMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwTotalPageFile;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFreePageFileMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwAvailPageFile;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetTotalVirtualMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwTotalVirtual;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFreeVirtualMemory: Integer;
+var
+  MemoryStatus: TMemoryStatus;
+begin
+ MemoryStatus.dwLength:=SizeOf(MemoryStatus);
+ GlobalMemoryStatus(MemoryStatus);
+ Result := MemoryStatus.dwAvailVirtual;
+end;
+
+//==============================================================================
+// Keyboard Information
+//==============================================================================
+
+function GetKeyState(const VirtualKey: Cardinal): boolean;
+var
+  Keys: TKeyboardState;
+begin
+  GetKeyBoardState(Keys);
+  Result := Keys[VirtualKey] = 1;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetNumLockKeyState: boolean;
+begin
+  Result := GetKeyState(VK_NUMLOCK);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetScrollLockKeyState: boolean;
+begin
+  Result := GetKeyState(VK_SCROLL);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetCapsLockKeyState: boolean;
+begin
+  Result := GetKeyState(VK_CAPITAL);
+end;
+
+//==============================================================================
+// Initialization
+//==============================================================================
+
+procedure InitSysInfo;
+var
+  SystemInfo: TSystemInfo;
+begin
+  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
+  GetSystemInfo(SystemInfo);
+  ProcessorCount := SystemInfo.dwNumberOfProcessors;
+  AllocGranularity := SystemInfo.dwAllocationGranularity;
+  PageSize := SystemInfo.dwPageSize;
+
+  //  added per MVB request                ESF    2000/06/04
+  IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
+
+  case GetWindowsVersion of
+    wvUnknown: ;
+    wvWin95:
+      IsWin95 := True;
+    wvWin95OSR2:
+      IsWin95OSR2 := True;
+    wvWin98:
+      IsWin98 := True;
+    wvWin98SE:
+      IsWin98SE := True;
+    wvWinNT3:
+      IsWinNT3 := True;
+    wvWinNT4:
+      IsWinNT4 := True;
+    wvWin2000:
+      IsWin2K := True;
+  end;
+
+  SHGetMalloc(SHMalloc);
 end;
 
 initialization
