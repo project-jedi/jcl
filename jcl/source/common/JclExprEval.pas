@@ -52,7 +52,7 @@ uses
 const
   { Brief: Initial size of internal hash lists created by TEasyEvaluator
       descendants, and also TExpressionCompiler. }
-  C_ExprEval_HashSize = 127;
+  cExprEvalHashSize = 127;
 
 type
   { Brief: Exception class used by the expression evaluator. }
@@ -95,34 +95,34 @@ type
   TFloat80Func = function: TFloat80;
 
   { Brief: A function type taking a single parameter. }
-  TUnaryFunc = function(x: TFloat): TFloat;
+  TUnaryFunc = function(X: TFloat): TFloat;
   { <COMBINE TUnaryFunc> }
-  TUnary32Func = function(x: TFloat32): TFloat32;
+  TUnary32Func = function(X: TFloat32): TFloat32;
   { <COMBINE TUnaryFunc> }
-  TUnary64Func = function(x: TFloat64): TFloat64;
+  TUnary64Func = function(X: TFloat64): TFloat64;
   { <COMBINE TUnaryFunc> }
-  TUnary80Func = function(x: TFloat80): TFloat80;
+  TUnary80Func = function(X: TFloat80): TFloat80;
 
   { Brief: A function type taking two parameters. }
-  TBinaryFunc = function(x, y: TFloat): TFloat;
+  TBinaryFunc = function(X, Y: TFloat): TFloat;
   { <COMBINE TBinaryFunc> }
-  TBinary32Func = function(x, y: TFloat32): TFloat32;
+  TBinary32Func = function(X, Y: TFloat32): TFloat32;
   { <COMBINE TBinaryFunc> }
-  TBinary64Func = function(x, y: TFloat64): TFloat64;
+  TBinary64Func = function(X, Y: TFloat64): TFloat64;
   { <COMBINE TBinaryFunc> }
-  TBinary80Func = function(x, y: TFloat80): TFloat80;
+  TBinary80Func = function(X, Y: TFloat80): TFloat80;
 
   { Brief: A function type taking three parameters. }
-  TTernaryFunc = function(x, y, z: TFloat): TFloat;
+  TTernaryFunc = function(X, Y, Z: TFloat): TFloat;
   { <COMBINE TTernaryFunc> }
-  TTernary32Func = function(x, y, z: TFloat32): TFloat32;
+  TTernary32Func = function(X, Y, Z: TFloat32): TFloat32;
   { <COMBINE TTernaryFunc> }
-  TTernary64Func = function(x, y, z: TFloat64): TFloat64;
+  TTernary64Func = function(X, Y, Z: TFloat64): TFloat64;
   { <COMBINE TTernaryFunc> }
-  TTernary80Func = function(x, y, z: TFloat80): TFloat80;
+  TTernary80Func = function(X, Y, Z: TFloat80): TFloat80;
 
 type
-{ Forward Declarations }
+  { Forward Declarations }
   TExprLexer = class;
   TExprCompileParser = class;
   TExprEvalParser = class;
@@ -156,7 +156,7 @@ type
       abstract; instead, construct a concrete descendant.
     See Also:
       TExprHashContext, TExprSetContext }
-  TExprContext = class
+  TExprContext = class(TObject)
   public
     { Finds a symbol corresponding to an identifier.
       Parameters: s: The identifier of the symbol to find.
@@ -199,8 +199,8 @@ type
         a power of 2 minus one does fairly well (e.g. 127, 2047, etc.).
       See Also: TStringHashMap }
     constructor Create(
-      ACaseSensitive: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = False{$ENDIF};
-      AHashSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 127{$ENDIF});
+      ACaseSensitive: Boolean = False;
+      AHashSize: Integer = 127);
 
     { Brief: Destroys this instance. Use Free instead. }
     destructor Destroy; override;
@@ -291,7 +291,7 @@ type
       that calls itself, even though it might be through another evaluator
       with different Lexer etc.) because the state is saved before Evaluate
       or Compile is called, and restored afterwards. }
-  TExprSym = class
+  TExprSym = class(TObject)
   private
     FIdent: string;
     FLexer: TExprLexer;
@@ -376,7 +376,6 @@ type
 
   { Brief: The type of token found by TExprLexer. }
   TExprToken = (
-
     // specials
     etEof,
     etNumber,
@@ -590,7 +589,7 @@ type
         NextTok method is called. When the end of the input stream is
         found, CurrTok will be equal to etEof, and repeated calls of
         NextTok won't do anything (i.e. CurrTok will remain equal to etEof). }
-  TExprLexer = class
+  TExprLexer = class(TObject)
   protected
     { Brief: NextTok should set as appropriate. }
     FCurrTok: TExprToken;
@@ -663,7 +662,7 @@ type
       instances.
     Note: Don't construct TExprNode objects directly; call the methods
       of a TExprNodeFactory instance. }
-  TExprNode = class
+  TExprNode = class(TObject)
   private
     FDepList: TList;
     function GetDepCount: Integer;
@@ -708,7 +707,7 @@ type
       that is specific to the implementation strategy. That GenCode method
       is a prime candidate for expression optimizations like common
       sub-expression elimination, constant sub-expression evaluation, etc. }
-  TExprNodeFactory = class
+  TExprNodeFactory = class(TObject)
   public
     { Brief: Loads the variable pointed to by ALoc.
       Description:
@@ -749,29 +748,29 @@ type
     { <COMBINE CallFloatFunc> }
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallUnaryFunc(AFunc: TUnaryFunc; x: TExprNode): TExprNode; virtual; abstract;
+    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallUnary32Func(AFunc: TUnary32Func; x: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallUnary64Func(AFunc: TUnary64Func; x: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallUnary80Func(AFunc: TUnary80Func; x: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallBinaryFunc(AFunc: TBinaryFunc; x, y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallBinary32Func(AFunc: TBinary32Func; x, y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallBinary64Func(AFunc: TBinary64Func; x, y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallBinary80Func(AFunc: TBinary80Func; x, y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallTernaryFunc(AFunc: TTernaryFunc; x, y, z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallTernary32Func(AFunc: TTernary32Func; x, y, z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallTernary64Func(AFunc: TTernary64Func; x, y, z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
     { <COMBINE CallFloatFunc> }
-    function CallTernary80Func(AFunc: TTernary80Func; x, y, z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
 
     { Brief: Performs an arithmetic operation.
       Description:
@@ -826,7 +825,7 @@ type
 
       <p>The key methods are Create and Compile.
     See Also: TExprEvalParser, TExprLexer, TExprSym }
-  TExprCompileParser = class
+  TExprCompileParser = class(TObject)
   private
     FContext: TExprContext;
     FLexer: TExprLexer;
@@ -843,7 +842,7 @@ type
     { Brief: Compiles an expression from the lexical source.
       Description:
         This method compiles the expression by descending through its
-        grammatical methods, starting with compile_expr.
+        grammatical methods, starting with CompileExpr.
       Returns: The top-level expression node. }
     function Compile: TExprNode; virtual;
 
@@ -865,20 +864,20 @@ type
 
     // grammar starts here
 
-    { Brief: Compiles relational operators and uses compile_simple_expr. }
-    function compile_expr(ASkip: Boolean): TExprNode; virtual;
-    { Brief: Compiles +, -, etc and uses compile_term. }
-    function compile_simple_expr(ASkip: Boolean): TExprNode;
-    { Brief: Compiles *, /, etc and uses compile_signed_factor. }
-    function compile_term(ASkip: Boolean): TExprNode;
-    { Brief: Compiles unary negate etc, and uses compile_factor. }
-    function compile_signed_factor(ASkip: Boolean): TExprNode;
+    { Brief: Compiles relational operators and uses CompileSimpleExpr. }
+    function CompileExpr(ASkip: Boolean): TExprNode; virtual;
+    { Brief: Compiles +, -, etc and uses CompileTerm. }
+    function CompileSimpleExpr(ASkip: Boolean): TExprNode;
+    { Brief: Compiles *, /, etc and uses CompileSignedFactor. }
+    function CompileTerm(ASkip: Boolean): TExprNode;
+    { Brief: Compiles unary negate etc, and uses CompileFactor. }
+    function CompileSignedFactor(ASkip: Boolean): TExprNode;
     { Brief: Compiles subexpressions (i.e. '(' & ')'), numbers, but defers
-        identifiers to compile_ident_factor. }
-    function compile_factor: TExprNode;
+        identifiers to CompileIdentFactor. }
+    function CompileFactor: TExprNode;
     { Brief: Looks up the symbol corresponding to an identifier and
         returns its compilation. }
-    function compile_ident_factor: TExprNode;
+    function CompileIdentFactor: TExprNode;
   end;
 
   { Brief: An evaluating parser.
@@ -887,7 +886,7 @@ type
       as it grammatically analyses the input stream of tokens from its lexer.
       It returns a floating-point value.
     See Also: TExprCompileParser, TExprLexer, TExprSym }
-  TExprEvalParser = class
+  TExprEvalParser = class(TObject)
   private
     FContext: TExprContext;
     FLexer: TExprLexer;
@@ -901,7 +900,7 @@ type
     { Brief: Evaluates an expression from the lexical source.
       Description:
         This method evaluates the expression by descending through its
-        grammatical methods, starting with eval_expr.
+        grammatical methods, starting with EvalExpr.
       Returns: The result of the evaluation. }
     function Evaluate: TFloat; virtual;
 
@@ -920,25 +919,24 @@ type
 
     // grammar starts here
 
-    { Brief: Evaluates relational operators and uses eval_simple_expr. }
-    function eval_expr(ASkip: Boolean): TFloat; virtual;
-    { Brief: Evaluates +, -, etc and uses eval_term. }
-    function eval_simple_expr(ASkip: Boolean): TFloat;
-    { Brief: Evaluates *, /, etc and uses eval_signed_factor. }
-    function eval_term(ASkip: Boolean): TFloat;
-    { Brief: Evaluates unary negate etc, and uses eval_factor. }
-    function eval_signed_factor(ASkip: Boolean): TFloat;
+    { Brief: Evaluates relational operators and uses EvalSimpleExpr. }
+    function EvalExpr(ASkip: Boolean): TFloat; virtual;
+    { Brief: Evaluates +, -, etc and uses EvalTerm. }
+    function EvalSimpleExpr(ASkip: Boolean): TFloat;
+    { Brief: Evaluates *, /, etc and uses EvalSignedFactor. }
+    function EvalTerm(ASkip: Boolean): TFloat;
+    { Brief: Evaluates unary negate etc, and uses EvalFactor. }
+    function EvalSignedFactor(ASkip: Boolean): TFloat;
     { Brief: Evaluates subexpressions (i.e. '(' & ')'), numbers, but defers
-        identifiers to eval_ident_factor. }
-    function eval_factor: TFloat;
+        identifiers to EvalIdentFactor. }
+    function EvalFactor: TFloat;
     { Brief: Looks up the symbol corresponding to an identifier and
         returns its evaluation. }
-    function eval_ident_factor: TFloat;
+    function EvalIdentFactor: TFloat;
   end;
 
 { some concrete class descendants follow... }
 
-type
   { Brief: A simple expression lexical analyser. }
   TExprSimpleLexer = class(TExprLexer)
   protected
@@ -965,7 +963,6 @@ type
     property Buf: string read FBuf write SetBuf;
   end;
 
-type
   { Brief: An operation that can be executed by a TExprVirtMach instance.
     Description:
       TExprVirtMachOp is the kernel of TExprVirtMach's operation. The
@@ -980,7 +977,7 @@ type
       mechanism to work, the inputs of downstream instructions must be
       'wired' to the outputs of upstream instructions.
     See Also: TExprVirtMach }
-  TExprVirtMachOp = class
+  TExprVirtMachOp = class(TObject)
   private
     function GetOutputLoc: PFloat;
   protected
@@ -1009,7 +1006,7 @@ type
 
   { Brief: A virtual machine for evaluating expressions relatively quickly.
     See Also: TExprVirtMachNodeFactory, TExprVirtMachOp }
-  TExprVirtMach = class
+  TExprVirtMach = class(TObject)
   private
     FCodeList: TList;
     FConstList: TList;
@@ -1049,7 +1046,6 @@ type
   TExprVirtMachNodeFactory = class(TExprNodeFactory)
   private
     FNodeList: TList;
-
     function AddNode(ANode: TExprNode): TExprNode;
     procedure DoClean(AVirtMach: TExprVirtMach);
     procedure DoConsts(AVirtMach: TExprVirtMach);
@@ -1080,18 +1076,18 @@ type
     function CallFloat32Func(AFunc: TFloat32Func): TExprNode; override;
     function CallFloat64Func(AFunc: TFloat64Func): TExprNode; override;
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; override;
-    function CallUnaryFunc(AFunc: TUnaryFunc; x: TExprNode): TExprNode; override;
-    function CallUnary32Func(AFunc: TUnary32Func; x: TExprNode): TExprNode; override;
-    function CallUnary64Func(AFunc: TUnary64Func; x: TExprNode): TExprNode; override;
-    function CallUnary80Func(AFunc: TUnary80Func; x: TExprNode): TExprNode; override;
-    function CallBinaryFunc(AFunc: TBinaryFunc; x, y: TExprNode): TExprNode; override;
-    function CallBinary32Func(AFunc: TBinary32Func; x, y: TExprNode): TExprNode; override;
-    function CallBinary64Func(AFunc: TBinary64Func; x, y: TExprNode): TExprNode; override;
-    function CallBinary80Func(AFunc: TBinary80Func; x, y: TExprNode): TExprNode; override;
-    function CallTernaryFunc(AFunc: TTernaryFunc; x, y, z: TExprNode): TExprNode; override;
-    function CallTernary32Func(AFunc: TTernary32Func; x, y, z: TExprNode): TExprNode; override;
-    function CallTernary64Func(AFunc: TTernary64Func; x, y, z: TExprNode): TExprNode; override;
-    function CallTernary80Func(AFunc: TTernary80Func; x, y, z: TExprNode): TExprNode; override;
+    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; override;
+    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; override;
+    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; override;
+    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; override;
+    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; override;
+    function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; override;
+    function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; override;
+    function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; override;
+    function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; override;
 
     function Add(ALeft, ARight: TExprNode): TExprNode; override;
     function Subtract(ALeft, ARight: TExprNode): TExprNode; override;
@@ -1101,9 +1097,8 @@ type
     function Compare(ALeft, ARight: TExprNode): TExprNode; override;
   end;
 
-{ some concrete symbols }
+  { some concrete symbols }
 
-type
   { Brief: Symbol for a constant of type TFloat. }
   TExprConstSym = class(TExprSym)
   private
@@ -1473,14 +1468,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-type
   { Brief: This is an abstract class that provides friendly methods for
       adding constanst, variables, functions and external contexts.
     Description:
       This is an abstract class provided so that symbols can be added
       to descendants' internal contexts with minimum hassle. Use a concrete
       descendant, like TEvaluator or TCompiledEvaluator instead. }
-  TEasyEvaluator = class
+  TEasyEvaluator = class(TObject)
   private
     FOwnContext: TExprHashContext;
     FExtContextSet: TExprSetContext;
@@ -1609,28 +1603,28 @@ type
       <code>
         uses SysUtils, JclExprEval, Dialogs;
 
-        function MyAdder(x, y: Double): Double;
+        function MyAdder(X, Y: Double): Double;
         begin
-          Result := x + y + 0.12;
+          Result := X + Y + 0.12;
         end;
 
         var
           evaluator: TEvaluator;
-          x: Double;
-          y: Extended;
+          X: Double;
+          Y: Extended;
         begin
           evaluator := TEvaluator.Create;
           try
-            evaluator.AddVar('x', x);
-            evaluator.AddVar('y', y);
+            evaluator.AddVar('X', X);
+            evaluator.AddVar('Y', Y);
             evaluator.AddFunc('MyAdder', MyAdder);
 
-            x := 3.5;
-            y := 0.7;
+            X := 3.5;
+            Y := 0.7;
             ShowMessage(Format('Delphi says: %.4g',
-              [MyAdder(x, y)]));
+              [MyAdder(X, Y)]));
             ShowMessage(Format('TEvaluator says: %.4g',
-              [evaluator.Evaluate('MyAdder(x, y)')]));
+              [evaluator.Evaluate('MyAdder(X, Y)')]));
           finally
             evaluator.Free;
           end;
@@ -1769,6 +1763,7 @@ implementation
 
 constructor TExprHashContext.Create(ACaseSensitive: Boolean; AHashSize: Integer);
 begin
+  inherited Create;
   if ACaseSensitive then
     FHashMap := TStringHashMap.Create(CaseSensitiveTraits, AHashSize)
   else
@@ -1819,9 +1814,12 @@ end;
 
 constructor TExprSetContext.Create(AOwnsContexts: Boolean);
 begin
+  inherited Create;
   FOwnsContexts := AOwnsContexts;
   FList := TList.Create;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TExprSetContext.Delete(AIndex: Integer);
 begin
@@ -1852,14 +1850,14 @@ end;
 
 function TExprSetContext.Find(const AName: string): TExprSym;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := Count - 1 downto 0 do
+  for I := Count - 1 downto 0 do
   begin
-    Result := Contexts[i].Find(AName);
+    Result := Contexts[I].Find(AName);
     if Result <> nil then
-      Exit;
+      Break;
   end;
 end;
 
@@ -1892,6 +1890,7 @@ end;
 
 constructor TExprSym.Create(const AIdent: string);
 begin
+  inherited Create;
   FIdent := AIdent;
 end;
 
@@ -1901,6 +1900,7 @@ end;
 
 constructor TExprLexer.Create;
 begin
+  inherited Create;
   Reset;
 end;
 
@@ -1917,6 +1917,7 @@ end;
 
 constructor TExprCompileParser.Create(ALexer: TExprLexer; ANodeFactory: TExprNodeFactory);
 begin
+  inherited Create;
   FLexer := ALexer;
   FNodeFactory := ANodeFactory;
 end;
@@ -1925,14 +1926,14 @@ end;
 
 function TExprCompileParser.Compile: TExprNode;
 begin
-  Result := compile_expr(False);
+  Result := CompileExpr(False);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_expr(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileExpr(ASkip: Boolean): TExprNode;
 begin
-  Result := compile_simple_expr(ASkip);
+  Result := CompileSimpleExpr(ASkip);
 
   { Utilize some of these compound instructions to test DAG optimization
     techniques later on.
@@ -1947,10 +1948,10 @@ begin
         // compare will return 0 if true, -1 / +1 if false
         // squaring will force a positive or zero value
         // subtract value from 1 to get answer
-        // IOW: 1 - Sqr(Compare(x, y))
+        // IOW: 1 - Sqr(Compare(X, Y))
 
         // first, get comparison
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
 
         // next, square comparison - note that this
         // forces a common sub-expression; parse tree will no longer
@@ -1967,22 +1968,22 @@ begin
       etNotEqual: // <>
       begin
         // same as above, but without the subtract
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
         Result := NodeFactory.Multiply(Result, Result);
       end;
 
       etLessThan: // <
       begin
         // have 1 for less than, 0 for equal, 0 for greater than too
-        // c = compare(x, y)
+        // c = compare(X, Y)
         // d = c * c
         // if less than, d = 1, c = -1; d - c = 2
         // if greater than, d = c = 1;  d - c = 0
         // if equal, d = c = 0;         d - c = 0
-        // IOW: (Sqr(compare(x, y)) - compare(x, y)) / 2
+        // IOW: (Sqr(compare(X, Y)) - compare(X, Y)) / 2
 
         // get comparison
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
         // subtract from square
         Result := NodeFactory.Subtract(
           NodeFactory.Multiply(
@@ -1998,14 +1999,14 @@ begin
       etLessEqual: // <=
       begin
         // less than or equal to return 1, greater than returns 0
-        // c = compare(x, y)
+        // c = compare(X, Y)
         // d = c * c
         // <  c = -1, d = 1, c + d = 0
         // =  c = 0,  d = 0, c + d = 0
         // >  c = +1, d = 1, c + d = 2
         // then divide by two, take away from 1
-        // IOW: 1 - (compare(x, y) + Sqr(compare(x, y))) / 2
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        // IOW: 1 - (compare(X, Y) + Sqr(compare(X, Y))) / 2
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
         // now, for some fun!
         Result := NodeFactory.Subtract(
           NodeFactory.LoadConst32(1),
@@ -2025,7 +2026,7 @@ begin
       etGreaterThan: // >
       begin
         // same as <=, without the taking away from 1 bit
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
         Result := NodeFactory.Divide(
           NodeFactory.Add(
             Result,
@@ -2041,7 +2042,7 @@ begin
       etGreaterEqual: // >=
       begin
         // same as less than, but subtract from one
-        Result := NodeFactory.Compare(Result, compile_simple_expr(True));
+        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
         Result := NodeFactory.Subtract(
           NodeFactory.Multiply(
             Result,
@@ -2059,16 +2060,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_simple_expr(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileSimpleExpr(ASkip: Boolean): TExprNode;
 begin
-  Result := compile_term(ASkip);
+  Result := CompileTerm(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etPlus:
-        Result := NodeFactory.Add(Result, compile_term(True));
+        Result := NodeFactory.Add(Result, CompileTerm(True));
       etMinus:
-        Result := NodeFactory.Subtract(Result, compile_term(True));
+        Result := NodeFactory.Subtract(Result, CompileTerm(True));
     else
       Break;
     end;
@@ -2076,16 +2077,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_term(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileTerm(ASkip: Boolean): TExprNode;
 begin
-  Result := compile_signed_factor(ASkip);
+  Result := CompileSignedFactor(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etAsterisk:
-        Result := NodeFactory.Multiply(Result, compile_signed_factor(True));
+        Result := NodeFactory.Multiply(Result, CompileSignedFactor(True));
       etForwardSlash:
-        Result := NodeFactory.Divide(Result, compile_signed_factor(True));
+        Result := NodeFactory.Divide(Result, CompileSignedFactor(True));
     else
       Break;
     end;
@@ -2093,53 +2094,51 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_signed_factor(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileSignedFactor(ASkip: Boolean): TExprNode;
 var
-  neg: Boolean;
+  Neg: Boolean;
 begin
   if ASkip then
     Lexer.NextTok;
 
-  neg := False;
+  Neg := False;
   while True do
   begin
     case Lexer.CurrTok of
       etPlus:
         { do nothing };
       etMinus:
-        neg := not neg;
+        Neg := not Neg;
     else
       Break;
     end;
     Lexer.NextTok;
   end;
 
-  Result := compile_factor;
-  if neg then
+  Result := CompileFactor;
+  if Neg then
     Result := NodeFactory.Negate(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_factor: TExprNode;
+function TExprCompileParser.CompileFactor: TExprNode;
 begin
   case Lexer.CurrTok of
     etNumber:
-    begin
-      Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
-      Lexer.NextTok;
-    end;
-
+      begin
+        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
+        Lexer.NextTok;
+      end;
     etIdentifier:
-      Result := compile_ident_factor;
-
+      Result := CompileIdentFactor;
     etLParen:
-    begin
-      Result := compile_expr(True);
-      if Lexer.CurrTok <> etRParen then
-        raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
-      Lexer.NextTok;
-    end;
+      begin
+        Result := CompileExpr(True);
+        if Lexer.CurrTok <> etRParen then
+          raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
+        Lexer.NextTok;
+      end;
   else
     raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
   end;
@@ -2147,9 +2146,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprCompileParser.compile_ident_factor: TExprNode;
+function TExprCompileParser.CompileIdentFactor: TExprNode;
 var
-  sym: TExprSym;
+  Sym: TExprSym;
   oldCompileParser: TExprCompileParser;
   oldLexer: TExprLexer;
   oldNodeFactory: TExprNodeFactory;
@@ -2158,27 +2157,27 @@ begin
   if FContext = nil then
     raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
-  sym := FContext.Find(Lexer.TokenAsString);
-  if sym = nil then
+  Sym := FContext.Find(Lexer.TokenAsString);
+  if Sym = nil then
     raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
 
   Lexer.NextTok;
 
   { set symbol properties }
-  oldCompileParser := sym.CompileParser;
-  oldLexer := sym.Lexer;
-  oldNodeFactory := sym.NodeFactory;
-  sym.FLexer := Lexer;
-  sym.FCompileParser := Self;
-  sym.FNodeFactory := NodeFactory;
+  oldCompileParser := Sym.CompileParser;
+  oldLexer := Sym.Lexer;
+  oldNodeFactory := Sym.NodeFactory;
+  Sym.FLexer := Lexer;
+  Sym.FCompileParser := Self;
+  Sym.FNodeFactory := NodeFactory;
   try
     { compile symbol }
-    Result := sym.Compile;
+    Result := Sym.Compile;
   finally
-    sym.FLexer := oldLexer;
-    sym.FCompileParser := oldCompileParser;
-    sym.FNodeFactory := oldNodeFactory;
+    Sym.FLexer := oldLexer;
+    Sym.FCompileParser := oldCompileParser;
+    Sym.FNodeFactory := oldNodeFactory;
   end;
 end;
 
@@ -2188,6 +2187,7 @@ end;
 
 constructor TExprEvalParser.Create(ALexer: TExprLexer);
 begin
+  inherited Create;
   FLexer := ALexer;
 end;
 
@@ -2195,47 +2195,47 @@ end;
 
 function TExprEvalParser.Evaluate: TFloat;
 begin
-  Result := eval_expr(False);
+  Result := EvalExpr(False);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_expr(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalExpr(ASkip: Boolean): TFloat;
 begin
-  Result := eval_simple_expr(ASkip);
+  Result := EvalSimpleExpr(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etEqualTo: // =
-        if Result = eval_simple_expr(True) then
-          Result := 1
+        if Result = EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
       etNotEqual: // <>
-        if Result <> eval_simple_expr(True) then
-          Result := 1
+        if Result <> EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
       etLessThan: // <
-        if Result < eval_simple_expr(True) then
-          Result := 1
+        if Result < EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
       etLessEqual: // <=
-        if Result <= eval_simple_expr(True) then
-          Result := 1
+        if Result <= EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
       etGreaterThan: // >
-        if Result > eval_simple_expr(True) then
-          Result := 1
+        if Result > EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
       etGreaterEqual: // >=
-        if Result >= eval_simple_expr(True) then
-          Result := 1
+        if Result >= EvalSimpleExpr(True) then
+          Result := 1.0
         else
-          Result := 0;
+          Result := 0.0;
     else
       Break;
     end;
@@ -2243,87 +2243,85 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_simple_expr(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalSimpleExpr(ASkip: Boolean): TFloat;
 begin
-  Result := eval_term(ASkip);
+  Result := EvalTerm(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etPlus:
-        Result := Result + eval_term(True);
+        Result := Result + EvalTerm(True);
       etMinus:
-        Result := Result - eval_term(True);
+        Result := Result - EvalTerm(True);
     else
-      Exit;
+      Break;
     end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_term(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalTerm(ASkip: Boolean): TFloat;
 begin
-  Result := eval_signed_factor(ASkip);
+  Result := EvalSignedFactor(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etAsterisk:
-        Result := Result * eval_signed_factor(True);
+        Result := Result * EvalSignedFactor(True);
       etForwardSlash:
-        Result := Result / eval_signed_factor(True);
+        Result := Result / EvalSignedFactor(True);
     else
-      Exit;
+      Break;
     end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_signed_factor(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalSignedFactor(ASkip: Boolean): TFloat;
 var
-  neg: Boolean;
+  Neg: Boolean;
 begin
   if ASkip then
     Lexer.NextTok;
 
-  neg := False;
+  Neg := False;
   while True do
   begin
     case Lexer.CurrTok of
       etPlus:
         { do nothing };
       etMinus:
-        neg := not neg;
+        Neg := not Neg;
     else
       Break;
     end;
     Lexer.NextTok;
   end;
 
-  Result := eval_factor;
-  if neg then
-    Result := - Result;
+  Result := EvalFactor;
+  if Neg then
+    Result := -Result;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_factor: TFloat;
+function TExprEvalParser.EvalFactor: TFloat;
 begin
   case Lexer.CurrTok of
     etIdentifier:
-      Result := eval_ident_factor;
-
+      Result := EvalIdentFactor;
     etLParen:
-    begin
-      Result := eval_expr(True);
-      if Lexer.CurrTok <> etRParen then
-        raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
-      Lexer.NextTok;
-    end;
-
+      begin
+        Result := EvalExpr(True);
+        if Lexer.CurrTok <> etRParen then
+          raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
+        Lexer.NextTok;
+      end;
     etNumber:
-    begin
-      Result := Lexer.TokenAsNumber;
-      Lexer.NextTok;
-    end;
+      begin
+        Result := Lexer.TokenAsNumber;
+        Lexer.NextTok;
+      end;
   else
     raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
   end;
@@ -2331,34 +2329,34 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprEvalParser.eval_ident_factor: TFloat;
+function TExprEvalParser.EvalIdentFactor: TFloat;
 var
-  sym: TExprSym;
+  Sym: TExprSym;
   oldEvalParser: TExprEvalParser;
   oldLexer: TExprLexer;
 begin
   { find symbol }
-  if FContext = nil then
+  if Context = nil then
     raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
-  sym := FContext.Find(Lexer.TokenAsString);
-  if sym = nil then
+  Sym := FContext.Find(Lexer.TokenAsString);
+  if Sym = nil then
     raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
 
   Lexer.NextTok;
 
   { set symbol properties }
-  oldEvalParser := sym.FEvalParser;
-  oldLexer := sym.Lexer;
-  sym.FLexer := Lexer;
-  sym.FEvalParser := Self;
+  oldEvalParser := Sym.FEvalParser;
+  oldLexer := Sym.Lexer;
+  Sym.FLexer := Lexer;
+  Sym.FEvalParser := Self;
   try
     { evaluate symbol }
-    Result := sym.Evaluate;
+    Result := Sym.Evaluate;
   finally
-    sym.FLexer := oldLexer;
-    sym.FEvalParser := oldEvalParser;
+    Sym.FLexer := oldLexer;
+    Sym.FEvalParser := oldEvalParser;
   end;
 end;
 
@@ -2375,12 +2373,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TExprSimpleLexer.NextTok;
-var
-  { register variable optimization }
-  cp: PChar;
-  start: PChar;
 const
-  CharToTokenMap: array[Char] of TExprToken =
+  CharToTokenMap: array [Char] of TExprToken =
   (
     {#0..#31}
     etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
@@ -2452,6 +2446,10 @@ const
     {#248} et248, {#249} et249, {#250} et250, {#251} et251,
     {#252} et252, {#253} et253, {#254} et254, {#255} et255
   );
+var
+  { register variable optimization }
+  cp: PChar;
+  start: PChar;
 begin
   cp := FCurrPos;
 
@@ -2463,81 +2461,77 @@ begin
   case cp^ of
     #0:
       FCurrTok := etEof;
-
     'a'..'z', 'A'..'Z', '_':
-    begin
-      start := cp;
-      Inc(cp);
-      while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
+      begin
+        start := cp;
         Inc(cp);
-      SetString(FTokenAsString, start, cp - start);
-      FCurrTok := etIdentifier;
-    end;
-
+        while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
+          Inc(cp);
+        SetString(FTokenAsString, start, cp - start);
+        FCurrTok := etIdentifier;
+      end;
     '0'..'9':
-    begin
-      start := cp;
-
-      { read in integer part of mantissa }
-      while cp^ in ['0'..'9'] do
-        Inc(cp);
-
-      { check for and read in fraction part of mantissa }
-      if cp^ = '.' then
       begin
-        Inc(cp);
+        start := cp;
+
+        { read in integer part of mantissa }
         while cp^ in ['0'..'9'] do
           Inc(cp);
-      end;
 
-      { check for and read in exponent }
-      if cp^ in ['e', 'E'] then
-      begin
-        Inc(cp);
-        if cp^ in ['+', '-'] then
+        { check for and read in fraction part of mantissa }
+        // (rom) should be made aware of DecimalSeparator
+        if cp^ = '.' then
+        begin
           Inc(cp);
-        while cp^ in ['0'..'9'] do
+          while cp^ in ['0'..'9'] do
+            Inc(cp);
+        end;
+
+        { check for and read in exponent }
+        if cp^ in ['e', 'E'] then
+        begin
           Inc(cp);
+          if cp^ in ['+', '-'] then
+            Inc(cp);
+          while cp^ in ['0'..'9'] do
+            Inc(cp);
+        end;
+
+        { evaluate number }
+        SetString(FTokenAsString, start, cp - start);
+        FTokenAsNumber := StrToFloat(FTokenAsString);
+
+        FCurrTok := etNumber;
       end;
-
-      { evaluate number }
-      SetString(FTokenAsString, start, cp - start);
-      FTokenAsNumber := StrToFloat(FTokenAsString);
-
-      FCurrTok := etNumber;
-    end;
-
     '<':
-    begin
-      Inc(cp);
-      case cp^ of
-        '=':
-        begin
-          FCurrTok := etLessEqual;
-          Inc(cp);
-        end;
-
-        '>':
-        begin
-          FCurrTok := etNotEqual;
-          Inc(cp);
-        end;
-      else
-        FCurrTok := etLessThan;
-      end;
-    end;
-
-    '>':
-    begin
-      Inc(cp);
-      if cp^ = '=' then
       begin
-        FCurrTok := etGreaterEqual;
         Inc(cp);
-      end else
-        FCurrTok := etGreaterThan;
-    end;
-
+        case cp^ of
+          '=':
+            begin
+              FCurrTok := etLessEqual;
+              Inc(cp);
+            end;
+          '>':
+            begin
+              FCurrTok := etNotEqual;
+              Inc(cp);
+            end;
+        else
+          FCurrTok := etLessThan;
+        end;
+      end;
+    '>':
+      begin
+        Inc(cp);
+        if cp^ = '=' then
+        begin
+          FCurrTok := etGreaterEqual;
+          Inc(cp);
+        end
+        else
+          FCurrTok := etGreaterThan;
+      end;
   else
     { map character to token }
     FCurrTok := CharToTokenMap[cp^];
@@ -2569,12 +2563,12 @@ end;
 
 constructor TExprNode.Create(const ADepList: array of TExprNode);
 var
-  i: Integer;
+  I: Integer;
 begin
+  inherited Create;
   FDepList := TList.Create;
-
-  for i := 0 to High(ADepList) do
-    AddDep(ADepList[i]);
+  for I := Low(ADepList) to High(ADepList) do
+    AddDep(ADepList[I]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2827,7 +2821,7 @@ type
     FFunc: TUnaryFunc;
     FX: PFloat;
   public
-    constructor Create(AFunc: TUnaryFunc; x: PFloat);
+    constructor Create(AFunc: TUnaryFunc; X: PFloat);
     procedure Execute; override;
   end;
 
@@ -2836,7 +2830,7 @@ type
     FFunc: TUnary32Func;
     FX: PFloat;
   public
-    constructor Create(AFunc: TUnary32Func; x: PFloat);
+    constructor Create(AFunc: TUnary32Func; X: PFloat);
     procedure Execute; override;
   end;
 
@@ -2845,7 +2839,7 @@ type
     FFunc: TUnary64Func;
     FX: PFloat;
   public
-    constructor Create(AFunc: TUnary64Func; x: PFloat);
+    constructor Create(AFunc: TUnary64Func; X: PFloat);
     procedure Execute; override;
   end;
 
@@ -2854,7 +2848,7 @@ type
     FFunc: TUnary80Func;
     FX: PFloat;
   public
-    constructor Create(AFunc: TUnary80Func; x: PFloat);
+    constructor Create(AFunc: TUnary80Func; X: PFloat);
     procedure Execute; override;
   end;
 
@@ -2863,7 +2857,7 @@ type
     FFunc: TBinaryFunc;
     FX, FY: PFloat;
   public
-    constructor Create(AFunc: TBinaryFunc; x, y: PFloat);
+    constructor Create(AFunc: TBinaryFunc; X, Y: PFloat);
     procedure Execute; override;
   end;
 
@@ -2872,7 +2866,7 @@ type
     FFunc: TBinary32Func;
     FX, FY: PFloat;
   public
-    constructor Create(AFunc: TBinary32Func; x, y: PFloat);
+    constructor Create(AFunc: TBinary32Func; X, Y: PFloat);
     procedure Execute; override;
   end;
 
@@ -2881,7 +2875,7 @@ type
     FFunc: TBinary64Func;
     FX, FY: PFloat;
   public
-    constructor Create(AFunc: TBinary64Func; x, y: PFloat);
+    constructor Create(AFunc: TBinary64Func; X, Y: PFloat);
     procedure Execute; override;
   end;
 
@@ -2890,7 +2884,7 @@ type
     FFunc: TBinary80Func;
     FX, FY: PFloat;
   public
-    constructor Create(AFunc: TBinary80Func; x, y: PFloat);
+    constructor Create(AFunc: TBinary80Func; X, Y: PFloat);
     procedure Execute; override;
   end;
 
@@ -2899,7 +2893,7 @@ type
     FFunc: TTernaryFunc;
     FX, FY, FZ: PFloat;
   public
-    constructor Create(AFunc: TTernaryFunc; x, y, z: PFloat);
+    constructor Create(AFunc: TTernaryFunc; X, Y, Z: PFloat);
     procedure Execute; override;
   end;
 
@@ -2908,7 +2902,7 @@ type
     FFunc: TTernary32Func;
     FX, FY, FZ: PFloat;
   public
-    constructor Create(AFunc: TTernary32Func; x, y, z: PFloat);
+    constructor Create(AFunc: TTernary32Func; X, Y, Z: PFloat);
     procedure Execute; override;
   end;
 
@@ -2917,7 +2911,7 @@ type
     FFunc: TTernary64Func;
     FX, FY, FZ: PFloat;
   public
-    constructor Create(AFunc: TTernary64Func; x, y, z: PFloat);
+    constructor Create(AFunc: TTernary64Func; X, Y, Z: PFloat);
     procedure Execute; override;
   end;
 
@@ -2926,7 +2920,7 @@ type
     FFunc: TTernary80Func;
     FX, FY, FZ: PFloat;
   public
-    constructor Create(AFunc: TTernary80Func; x, y, z: PFloat);
+    constructor Create(AFunc: TTernary80Func; X, Y, Z: PFloat);
     procedure Execute; override;
   end;
 
@@ -2963,6 +2957,7 @@ end;
 
 constructor TExprConstVmOp.Create(AValue: TFloat);
 begin
+  inherited Create;
   FOutput := AValue;
 end;
 
@@ -2978,6 +2973,7 @@ end;
 
 constructor TExprUnaryVmOp.Create(AInput: PFloat);
 begin
+  inherited Create;
   FInput := AInput;
 end;
 
@@ -2987,6 +2983,7 @@ end;
 
 constructor TExprBinaryVmOp.Create(ALeft, ARight: PFloat);
 begin
+  inherited Create;
   FLeft := ALeft;
   FRight := ARight;
 end;
@@ -3034,11 +3031,12 @@ end;
 procedure TExprCompareVmOp.Execute;
 begin
   if FLeft^ < FRight^ then
-    FOutput := -1
-  else if FLeft^ > FRight^ then
-    FOutput := 1
+    FOutput := -1.0
   else
-    FOutput := 0;
+  if FLeft^ > FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
 end;
 
 //==================================================================================================
@@ -3056,6 +3054,7 @@ end;
 
 constructor TExprVarVmOp.Create(AVarLoc: Pointer);
 begin
+  inherited Create;
   FVarLoc := AVarLoc;
 end;
 
@@ -3065,6 +3064,7 @@ end;
 
 constructor TExprCallFloatVmOp.Create(AFunc: TFloatFunc);
 begin
+  inherited Create;
   FFunc := AFunc;
 end;
 
@@ -3081,6 +3081,7 @@ end;
 
 constructor TExprCallFloat32VmOp.Create(AFunc: TFloat32Func);
 begin
+  inherited Create;
   FFunc := AFunc;
 end;
 
@@ -3097,6 +3098,7 @@ end;
 
 constructor TExprCallFloat64VmOp.Create(AFunc: TFloat64Func);
 begin
+  inherited Create;
   FFunc := AFunc;
 end;
 
@@ -3113,6 +3115,7 @@ end;
 
 constructor TExprCallFloat80VmOp.Create(AFunc: TFloat80Func);
 begin
+  inherited Create;
   FFunc := AFunc;
 end;
 
@@ -3127,10 +3130,11 @@ end;
 // TExprCallUnaryVmOp
 //==================================================================================================
 
-constructor TExprCallUnaryVmOp.Create(AFunc: TUnaryFunc; x: PFloat);
+constructor TExprCallUnaryVmOp.Create(AFunc: TUnaryFunc; X: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
+  FX := X;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3144,10 +3148,11 @@ end;
 // TExprCallUnary32VmOp
 //==================================================================================================
 
-constructor TExprCallUnary32VmOp.Create(AFunc: TUnary32Func; x: PFloat);
+constructor TExprCallUnary32VmOp.Create(AFunc: TUnary32Func; X: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
+  FX := X;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3161,10 +3166,11 @@ end;
 // TExprCallUnary64VmOp
 //==================================================================================================
 
-constructor TExprCallUnary64VmOp.Create(AFunc: TUnary64Func; x: PFloat);
+constructor TExprCallUnary64VmOp.Create(AFunc: TUnary64Func; X: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
+  FX := X;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3178,10 +3184,11 @@ end;
 // TExprCallUnary80VmOp
 //==================================================================================================
 
-constructor TExprCallUnary80VmOp.Create(AFunc: TUnary80Func; x: PFloat);
+constructor TExprCallUnary80VmOp.Create(AFunc: TUnary80Func; X: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
+  FX := X;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3195,11 +3202,12 @@ end;
 // TExprCallBinaryVmOp
 //==================================================================================================
 
-constructor TExprCallBinaryVmOp.Create(AFunc: TBinaryFunc; x, y: PFloat);
+constructor TExprCallBinaryVmOp.Create(AFunc: TBinaryFunc; X, Y: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
+  FX := X;
+  FY := Y;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3213,11 +3221,12 @@ end;
 // TExprCallBinary32VmOp
 //==================================================================================================
 
-constructor TExprCallBinary32VmOp.Create(AFunc: TBinary32Func; x, y: PFloat);
+constructor TExprCallBinary32VmOp.Create(AFunc: TBinary32Func; X, Y: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
+  FX := X;
+  FY := Y;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3231,11 +3240,12 @@ end;
 // TExprCallBinary64VmOp
 //==================================================================================================
 
-constructor TExprCallBinary64VmOp.Create(AFunc: TBinary64Func; x, y: PFloat);
+constructor TExprCallBinary64VmOp.Create(AFunc: TBinary64Func; X, Y: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
+  FX := X;
+  FY := Y;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3249,11 +3259,12 @@ end;
 // TExprCallBinary80VmOp
 //==================================================================================================
 
-constructor TExprCallBinary80VmOp.Create(AFunc: TBinary80Func; x, y: PFloat);
+constructor TExprCallBinary80VmOp.Create(AFunc: TBinary80Func; X, Y: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
+  FX := X;
+  FY := Y;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3267,12 +3278,13 @@ end;
 // TExprCallTernaryVmOp
 //==================================================================================================
 
-constructor TExprCallTernaryVmOp.Create(AFunc: TTernaryFunc; x, y, z: PFloat);
+constructor TExprCallTernaryVmOp.Create(AFunc: TTernaryFunc; X, Y, Z: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
-  FZ := z;
+  FX := X;
+  FY := Y;
+  FZ := Z;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3286,12 +3298,13 @@ end;
 // TExprCallTernary32VmOp
 //==================================================================================================
 
-constructor TExprCallTernary32VmOp.Create(AFunc: TTernary32Func; x, y, z: PFloat);
+constructor TExprCallTernary32VmOp.Create(AFunc: TTernary32Func; X, Y, Z: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
-  FZ := z;
+  FX := X;
+  FY := Y;
+  FZ := Z;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3305,12 +3318,13 @@ end;
 // TExprCallTernary64VmOp
 //==================================================================================================
 
-constructor TExprCallTernary64VmOp.Create(AFunc: TTernary64Func; x, y, z: PFloat);
+constructor TExprCallTernary64VmOp.Create(AFunc: TTernary64Func; X, Y, Z: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
-  FZ := z;
+  FX := X;
+  FY := Y;
+  FZ := Z;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3324,12 +3338,13 @@ end;
 // TExprCallTernary80VmOp
 //==================================================================================================
 
-constructor TExprCallTernary80VmOp.Create(AFunc: TTernary80Func; x, y, z: PFloat);
+constructor TExprCallTernary80VmOp.Create(AFunc: TTernary80Func; X, Y, Z: PFloat);
 begin
+  inherited Create;
   FFunc := AFunc;
-  FX := x;
-  FY := y;
-  FZ := z;
+  FX := X;
+  FY := Y;
+  FZ := Z;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3347,6 +3362,7 @@ end;
 
 constructor TExprVirtMach.Create;
 begin
+  inherited Create;
   FCodeList := TList.Create;
   FConstList := TList.Create;
 end;
@@ -3366,21 +3382,21 @@ function TExprVirtMach.Execute: TFloat;
 type
   PExprVirtMachOp = ^TExprVirtMachOp;
 var
-  i: Integer;
+  I: Integer;
   pop: PExprVirtMachOp;
 begin
   if FCodeList.Count <> 0 then
   begin
     { The code that follows is the same as this, but a lot faster
-    for i := 0 to FCodeList.Count - 1 do
-      TExprVirtMachOp(FCodeList[i]).Execute; }
-    i := FCodeList.Count;
+    for I := 0 to FCodeList.Count - 1 do
+      TExprVirtMachOp(FCodeList[I]).Execute; }
+    I := FCodeList.Count;
     pop := @FCodeList.List^[0];
-    while i > 0 do
+    while I > 0 do
     begin
       pop^.Execute;
       Inc(pop);
-      Dec(i);
+      Dec(I);
     end;
     Result := TExprVirtMachOp(FCodeList[FCodeList.Count - 1]).FOutput;
   end
@@ -3526,7 +3542,7 @@ type
   private
     FFunc: TUnaryFunc;
   public
-    constructor Create(AFunc: TUnaryFunc; x: TExprNode);
+    constructor Create(AFunc: TUnaryFunc; X: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3534,7 +3550,7 @@ type
   private
     FFunc: TUnary32Func;
   public
-    constructor Create(AFunc: TUnary32Func; x: TExprNode);
+    constructor Create(AFunc: TUnary32Func; X: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3542,7 +3558,7 @@ type
   private
     FFunc: TUnary64Func;
   public
-    constructor Create(AFunc: TUnary64Func; x: TExprNode);
+    constructor Create(AFunc: TUnary64Func; X: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3550,7 +3566,7 @@ type
   private
     FFunc: TUnary80Func;
   public
-    constructor Create(AFunc: TUnary80Func; x: TExprNode);
+    constructor Create(AFunc: TUnary80Func; X: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3558,7 +3574,7 @@ type
   private
     FFunc: TBinaryFunc;
   public
-    constructor Create(AFunc: TBinaryFunc; x, y: TExprNode);
+    constructor Create(AFunc: TBinaryFunc; X, Y: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3566,7 +3582,7 @@ type
   private
     FFunc: TBinary32Func;
   public
-    constructor Create(AFunc: TBinary32Func; x, y: TExprNode);
+    constructor Create(AFunc: TBinary32Func; X, Y: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3574,7 +3590,7 @@ type
   private
     FFunc: TBinary64Func;
   public
-    constructor Create(AFunc: TBinary64Func; x, y: TExprNode);
+    constructor Create(AFunc: TBinary64Func; X, Y: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3582,7 +3598,7 @@ type
   private
     FFunc: TBinary80Func;
   public
-    constructor Create(AFunc: TBinary80Func; x, y: TExprNode);
+    constructor Create(AFunc: TBinary80Func; X, Y: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3590,7 +3606,7 @@ type
   private
     FFunc: TTernaryFunc;
   public
-    constructor Create(AFunc: TTernaryFunc; x, y, z: TExprNode);
+    constructor Create(AFunc: TTernaryFunc; X, Y, Z: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3598,7 +3614,7 @@ type
   private
     FFunc: TTernary32Func;
   public
-    constructor Create(AFunc: TTernary32Func; x, y, z: TExprNode);
+    constructor Create(AFunc: TTernary32Func; X, Y, Z: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3606,7 +3622,7 @@ type
   private
     FFunc: TTernary64Func;
   public
-    constructor Create(AFunc: TTernary64Func; x, y, z: TExprNode);
+    constructor Create(AFunc: TTernary64Func; X, Y, Z: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3614,7 +3630,7 @@ type
   private
     FFunc: TTernary80Func;
   public
-    constructor Create(AFunc: TTernary80Func; x, y, z: TExprNode);
+    constructor Create(AFunc: TTernary80Func; X, Y, Z: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
@@ -3660,8 +3676,7 @@ procedure TExprBinaryVmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := FBinaryClass.Create(
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -3745,6 +3760,7 @@ end;
 
 constructor TExprVirtMachNodeFactory.Create;
 begin
+  inherited Create;
   FNodeList := TList.Create;
 end;
 
@@ -3861,27 +3877,27 @@ end;
 
 procedure TExprVirtMachNodeFactory.DoClean(AVirtMach: TExprVirtMach);
 var
-  i: Integer;
+  I: Integer;
 begin
   { clean up in preparation for code generation }
   AVirtMach.Clear;
-  for i := 0 to FNodeList.Count - 1 do
-    TExprVirtMachNode(FNodeList[i]).FExprVmCode := nil;
+  for I := 0 to FNodeList.Count - 1 do
+    TExprVirtMachNode(FNodeList[I]).FExprVmCode := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TExprVirtMachNodeFactory.DoConsts(AVirtMach: TExprVirtMach);
 var
-  i: Integer;
-  node: TExprVirtMachNode;
+  I: Integer;
+  Node: TExprVirtMachNode;
 begin
   { process consts }
-  for i := 0 to FNodeList.Count - 1 do
+  for I := 0 to FNodeList.Count - 1 do
   begin
-    node := TExprVirtMachNode(FNodeList[i]);
-    if (node is TExprConstVmNode) and (node.ExprVmCode = nil) then
-      node.GenCode(AVirtMach);
+    Node := TExprVirtMachNode(FNodeList[I]);
+    if (Node is TExprConstVmNode) and (Node.ExprVmCode = nil) then
+      Node.GenCode(AVirtMach);
   end;
 end;
 
@@ -3889,15 +3905,15 @@ end;
 
 procedure TExprVirtMachNodeFactory.DoCode(AVirtMach: TExprVirtMach);
 var
-  i: Integer;
-  node: TExprVirtMachNode;
+  I: Integer;
+  Node: TExprVirtMachNode;
 begin
   { process code }
-  for i := 0 to FNodeList.Count - 1 do
+  for I := 0 to FNodeList.Count - 1 do
   begin
-    node := TExprVirtMachNode(FNodeList[i]);
-    if node.ExprVmCode = nil then
-      node.GenCode(AVirtMach);
+    Node := TExprVirtMachNode(FNodeList[I]);
+    if Node.ExprVmCode = nil then
+      Node.GenCode(AVirtMach);
   end;
 end;
 
@@ -3931,86 +3947,86 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallUnaryFunc(AFunc: TUnaryFunc; x: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallUnaryVmNode.Create(AFunc, x));
+  Result := AddNode(TExprCallUnaryVmNode.Create(AFunc, X));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallUnary32Func(AFunc: TUnary32Func; x: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallUnary32VmNode.Create(AFunc, x));
+  Result := AddNode(TExprCallUnary32VmNode.Create(AFunc, X));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallUnary64Func(AFunc: TUnary64Func; x: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallUnary64VmNode.Create(AFunc, x));
+  Result := AddNode(TExprCallUnary64VmNode.Create(AFunc, X));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallUnary80Func(AFunc: TUnary80Func; x: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallUnary80VmNode.Create(AFunc, x));
+  Result := AddNode(TExprCallUnary80VmNode.Create(AFunc, X));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallBinaryFunc(AFunc: TBinaryFunc; x, y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallBinaryVmNode.Create(AFunc, x, y));
+  Result := AddNode(TExprCallBinaryVmNode.Create(AFunc, X, Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallBinary32Func(AFunc: TBinary32Func; x, y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallBinary32VmNode.Create(AFunc, x, y));
+  Result := AddNode(TExprCallBinary32VmNode.Create(AFunc, X, Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallBinary64Func(AFunc: TBinary64Func; x, y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallBinary64VmNode.Create(AFunc, x, y));
+  Result := AddNode(TExprCallBinary64VmNode.Create(AFunc, X, Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallBinary80Func(AFunc: TBinary80Func; x, y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallBinary80VmNode.Create(AFunc, x, y));
+  Result := AddNode(TExprCallBinary80VmNode.Create(AFunc, X, Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallTernaryFunc(AFunc: TTernaryFunc; x, y, z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallTernaryVmNode.Create(AFunc, x, y, z));
+  Result := AddNode(TExprCallTernaryVmNode.Create(AFunc, X, Y, Z));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallTernary32Func(AFunc: TTernary32Func; x, y, z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallTernary32VmNode.Create(AFunc, x, y, z));
+  Result := AddNode(TExprCallTernary32VmNode.Create(AFunc, X, Y, Z));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallTernary64Func(AFunc: TTernary64Func; x, y, z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallTernary64VmNode.Create(AFunc, x, y, z));
+  Result := AddNode(TExprCallTernary64VmNode.Create(AFunc, X, Y, Z));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExprVirtMachNodeFactory.CallTernary80Func(AFunc: TTernary80Func; x, y, z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCallTernary80VmNode.Create(AFunc, x, y, z));
+  Result := AddNode(TExprCallTernary80VmNode.Create(AFunc, X, Y, Z));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4042,28 +4058,28 @@ end;
 
 procedure TCompiledEvaluator.Compile(const AExpr: string);
 var
-  lex: TExprSimpleLexer;
-  parse: TExprCompileParser;
-  nodeFactory: TExprVirtMachNodeFactory;
+  Lex: TExprSimpleLexer;
+  Parse: TExprCompileParser;
+  NodeFactory: TExprVirtMachNodeFactory;
 begin
   if AExpr <> FExpr then
   begin
     FExpr := AExpr;
     FVirtMach.Clear;
 
-    parse := nil;
-    nodeFactory := nil;
-    lex := TExprSimpleLexer.Create(FExpr);
+    Parse := nil;
+    NodeFactory := nil;
+    Lex := TExprSimpleLexer.Create(FExpr);
     try
-      nodeFactory := TExprVirtMachNodeFactory.Create;
-      parse := TExprCompileParser.Create(lex, nodeFactory);
-      parse.Context := InternalContextSet;
-      parse.Compile;
-      nodeFactory.GenCode(FVirtMach);
+      NodeFactory := TExprVirtMachNodeFactory.Create;
+      Parse := TExprCompileParser.Create(Lex, NodeFactory);
+      Parse.Context := InternalContextSet;
+      Parse.Compile;
+      NodeFactory.GenCode(FVirtMach);
     finally
-      parse.Free;
-      nodeFactory.Free;
-      lex.Free;
+      Parse.Free;
+      NodeFactory.Free;
+      Lex.Free;
     end;
   end;
 end;
@@ -4226,10 +4242,10 @@ end;
 // TExprCallUnaryVmNode
 //==================================================================================================
 
-constructor TExprCallUnaryVmNode.Create(AFunc: TUnaryFunc; x: TExprNode);
+constructor TExprCallUnaryVmNode.Create(AFunc: TUnaryFunc; X: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x]);
+  inherited Create([X]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4238,8 +4254,7 @@ procedure TExprCallUnaryVmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := TExprCallUnaryVmOp.Create(
     FFunc,
-    VmDeps[0].ExprVmCode.OutputLoc
-  );
+    VmDeps[0].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4247,10 +4262,10 @@ end;
 // TExprCallUnary32VmNode
 //==================================================================================================
 
-constructor TExprCallUnary32VmNode.Create(AFunc: TUnary32Func; x: TExprNode);
+constructor TExprCallUnary32VmNode.Create(AFunc: TUnary32Func; X: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x]);
+  inherited Create([X]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4259,8 +4274,7 @@ procedure TExprCallUnary32VmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := TExprCallUnary32VmOp.Create(
     FFunc,
-    VmDeps[0].ExprVmCode.OutputLoc
-  );
+    VmDeps[0].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4268,10 +4282,10 @@ end;
 // TExprCallUnary64VmNode
 //==================================================================================================
 
-constructor TExprCallUnary64VmNode.Create(AFunc: TUnary64Func; x: TExprNode);
+constructor TExprCallUnary64VmNode.Create(AFunc: TUnary64Func; X: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x]);
+  inherited Create([X]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4280,8 +4294,7 @@ procedure TExprCallUnary64VmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := TExprCallUnary64VmOp.Create(
     FFunc,
-    VmDeps[0].ExprVmCode.OutputLoc
-  );
+    VmDeps[0].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4289,10 +4302,10 @@ end;
 // TExprCallUnary80VmNode
 //==================================================================================================
 
-constructor TExprCallUnary80VmNode.Create(AFunc: TUnary80Func; x: TExprNode);
+constructor TExprCallUnary80VmNode.Create(AFunc: TUnary80Func; X: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x]);
+  inherited Create([X]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4301,8 +4314,7 @@ procedure TExprCallUnary80VmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := TExprCallUnary80VmOp.Create(
     FFunc,
-    VmDeps[0].ExprVmCode.OutputLoc
-  );
+    VmDeps[0].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4310,10 +4322,10 @@ end;
 // TExprCallBinaryVmNode
 //==================================================================================================
 
-constructor TExprCallBinaryVmNode.Create(AFunc: TBinaryFunc; x, y: TExprNode);
+constructor TExprCallBinaryVmNode.Create(AFunc: TBinaryFunc; X, Y: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y]);
+  inherited Create([X, Y]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4323,8 +4335,7 @@ begin
   FExprVmCode := TExprCallBinaryVmOp.Create(
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4332,10 +4343,10 @@ end;
 // TExprCallBinary32VmNode
 //==================================================================================================
 
-constructor TExprCallBinary32VmNode.Create(AFunc: TBinary32Func; x, y: TExprNode);
+constructor TExprCallBinary32VmNode.Create(AFunc: TBinary32Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y]);
+  inherited Create([X, Y]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4345,8 +4356,7 @@ begin
   FExprVmCode := TExprCallBinary32VmOp.Create(
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4354,10 +4364,10 @@ end;
 // TExprCallBinary64VmNode
 //==================================================================================================
 
-constructor TExprCallBinary64VmNode.Create(AFunc: TBinary64Func; x, y: TExprNode);
+constructor TExprCallBinary64VmNode.Create(AFunc: TBinary64Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y]);
+  inherited Create([X, Y]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4367,8 +4377,7 @@ begin
   FExprVmCode := TExprCallBinary64VmOp.Create(
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4376,10 +4385,10 @@ end;
 // TExprCallBinary80VmNode
 //==================================================================================================
 
-constructor TExprCallBinary80VmNode.Create(AFunc: TBinary80Func; x, y: TExprNode);
+constructor TExprCallBinary80VmNode.Create(AFunc: TBinary80Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y]);
+  inherited Create([X, Y]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4389,8 +4398,7 @@ begin
   FExprVmCode := TExprCallBinary80VmOp.Create(
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4398,10 +4406,10 @@ end;
 // TExprCallTernaryVmNode
 //==================================================================================================
 
-constructor TExprCallTernaryVmNode.Create(AFunc: TTernaryFunc; x, y, z: TExprNode);
+constructor TExprCallTernaryVmNode.Create(AFunc: TTernaryFunc; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y, z]);
+  inherited Create([X, Y, Z]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4412,8 +4420,7 @@ begin
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
     VmDeps[1].ExprVmCode.OutputLoc,
-    VmDeps[2].ExprVmCode.OutputLoc
-  );
+    VmDeps[2].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4421,10 +4428,10 @@ end;
 // TExprCallTernary32VmNode
 //==================================================================================================
 
-constructor TExprCallTernary32VmNode.Create(AFunc: TTernary32Func; x, y, z: TExprNode);
+constructor TExprCallTernary32VmNode.Create(AFunc: TTernary32Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y, z]);
+  inherited Create([X, Y, Z]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4435,8 +4442,7 @@ begin
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
     VmDeps[1].ExprVmCode.OutputLoc,
-    VmDeps[2].ExprVmCode.OutputLoc
-  );
+    VmDeps[2].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4444,10 +4450,10 @@ end;
 // TExprCallTernary64VmNode
 //==================================================================================================
 
-constructor TExprCallTernary64VmNode.Create(AFunc: TTernary64Func; x, y, z: TExprNode);
+constructor TExprCallTernary64VmNode.Create(AFunc: TTernary64Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y, z]);
+  inherited Create([X, Y, Z]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4458,8 +4464,7 @@ begin
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
     VmDeps[1].ExprVmCode.OutputLoc,
-    VmDeps[2].ExprVmCode.OutputLoc
-  );
+    VmDeps[2].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4467,10 +4472,10 @@ end;
 // TExprCallTernary80VmNode
 //==================================================================================================
 
-constructor TExprCallTernary80VmNode.Create(AFunc: TTernary80Func; x, y, z: TExprNode);
+constructor TExprCallTernary80VmNode.Create(AFunc: TTernary80Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
-  inherited Create([x, y, z]);
+  inherited Create([X, Y, Z]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4481,8 +4486,7 @@ begin
     FFunc,
     VmDeps[0].ExprVmCode.OutputLoc,
     VmDeps[1].ExprVmCode.OutputLoc,
-    VmDeps[2].ExprVmCode.OutputLoc
-  );
+    VmDeps[2].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4501,8 +4505,7 @@ procedure TExprCompareVmNode.GenCode(AVirtMach: TExprVirtMach);
 begin
   FExprVmCode := TExprCompareVmOp.Create(
     VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc
-  );
+    VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
 
@@ -4514,7 +4517,7 @@ function TExprAbstractFuncSym.CompileFirstArg: TExprNode;
 begin
   if Lexer.CurrTok <> etLParen then
     raise EJclExprEvalError.CreateResRec(@RsExprEvalFirstArg);
-  Result := CompileParser.compile_expr(True);
+  Result := CompileParser.CompileExpr(True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4523,7 +4526,7 @@ function TExprAbstractFuncSym.CompileNextArg: TExprNode;
 begin
   if Lexer.CurrTok <> etComma then
     raise EJclExprEvalError.CreateResRec(@RsExprEvalNextArg);
-  Result := CompileParser.compile_expr(True);
+  Result := CompileParser.CompileExpr(True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4532,7 +4535,7 @@ function TExprAbstractFuncSym.EvalFirstArg: TFloat;
 begin
   if Lexer.CurrTok <> etLParen then
     raise EJclExprEvalError.CreateResRec(@RsExprEvalFirstArg);
-  Result := EvalParser.eval_expr(True);
+  Result := EvalParser.EvalExpr(True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4541,7 +4544,7 @@ function TExprAbstractFuncSym.EvalNextArg: TFloat;
 begin
   if Lexer.CurrTok <> etComma then
     raise EJclExprEvalError.CreateResRec(@RsExprEvalNextArg);
-  Result := EvalParser.eval_expr(True);
+  Result := EvalParser.EvalExpr(True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4776,26 +4779,26 @@ end;
 
 function TExprBinaryFuncSym.Compile: TExprNode;
 var
-  x, y: TExprNode;
+  X, Y: TExprNode;
 begin
   // must be called this way, because evaluation order of function
   // parameters is not defined; we need CompileFirstArg to be called
   // first.
-  x := CompileFirstArg;
-  y := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallBinaryFunc(FFunc, x, y);
+  Result := NodeFactory.CallBinaryFunc(FFunc, X, Y);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprBinaryFuncSym.Evaluate: TFloat;
 var
-  x, y: TFloat;
+  X, Y: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
-  Result := FFunc(x, y);
+  X := EvalFirstArg;
+  Y := EvalNextArg;
+  Result := FFunc(X, Y);
   EndArgs;
 end;
 
@@ -4814,24 +4817,24 @@ end;
 
 function TExprBinary32FuncSym.Compile: TExprNode;
 var
-  x, y: TExprNode;
+  X, Y: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallBinary32Func(FFunc, x, y);
+  Result := NodeFactory.CallBinary32Func(FFunc, X, Y);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprBinary32FuncSym.Evaluate: TFloat;
 var
-  x, y: TFloat;
+  X, Y: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y);
+  Result := FFunc(X, Y);
 end;
 
 //==================================================================================================
@@ -4849,24 +4852,24 @@ end;
 
 function TExprBinary64FuncSym.Compile: TExprNode;
 var
-  x, y: TExprNode;
+  X, Y: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallBinary64Func(FFunc, x, y);
+  Result := NodeFactory.CallBinary64Func(FFunc, X, Y);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprBinary64FuncSym.Evaluate: TFloat;
 var
-  x, y: TFloat;
+  X, Y: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y);
+  Result := FFunc(X, Y);
 end;
 
 //==================================================================================================
@@ -4884,24 +4887,24 @@ end;
 
 function TExprBinary80FuncSym.Compile: TExprNode;
 var
-  x, y: TExprNode;
+  X, Y: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallBinary80Func(FFunc, x, y);
+  Result := NodeFactory.CallBinary80Func(FFunc, X, Y);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprBinary80FuncSym.Evaluate: TFloat;
 var
-  x, y: TFloat;
+  X, Y: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y);
+  Result := FFunc(X, Y);
 end;
 
 //==================================================================================================
@@ -4919,26 +4922,26 @@ end;
 
 function TExprTernaryFuncSym.Compile: TExprNode;
 var
-  x, y, z: TExprNode;
+  X, Y, Z: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
-  z := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
+  Z := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallTernaryFunc(FFunc, x, y, z);
+  Result := NodeFactory.CallTernaryFunc(FFunc, X, Y, Z);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprTernaryFuncSym.Evaluate: TFloat;
 var
-  x, y, z: TFloat;
+  X, Y, Z: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
-  z := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
+  Z := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y, z);
+  Result := FFunc(X, Y, Z);
 end;
 
 //==================================================================================================
@@ -4956,26 +4959,26 @@ end;
 
 function TExprTernary32FuncSym.Compile: TExprNode;
 var
-  x, y, z: TExprNode;
+  X, Y, Z: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
-  z := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
+  Z := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallTernary32Func(FFunc, x, y, z);
+  Result := NodeFactory.CallTernary32Func(FFunc, X, Y, Z);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprTernary32FuncSym.Evaluate: TFloat;
 var
-  x, y, z: TFloat;
+  X, Y, Z: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
-  z := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
+  Z := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y, z);
+  Result := FFunc(X, Y, Z);
 end;
 
 //==================================================================================================
@@ -4993,26 +4996,26 @@ end;
 
 function TExprTernary64FuncSym.Compile: TExprNode;
 var
-  x, y, z: TExprNode;
+  X, Y, Z: TExprNode;
 begin
-  x := CompileFirstArg;
-  y := CompileNextArg;
-  z := CompileNextArg;
+  X := CompileFirstArg;
+  Y := CompileNextArg;
+  Z := CompileNextArg;
   EndArgs;
-  Result := NodeFactory.CallTernary64Func(FFunc, x, y, z);
+  Result := NodeFactory.CallTernary64Func(FFunc, X, Y, Z);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TExprTernary64FuncSym.Evaluate: TFloat;
 var
-  x, y, z: TFloat;
+  X, Y, Z: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
-  z := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
+  Z := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y, z);
+  Result := FFunc(X, Y, Z);
 end;
 
 //==================================================================================================
@@ -5039,13 +5042,13 @@ end;
 
 function TExprTernary80FuncSym.Evaluate: TFloat;
 var
-  x, y, z: TFloat;
+  X, Y, Z: TFloat;
 begin
-  x := EvalFirstArg;
-  y := EvalNextArg;
-  z := EvalNextArg;
+  X := EvalFirstArg;
+  Y := EvalNextArg;
+  Z := EvalNextArg;
   EndArgs;
-  Result := FFunc(x, y, z);
+  Result := FFunc(X, Y, Z);
 end;
 
 //==================================================================================================
@@ -5150,7 +5153,8 @@ end;
 
 constructor TEasyEvaluator.Create;
 begin
-  FOwnContext := TExprHashContext.Create(False, C_ExprEval_HashSize);
+  inherited Create;
+  FOwnContext := TExprHashContext.Create(False, cExprEvalHashSize);
   FExtContextSet := TExprSetContext.Create(False);
   FInternalContextSet := TExprSetContext.Create(False);
 
@@ -5310,10 +5314,12 @@ begin
   FOwnContext.Remove(AName);
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// TInternalCompiledExpression
+//==================================================================================================
 
 type
-  TInternalCompiledExpression = class
+  TInternalCompiledExpression = class(TObject)
   private
     FVirtMach: TExprVirtMach;
     FRefCount: Integer;
@@ -5324,6 +5330,22 @@ type
     property RefCount: Integer read FRefCount write FRefCount;
   end;
 
+//--------------------------------------------------------------------------------------------------
+
+constructor TInternalCompiledExpression.Create(AVirtMach: TExprVirtMach);
+begin
+  inherited Create;
+  FVirtMach := AVirtMach;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TInternalCompiledExpression.Destroy;
+begin
+  FVirtMach.Free;
+  inherited Destroy;
+end;
+
 //==================================================================================================
 // TExpressionCompiler
 //==================================================================================================
@@ -5331,7 +5353,7 @@ type
 constructor TExpressionCompiler.Create;
 begin
   FExprHash := TStringHashMap.Create(CaseInsensitiveTraits,
-    C_ExprEval_HashSize);
+    cExprEvalHashSize);
   inherited Create;
 end;
 
@@ -5347,81 +5369,81 @@ end;
 
 function TExpressionCompiler.Compile(const AExpr: string): TCompiledExpression;
 var
-  ice: TInternalCompiledExpression;
-  vm: TExprVirtMach;
-  parser: TExprCompileParser;
-  lexer: TExprSimpleLexer;
-  nodeFactory: TExprVirtMachNodeFactory;
+  Ice: TInternalCompiledExpression;
+  Vm: TExprVirtMach;
+  Parser: TExprCompileParser;
+  Lexer: TExprSimpleLexer;
+  NodeFactory: TExprVirtMachNodeFactory;
 begin
-  if FExprHash.Find(AExpr, ice) then
+  if FExprHash.Find(AExpr, Ice) then
   begin
     // expression already exists, add reference
-    Result := ice.VirtMach.Execute;
-    ice.RefCount := ice.RefCount + 1;
+    Result := Ice.VirtMach.Execute;
+    Ice.RefCount := Ice.RefCount + 1;
   end
   else
   begin
     // compile fresh expression
-    parser := nil;
-    nodeFactory := nil;
-    lexer := TExprSimpleLexer.Create(AExpr);
+    Parser := nil;
+    NodeFactory := nil;
+    Lexer := TExprSimpleLexer.Create(AExpr);
     try
-      nodeFactory := TExprVirtMachNodeFactory.Create;
-      parser := TExprCompileParser.Create(lexer, nodeFactory);
-      parser.Context := InternalContextSet;
-      parser.Compile;
+      NodeFactory := TExprVirtMachNodeFactory.Create;
+      Parser := TExprCompileParser.Create(Lexer, NodeFactory);
+      Parser.Context := InternalContextSet;
+      Parser.Compile;
 
-      ice := nil;
-      vm := TExprVirtMach.Create;
+      Ice := nil;
+      Vm := TExprVirtMach.Create;
       try
-        nodeFactory.GenCode(vm);
-        ice := TInternalCompiledExpression.Create(vm);
-        ice.RefCount := 1;
-        FExprHash.Add(AExpr, ice);
+        NodeFactory.GenCode(Vm);
+        Ice := TInternalCompiledExpression.Create(Vm);
+        Ice.RefCount := 1;
+        FExprHash.Add(AExpr, Ice);
       except
-        ice.Free;
-        vm.Free;
+        Ice.Free;
+        Vm.Free;
         raise;
       end;
     finally
-      nodeFactory.Free;
-      parser.Free;
-      lexer.Free;
+      NodeFactory.Free;
+      Parser.Free;
+      Lexer.Free;
     end;
 
-    Result := ice.VirtMach.Execute;
+    Result := Ice.VirtMach.Execute;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 type
+  PIceFindResult = ^TIceFindResult;
   TIceFindResult = record
     Found: Boolean;
     Ce: TCompiledExpression;
     Ice: TInternalCompiledExpression;
     Expr: string;
   end;
-  PIceFindResult = ^TIceFindResult;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iterate_FindIce(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
+function IterateFindIce(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
 var
-  pifr: PIceFindResult;
-  ice: TInternalCompiledExpression;
-  ce: TCompiledExpression;
+  PIfr: PIceFindResult;
+  Ice: TInternalCompiledExpression;
+  Ce: TCompiledExpression;
 begin
-  pifr := AUserData;
-  ice := APtr;
-  ce := ice.VirtMach.Execute;
+  PIfr := AUserData;
+  Ice := APtr;
+  Ce := Ice.VirtMach.Execute;
 
-  if (TMethod(pifr^.Ce).Code = TMethod(ce).Code) and
-    (TMethod(pifr^.Ce).Data = TMethod(ce).Data) then
+  if (TMethod(PIfr^.Ce).Code = TMethod(Ce).Code) and
+    (TMethod(PIfr^.Ce).Data = TMethod(Ce).Data) then
   begin
-    pifr^.Found := True;
-    pifr^.Ice := ice;
-    pifr^.Expr := AStr;
+    PIfr^.Found := True;
+    PIfr^.Ice := Ice;
+    PIfr^.Expr := AStr;
     Result := False;
   end else
     Result := True;
@@ -5431,32 +5453,36 @@ end;
 
 procedure TExpressionCompiler.Delete(ACompiledExpression: TCompiledExpression);
 var
-  ifr: TIceFindResult;
+  Ifr: TIceFindResult;
 begin
-  ifr.Found := False;
-  ifr.Ce := ACompiledExpression;
-  ifr.Ice := nil;
-  ifr.Expr := '';
-  FExprHash.Iterate(@ifr, Iterate_FindIce);
-  if not ifr.Found then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalExprPtrNotFound);
-  Remove(ifr.Expr);
+  with Ifr do
+  begin
+    Found := False;
+    Ce := ACompiledExpression;
+    Ice := nil;
+    Expr := '';
+    FExprHash.Iterate(@Ifr, IterateFindIce);
+    if not Found then
+      raise EJclExprEvalError.CreateResRec(@RsExprEvalExprPtrNotFound);
+    Remove(Expr);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TExpressionCompiler.Remove(const AExpr: string);
 var
-  ice: TInternalCompiledExpression;
+  Ice: TInternalCompiledExpression;
 begin
-  if not FExprHash.Find(AExpr, ice) then
+  if not FExprHash.Find(AExpr, Ice) then
     raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalExprNotFound,
       [AExpr]);
 
-  ice.RefCount := ice.RefCount - 1;
-  if ice.RefCount = 0 then
+  Ice.RefCount := Ice.RefCount - 1;
+  // (rom) add security: check for RefCount < 0
+  if Ice.RefCount = 0 then
   begin
-    ice.Free;
+    Ice.Free;
     FExprHash.Remove(AExpr);
   end;
 end;
@@ -5467,25 +5493,6 @@ procedure TExpressionCompiler.Clear;
 begin
   FExprHash.Iterate(nil, Iterate_FreeObjects);
 end;
-
-//==================================================================================================
-// TInternalCompiledExpression
-//==================================================================================================
-
-constructor TInternalCompiledExpression.Create(AVirtMach: TExprVirtMach);
-begin
-  FVirtMach := AVirtMach;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TInternalCompiledExpression.Destroy;
-begin
-  FVirtMach.Free;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
 
