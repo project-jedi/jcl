@@ -54,12 +54,7 @@ See also:
   <LINK TJclCounter,TJclCount>
   TJclWaitableTimer
 Quick info:
-  Unit: JclMultimedia
-  Category: Date and Time
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Create
 Summary:
@@ -74,13 +69,7 @@ Parameters:
   Kind - Determines the kind of timer, you have the option of a one-shot timer or a periodic timer. See TMmTimerKind for more information.
   Notification - Determines the method of notification when the timer elapses (fires). See TMmNotificationKind for more information.
 Quick info:
-  Unit: JclMultimedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.GetTime
 Summary:
@@ -98,13 +87,7 @@ Description:
 Result:
   The time since Windows was started, in milliseconds.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Event
 Summary:
@@ -119,13 +102,7 @@ Description:
   must be reset manually. To do that call the event's ResetEvent method as in:
   MyMmTimer.Event.ResetEvent.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Kind
 Summary:
@@ -133,13 +110,7 @@ Summary:
 Description:
   Straight copy of the Kind parameter as specified in the constructor.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Notification
 Summary:
@@ -147,13 +118,7 @@ Summary:
 Description:
   Straight copy of the Notification parameter as specified in the constructor.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.MaxPeriod
 Summary:
@@ -161,13 +126,7 @@ Summary:
 Description:
   MaxPeriod returns the maximum period (resolution) supported by the timer hardware.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.MinPeriod
 Summary:
@@ -175,13 +134,7 @@ Summary:
 Description:
   MinPeriod returns the minimum period (resolution) supported by the timer hardware.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Period
 Summary:
@@ -197,13 +150,7 @@ Description:
   not do this when the timer is active since it will mess up the values returned
   by the Elapsed function.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.OnTimer
 Summary:
@@ -213,13 +160,7 @@ Description:
   constructor. After calling BeginTimer this is the event that gets fired each
   time the interval expires.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.BeginTimer
 Summary:
@@ -232,13 +173,7 @@ Parameters:
   Delay - Event delay in milliseconds. This is the interval after which the timer 'fires'.
   Resolution - Timer event resolution, in milliseconds. This influences the accuracy with which periodic events occur. A value of 0 specified the greatest possible accuracy while larger values decrease in accuracy. In effect this means that you are saying you want to be notified after an interval of Delay +/- Resolution. The specified value must be supported by the timer hardware or the function fails. You can use the MaxPeriod and MinPeriod properties to retrieve the range of supported resolutions.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.EndTimer
 Summary:
@@ -247,13 +182,7 @@ Description:
   The EndTimer method stops the timer. Always call this method, even for a one-shot
   timer.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Elapsed
 Summary:
@@ -268,13 +197,7 @@ Result:
   If the timer is inactive (you haven't called BeginTimer or called EndTimer more
   recently) the return value is always 0.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.WaitFor
 Summary:
@@ -294,13 +217,7 @@ Result:
   See TJclWaitResult
   for the details.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TMmTimerKind
 <GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
@@ -309,12 +226,7 @@ Summary:
 Description:
   Determines the kind of timer, periodic or one-shot.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TMmTimerKind.tkOneShot
   The timer is a one-shot timer. After calling BeginTimer and the specified interval has elapsed, the timer will 'fire' once and once only. Note that even for a one-shot timer you still need to call EndTimer.
 @@TMmTimerKind.tkPeriodic
@@ -328,12 +240,7 @@ Description:
   Determines the method of notification when the timer's interval ellapses. You can
   choose between using kernel events or callbacks.
 Quick info:
-  Unit: JclMultiMedia
-  Category: Date and Time
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TMmNotificationKind.nkCallback
   The timer uses the callback method to notify you when the timer expires. This means that the handler assigned to the OnTimer event property will be called every time the timer's interval expires.
 @@TMmNotificationKind.nkSetEvent
@@ -343,29 +250,18 @@ Quick info:
 --------------------------------------------------------------------------------
 @@OpenCloseCdDrive
 <GROUP $MultiMedia.CDDrive>
-
-Description
-OpenCloseCdDrive opens or closes the CD drive. If an error
-\occurs an EJclMciError exception is raised.
-
-Summary
-Opens or closes the CD drive.
-
-Note
-Currently this function can only handle a single CD drive.
-
-Parameters
-OpenMode :   If True the CD drive is opened, if False the CD
-             drive is closed.
-
-QuickInfo
- Unit: JclMultiMedia
-  Category: MultiMedia
+Description:
+  OpenCloseCdDrive opens or closes the CD drive. If an error
+  \occurs an EJclMciError exception is raised.
+Summary:
+  Opens or closes the CD drive.
+Note:
+  Currently this function can only handle a single CD drive.
+Parameters:
+  OpenMode      If True the CD drive is opened, if False the CD drive is closed.
+Quick Info:
   Donator: Bernhard Berger
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-
+--------------------------------------------------------------------------------
 @@GetMciErrorMessage
 <GROUP MultiMedia.MCI>
 Summary:
@@ -378,10 +274,4 @@ Parameters:
 Result:
   Error message for the specified error code.
 Quick info:
-  Unit: JclMultiMedia
-  Category: MultiMedia
   Donator: Bernhard Berger
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
