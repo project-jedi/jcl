@@ -41,8 +41,11 @@ uses
   {$ENDIF DELPHI5_UP}
   JclBase, JclFileUtils, JclPeImage;
 
-
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
+
+{ TODO -cDesign : Move TJclIndex define to JclBase? }
+type
+  TJclIndex = Cardinal;
 
 //--------------------------------------------------------------------------------------------------
 // TD32 constants and structures
@@ -143,8 +146,8 @@ const
 type
   PJclTD32FileSignature = ^TJclTD32FileSignature;
   TJclTD32FileSignature = packed record
-    Signature: DWORD;
-    Offset: DWORD;
+    Signature: DWord;
+    Offset: DWord;
   end;
 
 { Subsection Types }
@@ -168,8 +171,8 @@ type
   TDirectoryEntry = packed record
     SubsectionType: Word; // Subdirectory type
     ModuleIndex: Word;    // Module index
-    Offset: DWORD;        // Offset from the base offset lfoBase
-    Size: DWORD;          // Number of bytes in subsection
+    Offset: DWord;        // Offset from the base offset lfoBase
+    Size: DWord;          // Number of bytes in subsection
   end;
 
   { The subsection directory is prefixed with a directory header structure
@@ -178,9 +181,9 @@ type
   TDirectoryHeader = packed record
     Size: Word;           // Length of this structure
     DirEntrySize: Word;   // Length of each directory entry
-    DirEntryCount: DWORD; // Number of directory entries
-    lfoNextDir: DWORD;    // Offset from lfoBase of next directory.
-    Flags: DWORD;         // Flags describing directory and subsection tables.
+    DirEntryCount: DWord; // Number of directory entries
+    lfoNextDir: DWord;    // Offset from lfoBase of next directory.
+    Flags: DWord;         // Flags describing directory and subsection tables.
     DirEntries: array[0..0] of TDirectoryEntry;
   end;
 
@@ -203,9 +206,11 @@ type
                    // The following attributes are defined:
 				         //   0x0000	Data segment
 				         //   0x0001	Code segment
-    Offset: DWORD; // Offset in segment where the code starts
-    Size: DWORD;   // Count of the number of bytes of code in the segment
+    Offset: DWord; // Offset in segment where the code starts
+    Size: DWord;   // Count of the number of bytes of code in the segment
   end;
+  PSegmentInfoArray = ^TSegmentInfoArray;
+  TSegmentInfoArray = array[0..32767] of TSegmentInfo;
 
   PModuleInfo = ^TModuleInfo;
   TModuleInfo = packed record
@@ -215,9 +220,9 @@ type
     SegmentCount: Word;   // Count of the number of code segments
                           // this module contributes to
     DebuggingStyle: Word; // Debugging style  for this  module.
-    NameIndex: DWORD;     // Name index of module.
-    TimeStamp: DWORD;     // Time stamp from the OBJ file.
-    Reserved: array[0..2] of DWORD; // Set to 0.
+    NameIndex: DWord;     // Name index of module.
+    TimeStamp: DWord;     // Time stamp from the OBJ file.
+    Reserved: array[0..2] of DWord; // Set to 0.
     Segments: array[0..0] of TSegmentInfo;
                           // Detailed information about each segment
                           // that code is contributed to.
@@ -266,7 +271,7 @@ type
   TLineMappingEntry = packed record
     SegmentIndex: Word;  // Segment index for this table
     PairCount: Word;     // Count of the number of source line pairs to follow
-    Offsets: array[0..0] of DWORD;
+    Offsets: array[0..0] of DWord;
                      // An array of 32-bit offsets for the offset
                      // within the code segment ofthe start of ine contained
                      // in the parallel array linenumber.
@@ -281,18 +286,20 @@ type
   end;
 
   TOffsetPair = packed record
-    StartOffset: DWORD;
-    EndOffset: DWORD;
+    StartOffset: DWord;
+    EndOffset: DWord;
   end;
+  POffsetPairArray = ^TOffsetPairArray;
+  TOffsetPairArray = array[0..32767] of TOffsetPair;
 
   { The file table describes the code segments that receive code from this
     source file. Source file entries have the following format: }
   PSourceFileEntry = ^TSourceFileEntry;
   TSourceFileEntry = packed record
     SegmentCount: Word; // Number of segments that receive code from this source file.
-    NameIndex: Integer; // Name index of Source file name.
+    NameIndex: DWord;   // Name index of Source file name.
 
-    BaseSrcLines: array[0..0] of DWORD;
+    BaseSrcLines: array[0..0] of DWord;
                         // An array of offsets for the line/address mapping
 			// tables for each of the segments that receive code
 			// from this source file.
@@ -321,7 +328,7 @@ type
     FileCount: Word;    // The number of source file scontributing code to segments
     SegmentCount: Word; // The number of code segments receiving code from this module
 
-    BaseSrcFiles: array[0..0] of DWORD;
+    BaseSrcFiles: array[0..0] of DWord;
     (*
     // This is an array of base offsets from the beginning of the sstSrcModule table
     BaseSrcFiles: array[0..FileCount - 1] of DWord;
@@ -363,10 +370,10 @@ type
 type
   PGlobalTypeInfo = ^TGlobalTypeInfo;
   TGlobalTypeInfo = packed record
-    Count: DWORD; // count of the number of types
+    Count: DWord; // count of the number of types
 
     // offset of each type string from the beginning of table
-    Offsets: array[0..0] of DWORD;
+    Offsets: array[0..0] of DWord;
   end;
 
 { Symbol type defines }
@@ -424,26 +431,26 @@ const
 *******************************************************************************}
 type
   TSymbolProcInfo = packed record
-    pParent: DWORD;
-    pEnd: DWORD;
-    pNext: DWORD;
-    Size: DWORD;        // Length in bytes of this procedure
-    DebugStart: DWORD;  // Offset in bytes from the start of the procedure to
+    pParent: DWord;
+    pEnd: DWord;
+    pNext: DWord;
+    Size: DWord;        // Length in bytes of this procedure
+    DebugStart: DWord;  // Offset in bytes from the start of the procedure to
                         // the point where the stack frame has been set up.
-    DebugEnd: DWORD;    // Offset in bytes from the start of the procedure to
+    DebugEnd: DWord;    // Offset in bytes from the start of the procedure to
                         // the point where the  procedure is  ready to  return
                         // and has calculated its return value, if any.
                         // Frame and register variables an still be viewed.
-    Offset: DWORD;      // Offset portion of  the segmented address of
+    Offset: DWord;      // Offset portion of  the segmented address of
                         // the start of the procedure in the code segment
     Segment: Word;      // Segment portion of the segmented address of
                         // the start of the procedure in the code segment
-    ProcType: DWORD;    // Type of the procedure type record
+    ProcType: DWord;    // Type of the procedure type record
     NearFar: Byte;      // Type of return the procedure makes:
                         //   0       near
                         //   4       far
     Reserved: Byte;
-    NameIndex: DWORD;   // Name index of procedure
+    NameIndex: DWord;   // Name index of procedure
   end;
 
 { Symbol Information Records }
@@ -459,7 +466,7 @@ type
 
   PSymbolInfos = ^TSymbolInfos;
   TSymbolInfos = packed record
-    Signature: DWORD;
+    Signature: DWord;
     Symbols: array[0..0] of TSymbolInfo;
   end;
 
@@ -470,68 +477,68 @@ type
 type
   TJclModuleInfo = class (TObject)
   private
-    FNameIndex: Integer;
-    FSegments: array of TSegmentInfo;
-    function GetSegment(Index: Integer): TSegmentInfo;
-    function GetSegmentCount: Integer;
+    FNameIndex: DWord;
+    FSegments: PSegmentInfoArray;
+    FSegmentCount: TJclIndex;
+    function GetSegment(const Idx: TJclIndex): TSegmentInfo;
   protected
-    constructor Create(pModInfo: PModuleInfo);
+    constructor Create(const pModInfo: PModuleInfo);
   public
-    property NameIndex: Integer read FNameIndex;
-    property SegmentCount: Integer read GetSegmentCount;
-    property Segment[Index: Integer]: TSegmentInfo read GetSegment; default;
+    property NameIndex: DWord read FNameIndex;
+    property SegmentCount: TJclIndex read FSegmentCount;//GetSegmentCount;
+    property Segment[const Idx: TJclIndex]: TSegmentInfo read GetSegment; default;
   end;
 
   TJclLineInfo = class (TObject)
   private
-    FLineNo: DWORD;
-    FOffset: DWORD;
+    FLineNo: DWord;
+    FOffset: DWord;
   protected
-    constructor Create(ALineNo, AOffset: DWORD);
+    constructor Create(ALineNo, AOffset: DWord);
   public
-    property LineNo: DWORD read FLineNo;
-    property Offset: DWORD read FOffset;
+    property LineNo: DWord read FLineNo;
+    property Offset: DWord read FOffset;
   end;
 
   TJclSourceModuleInfo = class (TObject)
   private
     FLines: TObjectList;
-    FSegments: array of TOffsetPair;
-    FNameIndex: Integer;
-    function GetLine(Index: Integer): TJclLineInfo;
-    function GetLineCount: Integer;
-    function GetSegment(Index: Integer): TOffsetPair;
-    function GetSegmentCount: Integer;
+    FSegments: POffsetPairArray;
+    FSegmentCount: TJclIndex;
+    FNameIndex: DWord;
+    function GetLine(const Idx: TJclIndex): TJclLineInfo;
+    function GetLineCount: TJclIndex;
+    function GetSegment(const Idx: TJclIndex): TOffsetPair;
   protected
-    constructor Create(pSrcFile: PSourceFileEntry; Base: DWORD);
+    constructor Create(const pSrcFile: PSourceFileEntry; Base: DWord);
   public
     destructor Destroy; override;
-    property NameIndex: Integer read FNameIndex;
-    property LineCount: Integer read GetLineCount;
-    property Line[Index: Integer]: TJclLineInfo read GetLine; default;
-    property SegmentCount: Integer read GetSegmentCount;
-    property Segment[Index: Integer]: TOffsetPair read GetSegment;
+    property NameIndex: DWord read FNameIndex;
+    property LineCount: TJclIndex read GetLineCount;
+    property Line[const Idx: TJclIndex]: TJclLineInfo read GetLine; default;
+    property SegmentCount: TJclIndex read FSegmentCount;//GetSegmentCount;
+    property Segment[const Idx: TJclIndex]: TOffsetPair read GetSegment;
   end;
 
   TJclSymbolInfo = class (TObject)
   private
     FSymbolType: Word;
   protected
-    constructor Create(pSymInfo: PSymbolInfo); virtual;
+    constructor Create(const pSymInfo: PSymbolInfo); virtual;
     property SymbolType: Word read FSymbolType;
   end;
 
   TJclProcSymbolInfo = class (TJclSymbolInfo)
   private
-    FNameIndex: Integer;
-    FOffset: DWORD;
-    FSize: DWORD;
+    FNameIndex: DWord;
+    FOffset: DWord;
+    FSize: DWord;
   protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
+    constructor Create(const pSymInfo: PSymbolInfo); override;
   public
-    property NameIndex: Integer read FNameIndex;
-    property Offset: DWORD read FOffset;
-    property Size: DWORD read FSize;
+    property NameIndex: DWord read FNameIndex;
+    property Offset: DWord read FOffset;
+    property Size: DWord read FSize;
   end;
 
   TJclLocalProcSymbolInfo = class (TJclProcSymbolInfo);
@@ -550,36 +557,36 @@ type
     FSourceModules: TObjectList;
     FSymbols: TObjectList;
     FValidData: Boolean;
-    function GetName(const Index: Integer): string;
-    function GetNameCount: Integer;
-    function GetSymbol(const Index: Integer): TJclSymbolInfo;
-    function GetSymbolCount: Integer;
-    function GetModule(const Index: Integer): TJclModuleInfo;
-    function GetModuleCount: Integer;
-    function GetSourceModule(const Index: Integer): TJclSourceModuleInfo;
-    function GetSourceModuleCount: Integer;
+    function GetName(const Idx: TJclIndex): string;
+    function GetNameCount: TJclIndex;
+    function GetSymbol(const Idx: TJclIndex): TJclSymbolInfo;
+    function GetSymbolCount: TJclIndex;
+    function GetModule(const Idx: TJclIndex): TJclModuleInfo;
+    function GetModuleCount: TJclIndex;
+    function GetSourceModule(const Idx: TJclIndex): TJclSourceModuleInfo;
+    function GetSourceModuleCount: TJclIndex;
   protected
     procedure Analyse;
-    procedure AnalyseNames(const pSubsection: Pointer; const Size: DWORD); virtual;
-    procedure AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWORD); virtual;
-    procedure AnalyseModules(const pModInfo: PModuleInfo; const Size: DWORD); virtual;
-    procedure AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWORD); virtual;
-    procedure AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWORD); virtual;
-    function LfaToVa(Lfa: DWORD): Pointer;
+    procedure AnalyseNames(const pSubsection: Pointer; const Size: DWord); virtual;
+    procedure AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWord); virtual;
+    procedure AnalyseModules(const pModInfo: PModuleInfo; const Size: DWord); virtual;
+    procedure AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWord); virtual;
+    procedure AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWord); virtual;
+    function LfaToVa(Lfa: DWord): Pointer;
   public
-    constructor Create(ATD32Data: TCustomMemoryStream); // Data mustn't be freed before the class is destroyed
+    constructor Create(const ATD32Data: TCustomMemoryStream); // Data mustn't be freed before the class is destroyed
     destructor Destroy; override;
     class function IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
-    class function IsTD32DebugInfoValid(DebugData: Pointer; DebugDataSize: LongWord): Boolean;
+    class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
     property Data: TCustomMemoryStream read FData;
-    property Names[const Index: Integer]: string read GetName;
-    property NameCount: Integer read GetNameCount;
-    property Symbols[const Index: Integer]: TJclSymbolInfo read GetSymbol;
-    property SymbolCount: Integer read GetSymbolCount;
-    property Modules[const Index: Integer]: TJclModuleInfo read GetModule;
-    property ModuleCount: Integer read GetModuleCount;
-    property SourceModules[const Index: Integer]: TJclSourceModuleInfo read GetSourceModule;
-    property SourceModuleCount: Integer read GetSourceModuleCount;
+    property Names[const Idx: TJclIndex]: string read GetName;
+    property NameCount: TJclIndex read GetNameCount;
+    property Symbols[const Idx: TJclIndex]: TJclSymbolInfo read GetSymbol;
+    property SymbolCount: TJclIndex read GetSymbolCount;
+    property Modules[const Idx: TJclIndex]: TJclModuleInfo read GetModule;
+    property ModuleCount: TJclIndex read GetModuleCount;
+    property SourceModules[const Idx: TJclIndex]: TJclSourceModuleInfo read GetSourceModule;
+    property SourceModuleCount: TJclIndex read GetSourceModuleCount;
     property ValidData: Boolean read FValidData;
   end;
 
@@ -589,10 +596,10 @@ type
 
   TJclTD32InfoScanner = class (TJclTD32InfoParser)
   public
-    function LineNumberFromAddr(Addr: DWORD): Integer;
-    function ProcNameFromAddr(Addr: DWORD): string;
-    function ModuleNameFromAddr(Addr: DWORD): string;
-    function SourceNameFromAddr(Addr: DWORD): string;
+    function LineNumberFromAddr(Addr: DWord): Integer;
+    function ProcNameFromAddr(Addr: DWord): string;
+    function ModuleNameFromAddr(Addr: DWord): string;
+    function SourceNameFromAddr(Addr: DWord): string;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -621,7 +628,7 @@ implementation
 
 uses
   Math,
-  JclResources, JclSysUtils;
+  JclResources;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -659,35 +666,28 @@ end;
 // TJclModuleInfo
 //==================================================================================================
 
-constructor TJclModuleInfo.Create(pModInfo: PModuleInfo);
+constructor TJclModuleInfo.Create(const pModInfo: PModuleInfo);
 begin
+  Assert(Assigned(pModInfo));
   inherited Create;
   FNameIndex := pModInfo.NameIndex;
-  SetLength(FSegments, pModInfo.SegmentCount);
-  Move(pModInfo.Segments[0], FSegments[0], SizeOf(FSegments[0]) * pModInfo.SegmentCount);
-{ TODO -cDesign : Try to utilize mapped data instead of copy them }  
+  FSegments := @pModInfo.Segments[0];
+  FSegmentCount := pModInfo.SegmentCount;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclModuleInfo.GetSegment(Index: Integer): TSegmentInfo;
+function TJclModuleInfo.GetSegment(const Idx: TJclIndex): TSegmentInfo;
 begin
-  Assert((0 <= Index) and (Index < GetSegmentCount));
-  Result := FSegments[Index];
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclModuleInfo.GetSegmentCount: Integer;
-begin
-  Result := Length(FSegments);
+  Assert(Idx < FSegmentCount);
+  Result := FSegments[Idx];
 end;
 
 //==================================================================================================
 // TJclLineInfo
 //==================================================================================================
 
-constructor TJclLineInfo.Create(ALineNo, AOffset: DWORD);
+constructor TJclLineInfo.Create(ALineNo, AOffset: DWord);
 begin
   inherited Create;
   FLineNo := ALineNo;
@@ -698,7 +698,7 @@ end;
 // TJclSourceModuleInfo
 //==================================================================================================
 
-constructor TJclSourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: DWORD);
+constructor TJclSourceModuleInfo.Create(const pSrcFile: PSourceFileEntry; Base: DWord);
 type
   PArrayOfWord = ^TArrayOfWord;
   TArrayOfWord = array[0..0] of Word;
@@ -706,6 +706,7 @@ var
   I, J: Integer;
   pLineEntry: PLineMappingEntry;
 begin
+  Assert(Assigned(pSrcFile));
   inherited Create;
   FNameIndex := pSrcFile.NameIndex;
   FLines := TObjectList.Create;
@@ -713,14 +714,13 @@ begin
   begin
     pLineEntry := PLineMappingEntry(Base + pSrcFile.BaseSrcLines[I]);
     for J := 0 to pLineEntry.PairCount - 1 do
-    begin
-      FLines.Add(TJclLineInfo.Create(PArrayOfWord(@pLineEntry.Offsets[pLineEntry.PairCount])^[J],
+      FLines.Add(TJclLineInfo.Create(
+        PArrayOfWord(@pLineEntry.Offsets[pLineEntry.PairCount])^[J],
         pLineEntry.Offsets[J]));
-    end;
   end;
-  SetLength(FSegments, pSrcFile.SegmentCount);
-  Move(pSrcFile.BaseSrcLines[pSrcFile.SegmentCount], FSegments[0], SizeOf(FSegments[0]) * pSrcFile.SegmentCount);
-{ TODO -cDesign : Try to utilize mapped data instead of copy them }
+
+  FSegments := @pSrcFile.BaseSrcLines[pSrcFile.SegmentCount];
+  FSegmentCount := pSrcFile.SegmentCount;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -733,39 +733,34 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetLine(Index: Integer): TJclLineInfo;
+function TJclSourceModuleInfo.GetLine(const Idx: TJclIndex): TJclLineInfo;
 begin
-  Result := TJclLineInfo(FLines.Items[Index]);
+  Assert(Idx < GetLineCount);
+  Result := TJclLineInfo(FLines.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetLineCount: Integer;
+function TJclSourceModuleInfo.GetLineCount: TJclIndex;
 begin
   Result := FLines.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetSegment(Index: Integer): TOffsetPair;
+function TJclSourceModuleInfo.GetSegment(const Idx: TJclIndex): TOffsetPair;
 begin
-  Assert((0 <= Index) and (Index < GetSegmentCount));
-  Result := FSegments[Index];
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclSourceModuleInfo.GetSegmentCount: Integer;
-begin
-  Result := Length(FSegments);
+  Assert(Idx < FSegmentCount);
+  Result := FSegments[Idx];
 end;
 
 //==================================================================================================
 // TJclSymbolInfo
 //==================================================================================================
 
-constructor TJclSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclSymbolInfo.Create(const pSymInfo: PSymbolInfo);
 begin
+  Assert(Assigned(pSymInfo));
   inherited Create;
   FSymbolType := pSymInfo.SymbolType;
 end;
@@ -774,8 +769,9 @@ end;
 // TJclProcSymbolInfo
 //==================================================================================================
 
-constructor TJclProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclProcSymbolInfo.Create(const pSymInfo: PSymbolInfo);
 begin
+  Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
   with pSymInfo^ do
   begin
@@ -816,22 +812,22 @@ begin
         AnalyseUnknownSubSection(pSubsection, Size);
       end;
     end;
-    if pDirHeader.lfoNextDir = 0 then
-      Break
+    if pDirHeader.lfoNextDir <> 0 then
+      pDirHeader := PDirectoryHeader(LfaToVa(pDirHeader.lfoNextDir))
     else
-      pDirHeader := PDirectoryHeader(LfaToVa(pDirHeader.lfoNextDir));
+      Break;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWord);
 var
   I, Count, Len: Integer;
   pszName: PChar;
 begin
-  Count := PDWORD(pSubsection)^;
-  pszName := PChar(DWORD(pSubsection) + SizeOf(DWORD));
+  Count := PDWord(pSubsection)^;
+  pszName := PChar(DWord(pSubsection) + SizeOf(DWord));
   for I := 0 to Count - 1 do
   begin
     // Get the length of the name
@@ -846,16 +842,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWord);
 var
-  Offset: DWORD;
+  Offset: DWord;
   pInfo: PSymbolInfo;
   Symbol: TJclSymbolInfo;
 begin
-  Offset := DWORD(@pSymbols.Symbols[0]) - DWORD(pSymbols);
+  Offset := DWord(@pSymbols.Symbols[0]) - DWord(pSymbols);
   while Offset < Size do
   begin
-    pInfo := PSymbolInfo(DWORD(pSymbols) + Offset);
+    pInfo := PSymbolInfo(DWord(pSymbols) + Offset);
     case pInfo.SymbolType of
       SYMBOL_TYPE_LPROC32:
         Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
@@ -872,37 +868,38 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseModules(const pModInfo: PModuleInfo; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseModules(const pModInfo: PModuleInfo; const Size: DWord);
 begin
   FModules.Add(TJclModuleInfo.Create(pModInfo));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWord);
 var
   I: Integer;
   pSrcFile: PSourceFileEntry;
 begin
   for I := 0 to pSrcModInfo.FileCount - 1 do
   begin
-    pSrcFile := PSourceFileEntry(DWORD(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
+    pSrcFile := PSourceFileEntry(DWord(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
     if pSrcFile.NameIndex > 0 then
-      FSourceModules.Add(TJclSourceModuleInfo.Create(pSrcFile, DWORD(pSrcModInfo)));
+      FSourceModules.Add(TJclSourceModuleInfo.Create(pSrcFile, DWord(pSrcModInfo)));
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWord);
 begin
   // do nothing
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclTD32InfoParser.Create(ATD32Data: TCustomMemoryStream);
+constructor TJclTD32InfoParser.Create(const ATD32Data: TCustomMemoryStream);
 begin
+  Assert(Assigned(ATD32Data));
   inherited Create;
   FNames := TList.Create;
   FModules := TObjectList.Create;
@@ -929,67 +926,73 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetModule(const Index: Integer): TJclModuleInfo;
+function TJclTD32InfoParser.GetModule(const Idx: TJclIndex): TJclModuleInfo;
 begin
-  Result := TJclModuleInfo(FModules.Items[Index]);
+  Assert(Idx < GetModuleCount);
+  Result := TJclModuleInfo(FModules.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetModuleCount: Integer;
+function TJclTD32InfoParser.GetModuleCount: TJclIndex;
 begin
   Result := FModules.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetName(const Index: Integer): string;
+function TJclTD32InfoParser.GetName(const Idx: TJclIndex): string;
 begin
-  Result := PChar(FNames[Index]);
+  Assert(Idx < GetNameCount);
+  Result := PChar(FNames[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetNameCount: Integer;
+function TJclTD32InfoParser.GetNameCount: TJclIndex;
 begin
   Result := FNames.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSourceModule(const Index: Integer): TJclSourceModuleInfo;
+function TJclTD32InfoParser.GetSourceModule(const Idx: TJclIndex): TJclSourceModuleInfo;
 begin
-  Result := TJclSourceModuleInfo(FSourceModules.Items[Index]);
+  Assert(Idx < GetSourceModuleCount);
+  Result := TJclSourceModuleInfo(FSourceModules.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSourceModuleCount: Integer;
+function TJclTD32InfoParser.GetSourceModuleCount: TJclIndex;
 begin
   Result := FSourceModules.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSymbol(const Index: Integer): TJclSymbolInfo;
+function TJclTD32InfoParser.GetSymbol(const Idx: TJclIndex): TJclSymbolInfo;
 begin
-  Result := TJclSymbolInfo(FSymbols.Items[Index]);
+  Assert(Idx < GetSymbolCount);
+  Result := TJclSymbolInfo(FSymbols.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSymbolCount: Integer;
+function TJclTD32InfoParser.GetSymbolCount: TJclIndex;
 begin
   Result := FSymbols.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-class function TJclTD32InfoParser.IsTD32DebugInfoValid(DebugData: Pointer; DebugDataSize: LongWord): Boolean;
+class function TJclTD32InfoParser.IsTD32DebugInfoValid(
+  const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
 var
   Sign: TJclTD32FileSignature;
   EndOfDebugData: LongWord;
 begin
+  Assert(not IsBadReadPtr(DebugData, DebugDataSize));
   Result := False;
   EndOfDebugData := LongWord(DebugData) + DebugDataSize;
   if DebugDataSize > SizeOf(Sign) then
@@ -1008,21 +1011,21 @@ end;
 class function TJclTD32InfoParser.IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
 begin
   Result := (Sign.Signature = Borland32BitSymbolFileSignatureForDelphi) or
-            (Sign.Signature = Borland32BitSymbolFileSignatureForBCB);
+    (Sign.Signature = Borland32BitSymbolFileSignatureForBCB);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.LfaToVa(Lfa: DWORD): Pointer;
+function TJclTD32InfoParser.LfaToVa(Lfa: DWord): Pointer;
 begin
-  Result := Pointer(DWORD(FBase) + Lfa)
+  Result := Pointer(DWord(FBase) + Lfa)
 end;
 
 //==================================================================================================
 // TJclTD32InfoScanner
 //==================================================================================================
 
-function TJclTD32InfoScanner.LineNumberFromAddr(Addr: DWORD): Integer;
+function TJclTD32InfoScanner.LineNumberFromAddr(Addr: DWord): Integer;
 var
   I, J: Integer;
 begin
@@ -1049,7 +1052,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoScanner.ModuleNameFromAddr(Addr: DWORD): string;
+function TJclTD32InfoScanner.ModuleNameFromAddr(Addr: DWord): string;
 var
   I, J, Offset: Integer;
 begin
@@ -1070,7 +1073,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoScanner.ProcNameFromAddr(Addr: DWORD): string;
+function TJclTD32InfoScanner.ProcNameFromAddr(Addr: DWord): string;
+var
+  I: Integer;
 
   function FormatProcName(const ProcName: string): string;
   var
@@ -1088,8 +1093,6 @@ function TJclTD32InfoScanner.ProcNameFromAddr(Addr: DWORD): string;
     end;
   end;
 
-var
-  I: Integer;
 begin
   Result := '';
   if ValidData then
@@ -1098,13 +1101,13 @@ begin
         if (Offset <= Addr) and (Addr < Offset + Size) then
         begin
           Result := FormatProcName(Names[NameIndex]);
-          Exit;
+          Break;
         end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoScanner.SourceNameFromAddr(Addr: DWORD): string;
+function TJclTD32InfoScanner.SourceNameFromAddr(Addr: DWord): string;
 var
   I, J: Integer;
 begin
@@ -1117,7 +1120,7 @@ begin
             if (StartOffset <= Addr) and (Addr < EndOffset) then
             begin
               Result := Names[NameIndex];
-              Exit;
+              Break;
             end;
 end;
 
@@ -1216,8 +1219,5 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
-
 
 end.
