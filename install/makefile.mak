@@ -27,32 +27,32 @@ default:	clean prototypes install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
-  $(DCC)
-  if exist *.dcu del *.dcu
+	$(DCC)
+	if exist *.dcu del *.dcu
 
 $(BIN)\JediInstaller.exe: \
-                VclUnits \
-                JediInstaller.dpr
+		VclUnits \
+		JediInstaller.dpr
 
 $(BIN)\QJediInstaller.exe: \
-                ClxUnits \
-                QJediInstaller.dpr
+		ClxUnits \
+		QJediInstaller.dpr
 
 install:        $(BIN)\JediInstaller.exe
-        cd ..
-        bin\JediInstaller.exe
-        cd install
+	cd ..
+	bin\JediInstaller.exe
+	cd install
 
 qinstall:       $(BIN)\QJediInstaller.exe
-        cd ..
-        bin\QJediInstaller.exe
-        cd install
+	cd ..
+	bin\QJediInstaller.exe
+	cd install
 
 .PHONY: clean prototypes
 
 clean:
-        cd ..
-        @echo cleaning up first...
+	cd ..
+	@echo cleaning up first...
 	-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
 	cd lib
 	-@del /f /s *.obj *.res
@@ -60,14 +60,8 @@ clean:
 
 prototypes: VclUnits ClxUnits
 
-VclUnits:       JclInstall.pas \
-                JediInstallIntf.pas \
-                ProductFrames.pas \
-                JediInstallerMain.pas
+VclUnits:
+	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
 
-ClxUnits:       
-	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak
-
-{prototypes}.pas{.}.pas:
-	$(jpp) $(VclOptions) $<
-
+ClxUnits:
+	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
