@@ -20,7 +20,7 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: January 20, 2004                                                                  }
+{ Last modified: January 22, 2004                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -836,7 +836,7 @@ function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
-    Result[CharPos] := JclStrings.CharUpper(Result[CharPos]);
+    Result[CharPos] := CharUpper(Result[CharPos]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1352,7 +1352,7 @@ var
   C: Char;               { first character of search string }
 begin
   //if (S = '') or (Search = '') then Exit;
-  Search := UpperCase(Search);
+  Search := AnsiUpperCase(Search);
   { avoid having to call Length() within the loop }
   SearchLength := Length(Search);
   ReplaceLength := Length(Replace);
@@ -1370,7 +1370,7 @@ begin
   while True do
   begin
     { copy characters until we find the first character of the search string }
-    while (UpCase(SourcePtr^) <> C) and (SourcePtr^ <> #0) do
+    while (CharUpper(SourcePtr^) <> C) and (SourcePtr^ <> #0) do
     begin
       ResultPtr^ := SourcePtr^;
       Inc(ResultPtr);
@@ -1384,7 +1384,7 @@ begin
       { continue comparing, +1 because first character was matched already }
       SourceMatchPtr := SourcePtr + 1;
       SearchMatchPtr := PChar(Search) + 1;
-      while (UpCase(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
+      while (CharUpper(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
       begin
         Inc(SourceMatchPtr);
         Inc(SearchMatchPtr);
@@ -1427,7 +1427,10 @@ end;
 
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 begin
-  if (S <> '') and (Search <> '') then
+  if Search = '' then
+    raise EJclStringError.CreateResRec(@RsBlankSearchString);
+    
+  if S <> '' then
   begin
     if rfIgnoreCase in Flags then
       StrReplaceCI(S, Search, Replace, Flags)
@@ -1532,13 +1535,13 @@ begin
     while Source^ <> #0 do
     begin
       if (Source^ in Delimiters) and (Dest^ <> #0) then
-        Dest^ := UpCase(Dest^);
+        Dest^ := CharUpper(Dest^);
 
       Inc(Dest);
       Inc(Source);
     end;
 
-    Result[1] := UpCase(Result[1]);
+    Result[1] := CharUpper(Result[1]);
   end;
 end;
 
@@ -2626,13 +2629,13 @@ var
   PatternRes: PChar;
 
 begin
-  Result := False;
+  if SubStr = '' then
+    raise EJclStringError.CreateResRec(@RsBlankSearchString);
 
-  if (S='') or (SubStr='') then
-  begin
-    Result := (S = SubStr) or (SubStr = '*');
+  Result := SubStr = '*';
+
+  if Result or (S = '') then
     Exit;
-  end;
 
   StringPtr := PChar(@S[Index]);
   PatternPtr := PChar(SubStr);
@@ -3291,7 +3294,8 @@ begin
   if (Index > 0) and (Index <= Length(S)) then
   begin
     P := PAnsiChar(S);
-    Inc(P, Index - 1);
+    Result := Index - 1;
+    Inc(P, Result);
     while P^ <> #0 do
     begin
       Inc(Result);
@@ -3316,7 +3320,8 @@ begin
   begin
     CU := CharUpper(C);
     P := PAnsiChar(S);
-    Inc(P, Index - 1);
+    Result := Index - 1;
+    Inc(P, Result);
     while P^ <> #0 do
     begin
       Inc(Result);
