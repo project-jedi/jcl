@@ -3059,7 +3059,10 @@ begin
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   with MemoryStatus do
-    Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100);
+    if dwTotalPageFile > 0 then
+      Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
+    else
+      Result := 0;  
 end;
 
 //--------------------------------------------------------------------------------------------------
