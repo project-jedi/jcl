@@ -31,7 +31,7 @@
 # Robert Rossmair, 2004-10-16
 #
 
-CallingConvention = -DZEXPORT=__fastcall -DZEXPORTVA=__cdecl
+CallingConvention = -pr -DZEXPORT=__fastcall -DZEXPORTVA=__cdecl
 
 !if !$d(BCB)
 BCB = $(MAKEDIR)\..
