@@ -536,12 +536,16 @@ end;
 procedure TMainForm.TreeViewExit(Sender: TObject);
 begin
   with ActiveView.InfoDisplay do
+  begin
     {$IFDEF VCL}
     if ReadOnly then
       Lines.LoadFromFile(FJediInstall.ReadmeFileName);
     {$ELSE}
       FileName := FJediInstall.ReadmeFileName;
+      TextColor := clBlack;
+      Update;
     {$ENDIF}
+  end;
 end;
 
 procedure TMainForm.UpdateFeatureInfo(Node: TTreeNode);
