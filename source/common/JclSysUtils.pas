@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: July 25, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -171,6 +171,7 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Classes information and manipulation
@@ -1022,7 +1023,7 @@ end;
 // replacement for the C distfix operator ? :
 //==================================================================================================
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string;
 begin
   if Condition then
     Result := TruePart
@@ -1032,7 +1033,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char;
 begin
   if Condition then
     Result := TruePart
@@ -1042,7 +1043,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte;
 begin
   if Condition then
     Result := TruePart
@@ -1052,7 +1053,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Integer; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Integer;
 begin
   if Condition then
     Result := TruePart
@@ -1062,7 +1063,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal;
 begin
   if Condition then
     Result := TruePart
@@ -1072,7 +1073,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 begin
   if Condition then
     Result := TruePart
@@ -1082,7 +1083,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean;
 begin
   if Condition then
     Result := TruePart
@@ -1092,7 +1093,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer;
 begin
   if Condition then
     Result := TruePart
@@ -1102,7 +1103,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64;
+begin
+  if Condition then
+    Result := TruePart
+  else
+    Result := FalsePart;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant;
 begin
   if Condition then
     Result := TruePart
