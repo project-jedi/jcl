@@ -76,10 +76,10 @@ const
 // (PIC, used by shared objects)
 
 {$IFDEF PIC}
-function GetGOT: Pointer;
+function GetGOT: Pointer; export;
 begin
   asm
-        MOV Result, EBX
+        MOV     Result,EBX
   end;
 end;
 {$ENDIF}
