@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: September 25, 2002                                                                }
+{ Last modified: November 5, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -171,7 +171,9 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
+{$IFDEF COMPILER6_UP}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
+{$ENDIF COMPILER6_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Classes information and manipulation
@@ -1113,6 +1115,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF COMPILER6_UP}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant;
 begin
   if Condition then
@@ -1120,6 +1123,7 @@ begin
   else
     Result := FalsePart;
 end;
+{$ENDIF COMPILER6_UP}
 
 //==================================================================================================
 // Classes information and manipulation
