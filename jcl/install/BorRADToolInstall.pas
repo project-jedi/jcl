@@ -28,6 +28,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.6  2004/03/13 09:07:58  rrossmair
+// minor fixes
+//
 // Revision 1.5  2004/03/13 07:46:49  rrossmair
 // Kylix/Delphi installation fixed; C++ incomplete
 //
@@ -2108,7 +2111,6 @@ procedure TJclBorRADToolInstallations.ReadInstallations;
   procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
   const
     RcBaseFileNames: array[TJclBorRADToolKind] of string = ('delphi', 'bcb');
-    IDs: array[1..3] of Integer = (60, 65, 69);
   var
     Item: TJclBorRADToolInstallation;
     RcFileName: string;

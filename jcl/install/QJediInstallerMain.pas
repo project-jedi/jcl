@@ -24,8 +24,8 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.6  2004/03/13 07:46:49  rrossmair
-// Kylix/Delphi installation fixed; C++ incomplete
+// Revision 1.7  2004/03/13 09:07:58  rrossmair
+// minor fixes
 //
 // Revision 1.7  2004/03/12 04:59:56  rrossmair
 // BCB/Win32 support basically working now

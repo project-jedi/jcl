@@ -24,6 +24,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.6  2004/03/13 09:07:58  rrossmair
+// minor fixes
+//
 // Revision 1.5  2004/03/13 07:46:49  rrossmair
 // Kylix/Delphi installation fixed; C++ incomplete
 //
