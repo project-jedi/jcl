@@ -88,7 +88,7 @@ const
 implementation
 
 uses
-  SysUtils;
+  SysUtils, JclBase;
 
 // Caution: For MimeEncodeStream and all other kinds of multi-buffered
 // Mime encodings (i.e. Files etc.), BufferSize must be set to a multiple of 3.
@@ -165,8 +165,6 @@ type
     B2: Byte;
     B3: Byte;
   end;
-
-  PCardinal = ^Cardinal;
 
 //--------------------------------------------------------------------------------------------------
 // Wrapper functions & procedures
@@ -650,6 +648,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/13 22:24:25  rrossmair
+// moved PCardinal declaration from JclMime to JclBase
+//
 // Revision 1.11  2004/10/13 06:58:19  marquardt
 // normal style cleaning
 //
