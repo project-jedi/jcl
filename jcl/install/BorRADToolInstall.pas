@@ -28,6 +28,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.7  2004/03/14 08:44:30  rrossmair
+// fix: update rc-file & free ConfigData in TJclBorRADToolInstallation
+//
 // Revision 1.6  2004/03/13 09:07:58  rrossmair
 // minor fixes
 //
@@ -1524,7 +1527,6 @@ end;
 
 destructor TJclBorRADToolInstallation.Destroy;
 begin
-  FreeAndNil(FGlobals);
   FreeAndNil(FRepository);
   FreeAndNil(FDCC);
   FreeAndNil(FIdePackages);
@@ -1533,6 +1535,9 @@ begin
   FreeAndNil(FOpenHelp);
   {$ENDIF}
   FreeAndNil(FPalette);
+  FreeAndNil(FGlobals);
+  FConfigData.UpdateFile;
+  FreeAndNil(FConfigData);
   inherited;
 end;
 
