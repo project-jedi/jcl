@@ -2160,7 +2160,7 @@ begin
     else
     if (OrigList[0][2] = ':') and (DestList[0][2] <> ':') then
       Result := StrEnsureSuffix(PathSeparator, Origin) +
-        StrEnsureNoPrefix(PathSeparator, Destination);
+        StrEnsureNoPrefix(PathSeparator, Destination)
     else
     {$ENDIF}
     begin

@@ -172,7 +172,7 @@ function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrDoubleQuote(const S: AnsiString): AnsiString;
 function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
-function StrEnsureNoSuffix(const Prefix, Text: AnsiString): AnsiString;
+function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrEscapedToString(const S: AnsiString): AnsiString;
