@@ -1,4 +1,4 @@
-package JclDebugIde70;
+package JclDebugIde90;
 
 {$R *.res}
 {$ALIGN 8}
