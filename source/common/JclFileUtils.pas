@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: March 25, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -2875,7 +2875,7 @@ var
     begin
       Error := True;
       Exit;
-    end;  
+    end;
     Inc(P, SizeOf(Word));
     ValueLen := PWord(P)^;
     Inc(P, SizeOf(Word));
@@ -2898,6 +2898,25 @@ var
     Data := P;
   end;
 
+  procedure FixKeyValue;
+  const
+    HexNumberCPrefix = '0x';
+  var
+    I: Integer;
+  begin // GAPI32.DLL version 5.5.2803.1 contanins '04050x04E2' value
+    repeat
+      I := Pos(HexNumberCPrefix, Key);
+      if I > 0 then
+        Delete(Key, I, Length(HexNumberCPrefix));
+    until I = 0;
+    I := 1;
+    while I <= Length(Key) do
+      if Key[I] in AnsiHexDigits then
+        Inc(I)
+      else
+        Delete(Key, I, 1);
+  end;
+
   procedure ProcessStringInfo(Size: Integer);
   var
     EndPtr, EndStringPtr: PChar;
@@ -2910,6 +2929,7 @@ var
     while not Error and (Data < EndPtr) do
     begin
       GetHeader; // StringTable
+      FixKeyValue;
       if (ValueLen <> 0) or (Length(Key) <> 8) then
       begin
         Error := True;
