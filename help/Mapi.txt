@@ -124,7 +124,7 @@ MAPI-Client record
 [Description]
 TJclMapiClient show information on each installed and registered MAPI-Client.
 [RecordFields]
-Count=3
+Count=4
 1=ClientName:string=Name of MAPI-client
 2=ClientPath:string=Path where MAPI-client is located
 3=RegKeyName:string=Registry key for MAPI-client
@@ -157,4 +157,3 @@ Category=Internet and E-mail
 SubCat=MAPI
 Author=unknown
 Delphi=4,5
-
