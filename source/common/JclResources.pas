@@ -255,6 +255,7 @@ resourcestring
 
   RsMapiMailNoClient = 'No Simple MAPI client installed, can''t send the message';
 
+  RsMapiMailORIG        = 'From';
   RsMapiMailTO          = 'To';
   RsMapiMailCC          = 'Cc';
   RsMapiMailBCC         = 'Bcc';
@@ -341,7 +342,6 @@ resourcestring
 resourcestring
   RsPeCantOpen = 'Can''t open file "%s"';
   RsPeNotPE = 'This is not a PE format';
-  RsPeUnexpected = 'Unexpected error';
   RsPeNotResDir = 'Not a resource directory';
   RsPeNotAvailableForAttached = 'Feature is not available for attached images';
   RsPeSectionNotFound = 'Section "%s" not found';
