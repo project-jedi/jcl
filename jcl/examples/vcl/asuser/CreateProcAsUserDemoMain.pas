@@ -42,9 +42,9 @@ var
 implementation
 
 uses
-  JclMiscel, JclSysInfo, JclStrings;
+  JclMiscel, JclStrings, JclSysInfo;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TForm1.btnAddEnvStringClick(Sender: TObject);
 begin
@@ -58,38 +58,36 @@ end;
 
 procedure TForm1.btnRemoveEnvStringClick(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := Pred(lbEnvironment.Items.Count) downto 0 do
-  begin
-    if lbEnvironment.Selected[i] then
-      lbEnvironment.Items.Delete(i);
-  end;
+  for I := lbEnvironment.Items.Count - 1 downto 0 do
+    if lbEnvironment.Selected[I] then
+      lbEnvironment.Items.Delete(I);
 end;
 
 procedure TForm1.btnCreateProcAsUserClick(Sender: TObject);
 begin
   CreateProcAsUser(edtDomain.Text, edtUserName.Text,
-                   edtPassWord.Text, edtCommandline.Text);
+    edtPassWord.Text, edtCommandline.Text);
 end;
 
 procedure TForm1.btnCreateProcAsUserExClick(Sender: TObject);
 var
-  pcharEnv: PCHAR;
-  envOptions: TEnvironmentOptions;
+  Env: PChar;
+  EnvOptions: TEnvironmentOptions;
 begin
-  envOptions := [];
+  EnvOptions := [];
   if chkEnvAdditional.Checked then
-    envOptions := envOptions + [eoAdditional];
+    EnvOptions := EnvOptions + [eoAdditional];
   if chkEnvCurrentUser.Checked then
-    envOptions := envOptions + [eoCurrentUser];
+    EnvOptions := EnvOptions + [eoCurrentUser];
   if chkEnvLocalMachine.Checked then
-    envOptions := envOptions + [eoLocalMachine];
+    EnvOptions := EnvOptions + [eoLocalMachine];
 
-  pcharEnv := CreateEnvironmentBlock(envOptions, lbEnvironment.Items);
+  Env := CreateEnvironmentBlock(EnvOptions, lbEnvironment.Items);
   CreateProcAsUserEx(edtDomain.Text, edtUserName.Text,
-                     edtPassWord.Text, edtCommandline.Text, pcharEnv);
-  FreeMultiSz(pcharEnv);
+    edtPassWord.Text, edtCommandline.Text, Env);
+  DestroyEnvironmentBlock(Env);
 end;
 
 end.

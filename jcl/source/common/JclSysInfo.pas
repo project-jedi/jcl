@@ -96,6 +96,7 @@ function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean; ove
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 {$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
+procedure DestroyEnvironmentBlock(var Env: PChar);
 procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 {$ENDIF MSWINDOWS}
 
@@ -857,6 +858,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// frees an environment block allocated by CreateEnvironmentBlock and
+// sets Env to nil
+
+procedure DestroyEnvironmentBlock(var Env: PChar);
+begin
+  FreeMultiSz(Env);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 const
   cEnvironment = 'Environment';
@@ -905,6 +916,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetCurrentFolder: string;
@@ -4034,6 +4046,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.30  2004/10/10 12:52:12  marquardt
+// DestroyEnvironmentBlock introduced
+//
 // Revision 1.29  2004/08/04 09:05:51  marquardt
 // forgot to export SetGlobalEnvironmentVariable
 //
