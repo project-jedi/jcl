@@ -18,6 +18,7 @@
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Robert Marquardt (marquardt)                                                                   }
+{   Uwe Schuster (uschuster)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {   Hallvard Vassbotn                                                                              }
@@ -858,6 +859,8 @@ function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp
 
 function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
 function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
+
+function PeInsertSection(const FileName: TFileName; SectionStream: TStream; SectionName: string): Boolean;
 
 { Image Checksum }
 
@@ -4784,6 +4787,96 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Author: Uwe Schuster(just a generic version of JclDebug.InsertDebugDataIntoExecutableFile) }
+function PeInsertSection(const FileName: TFileName; SectionStream: TStream; SectionName: string): Boolean;
+var
+  ImageStream: TMemoryStream;
+  NtHeaders: PImageNtHeaders;
+  Sections, LastSection, NewSection: PImageSectionHeader;
+  VirtualAlignedSize: DWORD;
+  I, X, NeedFill: Integer;
+  SectionDataSize: Integer;
+
+  procedure RoundUpToAlignment(var Value: DWORD; Alignment: DWORD);
+  begin
+    if (Value mod Alignment) <> 0 then
+      Value := ((Value div Alignment) + 1) * Alignment;
+  end;
+
+begin
+  Result := Assigned(SectionStream) and (SectionName <> '');
+  if not Result then
+    Exit;
+  ImageStream := TMemoryStream.Create;
+  try
+    try
+      ImageStream.LoadFromFile(FileName);
+      SectionDataSize := SectionStream.Size;
+      NtHeaders := PeMapImgNtHeaders(ImageStream.Memory);
+      Assert(NtHeaders <> nil);
+      Sections := PeMapImgSections(NtHeaders);
+      Assert(Sections <> nil);
+      // Check whether there is not a section with the name already. If so, return True (#0000069)
+      if PeMapImgFindSection(NtHeaders, SectionName) <> nil then
+      begin
+        Result := True;
+        Exit;
+      end;
+
+      LastSection := Sections;
+      Inc(LastSection, NtHeaders^.FileHeader.NumberOfSections - 1);
+      NewSection := LastSection;
+      Inc(NewSection);
+
+      // Increase the number of sections
+      Inc(NtHeaders^.FileHeader.NumberOfSections);
+      FillChar(NewSection^, SizeOf(TImageSectionHeader), #0);
+      // JCLDEBUG Virtual Address
+      NewSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
+      RoundUpToAlignment(NewSection^.VirtualAddress, NtHeaders^.OptionalHeader.SectionAlignment);
+      // JCLDEBUG Physical Offset
+      NewSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
+      RoundUpToAlignment(NewSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
+      // JCLDEBUG Section name
+      StrPLCopy(PChar(@NewSection^.Name), SectionName, IMAGE_SIZEOF_SHORT_NAME);
+      // JCLDEBUG Characteristics flags
+      NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
+
+      // Size of virtual data area
+      NewSection^.Misc.VirtualSize := SectionDataSize;
+      VirtualAlignedSize := SectionDataSize;
+      RoundUpToAlignment(VirtualAlignedSize, NtHeaders^.OptionalHeader.SectionAlignment);
+      // Update Size of Image
+      Inc(NtHeaders^.OptionalHeader.SizeOfImage, VirtualAlignedSize);
+      // Raw data size
+      NewSection^.SizeOfRawData := SectionDataSize;
+      RoundUpToAlignment(NewSection^.SizeOfRawData, NtHeaders^.OptionalHeader.FileAlignment);
+      // Update Initialized data size
+      Inc(NtHeaders^.OptionalHeader.SizeOfInitializedData, NewSection^.SizeOfRawData);
+
+      // Fill data to alignment
+      NeedFill := Integer(NewSection^.SizeOfRawData) - SectionDataSize;
+
+      // Note: Delphi linker seems to generate incorrect (unaligned) size of
+      // the executable when adding TD32 debug data so the position could be
+      // behind the size of the file then.
+      ImageStream.Seek(NewSection^.PointerToRawData, soFromBeginning);
+      ImageStream.CopyFrom(SectionStream, 0);
+      X := 0;
+      for I := 1 to NeedFill do
+        ImageStream.WriteBuffer(X, 1);
+
+      ImageStream.SaveToFile(FileName);
+    except
+      Result := False;
+    end;
+  finally
+    ImageStream.Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 begin
   with CreatePeImage(FileName) do
@@ -5919,6 +6012,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2005/02/22 07:29:52  uschuster
+// added function PeInsertSection(a generic version of JclDebug.InsertDebugDataIntoExecutableFile)
+//
 // Revision 1.18  2004/10/23 23:31:27  rrossmair
 // - fixed bug # 0001885
 //
