@@ -21,7 +21,7 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 { Unit owner: Jan Jacobs                                                                           }
-{ Last modified: March 12, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,9 +35,9 @@ interface
 
 uses
   Windows, Messages, Classes, MMSystem,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   JclBase, JclSynch, JclStrings;
 
 type
@@ -571,13 +571,15 @@ begin
       GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) * ControlDetails.cMultipleItems);
       try
         ControlDetails.paDetails := ListTexts;
-        MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT));
-        P := ListTexts;
-        for I := 1 to ControlDetails.cMultipleItems do
+        if mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) = MMSYSERR_NOERROR then
         begin
-          FListText.AddObject(P^.szName, Pointer(P^.dwParam1));
-          Inc(P);
-        end;
+          P := ListTexts;
+          for I := 1 to ControlDetails.cMultipleItems do
+          begin
+            FListText.AddObject(P^.szName, Pointer(P^.dwParam1));
+            Inc(P);
+          end;
+        end;  
       finally
         FreeMem(ListTexts);
       end;
@@ -719,14 +721,16 @@ begin
     MixerControls.cControls := FLineInfo.cControls;
     MixerControls.cbmxctrl := SizeOf(TMixerControl);
     MixerControls.pamxctrl := Controls;
-    MMCheck(mixerGetLineControls(FMixerDevice.Handle, @MixerControls, MIXER_GETLINECONTROLSF_ALL));
-    P := Controls;
-    for I := 1 to FLineInfo.cControls do
+    if mixerGetLineControls(FMixerDevice.Handle, @MixerControls, MIXER_GETLINECONTROLSF_ALL) = MMSYSERR_NOERROR then
     begin
-      Item := TJclMixerLineControl.Create(Self, P^);
-      FLineControls.Add(Item);
-      Inc(P);
-    end;
+      P := Controls;
+      for I := 1 to FLineInfo.cControls do
+      begin
+        Item := TJclMixerLineControl.Create(Self, P^);
+        FLineControls.Add(Item);
+        Inc(P);
+      end;
+    end;  
   finally
     FreeMem(Controls);
   end;
