@@ -250,8 +250,10 @@ type
     procedure SetStretchFilter(Value: TStretchFilter);
   protected
     FontHandle: HFont;
-    RasterX, RasterY: Integer;
-    RasterXF, RasterYF: Single;
+    RasterX: Integer;
+    RasterY: Integer;
+    RasterXF: Single;
+    RasterYF: Single;
     procedure AssignTo(Dst: TPersistent); override;
     function  ClipLine(var X0, Y0, X1, Y1: Integer): Boolean;
     function  ClipLineF(var X0, Y0, X1, Y1: Single; MinX, MaxX, MinY, MaxY: Single): Boolean;
