@@ -133,12 +133,12 @@ Count=4
 4=SetBit
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CountBitsSet(X: Byte): Integer; assembler; overload;
-function CountBitsSet(X: Word): Integer; assembler; overload;
+function CountBitsSet(X: Byte): Integer; overload;
+function CountBitsSet(X: Word): Integer; overload;
 function CountBitsSet(X: Smallint): Integer; overload;
 function CountBitsSet(X: ShortInt): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
-function CountBitsSet(X: Cardinal): Integer; assembler; overload;
+function CountBitsSet(X: Cardinal): Integer; overload;
 function CountBitsSet(X: Int64): Integer; overload;
 [ShortDescr]
 Returns the number of set bits in the passed value.
@@ -630,103 +630,39 @@ Kylix=1
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function Max(const B1, B2: Byte): Byte; overload;
-function Max(const B1, B2: Shortint): Shortint; overload;
-function Max(const B1, B2: Word): Word; overload;
-function Max(const B1, B2: Integer): Integer; overload;
-function Max(const B1, B2: Cardinal): Cardinal; overload;
-function Max(const B1, B2: Int64): Int64; overload;
+procedure SwapOrd(var I, J: Byte); overload;
+procedure SwapOrd(var I, J: Cardinal); overload;
+procedure SwapOrd(var I, J: Integer); overload;
+procedure SwapOrd(var I, J: Int64); overload;
+procedure SwapOrd(var I, J: Shortint); overload;
+procedure SwapOrd(var I, J: Smallint); overload;
+procedure SwapOrd(var I, J: Word); overload;
 [ShortDescr]
-Returns the larger of two values.
+Swaps two integer-typed variables.
 [Description]
-Max returns the larger of the two passed values.
+The Swap function swaps the two supplied arguments. When the function returns
+I has the value of J and J has the value of I. This function exist in 7 forms,
+one for each Integer type. A function to swap floating point values exists as well
+in the JclMath unit, see <REF Target"..\Math\Float support\SwapFloat">SwapFloat</REF>.
 [Parameters]
 Count=2
-1=B1:IntegerType=The first value.
-2=B2:IntegerType=The second value.
+1=I:IntegerType=First of the two variables to swap.
+2=J:IntegerType=Second of the two variables to swap.
 [Result]
-The larger of the two values.
+At the end of this routine I will contain the original value of J and J will contain the original value of I.
 [Quick Info]
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
-Author=ESB Consultancy;glenn@esbconsult.com.au
+Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Kylix=1
 FPC=1.x
-[SeeAlso]
-Count=1
-1=Min
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function Min(const B1, B2: Byte): Byte; overload;
-function Min(const B1, B2: Shortint): Shortint; overload;
-function Min(const B1, B2: Word): Word; overload;
-function Min(const B1, B2: Integer): Integer; overload;
-function Min(const B1, B2: Cardinal): Cardinal; overload;
-function Min(const B1, B2: Int64): Int64; overload;
-[ShortDescr]
-Returns the smaller of two values.
-[Description]
-Min returns the smaller of the two passed values.
-[Parameters]
-Count=2
-1=B1:IntegerType=The first value.
-2=B2:IntegerType=The second value.
-[Result]
-The smaller of the two values.
-[Quick Info]
-Unit=JclLogic
-Category=Ordinal Math and Logic
-SubCat=Arithmetic
-Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
-[SeeAlso]
-Count=1
-1=Max
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
-function DecLimit(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1): Shortint; overload;
-function DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
-function DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
-function DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
-function DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
-[ShortDescr]
-Decrements an ordinal up to limit.
-[Description]
-DecLimit decrements the specified ordinal variable by the specified value if and
-only if the operation will not decrement beyond the limit. For example, suppose
-that X equals 10, now calling DecLimit(X, 5, 2) will decrement X by 2 leaving it
-with 8 on return. However, calling DecLimit(X, 5, 6) will not decrement X by 6
-because that would decrement X beyond the limit. On return X still contains 10.
-[Parameters]
-Count=3
-1=B:IntegerType=The value to conditionally decrement.
-2=Limit:IntegerType=The decrementation limit, this is inclusive.
-3=Decr:IntegerType=The amount to decrement.
-[Result]
-B contains the decremented value if within limit, otherwise it contains the original value.
-This same value is returned as the function result.
-[Quick Info]
-Unit=JclLogic
-Category=Ordinal Math and Logic
-SubCat=Arithmetic
-Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
-[SeeAlso]
-Count=3
-1=IncLimit
-2=IncLimitClamp
-3=DecLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
 function IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimit(var B: Smallint; const Limit: Smallint; const Incr: Smallint = 1): Smallint; overload;
 function IncLimit(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
 function IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
 function IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
@@ -762,8 +698,47 @@ Count=3
 3=IncLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
+function DecLimit(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1): Shortint; overload;
+function DecLimit(var B: Smallint; const Limit: Smallint; const Decr: Smallint = 1): Smallint; overload;
+function DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
+function DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
+function DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
+function DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
+[ShortDescr]
+Decrements an ordinal up to limit.
+[Description]
+DecLimit decrements the specified ordinal variable by the specified value if and
+only if the operation will not decrement beyond the limit. For example, suppose
+that X equals 10, now calling DecLimit(X, 5, 2) will decrement X by 2 leaving it
+with 8 on return. However, calling DecLimit(X, 5, 6) will not decrement X by 6
+because that would decrement X beyond the limit. On return X still contains 10.
+[Parameters]
+Count=3
+1=B:IntegerType=The value to conditionally decrement.
+2=Limit:IntegerType=The decrementation limit, this is inclusive.
+3=Decr:IntegerType=The amount to decrement.
+[Result]
+B contains the decremented value if within limit, otherwise it contains the original value.
+This same value is returned as the function result.
+[Quick Info]
+Unit=JclLogic
+Category=Ordinal Math and Logic
+SubCat=Arithmetic
+Author=ESB Consultancy;glenn@esbconsult.com.au
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=3
+1=IncLimit
+2=IncLimitClamp
+3=DecLimitClamp
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function DecLimitClamp(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
 function DecLimitClamp(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1): Shortint; overload;
+function DecLimitClamp(var B: Smallint; const Limit: Smallint; const Decr: Smallint = 1): Smallint; overload;
 function DecLimitClamp(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
 function DecLimitClamp(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
 function DecLimitClamp(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
@@ -806,6 +781,7 @@ Count=3
 [Declaration]
 function IncLimitClamp(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
 function IncLimitClamp(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimitClamp(var B: Smallint; const Limit: Smallint; const Incr: Smallint = 1): Smallint; overload;
 function IncLimitClamp(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
 function IncLimitClamp(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
 function IncLimitClamp(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
@@ -846,59 +822,61 @@ Count=3
 3=DecLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SwapOrd(var I, J: Byte); overload;
-procedure SwapOrd(var I, J: Cardinal); overload;
-procedure SwapOrd(var I, J: Integer); overload;
-procedure SwapOrd(var I, J: Int64); overload;
-procedure SwapOrd(var I, J: Shortint); overload;
-procedure SwapOrd(var I, J: Smallint); overload;
-procedure SwapOrd(var I, J: Word); overload;
+function Max(const B1, B2: Byte): Byte; overload;
+function Max(const B1, B2: Shortint): Shortint; overload;
+function Max(const B1, B2: Smallint): Smallint; overload;
+function Max(const B1, B2: Word): Word; overload;
+function Max(const B1, B2: Integer): Integer; overload;
+function Max(const B1, B2: Cardinal): Cardinal; overload;
+function Max(const B1, B2: Int64): Int64; overload;
 [ShortDescr]
-Swaps two integer-typed variables.
+Returns the larger of two values.
 [Description]
-The Swap function swaps the two supplied arguments. When the function returns
-I has the value of J and J has the value of I. This function exist in 7 forms,
-one for each Integer type. A function to swap floating point values exists as well
-in the JclMath unit, see <REF Target"..\Math\Float support\SwapFloat">SwapFloat</REF>.
+Max returns the larger of the two passed values.
 [Parameters]
 Count=2
-1=I:IntegerType=First of the two variables to swap.
-2=J:IntegerType=Second of the two variables to swap.
+1=B1:IntegerType=The first value.
+2=B2:IntegerType=The second value.
 [Result]
-At the end of this routine I will contain the original value of J and J will contain the original value of I.
+The larger of the two values.
 [Quick Info]
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
-Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5,6
-Kylix=1
-FPC=1.x
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
-function LRot(const Value: Word; const Count: TBitRange): Word; overload;
-function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
-[ShortDescr]
-Left rotates bits.
-[Description]
-LRot shifts the bits in Value the specified Count number of times to the left.
-On each shift the bit in the highest bit position wraps around into the lowest.
-This function exists in 3 forms, one for each Integer type.
-[Parameters]
-Count=2
-1=Value:TIntegerType=The Value whose bits to rotate.
-2=Mask:TIntegerType=The number of times to rotate.
-[Result]
-The resulting integer after the rotate is performed.
-[Quick Info]
-Unit=JclLogic
-Category=Ordinal Math and Logic
-SubCat=Bit Manipulation
-Author=Marcel van Brakel;brakelm@bart.nl
+Author=ESB Consultancy;glenn@esbconsult.com.au
 Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
 Count=1
-1=RRot
+1=Min
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Min(const B1, B2: Byte): Byte; overload;
+function Min(const B1, B2: Shortint): Shortint; overload;
+function Min(const B1, B2: Smallint): Smallint; overload;
+function Min(const B1, B2: Word): Word; overload;
+function Min(const B1, B2: Integer): Integer; overload;
+function Min(const B1, B2: Cardinal): Cardinal; overload;
+function Min(const B1, B2: Int64): Int64; overload;
+[ShortDescr]
+Returns the smaller of two values.
+[Description]
+Min returns the smaller of the two passed values.
+[Parameters]
+Count=2
+1=B1:IntegerType=The first value.
+2=B2:IntegerType=The second value.
+[Result]
+The smaller of the two values.
+[Quick Info]
+Unit=JclLogic
+Category=Ordinal Math and Logic
+SubCat=Arithmetic
+Author=ESB Consultancy;glenn@esbconsult.com.au
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=1
+1=Max
