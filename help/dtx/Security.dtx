@@ -32,14 +32,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: John C Molyneux
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4.0 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@CreateNullDacl
 <GROUP Security.AccessControl>
@@ -62,14 +55,7 @@ Notes:
 See also:
   CreateInheritable
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@CreateInheritable
 <GROUP Security.AccessControl>
@@ -88,14 +74,7 @@ Result:
 See also:
   CreateNullDacl
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@IsPrivilegeEnabled
 <GROUP Security.Privileges>
@@ -116,14 +95,7 @@ See also:
   EnableProcessPrivilege
   EnableThreadPrivilege
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@EnableProcessPrivilege
 <GROUP Security.Privileges>
@@ -145,14 +117,7 @@ See also:
   EnableThreadPrivilege
   IsPrivilegeEnabled
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@EnableThreadPrivilege
 <GROUP Security.Privileges>
@@ -175,14 +140,7 @@ See also:
   EnableProcessPrivilege
   IsPrivilegeEnabled
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@IsAdministrator
 <GROUP Security.Privileges>
@@ -196,14 +154,7 @@ Result:
   If the process is running in the user context of a local administrator the function
   returns True, otherwise it returns False.
 Quick info:
-  Unit: JclSecurity
-  Category: Security
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@LookupAccountBySid
 <GROUP AccountInformation>
@@ -218,13 +169,7 @@ Parameters:
   Name - Returns the account-name of the principal identified by Sid.
   Domain - Returns the domain-name in which the principal identified by Sid is located (if any).
 Quick info:
-  Unit: JclSecurity
-  Category: Account Information
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@QueryTokenInformation
 <GROUP AccountInformation>
@@ -240,13 +185,7 @@ Parameters:
   InformationClass - The type of information to retrieve.
   Buffer - Upon success reveices a buffer containing the requested information. This buffer must be freed by the caller by using the FreeMem function. Upon failure the buffer is undefined and should not be freed.
 Quick info:
-  Unit: JclSecurity
-  Category: Account Information
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@GetInteractiveUserName
 <GROUP AccountInformation>
@@ -266,11 +205,4 @@ Description:
 Result:
   The name of the interactively logged on user, if any, in the format domain\username.
 Quick info:
-  Unit: JclSecurity
-  Category: Account Information
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 3.1 or later.
-  Windows 95/98: Unsupported.
---------------------------------------------------------------------------------
