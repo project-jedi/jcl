@@ -1,0 +1,2205 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsAlpha(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is an alphabetic character.
+[Description]
+UnicodeIsAlpha tests whether the specified unicode codepoint is an alphabetic
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an alphabetical character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsDigit(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a digit.
+[Description]
+UnicodeIsDigit tests whether the specified unicode codepoint is a digit.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a digit the function returns True, otherwise
+the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsAlphaNum(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is an alphanumerical character.
+[Description]
+UnicodeIsAlphaNum tests whether the specified unicode codepoint is an alphanumerical
+character. That is, it tests for both alphabetical characters and numbers.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an alphanumerical character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsControl(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a control character.
+[Description]
+UnicodeIsControl tests whether the specified unicode codepoint is a control
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a control character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSpace(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a spacing character.
+[Description]
+UnicodeIsSpace tests whether the specified unicode codepoint is a spacing
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a spacing character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsWhiteSpace(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a white space character.
+[Description]
+UnicodeIsWhiteSpace tests whether the specified unicode codepoint is a white space
+character. This is similar to UnicodeIsSpace with the addition of tabulator,
+new line and so forth.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a white space character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsBlank(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a space character.
+[Description]
+UnicodeIsBlank tests whether the specified unicode codepoint is a space
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a space character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsPunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a punctuation mark.
+[Description]
+UnicodeIsPunctuation tests whether the specified unicode codepoint is a punctuation
+mark.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a punctuation mark the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsGraph(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a graphical character.
+[Description]
+UnicodeIsGraph tests whether the specified unicode codepoint is a graphical
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a graphical character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsPrintable(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a printable character.
+[Description]
+UnicodeIsPrintable tests whether the specified unicode codepoint is a printable
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a printable character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsUpper(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is uppercase.
+[Description]
+UnicodeIsUpper tests whether the specified unicode codepoint is an uppercase
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an uppercase character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsLower(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is lowercase.
+[Description]
+UnicodeIsLower tests whether the specified unicode codepoint is a lowercase
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a lowercase character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsTitle(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a titlecased character.
+[Description]
+UnicodeIsTitle tests whether the specified unicode codepoint is a titlecase
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a titlecased character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsHexDigit(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a hexadecimal digit.
+[Description]
+UnicodeIsHexDigit tests whether the specified unicode codepoint is a hexadecimal digit.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a hexadecimal digit the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsIsoControl(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is an ISO control character.
+[Description]
+UnicodeIsIsoControl tests whether the specified unicode codepoint is an ISO control
+character (ordinal value smaller than 32).
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an ISO control character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsFormatControl(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a format control character.
+[Description]
+UnicodeIsFormatControl tests whether the specified unicode codepoint is a format
+control character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a format control character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSymbol(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a symbol.
+[Description]
+UnicodeIsSymbol tests whether the specified unicode codepoint is a symbol
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a symbol character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsNumber(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a number or digit.
+[Description]
+UnicodeIsNumber tests whether the specified unicode codepoint is a number
+or digit.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a number or digit the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsNonSpacing(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is non-spacing.
+[Description]
+UnicodeIsNonSpacing tests whether the specified unicode codepoint is a non-spacing
+character.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a non-spacing character the function returns True,
+otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsOpenPunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is an open/left punctuation.
+[Description]
+UnicodeIsOpenPunctuation tests whether the specified unicode codepoint is an open/left
+punctuation character. For example '['.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an open/left punctuation character the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsClosePunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a closing/right punctuation character.
+[Description]
+UnicodeIsClosePunctuation tests whether the specified unicode codepoint is a closing/right
+punctuation character. For example ']'.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a closing/right punctuation character the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is an initial punctuation character.
+[Description]
+UnicodeIsInitialPunctuation tests whether the specified unicode codepoint is an initial
+punctuation character. For example U+2018 LEFT SINGLE QUOTATION MARK.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is an initial punctuation character the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a final punctuation character.
+[Description]
+UnicodeIsFinalPunctuation tests whether the specified unicode codepoint is a final
+punctuation control character. For example U+2019 RIGHT SINGLE QUOTATION MARK.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a final punctuation character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsComposite(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a composite character.
+[Description]
+UnicodeIsComposite tests whether the specified unicode codepoint is a composite
+character. That is it returns whether the character can be decomposed into a set
+of other characters (eg an U umlaut is a composite character).
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a composite character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsQuotationMark(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a quotation mark.
+[Description]
+UnicodeIsQuotationMark tests whether the specified unicode codepoint is a quotation
+mark. For example ', " etc.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a quotation mark the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSymmetric(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is symmetric.
+[Description]
+UnicodeIsSymmetric tests whether the specified unicode codepoint is a symmetric
+character. That is, whether it has an opposite form. An example of a symmetric
+character is '<' (the opposite would be '>').
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a symmetric character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsMirroring(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a final mirroring character.
+[Description]
+UnicodeIsMirroring tests whether the specified unicode codepoint is a mirroring
+character (superset of symmetric).
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a mirroring character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsNonBreaking(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a non breaking character.
+[Description]
+UnicodeIsNonBreaking tests whether the specified unicode codepoint is a non breaking
+character, for example a non breaking space.
+[Parameters]
+Count=1
+1=Code:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a final punctuation character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeGetDigit(Code: UCS4): Integer;
+[ShortDescr]
+[Description]
+[Parameters]
+Count=1
+1=Code:UCS4=
+[Result]
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=4
+1=UnicodeGetNumber
+2=UnicodeToUpper
+3=UnicodeToLower
+4=UnicodeToTitle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeGetNumber(Code: UCS4): TUNumber;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Code:UCS4=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=4
+1=UnicodeGetDigit
+2=UnicodeToUpper
+3=UnicodeToLower
+4=UnicodeToTitle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeToUpper(Code: UCS4): UCS4;
+[ShortDescr]
+Converts a codepoint to uppercase.
+[Description]
+UnicodeToUpper converts the specified unicode codepoint (character) to uppercase.
+[Parameters]
+Count=1
+1=Code:UCS4=The codepoint to convert.
+[Result]
+The uppercased codepoint.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=4
+1=UnicodeGetDigit
+2=UnicodeGetNumber
+3=UnicodeToLower
+4=UnicodeToTitle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeToLower(Code: UCS4): UCS4;
+[ShortDescr]
+Converts a codepoint to lowercase.
+[Description]
+UnicodeToLower converts the specified unicode codepoint (character) to lowercase.
+[Parameters]
+Count=1
+1=Code:UCS4=The codepoint to convert.
+[Result]
+The lowercased codepoint.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=4
+1=UnicodeGetDigit
+2=UnicodeGetNumber
+3=UnicodeToUpper
+4=UnicodeToTitle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeToTitle(Code: UCS4): UCS4;
+[ShortDescr]
+Converts a codepoint to title case.
+[Description]
+UnicodeToUpper converts the specified unicode codepoint (character) to title case.
+[Parameters]
+Count=1
+1=Code:UCS4=The codepoint to convert.
+[Result]
+The title cased codepoint.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=4
+1=UnicodeGetDigit
+2=UnicodeGetNumber
+3=UnicodeToUpper
+4=UnicodeToLower
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsRightToLeft(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character against right-to-left directionality.
+[Description]
+UnicodeIsRightToLeft returns whether the specified character has (strong) right-to-left
+directionality. Examples of characters that have right-to-left directionality
+are the Arabic and Hebrew alphabet and punctuation specific to those scripts.
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test.
+[Result]
+If the specified unicode character has right-to-left directionality the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsLeftToRight
+2=UnicodeIsStrong
+3=UnicodeIsWeak
+4=UnicodeIsNeutral
+5=UnicodeIsSeparator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsLeftToRight(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character against left-to-right directionality.
+[Description]
+UnicodeIsLeftToRight returns whether the specified character has (strong) left-to-right
+directionality. Most alphabetic and syllabic, as well as all Han ideographic
+characters, have left-to-right directionality.
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test.
+[Result]
+If the specified unicode character has left-to-right directionality the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsRightToLeft
+2=UnicodeIsStrong
+3=UnicodeIsWeak
+4=UnicodeIsNeutral
+5=UnicodeIsSeparator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsStrong(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character for strong directionality.
+[Description]
+UnicodeIsStrong returns whether the specified character has strong directionality.
+Strong directionality means that it has either left-to-right or right-to-left
+directionality. In contrast there are also characters that exhibit weak or neutral
+directionality. Examples of characters with strong directionality are the Arabic
+and Hebrew alphabets as well as most alphabetic, syllable, and Han ideographic characters.
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test.
+[Result]
+If the specified unicode character has strong directionality the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsRightToLeft
+2=UnicodeIsLeftToRight
+3=UnicodeIsWeak
+4=UnicodeIsNeutral
+5=UnicodeIsSeparator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsWeak(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character for weak directionality.
+[Description]
+UnicodeIsWeak returns whether the specified character has weak directionality.
+Examples of characters with weak directionality are numbers and number separators
+and terminators. In contrast there are also characters that exhibit strong or neutral
+directionality.
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test
+[Result]
+If the specified unicode character has weak directionality the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsRightToLeft
+2=UnicodeIsLeftToRight
+3=UnicodeIsStrong
+4=UnicodeIsNeutral
+5=UnicodeIsSeparator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsNeutral(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character for neutral directionality.
+[Description]
+UnicodeIsNeutral returns whether the specified character has neutral directionality.
+Examples of characters with neutral directionality are spaces, punctuation and symbols.
+In contrast there are also characters that exhibit strong or weak directionality.
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test
+[Result]
+If the specified unicode character has neutral directionality the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsRightToLeft
+2=UnicodeIsLeftToRight
+3=UnicodeIsStrong
+4=UnicodeIsWeak
+5=UnicodeIsSeparator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSeparator(C: UCS4): Boolean;
+[ShortDescr]
+Tests a Unicode character against separator directionality.
+[Description]
+UnicodeIsSeparator tests whether the specified character is a block or segment
+separator. Examples of separators are the line separator (U+2028) and the
+horizontal tab (U+0009).
+[Parameters]
+Count=1
+1=C:UCS4=The Unicode character to test
+[Result]
+If the specified unicode character is a block or segment separator the function
+returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Directionality
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=5
+1=UnicodeIsRightToLeft
+2=UnicodeIsLeftToRight
+3=UnicodeIsStrong
+4=UnicodeIsWeak
+5=UnicodeIsNeutral
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
+[ShortDescr]
+[Description]
+WideStringOfChar returns a string of length Count with each character initialized
+to the specified character C.
+[Parameters]
+Count=2
+1=C:WideChar=The character to initialize the string with.
+2=Count:Cardinal=The length of the string.
+[Result]
+A string of length Count with all characters set to C.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
+[ShortDescr]
+Returns a quoted string.
+[Description]
+WideQuotedStr returns a copy of S with the specified Quote character inserted at
+the beginning and end of the string.
+[Parameters]
+Count=2
+1=S:WideString=The string to convert to a quoted string.
+2=Quote:WideChar=The character to use as quote.
+[Result]
+The quoted version of the supplied string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
+[ShortDescr]
+Extracts a string enclosed in quote characters.
+[Description]
+WideExtractQuotedStr removes the Quote characters from the beginning and end
+of a quoted string, and reduces pairs of Quote characters within the quoted
+string to a single character. If the first character in Src is not the Quote
+character, the function returns an empty string.  The function copies
+characters from the Src to the result string until the second solitary
+Quote character or the first null character in Src. The Src parameter is
+updated to point to the first character following the quoted string.  If
+the Src string does not contain a matching end Quote character, the Src
+parameter is updated to point to the terminating null character in Src.
+[Parameters]
+Count=2
+1=Src:PWideChar=The source string from which to remove quotes.
+2=Quote:WideChar=Denotes the character used as a quote.
+[Result]
+The string without the quotes.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideTrim(const S: WideString): WideString;
+[ShortDescr]
+Trims leading and trailing spaces and control characters.
+[Description]
+WideTrim returns a copy of the supplied string with all leading and trailing spaces and
+control characters removed. See <REF>UnicodeIsWhiteSpace</REF> and <REF>UnicodeIsControl</REF>
+for what constitutes a space and control character respectively.
+[Parameters]
+Count=1
+1=S:WideString=The string to trim.
+[Result]
+Copy of the supplied string without leading and trailing spaces and control characters.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=WideTrimLeft
+2=WideTrimRight
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideTrimRight(const S: WideString): WideString;
+[ShortDescr]
+Trims trailing spaces and control characters.
+[Description]
+WideTrimRight returns a copy of the supplied string with all trailing spaces and
+control characters removed. See <REF>UnicodeIsWhiteSpace</REF> and <REF>UnicodeIsControl</REF>
+for what constitutes a space and control character respectively.
+[Parameters]
+Count=1
+1=S:WideString=The string to trim.
+[Result]
+Copy of the supplied string without trailing spaces and control characters.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=WideTrimLeft
+2=WideTrim
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideTrimLeft(const S: WideString): WideString;
+[ShortDescr]
+Trims leading spaces and control characters.
+[Description]
+WideTrimLeft returns a copy of the supplied string with all leading spaces and
+control characters removed. See <REF>UnicodeIsWhiteSpace</REF> and <REF>UnicodeIsControl</REF>
+for what constitutes a space and control character respectively.
+[Parameters]
+Count=1
+1=S:WideString=The string to trim.
+[Result]
+Copy of the supplied string without leading spaces and control characters.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=WideTrim
+2=WideTrimRight
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideLowerCase(const S: WideString): WideString;
+[ShortDescr]
+Converts the supplied WideString to all lowercase.
+[Description]
+Converts the supplied WideString to all lowercase.
+[Parameters]
+Count=1
+1=S:WideString=The string to convert to lowercase.
+[Result]
+The lowercased string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideUpperCase(const S: WideString): WideString;
+[ShortDescr]
+Converts the supplied WideString to all uppercase.
+[Description]
+Converts the supplied WideString to all uppercase.
+[Parameters]
+Count=1
+1=S:WideString=The string to convert to uppercase.
+[Result]
+The uppercased string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideLoCase(C: WideChar): WideChar;
+[ShortDescr]
+Converts the specified character into lower case.
+[Description]
+Converts the specified character into lower case.
+[Parameters]
+Count=1
+1=C:WideChar=The character to convert to lower case.
+[Result]
+The lowercase character.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideUpCase(C: WideChar): WideChar;
+[ShortDescr]
+Converts the specified character into upper case.
+[Description]
+Converts the specified character into upper case.
+[Parameters]
+Count=1
+1=C:WideChar=The character to convert to upper case.
+[Result]
+The uppercase character.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideDecompose(const S: WideString): WideString;
+[ShortDescr]
+Performs a decomposition of all characters in the supplied string.
+[Description]
+Returns a copy of the string but with all individual characters decomposed into
+their respective base characters. For example, the composite character Ê is
+broken up into the two base characters E and ^.
+[Parameters]
+Count=1
+1=S:WideString=The string for which to decompose the individual characters.
+[Result]
+The decomposed string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideCompose(const S: WideString): WideString;
+[ShortDescr]
+Transforms a string into a composed string.
+[Description]
+Returns a string with all the characters of S, but if it is possible to combine
+characters then they are composed.  For example, the two base characters E and ^ 
+are combined into the composite character Ê.
+[Parameters]
+Count=1
+1=S:WideString=The string for which to compose the individual characters.
+[Result]
+The string with all characters composed, where possible.
+[Notes]
+Count=1
+1=This function is not implemented yet.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
+[ShortDescr]
+Returns the index of the first occurrence of Ch in S. 
+[Description]
+WideCharPos returns the index of the first occurrence of the specified character
+in the supplied string. Note that this is a binary search, no attempt is made to
+interpret either the given character or the string (ligatures, modifiers, surrogates etc.).
+[Parameters]
+Count=3
+1=S:WideString=The string which to scan for the Ch character.
+2=Ch:WideChar=The character to search for.
+3=Index:Integer=The index at which to start searching in S. Usually you'll pass 1
+to search the entire string (note: the string is one based, not zero based!).
+[Result]
+Index of the first occurrence of the specified character in the supplied string.
+This index is relative to the first character of the string, not relative to the
+specified index.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideAdjustLineBreaks(const S: WideString): WideString;
+[ShortDescr]
+Standardizes linebreak characters to lineseparator characters.
+[Description]
+Standardizes linebreak characters to lineseparator characters by adjusting all
+occurrences of CarriageReturn, LineFeed or a combination thereof into LineSeparators.
+The function changes all occurrences of CarriageReturn and LineFeed into a
+LineSeparator and turns the sequence LineFeed + CarriageReturn into two LineSeparators.
+Only the CarriageReturn + LineFeed sequence is unaffected.
+[Parameters]
+Count=1
+1=S:WideString=The string for which to adjust linebreaks.
+[Result]
+The linebreak adjusted string. This is a true copy of the string, the source string
+is not affected.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrRNScanW(S1, S2: PWideChar): Integer;
+[ShortDescr]
+StrRNScan returns the length of the consecutive characters from the end of S1 which do not appear in S2.
+[Description]
+StrRNScanW is identical to StrNScanW with 2 small differences. The first one is
+that the number of consecutive characters at the END of S1 is returned (not from
+the start). Secondly, S1 is traversed in backward direction, so it should point
+to the end of the actual string to be determined and there should a #0 character
+at the beginning of S1 to terminate the loop. S2 is used as it is in StrNScanW
+and points to the beginning of a sequence of characters. <BR>
+This function is useful for buffers which contain a string in reversed order.
+This is often the case for macro buffers which get the content of a string
+a single character at a time, ending with #0 which is
+then at the physical start of the string.
+[Parameters]
+Count=2
+1=S1:PWideChar=Pointer to the end of the source string which must have have a #0
+character at the start.
+2=S2:PWideChar=The sequence (set) of characters to test against.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrNScan
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrNScanW(S1, S2: PWideChar): Integer;
+[ShortDescr]
+StrNScan returns the length of the consecutive characters in S1 which do not appear in S2.
+[Description]
+StrNScan returns the length of the consecutive characters in S1, from the start
+of the string, which do not appear in S2. In other words: StrNScan returns the
+length of the longest sequence in S1 for which the predicate "not (S1^ in S2)"
+holds true if S2 were to be considered a set of characters. As an example consider
+S1 to hold 'Project JEDI' and S2 to hold 'abcdef'. Calling StrNScan with these
+parameters will return 4 since the fifth character, an 'e', appears in S2.
+[Parameters]
+Count=2
+1=S1:PWideChar=The source string.
+2=S2:PWideChar=The sequence (set) of characters to test against.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrRNScan
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure StrSwapByteOrder(Str: PWideChar);
+[ShortDescr]
+For each character in the string StrSwapByteOrder exchanges the low order and
+high order byte to go from LSB to MSB and vice versa.
+[Description]
+For each character in the string StrSwapByteOrder exchanges the low order and
+high order byte to go from LSB to MSB and vice versa.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string for which to swap the byte order of the individual
+characters.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure StrDisposeW(Str: PWideChar);
+[ShortDescr]
+Release the memory of a wide character string.
+[Description]
+Release the memory of a wide character string previously allocated by <REF>StrNewW</REF>
+of <REF>StrAllocW</REF>.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string to release.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrNewW(Str: PWideChar): PWideChar;
+[ShortDescr]
+Duplicates a wide character string.
+[Description]
+StrNewW makes a copy of the specified string, if not nil, and returns a pointer
+to the duplicated string. The function makes an actual copy of the string not
+just the pointer. When you are done using the string you must deallocate the memory
+by using <REF>StrDisposeW</REF>. Do <U>not</U> simply pass it to FreeMem.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string to duplicate (copy).
+[Result]
+Pointer to the first character of the duplicated string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrAllocW(Size: Cardinal): PWideChar;
+[ShortDescr]
+Allocates a buffer for a null-terminated wide string.
+[Description]
+Allocates a buffer for a null-terminated wide string and returns a pointer to
+the first character. The string is initially empty and initialized to all zeros.
+When you are done using the string you must deallocate the memory by
+using <REF>StrDisposeW</REF>. Do <U>not</U> simply pass it to FreeMem.
+[Parameters]
+Count=1
+1=Size:Cardinal=Size of the string to allocate in terms of characters. This indicates
+the total number of characters, including the null terminator. Thus, to allocate
+a buffer to hold the string 'Project JEDI' you must use at least 13 as the Size
+argument.
+[Result]
+Pointer to the first character of the allocated string.
+[Notes]
+Count=1
+1=The function allocates SizeOf(Cardinal) more memory then you requested. This
+additional Cardinal is stored at offset -4 of the returned pointer and is used to
+hold the size of the buffer. You can use the <REF>StrBufSizeW</REF> function to
+query for this value.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrUpperW(Str: PWideChar): PWideChar;
+[ShortDescr]
+StrUpperW converts the specified string to all uppercase.
+[Description]
+StrUpperW converts the specified string to all uppercase and returns a pointer
+to it.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string to convert to uppercase.
+[Result]
+Pointer to the converted string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLowerW(Str: PWideChar): PWideChar;
+[ShortDescr]
+StrLowerW converts the specified string to all lowercase.
+[Description]
+StrLowerW converts the specified string to all lowercase and returns a pointer
+to it.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string to convert to lowercase.
+[Result]
+Pointer to the converted string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrTitleW(Str: PWideChar): PWideChar;
+[ShortDescr]
+Converts a string to title case.
+[Description]
+StrTitleW converts the specified string to title case and returns a pointer to
+the converted string. See UnicodeToTitle for more information.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string to convert to title case.
+[Result]
+Pointer to the converted string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrPosW(Str, SubStr: PWideChar): PWideChar;
+[ShortDescr]
+[Description]
+StrPosW returns a pointer to the first character of the first occurrence of SubStr
+in Str. If SubStr does not occur in Str nil is returned.
+[Parameters]
+Count=2
+1=Str:PWideChar=String to search for the first occurrence of SubStr.
+2=SubStr:PWideChar=Substring to search for in Str.
+[Result]
+Pointer to the first character of the first occurrence of SubStr in Str or nil if
+SubStr does not occur in Str.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrRScanW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
+[ShortDescr]
+Scans the specified string for the occurrences of Chr.
+[Description]
+Scans the string for occurrences of the specified character and returns a pointer
+to the last occurrence. The comparison between Str and Chr is case-sensitive.
+[Parameters]
+Count=2
+1=Str:PWideChar=The string to scan for an occurrence of Chr.
+2=Chr:WideChar=The character to scan for in Str.
+[Result]
+Pointer to the last occurrence of Chr in Str or nil if the character does not
+occur in Str.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=StrPosW
+2=StrScanW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar; overload;
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
+[ShortDescr]
+Scans the specified string for an occurrence of Chr.
+[Description]
+Scans at most StrLen characters in the specified string for an occurrence of Chr.
+The comparison between Str and Chr is case-sensitive. Caller is responsible for
+ensuring that StrLen never exceeds the length of the strings. The overloaded
+routines without the StrLen parameter scans the string until it finds the character
+or the end of the string. You should prefer the routine with the StrLen parameter
+because it is much faster.
+[Parameters]
+Count=3
+1=Str:PWideChar=The string to scan for an occurrence of Chr.
+2=Chr:WideChar=The character to scan for in Str.
+3=StrLen:Cardinal=Maximum number of characters to scan.
+[Result]
+Pointer to the first occurrence of Chr in Str or nil if the specified character
+does not occur in Str.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=StrPosW
+2=StrRScanW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+[ShortDescr]
+Case-insensitive, binary comparison of two null terminated strings.
+[Description]
+Case-insensitive, binary comparison of two null terminated strings.
+[Parameters]
+Count=2
+1=Str1:PWideChar=First string
+2=Str2:PWideChar=Second string
+3=MaxLen:Cardinal=The maximum number of characters to compare.
+[Result]
+The return value should be interpreted as described in the table below. The actual
+value indicates the ordinal difference between the first mismatching character in
+the strings.
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width =20%>Value</TH>
+ <TH align=left width =80%>Description</TH>
+ </TR>
+ <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ </TABLE>
+[Notes]
+Count=1
+1=Only ANSI characters are compared case insensitively.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+[ShortDescr]
+Case-sensitive, binary comparison of two null terminated strings.
+[Description]
+Case-sensitive, binary comparison of two null terminated strings.
+[Parameters]
+Count=3
+1=Str1:PWideChar=First string
+2=Str2:PWideChar=Second string
+3=MaxLen:Cardinal=The maximum number of characters to compare.
+[Result]
+The return value should be interpreted as described in the table below. The actual
+value indicates the ordinal difference between the first mismatching character in
+the strings.
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width =20%>Value</TH>
+ <TH align=left width =80%>Description</TH>
+ </TR>
+ <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ </TABLE>
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrICompW(Str1, Str2: PWideChar): Integer;
+[ShortDescr]
+Case-insensitive, binary comparison of two null terminated strings.
+[Description]
+Case-insensitive, binary comparison of two null terminated strings.
+[Parameters]
+Count=2
+1=Str1:PWideChar=First string
+2=Str2:PWideChar=Second string
+[Result]
+The return value should be interpreted as described in the table below. The actual
+value indicates the ordinal difference between the first mismatching character in
+the strings.
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width =20%>Value</TH>
+ <TH align=left width =80%>Description</TH>
+ </TR>
+ <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ </TABLE>
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrCompW(Str1, Str2: PWideChar): Integer;
+[ShortDescr]
+Case-sensitive, binary comparison of two null terminated strings.
+[Description]
+Case-sensitive, binary comparison of two null terminated strings.
+[Parameters]
+Count=2
+1=Str1:PWideChar=First string
+2=Str2:PWideChar=Second string
+[Result]
+The return value should be interpreted as described in the table below. The actual
+value indicates the ordinal difference between the first mismatching character in
+the strings.
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width =20%>Value</TH>
+ <TH align=left width =80%>Description</TH>
+ </TR>
+ <TR VALIGN="top"><TD width=20%>&sm;0</TD><TD width=80%>Str1 &sm; Str2</TD>
+ <TR VALIGN="top"><TD width=20%>0</TD><TD width=80%>Str1 equals Str2</TD>
+ <TR VALIGN="top"><TD width=20%>&gt;</TD><TD width=80%>Str1 &gt; Str2</TD>
+ </TABLE>
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+[ShortDescr]
+Concatenates two strings enforcing a maximum for the total length.
+[Description]
+StrCatW concatenates two strings and ensures that the resulting string is at
+maximum MaxLen characters long. Thus, it appends at most MaxLen - StrLenW(Dest)
+characters from Source to Dest.
+[Parameters]
+Count=3
+1=Dest:PWideChar=Pointer to a string buffer to which to append characters from
+Source. This buffer must have room to hold at least MaxLen + 1 characters.
+2=Source:PWideChar=The string which is (partially) appended to Source.
+3=MaxLen:Cardinal=Maximum length of the resulting string.
+[Result]
+Pointer to the destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrCatW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrCatW(Dest, Source: PWideChar): PWideChar;
+[ShortDescr]
+Concatenates two strings.
+[Description]
+StrCatW appends Source to Dest and returns a pointer to the concatenated string.
+The Dest buffer must have enough room to hold the concatenated string, no length
+checking is performed. See <REF>StrLCatW</REF> for a length checking StrCatW.
+[Parameters]
+Count=2
+1=Dest:PWideChar=Pointer to a string buffer to append Dest to.
+2=Source:PWideChar=The string which is appended to Dest.
+[Result]
+Pointer to the Destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrLCatW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrPLCopyW(Dest: PWideChar; const Source: String; MaxLen: Cardinal): PWideChar;
+[ShortDescr]
+Copies up to MaxLen characters from Source into Dest.
+[Description]
+Copies up to MaxLen characters from the Pascal style source string into a null
+terminated wide string. The Dest buffer must have enough room to hold at least
+MaxLen + 1 characters.
+[Parameters]
+Count=3
+1=Dest:PWideChar=Pointer to a buffer which receives a (partial) copy of Source.
+2=Source:string=Source string from which to copy up to MaxLen characters.
+3=MaxLen:Cardinal=Maximum number of characters to copy from Source to Dest.
+[Result]
+Pointer to the destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrPCopyW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrPCopyW(Dest: PWideChar; const Source: String): PWideChar;
+[ShortDescr]
+Copies a Pascal style string to a null terminated wide string.
+[Description]
+StrPCopyW copies a Pascal style string to a null terminated wide string. The Dest
+buffer must have enough room to hold at least Length(Source) + 1 wide characters.
+[Parameters]
+Count=2
+1=Dest:PWideChar=Pointer to a buffer which receives a copy of the source string.
+2=Source:string=Source string to copy into Dest.
+[Result]
+Pointer to the destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrPLCopyW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+[ShortDescr]
+Copies MaxLen characters from Source to Dest.
+[Description]
+StrLCopyW copies up to MaxLen characters from Source to Dest and returns a
+pointer to Dest. The Dest buffer must have enough room to hold at least MaxLen + 1
+characters.
+[Parameters]
+Count=3
+1=Dest:PWideChar=Buffer which receives a (partial) copy of Source
+2=Source:PWideChar=Source string
+3=MaxLen:Cardinal=Maximum number of characters to copy from Source to Dest.
+[Result]
+Pointer to the Destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrECopyW(Dest, Source: PWideChar): PWideChar;
+[ShortDescr]
+[Description]
+StrECopyW copies the source string into the destination string and returns a
+pointer to the null terminating character at the end of the destination string.
+The function performs no length checking, the destination buffer must have room
+for at least StrLenW(Source) + 1 characters.
+[Parameters]
+Count=2
+1=Dest:PWideChar=Buffer which receives a copy of the source string.
+2=Source:PWideChar=Source string to copy.
+[Result]
+Pointer to the null terminating character at the end of the destination string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=StrCopyW
+2=StrMoveW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrCopyW(Dest, Source: PWideChar): PWideChar;
+[ShortDescr]
+Copies the source string into the destination string.
+[Description]
+StrCopyW copies the source string into the destination string and returns a pointer
+to the destination string. Dest must have been preallocated with enough room to
+hold a copy of the source string (it must be at least StrLenW(Source) + 1
+characters in length).
+[Parameters]
+Count=2
+1=Dest:PWideChar=Pointer to a buffer that receives a copy of the source string.
+The buffer have enough room to hold StrLenW(Source) + 1 characters.
+2=Source:PWideChar=The string to copy.
+[Result]
+Pointer to the Dest string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=StrMoveW
+2=StrECopyW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
+[ShortDescr]
+Copies a string from Source to Dest.
+[Description]
+StrMoveW copies Count characters from Source to Destination. Dest must have
+enough room to hold at least Count + 1 characters.
+[Parameters]
+Count=3
+1=Dest:PWideChar=Pointer to a buffer that receives a copy of the source string.
+2=Source:PWideChar=Source string from which to copy.
+3=Count:Cardinal=The number of characters to copy from Source to Dest.
+[Result]
+Copy of the Dest pointer.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=StrCopyW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrEndW(Str: PWideChar): PWideChar;
+[ShortDescr]
+Returns a pointer to the end of the string.
+[Description]
+StrEndW returns a pointer to the null terminating character at the end of the
+specified string.
+[Parameters]
+Count=1
+1=Str:PWideChar=Source string.
+[Result]
+Pointer to the end of the source string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrLenW(Str: PWideChar): Cardinal;
+[ShortDescr]
+Returns the length of the string in characters.
+[Description]
+StrLenW returns the length of the specified string, in characters, excluding the
+null terminator.
+[Parameters]
+Count=1
+1=Str:PWideChar=The string for which to determine the length
+[Result]
+The length of the specified string, in characters.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CharSetFromLocale(Language: LCID): TFontCharSet;
+[ShortDescr]
+Returns character set information for a given locale.
+[Description]
+The CharSetFromLocale function returns character set information for the specified
+locale. The returned TFontCharSet record contains information such as the ANSI
+code-page identifier. See the Platform SDK entries for CHARSETINFO and FONTSIGNATURE
+for more information.
+[Parameters]
+Count=1
+1=Language:LCID=The locale for which to retrieve character set information.
+[Result]
+A TFontCharSet record which describes the character set.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CodePageFromLocale
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CodePageFromLocale(Language: LCID): Integer;
+[ShortDescr]
+Returns the ANSI code page for a specific locale.
+[Description]
+CodePageFromLocale returns the ANSI code page associated with the specified locale.
+If the locale does not use an ANSI code page, the system's current ANSI code page
+is returned.
+[Parameters]
+Count=1
+1=Langauge:LCID=Locale for which to retrieve the ANSI code page.
+[Result]
+The ANSI code page of the specified locale, or the system's current code page if
+the locale does not use an ANSI code page.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CodeBlockFromChar(const C: WideChar): Cardinal;
+[ShortDescr]
+Returns the character block (code block) for a character.
+[Description]
+The CodeBlockFromChar returns the code block (or character block) in which the
+specified character exists.
+[Parameters]
+Count=1
+1=C:WideChar=The unicode character for which you want to know the character block
+in which it resides.
+[Result]
+The character block for the specified character. The following table describes
+the possible values:
+ <TABLE>
+ <TR VALIGN="top">
+ <TH align=left width =10%>Value</TH>
+ <TH align=left width =30%>Range</TH>
+ <TH align=left width =60%>Description</TH>
+ </TR>
+ <TR VALIGN="top"><TD width=10%>00</TD><TD width=30%>#$0000..#$007F</TD><TD width=60%>Basic Latin</TD></TR>
+ <TR VALIGN="top"><TD width=10%>01</TD><TD width=30%>#$0080..#$00FF</TD><TD width=60%>Latin-1 Supplement</TD></TR>
+ <TR VALIGN="top"><TD width=10%>02</TD><TD width=30%>#$0100..#$017F</TD><TD width=60%>Latin Extended-A</TD></TR>
+ <TR VALIGN="top"><TD width=10%>03</TD><TD width=30%>#$0180..#$024F</TD><TD width=60%>Latin Extended-B</TD></TR>
+ <TR VALIGN="top"><TD width=10%>04</TD><TD width=30%>#$0250..#$02AF</TD><TD width=60%>IPA Extensions</TD></TR>
+ <TR VALIGN="top"><TD width=10%>05</TD><TD width=30%>#$02B0..#$02FF</TD><TD width=60%>Spacing Modifier Letters</TD></TR>
+ <TR VALIGN="top"><TD width=10%>06</TD><TD width=30%>#$0300..#$036F</TD><TD width=60%>Combining Diacritical Marks</TD></TR>
+ <TR VALIGN="top"><TD width=10%>07</TD><TD width=30%>#$0370..#$03FF</TD><TD width=60%>Greek</TD></TR>
+ <TR VALIGN="top"><TD width=10%>08</TD><TD width=30%>#$0400..#$04FF</TD><TD width=60%>Cyrillic</TD></TR>
+ <TR VALIGN="top"><TD width=10%>09</TD><TD width=30%>#$0530..#$058F</TD><TD width=60%>Armenian</TD></TR>
+ <TR VALIGN="top"><TD width=10%>10</TD><TD width=30%>#$0590..#$05FF</TD><TD width=60%>Hebrew</TD></TR>
+ <TR VALIGN="top"><TD width=10%>11</TD><TD width=30%>#$0600..#$06FF</TD><TD width=60%>Arabic</TD></TR>
+ <TR VALIGN="top"><TD width=10%>12</TD><TD width=30%>#$0900..#$097F</TD><TD width=60%>Devanagari</TD></TR>
+ <TR VALIGN="top"><TD width=10%>13</TD><TD width=30%>#$0980..#$09FF</TD><TD width=60%>Bengali</TD></TR>
+ <TR VALIGN="top"><TD width=10%>14</TD><TD width=30%>#$0A00..#$0A7F</TD><TD width=60%>Gurmukhi</TD></TR>
+ <TR VALIGN="top"><TD width=10%>15</TD><TD width=30%>#$0A80..#$0AFF</TD><TD width=60%>Gujarati</TD></TR>
+ <TR VALIGN="top"><TD width=10%>16</TD><TD width=30%>#$0B00..#$0B7F</TD><TD width=60%>Oriya</TD></TR>
+ <TR VALIGN="top"><TD width=10%>17</TD><TD width=30%>#$0B80..#$0BFF</TD><TD width=60%>Tamil</TD></TR>
+ <TR VALIGN="top"><TD width=10%>18</TD><TD width=30%>#$0C00..#$0C7F</TD><TD width=60%>Telugu</TD></TR>
+ <TR VALIGN="top"><TD width=10%>19</TD><TD width=30%>#$0C80..#$0CFF</TD><TD width=60%>Kannada</TD></TR>
+ <TR VALIGN="top"><TD width=10%>20</TD><TD width=30%>#$0D00..#$0D7F</TD><TD width=60%>Malayalam</TD></TR>
+ <TR VALIGN="top"><TD width=10%>21</TD><TD width=30%>#$0E00..#$0E7F</TD><TD width=60%>Thai</TD></TR>
+ <TR VALIGN="top"><TD width=10%>22</TD><TD width=30%>#$0E80..#$0EFF</TD><TD width=60%>Lao</TD></TR>
+ <TR VALIGN="top"><TD width=10%>23</TD><TD width=30%>#$0F00..#$0FBF</TD><TD width=60%>Tibetan</TD></TR>
+ <TR VALIGN="top"><TD width=10%>24</TD><TD width=30%>#$10A0..#$10FF</TD><TD width=60%>Georgian</TD></TR>
+ <TR VALIGN="top"><TD width=10%>25</TD><TD width=30%>#$1100..#$11FF</TD><TD width=60%>Hangul Jamo</TD></TR>
+ <TR VALIGN="top"><TD width=10%>26</TD><TD width=30%>#$1E00..#$1EFF</TD><TD width=60%>Latin Extended Additional</TD></TR>
+ <TR VALIGN="top"><TD width=10%>27</TD><TD width=30%>#$1F00..#$1FFF</TD><TD width=60%>Greek Extended</TD></TR>
+ <TR VALIGN="top"><TD width=10%>28</TD><TD width=30%>#$2000..#$206F</TD><TD width=60%>General Punctuation</TD></TR>
+ <TR VALIGN="top"><TD width=10%>29</TD><TD width=30%>#$2070..#$209F</TD><TD width=60%>Superscripts and Subscripts</TD></TR>
+ <TR VALIGN="top"><TD width=10%>30</TD><TD width=30%>#$20A0..#$20CF</TD><TD width=60%>Currency Symbols</TD></TR>
+ <TR VALIGN="top"><TD width=10%>31</TD><TD width=30%>#$20D0..#$20FF</TD><TD width=60%>Combining Marks for Symbols</TD></TR>
+ <TR VALIGN="top"><TD width=10%>32</TD><TD width=30%>#$2100..#$214F</TD><TD width=60%>Letterlike Symbols</TD></TR>
+ <TR VALIGN="top"><TD width=10%>33</TD><TD width=30%>#$2150..#$218F</TD><TD width=60%>Number Forms</TD></TR>
+ <TR VALIGN="top"><TD width=10%>34</TD><TD width=30%>#$2190..#$21FF</TD><TD width=60%>Arrows</TD></TR>
+ <TR VALIGN="top"><TD width=10%>35</TD><TD width=30%>#$2200..#$22FF</TD><TD width=60%>Mathematical Operators</TD></TR>
+ <TR VALIGN="top"><TD width=10%>36</TD><TD width=30%>#$2300..#$23FF</TD><TD width=60%>Miscellaneous Technical</TD></TR>
+ <TR VALIGN="top"><TD width=10%>37</TD><TD width=30%>#$2400..#$243F</TD><TD width=60%>Control Pictures</TD></TR>
+ <TR VALIGN="top"><TD width=10%>38</TD><TD width=30%>#$2440..#$245F</TD><TD width=60%>Optical Character Recognition</TD></TR>
+ <TR VALIGN="top"><TD width=10%>39</TD><TD width=30%>#$2460..#$24FF</TD><TD width=60%>Enclosed Alphanumerics</TD></TR>
+ <TR VALIGN="top"><TD width=10%>40</TD><TD width=30%>#$2500..#$257F</TD><TD width=60%>Box Drawing</TD></TR>
+ <TR VALIGN="top"><TD width=10%>41</TD><TD width=30%>#$2580..#$259F</TD><TD width=60%>Block Elements</TD></TR>
+ <TR VALIGN="top"><TD width=10%>42</TD><TD width=30%>#$25A0..#$25FF</TD><TD width=60%>Geometric Shapes</TD></TR>
+ <TR VALIGN="top"><TD width=10%>43</TD><TD width=30%>#$2600..#$26FF</TD><TD width=60%>Miscellaneous Symbols</TD></TR>
+ <TR VALIGN="top"><TD width=10%>44</TD><TD width=30%>#$2700..#$27BF</TD><TD width=60%>Dingbats</TD></TR>
+ <TR VALIGN="top"><TD width=10%>45</TD><TD width=30%>#$3000..#$303F</TD><TD width=60%>CJK Symbols and Punctuation</TD></TR>
+ <TR VALIGN="top"><TD width=10%>46</TD><TD width=30%>#$3040..#$309F</TD><TD width=60%>Hiragana</TD></TR>
+ <TR VALIGN="top"><TD width=10%>47</TD><TD width=30%>#$30A0..#$30FF</TD><TD width=60%>Katakana</TD></TR>
+ <TR VALIGN="top"><TD width=10%>48</TD><TD width=30%>#$3100..#$312F</TD><TD width=60%>Bopomofo</TD></TR>
+ <TR VALIGN="top"><TD width=10%>49</TD><TD width=30%>#$3130..#$318F</TD><TD width=60%>Hangul Compatibility Jamo</TD></TR>
+ <TR VALIGN="top"><TD width=10%>50</TD><TD width=30%>#$3190..#$319F</TD><TD width=60%>Kanbun</TD></TR>
+ <TR VALIGN="top"><TD width=10%>51</TD><TD width=30%>#$3200..#$32FF</TD><TD width=60%>Enclosed CJK Letters and Months</TD></TR>
+ <TR VALIGN="top"><TD width=10%>52</TD><TD width=30%>#$3300..#$33FF</TD><TD width=60%>CJK Compatibility</TD></TR>
+ <TR VALIGN="top"><TD width=10%>53</TD><TD width=30%>#$4E00..#$9FFF</TD><TD width=60%>CJK Unified Ideographs</TD></TR>
+ <TR VALIGN="top"><TD width=10%>54</TD><TD width=30%>#$AC00..#$D7A3</TD><TD width=60%>Hangul Syllables</TD></TR>
+ <TR VALIGN="top"><TD width=10%>55</TD><TD width=30%>#$D800..#$DB7F</TD><TD width=60%>High Surrogates</TD></TR>
+ <TR VALIGN="top"><TD width=10%>56</TD><TD width=30%>#$DB80..#$DBFF</TD><TD width=60%>High Private Use Surrogates</TD></TR>
+ <TR VALIGN="top"><TD width=10%>57</TD><TD width=30%>#$DC00..#$DFFF</TD><TD width=60%>Low Surrogates</TD></TR>
+ <TR VALIGN="top"><TD width=10%>58</TD><TD width=30%>#$E000..#$F8FF</TD><TD width=60%>Private Use</TD></TR>
+ <TR VALIGN="top"><TD width=10%>59</TD><TD width=30%>#$F900..#$FAFF</TD><TD width=60%>CJK Compatibility Ideographs</TD></TR>
+ <TR VALIGN="top"><TD width=10%>60</TD><TD width=30%>#$FB00..#$FB4F</TD><TD width=60%>Alphabetic Presentation Forms</TD></TR>
+ <TR VALIGN="top"><TD width=10%>61</TD><TD width=30%>#$FB50..#$FDFF</TD><TD width=60%>Arabic Presentation Forms-A</TD></TR>
+ <TR VALIGN="top"><TD width=10%>62</TD><TD width=30%>#$FE20..#$FE2F</TD><TD width=60%>Combining Half Marks</TD></TR>
+ <TR VALIGN="top"><TD width=10%>63</TD><TD width=30%>#$FE30..#$FE4F</TD><TD width=60%>CJK Compatibility Forms</TD></TR>
+ <TR VALIGN="top"><TD width=10%>64</TD><TD width=30%>#$FE50..#$FE6F</TD><TD width=60%>Small Form Variants</TD></TR>
+ <TR VALIGN="top"><TD width=10%>65</TD><TD width=30%>#$FE70..#$FEFF</TD><TD width=60%>Arabic Presentation Forms-B</TD></TR>
+ <TR VALIGN="top"><TD width=10%>66</TD><TD width=30%>#$FF00..#$FFEF</TD><TD width=60%>Halfwidth and Fullwidth Forms</TD></TR>
+ <TR VALIGN="top"><TD width=10%>67</TD><TD width=30%>#$FFF0..#$FFFF</TD><TD width=60%>Specials</TD></TR>
+ </TABLE>
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KeyboardCodePage: Word;
+[ShortDescr]
+Returns the codepage based on the thread input locale.
+[Description]
+Returns the codepage for the calling thread based on the threads input locale
+identifier (formerly called the keyboard layout). This effectively returns the
+codepage associated with the keyboard and all other forms of input such as a
+speech-to-text converter.
+[Result]
+Codepage for the calling thread, based on the keyboard layout.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CodePageFromLocale
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KeyUnicode(C: Char): WideChar;
+[ShortDescr]
+[Description]
+Converts the specified character (as it comes with a WM_CHAR message) into it's
+corresponding Unicode character. The conversion is based upon the active keyboard
+layout.
+[Parameters]
+Count=1
+1=C:Char=The character to convert.
+[Result]
+The converted character.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=KeyboardCodePage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StringToWideStringEx(const S: String; CodePage: Word): WideString;
+[ShortDescr]
+Converts a string to a WideString.
+[Description]
+StringToWideStringEx maps a string to a Wide (unicode) string for the specified
+codepage. This is merely a convenient wrapper for the MultiByteToWideChar API
+function.
+[Parameters]
+Count=2
+1=S:string=The string to convert to unicode
+2=CodePage:Word=The code page to be used by the conversion. You can specify the
+value of any available code page or one of the following values:
+ <TABLE>
+ <TR VALIGN="top"><TH align=left width=30%>Value</TH><TH align=left width=70%>Meaning</TH></TR>
+ <TR VALIGN="top"><TD width=30%>CP_ACP</TD><TD width=70%>ANSI code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_MACCP</TD><TD width=70%>Macintosh code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_OEMCP</TD><TD width=70%>OEM code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_SYMBOL</TD><TD width=70%><B>Windows&nbsp;2000:</B> Symbol code page (42)</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_THREAD_ACP</TD><TD width=70%>The current thread's ANSI code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_UTF7</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_UTF8</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.</TD></TR>
+ </TABLE>
+[Result]
+The converted string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=WideStringToStringEx
+2=TranslateString
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TranslateString(const S: String; CP1, CP2: Word): String;
+[ShortDescr]
+Translates a string from one codepage to another.
+[Description]
+The TranslateString function translates the specified string from one codepage
+to another.
+[Parameters]
+Count=3
+1=S:string=The string to translate.
+2=CP1:Word=Source code page.
+2=CP2:Word=Destination code page.
+[Result]
+The translated string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideStringToStringEx(const WS: WideString; CodePage: Word): String;
+[ShortDescr]
+WideStrinToStringEx maps a WideString to a string based on the specified codepage.
+[Description]
+WideStrinToStringEx maps a WideString to a string based on the specified codepage.
+[Parameters]
+Count=2
+1=WS:WideString=The WideString to convert.
+2=CodePage:Word=The code page to be used by the conversion. You can specify the
+value of any available code page or one of the following values:
+ <TABLE>
+ <TR VALIGN="top"><TH align=left width=30%>Value</TH><TH align=left width=70%>Meaning</TH></TR>
+ <TR VALIGN="top"><TD width=30%>CP_ACP</TD><TD width=70%>ANSI code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_MACCP</TD><TD width=70%>Macintosh code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_OEMCP</TD><TD width=70%>OEM code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_SYMBOL</TD><TD width=70%><B>Windows&nbsp;2000:</B> Symbol code page (42)</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_THREAD_ACP</TD><TD width=70%>The current thread's ANSI code page</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_UTF7</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-7</TD></TR>
+ <TR VALIGN="top"><TD width=30%>CP_UTF8</TD><TD width=70%><B>Windows NT 4.0 and Windows 2000:</B> Translate using UTF-8. When this is set, <I>dwFlags</I> must be zero.</TD></TR>
+ </TABLE>
+[Result]
+The converted string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Utility functions
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=StringToWideStringEx
+2=TranslateString
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideStringToUTF8(S: WideString): AnsiString;
+[ShortDescr]
+Converts the given WideString to a UTF8 based AnsiString.
+[Description]
+Converts the given WideString to a UTF8 based AnsiString.
+[Parameters]
+Count=1
+1=S:WideString=The unciode string to convert
+[Result]
+The string in UTF8 format.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString conversion routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=UTF8ToWideString
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UTF8ToWideString(S: AnsiString): WideString;
+[ShortDescr]
+Converts the given UTF8 based AnsiString to a WideString.
+[Description]
+Converts the given UTF8 based AnsiString to a WideString.
+[Parameters]
+Count=1
+1=S:AnsiString=The UTF8 based AnsiString to convert to a WideString
+[Result]
+The string converted to a WideString.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString conversion routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=WideStringToUTF8
