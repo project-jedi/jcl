@@ -1,10 +1,62 @@
+{$IFDEF JCL}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: zlibs.pas, gzips.pas, tar.pas.                                             }
+{ The Initial Developer of the Original Code is Peter J. Haas. Portions created by Peter J. Haas   }
+{ are Copyright (C) 2002-2003 Peter J. Haas. All Rights Reserved.                                  }
+{                                                                                                  }
+{ The Original Code Version 2.0 is: JclZlib.pas.                                                   }
+{ The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
+{ Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
+{                                                                                                  }
+{ You may retrieve the latest version of the Original Code at the homepage                         }
+{ of JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/                                 }
+{ You may retrieve the latest version of this file at the homepage of                              }
+{ JEDI, located at http://www.delphi-jedi.org/                                                     }
+{                                                                                                  }
+{  Contributor(s):                                                                                 }
+{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{                                                                                                  }
+{ Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
+{ Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
+{ applicable instead of those above.                                                               }
+{                                                                                                  }
+{ If you wish to allow use of your version of this file only under the terms of the LGPL License   }
+{ and not to allow others to use your version of this file under the MPL, indicate your decision by}
+{ deleting the provisions above and replace them with the notice and other provisions required by  }
+{ the LGPL License. If you do not delete the provisions above, a recipient may use your version of }
+{ this file under either the MPL or the LGPL License.                                              }
+{                                                                                                  }
+{  For more information about the LGPL:                                                            }
+{  http://www.gnu.org/copyleft/lesser.html                                                         }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{  Additional info:                                                                                }
+{    RFC 1952: GZIP file format specification version 4.3, 1996, Peter Deutsch                     }
+{    ftp://ftp.uu.net/graphics/png/documents/zlib/zdoc-index.html                                  }
+{                                                                                                  }
+{    The gzip file format, additional informations, Jean-loup Gailly                               }
+{    http://www.gzip.org/format.txt                                                                }
+{                                                                                                  }
+{    gzip format                                                                                   }
+{    http://www.onicos.com/staff/iz/formats/gzip.html                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+{$ELSE JCL}
 {******************************************************************************}
 {                                                                              }
-{$IFDEF JCL}
-{  Project JEDI Code Library (JCL)                                             }
-{$ELSE JCL}
 {  JclZlib V2.0 -  zlib, gzip, tar stream classes                              }
-{$ENDIF JCL}
 {                                                                              }
 {  The contents of this file are subject to the Mozilla Public License         }
 {  Version 1.1 (the "License"); you may not use this file except in            }
@@ -26,16 +78,8 @@
 {  created by Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights   }
 {  Reserved.                                                                   }
 {                                                                              }
-{$IFDEF JCL}
-{  You may retrieve the latest version of the Original Code at the homepage    }
-{  of JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/            }
-{                                                                              }
-{  You may retrieve the latest version of this file at the homepage of         }
-{  JEDI, located at http://www.delphi-jedi.org/                                }
-{$ELSE JCL}
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
-{$ENDIF JCL}
 {                                                                              }
 {  Contributor(s):                                                             }
 {                                                                              }
@@ -65,6 +109,7 @@
 {    http://www.onicos.com/staff/iz/formats/gzip.html                          }
 {                                                                              }
 {******************************************************************************}
+{$ENDIF JCL}
 
 // $Id$
 {$IFDEF PROTOTYPE}
@@ -92,7 +137,7 @@ unit JclZlib;
 interface
 uses
   {$IFDEF MSWINDOWS}
-  Windows, 
+  Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   Types, Libc,
@@ -105,7 +150,13 @@ uses
   {$ENDIF JCL}
   zlibh;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+// TJclZLibStream
+//--------------------------------------------------------------------------------------------------
+{$ELSE JCL}
 // *****************************************************************************
+{$ENDIF JCL}
 
 const
   JclZLibStreamDefaultBufferSize = 32 * 1024;
@@ -212,7 +263,13 @@ function ZLibDecompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; var DstCapacity: Integer;
   const Flush: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_SYNC_FLUSH{$ENDIF}): Boolean;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+// TJclGZipStream
+//--------------------------------------------------------------------------------------------------
+{$ELSE JCL}
 // *****************************************************************************
+{$ENDIF JCL}
 
 type
   TJclGZipStream = class(TStream)
@@ -304,7 +361,13 @@ procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
   const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF});
 procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+// TJclTarReader
+//--------------------------------------------------------------------------------------------------
+{$ELSE JCL}
 // *****************************************************************************
+{$ENDIF JCL}
 
 const
   TarBlockSize = 512;
@@ -515,8 +578,13 @@ begin
     raise EJclZLibError.CreateRes(GetZlibErrorText(ErrorCode));
 end;
 
-
+{$IFDEF JCL}
+//==================================================================================================
+// TZLibStream
+//==================================================================================================
+{$ELSE JCL}
 // **************************  TZLibStream  *************************
+{$ENDIF JCL}
 
 constructor TJclZLibStream.Create(const Stream: TStream; const BufferSize: Integer);
 begin
@@ -547,8 +615,13 @@ begin
   raise EJclZLibError.CreateRes(@RsZlibNoSeek);
 end;
 
-
+{$IFDEF JCL}
+//==================================================================================================
+// TZLibReader
+//==================================================================================================
+{$ELSE JCL}
 // **************************  TZLibReader  *************************
+{$ENDIF JCL}
 
 constructor TJclZLibReader.Create(const Stream: TStream;
   const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
@@ -669,7 +742,13 @@ begin
 end;
 
 
+{$IFDEF JCL}
+//==================================================================================================
+// TZLibWriter
+//==================================================================================================
+{$ELSE JCL}
 // **************************  TZLibWriter  *************************
+{$ENDIF JCL}
 
 constructor TJclZLibWriter.Create(const Stream: TStream;
   const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
@@ -912,7 +991,13 @@ begin
   end;
 end;
 
+{$IFDEF JCL}
+//==================================================================================================
+// TJclGZipStream
+//==================================================================================================
+{$ELSE JCL}
 // ******************************************************************
+{$ENDIF JCL}
 
 constructor TJclGZipStream.Create(const Stream: TStream);
 begin
@@ -1265,7 +1350,13 @@ begin
   FUncompressedSize := FUncompressedSize + LongWord(Result);
 end;
 
+{$IFDEF JCL}
+//==================================================================================================
+// gzip file support
+//==================================================================================================
+{$ELSE JCL}
 // ****************  gzip file support  *****************************
+{$ENDIF JCL}
 
 const
   MaxBufferSize = 1024 * 1024;  // 1 MByte
@@ -1800,7 +1891,7 @@ var
   RestBytes: Integer;
 begin
   {$IFNDEF UNIX}
-  // path delimiter -> UNIX 
+  // path delimiter -> UNIX
   for I := 1 to Length(Filename) do
     if Filename[I] = PathDelim then
       Filename[I] := UnixPathDelimiter;
@@ -2074,7 +2165,7 @@ end;
 // ****************************************************************************
 
 //  History:                                                                  
-//  2002-04-07 Version 0.9                                                    
+//  2002-04-07 Version 0.9
 //   - First public pre release                                               
 //                                                                            
 //  2003-04-14 Version 1.0                                                    
@@ -2095,6 +2186,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.3  2004/05/05 00:36:16  mthoma
+//  Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 //  Revision 1.2  2004/04/29 01:53:55  peterjhaas
 //  - add Prototype directive to avoid log problems
 //
