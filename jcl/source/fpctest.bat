@@ -1,5 +1,5 @@
 @echo   Free Pascal Compiler test...
-@echo   For error messages, see fpcbuild.err.
+@echo   For error messages, see fpctest.err.
 @echo off
 @if "%1"=="" goto usage
 @if not exist %1. goto invpath
@@ -10,5 +10,5 @@
 @echo invalid path "%1"
 @goto exit
 :usage
-@echo   usage: fpcbuild ^<path to fpc installation^>
+@echo   usage: fpctest ^<path to fpc installation^>
 :exit
