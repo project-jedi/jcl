@@ -559,6 +559,7 @@ begin
   Result := True;
 end;
 
+{ TODO : Test }
 function TJclIntfVector.InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
@@ -570,12 +571,20 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(IInterface));
-  It := ACollection.First;
-  while It.HasNext do
+  if Size <> 0 then
   begin
-    FItems[Index] := It.Next;
-    Inc(Index);
+    Inc(FCapacity, Size);
+    SetLength(FItems, FCapacity);
+    Inc(FCount, Size);
+    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
+    // required to keep reference counters in order
+    FillChar(FItems[Index], Size * SizeOf(FItems[0]), 0);
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      FItems[Index] := It.Next;
+      Inc(Index);
+    end;
   end;
   Result := True;
 end;
@@ -874,12 +883,20 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(string));
-  It := ACollection.First;
-  while It.HasNext do
+  if Size <> 0 then
   begin
-    FItems[Index] := It.Next;
-    Inc(Index);
+    Inc(FCapacity, Size);
+    SetLength(FItems, FCapacity);
+    Inc(FCount, Size);
+    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
+    // required to keep reference counters in order
+    FillChar(FItems[Index], Size * SizeOf(FItems[0]), 0);
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      FItems[Index] := It.Next;
+      Inc(Index);
+    end;
   end;
   Result := True;
 end;
@@ -1143,6 +1160,7 @@ begin
   Result := True;
 end;
 
+{ TODO : Test }
 function TJclVector.InsertAll(Index: Integer; ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
@@ -1154,12 +1172,18 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(IInterface));
-  It := ACollection.First;
-  while It.HasNext do
+  if Size <> 0 then
   begin
-    FItems[Index] := It.Next;
-    Inc(Index);
+    Inc(FCapacity, Size);
+    SetLength(FItems, FCapacity);
+    Inc(FCount, Size);
+    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      FItems[Index] := It.Next;
+      Inc(Index);
+    end;
   end;
   Result := True;
 end;
@@ -1407,6 +1431,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/03/12 05:22:07  rrossmair
+// - InsertAll methods fixed
+//
 // Revision 1.8  2005/03/08 08:33:18  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
