@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: December 13, 2000                                             }
+{ Last modified: December 24s, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -103,6 +103,7 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
+procedure CreateEmptyFile(const FileName: string); // TODOC Anthony
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
@@ -113,6 +114,7 @@ function FileGetDisplayName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
+function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString; // TODOC Anthony
 function ForceDirectories(Name: string): Boolean;
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
@@ -951,6 +953,65 @@ end;
 
 //------------------------------------------------------------------------------
 
+function PathGetLongName2(const Path: string): string;
+var
+  ResultPtr: PChar;
+
+  procedure ProcessPartialPath(const Path: string);
+  var
+    FFD: TWin32FindData;
+    H: THandle;
+    L: Integer;
+    DirDrive: string;
+  begin
+    DirDrive := ExtractFileDir(Path);
+    // if Path and DirDrive equal, we have a root
+    if DirDrive <> Path then
+    begin
+      H := FindFirstFile(PChar(Path), FFD);
+      if H <> INVALID_HANDLE_VALUE then
+      try
+        // first process parent directories
+        ProcessPartialPath(DirDrive);
+        // then add the result of FindFirstFile to the buffer
+        ResultPtr^ := '\';
+        L := StrLen(FFD.cFileName);
+        System.Move(FFD.cFileName[0], ResultPtr[1], L);
+        Inc(ResultPtr, L + 1);
+        ResultPtr^ := #0;
+      finally
+        Windows.FindClose(H);
+      end
+      else
+        RaiseLastWin32Error;
+    end
+    else
+    begin
+      // Root directory, end of recursion, copy root to buffer without '\'
+      // Note that if DirDrive = '' then the ResultPtr^ := #0 will cause AV!
+      L := Length(DirDrive) - 1;
+      Move(DirDrive[1], ResultPtr^, L);
+      Inc(ResultPtr, L);
+      ResultPtr^ := #0;
+    end;
+  end;
+
+begin
+  // ProcessPartialPath doesn't like empty strings that much...
+  if Path = '' then
+    Result := ''
+  else
+  begin
+    SetLength(Result, 2 * MAX_PATH);
+    ResultPtr := PChar(Result);
+    // Create fully qualified path and pass it to the converter
+    ProcessPartialPath(ExpandFileName(Path));
+    SetLength(Result, ResultPtr - PChar(Result));
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function PathGetLongName(const Path: string): string;
 var
   PIDL: PItemIDList;
@@ -975,22 +1036,6 @@ begin
       end;
     end;
   end;
-end;
-
-//------------------------------------------------------------------------------
-
-function PathGetLongName2(const Path: string): string;
-var
-  SearchRec: TSearchRec;
-begin
-  Result := Path;
-  if FindFirst(Path, faAnyFile, SearchRec) = 0 then
-  begin
-    Result := PathAddSeparator(ExtractFilePath(Path)) + SearchRec.Name;
-    FindClose(SearchRec);
-  end
-  else
-    Result := Path;
 end;
 
 //------------------------------------------------------------------------------
@@ -1147,6 +1192,22 @@ begin
     Result := CloseHandle(Volume);
     if Result then
       Volume := INVALID_HANDLE_VALUE;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CreateEmptyFile(const FileName: string);
+var
+  Handle: THandle;
+begin
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, CREATE_NEW, 0, 0);
+  if Handle <> INVALID_HANDLE_VALUE then
+    CloseHandle(Handle)
+  else
+  begin
+    CloseHandle(Handle);
+    RaiseLastWin32Error;
   end;
 end;
 
@@ -1357,6 +1418,21 @@ begin
     Result := ExtractFileExt(FileName);
     Delete(Result, 1, 1);
     Result := TrimLeft(UpperCase(Result) + ' File'); // TODO Localize
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
+var
+  I: Integer;
+begin
+  Result := FileName + '.' + FileExt;
+  I := 1;
+  while FileExists(Result) do
+  begin
+    Inc(I);
+    Result := FileName + Suffix + IntToStr(I) + '.' + FileExt;
   end;
 end;
 
@@ -2062,20 +2138,22 @@ var
       while Data < EndStringPtr do
       begin
         GetHeader; // String
-        if DataType <> 1 then
-        begin
+        case DataType of
+          0: if ValueLen in [1..4] then
+               Value := Format('$%.*x', [ValueLen * 2, PInteger(Data)^])
+             else
+               Value := '';
+          1: if ValueLen = 0 then
+               Value := ''
+             else
+             if IsUnicode then
+               Value := PWideChar(Data)
+             else
+               Value := PAnsiChar(Data);
+        else
           Error := True;
           Break;
         end;
-        if ValueLen > 0 then
-        begin
-          if IsUnicode then
-            Value := PWideChar(Data)
-          else
-            Value := PAnsiChar(Data);
-        end
-        else
-          Value := '';
         Inc(Data, Len - HeaderSize);
         Padding(Data); // String.Padding
         FItemList.AddObject(Format('%s=%s', [Key, Value]), Pointer(LangIndex));
