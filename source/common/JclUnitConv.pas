@@ -37,7 +37,6 @@ uses
   JclBase;
 
 const
-
   { Temperature constants }
 
   CelsiusFreezingPoint    = 0.0;
@@ -67,8 +66,8 @@ const
   ArcMinutesPerDeg        = 60.0;
   ArcSecondsPerArcMinute  = 60.0;
   ArcSecondsPerDeg        = ArcSecondsPerArcMinute * ArcMinutesPerDeg;
-  DegPerArcMinute         = 1/ArcMinutesPerDeg;
-  DegPerArcSecond         = 1/ArcSecondsPerDeg;
+  DegPerArcMinute         = 1 / ArcMinutesPerDeg;
+  DegPerArcSecond         = 1 / ArcSecondsPerDeg;
 
 function HowAOneLinerCanBiteYou(const Step, Max: Longint): Longint;
 function MakePercentage(const Step, Max: Longint): Longint;
@@ -166,19 +165,20 @@ function BarToPascal(const Bar: Float): Float;
 function AtToPascal(const At: Float): Float;
 function TorrToPascal(const Torr: Float): Float;
 
-{ Other conversion }
+{ Other conversions }
 
 function KnotToMs(const Knot: Float): Float;
 function HpElectricToWatt(const HpE: Float): Float;
 function HpMetricToWatt(const HpM: Float): Float;
-function MsToKnot(const ms: Float): Float;
+function MsToKnot(const Ms: Float): Float;
 function WattToHpElectric(const W: Float): Float;
 function WattToHpMetric(const W: Float): Float;
 
 implementation
 
 uses
-  SysUtils, JclResources, JclMath;
+  SysUtils,
+  JclResources, JclMath;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -391,7 +391,7 @@ end;
 
 procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Phi, Theta: Float);
 begin
-  Rho := Sqrt(X*X+Y*Y+Z*Z);
+  Rho := Sqrt(X*X + Y*Y + Z*Z);
   Phi := ArcTan2(Y, X);
   if Phi < 0 then
     Phi := Phi + TwoPi;
@@ -779,9 +779,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MsToKnot(const ms: Float): Float;
+function MsToKnot(const Ms: Float): Float;
 begin
-  Result := ms / 0.514444444444;
+  Result := Ms / 0.514444444444;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -797,7 +797,5 @@ function WattToHpMetric(const W: Float): Float;
 begin
   Result := W / 735.4988;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
