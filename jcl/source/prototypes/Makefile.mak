@@ -28,7 +28,8 @@ Windows:        ..\windows\JclWin32.pas \
                 ..\windows\Hardlinks.pas \
                 ..\windows\zlibh.pas
 
-Unix:		..\unix\zlibh.pas
+Unix:		..\unix\zlibh.pas \
+                ..\unix\JclWin32.pas
 
 zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 
@@ -48,6 +49,10 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 		_GraphUtils.pas
 	$(jpp) $(VClxOptions) $?
 
+..\unix\JclWin32.pas: \
+                JclWin32.pas
+        $(jpp) -ijcl.inc $(UnixOptions) $?
+
 ..\unix\zlibh.pas: \
 		zlibh.pas
         echo Unix-zlib
@@ -55,7 +60,7 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
-        $(jpp) -ijcl.inc $(Win32Options) $?
+        $(jpp) -ijcl.inc $(WinOptions) $?
 
 ..\windows\zlibh.pas: \
 		zlibh.pas
