@@ -118,9 +118,9 @@ interface
 
 uses
   {$IFDEF WIN32}
-    Windows,
+  Windows,
   {$ENDIF WIN32}
-    Classes; 
+  Classes; 
 
 const
   // definitions of often used characters:
@@ -977,8 +977,9 @@ uses
   RtlConsts,
   {$ELSE}
   Consts,
-  {$ENDIF}
-  JclBase, JclSynch, SysUtils, JclResources;
+  {$ENDIF DELPHI6_UP}
+  SysUtils,
+  JclBase, JclResources, JclSynch;
   
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
@@ -4755,7 +4756,7 @@ begin
       P := PWideChar(S);
       while not (P^ in [WideNull..WideSpace, WideChar('"'), WideChar(',')]) do
         Inc(P);
-      if (P^ <> WideNull) then
+      if P^ <> WideNull then
         S := WideQuotedStr(S, '"');
       Result := Result + S + ',';
     end;
@@ -8034,7 +8035,9 @@ end;
 
 initialization
   PrepareUnicodeData;
+
 finalization
   FreeUnicodeData;
+
 end.
 
