@@ -88,8 +88,8 @@ type
 
     class function MouseButtonCount: DWORD;
 
-    procedure Alloc;
-    procedure Free;
+    class procedure Alloc;
+    class procedure Free;
 
     function Add(AWidth: Smallint = 0; AHeight: Smallint = 0): TJclScreenBuffer;
     function Remove(const ScrBuf: TJclScreenBuffer): Longword;
@@ -581,12 +581,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclConsole.Alloc;
+class procedure TJclConsole.Alloc;
 begin
   Win32Check(AllocConsole);
 end;
 
-procedure TJclConsole.Free;
+class procedure TJclConsole.Free;
 begin
   Win32Check(FreeConsole);
 end;
