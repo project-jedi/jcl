@@ -362,7 +362,7 @@ uses
   JclWinMIDI,
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-  JclUnixMIDI,
+  //JclUnixMIDI,
 {$ENDIF LINUX}
   SysUtils;
 
@@ -710,6 +710,7 @@ procedure TJclMIDIOut.SendBreathControlChangeHR(Channel: TMIDIChannel; Value: TM
 begin
   SendControlChangeHR(Channel, MIDICCBreathControl, Value);
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.SendDataEntry(Channel: TMIDIChannel; Value: TMidiDataByte);
