@@ -667,13 +667,13 @@ begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
     TIME_ZONE_ID_STANDARD:
-      Result := DateTime - (TimeZoneInfo.Bias / MinutesPerDay);
+      Result := DateTime + (TimeZoneInfo.Bias / MinutesPerDay);
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
   else
     raise EJclDateTimeError.Create(RsMakeUTCTime);
   end;
-end;
+end;                    
 
 //--------------------------------------------------------------------------------------------------
 
