@@ -1,14 +1,12 @@
 @@WideSameText
 <GROUP Unicode.WideStringroutines>
 Description:
-
   WideSameText compares the two strings case insensitively and returns True if the
   strings are equal.
 Parameters:
   Str1 - The first string.
   Str2 - The second string.
 Result:
-
   If both strings are equal (case insensitive) the function returns True, otherwise
   False is returned.
 Quick info:
@@ -20,11 +18,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings
-<GROUP Unicode>
+<GROUP Unicode.TWideStrings>
 Summary:
   TWideStrings is the abstract base class for objects that represent a list of WideStrings.
 Description:
-
   TWideStrings is the abstract base class for objects that represent a list of
   WideStrings. It is very similar to the Delphi TStrings class with the one
   fundamental difference; instead of storing a list of strings it stores a list of
@@ -45,9 +42,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Create
-<GROUP Unicode>
 Description:
-
   Creates an instance of TWideStrings and initializes the object for use. Since
   TWideStrings is an abstract base class you cannot actually instantiate it, instead
   use a derived class such as TWideStringList. The TWideStrings constructor only
@@ -62,11 +57,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Destroy
-<GROUP Unicode>
 Summary:
   Destroys an object instance.
 Description:
-
   Destroys the object instance for which this method is called. It is not a recommended
   coding style to call the destructor directly, instead you should call the Free
   method or even better use the FreeAndNil procedure.
@@ -80,16 +73,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Add
-<GROUP Unicode>
 Summary:
   Adds a WideString to the end of the list.
 Description:
-
   Adds a WideString to the end of the list and returns the index of the new WideString.
 Parameters:
   S - The WideString to add at the end of the list.
 Result:
-
   Zero based index of the newly inserted WideString.
 Quick info:
   Unit: JclUnicode
@@ -101,18 +91,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.AddObject
-<GROUP Unicode>
 Summary:
   Adds a WideString and associated object to the end of the list.
 Description:
-
   AddObject adds a WideString to the end of the list and associates an object with
   the WideString.
 Parameters:
   S - The WideString to add to the end of the list.
   AObject - The object to associate with the WideString. You can later retrieve the object by using the Objects property.
 Result:
-
   Zero based index at which the object is inserted.
 Quick info:
   Unit: JclUnicode
@@ -124,11 +111,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Append
-<GROUP Unicode>
 Summary:
   Appends a WideString to the list.
 Description:
-
   Appends a WideString to the list. This method is identical to the Add
   method except that it does not return the index at which the WideString was
   inserted. Use this method rather than Add when the index is not needed or for
@@ -145,11 +130,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.AddStrings
-<GROUP Unicode>
 Summary:
   Copies strings from another TStrings or TWideStrings into this object.
 Description:
-
   Use AddStrings to add the strings from a TStrings or TWideStrings descendant to
   this list. If the source list has objects associated with its items a reference
   to these objects is copied as well (only a reference, no deep copy is made). Note
@@ -167,11 +150,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Assign
-<GROUP Unicode>
 Summary:
   Assign sets the list of WideStrings based on the Source parameter.
 Description:
-
   Assign sets the list of WideStrings based on the Source parameter. If the Source
   parameter is of type TStrings or TWideStrings, Assign first clears the list and
   then copies the items from the Source object including associated objects, if
@@ -190,11 +171,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.AssignTo
-<GROUP Unicode>
 Summary:
   AssignTo assigns itself to the specified object.
 Description:
-
   AssignTo assigns itself to the specified Dest(ination) object. For AssignTo to
   do anything the Dest object must be of type TStrings or TWideStrings. Conceptually
   AssignTo is equivalent to Dest.Assign(Self) except that this method enables a
@@ -211,18 +190,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.BeginUpdate
-<GROUP Unicode>
 Summary:
   Marks the beginning of modifications to the list.
 Description:
-
   Call BeginUpdate immediately before you modify the list and EndUpdate
   immediately after. All properties and methods that modify the list automatically call
   BeginUpdate and EndUpdate. BeginUpdate calls SetUpdateState which can
   be overridden by descendants to receive a notification of updates. This way
   descendants can optimize updates such as refreshing/repainting visible controls.
 Notes:
-
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
 Quick info:
   Unit: JclUnicode
@@ -234,11 +210,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Clear
-<GROUP Unicode>
 Summary:
   Clears the list of WideStrings and associated objects.
 Description:
-
   Clear is an abstract method implemented by descendants to clear the list of
   WideStrings and associated objects. Note that, unless otherwise stated in the
   documentation for the descendant class, clearing the list of objects does not
@@ -253,11 +227,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Delete
-<GROUP Unicode>
 Summary:
   Deletes the item at a specified position.
 Description:
-
   Delete is an abstract method implemented by descendant classes to delete an item
   at a specified position from the list. If the WideString has an associated object,
   the reference to that object is deleted as well.
@@ -273,11 +245,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.EndUpdate
-<GROUP Unicode>
 Summary:
   Marks the end of an update sequence.
 Description:
-
   Call BeginUpdate immediately before you modify the list and EndUpdate
   immediately after. All properties methods that modify the list automatically call
   BeginUpdate and EndUpdate. When the UpdateCount managed by BeginUpdate and EndUpdate
@@ -285,7 +255,6 @@ Description:
   be overridden by descendants to receive a notification of updates. This way
   descendants can optimize updates such as refreshing/repainting visible controls.
 Notes:
-
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
 Quick info:
   Unit: JclUnicode
@@ -297,11 +266,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Equals
-<GROUP Unicode>
 Summary:
   Compares two TWideStrings for equality.
 Description:
-
   Equals compares the list for which it is called with the list supplied as the
   argument. The function compares all strings in the lists and if they are all
   equal the function returns True. If one or more strings are not equal or the
@@ -311,7 +278,6 @@ Description:
 Parameters:
   Strings - The list with which to compare.
 Result:
-
   If the strings in two lists are identical, that is all individual strings are
   equal and both lists have the same number of strings, the function returns True,
   in all other cases the function returns False.
@@ -325,11 +291,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Exchange
-<GROUP Unicode>
 Summary:
   Swaps the WideStrings at the specified positions.
 Description:
-
   Exchange swaps the strings at the specified positions. If either string has an
   associated object the objects are exchanged as well.
 Parameters:
@@ -345,17 +309,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetSeparatedText
-<GROUP Unicode>
 Summary:
   Returns the contents of the list in a single buffer with customizable separator.
 Description:
-
   GetSeparatedText returns a dynamically allocated buffer which contains a concatenation
   of the individual strings in the list. The individual strings are terminated
   with the specified Separators string. As such this is identical to GetText except
   that the separator characters are customizable.
 Result:
-
   WideString holding the concatenation of the individual strings in the
   list. If the list is empty the returned string is empty.
 Quick info:
@@ -368,16 +329,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetText
-<GROUP Unicode>
 Summary:
   Returns the contents of the list in a single buffer.
 Description:
-
   GetText returns a dynamically allocated buffer which contains a concatenation
   of the individual strings in the list. The individual strings are terminated
   by a carriage-return linefeed pair.
 Result:
-
   Pointer to the buffer holding the concatenation of the individual strings in the
   list. If the list is empty the returned pointer points to an empty buffer.
 Quick info:
@@ -390,17 +348,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOf
-<GROUP Unicode>
 Summary:
   Returns the position of a string in the list.
 Description:
-
   IndexOf Returns the zero-based index of the first occurrence of S in the list. If
   S is not found the method returns -1.
 Parameters:
   S - The string for which you want to know the index of the first occurrence.
 Result:
-
   Zero based index of the first occurrence of S in the list. If S does not exist in
   the list -1 is returned.
 Quick info:
@@ -413,11 +368,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOfName
-<GROUP Unicode>
 Summary:
   Returns the position of the first string with the form Name=Value with the specified name part.
 Description:
-
   IndexOfName returns the zero based index of the first occurrence of the string of the form
   Name=Value where the Name part matches the specified Name. If no such occurrence
   exists in the list the function returns -1. This kind of strings is commonly
@@ -426,7 +379,6 @@ Description:
 Parameters:
   Name - The Name for which to search in the list.
 Result:
-
   Zero based index of the first occurrence of a string whose Name part matches the
   specified name. If no occurrence is found -1 is returned.
 Quick info:
@@ -439,18 +391,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOfObject
-<GROUP Unicode>
 Summary:
   Returns the index of the string associated with a given object.
 Description:
-
   IndexOfObject returns the zero based index of the first string associated with
   the specified object. Note that the object comparison is simply a pointer
   comparison since this class has no knowledge of the object stored in it.
 Parameters:
   AObject - The object to search for.
 Result:
-
   Zero based index of the first string associated with the specified object or -1
   if the object is not associated with any of the strings.
 Quick info:
@@ -463,11 +412,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Insert
-<GROUP Unicode>
 Summary:
   Inserts a WideString at a specific position.
 Description:
-
   Abstract method implemented by descendants to insert a WideString at a specific
   position within the list. Index denotes the zero based position at which to insert,
   specifying 0 will insert at the beginning (first position) of the list, 1 will
@@ -485,11 +432,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.InsertObject
-<GROUP Unicode>
 Summary:
   Inserts a WideString at a specified position and associates it with an object.
 Description:
-
   InsertObject inserts the supplied string at the specified position in the list
   and associates the supplied object with it. Index denotes the zero based position
   at which to insert, specifying 0 will insert at the beginning (first position)
@@ -508,11 +453,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.LoadFromFile
-<GROUP Unicode>
 Summary:
   Loads the lines from a textfile into the list.
 Description:
-
   Loads a text from a file into the list. Each line in the file, as indicated by
   a WideNull, LineFeed, CarriageReturn, VerticalTab, FormFeed, LineSeparator or
   ParagraphSeparator, is appended as a string in the list. If a byte-order mark is
@@ -521,7 +464,6 @@ Description:
 Parameters:
   FileName - The fully qualified name of the file containing the text to load.
 Notes:
-
   The class remembers whether an opened file originally contained Unicode by setting the SaveUnicode property appropriately.
 Quick info:
   Unit: JclUnicode
@@ -533,11 +475,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.LoadFromStream
-<GROUP Unicode>
 Summary:
   Loads the lines from a stream into the list.
 Description:
-
   Loads the text from a stream into the list. Each line in the stream, as indicated by
   a WideNull, LineFeed, CarriageReturn, VerticalTab, FormFeed, LineSeparator or
   ParagraphSeparator, is appended as a string in the list. If a byte-order mark is
@@ -546,7 +486,6 @@ Description:
 Parameters:
   Stream - The TStream from which to load the text.
 Notes:
-
   The class remembers whether an opened stream originally contained Unicode by setting the SaveUnicode property appropriately.
 Quick info:
   Unit: JclUnicode
@@ -558,11 +497,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Move
-<GROUP Unicode>
 Summary:
   Moves a WideString from one position to another.
 Description:
-
   Move moves the string at position CurIndex to position NewIndex. Both indices
   are zero based and if the WideString has an associated object, that object remains
   associated with it.  The remaining strings are reshuffled as appropriate.
@@ -579,11 +516,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveToFile
-<GROUP Unicode>
 Summary:
   Saves the contents of the list to a file.
 Description:
-
   SaveToFile writes the contents of the list to the specified file. The individual
   strings are separated by a carriage-return linefeed pair. SaveToFile uses the
   value of the SaveUnicode property to determine whether to save the contents as
@@ -597,7 +532,6 @@ Description:
 Parameters:
   FileName - Fully qualified name of the file to save the strings to.
 Notes:
-
   Upon exit the Saved property is updated to reflect the result of the method.
 Quick info:
   Unit: JclUnicode
@@ -609,11 +543,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveToStream
-<GROUP Unicode>
 Summary:
   Writes the contents of the list to a stream.
 Description:
-
   SaveToStream writes the contents of the list to the specified stream. The individual
   strings are separated by a carriage-return linefeed pair. SaveToStream uses the
   value of the SaveUnicode property to determine whether to save the contents as
@@ -628,7 +560,6 @@ Parameters:
   Stream - TStream descendant to write the strings to.
   WithBOM - WithBOM determines whether to write a <B>B</B>yte <B>O</B>rder <B>M</B>ark or not.  <B>Note:</B> when saved as ANSI text there will never be a BOM.
 Notes:
-
   Upon exit the Saved property is updated to reflect the result of the method.
 Quick info:
   Unit: JclUnicode
@@ -640,11 +571,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SetText
-<GROUP Unicode>
 Summary:
   Sets the text property.
 Description:
-
   SetText replaces the list with the strings specified by the Value parameter. This
   method assumes that the individual strings are separated by a WideNull, LineFeed,
   CarriageReturn, VerticalTab, FormFeed, LineSeparator or ParagraphSeparator.
@@ -660,11 +589,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Capacity
-<GROUP Unicode>
 Summary:
   Indicates the number of items the list can hold.
 Description:
-
   Capacity determines the number of strings that the list can hold without having
   to resize/reallocate the internal storage. For TWideStrings reading Capacity
   returns the Count property and setting Capacity does nothing. Descendant classes
@@ -679,11 +606,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.CommaText
-<GROUP Unicode>
 Summary:
   Lists the WideStrings in the TWideStrings in system data format (SDF).
 Description:
-
   CommaText gets or sets all the strings in the TWideStrings object in a single
   comma-delimited string. Strings in the list that include spaces, commas or quotes will be
   contained in double quotes; any double quotes in a string will be repeated.
@@ -710,7 +635,6 @@ Description:
   3
   Hello4
 Notes:
-
   TODO Description is copied from VCL helpfile. Rewrite to avoid cp issues!!!  BLW -Check rewrite
 Quick info:
   Unit: JclUnicode
@@ -722,11 +646,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Count
-<GROUP Unicode>
 Summary:
   Represents the number of strings in the list.
 Description:
-
   Abstract property which indicates the number of WideStrings in the list. You can
   use this property to iterate over all the items in the list. When doing so keep
   in mind that the Strings property accepts a zero based index and as such the
@@ -741,11 +663,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Objects
-<GROUP Unicode>
 Summary:
   Represents the set of objects associated with the strings.
 Description:
-
   Objects contains a set of objects associated with the strings contained in the
   list. Reading the Objects property in TWideStrings returns nil and setting this
   property does nothing. Descendant classes can, and usually will, override this
@@ -764,11 +684,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Values
-<GROUP Unicode>
 Summary:
   Retrieves the Value part if the list contains strings of the form Name=Value.
 Description:
-
   When the list contains strings of the form Name=Value you can use the Values
   property to get or set the Value part of these strings. Name is the name part of
   the string whose Value you want to get or set. If the list does not contain a
@@ -785,11 +703,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Names
-<GROUP Unicode>
 Summary:
   Retrieves the Name part if the list contains strings of the form Name=Value.
 Description:
-
   When the list contains strings of the form Name=Value you can use the Names
   property to access the Name part of these strings. Index is the zero based index
   of the string whose name part to retrieve. If the string is not of the form
@@ -804,11 +720,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.NormalizationForm
-<GROUP Unicode>
 Summary:
   Determines in which form Unicode strings should be stored
 Description:
-
   NormalizationForm determines in which form Unicode strings should be stored.
 Quick info:
   Unit: JclUnicode
@@ -820,11 +734,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Saved
-<GROUP Unicode>
 Summary:
   Reflects the result of saving the list to a file or stream.
 Description:
-
   The Saved property reflects the result of the last SaveToFile and/or SaveToStream
   method call. If that call actually wrote the list to a file or stream, this property
   is set to True, in all other cases it is set to False.
@@ -838,11 +750,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveUnicode
-<GROUP Unicode>
 Summary:
   Determines if the class saves data as Unicode or ANSI.
 Description:
-
   Determines whether the SaveToFile and SaveToStream methods write the data as
   Unicode or ANSI. If set to True these methods save the data as Unicode, if set
   to False the data is implicitly converted to and saved as ANSI. In the latter
@@ -858,11 +768,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Strings
-<GROUP Unicode>
 Summary:
   Represents the set of WideStrings managed by the class.
 Description:
-
   Partial abstract property which contains the set of strings managed by the class.
   Descendant classes must implement the Get method (Put is implemented
   through Delete and Insert). Reading the Strings property returns the WideString
@@ -883,11 +791,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Text
-<GROUP Unicode>
 Summary:
   Lists the strings in the TStrings object as a single string with the individual strings delimited by carriage returns and line feeds.
 Description:
-
   The Text property enables you the get or set the contents of the string in the
   list as a single WideString. Reading the Text property returns a WideString with
   the individual strings separated by a carriage-return linefeed pair, setting the
@@ -907,7 +813,6 @@ Quick info:
 @@OnConfirmConversion
 <GROUP Unicode.TWideStrings>
 Description:
-
   When saving the list to a file or stream the class uses the SaveUnicode property
   to determine whether to save the list as Unicode or ANSI. If the SaveUnicode
   property is False the list is implicitly converted to and saved as ANSI. However,
@@ -931,11 +836,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.DefineProperties
-<GROUP Unicode>
 Summary:
   DefineProperties registers the Text property as a private property for streaming.
 Description:
-
   DefineProperties registers the Text property as a private property for streaming.
   This is necessary due to a bug in the handling of text DFM's in Classes.pas which
   prevents WideStrings from loading under certain circumstances. Zbysek Hlinka
@@ -953,11 +856,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Error
-<GROUP Unicode>
 Summary:
   Utility method which raises an EStringListError exception.
 Description:
-
   Error is a utility method used by various other methods for raising an
   EStringListError exception.
 Parameters:
@@ -973,17 +874,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Get
-<GROUP Unicode>
 Summary:
   Abstract property read method for the Strings property.
 Description:
-
   Get is the abstract property read method for the Strings property. Descendant
   classes must implement this method and return a WideString given an Index.
 Parameters:
   Index - Zero based Index of the WideString. The Index must be between 0 and Count - 1 (inclusive).
 Result:
-
   The WideString at the specified Index. If the specified Index is invalid an
   exception is raised.
 Quick info:
@@ -996,11 +894,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetCapacity
-<GROUP Unicode>
 Summary:
   Property read method of the Capacity property.
 Description:
-
   Property read method of the Capacity property.
   Capacity determines the number of strings that the list can hold without having
   to resize/reallocate the internal storage. The TWideStrings implementation simply
@@ -1008,7 +904,6 @@ Description:
   descendant classes can, and usually will, override this method to return the
   actual capacity of the list.
 Result:
-
   The capacity of the list.
 Quick info:
   Unit: JclUnicode
@@ -1020,16 +915,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetCount
-<GROUP Unicode>
 Summary:
   Property read method of the Count property.
 Description:
-
   GetCount is the abstract property read method of the Count property. Descendant
   classes must implement this method and return the number of items in the Strings
   list.
 Result:
-
   The number of strings in the list.
 Quick info:
   Unit: JclUnicode
@@ -1041,17 +933,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetObject
-<GROUP Unicode>
 Summary:
   Property read method of the Objects property.
 Description:
-
   GetObject is the abstract property read method of the Objects property. Descendant
   classes must implement this method and return the Object at the specified Index.
 Parameters:
   Index - The zero based index of the object to retrieve. The index must be between 0 and Count - 1 (inclusive).
 Result:
-
   The TObject at the specified index. If the index is invalid an exception is raised.
   If no object exists at the specified index the method returns nil.
 Quick info:
@@ -1064,11 +953,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.GetText
-<GROUP Unicode>
 Summary:
   Property read method of the Text property.
 Description:
-
   GetText is the property read method of the Text property. Its purpose is to
   list the strings in the TWideStrings object as a single string with the individual
   WideStrings delimited by carriage returns and line feeds. The default implementation
@@ -1076,7 +963,6 @@ Description:
   this method to provide a faster implementation. Note that this method is also
   called internally by the GetText method.
 Result:
-
   The WideStrings in the list as a single string with the individual strings delimited
   by a carriage return - linefeed.
 Quick info:
@@ -1089,11 +975,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.Put
-<GROUP Unicode>
 Summary:
   Property write method of the Strings property.
 Description:
-
   Put is the property write method of the Strings property. In TWideStrings Put
   does nothing. It is up to descendant classes to override this method and
   implement it in an appropriate manner.
@@ -1110,11 +994,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.PutObject
-<GROUP Unicode>
 Summary:
   Property write method of the Objects property.
 Description:
-
   PutObject is the property write method of the Objects property. In TWideStrings
   PutObject does nothing. It is up to descendant classes to override this method
   and implement it in an appropriate manner.
@@ -1131,11 +1013,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SetCapacity
-<GROUP Unicode>
 Summary:
   Property write method of the Capacity property.
 Description:
-
   SetCapacity is the property write method of the Capacity property. In TWideStrings
   the SetCapacity does not do anything. Descendant classes can optionally override
   this method to implement a capacity scheme. In this case the SetCapacity method
@@ -1154,11 +1034,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SetUpdateState
-<GROUP Unicode>
 Summary:
   Called whenever the update state of the class changes.
 Description:
-
   SetUpdateState is called whenever the update state of the class changes. Thus,
   it is called for each first BeginUpdate and for each last EndUpdate. SetUpdateState
   in TWideStrings is merely a place-holder and does nothing. Descendant classes
@@ -1175,9 +1053,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStrings.SetLanguage
-<GROUP Unicode>
 Description:
-
   SetLanguage is the property write method of the Language property. The TWideStrings
   implementation does nothing except store the new value. Descendant classes may
   override this method to respond to language changes such as re-sorting the list.
@@ -1193,9 +1069,8 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList
-<GROUP Unicode>
+<GROUP Unicode.TWideStringList>
 Description:
-
   TWideStringList is a TWideStrings descendant which maintains a list of WideStrings.
   The class implements the abstract methods of TWideStrings and introduces some new
   methods and properties to:
@@ -1214,11 +1089,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Add
-<GROUP Unicode>
 Summary:
   Adds a WideString to the end of the list.
 Description:
-
   Adds a WideString to the list and returns the index of the new WideString. If the
   list is unsorted the string is appended to the list. If the list is sorted and
   the specified string does not exist in the list yet, the string is inserted at
@@ -1227,7 +1100,6 @@ Description:
 Parameters:
   S - The WideString to add at the end of the list.
 Result:
-
   Zero based index of the newly inserted WideString.
 Quick info:
   Unit: JclUnicode
@@ -1239,11 +1111,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Clear
-<GROUP Unicode>
 Summary:
   Clears the list of WideStrings and associated objects.
 Description:
-
   Clear clears the list of WideStrings and associated objects. Note that references
   to associated objects are removed, but the objects themselves are not destroyed.
 Quick info:
@@ -1256,11 +1126,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Delete
-<GROUP Unicode>
 Summary:
   Deletes the item at a specified position.
 Description:
-
   Delete is an abstract method implemented by descendant classes to delete an item
   at a specified position from the list. If the WideString has an associated object,
   the reference to that object (but not the object itself) is deleted as well.
@@ -1276,18 +1144,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Exchange
-<GROUP Unicode>
 Summary:
   Swaps the WideStrings at the specified positions.
 Description:
-
   Exchange swaps the strings at the specified positions. If either string has an
   associated object the objects are exchanged as well.
 Parameters:
   Index1 - Index of the first WideString to exchange.
   Index2 - Index of the second WideString to exchange.
 Notes:
-
   Do not call Exchange on a sorted list except to exchange two identical strings with different associated objects. Exchange does not check whether the list is sorted and as such calling it may destroy the sort order.
 Quick info:
   Unit: JclUnicode
@@ -1299,11 +1164,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Find
-<GROUP Unicode>
 Summary:
   Locates the position of a string in a sorted list and whether the string exists.
 Description:
-
   Find returns the position in a sorted list where S should be inserted.
   If the specified string already exists the method returns True and Index contains
   its zero based index, if the string does not exist in the list the method returns
@@ -1314,7 +1177,6 @@ Parameters:
   S - The string to search for.
   Index - The zero based index of S or the position in the list where S should be inserted if it does not exist in the list yet.
 Result:
-
   If the specified string exists in the list the method returns True, otherwise it
   returns False.
 Quick info:
@@ -1327,17 +1189,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.IndexOf
-<GROUP Unicode>
 Summary:
   Returns the position of a string in the list.
 Description:
-
   IndexOf Returns the zero-based index of the first occurrence of S in the list. If
   S is not found the method returns -1.
 Parameters:
   S - The string for which you want to know the index of the first occurrence.
 Result:
-
   Zero based index of the first occurrence of S in the list. If S does not exist in
   the list -1 is returned.
 Quick info:
@@ -1350,11 +1209,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Insert
-<GROUP Unicode>
 Summary:
   Inserts a WideString at a specific position.
 Description:
-
   Insert inserts a WideString at a specific position
   within the list. Index denotes the zero based position at which to insert,
   specifying 0 will insert at the beginning (first position) of the list, 1 will
@@ -1373,11 +1230,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Sort
-<GROUP Unicode>
 Summary:
   Sorts the strings in the list.
 Description:
-
   Sorts the strings in the list in ascending order. Note that the sort procedure
   uses the Language property to determine the sort order of the strings.
 Quick info:
@@ -1390,11 +1245,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Changed
-<GROUP Unicode>
 Summary:
   Called every time after a change has occurred to the list.
 Description:
-
   Changed is called every time after a change has occurred to the list. If the list
   is being updated Changed does nothing, otherwise it fires the OnChange event.
 Quick info:
@@ -1407,9 +1260,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Changing
-<GROUP Unicode>
 Description:
-
   Changing is called every time before a change is about to be made to the list. If
   the list is being updated Changing does nothing, otherwise it fires the
   OnChanging event.
@@ -1423,17 +1274,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Get
-<GROUP Unicode>
 Summary:
   Property read method for the Items property.
 Description:
-
   Get is the property read method for the Items property. Get returns the string
   at the specified index or raises an exception if the Index is invalid.
 Parameters:
   Index - Zero based index of the string to retrieve. Must be in the range 0 to Count - 1 or an exception is raised.
 Result:
-
   The string at the specified index. If the index is invalid an exception is raised.
 Quick info:
   Unit: JclUnicode
@@ -1445,16 +1293,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.GetCapacity
-<GROUP Unicode>
 Summary:
   Property read method of the Capacity property.
 Description:
-
   GetCapacity is the property read method of the Capacity property. GetCapacity
   returns the current capacity of the list which equals the maximum number of
   strings the list can hold without having to resize its internal data structures.
 Result:
-
   Capacity of the list.
 Quick info:
   Unit: JclUnicode
@@ -1466,15 +1311,12 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.GetCount
-<GROUP Unicode>
 Summary:
   Property read method of the Count property.
 Description:
-
   GetCount is the property read method of the Count property. GetCount returns the
   number of strings that are currently in the list.
 Result:
-
   The number of strings in the list.
 Quick info:
   Unit: JclUnicode
@@ -1486,18 +1328,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.GetObject
-<GROUP Unicode>
 Summary:
   Property read method of the Objects property.
 Description:
-
   GetObject is the property read method of the Objects property. GetObject returns
   the object reference associated with the string at the specified Index. If no
   object is associated with that string GetObject returns nil.
 Parameters:
   Index - Zero based index of the string for which you want to retrieve the associated object. Index must be within the range 0 to Count - 1 or an exception is raised.
 Result:
-
   The object associated with the string at the specified index or nil if the string
   has no associated object.
 Quick info:
@@ -1510,11 +1349,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Put
-<GROUP Unicode>
 Summary:
   Property write method of the Items property.
 Description:
-
   Put is the property write method of the Items property. Put sets the value of
   the string at the specified index which must be in the range 0 to Count - 1 or
   an exception is raised. Note that Put cannot be used to insert a string into
@@ -1532,11 +1369,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.PutObject
-<GROUP Unicode>
 Summary:
   Property write method of the Objects property
 Description:
-
   PutObject is the property write method of the Objects property. PutObject associates
   the string at the specified index with the supplied object. Index must be in the
   range 0 to Count - 1 or an exception is raised.
@@ -1553,11 +1388,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.SetCapacity
-<GROUP Unicode>
 Summary:
   Property write method of the Capacity property.
 Description:
-
   SetCapacity is the property write method of the Capacity property. SetCapacity
   resizes the internal data structures used by TWideStringList to store its items so
   that subsequent additions to the list do not need to resize them until the
@@ -1575,11 +1408,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.SetUpdateState
-<GROUP Unicode>
 Summary:
   Called when the update state changes.
 Description:
-
   SetUpdateState is called whenever the update state of the list changes. The update
   state of the list is considered changed when the update count either becomes zero
   or changes from zero to non-zero. The update count is changed by the user calling
@@ -1596,11 +1427,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.SetLanguage
-<GROUP Unicode>
 Summary:
   TODO The property write method of Language property.
 Description:
-
   TODO SetLanguage is the property write method of Language property. The TWideStringList
   implementation does nothing except store the new value and re-sort the list.
 Parameters:
@@ -1615,11 +1444,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Duplicates
-<GROUP Unicode>
 Summary:
   Specifies whether duplicate items can be added to the list.
 Description:
-
   Set Duplicates to specify what should happen when an attempt is made to add
   duplicate strings to the list. Duplicates can have the following values:
     
@@ -1641,11 +1468,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TWideStringList.Sorted
-<GROUP Unicode>
 Summary:
   Specifies whether the strings in the list should be sorted.
 Description:
-
   Setting sorted to True causes the strings in the list to be sorted in ascending
   order. Using Add to insert a string into a sorted list automatically inserts it
   at the appropriate position. Setting sorted to False will enforce no ordering on
@@ -1653,7 +1478,6 @@ Description:
   unsorted list at an arbitrary position or Add to add a string to the end of the
   list.
 Notes:
-
   Do not use Insert to add an item into a sorted list.
   The order of the strings in a sorted list is determined using the Language property.
 Quick info:
@@ -1670,13 +1494,11 @@ Quick info:
 Summary:
   Occurs immediately after the list of strings has changed.
 Description:
-
   The OnChange event is fired immediately after the list of strings has changed.
   The changes that cause an OnChange event are addition, deletion, moving (e.g. exchange)
   and the modification of a string. Note that before the modification is made
   the OnChanging event is fired.
 Notes:
-
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
 Quick info:
   Unit: JclUnicode
@@ -1692,13 +1514,11 @@ Quick info:
 Summary:
   Occurs immediately before the list of strings is changed.
 Description:
-
   The OnChanging event is fired immediately before changes are made to the list of
   strings. Changes that cause an OnChange event are addition, deletion, moving (e.g.
   exchange) and the modification of a string. Note that after the modification is
   made the OnChange event is fired.
 Notes:
-
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
 Quick info:
   Unit: JclUnicode
