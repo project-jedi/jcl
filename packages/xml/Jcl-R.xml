@@ -41,6 +41,7 @@
     <File Name="..\..\source\common\JclDITs.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclZlib.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclWideStrings.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclAppInst.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclCIL.pas" Targets="C6,D6,D7" Formname="" Condition=""/>

@@ -40,6 +40,7 @@ USEUNIT("..\..\source\common\JclSysUtils.pas");
 USEUNIT("..\..\source\common\Jcl8087.pas");
 USEUNIT("..\..\source\common\JclDITs.pas");
 USEUNIT("..\..\source\common\JclWideStrings.pas");
+USEUNIT("..\..\source\common\JclUnitVersioning.pas");
 USEUNIT("..\..\source\common\JclZlib.pas");
 USEUNIT("..\..\source\windows\Snmp.pas");
 USEUNIT("..\..\source\windows\JclCOM.pas");

@@ -63,6 +63,7 @@
       ..\..\lib\c5\obj\JclTD32.obj
       ..\..\lib\c5\obj\JclUnicode.obj
       ..\..\lib\c5\obj\JclWideStrings.obj
+      ..\..\lib\c5\obj\JclUnitVersioning.obj
       ..\..\lib\c5\obj\JclWin32.obj
       ..\..\lib\c5\obj\JclWinMIDI.obj
       ..\..\lib\c5\obj\JclAppInst.obj

@@ -59,6 +59,7 @@ contains
   JclSysUtils in '..\..\source\common\JclSysUtils.pas',
   JclUnitConv in '..\..\source\common\JclUnitConv.pas',
   JclWideStrings in '..\..\source\common\JclWideStrings.pas',
+  JclUnitVersioning in '..\..\source\common\JclUnitVersioning.pas',
   Snmp in '..\..\source\windows\Snmp.pas',
   JclCIL in '..\..\source\windows\JclCIL.pas',
   JclCLR in '..\..\source\windows\JclCLR.pas',
