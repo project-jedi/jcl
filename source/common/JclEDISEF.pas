@@ -23,7 +23,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: July, 20, 2003                                                                     }
-{ Last modified: October 22, 2003                                                                  }
+{ Last modified: October 26, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -425,10 +425,25 @@ uses
   JclResources, JclStrings;
 
 const
-  // (rom) TODO move to JclResources
-  cUnknownAttribute = 'Unknown Attribute';
+  Value_Optional = 'O';
+  Value_Conditional = 'C';
+  Value_One = '1';
+  Value_GreaterThanOne = '>1';
+  Value_Version10 = '1.0';
+  Value_QuestionMark = '?';
 
-// (rom) contains many literal chars which should be made constants
+  SEFDelimiter_EqualSign = '=';
+  SEFDelimiter_OpeningBrace = '{';
+  SEFDelimiter_ClosingBrace = '}';
+  SEFDelimiter_OpeningBracket = '[';
+  SEFDelimiter_ClosingBracket = ']';
+  SEFDelimiter_AtSign = '@';
+  SEFDelimiter_SemiColon = ';';
+  SEFDelimiter_Colon = ':';
+  SEFDelimiter_Comma = ',';
+  SEFDelimiter_Period = '.';
+  SEFDelimiter_Caret = '^';
+  SEFDelimiter_PlusSign = '+';
 
 //--------------------------------------------------------------------------------------------------
 //  Procedures
@@ -448,7 +463,7 @@ begin
     caAmpersand:
       Result := EDISEFComsUserAttributeAmpersandDesc;
   else
-    Result := cUnknownAttribute;
+    Result := RsUnknownAttribute;
   end;
 end;
 
@@ -457,7 +472,7 @@ end;
 function GetEDISEFComsUserAttributeDescription(Attribute: string): string;
 begin
   if Attribute = '' then
-    Attribute := '?';
+    Attribute := Value_QuestionMark;
   case Attribute[1] of
     EDISEFComsUserAttributePeriod:
       Result := EDISEFComsUserAttributePeriodDesc;
@@ -470,7 +485,7 @@ begin
     EDISEFComsUserAttributeAmpersand:
       Result := EDISEFComsUserAttributeAmpersandDesc;
   else
-    Result := cUnknownAttribute;
+    Result := RsUnknownAttribute;
   end;
 end;
 
@@ -486,7 +501,7 @@ begin
   Element.ElementType := '';
   Element.MinimumLength := 0;
   Element.MaximumLength := 0;
-  Element.RequirementDesignator := 'O';
+  Element.RequirementDesignator := Value_Optional;
   //
   Temp := TStringList.Create;
   try
@@ -512,8 +527,8 @@ end;
 
 function CombineELMSDataOfELMSDefinition(Element: TEDISEFElement): string;
 begin
-  Result := Element.Id + '=' + Element.ElementType + ',' + IntToStr(Element.MaximumLength) + ',' +
-    IntToStr(Element.MaximumLength);
+  Result := Element.Id + SEFDelimiter_EqualSign + Element.ElementType + SEFDelimiter_Comma +
+    IntToStr(Element.MaximumLength) + SEFDelimiter_Comma + IntToStr(Element.MaximumLength);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -530,7 +545,7 @@ begin
   Element.ElementType := '';
   Element.MinimumLength := 0;
   Element.MaximumLength := 0;
-  Element.RequirementDesignator := 'O';
+  Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 0;
   // Parse User Attribute
   if Data[1] in EDISEFComsUserAttributeSet then
@@ -541,10 +556,10 @@ begin
   else
     I := 1;
   // Get delimiter locations
-  J := StrSearch('@', Data, 1);
-  K := StrSearch(';', Data, 1);
-  L := StrSearch(':', Data, 1);
-  M := StrSearch(',', Data, 1);
+  J := StrSearch(SEFDelimiter_AtSign, Data, 1);
+  K := StrSearch(SEFDelimiter_SemiColon, Data, 1);
+  L := StrSearch(SEFDelimiter_Colon, Data, 1);
+  M := StrSearch(SEFDelimiter_Comma, Data, 1);
   O := Length(Data) + 1;
   // Parse Id using the closest delimiter
   N := O;
@@ -628,7 +643,7 @@ begin
     Result := Result + Element.UserAttribute;
   Result := Result + Element.Id;
   if Element.Ordinal <> -1 then
-    Result := Result + '@' + IntToStr(Element.Ordinal);
+    Result := Result + SEFDelimiter_AtSign + IntToStr(Element.Ordinal);
   // Get Default Values
   CompareElement := nil;
   if ELMSList <> nil then
@@ -643,23 +658,24 @@ begin
     if (CompareElement.MinimumLength <> Element.MinimumLength) or
       (CompareElement.MaximumLength <> Element.MaximumLength) then
     begin
-      Result := Result + ';';
+      Result := Result + SEFDelimiter_SemiColon;
       if CompareElement.MinimumLength <> Element.MinimumLength then
         Result := Result + IntToStr(Element.MinimumLength);
-      Result := Result + ':';
+      Result := Result + SEFDelimiter_Colon;
       if CompareElement.MaximumLength <> Element.MaximumLength then
         Result := Result + IntToStr(Element.MaximumLength);
     end;
   end
   else
   begin
-    Result := Result + ';';
+    Result := Result + SEFDelimiter_SemiColon;
     Result := Result + IntToStr(Element.MinimumLength);
-    Result := Result + ':';
+    Result := Result + SEFDelimiter_Colon;
     Result := Result + IntToStr(Element.MaximumLength);
   end;
-  if (Element.RequirementDesignator <> '') and (Element.RequirementDesignator <> 'O') then
-    Result := Result + ',' + Element.RequirementDesignator;
+  if (Element.RequirementDesignator <> '') and
+    (Element.RequirementDesignator <> Value_Optional) then
+    Result := Result + SEFDelimiter_Comma + Element.RequirementDesignator;
   if (Element.Parent is TEDISEFSegment) and (Element.RepeatCount > 0) then
     Result := Result + IntToStr(Element.RepeatCount);
 end;
@@ -678,7 +694,7 @@ begin
   Element.ElementType := '';
   Element.MinimumLength := 0;
   Element.MaximumLength := 0;
-  Element.RequirementDesignator := 'O';
+  Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 0;
   // Parse User Attribute
   if Data[1] in EDISEFComsUserAttributeSet then
@@ -689,11 +705,11 @@ begin
   else
     I := 1;
   // Get delimiter locations
-  J := StrSearch('@', Data, 1);
-  K := StrSearch(';', Data, 1);
-  L := StrSearch(':', Data, 1);
-  M := StrSearch(',', Data, 1);
-  N := StrSearch(',', Data, M + 1);
+  J := StrSearch(SEFDelimiter_AtSign, Data, 1);
+  K := StrSearch(SEFDelimiter_SemiColon, Data, 1);
+  L := StrSearch(SEFDelimiter_Colon, Data, 1);
+  M := StrSearch(SEFDelimiter_Comma, Data, 1);
+  N := StrSearch(SEFDelimiter_Comma, Data, M + 1);
   P := Length(Data) + 1;
   // Parse Id
   O := P;
@@ -787,7 +803,7 @@ var
   SubElement: TEDISEFSubElement;
   RepeatingPattern: TEDISEFRepeatingPattern;
 begin
-  I := StrSearch('=', Data, 1);
+  I := StrSearch(SEFDelimiter_EqualSign, Data, 1);
   if (I > 0) and (Element is TEDISEFCompositeElement) then
   begin
     Element.EDISEFDataObjects.Clear;
@@ -798,12 +814,12 @@ begin
   while I > 0 do
   begin
     // Start search
-    I := StrSearch('[', Data, M);
+    I := StrSearch(SEFDelimiter_OpeningBracket, Data, M);
     if I = 0 then
       Break;
-    J := StrSearch(']', Data, M);
-    K := StrSearch('{', Data, M);
-    L := StrSearch('}', Data, M);
+    J := StrSearch(SEFDelimiter_ClosingBracket, Data, M);
+    K := StrSearch(SEFDelimiter_OpeningBrace, Data, M);
+    L := StrSearch(SEFDelimiter_ClosingBrace, Data, M);
     // Determine if data block to process is a repetition
     if (I < K) or (K = 0) then // Normal data block
     begin
@@ -816,16 +832,16 @@ begin
     else // Repeating data block (K = 1 on the first pass)
     begin
       // Get repeat count
-      N := StrSearch('[', Data, K);
+      N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       RepeatCount := StrToInt(Copy(Data, K + 1, (N - K) - 1));
       // Correct start position
-      K := StrSearch('[', Data, K);
+      K := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       // Validate end position
-      N := StrSearch('{', Data, K + 1);
+      N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); // Search for nested repetition
-        L := StrSearch('}', Data, L + 1); // Correct end position
+        N := StrSearch(SEFDelimiter_OpeningBrace, Data, N + 1); // Search for nested repetition
+        L := StrSearch(SEFDelimiter_ClosingBrace, Data, L + 1); // Correct end position
       end;
       // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
@@ -859,13 +875,15 @@ function CombineCOMSDataOfCOMSDefinition(CompositeElement: TEDISEFCompositeEleme
 var
   I: Integer;
 begin
-  Result := CompositeElement.Id + '=';
+  Result := CompositeElement.Id + SEFDelimiter_EqualSign;
   for I := 0 to CompositeElement.Elements.Count - 1 do
   begin
     if not (CompositeElement.Elements[I] is TEDISEFRepeatingPattern) then
-      Result := Result + '[' + CompositeElement.Elements[I].Assemble + ']'
+      Result := Result + SEFDelimiter_OpeningBracket + CompositeElement.Elements[I].Assemble +
+        SEFDelimiter_ClosingBracket
     else
-      Result := Result + '{' + CompositeElement.Elements[I].Assemble + '}';
+      Result := Result + SEFDelimiter_OpeningBrace + CompositeElement.Elements[I].Assemble +
+        SEFDelimiter_ClosingBrace;
   end;
 end;
 
@@ -905,11 +923,11 @@ begin
     Result := Result + CompositeElement.UserAttribute;
   Result := Result + CompositeElement.Id;
   if CompositeElement.Ordinal > 0 then
-    Result := Result + '@' + IntToStr(CompositeElement.Ordinal);
+    Result := Result + SEFDelimiter_AtSign + IntToStr(CompositeElement.Ordinal);
   if (CompositeElement.RequirementDesignator <> '') and
-    (CompositeElement.RequirementDesignator <> 'O') then
+    (CompositeElement.RequirementDesignator <> Value_Optional) then
   begin
-    Result := Result + ',' + CompositeElement.RequirementDesignator;
+    Result := Result + SEFDelimiter_Comma + CompositeElement.RequirementDesignator;
   end;
 end;
 
@@ -928,12 +946,12 @@ var
   CompositeElement: TEDISEFCompositeElement;
   RepeatingPattern: TEDISEFRepeatingPattern;
 begin
-  I := StrSearch('=', Data, 1);
+  I := StrSearch(SEFDelimiter_EqualSign, Data, 1);
   if (I > 0) and (Segment is TEDISEFSegment) then
   begin
     Segment.EDISEFDataObjects.Clear;
     Segment.Id := Copy(Data, 1, I - 1);
-    TEDISEFSegment(Segment).RequirementDesignator := 'O';
+    TEDISEFSegment(Segment).RequirementDesignator := Value_Optional;
     TEDISEFSegment(Segment).MaximumUse := 1;
   end;
   Inc(I);
@@ -941,17 +959,17 @@ begin
   while I > 0 do
   begin
     // Start search
-    I := StrSearch('[', Data, M);
+    I := StrSearch(SEFDelimiter_OpeningBracket, Data, M);
     if I = 0 then
       Break;
-    J := StrSearch(']', Data, M);
-    K := StrSearch('{', Data, M);
-    L := StrSearch('}', Data, M);
+    J := StrSearch(SEFDelimiter_ClosingBracket, Data, M);
+    K := StrSearch(SEFDelimiter_OpeningBrace, Data, M);
+    L := StrSearch(SEFDelimiter_ClosingBrace, Data, M);
     // Determine if data block to process is a repetition
     if (I < K) or (K = 0) then // Normal data block
     begin
       ElementData := Copy(Data, I + 1, (J - I) - 1);
-      if ElementData[1] = 'C' then
+      if ElementData[1] = Value_Conditional then
       begin
         CompositeElement := TEDISEFCompositeElement.Create(Segment);
         Segment.EDISEFDataObjects.AddByNameOrId(CompositeElement);
@@ -972,16 +990,16 @@ begin
     else // Repeating data block (K = 1 on the first pass)
     begin
       // Get repeat count
-      N := StrSearch('[', Data, K);
+      N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       RepeatCount := StrToInt(Copy(Data, K + 1, (N - K) - 1));
       // Correct start position
-      K := StrSearch('[', Data, K);
+      K := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       // Validate end position
-      N := StrSearch('{', Data, K + 1);
+      N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); // Search for nested repetition
-        L := StrSearch('}', Data, L + 1); // Correct end position
+        N := StrSearch(SEFDelimiter_OpeningBrace, Data, N + 1); // Search for nested repetition
+        L := StrSearch(SEFDelimiter_ClosingBrace, Data, L + 1); // Correct end position
       end;
       // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
@@ -1015,13 +1033,15 @@ function CombineSEGSDataOfSEGSDefinition(Segment: TEDISEFSegment): string;
 var
   I: Integer;
 begin
-  Result := Segment.Id + '=';
+  Result := Segment.Id + SEFDelimiter_EqualSign;
   for I := 0 to Segment.Elements.Count - 1 do
   begin
     if not (Segment.Elements[I] is TEDISEFRepeatingPattern) then
-      Result := Result + '[' + Segment.Elements[I].Assemble + ']'
+      Result := Result + SEFDelimiter_OpeningBracket + Segment.Elements[I].Assemble +
+        SEFDelimiter_ClosingBracket
     else
-      Result := Result + '{' + Segment.Elements[I].Assemble + '}';
+      Result := Result + SEFDelimiter_OpeningBrace + Segment.Elements[I].Assemble +
+        SEFDelimiter_ClosingBrace;
   end;
 end;
 
@@ -1034,7 +1054,7 @@ var
   ListItem: TEDISEFDataObjectListItem;
   SegmentDef: TEDISEFSegment;
 begin
-  Segment.RequirementDesignator := 'O';
+  Segment.RequirementDesignator := Value_Optional;
   Segment.MaximumUse := 1;
   Segment.EDISEFDataObjects.Clear;
   Temp := TStringList.Create;
@@ -1051,12 +1071,12 @@ begin
     if Temp.Count >= 2 then
     begin
       if Temp[1] = '' then
-        Temp[1] := 'O';
+        Temp[1] := Value_Optional;
       Segment.RequirementDesignator := Temp[1];
     end;
     if Temp.Count >= 3 then
     begin
-      if Temp[2] = '>1' then
+      if Temp[2] = Value_GreaterThanOne then
         Temp[2] := IntToStr(Value_UndefinedMaximum);
       Segment.MaximumUse := StrToInt(Temp[2]);
     end;
@@ -1073,17 +1093,19 @@ begin
     Result := Result + Segment.UserAttribute;
   Result := Result + Segment.Id;
   if Segment.Ordinal > 0 then
-    Result := Result + '@' + IntToStr(Segment.Ordinal);
-  if (Segment.RequirementDesignator <> '') and (Segment.RequirementDesignator <> 'O') then
-    Result := Result + ',' + Segment.RequirementDesignator;
+    Result := Result + SEFDelimiter_AtSign + IntToStr(Segment.Ordinal);
+  if (Segment.RequirementDesignator <> '') and
+    (Segment.RequirementDesignator <> Value_Optional) then
+    Result := Result + SEFDelimiter_Comma + Segment.RequirementDesignator;
   if Segment.MaximumUse > 1 then
   begin
-    if (Segment.RequirementDesignator = '') or (Segment.RequirementDesignator = 'O') then
-      Result := Result + ',';
+    if (Segment.RequirementDesignator = '') or
+      (Segment.RequirementDesignator = Value_Optional) then
+      Result := Result + SEFDelimiter_Comma;
     if Segment.MaximumUse = Value_UndefinedMaximum then
-      Result := Result + ',>1'
+      Result := Result + SEFDelimiter_Comma + Value_GreaterThanOne 
     else
-      Result := Result + ',' + IntToStr(Segment.MaximumUse);
+      Result := Result + SEFDelimiter_Comma + IntToStr(Segment.MaximumUse);
   end;
 end;
 
@@ -1107,12 +1129,12 @@ begin
   while I > 0 do
   begin
     // Start search
-    I := StrSearch('[', Data, M);
+    I := StrSearch(SEFDelimiter_OpeningBracket, Data, M);
     if I = 0 then
       Break;
-    J := StrSearch(']', Data, M);
-    K := StrSearch('{', Data, M);
-    L := StrSearch('}', Data, M);
+    J := StrSearch(SEFDelimiter_ClosingBracket, Data, M);
+    K := StrSearch(SEFDelimiter_OpeningBrace, Data, M);
+    L := StrSearch(SEFDelimiter_ClosingBrace, Data, M);
     // Determine if data block to process is a repetition
     if (I < K) or (K = 0) then // Normal data block
     begin
@@ -1129,29 +1151,29 @@ begin
     end
     else // Repeating data block (K = 1 on the first pass)
     begin
-      N := StrSearch('[', Data, K);
-      J := StrSearch('+', Data, K);
+      N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
+      J := StrSearch(SEFDelimiter_PlusSign, Data, K);
       if (J < N) and (J <> 0) then
         N := J;
       // Get Loop Id
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
-      J := StrSearch(':', RepeatData, 1);
+      J := StrSearch(SEFDelimiter_Colon, RepeatData, 1);
       LoopId := Copy(RepeatData, 1, J - 1);
       // Get Repeat Count
       RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
-      if RepeatData = '>1' then
+      if RepeatData = Value_GreaterThanOne then
         RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then
-        RepeatData := '1';
+        RepeatData := Value_One;
       RepeatCount := StrToInt(RepeatData);
       // Correct start position
-      K := StrSearch('[', Data, K);
+      K := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       // Validate end position
-      N := StrSearch('{', Data, K + 1);
+      N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); // Search for nested repetition
-        L := StrSearch('}', Data, L + 1); // Correct end position
+        N := StrSearch(SEFDelimiter_OpeningBrace, Data, N + 1); // Search for nested repetition
+        L := StrSearch(SEFDelimiter_ClosingBrace, Data, L + 1); // Correct end position
       end;
       // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
@@ -1194,12 +1216,12 @@ begin
   while I > 0 do
   begin
     // Start search
-    I := StrSearch('[', Data, M);
+    I := StrSearch(SEFDelimiter_OpeningBracket, Data, M);
     if I = 0 then
       Break;
-    J := StrSearch(']', Data, M);
-    K := StrSearch('{', Data, M);
-    L := StrSearch('}', Data, M);
+    J := StrSearch(SEFDelimiter_ClosingBracket, Data, M);
+    K := StrSearch(SEFDelimiter_OpeningBrace, Data, M);
+    L := StrSearch(SEFDelimiter_ClosingBrace, Data, M);
     // Determine if data block to process is a repetition
     if (I < K) or (K = 0) then // Normal data block
     begin
@@ -1214,29 +1236,29 @@ begin
     end
     else // Repeating data block (K = 1 on the first pass)
     begin
-      N := StrSearch('[', Data, K);
-      J := StrSearch('+', Data, K);
+      N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
+      J := StrSearch(SEFDelimiter_PlusSign, Data, K);
       if (J < N) and (J <> 0) then
         N := J;
       // Get Loop Id
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
-      J := StrSearch(':', RepeatData, 1);
+      J := StrSearch(SEFDelimiter_Colon, RepeatData, 1);
       LoopId := Copy(RepeatData, 1, J - 1);
       // Get Repeat Count
       RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
-      if RepeatData = '>1' then
+      if RepeatData = Value_GreaterThanOne then
         RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then
-        RepeatData := '1';
+        RepeatData := Value_One;
       RepeatCount := StrToInt(RepeatData);
       // Correct start position
-      K := StrSearch('[', Data, K);
+      K := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       // Validate end position
-      N := StrSearch('{', Data, K + 1);
+      N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); // Search for nested repetition
-        L := StrSearch('}', Data, L + 1); // Correct end position
+        N := StrSearch(SEFDelimiter_OpeningBrace, Data, N + 1); // Search for nested repetition
+        L := StrSearch(SEFDelimiter_ClosingBrace, Data, L + 1); // Correct end position
       end;
       // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
@@ -1268,13 +1290,13 @@ var
   TableData: string;
 begin
   Set_.FEDISEFDataObjects.Clear;
-  I := StrSearch('=', Data, 1);
+  I := StrSearch(SEFDelimiter_EqualSign, Data, 1);
   Set_.Id := Copy(Data, 1, I - 1);
   while I > 0 do
   begin
     // Start search
-    I := StrSearch('^', Data, I);
-    J := StrSearch('^', Data, I + 1);
+    I := StrSearch(SEFDelimiter_Caret, Data, I);
+    J := StrSearch(SEFDelimiter_Caret, Data, I + 1);
     if I = 0 then
     begin
       Table := TEDISEFTable.Create(Set_);
@@ -1866,19 +1888,21 @@ begin
   for I := 0 to FEDISEFDataObjects.Count - 1 do
   begin
     if not (FEDISEFDataObjects[I] is TEDISEFLoop) then
-      Result := Result + '[' + FEDISEFDataObjects[I].Assemble + ']'
+      Result := Result + SEFDelimiter_OpeningBracket + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBracket
     else
-      Result := Result + '{' + FEDISEFDataObjects[I].Assemble + '}';
+      Result := Result + SEFDelimiter_OpeningBrace + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBrace;
   end;
   if FEDISEFDataObjects.Count > 0 then
   begin
     if FEDISEFDataObjects[0].Id <> FId then
-      Result := FId + ':' + IntToStr(FMaximumRepeat) + Result
+      Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result
     else
-      Result := ':' + IntToStr(FMaximumRepeat) + Result;
+      Result := SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result;
   end
   else
-    Result := FId + ':' + IntToStr(FMaximumRepeat) + Result;
+    Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1920,13 +1944,15 @@ var
 begin
   Result := '';
   if FEDISEFDataObjects.Count > 0 then
-    Result := '^';
+    Result := SEFDelimiter_Caret;
   for I := 0 to FEDISEFDataObjects.Count - 1 do
   begin
     if not (FEDISEFDataObjects[I] is TEDISEFLoop) then
-      Result := Result + '[' + FEDISEFDataObjects[I].Assemble + ']'
+      Result := Result + SEFDelimiter_OpeningBracket + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBracket
     else
-      Result := Result + '{' + FEDISEFDataObjects[I].Assemble + '}';
+      Result := Result + SEFDelimiter_OpeningBrace + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBrace;
   end;
 end;
 
@@ -1959,7 +1985,7 @@ function TEDISEFSet.Assemble: string;
 var
   I: Integer;
 begin
-  Result := FId + '=';
+  Result := FId + SEFDelimiter_EqualSign;
   for I := 0 to FEDISEFDataObjects.Count - 1 do
   begin
     Result := Result + FEDISEFDataObjects[I].Assemble;
@@ -2018,7 +2044,7 @@ var
   I: Integer;
 begin
   Result := '';
-  Result := Result + SectionTag_VER + ' ' + FEDISEFVer + AnsiCrLf;
+  Result := Result + SectionTag_VER + AnsiSpace + FEDISEFVer + AnsiCrLf;
   Result := Result + SectionTag_INI + AnsiCrLf;
   Result := Result + FEDISEFIni.Text + AnsiCrLf;
   if FEDISEFStd.Text <> '' then
@@ -2127,7 +2153,7 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_CODES + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       FEDISEFCodesList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
@@ -2150,7 +2176,7 @@ begin
     if SearchResult > 0 then
     begin
       SearchResult := SearchResult + Length(SectionTag_COMS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -2187,7 +2213,7 @@ begin
     if SearchResult > 0 then
     begin
       SearchResult := SearchResult + Length(SectionTag_ELMS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -2215,7 +2241,7 @@ var
 begin
   FEDISEFIni.Clear;
   {$IFDEF DELPHI6_UP}
-  FEDISEFIni.Delimiter := ',';
+  FEDISEFIni.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
 
   {$ENDIF}
@@ -2223,7 +2249,7 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_INI + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       FEDISEFIni.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
@@ -2246,7 +2272,7 @@ begin
     if SearchResult > 0 then
     begin
       SearchResult := SearchResult + Length(SectionTag_SEGS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -2281,7 +2307,7 @@ begin
     if SearchResult > 0 then
     begin
       SearchResult := SearchResult + Length(SectionTag_SETS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -2309,7 +2335,7 @@ var
 begin
   FEDISEFStd.Clear;
   {$IFDEF DELPHI6_UP}
-  FEDISEFStd.Delimiter := ',';
+  FEDISEFStd.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
 
   {$ENDIF}
@@ -2317,7 +2343,7 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_STD + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
     begin
       {$IFDEF DELPHI6_UP}
@@ -2348,13 +2374,13 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_VER);
-    SearchResult2 := StrSearch(AnsiCrLf + '.', FData, SearchResult + 1);
+    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       FEDISEFVer := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
       FEDISEFVer := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
     if FEDISEFVer = '' then
-      FEDISEFVer := '1.0';
+      FEDISEFVer := Value_Version10;
   end;
 end;
 
@@ -2437,9 +2463,11 @@ begin
   for I := 0 to FEDISEFDataObjects.Count - 1 do
   begin
     if not (FEDISEFDataObjects[I] is TEDISEFRepeatingPattern) then
-      Result := Result + '[' + FEDISEFDataObjects[I].Assemble + ']'
+      Result := Result + SEFDelimiter_OpeningBracket + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBracket
     else
-      Result := Result + '{' + FEDISEFDataObjects[I].Assemble + '}';
+      Result := Result + SEFDelimiter_OpeningBrace + FEDISEFDataObjects[I].Assemble +
+        SEFDelimiter_ClosingBrace;
   end;
 end;
 
