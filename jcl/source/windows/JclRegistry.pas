@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 9, 2000                                                  }
+{ Last modified: August 31, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -51,8 +51,10 @@ function RegReadStringDef(RootKey: HKEY; const Key, Name, Def: string): string;
 procedure RegWriteBool(RootKey: HKEY; const Key, Name: string; Value: Boolean);
 procedure RegWriteInteger(RootKey: HKEY; const Key, Name: string; Value: Integer);
 procedure RegWriteString(RootKey: HKEY; const Key, Name, Value: string);
-function RegGetValueNames(RootKey: HKEY; const Key: string): TStringList;
-function RegGetKeyNames(RootKey: HKEY; const Key: string): TStringList;
+
+function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
 
 type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -329,31 +331,57 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RegGetValueNames(RootKey: HKEY; const Key: string): TStringList;
+function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
   WinReg: TRegistry;
 begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    Result := TStringList.Create;
-    WinReg.GetValueNames(Result);
-  finally
-    WinReg.Free;
-  end;
+  if List <> nil then
+  begin
+    List.Clear;
+    WinReg := TRegistry.Create;
+    try
+      OpenKey(WinReg, RootKey, Key, True);
+      WinReg.GetValueNames(List);
+      Result := true;
+    finally
+      WinReg.Free;
+    end;
+  end
+  else
+    Result := false;
 end;
 
 //------------------------------------------------------------------------------
 
-function RegGetKeyNames(RootKey: HKEY; const Key: string): TStringList;
+function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+var
+  WinReg: TRegistry;
+begin
+  if List <> nil then
+  begin
+    WinReg := TRegistry.Create;
+    try
+      OpenKey(WinReg, RootKey, Key, True);
+      WinReg.GetKeyNames(List);
+      Result := true;
+    finally
+      WinReg.Free;
+    end;
+  end
+  else
+    Result := false;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
 var
   WinReg: TRegistry;
 begin
   WinReg := TRegistry.Create;
   try
     OpenKey(WinReg, RootKey, Key, True);
-    Result := TStringList.Create;
-    WinReg.GetKeyNames(Result);
+    Result := WinReg.HasSubKeys;
   finally
     WinReg.Free;
   end;
