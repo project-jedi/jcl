@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 23, 2001                                             }
+{ Last modified: December 4, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 //
@@ -221,7 +221,9 @@ function RedComponent(const Color32: TColor32): Integer;
 function GreenComponent(const Color32: TColor32): Integer;
 function BlueComponent(const Color32: TColor32): Integer;
 function AlphaComponent(const Color32: TColor32): Integer;
-function Intensity(const Color32: TColor32): Integer;
+
+function Intensity(const R, G, B: Single): Single; overload;
+function Intensity(const Color32: TColor32): Integer; overload;
 
 function SetAlpha(const Color32: TColor32; NewAlpha: Integer): TColor32;
 
@@ -242,7 +244,8 @@ function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; over
 {$ENDIF COMPLIB_VCL}
 
 {$IFDEF MSWINDOWS}
-function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; TriplePointWidth: Integer = 0): WideString;
+function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
+  EllipsisWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): WideString;
 {$ENDIF MSWINDOWS}
 
 var
@@ -2337,6 +2340,17 @@ end;
 
 //------------------------------------------------------------------------------
 
+function Intensity(const R, G, B: Single): Single;
+const
+  RFactor =  61 / 256;
+  GFactor = 174 / 256;
+  BFactor =  21 / 256;
+begin
+  Result := RFactor * R + GFactor * G + BFactor * B;
+end;
+
+//------------------------------------------------------------------------------
+
 function Intensity(const Color32: TColor32): Integer;
 // input:  RGB components
 // output: (R * 61 + G * 174 + B * 21) div 256
@@ -2504,18 +2518,20 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; TriplePointWidth: Integer = 0): WideString;
+function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
+  EllipsisWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): WideString;
 
-// Adjusts the given string S so that it fits into the given width. TriplePointWidth gives the width of
-// the three points to be added to the shorted string. I this value is 0 then it will be determined implicitely.
+// Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
+// the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
 // For higher speed (and multiple entries to be shorted) specify this value explicitely.
+// RTL determines if right-to-left reading is active, which is needed to put the ellipsisis on the correct side.
 // Note: It is assumed that the string really needs shortage. Check this in advance.
-const
-  cTriplePoint = '...';
+
 var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
+
 begin
   Len := Length(S);
   if (Len = 0) or (Width <= 0) then
@@ -2523,13 +2539,13 @@ begin
   else
   begin
     // Determine width of triple point using the current DC settings (if not already done).
-    if TriplePointWidth = 0 then
+    if EllipsisWidth = 0 then
     begin
-      GetTextExtentPoint32W(DC, cTriplePoint, Length(cTriplePoint), Size);
-      TriplePointWidth := Size.cx;
+      GetTextExtentPoint32W(DC, '...', 3, Size);
+      EllipsisWidth := Size.cx;
     end;
 
-    if Width <= TriplePointWidth then
+    if Width <= EllipsisWidth then
       Result := ''
     else
     begin
@@ -2541,7 +2557,7 @@ begin
       begin
         N := (L + H) shr 1;
         GetTextExtentPoint32W(DC, PWideChar(S), N, Size);
-        W := Size.cx + TriplePointWidth;
+        W := Size.cx + EllipsisWidth;
         if W < Width then
           L := N + 1
         else
@@ -2551,9 +2567,12 @@ begin
             L := N;
         end;
       end;
-      // Right-to-left directionality is automatically handled by DrawTextW, inclusive the three points
-      // if ETO_RTLREADING is set for the canvas.
-      Result := Copy(S, 1, N - 1) + cTriplePoint;
+
+      // Windows 2000+ automatically switches the order in the string. For every other system we have to take care.
+      if IsWin2K or not RTL then
+        Result := Copy(S, 1, N - 1) + '...'
+      else
+        Result := '...' + Copy(S, 1, N - 1);
     end;
   end;
 end;
