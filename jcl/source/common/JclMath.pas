@@ -12,12 +12,20 @@
 {                                                                                                  }
 { The Original Code is JclMath.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Clayton Collie, ESB Consultancy, J. Debord,      }
+{ Marcel van Brakel and Michael Schnell.                                                           }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Matthias Thoma                                                                                 }
-{   Robert Rossmair                                                                                }
+{ Contributors:                                                                                    }
+{   Ernesto Benestante                                                                             }
+{   Marcel van Brakel                                                                              }
+{   IDK                                                                                            }
+{   Aleksei Koudinov                                                                               }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Mark Vaughan                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -29,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclMath;
@@ -3752,6 +3760,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.5  2004/05/09 11:15:42  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.4  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
