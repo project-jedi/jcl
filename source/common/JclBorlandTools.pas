@@ -1140,7 +1140,7 @@ begin
     finally
       OptionsFile.Free;
     end;
-    Result := Execute(PackageName);
+    Result := Execute(StrDoubleQuote(StrTrimQuotes(PackageName)));
   finally
     SetCurrentDir(SaveDir);
   end;
