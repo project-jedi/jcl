@@ -7,8 +7,10 @@
 # $Id$
 
 JPP=../../source/prototypes/jpp
-OPTIONS="-c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x../Q"
+CLXOPTIONS="-c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x../Q"
+VCLOPTIONS="-c -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uHAS_UNIT_LIBC -uUnix -uLinux -uKYLIX -x../"
 FILES="JclInstall.pas JediInstallIntf.pas ProductFrames.pas JediInstallerMain.pas"
 
-$JPP $OPTIONS $FILES
+$JPP $CLXOPTIONS $FILES
+$JPP $VCLOPTIONS $FILES
 
