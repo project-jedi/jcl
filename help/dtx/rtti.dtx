@@ -1,0 +1,2400 @@
+@@JclSetToList
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a set to a list of enumeration values.
+Description:
+
+  JclSetToList converts a set to a list of enumeration values. Additionally
+  the set value is returned as a string optionally surrounded by brackets and
+  optionally using ranges if adjacent values are set.
+Parameters:
+  TypeInfo - RTTI of the set as returned by System.TypeInfo(<I>set type</I>).
+  Value - Set value.
+  WantBrackets - Flag to surround the result with brackets ('[' and ']'). When set to True, brackets will be present in the resulting string but not in the list.
+  WantRanges - Flag to use range specifiers for adjacent values. When set to True adjacent values will be specified as '<I>First value</I> .. <I>Last value</I>'. Ranges will be used in both the list as well as the resulting string.
+  Strings - TStrings decendant to receive a list of values. Caller is responsible of creating/destroying the list. The list is <B>not</B> cleared on entry to JclSetToList.
+Result:
+
+  The string will be the concatenation of all added values in the Strings parameter,
+  optionally surrounded by '['and ']' depending on the value of WantBrackets.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclSetToStr
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a set to a string of enumeration values.
+Description:
+
+  JclSetToStr converts a set to a string representing the set, optionally
+  surrounded by brackets and optionally using ranges if adjacent values are set.
+   <P>
+  JclSetToStr uses JclSetToList to do the conversion.
+Parameters:
+  TypeInfo - RTTI of the set as returned by System.TypeInfo(<I>set type</I>).
+  Value - Set value.
+  WantBrackets - Flag to surround the result with brackets ('[' and ']'). When set to True, brackets will be present in the resulting string but not in the list.
+  WantRanges - Flag to use range specifiers for adjacent values. When set to True adjacent values will be specified as '<I>First value</I> .. <I>Last value</I>'.
+Result:
+
+  The string will be the concatenation of all added values in the Strings parameter,
+  optionally surrounded by '['and ']' depending on the value of WantBrackets.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclStrToSet
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a string to a set value.
+Description:
+
+  JclStrToSet converts a string to a set value. The string may or may not contain
+  brackets ('[' and ']') and/or ranges ('<I>First value</I> .. <I>Last value</I>').
+  Value/ranges must be seperated by a comma (','). If the string contains illegal
+  values an exception is raised.
+Parameters:
+  TypeInfo - RTTI of the set as returned by System.TypeInfo(<I>set type</I>).
+  SetVar - Set value.
+  Value - String representing a set value.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclIntToSet
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts an integer value to a set.
+Description:
+
+  JclIntToSet converts an integer to a set value. Each bit in the integer value
+  represents a value in the set. Note that the set variable in memory might be
+  shifted up to 7 bits left. The actual number of bits shifted is equal to the
+  ordinal of the first value modulo 8
+Parameters:
+  TypeInfo - RTTI of the set as returned by System.TypeInfo(<I>set type</I>).
+  SetVar - Set value.
+  Value - Integer representing a set value.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclSetToInt
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a set value to an integer.
+Description:
+
+  JclSetToInt converts a set value to an integer. Each bit in the integer value
+  represents a value in the set. Note that the set variable in memory might be
+  shifted up to 7 bits left. The actual number of bits shifted is equal to the
+  ordinal of the first value modulo 8
+Parameters:
+  TypeInfo - RTTI of the set as returned by System.TypeInfo(<I>set type</I>).
+  SetVar - Set value.
+Result:
+
+  The return value is an Integer representing the set.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGUIDToString
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a GUID to a string.
+Description:
+
+  JclGUIDToString converts a GUID to a string. Note that the ComObj unit also has
+  a GUIDToString function but it requires the ole.dll to do the conversion.
+Parameters:
+  GUID - GUID to convert to a string.
+Result:
+
+  A string representing the GUID.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclStringToGUID
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a string to a GUID.
+Description:
+
+  JclStringToGUID converts a string to a GUID. Note that the ComObj unit also has
+  a StringToGUID function but it requires the ole.dll to do the conversion.
+Parameters:
+  S - String representing a GUID.
+Result:
+
+  The GUID the string is representing.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclEnumValueToIdent
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts an enumeration value to it's identifier.
+Description:
+
+  JclEnumValueToIdent converts an enumeration value to it's identifier. JclEnumValueToIdent
+  does exactly the same as GetEnumName but doesn't require an ordinal value. In
+  addition JclEnumValueToIdent will do a range check on the value and return a
+  "Value out of range" string if it's out of range.
+Parameters:
+  TypeInfo - RTTI of the enumeration as returned by System.TypeInfo(<I>enum type</I>), JclGenerateEnum* or JclGenerateSubRange function.
+  Value - Enumeration value.
+Result:
+
+  The identifier name of the value if the value is in range. If it's out of range
+  the resulting string will contain "Value out of range (ordinal=<I>Ord(Value)</I>)."
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclStrToTypedInt
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a string to an integer.
+Description:
+
+  JclStrToTypedInt converts a string to an integer. Besides the normal StrToInt,
+  JclStrToTypedInt will first check if a conversion function for the integer type
+  exists (ie. if RegisterIntegerConsts is called for the type). If such a function
+  exists the string may also contain identifiers. An example of a typed Integer is
+  TCursor.
+Parameters:
+  Value - Value to convert
+  TypeInfo - Pointer to the RTTI for the integer type. This pointer can be obtained through a call to System.TypeInfo(<I>type</I>) or JclGenerateSubRange.
+Result:
+
+  The Integer value the string represents.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclTypedIntToStr
+<GROUP RuntimeTypeInformation.Conversions>
+Summary:
+  Converts a Integer to a string.
+Description:
+
+  JclTypedIntToStr converts an integer to a string. Besides the normal IntToStr,
+  JclTypedIntToStr will first check if a conversion function for the Integer type
+  exists (ie. if RegisterIntegerConsts is called for the type). If such a function
+  exists the resulting string may contain an identifier instead of a number. An
+  example of a typed Integer is TCursor.
+Parameters:
+  Value - Value to convert
+  TypeInfo - Pointer to the RTTI for the integer type. This pointer can be obtained through a call to System.TypeInfo(<I>type</I>) or JclGenerateSubRange.
+Result:
+
+  A string representing the given value.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGenerateSetType
+<GROUP RuntimeTypeInformation.RTTIgeneration>
+Summary:
+  Generates the RTTI structure for a new set.
+Description:
+
+  JclGenerateSetType generates the RTTI structure for a new set type.
+Parameters:
+  BaseType - RTTI of the ordinal type (as returned by System.TypeInfo(<I>ordinal type</I>), JclGenerateEnum* or JclGenerateSubRange).
+  TypeName - Name of the newly generated RTTI.
+Result:
+
+  The return value is a pointer to the RTTI info.
+Notes:
+
+  All generated types are stored in a list and get freed on finalization of the JclRTTI unit. Optionally you can use RemoveTypeInfo to remove a specific type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGenerateEnumType
+<GROUP RuntimeTypeInformation.RTTIgeneration>
+Summary:
+  Generates the RTTI structure for a new enumeration base type.
+Description:
+
+  JclGenerateEnumType generates the RTTI structure for a new enumeration type.
+Parameters:
+  TypeName - Name of the newly generated RTTI.
+  Literals - Array of literals. Opposed to the Delphi syntax, literals can contain any ASCII character. Literals can be a maximum of 256 characters long.
+Result:
+
+  The return value is a pointer to the RTTI info.
+Notes:
+
+  All generated types are stored in a list and get freed on finalization of the JclRTTI unit. Optionally you can use RemoveTypeInfo to remove a specific type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGenerateEnumTypeBasedOn
+<GROUP RuntimeTypeInformation.RTTIgeneration>
+Summary:
+  Generates the RTTI structure for a new enumeration base type based on an existing enumeration.
+Description:
+
+  JclGenerateEnumTypeBasedOn generates the RTTI structure for a new enumeration type,
+  based on an existing enumeration.
+Parameters:
+  TypeName - Name of the newly generated RTTI.
+  BaseType - Pointer to RTTI of enumeration type to base the new type on. The pointer can be obtained from a call to System.TypeInfo(<I>ordinal type</I>), JclGenerateEnum* or JclGenerateSubRange.
+  PrefixCut - Number of characters to skip from the left. Additionally this value can be set to PREFIX_CUT_LOWERCASE (skip all leading lowercase characters) or PREFIX_CUT_EQUAL (skip all common leading characters).
+Result:
+
+  The return value is a pointer to the RTTI info.
+Notes:
+
+  All generated types are stored in a list and get freed on finalization of the JclRTTI unit. Optionally you can use RemoveTypeInfo to remove a specific type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclGenerateSubRange
+<GROUP RuntimeTypeInformation.RTTIgeneration>
+Summary:
+  Generates the RTTI structure for a new sub range type.
+Description:
+
+  JclGenerateSubRange generates the RTTI structure for a new sub range type.
+Parameters:
+  BaseType - Pointer to RTTI of ordinal type to base the new type on. The pointer can be obtained from a call to System.TypeInfo(<I>ordinal type</I>), JclGenerateEnum* or JclGenerateSubRange.
+  TypeName - Name of the newly generated RTTI.
+  MinValue - Minium value for the sub range.
+  MaxValue - Maximum value for the sub range.
+Result:
+
+  The return value is a pointer to the RTTI info.
+Notes:
+
+  All generated types are stored in a list and get freed on finalization of the JclRTTI unit. Optionally you can use RemoveTypeInfo to remove a specific type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@RemoveTypeInfo
+<GROUP RuntimeTypeInformation.RTTIgeneration>
+Summary:
+  Removes a generated RTTI structure.
+Description:
+
+  RemoveTypeInfo removes a user generated RTTI structure.
+Parameters:
+  TypeInfo - Pointer to the user generated RTTI as returned by JclGenerateEnumType, JclGenerateEnumTypeBasedOn or JclGenerateSubRange.
+Notes:
+
+  All generated types are stored in a list and get freed on finalization of the JclRTTI unit. Optionally you can use RemoveTypeInfo to remove a specific type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclHookIs
+<GROUP RuntimeTypeInformation.Classoperatorhooking>
+Summary:
+  Hooks the is/as class operators.
+Description:
+
+  JclHookIs hooks the <B>is</B> and <B>as</B> class operators. The <B>as</B> operator
+  will be hooked to a function that uses the <B>is</B> operator to check the valid
+  cast. If it's valid the object is simply returned, otherwise the normal exception
+  will be raised ('Invalid cast').<P>
+  The <B>is</B> operator is hooked to the specified function. JclRTTI provides two
+  functions: JclIsClass and JclIsClassByName.
+  The first is an exact copy of the function found in the system unit, and checks
+  the class based on RTTI (or rather VMT) pointers. The second checks the class
+  based on it's name.
+Parameters:
+  IsProc - Function to use as the <B>is</B> operator.
+Result:
+
+  If the hook was successfully set True will be returned, False otherwise.
+Notes:
+
+  This procedure changes the executable code (with the risk of completly destroying your application).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclIsHooked
+<GROUP RuntimeTypeInformation.Classoperatorhooking>
+Summary:
+  Checks if the class operators are hooked.
+Description:
+
+  JclIsHooked checks if the class operators are hooked.
+Result:
+
+  If the class operators are hooked True will be returned, False otherwise.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclUnhookIs
+<GROUP RuntimeTypeInformation.Classoperatorhooking>
+Summary:
+  Unhooks the is/as class operators.
+Description:
+
+  JclUnhookIs unhooks the <B>is</B> and <B>as</B> class operators.
+Result:
+
+  If the class operators were hooked and could be unhooked successfully True will
+  be returned, False othwerwise.
+Notes:
+
+  This procedure changes the executable code (with the risk of completly destroying your application).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclIsClass
+<GROUP RuntimeTypeInformation.Classoperatorhooking>
+Summary:
+  Is class operator replacement
+Description:
+
+  JclIsClass is an <B>is</B> class operator replacement. This implementation is
+  an exact copy of the one in the system.pas unit.<P>
+  JclIsClass is primarily intended to be used by the JclIsHook function. Because
+  JclIsClass is an exact copy of the version in system.pas it's probably not very
+  usefull to hook the <B>is</B> operator to an exact copy. It was used during
+  testing.
+Result:
+
+  If AnObj's class is AClass or inherits from AClass the function returns True,
+  otherwise it returns False.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Borland
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclIsClassByName
+<GROUP RuntimeTypeInformation.Classoperatorhooking>
+Summary:
+  Is class operator replacement
+Description:
+
+  JclIsClassByName is an <B>is</B> class operator replacement. This implementation
+  checks the class by it's name.<P>
+  JclIsClassByName checks the name of AnObj's class with the name of AClass. If
+  they're not equal (case insensitive), the parent tree is checked. If an equal
+  name is found, the entire path to the root is checked as well. Only if the path
+  exactly matches AnObj <B>is</B> AClass is assumed to be True.
+Result:
+
+  If AnObj's class is AClass or inherits from AClass the function returns True,
+  otherwise it returns False.
+Notes:
+
+  Although the names of all classes upto the root matches, it's not certain that AnObj actually is of AClass. To increase certainty, one should also check the unit name where the class is declared and possibly also it's InstanceSize.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@JclTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve RTTI information
+Description:
+
+  JclTypeInfo retrieves and interface to RTTI information given a pointer to the
+  type info structure. ATypeInfo can be obtained through a call to
+  System.TypeInfo(<I>type identifier</I>) or through one of the JclGenerate*
+  functions.
+Result:
+
+  An interface reference to the RTTI info for the specified type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclBaseInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Basic type info interface
+Description:
+
+  IJclBaseInfo is the base interface of type information retrieval. It provides two
+  method for outputting the RTTI
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclBaseInfo.WriteTo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Write RTTI information to the info writer.
+Description:
+
+  WriteTo writes the RTTI information to the info writer.
+Parameters:
+  Dest - Info writer object to write to.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclBaseInfo.DeclarationTo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Writes the Pascal declaration of the type to the info writer.
+Description:
+
+  DeclarationTo writes the Pascal declaration to the info writer. Note that the
+  declaration for some types is not exact, more specifically the declarations for
+  interface and class types. That is because not all information needed is in the
+  RTTI.
+Parameters:
+  Dest - Info writer object to write to.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Generic RTTI interface.
+Description:
+
+  IJclTypeInfo is the generic interface of RTTI. It provides for methods and
+  properties to query the type name, type kind, pointer to the type info and a
+  pointer to the type data.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.GetName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the name of the type.
+Description:
+
+  GetName retrieves the name of the type. GetName is the read specifier for the
+  Name property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.GetTypeData
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a pointer to the type data.
+Description:
+
+  GetTypeData retrieves a pointer to the type data of the type. GetTypeData is the
+  read specifier for the TypeData property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.GetTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a pointer to the type info.
+Description:
+
+  GetTypeInfo retrieves a pointer to the type info of the type. GetTypeInfo is the
+  read specifier for the TypeInfo property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.GetTypeKind
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the type kind.
+Description:
+
+  GetTypeKind retrieves the type kind of the type. GetTypeKind is the read
+  specifier for the TypeKind property. For more information please refer to the
+  Delphi help on TTypeKind.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.Name
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the name of the type.
+Description:
+
+  Name retrieves the name of the type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.TypeData
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a pointer to the type data.
+Description:
+
+  TypeData retrieves a pointer to the type data of the type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.TypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a pointer to the type info.
+Description:
+
+  TypeInfo retrieves a pointer to the type info of the type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclTypeInfo.TypeKind
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the type kind.
+Description:
+
+  TypeKind retrieves the type kind of the type. For more information please refer
+  to the Delphi help on TTypeKind.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Ordinal RTTI interface.
+Description:
+
+  IJclOrdinalTypeInfo is the base interface for ordinal types. It provides
+  methods and properties to query the ordinal type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalTypeInfo.GetOrdinalType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the ordinal type.
+Description:
+
+  GetOrdinalType retrieves the ordinal type. GetOrdinalType is the read specifier
+  for the OrdinalType property. See Delphi's help on TOrdType.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalTypeInfo.OrdinalType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the ordinal type.
+Description:
+
+  OrdinalType retrieves the ordinal type. See Delphi's help on TOrdType.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalRangeTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Ordinal range RTTI interface.
+Description:
+
+  IJclOrdinalRangeTypeInfo is the base interface for ranged ordinal types. It
+  provides methods and properties to query the minimum and maximum values.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalRangeTypeInfo.GetMinValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the minimum value.
+Description:
+
+  GetMinValue retrieves the minimum value for the ordinal type. GetMinValue is the
+  read specifier for the MinValue property.
+Result:
+
+  The minimum value of the range.
+Notes:
+
+  Although Int64 is not an ordinal type, it is used in this interface for the min and max values because it allows for all possible ranges (signed or unsigned 32-bit Integer values). This is not the case for Delphi 4 because Delphi 4 doesn't indicate that a type is an unsigned long.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalRangeTypeInfo.GetMaxValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the maximum value.
+Description:
+
+  GetMaxValue retrieves the maximum value for the ordinal type. GetMaxValue is the
+  read specifier for the MaxValue property.
+Result:
+
+  The maximum value of the range.
+Notes:
+
+  Although Int64 is not an ordinal type, it is used in this interface for the min and max values because it allows for all possible ranges (signed or unsigned 32-bit Integer values). This is not the case for Delphi 4 because Delphi 4 doesn't indicate that a type is an unsigned long.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalRangeTypeInfo.MinValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the minimum value.
+Description:
+
+  MinValue retrieves the minimum value for the ordinal type.
+Notes:
+
+  Although Int64 is not an ordinal type, it is used in this interface for the min and max values because it allows for all possible ranges (signed or unsigned 32-bit Integer values). This is not the case for Delphi 4 because Delphi 4 doesn't indicate that a type is an unsigned long.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclOrdinalRangeTypeInfo.MaxValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the maximum value.
+Description:
+
+  MaxValue retrieves the maximum value for the ordinal type.
+Notes:
+
+  Although Int64 is not an ordinal type, it is used in this interface for the min and max values because it allows for all possible ranges (signed or unsigned 32-bit Integer values). This is not the case for Delphi 4 because Delphi 4 doesn't indicate that a type is an unsigned long.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Enumeration RTTI interface.
+Description:
+
+  IJclEnumerationTypeInfo is the interface for enumeration types. It provides
+  methods and properties to query the base type, the name list and locating a name.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.GetBaseType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves an interface to the base type
+Description:
+
+  GetBaseType retrieves an interface to the base type for the enumeration. If the
+  enumeration is the base type an interface to the object is returned.
+   <P>
+  Under normal circumstances an enumeration can have at most 1 base type (a sub
+  range is always the sub range of the base type, never a sub range of a sub range).
+  GetBaseType is the read specifier for the BaseType property.
+Result:
+
+  An interface pointer to the base type for this enumeration. If this enumeration
+  is the base type, a pointer to the same object is returned.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.GetNames
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a name of the enumeration
+Description:
+
+  GetNames retrieves a name given an ordinal value. No range check is performed and
+  it is possible to retrieve names of ordinals that are not part of the sub range.
+  GetNames is the read specifier for the Names property.
+Parameters:
+  I - Ordinal value to get the name of.
+Result:
+
+  Enumeration name of the given ordinal.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.GetUnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the unit name of the enumeration
+Description:
+
+  GetUnitName retrieves the unit name where the type is declared. GetUnitName is
+  the read specifier for the UnitName property.
+Result:
+
+  Name of the unit where the type is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.IndexOfName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves a the inbdex of a name of the enumeration
+Description:
+
+  IndexOfName retrieves the index for a given name. If the names does not exist
+  within the sub range -1 is returned.
+Parameters:
+  Name - Enumeration name to get the ordinal for.
+Result:
+
+  If the enumeration name exists within the sub range, it's ordinal value is returned,
+  otherwise -1 is returned.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.BaseType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  An interface to the base type
+Description:
+
+  BaseType holds a reference to an interface to the base type for the enumeration.
+  If the enumeration is the base type an interface to the object is returned.
+   <P>
+  Under normal circumstances an enumeration can have at most 1 base type (a sub
+  range is always the sub range of the base type, never a sub range of a sub range).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.Names
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  A name of an enumeration value
+Description:
+
+  Names retrieves a name given an ordinal value. No range check is performed and
+  it is possible to retrieve names of ordinals that are not part of the sub range.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEnumerationTypeInfo.UnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The unit name of the enumeration
+Description:
+
+  UnitName holds the unit name where the type is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclSetTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Set RTTI interface.
+Description:
+
+  IJclSetTypeInfo is the interface for set types. It provides methods and properties
+  to query the base type and convert values from/to a string list.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclSetTypeInfo.GetBaseType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves an interface to the base type
+Description:
+
+  GetBaseType retrieves an interface to the base type for the set. GetBaseType is
+  the read specifier for the BaseType property.
+   <P>
+   <B>Background:</B>
+  When the compiler finds a set declaration similar to <I>TMySet = <B>set of</B>
+  (<valuelist>)</I> an implicit enumeration type is generated for that set. The
+  distinction between a set based on a declared enumeration or an implicit enumeration
+  can be made by examining the name of the base type. If it starts with a dot
+  (".") it's an implicit type generated by the compiler.
+Result:
+
+  An interface pointer to the base type for this set.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclSetTypeInfo.GetAsList
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Convert a set value to a list of strings.
+Description:
+
+  Convert a set value to a list of members. Optionally adjacent members in the
+  set are specified as a range instead of separate strings.
+Parameters:
+  Value - Set variable to convert to a list of member values.
+  WantRanges - Flag to determine if ranges are to be used for adjacent members.
+  Strings - TStrings descendant to retrieve the list of values/ranges set in Value. Caller is responsible for instantiating, clearing and freeing the list object.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclSetTypeInfo.SetAsList
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Convert a a list of strings to a set value.
+Description:
+
+  Convert a list of string values to a set value. Strings can be any valid set member or
+  ranges of set members.
+Parameters:
+  Value - Set variable to retrieve the the set value.
+  Strings - TStrings descendant holding the list of members/ranges. Caller is responsible for instantiating and freeing the list object.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclSetTypeInfo.BaseType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  An interface to the base type
+Description:
+
+  BaseType is an interface to the base type for the set
+   <P>
+   <B>Background:</B>
+  When the compiler finds a set declaration similar to <I>TMySet = <B>set of</B>
+  (<valuelist>)</I> an implicit enumeration type is generated for that set. The
+  distinction between a set based on a declared enumeration or an implicit enumeration
+  can be made by examining the name of the base type. If it starts with a dot
+  (".") it's an implicit type generated by the compiler.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclFloatTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Float RTTI interface.
+Description:
+
+  IJclFloatTypeInfo is the interface for float types. It provides
+  methods and properties to query the float type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclFloatTypeInfo.GetFloatType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve float type.
+Description:
+
+  GetFloatType retrieves the float type. See TFloatType in the TypInfo unit for
+  more information. GetFloatType is the read specifier for the FloatType property
+Result:
+
+  The float type of this float info object.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclFloatTypeInfo.FloatType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The float type.
+Description:
+
+  FloatType holds the float type. See TFloatType in the TypInfo unit for
+  more information.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclStringTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Short string RTTI interface.
+Description:
+
+  IJclStringTypeInfo is the interface for short string types. It provides
+  methods and properties to query the maximum string length.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclStringTypeInfo.GetMaxLength
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve teh maximum length.
+Description:
+
+  GetMaxLength retrieves the maximum string length. GetMaxLength is the read
+  specifier for the MaxLength property
+Result:
+
+  The float type of this float info object.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclStringTypeInfo.MaxLength
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The maximum string length.
+Description:
+
+  MaxLength holds the maximum string length for this ShortString type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclPropSpecKind
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclClassTypeInfo>
+Summary:
+  Property access specifier kind
+Description:
+
+  TJclPropSpecKind is the access specifier kind for the read, write or stored
+  specifier of a given property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+@@TJclPropSpecKind.pskNone
+  Specifier does not exist.
+@@TJclPropSpecKind.pskStaticMethod
+  Specifier uses a static method. The specifier value holds the address of the method.
+@@TJclPropSpecKind.pskVirtualMethod
+  Specifier uses a virtual method. The specifier value holds the VMT slot of the method.
+@@TJclPropSpecKind.pskField
+  Specifier uses a field. The specifier value holds the offset (relative to the start of the instance) to the field.
+@@TJclPropSpecKind.pskConstant
+  Specifier uses a constant. The specifier value holds the constant. Note that constants are used for the stored specifier only.
+--------------------------------------------------------------------------------
+@@IJclPropInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclClassTypeInfo>
+Summary:
+  Class RTTI property interface.
+Description:
+
+  IJclPropInfo is the interface for properties of class types. It provides
+  methods and properties to query the read, write and stored specifier values /
+  types, property name and index, default value and index specifier.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Class RTTI interface.
+Description:
+
+  IJclClassTypeInfo is the interface for class types. It provides
+  methods and properties to query the class reference, parent info, property info
+  and unit of declaration.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetClassRef
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve a class reference
+Description:
+
+  GetClassRef retrieves the class reference to the class. GetClassRef is the read
+  specifier for the ClassRef property.
+Result:
+
+  A class reference to the class.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetParent
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve an interface to the RTTI of the parent class
+Description:
+
+  GetParent retrieves an interface to the RTTI of the parent class. If the class
+  has no parent, GetParent will return <B>nil</B>. GetParent is the read specifier
+  for the Parent property.
+Result:
+
+  If the class has a parent the function will return an interface to the RTTI of
+  the parent, otherwise the function returns <B>nil</B>.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetTotalPropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the number of published properties.
+Description:
+
+  GetTotalPropertyCount retrieves the number of published properties. This number
+  includes all published properties of the parent tree. To find the number of
+  properties declared by the class, query the PropertyCount property.
+  GetTotalPropertyCount is the read specifier for the TotalPropertyCount property.
+Result:
+
+  The number of published properties declared by the class and it's ancestors.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetPropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the number of published properties declared in this class
+Description:
+
+  GetPropertyCount retrieves the number of properties published by this class. To
+  find the number of published properties in this class and it's ancestors, query the
+  TotalPropertyCount property. GetPropertyCount is the read specifier for the
+  PropertyCount property.
+Result:
+
+  The number of published properties declared by the class.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetProperties
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve an interface to the property.
+Description:
+
+  GetProperties retrieves an interface to the property at the given index. Valid
+  index values run from 0 up to TotalPropertyCount-1. Up to PropertyCount are
+  properties declared by this class. GetProperties is the read specifier for the
+  Properties property.
+Parameters:
+  PropIdx - Index of property to retrieve.
+Result:
+
+  An interface to the requested property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.GetUnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the unit name where the class is declared
+Description:
+
+  GetUnitName retrieves the name of the unit where the class is declared.
+  GetUnitName is the read specifier for the UnitName property.
+Result:
+
+  The name of the unit where the class is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.ClassRef
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Class reference
+Description:
+
+  ClassRef holds the class reference to the class.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.Parent
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve an interface to the RTTI of the parent class
+Description:
+
+  Parent holds an interface to the RTTI of the parent class. If the class has no
+  parent, Parent will be <B>nil</B>.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.TotalPropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Number of published properties.
+Description:
+
+  TotalPropertyCount holds the number of published properties. This number
+  includes all published properties of the ancestor tree. To find the number of
+  properties declared by the class, query the PropertyCount property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.PropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Number of published properties declared in this class
+Description:
+
+  PropertyCount holds the number of properties published by this class. To
+  find the number of published properties in this class and it's ancestors, query
+  the TotalPropertyCount property.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.Properties
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Array of interfaces to the properties.
+Description:
+
+  Properties is an array of interfaces to the properties. Valid index values run
+  from 0 up to TotalPropertyCount-1. Up to PropertyCount-1 are properties declared
+  by this class.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclClassTypeInfo.UnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Unit name where the class is declared
+Description:
+
+  UnitName holds the name of the unit where the class is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Event RTTI parameter interface.
+Description:
+
+  IJclEventParamInfo is the interface for parameters of event types. It provides
+  methods and properties to obtain parameter flags, name and type name for the
+  parameter. Note that for event parameters the type name is stored, not a pointer
+  to the RTTI and it's therefor impossible to get RTTI info for parameters.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.GetFlags
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Retrieve parameter flags.
+Description:
+
+  GetFlags retrieves the parameter flags that show if a given parameter is specified
+  using <B>const</B>, <B>var or <B>out</B> and if the parameter is an <B>array of</B>
+  the specified type. GetFlags is the read specifier for the Flags property.
+Result:
+
+  A set of parameter flags for this parameter.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.GetName
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Retrieve parameter name.
+Description:
+
+  GetName retrieves the parameter name. GetName is the read specifier for the Name
+  property.
+Result:
+
+  The parameter name.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.GetRecSize
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Retrieve parameter RTTI record size.
+Description:
+
+  GetRecSize retrieves the parameter RTTI record size. GetRecSize is the read
+  specifier for the RecSize property.
+Result:
+
+  The size of the record for this parameter in the RTTI structure.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.GetTypeName
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Retrieve parameter type name.
+Description:
+
+  GetTypeName retrieves the parameter type name. For event parameters there's no
+  RTTI pointer to the type, just the name. GetTypeName is the read specifier for
+  the TypeName property.
+Result:
+
+  If it's a typed parameter the function will return the name of that type,
+  otherwise an empty string is returned.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.GetParam
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Retrieve pointer to the parameter record.
+Description:
+
+  GetParam retrieves the pointer to the parameter record. GetParam is the read
+  specifier for the Param property.
+Result:
+
+  A pointer to the parameters' record in the RTTI structure.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.Flags
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Parameter flags.
+Description:
+
+  Flags holds the parameter flags that show if a given parameter is specified
+  using <B>const</B>, <B>var or <B>out</B> and if the parameter is an <B>array of</B>
+  the specified type.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.Name
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Parameter name.
+Description:
+
+  Name holds the parameter name.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.RecSize
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Parameter RTTI record size.
+Description:
+
+  RecSize holds the parameter RTTI record size.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.TypeName
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Parameter type name.
+Description:
+
+  TypeName holds the parameter type name. For event parameters there's no
+  RTTI pointer to the type, just the name.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventParamInfo.Param
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+Summary:
+  Pointer to the parameter record.
+Description:
+
+  Param holds the pointer to the parameter record.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Event RTTI interface.
+Description:
+
+  IJclEventTypeInfo is the interface for event types. It provides methods and
+  properties to query the method type (function or procedure), parameter info and
+  the result type name (for functions).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.GetMethodKind
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Method kind.
+Description:
+
+  GetMethodKind retrieves the method type (either a procedure or a function).
+  GetMethodKind is the read specifier of the MethodKind property.
+Result:
+
+  If the event is a procedure the function will return mkProcedure, otherwise
+  mkFunction is returned.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.GetParameterCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the number of parameters
+Description:
+
+  GetParameterCount retrieves the number of parameters declared. GetParameterCount
+  is the read specifier of the ParameterCount property.
+Result:
+
+  The number of parameters declared in the event.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.GetParameters
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves an interface to the parameter info.
+Description:
+
+  GetParameters retrieves an interface to parameter info. GetParameters is the
+  read specifier of the Parameters property.
+Parameters:
+  ParamIdx - Index (0-based) of parameter to retrieve.
+Result:
+
+  An interface to the requested parameter.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.GetResultTypeName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the result type name.
+Description:
+
+  GetResultTypeName retrieves the result type name. If the MethodKind = mkProcedure,
+  GetResultTypeName will return an empty string. GetResultTypeName is the read
+  specifier of the ResultTypeName property.
+Result:
+
+  If MethodKind = mkFunction teh function returns the name of result type, otherwise
+  the function returns an empty string.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.MethodKind
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Method kind
+Description:
+
+  MethodKind holds the method type (either a procedure or a function).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.ParameterCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Number of parameters
+Description:
+
+  ParameterCount holds the number of parameters declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.Parameters
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  An array of interface's to the parameter info
+Description:
+
+  Parameters is an array to parameter info interfaces. The index is 0-based.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclEventTypeInfo.ResultTypeName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Result type name.
+Description:
+
+  ResultTypeName holds the result type name. If the MethodKind = mkProcedure,
+  ResultTypeName will be an empty string.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Interface RTTI interface.
+Description:
+
+  IJclInterfaceTypeInfo is the RTTI interface for interface types. It provides
+  methods and properties to query the parent interface, the interface GUID,
+  it's flags unit name of declaration and number of properties (Delphi 6 only).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GetParent
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve a reference to the parent interface.
+Description:
+
+  GetParent retrieves an interface to the parent interface of this type. If the
+  interface has no parent nil is returned. GetParent is the read specifier of the
+  Parent property.
+Result:
+
+  A reference to the parent interface RTTI. If the interface has no parent <B>nil</B>
+  will be returned instead.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GetFlags
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the interface flags.
+Description:
+
+  GetFlags retrieves the interface flags. There are three possible flags: 
+   <IL>ifHasGUID - Interface has a GUID</IL>
+   <IL>ifDispInterface - Interface is an <B>dispinterface</B>
+   <IL>ifDispatch - Interface supports the IDispatch interface</IL> 
+  GetFlags is the read specifier of the Flags property.
+Result:
+
+  A set of flags that apply to the interface.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GetGUID
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the interface GUID.
+Description:
+
+  GetGUID retrieves the interface GUID. If the interface has no GUID the null GUID
+  is returned. GetGUID is the read specifier of the GUID property.
+Result:
+
+  The GUID of the interface or the null GUID if the interface has no GUID.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GetPropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the number of properties in the interface.
+Description:
+
+  GetPropertyCount retrieves the number of properties declared in the interface.
+  Although the number of properties is stored, there's no information on individual
+  properties. GetPropertyCount is the read specifier of the PropertyCount property.
+Result:
+
+  The number of properties declared in the interface.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GetUnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieve the unit name of the interface.
+Description:
+
+  GetUnitName retrieves the unit name where the interface is declared. GetUnitName
+  is the read specifier of the UnitName property.
+Result:
+
+  The unit name where the interface is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.Parent
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  A reference to the parent interface.
+Description:
+
+  Parent holds a reference to the parent interface of this type. If the interface
+  has no parent, Parent holds <B>nil</B>.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.Flags
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The interface flags.
+Description:
+
+  Flags hold the interface flags. There are three possible flags: 
+   <IL>ifHasGUID - Interface has a GUID</IL>
+   <IL>ifDispInterface - Interface is an <B>dispinterface</B>
+   <IL>ifDispatch - Interface supports the IDispatch interface</IL>
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.GUID
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The interface GUID.
+Description:
+
+  GUID holds the interface GUID. If the interface has no GUID the property will
+  hold the null GUID.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.UnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The unit name of the interface.
+Description:
+
+  UnitName holds the unit name where the interface is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInterfaceTypeInfo.PropertyCount
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The number of properties in the interface.
+Description:
+
+  PropertyCount holds the number of properties declared in the interface.
+  Although the number of properties is stored, there's no information on individual
+  properties.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInt64TypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Int64 RTTI interface.
+Description:
+
+  IJclInt64TypeInfo is the interface for Int64 types. It provides methods and
+  properties to query the minimum and maximum values.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInt64TypeInfo.GetMinValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the minimum value.
+Description:
+
+  GetMinValue retrieves the minimum value. GetMinValue is the read specifier for
+  the MinValue property.
+Result:
+
+  The minimum value of the range.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInt64TypeInfo.GetMaxValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the maximum value.
+Description:
+
+  GetMaxValue retrieves the maximum value. GetMaxValue is the read specifier for
+  the MaxValue property.
+Result:
+
+  The maximum value of the range.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInt64TypeInfo.MinValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the minimum value.
+Description:
+
+  MinValue retrieves the minimum value.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclInt64TypeInfo.MaxValue
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the maximum value.
+Description:
+
+  MaxValue retrieves the maximum value.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Dynamic array RTTI interface.
+Description:
+
+  IJclDynArrayTypeInfo is the interface for dynamic array types. RTTI for dynamic
+  arrays is available as of Delphi 6. The interface provides methods and
+  properties to query the element size, it's type (both RTTI as well as varType),
+  the unit name of it's declaration and if the elements require clean-up.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetElementSize
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the element size.
+Description:
+
+  GetElementSize retrieves the size of each element. GetElementSize is the read
+  specifier for the ElementSize property.
+Result:
+
+  The size of each element.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetElementType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the interface to the element RTTI.
+Description:
+
+  GetElementType retrieves a reference to the interface for the RTTI of the elements.
+  Note that declarations as in <I>TMyArray = <B>array of record</B> x: Integer;
+  y: string; <B>end</B></I> do <B>not</B> generate RTTI for the elements.
+  GetElementType is the read specifier for the ElementType property.
+Result:
+
+  A reference to the RTTI interface for the elements or nil if there's no RTTI on
+  the elements.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetElementsNeedCleanup
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Determines if elements need cleanup.
+Description:
+
+  GetElementsNeedCleanup determines if the elements require cleanup when elements
+  are discarded. GetElementsNeedCleanup is the read specifier for the
+  ElementsNeedCleanup property.
+Result:
+
+  If the elements of the array need cleanup the function returns True, otherwise it
+  returns false.
+Notes:
+
+  The decision is made by examining the elType member of the type data. If it's not <B>nil</B> cleanup is required. For constructions that do not create RTTI for the elements this decision might be wrong (notably with record constructs containing long strings as in <I>TMyArray = <B>array of record</B> x: Integer; y: string; <B>end</B></I>).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetVarType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the OLE Automation varType equivalent.
+Description:
+
+  GetVarType retrieves the OLE Automation varType equivalent. GetVarType is the
+  read specifier for the VarType property.
+Result:
+
+  The OLE Automation varType equivalent
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetUnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retrieves the unit name of the dynamic array
+Description:
+
+  GetUnitName retrieves the unit name where the type is declared. GetUnitName is
+  the read specifier for the UnitName property.
+Result:
+
+  Name of the unit where the type is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetElementSize
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The element size.
+Description:
+
+  ElementSize holds the size of each element.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.GetElementType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Retreives the interface to the element RTTI.
+Description:
+
+  ElementType holds a reference to the interface for the RTTI of the elements.
+  Note that declarations as in <I>TMyArray = <B>array of record</B> x: Integer;
+  y: string; <B>end</B></I> do <B>not</B> generate RTTI for the elements.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.ElementsNeedCleanup
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  Elements cleanup flag.
+Description:
+
+  ElementsNeedCleanup is the element cleanup flag.
+Notes:
+
+  The decision is made by examining the elType member of the type data. If it's not <B>nil</B> cleanup is required. For constructions that do not create RTTI for the elements this decision might be wrong (notably with record constructs containing long strings as in <I>TMyArray = <B>array of record</B> x: Integer; y: string; <B>end</B></I>).
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.VarType
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The OLE Automation varType equivalent.
+Description:
+
+  VarType holds the OLE Automation varType equivalent.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+--------------------------------------------------------------------------------
+@@IJclDynArrayTypeInfo.UnitName
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+Summary:
+  The unit name of the dynamic array
+Description:
+
+  UnitName holds the unit name where the type is declared.
+Quick info:
+  Unit: JclRTTI
+  Category: Runtime Type Information
+  Visibility: Public
+  Donator: Marcel Bestebroer
+  Delphi Versions: 6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
