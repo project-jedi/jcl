@@ -1472,6 +1472,22 @@ const
 implementation
 
 {$IFDEF ZLIB_DLL}
+{$IFNDEF HAS_UNIT_LIBC}
+{$IFDEF UNIX}
+uses
+  dl;
+{$ENDIF UNIX}
+{$ENDIF ~HAS_UNIT_LIBC}
+
+{$IFDEF MSWINDOWS}
+type
+  TModuleHandle = HINST;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+type
+  TModuleHandle = Pointer;
+{$ENDIF LINUX}
+
 const
   {$IFDEF MSWINDOWS}
   ZLibModuleName = 'zlib1.dll';
@@ -1479,21 +1495,32 @@ const
   {$IFDEF UNIX}
   ZLibModuleName = 'libz.so';
   {$ENDIF UNIX}
+  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
   {$UNDEF LINK_LIBC}
+
+var
+  _ZLibModuleHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+
+function ZlibModuleHandle: Pointer;
+begin
+  {$IFDEF UNIX}
+  if _ZLibModuleHandle = INVALID_MODULEHANDLE_VALUE then
+    _ZLibModuleHandle := dlopen(ZLibModuleName, RTLD_NOW);
+  Result := _ZLibModuleHandle;
+  {$ENDIF UNIX}
+end;
+
+function GetFunctionAddress(FunctionName: string): Pointer;
+begin
+  {$IFDEF UNIX}
+  Result := ZlibModuleHandle;
+  if Result <> nil then
+    Result := dlsym(Result, PChar(FunctionName));
+  {$ENDIF UNIX}
+end;
+
 {$ELSE ~ZLIB_DLL}
-
-{$IFDEF HAS_UNIT_LIBC}
-uses
-  Libc;
-{$ELSE ~HAS_UNIT_LIBC}
-{$IFDEF UNIX}
-  dl;
-{$ENDIF UNIX}
-
-type
-  size_t = Longint;
-{$ENDIF ~HAS_UNIT_LIBC}
 
 {$LINK obj\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
 {$LINK obj\compress.obj}
@@ -1539,7 +1566,22 @@ function inflateSetDictionary; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 function inflateSync;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 function inflateCopy;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 function inflateReset;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateBackInit_;     external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by inflateBackInit()
+
+{$IFDEF ZLIB_DLL}
+var
+  _inflateBackInit_: function (var strm:z_stream; windowBits: Integer;
+    window: PByte; {const} version: PChar; stream_size: Integer): Integer = nil;
+
+function inflateBackInit_;      // wrapped by inflateBackInit()
+begin
+  if not Assigned(_inflateBackInit_) then
+    _inflateBackInit_ := GetFunctionAddress('inflateBackInit_');
+  Result := _inflateBackInit_(strm, windowBits, window, version, stream_size);
+end;
+{$ELSE}
+function inflateBackInit_; external;
+{$ENDIF}
+
 function inflateBack;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 function inflateBackEnd;       external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 function zlibCompileFlags;     external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
@@ -1643,32 +1685,6 @@ end;
 
 {$ENDIF ~LINK_LIBC}
 {$ENDIF ~ZLIB_DLL}
-
-{$IFDEF UNIX}
-
-//-----------------------------------------------------------------------------
-// START Unix specific
-//-----------------------------------------------------------------------------
-
-function ZlibModuleHandle: Pointer;
-begin
-  if _ZLibModuleHandle = INVALID_MODULEHANDLE_VALUE then
-    _ZLibModuleHandle := dlopen(ZLibModuleName, RTLD_NOW);
-  Result := _ZLibModuleHandle;
-end;
-
-function GetFunctionAdress(FunctionName: string): Pointer;
-begin
-  Result := ZlibModuleHandle;
-  if Result <> nil then
-    Result := dlsym(Result, PChar(FunctionName));
-end;
-
-//-----------------------------------------------------------------------------
-// END Unix specific
-//-----------------------------------------------------------------------------
-
-{$ENDIF UNIX}
 
 //-----------------------------------------------------------------------------
 //
