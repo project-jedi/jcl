@@ -63,13 +63,21 @@ function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 function GetUserObjectName(hUserObject: THandle): string;
 
+//------------------------------------------------------------------------------
+// Account Information
+//------------------------------------------------------------------------------
+
+procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
+procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
+function GetInteractiveUserName: string;  
+
 implementation
 
 uses
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
-  JclStrings, JclWin32;
+  JclStrings, JclWin32, JclSysInfo;
 
 //==============================================================================
 // Access Control
@@ -299,6 +307,88 @@ begin
     StrResetLength(Result)
   else
     Result := '';
+end;
+
+//==============================================================================
+// Account Information
+//==============================================================================
+
+procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
+var
+  NameSize, DomainSize: DWORD;
+  Use: DWORD;
+begin
+  NameSize := 0;
+  DomainSize := 0;
+  LookupAccountSid(nil, Sid, nil, NameSize, nil, DomainSize, Use);
+  SetLength(Name, NameSize);
+  SetLength(Domain, DomainSize);
+  Win32Check(LookupAccountSid(nil, Sid, PChar(Name), NameSize, PChar(Domain), DomainSize, Use));
+  SetLength(Domain, StrLen(PChar(Domain)));
+  SetLength(Name, StrLen(PChar(Name)));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
+  var Buffer: Pointer);
+var
+  B: BOOL;
+  Length, LastError: DWORD;
+begin
+  Buffer := nil;
+  Length := 0;
+  B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
+  while (not B) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) do
+  begin
+    ReallocMem(Buffer, Length);
+    B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
+    if not B then LastError := GetLastError;
+  end;
+  if not B then
+  begin
+    FreeMem(Buffer);
+    SetLastError(LastError);
+    RaiseLastWin32Error;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+type
+  _TOKEN_USER = record
+    User: SID_AND_ATTRIBUTES;
+  end;
+  {$EXTERNALSYM _TOKEN_USER}
+  TOKEN_USER = _TOKEN_USER;
+  {$EXTERNALSYM TOKEN_USER}
+  TTokenUser = TOKEN_USER;
+  PTokenUser = ^TOKEN_USER;
+
+function GetInteractiveUserName: string;
+var
+  Handle: THandle;
+  Token: THandle;
+  User: PTokenUser;
+  Name, Domain: string;
+begin
+  Handle := GetShellProcessHandle;
+  try
+    Win32Check(OpenProcessToken(Handle, TOKEN_QUERY, Token));
+    try
+      QueryTokenInformation(Token, TokenUser, Pointer(User));
+      try
+        LookupAccountBySid(User.User.Sid, Name, Domain);
+        Result := Domain + '\' + Name;
+      finally
+        FreeMem(User);
+      end;
+    finally
+      CloseHandle(Token);
+    end;
+  finally
+    CloseHandle(Handle);
+  end;
 end;
 
 end.
