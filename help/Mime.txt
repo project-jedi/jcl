@@ -10,7 +10,7 @@ within one of MIME-routines.
 Kind=Type
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -27,7 +27,7 @@ MIME encoded string
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=4
@@ -50,7 +50,7 @@ Decoded string
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=4
@@ -79,7 +79,7 @@ Count=2
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=4
@@ -108,7 +108,7 @@ Count=2
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=4
@@ -122,7 +122,7 @@ function MimeEncodedSize(const i: Integer): Integer;
 [ShortDescr]
 Calculates the output size for encoding
 [Description]
-MimeEncodedSize calculates the output size of i MimeEncoded bytes. Use for <REF Target"MimeEncode">MimeEncode only.</REF>
+MimeEncodedSize calculates the output size of i MimeEncoded bytes. Use for <REF>MimeEncode</REF> only.
 [Parameters]
 Count=1
 1=i:Integer=Number of bytes to encode
@@ -131,7 +131,7 @@ Number of bytes needed for encoding
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=2
@@ -144,7 +144,7 @@ function MimeDecodedSize(const i: Integer): Integer;
 Calculates the output size for decoding
 [Description]
 MimeDecodedSize calculates the maximum output size of i MimeDecoded bytes. You
-may use it for <REF Target"MimeDecode">MimeDecode</REF> to calculate the maximum amount of memory required for
+may use it for <REF>MimeDecode</REF> to calculate the maximum amount of memory required for
 decoding in one single pass.
 [Parameters]
 Count=1
@@ -154,7 +154,7 @@ Maximum number of bytes needed for decoding
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=2
@@ -166,17 +166,17 @@ procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; 
 [ShortDescr]
 The primary Mime encoding routine
 [Description]
-MimeEncode is the primary MIME-encoding routine and is used by <REF Target"MimeEncodeString">MimeEncodeString</REF>
-and <REF Target"MimeEncodeStream">MimeEncodeStream</REF> but can also be used directly.<BR><B>
+MimeEncode is the primary MIME-encoding routine and is used by <REF>MimeEncodeString</REF>
+and <REF>MimeEncodeStream</REF> but can also be used directly.<BR><B>
 CAUTION:</B> OutputBuffer must have enough memory allocated to take all encoded
-output. <REF Target"MimeEncodedSize">MimeEncodedSize</REF>(InputBytesCount) calculates this amount in bytes.
+output. <REF>MimeEncodedSize</REF>(InputBytesCount) calculates this amount in bytes.
 MimeEncode will then fill the entire OutputBuffer, so there is no
 OutputBytesCount result for this procedure. Preallocating all memory at once (as
 required by MimeEncode) avoids the time-consuming process of reallocation. If
-InputBuffer and/or OutBuffer is/are nil an exception is raised. </P><P><B>
-Note:</B> If not all data fits into memory at once, you can use MimeEncode multiple
-times, but you must be very careful about the size of the InputBuffer. It should
-be set to a number that is a multiple of 3.
+InputBuffer and/or OutBuffer is/are nil an exception is raised.
+[Notes]
+Count=1
+1=If not all data fits into memory at once, you can use MimeEncode multiple times, but you must be very careful about the size of the InputBuffer. It should be set to a number that is a multiple of 3.
 [Parameters]
 Count=3
 1=InputBuffer:Pointer=Points to the memory block to encode
@@ -185,7 +185,7 @@ Count=3
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=2
@@ -197,9 +197,9 @@ function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer; 
 [ShortDescr]
 The primary Mime decoding routine
 [Description]
-MimeDecode is the primary MIME-decoding routine and can also be used directly.
-CAUTION: OutputBuffer must have enough memory allocated to take all output.
-<REF Target"MimeDecodedSize">MimeDecodedSize</REF>(InputBytesCount) calculates this amount in bytes. There is no
+MimeDecode is the primary MIME-decoding routine and can also be used directly.<BR><B>
+CAUTION:</B> OutputBuffer must have enough memory allocated to take all
+output. <REF>MimeDecodedSize</REF>(InputBytesCount) calculates this amount in bytes. There is no
 guarantee that all output will be filled after decoding. MimeDecode therefore
 returns the actual number of bytes written to OutputBuffer. Preallocating all
 memory at once (as is required by MimeDecode) avoids the time-consuming process
@@ -216,7 +216,7 @@ Number of bytes actually written to the OutputBuffer
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=2
@@ -229,11 +229,11 @@ function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: In
 MIME decode a chunk of data in a multi-phase decoding routine
 [Description]
 MIME decodes a chunk of data in a mutli-phase decoding routine. It is used
-within <REF Target"MimeDecodeString">MimeDecodeString</REF>, <REF Target"MimeDecodeStream">MimeDecodeStream,/REF> and <REF Target"MimeDecode">MimeDecode</REF>, but can also be used
-directly. If either InputBuffer or OutBuffer are nil, an exception is raised. </P><P><B>
-Note:</B> On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be
-4. The values returned in these parameters should be used in the next call to
-MimeDecodePartial or <REF Target"MimeDecodePartialEnd">MimeDecodePartialEnd</REF>.
+within <REF>MimeDecodeString</REF>, <REF>MimeDecodeStream</REF>, and <REF>MimeDecode</REF>, but can also be used
+directly. If either InputBuffer or OutBuffer are nil, an exception is raised.
+[Notes]
+Count=1
+1=On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be 4. The values returned in these parameters should be used in the next call to MimeDecodePartial or <REF>MimeDecodePartialEnd</REF>.
 [Parameters]
 Count=5
 1=InputBuffer:Pointer=Points to the memory block to decode
@@ -246,7 +246,7 @@ Number of bytes actually written to the OutputBuffer
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=1
@@ -259,9 +259,10 @@ MIME decode the last chunk of data in a multi-phase decoding routine
 [Description]
 MIME decodes the last chunk of data in a mutli-phase decoding routine. It is
 used within <REF Target"MimeDecodeString">MimeDecodeString</REF>, <REF Target"MimeDecodeStream">MimeDecodeStream,/REF> and <REF Target"MimeDecode">MimeDecode</REF>, but can also be
-used directly. If OutBuffer is nil, an exception is raised. </P><P><B>
-Note:</B> ByteBuffer and ByteBufferSpace are the values returned in the last call to
-<REF Target"MimeDecodePartial">MimeDecodePartial</REF>.
+used directly. If OutBuffer is nil, an exception is raised.
+[Notes]
+Count=1
+1=ByteBuffer and ByteBufferSpace are the values returned in the last call to <REF>MimeDecodePartial</REF>.
 [Parameters]
 Count=3
 1=OutputBuffer:Pointer=Points to the output buffer
@@ -272,7 +273,7 @@ Number of bytes actually written to the OutputBuffer
 [Quick Info]
 Unit=JclMime
 Category=MIME
-Author=Ralf Junker;<ralfjunker@gmx.de>
+Author=Ralf Junker;ralfjunker@gmx.de
 Delphi=4,5
 [SeeAlso]
 Count=1
