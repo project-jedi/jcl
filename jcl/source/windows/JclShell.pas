@@ -1,32 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclShell.pas.                                           }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains routines and classes which makes working with the Windows }
-{ Shell a bit easier. Included are routines for working with PIDL's, special   }
-{ folder's, file and folder manipulation through shell interfaces, shortcut's  }
-{ and program execution.                                                       }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 29, 2001                                                }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclShell.pas.                                                               }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains routines and classes which makes working with the Windows Shell a bit easier. }
+{ Included are routines for working with PIDL's, special folder's, file and folder manipulation    }
+{ through shell interfaces, shortcut's and program execution.                                      }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: April 29, 2001                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclShell;
 
@@ -40,9 +38,9 @@ uses
   Windows, Graphics, ShlObj, SysUtils,
   JclBase;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Files and Folders
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TSHDeleteOption = (doSilent, doAllowUndo, doFilesOnly);
@@ -85,27 +83,26 @@ function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
 function DisplayContextMenu(const Handle: HWND; const FileName: string;
   Pos: TPoint): Boolean;
 
-function OpenFolder(const Path: string; Parent: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
-function OpenSpecialFolder(FolderID: Integer; Parent: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+function OpenFolder(const Path: string; Parent: HWND = 0): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: HWND = 0): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Memory Management
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
 function SHAllocMem(out P: Pointer; Count: Integer): Boolean;
 function SHGetMem(var P: Pointer; Count: Integer): Boolean;
 function SHFreeMem(var P: Pointer): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Paths and PIDLs
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
 function PathToPidl(const Path: string; Folder: IShellFolder): PItemIdList;
 function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
-function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder;
-  out Last: PItemIdList): Boolean;
+function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
 function PidlCompare(const Pidl1, Pidl2: PItemIdList): Boolean;
 function PidlCopy(const Source: PItemIdList; out Dest: PItemIdList): Boolean;
 function PidlFree(var IdList: PItemIdList): Boolean;
@@ -117,9 +114,9 @@ function PidlToPath(IdList: PItemIdList): string;
 function StrRetFreeMem(StrRet: TStrRet): Boolean;
 function StrRetToString(IdList: PItemIdList; StrRet: TStrRet; Free: Boolean): string;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Shortcuts / Shell link
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PShellLink = ^TShellLink;
@@ -138,13 +135,12 @@ type
 procedure ShellLinkFree(var Link: TShellLink);
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
-function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
-  const FileName: string): HRESULT;
+function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
 function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;  
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Miscellanuous
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PDllVersionInfo = ^TDllVersionInfo;
@@ -157,12 +153,7 @@ type
   end;
   TDllVersionInfo = _DllVersionInfo;
 
-const
-  DLLVER_PLATFORM_WINDOWS = $00000001;
-  DLLVER_PLATFORM_NT      = $00000002;
-
-function SHDllGetVersion(const FileName: string;
-  var Version: TDllVersionInfo): Boolean;
+function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
 
 function GetSystemIcon(IconIndex: Integer; Flags: Cardinal): HICON;
 function OverlayIcon(var Icon: HICON; Overlay: HICON; Large: Boolean): Boolean;
@@ -170,20 +161,15 @@ function OverlayIconShortCut(var Large, Small: HICON): Boolean;
 function OverlayIconShared(var Large, Small: HICON): Boolean;
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
 
-function ShellExecEx(const FileName: string;
-  const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+function ShellExecEx(const FileName: string; const Parameters: string = ''; const Verb: string = '';
+  CmdShow: Integer = SW_SHOWNORMAL): Boolean;
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
-function ShellExecAndWait(const FileName: string;
-  const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+function ShellExecAndWait(const FileName: string; const Parameters: string = ''; const Verb: string = '';
+  CmdShow: Integer = SW_SHOWNORMAL): Boolean;
 
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
-function ShellRunControlPanel(const NameOrFileName: string;
-  AppletNumber: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
 
 type
   TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
@@ -202,9 +188,9 @@ const
   cVerbProperties = 'properties';
   cVerbOpen = 'open';
 
-//==============================================================================
+//==================================================================================================
 // Files and Folders
-//==============================================================================
+//==================================================================================================
 
 // Helper function and constant to map a TSHDeleteOptions set to a Cardinal
 
@@ -222,7 +208,7 @@ begin
     Result := Result or FOF_FILESONLY;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHDeleteFiles(Parent: HWND; const Files: string;
   Options: TSHDeleteOptions): Boolean;
@@ -242,7 +228,7 @@ begin
   Result := SHFileOperation(FileOp) = 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHDeleteFolder(Parent: HWND; const Folder: string;
   Options: TSHDeleteOptions): Boolean;
@@ -253,7 +239,7 @@ begin
     SHDeleteFiles(Parent, Folder, Options);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Helper function to map a TSHRenameOptions set to a cardinal
 
@@ -285,7 +271,7 @@ begin
   Result := SHFileOperation(FileOp) = 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EnumFolderFlagsToCardinal(Flags: TEnumFolderFlags): Cardinal;
 begin
@@ -298,7 +284,7 @@ begin
     Result := Result or SHCONTF_INCLUDEHIDDEN;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ClearEnumFolderRec(var F: TEnumFolderRec; const Free, Release: Boolean);
 begin
@@ -319,14 +305,14 @@ begin
   F.IconSmall := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure SHEnumFolderClose(var F: TEnumFolderRec);
 begin
   ClearEnumFolderRec(F, True, True);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 const
@@ -362,7 +348,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
   var F: TEnumFolderRec): Boolean;
@@ -389,7 +375,7 @@ begin
     SHEnumFolderClose(F);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHEnumFolderFirst(const Folder: string; Flags: TEnumFolderFlags;
   var F: TEnumFolderRec): Boolean;
@@ -411,7 +397,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSpecialFolderLocation(const Folder: Integer): string;
 var
@@ -426,7 +412,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean;
 var
@@ -445,7 +431,7 @@ begin
   Result := ShellExecuteEx(@Info);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean;
 var
@@ -464,7 +450,7 @@ begin
   Result := ShellExecuteEx(@Info);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Window procedure for the callback window created by DisplayContextMenu.
 // It simply forwards messages to the folder. If you don't do this then the
@@ -472,8 +458,7 @@ end;
 // note: storing the IContextMenu2 pointer in the window's user data was
 // 'inspired' by (read: copied from) code by Brad Stowers.
 
-function MenuCallback(Wnd: HWND; Msg: UINT; wParam: WPARAM;
-  lParam: LPARAM): LRESULT; stdcall;
+function MenuCallback(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
 var
   ContextMenu2: IContextMenu2;
 begin
@@ -501,7 +486,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Helper function for DisplayContextMenu, creates the callback window.
 
@@ -520,7 +505,7 @@ begin
     0, 0, 0, 0, 0, HInstance, Pointer(ContextMenu));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
@@ -570,7 +555,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DisplayContextMenu(const Handle: HWND; const FileName: string;
   Pos: TPoint): Boolean;
@@ -587,7 +572,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OpenFolder(const Path: string; Parent: HWND): Boolean;
 var
@@ -609,7 +594,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OpenSpecialFolder(FolderID: Integer; Parent: HWND): Boolean;
 var
@@ -643,9 +628,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Memory Management
-//==============================================================================
+//==================================================================================================
 
 function SHAllocMem(out P: Pointer; Count: Integer): Boolean;
 var
@@ -664,7 +649,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHFreeMem(var P: Pointer): Boolean;
 var
@@ -682,7 +667,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHGetMem(var P: Pointer; Count: Integer): Boolean;
 var
@@ -697,7 +682,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
 var
@@ -713,12 +698,11 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Paths and PIDLs
-//==============================================================================
+//==================================================================================================
 
-function DriveToPidlBind(const DriveName: string;
-  out Folder: IShellFolder): PItemIdList;
+function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
 var
   Attr: ULONG;
   Eaten: ULONG;
@@ -748,7 +732,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathToPidl(const Path: string; Folder: IShellFolder): PItemIdList;
 var
@@ -765,7 +749,7 @@ begin
     DesktopFolder.ParseDisplayName(0, nil, WidePath, CharsParsed, Result, Attr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
 var
@@ -799,10 +783,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder;
-  out Last: PItemIdList): Boolean;
+function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
 var
   Path: string;
 begin
@@ -814,7 +797,7 @@ begin
     Folder := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlCompare(const Pidl1, Pidl2: PItemIdList): Boolean;
 var
@@ -826,7 +809,7 @@ begin
     Result := CompareMem(Pidl1, Pidl2, L);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlCopy(const Source: PItemIdList; out Dest: PItemIdList): Boolean;
 var
@@ -845,7 +828,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlFree(var IdList: PItemIdList): Boolean;
 var
@@ -865,7 +848,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlGetDepth(const Pidl: PItemIdList): Integer;
 var
@@ -885,7 +868,7 @@ begin
     Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlGetLength(const Pidl: PItemIdList): Integer;
 var
@@ -908,7 +891,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlGetNext(const Pidl: PItemIdList): PItemIdList;
 begin
@@ -921,7 +904,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PidlToPath(IdList: PItemIdList): string;
 begin
@@ -932,7 +915,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function StrRetFreeMem(StrRet: TStrRet): Boolean;
 begin
@@ -941,7 +924,7 @@ begin
     Result := SHFreeMem(Pointer(StrRet.pOleStr));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function StrRetToString(IdList: PItemIdList; StrRet: TStrRet; Free: Boolean): string;
 begin
@@ -964,16 +947,16 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // ShortCuts / Shell link
-//==============================================================================
+//==================================================================================================
 
 procedure ShellLinkFree(var Link: TShellLink);
 begin
   PidlFree(Link.IdList);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   IID_IShellLink: TGUID = ( { IID_IShellLinkA }
@@ -998,7 +981,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 var
@@ -1024,7 +1007,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 var
@@ -1069,7 +1052,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
 var
@@ -1117,9 +1100,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Miscellanuous
-//==============================================================================
+//==================================================================================================
 
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
 var
@@ -1141,10 +1124,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-function SHDllGetVersion(const FileName: string;
-  var Version: TDllVersionInfo): Boolean;
+function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
 type
   TDllGetVersionProc = function (var pdvi: TDllVersionInfo): HRESULT; stdcall;
 var
@@ -1165,7 +1147,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OverlayIcon(var Icon: HICON; Overlay: HICON; Large: Boolean): Boolean;
 var
@@ -1203,7 +1185,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OverlayIconShortCut(var Large, Small: HICON): Boolean;
 var
@@ -1217,7 +1199,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OverlayIconShared(var Large, Small: HICON): Boolean;
 var
@@ -1231,7 +1213,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSystemIcon(IconIndex: Integer; Flags: Cardinal): HICON;
 var
@@ -1246,7 +1228,7 @@ begin
   Result := ImageList_ExtractIcon(0, ImageList, IconIndex);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellExecEx(const FileName: string; const Parameters: string;
   const Verb: string; CmdShow: Integer): Boolean;
@@ -1263,7 +1245,7 @@ begin
   Result := ShellExecuteEx(@Sei);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // TODOC author Jeff note, ShellExecEx() above used to be ShellExec()...
 
@@ -1272,7 +1254,7 @@ begin
   Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory), ShowCommand) > 32;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellExecAndWait(const FileName: string; const Parameters: string;
   const Verb: string; CmdShow: Integer): Boolean;
@@ -1295,14 +1277,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellOpenAs(const FileName: string): Boolean;
 begin
   Result := ShellExecEx('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PRasDialDlg = ^TRasDialDlg;
@@ -1351,7 +1333,7 @@ begin
     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]),'',SW_SHOWNORMAL);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // You can pass simple name of standard system control panel (e.g. 'timedate')
 // or full qualified file name (Window 95 only? doesn't work on Win2K!)
@@ -1374,7 +1356,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileExeType(const FileName: TFileName): TJclFileExeType;
 var
@@ -1397,7 +1379,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ShellFindExecutable(const FileName, DefaultDir: string): string;
 var
