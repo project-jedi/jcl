@@ -54,13 +54,15 @@ type
     function InitOptions: Boolean;
     procedure InstallationStarted;
     procedure InstallationFinished;
+    {$IFDEF MSWINDOWS}
     function InstallExpert(const BaseName: string): Boolean;
+    function UninstallExpert(const FileName: string): Boolean;
+    {$ENDIF MSWINDOWS}
     procedure InstallFailedOn(const InstallObj: string);
     function InstallPackageSourceFile(const Name: string): Boolean;
     function InstallRunTimePackage(const BaseName: string): Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
     procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
-    function UninstallExpert(const FileName: string): Boolean;
     function UninstallPackage(const Name: string): Boolean;
     function UninstallRunTimePackage(const BaseName: string): Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
@@ -881,7 +883,9 @@ end;
 function TJclInstallation.InitOptions: Boolean;
 var
   GUI: TObject;
+  {$IFDEF MSWINDOWS}
   ExpertOptions: TJediInstallGUIOptions;
+  {$ENDIF MSWINDOWS}
   InstallationNode, ProductNode, TempNode, MakeNode: TObject;
 
   function AddNode(Parent: TObject; Option: TJediInstallOption;
@@ -1146,10 +1150,12 @@ begin
       FOnEnding(Target);
 end;
 
+{$IFDEF MSWINDOWS}
 function TJclInstallation.InstallExpert(const BaseName: string): Boolean;
 begin
   Result := InstallPackageSourceFile(ExpertFileName(Target, BaseName));
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJclInstallation.InstallFailedOn(const InstallObj: string);
 begin
@@ -1342,6 +1348,7 @@ begin
     WriteLog(Format(LineBreak + 'Removed package %s.', [PackageFileName]));
 end;
 
+{$IFDEF MSWINDOWS}
 function TJclInstallation.UninstallExpert(const FileName: string): Boolean;
 var
   BPLFileName: string;
@@ -1350,6 +1357,7 @@ begin
   Target.IdePackages.RemovePackage(PathAddSeparator(StoredBPLPath) + Format(BPLFileName, [Target.VersionNumber]));
   Result := UninstallPackage(ExpertFileName(Target, FileName));
 end;
+{$ENDIF MSWINDOWS}
 
 function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
 begin
@@ -1681,6 +1689,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.56  2005/03/14 16:10:43  rrossmair
+// - compiler hints resolved
+//
 // Revision 1.55  2005/03/14 08:46:47  rrossmair
 // - check-in in preparation for release 1.95
 //
