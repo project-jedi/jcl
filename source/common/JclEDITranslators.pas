@@ -43,6 +43,7 @@ unit JclEDITranslators;
 interface
 
 uses
+  SysUtils, 
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
@@ -80,6 +81,8 @@ type
   end;
 
 implementation
+
+uses JclStrings;
 
 //==================================================================================================
 // TEDISpecToSEFTranslator
