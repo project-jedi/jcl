@@ -13,8 +13,8 @@ Count=1
 The TFileTime converted to local TDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -32,7 +32,7 @@ Count=5
 5=FileTimeToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
+function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; 
 [ShortDescr]
 Converts a UTC based TFileTime to a TDateTime.
 [Description]
@@ -44,8 +44,8 @@ Count=1
 The TFileTime converted to TDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -63,7 +63,7 @@ Count=5
 5=FileTimeToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
+function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; 
 [ShortDescr]
 Converts a UTC based TFileTime to a TSystemTime.
 [Description]
@@ -72,7 +72,7 @@ FileTimeToSystemTime converts the supplied, UTC based TFileTime to a TSystemTime
 Count=1
 1=FileTime:TFileTime=The UTC based TFileTime to convert.
 [Result]
-The TFileTime converted to TSystemTime. On failure the function raises an exception.
+The TFileTime converted to TSystemTime
 [Notes]
 Count=1
 1=This function performs the same operation as FileTimeToSystemTime from Windows.pas.
@@ -105,15 +105,15 @@ Count=1
 The TFileTime converted to TDateTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
-Author=Petr Vones;petr.v@mujmail.cz
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
 Count=5
@@ -134,11 +134,11 @@ ignoring whether the supplied datetime is UNC based or local.
 Count=1
 1=DosTime:TDosDateTime=The TDosDateTime to convert.
 [Result]
-The TDosDateTime converted to TSystemTime. On failure the function raises an exception.
+The TDosDateTime converted to TSystemTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -168,8 +168,8 @@ Count=1
 The TSystemTime converted to TDosDateTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -186,7 +186,7 @@ Count=4
 4=DateTimeToDosDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
+function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; 
 [ShortDescr]
 Converts a TSystemTime to a TFileTime.
 [Description]
@@ -226,8 +226,8 @@ Count=1
 String representation of the supplied SystemTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -263,7 +263,7 @@ BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
-Author=Petr Vones;petr.v@mujmail.cz
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
 Count=4
@@ -273,7 +273,7 @@ Count=4
 4=DateTimeToDosDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
+function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; 
 [ShortDescr]
 Converts a TDosDateTime to a TFileTime.
 [Description]
@@ -286,8 +286,8 @@ Count=1
 The TDosDateTime converted to TFileTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -323,7 +323,7 @@ BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
-Author=Petr Vones;petr.v@mujmail.cz
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
 Count=4
@@ -346,8 +346,8 @@ Count=1
 The TDateTime converted to TFileTime.
 [Notes]
 Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+1=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -364,7 +364,7 @@ Count=4
 4=DosDateTimeToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; overload;
+function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; 
 [ShortDescr]
 Converts a TDateTime to a TSystemTime.
 [Description]
@@ -376,9 +376,10 @@ Count=1
 [Result]
 The TDateTime converted to TSystemTime.
 [Notes]
-Count=1
-1=The JCL datetime conversion routines supplement routines found in the Delphi
-RTL and the Win32 API. If a conversion routine is not included here it most likely
+Count=2
+1=DateTimeToSystemTime just calls the VCL procedure DateTimeToSystemTime
+2=The JCL datetime conversion functions supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
 BCB=3,4,5
@@ -409,7 +410,7 @@ Count=1
 The UNC based TDateTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -433,7 +434,7 @@ Count=1
 The UNC based TFileTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -457,7 +458,7 @@ Count=1
 The local TDateTime. If the function fails it raises an EJclDateTimeError exception.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -476,7 +477,7 @@ FileTimeToStr converts the TFileTime to a string.
 Count=1
 1=FileTime:TFileTime=The TFileTime to convert.
 [Result]
-The string representation of FileTime, or an empty string if the function fails.
+The string representation of FileTime.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -514,7 +515,7 @@ Returns the number of seconds in a datetime.
 [Description]
 Returns the number of seconds in a datetime. Basically it extracts the hour, minutes
 and seconds from the date time and returns the result of the formula
-(3600 * Hours) + (60 * Minutes) + Seconds.
+(3600 * Hours) + (60 * Minutes) + Seconds, but is much faster than doing it this way.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The DateTime for which you want to know the number of seconds.
@@ -522,7 +523,7 @@ Count=1
 The number of seconds in the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -538,7 +539,7 @@ Returns the number of milliseconds in a datetime.
 [Description]
 Returns the number of milliseconds in a datetime. Basically it extracts the hour, minutes
 and seconds from the date time and returns the result of the formula
-(3600 * Hours) + (60 * Minutes) + (1000 * Seconds).
+(3600 * Hours) + (60 * Minutes) + (1000 * Seconds), but is much faster than doing it this way.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The DateTime for which you want to know the number of milliseconds.
@@ -546,7 +547,7 @@ Count=1
 The number of milliseconds in the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -631,6 +632,9 @@ Count=2
 [Result]
 The function returns the weeknumber of the specified datetime. The year this
 week belongs to is returned through the var parameter.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -666,7 +670,7 @@ Extracts the century from a datetime.
 [Description]
 CenturyOfDate returns the century of the specified datetime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
-then CenturyOfDate(D) returns 2000
+then CenturyOfDate(D) returns 21
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The datetime from which to extract the century.
@@ -674,7 +678,7 @@ Count=1
 The century of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -691,19 +695,19 @@ Count=4
 [Declaration]
 function CenturyBaseYear(DateTime: TDateTime): Integer;
 [ShortDescr]
-Extracts the century from a datetime.
+Gives the year "00" of the century specified by DateTime.
 [Description]
-CenturyBaseYear returns the century of the specified datetime.
+CenturyBaseYear returns the year "00" of the century specified by DateTime.
 For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
-then CenturyBaseYear(D) returns 21.
+then CenturyBaseYear(D) returns 2000.
 [Parameters]
 Count=1
-1=DateTime:TDateTime=The datetime from which to extract the century.
+1=DateTime:TDateTime=The datetime from which to extract the year "00" of the century.
 [Result]
-The century of the specified datetime.
+The year "00" of the century of the specified DateTime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -732,7 +736,7 @@ Count=1
 The year of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -761,7 +765,7 @@ Count=1
 The month of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -790,7 +794,7 @@ Count=1
 The day of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -819,7 +823,7 @@ Count=1
 The hour of the specified datetime.
 [Notes]
 Count=2
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 2=12:00:00 AM evaluates to 0.
 [Quick Info]
 BCB=3,4,5
@@ -843,7 +847,7 @@ Count=1
 The minutes of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -866,7 +870,7 @@ Count=1
 The seconds of the specified datetime.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -875,8 +879,8 @@ Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function IsLeapYear(Year: Integer): Boolean; overload;
-function IsLeapYear(DateTime: TDateTime): Boolean; overload;
+function IsLeapYear(DateTime: TDateTime): Boolean; 
+function IsLeapYear(Year: Integer): Boolean; 
 [ShortDescr]
 Tests whether DateTime represents a leap year.
 [Description]
@@ -888,12 +892,13 @@ Count=1
 True if DateTime is a leap year or False if it's not.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
+2=The overloaded function avoids an erroneous result if the user thinks he calls SysUtils.IsLeapYear
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-Author=Nick Hodges;nick@xapware.com
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -909,7 +914,7 @@ the number of days.
 The number of days in the month in which DateTime lies.
 [Notes]
 Count=1
-1=The specified datetime is assumed to be valid.
+1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -940,3 +945,127 @@ Unit=JclDateTime
 Category=Date and Time
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; 
+[ShortDescr]
+Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
+[Description]
+Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
+[Parameters]
+Count=3
+1=Year:Integer=Year of date to convert.
+2=Month:Word=Month of date to convert.
+3=Day:Word=Day of date to convert
+[Result]
+The date converted to TDateTime.
+[Notes]
+Count=2
+1=With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
+2=As people did not use 12 Months before year 0001, and supposedly will not after 9999, 
+we just use the solar year and a month = 1/12 of a solar year in such years.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=DecodeDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word);
+procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word);
+[ShortDescr]
+Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
+[Description]
+Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
+[Parameters]
+Count=4
+1=Date:TDateTime=date to be converted.
+2=Year:Integer=Year of the converted date.
+3=Month:Word=Month of the converted date.
+4=Day:Word=Day of the converted date.
+[Notes]
+Count=2
+1=With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
+2=As people did not use 12 Months before year 0001, and supposedly will not after 9999, 
+we just use the solar year and a month = 1/12 of a solar year in such years.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=EncodeDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CreationDateTimeOfFile(const SR: TSearchRec): TDateTime;
+[ShortDescr]
+Extracts the creation date of the file specified by SR.
+[Description]
+Extracts the creation date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext. 
+[Parameters]
+Count=1
+1=SR: TSearchRec: SearchRecord holding the file information.
+[Result]
+The creation date date of the file specified by SR, converted to TDateTime.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=LastAccessDateTimeOfFile
+2=LastWriteDateTimeOfFile
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LastAccessDateTimeOfFile(const SR: TSearchRec): TDateTime;
+[ShortDescr]
+Extracts the last access date of the file specified by SR.
+[Description]
+Extracts the last access date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext. 
+[Parameters]
+Count=1
+1=SR: TSearchRec: SearchRecord holding the file information.
+[Result]
+The last access date date of the file specified by SR, converted to TDateTime.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=CreationDateTimeOfFile
+2=LastWriteDateTimeOfFile
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LastWriteDateTimeOfFile(const SR: TSearchRec): TDateTime;
+[ShortDescr]
+Extracts the last write date of the file specified by SR.
+[Description]
+Extracts the last write date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext. 
+[Parameters]
+Count=1
+1=SR: TSearchRec: SearchRecord holding the file information.
+[Result]
+The last write date date of the file specified by SR, converted to TDateTime.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=CreationDateTimeOfFile
+2=LastAccessDateTimeOfFile
