@@ -86,6 +86,11 @@ type
                       ssPausePending,    // SERVICE_PAUSE_PENDING
                       ssPaused);         // SERVICE_PAUSED
 
+  TJclServiceStates = set of TJclServiceState;
+
+const
+  ssPendingStates =   [ssStartPending, ssStopPending, ssContinuePending, ssPausePending];
+
 //--------------------------------------------------------------------------------------------------
 // Start Type
 //--------------------------------------------------------------------------------------------------
@@ -1102,13 +1107,13 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
     cValList = 'List';
   var
-    List: TWideStringList;
+    List: TStringList;
     I: Integer;
   begin
     // Get the service groups
-    List := TWideStringList.Create;
+    List := TStringList.Create;
     try
-      RegReadWideMultiSz(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, List);
+      RegReadMultiSz(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, List);
       for I := 0 to List.Count - 1 do
         AddGroup(TJclServiceGroup.Create(Self, List[I], GetGroupCount));
     finally
@@ -1405,58 +1410,63 @@ end;
 
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
 var
-  SvcStatus: TServiceStatus;
+  ServiceStatus: TServiceStatus;
 begin
-  if not QueryServiceStatus(ServiceHandle, SvcStatus) then
+  if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
-  Result := SvcStatus.dwCurrentState;
+
+  Result := ServiceStatus.dwCurrentState;
 end;
 
 //--------------------------------------------------------------------------------------------------
-
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
 var
-  SvcStatus: TServiceStatus;
-  Pending: Boolean;
-  StartTickCount, OldCheckPoint, WaitTime: DWord;
+   ServiceStatus: TServiceStatus;
+   WaitDuration: Dword;
+   LastCheckPoint: Dword;
 begin
-  if not QueryServiceStatus(ServiceHandle, SvcStatus) then
+  if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
-  Result := SvcStatus.dwCurrentState;
-  Pending := Result in [SERVICE_START_PENDING, SERVICE_STOP_PENDING,
-    SERVICE_CONTINUE_PENDING, SERVICE_PAUSE_PENDING];
-  if Pending then
+
+  Result:=ServiceStatus.dwCurrentState;
+
+  while TJclServiceState(Result) in ssPendingStates do
   begin
-    StartTickCount := GetTickCount;
-    OldCheckPoint := SvcStatus.dwCheckPoint;
-    repeat
-      WaitTime := SvcStatus.dwWaitHint div 10;
-      if WaitTime < 1000 then
-        WaitTime := 1000
+    LastCheckPoint:=ServiceStatus.dwCheckPoint;
+
+    //Multiple operations might alter the expected wait duration, so check inside the loop
+    if ServiceStatus.dwWaitHint < 1000 then
+      WaitDuration:=1000
+    else
+    begin
+      if ServiceStatus.dwWaitHint > 10000 then
+        WaitDuration:=10000
       else
-      if WaitTime > 10000 then
-        WaitTime := 10000;
-      Sleep(WaitTime);
-      // check the status again
-      if not QueryServiceStatus(ServiceHandle, SvcStatus) then
-        RaiseLastOSError;
-      Result := SvcStatus.dwCurrentState;
-      Pending := Result in [SERVICE_START_PENDING, SERVICE_STOP_PENDING,
-        SERVICE_CONTINUE_PENDING, SERVICE_PAUSE_PENDING];
-      if SvcStatus.dwCheckPoint > OldCheckPoint then
-      begin
-        // The service is making progress.
-        StartTickCount := GetTickCount;
-        OldCheckPoint := SvcStatus.dwCheckPoint;
-      end;
-    // Status not pending or no progress made within the wait hint
-    until not Pending or (GetTickCount - StartTickCount > SvcStatus.dwWaitHint);
+        WaitDuration:=ServiceStatus.dwWaitHint;
+    end;
+
+    Sleep(WaitDuration);
+
+    //Get the new status
+    if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
+      RaiseLastOSError;
+
+    Result:=ServiceStatus.dwCurrentState;
+
+    if ServiceStatus.dwCheckPoint = LastCheckPoint then    //No progress made
+      Break;
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.25  2004/10/20 09:35:06  rikbarker
+// EnumServiceGroups Modified to use new JclRegistry MULTI_SZ enabled functions.
+// PH cleaning of GetServiceStatus.
+// GetServiceStatusWaitingIfPending rewritten
+// New set ssPendingStates defined
+//
 // Revision 1.24  2004/10/17 21:00:16  mthoma
 // cleaning
 //
