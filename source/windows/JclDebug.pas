@@ -2893,6 +2893,7 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$OVERFLOWCHECKS OFF}
 function NextStackFrame(var StackFrame: PStackFrame; var StackInfo : TStackInfo): Boolean;
 begin
   // Only report this stack frame into the StockInfo structure
@@ -2920,6 +2921,7 @@ begin
   end;
   Result := False;
 end;
+{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
