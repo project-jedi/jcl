@@ -2207,7 +2207,7 @@ begin
       if RawOutput then
         Output := Output + TempOutput
       else
-        Output := Output + MuteCRTerminatedLines(Output);
+        Output := Output + MuteCRTerminatedLines(TempOutput);
 end;
 
 { TODO -cHelp :
@@ -2428,6 +2428,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.26  2004/11/18 00:46:49  rrossmair
+// - Execute() fixed
+//
 // Revision 1.25  2004/10/25 06:58:44  rrossmair
 // - fixed bug #0002065
 // - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()
