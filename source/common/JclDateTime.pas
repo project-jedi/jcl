@@ -385,7 +385,7 @@ var
   M: Integer;
 begin
   M := MonthOfDate(DateTime);
-  if (M = 2) and IsLeapYear(DateTime) then
+  if (M = 2) and IsLeapYear(DateTime) then    // Compiler Setting should be  { $B–} 
     Result := 29
   else
     Result := DaysInMonths[M];
