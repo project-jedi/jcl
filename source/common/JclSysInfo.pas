@@ -146,12 +146,14 @@ function GetShellProcessHandle: THandle;
 // Version Information
 //------------------------------------------------------------------------------
 
+// TODOC Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31
+
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
-                     wvWinME, wvWinNT3, wvWinNT4, wvWin2000, wvWinXP);
+                     wvWinME, wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
                     ptPersonal, ptProfessional, ptDatacenterServer);
-
+                    
 { TODOC
 
   Added to TNtProductType (by Jean-Fabien Connault):
@@ -171,6 +173,9 @@ var
   IsWinME: Boolean = False;
   IsWinNT: Boolean = False;
   IsWinNT3: Boolean = False;
+  IsWinNT31: Boolean = False;
+  IsWinNT35: Boolean = False;
+  IsWinNT351: Boolean = False;
   IsWinNT4: Boolean = False;
   IsWin2K: Boolean = False;
   IsWinXP: Boolean = False;
@@ -201,6 +206,15 @@ ShortDescr: Returns the installed service pack
 Descr: Returns the major version number of the latest installed Windows Service Pack.
 Result: The major version number of the latest installed Service Pack. In case of failure, or it
         no Service Pack is installed, the function returns 0.
+Author: Jean-Fabien Connault
+}
+
+function GetWindowsServicePackVersionString: string;
+{
+ShortDescr: Returns the installed service pack as a string
+Descr: Returns the major version number of the latest installed Windows Service Pack.
+Result: The major version number of the latest installed Service Pack. In case of failure, or if
+        no Service Pack is installed, the function returns an empty string.
 Author: Jean-Fabien Connault
 }
 
@@ -1319,7 +1333,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
   end;
 
 begin
-  if GetWindowsVersion in [wvWinNT3, wvWinNT4] then
+  if GetWindowsVersion in [wvWinNT31, wvWinNT31, wvWinNT351, wvWinNT4] then
     Result := BuildListPS
   else
     Result := BuildListTH;
@@ -1720,7 +1734,14 @@ begin
     VER_PLATFORM_WIN32_NT:
       case Win32MajorVersion of
         3:
-          Result := wvWinNT3;
+          case Win32MinorVersion of
+            1:
+              Result := wvWinNT31;
+            5:
+              Result := wvWinNT35;
+            51:
+              Result := wvWinNT351;
+          end;
         4:
           Result := wvWinNT4;
         5:
@@ -1821,7 +1842,7 @@ begin
     wvWin98: Result := RsOSVersionWin98;
     wvWin98SE: Result := RsOSVersionWin98SE;
     wvWinME: Result := RsOSVersionWinME;
-    wvWinNT3: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
+    wvWinNT31, wvWinNT35, wvWinNT351: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
     wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
     wvWin2000: Result := RsOSVersionWin2000;
     wvWinXP: Result := RsOSVersionWinXP;
@@ -1849,7 +1870,10 @@ end;
 //------------------------------------------------------------------------------
 
 function GetWindowsServicePackVersion: Integer;
+const
+  RegWindowsControl = '\SYSTEM\CurrentControlSet\Control\Windows\';
 var
+  SP: Integer;
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
@@ -1857,12 +1881,26 @@ begin
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
-    if JclWin32.GetVersionEx(@VersionInfo) then
-      Result := VersionInfo.wServicePackMajor;
+    if JclWin32.GetVersionEx(@VersionInfo) then Result := VersionInfo.wServicePackMajor;
   end
   else
-    Result := StrToInt(IntToHex(RegReadIntegerDef(HKEY_LOCAL_MACHINE,
-      '\SYSTEM\CurrentControlSet\Control\Windows\', 'CSDVersion', 0), 4)) div 100;
+  begin
+    SP := RegReadIntegerDef(HKEY_LOCAL_MACHINE, RegWindowsControl, 'CSDVersion', 0);
+    Result := StrToInt(IntToHex(SP, 4)) div 100;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetWindowsServicePackVersionString: string;
+var
+  SP: Integer;
+begin
+  SP := GetWindowsServicePackVersion;
+  if SP > 0 then
+    Result := 'SP' + IntToStr(SP)
+  else
+    Result := '';
 end;
 
 //==============================================================================
@@ -2963,8 +3001,21 @@ begin
       IsWin98SE := True;
     wvWinME:
       IsWinME := True;
-    wvWinNT3:
-      IsWinNT3 := True;
+    wvWinNT31:
+      begin
+        IsWinNT3 := True;
+        IsWinNT31 := True;
+      end;
+    wvWinNT35:
+      begin
+        IsWinNT3 := True;
+        IsWinNT35 := True;
+      end;
+    wvWinNT351:
+      begin
+        IsWinNT3 := True;
+        IsWinNT351 := True;
+      end;
     wvWinNT4:
       IsWinNT4 := True;
     wvWin2000:
