@@ -72,22 +72,24 @@ const
 procedure Syntax;
 begin
   Writeln(
-    'JEDI PreProcessor v. 2004-06-20'#10,
+    'JEDI PreProcessor v. 2004-12-03'#10,
     'Copyright (C) 2001 Barry Kelly'#10,
     #10,
     'Syntax:'#10,
     '  ' + ParamStr(0) + ' [options] <input files>...'#10,
     #10,
     'Options:'#10,
-    '  -h, -?     This help'#10,
-    '  -i         Process includes'#10,
-    '  -c         Process conditional directives'#10,
-    '  -C         Strip comments'#10,
-    '  -pxxx      Add xxx to include path'#10,
-    '  -dxxx      Define xxx as a preprocessor conditional symbol'#10,
-    '  -uxxx      Assume preprocessor conditional symbol xxx as not defined'#10,
-    '  -rx[,y...] Comma-separated list of strings to replace underscores in input file names with'#10,
-    //'  -x[n:]yyy  Strip first n characters from file name; precede filename by prefix yyy'#10,
+    '  -c'#9#9'Process conditional directives'#10,
+    '  -C'#9#9'Strip comments'#10,
+    '  -fxxx'#9#9'Prefix xxx to filename'#10,
+    '  -h, -?'#9'This help'#10,
+    '  -i[x[,y...]]'#9'Process includes, except files x, y, ...'#10,
+    '  -pxxx'#9#9'Add xxx to include path'#10,
+    '  -dxxx'#9#9'Define xxx as a preprocessor conditional symbol'#10,
+    '  -uxxx'#9#9'Assume preprocessor conditional symbol xxx as not defined'#10,
+    '  -rx[,y...]'#9'Comma-separated list of strings to replace underscores'#10,
+    #9#9'in input file names with'#10,
+    //'  -x[n:]yyy'#9'Strip first n characters from file name; precede filename by prefix yyy'#10,
     #10,
     'When required to prevent the original file from being overwritten, '#10 +
     'the processed file''s extension will be changed to ', ProcessedExtension, #10,
@@ -97,7 +99,7 @@ begin
   Halt(2);
 end;
 
-procedure Process(AState: TPppState; const AOld, ANew: string);
+procedure Process(AState: TJppState; const AOld, ANew: string);
 var
   parse: TJppParser;
   fsIn, fsOut: TStream;
@@ -162,7 +164,7 @@ end;
 
 procedure Params(ACommandLine: PChar);
 var
-  pppState: TSimplePppState;
+  pppState: TJppState;
   StripLength: Integer; // RR
   Prefix, ReplaceString: string; // RR
   N: Integer;
@@ -196,11 +198,21 @@ var
       Inc(cp);
 
       case cp^ of
+        'f', 'F': // RR
+          begin
+            Inc(cp);
+            cp := ReadStringDoubleQuotedMaybe(cp, Prefix);
+            Prefix := ExpandUNCFilename(Prefix);
+          end;
+
         'h', 'H', '?':
           Syntax;
 
         'i', 'I':
-          cp := CheckOpt(cp + 1, poProcessIncludes);
+          begin
+            cp := ReadStringDoubleQuotedMaybe(CheckOpt(cp + 1, poProcessIncludes), tmp);
+            pppState.ExcludedIncludes.CommaText := tmp;
+          end;
 
         'c':
           cp := CheckOpt(cp + 1, poProcessDefines);
@@ -209,42 +221,42 @@ var
           cp := CheckOpt(cp + 1, poStripComments);
 
         'p', 'P':
-        begin
-          Inc(cp);
-          cp := ReadStringDoubleQuotedMaybe(cp, tmp);
-          pppState.SearchPath.Add(ExpandUNCFileName(tmp));
-        end;
+          begin
+            Inc(cp);
+            cp := ReadStringDoubleQuotedMaybe(cp, tmp);
+            pppState.SearchPath.Add(ExpandUNCFileName(tmp));
+          end;
 
         'd':
-        begin
-          Inc(cp);
-          cp := ReadIdent(cp, tmp);
-          pppState.Define(tmp);
-        end;
+          begin
+            Inc(cp);
+            cp := ReadIdent(cp, tmp);
+            pppState.Define(tmp);
+          end;
 
         'r':
-        begin
-          Inc(cp);
-          cp := ReadStringDoubleQuotedMaybe(cp, ReplaceString);
-          ReplaceStrings.CommaText := ReplaceString;
-        end;
+          begin
+            Inc(cp);
+            cp := ReadStringDoubleQuotedMaybe(cp, ReplaceString);
+            ReplaceStrings.CommaText := ReplaceString;
+          end;
 
         'u': // RR
-        begin
-          Inc(cp);
-          cp := ReadIdent(cp, tmp);
-          pppState.Undef(tmp);
-        end;
+          begin
+            Inc(cp);
+            cp := ReadIdent(cp, tmp);
+            pppState.Undef(tmp);
+          end;
 
         'x', 'X': // RR
-        begin
-          Inc(cp);
-          cp := ReadStringDoubleQuotedMaybe(cp, Prefix);
-          Val(Prefix, StripLength, N);
-          if N > 1 then
-            Prefix := Copy(Prefix, N + 1, Length(Prefix));
-          Prefix := ExpandUNCFilename(Prefix);
-        end;
+          begin
+            Inc(cp);
+            cp := ReadStringDoubleQuotedMaybe(cp, Prefix);
+            Val(Prefix, StripLength, N);
+            if N > 1 then
+              Prefix := Copy(Prefix, N + 1, Length(Prefix));
+            Prefix := ExpandUNCFilename(Prefix);
+          end;
 
       else
         Syntax;
@@ -336,6 +348,9 @@ begin
 
 // Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
 // $Log$
+// Revision 1.9  2004/12/03 04:17:19  rrossmair
+// - "i" option changed to allow for excluding specified files from processing
+//
 // Revision 1.8  2004/08/23 16:42:35  rrossmair
 // added -r option
 //

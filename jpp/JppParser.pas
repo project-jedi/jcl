@@ -53,7 +53,7 @@ type
   TJppParser = class
   private
     FLexer: TJppLexer;
-    FState: TPppState;
+    FState: TJppState;
     FTriState: TTriState;
     FResult: string;
     FResultLen: Integer;
@@ -65,6 +65,7 @@ type
   protected
     procedure AddResult(const S: string);
     procedure Emit(const AText: string);
+    function IsExcludedInclude(const FileName: string): Boolean;
 
     procedure NextToken;
 
@@ -79,9 +80,9 @@ type
     procedure Skip;
 
     property Lexer: TJppLexer read FLexer;
-    property State: TPppState read FState;
+    property State: TJppState read FState;
   public
-    constructor Create(AStream: TStream; APppState: TPppState);
+    constructor Create(AStream: TStream; APppState: TJppState);
     destructor Destroy; override;
     function Parse: string;
   end;
@@ -122,7 +123,7 @@ end;
 
 { TJppParser }
 
-constructor TJppParser.Create(AStream: TStream; APppState: TPppState);
+constructor TJppParser.Create(AStream: TStream; APppState: TJppState);
 begin
   Assert(AStream <> nil);
   Assert(APppState <> nil);
@@ -154,6 +155,11 @@ end;
 procedure TJppParser.Emit(const AText: string);
 begin
   FResult := FResult + AText;
+end;
+
+function TJppParser.IsExcludedInclude(const FileName: string): Boolean;
+begin
+  Result := State.ExcludedIncludes.IndexOf(FileName) >= 0;
 end;
 
 procedure TJppParser.NextToken;
@@ -198,9 +204,10 @@ begin
     ptIfndef,
     ptIfopt,
     ptElse,
-    ptEndif,
-    ptInclude:
+    ptEndif:
       FAllWhiteSpaceIn := False;
+    ptInclude:
+      FAllWhiteSpaceIn := IsExcludedInclude(Lexer.TokenAsString);
   else
     // Error
   end;
@@ -303,7 +310,8 @@ var
 begin
   Assert(Lexer.TokenAsString <> '');
   { we must prevent case of $I- & $I+ becoming file names }
-  if Lexer.TokenAsString[1] in ['-', '+'] then
+  if (Lexer.TokenAsString[1] in ['-', '+'])
+  or IsExcludedInclude(Lexer.TokenAsString) then
     Result := Lexer.RawComment
   else
   begin
@@ -400,6 +408,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/12/03 04:17:19  rrossmair
+// - "i" option changed to allow for excluding specified files from processing
+//
 // Revision 1.8  2004/10/30 13:30:46  rrossmair
 // - fixed TJppParser.ParseUndef bug
 //

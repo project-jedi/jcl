@@ -108,9 +108,15 @@ type
   end;
 
   TJppState = class(TSimplePppState)
+  private
+    FExcludedIncludes: TStrings;
   protected
     function GetTriState(const ASymbol: string): TTriState; override;
     procedure SetTriState(const ASymbol: string; const Value: TTriState); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property ExcludedIncludes: TStrings read FExcludedIncludes;
   end;
 
 implementation
@@ -151,17 +157,23 @@ function TSimplePppState.FindFile(const AName: string): TStream;
 var
   i: Integer;
   fn: string;
+  Found: Boolean;
 begin
-  for i := 0 to FSearchPath.Count - 1 do
-  begin
-    fn := FSearchPath[i] + PathDelim + AName;
-    if FileExists(fn) then
+  fn := AName;
+  Found := FileExists(fn);
+  if not Found then
+    for i := 0 to FSearchPath.Count - 1 do
     begin
-      Result := TFileStream.Create(fn, fmOpenRead or fmShareDenyWrite);
-      Exit;
+      fn := FSearchPath[i] + PathDelim + AName;
+      if FileExists(fn) then
+      begin
+        Found := True;
+        Break;
+      end;
     end;
-  end;
-  raise EPppState.CreateFmt('File not found: %s', [AName]);
+  if not Found then
+    raise EPppState.CreateFmt('File not found: %s', [AName]);
+  Result := TFileStream.Create(fn, fmOpenRead or fmShareDenyWrite);
 end;
 
 function TSimplePppState.GetOptions: TPppOptions;
@@ -217,6 +229,18 @@ begin
 end;
 
 { TJppState }
+
+constructor TJppState.Create;
+begin
+  inherited Create;
+  FExcludedIncludes := TStringList.Create;
+end;
+
+destructor TJppState.Destroy;
+begin
+  FExcludedIncludes.Free;
+  inherited Destroy;
+end;
 
 function TJppState.GetTriState(const ASymbol: string): TTriState;
 var
