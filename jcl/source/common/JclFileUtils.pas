@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: Februari 19, 2001                                             }
+{ Last modified: April 19, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -123,6 +123,7 @@ function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
 function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
 function ForceDirectories(Name: string): Boolean;
+function GetDirectorySize(const Path: string): Int64;
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
@@ -1620,6 +1621,38 @@ begin
     or (ExtractFilePath(Name) = Name) then
     Exit;
   Result := ForceDirectories(ExtractFilePath(Name)) and CreateDir(Name);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetDirectorySize(const Path: string): Int64;
+
+  function RecurseFolder(const Path: string): Int64;
+  var
+    F: TSearchRec;
+    R: Integer;
+  begin
+    Result := 0;
+    R := SysUtils.FindFirst(Path + '*.*', faAnyFile, F);
+    if R = 0 then
+    begin
+      while R = 0 do
+      begin
+        if (F.Name <> '.') and (F.Name <> '..') then
+        begin
+          if (F.Attr and faDirectory) = faDirectory then
+            Inc(Result, RecurseFolder(Path + F.Name + PathSeparator))
+          else
+            Result := Result + (F.FindData.nFileSizeHigh shl 32) + F.FindData.nFileSizeLow;
+        end;
+        R := SysUtils.FindNext(F);
+      end;
+      SysUtils.FindClose(F);
+    end;
+  end;
+
+begin
+  Result := RecurseFolder(PathAddSeparator(Path));
 end;
 
 //------------------------------------------------------------------------------
