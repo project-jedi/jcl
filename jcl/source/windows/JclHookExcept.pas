@@ -20,7 +20,7 @@
 { Exception hooking routines                                                                       }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 02, 2002                                                                    }
+{ Last modified: April 28, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -31,7 +31,7 @@ interface
 {$I jcl.inc}
 
 uses
-  SysUtils;
+  Windows, SysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Exception hooking notifiers routines
@@ -52,12 +52,27 @@ function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Bo
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 
 //--------------------------------------------------------------------------------------------------
-// Exception initialization routines
+// Exception hooking routines
 //--------------------------------------------------------------------------------------------------
 
 function JclHookExceptions: Boolean;
 function JclUnhookExceptions: Boolean;
 function JclExceptionsHooked: Boolean;
+
+function JclHookExceptionsInModule(Module: HMODULE): Boolean;
+function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
+
+//--------------------------------------------------------------------------------------------------
+// Exceptions hooking in libraries
+//--------------------------------------------------------------------------------------------------
+
+type
+  TJclModuleArray = array of HMODULE;
+
+function JclHookExceptionsInLibraries(var ModulesList: TJclModuleArray; ReturnBorlandModules: Boolean = False): Boolean;
+
+var
+  __JclDebugHook: Pointer;
 
 //--------------------------------------------------------------------------------------------------
 // Hooking routines location info helper
@@ -68,8 +83,8 @@ function JclBelongsHookedCode(Addr: Pointer): Boolean;
 implementation
 
 uses
-  Windows, Classes,
-  JclBase, JclPeImage, JclSysUtils;
+  Classes,
+  JclBase, JclPeImage, JclSysInfo, JclSysUtils;
 
 type
   PExceptionArguments = ^TExceptionArguments;
@@ -102,6 +117,32 @@ var
 threadvar
   Recursive: Boolean;
   NewResultExc: Exception;
+
+//==================================================================================================
+// Helper routines
+//==================================================================================================
+
+function RaiseExceptionAddress: Pointer;
+begin
+  Result := GetProcAddress(GetModuleHandle(kernel32), 'RaiseException');
+  Assert(Result <> nil);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure FreeNotifiers;
+var
+  I: Integer;
+begin
+  with Notifiers.LockList do
+  try
+    for I := 0 to Count - 1 do
+      TObject(Items[I]).Free;
+  finally
+    Notifiers.UnlockList;
+  end;
+  FreeAndNil(Notifiers);
+end;
 
 //==================================================================================================
 // TNotifierItem
@@ -299,18 +340,17 @@ end;
 
 function JclHookExceptions: Boolean;
 var
-  RaiseExceptionAddress: Pointer;
+  RaiseExceptionAddressCache: Pointer;
 begin
   if not ExceptionsHooked then
   begin
     Recursive := False;
-    RaiseExceptionAddress := GetProcAddress(GetModuleHandle(kernel32), 'RaiseException');
-    Assert(RaiseExceptionAddress <> nil);
+    RaiseExceptionAddressCache := RaiseExceptionAddress;
     with TJclPeMapImgHooks do
-      Result := ReplaceImport(SystemBase, kernel32, RaiseExceptionAddress, @HookedRaiseException);
+      Result := ReplaceImport(SystemBase, kernel32, RaiseExceptionAddressCache, @HookedRaiseException);
     if Result then
     begin
-      @Kernel32_RaiseException := RaiseExceptionAddress;
+      @Kernel32_RaiseException := RaiseExceptionAddressCache;
       SysUtils_ExceptObjProc := System.ExceptObjProc;
       System.ExceptObjProc := @HookedExceptObjProc;
     end;
@@ -347,24 +387,67 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure FreeNotifiers;
-var
-  I: Integer;
+function JclHookExceptionsInModule(Module: HMODULE): Boolean;
 begin
-  with Notifiers.LockList do
-  try
-    for I := 0 to Count - 1 do
-      TObject(Items[I]).Free;
-  finally
-    Notifiers.UnlockList;
+  Result := ExceptionsHooked and
+    TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, RaiseExceptionAddress, @HookedRaiseException);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
+begin
+  Result := ExceptionsHooked and
+    TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, @HookedRaiseException, @Kernel32_RaiseException);
+end;
+
+//==================================================================================================
+// Exceptions hooking in libraries
+//==================================================================================================
+
+function JclHookExceptionsInLibraries(var ModulesList: TJclModuleArray; ReturnBorlandModules: Boolean): Boolean;
+var
+  Modules: TStringList;
+  PeImage: TJclPeBorImage;
+  I, C: Integer;
+  H: HMODULE;
+begin
+  Result := ExceptionsHooked and not IsLibrary;
+  if Result then
+  begin
+    ModulesList := nil;
+    C := Length(ModulesList);
+    PeImage := nil;
+    Modules := TStringList.Create;
+    try
+      PeImage := TJclPeBorImage.Create(True);
+      if LoadedModulesList(Modules, GetCurrentProcessId, True) then
+        for I := 0 to Modules.Count - 1 do
+        begin
+          H := HMODULE(Modules.Objects[I]);
+          if H <> HInstance then
+          begin
+            PeImage.AttachLoadedModule(H);
+            if PeImage.StatusOK and PeImage.IsBorlandImage and (JclHookExceptionsInModule(H) or ReturnBorlandModules) then
+            begin
+              SetLength(ModulesList, C + 1);
+              ModulesList[C] := H;
+              Inc(C);
+            end;
+          end;
+        end;
+    finally
+      Modules.Free;
+      PeImage.Free;
+    end;
   end;
-  FreeAndNil(Notifiers);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 initialization
   Notifiers := TThreadList.Create;
+  __JclDebugHook := @HookedRaiseException;
 
 finalization
   FreeNotifiers;
