@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 12, 2001                                              }
+{ Last modified: Februari 01, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -154,8 +154,7 @@ function UnlockVolume(var Handle: THandle): Boolean;
 //------------------------------------------------------------------------------
 
 type
-  TFileFlag = (ffDebug, ffInfoInferred, ffPatched, ffPreRelease, ffPrivateBuild,
-               ffSpecialBuild);
+  TFileFlag = (ffDebug, ffInfoInferred, ffPatched, ffPreRelease, ffPrivateBuild, ffSpecialBuild);
   TFileFlags = set of TFileFlag;
 
   PLangIdRec = ^TLangIdRec;
@@ -364,7 +363,7 @@ type
 // TJclFileMaskComparator
 //------------------------------------------------------------------------------
 
-// TODO UNTESTES/UNDOCUMENTED
+// TODO UNTESTET/UNDOCUMENTED
 
 type
   TJclFileMaskComparator = class(TObject)
@@ -408,7 +407,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF WIN32}
-  JclResources, JclSecurity, JclSysUtils, JclWin32, JclStrings;
+  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
 
@@ -419,7 +418,7 @@ uses
   necessary for GUI applications and is unacceptable for high performance
   services or console apps.
 
-  The routines which query files or directories for there attributes
+  The routines which query files or directories for their attributes
   deliberately use FindFirst eventhough there may be easier ways to get at the
   required information. This is because FindFirst is about the only routine
   which doesn't cause the file's last modification/accessed time to be changed
@@ -1208,9 +1207,10 @@ begin
     Exit;
   {$IFDEF WIN32}
   Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
-  {$ELSE}
-  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
   {$ENDIF WIN32}
+  {$IFDEF LINUX}
+  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
+  {$ENDIF LINUX}
 end;
 
 //------------------------------------------------------------------------------
@@ -1228,22 +1228,91 @@ end;
 //------------------------------------------------------------------------------
 
 function PathIsUNC(const Path: string): Boolean;
+
+{$IFDEF WIN32}
+
+var
+  P: PChar;
+
+  function AbsorbSeperator: Boolean;
+  begin
+    Result := (P <> nil) and (P^ = '\');
+    if Result then Inc(P);
+  end;
+
+  function AbsorbMachineName: Boolean;
+  var
+    NonDigitFound: Boolean;
+  begin
+    // a valid machine name is a string composed of the set [a-z, A-Z, 0-9, -]
+    // but it may not consist entirely out of numbers
+    Result := True;
+    NonDigitFound := False;
+    while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
+    begin
+      if P^ in ['a'..'z', 'A'..'Z', '-'] then
+      begin
+        NonDigitFound := True;
+        Inc(P);
+      end
+      else
+      if P^ in ['0'..'9'] then
+        Inc(P)
+      else
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+    Result := Result and NonDigitFound;
+  end;
+
+  function AbsorbShareName: Boolean;
+  const
+    InvalidCharacters = ['<','>','?','/',',','*','+','=','[',']','|',':',';','"',''''];
+  begin
+    // a valid share name is a string composed of a set the set !InvalidCharacters
+    // note that a leading '$' is valid (indicates a hidden share)
+    Result := True;
+    while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
+    begin
+      if P^ in InvalidCharacters then
+      begin
+        Result := False;
+        Break;
+      end;
+      Inc(P);
+    end;
+  end;
+
 begin
-  {$IFDEF LINUX}
-  Result := False;
-  {$ENDIF LINUX}
-  {$IFDEF WIN32}
-  // Format of a valid UNC path is: "\\machine\sharename[\filename]"
   Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
-  { TODO further verification tests:
-     \\.\whatever             is not valid
-     \\?\whatever             is not valid unless \\?\UNC\sharename[\filename]
-     \\[sharename\][filename] is not valid
-     \\<x>:[whatever]         is not valid
-     \\machine\<x>:[<\pathname>|<\drivename>] is not valid
-     \\machine\<x>$[<\pathname>|<\drivename>] _is_ valid }
-  {$ENDIF WIN32}
+  if Result then
+  begin
+    if Copy(Path, 1, Length(PathUncPrefix + '?\UNC')) = PathUncPrefix + '?\UNC' then
+      P := @Path[Length(PathUncPrefix + '?\UNC')]
+    else
+    begin
+      P := @Path[Length(PathUncPrefix)];
+      Result := AbsorbSeperator and AbsorbMachineName;
+    end;
+    Result := Result and AbsorbSeperator;
+    if Result then
+    begin
+      Result := AbsorbShareName;
+      // remaining, if anything, is path and or filename (optional) check those?
+    end;
+  end;
 end;
+
+{$ENDIF WIN32}
+{$IFDEF LINUX}
+
+begin
+  Result := False;
+end;
+
+{$ENDIF LINUX}
 
 //------------------------------------------------------------------------------
 
@@ -1531,7 +1600,7 @@ begin
     // Lookup failed so mimic explorer behaviour by returning "XYZ File"
     Result := ExtractFileExt(FileName);
     Delete(Result, 1, 1);
-    Result := TrimLeft(UpperCase(Result) + ' File'); // TODO Localize
+    Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
   end;
 end;
 
@@ -2657,7 +2726,7 @@ var
         while Rslt = 0 do
         begin
           if (FindInfo.Name <> '.') and (FindInfo.Name <> '..') and
-             (FindInfo.Attr and faDirectory = faDirectory) then
+            (FindInfo.Attr and faDirectory = faDirectory) then
             Folders.Add(Folders[CurrentItem] + FindInfo.Name + PathSeparator);
           Rslt := FindNext(FindInfo);
         end;
@@ -2705,14 +2774,15 @@ begin
     LocAttr := Attr;
 
   // here's the recursive search for nested folders
+  
   if flRecursive in Options then
     BuildFolderList;
 
   for Counter := 0 to Folders.Count - 1 do
   begin
-     if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter]) <> 0)) or
-        (not (flMaskedSubfolders in Options))) then
-    FillFileList(Counter);
+    if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter]) <> 0)) or
+      (not (flMaskedSubfolders in Options))) then
+      FillFileList(Counter);
   end;
   Folders.Free;
   Result := True;
