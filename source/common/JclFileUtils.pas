@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 16, 2003                                                                    }
+{ Last modified: October 26, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -81,15 +81,15 @@ const
   PathUncPrefix    = '\\';
   {$ENDIF MSWINDOWS}
 
-  faSymLink           = $00000040 {$IFDEF COMPILER6_UP} platform {$ENDIF}; // defined since D7
+  faSymLink           = $00000040 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF}; // defined since D7
   faNormalFile        = $00000080;
-  faTemporary         = $00000100 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faSparseFile        = $00000200 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faReparsePoint      = $00000400 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faCompressed        = $00000800 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faOffline           = $00001000 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faNotContentIndexed = $00002000 {$IFDEF COMPILER6_UP} platform {$ENDIF};
-  faEncrypted         = $00004000 {$IFDEF COMPILER6_UP} platform {$ENDIF};
+  faTemporary         = $00000100 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faSparseFile        = $00000200 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faReparsePoint      = $00000400 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faCompressed        = $00000800 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faOffline           = $00001000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faNotContentIndexed = $00002000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
+  faEncrypted         = $00004000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
 
   faRejectedByDefault = faHidden + faSysFile + faVolumeID + faDirectory;
   faWindowsSpecific   = faVolumeID + faArchive + faTemporary + faSparseFile + faReparsePoint +
@@ -147,9 +147,11 @@ function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: 
   const AttributeMatch: TJclAttributeMatch = amSuperSetOf; const Options: TFileListOptions = [];
   const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
 function VerifyFileAttributeMask(var RejectedAttributes, RequiredAttributes: Integer): Boolean;
-function FileAttributeMatch(FileAttributes, RejectedAttributes,
+function IsFileAttributeMatch(FileAttributes, RejectedAttributes,
   RequiredAttributes: Integer): Boolean;
 function FileAttributesStr(const FileInfo: TSearchRec): string;
+function IsFileNameMatch(FileName: string; const Mask: string;
+  const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   RejectedAttributes: Integer = faRejectedByDefault; RequiredAttributes: Integer = 0;
   const Abort: PBoolean = nil);
@@ -347,6 +349,7 @@ type
     ['{F7E747ED-1C41-441F-B25B-BB314E00C4E9}']
     // property access methods
     function GetAttributeMask: TJclFileAttributeMask;
+    function GetCaseSensitiveSearch: Boolean;
     function GetRootDirectory: string;
     function GetFileMask: string;
     function GetFileMasks: TStrings;
@@ -366,6 +369,7 @@ type
     function GetOption(const Option: TFileSearchOption): Boolean;
     function GetOptions: TFileSearchoptions;
     procedure SetAttributeMask(const Value: TJclFileAttributeMask);
+    procedure SetCaseSensitiveSearch(const Value: Boolean);
     procedure SetRootDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
     procedure SetFileMasks(const Value: TStrings);
@@ -390,6 +394,7 @@ type
     procedure StopTask(ID: TFileSearchTaskID);
     procedure StopAllTasks(Silently: Boolean = False); // Silently: Don't call OnTerminateTask
     // properties
+    property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearch write SetCaseSensitiveSearch;
     property RootDirectory: string read GetRootDirectory write SetRootDirectory;
     property FileMask: string read GetFileMask write SetFileMask;
     property SubDirectoryMask: string read GetSubDirectoryMask write SetSubDirectoryMask;
@@ -429,9 +434,12 @@ type
     FLastChangeBefore: TDateTime;
     FLastChangeAfter: TDateTime;
     FOptions: TFileSearchOptions;
+    FCaseSensitiveSearch: Boolean;
     function IsLastChangeAfterStored: Boolean;
     function IsLastChangeBeforeStored: Boolean;
     function GetNextTaskID: TFileSearchTaskID;
+    function GetCaseSensitiveSearch: Boolean;
+    procedure SetCaseSensitiveSearch(const Value: Boolean);
   protected
     FRefCount: Integer;
     function CreateTask: TThread;
@@ -497,6 +505,8 @@ type
     property LastChangeAfterAsString: string read GetLastChangeAfterStr write SetLastChangeAfterStr;
     property LastChangeBeforeAsString: string read GetLastChangeBeforeStr write SetLastChangeBeforeStr;
   published
+    property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearch write SetCaseSensitiveSearch
+      default {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF};
     property FileMasks: TStrings read FFileMasks write SetFileMasks;
     property RootDirectory: string read FRootDirectory write FRootDirectory;
     property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
@@ -4431,7 +4441,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function FileAttributeMatch(FileAttributes, RejectedAttributes,
+function IsFileAttributeMatch(FileAttributes, RejectedAttributes,
   RequiredAttributes: Integer): Boolean;
 begin
   VerifyFileAttributeMask(RejectedAttributes, RequiredAttributes);
@@ -4508,7 +4518,7 @@ var
 begin
   Assert(Assigned(HandleFile));
   Assert(VerifyFileAttributeMask(RejectedAttributes, RequiredAttributes),
-    'Some file search attributes are required AND rejected!');
+    RsFileSearchAttrInconsistency);
 
   Directory := ExtractFilePath(Path);
 
@@ -4748,20 +4758,24 @@ type
     FIncludeSubDirectories: Boolean;
     FIncludeHiddenSubDirectories: Boolean;
     FNotifyOnTermination: Boolean;
+    FCaseSensitiveSearch: Boolean;
     procedure EnterDirectory;
     procedure AsyncProcessDirectory(const Directory: string);
     procedure SyncProcessDirectory(const Directory: string);
     procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
     procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    function GetFileMasks: TStrings;
     procedure SetFileMasks(const Value: TStrings);
   protected
     procedure DoTerminate; override;
     procedure Execute; override;
     function FileMatch: Boolean;
+    function FileNameMatchesMask: Boolean;
     procedure ProcessDirectory;
     procedure ProcessDirFiles;
     procedure ProcessFile;
-    property FileMasks: TStrings read FFileMasks write SetFileMasks;
+    property CaseSensitiveSearch: Boolean read FCaseSensitiveSearch write FCaseSensitiveSearch;
+    property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
     property Directory: string read FDirectory write FDirectory;
@@ -4784,7 +4798,6 @@ type
 constructor TEnumFileThread.Create;
 begin
   inherited Create(True);
-  FFileMasks := TStringList.Create;
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
   FFileSizeMax := High(FFileSizeMax);
@@ -4873,12 +4886,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TEnumFileThread.ProcessDirFiles;
-var
-  I: Integer;
 begin
-  for I := 0 to FFileMasks.Count - 1 do
-    EnumFiles(Directory + FFileMasks[I], FInternalFileHandler, FRejectedAttr, FRequiredAttr,
-      @Terminated);
+  EnumFiles(Directory + '*', FInternalFileHandler, FRejectedAttr, FRequiredAttr, @Terminated);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4887,12 +4896,43 @@ function TEnumFileThread.FileMatch: Boolean;
 var
   FileSize: Int64;
 begin
-  Result := (FFileInfo.Time >= FFileTimeMin) and (FFileInfo.Time <= FFileTimeMax);
+  Result := FileNameMatchesMask and (FFileInfo.Time >= FFileTimeMin) and (FFileInfo.Time <= FFileTimeMax);
   if Result then
   begin
     FileSize := GetSizeOfFile(FFileInfo);
     Result := (FileSize >= FFileSizeMin) and (FileSize <= FFileSizeMax);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsFileNameMatch(FileName: string; const Mask: string;
+  const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  if Pos('.', FileName) = 0 then
+    FileName := FileName + '.';  // file names w/o extension match mask '*.'
+  {$ENDIF}
+  if CaseSensitive then
+    Result := StrMatches(Mask, FileName)
+  else
+    Result := StrMatches(AnsiUpperCase(Mask), AnsiUpperCase(FileName));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEnumFileThread.FileNameMatchesMask: Boolean;
+var
+  I: Integer;
+begin
+  Result := FFileMasks = nil;
+  if not Result then
+    for I := 0 to FFileMasks.Count - 1 do
+      if IsFileNameMatch(FFileInfo.Name, FFileMasks[I], CaseSensitiveSearch) then
+      begin
+        Result := True;
+        Break;
+      end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4925,9 +4965,32 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEnumFileThread.SetFileMasks(const Value: TStrings);
+function TEnumFileThread.GetFileMasks: TStrings;
 begin
-  FFileMasks.Assign(Value);
+  if not Assigned(FFileMasks) then
+    FFileMasks := TStringList.Create;
+  Result := FFileMasks;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEnumFileThread.SetFileMasks(const Value: TStrings);
+var
+  I: Integer;
+  FindAll: Boolean;
+begin
+  FindAll := False;
+  if Value.Count >= 1 then
+    for I := 0 to Value.Count - 1 do
+      if (Value[I] = '*') {$IFDEF MSWINDOWS} or (Value[I] = '*.*') {$ENDIF} then
+      begin
+        FindAll := True;
+        Break;
+      end;
+  if FindAll then
+    FreeAndNil(FFileMasks) // compare FileNameMatchesMask
+  else
+    FileMasks.Assign(Value);
 end;
 
 //==================================================================================================
@@ -4946,6 +5009,9 @@ begin
   FOptions := [fsIncludeSubDirectories];
   FLastChangeAfter := MinDateTime;
   FLastChangeBefore := MaxDateTime;
+  {$IFDEF UNIX}
+  FCaseSensitiveSearch := True;
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5011,6 +5077,7 @@ begin
   if Source is TJclFileEnumerator then
   begin
     Src := TJclFileEnumerator(Source);
+    FCaseSensitiveSearch := Src.FCaseSensitiveSearch;
     FileMasks.Assign(Src.FileMasks);
     RootDirectory := Src.RootDirectory;
     SubDirectoryMask := Src.SubDirectoryMask;
@@ -5036,6 +5103,7 @@ var
 begin
   Task := TEnumFileThread.Create;
   Task.FID := NextTaskID;
+  Task.CaseSensitiveSearch := FCaseSensitiveSearch;
   Task.FileMasks := FileMasks;
   Task.Directory := RootDirectory;
   Task.RejectedAttr := AttributeMask.Rejected;
@@ -5200,6 +5268,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclFileEnumerator.GetCaseSensitiveSearch: Boolean;
+begin
+  Result := FCaseSensitiveSearch;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclFileEnumerator.GetRootDirectory: string;
 begin
   Result := FRootDirectory;
@@ -5315,6 +5390,14 @@ end;
 function TJclFileEnumerator.IsLastChangeBeforeStored: Boolean;
 begin
   Result := FLastChangeBefore <> MaxDateTime;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclFileEnumerator.SetCaseSensitiveSearch(
+  const Value: Boolean);
+begin
+  FCaseSensitiveSearch := Value;
 end;
 
 //--------------------------------------------------------------------------------------------------
