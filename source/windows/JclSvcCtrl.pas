@@ -28,7 +28,7 @@
 
 // Last modified: $Date$
 // For history see end of file
-
+{$R+}
 unit JclSvcCtrl;
 
 interface
@@ -977,7 +977,9 @@ end;
 
 procedure TJclSCManager.Close;
 begin
-  Win32Check(CloseServiceHandle(FHandle));
+  if FHandle <> INVALID_SCM_HANDLE then
+    Win32Check(CloseServiceHandle(FHandle));
+
   FHandle := INVALID_SCM_HANDLE;
 end;
 
@@ -1059,9 +1061,10 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     // Get the service groups
     DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, PChar(nil)^, 0);
     SetLength(Buf, DataSize);
-    DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, Buf[0], DataSize);
     if DataSize > 0 then
     begin
+      DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, Buf[0], DataSize);
+
       pch := @Buf[0];
       while pch^ <> #0 do
       begin
@@ -1359,6 +1362,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/04/08 19:49:26  mthoma
+// Fixed 0000521, 0000848. Range check error in TJclSCManager.Refresh and TJclSCManager raises exception when free'd .
+//
 // Revision 1.8  2004/04/08 12:18:07  obones
 // BCB5 compatibility fix
 //
