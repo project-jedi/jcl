@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is jcl.inc                                                                     } 
+{ The Original Code is jcl.inc                                                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel.                       }
@@ -18,7 +18,6 @@
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -71,6 +70,9 @@ ALERT_jedi_inc_incompatible
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 // $Log$
+// Revision 1.9  2004/10/17 06:55:51  rrossmair
+// cleanup
+//
 // Revision 1.8  2004/10/02 05:47:28  marquardt
 // added check for incompatible jedi.inc
 // replaced jedi.inc with jvcl.inc
@@ -83,8 +85,5 @@ ALERT_jedi_inc_incompatible
 //
 // Revision 1.5  2004/05/31 22:28:39  rrossmair
 // header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.4  2004/04/06 05:04:53  peterjhaas
-// adapt compiler conditions, add log entry
 //
 
