@@ -21,10 +21,10 @@
 { This unit contains a class and support routines for controlling the number   }
 { of concurrent instances of your application that can exists at any time. In  }
 { addition there is support for simple interprocess communication between      }
-{ these instance including a notifaction mechanisme.                           }
+{ these instance including a notifaction mechanism.                            }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: March 01, 2001                                                }
+{ Last modified: March 31, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -92,7 +92,8 @@ type
     property ProcessIDs[Index: Integer]: DWORD read GetProcessIDs;
   end;
 
-function JclAppInstances: TJclAppInstances;
+function JclAppInstances: TJclAppInstances; overload;
+function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; overload;
 
 //------------------------------------------------------------------------------
 // Interprocess communication routines
@@ -107,7 +108,7 @@ procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings
 implementation
 
 uses
-  SysUtils,
+  ComObj, SysUtils,
   JclStrings, JclSysUtils;
 
 const
@@ -148,6 +149,7 @@ var
   { the single global TJclAppInstance instance }
 
   AppInstances: TJclAppInstances;
+  ExplicitUniqueAppId: string;
 
 //==============================================================================
 // TJclAppInstances
@@ -318,7 +320,10 @@ procedure TJclAppInstances.InitData;
 var
   UniqueAppID: string;
 begin
-  UniqueAppID := AnsiUpperCase(JclAIPrefix + ParamStr(0));
+  if ExplicitUniqueAppId <> '' then
+    UniqueAppID := JclAIPrefix + ExplicitUniqueAppId
+  else
+    UniqueAppID := AnsiUpperCase(JclAIPrefix + ParamStr(0));
   CharReplace(UniqueAppID, '\', '_');
   FOptex := TJclOptex.Create(UniqueAppID + JclAIOptex, 4000);
   FOptex.Enter;
@@ -527,6 +532,15 @@ begin
   if AppInstances = nil then
     AppInstances := TJclAppInstances.Create;
   Result := AppInstances;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances;
+begin
+  Assert(AppInstances = nil);
+  ExplicitUniqueAppId := UniqueAppIdGuidStr;
+  Result := JclAppInstances;
 end;
 
 //==============================================================================
