@@ -923,6 +923,13 @@ resourcestring
   RsScheduleMonthInRange    = 'Month values should fall in the range 1 .. 12';
 
 //--------------------------------------------------------------------------------------------------
+// JclStatistics
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsInvalidSampleSize = 'Invalid sample size (%d)';
+
+//--------------------------------------------------------------------------------------------------
 // JclStrHashMap
 //--------------------------------------------------------------------------------------------------
 
@@ -1103,6 +1110,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.12  2004/08/18 17:10:27  rrossmair
+// added RsInvalidSampleSize for JclStatistics
+//
 // Revision 1.11  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //
