@@ -158,10 +158,6 @@ procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
 function GetDefaultPrinterName: AnsiString;
 
-// DPGetDefaultPrinter
-// Parameters:
-//   PrinterName: Return the printer name.
-// Returns: True for success, False for failure.
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 
 // DPSetDefaultPrinter
@@ -173,7 +169,7 @@ function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 implementation
 
 uses
-  Graphics, IniFiles, Messages, Printers, WinSpool,
+  Graphics, IniFiles, Messages, Printers, WinSpool, StrUtils,
   JclWin32, JclSysInfo, JclResources;
 
 const
@@ -1139,7 +1135,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
+{ TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft }
 // DPGetDefaultPrinter
 // Parameters:
 //   PrinterName: Return the printer name.
@@ -1148,95 +1144,67 @@ end;
 // Source of the original code: Microsoft Knowledge Base Article - 246772
 //   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
-
-function GetDefaultPrinter9x(var PrinterName: string): Boolean;
+const
+  BUFSIZE = 8192;
+type
+  TGetDefaultPrinter = function(Buffer: PChar; var Size: DWORD): BOOL; stdcall;
 var
-  NeededSize, ReturnedCount: DWord;
-  Info2Ptr: PPrinterInfo2;
-begin
-  Result := False;
-  // The first EnumPrinters() tells you how big our buffer must
-  // be to hold ALL of PRINTER_INFO_2. Note that this will
-  // typically return FALSE. This only means that the buffer (the 4th
-  // parameter) was not filled in. You do not want it filled in here.
-  NeededSize := 0;
-  ReturnedCount := 0;
-  SetLastError(0);
-  EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, NeededSize, ReturnedCount);
-  if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
-    Exit;
-  // Allocate enough space for PRINTER_INFO_2.
-  GetMem(Info2Ptr, NeededSize);
-  try
-    // The second EnumPrinters() will fill in all the current information.
-    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, Info2Ptr, NeededSize,
-      NeededSize, ReturnedCount);
-    if Result then
-      // Copy printer name into passed-in buffer.
-      PrinterName := Info2Ptr^.pPrinterName;
-  finally
-    // Clean up.
-    FreeMem(Info2Ptr);
-  end;
-end;
-
-function GetDefaultPrinter2k(var PrinterName: string): Boolean;
-var
-  Len: DWord;
-  PrinterNameBuffer: array [0..249] of Char;
-begin
-  Len := Length(PrinterNameBuffer);
-  Result := RtdlGetDefaultPrinter(PrinterNameBuffer, @Len);
-  if Result then
-    SetString(PrinterName, PrinterNameBuffer, Len - 1)
-  else
-  if GetLastError = ERROR_INSUFFICIENT_BUFFER then
-  begin
-    SetLength(PrinterName, Len - 1);
-    Result := RtdlGetDefaultPrinter(Pointer(PrinterName), @Len);
-  end;
-end;
-
-function GetDefaultPrinterNT(var PrinterName: string): Boolean;
-var
-  Len, I: Integer;
-  PrinterNameBuffer: array [0..249] of Char;
-begin
-  // Retrieve the default string from Win.ini (the registry).
-  // string will be in form "printername,drivername,portname".
-  Len := GetProfileString(WindowsIdent, DeviceIdent, ',', PrinterNameBuffer,
-    Length(PrinterNameBuffer));
-  // Printer name precedes first "," character.
-  { TODO : a missing ',' mean, that the buffer was too small }
-  for I := Low(PrinterNameBuffer) to High(PrinterNameBuffer) do
-  begin
-    if PrinterNameBuffer[I] = ',' then
-    begin
-      Len := I;
-      Break;
-    end;
-  end;
-  SetString(PrinterName, PrinterNameBuffer, Len);
-  Result := Len <> 0;
-end;
-
+  Needed, Returned: DWORD;
+  PI2: PPrinterInfo2;
+  WinVer: TWindowsVersion;
+  hWinSpool: HMODULE;
+  GetDefPrint: TGetDefaultPrinter;
+  Size: DWORD;
 begin
   Result := False;
   PrinterName := '';
-  // If Windows 95 or 98, use EnumPrinters.
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+  WinVer := GetWindowsVersion;
+  // Windows 9x uses EnumPrinters
+  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
   begin
-    Result := GetDefaultPrinter9x(PrinterName);
+    SetLastError(0);
+    EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
+    if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0) then
+      Exit;
+    GetMem(PI2, Needed);
+    try
+      Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PI2, Needed, Needed, Returned);
+      if Result then
+        PrinterName := PI2^.pPrinterName;
+    finally
+      FreeMem(PI2);
+    end;
   end
-  // If Windows NT, use the GetDefaultPrinter API for Windows 2000,
-  // or GetProfileString for version 4.0 and earlier.
   else
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  // Win NT uses WIN.INI (registry)
+  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
   begin
-    if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
-      Result := GetDefaultPrinter2k(PrinterName)
-    else // NT4.0 or earlier
-      Result := GetDefaultPrinterNT(PrinterName);
+    SetLength(PrinterName, BUFSIZE);
+    Result := GetProfileString('windows', 'device', ',,,', PChar(PrinterName), BUFSIZE) > 0;
+    if Result then
+      PrinterName := LeftStr(PrinterName, Pos(',', PrinterName) - 1)
+    else
+      PrinterName := '';
+  end
+  else
+  // >= Win 2000 uses GetDefaultPrinter
+  begin
+    hWinSpool := LoadLibrary('winspool.drv');
+    if hWinSpool <> 0 then
+      try
+        @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
+        if not Assigned(GetDefPrint) then
+          Exit;
+        Size := BUFSIZE;
+        SetLength(PrinterName, Size);
+        Result := GetDefPrint(PChar(PrinterName), Size);
+        if Result then
+          SetLength(PrinterName, StrLen(PChar(PrinterName)))
+        else
+          PrinterName := '';
+      finally
+        FreeLibrary(hWinSpool);
+      end;
   end;
 end;
 
@@ -1381,6 +1349,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/10/08 16:45:31  marquardt
+// PH cleaning DPGetDefaultPrinter reimplemented from scratch
+//
 // Revision 1.13  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
 //
