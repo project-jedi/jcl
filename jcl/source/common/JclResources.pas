@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: December 13, 2000                                             }
+{ Last modified: January 21, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -261,7 +261,6 @@ resourcestring
   RsMapiMailBCC         = 'Bcc';
   RsMapiMailSubject     = 'Subject';
   RsMapiMailBody        = 'Body';
-  RsMapiMailAttachments = 'Attachments';
 
 //------------------------------------------------------------------------------
 // JclMath
@@ -453,6 +452,33 @@ resourcestring
   RsPeDEBUG_OMAP_TO_SRC = 'OMAP_TO_SRC';
   RsPeDEBUG_OMAP_FROM_SRC = 'OMAP_FROM_SRC';
   RsPeDEBUG_BORLAND = 'BORLAND';
+
+  // TJclPePackageInfo.PackageModuleTypeToString
+
+  RsPePkgExecutable = 'Executable';
+  RsPePkgPackage = 'Package';
+  PsPePkgLibrary = 'Library';
+
+  // TJclPePackageInfo.PackageOptionsToString
+
+  RsPePkgNeverBuild = 'NeverBuild';
+  RsPePkgDesignOnly = 'DesignOnly';
+  RsPePkgRunOnly = 'RunOnly';
+  RsPePkgIgnoreDupUnits = 'IgnoreDupUnits';
+
+  // TJclPePackageInfo.ProducerToString
+
+  RsPePkgV3Produced = 'Delphi 3 or C++ Builder 3';
+  RsPePkgProducerUndefined = 'Undefined';
+  RsPePkgBCB4Produced = 'C++ Builder 4 or later';
+  RsPePkgDelphi4Produced = 'Delphi 4 or later';
+
+  // TJclPePackageInfo.UnitInfoFlagsToString
+
+  RsPePkgMain = 'Main';
+  RsPePkgWeak = 'Weak';
+  RsPePkgOrgWeak = 'OrgWeak';
+  RsPePkgImplicit = 'Implicit';
 
 //------------------------------------------------------------------------------
 // JclPrint
