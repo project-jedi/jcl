@@ -16,7 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 31, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains generic JCL base classes and routines to support earlier  }
+{ versions of Delphi as well as FPC.                                           }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -42,7 +48,7 @@ const
   JclVersionMajor   = 1;   // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 0;   // third minor release
   JclVersionRelease = 1;   // 0=pre-release|beta/1=release
-  JclVersionBuild   = 336; // days since march 1, 2000
+  JclVersionBuild   = 337; // days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -51,10 +57,12 @@ const
 //------------------------------------------------------------------------------
 
 {$IFDEF FPC}
+
 type
   PResStringRec = ^string;
 
 function SysErrorMessage(ErrNo: Integer): string;
+
 {$ENDIF FPC}
 
 //------------------------------------------------------------------------------
@@ -301,8 +309,7 @@ begin
   {$ENDIF FPC}
 end;
 
-constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec;
-  const Args: array of const);
+constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
 begin
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^, Args);
@@ -310,7 +317,6 @@ begin
   inherited CreateFmt(LoadResString(ResStringRec), Args);
   {$ENDIF FPC}
 end;
-
 
 //==============================================================================
 // FreePascal support
@@ -321,14 +327,14 @@ end;
 
 function SysErrorMessage(ErrNo: Integer): string;
 var
-  Siz: Integer;
+  Size: Integer;
   Buffer: array [0..1024] of Char;
 begin
-  Siz := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
+  Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
     nil, ErrNo, 0, Buffer, SizeOf(Buffer), nil);
-  while (Siz > 0) and (Buffer[Siz-1] in [#0..#32, '.']) do
-    Dec(Siz);
-  SetString(Result, Buffer, Siz);
+  while (Size > 0) and (Buffer[Size - 1] in [#0..#32, '.']) do
+    Dec(Size);
+  SetString(Result, Buffer, Size);
 end;
 
 {$ELSE}
