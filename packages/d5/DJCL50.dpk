@@ -39,7 +39,6 @@ contains
   JclCounter in '..\Source\JclCounter.pas',
   JclDateTime in '..\Source\JclDateTime.pas',
   JclDebug in '..\Source\JclDebug.pas',
-  JclExcel in '..\Source\JclExcel.pas',
   JclFileUtils in '..\Source\JclFileUtils.pas',
   JclGraphics in '..\Source\JclGraphics.pas',
   JclGraphUtils in '..\Source\JclGraphUtils.pas',
