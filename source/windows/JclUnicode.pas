@@ -20,7 +20,7 @@
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
 { Unit owner: Mike Lischke                                                                         }
-{ Last modified: November 29, 2001                                                                 }
+{ Last modified: July 25, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -136,7 +136,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Dialogs,
   Classes;
 
 {$IFDEF SUPPORTS_WIDESTRING}
