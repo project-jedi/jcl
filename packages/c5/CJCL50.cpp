@@ -60,7 +60,6 @@ USEUNIT("..\..\source\windows\JclTD32.pas");
 USEUNIT("..\..\source\windows\JclUnicode.pas");
 USEUNIT("..\..\source\windows\JclWin32.pas");
 USEUNIT("..\..\source\windows\JclWinMIDI.pas");
-USEUNIT("..\..\source\windows\LM.pas");
 USEUNIT("..\..\source\windows\JclAppInst.pas");
 USEUNIT("..\..\source\vcl\JclPrint.pas");
 USEUNIT("..\..\source\vcl\JclGraphUtils.pas");

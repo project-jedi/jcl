@@ -30,9 +30,8 @@
       ..\..\lib\c6\obj\JclSvcCtrl.obj ..\..\lib\c6\obj\JclSynch.obj 
       ..\..\lib\c6\obj\JclTD32.obj ..\..\lib\c6\obj\JclUnicode.obj 
       ..\..\lib\c6\obj\JclWin32.obj ..\..\lib\c6\obj\JclWinMIDI.obj 
-      ..\..\lib\c6\obj\LM.obj ..\..\lib\c6\obj\JclAppInst.obj
-      ..\..\lib\c6\obj\JclZLib.obj ..\..\lib\c6\obj\zlibh.obj
-      ..\..\lib\c6\obj\JclDITs.obj"/>
+      ..\..\lib\c6\obj\JclAppInst.obj ..\..\lib\c6\obj\JclZLib.obj 
+      ..\..\lib\c6\obj\zlibh.obj ..\..\lib\c6\obj\JclDITs.obj"/>
     <RESFILES value="CJcl.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -132,7 +131,6 @@
       <FILE FILENAME="..\..\source\windows\JclUnicode.pas" FORMNAME="" UNITNAME="JclUnicode" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclWin32.pas" FORMNAME="" UNITNAME="JclWin32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclWinMIDI.pas" FORMNAME="" UNITNAME="JclWinMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\source\windows\LM.pas" FORMNAME="" UNITNAME="LM" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\zlibh.pas" FORMNAME="" UNITNAME="zlibh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclAppInst.pas" FORMNAME="" UNITNAME="JclAppInst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
