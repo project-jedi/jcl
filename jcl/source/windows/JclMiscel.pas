@@ -40,6 +40,8 @@ uses
 // StrLstLoadSave
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
+// where is this stuff used/useful, anyway?
 const
   HKCR: HKEY = HKEY_CLASSES_ROOT;
   HKCU: HKEY = HKEY_CURRENT_USER;
@@ -47,6 +49,7 @@ const
   HKUS: HKEY = HKEY_USERS;
   HKCC: HKEY = HKEY_CURRENT_CONFIG;
   HKPD: HKEY = HKEY_PERFORMANCE_DATA;
+{$ENDIF FPC}
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 
