@@ -949,7 +949,7 @@ end;
 
 function TJclBorRADToolIdePackages.PackageEntryToFileName(const Entry: string): string;
 begin
-  Result := {$IFDEF MSWINDOWS} PathGetLongName2 {$ENDIF} (Installation.SubstitutePath(Entry));
+  Result := {$IFDEF MSWINDOWS} PathGetLongName {$ENDIF} (Installation.SubstitutePath(Entry));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2308,6 +2308,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/10/17 05:23:06  rrossmair
+// replaced PathGetLongName2() by PathGetLongName()
+//
 // Revision 1.18  2004/08/09 06:38:08  marquardt
 // add JvWStrUtils.pas as JclWideStrings.pas
 //
