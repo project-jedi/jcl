@@ -24,8 +24,8 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.10  2004/03/18 20:26:26  rrossmair
-// fixed again
+// Revision 1.11  2004/03/20 18:01:30  rrossmair
+// *** empty log message ***
 //
 // Revision 1.7  2004/03/12 04:59:56  rrossmair
 // BCB/Win32 support basically working now
@@ -120,6 +120,9 @@ implementation
 
 
 uses
+  {$IFDEF UNIX}
+  Libc,
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   FileCtrl,
   JclDebug, JclShell,
@@ -197,13 +200,24 @@ end;
 procedure TMainForm.Install;
 var
   Res: Boolean;
+  LogFileName: string;
 begin
   Screen.Cursor := crHourGlass;
   try
-    Res := FJediInstall.Install;
+    LogFileName := ChangeFileExt(Application.ExeName, '.log');
+    FInstallLog := TFileStream.Create(LogFileName, fmCreate);
+    try
+      Res := FJediInstall.Install;
+    finally
+      FreeAndNil(FInstallLog);
+    end;
     Screen.Cursor := crDefault;
     if Res then
-      MessageBox(RsInstallSuccess);
+      MessageBox(RsInstallSuccess)
+    else
+      {$IFDEF UNIX}
+      Libc.system(PChar(Format('xterm -e less %s', [LogFileName])))
+      {$ENDIF};
   finally
     Screen.Cursor := crDefault;
   end;
@@ -306,7 +320,7 @@ procedure TMainForm.WriteInstallLog(const Text: string);
 var
   TextLine: string;
 begin
-  TextLine := Text + AnsiCrLf;
+  TextLine := Text + sLineBreak;
   FInstallLog.WriteBuffer(Pointer(TextLine)^, Length(TextLine));
 end;
 
@@ -337,7 +351,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
   FBorRADToolInstallations.Iterate(CreateView);
-  FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
+  //FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJediInstall := CreateJediInstall;
@@ -363,7 +377,7 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBorRADToolInstallations);
-  FreeAndNil(FInstallLog);
+  //FreeAndNil(FInstallLog);
   FreeAndNil(FSystemPaths);
 end;
 

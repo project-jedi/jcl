@@ -24,8 +24,11 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.10  2004/03/18 20:26:26  rrossmair
-// fixed again
+// Revision 1.11  2004/03/20 18:01:30  rrossmair
+// *** empty log message ***
+//
+// Revision 1.12  2004/03/18 20:30:58  rrossmair
+// *** empty log message ***
 //
 // Revision 1.11  2004/03/17 17:39:03  rrossmair
 // Win32 installation fixed
@@ -90,6 +93,7 @@ type
     {$ENDIF MSWINDOWS}
     procedure CleanupRepository(Installation: TJclBorRADToolInstallation);
     function CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
+    procedure InstallFailedOn(const InstallObj: string);
     function InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
     function MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
@@ -218,7 +222,7 @@ resourcestring
   RsSourceLibHint   = 'Adds "%s" to the Library Path';
   RsStatusMessage   = 'Installing %s...';
   RsStatusDetailMessage = 'Installing %s for %s...';
-  RsInstallFailed   = 'Installation of %s failed, see JediInstaller.log for details.';
+  RsInstallFailed   = 'Installation of %s failed, see %s for details.';
   RsLibDescriptor   = '%s library %sunits for %s';
   
   RsReadmeFileName  = 'Readme.html';
@@ -398,8 +402,8 @@ begin
   finally
     Units.Free;
   end;
-  {if not Result then
-    Tool.MessageBox(Format(RsInstallFailed, [LibDescriptor]), MB_OK or MB_ICONERROR);}
+  if not Result then
+    InstallFailedOn(LibDescriptor);
 end;
 
 function TJclInstall.InitInformation(const ApplicationFileName: string): Boolean;
@@ -459,10 +463,15 @@ begin
   Result := True;
   Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
-    Tool.BorRADToolInstallations.Iterate(InstallFor);
+    Result := Tool.BorRADToolInstallations.Iterate(InstallFor);
   finally
     Tool.UpdateStatus('');
   end;
+end;
+
+procedure TJclInstall.InstallFailedOn(const InstallObj: string);
+begin
+  Tool.MessageBox(Format(RsInstallFailed, [InstallObj, ChangeFileExt(ExtractFileName(ParamStr(0)), '.log')]), mtError);
 end;
 
 function TJclInstall.InstallFor(Installation: TJclBorRADToolInstallation): Boolean;
@@ -555,9 +564,9 @@ begin
       Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
       Make.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
       {$ELSE}
-      SetEnvironmentVar('OBJDIR', '-I' + Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPILIBDIR','-l' + Tool.DcpPath(Installation));
-      SetEnvironmentVar('BPLDIR', PathAddSeparator(Tool.BplPath(Installation)));
+      SetEnvironmentVar('OBJDIR', Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
       {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));
@@ -573,7 +582,7 @@ begin
   end;
   Tool.WriteInstallLog('');
   if not Result then
-    Tool.MessageBox(Format(RsInstallFailed, [PackageFileName]), mtError);
+    InstallFailedOn(PackageFileName);
 end;
 
 function TJclInstall.InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;

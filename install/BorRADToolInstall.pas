@@ -27,6 +27,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.12  2004/03/20 18:01:30  rrossmair
+// *** empty log message ***
+//
 // Revision 1.11  2004/03/18 20:26:26  rrossmair
 // fixed again
 //
@@ -630,7 +633,7 @@ begin
       TempOutput := TempOutput + Buffer;
     end;
   until Count < Length(Buffer) - 1;
-  Output := Output + TempOutput;
+  Output := AdjustLineBreaks(Output + TempOutput);
   Result := pclose(Pipe);
   wait(nil);
 end;

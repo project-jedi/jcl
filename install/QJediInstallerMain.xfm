@@ -218,7 +218,7 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 16
       Top = 14
-      Width = 282
+      Width = 290
       Height = 23
       Caption = 'Project JEDI X-Platform Installer'
       Font.Color = clText
