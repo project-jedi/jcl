@@ -1186,7 +1186,7 @@ const
 const
   {$EXTERNALSYM REPARSE_GUID_DATA_BUFFER_HEADER_SIZE}
   REPARSE_GUID_DATA_BUFFER_HEADER_SIZE = 24;
-  
+
   {$EXTERNALSYM MAXIMUM_REPARSE_DATA_BUFFER_SIZE}
   MAXIMUM_REPARSE_DATA_BUFFER_SIZE = 16 * 1024;
 
@@ -1738,7 +1738,7 @@ type
   // Microsoft version (64 bit SDK)
   {$EXTERNALSYM RVA}
   RVA = DWORD;
-  
+
   {$EXTERNALSYM ImgDelayDescr}
   ImgDelayDescr = packed record
     grAttrs: DWORD;      // attributes
@@ -2698,6 +2698,77 @@ const
   STATUS_NOT_IMPLEMENTED = NTSTATUS($C0000002);
 
 //==================================================================================================
+// from Gl.h
+//==================================================================================================
+
+// Using of OpenGL unit might cause unexpected problems due setting 8087CW in the intialization
+// section.
+
+type
+  {$EXTERNALSYM GLenum}
+  GLenum = Cardinal;
+  {$EXTERNALSYM GLubyte}
+  GLubyte = AnsiChar;
+  PGLubyte = PAnsiChar;
+
+// ErrorCode
+const
+  {$EXTERNALSYM GL_NO_ERROR}
+  GL_NO_ERROR          = 0;
+  {$EXTERNALSYM GL_INVALID_ENUM}
+  GL_INVALID_ENUM      = $0500;
+  {$EXTERNALSYM GL_INVALID_VALUE}
+  GL_INVALID_VALUE     = $0501;
+  {$EXTERNALSYM GL_INVALID_OPERATION}
+  GL_INVALID_OPERATION = $0502;
+  {$EXTERNALSYM GL_STACK_OVERFLOW}
+  GL_STACK_OVERFLOW    = $0503;
+  {$EXTERNALSYM GL_STACK_UNDERFLOW}
+  GL_STACK_UNDERFLOW   = $0504;
+  {$EXTERNALSYM GL_OUT_OF_MEMORY}
+  GL_OUT_OF_MEMORY     = $0505;
+
+// StringName
+const
+  {$EXTERNALSYM GL_VENDOR}
+  GL_VENDOR     = $1F00;
+  {$EXTERNALSYM GL_RENDERER}
+  GL_RENDERER   = $1F01;
+  {$EXTERNALSYM GL_VERSION}
+  GL_VERSION    = $1F02;
+  {$EXTERNALSYM GL_EXTENSIONS}
+  GL_EXTENSIONS = $1F03;
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+function RtdlglGetString(name: GLenum): PGLubyte;
+function RtdlglGetError: GLenum;
+
+//==================================================================================================
+// from Glu.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+function RtdlgluErrorString(errCode: GLenum): PGLubyte;
+
+//==================================================================================================
+// from WinGDI.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+function RtdlwglCreateContext(hdc: HDC): HGLRC;
+function RtdlwglDeleteContext(hglrc: HGLRC): BOOL;
+function RtdlwglMakeCurrent(hdc: HDC; hglrc: HGLRC): BOOL;
+
+//==================================================================================================
 // from Native API
 //==================================================================================================
 
@@ -2854,6 +2925,19 @@ function RtdlNtQueryTimer(TimerHandle: THandle;
 function InitNetbios: Boolean; // obsolete
 procedure ExitNetbios; // do nothing, obsolete
 
+//==================================================================================================
+// Run time dynamic linking
+//==================================================================================================
+
+function Kernel32Handle: HModule;
+function Advapi32Handle: HModule;
+function NetApi32Handle: HModule;
+function WinSpoolHandle: HModule;
+function ImageHlpHandle: HModule;
+function RasDlgHandle: HModule;
+function NTDllHandle: HModule;
+function OpenGl32Handle: HModule;
+function Glu32Handle: HModule;
 
 //==================================================================================================
 // COM related declarations
@@ -2957,6 +3041,15 @@ begin
     Result := STATUS_NOT_IMPLEMENTED;
 end;
 
+var
+  LastOpenGlCallFailed: Boolean{ = False};
+
+function JclGetProcAddressOpenGl(var Call: Pointer; LibHandle: HModule; ProcName: LPCSTR): Boolean;
+begin
+  Result := JclGetProcAddress(Call, LibHandle, ProcName);
+  LastOpenGlCallFailed := not Result;
+end;
+
 //--------------------------------------------------------------------------------------------------
 
 var
@@ -2968,6 +3061,8 @@ var
   _ImageHlpHandle: HModule{ = 0};
   _RasDlgHandle: HModule{ = 0};
   _NTDllHandle: HModule{ = 0};
+  _OpenGl32Handle: HModule{ = 0};
+  _Glu32Handle: HModule{ = 0};
 
 function Kernel32Handle: HModule;
 begin
@@ -3002,6 +3097,16 @@ end;
 function NTDllHandle: HModule;
 begin
   Result := JclLoadLibrary(_NTDllHandle, 'ntdll.dll');
+end;
+
+function OpenGl32Handle: HModule;
+begin
+  Result := JclLoadLibrary(_OpenGl32Handle, opengl32);
+end;
+
+function Glu32Handle: HModule;
+begin
+  Result := JclLoadLibrary(_Glu32Handle, 'glu32.dll');
 end;
 
 //==================================================================================================
@@ -3705,6 +3810,111 @@ begin
 end;
 
 //==================================================================================================
+// from Gl.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFNglGetString = function(name: GLenum): PGLubyte; stdcall;
+  TFNglGetError = function: GLenum; stdcall;
+
+var
+  _glGetString: TFNglGetString{ = Nil};
+  _glGetError: TFNglGetError{ = Nil};
+
+//--------------------------------------------------------------------------------------------------
+  
+function RtdlglGetString(name: GLenum): PGLubyte;
+begin
+  if JclGetProcAddressOpenGl(@_glGetString, OpenGl32Handle, 'glGetString') then
+    Result := _glGetString(name)
+  else
+    Result := Nil;
+end;
+
+function RtdlglGetError: GLenum;
+begin
+  Result := GL_INVALID_OPERATION;  // error code, if the last or this call failed
+  if not LastOpenGlCallFailed then
+  begin
+    if JclGetProcAddressOpenGl(@_glGetError, OpenGl32Handle, 'glGetError') then
+      Result := _glGetError;
+  end;
+  LastOpenGlCallFailed := False;  // Reset the error flag
+end;
+
+//==================================================================================================
+// from Glu.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFNgluErrorString = function(errCode: GLenum): PGLubyte; stdcall;
+
+var
+  _gluErrorString: TFNgluErrorString{ = Nil};
+  
+//--------------------------------------------------------------------------------------------------
+
+function RtdlgluErrorString(errCode: GLenum): PGLubyte;
+begin
+  if JclGetProcAddressOpenGl(@_gluErrorString, Glu32Handle, 'gluErrorString') then
+    Result := _gluErrorString(errCode)
+  else
+    { TODO : maybe we should return a own error message in case of GL_INVALID_OPERATION
+             this need to use a global variable initalized from a resource string }
+    Result := Nil;
+end;
+
+//==================================================================================================
+// from WinGDI.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Run time dynamic linking
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFNwglCreateContext = function(hdc: HDC): HGLRC; stdcall;
+  TFNwglDeleteContext = function(hglrc: HGLRC): BOOL; stdcall;
+  TFNwglMakeCurrent = function(hdc: HDC; hglrc: HGLRC): BOOL; stdcall;
+
+var
+  _wglCreateContext: TFNwglCreateContext{ = Nil};
+  _wglDeleteContext: TFNwglDeleteContext{ = Nil};
+  _wglMakeCurrent: TFNwglMakeCurrent{ = Nil};
+
+//--------------------------------------------------------------------------------------------------
+
+function RtdlwglCreateContext(hdc: HDC): HGLRC;
+begin
+  if JclGetProcAddressBool(@_wglCreateContext, OpenGl32Handle, 'wglCreateContext') then
+    Result := _wglCreateContext(hdc)
+  else
+    Result := 0;
+end;
+
+function RtdlwglDeleteContext(hglrc: HGLRC): BOOL;
+begin
+  Result := JclGetProcAddressBool(@_wglDeleteContext, OpenGl32Handle, 'wglDeleteContext');
+  if Result then
+    Result := _wglDeleteContext(hglrc);
+end;
+
+function RtdlwglMakeCurrent(hdc: HDC; hglrc: HGLRC): BOOL;
+begin
+  Result := JclGetProcAddressBool(@_wglMakeCurrent, OpenGl32Handle, 'wglMakeCurrent');
+  if Result then
+    Result := _wglMakeCurrent(hdc, hglrc);
+end;
+
+//==================================================================================================
 // from Native API
 //==================================================================================================
 
@@ -3800,10 +4010,15 @@ finalization
   JclFreeLibrary(_ImageHlpHandle);
   JclFreeLibrary(_RasDlgHandle);
   JclFreeLibrary(_NTDllHandle);
+  JclFreeLibrary(_OpenGl32Handle);
+  JclFreeLibrary(_Glu32Handle);
 
 // History:
 
 // $Log$
+// Revision 1.17  2004/04/18 00:45:05  peterjhaas
+// add run-time dynamic linking support for GetOpenGLVersion
+//
 // Revision 1.16  2004/04/11 22:16:20  mthoma
 // Modifications for GetDefaultPrinterName. Added GetDefaultPrinter API function.
 //
