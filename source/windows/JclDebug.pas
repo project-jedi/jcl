@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 02, 2002                                                                    }
+{ Last modified: March 11, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -94,6 +94,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
+  PJclMapAddress = ^TJclMapAddress;
   TJclMapAddress = packed record
     Segment: Word;
     Offset: Integer;
@@ -164,17 +165,20 @@ type
 // MAP file scanner
 //--------------------------------------------------------------------------------------------------
 
+  PJclMapSegment = ^TJclMapSegment;
   TJclMapSegment = record
     StartAddr: DWORD;
     EndAddr: DWORD;
     UnitName: PJclMapString;
   end;
 
+  PJclMapProcName = ^TJclMapProcName;
   TJclMapProcName = record
     Addr: DWORD;
     ProcName: PJclMapString;
   end;
 
+  PJclMapLineNumber = ^TJclMapLineNumber;
   TJclMapLineNumber = record
     Addr: DWORD;
     LineNumber: Integer;
@@ -299,6 +303,7 @@ function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
 type
   TJclDebugInfoSource = class;
 
+  PJclLocationInfo = ^TJclLocationInfo;
   TJclLocationInfo = record
     Address: Pointer;               // Error address
     UnitName: string;               // Name of Delphi unit
@@ -454,6 +459,7 @@ type
     CallerAdr: DWORD;
   end;
 
+  PStackInfo = ^TStackInfo;
   TStackInfo = record
     CallerAdr: DWORD;
     Level: DWORD;
@@ -1487,11 +1493,13 @@ end;
 
 function DecodeNameString(const S: PChar): string;
 var
-  I: Integer;
+  I, B: Integer;
   C: Byte;
   P: PByte;
+  Buffer: array[0..255] of Char;
 begin
   Result := '';
+  B := 0;
   P := PByte(S);
   case P^ of
     1:
@@ -1502,8 +1510,9 @@ begin
       end;
     2:
       begin
-        Result := '@';
         Inc(P);
+        Buffer[B] := '@';
+        Inc(B);
       end;
   end;
   I := 0;
@@ -1542,9 +1551,12 @@ begin
       $3F:
         C := Ord('_');
     end;
-    Result := Result + Chr(C);
+    Buffer[B] := Chr(C);
+    Inc(B);
     Inc(I);
-  until False;
+  until B >= SizeOf(Buffer) - 1;
+  Buffer[B] := AnsiNull;
+  Result := Buffer;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2357,7 +2369,7 @@ end;
 function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
 const
   DebugInfoSources: array [1..4] of TJclDebugInfoSourceClass =
-    (TJclDebugInfoMap, TJclDebugInfoBinary, TJclDebugInfoTD32, TJclDebugInfoExports);
+    (TJclDebugInfoBinary, TJclDebugInfoTD32, TJclDebugInfoMap, TJclDebugInfoExports);
 var
   I: Integer;
 begin
@@ -3184,21 +3196,25 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CorrectExceptStackListTop(List: TJclStackInfoList);
+procedure CorrectExceptStackListTop(List: TJclStackInfoList; SkipFirstItem: Boolean);
 var
-  I, FoundPos: Integer;
+  TopItem,I, FoundPos: Integer;
 begin
   FoundPos := -1;
+  if SkipFirstItem then
+    TopItem := 1
+  else
+    TopItem := 0;
   with List do
   begin
-    for I := Count - 1 downto 0 do
+    for I := Count - 1 downto TopItem do
       if JclBelongsHookedCode(Pointer(Items[I].StackInfo.CallerAdr)) then
       begin
         FoundPos := I;
         Break;
       end;
     if FoundPos <> -1 then
-      for I := FoundPos downto 0 do
+      for I := FoundPos downto TopItem do
         Delete(I);
   end;
 end;
@@ -3222,8 +3238,7 @@ begin
     FirstCaller := ExceptAddr
   else
     FirstCaller := nil;
-  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller));
-//  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller);
+  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3326,7 +3341,8 @@ begin
   while ValidStackAddr(DWORD(StackFrame)) do
   begin
     // CallerAdr within current process space, code segment etc.
-    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) then
+    // CallersEBP within current thread stack. Added Mar 12 2002 per Hallvard's suggestion
+    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) and ValidStackAddr(StackFrame^.CallersEBP) then
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
@@ -3584,8 +3600,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclExceptFrame.HandlerInfo(ExceptObj: TObject;
-  var HandlerAt: Pointer): Boolean;
+function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
 var
   I: Integer;
   VTable: Pointer;
