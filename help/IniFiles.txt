@@ -13,14 +13,15 @@ Count=3
 3=Line:string=The name of the key to write
 4=Value:Boolean=The value to write
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadBool
@@ -43,14 +44,15 @@ Count=3
 3=Line:string=The name of the key to write
 4=Value:Integer=The value to write
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadBool
@@ -73,14 +75,15 @@ Count=3
 3=Line:string=The name of the key to write
 4=Value:string=The value to write
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadBool
@@ -104,14 +107,15 @@ Count=3
 [Result]
 The key within section, default value returned on failure is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadInteger
@@ -135,14 +139,15 @@ Count=3
 [Result]
 The key within section, default value returned on failure is 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadBool
@@ -166,14 +171,15 @@ Count=3
 [Result]
 The key within section, default value returned on failure is an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclIniFiles
 Category=Registry and Ini files
 SubCat=Ini files
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=IniReadBool
