@@ -1412,3 +1412,1082 @@ Windows 95/98=Not tested.
 Count=2
 1=GetUserDomainName;GetUserDomainName
 2=GetLocalUserName;GetLocalUserName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetDesktopFolder: string;
+[ShortDescr]
+Returns the name of the virtual folder representing the Windows desktop.
+[Description]
+GetDesktopFolder returns the name of the virtual folder (directory) representing
+the Windows desktop. On a standard Windows NT 4.0 installation, this is equivalent
+to "C:\WINNT\Profiles\%Username%\Desktop".
+[Result]
+A string containing the local path to the desktop directory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetPersonalFolder;GetPersonalFolder
+8=GetFavoritesFolder;GetFavoritesFolder
+9=GetStartupFolder;GetStartupFolder
+10=GetRecentFolder;GetRecentFolder
+11=GetSendToFolder;GetSendToFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetProgramsFolder: string;
+[ShortDescr]
+Returns the name of the file system directory containing the current user's
+program groups.
+[Description]
+GetProgramsFolder returns the name of the file system directory containing the user's
+program groups (which are in fact file system directories themselves) and program
+shortcuts (which are special files). On a standard Windows NT 4.0 installation,
+this is equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files".
+[Note]
+Count=1
+1=Applications that need to add program groups and program shortcuts should place
+them into the directory returned by this function.
+[Result]
+A string containing the local path to the programs directory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+24=GetTemplatesFolder;GetTemplatesFolder
+25=GetInternetCacheFolder;GetInternetCacheFolder
+26=GetCookiesFolder;GetCookiesFolder
+27=GetHistoryFolder;GetHistoryFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetPersonalFolder: string;
+[ShortDescr]
+Returns the name of the directory that serves as a common repository for documents.
+[Description]
+GetPersonalFolder returns the name of the directory that serves as a common
+repository for documents. On a standard Windows NT 4.0 installation,
+this is equivalent to "C:\WINNT\Profiles\%Username%freter\Personal Files".
+[Result]
+A string containing the local path to the current user's personal files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetFavoritesFolder;GetFavoritesFolder
+9=GetStartupFolder;GetStartupFolder
+10=GetRecentFolder;GetRecentFolder
+11=GetSendToFolder;GetSendToFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFavoritesFolder: string;
+[ShortDescr]
+Returns the name of the directory that serves as a common repository for the
+user's favorite items.
+[Description]
+GetFavoritesFolder returns the name of the directory that serves as a common
+repository for the user's favorite items. On a standard Windows NT 4.0 installation,
+this is equivalent to "C:\WINNT\Profiles\%Username%\Favorites".
+[Result]
+A string containing the local path to the current user's favorite files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetStartupFolder;GetStartupFolder
+10=GetRecentFolder;GetRecentFolder
+11=GetSendToFolder;GetSendToFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetStartupFolder: string;
+[ShortDescr]
+Returns the name of the directory that corresponds to the user's Startup program
+group.
+[Description]
+GetStartupFolder returns the name of the directory that corresponds to the user's
+Startup program group. The system starts these programs whenever any user logs
+onto Windows NT or starts Windows 95. On a standard Windows NT 4.0 installation,
+this directory is equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files\Startup".
+[Result]
+A string containing the local path to the current user's startup files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder1
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetRecentFolder;GetRecentFolder
+11=GetSendToFolder;GetSendToFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetRecentFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains the user's most
+recently used documents.
+[Description]
+GetRecentFolder returns the name of the file system directory that contains the
+user's most recently used documents. On a standard Windows NT 4.0 installation,
+this directory is equivalent to "C:\WINNT\Profiles\%Username%\Recent".
+[Result]
+A string containing the local path to the current user's recently used files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetSendToFolder;GetSendToFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSendToFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains Send To menu items.
+[Description]
+GetSendToFolder returns the name of the file system directory that contains Send
+To menu items. On a standard Windows NT 4.0 installation, this directory is
+equivalent to "C:\WINNT\Profiles\%Username%\SendTo".
+[Result]
+A string containing the local path to the current user's Send To files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetStartmenuFolder;GetStartmenuFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetStartmenuFolder: string;
+[ShortDescr]
+Returns the name of the file system directory containing Start menu items.
+[Description]
+GetStartmenuFolder returns the name of the file system directory containing Start
+menu items. On a standard Windows NT 4.0 installation, this directory is equivalent
+to "C:\WINNT\Profiles\%Username%\SendTo".
+[Result]
+A string containing the local path to the current user's Start menu folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetDesktopDirectoryFolder: string;
+[ShortDescr]
+Returns the name of the file system directory used to physically store file
+objects on the desktop.
+[Description]
+GetDesktopDirectoryFolder returns the name of the file system directory used to
+physically store file objects on the desktop (not to be confused with the desktop
+folder itself). On a standard Windows NT 4.0 installation, this directory is
+equivalent to "C:\WINNT\Profiles\%Username%\Desktop".
+[Result]
+A string containing the local path to the current user's desktop folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetNethoodFolder;GetNethoodFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetNethoodFolder: string;
+[ShortDescr]
+Returns the name of the file system directory containing objects that appear in
+the network neighborhood.
+[Description]
+GetNetHoodFolder returns the name of the file system directory containing objects
+that appear in the network neighborhood. On a standard Windows NT 4.0 installation,
+this directory is equivalent to "C:\WINNT\Profiles\%Username%\Nethood".
+[Result]
+A string containing the local path to the current user's nethood folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetFontsFolder;GetFontsFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFontsFolder: string;
+[ShortDescr]
+Returns the name of the file system directory containing fonts.
+[Description]
+GetFontsFolder returns the name of the file system directory containing fonts. On
+a standard Windows NT 4.0 installation, this directory is equivalent
+to "C:\WINNT\Fonts".
+[Result]
+A string containing the local path to the system's fonts folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonStartmenuFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains the programs and
+folders that appear on the Start menu for all users.
+[Description]
+GetCommonStartmenuFolder returns the name of the file system directory that
+contains the programs and folders that appear on the Start menu for all users. On
+a standard Windows NT 4.0 installation, this directory is equivalent
+to "C:\WINNT\Profiles\All Users\Start Menu".
+[Result]
+A string containing the local path to the system's Start menu folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonProgramsFolder;GetCommonProgramsFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonProgramsFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains the directories for
+the common program groups that appear on the Start menu for all users.
+[Description]
+Returns the name of the file system directory that contains the directories for
+the common program groups that appear on the Start menu for all users. On
+a standard Windows NT 4.0 installation, this directory is equivalent
+to "C:\WINNT\Profiles\All Users\Start Menu\Program Files".
+[Result]
+A string containing the local path to the system's programs folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonStartupFolder;GetCommonStartupFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonStartupFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains the programs that
+appear in the Startup folder for all users.
+[Description]
+GetCommonStartupFolder returns the name of the file system directory that contains
+the programs that appear in the Startup folder for all users. On a standard Windows
+NT 4.0 installation, this directory is equivalent to
+"C:\WINNT\Profiles\All Users\Start Menu\Program File\Startup".
+[Result]
+A string containing the local path to the system's Startup folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonDesktopdirectoryFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that contains files and folders that
+appear on the desktop for all users.
+[Description]
+GetCommonDesktopdirectoryFolder returns the name of the file system directory that
+contains files and folders that appear on the desktop for all users. On a standard
+Windows NT 4.0 installation, this directory is equivalent to
+"C:\WINNT\Profiles\All Users\Desktop".
+[Result]
+A string containing the local path to the system's desktop folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetAppdataFolder;GetAppdataFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAppdataFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for application-specific data.
+[Description]
+GetAppdataFolder Returns the name of the file system directory that serves as a
+common repository for application-specific data. On a standard Windows NT 4.0
+installation, this directory is equivalent to "C:\WINNT\Profiles\%Username%\Application Data".
+[Result]
+A string containing the local path to the current user's application data folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetPrinthoodFolder;GetPrinthoodFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetPrinthoodFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for printer links.
+[Description]
+GetPrinthoodFolder Returns the name of the file system directory that serves as a common repository
+for printer links. On a standard Windows NT 4.0 installation, this directory is
+equivalent to "C:\WINNT\Profiles\%Username%\Printhood".
+[Result]
+A string containing the local path to the current user's printhood folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonFavoritesFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for all users' favorite items.
+[Description]
+GetCommonFavoritesFolder returns the name of the file system directory that serves
+as a common repository for all users' favorite items.
+[Result]
+A string containing the local path to the systems's favorites files folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetTemplatesFolder;GetTemplatesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetTemplatesFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for document templates.
+[Description]
+GetTemplatesFolder returns the name of the file system directory that serves as
+a common repository for document templates.
+[Result]
+A string containing the local path to the current user's templates folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+24=GetInternetCacheFolder;GetInternetCacheFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetInternetCacheFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for temporary Internet files.
+[Description]
+GetInternetCacheFolder returns the name of the file system directory that serves
+as a common repository for temporary Internet files.
+[Result]
+A string containing the local path to the current user's internet cache folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+24=GetTemplatesFolder;GetTemplatesFolder
+25=GetCookiesFolder;GetCookiesFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCookiesFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for Internet cookies.
+[Description]
+GetCookiesFolder returns the name of the file system directory that serves as a
+common repository for Internet cookies.
+[Result]
+A string containing the local path to the current user's internet cookies folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+24=GetTemplatesFolder;GetTemplatesFolder
+25=GetInternetCacheFolder;GetInternetCacheFolder
+26=GetHistoryFolder;GetHistoryFolder
+27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetHistoryFolder: string;
+[ShortDescr]
+Returns the name of the file system directory that serves as a common repository
+for Internet history items.
+[Description]
+GetHistoryFolder returns the name of the file system directory that serves as a
+common repository for Internet history items.
+[Result]
+A string containing the local path to the current user's internet history folder.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Peter Friese;freter@gmx.net
+Delphi=5
+Windows NT/2000=Requires NT 4.0
+Windows 95/98=Requires Windows 95 or higher.
+[SeeAlso]
+Count=27
+1=GetCommonFilesFolder;GetCommonFilesFolder
+2=GetCurrentFolder;GetCurrentFolder
+3=GetProgramFilesFolder;GetProgramFilesFolder
+4=GetWindowsFolder;GetWindowsFolder
+5=GetWindowsSystemFolder;GetWindowsSystemFolder
+6=GetWindowsTempFolder;GetWindowsTempFolder
+7=GetDesktopFolder;GetDesktopFolder
+8=GetPersonalFolder;GetPersonalFolder
+9=GetFavoritesFolder;GetFavoritesFolder
+10=GetStartupFolder;GetStartupFolder
+11=GetRecentFolder;GetRecentFolder
+12=GetSendToFolder;GetSendToFolder
+13=GetStartmenuFolder;GetStartmenuFolder
+14=GetDesktopDirectoryFolder;GetDesktopDirectoryFolder
+15=GetNethoodFolder;GetNethoodFolder
+16=GetFontsFolder;GetFontsFolder
+17=GetCommonStartmenuFolder;GetCommonStartmenuFolder
+18=GetCommonProgramsFolder;GetCommonProgramsFolder
+19=GetCommonStartupFolder;GetCommonStartupFolder
+20=GetCommonDesktopdirectoryFolder;GetCommonDesktopdirectoryFolder
+21=GetAppdataFolder;GetAppdataFolder
+22=GetPrinthoodFolder;GetPrinthoodFolder
+23=GetCommonFavoritesFolder;GetCommonFavoritesFolder
+24=GetTemplatesFolder;GetTemplatesFolder
+25=GetInternetCacheFolder;GetInternetCacheFolder
+26=GetCookiesFolder;GetCookiesFolder
+27=GetProgramsFolder;GetProgramsFolder
