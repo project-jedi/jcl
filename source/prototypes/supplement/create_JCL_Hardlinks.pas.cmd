@@ -6,5 +6,8 @@ echo.
 echo.
 pause
 rem Remove the nonJCL parts
-simple_pp.pl ..\Hardlinks.pas JCL > "..\..\windows\Hardlinks.pas"
+set tempname=.\Temp_Hardlinks.pas
+simple_pp.pl ..\Hardlinks.pas JCL > "%tempname%"
+simple_pp.pl %tempname% !PROTOTYPE > "..\..\windows\Hardlinks.pas"
+del /f "%tempname%"
 
