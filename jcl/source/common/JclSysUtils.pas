@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclSysUtils;
@@ -67,7 +67,7 @@ procedure FillRemainBytes(var Data; DataSize: Integer; Offset: Integer; Value: B
 { TODO -cHelp : Author: Peter J. Haas
                 Copy Count bytes from Src to Dst and
                 return a pointer to the end of dst buffer  }
-function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer; assembler;
+function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer;
 
 //--------------------------------------------------------------------------------------------------
 // Guards
@@ -2255,6 +2255,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/19 06:16:38  rrossmair
+// fixed for FPC, which doesn't like the assembler key word showing up in the interface section
+//
 // Revision 1.9  2004/04/06 04:30:21  peterjhaas
 // Add FillRemainBytes, CopyMemE
 //
