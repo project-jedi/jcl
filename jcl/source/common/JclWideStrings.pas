@@ -8,9 +8,11 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: WStrUtils.PAS, released on 2004-01-25
+The Original Code is: WStrUtils.PAS, released on 2004-01-25.
 
-The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
+The Initial Developers of the Original Code are Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
+and Mike Lischke (WideQuotedStr & WideExtractQuotedStr from Unicode.pas).
+
 All Rights Reserved.
 
 Contributors:
@@ -477,8 +479,12 @@ function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
 begin
   Result := P;
   if Result <> nil then
-    while (Result^ <> #0) and (Result^ <> Ch) do
+  begin
+    while (Result^ <> 0) and (Result^ <> Ch) do
       Inc(Result);
+    if Result^ = #0 then
+      Result := nil;
+  end;
 end;
 
 function StrEndW(P: PWideChar): PWideChar;
@@ -1803,6 +1809,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/03/19 02:47:07  rrossmair
+// - fixed issue #2680 (WideQuotedStr always fails)
+// - gives credit to Mike Lischke in header now
+//
 // Revision 1.11  2005/03/08 08:33:18  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
