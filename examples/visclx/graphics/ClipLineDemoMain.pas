@@ -81,7 +81,7 @@ begin
   L := 0.4 * Random;
 
   FPenColor := WinColor(HSLToRGB(H, S, L));
-  FPenColorLight := WinColor(HSLToRGB(H, S, 1 - 0.66 * (1 - L)));
+  FPenColorLight := WinColor(HSLToRGB(H, S, 1 - 0.2 * (1 - L)));
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
