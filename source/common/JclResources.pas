@@ -491,6 +491,13 @@ resourcestring
   RsMetSectInitialize         = 'Failed to initialize the metered section.';
   RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
+//------------------------------------------------------------------------------
+// JclComplex
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsComplexInvalidString = 'Failed to create a complex number from the string provided';
+
 implementation
 
 end.
