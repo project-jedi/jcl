@@ -1624,16 +1624,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function StrUpper(const S: AnsiString): AnsiString;
-var
-  L: Integer;
 begin
-  L := Length(S);
-  if L > 0 then // avoid ERangeError in case {$RANGECHECKS ON}
-  begin
-    SetLength(Result, L);
-    Move(S[1], Result[1], L);
-    StrUpperInPlace(Result);
-  end;
+   Result := S;
+   StrUpperInPlace(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
