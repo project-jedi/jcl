@@ -75,7 +75,7 @@ Count=1
 The TFileTime converted to TSystemTime
 [Notes]
 Count=1
-1=This function performs the same operation as FileTimeToSystemTime from Windows.pas.
+1=This function performs the same operation as the procedure FileTimeToSystemTime from Windows.pas.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -198,7 +198,7 @@ Count=1
 The TSystemTime converted to TFileTime. On failure the function raises an exception.
 [Notes]
 Count=1
-1=This function performs the same operation as SystemTimeToFileTime from Windows.pas.
+1=This function performs the same operation as the procedure SystemTimeToFileTime from Windows.pas.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -257,7 +257,7 @@ Count=1
 The TDosDateTime converted to TDateTime.
 [Notes]
 Count=1
-1=This function performs the same operation as DateTimeToFileDate from SysUtils.
+1=This function performs the same operation as the procedure DateTimeToFileDate from SysUtils.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -938,13 +938,45 @@ Count=2
 The 4 digit year.
 [Notes]
 Count=1
-1=If year or pivot is 100 they are converted to 0 first.
+1=If Year or Pivot is 100 they are converted to 0 first.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=MakeYear4Digit
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
+[ShortDescr]
+Converts a 2 digit year into a 4 digit year.
+[Description]
+"Window" technique for years to translate 2 digits to 4 digits.
+The window is 100 years wide. The windowsill year is the lower edge of the window.
+A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year.
+If WindowsillYear is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039.
+A common default is 1950.
+[Parameters]
+Count=2
+1=Year:Integer=The 2 digit year to convert. Is asserted to be in the range 0..100
+2=WindowsillYear:Integer=windowsill year
+[Result]
+The 4 digit year.
+[Notes]
+Count=1
+1=If Year is 100 it is converted to 0 first.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Anthony Steele
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=Make4DigitYear
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; 
