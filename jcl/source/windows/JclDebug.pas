@@ -3012,7 +3012,7 @@ begin
   FS := GetFS;
   while Longint(FS) <> -1 do
   begin
-    if Level >= IgnoreLevels then
+    if (Level >= IgnoreLevels) and (ValidCodeAddr(DWORD(FS.Desc))) then
       AddFrame(FS);
     Inc(Level);
     FS := FS.next;
