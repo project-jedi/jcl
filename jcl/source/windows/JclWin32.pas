@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner:                                                                  }
-{ Last modified: December 13, 2000                                             }
+{ Last modified: January 15, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -41,6 +41,21 @@ uses
   AccCtrl, AclApi,
   {$ENDIF}
   ShlObj;
+
+//------------------------------------------------------------------------------
+// Locales related
+//------------------------------------------------------------------------------
+
+function LANGIDFROMLCID(const lcid: LCID): Word;
+function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
+function PRIMARYLANGID(const lgid: Word): Word;
+function SUBLANGID(const lgid: Word): Word;
+function MAKELCID(const wLanguageID, wSortID: Word): LCID;
+function SORTIDFROMLCID(const lcid: LCID): Word;
+
+const
+  KLF_SETFORPROCESS = $00000100;
+  DATE_YEARMONTH = $00000008;
 
 //------------------------------------------------------------------------------
 // Various Base Services declarations
@@ -66,12 +81,12 @@ type
     dwMinorVersion: DWORD;
     dwBuildNumber: DWORD;
     dwPlatformId: DWORD;
-    szCSDVersion: array [0..127] of CHAR;     // Maintenance string for PSS usage
-    wServicePackMajor: WORD;
-    wServicePackMinor: WORD;
-    wSuiteMask: WORD;
-    wProductType: BYTE;
-    wReserved: BYTE;
+    szCSDVersion: array [0..127] of Char;     // Maintenance string for PSS usage
+    wServicePackMajor: Word;
+    wServicePackMinor: Word;
+    wSuiteMask: Word;
+    wProductType: Byte;
+    wReserved: Byte;
   end;
 
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
@@ -376,17 +391,17 @@ type
   PReparseDataBuffer = ^TReparseDataBuffer;
   _REPARSE_DATA_BUFFER = record
     ReparseTag: DWORD;
-    ReparseDataLength: WORD;
-    Reserved: WORD;
+    ReparseDataLength: Word;
+    Reserved: Word;
     case Integer of
       0: ( // SymbolicLinkReparseBuffer and MountPointReparseBuffer
-        SubstituteNameOffset: WORD;
-        SubstituteNameLength: WORD;
-        PrintNameOffset: WORD;
-        PrintNameLength: WORD;
+        SubstituteNameOffset: Word;
+        SubstituteNameLength: Word;
+        PrintNameOffset: Word;
+        PrintNameLength: Word;
         PathBuffer: array [0..0] of WCHAR);
       1: ( // GenericReparseBuffer
-        DataBuffer: array [0..0] of BYTE);
+        DataBuffer: array [0..0] of Byte);
   end;
   TReparseDataBuffer = _REPARSE_DATA_BUFFER;
 
@@ -397,8 +412,8 @@ const
 type
   PReparsePointInformation = ^TReparsePointInformation;
   _REPARSE_POINT_INFORMATION = record
-    ReparseDataLength: WORD;
-    UnparsedNameLength: WORD;
+    ReparseDataLength: Word;
+    UnparsedNameLength: Word;
   end;
   TReparsePointInformation = _REPARSE_POINT_INFORMATION;
 
@@ -414,10 +429,10 @@ type
   PReparseGuidDataBuffer = ^TReparseGuidDataBuffer;
   _REPARSE_GUID_DATA_BUFFER = record
     ReparseTag: DWORD;
-    ReparseDataLength: WORD;
+    ReparseDataLength: Word;
     Reserved: WORD;
     ReparseGuid: TGUID;
-    DataBuffer: array [0..0] of BYTE;
+    DataBuffer: array [0..0] of Byte;
   end;
   TReparseGuidDataBuffer = _REPARSE_GUID_DATA_BUFFER;
 
@@ -463,7 +478,7 @@ type
     th32ProcessID: DWORD; // owning process
     GlblcntUsage: DWORD;  // Global usage count on the module
     ProccntUsage: DWORD;  // Module usage count in th32ProcessID's context
-    modBaseAddr: PBYTE;   // Base address of module in th32ProcessID's context
+    modBaseAddr: PByte;   // Base address of module in th32ProcessID's context
     modBaseSize: DWORD;   // Size in bytes of module starting at modBaseAddr
     hModule: HMODULE;     // The hModule of this module in th32ProcessID's context
     szModule: array [0..MAX_MODULE_NAME32] of Char;
@@ -716,6 +731,52 @@ function NetBios(P: PNCB): Byte;
 
 implementation
 
+//==============================================================================
+// Locales related
+//==============================================================================
+
+function LANGIDFROMLCID(const lcid: LCID): Word;
+begin
+  Result := Word(lcid);
+end;
+
+//------------------------------------------------------------------------------
+
+function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
+begin
+  Result := usPrimaryLanguage or (usSubLanguage shl 10);
+end;
+
+//------------------------------------------------------------------------------
+
+function PRIMARYLANGID(const lgid: Word): Word;
+begin
+  Result := (lgid and $03FF);
+end;
+
+//------------------------------------------------------------------------------
+
+function SUBLANGID(const lgid: Word): Word;
+begin
+  Result := (lgid shr 10);
+end;
+
+//------------------------------------------------------------------------------
+
+function MAKELCID(const wLanguageID, wSortID: Word): LCID;
+begin
+  Result := wLanguageID or (wSortID shl 16);
+end;
+
+//------------------------------------------------------------------------------
+
+function SORTIDFROMLCID(const lcid: LCID): Word;
+begin
+  Result := (lcid shl 16) and $0F;
+end;
+
+//------------------------------------------------------------------------------
+
 function GetVolumeNameForVolumeMountPointA; external kernel32 name 'GetVolumeNameForVolumeMountPointA';
 function GetVolumeNameForVolumeMountPointW; external kernel32 name 'GetVolumeNameForVolumeMountPointW';
 function GetVolumeNameForVolumeMountPoint; external kernel32 name 'GetVolumeNameForVolumeMountPointA';
@@ -739,7 +800,7 @@ type
 
 var
   NetBiosLib: HINST = 0;
-  _NetBios: TNetBios = nil;
+  _NetBios: TNetBios;
 
 //------------------------------------------------------------------------------
 
