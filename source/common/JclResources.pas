@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: June 4, 2001                                                  }
+{ Last modified: June 24, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -556,7 +556,7 @@ resourcestring
   RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
 
 //------------------------------------------------------------------------------
-// JclRegistry
+// JclRTTI
 //------------------------------------------------------------------------------
 
 resourcestring
@@ -573,6 +573,7 @@ resourcestring
   RsRTTIOrdinal =           'ordinal=';
   RsRTTITrue =              'True';
   RsRTTIFalse =             'False';
+  RsRTTITypeError =         '???';
   RsRTTITypeInfoAt =        'Type info: %p';
 
   RsRTTIPropRead =          'read';
@@ -605,6 +606,10 @@ resourcestring
   RsRTTIParamCount =        'Parameter count: ';
   RsRTTIReturnType =        'Return type: ';
   RsRTTIMaxLen =            'Max length: ';
+  RsRTTIElSize =            'Element size: ';
+  RsRTTIElType =            'Element type: ';
+  RsRTTIElNeedCleanup =     'Elements need clean up: ';
+  RsRTTIVarType =           'Variant type: ';
 
 //------------------------------------------------------------------------------
 // JclSscanf
