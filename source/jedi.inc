@@ -26,10 +26,9 @@
 { include file. For the JCL this is JCL.INC. These files should be included in }
 { source files instead of this file (which is pulled in automatically).        }
 {                                                                              }
-{ Last modified: Dec  27, 2003                                                 }
-{                                                                              }
 {******************************************************************************}
 
+// $Id$
 (*
 
 - Development environment directives
@@ -451,9 +450,12 @@
 //------------------------------------------------------------------------------
 
 {$IFDEF COMPILER3_UP}
+  {$DEFINE SUPPORTS_OUTPARAMS}
   {$DEFINE SUPPORTS_WIDESTRING}
   {$DEFINE SUPPORTS_INTERFACE}
-{$ENDIF}
+  {$DEFINE SUPPORTS_DISPINTERFACE}
+  {$DEFINE SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPILER35_UP}
   {$DEFINE SUPPORTS_EXTSYM}
@@ -504,3 +506,7 @@
 {$IFNDEF VisualCLX}
   {$DEFINE VCL}
 {$ENDIF}
+
+// for Delphi/BCB trial versions remove the point from the line below  
+{.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
+
