@@ -1,0 +1,30 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MakePercentage(const Step, Max: Longint): Longint;
+[ShortDescr]
+Hehe, no way...
+[Description]
+I dare not describe this function's purpose. See the Notes section below. As a
+tribute to that wonderful article this function has been designated the alias
+HowAOneLinerCanBiteYou. You are encouraged to use that alias in your applications
+as opposed to the much more readable and self-explanatory name MakePercentage :-)
+[Parameters]
+Count=2
+1=Step:Longint=Sorry, no can do.
+2=Max:Longint=No idea, but I do know that passing 0 will trigger an assertion if
+you have assertions enabled or a runtime error (EDivByZero) if not.
+[Result]
+All I have to say about this is that it is very well possible that the result
+may be larger than 100 and that the sign of the arguments is preserved so it is
+possible that the result is negative.
+[Notes]
+Count=1
+1=For a very educational dissection of this function have a look at the
+article written by Robert Marquardt entitled "<A HREF="http://www.delphi-jedi.org/Jedi:VOYBUGHUNT">
+Lessons in good programming or how a one liner can bite you</A>" available at the Voyager section on the JEDI website.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
