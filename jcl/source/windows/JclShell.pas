@@ -1052,7 +1052,7 @@ begin
   begin
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
-    FullPath := PathGetLongName(FileName);
+    FullPath := ExpandFileName(FileName);
     MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
       LinkName, MAX_PATH);
     Result := PersistFile.Load(LinkName, STGM_READ);
