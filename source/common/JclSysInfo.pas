@@ -1347,18 +1347,38 @@ const
   ProductType = 'System\CurrentControlSet\Control\ProductOptions';
 var
   Product: string;
+  VersionInfo: TOSVersionInfoEx;
 begin
-  Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
-  if CompareText(Product, 'WinNT') = 0 then
-    Result :=  ptWorkStation
-  else
-  if CompareText(Product, 'ServerNT') = 0 then
-    Result := ptServer
-  else
-  if CompareText(Product, 'LanmanNT') = 0 then
-    Result := ptAdvancedServer
-  else
+  if IsWin2K then
+  begin
+    { favor documented API over registry }
     Result := ptUnknown;
+    FillChar(VersionInfo, SizeOf(VersionInfo), 0);
+    VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
+    if JclWin32.GetVersionEx(@VersionInfo) then
+    begin
+      case VersionInfo.wProductType of
+        VER_NT_WORKSTATION: Result := ptWorkStation;
+        VER_NT_DOMAIN_CONTROLLER: Result := ptAdvancedServer;
+        VER_NT_SERVER: Result := ptServer;
+      end;
+    end;
+  end
+  else
+  begin
+    { GetVersionEx is not supported on pre Windows 2000 systems }
+    Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
+    if CompareText(Product, 'WinNT') = 0 then
+      Result :=  ptWorkStation
+    else
+    if CompareText(Product, 'ServerNT') = 0 then
+      Result := ptServer
+    else
+    if CompareText(Product, 'LanmanNT') = 0 then
+      Result := ptAdvancedServer
+    else
+      Result := ptUnknown;
+  end;
 end;
 
 //==============================================================================
