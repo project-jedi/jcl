@@ -70,6 +70,7 @@ contains
   JclExprEval in '..\Source\JclExprEval.pas',
   JclRTTI in '..\Source\JclRTTI.pas',
   LM in '..\Source\LM.pas',
+  JclTD32 in '..\Source\JclTD32.pas',
   JclStrHashMap in '..\Source\JclStrHashMap.pas';
 
 end.
