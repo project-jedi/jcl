@@ -385,7 +385,7 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetMciErrorMessage(ErrorCode: MCIERROR): string;
+function GetMciErrorMessage(MciErrNo: MCIERROR): string;
 [ShortDescr]
 Wrapper for mciGetErrorString API.
 [Description]
