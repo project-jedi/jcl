@@ -183,7 +183,6 @@ end;
 
 constructor TNotifierItem.Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FNotifyProc := NotifyProc;
   FPriority := Priority;
@@ -193,7 +192,6 @@ end;
 
 constructor TNotifierItem.Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority);
 begin
-  // (rom) added inherited Create
   inherited Create;
   FNotifyMethod := NotifyMethod;
   FPriority := Priority;
@@ -516,7 +514,6 @@ end;
 
 constructor TJclHookExceptModuleList.Create;
 begin
-  // (rom) added inherited Create
   inherited Create;
   FModules := TThreadList.Create;
   HookStaticModules;
@@ -625,6 +622,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/08/02 15:30:17  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.6  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

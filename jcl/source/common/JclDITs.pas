@@ -168,7 +168,7 @@ function ISOStrToFloatDef(const Value: string; const Default: Extended): Extende
 implementation
 
 uses
-  JclResources;
+  JclMath, JclResources;
 
 const
   cNaNText = 'NAN';
@@ -591,15 +591,14 @@ begin
       if Value[1] = '+' then
         Delete(Value, 1, 1);
       Value := UpperCase(Value);
-      // (rom) better based on JclMath
       if Value = cNaNText then
-        Float := 0/0
+        Float := NaN
       else
       if Value = cInfText then
-        Float := 1/0
+        Float := Infinity
       else
       if Value = cNegInfText then
-        Float := -1/0
+        Float := NegInfinity
       else
         Result := False;
     end;
@@ -639,6 +638,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.12  2004/08/02 15:30:07  marquardt
+//   hunting down (rom) comments
+//
 //   Revision 1.11  2004/08/02 06:34:59  marquardt
 //   minor string literal improvements
 //

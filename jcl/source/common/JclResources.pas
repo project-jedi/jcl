@@ -100,7 +100,7 @@ resourcestring
 
 resourcestring
   RsClrCopyright = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  #13#10 +
-                   '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  #13#10;
+    '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  #13#10;
 
 //--------------------------------------------------------------------------------------------------
 // JclCOM
@@ -108,7 +108,7 @@ resourcestring
 
 resourcestring
   RsComInvalidParam      = 'An invalid parameter was passed to the routine. If a parameter was' +
-   ' expected, it might be an unassigned item or nil pointer';
+    ' expected, it might be an unassigned item or nil pointer';
   RsComFailedStreamRead  = 'Failed to read all of the data from the specified stream';
   RsComFailedStreamWrite = 'Failed to write all of the data into the specified stream';
 
@@ -145,14 +145,12 @@ resourcestring
 // JclDebug
 //--------------------------------------------------------------------------------------------------
 
-  // Diagnostics
-
 resourcestring
+  // Diagnostics
   RsDebugAssertValidPointer = 'Invalid Pointer passed to AssertValid';
   RsDebugAssertValidString  = 'Invalid string passed to AssertValid';
 
   // TMapFiles
-
   RsDebugMapFileExtension = '.map'; // do not localize
   RsDebugNoProcessInfo    = 'Unable to obtain process information';
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
@@ -168,7 +166,7 @@ resourcestring
   RsEDIError004 = 'Could not get data object from %s at index [%s], Index too low.';
   RsEDIError005 = 'Could not get data object from %s at index [%s], Index too high.';
   RsEDIError006 = 'Could not get data object from %s at index [%s], ' +
-                  'There was no data object assigned.';
+    'There was no data object assigned.';
   RsEDIError007 = 'Could not set data object from %s at index [%s].';
   RsEDIError008 = 'Could not set data object from %s at index [%s], Index too low.';
   RsEDIError009 = 'Could not set data object from %s at index [%s], Index too high.';
@@ -202,17 +200,17 @@ resourcestring
   RsEDIError037 = 'Could not assign delimiters to composite element.  Dissassemble cancelled.';
   RsEDIError038 = 'Could not assign delimiters to composite element.  Assemble cancelled.';
   RsEDIError039 = 'Could not get data object in transaction set loop at index [%s], ' +
-                  'Data object does not exist.';
+    'Data object does not exist.';
   RsEDIError040 = 'Could not get data object in transaction set loop at index [%s], ' +
-                  'Index too high.';
+    'Index too high.';
   RsEDIError041 = 'Could not get data object in transaction set loop at index [%s], Index too low.';
   RsEDIError042 = 'Could not get data object in transaction set loop at index [%s].';
   RsEDIError043 = 'Could not set data object in transaction set loop at index [%s], ' +
-                  'Index too high.';
+    'Index too high.';
   RsEDIError044 = 'Could not set data object in transaction set loop at index [%s], Index too low.';
   RsEDIError045 = 'Could not set data object in transaction set loop at index [%s].';
   RsEDIError046 = 'Could not get data object in message loop at index [%s], ' +
-                  'Data object does not exist.';
+    'Data object does not exist.';
   RsEDIError047 = 'Could not get data object in message loop at index [%s], Index too high.';
   RsEDIError048 = 'Could not get data object in message loop at index [%s], Index too low.';
   RsEDIError049 = 'Could not get data object in message loop at index [%s].';
@@ -225,7 +223,7 @@ resourcestring
   RsEDIError056 = 'Could not get loop stack record at index [%s].';
   RsEDIError057 = 'Could not get safe loop stack index [%s].';
   RsEDIError058 = 'Could not assign element specification to element at index [%s] ' +
-                  'in segment [%s] at index [%s] in transaction set.';
+    'in segment [%s] at index [%s] in transaction set.';
 
   RsUnknownAttribute = 'Unknown Attribute';
 
@@ -265,8 +263,8 @@ resourcestring
   EDIXMLError002 = 'Could not save edi file.  File name and path not specified.';
   EDIXMLError003 = 'Could not assign delimiters to edi file.  Disassemble cancelled.';
   EDIXMLError004 = 'Could not assign delimiters to edi file.  Assemble cancelled.';
-  EDIXMLError005 = 'Could not assign delimiters to interchange control.  Disassemble cancelled.';
-  EDIXMLError006 = 'Could not assign delimiters to interchange control.  Assemble cancelled.';
+  EDIXMLError005 = 'Could not assign delimiters to interchange control. Disassemble cancelled.';
+  EDIXMLError006 = 'Could not assign delimiters to interchange control. Assemble cancelled.';
   EDIXMLError007 = 'Could not find interchange control end tag.';
   EDIXMLError008 = 'Could not find interchange control end tag delimiter.';
   EDIXMLError009 = 'Could not find interchange control header.';
@@ -275,8 +273,8 @@ resourcestring
   EDIXMLError012 = 'Could not find interchange control trailer.';
   EDIXMLError013 = 'Could not find interchange control trailer end tag.';
   EDIXMLError014 = 'Could not find interchange control trailer end tag delimiter.';
-  EDIXMLError015 = 'Could not assign delimiters to functional group.  Disassemble cancelled.';
-  EDIXMLError016 = 'Could not assign delimiters to functional group.  Assemble cancelled.';
+  EDIXMLError015 = 'Could not assign delimiters to functional group. Disassemble cancelled.';
+  EDIXMLError016 = 'Could not assign delimiters to functional group. Assemble cancelled.';
   EDIXMLError017 = 'Could not find functional group end tag.';
   EDIXMLError018 = 'Could not find functional group end tag delimiter.';
   EDIXMLError019 = 'Could not find functional group header.';
@@ -285,12 +283,12 @@ resourcestring
   EDIXMLError022 = 'Could not find functional group trailer.';
   EDIXMLError023 = 'Could not find functional group trailer end tag.';
   EDIXMLError024 = 'Could not find functional group trailer end tag delimiter.';
-  EDIXMLError025 = 'Could not assign delimiters to transactoin set.  Disassemble cancelled.';
-  EDIXMLError026 = 'Could not assign delimiters to transactoin set.  Assemble cancelled.';
+  EDIXMLError025 = 'Could not assign delimiters to transactoin set. Disassemble cancelled.';
+  EDIXMLError026 = 'Could not assign delimiters to transactoin set. Assemble cancelled.';
   EDIXMLError027 = 'Could not find transaction set end tag.';
   EDIXMLError028 = 'Could not find transaction set end tag delimiter.';
-  EDIXMLError029 = 'Could not assign delimiters to transactoin set loop.  Disassemble cancelled.';
-  EDIXMLError030 = 'Could not assign delimiters to transactoin set loop.  Assemble cancelled.';
+  EDIXMLError029 = 'Could not assign delimiters to transactoin set loop. Disassemble cancelled.';
+  EDIXMLError030 = 'Could not assign delimiters to transactoin set loop. Assemble cancelled.';
   EDIXMLError031 = 'Could not find loop end tag';
   EDIXMLError032 = 'Could not find loop end tag delimiter';
   EDIXMLError033 = 'Could not set data object at index [%s].';
@@ -301,13 +299,13 @@ resourcestring
   EDIXMLError038 = 'Could not get data object at index [%s], Index too high.';
   EDIXMLError039 = 'Could not get data object at index [%s], Data object does not exist.';
   EDIXMLError040 = 'Could not delete EDI data object';
-  EDIXMLError041 = 'Could not assign delimiters to segment.  Disassemble cancelled.';
-  EDIXMLError042 = 'Could not assign delimiters to segment.  Assemble cancelled.';
+  EDIXMLError041 = 'Could not assign delimiters to segment. Disassemble cancelled.';
+  EDIXMLError042 = 'Could not assign delimiters to segment. Assemble cancelled.';
   EDIXMLError043 = 'Could not find segment begin tag';
   EDIXMLError044 = 'Could not find segment end tag';
   EDIXMLError045 = 'Could not find segment end tag delimiter';
-  EDIXMLError046 = 'Could not assign delimiters to element.  Disassemble cancelled.';
-  EDIXMLError047 = 'Could not assign delimiters to element.  Assemble cancelled.';
+  EDIXMLError046 = 'Could not assign delimiters to element. Disassemble cancelled.';
+  EDIXMLError047 = 'Could not assign delimiters to element. Assemble cancelled.';
   EDIXMLError048 = 'Could not find element tag';
   EDIXMLError049 = 'Could not find element end tag';
   EDIXMLError050 = 'Could not find element end tag delimiter';
@@ -339,7 +337,7 @@ resourcestring
 
   RsExprEvalExprNotFound = 'Expression compiler error: Expression ''%s'' not found';
   RsExprEvalExprPtrNotFound = 'Expression compiler error: Expression pointer not found';
-
+  RsExprEvalExprRefCountAssertion = 'Expression compiler error: expression refcount < 0';
 
 //--------------------------------------------------------------------------------------------------
 // JclStrHashMap
@@ -350,19 +348,15 @@ resourcestring
   RsStringHashMapDuplicate = 'Duplicate hash list entry: %s';
   RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
 
-
 //--------------------------------------------------------------------------------------------------
 // JclFileUtils
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-
   // Path manipulation
-
   RsPathInvalidDrive = '%s is not a valid drive';
 
   // Files and directories
-
   RsFileUtilsAttrUnavailable = 'Unable to retrieve attributes of %s';
 
   RsCannotCreateDir = 'Unable to create directory';
@@ -370,12 +364,10 @@ resourcestring
   RsFileSearchAttrInconsistency = 'Some file search attributes are required AND rejected!';
 
   // TJclFileVersionInfo
-
   RsFileUtilsNoVersionInfo = 'File contains no version information';
   RsFileUtilsLanguageIndex = 'Illegal language index';
 
   // Strings returned from OSIdentTOString()
-
   RsVosUnknown      = 'Unknown';
   RsVosDos          = 'MS-DOS';
   RsVosOS216        = '16-bit OS/2';
@@ -393,7 +385,6 @@ resourcestring
   RsVosDesignedFor  = 'Designed for ';
 
   // Strings returned from OSFileTypeToString()
-
   RsVftUnknown         = 'Unknown';
   RsVftApp             = 'Application';
   RsVftDll             = 'Library';
@@ -416,11 +407,9 @@ resourcestring
   RsVft2FontTRUETYPE   = 'TrueType';
 
   // TJclFileStream
-
   RsFileStreamCreate         = 'Unable to create temporary file stream';
 
   // TJclFileMapping
-
   RsCreateFileMapping        = 'Failed to create FileMapping';
   RsCreateFileMappingView    = 'Failed to create FileMappingView';
   RsLoadFromStreamSize       = 'Not enough space in View in procedure LoadFromStream';
@@ -429,7 +418,6 @@ resourcestring
   RsFailedToObtainSize       = 'Failed to obtain size of file';
 
   // GetDriveTypeStr()
-
   RsUnknownDrive   = 'Unknown drive type';
   RsRemovableDrive = 'Removable Drive';
   RsHardDisk       = 'Hard Disk';
@@ -438,7 +426,6 @@ resourcestring
   RsRamDisk        = 'RAM-Disk';
 
   // GetFileAttributeList()
-
   RsAttrDirectory  = 'Directory';
   RsAttrReadOnly   = 'ReadOnly';
   RsAttrSystemFile = 'SystemFile';
@@ -448,7 +435,6 @@ resourcestring
   RsAttrHidden     = 'Hidden';
 
   // GetFileAttributeListEx()
-
   RsAttrNormal       = 'Normal';
   RsAttrTemporary    = 'Temporary';
   RsAttrCompressed   = 'Compressed';
@@ -458,15 +444,12 @@ resourcestring
   RsAttrSparseFile   = 'Sparse';
 
   // TJclFileMapping.Create
-
   RsFileMappingOpenFile = 'Unable to open the file';
 
   // TJclMappedTextReader
-
   RsFileIndexOutOfRange = 'Index of out range';
 
   // FileGetTypeName()
-
   RsDefaultFileTypeName = ' File';
 
 //--------------------------------------------------------------------------------------------------
@@ -615,9 +598,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-
   // Multimedia timer
-
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
   RsMmTimerBeginPeriod = 'The supplied timer period value is out of range';
   RsMmSetEvent         = 'Error setting multimedia event timer';
@@ -625,7 +606,6 @@ resourcestring
   RsMmTimerActive      = 'This operation cannot be performed while the timer is active';
 
   // Audio Mixer
-
   RsMmMixerSource      = 'Source';
   RsMmMixerDestination = 'Destination';
   RsMmMixerUndefined   = 'Undefined';
@@ -648,12 +628,10 @@ resourcestring
   RsMmMixerCtlNotFound = 'Line control (%s, %.8x) not found';
 
   // EJclMciError
-
   RsMmUnknownError     = 'Unknown MCI error No. %d';
   RsMmMciErrorPrefix   = 'MCI-Error: ';
 
   // CD audio routines
-
   RsMmNoCdAudio        = 'Cannot open CDAUDIO-Device';
   RsMmCdTrackNo        = 'Track: %.2u';
   RsMMCdTimeFormat     = '%2u:%.2u';
@@ -689,7 +667,6 @@ resourcestring
   RsPeReadOnlyStream          = 'Stream is read-only';
 
   // TJclPeImage
-
   RsPeCantOpen                = 'Cannot open file "%s"';
   RsPeNotPE                   = 'This is not a PE format';
   RsPeNotResDir               = 'Not a resource directory';
@@ -697,7 +674,6 @@ resourcestring
   RsPeSectionNotFound         = 'Section "%s" not found';
 
   // PE directory names
-
   RsPeImg_00 = 'Exports';
   RsPeImg_01 = 'Imports';
   RsPeImg_02 = 'Resources';
@@ -715,7 +691,6 @@ resourcestring
   RsPeImg_14 = 'COM run-time';
 
   // NT Header names
-
   RsPeSignature               = 'Signature';
   RsPeMachine                 = 'Machine';
   RsPeNumberOfSections        = 'Number of Sections';
@@ -752,7 +727,6 @@ resourcestring
   RsPeNumberOfRvaAndSizes     = 'Number of RVA';
 
   // Load config names
-
   RsPeVersion                       = 'Version';
   RsPeGlobalFlagsClear              = 'GlobalFlagsClear';
   RsPeGlobalFlagsSet                = 'GlobalFlagsSet';
@@ -769,7 +743,6 @@ resourcestring
   RsPeEditList                      = 'EditList';
 
   // Machine names
-
   RsPeMACHINE_UNKNOWN = 'Unknown';
   RsPeMACHINE_I386    = 'Intel 386';
   RsPeMACHINE_R3000   = 'MIPS little-endian R3000';
@@ -779,7 +752,6 @@ resourcestring
   RsPeMACHINE_POWERPC = 'IBM PowerPC Little-Endian';
 
   // Subsystem names
-
   RsPeSUBSYSTEM_UNKNOWN     = 'Unknown';
   RsPeSUBSYSTEM_NATIVE      = 'Native';
   RsPeSUBSYSTEM_WINDOWS_GUI = 'GUI';
@@ -789,7 +761,6 @@ resourcestring
   RsPeSUBSYSTEM_RESERVED8   = 'Reserved 8';
 
   // Debug symbol type names
-
   RsPeDEBUG_UNKNOWN       = 'UNKNOWN';
   RsPeDEBUG_COFF          = 'COFF';
   RsPeDEBUG_CODEVIEW      = 'CODEVIEW';
@@ -802,27 +773,23 @@ resourcestring
   RsPeDEBUG_BORLAND       = 'BORLAND';
 
   // TJclPePackageInfo.PackageModuleTypeToString
-
   RsPePkgExecutable = 'Executable';
   RsPePkgPackage    = 'Package';
   PsPePkgLibrary    = 'Library';
 
   // TJclPePackageInfo.PackageOptionsToString
-
   RsPePkgNeverBuild     = 'NeverBuild';
   RsPePkgDesignOnly     = 'DesignOnly';
   RsPePkgRunOnly        = 'RunOnly';
   RsPePkgIgnoreDupUnits = 'IgnoreDupUnits';
 
   // TJclPePackageInfo.ProducerToString
-
   RsPePkgV3Produced        = 'Delphi 3 or C++ Builder 3';
   RsPePkgProducerUndefined = 'Undefined';
   RsPePkgBCB4Produced      = 'C++ Builder 4 or later';
   RsPePkgDelphi4Produced   = 'Delphi 4 or later';
 
   // TJclPePackageInfo.UnitInfoFlagsToString
-
   RsPePkgMain     = 'Main';
   RsPePkgWeak     = 'Weak';
   RsPePkgOrgWeak  = 'OrgWeak';
@@ -833,6 +800,8 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
+  RsSpoolerDocName = 'My Document';
+
   RsInvalidPrinter        = 'Invalid printer';
   RsNAStartDocument       = 'Unable to "Start document"';
   RsNASendData            = 'Unable to send data to printer';
@@ -848,7 +817,6 @@ resourcestring
   RsIndexOutOfRangePaper  = 'Index out of range setting paper';
 
   // Paper Styles (PS)
-
   RsPSLetter      = 'Letter 8 1/2 x 11 in';
   RsPSLetterSmall = 'Letter Small 8 1/2 x 11 in';
   RsPSTabloid     = 'Tabloid 11 x 17 in';
@@ -892,56 +860,56 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsRTTIValueOutOfRange =   'Value out of range (%s).';
+  RsRTTIValueOutOfRange   = 'Value out of range (%s).';
   RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
   RsRTTIInvalidGUIDString = 'Invalid conversion from string to GUID (%s).';
   RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
 
-  RsRTTIVar =               'var ';
-  RsRTTIConst =             'const ';
-  RsRTTIArrayOf =           'array of ';
-  RsRTTIOut =               'out ';
-  RsRTTIBits =              'bits';
-  RsRTTIOrdinal =           'ordinal=';
-  RsRTTITrue =              'True';
-  RsRTTIFalse =             'False';
-  RsRTTITypeError =         '???';
-  RsRTTITypeInfoAt =        'Type info: %p';
+  RsRTTIVar               = 'var ';
+  RsRTTIConst             = 'const ';
+  RsRTTIArrayOf           = 'array of ';
+  RsRTTIOut               = 'out ';
+  RsRTTIBits              = 'bits';
+  RsRTTIOrdinal           = 'ordinal=';
+  RsRTTITrue              = 'True';
+  RsRTTIFalse             = 'False';
+  RsRTTITypeError         = '???';
+  RsRTTITypeInfoAt        = 'Type info: %p';
 
-  RsRTTIPropRead =          'read';
-  RsRTTIPropWrite =         'write';
-  RsRTTIPropStored =        'stored';
+  RsRTTIPropRead          = 'read';
+  RsRTTIPropWrite         = 'write';
+  RsRTTIPropStored        = 'stored';
 
-  RsRTTIField =             'field';
-  RsRTTIStaticMethod =      'static method';
-  RsRTTIVirtualMethod =     'virtual method';
+  RsRTTIField             = 'field';
+  RsRTTIStaticMethod      = 'static method';
+  RsRTTIVirtualMethod     = 'virtual method';
 
   RsRTTIIndex =             'index';
   RsRTTIDefault =           'default';
 
-  RsRTTIName =              'Name: ';
-  RsRTTIType =              'Type: ';
-  RsRTTIFlags =             'Flags: ';
-  RsRTTIGUID =              'GUID: ';
-  RsRTTITypeKind =          'Type kind: ';
-  RsRTTIOrdinalType =       'Ordinal type: ';
-  RsRTTIMinValue =          'Min value: ';
-  RsRTTIMaxValue =          'Max value: ';
-  RsRTTINameList =          'Names: ';
-  RsRTTIClassName =         'Class name: ';
-  RsRTTIParent =            'Parent: ';
-  RsRTTIPropCount =         'Property count: ';
-  RsRTTIUnitName =          'Unit name: ';
-  RsRTTIBasedOn =           'Based on: ';
-  RsRTTIFloatType =         'Float type: ';
-  RsRTTIMethodKind =        'Method kind: ';
-  RsRTTIParamCount =        'Parameter count: ';
-  RsRTTIReturnType =        'Return type: ';
-  RsRTTIMaxLen =            'Max length: ';
-  RsRTTIElSize =            'Element size: ';
-  RsRTTIElType =            'Element type: ';
-  RsRTTIElNeedCleanup =     'Elements need clean up: ';
-  RsRTTIVarType =           'Variant type: ';
+  RsRTTIName              = 'Name: ';
+  RsRTTIType              = 'Type: ';
+  RsRTTIFlags             = 'Flags: ';
+  RsRTTIGUID              = 'GUID: ';
+  RsRTTITypeKind          = 'Type kind: ';
+  RsRTTIOrdinalType       = 'Ordinal type: ';
+  RsRTTIMinValue          = 'Min value: ';
+  RsRTTIMaxValue          = 'Max value: ';
+  RsRTTINameList          = 'Names: ';
+  RsRTTIClassName         = 'Class name: ';
+  RsRTTIParent            = 'Parent: ';
+  RsRTTIPropCount         = 'Property count: ';
+  RsRTTIUnitName          = 'Unit name: ';
+  RsRTTIBasedOn           = 'Based on: ';
+  RsRTTIFloatType         = 'Float type: ';
+  RsRTTIMethodKind        = 'Method kind: ';
+  RsRTTIParamCount        = 'Parameter count: ';
+  RsRTTIReturnType        = 'Return type: ';
+  RsRTTIMaxLen            = 'Max length: ';
+  RsRTTIElSize            = 'Element size: ';
+  RsRTTIElType            = 'Element type: ';
+  RsRTTIElNeedCleanup     = 'Elements need clean up: ';
+  RsRTTIVarType           = 'Variant type: ';
 
 //--------------------------------------------------------------------------------------------------
 // JclSchedule
@@ -963,7 +931,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsBlankSearchString = 'Search string cannot be blank';
+  RsBlankSearchString       = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
   
@@ -993,7 +961,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsSystemProcess = 'System Process';
+  RsSystemProcess     = 'System Process';
   RsSystemIdleProcess = 'System Idle Process';
 
   RsIntelCacheDescr01 = 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries';
@@ -1011,7 +979,6 @@ resourcestring
   RsIntelCacheDescr44 = 'Unified cache, 32 byte cache line, 4-way set associative, 1Mb';
   RsIntelCacheDescr45 = 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb';
 
-resourcestring
   RsOSVersionWin95     = 'Windows 95';
   RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
   RsOSVersionWin98     = 'Windows 98';
@@ -1023,7 +990,6 @@ resourcestring
   RsOSVersionWinXP     = 'Windows XP';
   RsOSVersionWin2003   = 'Windows Server 2003';
 
-resourcestring
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
   RsProductTypeAdvancedServer   = 'Advanced Server';
@@ -1031,7 +997,6 @@ resourcestring
   RsProductTypeProfessional     = 'Professional';
   RsProductTypeDatacenterServer = 'Datacenter Server';
 
-resourcestring
   RsOpenGLInfoError = 'Err';
   
 //--------------------------------------------------------------------------------------------------
@@ -1040,31 +1005,23 @@ resourcestring
 
 resourcestring
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
-  RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
-  RsInvalidDigit = 'Invalid base %d digit ''%s'' encountered.';
-  RsInvalidDigitValue = 'There is no valid base %d digit for decimal value %d';
-
-//--------------------------------------------------------------------------------------------------
-// JclTD32
-//--------------------------------------------------------------------------------------------------
-
-{ TODO : Currently don't used }
-//resourcestring
-//  RsSvcInvalidSvcState = 'Invalid service state: %.8x';
+  RsStringToBoolean      = 'Unable to convert the string "%s" to a boolean';
+  RsInvalidDigit         = 'Invalid base %d digit ''%s'' encountered.';
+  RsInvalidDigitValue    = 'There is no valid base %d digit for decimal value %d';
 
 //--------------------------------------------------------------------------------------------------
 // JclTD32
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsHasNotTD32Info       = 'File [%s] has not TD32 debug information!';
+  RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
 
 //--------------------------------------------------------------------------------------------------
 // JclUnicode
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsUREBaseString = 'Error in regular expression: %s' + #13;
+  RsUREBaseString          = 'Error in regular expression: %s' + #13;
   RsUREUnexpectedEOS       = 'Unexpected end of pattern.';
   RsURECharacterClassOpen  = 'Character class not closed, '']'' is missing.';
   RsUREUnbalancedGroup     = 'Unbalanced group expression, '')'' is missing.';
@@ -1077,8 +1034,8 @@ resourcestring
 // JclZlib
 //--------------------------------------------------------------------------------------------------
 
-// zlib
 resourcestring
+  // zlib
   RsZLibNeedDict     = 'need dictionary';
   RsZLibStreamEnd    = 'stream end';
   RsZLibOK           = '';
@@ -1094,12 +1051,11 @@ resourcestring
   RsZLibNoWrite      = 'TZLibReader cannot write';
   RsZLibNoRead       = 'TZLibWriter cannot read';
 
-// gzip
-resourcestring
-  RsGzipNoSetSize    = 'gzip stream cannot perform set size';
-  RsGzipNoSeek       = 'gzip stream cannot perform seek';
-  RsGzipNoWrite      = 'gzip reader cannot write';
-  RsGzipNoRead       = 'gzip writer cannot read';
+  // gzip
+  RsGzipNoSetSize = 'gzip stream cannot perform set size';
+  RsGzipNoSeek    = 'gzip stream cannot perform seek';
+  RsGzipNoWrite   = 'gzip reader cannot write';
+  RsGzipNoRead    = 'gzip writer cannot read';
 
   RsGzipNoGZipStream          = 'no gzip stream';
   RsGzipNoDeflate             = 'no deflate compression';
@@ -1109,8 +1065,7 @@ resourcestring
   RsGzipCRCError              = 'checksum error';
   RsGzipSizeError             = 'uncompressed size error';
 
-// Tar
-resourcestring
+  // Tar
   RsTarOctalToIntInvalidCharacters = 'OctalToInt invalid characters: "%s"';
   RsTarOctalToIntOutOfRange        = 'OctalToInt out of range: "%s"';
   RsTarChecksumError               = 'TAR Checksum Error';
@@ -1131,6 +1086,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.10  2004/08/02 15:30:16  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.9  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //
