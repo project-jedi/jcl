@@ -23,6 +23,7 @@
 { Last modified: April 20, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
+
 unit JclDotNet;
 
 {**************************************************************************************************}
@@ -40,8 +41,6 @@ interface
 
 {$I jcl.inc}
 
-//{$WEAKPACKAGEUNIT ON} // Need to initialize COM context 
-
 uses
   {$IFDEF MSWINDOWS}
   Windows, ActiveX,
@@ -50,7 +49,8 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase, mscoree_TLB, mscorlib_TLB;
+  JclBase,
+  mscoree_TLB, mscorlib_TLB;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
 
@@ -66,11 +66,12 @@ type
 type
   TJclClrHostFlavor = (hfServer, hfWorkStation);
 
-  TJclClrHostLoaderFlag = (hlOptSingleDomain,
-                           hlOptMultiDomain,
-                           hlOptMultiDomainHost,
-                           hlSafeMode,
-                           hlSetPreference);
+  TJclClrHostLoaderFlag =
+   (hlOptSingleDomain,
+    hlOptMultiDomain,
+    hlOptMultiDomainHost,
+    hlSafeMode,
+    hlSetPreference);
   TJclClrHostLoaderFlags = set of TJclClrHostLoaderFlag;
 
 type
@@ -82,9 +83,7 @@ type
   private
     FDefaultInterface: ICorRuntimeHost;
     FAppDomains: TObjectList;
-
     procedure EnumAppDomains;
-
     function GetAppDomain(const Idx: Integer): TJclClrAppDomain;
     function GetAppDomainCount: Integer;
     function GetDefaultAppDomain: IJclClrAppDomain;
@@ -98,28 +97,21 @@ type
       const ConcurrentGC: Boolean = True;
       const LoaderFlags: TJclClrHostLoaderFlags = [hlOptSingleDomain]);
     destructor Destroy; override;
-
     procedure Start;
     procedure Stop;
     procedure Refresh;
-
     function CreateDomainSetup: TJclClrAppDomainSetup;
     function CreateAppDomain(const Name: WideString;
       const Setup: TJclClrAppDomainSetup = nil;
       const Evidence: IJclClrEvidence = nil): TJclClrAppDomain;
-
     function FindAppDomain(const Intf: IJclClrAppDomain; var Ret: TJclClrAppDomain): Boolean; overload;
     function FindAppDomain(const Name: WideString; var Ret: TJclClrAppDomain): Boolean; overload;
-
     class function CorSystemDirectory: WideString;
     class function CorVersion: WideString;
     class function CorRequiredVersion: WideString;
-
     property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
-
     property AppDomains[const Idx: Integer]: TJclClrAppDomain read GetAppDomain; default;
     property AppDomainCount: Integer read GetAppDomainCount;
-
     property DefaultAppDomain: IJclClrAppDomain read GetDefaultAppDomain;
     property CurrentAppDomain: IJclClrAppDomain read GetCurrentAppDomain;
   end;
@@ -138,7 +130,6 @@ type
     function Load(const RawAssemblyStream: TStream;
       const RawSymbolStoreStream: TStream = nil;
       const AssemblySecurity: IJclClrEvidence = nil): TJclClrAssembly; overload;
-
     function Execute(const AssemblyFile: TFileName;
       const AssemblySecurity: IJclClrEvidence = nil): Integer; overload;
     function Execute(const AssemblyFile: TFileName;
@@ -147,9 +138,7 @@ type
     function Execute(const AssemblyFile: TFileName;
       const Arguments: TStrings;
       const AssemblySecurity: IJclClrEvidence = nil): Integer; overload;
-
     procedure Unload;
-
     property Host: TJclClrHost read FHost;
     property DefaultInterface: IJclClrAppDomain read FDefaultInterface implements IJclClrAppDomain;
   end;
@@ -157,7 +146,6 @@ type
   TJclClrAppDomainSetup = class(TJclClrBase, IAppDomainSetup)
   private
     FDefaultInterface: IAppDomainSetup;
-
     function GetApplicationBase: WideString;
     function GetApplicationName: WideString;
     function GetCachePath: WideString;
@@ -182,7 +170,6 @@ type
     constructor Create(Intf: IAppDomainSetup);
   public
     property DefaultInterface: IAppDomainSetup read FDefaultInterface implements IAppDomainSetup;
-
     property ApplicationBase: WideString read GetApplicationBase write SetApplicationBase;
     property ApplicationName: WideString read GetApplicationName write SetApplicationName;
     property CachePath: WideString read GetCachePath write SetCachePath;
@@ -205,10 +192,10 @@ type
   end;
 
 type
-  TJclClrField = class
+  TJclClrField = class(TObject)
   end;
 
-  TJclClrProperty = class
+  TJclClrProperty = class(TObject)
   end;
 
   TJclClrMethod = class(TJclClrBase, IJclClrMethod)
@@ -218,16 +205,16 @@ type
     property DefaultInterface: IJclClrMethod read FDefaultInterface implements IJclClrMethod;
   end;
 
-  TJclClrObject = class
+  TJclClrObject = class(TObject)
   private
     function GetMethod(const Name: WideString): TJclClrMethod;
     function GetField(const Name: WideString): TJclClrField;
     function GetProperty(const Name: WideString): TJclClrProperty;
   protected
     constructor Create(const AssemblyName, NamespaceName, ClassName: WideString;
-                       const Parameters: array of const); overload;
+      const Parameters: array of const); overload;
     constructor Create(const AssemblyName, NamespaceName, ClassName: WideString;
-                       const NewInstance: Boolean = False); overload;
+      const NewInstance: Boolean = False); overload;
   public
     property Fields[const Name: WideString]: TJclClrField read GetField;
     property Properties[const Name: WideString]: TJclClrProperty read GetProperty;
@@ -238,39 +225,40 @@ type
   HDOMAINENUM = Pointer;
 
 function GetCORSystemDirectory(const pbuffer: PWideChar; const cchBuffer: DWORD;
-  var dwlength: DWORD): HResult; stdcall;
+  var dwLength: DWORD): HRESULT; stdcall;
 function GetCORVersion(const pbuffer: PWideChar; const cchBuffer: DWORD;
-  var dwlength: DWORD): HResult; stdcall;
+  var dwLength: DWORD): HRESULT; stdcall;
 function GetCORRequiredVersion(const pbuffer: PWideChar; const cchBuffer: DWORD;
-  var dwlength: DWORD): HResult; stdcall;
+  var dwLength: DWORD): HRESULT; stdcall;
 function CorBindToRuntimeHost(const pwszVersion, pwszBuildFlavor, pwszHostConfigFile: PWideChar;
   const pReserved: Pointer; const startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HResult; stdcall;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 function CorBindToRuntimeEx(const pwszVersion, pwszBuildFlavor: PWideChar; startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HResult; stdcall;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 function CorBindToRuntimeByCfg(const pCfgStream: IStream; const reserved, startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HResult; stdcall;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 function CorBindToRuntime(const pwszVersion, pwszBuildFlavor: PWideChar;
-  const rclsid: TCLSID; const riid: TIID; out pv): HResult; stdcall;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 function CorBindToCurrentRuntime(const pwszFileName: PWideChar;
-  const rclsid: TCLSID; const riid: TIID; out pv): HResult; stdcall;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 function ClrCreateManagedInstance(const pTypeName: PWideChar;
-  const riid: TIID; out pv): HResult; stdcall;
+  const riid: TIID; out pv): HRESULT; stdcall;
 procedure CorMarkThreadInThreadPool; stdcall;
 function RunDll32ShimW(const hwnd: HWND; const hinst: HMODULE;
-  const lpszCmdLine: PWideChar; const nCmdShow: Integer): HResult; stdcall;
+  const lpszCmdLine: PWideChar; const nCmdShow: Integer): HRESULT; stdcall;
 function LoadLibraryShim(const szDllName, szVersion: PWideChar;
-  const pvReserved: Pointer; out phModDll: HMODULE): HResult; stdcall;
+  const pvReserved: Pointer; out phModDll: HMODULE): HRESULT; stdcall;
 function CallFunctionShim(const szDllName: PWideChar; const szFunctionName: PChar;
   const lpvArgument1, lpvArgument2: Pointer; const szVersion: PWideChar;
-  const pvReserved: Pointer): HResult; stdcall;
-function GetRealProcAddress(const pwszProcName: PChar; out ppv: Pointer): HResult; stdcall;
+  const pvReserved: Pointer): HRESULT; stdcall;
+function GetRealProcAddress(const pwszProcName: PChar; out ppv: Pointer): HRESULT; stdcall;
 procedure CorExitProcess(const exitCode: Integer); stdcall;
 
 implementation
 
 uses
-  ComObj, Variants, Provider, JclSysUtils;
+  ComObj, Variants, Provider,
+  JclSysUtils;
 
 const
   mscoree_dll = 'mscoree.dll';
@@ -297,20 +285,22 @@ const
   CLR_BUILD_VERSION = 3705;
 
   STARTUP_CONCURRENT_GC	                        = $1;
-  STARTUP_LOADER_OPTIMIZATION_MASK	            = $3 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN	    = $1 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN	    = $2 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MASK	        = $3 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
   STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST	= $3 shl 1;
-  STARTUP_LOADER_SAFEMODE	                      = $10;
+  STARTUP_LOADER_SAFEMODE	                = $10;
   STARTUP_LOADER_SETPREFERENCE	                = $100;
 
-{ TJclClrHost }
+//==================================================================================================
+// TJclClrHost
+//==================================================================================================
 
 constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHostFlavor;
   const ConcurrentGC: Boolean; const LoaderFlags: TJclClrHostLoaderFlags);
 const
-  ClrHostFlavorNames: array[TJclClrHostFlavor] of WideString = ('srv', 'wks');
-  ClrHostLoaderFlagValues: array[TJclClrHostLoaderFlag] of DWORD =
+  ClrHostFlavorNames: array [TJclClrHostFlavor] of WideString = ('srv', 'wks');
+  ClrHostLoaderFlagValues: array [TJclClrHostLoaderFlag] of DWORD =
    (STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST,
@@ -321,11 +311,10 @@ var
   ALoaderFlag: TJclClrHostLoaderFlag;
 begin
   inherited Create;
-
   Flags := 0;
   if ConcurrentGC then
     Flags := Flags or STARTUP_CONCURRENT_GC;
-  for ALoaderFlag:=Low(TJclClrHostLoaderFlag) to High(TJclClrHostLoaderFlag) do
+  for ALoaderFlag := Low(TJclClrHostLoaderFlag) to High(TJclClrHostLoaderFlag) do
     if ALoaderFlag in LoaderFlags then
       Flags := Flags or ClrHostLoaderFlagValues[ALoaderFlag];
   OleCheck(CorBindToRuntimeEx(PWideCharOrNil(ClrVer),
@@ -333,12 +322,15 @@ begin
     CLASS_CorRuntimeHost, IID_ICorRuntimeHost, FDefaultInterface));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclClrHost.Destroy;
 begin
   FreeAndNil(FAppDomains);
-
-  inherited;
+  inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrHost.EnumAppDomains;
 var
@@ -359,12 +351,14 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.FindAppDomain(const Intf: IJclClrAppDomain;
   var Ret: TJclClrAppDomain): Boolean;
 var
   I: Integer;
 begin
-  for I:=0 to AppDomainCount-1 do
+  for I := 0 to AppDomainCount-1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface = Intf then
@@ -377,12 +371,14 @@ begin
   Result := False;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.FindAppDomain(const Name: WideString;
   var Ret: TJclClrAppDomain): Boolean;
 var
   I: Integer;
 begin
-  for I:=0 to AppDomainCount-1 do
+  for I := 0 to AppDomainCount-1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface.FriendlyName = Name then
@@ -395,15 +391,21 @@ begin
   Result := False;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.GetAppDomain(const Idx: Integer): TJclClrAppDomain;
 begin
   Result := TJclClrAppDomain(FAppDomains.Items[Idx]);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.GetAppDomainCount: Integer;
 begin
   Result := FAppDomains.Count;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrHost.GetDefaultAppDomain: IJclClrAppDomain;
 var
@@ -413,6 +415,8 @@ begin
   Result := spUnk as IJclClrAppDomain;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.GetCurrentAppDomain: IJclClrAppDomain;
 var
   spUnk: IUnknown;
@@ -421,15 +425,21 @@ begin
   Result := spUnk as IJclClrAppDomain;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.AddAppDomain(const AppDomain: TJclClrAppDomain): Integer;
 begin
   Result := FAppDomains.Add(AppDomain);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer;
 begin
   Result := FAppDomains.Remove(AppDomain);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 class function TJclClrHost.CorSystemDirectory: WideString;
 var
@@ -440,6 +450,8 @@ begin
   SetLength(Result, Len);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 class function TJclClrHost.CorVersion: WideString;
 var
   Len: DWORD;
@@ -448,6 +460,8 @@ begin
   OleCheck(GetCORVersion(PWideChar(Result), Length(Result), Len));
   SetLength(Result, Len);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 class function TJclClrHost.CorRequiredVersion: WideString;
 var
@@ -458,6 +472,8 @@ begin
   SetLength(Result, Len);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrHost.CreateDomainSetup: TJclClrAppDomainSetup;
 var
   pUnk: IUnknown;
@@ -465,6 +481,8 @@ begin
   OleCheck(FDefaultInterface.CreateDomainSetup(pUnk));
   Result := TJclClrAppDomainSetup.Create(pUnk as IAppDomainSetup);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrHost.CreateAppDomain(const Name: WideString;
   const Setup: TJclClrAppDomainSetup;
@@ -476,37 +494,44 @@ begin
   Result := TJclClrAppDomain.Create(Self, pUnk as IJclClrAppDomain);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrHost.Start;
 begin
   OleCheck(DefaultInterface.Start);
   Refresh;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrHost.Stop;
 begin
   OleCheck(DefaultInterface.Stop);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrHost.Refresh;
 begin
   EnumAppDomains;
 end;
 
-{ TJclClrAppDomain }
+//==================================================================================================
+// TJclClrAppDomain
+//==================================================================================================
 
 constructor TJclClrAppDomain.Create(const AHost: TJclClrHost;
   const spAppDomain: IJclClrAppDomain);
 begin
   Assert(Assigned(AHost));
   Assert(Assigned(spAppDomain));
-
   inherited Create;
-
-  FHost             := AHost;
+  FHost := AHost;
   FDefaultInterface := spAppDomain;
-  
   FHost.AddAppDomain(Self);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomain.Execute(const AssemblyFile: TFileName;
   const Arguments: TJclClrAssemblyArguments;
@@ -515,7 +540,6 @@ var
   Args: Variant;
 begin
   Assert(FileExists(AssemblyFile));
-
   if Length(Arguments) = 0 then
     Result := Execute(AssemblyFile, AssemblySecurity)
   else
@@ -525,16 +549,19 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomain.Execute(const AssemblyFile: TFileName;
   const AssemblySecurity: IJclClrEvidence): Integer;
 begin
   Assert(FileExists(AssemblyFile));
-
   if Assigned(AssemblySecurity) then
     Result := DefaultInterface.ExecuteAssembly(AssemblyFile, AssemblySecurity)
   else
     Result := DefaultInterface.ExecuteAssembly_2(AssemblyFile);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomain.Execute(const AssemblyFile: TFileName;
   const Arguments: TStrings; const AssemblySecurity: IJclClrEvidence): Integer;
@@ -542,7 +569,6 @@ var
   Args: Variant;
 begin
   Assert(FileExists(AssemblyFile));
-
   if Arguments.Count = 0 then
     Result := Execute(AssemblyFile, AssemblySecurity)
   else
@@ -551,6 +577,8 @@ begin
     Result := DefaultInterface.ExecuteAssembly_3(AssemblyFile, AssemblySecurity, PSafeArray(TVarData(Args).VArray));
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomain.Load(const AssemblyString: WideString;
   const AssemblySecurity: IJclClrEvidence): TJclClrAssembly;
@@ -561,6 +589,8 @@ begin
     Result := TJclClrAssembly.Create(DefaultInterface.Load_2(AssemblyString));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomain.Load(const RawAssemblyStream,
   RawSymbolStoreStream: TStream;
   const AssemblySecurity: IJclClrEvidence): TJclClrAssembly;
@@ -568,7 +598,6 @@ var
   RawAssembly, RawSymbolStore: Variant;
 begin
   Assert(Assigned(RawAssemblyStream));
-
   RawAssembly := VarArrayCreate([0, RawAssemblyStream.Size-1], varByte);
   try
     try
@@ -607,17 +636,20 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomain.Unload;
 var
   AppDomain: TJclClrAppDomain;
 begin
   OleCheck(FHost.DefaultInterface.UnloadDomain(DefaultInterface));
-
   if FHost.FindAppDomain(DefaultInterface, AppDomain) and (AppDomain = Self) then
     FHost.RemoveAppDomain(Self);
 end;
 
-{ TJclClrObject }
+//==================================================================================================
+// TJclClrObject
+//==================================================================================================
 
 constructor TJclClrObject.Create(
   const AssemblyName, NamespaceName, ClassName: WideString;
@@ -626,6 +658,8 @@ begin
   inherited Create;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclClrObject.Create(
   const AssemblyName, NamespaceName, ClassName: WideString;
   const NewInstance: Boolean);
@@ -633,140 +667,186 @@ begin
   Create(AssemblyName, NamespaceName, ClassName, []);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrObject.GetField(const Name: WideString): TJclClrField;
 begin
 
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrObject.GetProperty(const Name: WideString): TJclClrProperty;
 begin
 
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrObject.GetMethod(const Name: WideString): TJclClrMethod;
 begin
 
 end;
 
-{ TJclClrAppDomainSetup }
+//==================================================================================================
+// TJclClrAppDomainSetup
+//==================================================================================================
 
 constructor TJclClrAppDomainSetup.Create(Intf: IAppDomainSetup);
 begin
   Assert(Assigned(Intf));
-
   inherited Create;
-
   FDefaultInterface := Intf;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomainSetup.GetApplicationBase: WideString;
 begin
   OleCheck(FDefaultInterface.Get_ApplicationBase(Result));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomainSetup.GetApplicationName: WideString;
 begin
   OleCheck(FDefaultInterface.Get_ApplicationName(Result));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomainSetup.GetCachePath: WideString;
 begin
   OleCheck(FDefaultInterface.Get_CachePath(Result));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomainSetup.GetConfigurationFile: WideString;
 begin
   OleCheck(FDefaultInterface.Get_ConfigurationFile(Result));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomainSetup.GetDynamicBase: WideString;
 begin
   OleCheck(FDefaultInterface.Get_DynamicBase(Result));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomainSetup.GetLicenseFile: WideString;
 begin
   OleCheck(FDefaultInterface.Get_LicenseFile(Result));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomainSetup.GetPrivateBinPath: WideString;
 begin
   OleCheck(FDefaultInterface.Get_PrivateBinPath(Result));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomainSetup.GetPrivateBinPathProbe: WideString;
 begin
   OleCheck(FDefaultInterface.Get_PrivateBinPathProbe(Result));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclClrAppDomainSetup.GetShadowCopyDirectories: WideString;
 begin
   OleCheck(FDefaultInterface.Get_ShadowCopyDirectories(Result));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclClrAppDomainSetup.GetShadowCopyFiles: WideString;
 begin
   OleCheck(FDefaultInterface.Get_ShadowCopyFiles(Result));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrAppDomainSetup.SetApplicationBase(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_ApplicationBase(Value));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomainSetup.SetApplicationName(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_ApplicationName(Value));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrAppDomainSetup.SetCachePath(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_CachePath(Value));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomainSetup.SetConfigurationFile(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_ConfigurationFile(Value));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrAppDomainSetup.SetDynamicBase(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_DynamicBase(Value));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomainSetup.SetLicenseFile(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_LicenseFile(Value));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrAppDomainSetup.SetPrivateBinPath(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_PrivateBinPath(Value));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomainSetup.SetPrivateBinPathProbe(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_PrivateBinPathProbe(Value));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrAppDomainSetup.SetShadowCopyDirectories(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_ShadowCopyDirectories(Value));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclClrAppDomainSetup.SetShadowCopyFiles(const Value: WideString);
 begin
   OleCheck(FDefaultInterface.Set_ShadowCopyFiles(Value));
 end;
 
-{ TJclClrAssembly }
+//==================================================================================================
+// TJclClrAssembly
+//==================================================================================================
 
 constructor TJclClrAssembly.Create(Intf: IJclClrAssembly);
 begin
   Assert(Assigned(Intf));
-
   inherited Create;
-
   FDefaultInterface := Intf;
 end;
 
