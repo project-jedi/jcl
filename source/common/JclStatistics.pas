@@ -15,9 +15,14 @@
 { The Initial Developer of the Original Code is ESB Consultancy.                                   }
 { Portions created by ESB Consultancy are Copyright ESB Consultancy. All rights reserved.          }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Marcel van Brakel, ESB Consultancy, Robert Marquardt, Robert Rossmair, Matthias Thoma,         }
-{   Petr Vones                                                                                     }  
+{ Contributors (in alphabetical order):                                                           }
+{   ESB Consultancy                                                                                }
+{   Fred Hovey                                                                                     }
+{   Marcel van Brakel                                                                              }
+{   Matthias Thoma                                                                                 }
+{   Robert Marquardt                                                                               }
+{   Robert Rossmair                                                                                }
+{   Petr Vones                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -29,6 +34,8 @@
 // Last modified: $Date$
 // For history see end of file
 
+{ TODO : Test cases! }
+
 unit JclStatistics;
 
 {$I jcl.inc}
@@ -36,7 +43,10 @@ unit JclStatistics;
 interface
 
 uses
-  JclBase;
+  JclBase, JclMath;
+
+type
+  EJclStatisticsError = class(EJclMathError);
 
 { Mean functions }
 
@@ -56,10 +66,14 @@ function MedianUnsorted(const X: TDynFloatArray): Float;
 function MinFloatArray(const B: TDynFloatArray): Float;
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Permutation(N, R: Cardinal): Float;
+function Combinations(N, R: Cardinal): Float;
+function SumOfSquares(const X: TDynFloatArray): Float;
 function PopulationVariance(const X: TDynFloatArray): Float;
 procedure PopulationVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 function SampleVariance(const X: TDynFloatArray): Float;
 procedure SampleVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
+function StdError(const X: TDynFloatArray): Float; overload;
+function StdError(const Variance: Float; const SampleSize: Integer): Float; overload;
 function SumFloatArray(const B: TDynFloatArray): Float;
 function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
@@ -68,7 +82,7 @@ function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 implementation
 
 uses
-  JclLogic, JclMath, JclResources, JclSysUtils;
+  JclLogic, JclResources, JclSysUtils;
 
 //==================================================================================================
 // Local helpers
@@ -88,6 +102,22 @@ begin
     raise EJclMathError.CreateResRec(@RsEmptyArray);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+procedure InvalidSampleSize(SampleSize: Integer);
+begin
+  raise EJclStatisticsError.CreateResRecFmt(@RsInvalidSampleSize, [SampleSize]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
+begin
+  Result := Length(Sample);
+  if Result < MinValidSize then
+    InvalidSampleSize(Result);
+end;
+
 //==================================================================================================
 // Mean Functions
 //==================================================================================================
@@ -101,34 +131,34 @@ end;
 
 function GeometricMean(const X: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
-  L := GetDynLengthNotNull(X);
+  N := GetSampleSize(X);
   Result := 1.0;
-  for I := 0 to L - 1 do
+  for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
     Result := Result * X[I];
   end;
-  Result := Power(Result, 1 / L);
+  Result := Power(Result, 1 / N);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function HarmonicMean(const X: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := 0.0;
-  L := GetDynLengthNotNull(X);
-  for I := 0 to L - 1 do
+  N := GetSampleSize(X);
+  for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
     Result := Result + 1 / X[I];
   end;
-  Result := L / Result;
+  Result := N / Result;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -233,7 +263,7 @@ function Median(const X: TDynFloatArray): Float;
 var
   N: Integer;
 begin
-  N := GetDynLengthNotNull(X);
+  N := GetSampleSize(X);
   if N = 1 then
     Result := X[0]
   else
@@ -314,86 +344,117 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PopulationVariance(const X: TDynFloatArray): Float;
+{ TODO -cDoc : Donator: Fred Hovey }
+function Combinations(N, R: Cardinal): Float;
+begin
+  Result := Factorial(R);
+  if IsFloatZero(Result) then
+   Result := -1.0
+  else
+   Result := Permutation(N, R) / Result;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc : donator: Fred Hovey, contributor: Robert Rossmair }
+function SumOfSquares(const X: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
   Sum: Float;
 begin
-  L := GetDynLengthNotNull(X);
+  N := GetSampleSize(X);
   Result := Sqr(X[0]);
   Sum := X[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
   begin
     Result := Result + Sqr(X[I]);
     Sum := Sum + X[I];
   end;
-  Result := Result / L;
-  Result := Result - Sqr(Sum / L);
+  Result := Result - Sum * Sum / N;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
+function PopulationVariance(const X: TDynFloatArray): Float;
+begin
+  // Length(X) = 0 would cause SumOfSquares() to raise an exception before the division is executed.
+  Result := SumOfSquares(X) / Length(X);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure PopulationVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 var
-  I, L: Integer;
+  I, N: Integer;
   Sum, SumSq: Float;
 begin
-  L := GetDynLengthNotNull(X);
+  N := GetSampleSize(X);
   SumSq := Sqr(X[0]);
   Sum := X[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
   begin
     SumSq := SumSq + Sqr(X[I]);
     Sum := Sum + X[I];
   end;
-  Mean := Sum / L;
-  Variance := (SumSq / L) - Sqr(Mean);
+  Mean := Sum / N;
+  Variance := (SumSq / N) - Sqr(Mean);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
 function SampleVariance(const X: TDynFloatArray): Float;
 var
-  I, L: Integer;
-  Sum: Float;
+  N: Integer;
 begin
-  L := GetDynLengthNotNull(X);
-  Result := Sqr(X[0]);
-  Sum := X[0];
-  for I := 1 to L - 1 do
-  begin
-    Result := Result + Sqr(X[I]);
-    Sum := Sum + X[I];
-  end;
-  if L > 1 then
-  begin
-    Result := Result / (L - 1);
-    Result := Result - Sqr(Sum / (L - 1));
-  end
-  else
-    Result := 0.0;
+  N := GetSampleSize(X, 2);
+  Result := SumOfSquares(X) / (N - 1)
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
 procedure SampleVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 var
-  I, L: Integer;
+  I, N: Integer;
   Sum, SumSq: Float;
 begin
-  L := GetDynLengthNotNull(X);
+  N := GetSampleSize(X);
   SumSq := Sqr(X[0]);
   Sum := X[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
   begin
     SumSq := SumSq + Sqr(X[I]);
     Sum := Sum + X[I];
   end;
-  Mean := Sum / L;
-  if L > 1 then
-    Variance := (SumSq / (L - 1)) - Sqr(Sum / (L - 1))
+  Mean := Sum / N;
+  if N < 2 then
+    InvalidSampleSize(N);
+  //Variance := (SumSq / (N - 1)) - Sqr(Sum / (N - 1)) => WRONG!!!!
+  Variance := (SumSq - Sum * Sum / N) / (N - 1)
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
+function StdError(const X: TDynFloatArray): Float;
+begin
+  // Length(X) = 0 would cause SampleVariance() to raise an exception before the division is
+  // executed.
+  Result := Sqrt(SampleVariance(X) / Length(X));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
+function StdError(const Variance: Float; const SampleSize: Integer): Float;
+//overloaded in interface
+begin
+  if SampleSize > 0 then
+    Result := Sqrt(Variance / SampleSize)
   else
-    Variance := 0.0;
+    InvalidSampleSize(SampleSize);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -480,6 +541,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/18 17:08:59  rrossmair
+// - mantis #2019 & #2021 handled, improved error reports
+//
 // Revision 1.8  2004/07/29 15:16:51  marquardt
 // simple style cleaning
 //
