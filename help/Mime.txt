@@ -118,14 +118,14 @@ Count=4
 4=MimeDecodedSize
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MimeEncodedSize(const i: Integer): Integer;
+function MimeEncodedSize(const I: Cardinal): Cardinal;
 [ShortDescr]
 Calculates the output size for encoding
 [Description]
-MimeEncodedSize calculates the output size of i MimeEncoded bytes. Use for <REF>MimeEncode</REF> only.
+MimeEncodedSize calculates the output size of I MimeEncoded bytes. Use for <REF>MimeEncode</REF> only.
 [Parameters]
 Count=1
-1=i:Integer=Number of bytes to encode
+1=I:Cardinal=Number of bytes to encode
 [Result]
 Number of bytes needed for encoding
 [Quick Info]
@@ -139,16 +139,16 @@ Count=2
 2=MimeDecodedSize
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MimeDecodedSize(const i: Integer): Integer;
+function MimeDecodedSize(const I: Cardinal): Cardinal;
 [ShortDescr]
 Calculates the output size for decoding
 [Description]
-MimeDecodedSize calculates the maximum output size of i MimeDecoded bytes. You
+MimeDecodedSize calculates the maximum output size of I MimeDecoded bytes. You
 may use it for <REF>MimeDecode</REF> to calculate the maximum amount of memory required for
 decoding in one single pass.
 [Parameters]
 Count=1
-1=i:Integer=Number of bytes to decode
+1=I:Cardinal=Number of bytes to decode
 [Result]
 Maximum number of bytes needed for decoding
 [Quick Info]
@@ -162,7 +162,8 @@ Count=2
 2=MimeEncodedSize
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; const OutputBuffer: Pointer);
+procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal;
+  var OutputBuffer);
 [ShortDescr]
 The primary Mime encoding routine
 [Description]
@@ -179,9 +180,9 @@ Count=1
 1=If not all data fits into memory at once, you can use MimeEncode multiple times, but you must be very careful about the size of the InputBuffer. It should be set to a number that is a multiple of 3.
 [Parameters]
 Count=3
-1=InputBuffer:Pointer=Points to the memory block to encode
-2=InputByteCount:Integer=Number of bytes to encode
-3=OutputBuffer:Pointer=Points to the output buffer
+1=InputBuffer:=Points to the memory block to encode
+2=InputByteCount:Cardinal=Number of bytes to encode
+3=OutputBuffer:=Points to the output buffer
 [Quick Info]
 Unit=JclMime
 Category=MIME
@@ -193,7 +194,8 @@ Count=2
 2=MimeDecode
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer): Integer;
+function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer): Cardinal;
 [ShortDescr]
 The primary Mime decoding routine
 [Description]
@@ -208,9 +210,9 @@ to OutputBytesCount, i.e. SetLength(OutString, OutputBytesCount). If InputBuffer
 and/or OutBuffer is/are nil an exception is raised
 [Parameters]
 Count=3
-1=InputBuffer:Pointer=Points to the memory block to encode
-2=InputBytesCount:Integer=Number of bytes to encode
-3=OutputBuffer:Pointer=Points to the output buffer
+1=InputBuffer:=Points to the memory block to encode
+2=InputBytesCount:Cardinal=Number of bytes to encode
+3=OutputBuffer:=Points to the output buffer
 [Result]
 Number of bytes actually written to the OutputBuffer
 [Quick Info]
@@ -224,7 +226,8 @@ Count=2
 2=MimeEncode
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
 [ShortDescr]
 MIME decode a chunk of data in a multi-phase decoding routine
 [Description]
@@ -236,9 +239,9 @@ Count=1
 1=On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be 4. The values returned in these parameters should be used in the next call to MimeDecodePartial or <REF>MimeDecodePartialEnd</REF>.
 [Parameters]
 Count=5
-1=InputBuffer:Pointer=Points to the memory block to decode
-2=InputBytesCount:Integer=Number of bytes to decode
-3=OutputBuffer:Pointer=Points to the output buffer
+1=InputBuffer:=Buffer to decode
+2=InputBytesCount:Cardinal=Number of bytes to decode
+3=OutputBuffer:=Points to the output buffer
 4=ByteBuffer:Cardinal=Bytes of buffer from previous call
 5=ByteBufferSpace:Cardinal=Number of bytes to read before ByteBuffer is full
 [Result]
@@ -253,7 +256,8 @@ Count=1
 1=MimeDecodePartialEnd
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal; const ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
+  const ByteBufferSpace: Cardinal): Cardinal;
 [ShortDescr]
 MIME decode the last chunk of data in a multi-phase decoding routine
 [Description]
@@ -265,7 +269,7 @@ Count=1
 1=ByteBuffer and ByteBufferSpace are the values returned in the last call to <REF>MimeDecodePartial</REF>.
 [Parameters]
 Count=3
-1=OutputBuffer:Pointer=Points to the output buffer
+1=OutputBuffer:=Points to the output buffer
 2=ByteBuffer:Cardinal=Bytes of buffer from previous call
 3=ByteBufferSpace:Cardinal=Number of bytes to read before ByteBuffer is full
 [Result]
