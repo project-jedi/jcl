@@ -2,22 +2,44 @@
 <HTML>
 
 <head>
-<TITLE>Jedi Code Library Release 1.94</TITLE>
+<TITLE>Jedi Code Library Release 1.95</TITLE>
 <link rel="stylesheet" type="text/css" href="styles/default.css">
 </head>
 
 <BODY>
 <hr>
 <h1>Jedi Code Library</h1>
-<p>Release 1.94<br>
-Build 1802<br>
-05-February-2005</p>
+<p>Release 1.95<br>
+Build 1839<br>
+14-March-2005</p>
 <hr>
-<p>The main objective of JCL release 1.94 is to provide basic support for Delphi 2005/Win32.
-For Delphi 2005, integrated Online Help and installer access to the Object Repository are not yet available.
-
-<p>Other changes since last release include uninstall support for the JEDI Installer as well as bug fixes.
-For detailed change logs, use the facilities of our CVS repository at
+<p>JCL release 1.95 includes major additions; thanks to the generous donation of the
+Delphi Container Library (DCL) v. 0.89 code base by its creator Jean-Philippe Bempel,
+the JCL now provides a set of carefully designed container classes and interfaces,
+supplied by the newly added units:
+<pre>
+source\common\JclAbstractContainers.pas
+source\common\JclAlgorithms.pas
+source\common\JclArrayLists.pas
+source\common\JclArraySets.pas
+source\common\JclBinaryTrees.pas
+source\common\JclContainerIntf.pas
+source\common\JclHashMaps.pas
+source\common\JclHashSets.pas
+source\common\JclLinkedLists.pas
+source\common\JclQueues.pas
+source\common\JclStacks.pas
+source\common\JclVectors.pas
+</pre>
+Note that documentation is still in early stage and might even be incorrect, so beware.<br>
+The installer option "Thread safe container classes allows to trade off between speed (off)
+and safeness (on).  If it's on, synchronization in multithreaded applications is handled internally,
+otherwise it is left to the developer.</p>
+<p>Although this one stands out, there have been other valuable additions like unit JclWideFormat
+by Rob Kennedy, the JEDI Uses Wizard and more.
+CPU information code in JclSysInfo has been updated to report features of recent CPU types.</p>
+<p>For Delphi 2005, integrated Online Help and installer access to the Object Repository are still not available.</p>
+<p>As always, multiple bugs have been fixed; for detailed change logs, use the facilities of our CVS repository at
 <a href="http://sourceforge.net/projects/jcl/">SourceForge.net</a>, see below.</p>
 
 <h3>Supported Tools</h3>
@@ -31,9 +53,10 @@ Notes:
 <ul>
 <li>Not every unit supports all tools.  Look out for <tt>*.exc</tt> files in the
 tool-specific <tt>lib/</tt> subdirectories for a list of units excluded from compilation.</li>
-<li>We didn't manage to persuade Kylix 3/C++ to build the CJclVClx package; this issue
-remains unresolved for the time being and will cause the installer to fail at the respective
-point of execution.</li>
+<li>Kylix 3/C++ installation is broken; the installer will fail when it attempts to build the packages.  
+Since the dreaded file open/save dialog Kylix bug is haunting me again (wasn't it considered to be defeated as of Kernel 2.4.21?),
+I am at present not investigating this further.
+</li>
 <li><a href="http://www.freepascal.org/"><b>Free Pascal</b></a> (FP) support is in the pipeline;
 this relates to the FP code branch currently under development (1.9.x - we will not
 support FP versions 1.0.x). Expect a JCL release providing FP support soon
