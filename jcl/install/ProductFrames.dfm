@@ -60,7 +60,7 @@ object ProductFrame: TProductFrame
       Height = 13
       Caption = '&Information'
     end
-    object InfoDisplay: TMemo
+    object InfoDisplay: TRichEdit
       Left = 4
       Top = 24
       Width = 412

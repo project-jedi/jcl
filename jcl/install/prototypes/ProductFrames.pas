@@ -50,7 +50,7 @@ type
     {$IFDEF VisualCLX}
     InfoDisplay: TTextViewer;
     {$ELSE VCL}
-    InfoDisplay: TMemo;
+    InfoDisplay: TRichEdit;
     {$ENDIF VCL}
     OptionsGroupBox: TGroupBox;
     BplPathLabel: TLabel;
@@ -90,6 +90,7 @@ type
   end;
 
 implementation
+
 {$IFDEF VisualCLX}
 {$R *.xfm}
 
@@ -99,6 +100,7 @@ uses Qt, QDialogs;
 
 uses FileCtrl;
 {$ENDIF}
+
 resourcestring
   RsSelectPath      = 'Select path';
   RsEnterValidPath  = '(Enter valid path)';
@@ -324,12 +326,12 @@ begin
     Result := (X > X1) and (X <= X1 + TreeView.Images.Width);
   end;
 end;
-{$ELSE} // VCL
+{$ELSE VCL}
 function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer): Boolean;
 begin
   Result := htOnIcon in TreeView.GetHitTestInfoAt(X, Y);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TProductFrame.TreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
