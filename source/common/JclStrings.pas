@@ -3490,7 +3490,8 @@ end;
 
 procedure FreeMultiSz(var Dest: PChar);
 begin
-  FreeMem(Dest);
+  if Dest <> nil then
+    FreeMem(Dest);
   Dest := nil;
 end;
 
@@ -4242,6 +4243,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.27  2004/10/10 12:52:12  marquardt
+// DestroyEnvironmentBlock introduced
+//
 // Revision 1.26  2004/09/30 13:11:27  marquardt
 // remove PH contributions
 //
