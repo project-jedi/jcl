@@ -3890,15 +3890,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : AddStringToStrings }
-{ descr: conditionally adds a string to a string list.
-  s: the string to add
-  strings: the string list to add s to
-  unique: determines whether s can be added to the list if an entry already exists
-  result: true if the string was added, false if it was not
-  author: Jean-Fabien Connault
-}
-
 function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
@@ -4200,6 +4191,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.16  2004/04/19 06:12:34  rrossmair
+// AddStringToStrings help TODO done
+//
 // Revision 1.15  2004/04/14 20:39:59  mthoma
 // Reintroduced StrIsNumber as StrConsistsofNumberChars, copied local function StrEndW from JclUnicode to get rid of that dependency.
 //
