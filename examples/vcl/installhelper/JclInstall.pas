@@ -211,7 +211,7 @@ var
     Tool.WriteInstallLog(Format('Making %s', [LibDescriptor]));
     Units := TStringList.Create;
     try
-      Tool.UpdateStatus(Format('Compiling %s', [LibDescriptor]));
+      Tool.UpdateStatus(Format('Compiling %s ...', [LibDescriptor]));
       BuildFileList(Format('%ssource\%s\*.pas', [FJclPath, SubDir]), faAnyFile, Units);
       with Installation.Compiler do
       begin
@@ -237,7 +237,7 @@ var
           LibSubDir := '';
         end;
         AddPathOption('N', Format('%slib\d%d%s', [FJclPath, Installation.VersionNumber, LibSubDir]));
-        AddPathOption('I', FJclSourcePath);
+        AddPathOption('I', FJclPath + 'source');
         AddPathOption('R', FJclSourcePath);
         AddPathOption('U', FJclSourcePath);
         SaveDir := GetCurrentDir;
@@ -294,12 +294,12 @@ var
   begin
     CompileLibraryUnits('common', Debug);
     if (Installation.VersionNumber < 6)
-    or Tool.FeatureChecked(FID_JCL_Windows, Installation.VersionNumber) then
+    or Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_Windows, Installation.VersionNumber) then
       CompileLibraryUnits('windows', Debug);
     if (Installation.VersionNumber < 6)
-    or Tool.FeatureChecked(FID_JCL_Vcl, Installation.VersionNumber) then
+    or Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_Vcl, Installation.VersionNumber) then
       CompileLibraryUnits('vcl', Debug);
-    if Tool.FeatureChecked(FID_JCL_VClx, Installation.VersionNumber) then
+    if Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation.VersionNumber) then
       CompileLibraryUnits('visclx', Debug);
   end;
 
@@ -471,6 +471,7 @@ begin
       if Installation.VersionNumber <= 6 then
         AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
       InstallationNode.Expand(True);
+      MakeNode.Collapse(True);
     end;
   finally
     Nodes.EndUpdate;
@@ -483,12 +484,7 @@ end;
 
 function TJclInstall.SelectedNodeCollapsing(Node: TTreeNode): Boolean;
 begin
-  case Integer(Node.Data) and not FID_Checked of
-    FID_JCL_MakeRelease,
-    FID_JCL_MakeDebug: Result := True;
-  else
-    Result := False;
-  end;
+  Result := Integer(Node.Data) and not FID_Checked and FID_Level2 <> 0;
 end;
 
 procedure TJclInstall.SetTool(const Value: IJediInstallTool);
