@@ -572,7 +572,7 @@ begin
   // Skips leaving compressed data
   while not FEndOfStream do
   begin
-    FZLibStream.next_out := PChar(@Buf);
+    FZLibStream.next_out := @Buf;
     FZLibStream.avail_out := SizeOf(Buf);
     ReadNextBlock;
     if FZLibStream.avail_in = 0 then
@@ -2140,6 +2140,10 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.15  2004/11/11 23:43:40  assarbad
+//  - zlib.h converted from scratch (assarbad) - modifications by Robert (rrossmair)
+//  - Makefile.mak and JclZlib.pas modifications from Robert (rrossmair)
+//
 //  Revision 1.14  2004/08/01 05:52:12  marquardt
 //  move constructors/destructors
 //
