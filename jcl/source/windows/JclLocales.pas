@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 19, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains a set of classes which allow you to easily retrieve       }
+{ locale specific information such the list of keyboard layouts, names used    }
+{ for dates and characters used for formatting numbers and dates.              }
+{                                                                              }
+{ Unit owner: Petr Vones                                                       }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -276,7 +283,7 @@ type
 // Various routines
 //------------------------------------------------------------------------------
 
-procedure JclLocalesInfoList(Strings: TStrings; InfoType: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SENGCOUNTRY {$ENDIF});
+procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = LOCALE_SENGCOUNTRY {$ENDIF});
 
 implementation
 
@@ -1000,7 +1007,7 @@ end;
 // Various routines
 //==============================================================================
 
-procedure JclLocalesInfoList(Strings: TStrings; InfoType: Integer);
+procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
   with TJclLocalesList.Create(lkInstalled) do
   try
