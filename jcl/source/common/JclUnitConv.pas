@@ -28,7 +28,7 @@ unit JclUnitConv;
 
 interface
 
-uses 
+uses
   JclBase;
 
 const
@@ -124,6 +124,20 @@ function KgToLb(const nKg: Float): Float;
 function LbToKg(const nLb: Float): Float;
 function KgToOz(const nKg: Float): Float;
 function OzToKg(const nOz: Float): Float;
+function CwtUsToKg(const nCwt: Float): Float;
+function CwtUkToKg(const nCwt: Float): Float;
+function KaratToKg(const nKarat: Float): Float;
+function KgToCwtUs(const nKg: Float): Float;
+function KgToCwtUk(const nKg: Float): Float;
+function KgToKarat(const nKg: Float): Float;
+function KgToSton(const nKg: Float): Float;
+function KgToLton(const nKg: Float): Float;
+function StonToKg(const nSTon: Float): Float;
+function LtonToKg(const nLton: Float): Float;
+function QrUsToKg(const nQr: Float): Float;
+function QrUkToKg(const nQr: Float): Float;
+function KgToQrUs(const nKg: Float): Float;
+function KgToQrUk(const nKg: Float): Float;
 
 { Pressure conversion }
 
@@ -507,6 +521,105 @@ function OzToKg(const nOz: Float): Float;
 begin
   Result := nOz / 35.2739619496;
 end;
+
+//------------------------------------------------------------------------------
+
+function QrUsToKg(const nQr : Float) : Float;
+begin
+  Result := nQr * 11.34;
+end;
+
+//------------------------------------------------------------------------------
+
+function QrUkToKg(const nQr : Float) : Float;
+begin
+  Result := nQr * 12.7;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToQrUs(const nKg : Float) : Float;
+begin
+  Result := nKg / 11.34;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToQrUk(const nKg : Float) : Float;
+begin
+  Result := nKg / 12.7;
+end;
+
+//------------------------------------------------------------------------------
+
+function CwtUsToKg(const nCwt : Float) : Float;
+begin
+  Result := nCwt * 45.359;
+end;
+
+//------------------------------------------------------------------------------
+
+function CwtUkToKg(const nCwt : Float) : Float;
+begin
+  Result := nCwt * 50.802;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToCwtUs(const nKg : Float) : Float;
+begin
+  Result := nKg / 45.359;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToCwtUk(const nKg : Float) : Float;
+begin
+  Result := nKg / 50.802;
+end;
+
+//------------------------------------------------------------------------------
+
+function LtonToKg(const nLton : Float) : Float;
+begin
+  Result := nLton * 1016.05;
+end;
+
+//------------------------------------------------------------------------------
+
+function StonToKg(const nSton : Float) : Float;
+begin
+  Result := nSton * 907.185;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToLton(const nKg : Float) : Float;
+begin
+  Result := nKg / 1016.05;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToSton(const nKg : Float) : Float;
+begin
+  Result := nKg / 907.185;
+end;
+
+//------------------------------------------------------------------------------
+
+function KgToKarat(const nKg : Float) : Float;
+begin
+  Result := nKg / 0.0002;
+end;
+
+//------------------------------------------------------------------------------
+
+function KaratToKg(const nKarat : Float) : Float;
+begin
+  Result := nKarat * 0.0002;
+end;
+
 
 //==============================================================================
 // Pressure conversion
