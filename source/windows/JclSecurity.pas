@@ -18,7 +18,7 @@
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   John C Molyneux                                                                                }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -128,14 +128,13 @@ uses
 // Access Control
 //==================================================================================================
 
-{ TODO -cHelp : Win9x: return always True }
 function AllowRegKeyForEveryone(Key: HKEY; Path: string): Boolean;
 var
   WidePath: PWideChar;
   Len: Integer;
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT; 
-  if Result then  // if Win9x, then function return True
+  if Result then  // Win9x/ME
     Exit;
   case Key of
     HKEY_LOCAL_MACHINE:
@@ -157,7 +156,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always Nil }
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 var
@@ -188,7 +186,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always Nil }
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 begin
   Sa.nLength := SizeOf(Sa);
@@ -204,7 +201,6 @@ end;
 // Privileges
 //==================================================================================================
 
-{ TODO -cHelp : Win9x: return always True }
 function IsAdministrator: Boolean;
 var
   psidAdmin: Pointer;
@@ -215,7 +211,7 @@ var
   I: Integer;
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
-  if Result then  // if Win9x, then function return True
+  if Result then  // Win9x/ME
     Exit;
   psidAdmin := nil;
   TokenInfo := nil;
@@ -268,7 +264,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always True }
 function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 const
@@ -293,7 +288,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always True }
 function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 const
@@ -304,7 +298,7 @@ var
   HaveToken: Boolean;
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
-  if Result then  // if Win9x, then function return True
+  if Result then  // Win9x/ME
     Exit;
   Token := 0;
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_ADJUST_PRIVILEGES,
@@ -325,7 +319,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always True }
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
 var
   Token: THandle;
@@ -334,7 +327,7 @@ var
   HaveToken: Boolean;
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
-  if Result then  // if Win9x, then function return True
+  if Result then  // Win9x/ME
     Exit;
   Token := 0;
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, False, Token);
@@ -352,7 +345,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always '' }
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 var
   Count: DWORD;
@@ -374,19 +366,18 @@ begin
       Result := '';
   end
   else
-    Result := '';  // if Win9x, then function return ''
+    Result := '';  // Win9x/ME
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always True }
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 var
   Sd: PSecurity_Descriptor;
   Si: Security_Information;
 begin
   Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
-  if Result then  // if Win9x, then function return True
+  if Result then  // Win9x/ME
     Exit;
   { TODO : Check the success of called functions }
   Sd := PSecurity_Descriptor(LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH));
@@ -401,14 +392,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always '' }
 function GetUserObjectName(hUserObject: THandle): string;
 var
   Count: DWORD;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-    // have the the API function determine the required string length
+    // have the API function determine the required string length
     GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
     SetLength(Result, Count + 1);
 
@@ -425,7 +415,6 @@ end;
 // Account Information
 //==================================================================================================
 
-{ TODO -cHelp : Win9x: return always '' }
 procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 var
   NameSize, DomainSize: DWORD;
@@ -452,7 +441,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x: return always Nil }
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
   var Buffer: Pointer);
 var
@@ -460,7 +448,7 @@ var
   Length, LastError: DWORD;
 begin
   Buffer := nil;
-  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // if Win9x, then function return Nil
+  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // Win9x/ME
     Exit;
   Length := 0;
   LastError := 0;
@@ -496,7 +484,6 @@ end;
 
 {$IFNDEF FPC} // JclSysInfo.GetShellProcessHandle not available
 
-{ TODO -cHelp : Win9x: return always '' }
 function GetInteractiveUserName: string;
 var
   Handle: THandle;
@@ -531,6 +518,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.9  2004/05/13 07:46:06  rrossmair
 // changes for FPC 1.9.3+ compatibility
 //

@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
@@ -3892,7 +3892,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer Peter J. Haas }
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
   if FAttachedImage then
@@ -5853,6 +5852,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.7  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Flier Lu (flier)                                                                               }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
@@ -216,7 +216,7 @@ type
     scfContinue, scfStartAndContinue);
 
 { TODO -cHelp : Author Peter J. Haas }  
-// TaskSchedulerServiceControl control the status of the task scheduler service
+// TaskSchedulerServiceControl controls the status of the task scheduler service
 // Func:
 //   scfQueryStatus: Get the current status of the task scheduler service.
 //   scfStop: Stop the task scheduler service.
@@ -1213,6 +1213,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.9  2004/05/06 23:43:22  rrossmair
 // minor improvements
 //

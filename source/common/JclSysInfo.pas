@@ -15,12 +15,30 @@
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   James Azarja, Azret Botash, Marcel van Brakel, Carl Clark, Wim de Cleen, Jean-Fabien Connault, }
-{   Bryan Coutch, Eric S. Fisher, Peter Friese, Peter J. Haas (PeterJHaas) jediplus@pjh2.de,       }
-{   Tom Hahn, Nick Hodges, Mike Lischke, Robert Marquardt, John C Molyneux, Scott Price,           }
-{   Alexander Radchenko, Robert Rossmair, Olivier Sannier (obones), André Snepvangers,             }
-{   Peter Thörnquist (peter3), Matthias Thoma, Petr Vones                                          }
+{ Contributors:                                                                                    }
+{   Alexander Radchenko                                                                            }
+{   André Snepvangers                                                                              }
+{   Azret Botash                                                                                   }
+{   Bryan Coutch                                                                                   }
+{   Carl Clark                                                                                     }
+{   Eric S. Fisher                                                                                 }
+{   James Azarja                                                                                   }
+{   Jean-Fabien Connault                                                                           }
+{   John C Molyneux                                                                                }
+{   Marcel van Brakel                                                                              }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Mike Lischke                                                                                   }
+{   Nick Hodges                                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Peter Friese                                                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
+{   Peter Thörnquist (peter3)                                                                      }
+{   Petr Vones (pvones)                                                                            }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Scott Price                                                                                    }
+{   Tom Hahn                                                                                       }
+{   Wim de Cleen                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -3938,6 +3956,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.20  2004/06/02 03:23:46  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.19  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //

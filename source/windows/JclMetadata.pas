@@ -47,8 +47,6 @@ uses
   {$ENDIF RTL130_UP}
   JclBase, JclSysUtils, JclFileUtils, JclPeImage, JclClr;
 
-{ TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
 type
   TJclClrElementType = (etEnd, etVoid, etBoolean, etChar,
     etI1, etU1, etI2, etU2, etI4, etU4, etI8, etU8, etR4, etR8, etString,
@@ -5473,6 +5471,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.5  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -115,10 +115,10 @@
 { The Initial Developer of the Original Code is Marcel van Brakel. Portions created by Marcel van  }
 { Brakel are Copyright (C) Marcel van Brakel. All Rights Reserved.                                 }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Flier Lu (flier)                                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -4033,6 +4033,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.20  2004/05/28 14:00:46  obones
 // BCB5 compatibility
 //

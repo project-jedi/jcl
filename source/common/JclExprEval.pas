@@ -34,30 +34,6 @@
 // Last modified: $Date$
 // For history see end of file
 
-  {@@ <GROUP $ExprEval>
-   <TOPICORDER 100>
-   Description
-   The key classes are TEvaluator, TCompiledEvaluator and
-   TExpressionCompiler.
-       *   For single evaluations of multiple expressions, use
-           TEvaluator.
-       *   For many evaluations of the same expression, use
-           TCompiledEvaluator.
-       *   For many evaluations of many expressions, use
-           TExpressionCompiler.
-   Customized evaluators can be put together from constituent
-   parts.
-   
-   Summary
-   This unit contains the expression evaluator.
-   
-   Donator
-   Barry Kelly
-
-   Contributors
-   Barry Kelly, Matthias Thoma, Peter Haas, Petr Vones, Robert Marquardt, Robert Rossmair
-   }
-
 unit JclExprEval;
 
 {$I jcl.inc}
@@ -69,86 +45,45 @@ uses
   JclBase, JclSysUtils, JclStrHashMap, JclResources;
 
 const
-  {@@ <GROUP $ExprEval>
-     Brief: Initial size of internal hash lists created by TEasyEvaluator
-      descendants, and also TExpressionCompiler. }
   cExprEvalHashSize = 127;
 
 type
-  {@@ <GROUP $ExprEval>
-     Brief: Exception class used by the expression evaluator. }
   EJclExprEvalError = class(EJclError);
 
 const
-  {@@ <GROUP $ExprEval>
-     Brief: Set of characters that will be skipped before a token read
-    commences.
-    See Also: TExprLexer }
   ExprWhiteSpace = [#1..#32];
 
 type
-  {@@ <GROUP $ExprEval>
-     Brief: Floating-point type used by TLexer and TParser.Evaluate. }
   TFloat = Double;
-  {@@ <COMBINE TFloat> }
   PFloat = ^TFloat;
 
-  {@@ <GROUP $ExprEval>
-     Brief: 32-bit IEEE standard floating-point value. }
   TFloat32 = Single;
-  {@@ <COMBINE TFloat32> }
   PFloat32 = ^TFloat32;
 
-  {@@ <GROUP $ExprEval>
-     Brief: 64-bit IEEE standard floating-point value. }
   TFloat64 = Double;
-  {@@ <COMBINE TFloat64> }
   PFloat64 = ^TFloat64;
 
-  {@@ <GROUP $ExprEval>
-     Brief: 80-bit Intel extended precision floating-point value. }
   TFloat80 = Extended;
-  {@@ <COMBINE TFloat80> }
   PFloat80 = ^TFloat80;
 
-  {@@ <GROUP $ExprEval>
-     Brief: A function type taking no parameters. }
   TFloatFunc = function: TFloat;
-  {@@ <COMBINE TFloatFunc> }
   TFloat32Func = function: TFloat32;
-  {@@ <COMBINE TFloatFunc> }
   TFloat64Func = function: TFloat64;
-  {@@ <COMBINE TFloatFunc> }
   TFloat80Func = function: TFloat80;
 
-  {@@ <GROUP $ExprEval>
-     Brief: A function type taking a single parameter. }
   TUnaryFunc = function(X: TFloat): TFloat;
-  {@@ <COMBINE TUnaryFunc> }
   TUnary32Func = function(X: TFloat32): TFloat32;
-  {@@ <COMBINE TUnaryFunc> }
   TUnary64Func = function(X: TFloat64): TFloat64;
-  {@@ <COMBINE TUnaryFunc> }
   TUnary80Func = function(X: TFloat80): TFloat80;
 
-  {@@ <GROUP $ExprEval>
-     Brief: A function type taking two parameters. }
   TBinaryFunc = function(X, Y: TFloat): TFloat;
-  {@@ <COMBINE TBinaryFunc> }
   TBinary32Func = function(X, Y: TFloat32): TFloat32;
-  {@@ <COMBINE TBinaryFunc> }
   TBinary64Func = function(X, Y: TFloat64): TFloat64;
-  {@@ <COMBINE TBinaryFunc> }
   TBinary80Func = function(X, Y: TFloat80): TFloat80;
 
-  {@@ <GROUP $ExprEval>
-     Brief: A function type taking three parameters. }
   TTernaryFunc = function(X, Y, Z: TFloat): TFloat;
-  {@@ <COMBINE TTernaryFunc> }
   TTernary32Func = function(X, Y, Z: TFloat32): TFloat32;
-  {@@ <COMBINE TTernaryFunc> }
   TTernary64Func = function(X, Y, Z: TFloat64): TFloat64;
-  {@@ <COMBINE TTernaryFunc> }
   TTernary80Func = function(X, Y, Z: TFloat80): TFloat80;
 
 type
@@ -160,106 +95,24 @@ type
   TExprNode = class;
   TExprNodeFactory = class;
 
-  {@@ <GROUP $ExprEval>
-    Brief: Finds a symbol corresponding to an identifier.
-    Description:
-      Expressions composed solely of numbers and operators may be
-      evaluated quite easily, but to make an expression evaluator really
-      useful requires that things like named constants, variables and
-      functions be added as well.
-      <p>
-      To allow a defined set of constants, variables and functions
-      to be used in multiple evaluators (and mixed and matched according
-      to need), the task of handling symbol resolution is devolved to
-      an object known as a <i>context</i>.
-      <p>
-      Contexts are not required to be flat; indeed, they are expected to
-      be compound objects, which devolve to other, more specialized contexts
-      to do actual resolution.
-      <p>
-      As an example, consider the way names are resolved in Object Pascal.
-      The set of valid symbols is initially defined by the System unit, and
-      then added to with each unit named in the uses clause. When a method
-      is being compiled, private, protected and public names come into the
-      namespace; they aren't in effect with methods of other classes. In
-      a similar way, contexts can be built up according to requirements.
-    Note: Don't construct instances of TExprContext directly, since it is
-      abstract; instead, construct a concrete descendant.
-    See Also:
-      TExprHashContext, TExprSetContext }
   TExprContext = class(TObject)
   public
-    { Finds a symbol corresponding to an identifier.
-      Parameters: s: The identifier of the symbol to find.
-      Returns: The symbol object, or nil if not found. }
     function Find(const AName: string): TExprSym; virtual; abstract;
   end;
 
-  {@@ <GROUP $ExprEval>
-    Brief: A context class that uses a hash map for its implementation.
-    Description:
-      This is a concrete context class that uses a hash map for symbol
-      lookup. The fact that it uses a hash for its implementation means that
-      symbol lookup takes a constant time, i.e. it is independant of the
-      actual number of symbols stored in the context; however, this
-      guarantee depends on the internal hash map's internal table being
-      large enough to minimize collisions.
-      <p>
-    Note: Case sensitivity is also a concern; see the Create method. }
   TExprHashContext = class(TExprContext)
   private
     FHashMap: TStringHashMap;
   public
-    {@@ Brief: Creates an instance of THashContext.
-      Parameters:
-        ACaseSensitive: Whether this context should be case sensitive or not.
-        AHashSize: The hash size to pass on to the internal
-          hash map structure.
-      Description:
-        This constructs an instance of THashContext. The first
-        parameter indicates case sensitivity; the meaning of the second
-        parameter is slightly more subtle. It tells the context what
-        value to pass on to the internal hash map's constructor. A large
-        value will mean that the context will take up quite a bit of memory
-        even when it is empty (4 bytes are added for every increase of 1
-        in the hash size). For good performance, the hash should roughly
-        be the expected average amount of items to be held in the hash.
-        The performance degradation for too small hash tables is logarithmic,
-        however, so only in pathalogical cases should this be a concern.
-      Note: It is fairly important that the hash size not be an even
-        number; it's best if it is a prime number, although typically
-        a power of 2 minus one does fairly well (e.g. 127, 2047, etc.).
-      See Also: TStringHashMap }
     constructor Create(
       ACaseSensitive: Boolean = False;
       AHashSize: Integer = 127);
-
-    {@@ Brief: Destroys this instance. Use Free instead. }
     destructor Destroy; override;
-
-    {@@ Brief: Adds a symbol to this context.
-      Parameters:
-        ASymbol: The symbol object to add.
-      Description:
-        Once a symbol has been added, the context takes over ownership
-        of it, and will free it when it is itself destroyed. }
     procedure Add(ASymbol: TExprSym);
-
-    {@@ Brief: Removes a symbol from this context.
-      Parameters:
-        AName: symbol to remove and free.
-      Description:
-        The symbol object refered to by AName will be destroyed. }
     procedure Remove(const AName: string);
-
     function Find(const AName: string): TExprSym; override;
   end;
 
-  {@@ <GROUP $ExprEval>
-    Brief: A compound context object for combining multiple contexts.
-    Description:
-      A context class that contains a set of other contexts, which it
-      searches in order, starting with the most recently added. }
   TExprSetContext = class(TExprContext)
   private
     FList: TList;
@@ -267,45 +120,15 @@ type
     function GetContexts(AIndex: Integer): TExprContext;
     function GetCount: Integer;
   public
-    {@@ Brief: Constructs an instance.
-      Parameters:
-        AOwnsContexts: Determines whether this context object
-          should free contexts when they are deleted. You can use
-          Extract to remove a context while keeping it intact. }
     constructor Create(AOwnsContexts: Boolean);
-
-    {@@ Brief: Destroys the TExprSetContext instance. Use Free instead. }
     destructor Destroy; override;
-
-    {@@ Brief: Adds a context to the set.
-      Parameters:
-        AContext: Context to add to the set of contexts. }
     procedure Add(AContext: TExprContext);
-    {@@ Brief: Removes a context.
-      Parameters:
-        AContext: Context to remove. }
     procedure Remove(AContext: TExprContext);
-    {@@ Brief: Removes a context by index.
-      Parameters:
-        AIndex: Index of context to remove. }
     procedure Delete(AIndex: Integer);
-    {@@ Brief: Removes a context without freeing it (if AOwnsContexts was
-        passed as True in the constructor Create).
-      Parameters:
-        AContext: Context to remove.
-      Returns:
-        The context passed in (AContext). }
     function Extract(AContext: TExprContext): TExprContext;
-
-    {@@ Brief: Returns the number of contexts held by this set. }
     property Count: Integer read GetCount;
-    {@@ Brief: Accesses an internal context by index. }
     property Contexts[AIndex: Integer]: TExprContext read GetContexts;
-
-    {@@ Brief: Access to the internal list of contexts for advanced
-        operations. }
     property InternalList: TList read FList;
-
     function Find(const AName: string): TExprSym; override;
   end;
 
@@ -5570,6 +5393,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/02 03:23:44  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.5  2004/05/13 07:43:26  rrossmair
 // reworked comments for DOM2 inclusion
 //

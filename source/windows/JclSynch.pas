@@ -18,7 +18,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
@@ -519,8 +519,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas, return wrError, if
-  SignalObjectAndWait not available on the OS (Win9x, WinNT before 4.0) }  
 function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
@@ -643,7 +641,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclCriticalSectionEx.CreateEx(SpinCount: Cardinal;
   NoFailEnter: Boolean);
 begin
@@ -678,11 +675,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
                              
-{ TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 procedure TJclCriticalSectionEx.SetSpinCount(const Value: Cardinal);
 begin
-  // InitializeCriticalSectionAndSpinCount need WinNT4.0 SP3 and later
   FSpinCount := SetCriticalSectionSpinCount(FCriticalSection, Value);
   { TODO : Exception for Win9x, older WinNT? }
   // RaiseLastOSError;
@@ -698,8 +692,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclCriticalSectionEx.TryEnter: Boolean;
 begin
   Result := RtdlTryEnterCriticalSection(FCriticalSection);
@@ -761,7 +753,6 @@ end;
 //==================================================================================================
 
 { TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.Cancel: Boolean;
 begin
   Result := RtdlCancelWaitableTimer(FHandle);
@@ -773,7 +764,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclWaitableTimer.Create(SecAttr: PSecurityAttributes;
   Manual: Boolean; const Name: string);
 begin
@@ -788,7 +778,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclWaitableTimer.Open(Access: Cardinal; Inheritable: Boolean;
   const Name: string);
 begin
@@ -803,7 +792,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.SetTimer(const DueTime: Int64; Period: Longint;
   Resume: Boolean): Boolean;
 var
@@ -819,7 +807,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : OS restrictions }
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.SetTimerApc(const DueTime: Int64; Period: Longint;
   Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
 var
@@ -1575,7 +1562,6 @@ end;
 
 // http://undocumented.ntinternals.net/
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 var
   ResultStatus: NTSTATUS;
@@ -1589,7 +1575,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 var
   ResultStatus: NTSTATUS;
@@ -1603,7 +1588,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
 var
   ResultStatus: NTSTATUS;
@@ -1617,7 +1601,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 var
   ResultStatus: NTSTATUS;
@@ -1634,6 +1617,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.7  2004/05/09 10:13:38  ahuser
 // Better Delphi 7.1 fix that does not throw hints for older versions
 //

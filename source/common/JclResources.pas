@@ -23,7 +23,7 @@
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones                                                                                     }
 {   Raymond Alexander (rayspostbox3)                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -1079,6 +1079,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/02 03:23:46  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.6  2004/05/14 15:26:34  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
