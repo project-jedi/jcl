@@ -1606,9 +1606,10 @@ of the caller, etc.
 [Result]
 Filename of the source file in which the routine specified by Level exists.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use FileByLevel instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1647,9 +1648,10 @@ of the caller, etc.
 [Result]
 Unit name in which the routine specified by Level exists.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use ModuleByLevel instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1687,9 +1689,10 @@ currently executing routine, 1 is the caller, 2 is the caller of the caller, etc
 [Result]
 Name of the routine at the specified level.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use ProcByLevel instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1727,9 +1730,10 @@ currently executing routine, 1 is the caller, 2 is the caller of the caller, etc
 [Result]
 Line number of the routine specified by Level.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use LineByLevel instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1772,9 +1776,10 @@ currently executing routine, 1 is the caller, 2 is the caller of the caller, etc
 [Result]
 Returns True if the information was found, otherwise False.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use MapByLevel instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1809,9 +1814,10 @@ Count=1
 [Result]
 Name of the source code file in which the specified address is defined.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use FileOfAddr instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1846,9 +1852,10 @@ Count=1
 [Result]
 Name of module in which the specified address is defined.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use ModuleOfAddr instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1883,9 +1890,10 @@ Count=1
 [Result]
 Name of the procedure in which Addr is defined.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use ProcOfAddr instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1920,9 +1928,10 @@ Count=1
 [Result]
 Line number at which the address is defined.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use LineOfAddr instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1963,9 +1972,10 @@ Count=5
 [Result]
 Returns True if the information was found, otherwise False.
 [Notes]
-Count=1
+Count=2
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
+2=This function is obsolete. Use MapOfAddr instead.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1987,6 +1997,404 @@ Count=9
 7=__MODULE_OF_ADDR__
 8=__PROC_OF_ADDR__
 9=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileByLevel(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the file.
+[Description]
+FileByLevel returns the name of the source file in which the routine specified by
+Level exists. Level 0 denotes the currently executing routine, 1 denotes the
+caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the source file in which
+it resides. 0 is the currently executing routine, 1 is the caller, 2 is the caller
+of the caller, etc.
+[Result]
+Filename of the source file in which the routine specified by Level exists.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=ModuleByLevel
+2=ProcByLevel
+3=LineByLevel
+4=MapByLevel
+5=FileOfAddr
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ModuleByLevel(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the unit in which a routine resides.
+[Description]
+__MODULE__ returns the name of the unit in which the routine specified by
+Level exists. Level 0 denotes the currently executing routine, 1 denotes the
+caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the module name in which
+it resides. 0 is the currently executing routine, 1 is the caller, 2 is the caller
+of the caller, etc.
+[Result]
+Unit name in which the routine specified by Level exists.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ProcByLevel
+3=LineByLevel
+4=MapByLevel
+5=FileOfAddr
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ProcByLevel(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the routine at a specified level.
+[Description]
+__PROC__ returns the name of the procedure at the specified Level. Level 0 denotes
+the currently executing routine, 1 denotes the caller of the routine, 2 the caller
+of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the name. 0 is the
+currently executing routine, 1 is the caller, 2 is the caller of the caller, etc.
+[Result]
+Name of the routine at the specified level.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=LineByLevel
+4=MapByLevel
+5=FileOfAddr
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LineByLevel(const Level: Integer = 0): Integer;
+[ShortDescr]
+Returns the line number in the source code file at which a routine is executing.
+[Description]
+__LINE__ returns the line number within the source code file at which the routine
+specified by Level is currently executing. Level 0 denotes the currently executing
+routine, 1 denotes the caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the line number. 0 is the
+currently executing routine, 1 is the caller, 2 is the caller of the caller, etc.
+[Result]
+Line number of the routine specified by Level.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=MapByLevel
+5=FileOFAddr
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+[ShortDescr]
+Returns the file name, unit name, procedure name and line number at which a
+routine is executing.
+[Description]
+MapByLevel combines the FileByLevel, ModuleByLevel, ProcByLevel and LineByLevel routines into a
+single call.
+[Parameters]
+Count=5
+1=Level:Integer=Caller level for which you want to get location information. 0 is the
+currently executing routine, 1 is the caller, 2 is the caller of the caller, etc.
+2=_File:string=File name of the routine specified by Level
+3=_Module:string=Unit name of the routine specified by Level
+4=_Proc:string=Procedure name of the routine specified by Level
+5=_Line:Integer=Line number of the routine specified by Level
+[Result]
+Returns True if the information was found, otherwise False.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=FileOFAddr
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileOfAddr(const Addr: Pointer): string;
+[ShortDescr]
+Returns the filename for an address.
+[Description]
+FileOfAddr returns the name of the source code file given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the source code file.
+[Result]
+Name of the source code file in which the specified address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=MapByLevel
+6=ModuleOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ModuleOfAddr(const Addr: Pointer): string;
+[ShortDescr]
+Returns the module name for an address.
+[Description]
+__MODULE_OF_ADDR__ returns the name of the module given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the module name.
+[Result]
+Name of module in which the specified address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=MapByLevel
+6=FileOfAddr
+7=ProcOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ProcOfAddr(const Addr: Pointer): string;
+[ShortDescr]
+Returns the procedure name for an address.
+[Description]
+__PROC_OF_ADDR__ returns the name of the procedure given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=Address for which you want to know the procedure.
+[Result]
+Name of the procedure in which Addr is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=MapByLevel
+6=FileOfAddr
+7=ModuleOfAddr
+8=LineOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LineOfAddr(const Addr: Pointer): Integer;
+[ShortDescr]
+Returns the line number given an address.
+[Description]
+__LINE_OF_ADDR__ returns the line number in a source code file given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the line number.
+[Result]
+Line number at which the address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=MapByLevel
+6=FileOfAddr
+7=ModuleOfAddr
+8=ProcOfAddr
+9=MapOfAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+[ShortDescr]
+Returns the file name, unit name, procedure name and line number given an address.
+[Description]
+__MAP_OF_ADDR__ combines the __FILE_OF_ADDR__, __MODULE_OF_ADDR__, __PROC_OF_ADDR__
+and __LINE_OF_ADDR__ routines into a single call.
+[Parameters]
+Count=5
+1=Addr:Pointer=The address for which you want to know the location information.
+2=_File:string=File name of the routine specified by Level
+3=_Module:string=Unit name of the routine specified by Level
+4=_Proc:string=Procedure name of the routine specified by Level
+5=_Line:Integer=Line number of the routine specified by Level
+[Result]
+Returns True if the information was found, otherwise False.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=9
+1=FileByLevel
+2=ModuleByLevel
+3=ProcByLevel
+4=LineByLevel
+5=MapByLevel
+6=FileOfAddr
+7=ModuleOfAddr
+8=ProcOfAddr
+9=LineOfAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PStackFrame = ^TStackFrame;
