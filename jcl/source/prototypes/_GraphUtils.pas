@@ -754,6 +754,7 @@ end;
 procedure FreeAlphaTable;
 begin
   FreeMem(AlphaTable);
+  AlphaTable := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2879,6 +2880,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.13  2004/07/31 06:21:02  marquardt
+// - reset AlphaTable to nil in FreeAlphaTable
+//
 // Revision 1.12  2004/07/16 03:58:14  rrossmair
 // some style cleaning
 //
