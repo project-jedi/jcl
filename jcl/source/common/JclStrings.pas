@@ -32,7 +32,7 @@ unit JclStrings;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, 
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -217,6 +217,7 @@ function StrIPos(const SubStr, S: AnsiString): Integer;
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
 function StrLastPos(const SubStr, S: AnsiString): Integer;
 function StrMatch(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
+function StrMatches(const Substr, S: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Boolean;
 function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
 function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
 function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer;
@@ -343,6 +344,7 @@ type
 implementation
 
 uses
+  Mask,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF WIN32}
@@ -2491,6 +2493,7 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+// IMPORTANT NOTE: The StrMatch function does currently not work with the Asterix (*)
 
 function StrMatch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 asm
@@ -2666,6 +2669,104 @@ asm
 
 @@SubstrIsNull:
 @@Exit:
+end;
+
+//------------------------------------------------------------------------------
+// Derived from "Like" by Michael Winter
+
+function StrMatches(const Substr, S: AnsiString; const Index: Integer): Boolean;
+var
+  StringPtr: PChar;
+  PatternPtr: PChar;
+  StringRes: PChar;
+  PatternRes: PChar;
+
+begin
+  Result := False;
+  StringPtr := PChar(@S[Index]);
+  PatternPtr := PChar(SubStr);
+  StringRes := nil;
+  PatternRes := nil;
+
+  if (S='') or (SubStr='') then
+    Exit;
+
+  repeat
+    repeat
+      case PatternPtr^ of
+        #0: begin
+              Result:=StringPtr^=#0;
+              if Result or (StringRes=nil) or (PatternRes=nil) then
+                Exit;
+
+              StringPtr:=StringRes;
+              PatternPtr:=PatternRes;
+              Break;
+            end;
+        '*': begin
+               inc(PatternPtr);
+               PatternRes:=PatternPtr;
+               Break;
+             end;
+        '?': begin
+               if StringPtr^=#0 then
+                 Exit;
+               inc(StringPtr);
+               inc(PatternPtr);
+             end;
+        else
+        begin
+          if StringPtr^=#0 then
+            Exit;
+          if StringPtr^<>PatternPtr^ then
+          begin
+            if (StringRes=nil) or (PatternRes=nil) then
+              Exit;
+            StringPtr:=StringRes;
+            PatternPtr:=PatternRes;
+            Break;
+          end
+          else
+          begin
+            inc(StringPtr);
+            inc(PatternPtr);
+          end;
+        end;
+      end;
+    until false;
+
+    repeat
+      case PatternPtr^ of
+        #0: begin
+          Result:=true;
+          Exit;
+        end;
+        '*': begin
+          inc(PatternPtr);
+          PatternRes:=PatternPtr;
+        end;
+        '?': begin
+          if StringPtr^=#0 then
+            Exit;
+          inc(StringPtr);
+          inc(PatternPtr);
+        end;
+        else begin
+          repeat
+            if StringPtr^=#0 then
+              Exit;
+            if StringPtr^=PatternPtr^ then
+              Break;
+            inc(StringPtr);
+          until false;
+          inc(StringPtr);
+          StringRes:=StringPtr;
+          inc(PatternPtr);
+          Break;
+        end;
+      end;
+    until false;
+  until false;
 end;
 
 //------------------------------------------------------------------------------
