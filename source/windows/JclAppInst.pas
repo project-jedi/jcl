@@ -30,7 +30,7 @@
 
 unit JclAppInst;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
