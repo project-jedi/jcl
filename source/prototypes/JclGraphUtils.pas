@@ -1055,8 +1055,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32); assembler;
-asm
+procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
+{asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // EAX <- F
@@ -1091,6 +1091,9 @@ asm
         db $0F,$7E,$0A           /// MOVD      [EDX],MM1
 @1:     POP       EBX
 @2:
+end;}
+begin
+  B := M_BlendRegEx(F, B, M);
 end;
 
 //------------------------------------------------------------------------------
