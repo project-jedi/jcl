@@ -38,12 +38,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Graphics,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Qt, QGraphics,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   JclBase;
 
 type
@@ -76,10 +76,10 @@ type
       {$ENDIF MSWINDOWS}
   end;
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TPointArray = array of TPoint;
   PPointArray = ^TPointArray;
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
 
   { position codes for clipping algorithm }
   TClipCode = (ccLeft, ccRight, ccAbove, ccBelow);
@@ -242,10 +242,10 @@ procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
 function ColorToHTML(const Color: TColor): String;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 // Petr Vones
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
@@ -1149,11 +1149,11 @@ begin
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
   {$ELSE}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   { TODO : Find a Qt-independent solution }
   X := QWidget_width(QApplication_desktop);
   Y := QWidget_height(QApplication_desktop);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   {$ENDIF MSWINDOWS}
   with R do
   begin
@@ -2247,7 +2247,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
@@ -2283,7 +2283,7 @@ begin
   Result := True;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2529,11 +2529,11 @@ begin
       X := Round(X2);
       Y := Round(Y2);
       Canvas.LineTo(X, Y);
-      {$IFDEF COMPLIB_VCL}
+      {$IFDEF VCL}
       if Codes2 <> [] then
         // Draw end point if neccessary
         Canvas.LineTo(X + 1, Y);
-      {$ENDIF COMPLIB_VCL}
+      {$ENDIF VCL}
     end;
     with Points[i] do
     begin
