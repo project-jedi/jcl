@@ -869,6 +869,10 @@ var
           Val := Val * 16 + N;
         end;
       end;
+
+      if val > 255 then
+        raise EJclStringError.CreateResRec(@RsNumericConstantTooLarge);
+
       Result := Result + Chr(Val);
     end;
   end;
@@ -897,6 +901,10 @@ var
         end;
       end;
     end;
+
+    if val > 255 then
+      raise EJclStringError.CreateResRec(@RsNumericConstantTooLarge);
+
     Result := Result + Chr(Val);
   end;
 
