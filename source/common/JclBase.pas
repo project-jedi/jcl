@@ -156,20 +156,22 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TDynByteArray     = array of Byte;
-  TDynShortIntArray = array of Shortint;
-  TDynWordArray     = array of Word;
-  TDynSmallIntArray = array of Smallint;
-  TDynLongIntArray  = array of Longint;
-  TDynInt64Array    = array of Int64;
-  TDynCardinalArray = array of Cardinal;
-  TDynIntegerArray  = array of Integer;
-  TDynExtendedArray = array of Extended;
-  TDynDoubleArray   = array of Double;
-  TDynSingleArray   = array of Single;
-  TDynFloatArray    = array of Float;
-  TDynPointerArray  = array of Pointer;
-  TDynStringArray   = array of string;
+  TDynByteArray       = array of Byte;
+  TDynShortIntArray   = array of Shortint;
+  TDynWordArray       = array of Word;
+  TDynSmallIntArray   = array of Smallint;
+  TDynLongIntArray    = array of Longint;
+  TDynInt64Array      = array of Int64;
+  TDynCardinalArray   = array of Cardinal;
+  TDynIntegerArray    = array of Integer;
+  TDynExtendedArray   = array of Extended;
+  TDynDoubleArray     = array of Double;
+  TDynSingleArray     = array of Single;
+  TDynFloatArray      = array of Float;
+  TDynPointerArray    = array of Pointer;
+  TDynStringArray     = array of string;
+  TDynIInterfaceArray = array of IInterface;
+  TDynObjectArray     = array of TObject;
 
 //--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
@@ -299,6 +301,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/12/17 05:33:02  marquardt
+// updates for DCL
+//
 // Revision 1.23  2004/11/18 00:57:14  rrossmair
 // - check-in for release 1.93
 //
