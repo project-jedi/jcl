@@ -455,7 +455,7 @@ begin
           ttReaumur:
             Result := CelsiusToReaumur(Temperature);
         else
-          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -471,7 +471,7 @@ begin
           ttReaumur:
             Result := FahrenheitToReaumur(Temperature);
         else
-          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -487,7 +487,7 @@ begin
           ttReaumur:
             Result := KelvinToReaumur(Temperature);
         else
-          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -503,7 +503,7 @@ begin
           ttReaumur:
             Result := RankineToReaumur(Temperature);
         else
-          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -519,7 +519,7 @@ begin
           ttRankine:
             Result := ReaumurToRankine(Temperature);
         else
-          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
         end;
       end;
   else
@@ -971,6 +971,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/03/07 17:28:59  marquardt
+// raise was missing from several exceptions
+//
 // Revision 1.8  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
