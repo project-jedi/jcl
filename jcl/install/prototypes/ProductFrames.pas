@@ -15,7 +15,9 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
+{ Contributors:                                                                                    }
+{   Andreas Hausladen (ahuser)                                                                     }
+{   Robert Rossmair (rrossmair) - crossplatform & BCB support, refactoring                         }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -100,6 +102,8 @@ type
     function FeatureChecked(FeatureID: Cardinal): Boolean;
     procedure LogOutputLine(const Line: string);
     procedure UpdateTree;
+    procedure StartCompilation(Installation: TJclBorRADToolInstallation);
+    procedure StopCompilation(Installation: TJclBorRADToolInstallation);
     property NodeChecked[Node: TTreeNode]: Boolean read GetNodeChecked write SetNodeChecked;
     property Installation: TJclBorRADToolInstallation read FInstallation write SetInstallation;
   end;
@@ -119,7 +123,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QDialogs,
   {$ELSE}
-  FileCtrl,
+  FileCtrl, FrmCompile,
   {$ENDIF}
   JclStrings,
   JclInstall;
@@ -173,9 +177,23 @@ end;
 
 procedure TProductFrame.LogOutputLine(const Line: string);
 {$IFDEF VCL}
+
+  function Cmp(const S: string): Boolean;
+  begin
+    Result := Copy(Line, 1, Length(S)) = S;
+  end;
+
 begin
-  InfoDisplay.Lines.Append(Line);
-  InfoDisplay.Perform(EM_SCROLLCARET, 0, 0);
+  if FormCompile.HandleLine(Line) <> clFileProgress then
+  begin
+    if Cmp(AnsiLineBreak + 'Installing package ') then
+      FormCompile.Linking(Copy(Line, 20, MaxInt))
+    else if Cmp('Copying .hpp files...') then
+      FormCompile.Done;
+
+    InfoDisplay.Lines.Append(Line);
+    InfoDisplay.Perform(EM_SCROLLCARET, 0, 0);
+  end;
 end;
 {$ELSE VisualCLX}
 var
@@ -194,8 +212,6 @@ end;
 {$ENDIF VisualCLX}
 
 procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
-const
-  Prefixes: array[TJclBorRADToolKind] of Char = ('D', 'C');
 
   function GetPathForEdit(Path: string): string;
   begin
@@ -401,6 +417,29 @@ end;
 procedure TProductFrame.UpdateTree;
 begin
   TreeView.FullExpand;
+end;
+
+procedure TProductFrame.StartCompilation(Installation: TJclBorRADToolInstallation);
+begin
+  {$IFDEF VCL}
+  if not Assigned(FormCompile) then
+    FormCompile := TFormCompile.Create(Self);
+  FormCompile.Init(Installation.Name, True);
+  FormCompile.Show;
+  Application.ProcessMessages;
+  {$ENDIF VCL}
+end;
+
+procedure TProductFrame.StopCompilation(Installation: TJclBorRADToolInstallation);
+begin
+  {$IFDEF VCL}
+  if FormCompile.Errors > 0 then // do not make the dialog modal when no error occured
+    FormCompile.Done(' ')
+  else
+    FormCompile.Done;
+  FormCompile.Free;
+  FormCompile := nil;
+  {$ENDIF VCL}
 end;
 
 end.
