@@ -240,7 +240,7 @@ var
   Handle: THandle;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);  
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   try
     Result := NtfsZeroDataByHandle(Handle, First, Last);
