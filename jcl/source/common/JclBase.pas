@@ -298,7 +298,7 @@ type
 
 procedure RaiseLastOSError;
 
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
 
 //------------------------------------------------------------------------------
 // Interface compatibility
@@ -310,8 +310,8 @@ procedure RaiseLastOSError;
 type
   IInterface = IUnknown;
 
-{$ENDIF}
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
+{$ENDIF SUPPORTS_INTERFACE}
 
 implementation
 
@@ -363,7 +363,7 @@ end;
 
 function SysErrorMessage(ErrNo: Integer): string;
 begin
-  Result := Format('Win32 Error %d (%x)', [ErrNo, ErrNo]);
+  Result := Format(RsSysErrorMessageFmt, [ErrNo, ErrNo]);
 end;
 
 {$ENDIF WIN32}
@@ -629,7 +629,7 @@ begin
   RaiseLastWin32Error;
 end;
 
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
 
 
 end.
