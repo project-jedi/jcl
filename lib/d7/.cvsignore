@@ -1,4 +1,5 @@
 *.dcu
 *.ddp
 *.bpl
-*.dcp.cvsignore
+*.dcp
+.cvsignore
