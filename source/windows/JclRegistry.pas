@@ -512,7 +512,7 @@ var
 begin
   if RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
-    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_SZ, PChar(Value), Length(Value)+1);
+    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_SZ, PByte(Value), Length(Value)+1);
     RegCloseKey(RegKey);
     if Ret <> ERROR_SUCCESS then
       WriteError(Key);
