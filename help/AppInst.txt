@@ -2,19 +2,19 @@
 [Declaration]
 TJclAppInstances = class (TObject)
 [ShortDescr]
-TJclAppInstances allows you to control the number of application instance the user can run.
+TJclAppInstances allows you to control the number of application instances the user can run.
 [Description]
-TJclAppInstance is a class which allows you to control the number of instances
+TJclAppInstances is a class which allows you to control the number of instances
 of your application that the user can run simultanously. In addition the class
-has a build in method for simple communication among running instances. The
-application programmer can use this as desired but it's also used to send notifcations.
+has a built in method for simple communication among running instances. The
+application programmer can use this as desired but it's also used to send notifications.
 For example, when an application starts running or terminates, the class automatically
-send a notification about this event to all other instances. To use TJclAppInstances
+sends a notification about this event to all other instances. To use TJclAppInstances
 include JclAppInst and somewhere during start up (eg in the project source before
 the Application.Initialize call) call JclAppInstances.CheckInstance(X) or
 JclAppInstances.CheckSingleInstance. The first call determines whether or not
 at most X instances are already running, but does nothing else, while the second
-call immediately terminates the application when another istance is already running.
+call immediately terminates the application when another instance is already running.
  <P>To receive notifications you must override the WndProc of your main form and
 include the following code (or something along those lines):<BR>
   <PRE Class=Syntax>
@@ -31,7 +31,7 @@ end;
   </PRE>
 Note that in both instance creation and instance destruction the Msg.LParam
 field contains the process ID of the affected instance (which could be the instance
-itself). Also, notifications as well as user messages are send to both the main
+itself). Also, notifications as well as user messages are sent to both the main
 form and to the application message queue. Therefore instead of overriding
 WndProc you could have also used the TApplication.OnMessage event.
 [Quick Info]
@@ -47,11 +47,11 @@ AI_INSTANCECREATED = $0001;
 [ShortDescr]
 WParam field for instance creation notifications
 [Description]
-When an application instance is created TJclAppInst sends a notification message
+When an application instance is created TJclAppInstances sends a notification message
 to all other running instances. The message value is determined by the MessageId
-property, the WParam field is set to AI_INSTANCECREATED and the LParam fiels is
-set to the Process ID of the instance being created. Note that message is also
-send to the application instance under construction.
+property, the WParam field is set to AI_INSTANCECREATED and the LParam field is
+set to the Process ID of the instance being created. Note that the message is also
+sent to the application instance under construction.
 [Quick Info]
 Kind=Constant
 BCB=3,4,5
@@ -70,11 +70,11 @@ AI_INSTANCEDESTROYED = $0002;
 [ShortDescr]
 WParam field for instance destruction notifications
 [Description]
-When an application instance is destroyed TJclAppInst sends a notification message
+When an application instance is destroyed TJclAppInstances sends a notification message
 to all other running instances. The message value is determined by the MessageId
 property, the WParam field is set to AI_INSTANCEDESTROYED and the LParam fiels is
-set to the Process ID of the instance being destroyed. Note that message is also
-send to the application instance which is exiting.
+set to the Process ID of the instance being destroyed. Note that the message is also
+sent to the application instance which is exiting.
 [Quick Info]
 Kind=Constant
 BCB=3,4,5
@@ -113,16 +113,16 @@ Count=2
 [Declaration]
 class function BringAppWindowToFront(const Wnd: HWND): Boolean;
 [ShortDescr]
-Brings the specified window into the foreground.
+Brings the specified window to the foreground.
 [Description]
-BringAppWindowToFront puts the thread that created the specified window into the
+BringAppWindowToFront puts the thread that created the specified window to the
 foreground and activates the window. Keyboard input is directed
 to the window, and various visual cues are changed for the user. The system
 assigns a slightly higher priority to the thread that created the foreground
 window than it does to other threads (from the Platform SDK).
 [Parameters]
 Count=1
-1=Wnd:HWND=Handle of the window to bring into the foreground.
+1=Wnd:HWND=Handle of the window to bring to the foreground.
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
@@ -181,10 +181,10 @@ Delphi=3,4,5
 [Declaration]
 class function SetForegroundWindow98(const Wnd: HWND): Boolean;
 [ShortDescr]
-Brings the specified window into the foreground.
+Brings the specified window to the foreground.
 [Description]
-BringAppWindowToFrontputs the thread that created the specified window into the
-foreground and activated the window. Keyboard input is directed
+SetForegroundWindow98 puts the thread that created the specified window to the
+foreground and activates the window. Keyboard input is directed
 to the window, and various visual cues are changed for the user. The system
 assigns a slightly higher priority to the thread that created the foreground
 window than it does to other threads (from the Platform SDK).
@@ -213,14 +213,14 @@ Check the number of running instances.
 [Description]
 CheckInstance determines whether fewer than MaxInstances application instances
 are running. If this is true, the process is registered as a running instance
-and a notification is send to all other running instances, otherwise the function
+and a notification is sent to all other running instances, otherwise the function
 does nothing. Note that unlike CheckSingleInstance, the application is not
-terminated and none of the already running instances is brought into the foreground.
+terminated and none of the already running instances is brought to the foreground.
 It's up to the application programmer to decide what to do if the function fails.
 You could, for example, terminate the application yourself by
 calling <REF>KillInstance</REF>.
 [Result]
-If fewer than MaxInstances appplications we're running the result is True,
+If fewer than MaxInstances appplications were running the result is True,
 otherwise the result is False.
 [Quick Info]
 Kind=Method
@@ -241,9 +241,9 @@ procedure CheckMultipleInstances(const MaxInstances: Word);
 [ShortDescr]
 Check the number of running instances.
 [Description]
-CheckMultipleInstance determines whether fewer than MaxInstances application
+CheckMultipleInstances determines whether fewer than MaxInstances application
 instances are running. If this is true, the process is registered as a running
-instance and a notification is send to all other running instances, otherwise the
+instance and a notification is sent to all other running instances, otherwise the
 method brings the first instance of the application to the foreground and then
 terminates itself (as such the routine never returns).
 [Quick Info]
@@ -284,9 +284,9 @@ Count=1
 [Declaration]
 function SwitchTo(const Index: Integer): Boolean;
 [ShortDescr]
-SwitchTo brings the application determined by ProcessIDs[Index] into the foreground.
+SwitchTo brings the application determined by ProcessIDs[Index] to the foreground.
 [Description]
-SwitchTo brings the application determined by ProcessIDs[Index] into the foreground.
+SwitchTo brings the application determined by ProcessIDs[Index] to the foreground.
 [Parameters]
 Count=1
 1=Index:Integer=Zero based index into the ProcessIDs array property of the instance
@@ -308,8 +308,8 @@ procedure UserNotify(const Param: Longint);
 [ShortDescr]
 Sends a user defined message to all running instances.
 [Description]
-UserNotify sends a notification message to all running instances with WPARAM set
-to AI_USERMSG and LPARAM set to the specified parameter.
+UserNotify sends a notification message to all running instances with WParam set
+to AI_USERMSG and LParam set to the specified parameter.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -347,7 +347,7 @@ which are sharing the TJclAppInstances. In effect it contains the process IDs
 of all running instances. The array is zero based and the highest valid index
 is given by <REF>InstanceCount</REF> property. If an invalid index is specified
 the property reads 0. Note that it is possible that in between reading InstanceCount
-and ProcessIDs, or readinf ProcessIDs and it, an instance terminates thereby
+and ProcessIDs, or reading ProcessIDs and it, an instance terminates thereby
 invalidating the process ID. Always check the result before and after using the
 returned process ID.
 [Quick Info]
