@@ -55,7 +55,7 @@ File39=..\source\JclWin32.pas
 Count=0
 
 [Description Files]
-Count=36
+Count=35
 File0=dtx\8087.dtx
 File1=dtx\AppInst.dtx
 File2=dtx\Base.dtx
@@ -83,15 +83,14 @@ File23=dtx\Registry.dtx
 File24=dtx\rtti.dtx
 File25=dtx\Security.dtx
 File26=dtx\Shell.dtx
-File27=dtx\SScanf.dtx
-File28=dtx\Statistics.dtx
-File29=dtx\Strings.dtx
-File30=dtx\Synch.dtx
-File31=dtx\SysInfo.dtx
-File32=dtx\SysUtils.dtx
-File33=dtx\Unicode.dtx
-File34=dtx\UnitConv.dtx
-File35=dtx\WideStrings.dtx
+File27=dtx\Statistics.dtx
+File28=dtx\Strings.dtx
+File29=dtx\Synch.dtx
+File30=dtx\SysInfo.dtx
+File31=dtx\SysUtils.dtx
+File32=dtx\Unicode.dtx
+File33=dtx\UnitConv.dtx
+File34=dtx\WideStrings.dtx
 
 [Description Include Directories]
 Count=0
