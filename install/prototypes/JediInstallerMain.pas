@@ -84,13 +84,12 @@ type
     FJclInstall: IJediInstall;
     FSystemPaths: TStringList;
     FFeatureNode: TTreeNode;
-    FFeatureInfo: TStringList;
-    FFeatureInfoChanged: Boolean;
+    FFeatureChanged: Boolean;
+    FHintPos: TPoint;
     function ActiveView: TProductFrame;
     function CheckUpdatePack(Installation: TJclBorRADToolInstallation): Boolean;
     function CreateView(Installation: TJclBorRADToolInstallation): Boolean;
     function ExpandOptionTree(Installation: TJclBorRADToolInstallation): Boolean;
-    function InfoFile(Node: TTreeNode): string;
     procedure InstallationStarted(Installation: TJclBorRADToolInstallation);
     procedure InstallationFinished(Installation: TJclBorRADToolInstallation);
     procedure InstallationProgress(Percent: Cardinal);
@@ -100,8 +99,6 @@ type
     procedure UMCheckUpdates(var Message: TMessage); message UM_CHECKUPDATES;
     {$ENDIF VCL}
     procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
-    procedure TreeViewChanging(Sender: TObject; Node: TTreeNode;
-      var AllowChange: Boolean);
     procedure TreeViewEnter(Sender: TObject);
     procedure TreeViewExit(Sender: TObject);
     procedure TreeViewMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -110,9 +107,11 @@ type
     {$IFDEF VisualCLX}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     {$ENDIF VisualCLX}
+    function InfoFile(Node: TTreeNode): string;
     function OptionGUI(Installation: TJclBorRADToolInstallation): TObject;
     function GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption; const Text: string;
       StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+    procedure HandleException(Sender: TObject; E: Exception);
     property JclDistribution: IJediInstall read FJclInstall;
   public
     procedure ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE}string{$ENDIF};
@@ -173,16 +172,6 @@ const
   BCBTag            = $10000;
   VersionMask       = $FFFF;
 
-resourcestring
-  RsCantFindFiles   = 'Can not find installation files, check your installation.';
-  RsCloseRADTool    = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
-  RsConfirmInstall  = 'Are you sure to install all selected features?';
-  RsInstallSuccess  = 'Installation finished';
-  RsInstallFailure  = 'Installation failed.'#10'Check compiler output for details.';
-  RsNoInstall       = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
-  RsUpdateNeeded    = 'You should install latest Update Pack #%d for %s.'#13#10 +
-                      'Would you like to open Borland support web page?';
-
 function Collapsable(Node: TTreeNode): Boolean;
 begin
   Result := (Cardinal(Node.Data) and FID_Expandable) <> 0;
@@ -228,7 +217,6 @@ begin
   ProductFrame := TProductFrame.Create(Self);
   ProductFrame.Installation := Installation;
   ProductFrame.TreeView.Images := ImageList;
-  ProductFrame.TreeView.OnChanging := TreeViewChanging;
   ProductFrame.TreeView.OnChange := TreeViewChange;
   ProductFrame.TreeView.OnCollapsing := TreeViewCollapsing;
   ProductFrame.TreeView.OnEnter := TreeViewEnter;
@@ -236,6 +224,7 @@ begin
   ProductFrame.TreeView.OnMouseMove := TreeViewMouseMove;
   ProductFrame.Align := alClient;
   ProductFrame.Parent := Page;
+  FJclInstall.SetOnWriteLog(Installation, ProductFrame.LogOutputLine);
   Result := True;
 end;
 
@@ -296,6 +285,18 @@ begin
   Result := Node;
 end;
 
+procedure TMainForm.HandleException(Sender: TObject; E: Exception);
+begin
+  if E is EJediInstallInitFailure then
+  begin
+    Dialog(E.Message, dtError);
+    Application.ShowMainForm := False;
+    Application.Terminate;
+  end
+  else
+    Application.ShowException(E);
+end;
+
 procedure TMainForm.Install;
 var
   Res: Boolean;
@@ -349,6 +350,18 @@ begin
     end;
     FSystemPaths.Sorted := True;
   end;
+end;
+
+procedure TMainForm.SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
+begin
+  with Installation do
+    View(Installation).BplPathEdit.Text := Value;
+end;
+
+procedure TMainForm.SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
+begin
+  with Installation do
+    View(Installation).DcpPathEdit.Text := Value;
 end;
 
 function TMainForm.SystemPathValid(const Path: string): Boolean;
@@ -426,9 +439,9 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Application.OnException := HandleException;
   FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
   FSystemPaths := TStringList.Create;
-  FFeatureInfo := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJclInstall := CreateJclInstall;
   FJclInstall.SetOnProgress(InstallationProgress);
@@ -438,21 +451,7 @@ begin
   BorRADToolInstallations.Iterate(ExpandOptionTree);
 
   UpdateStatus('');
-  {
-  if False then
-  begin
-    Dialog(RsCantFindFiles, dtError);
-    Application.ShowMainForm := False;
-    Application.Terminate;
-  end
-  else
-  if False then
-  begin
-    Dialog(RsNoInstall);
-    Application.ShowMainForm := False;
-    Application.Terminate;
-  end;
-  }
+
   ReadSystemPaths;
   {$IFDEF VCL}
   TitlePanel.DoubleBuffered := True;
@@ -466,7 +465,6 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBorRADToolInstallations);
-  FreeAndNil(FFeatureInfo);
   FreeAndNil(FSystemPaths);
 end;
 
@@ -555,10 +553,6 @@ var
 begin
   P := View(Installation);
   P.InfoDisplay.Lines.Clear;
-  Installation.DCC.OutputCallback := P.LogOutputLine;
-  Installation.Make.OutputCallback := P.LogOutputLine;
-  if Installation is TJclBCBInstallation then
-    TJclBCBInstallation(Installation).Bpr2Mak.OutputCallback := P.LogOutputLine;
   ProductsPageControl.ActivePage := P.Parent as TTabSheet;
 end;
 
@@ -600,21 +594,6 @@ begin
   UpdateFeatureInfo(Node);
 end;
 
-procedure TMainForm.TreeViewChanging(Sender: TObject; Node: TTreeNode; var AllowChange: Boolean);
-begin
-  {$IFDEF EDIT_INFO_FILES}
-  {$IFDEF VCL}
-  with ActiveView do
-    if InfoDisplay.Modified then
-    begin
-      InfoDisplay.Lines.SaveToFile(InfoFile(TreeView.Selected));
-      InfoDisplay.Modified := False;
-    end;
-  {$ENDIF}
-  //FJclInstall.SelectedNodeChanging(Node);
-  {$ENDIF EDIT_INFO_FILES}
-end;
-
 procedure TMainForm.TreeViewEnter(Sender: TObject);
 begin
   with ActiveView  do
@@ -634,23 +613,11 @@ begin
 end;
 
 procedure TMainForm.UpdateFeatureInfo(Node: TTreeNode);
-const
-  SFileNotFound = '%s: File not found';
-var
-  FileName: string;
 begin
   if Assigned(Node) and (Node <> FFeatureNode) then
   begin
     FFeatureNode := Node;
-    FileName := InfoFile(Node);
-    if FileExists(FileName) then
-      FFeatureInfo.LoadFromFile(FileName)
-    else
-    begin
-      FFeatureInfo.Clear;
-      FFeatureInfo.Add(Format(SFileNotFound, [FileName]));
-    end;
-    FFeatureInfoChanged := True;
+    FFeatureChanged := True;
   end;
 end;
 
@@ -661,8 +628,13 @@ begin
   View := ActiveView;
   if Assigned(View) and (HintInfo.HintControl = View.TreeView) then
   begin
-    if FFeatureInfoChanged then
-      HintInfo.HintStr := FFeatureInfo.Text;
+    if FFeatureChanged then
+    begin
+      HintInfo.HintStr := FJclInstall.GetHint(TJediInstallOption(FeatureID(FFeatureNode) and $FF));
+      FHintPos := HintInfo.HintPos;
+    end                      
+    else
+      HintInfo.HintPos := FHintPos;
     HintInfo.ReshowTimeout := 500;
   end;
 end;
