@@ -1197,16 +1197,19 @@ end;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 var
   L: Integer;
+  B, P: string;
 begin
   Result := False;
-  // an empty path or one that's shorter then base cannot be a subdirectory
-  L := Length(Base);
-  if (Path = '') or (L > Length(Path)) then
+  B := PathRemoveSeparator(Base);
+  P := PathRemoveSeparator(Path);
+  // an empty path or one that's not longer than base cannot be a subdirectory
+  L := Length(B);
+  if (P = '') or (L >= Length(P)) then
     Exit;
   {$IFDEF WIN32}
-  Result := AnsiSameText(StrLeft(Path, L), Base);
+  Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
   {$ELSE}
-  Result := AnsiSameStr(StrLeft(Path, L), Base);
+  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
   {$ENDIF}
 end;
 
