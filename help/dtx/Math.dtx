@@ -94,7 +94,6 @@ Parameters:
 Result:
   The integral part of the square root of the argument.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -116,7 +115,6 @@ Result:
 See also:
   RemainderFloat
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -138,7 +136,6 @@ Result:
 See also:
   ModFloat
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -158,10 +155,15 @@ Parameters:
   Sec - Seconds
 Result:
   Degrees, Minutes and Seconds converted to a float.
+Notes:
+  This function is obsolete. Use the function DmsToDeg respectively DmsToRad instead.
 See also:
   FloatToDegMinSec
+  DmsToDeg
+  DmsToRad
+  DegToDms
+  DegToDmsStr
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -179,10 +181,15 @@ Parameters:
   Deg - Receives the degrees.
   Min - Receives the minutes.
   Sec - Receives the seconds.
+Notes:
+  This function is obsolete. Use the function DegToDms instead.
 See also:
   DegMinSecToFloat
+  DmsToDeg
+  DmsToRad
+  DegToDms
+  DegToDmsStr
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -206,7 +213,6 @@ Result:
 See also:
   FloatsEqual
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -232,7 +238,6 @@ Result:
 See also:
   FloatIsZero
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -250,7 +255,6 @@ Parameters:
   X - First float
   Y - Second float
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
@@ -269,7 +273,6 @@ Parameters:
 Result:
   Sqrt(X^2 + Y^2)
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: J. Debord
   Delphi Versions: 4,5,6
@@ -288,7 +291,6 @@ Parameters:
 Result:
   The normalized angle.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: J. Debord
   Delphi Versions: 4,5,6
@@ -310,7 +312,6 @@ See also:
   PowerInt
   TwoToY
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -332,7 +333,6 @@ See also:
   PowerInt
   TenToY
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -358,7 +358,6 @@ See also:
   TenToY
   TwoToY
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: J. Debord
   Delphi Versions: 4,5,6
@@ -383,7 +382,6 @@ See also:
   GCD
   LCM
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -406,7 +404,6 @@ See also:
   GCD
   IsRelativePrime
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -430,7 +427,6 @@ See also:
   LCM
   IsRelativePrime
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
@@ -448,7 +444,6 @@ Parameters:
 Result:
   The angle in cycles.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
@@ -466,7 +461,6 @@ Parameters:
 Result:
   The angle in grads.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
@@ -484,7 +478,6 @@ Parameters:
 Result:
   The angle in cycles.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
@@ -502,7 +495,6 @@ Parameters:
 Result:
   The angle in degrees.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
@@ -524,7 +516,6 @@ See also:
   LogBase2
   LogBase10
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -545,7 +536,6 @@ See also:
   LogBase10
   LogBaseN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -566,7 +556,6 @@ See also:
   LogBase2
   LogBaseN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -585,7 +574,6 @@ Parameters:
 Result:
   The inverse cosine of X in radians.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -604,7 +592,6 @@ Parameters:
 Result:
   The inverse hyperbolic cosine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -623,7 +610,6 @@ Parameters:
 Result:
   The angle whose cotangent equals X in radians.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -642,7 +628,6 @@ Parameters:
 Result:
   ArcCoth of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -661,7 +646,6 @@ Parameters:
 Result:
   The angle, in radians, whose cosecant equals X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -680,7 +664,6 @@ Parameters:
 Result:
   ArcCscH of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -699,7 +682,6 @@ Parameters:
 Result:
   ArcSec of X in radians.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -718,7 +700,6 @@ Parameters:
 Result:
   Inverse hyperbolic secant of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -743,7 +724,6 @@ Returns
 ArcSin of X in radians.
 
 QuickInfo:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -762,7 +742,6 @@ Parameters:
 Result:
   ArcSinH of X
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -781,7 +760,6 @@ Parameters:
 Result:
   Inverse tangent of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -801,7 +779,6 @@ Parameters:
 Result:
   The inverse tangent of Y / X in radians.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -819,7 +796,6 @@ Parameters:
 Result:
   Inverse hyperbolic tangent of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -837,7 +813,6 @@ Parameters:
 Result:
   Cosine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -855,7 +830,6 @@ Parameters:
 Result:
   Hyperbolic cosine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -873,7 +847,6 @@ Parameters:
 Result:
   Cotangent of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -890,7 +863,6 @@ Description:
 Parameters:
   X - Value whose hyperbolic cotangent to calculate.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -908,7 +880,6 @@ Parameters:
 Result:
   Cosecant of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -926,7 +897,6 @@ Parameters:
 Result:
   Hyperbolic cosecant of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -944,7 +914,6 @@ Parameters:
 Result:
   Secant of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -962,9 +931,59 @@ Parameters:
 Result:
   Hyperbolic secant of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@Haversine
+<GROUP MathRoutines.Transcendental>
+Summary:
+  Returns the haversine of the argument.
+Description:
+  Haversine calculates the aversine of X.
+Parameters:
+  X - Angle, in radians, whose haversine to calculate.
+Result:
+  Haversine of X.
+Quick info:
+  Category: Math Routines
+  Donator: Matthias Thoma
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@Coversine
+<GROUP MathRoutines.Transcendental>
+Summary:
+  Returns the coversine of the argument.
+Description:
+  Coversine calculates the coversine of X.
+Parameters:
+  X - Angle, in radians, whose coversine to calculate.
+Result:
+  Coersine of X.
+Quick info:
+  Category: Math Routines
+  Donator: Matthias Thoma
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@Versine
+<GROUP MathRoutines.Transcendental>
+Summary:
+  Returns the versine of the argument.
+Description:
+  Versine calculates the versine of X.
+Parameters:
+  X - Angle, in radians, whose versine to calculate.
+Result:
+  Versine of X.
+Quick info:
+  Category: Math Routines
+  Donator: Matthias Thoma
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
@@ -980,7 +999,6 @@ Parameters:
 Result:
   Sine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -999,7 +1017,6 @@ Parameters:
   Sin - Sine of X.
   Cos - Cosine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1017,7 +1034,6 @@ Parameters:
 Result:
   Hyperbolic sine of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1035,7 +1051,6 @@ Parameters:
 Result:
   Tangent of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1054,7 +1069,6 @@ Parameters:
 Result:
   Hyperbolic tangent of X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1079,7 +1093,6 @@ See also:
   TenToY
   TwoToY
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1097,7 +1110,6 @@ Parameters:
 Result:
   Nearest integer value above X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1115,7 +1127,6 @@ Parameters:
 Result:
   Nearest integer value below X.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1135,7 +1146,6 @@ Parameters:
 Result:
   Factorial of N.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1155,7 +1165,6 @@ Parameters:
 Result:
   The smaller of the two arguments.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1175,7 +1184,6 @@ Parameters:
 Result:
   The larger of the two arguments.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1194,7 +1202,6 @@ Parameters:
 Result:
   Sign of X expressed as -1, 0 or +1.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1213,7 +1220,6 @@ Parameters:
 Result:
   The value of X with the sign (positive or negative) of Y.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
   Delphi Versions: 4,5,6
@@ -1246,7 +1252,6 @@ See also:
   InitCrc32
   CheckCrc16
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1292,7 +1297,6 @@ See also:
   InitCrc32
   Crc16
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1330,7 +1334,6 @@ See also:
   CheckCrc32
   InitCrc16
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1362,7 +1365,6 @@ See also:
   InitCrc16
   CheckCrc32
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1407,7 +1409,6 @@ See also:
   InitCrc16
   Crc32
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1443,7 +1444,6 @@ See also:
   CheckCrc16
   InitCrc32
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
@@ -1487,7 +1487,6 @@ See also:
   IsNaN
   IsInfinite
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1519,7 +1518,6 @@ Result:
 See also:
   TFloatingPointClass
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1540,7 +1538,6 @@ See also:
   TFloatingPointClass
   FloatingPointClass
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1564,7 +1561,6 @@ See also:
   MakeSignalingNaN
   TNaNTag
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1582,7 +1578,6 @@ See also:
   MakeQuietNaN
   MakeSignalingNaN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1604,7 +1599,6 @@ See also:
   MakeQuietNaN
   MakeSignalingNaN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1629,7 +1623,6 @@ See also:
   MakeSignalingNaN
   GetNaNTag
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1657,7 +1650,6 @@ See also:
   MakeQuietNaN
   GetNaNTag
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1685,7 +1677,6 @@ See also:
   MineDoubleBuffer
   MakeSignalingNaN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1713,7 +1704,6 @@ See also:
   MineSingleBuffer
   MakeSignalingNaN
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Robert Rossmair
   Delphi Versions: 4,5,6
@@ -1737,7 +1727,6 @@ See also:
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1759,7 +1748,6 @@ See also:
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1781,7 +1769,6 @@ See also:
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1803,7 +1790,6 @@ See also:
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1819,7 +1805,6 @@ Description:
 Parameters:
   X - Value for which to calculate the exp.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1840,7 +1825,6 @@ See also:
   IsInfinite
   IsSpecialValue
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1864,7 +1848,6 @@ See also:
   IsPrimeTD
   IsRelativePrime
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1887,7 +1870,6 @@ See also:
   SetPrimalityTest
   IsPrime
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1908,7 +1890,6 @@ Parameters:
   N - The value to test.
 See also:
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1928,7 +1909,6 @@ See also:
   IsNaN
   IsInfinite
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Matthias Thoma
   Delphi Versions: 4,5,6
@@ -1945,7 +1925,6 @@ Parameters:
   N - The number for which the prime factors should be determined.
 See also:
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1964,7 +1943,6 @@ Parameters:
 See also:
   SetPrecisionToleranceToEpsilon
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -1981,7 +1959,6 @@ Description:
   CalcMachineEps function.
 Parameters:
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -2036,7 +2013,6 @@ Description
   Now you are done. Anyway, please consider to donate your
   function to the main JCL branch.
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: IDK
   Delphi Versions: 4,5,6
@@ -2200,7 +2176,6 @@ Parameters:
 See also:
   SetPrimalityTest
 Quick info:
-  Unit: JclMath
   Category: Math Routines
   Donator: Matthias Thoma
   Delphi Versions: 4,5,6
