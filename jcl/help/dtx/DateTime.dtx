@@ -11,6 +11,12 @@ Result:
   The TFileTime converted to local TDateTime. On failure the function raises an exception.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -33,6 +39,12 @@ Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.FileTimeToDosDateTime). Failure to do so may lead to a compiler error.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -55,6 +67,12 @@ Notes:
   This function performs the same operation as the procedure FileTimeToSystemTime from Windows.pas.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.FileTimeToSystemTime). Failure to do so may lead to a compiler error.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -76,6 +94,12 @@ Result:
   The TFileTime converted to TDateTime.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToLocalDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -97,6 +121,11 @@ Result:
   The TDosDateTime converted to TSystemTime.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  FileTimeToDateTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -118,6 +147,11 @@ Result:
   The TSystemTime converted to TDosDateTime. On failure the function raises an exception.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -140,6 +174,11 @@ Notes:
   This function performs the same operation as the procedure SystemTimeToFileTime from Windows.pas.
   The overloaded procedure is identical to the procedure in Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.SystemTimeToFileTime). Failure to do so may lead to a compiler error.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -160,6 +199,11 @@ Result:
   String representation of the supplied SystemTime.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -181,6 +225,11 @@ Result:
   The TDosDateTime converted to TDateTime.
 Notes:
   This function performs the same operation as the procedure DateTimeToFileDate from SysUtils.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -204,6 +253,11 @@ Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.DosDateTimeToFileTime). Failure to do so may lead to a compiler error.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DateTimeToDosDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -225,6 +279,11 @@ Result:
   The TDateTime converted to TDosDateTime.
 Notes:
   This function performs the same operation as DateTimeToFileDate from SysUtils.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -246,6 +305,11 @@ Result:
   The TDateTime converted to TFileTime.
 Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -270,6 +334,11 @@ Notes:
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from SysUtils and provided for compatibility.
   Please keep in mind that this routine is also defined in SysUtils.pas and to succesfully use it you must ensure that either JclDateTime is listed after SysUtils in the uses clause or you prefix the call with the unit name (JclDateTime.DateTimeToSystemTime). Failure to do so may lead to a compiler error.
+See also:
+  FileTimeToDateTime
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -504,6 +573,8 @@ Notes:
   The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
   According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
   The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility. Other values might be useful in some instances and can be set in the source code.
+See also:
+  ISOWeekToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -531,6 +602,8 @@ Notes:
   The specified date is assumed to be after 1/1/0001 and before 1/1/10000).
   According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
   The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility, Other values might be useful in some instances and can be set in the source code.
+See also:
+  ISOWeekNumber
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -552,6 +625,8 @@ Parameters:
   Year - (Optional) The year of the date.
 Result:
   The function returns the number of the day in that year.
+See also:
+  DayOfTheYearToDateTime
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -573,6 +648,8 @@ Parameters:
   Day - The number of a day in that year.
 Result:
   The function returns the DateTime denoted by a year and the number of a day in that year.
+See also:
+  DayOfTheYear
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -616,6 +693,11 @@ Result:
   The century of the specified DateTime.
 Notes:
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+See also:
+  CenturyBaseYear
+  DayOfDate
+  MonthOfDate
+  YearOfDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -638,6 +720,11 @@ Result:
   The year "00" of the century of the specified DateTime.
 Notes:
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+See also:
+  CenturyOfDate
+  DayOfDate
+  MonthOfDate
+  YearOfDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -660,6 +747,11 @@ Result:
   The year of the specified DateTime.
 Notes:
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+See also:
+  CenturyOfDate
+  CenturyBaseYear
+  DayOfDate
+  MonthOfDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -682,6 +774,11 @@ Result:
   The month of the specified DateTime.
 Notes:
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+See also:
+  CenturyOfDate
+  CenturyBaseYear
+  DayOfDate
+  YearOfDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -704,6 +801,11 @@ Result:
   The day of the specified DateTime.
 Notes:
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
+See also:
+  CenturyOfDate
+  CenturyBaseYear
+  MonthOfDate
+  YearOfDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -833,6 +935,8 @@ Result:
   The 4 digit year.
 Notes:
   If Year or Pivot is 100 they are converted to 0 first.
+See also:
+  MakeYear4Digit
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -858,6 +962,8 @@ Result:
   The 4 digit year.
 Notes:
   If Year is 100 it is converted to 0 first.
+See also:
+  Make4DigitYear
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -883,6 +989,8 @@ Notes:
   As people did not use 12 Months before year 0001, and supposedly will not after 9999, we just use the solar year and a month = 1/12 of a solar year in such years.
   Year 0 does not exist.
   To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.EncodeDate.
+See also:
+  DecodeDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -907,6 +1015,8 @@ Notes:
   As people did not use 12 Months before year 0001, and supposedly will not after 9999, we just use the solar year and a month = 1/12 of a solar year in such years.
   Year 0 does not exist.
   To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.DecodeDate.
+See also:
+  EncodeDate
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -925,6 +1035,9 @@ Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
   The creation date date of the file specified by SR, converted to TDateTime.
+See also:
+  LastAccessDateTimeOfFile
+  LastWriteDateTimeOfFile
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -943,6 +1056,9 @@ Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
   The last access date date of the file specified by SR, converted to TDateTime.
+See also:
+  CreationDateTimeOfFile
+  LastWriteDateTimeOfFile
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
@@ -961,6 +1077,9 @@ Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
   The last write date date of the file specified by SR, converted to TDateTime.
+See also:
+  CreationDateTimeOfFile
+  LastAccessDateTimeOfFile
 Quick info:
   Unit: JclDateTime
   Category: Date and Time
