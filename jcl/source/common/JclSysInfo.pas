@@ -123,6 +123,9 @@ function GetBIOSDate: TDateTime;
 // Processes, Tasks and Modules
 //------------------------------------------------------------------------------
 
+type
+  TJclTerminateAppResult = (taError, taClean, taKill);
+
 function RunningProcessesList(const List: TStrings; FullPath: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
@@ -477,7 +480,7 @@ var
 implementation
 
 uses
-  SysUtils, TLHelp32, Winsock,
+  Messages, SysUtils, TLHelp32, Winsock,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
