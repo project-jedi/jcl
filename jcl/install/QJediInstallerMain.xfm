@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 308
-  Top = 236
+  Left = 307
+  Top = 235
   Width = 840
   Height = 583
   VertScrollBar.Range = 49
@@ -10,11 +10,10 @@ object MainForm: TMainForm
   Constraints.MinHeight = 300
   Constraints.MinWidth = 500
   Font.Color = clText
-  Font.Height = 11
+  Font.Height = 12
   Font.Name = 'arial'
   Font.Pitch = fpVariable
   Font.Style = []
-  Font.Weight = 40
   ParentFont = False
   Position = poScreenCenter
   Scaled = False
@@ -22,7 +21,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 96
+  PixelsPerInch = 85
   object StatusBevel: TBevel
     Left = 8
     Top = 525
@@ -56,7 +55,6 @@ object MainForm: TMainForm
     BevelWidth = 2
     BorderStyle = bsSingle
     Color = clBase
-    ParentColor = False
     TabOrder = 2
     object JediImage: TImage
       Left = 702
@@ -219,14 +217,15 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 8
       Top = 13
-      Width = 247
-      Height = 18
+      Width = 201
+      Height = 26
       Caption = 'Project JEDI Delphi Installer'
       Font.Color = clText
       Font.Height = 16
       Font.Name = 'Verdana'
       Font.Pitch = fpVariable
-      Font.Style = [fsBold]
+      Font.Style = []
+      Font.Weight = 40
       ParentFont = False
     end
   end
@@ -255,7 +254,7 @@ object MainForm: TMainForm
     Top = 56
     Width = 815
     Height = 440
-    ActivePage = D7TabSheet
+    ActivePage = D3TabSheet
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
     TabOrder = 3
@@ -270,8 +269,13 @@ object MainForm: TMainForm
         Height = 410
         HorzScrollBar.Range = 398
         Align = alClient
+        Color = clBackground
+        ParentColor = False
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -279,9 +283,22 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
             inherited BplPathEdit: TEdit
+              Height = 23
               OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
             end
           end
         end
@@ -298,8 +315,13 @@ object MainForm: TMainForm
         Height = 410
         HorzScrollBar.Range = 398
         Align = alClient
+        Color = clBackground
+        ParentColor = False
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -307,9 +329,22 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
             inherited BplPathEdit: TEdit
+              Height = 23
               OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
             end
           end
         end
@@ -326,8 +361,13 @@ object MainForm: TMainForm
         Height = 410
         HorzScrollBar.Range = 398
         Align = alClient
+        Color = clBackground
+        ParentColor = False
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -335,9 +375,22 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
             inherited BplPathEdit: TEdit
+              Height = 23
               OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
             end
           end
         end
@@ -354,8 +407,13 @@ object MainForm: TMainForm
         Height = 410
         HorzScrollBar.Range = 398
         Align = alClient
+        Color = clBackground
+        ParentColor = False
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -363,9 +421,22 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
             inherited BplPathEdit: TEdit
+              Height = 23
               OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
             end
           end
         end
@@ -476,10 +547,10 @@ object MainForm: TMainForm
       FFFFFFFFFFFFFFFFFF000000000000000000000000000000FFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF424DBE000000000000003E0000002800000020000000
       20000000010001000000000080000000120B0000120B00000200000002000000
-      FFFFFF00000000000000000000000000000000001FFC1FFC1004100411041004
-      1384100417C4100416E41004147410041034100410141004100410041FFC1FFC
-      00000000000000000000000007C007C01FF01FF03FF83FF87ABC7ABC77DC77DC
-      EFEEEFEEFFFEFFFEAFEEAFEEBBFEBBFEACEEACEE77DC77DC5ABC5ABC2FF82FF8
-      18F018F007C007C0}
+      FFFFFF0000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000}
   end
 end
