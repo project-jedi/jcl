@@ -21,7 +21,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI  }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: June 5, 2001                                                  }
+{ Last modified: October 11, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -67,9 +67,11 @@ type
     FClientConnectKind: TJclMapiClientConnect;
     FClientLibHandle: THandle;
     FDefaultClientIndex: Integer;
+    FDefaultProfileName: string;
     FFunctions: array of ^Pointer;
     FMapiInstalled: Boolean;
     FMapiVersion: string;
+    FProfiles: array of string;
     FSelectedClientIndex: Integer;
     FSimpleMapiInstalled: Boolean;
     FMapiAddress: TFNMapiAddress;
@@ -87,13 +89,16 @@ type
     function GetClientCount: Integer;
     function GetClients(Index: Integer): TJclMapiClient;
     function GetCurrentClientName: string;
+    function GetProfileCount: Integer;
+    function GetProfiles(Index: Integer): string;
     procedure SetSelectedClientIndex(const Value: Integer);
     procedure SetClientConnectKind(const Value: TJclMapiClientConnect);
     function UseMapi: Boolean;
   protected
     procedure BeforeUnloadClientLib; dynamic;
-    procedure CheckListIndex(I: Integer);
+    procedure CheckListIndex(I, ArrayLength: Integer);
     function GetClientLibName: string;
+    class function ProfilesRegKey: string;
     procedure ReadMapiSettings;
   public
     constructor Create;
@@ -107,8 +112,11 @@ type
     property Clients[Index: Integer]: TJclMapiClient read GetClients; default;
     property CurrentClientName: string read GetCurrentClientName;
     property DefaultClientIndex: Integer read FDefaultClientIndex;
+    property DefaultProfileName: string read FDefaultProfileName;
     property MapiInstalled: Boolean read FMapiInstalled;
     property MapiVersion: string read FMapiVersion;
+    property ProfileCount: Integer read GetProfileCount;
+    property Profiles[Index: Integer]: string read GetProfiles;
     property SelectedClientIndex: Integer read FSelectedClientIndex write SetSelectedClientIndex;
     property SimpleMapiInstalled: Boolean read FSimpleMapiInstalled;
     property BeforeUnloadClient: TNotifyEvent read FBeforeUnloadClient write FBeforeUnloadClient;
@@ -364,9 +372,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclSimpleMapi.CheckListIndex(I: Integer);
+procedure TJclSimpleMapi.CheckListIndex(I, ArrayLength: Integer);
 begin
-  if (I < 0) or (I >= ClientCount) then
+  if (I < 0) or (I >= ArrayLength) then
     raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
 end;
 
@@ -429,7 +437,7 @@ end;
 
 function TJclSimpleMapi.GetClients(Index: Integer): TJclMapiClient;
 begin
-  CheckListIndex(Index);
+  CheckListIndex(Index, ClientCount);
   Result := FClients[Index];
 end;
 
@@ -444,6 +452,21 @@ begin
     Result := Clients[SelectedClientIndex].ClientName
   else
     Result := '';
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclSimpleMapi.GetProfileCount: Integer;
+begin
+  Result := Length(FProfiles);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclSimpleMapi.GetProfiles(Index: Integer): string;
+begin
+  CheckListIndex(Index, ProfileCount);
+  Result := FProfiles[Index];
 end;
 
 //------------------------------------------------------------------------------
@@ -473,12 +496,22 @@ end;
 
 //------------------------------------------------------------------------------
 
+class function TJclSimpleMapi.ProfilesRegKey: string;
+begin
+  if IsWinNT then
+    Result := 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows Messaging Subsystem\Profiles'
+  else
+    Result := 'SOFTWARE\Microsoft\Windows Messaging Subsystem\Profiles';
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TJclSimpleMapi.ReadMapiSettings;
 const
   MessageSubsytemKey = 'SOFTWARE\Microsoft\Windows Messaging Subsystem';
   MailClientsKey = 'SOFTWARE\Clients\Mail';
 var
-  DefaultClient: string;
+  DefaultValue: string;
   SL: TStringList;
   I: Integer;
 
@@ -505,6 +538,8 @@ var
 begin
   FClients := nil;
   FDefaultClientIndex := -1;
+  FProfiles := nil;
+  FDefaultProfileName := '';
   SL := TStringList.Create;
   with TRegistry.Create do
   try
@@ -519,7 +554,7 @@ begin
     FAnyClientInstalled := FMapiInstalled;
     if OpenKeyReadOnly(MailClientsKey) then
     begin
-      DefaultClient := ReadString('');
+      DefaultValue := ReadString('');
       GetKeyNames(SL);
       CloseKey;
       SetLength(FClients, SL.Count);
@@ -537,8 +572,18 @@ begin
           CloseKey;
         end;
       end;
-      FDefaultClientIndex := SL.IndexOf(DefaultClient);
+      FDefaultClientIndex := SL.IndexOf(DefaultValue);
       FSelectedClientIndex := FDefaultClientIndex;
+    end;
+    RootKey := HKEY_CURRENT_USER;
+    if OpenKeyReadOnly(ProfilesRegKey) then
+    begin
+      FDefaultProfileName := ReadString('DefaultProfile');
+      GetKeyNames(SL);
+      CloseKey;
+      SetLength(FProfiles, SL.Count);
+      for I := 0 to SL.Count - 1 do
+        FProfiles[I] := SL[I];
     end;
   finally
     Free;
@@ -561,7 +606,7 @@ end;
 
 procedure TJclSimpleMapi.SetSelectedClientIndex(const Value: Integer);
 begin
-  CheckListIndex(Value);
+  CheckListIndex(Value, ClientCount);
   if FSelectedClientIndex <> Value then
   begin
     FSelectedClientIndex := Value;
