@@ -36,7 +36,8 @@ unit JclPeImage;
 interface
 
 uses
-  Windows, Classes, ImageHlp, SysUtils, TypInfo, Contnrs,
+  Windows, Classes, SysUtils, TypInfo, Contnrs,
+  {$IFNDEF BCB5}ImageHlp,{$ENDIF BCB5} 
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
@@ -593,7 +594,9 @@ type
     FDebugList: TJclPeDebugList;
     FFileName: TFileName;
     FImageSections: TStrings;
+{$IFNDEF BCB5}
     FLoadedImage: TLoadedImage;
+{$ENDIF BCB5}
     FExportList: TJclPeExportFuncList;
     FImportList: TJclPeImportList;
     FNoExceptions: Boolean;
@@ -680,7 +683,9 @@ type
     property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva;
     property ImportList: TJclPeImportList read GetImportList;
     property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
+{$IFNDEF BCB5}
     property LoadedImage: TLoadedImage read FLoadedImage;
+{$ENDIF BCB5}
     property MappedAddress: DWORD read GetMappedAddress;
     property OptionalHeader: TImageOptionalHeader read GetOptionalHeader;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
@@ -3060,6 +3065,7 @@ begin
     FStatus := stOk;
     FAttachedImage := True;
     FFileName := GetModulePath(Handle);
+{$IFNDEF BCB5}
     FLoadedImage.ModuleName := PChar(FFileName);
     FLoadedImage.hFile := INVALID_HANDLE_VALUE;
     FLoadedImage.MappedAddress := Pointer(Handle);
@@ -3071,6 +3077,7 @@ begin
     FLoadedImage.fSystemImage := (FLoadedImage.Characteristics and IMAGE_FILE_SYSTEM <> 0);
     FLoadedImage.fDOSImage := False;
     FLoadedImage.SizeOfImage := NtHeaders^.OptionalHeader.SizeOfImage;
+{$ENDIF BCB5}
     ReadImageSections;
     AfterOpen;
   end;
@@ -3083,6 +3090,7 @@ function TJclPeImage.CalculateCheckSum: DWORD;
 var
   C: DWORD;
 begin
+{$IFNDEF BCB5}
   if StatusOK then
   begin
     CheckNotAttached;
@@ -3092,6 +3100,9 @@ begin
   end
   else
     Result := 0;
+{$ELSE}
+  Result := 0;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3115,9 +3126,11 @@ begin
   FreeAndNil(FRelocationList);
   FreeAndNil(FResourceList);
   FreeAndNil(FVersionInfo);
+{$IFNDEF BCB5}
   if not FAttachedImage and StatusOK then
     UnMapAndLoad(@FLoadedImage);
   FillChar(FLoadedImage, SizeOf(FLoadedImage), #0);
+{$ENDIF BCB5}
   FStatus := stNotLoaded;
   FAttachedImage := False;
 end;
@@ -3174,7 +3187,11 @@ function TJclPeImage.DirectoryEntryToData(Directory: Word): Pointer;
 var
   Size: DWORD;
 begin
+{$IFNDEF BCB5}
   Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, FAttachedImage, Directory, Size);
+{$ELSE}
+  Result := nil;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3281,6 +3298,7 @@ end;
 
 function TJclPeImage.GetDirectories(Directory: Word): TImageDataDirectory;
 begin
+{$IFNDEF BCB5}
   if StatusOK then
     Result := FLoadedImage.FileHeader.OptionalHeader.DataDirectory[Directory]
   else
@@ -3288,6 +3306,10 @@ begin
     Result.VirtualAddress := 0;
     Result.Size := 0;
   end;
+{$ELSE}
+  Result.VirtualAddress := 0;
+  Result.Size := 0;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3377,6 +3399,7 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
   end;
 
 begin
+{$IFNDEF BCB5}
   if StatusOK then
     with FLoadedImage.FileHeader^ do
       case Index of
@@ -3453,6 +3476,9 @@ begin
       end
   else
     Result := '';
+{$ELSE}
+  Result := '';
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3544,18 +3570,29 @@ end;
 
 function TJclPeImage.GetMappedAddress: DWORD;
 begin
+{$IFNDEF BCB5}
   if StatusOK then
     Result := DWORD(LoadedImage.MappedAddress)
   else
     Result := 0;
+{$ELSE}
+  Result := 0;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetOptionalHeader: TImageOptionalHeader;
+{$IFNDEF BCB5}
 begin
   Result := FLoadedImage.FileHeader.OptionalHeader;
 end;
+{$ELSE}
+var tmp : TImageOptionalHeader;
+begin
+  Result := tmp;
+end;
+{$ENDIF BCB5}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3618,7 +3655,11 @@ end;
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
   CheckNotAttached;
+{$IFNDEF BCB5}
   Result.VirtualAddress := GetImageUnusedHeaderBytes(@FLoadedImage, Result.Size);
+{$ELSE}
+  Result.VirtualAddress := 0;
+{$ENDIF BCB5}
   if Result.VirtualAddress = 0 then
     RaiseLastOSError;
 end;
@@ -3754,7 +3795,7 @@ end;
 
 function TJclPeImage.IsSystemImage: Boolean;
 begin
-  Result := StatusOK and FLoadedImage.fSystemImage;
+  Result := StatusOK {$IFNDEF BCB5}and FLoadedImage.fSystemImage{$ENDIF BCB5};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3820,7 +3861,11 @@ end;
 
 function TJclPeImage.RawToVa(Raw: DWORD): Pointer;
 begin
+{$IFNDEF BCB5}
   Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Raw);
+{$ELSE}
+  Result := nil;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3832,12 +3877,14 @@ var
 begin
   if not StatusOK then
     Exit;
+{$IFNDEF BCB5}
   Header := FLoadedImage.Sections;
   for I := 0 to FLoadedImage.NumberOfSections - 1 do
   begin
     FImageSections.AddObject(Copy(PChar(@Header.Name), 1, IMAGE_SIZEOF_SHORT_NAME), Pointer(Header));
     Inc(Header);
   end;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3864,7 +3911,11 @@ var
   SectionHeader: PImageSectionHeader;
   EndRVA: DWORD;
 begin
+{$IFNDEF BCB5}
   Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
+{$ELSE}
+  Result := nil;
+{$ENDIF BCB5}
   if Result = nil then
     for I := 0 to FImageSections.Count - 1 do
     begin
@@ -3886,19 +3937,27 @@ end;
 
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
+{$IFNDEF BCB5}
   if FAttachedImage then
     Result := FLoadedImage.MappedAddress + Rva
   else
     Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
+{$ELSE}
+  Result := nil;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.RvaToVaEx(Rva: DWORD): Pointer;
 begin
+{$IFNDEF BCB5}
   if (Rva > FLoadedImage.SizeOfImage) and (Rva > OptionalHeader.ImageBase) then
     Dec(Rva, OptionalHeader.ImageBase);
   Result := RvaToVa(Rva);
+{$ELSE}
+  Result := nil;
+{$ENDIF BCB5}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3911,7 +3970,11 @@ begin
     FFileName := Value;
     if FFileName = '' then
       Exit;
+{$IFNDEF BCB5}
     if MapAndLoad(PChar(FFileName), nil, @FLoadedImage, True, FReadOnlyAccess) then
+{$ELSE}
+    if False then
+{$ENDIF BCB5}
     begin
       FStatus := stOk;
       ReadImageSections;
@@ -4705,8 +4768,10 @@ begin
   with Result do
   begin
     NewImageBase := NewBase;
+{$IFNDEF BCB5}
     Win32Check(ReBaseImage(PChar(ImageName), nil, True, False, False, MaxNewSize,
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
+{$ENDIF BCB5}
   end;
 end;
 
@@ -4784,6 +4849,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function PeUpdateCheckSum(const FileName: TFileName): Boolean;
+{$IFNDEF BCB5}
 var
   LI: TLoadedImage;
 begin
@@ -4791,6 +4857,11 @@ begin
   if Result then
     Result := UnMapAndLoad(@LI);
 end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF BCB5}
 
 //==================================================================================================
 // Various simple PE Image searching and listing routines
@@ -5827,7 +5898,11 @@ begin
     urMicrosoft:
       begin
         SetLength(Unmangled, 2048);
+{$IFNDEF BCB5}
         Res := UnDecorateSymbolName(PChar(Name), PChar(Unmangled), 2048, UNDNAME_NAME_ONLY);
+{$ELSE}
+        Res := 0;
+{$ENDIF BCB5}
         if Res > 0 then
         begin
           StrResetLength(Unmangled);
@@ -5844,3 +5919,4 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 end.
+
