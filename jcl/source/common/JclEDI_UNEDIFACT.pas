@@ -547,7 +547,7 @@ begin
   if Length(FEDIDataObjects) > 0 then
     for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
       if Assigned(FEDIDataObjects[I]) then
-        FData := FData + FDelimiters.ED + FEDIDataObjects[I].Assemble;
+        FData := FData + FDelimiters.ED + FEDIDataObjects[I].Assemble
       else
         FData := FData + FDelimiters.ED;
   FData := FData + FDelimiters.SD;
