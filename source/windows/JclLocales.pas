@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 14, 2001                                              }
+{ Last modified: January 15, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -34,17 +34,6 @@ uses
   Contnrs,
   {$ENDIF DELPHI5_UP}
   JclBase;
-
-//------------------------------------------------------------------------------
-// Missing translations
-//------------------------------------------------------------------------------
-
-function LANGIDFROMLCID(const lcid: LCID): Word;
-function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
-function PRIMARYLANGID(const lgid: Word): Word;
-function SUBLANGID(const lgid: Word): Word;
-function MAKELCID(const wLanguageID, wSortID: Word): LCID;
-function SORTIDFROMLCID(const lcid: LCID): Word;
 
 //------------------------------------------------------------------------------
 // System locales
@@ -232,51 +221,6 @@ uses
 const
   JclMaxKeyboardLayouts = 16;
   LocaleUseAcp: array [Boolean] of DWORD = (0, LOCALE_USE_CP_ACP);
-{ TODO -cMOVE : Move following constants to JclWin32 }
-  KLF_SETFORPROCESS = $00000100;
-  DATE_YEARMONTH = $00000008;
-
-//------------------------------------------------------------------------------
-
-function LANGIDFROMLCID(const lcid: LCID): Word;
-begin
-  Result := Word(lcid);
-end;
-
-//------------------------------------------------------------------------------
-
-function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
-begin
-  Result := usPrimaryLanguage or (usSubLanguage shl 10);
-end;
-
-//------------------------------------------------------------------------------
-
-function PRIMARYLANGID(const lgid: Word): Word;
-begin
-  Result := (lgid and $03FF);
-end;
-
-//------------------------------------------------------------------------------
-
-function SUBLANGID(const lgid: Word): Word;
-begin
-  Result := (lgid shr 10);
-end;
-
-//------------------------------------------------------------------------------
-
-function MAKELCID(const wLanguageID, wSortID: Word): LCID;
-begin
-  Result := wLanguageID or (wSortID shl 16);
-end;
-
-//------------------------------------------------------------------------------
-
-function SORTIDFROMLCID(const lcid: LCID): Word;
-begin
-  Result := (lcid shl 16) and $0F;
-end;
 
 //------------------------------------------------------------------------------
 
