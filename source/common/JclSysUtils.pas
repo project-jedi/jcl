@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: July 25, 2002                                                                     }
+{ Last modified: September 25, 2002                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1507,7 +1507,7 @@ end;
 { TODOC
   Author: Jeff
 
-  StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1'.
+  StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1' or 'T/F' or 'Y/N'.
                 raises an EJclConversionError exception on failure.
   IntToBool: converts an integer to a boolean where 0 means false and anything else is tue.
   BoolToInt: converts a boolean to an integer: True=>1 and False=>0
@@ -1523,11 +1523,18 @@ const
 //--------------------------------------------------------------------------------------------------
 
 function StrToBoolean(const S: string): Boolean;
+var
+  LowerCasedText: string;
 begin
-  Result := ((S = '1') or (LowerCase(S) = LowerCase(DefaultTrueBoolStr)) or (LowerCase(S) = LowerCase(DefaultYesBoolStr)));
+  LowerCasedText := LowerCase(S);
+  Result := ((S = '1') or
+    (LowerCasedText = LowerCase(DefaultTrueBoolStr)) or (LowerCasedText = LowerCase(DefaultYesBoolStr))) or
+    (LowerCasedText = LowerCase(DefaultTrueBoolStr[1])) or (LowerCasedText = LowerCase(DefaultYesBoolStr[1]));
   if not Result then
   begin
-    Result := not ((S = '0') or (LowerCase(S) = LowerCase(DefaultFalseBoolStr)) or (LowerCase(S) = LowerCase(DefaultNoBoolStr)));
+    Result := not ((S = '0') or
+      (LowerCasedText = LowerCase(DefaultFalseBoolStr)) or (LowerCasedText = LowerCase(DefaultNoBoolStr)) or
+      (LowerCasedText = LowerCase(DefaultFalseBoolStr[1])) or (LowerCasedText = LowerCase(DefaultNoBoolStr[1])));
     if Result then
       raise EJclConversionError.CreateResRecFmt(@RsStringToBoolean, [S]);
   end;
