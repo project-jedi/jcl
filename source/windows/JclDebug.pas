@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 17, 2002                                                                    }
+{ Last modified: April 6, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -3268,7 +3268,7 @@ begin
   FLock.Enter;
   try
     if FModulesList <> ModulesList then
-      FreeAndNil(FModulesList);
+      FreeAndNil(ModulesList);
   finally
     FLock.Leave
   end;
