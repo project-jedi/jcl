@@ -1565,8 +1565,7 @@ begin
           Inc(cp);
 
         { check for and read in fraction part of mantissa }
-        // (rom) should be made aware of DecimalSeparator
-        if cp^ = '.' then
+        if (cp^ = '.') or (cp^ = DecimalSeparator) then
         begin
           Inc(cp);
           while cp^ in ['0'..'9'] do
@@ -4561,11 +4560,10 @@ var
   Ice: TInternalCompiledExpression;
 begin
   if not FExprHash.Find(AExpr, Ice) then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalExprNotFound,
-      [AExpr]);
+    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalExprNotFound, [AExpr]);
 
   Ice.RefCount := Ice.RefCount - 1;
-  // (rom) add security: check for RefCount < 0
+  Assert(Ice.RefCount >= 0, RsExprEvalExprRefCountAssertion);
   if Ice.RefCount = 0 then
   begin
     Ice.Free;
@@ -4583,6 +4581,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/02 15:30:16  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.8  2004/08/01 05:52:11  marquardt
 // move constructors/destructors
 //

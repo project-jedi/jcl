@@ -201,8 +201,6 @@ const
 procedure DirectPrint(const Printer, Data: string);
 const
   cRaw = 'RAW';
-  // (rom) resourcestring?
-  cMyDocument = 'My Document';
 type
   TDoc_Info_1 = record
     DocName: PChar;
@@ -226,7 +224,7 @@ begin
   if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
     raise EJclPrinterError.CreateResRec(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
-  DocInfo.DocName := cMyDocument;
+  DocInfo.DocName := PChar(RsSpoolerDocName);
   DocInfo.OutputFile := nil;
   DocInfo.Datatype := cRaw;
   try
@@ -1383,6 +1381,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/08/02 15:30:16  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.11  2004/08/02 06:34:59  marquardt
 // minor string literal improvements
 //

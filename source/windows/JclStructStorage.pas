@@ -318,9 +318,9 @@ begin
     // not strictly necessary, since STGM_SHARE_DENY_NONE = 0, but makes it more self-documenting
 end;
 
-// simpler and less convoluted than using StringToWideChar
-
 //--------------------------------------------------------------------------------------------------
+
+// simpler and less convoluted than using StringToWideChar
 
 function StrToWChar(const S: string): PWideChar;
 begin
@@ -329,7 +329,7 @@ begin
   else
   begin
     Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
-    // (rom) fixed output buffer size
+    // (rom) fixed output buffer size (see Win32 help)
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
   end;
 end;
@@ -834,6 +834,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/08/02 15:30:17  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.4  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //

@@ -609,26 +609,26 @@ begin
   Result := '';
   for I := 0 to FAttributes.Count - 1 do
   begin
-    {$IFDEF DELPHI7_UP}
+    {$IFDEF COMPILER7_UP}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.ValueFromIndex[I]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.ValueFromIndex[I]);
     {$ELSE}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.Values[FAttributes.Names[I]]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.Values[FAttributes.Names[I]]);
-    {$ENDIF DELPHI7_UP}
+    {$ENDIF COMPILER7_UP}
     if J > K then
       QuoteDelimiter := FDelimiters.SingleQuote
     else
       QuoteDelimiter := FDelimiters.DoubleQuote;
     if Result <> '' then
       Result := Result + FDelimiters.SpaceDelimiter;
-    {$IFDEF DELPHI7_UP}
+    {$IFDEF COMPILER7_UP}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.ValueFromIndex[I] + QuoteDelimiter;
     {$ELSE}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] + QuoteDelimiter;
-    {$ENDIF DELPHI7_UP}
+    {$ENDIF COMPILER7_UP}
   end;
 end;
 

@@ -166,11 +166,11 @@ type
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
     procedure UpdateOwnerItemName;
-    {$IFDEF DELPHI6_UP} // Hide warnings in D5
+    {$IFDEF COMPILER6_UP} // Hide warnings in D5
     function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
     {$ELSE}
     function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual;
-    {$ENDIF DELPHI6_UP}
+    {$ENDIF COMPILER6_UP}
   published
     property State: TEDIDataObjectDataState read FState;
     property Id: string read FId write SetId;
@@ -923,11 +923,11 @@ begin
   try
     Temp.Text := Data;
     Element.Id := Temp.Names[0];
-    {$IFDEF DELPHI7_UP}
+    {$IFDEF COMPILER7_UP}
     Temp.CommaText := Temp.ValueFromIndex[0];
     {$ELSE}
     Temp.CommaText := Temp.Values[Element.Id];
-    {$ENDIF DELPHI7_UP}
+    {$ENDIF COMPILER7_UP}
     if Temp.Count >= 1 then
       Element.ElementType := Temp[0];
     if Temp.Count >= 2 then
@@ -2565,12 +2565,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
 begin
   Result := nil;
 end;
-{$ENDIF ~DELPHI6_UP}
+{$ENDIF ~COMPILER6_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4602,11 +4602,11 @@ var
   SearchResult, SearchResult2: Integer;
 begin
   INI.Clear;
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   INI.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
   // TODO : (rom) ?
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_INI, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4698,11 +4698,11 @@ var
   SearchResult, SearchResult2: Integer;
 begin
   STD.Clear;
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   STD.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
   // TODO : (rom) ?
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_STD, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4710,19 +4710,19 @@ begin
     SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
     begin
-      {$IFDEF DELPHI6_UP}
+      {$IFDEF COMPILER6_UP}
       STD.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
       {$ELSE}
       STD.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ENDIF DELPHI6_UP}
+      {$ENDIF COMPILER6_UP}
     end
     else
     begin
-      {$IFDEF DELPHI6_UP}
+      {$IFDEF COMPILER6_UP}
       STD.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       {$ELSE}
       STD.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ENDIF DELPHI6_UP}
+      {$ENDIF COMPILER6_UP}
     end;
   end;
 end;

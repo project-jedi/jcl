@@ -2865,7 +2865,6 @@ end;
 constructor EJclNaNSignal.Create(ATag: TNaNTag);
 begin
   FTag := ATag;
-  // (rom) no raise here?
   CreateResRecFmt(@RsNaNSignal, [ATag]);
 end;
 
@@ -3733,6 +3732,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.12  2004/08/02 15:30:16  marquardt
+// hunting down (rom) comments
+//
 // Revision 1.11  2004/08/01 05:52:11  marquardt
 // move constructors/destructors
 //
