@@ -480,7 +480,7 @@ begin
   Result := P;
   if Result <> nil then
   begin
-    while (Result^ <> 0) and (Result^ <> Ch) do
+    while (Result^ <> #0) and (Result^ <> Ch) do
       Inc(Result);
     if Result^ = #0 then
       Result := nil;
@@ -1809,6 +1809,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/19 21:22:25  rrossmair
+// - fixed typo in changed StrScanW
+//
 // Revision 1.12  2005/03/19 02:47:07  rrossmair
 // - fixed issue #2680 (WideQuotedStr always fails)
 // - gives credit to Mike Lischke in header now
