@@ -16,7 +16,15 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 31, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains a class and support routines for controlling the number   }
+{ of concurrent instances of your application that can exists at any time. In  }
+{ addition there is support for simple interprocess communication between      }
+{ these instance including a notifaction mechanisme.                           }
+{                                                                              }
+{ Unit owner: Petr Vones                                                       }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -35,9 +43,9 @@ uses
 //------------------------------------------------------------------------------
 
 const
-  AI_INSTANCECREATED   = $0001;
+  AI_INSTANCECREATED = $0001;
   AI_INSTANCEDESTROYED = $0002;
-  AI_USERMSG           = $0003;
+  AI_USERMSG = $0003;
 
 //------------------------------------------------------------------------------
 // Application instances manager class
@@ -103,14 +111,31 @@ uses
   JclStrings, JclSysUtils;
 
 const
+
+  { strings to form a unique name for file mapping and optex objects }
+
   JclAIPrefix = 'Jcl';
   JclAIOptex = '_Otx';
   JclAIMapping = '_Map';
+
+  { window message used for communication between instances }
+
   JclAIMessage = '_Msg';
+
+  { maximum number of instance that may exist at any time }
+
   JclAIMaxInstances = 256;
+
+  { name of the application window class }
+
   ClassNameOfTApplication = 'TApplication';
 
 type
+
+{ management data to keep track of application instances. this data is shared
+  amongst all instances and must be appropriately protected from concurrent
+  access at all time }
+
   PJclAISharedData = ^TJclAISharedData;
   TJclAISharedData = packed record
     MaxInst: Word;
@@ -119,6 +144,9 @@ type
   end;
 
 var
+
+  { the single global TJclAppInstance instance }
+
   AppInstances: TJclAppInstances;
 
 //==============================================================================
