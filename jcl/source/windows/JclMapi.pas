@@ -16,7 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 27, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ Various classes and support routines for sending e-mail through MAPI         }
+{                                                                              }
+{ Unit owner: Petr Vones                                                       }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
