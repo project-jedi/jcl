@@ -1582,6 +1582,30 @@ Count=1
 1=GetFileAttributeListEx
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function GetDirectorySize(const Path: string): Int64;
+[ShortDescr]
+Returns the size of a directory.
+[Description]
+GetDirectorySize returns the size, in bytes, of a directory. That is, the combined 
+sizes of all files contained within the directory.
+[Parameters]
+Count=1
+1=Path:string=The directory whose size to determine.
+[Result]
+The combined size, in bytes, of all the files contained in the directory. If the 
+function fails, for example because the specified directory doesn't exists, it
+returns -1.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@chello.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetDriveTypeStr(Drive: Char): string;
 [ShortDescr]
 Returns the type of drive.
