@@ -76,7 +76,7 @@ type
     function InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
     function MakePath(Installation: TJclBorRADToolInstallation; const FormatStr: string): string;
-    procedure MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
+    function MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean): Boolean;
     property LibObjDir: string read FJclLibObjDir write FJclLibObjDir;
   public
     function FeatureInfoFileName(FeatureID: Cardinal): string;
@@ -274,10 +274,7 @@ end;
 
 function TJclInstall.CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
 var
-  I: Integer;
-  {$IFDEF KYLIX}
-  J: Integer;
-  {$ENDIF}
+  I, J: Integer;
   Units, ExcludeList: TStringList;
   UnitType: string;
   LibDescriptor: string;
@@ -285,7 +282,7 @@ var
   Path, ExcludeListFileName: string;
   Success: Boolean;
 begin
-  Result := True;
+  Result := False;
   if Debug then
     UnitType := 'debug ';
   LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Installation.Name]);
@@ -304,7 +301,11 @@ begin
       try
         ExcludeList.LoadFromFile(ExcludeListFileName);
         for I := 0 to ExcludeList.Count - 1 do
-          Units.Delete(Units.IndexOf(ExcludeList[I]));
+        begin
+          J := Units.IndexOf(ExcludeList[I]);
+          if J <> -1 then
+            Units.Delete(J);
+        end;
       finally
         ExcludeList.Free;
       end;
@@ -379,13 +380,13 @@ begin
       if Success then
       {$ENDIF}
       try
-        Execute(StringsToStr(Units, ' ', False));
+        Result := Execute(StringsToStr(Units, ' ', False));
         Tool.WriteInstallLog('');
         Tool.WriteInstallLog('Compiling .dcu files...');
         Tool.WriteInstallLog(Installation.DCC.Output);
         {$IFDEF KYLIX}
         J := Options.Add('-P');   // generate position independent code (PIC)
-        Execute(StringsToStr(Units, ' ', False));
+        Result := Execute(StringsToStr(Units, ' ', False));
         Options.Delete(J);        // remove PIC option
         Tool.WriteInstallLog('');
         Tool.WriteInstallLog('Compiling dpu files...');
@@ -507,9 +508,9 @@ begin
   if Tool.FeatureChecked(FID_JCL_Make, Installation) then
   begin
     if Tool.FeatureChecked(FID_JCL_MakeDebug, Installation) then
-      MakeUnits(Installation, True);
+      Result := Result and MakeUnits(Installation, True);
     if Tool.FeatureChecked(FID_JCL_MakeRelease, Installation) then
-      MakeUnits(Installation, False);
+      Result := Result and MakeUnits(Installation, False);
   end;
   {$IFDEF MSWINDOWS}
   if Tool.FeatureChecked(FID_JCL_HelpHlp, Installation) then
@@ -610,15 +611,15 @@ begin
   {$ENDIF}
 end;
 
-procedure TJclInstall.MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
+function TJclInstall.MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean): Boolean;
 begin
-  CompileLibraryUnits(Installation, 'common', Debug);
+  Result := CompileLibraryUnits(Installation, 'common', Debug);
   {$IFDEF MSWINDOWS}
-  CompileLibraryUnits(Installation, 'windows', Debug);
-  CompileLibraryUnits(Installation, 'vcl', Debug);
+  Result := Result and CompileLibraryUnits(Installation, 'windows', Debug);
+  Result := Result and CompileLibraryUnits(Installation, 'vcl', Debug);
   {$ENDIF MSWINDOWS}
   if Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
-    CompileLibraryUnits(Installation, 'visclx', Debug);
+    Result := Result and CompileLibraryUnits(Installation, 'visclx', Debug);
 end;
 
 function TJclInstall.PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
