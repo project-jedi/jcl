@@ -15,127 +15,30 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Michael Schnell                                                                                }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Routines for working with dates and times. Mostly conversion between the                         }
 { different formats but also some date testing routines (is leap year? etc)                        }
 {                                                                                                  }
-{ Unit Owner: Michael Schnell                                                                      }
-{                                                                                                  }
 {**************************************************************************************************}
 
-{**************************************************************************************************}
-{                                                                                                  }
-{ Modifications by MSchnell:                                                                       }
-{ 000622:                                                                                          }
-{                                                                                                  }
-{ Name changed GetCenturyOfDate -> CenturyOfDate                                                   }
-{                                                                                                  }
-{ Name changed GetCenturyBaseYear -> CenturyBaseYear                                               }
-{                                                                                                  }
-{ function GetWeekNumber(Today: TDateTime): string;  ->                                            }
-{ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;                }
-{                                                                                                  }
-{ Added overload function IsLeapYear(Year: Integer): Boolean;                                      }
-{ to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear                           }
-{ IsLeapYear is now using SysUtils.IsLeapYear                                                      }
-{                                                                                                  }
-{ Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->                            }
-{ function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;                                  }
-{ now not calling DecodeTime any more                                                              }
-{                                                                                                  }
-{ Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer                               }
-{                                                                                                  }
-{ 000624:                                                                                          }
-{ DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate                    }
-{  so let's have Delphi do the work here                                                           }
-{ DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime                    }
-{  so let's have Delphi do the work here                                                           }
-{                                                                                                  }
-{ DosDateTimeToStr does not use FileTime any more                                                  }
-{                                                                                                  }
-{ Added function DateTimeToFileTime                                                                }
-{ Added function LocalDateTimeToFileTime                                                           }
-{ Changed function  FileTimeToDateTime                                                             }
-{           not using TSystemDate and avoid systemcalls                                            }
-{ Changed function  FileTimeToLocalDateTime                                                        }
-{           not using TSystemDate and avoid systemcalls                                            }
-{                                                                                                  }
-{ 000625:                                                                                          }
-{ Added function SystemTimeToFileTime                                                              }
-{ Added function FieTimeToSystemTime                                                               }
-{ Added function Datetimetosystemtime                                                              }
-{ Added function DosDateTimeToFileTime                                                             }
-{ Added function FileTimeToDosDateTime                                                             }
-{ Added function SystemTimeToStr                                                                   }
-{                                                                                                  }
-{ 000706:                                                                                          }
-{ Formatted according to style rules                                                               }
-{                                                                                                  }
-{ 000708:                                                                                          }
-{ Swapped function names CenturyOfDate and CenturyBaseYear                                         }
-{ those were obviously called wrong before                                                         }
-{ Attention: must be done in the Help, too                                                         }
-{                                                                                                  }
-{ 000716:                                                                                          }
-{ Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate                 }
-{                                                                                                  }
-{ 000809:                                                                                          }
-{ added functions                                                                                  }
-{ CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile                     }
-{                                                                                                  }
-{ 000828:                                                                                          }
-{ added function MakeYear4Digit                                                                    }
-{                                                                                                  }
-{ 000907:                                                                                          }
-{ added ISOWeekNumber with 1 and 3 parameters                                                      }
-{                                                                                                  }
-{ 000912:                                                                                          }
-{ more elegant code for ISOWeekNumber                                                              }
-{ added ISOWeekToDateTime                                                                          }
-{ added overload for ISOWeekNumber with three integer parameters                                   }
-{                                                                                                  }
-{ 000914                                                                                           }
-{ added functions DayOfTheYear and DayOfTheYearToDateTime                                          }
-{                                                                                                  }
-{ 000918                                                                                           }
-{ added function FormatDateTime                                                                    }
-{                                                                                                  }
-{ 001015                                                                                           }
-{ avoiding "absolute" (in locations where stated)                                                  }
-{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate              }
-{ added function FATDatesEqual                                                                     }
-{                                                                                                  }
-{ 001019                                                                                           }
-{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)                      }
-{                                                                                                  }
-{ 010210                                                                                           }
-{ added overload procedures for compatibility:                                                     }
-{    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,                           }
-{    FileTimeToSystemTime, SystemTimeToFileTime                                                    }
-{                                                                                                  }
-{                                                                                                  }
-{ TODO:                                                                                            }
-{ Help for FATDatesEqual                                                                           }
-{                                                                                                  }
-{                                                                                                  }
-{ in Help:                                                                                         }
-{  We do all conversions (but thoses provided by Delphi anyway)  between                           }
-{  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus                                 }
-{  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                                       }
-{                                                                                                  }
-{                                                                                                  }
-{**************************************************************************************************}
+// Last modified: $Data$
+// For history see end of file
 
-// $Id$
+{ TODO -cHelp : Help for FATDatesEqual }                                                                                                  
+
+// in Help:
+//  We do all conversions (but thoses provided by Delphi anyway)  between
+//  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus
+//  TDatetime, TDosDateTime, TFileTime, TSystemTime to string
 
 unit JclDateTime;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -243,6 +146,20 @@ function SystemTimeToStr(const SystemTime: TSystemTime): string;
 function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
+{$ENDIF MSWINDOWS}
+
+type
+  { TODO -cHelp : add the following types and constants }
+  TJclUnixTime32 = LongWord;
+
+{ TODO -cHelp : Author: Peter J. Haas }
+function UnixTimeToDateTime(const Value: TJclUnixTime32): TDateTime;
+
+{$IFDEF MSWINDOWS}
+{ TODO -cHelp : Author: Peter J. Haas }
+function FileTimeToUnixTime(const Value: TFileTime): TJclUnixTime32;
+{ TODO -cHelp : Author: Peter J. Haas }
+function UnixTimeToFileTime(const Value: TJclUnixTime32): TFileTime;
 {$ENDIF MSWINDOWS}
 
 type
@@ -569,7 +486,7 @@ end;
 
 function Make4DigitYear(Year, Pivot: Integer): Integer;
 begin
-  // TODO
+  { TODO : Make4DigitYear }                                                                                                  
   Assert((Year >= 0) and (Year <= 100) and (Pivot >= 0) and (Pivot <= 100));
   if Year = 100 then
     Year := 0;
@@ -745,6 +662,7 @@ var
 begin
   ResultCheck(FileTimeToLocalFileTime(FileTime, LocalFileTime));
   Result := FileTimeToDateTime(LocalFileTime);
+  { TODO : daylight saving time }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -755,6 +673,7 @@ var
 begin
   LocalFileTime := DateTimeToFileTime(DateTime);
   ResultCheck(LocalFileTimeToFileTime(LocalFileTime, Result));
+  { TODO : daylight saving time }
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1153,5 +1072,150 @@ function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean;
 begin
   Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
 end;
+
+//==================================================================================================
+// Conversion Unix time <--> TDateTime / FileTime, constants
+//==================================================================================================
+
+const
+  SecsPerMin  = 60;
+  SecsPerHour = SecsPerMin * 60;
+  SecsPerDay  = SecsPerHour * 24;
+
+  // 1970-01-01T00:00:00 in TDateTime
+  UnixTimeStart = 25569;
+
+{$IFDEF MSWINDOWS}
+  // 1 second in FileTime resolution
+  FileTimeSecond = 1000 * 1000 * 10;
+  // 1 day in FileTime resolution: 24 * 60 * 60 * 1000 * 1000 * 10;
+  FileTimeDay = 864000000000;
+
+  // 1601-01-01T00:00:00 in TDateTime
+  FileTimeStart = -109205;
+  // Time between 1601-01-01 and 1970-01-01 in FileTime resolution
+  FileTimeUnixStart = (UnixTimeStart - FileTimeStart) * FileTimeDay;
+{$ENDIF MSWINDOWS}
+
+//==================================================================================================
+// Conversion Unix time <--> TDateTime
+//==================================================================================================
+
+function UnixTimeToDateTime(const Value: TJclUnixTime32): TDateTime;
+begin
+  Result := Value / SecsPerDay + UnixTimeStart;
+end;
+
+//==================================================================================================
+// Conversion Unix time <--> FileTime
+//==================================================================================================
+
+{$IFDEF MSWINDOWS}
+function FileTimeToUnixTime(const Value: TFileTime): TJclUnixTime32;
+begin
+  Result := (Int64(Value) - FileTimeUnixStart) div FileTimeSecond;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function UnixTimeToFileTime(const Value: TJclUnixTime32): TFileTime;
+begin
+  Int64(Result) := Int64(Value) * FileTimeSecond + FileTimeUnixStart;
+end;
+{$ENDIF MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+
+// History:
+
+// 2000-06-22, Michael Schnell:                                                                 
+//  Name changed GetCenturyOfDate -> CenturyOfDate
+//  Name changed GetCenturyBaseYear -> CenturyBaseYear
+//
+//  function GetWeekNumber(Today: TDateTime): string;  ->
+//  function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;
+//
+//  Added overload function IsLeapYear(Year: Integer): Boolean;
+//  to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear
+//  IsLeapYear is now using SysUtils.IsLeapYear
+//
+//  Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->
+//  function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
+//  now not calling DecodeTime any more
+//
+//  Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer
+
+// 2000-06-24, Michael Schnell:
+//  DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate
+//  so let's have Delphi do the work here
+//  DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime
+//  so let's have Delphi do the work here
+//
+//  DosDateTimeToStr does not use FileTime any more
+//
+//  Added function DateTimeToFileTime
+//  Added function LocalDateTimeToFileTime
+//  Changed function  FileTimeToDateTime
+//    not using TSystemDate and avoid systemcalls
+//  Changed function  FileTimeToLocalDateTime
+//    not using TSystemDate and avoid systemcalls
+
+// 2000-06-25, Michael Schnell:
+//  Added function SystemTimeToFileTime
+//  Added function FieTimeToSystemTime
+//  Added function Datetimetosystemtime
+//  Added function DosDateTimeToFileTime
+//  Added function FileTimeToDosDateTime
+//  Added function SystemTimeToStr
+
+// 2000-07-06, Michael Schnell:
+//  Formatted according to style rules
+
+// 2000-07-08, Michael Schnell:
+//  Swapped function names CenturyOfDate and CenturyBaseYear
+//  those were obviously called wrong before
+//  Attention: must be done in the Help, too
+                                                                                            
+// 2000-07-16, Michael Schnell:                                                                       
+//  Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate               
+
+// 2000-08-09, Michael Schnell:                                                                       
+//  added functions
+//  CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile                   
+
+// 2000-08-28, Michael Schnell:                                                                      
+//  added function MakeYear4Digit                                                                 
+                                                                                               
+// 2000-09-07, Michael Schnell:                                                                      
+//  added ISOWeekNumber with 1 and 3 parameters                                                   
+                                                                                               
+// 2000-09-12, Michael Schnell:                                                                      
+//  more elegant code for ISOWeekNumber                                                           
+//  added ISOWeekToDateTime                                                                       
+//  added overload for ISOWeekNumber with three integer parameters                                
+                                                                                               
+// 2000-09-14, Michael Schnell                                                                       
+//  added functions DayOfTheYear and DayOfTheYearToDateTime                                       
+                                                                                               
+// 2000-09-18, Michael Schnell                                                                       
+//  added function FormatDateTime                                                                 
+                                                                                               
+// 2000-10-15, Michael Schnell
+//  avoiding "absolute" (in locations where stated)                                               
+//  extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate           
+//  added function FATDatesEqual                                                                  
+                                                                                               
+// 2000-10-19, Michael Schnell                                                                       
+//  changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)                   
+                                                                                               
+// 2001-02-10, Michael Schnell                                                                       
+//  added overload procedures for compatibility:                                                  
+//    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,                        
+//    FileTimeToSystemTime, SystemTimeToFileTime                                                 
+
+// $Log$
+// Revision 1.4  2004/04/06 04:33:37  peterjhaas
+// Add UNIX time <--> TDateTime / TFiletime conversion
+//
 
 end.
