@@ -554,7 +554,7 @@ const
   IDs: array [TKylixVersion] of Integer = (60, 65, 69);
   LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
-  Delphi32IdeExeName         = 'delphi';
+  DelphiIdeExeName           = 'delphi';
   BCBIdeExeName              = 'bcblin';
   MakeExeName                = 'make';
   Bpr2MakExeName             = 'bpr2mak';
@@ -1767,8 +1767,14 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetIdeExeFileName: string;
+const
+  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName); 
 begin
+  {$IFDEF MSWINDOWS}
   Result := Globals.Values['App'];
+  {$ELSE}
+  Result := FBinFolderName + IdeFileNames[RADToolKind];
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2402,6 +2408,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.26  2004/12/15 22:54:04  rrossmair
+// - fixed for Kylix
+//
 // Revision 1.25  2004/12/15 21:46:40  rrossmair
 // - D2005 support (incomplete)
 //
