@@ -29,7 +29,10 @@ unit JclDebugIdeImpl;
 {$UNDEF OldStyleExpert}
 
 // Delphi 5 can use both kind of the expert
-// Delphi 6 can use New expert style only
+// Delphi 6 and + can use New expert style only
+
+// BCB 5 can use both kind of the expert
+// BCB 6 and + can use New expert style only
 
 interface
 
@@ -60,9 +63,9 @@ type
     FInsertDataItem: TMenuItem;
     FInsertDataAction: TAction;
     FResultInfo: array of TJclDebugDataInfo;
-    {$IFNDEF DELPHI5_UP}
+    {$IFNDEF COMPILER5_UP}
     FSaveAllAction: TAction;
-    {$ENDIF DELPHI5_UP}
+    {$ENDIF COMPILER5_UP}
     {$IFNDEF OldStyleExpert}
     FSaveBuildProject: TAction;
     FSaveBuildProjectExecute: TNotifyEvent;
@@ -309,11 +312,11 @@ var
   ProjectName: string;
 begin
   TempActiveProject := ActiveProject;
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   FBuildAction.Enabled := Assigned(TempActiveProject);
-  {$ELSE DELPHI5_UP}
+  {$ELSE COMPILER5_UP}
   FBuildAction.Enabled := Assigned(TempActiveProject) and not FSaveAllAction.Enabled;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   if Assigned(ActiveProject) then
     ProjectName := ExtractFileName(TempActiveProject.FileName)
   else
@@ -355,11 +358,11 @@ end;
 
 procedure TJclDebugExtension.BuildAllActionUpdate(Sender: TObject);
 begin
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   FBuildAllAction.Enabled := ProjectGroup <> nil;
-  {$ELSE DELPHI5_UP}
+  {$ELSE COMPILER5_UP}
   FBuildAllAction.Enabled := (ProjectGroup <> nil) and not FSaveAllAction.Enabled;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
 end;
 
 {$ENDIF OldStyleExpert}
@@ -542,9 +545,9 @@ var
   OutputDirectory, LinkerBugUnit: string;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
   ExecutableNotFound: Boolean;
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   OptionsModifiedState: Boolean;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
 begin
   Assert(Assigned(ActiveProject));
   ProjectFileName := ActiveProject.FileName;
@@ -552,16 +555,16 @@ begin
   // read output directory
   OutputDirectory := GetOutputDirectory(ActiveProject);
   MapFileName := GetMapFileName(ActiveProject);
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   OptionsModifiedState := ProjOptions.ModifiedState;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   SaveMapFile := ProjOptions.Values[MapFileOptionName];
   ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
   BuildOk := ActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
   ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   ProjOptions.ModifiedState := OptionsModifiedState;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   ExecutableNotFound := False;
   LinkerBugUnit := '';
   LineNumberErrors := 0;
@@ -679,7 +682,7 @@ begin
         System.Break;
       end;
   Assert(FBuildMenuItem.Parent <> nil);
-  {$IFNDEF DELPHI5_UP}
+  {$IFNDEF COMPILER5_UP}
   FSaveAllAction := nil;
   with IDEActionList do
     for I := 0 to ActionCount - 1 do
@@ -689,7 +692,7 @@ begin
         Break;
       end;
   Assert(FSaveAllAction <> nil);
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   {$ELSE OldStyleExpert}
   with IDEProjectItem do
     for I := 0 to Count - 1 do
