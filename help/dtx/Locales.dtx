@@ -1,0 +1,1640 @@
+@@TJclLocaleInfo
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  TJclLocaleInfo represents an installed or supported locale.
+Description:
+
+  TJclLocaleInfo represents an installed or supported locale. You can use it to
+  easily access information about the locale.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@Create
+<GROUP Internationalisation.NationalLanguageSupport.TJclLocaleInfo>
+Summary:
+  Creates an instance of TJclLocaleInfo for a specific locale.
+Description:
+
+  Creates and initializes an instance of the TJclLocaleInfo class. You normally don't
+  explicitly create such an instance but instead retrieve them using the TJclLocalesList.
+Parameters:
+  ALocaleID - The locale which the instance will represent.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.CharInfo
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Retrieves character typed locale information.
+Description:
+
+  The CharInfo property lets you read character typed locale information directly.
+  The InfoType is an Integer which specifies the locale information type which you
+  want to retrieve. You can specify any LOCALE_* information types as documented
+  in the Platform SDK documentation on GetLocaleInfo. Note that if the locale
+  information type requested is string based, only the first character of the
+  string is returned. This property should only be used for those information types
+  that are not directly supported by this class through its properties.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.IntegerInfo
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Retrieves Integer typed locale information.
+Description:
+
+  The IntegerInfo property lets you read Integer typed locale information directly.
+  The InfoType is an Integer which specifies the locale information type which you
+  want to retrieve. You can specify any LOCALE_* information types as documented
+  in the Platform SDK documentation on GetLocaleInfo. This property should only be
+  used for those information types that are not directly supported by this class
+  through its properties.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.StringInfo
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Retrieves string typed locale information.
+Description:
+
+  The StringInfo property lets you read string typed locale information directly.
+  The InfoType is an Integer which specifies the locale information type which you
+  want to retrieve. You can specify any LOCALE_* information types as documented
+  in the Platform SDK documentation on GetLocaleInfo. This property should only be
+  used for those information types that are not directly supported by this class
+  through its properties.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.FontCharset
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the font character set associated with the locale.
+Description:
+
+  FontCharSet returns the font character set associated with the locale. The table
+  below defines the possible return values, if the character set couldn't be found
+  the property reads DEFAULT_CHARSET.
+    <TABLE>
+Code page  Character set
+---------  ------------------
+  ANSI_CHARSET
+  EASTEUROPE_CHARSET
+  RUSSIAN_CHARSET
+  GREEK_CHARSET
+  TURKISH_CHARSET
+  HEBREW_CHARSET
+  ARABIC_CHARSET
+  BALTIC_CHARSET
+  THAI_CHARSET
+  SHIFTJIS_CHARSET
+</TABLE>
+
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LangID
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the language identifier.
+Description:
+
+  LangId returns the language identifier for this locale.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LocaleID
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the locale identifier.
+Description:
+
+  Returns the locale identifier for which this instance contains information.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LangIDPrimary
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the primary language identifier.
+Description:
+
+  Extracts the primary language identifier from the language identifier this locale
+  information object represents. The return value can be one of the following values:
+    <TABLE>
+LANG_AFRIKAANS   LANG_KONKANI
+LANG_ALBANIAN    LANG_KOREAN
+LANG_ARABIC      LANG_LATVIAN
+LANG_ARMENIAN    LANG_LITHUANIAN
+LANG_ASSAMESE    LANG_MACEDONIAN
+LANG_AZERI       LANG_MALAY
+LANG_BASQUE      LANG_MALAYALAM
+LANG_BELARUSIAN  LANG_MANIPURI
+LANG_BENGALI     LANG_MARATHI
+LANG_BULGARIAN   LANG_NEPALI
+LANG_CATALAN     LANG_NEUTRAL
+LANG_CHINESE     LANG_NORWEGIAN
+LANG_CROATIAN    LANG_ORIYA
+LANG_CZECH       LANG_POLISH
+LANG_DANISH      LANG_PORTUGUESE
+LANG_DUTCH       LANG_PUNJABI
+LANG_ENGLISH     LANG_ROMANIAN
+LANG_ESTONIAN    LANG_RUSSIAN
+LANG_FAEROESE    LANG_SANSKRIT
+LANG_FARSI       LANG_SERBIAN
+LANG_FINNISH     LANG_SINDHI
+LANG_FRENCH      LANG_SLOVAK
+LANG_GEORGIAN    LANG_SLOVENIAN
+LANG_GERMAN      LANG_SPANISH
+LANG_GREEK       LANG_SWAHILI
+LANG_GUJARATI    LANG_SWEDISH
+LANG_HEBREW      LANG_TAMIL
+LANG_HINDI       LANG_TATAR
+LANG_HUNGARIAN   LANG_TELUGU
+LANG_ICELANDIC   LANG_THAI
+LANG_INDONESIAN  LANG_TURKISH
+LANG_ITALIAN     LANG_UKRANIAN
+LANG_JAPANESE    LANG_URDU
+LANG_KANNADA     LANG_UZBEK
+LANG_KASHMIRI    LANG_VIETNAMESE
+LANG_KAZAK       &nbsp;
+</TABLE>
+
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LangIDSub
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the sublanguage identifier.
+Description:
+
+  Extracts the sublanguage identifier from the language identifier this locale
+  information object represents. The return value can be one of the following values:
+    <TABLE>
+SUBLANG_ARABIC_SAUDI_ARABIA SUBLANG_ARABIC_IRAQ SUBLANG_ARABIC_EGYPT SUBLANG_ARABIC_LIBYA SUBLANG_ARABIC_ALGERIA SUBLANG_ARABIC_MOROCCO SUBLANG_ARABIC_TUNISIA SUBLANG_ARABIC_OMAN SUBLANG_ARABIC_YEMEN SUBLANG_ARABIC_SYRIA SUBLANG_ARABIC_JORDAN SUBLANG_ARABIC_LEBANON SUBLANG_ARABIC_KUWAIT SUBLANG_ARABIC_UAE SUBLANG_ARABIC_BAHRAIN SUBLANG_ARABIC_QATAR SUBLANG_AZERI_CYRILLIC SUBLANG_AZERI_LATIN SUBLANG_CHINESE_SIMPLIFIED SUBLANG_CHINESE_HONGKONG SUBLANG_CHINESE_SINGAPORE SUBLANG_CHINESE_MACAU SUBLANG_DEFAULT SUBLANG_DUTCH SUBLANG_DUTCH_BELGIAN SUBLANG_ENGLISH_US SUBLANG_ENGLISH_UK SUBLANG_ENGLISH_AUS SUBLANG_ENGLISH_CAN SUBLANG_ENGLISH_NZ SUBLANG_ENGLISH_EIRE SUBLANG_ENGLISH_SOUTH_AFRICA SUBLANG_ENGLISH_JAMAICA SUBLANG_ENGLISH_CARIBBEAN SUBLANG_ENGLISH_BELIZE SUBLANG_ENGLISH_TRINIDAD SUBLANG_ENGLISH_PHILIPPINES SUBLANG_ENGLISH_ZIMBABWE SUBLANG_FRENCH SUBLANG_FRENCH_BELGIAN SUBLANG_FRENCH_CANADIAN SUBLANG_FRENCH_SWISS SUBLANG_FRENCH_LUXEMBOURG SUBLANG_FRENCH_MONACO SUBLANG_GERMAN SUBLANG_GERMAN_SWISS  SUBLANG_GERMAN_AUSTRIAN SUBLANG_GERMAN_LUXEMBOURG SUBLANG_GERMAN_LIECHTENSTEIN SUBLANG_ITALIAN SUBLANG_ITALIAN_SWISS SUBLANG_KASHMIRI_INDIA SUBLANG_KOREAN SUBLANG_LITHUANIAN SUBLANG_MALAY_BRUNEI_DARUSSALAM SUBLANG_MALAY_MALAYSIA SUBLANG_NEPALI_INDIA SUBLANG_NEUTRAL SUBLANG_NORWEGIAN_BOKMAL SUBLANG_NORWEGIAN_NYNORSK SUBLANG_PORTUGUESE SUBLANG_PORTUGUESE_BRAZILIAN SUBLANG_SERBIAN_LATIN SUBLANG_SERBIAN_CYRILLIC SUBLANG_SPANISH SUBLANG_SPANISH_MEXICAN SUBLANG_SPANISH_MODERN SUBLANG_SPANISH_GUATEMALA SUBLANG_SPANISH_COSTA_RICA SUBLANG_SPANISH_PANAMA SUBLANG_SPANISH_DOMINICAN_REPUBLIC SUBLANG_SPANISH_VENEZUELA SUBLANG_SPANISH_COLOMBIA SUBLANG_SPANISH_PERU SUBLANG_SPANISH_ARGENTINA SUBLANG_SPANISH_ECUADOR SUBLANG_SPANISH_CHILE SUBLANG_SPANISH_URUGUAY SUBLANG_SPANISH_PARAGUAY SUBLANG_SPANISH_BOLIVIA SUBLANG_SPANISH_EL_SALVADOR SUBLANG_SPANISH_HONDURAS SUBLANG_SPANISH_NICARAGUA SUBLANG_SPANISH_PUERTO_RICO SUBLANG_SWEDISH SUBLANG_SWEDISH_FINLAND SUBLANG_SYS_DEFAULT SUBLANG_URDU_INDIA SUBLANG_URDU_PAKISTAN SUBLANG_UZBEK_CYRILLIC SUBLANG_UZBEK_LATIN
+</TABLE>
+
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.SortID
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the sort identifier.
+Description:
+
+  Extracts the sort identifier from the locale identifier this object represents.
+  This property returns one of the following values:
+    <TABLE>
+Value                      Meaning
+-------------------------  -----------------------------------
+SORT_CHINESE_BIG5          Specifies Chinese BIG5 order.
+SORT_CHINESE_BOPOMOFO      Traditional Chinese Bopomofo order.
+SORT_CHINESE_PRC           PRC Chinese Stroke Count order.
+SORT_CHINESE_PRCP          PRC Chinese Phonetic order
+SORT_DEFAULT               Specifies the default sort.
+SORT_GEORGIAN_MODERN       Georgian Modern order.
+SORT_GEORGIAN_TRADITIONAL  Georgian Traditional order.
+SORT_GERMAN_PHONE_BOOK     German Phone Book order.
+SORT_HUNGARIAN_DEFAULT     Hungarian Default order.
+SORT_HUNGARIAN_TECHNICAL   Hungarian Technical order
+SORT_JAPANESE_XJIS         Specifies Japanese XJIS order.
+SORT_KOREAN_KSC            Specifies Korean KSC order.
+</TABLE>
+
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.UseSystemACP
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Determines whether the system ACP is used for string translation.
+Description:
+
+  Determines whether the class uses the system ANSI code page (ACP) for string
+  translation instead of the locale's code page. This property is True by default,
+  assign False to turn off usage of the system ACP instead.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.AbbreviatedCountryName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
+Description:
+
+  Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.AbbreviatedDayNames
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns a list of native abbreviated names for the days in a week.
+Description:
+
+  AbbreviatedDayNames contains a list of abbreviated names, one for each day of the
+  week. The list is indexed with a 1-based index which indicates the day for which
+  to retrieve the abbreviated name. For example, 1 is monday, 2 is tuesday and so forth.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.AbbreviatedLangName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Abbreviated name of the language.
+Description:
+
+  Abbreviated name of the language. In most cases it is created by taking the
+  two-letter language abbreviation from the ISO Standard 639 and adding a third
+  letter, as appropriate, to indicate the sublanguage.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.AbbreviatedMonthNames
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns a list of native abbreviated names for the months in a year.
+Description:
+
+  AbbreviatedMonthNames contains a list of abbreviated names, one for each month of the
+  year. The list is indexed with a 1-based index which indicates the month for which
+  to retrieve the abbreviated name. For example, 1 is january, 2 is february and so forth.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.CodePageANSI
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  ANSI code page associated with this locale.
+Description:
+
+  American National Standards Institute (ANSI) code page associated with this locale.
+  If the locale does not use an ANSI code page, the value is 0. The maximum number
+  of characters allowed for this string is six.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.CodePageMAC
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Default Macintosh code page associated with the locale.
+Description:
+
+  Default Macintosh code page associated with the locale. If the locale does not
+  use a Macintosh code page, the value is 2. The maximum number of characters
+  allowed for this string is six.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.CodePageOEM
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Original equipment manufacturer (OEM) code page associated with the country/region.
+Description:
+
+  Original equipment manufacturer (OEM) code page associated with the country/region.
+  If the locale does not use an OEM code page, the value is 1.The maximum number of
+  characters allowed for this string is six.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.CountryCode
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Code for the principal country/region in this locale.
+Description:
+
+  Code for the principal country/region in this locale. This is provided so that
+  partially specified locales can be completed with default values. The maximum
+  number of characters allowed for this string is six.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.DateFormats
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  List of date formats that are available for this locale.
+Description:
+
+  List of date formats that are available for this locale. The list is indexed by
+  a TJclLocaleDateFormats which is defined as:
+    TJclLocaleDateFormats = (ldShort, ldLong, ldYearMonth);
+  As such the index determines whether the returned list contains the long, short
+  or year/month date formats.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.DecimalSeparator
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Character(s) used as the decimal separator.
+Description:
+
+  Character(s) used as the decimal separator. The maximum number of characters
+  allowed for this string is four.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.EnglishCountryName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Full English name of the country/region.
+Description:
+
+  Full English name of the country/region. This is always restricted to characters
+  that can be mapped into the ASCII 127-character subset.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.EnglishLangName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Full English name of the language from the ISO standard 639.
+Description:
+
+  Full English name of the language from the International Organization for
+  Standardization (ISO) Standard 639. This is always restricted to characters that
+  can be mapped into the ASCII 127-character subset. This is not always equivalent
+  to the English version of LOCALE_SLANGUAGE.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LangIdStr
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Language identifier.
+Description:
+
+  Language identifier. The maximum number of characters allowed for this string is five.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.ListItemSeparator
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Character(s) used to separate list items.
+Description:
+
+  Character(s) used to separate list items. For example, a ',' is used in many
+  locales. The maximum number of characters allowed for this string is four.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LocalizedCountryName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Full localized name of the country/region.
+Description:
+
+  Full localized name of the country/region. This is based on the localization of
+  the product, thus it changes for each localized version.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LocalizedLangName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Full localized name of the language.
+Description:
+
+  Full localized name of the language. This name is based on the localization of
+  the product, thus the value changes for each localized version.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LongDayNames
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the native long name for the specified day.
+Description:
+
+  List of native long names for the days in a week. The index into this list is
+  a 1 based index of the day for which to retrieve the long name. For example, 1
+  is monday, 2 is tuesday and so forth.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.LongMonthNames
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the native long name for the specified month.
+Description:
+
+  List of native long names for the months in a year. The index into this list is
+  a 1 based index of the month for which to retrieve the long name. For example, 1
+  is january, 2 is february and so forth. The highest possible index is 13 which
+  may return an empty string if the 13th month doesn't exist for this locale.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.MonetarySymbolIntl
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Three characters of the international monetary symbol specified in ISO 4217 followed by the character separating this string from the amount.
+Description:
+
+  Three characters of the international monetary symbol specified in ISO 4217
+  followed by the character separating this string from the amount.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.MonetarySymbolLocal
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  String used as the local monetary symbol. The maximum number of characters allowed for this string is six.
+Description:
+
+  String used as the local monetary symbol. The maximum number of characters allowed
+  for this string is six.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.NativeCountryName
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Native name of the country/region.
+Description:
+
+  Native name of the country/region.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.NegativeNumber
+<GROUP Internationalisation.NationalLanguageSupport>
+Description:
+
+  Negative number mode, that is, the format for a negative number. The maximum number
+  of characters allowed for this string is two. The mode can be one of these values.
+   <TABLE>
+Value  Format
+-----  -----------------------------------------------------------
+0      Left parenthesis, number, right parenthesis. Example: (1.1)
+1      Negative sign, number. Example: -1.1
+2      Negative sign, space, number. Example: - 1.1
+3      Number, negative sign. Example: 1.1-
+4      Number, space, negative sign. Example: 1.1 -
+</TABLE>
+
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.TimeFormats
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Formats that are available for this locale.
+Description:
+
+  Formats that are available for this locale.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocaleInfo.ThousandSeparator
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Character(s) used to separate groups of digits to the left of the decimal.
+Description:
+
+  Character(s) used to separate groups of digits to the left of the decimal. The
+  maximum number of characters allowed for this string is four.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesKind
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  TJclLocalesKind is used by the TJclLocalesList class to specify whether the list contains elements for all supported or all installed locales and codepages.
+Description:
+
+  TJclLocalesKind is used by the TJclLocalesList class to specify whether the list
+  contains elements for all supported or all installed locales and codepages.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+@@TJclLocalesKind.lkInstalled
+  Only installed locales and codepages.
+@@TJclLocalesKind.lkSupported
+  All supported locales and codepages.
+--------------------------------------------------------------------------------
+@@TJclLocalesList
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Maintains information about supported locales and codepages.
+Description:
+
+  TJclLocalesList maintains a list of elements containing information about locales
+  and codepages. The list contains either information about all supported locales
+  and codepages or all installed locales and codepages depending on how it is
+  constructed.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.Create
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Creates and initialises an instance of TJclLocalesList.
+Description:
+
+  The Create constructor creates an instance of TJclLocalesList and initialises it
+  according to the specified parameter.
+Parameters:
+   - TJclLocalesKind=Specifies the kind of items this list will contain after construction. If you specify lkSupported the list will contain information for all supported locales and codepages on the system. If you specify lkInstalled the list will contain information about the installed locales and codepages only. See TJclLocalesKind for more information. Note that the JclLocales unit maintains a global instance of a TJclLocalesList which you can retrieve by using the JclLocalesList function.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.CodePages
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  List of supported or installed codepages.
+Description:
+
+  The CodePages property contains a list of all supported or installed codepages
+  on the system depending on the Kind property. Each item contains the string
+  representation of a code page identifier while the associated Objects item contains
+  the numeric representation of the code page identifier (or 0 if the code page
+  couldn't be converted to a numerical value).
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.ItemFromLangID
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the TJclLocaleInfo object given a language identifier.
+Description:
+
+  The ItemFromLangID provides the same list of locale information objects as the
+  Items property does except that it allows indexing by language ID instead of a
+  zero based index. This allows you to directly retrieve information about a specific
+  language without having to traverse the entire list. Note that if the list contains
+  no information for the specified language, the property returns nil.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.ItemFromLangIDPrimary
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the TJclLocaleInfo object given a primary language ID.
+Description:
+
+  The ItemFromLangIDPrimary provides the same list of locale information objects as the
+  Items property does except that it allows indexing by primary language ID instead of
+  a zero based index. This allows you to directly retrieve information about a specific
+  language without having to traverse the entire list. Note that if the list contains
+  no information for the specified language, the property returns nil.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.ItemFromLocaleID
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the TJclLocaleInfo object given a locale identifier.
+Description:
+
+  The ItemFromLocaleID provides the same list of locale information objects as the
+  Items property does except that it allows indexing by Locale ID instead of a
+  zero based index. This allows you to directly retrieve information about a specific
+  locale without having to traverse the entire list. Note that if the list contains
+  no information for the specified locale, the property returns nil.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.Items
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  List of locale information items.
+Description:
+
+  The Items property contains a list of TJclLocaleInfo objects each of which supplies
+  information about a single locale installed or supported (depending on the Kind
+  property) on the system.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclLocalesList.Kind
+<GROUP Internationalisation.NationalLanguageSupport>
+Summary:
+  Returns the Kind of elements contained in the list.
+Description:
+
+  Kind specifies the kind of elements this list contains. It is a direct copy of
+  the AKind parameter of the TJclLocalesList constructor. See TJclLocalesKind
+  for more information.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.5 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Maintains a list of input locale identifiers.
+Description:
+
+  The TJclKeyboardLayoutList class maintains a list of input locale identifiers (formerly
+  called keyboard layout handles) corresponding to the current set of input locales
+  in the system. Note that unlike keyboard layouts, an input locale can also encompass
+  a speech-to-toext converter, IME or any other kind of input.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.ActivatePrevLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Activates the previous input locale identifier.
+Description:
+
+  The system maintains a circular list of all loaded input locale identifiers. Calling
+  this method will result in the input locale identifier that preceeds the currently
+  active input locale to be activated.
+Parameters:
+  ActivateFlags - Set of flags that determine how the input locale is to be activated. See TjclKeybLayoutFlags for a detailed description of the possible flags.
+Result:
+
+  If the function succeeds it returns True otherwise it returns False.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.ActivateNextLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Activates the next input locale identifier.
+Description:
+
+  The system maintains a circular list of all loaded input locale identifiers. Calling
+  this method will result in the input locale identifier that succeeds the currently
+  active input locale to be activated.
+Parameters:
+  ActivateFlags - Set of flags that determine how the input locale is to be activated. See TjclKeybLayoutFlags for a detailed description of the possible flags.
+Result:
+
+  If the function succeeds it returns True otherwise it returns False.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.LoadLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Loads a new input locale identifier.
+Description:
+
+  The LoadLayout method loads a new input locale identifier into the system. Note
+  that many input locale identifiers can be loaded at the same time, but only can
+  be active at any moment. This method only loads the input locale identifier but
+  does not activate it. To do so use the Activate method of the TJclKeyboardLayout
+  class.
+Parameters:
+  LayoutName - Name of the input locale identifier to load. The name is composed of the hexadecimal value of the language identifier (low word) and a devide identifier (high word).
+  LoadFlags - Set of flags that determine how the input locale identifier is loaded. See TJclKeybLayoutFlags for an explanantion of the possible flags.
+Result:
+
+  If the function succeeds it returns True and automatically refreshes the list. If
+  the funcion fails it returns False and the list remains unchanged.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.Refresh
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Refreshes the list of input locales and fires the OnRefresh event.
+Description:
+
+  Refreshes the list of input locales and fires the OnRefresh event.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.ActiveLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the currently active input locale identifier for the calling thread.
+Description:
+
+  Returns the currently active input locale identifier for the calling thread.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.AvailableLayouts
+<GROUP Internationalisation.KeyboardInput>
+Description:
+
+  A list of TJclAvailableKeybLayout items representing the available keyboard layouts.
+  The AvailableLayoutCount property contains the number of elements in this list and
+  as such the valid indices range from 0 to AvailableLayoutCount - 1.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.AvailableLayoutCount
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the number of elements in the AvailableLayouts list.
+Description:
+
+  Returns the number of elements in the AvailableLayouts list.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.Count
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  The number of elements in the list.
+Description:
+
+  Count returns the number of elements in the Items list. Note that the Items list
+  is zero based and therefore valid indices range from 0 to Count - 1.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.ItemFromHKL
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the TJclKeyboardLayout class for a specified input locale identifier.
+Description:
+
+  ItemFromHKL returns the TJclKeyboardLayout item from the list of loaded input
+  locale identifiers with the specified identifier. If the specified input identifier
+  does not exist in the list (it is not loaded) the property reads nil.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.Items
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  The list of loaded input locale identifiers.
+Description:
+
+  Items contains the list of loaded input locale identifiers. Each entry contains
+  a TJclKeyboardLayout class which you can use to read information about the input
+  locale identifier or manipulate it (such as activation).
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.LayoutFromLocaleID
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the TJclKeyboardLayout class for a specified locale identifier.
+Description:
+
+  LayoutFromLocaleID returns the TJclKeyboardLayout item from the list of loaded input
+  locale identifiers with the specified locale identifier. If the specified input
+  identifier does not exist in the list (it is not loaded) the property reads nil.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayoutList.OnRefresh
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  The event is fired whenever the list is refreshed, either implicitly or explicitly.
+Description:
+
+  The event is fired whenever the list is refreshed, either implicitly or explicitly.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Wrapper for a loaded input locale identifier.
+Description:
+
+  TJclKeyboardLayout is a wrapper for an input locale identifier which is loaded in
+  the system. You can use it to retrieve information about the input locale identifier
+  and manipulate it, for example, unload or activate it. You normally don't create
+  instances of this class directly but instead use the TJclKeyboardLayoutList to
+  maintain a list of loaded TJclKeyboardLayout objects and retrieve them from there.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.Create
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
+Description:
+
+  Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
+  Note that you normally don't construct instances of this class explicitly but instead
+  use the TJclKeyboardLayoutList to maintain a list of TJclKeyboardLayout objects. You
+  can, however, create an instance yourself. If you do so set the AOwner parameter to nil.
+Parameters:
+  AOwner - Instance of the TJclKeyboardLayoutList that is creating this object. The supplied object is automatically kept up to date in case of changes (such as unloading of the input locale identifier).
+  ALayout - The input locale identifier which this class will represent.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.Activate
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Activates the input locale identifier represented by this object.
+Description:
+
+  Activates the input locale identifier represented by this object.
+Parameters:
+  ActivateFlags - Set of flags that determine how the input locale identifier is activated. See TJclKeybLayoutFlags for a detailed description of the possible flags.
+Result:
+
+  If the function succeeds it returns True otherwise it returns False.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.Unload
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Unloads the input locale identifier.
+Description:
+
+  Unloads the input locale identifier represented by this object. After calling this
+  method the input locale identifier is no longer available until it is explicitly
+  loaded again. If this object is connected to a TJclKeyboardLayoutList through the
+  AOwner parameter of it's constructor, that list is automatically updated to reflect
+  the change.
+Result:
+
+  If the function succeeds it returns True and update the AOwner list, if present.
+  If the function fails it returns False and the AOwner list remains unchanged.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.DisplayName
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the (localized) display name for this keyboard layout.
+Description:
+
+  Returns the (localized) display name for this keyboard layout.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.DeviceHandle
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Extracts the device identifier part from the input locale identifier that this object represents.
+Description:
+
+  Extracts the device identifier part from the input locale identifier that this object represents.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.Layout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the input locale identifier that this object represents.
+Description:
+
+  Returns the input locale identifier that this object represents.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.LocaleID
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Extracts the locale identifier from the input locale identifier.
+Description:
+
+  Extracts the locale identifier from the input locale identifier that this object
+  represents. Note that the Locale Identifier is referred to as the language
+  identifier in the Microsoft documentation.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.LocaleInfo
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Provides access to the locale information for this input locale identifier.
+Description:
+
+  Returns a TJclLocaleInfo object which provides access to information about the
+  locale identifier associated with this input locale identifier. The object remains
+  owned by this class so you don't have to free it.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeyboardLayout.VariationName
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns the variation name for this keyboard layout.
+Description:
+
+  Returns the variation name for this keyboard layout.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclKeybLayoutFlags
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Set of flags which describe how to load, unload or activate an input locale identifier.[Description]
+Description:
+
+  Set of flags which describe how to load, unload or activate an input locale identifier.
+  It is used by the TJclKeyboardLayout and TJclKeyboardLayoutList classes.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+@@TJclKeybLayoutFlags.klReorder
+  Moves the specified input locale identifier to the head of the input locale identifier list, making that locale identifier the active locale identifier for the current thread. This value reorders the input locale identifier list even if KLF_ACTIVATE is not provided.
+@@TJclKeybLayoutFlags.klUnloadPrevious
+  Unsupported.
+@@TJclKeybLayoutFlags.klSetForProcess
+  This flag is valid only with KLF_ACTIVATE. Activates the specified input locale identifier for the entire process and sends the WM_INPUTLANGCHANGE message to the current thread's Focus or Active window. Typically, LoadKeyboardLayout activates an input locale identifier only for the current thread. This flag is only supported for Windows 2000.
+@@TJclKeybLayoutFlags.klActivate
+  If the specified input locale identifier is not already loaded, the function loads and activates the input locale identifier for the current thread.
+@@TJclKeybLayoutFlags.klNotEllShell
+  Prevents a ShellProc hook procedure from receiving an HSHELL_LANGUAGE hook code when the new input locale identifier is loaded. This value is typically used when an application loads multiple input locale identifiers one after another. Applying this value to all but the last input locale identifier delays the shell's processing until all input locale identifiers have been added.
+@@TJclKeybLayoutFlags.klReplaceLang
+  If the new input locale identifier has the same language identifier as a current input locale identifier, the new input locale identifier replaces the current one as the input locale identifier for that language. If this value is not provided and the input locale identifiers have the same language identifiers, the current input locale identifier is not replaced and the function returns NULL.
+@@TJclKeybLayoutFlags.klSubstituteOK
+  Substitutes the specified input locale identifier with another locale preferred by the user. The system starts with this flag set, and it is recommended that your application always use this flag. The substitution occurs only if the registry key HKEY_CURRENT_USER\Keyboard Layout\Substitutes explicitly defines a substitution locale. For example, if the key includes the value name "00000409" with value "00010409", loading the U.S. English layout ("00000409") causes the Dvorak U.S. English layout ("00010409") to be loaded instead. The system uses KLF_SUBSTITUTE_OK when booting, and it is recommended that all applications use this value when loading input locale identifiers to ensure that the user's preference is selected.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Describes an available keyboard layout.
+Description:
+
+  Describes an available keyboard layout.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.Load
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Loads the keyboard layout.
+Description:
+
+  Loads the keyboard layout. This method is implemented by calling the
+  TJclAvailableKeybLayout.Load method. See the description of that method for more
+  information.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.Identifier
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  The Windows keyboard layout code.
+Description:
+
+  An 8-digit hexadecimal Windows keyboard layout code. The first four digits
+  of the codes indicate whether the keyboard layout or IME is the default layout
+  for the language (as indicated by all zeros), or a variation of the
+  default (other than zeros). The last four digits are the standard locale ID.
+  For example, the 00010402 subkey represents the first variation of the keyboard
+  layouts associated with locale 0x0402 (Bulgarian).
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.IdentifierName
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  String representation (8-digit hexadecimal value) of the keybaord layout code.
+Description:
+
+  String representation (8-digit hexadecimal value) of the keybaord layout code.
+  The string is formed on demand using the Idenitifier property.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.LayoutID
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
+Description:
+
+  Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.LayoutFile
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Specifies the DLL for the keyboard layout or Input Method Editor (IME).
+Description:
+
+  Specifies the DLL for the keyboard layout or Input Method Editor (IME).
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.LayoutFileExists
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Returns whether the file specified by the LayoutFile property exists in the filesystem.
+Description:
+
+  Returns whether the file specified by the LayoutFile property exists in the filesystem.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@TJclAvailableKeybLayout.Name
+<GROUP Internationalisation.KeyboardInput>
+Summary:
+  Name of the keybaord layout or Input Method Editor.
+Description:
+
+  Specifies the name used to represent the keyboard layout or Input Method
+  Editor (IME) on the Input Locales tab of Regional Options in Control Panel.
+Quick info:
+  Unit: JclLocales
+  Category: Internationalisation
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
