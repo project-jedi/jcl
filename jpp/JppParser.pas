@@ -51,6 +51,7 @@ type
     FLexer: TPppLexer;
     FState: TPppState;
     FResult: string;
+    FStateUnknown: Boolean;
   protected
     procedure Emit(const AText: string);
 
@@ -118,16 +119,21 @@ begin
   T := State.TriState(Lexer.TokenAsString);
   if T = ttUnknown then
   begin
-    Result := Lexer.RawComment;
-    Lexer.NextTok;
-    Result := Result + ParseText;
-    if Lexer.CurrTok = ptElse then
-    begin
-      Result := Result + Lexer.RawComment;
+    FStateUnknown := True;
+    try
+      Result := Lexer.RawComment;
       Lexer.NextTok;
       Result := Result + ParseText;
+      if Lexer.CurrTok = ptElse then
+      begin
+        Result := Result + Lexer.RawComment;
+        Lexer.NextTok;
+        Result := Result + ParseText;
+      end;
+      Result := Result + Lexer.RawComment;
+    finally
+      FStateUnknown := False;
     end;
-    Result := Result + Lexer.RawComment;
   end
   else
     if ((Token = ptIfdef) and (T = ttDefined))
@@ -271,6 +277,12 @@ var
     end;
   end;
 
+  procedure AddRawComment;
+  begin
+    strBuilder.Add(Lexer.RawComment);
+    Lexer.NextTok;
+  end;
+
 begin
   strBuilder := TStringList.Create;
   try
@@ -293,37 +305,34 @@ begin
           if poProcessDefines in State.Options then
             case Lexer.CurrTok of
               ptDefine:
-                ParseDefine;
+                if FStateUnknown then
+                  AddRawComment
+                else
+                  ParseDefine;
               ptUndef:
-                ParseUndef;
+                if FStateUnknown then
+                  AddRawComment
+                else
+                  ParseUndef;
               ptIfdef:
-                strBuilder.Add(ParseCondition(ptIfdef)); // strBuilder.Add(ParseIfdef);
+                strBuilder.Add(ParseCondition(ptIfdef));
               ptIfndef:
-                strBuilder.Add(ParseCondition(ptIfndef)); // strBuilder.Add(ParseIfndef);
+                strBuilder.Add(ParseCondition(ptIfndef));
             end
           else
-          begin
-            strBuilder.Add(Lexer.RawComment);
-            Lexer.NextTok;
-          end;
+            AddRawComment;
 
         ptElse, ptEndif:
           if poProcessDefines in State.Options then
             Break
           else
-          begin
-            strBuilder.Add(Lexer.RawComment);
-            Lexer.NextTok;
-          end;
+            AddRawComment;
 
         ptInclude:
           if poProcessIncludes in State.Options then
             strBuilder.Add(ParseInclude)
           else
-          begin
-            strBuilder.Add(Lexer.RawComment);
-            Lexer.NextTok;
-          end;
+            AddRawComment;
       else
         Break;
       end;
