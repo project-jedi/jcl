@@ -2610,9 +2610,18 @@ end;
 
 function TJclExceptFrame.CodeLocation: Pointer;
 begin
-  Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc.instructions))));
-    if Result = nil then
-      Result := @ExcFrame.desc.instructions;
+  if FrameKind <> efkUnknown then
+  begin
+    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc.instructions))));
+      if Result = nil then
+        Result := @ExcFrame.desc.instructions;
+  end
+  else
+  begin
+    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc))));
+      if Result = nil then
+        Result := @ExcFrame.desc;
+  end;
 end;
 
 //==============================================================================
