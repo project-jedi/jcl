@@ -16,7 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 18, 2000                                                 }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains a high performance counter class which can be used for    }
+{ highly accurate timing.                                                      }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
