@@ -369,8 +369,8 @@ uses
   JclLogic, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 const
-  RegSessionManager = {HKLM\}'System\CurrentControlSet\Control\Session Manager';
-  RegCritSecTimeout = {RegSessionManager\}'CriticalSectionTimeout';
+  RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
+  RegCritSecTimeout = {RegSessionManager\} 'CriticalSectionTimeout';
 
 //==================================================================================================
 // Locked Integer manipulation
@@ -1619,6 +1619,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/10/21 08:40:11  marquardt
+// style cleaning
+//
 // Revision 1.13  2004/10/17 23:09:37  mthoma
 // More cleaning. Removing RTLD versions of some functions.
 //

@@ -107,8 +107,8 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsComInvalidParam      = 'An invalid parameter was passed to the routine. If a parameter was' +
-    ' expected, it might be an unassigned item or nil pointer';
+  RsComInvalidParam      = 'An invalid parameter was passed to the routine. If a parameter was ' +
+    'expected, it might be an unassigned item or nil pointer';
   RsComFailedStreamRead  = 'Failed to read all of the data from the specified stream';
   RsComFailedStreamWrite = 'Failed to write all of the data into the specified stream';
 
@@ -329,14 +329,14 @@ resourcestring
 resourcestring
   RsExprEvalRParenExpected = 'Parse error: '')'' expected';
   RsExprEvalFactorExpected = 'Parse error: Factor expected';
-  RsExprEvalUnknownSymbol = 'Parse error: Unknown symbol: ''%s''';
+  RsExprEvalUnknownSymbol  = 'Parse error: Unknown symbol: ''%s''';
 
   RsExprEvalFirstArg = 'Parse error: ''('' and function''s first parameter expected';
-  RsExprEvalNextArg = 'Parse error: '','' and another parameter expected';
-  RsExprEvalEndArgs = 'Parse error: '')'' to close function''s parameters expected';
+  RsExprEvalNextArg  = 'Parse error: '','' and another parameter expected';
+  RsExprEvalEndArgs  = 'Parse error: '')'' to close function''s parameters expected';
 
-  RsExprEvalExprNotFound = 'Expression compiler error: Expression ''%s'' not found';
-  RsExprEvalExprPtrNotFound = 'Expression compiler error: Expression pointer not found';
+  RsExprEvalExprNotFound          = 'Expression compiler error: Expression ''%s'' not found';
+  RsExprEvalExprPtrNotFound       = 'Expression compiler error: Expression pointer not found';
   RsExprEvalExprRefCountAssertion = 'Expression compiler error: expression refcount < 0';
 
 //--------------------------------------------------------------------------------------------------
@@ -504,12 +504,12 @@ resourcestring
   RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
   RsMapiErrNOT_SUPPORTED            = 'Not supported';
 
-  RsMapiMailORIG        = 'From';
-  RsMapiMailTO          = 'To';
-  RsMapiMailCC          = 'Cc';
-  RsMapiMailBCC         = 'Bcc';
-  RsMapiMailSubject     = 'Subject';
-  RsMapiMailBody        = 'Body';
+  RsMapiMailORIG    = 'From';
+  RsMapiMailTO      = 'To';
+  RsMapiMailCC      = 'Cc';
+  RsMapiMailBCC     = 'Bcc';
+  RsMapiMailSubject = 'Subject';
+  RsMapiMailBody    = 'Body';
 
 //--------------------------------------------------------------------------------------------------
 // JclMath
@@ -645,12 +645,12 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  SErrNoMatch = 'No match';
-  SErrNull = 'Required value is null';
-  SErrBadOption = 'Bad option';
-  SErrBadMagic = 'Bad magic';
+  SErrNoMatch     = 'No match';
+  SErrNull        = 'Required value is null';
+  SErrBadOption   = 'Bad option';
+  SErrBadMagic    = 'Bad magic';
   SErrUnknownNode = 'Unknown node';
-  SErrNoMemory = 'Out of memory';
+  SErrNoMemory    = 'Out of memory';
   SErrNoSubString = 'No substring';
 
 //--------------------------------------------------------------------------------------------------
@@ -658,7 +658,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsPeReadOnlyStream          = 'Stream is read-only';
+  RsPeReadOnlyStream = 'Stream is read-only';
 
   // TJclPeImage
   RsPeCantOpen                = 'Cannot open file "%s"';
@@ -860,53 +860,53 @@ resourcestring
   RsRTTIInvalidGUIDString = 'Invalid conversion from string to GUID (%s).';
   RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
 
-  RsRTTIVar               = 'var ';
-  RsRTTIConst             = 'const ';
-  RsRTTIArrayOf           = 'array of ';
-  RsRTTIOut               = 'out ';
-  RsRTTIBits              = 'bits';
-  RsRTTIOrdinal           = 'ordinal=';
-  RsRTTITrue              = 'True';
-  RsRTTIFalse             = 'False';
-  RsRTTITypeError         = '???';
-  RsRTTITypeInfoAt        = 'Type info: %p';
+  RsRTTIVar           = 'var ';
+  RsRTTIConst         = 'const ';
+  RsRTTIArrayOf       = 'array of ';
+  RsRTTIOut           = 'out ';
+  RsRTTIBits          = 'bits';
+  RsRTTIOrdinal       = 'ordinal=';
+  RsRTTITrue          = 'True';
+  RsRTTIFalse         = 'False';
+  RsRTTITypeError     = '???';
+  RsRTTITypeInfoAt    = 'Type info: %p';
 
-  RsRTTIPropRead          = 'read';
-  RsRTTIPropWrite         = 'write';
-  RsRTTIPropStored        = 'stored';
+  RsRTTIPropRead      = 'read';
+  RsRTTIPropWrite     = 'write';
+  RsRTTIPropStored    = 'stored';
 
-  RsRTTIField             = 'field';
-  RsRTTIStaticMethod      = 'static method';
-  RsRTTIVirtualMethod     = 'virtual method';
+  RsRTTIField         = 'field';
+  RsRTTIStaticMethod  = 'static method';
+  RsRTTIVirtualMethod = 'virtual method';
 
-  RsRTTIIndex =             'index';
-  RsRTTIDefault =           'default';
+  RsRTTIIndex         = 'index';
+  RsRTTIDefault       = 'default';
 
-  RsRTTIName              = 'Name: ';
-  RsRTTIType              = 'Type: ';
-  RsRTTIFlags             = 'Flags: ';
-  RsRTTIGUID              = 'GUID: ';
-  RsRTTITypeKind          = 'Type kind: ';
-  RsRTTIOrdinalType       = 'Ordinal type: ';
-  RsRTTIMinValue          = 'Min value: ';
-  RsRTTIMaxValue          = 'Max value: ';
-  RsRTTINameList          = 'Names: ';
-  RsRTTIClassName         = 'Class name: ';
-  RsRTTIParent            = 'Parent: ';
-  RsRTTIPropCount         = 'Property count: ';
-  RsRTTIUnitName          = 'Unit name: ';
-  RsRTTIBasedOn           = 'Based on: ';
-  RsRTTIFloatType         = 'Float type: ';
-  RsRTTIMethodKind        = 'Method kind: ';
-  RsRTTIParamCount        = 'Parameter count: ';
-  RsRTTIReturnType        = 'Return type: ';
-  RsRTTIMaxLen            = 'Max length: ';
-  RsRTTIElSize            = 'Element size: ';
-  RsRTTIElType            = 'Element type: ';
-  RsRTTIElNeedCleanup     = 'Elements need clean up: ';
-  RsRTTIVarType           = 'Variant type: ';
+  RsRTTIName          = 'Name: ';
+  RsRTTIType          = 'Type: ';
+  RsRTTIFlags         = 'Flags: ';
+  RsRTTIGUID          = 'GUID: ';
+  RsRTTITypeKind      = 'Type kind: ';
+  RsRTTIOrdinalType   = 'Ordinal type: ';
+  RsRTTIMinValue      = 'Min value: ';
+  RsRTTIMaxValue      = 'Max value: ';
+  RsRTTINameList      = 'Names: ';
+  RsRTTIClassName     = 'Class name: ';
+  RsRTTIParent        = 'Parent: ';
+  RsRTTIPropCount     = 'Property count: ';
+  RsRTTIUnitName      = 'Unit name: ';
+  RsRTTIBasedOn       = 'Based on: ';
+  RsRTTIFloatType     = 'Float type: ';
+  RsRTTIMethodKind    = 'Method kind: ';
+  RsRTTIParamCount    = 'Parameter count: ';
+  RsRTTIReturnType    = 'Return type: ';
+  RsRTTIMaxLen        = 'Max length: ';
+  RsRTTIElSize        = 'Element size: ';
+  RsRTTIElType        = 'Element type: ';
+  RsRTTIElNeedCleanup = 'Elements need clean up: ';
+  RsRTTIVarType       = 'Variant type: ';
 
-  RsDeclarationFormat     = '// Declaration for ''%s'' not supported.';
+  RsDeclarationFormat = '// Declaration for ''%s'' not supported.';
 
 //--------------------------------------------------------------------------------------------------
 // JclSchedule
@@ -1013,11 +1013,15 @@ resourcestring
 
   RsOpenGLInfoError = 'Err';
 
-  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
-  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
-  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
-  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
+  RsEOpenGLInfo = 'GetOpenGLVersion: %s failed';
 
+  {$IFDEF MSWINDOWS}
+  RsSPInfo = 'SP%u';
+  {$ENDIF MSWINDOWS}
+
+  {$IFDEF UNIX}
+  RsInvalidProcessID = 'Invalid process ID %d';
+  {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 // JclSysUtils
@@ -1059,12 +1063,20 @@ resourcestring
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
 //--------------------------------------------------------------------------------------------------
+// JclWin32
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsELibraryNotFound  = 'Library not found: %s';
+  RsEFunctionNotFound = 'Function not found: %s.%s';
+
+//--------------------------------------------------------------------------------------------------
 // JclWinMidi
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsMidiInUnknownError    = 'Unknown MIDI-In error No. %d';
-  RsMidiOutUnknownError   = 'Unknown MIDI-Out error No. %d';
+  RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
+  RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
 //--------------------------------------------------------------------------------------------------
 // JclZlib
@@ -1112,6 +1124,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.20  2004/10/21 08:40:10  marquardt
+// style cleaning
+//
 // Revision 1.19  2004/10/18 16:22:13  marquardt
 // JclRegistry redesign to remove PH contributor
 //

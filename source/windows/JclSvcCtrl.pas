@@ -1066,7 +1066,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   { TODO : Delete after Test }
   {procedure EnumServiceGroups;
   const
-    cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
+    cKeyServiceGroupOrder = 'SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
     cValList              = 'List';
   var
     Buf: array of Char;
@@ -1093,7 +1093,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   { TODO -cHelp : }
   procedure EnumServiceGroups;
   const
-    cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
+    cKeyServiceGroupOrder = 'SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
     cValList = 'List';
   var
     List: TStringList;
@@ -1449,6 +1449,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2004/10/21 08:40:11  marquardt
+// style cleaning
+//
 // Revision 1.26  2004/10/21 06:38:53  marquardt
 // style clenaing, bugfixes, improvements
 //

@@ -893,8 +893,8 @@ end;
 // inside HKEY_LOCAL_MACHINE
 
 const
-  HKLM_CURRENT_VERSION_WINDOWS = 'Software\Microsoft\Windows\CurrentVersion';
-  HKLM_CURRENT_VERSION_NT      = 'Software\Microsoft\Windows NT\CurrentVersion';
+  HKLM_CURRENT_VERSION_WINDOWS = 'SOFTWARE\Microsoft\Windows\CurrentVersion';
+  HKLM_CURRENT_VERSION_NT      = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
 
 function REG_CURRENT_VERSION: string;
 begin
@@ -1467,9 +1467,9 @@ end;
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
-  WinNT_REG_PATH = '\HARDWARE\DESCRIPTION\System';
+  WinNT_REG_PATH = 'HARDWARE\DESCRIPTION\System';
   WinNT_REG_KEY  = 'SystemBiosDate';
-  Win9x_REG_PATH = '\Enum\Root\*PNP0C01\0000';
+  Win9x_REG_PATH = 'Enum\Root\*PNP0C01\0000';
   Win9x_REG_KEY  = 'BiosDate';
 var
   RegStr: string;
@@ -1529,9 +1529,6 @@ const
   CommLen = 16;  // synchronize with size of comm in struct task_struct in
                  //     /usr/include/linux/sched.h
   SProcDirectory = '/proc';
-
-resourcestring
-  RsInvalidProcessID = 'Invalid process id %d';
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 var
@@ -2150,7 +2147,7 @@ end;
 
 function GetShellProcessName: string;
 const
-  cShellKey = 'Software\Microsoft\Windows NT\CurrentVersion\WinLogon';
+  cShellKey = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon';
   cShellValue = 'Shell';
   cShellDefault = 'explorer.exe';
   cShellSystemIniFileName = 'system.ini';
@@ -2254,7 +2251,7 @@ end;
 
 function NtProductType: TNtProductType;
 const
-  ProductType = 'System\CurrentControlSet\Control\ProductOptions';
+  ProductType = 'SYSTEM\CurrentControlSet\Control\ProductOptions';
 var
   Product: string;
   VersionInfo: TOSVersionInfoEx;
@@ -2299,7 +2296,7 @@ begin
   begin
     if GetVersionEx(VersionInfo) then
     begin
-      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+      if VersionInfo.wProductType = VER_NT_WORKSTATION then
       begin
         if (VersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
@@ -2331,16 +2328,26 @@ end;
 function GetWindowsVersionString: string;
 begin
   case GetWindowsVersion of
-     wvWin95: Result := RsOSVersionWin95;
-     wvWin95OSR2: Result := RsOSVersionWin95OSR2;
-     wvWin98: Result := RsOSVersionWin98;
-     wvWin98SE: Result := RsOSVersionWin98SE;
-     wvWinME: Result := RsOSVersionWinME;
-     wvWinNT31, wvWinNT35, wvWinNT351: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
-     wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
-     wvWin2000: Result := RsOSVersionWin2000;
-     wvWinXP: Result := RsOSVersionWinXP;
-     wvWin2003: Result := RsOSVersionWin2003;
+    wvWin95:
+      Result := RsOSVersionWin95;
+    wvWin95OSR2:
+      Result := RsOSVersionWin95OSR2;
+    wvWin98:
+      Result := RsOSVersionWin98;
+    wvWin98SE:
+      Result := RsOSVersionWin98SE;
+    wvWinME:
+      Result := RsOSVersionWinME;
+    wvWinNT31, wvWinNT35, wvWinNT351:
+      Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
+    wvWinNT4:
+      Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
+    wvWin2000:
+      Result := RsOSVersionWin2000;
+    wvWinXP:
+      Result := RsOSVersionWinXP;
+    wvWin2003:
+      Result := RsOSVersionWin2003;
   else
     Result := '';
   end;  
@@ -2351,12 +2358,18 @@ end;
 function NtProductTypeString: string;
 begin
   case NtProductType of
-   ptWorkStation: Result := RsProductTypeWorkStation;
-   ptServer: Result := RsProductTypeServer;
-   ptAdvancedServer: Result := RsProductTypeAdvancedServer;
-   ptPersonal: Result := RsProductTypePersonal;
-   ptProfessional: Result := RsProductTypeProfessional;
-   ptDatacenterServer: Result := RsProductTypeDatacenterServer;
+   ptWorkStation:
+     Result := RsProductTypeWorkStation;
+   ptServer:
+     Result := RsProductTypeServer;
+   ptAdvancedServer:
+     Result := RsProductTypeAdvancedServer;
+   ptPersonal:
+     Result := RsProductTypePersonal;
+   ptProfessional:
+     Result := RsProductTypeProfessional;
+   ptDatacenterServer:
+     Result := RsProductTypeDatacenterServer;
   else
     Result := '';
   end;
@@ -2366,7 +2379,7 @@ end;
 
 function GetWindowsServicePackVersion: Integer;
 const
-  RegWindowsControl = '\SYSTEM\CurrentControlSet\Control\Windows\';
+  RegWindowsControl = 'SYSTEM\CurrentControlSet\Control\Windows';
 var
   SP: Integer;
   VersionInfo: TOSVersionInfoEx;
@@ -2376,7 +2389,8 @@ begin
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
-    if GetVersionEx(VersionInfo) then Result := VersionInfo.wServicePackMajor;
+    if GetVersionEx(VersionInfo) then
+      Result := VersionInfo.wServicePackMajor;
     end
   else
   begin
@@ -2393,7 +2407,7 @@ var
 begin
   SP := GetWindowsServicePackVersion;
   if SP > 0 then
-    Result := 'SP' + IntToStr(SP)
+    Result := Format(RsSPInfo, [SP])
   else
     Result := '';
 end;
@@ -2421,10 +2435,15 @@ var
   bError: Boolean;
   sOpenGLVersion, sOpenGLVendor: string;
   Save8087CW: Word;
+
+  procedure FunctionFailedError(Name: string);
+  begin
+    raise EJclError.CreateResRecFmt(@RsEOpenGLInfo, [Name]);
+  end;
+
 begin
   { To call for the version information string we must first have an active
     context established for use.  We can, of course, close this after use }
-
   Save8087CW := Get8087ControlWord;
   try
     Set8087CW($133F);
@@ -2445,7 +2464,7 @@ begin
     begin
       nSize := SizeOf(pfd);
       nVersion := 1;  { The Current Version of the descriptor is 1 }
-      dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
+      dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
       iPixelType := PFD_TYPE_RGBA;
       cColorBits := 24;  { support 24-bit colour }
       cDepthBits := 32;  { Depth of the z-buffer }
@@ -2456,22 +2475,22 @@ begin
     try
       iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
       if iFormatIndex = 0 then
-        raise Exception.Create(RsOpenGLInfoExcep_CPF);
+        FunctionFailedError('ChoosePixelFormat');
 
       if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
-        raise Exception.Create(RsOpenGLInfoExcep_SPF);
+        FunctionFailedError('SetPixelFormat');
 
       hGLContext := wglCreateContext(hGLDC);
       if hGLContext = 0 then
-        raise Exception.Create(RsOpenGLInfoExcep_CC);
+        FunctionFailedError('wglCreateContext');
 
       if not wglMakeCurrent(hGLDC, hGLContext) then
-        raise Exception.Create(RsOpenGLInfoExcep_MC);
+        FunctionFailedError('wglMakeCurrent');
 
       { TODO : Review the following.  Not sure I am 100% happy with this code
                in its current structure. }
       pcTemp := glGetString(GL_VERSION);
-      if pcTemp <> Nil then
+      if pcTemp <> nil then
       begin
         { TODO : Store this information in a Global Variable, and return that??
                  This would save this work being performed again with later calls }
@@ -2481,7 +2500,7 @@ begin
       begin
         bError := True;
         glErr := glGetError;
-        if (glErr <> GL_NO_ERROR) then
+        if glErr <> GL_NO_ERROR then
         begin
           sOpenGLVersion := gluErrorString(glErr);
           sOpenGLVendor := '';
@@ -2489,7 +2508,7 @@ begin
       end;
 
       pcTemp := glGetString(GL_VENDOR);
-      if pcTemp <> Nil then
+      if pcTemp <> nil then
       begin
         { TODO : Store this information in a Global Variable, and return that??
                  This would save this work being performed again with later calls }
@@ -2499,7 +2518,7 @@ begin
       begin
         bError := True;
         glErr := glGetError;
-        if (glErr <> GL_NO_ERROR) then
+        if glErr <> GL_NO_ERROR then
         begin
           sOpenGLVendor := gluErrorString(glErr);
           Exit;
@@ -2545,8 +2564,8 @@ end;
 
 function AdapterToString(Adapter: PByteArray): string;
 begin
-  Result := Format('%2.2x-%2.2x-%2.2x-%2.2x-%2.2x-%2.2x', [
-    Integer(Adapter[0]), Integer(Adapter[1]),
+  Result := Format('%2.2x-%2.2x-%2.2x-%2.2x-%2.2x-%2.2x',
+   [Integer(Adapter[0]), Integer(Adapter[1]),
     Integer(Adapter[2]), Integer(Adapter[3]),
     Integer(Adapter[4]), Integer(Adapter[5])]);
 end;
@@ -2563,6 +2582,7 @@ var
   _NetBios: TNetBios;
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
+
   procedure ExitNetbios;
     begin
     if NetBiosLib <> 0 then
@@ -2667,10 +2687,10 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     MIB_ifMACEntAddr: TAsnObjectIdentifier;
     MIB_ifEntryType: TAsnObjectIdentifier;
     MIB_ifEntryNum: TAsnObjectIdentifier;
-    varBindList: TSnmpVarBindList;
-    varBind: array [0..1] of TSnmpVarBind;
+    VarBindList: TSnmpVarBindList;
+    VarBind: array [0..1] of TSnmpVarBind;
     ErrorStatus, ErrorIndex: TAsnInteger32;
-    Dtmp: Integer;
+    DTmp: Integer;
     Ret: Boolean;
     MAC: PByteArray;
   begin
@@ -2686,33 +2706,33 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
         MIB_ifEntryNum.ids := @OID_ifEntryNum;
         if SnmpExtensionInit(GetTickCount, PollForTrapEvent, SupportedView) then
         begin
-          varBindList.list := @varBind[0];
-          varBind[0].name := DEFINE_NULLOID;
-          varBind[1].name := DEFINE_NULLOID;
-          varBindList.len := 1;
-          SnmpUtilOidCpy(@varBind[0].name, @MIB_ifEntryNum);
-          Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, varBindList, ErrorStatus, ErrorIndex);
+          VarBindList.list := @VarBind[0];
+          VarBind[0].name := DEFINE_NULLOID;
+          VarBind[1].name := DEFINE_NULLOID;
+          VarBindList.len := 1;
+          SnmpUtilOidCpy(@VarBind[0].name, @MIB_ifEntryNum);
+          Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, VarBindList, ErrorStatus, ErrorIndex);
           if Ret then
           begin
-            Result := varBind[0].value.number;
-            varBindList.len := 2;
-            SnmpUtilOidCpy(@varBind[0].name, @MIB_ifEntryType);
-            SnmpUtilOidCpy(@varBind[1].name, @MIB_ifMACEntAddr);
+            Result := VarBind[0].value.number;
+            VarBindList.len := 2;
+            SnmpUtilOidCpy(@VarBind[0].name, @MIB_ifEntryType);
+            SnmpUtilOidCpy(@VarBind[1].name, @MIB_ifMACEntAddr);
             while Ret do
             begin
-              Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, varBindList, ErrorStatus, ErrorIndex);
+              Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, VarBindList, ErrorStatus, ErrorIndex);
               if Ret then
               begin
-                Ret := SnmpUtilOidNCmp(@varBind[0].name, @MIB_ifEntryType, MIB_ifEntryType.idLength) = SNMP_ERRORSTATUS_NOERROR;
+                Ret := SnmpUtilOidNCmp(@VarBind[0].name, @MIB_ifEntryType, MIB_ifEntryType.idLength) = SNMP_ERRORSTATUS_NOERROR;
                 if Ret then
                 begin
-                  Dtmp := varBind[0].value.number;
-                  if Dtmp = 6 then
+                  DTmp := VarBind[0].value.number;
+                  if DTmp = 6 then
                   begin
-                    Ret := SnmpUtilOidNCmp(@varBind[1].name, @MIB_ifMACEntAddr, MIB_ifMACEntAddr.idLength) = SNMP_ERRORSTATUS_NOERROR;
-                    if Ret and (varBind[1].value.address.stream <> nil) then
+                    Ret := SnmpUtilOidNCmp(@VarBind[1].name, @MIB_ifMACEntAddr, MIB_ifMACEntAddr.idLength) = SNMP_ERRORSTATUS_NOERROR;
+                    if Ret and (VarBind[1].value.address.stream <> nil) then
                     begin
-                      MAC := PByteArray(varBind[1].value.address.stream);
+                      MAC := PByteArray(VarBind[1].value.address.stream);
                       if not CompareMem(MAC, @NullAdapterAddress, SizeOf(NullAdapterAddress)) then
                         Addresses.Add(AdapterToString(MAC));
                     end;
@@ -2721,8 +2741,8 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
               end;
             end;
           end;
-          SnmpUtilVarBindFree(@varBind[0]);
-          SnmpUtilVarBindFree(@varBind[1]);
+          SnmpUtilVarBindFree(@VarBind[0]);
+          SnmpUtilVarBindFree(@VarBind[1]);
         end;
       finally
         UnloadSnmpExtension;
@@ -2846,7 +2866,7 @@ begin
   Result := QueryPerformanceFrequency(CountFreq);
   if Result then
   begin
-    while ((Tries < 3 ) or ((Tries < 20) and ((Abs(3 * Freq - Total) > 3) or
+    while ((Tries < 3) or ((Tries < 20) and ((Abs(3 * Freq - Total) > 3) or
       (Abs(3 * Freq2 - Total) > 3) or (Abs(3 * Freq3 - Total) > 3)))) do
     begin
       Inc(Tries);
@@ -3024,10 +3044,14 @@ begin
               end;
             8:
               case IntelSpecific.BrandID of
-                1: CpuName := 'Celeron';
-                2: CpuName := 'Pentium III';
-                3: CpuName := 'Pentium III Xeon';
-                4: CpuName := 'Pentium III';
+                1:
+                  CpuName := 'Celeron';
+                2:
+                  CpuName := 'Pentium III';
+                3:
+                  CpuName := 'Pentium III Xeon';
+                4:
+                  CpuName := 'Pentium III';
               else
                 CpuName := 'Pentium III';
               end;
@@ -3528,7 +3552,7 @@ end;
 {$IFDEF MSWINDOWS}
 function GetAPMLineStatus: TAPMLineStatus;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := alsUnknown;
 
@@ -3554,7 +3578,7 @@ end;
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := abfUnknown;
 
@@ -3587,7 +3611,7 @@ end;
 
 function GetAPMBatteryFlags: TAPMBatteryFlags;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := [];
 
@@ -3620,7 +3644,7 @@ end;
 
 function GetAPMBatteryLifePercent: Integer;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := 0;
 
@@ -3637,7 +3661,7 @@ end;
 
 function GetAPMBatteryLifeTime: DWORD;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := 0;
 
@@ -3654,7 +3678,7 @@ end;
 
 function GetAPMBatteryFullLifeTime: DWORD;
 var
-  SystemPowerstatus: TSystemPowerStatus;
+  SystemPowerStatus: TSystemPowerStatus;
 begin
   Result := 0;
 
@@ -4022,7 +4046,7 @@ begin
     wvWinNT351:
       begin
         IsWinNT3 := True;
-        // (rom) bug? IsWinNT35 not set here
+        IsWinNT35 := True;
         IsWinNT351 := True;
       end;
     wvWinNT4:
@@ -4058,6 +4082,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.33  2004/10/21 08:40:10  marquardt
+// style cleaning
+//
 // Revision 1.32  2004/10/17 23:48:22  mthoma
 // Removed contributions... Reintroduced orignal GetOpenGLVersion.
 //
