@@ -20,6 +20,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.12  2004/03/18 20:30:58  rrossmair
+// *** empty log message ***
+//
 // Revision 1.11  2004/03/17 17:39:03  rrossmair
 // Win32 installation fixed
 //
@@ -306,7 +309,7 @@ begin
     if FileExists(ListFileName) then
       Units.LoadFromFile(ListFileName)
     else
-      BuildFileList(Path + '\*.pas', faAnyFile, Units);
+      BuildFileList(Path + (PathSeparator + '*.pas'), faAnyFile, Units);
     for I := 0 to Units.Count -1 do
       Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
     with Installation.DCC do
@@ -534,7 +537,7 @@ const
   BcbBmk = '\BCB.bmk';
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
-  BcbBmk = '/BCB.bmk';
+  BcbGmk = '/bcb.gmk';
   {$ENDIF KYLIX}
 var
   PackageFileName: string;
@@ -546,10 +549,16 @@ begin
     with TJclBCBInstallation(Installation) do
     begin
       Bpr2Mak.Options.Clear;
-      Bpr2Mak.Options.Add('-t..' + BcbBmk);
+      Bpr2Mak.Options.Add('-t..' + BcbGmk);
+      {$IFDEF MSWINDOWS}
       Make.Options.Clear;
-      Make.Options.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
-      Make.Options.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
+      Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
+      Make.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
+      {$ELSE}
+      SetEnvironmentVar('OBJDIR', '-I' + Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPILIBDIR','-l' + Tool.DcpPath(Installation));
+      SetEnvironmentVar('BPLDIR', PathAddSeparator(Tool.BplPath(Installation)));
+      {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));
       Tool.WriteInstallLog(Installation.DCC.Output);
@@ -643,7 +652,9 @@ begin
       AddMakeNodes(MakeNode, False);
       AddMakeNodes(MakeNode, True);
 
-      {$IFNDEF KYLIX}
+      {$IFDEF KYLIX}
+      AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
+      {$ELSE MSWINDOWS}
       if (FJclHlpHelpFileName <> '') or (FJclChmHelpFileName <> '') then
       begin
         TempNode := AddNode(ProductNode, RsHelpFiles, FID_JCL_Help);
@@ -658,9 +669,7 @@ begin
       AddNode(TempNode, RsJCLDialogVCLSnd, FID_JCL_ExcDialogVCLSnd);
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
-      {$ENDIF}
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
-      {$IFDEF MSWINDOWS}
       TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
       AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug);
       AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer);
