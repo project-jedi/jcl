@@ -146,11 +146,7 @@ $Id$
           <exclude name="${basedir}/dist/**" />
           <exclude name="${basedir}/docs/about jcl/**" />
           <exclude name="${basedir}/docs/contributors.txt" />
-          <exclude name="${basedir}/devtools/*.dpr" />
-          <exclude name="${basedir}/devtools/*.dof" />
-          <exclude name="${basedir}/devtools/*.htm" />
-          <exclude name="${basedir}/devtools/*.ico" />
-          <exclude name="${basedir}/devtools/*.txt" />
+          <exclude name="${basedir}/devtools/**" />
           <exclude name="${doc.dir}/*.info" />
           <exclude name="${doc.dir}/internal/**" />
           <exclude name="${install.dir}/prototypes/**" />
@@ -217,11 +213,11 @@ $Id$
           <include name="${basedir}/**/*.rc" />
           <include name="${basedir}/**/*.res" />
           <include name="${basedir}/**/*.ico" />
-
+<!--
           <include name="${help.dir}/JCLHelp.hlp" />
           <include name="${help.dir}/JCLHelp.cnt" />
           <include name="${help.dir}/JCLHelp.als" />
-
+-->
           <include name="${basedir}/**/*.tlb" />
 
           <include name="${basedir}/**/*.txt" />
