@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 22, 2001                                              }
+{ Last modified: January 27, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -164,7 +164,7 @@ type
   TJclEmailLogonOptions = set of (loLogonUI, loNewSession);
   TJclEmailReadOptions = set of (roAttachments, roHeaderOnly, roMarkAsRead);
 
-  TJclEmailReadedMsg = record
+  TJclEmailReadMsg = record
     ConversationID: string;
     DateReceived: TDateTime;
     MessageType: string;
@@ -178,7 +178,7 @@ type
     FFindOptions: TJclEmailFindOptions;
     FLogonOptions: TJclEmailLogonOptions;
     FParentWnd: HWND;
-    FReadedMsg: TJclEmailReadedMsg;
+    FReadMsg: TJclEmailReadMsg;
     FRecipients: TJclEmailRecips;
     FSeedMessageID: string;
     FSessionHandle: THandle;
@@ -217,7 +217,7 @@ type
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
     property ParentWnd: HWND read GetParentWnd write FParentWnd;
-    property ReadedMsg: TJclEmailReadedMsg read FReadedMsg;
+    property ReadMsg: TJclEmailReadMsg read FReadMsg;
     property Recipients: TJclEmailRecips read FRecipients;
     property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
     property SessionHandle: THandle read FSessionHandle;
@@ -719,10 +719,10 @@ begin
   FBody := '';
   FSubject := '';
   FRecipients.Clear;
-  FReadedMsg.MessageType := '';
-  FReadedMsg.DateReceived := 0;
-  FReadedMsg.ConversationID := '';
-  FReadedMsg.Flags := 0;
+  FReadMsg.MessageType := '';
+  FReadMsg.DateReceived := 0;
+  FReadMsg.ConversationID := '';
+  FReadMsg.Flags := 0;
 end;
 
 //------------------------------------------------------------------------------
@@ -1080,10 +1080,10 @@ begin
       Attachments.Add(Files^.lpszFileName);
       Inc(Files);
     end;
-    FReadedMsg.MessageType := Msg^.lpszMessageType;
-    FReadedMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
-    FReadedMsg.ConversationID := Msg^.lpszConversationID;
-    FReadedMsg.Flags := Msg^.flFlags;
+    FReadMsg.MessageType := Msg^.lpszMessageType;
+    FReadMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
+    FReadMsg.ConversationID := Msg^.lpszConversationID;
+    FReadMsg.Flags := Msg^.flFlags;
     Result := True;
   finally
     MapiFreeBuffer(Msg);
