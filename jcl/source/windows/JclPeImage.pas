@@ -21,7 +21,7 @@
 { This unit contains various PE file classes and support routines              }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: December 13, 2000                                             }
+{ Last modified: January 6, 2001                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -425,6 +425,7 @@ type
     FLastAllSortType: TJclPeImportSort;
     FLastAllSortDescending: Boolean;
     FLinkerProducer: TJclPeLinkerProducer;
+    FParalelImportTable: array of Pointer;
     FUniqueNamesList: TStringList;
     function GetAllItemCount: Integer;
     function GetAllItems(Index: Integer): TJclPeImportFuncItem;
@@ -441,6 +442,7 @@ type
     constructor Create(AImage: TJclPeImage);
     destructor Destroy; override;
     procedure CheckImports(PeImageCache: TJclPeImagesCache {$IFDEF SUPPORTS_DEFAULTPARAMS} = nil {$ENDIF});
+    function MakeBorlandImportTableForMappedImage: Boolean;
     function SmartFindName(const CompareName, LibName: string;
       Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): TJclPeImportFuncItem;
     procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
@@ -474,7 +476,7 @@ type
     FForwardedDotPos: PChar;
     FHint: Word;
     FName: PChar;
-    FOrdinal: DWORD;
+    FOrdinal: Word;
     FResolveCheck: TJclPeResolveCheck;
     function GetIsForwarded: Boolean;
     function GetForwardedFuncName: string;
@@ -498,7 +500,7 @@ type
     property Hint: Word read FHint;
     property MappedAddress: Pointer read GetMappedAddress;
     property Name: string read GetName;
-    property Ordinal: DWORD read FOrdinal;
+    property Ordinal: Word read FOrdinal;
     property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
     property SectionName: string read GetSectionName;
   end;
@@ -604,6 +606,7 @@ type
     function GetRawEntryData: Pointer;
     function GetResourceType: TJclResourceType;
     function GetResourceTypeStr: string;
+    function GetRawEntryDataSize: Integer;
   protected
     function OffsetToRawData(Ofs: DWORD): DWORD;
     function Level1Item: TJclPeResourceItem;
@@ -620,6 +623,7 @@ type
     property ParameterName: string read GetParameterName; 
     property ParentItem: TJclPeResourceItem read FParentItem; 
     property RawEntryData: Pointer read GetRawEntryData;
+    property RawEntryDataSize: Integer read GetRawEntryDataSize;
     property ResourceType: TJclResourceType read GetResourceType;
     property ResourceTypeStr: string read GetResourceTypeStr;
   end;
@@ -802,6 +806,7 @@ type
     function GetImageSectionHeaders(Index: Integer): TImageSectionHeader;
     function GetImageSectionNames(Index: Integer): string;
     function GetImageSectionNameFromRva(const Rva: DWORD): string;
+    function GetVersionInfoAvailable: Boolean;
     procedure SetFileName(const Value: TFileName);
   protected
     procedure AfterOpen; dynamic;
@@ -857,10 +862,11 @@ type
     property Status: TJclPeImageStatus read FStatus;
     property UnusedHeaderBytes: TImageDataDirectory read GetUnusedHeaderBytes;
     property VersionInfo: TJclFileVersionInfo read GetVersionInfo;
+    property VersionInfoAvailable: Boolean read GetVersionInfoAvailable;
   end;
 
 //------------------------------------------------------------------------------
-// Borland PE Image specific information
+// Borland Delphi PE Image specific information
 //------------------------------------------------------------------------------
 
   TJclPePackageInfo = class (TObject)
@@ -1034,6 +1040,9 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
 
 function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
 
+function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
+  const SectionName: string): PImageSectionHeader;
+
 type
   TJclPeSectionStream = class (TCustomMemoryStream)
   private
@@ -1044,6 +1053,7 @@ type
     constructor Create(Instance: HMODULE; const ASectionName: string);
     function Write(const Buffer; Count: Longint): Longint; override;
     property Instance: HMODULE read FInstance;
+    property SectionHeader: TImageSectionHeader read FSectionHeader;
   end;
 
 //------------------------------------------------------------------------------
@@ -1187,28 +1197,11 @@ uses
   Consts,
   JclResources, JclSysUtils;
 
-resourcestring
-  RsPeNotAvailableForAttached = 'Feature is not available for attached images';
-  RsPeSectionNotFound = 'Section "%s" not found';
-
 //------------------------------------------------------------------------------
 
 function IMAGE_ORDINAL(Ordinal: DWORD): Word;
 begin
   Result := Ordinal and $FFFF;
-end;
-
-//------------------------------------------------------------------------------
-
-function ValueComp(const Value1, Value2: Integer): Integer;
-begin
-  if Value1 > Value2 then
-    Result := 1
-  else
-  if Value1 < Value2 then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 //------------------------------------------------------------------------------
@@ -1336,8 +1329,7 @@ begin
   if Result = 0 then
     Result := StrComp(TJclPeImportFuncItem(Item1).ImportLib.FName, TJclPeImportFuncItem(Item2).ImportLib.FName);
   if Result = 0 then
-    Result := ValueComp(TJclPeImportFuncItem(Item1).Ordinal,
-      TJclPeImportFuncItem(Item2).Ordinal)
+    Result := TJclPeImportFuncItem(Item1).Ordinal - TJclPeImportFuncItem(Item2).Ordinal;
 end;
 
 function ImportSortByNameDESC(Item1, Item2: Pointer): Integer;
@@ -1349,7 +1341,7 @@ end;
 
 function ImportSortByHint(Item1, Item2: Pointer): Integer;
 begin
-  Result := ValueComp(TJclPeImportFuncItem(Item1).Hint, TJclPeImportFuncItem(Item2).Hint)
+  Result := TJclPeImportFuncItem(Item1).Hint - TJclPeImportFuncItem(Item2).Hint;
 end;
 
 function ImportSortByHintDESC(Item1, Item2: Pointer): Integer;
@@ -1379,7 +1371,7 @@ begin
   Result := StrComp(TJclPeImportFuncItem(Item1).ImportLib.FName,
     TJclPeImportFuncItem(Item2).ImportLib.FName);
   if Result = 0 then
-    Result := ValueComp(TJclPeImportFuncItem(Item1).Ordinal, TJclPeImportFuncItem(Item2).Ordinal)
+    Result := TJclPeImportFuncItem(Item1).Ordinal -  TJclPeImportFuncItem(Item2).Ordinal;
 end;
 
 function ImportSortByOrdinalDESC(Item1, Item2: Pointer): Integer;
@@ -1405,8 +1397,8 @@ end;
 
 function ImportLibSortByIndex(Item1, Item2: Pointer): Integer;
 begin
-  Result := ValueComp(TJclPeImportLibItem(Item1).ImportDirectoryIndex,
-    TJclPeImportLibItem(Item2).ImportDirectoryIndex);
+  Result := TJclPeImportLibItem(Item1).ImportDirectoryIndex -
+    TJclPeImportLibItem(Item2).ImportDirectoryIndex;
 end;
 
 //------------------------------------------------------------------------------
@@ -1687,8 +1679,8 @@ begin
         LibItem.FImportKind := ikImport;
         if ImportDesc^.Characteristics = 0 then
         begin
-          if FAttachedImage then
-            LibItem.FThunk := nil // Borland images doesn't have two paralel arrays
+          if FAttachedImage then  // Borland images doesn't have two paralel arrays
+            LibItem.FThunk := nil // see MakeBorlandImportTableForMappedImage method
           else
             LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.FirstThunk));
           FLinkerProducer := lrBorland;
@@ -1742,9 +1734,13 @@ end;
 //------------------------------------------------------------------------------
 
 destructor TJclPeImportList.Destroy;
+var
+  I: Integer;
 begin
   FreeAndNil(FAllItemsList);
   FreeAndNil(FUniqueNamesList);
+  for I := 0 to Length(FParalelImportTable) - 1 do
+    FreeMem(FParalelImportTable[I]);
   inherited;
 end;
 
@@ -1806,6 +1802,39 @@ end;
 function TJclPeImportList.GetUniqueLibNames(Index: Integer): string;
 begin
   Result := FUniqueNamesList[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImportList.MakeBorlandImportTableForMappedImage: Boolean;
+var
+  FileImage: TJclPeImage;
+  I, TableSize: Integer;
+begin
+  if FImage.FAttachedImage and (FLinkerProducer = lrBorland) and
+    (Length(FParalelImportTable) = 0) then
+  begin
+    FileImage := TJclPeImage.Create(True);
+    try
+      FileImage.FileName := FImage.FileName;
+      Result := FileImage.StatusOK;
+      if Result then
+      begin
+        SetLength(FParalelImportTable, FileImage.ImportList.Count);
+        for I := 0 to FileImage.ImportList.Count - 1 do
+        begin
+          Assert(Items[I].ImportKind = ikImport); // Borland doesn't have Delay load or Bound imports
+          TableSize := (FileImage.ImportList[I].Count + 1) * SizeOf(TImageThunkData);
+          GetMem(FParalelImportTable[I], TableSize);
+          System.Move(FileImage.ImportList[I].ThunkData^, FParalelImportTable[I]^, TableSize);
+          Items[I].FThunk := FParalelImportTable[I];
+        end;
+      end;
+    finally
+      FileImage.Free;
+    end;
+  end else
+    Result := True;
 end;
 
 //------------------------------------------------------------------------------
@@ -2055,7 +2084,7 @@ end;
 
 function ExportSortByOrdinal(Item1, Item2: Pointer): Integer;
 begin
-  Result := ValueComp(TJclPeExportFuncItem(Item1).Ordinal, TJclPeExportFuncItem(Item2).Ordinal);
+  Result := TJclPeExportFuncItem(Item1).Ordinal - TJclPeExportFuncItem(Item2).Ordinal;
 end;
 
 function ExportSortByOrdinalDESC(Item1, Item2: Pointer): Integer;
@@ -2067,7 +2096,7 @@ end;
 
 function ExportSortByHint(Item1, Item2: Pointer): Integer;
 begin
-  Result := ValueComp(TJclPeExportFuncItem(Item1).Hint, TJclPeExportFuncItem(Item2).Hint);
+  Result := TJclPeExportFuncItem(Item1).Hint - TJclPeExportFuncItem(Item2).Hint;
 end;
 
 function ExportSortByHintDESC(Item1, Item2: Pointer): Integer;
@@ -2079,7 +2108,7 @@ end;
 
 function ExportSortByAddress(Item1, Item2: Pointer): Integer;
 begin
-  Result := ValueComp(TJclPeExportFuncItem(Item1).Address, TJclPeExportFuncItem(Item2).Address);
+  Result := TJclPeExportFuncItem(Item1).Address - TJclPeExportFuncItem(Item2).Address;
   if Result = 0 then
     Result := ExportSortByName(Item1, Item2);
 end;
@@ -2553,6 +2582,16 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeResourceItem.GetRawEntryDataSize: Integer;
+begin
+  if GetIsDirectory then
+    Result := -1
+  else
+    Result := PImageResourceDataEntry(OffsetToRawData(FEntry^.OffsetToData))^.Size;
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeResourceItem.GetResourceType: TJclResourceType;
 begin
   with Level1Item do
@@ -2965,17 +3004,9 @@ end;
 
 function TJclPeImage.DirectoryEntryToData(Directory: Word): Pointer;
 var
-  VA: DWORD;
+  Size: DWORD;
 begin
-  if FAttachedImage then
-  begin
-    VA := FLoadedImage.FileHeader.OptionalHeader.DataDirectory[Directory].VirtualAddress;
-    if VA > 0 then
-      Result := Pointer(VA + FLoadedImage.MappedAddress)
-    else
-      Result := nil;
-  end else
-    Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, False, Directory, VA);
+  Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, FAttachedImage, Directory, Size);
 end;
 
 //------------------------------------------------------------------------------
@@ -3112,13 +3143,20 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
   function GetMachineString(Value: DWORD): string;
   begin
     case Value of
-      IMAGE_FILE_MACHINE_UNKNOWN: Result := RsPeMACHINE_UNKNOWN;
-      IMAGE_FILE_MACHINE_I386: Result := RsPeMACHINE_I386;
-      IMAGE_FILE_MACHINE_R3000: Result := RsPeMACHINE_R3000;
-      IMAGE_FILE_MACHINE_R4000: Result := RsPeMACHINE_R4000;
-      IMAGE_FILE_MACHINE_R10000: Result := RsPeMACHINE_R10000;
-      IMAGE_FILE_MACHINE_ALPHA: Result := RsPeMACHINE_ALPHA;
-      IMAGE_FILE_MACHINE_POWERPC: Result := RsPeMACHINE_POWERPC;
+      IMAGE_FILE_MACHINE_UNKNOWN:
+        Result := RsPeMACHINE_UNKNOWN;
+      IMAGE_FILE_MACHINE_I386:
+        Result := RsPeMACHINE_I386;
+      IMAGE_FILE_MACHINE_R3000:
+        Result := RsPeMACHINE_R3000;
+      IMAGE_FILE_MACHINE_R4000:
+        Result := RsPeMACHINE_R4000;
+      IMAGE_FILE_MACHINE_R10000:
+        Result := RsPeMACHINE_R10000;
+      IMAGE_FILE_MACHINE_ALPHA:
+        Result := RsPeMACHINE_ALPHA;
+      IMAGE_FILE_MACHINE_POWERPC:
+        Result := RsPeMACHINE_POWERPC;
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3127,13 +3165,20 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
   function GetSubsystemString(Value: DWORD): string;
   begin
     case Value of
-      IMAGE_SUBSYSTEM_UNKNOWN: Result := RsPeSUBSYSTEM_UNKNOWN;
-      IMAGE_SUBSYSTEM_NATIVE: Result := RsPeSUBSYSTEM_NATIVE;
-      IMAGE_SUBSYSTEM_WINDOWS_GUI: Result := RsPeSUBSYSTEM_WINDOWS_GUI;
-      IMAGE_SUBSYSTEM_WINDOWS_CUI: Result := RsPeSUBSYSTEM_WINDOWS_CUI;
-      IMAGE_SUBSYSTEM_OS2_CUI: Result := RsPeSUBSYSTEM_OS2_CUI;
-      IMAGE_SUBSYSTEM_POSIX_CUI: Result := RsPeSUBSYSTEM_POSIX_CUI;
-      IMAGE_SUBSYSTEM_RESERVED8: Result := RsPeSUBSYSTEM_RESERVED8;
+      IMAGE_SUBSYSTEM_UNKNOWN:
+        Result := RsPeSUBSYSTEM_UNKNOWN;
+      IMAGE_SUBSYSTEM_NATIVE:
+        Result := RsPeSUBSYSTEM_NATIVE;
+      IMAGE_SUBSYSTEM_WINDOWS_GUI:
+        Result := RsPeSUBSYSTEM_WINDOWS_GUI;
+      IMAGE_SUBSYSTEM_WINDOWS_CUI:
+        Result := RsPeSUBSYSTEM_WINDOWS_CUI;
+      IMAGE_SUBSYSTEM_OS2_CUI:
+        Result := RsPeSUBSYSTEM_OS2_CUI;
+      IMAGE_SUBSYSTEM_POSIX_CUI:
+        Result := RsPeSUBSYSTEM_POSIX_CUI;
+      IMAGE_SUBSYSTEM_RESERVED8:
+        Result := RsPeSUBSYSTEM_RESERVED8;
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3234,16 +3279,16 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeImage.GetImageSectionNames(Index: Integer): string;
+function TJclPeImage.GetImageSectionNameFromRva(const Rva: DWORD): string;
 begin
-  Result := FImageSections[Index];
+  Result := GetSectionName(RvaToSection(Rva));
 end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeImage.GetImageSectionNameFromRva(const Rva: DWORD): string;
+function TJclPeImage.GetImageSectionNames(Index: Integer): string;
 begin
-  Result := GetSectionName(RvaToSection(Rva));
+  Result := FImageSections[Index];
 end;
 
 //------------------------------------------------------------------------------
@@ -3389,14 +3434,27 @@ end;
 //------------------------------------------------------------------------------
 
 function TJclPeImage.GetVersionInfo: TJclFileVersionInfo;
+var
+  VersionInfoResource: TJclPeResourceItem;
 begin
-  if StatusOK and (FVersionInfo = nil) and VersionResourceAvailable(FileName) then
-  try
-    FVersionInfo := TJclFileVersionInfo.Create(FileName);
-  except
-    FreeAndNil(FVersionInfo);
-  end;  
+  if (FVersionInfo = nil) and VersionInfoAvailable then
+  begin
+    VersionInfoResource := ResourceList.FindResource(rtVersion, '1').List[0];
+    with VersionInfoResource do
+      try
+        FVersionInfo := TJclFileVersionInfo.Attach(RawEntryData, RawEntryDataSize);
+      except
+        FreeAndNil(FVersionInfo);
+      end;  
+  end;
   Result := FVersionInfo;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.GetVersionInfoAvailable: Boolean;
+begin
+  Result := StatusOK and (ResourceList.FindResource(rtVersion, '1') <> nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -4627,6 +4685,31 @@ begin
       NtHeaders^.FileHeader.SizeOfOptionalHeader);
 end;
 
+//------------------------------------------------------------------------------
+
+function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
+  const SectionName: string): PImageSectionHeader;
+var
+  Header: PImageSectionHeader;
+  I: Integer;
+  P: PChar;
+begin
+  Result := nil;
+  if NtHeaders <> nil then
+  begin
+    P := PChar(SectionName);
+    Header := PeMapImgSections(NtHeaders);
+    with NtHeaders^ do
+      for I := 1 to FileHeader.NumberOfSections do
+        if StrIComp(PChar(@Header^.Name), P) = 0 then
+        begin
+          Result := Header;
+          Break;
+        end else
+          Inc(Header);
+  end;
+end;
+
 //==============================================================================
 // TJclPeSectionStream
 //==============================================================================
@@ -4642,28 +4725,17 @@ end;
 procedure TJclPeSectionStream.Initialize(Instance: HMODULE; const ASectionName: string);
 var
   Header: PImageSectionHeader;
-  I: Integer;
-  Found: Boolean;
   NtHeaders: PImageNtHeaders;
 begin
   FInstance := Instance;
-  Found := False;
   NtHeaders := PeMapImgNtHeaders(Pointer(Instance));
   if NtHeaders = nil then
     raise EJclPeImageError.CreateResRec(@RsPeNotPE);
-  Header := PeMapImgSections(NtHeaders);
-  with NtHeaders^ do
-    for I := 1 to FileHeader.NumberOfSections do
-      if StrIComp(PChar(@Header^.Name), PChar(ASectionName)) = 0 then
-      begin
-        FSectionHeader := Header^;
-        Found := True;
-        Break;
-      end else
-        Inc(Header);
-  if not Found then
+  Header := PeMapImgFindSection(NtHeaders, ASectionName);
+  if Header = nil then
     raise EJclPeImageError.CreateResRecFmt(@RsPeSectionNotFound, [ASectionName]);
-  SetPointer(Pointer(FInstance + FSectionHeader.VirtualAddress), FSectionHeader.SizeOfRawData);
+  SetPointer(Pointer(FInstance + Header^.VirtualAddress), Header^.SizeOfRawData);
+  FSectionHeader := Header^;
 end;
 
 //------------------------------------------------------------------------------
@@ -5158,5 +5230,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
 
 end.
