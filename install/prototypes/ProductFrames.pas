@@ -37,7 +37,7 @@ uses
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
   JediInstallIntf,
   {$ENDIF}
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 type
   TProductFrame = class(TFrame)

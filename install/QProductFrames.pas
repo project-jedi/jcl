@@ -38,7 +38,7 @@ uses
   QGraphics, QForms, QControls, QStdCtrls, QComCtrls, QExtCtrls,
   QJediInstallIntf,
   
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 type
   TProductFrame = class(TFrame)

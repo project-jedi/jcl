@@ -31,7 +31,7 @@ interface
 
 uses
   QComCtrls, QDialogs,
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 const
   // Feature masks
