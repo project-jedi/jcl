@@ -851,6 +851,154 @@ type
     property Rows[const Idx: Integer]: TJclClrTableParamPtrRow read GetRow; default;
   end;
 
+  IMAGE_COR_ILMETHOD_TINY = packed record
+    Flags_CodeSize: Byte;
+  end;
+  TImageCorILMethodTiny = IMAGE_COR_ILMETHOD_TINY;
+  PImageCorILMethodTiny = ^TImageCorILMethodTiny;
+
+  IMAGE_COR_ILMETHOD_FAT = packed record
+    Flags_Size,
+    MaxStack: Word;
+    CodeSize: DWORD;
+    LocalVarSigTok: TJclClrToken;
+  end;
+  TImageCorILMethodFat = IMAGE_COR_ILMETHOD_FAT;
+  PImageCorILMethodFat = ^TImageCorILMethodFat;
+
+  PImageCorILMethodHeader = ^TImageCorILMethodHeader;
+  TImageCorILMethodHeader = packed record
+  case Boolean of
+    True:  ( Tiny: TImageCorILMethodTiny );
+    False: ( Fat:  TImageCorILMethodFat  );
+  end;
+
+  IMAGE_COR_ILMETHOD_SECT_SMALL = packed record
+    Kind: Byte;
+    Datasize: Byte;
+    Padding: Word;
+  end;
+  TImageCorILMethodSectSmall = IMAGE_COR_ILMETHOD_SECT_SMALL;
+  PImageCorILMethodSectSmall = ^TImageCorILMethodSectSmall;
+
+  IMAGE_COR_ILMETHOD_SECT_FAT = packed record
+    Kind_DataSize: DWORD;
+  end;
+  TImageCorILMethodSectFat = IMAGE_COR_ILMETHOD_SECT_FAT;
+  PImageCorILMethodSectFat = ^TImageCorILMethodSectFat;
+
+  PImageCorILMethodSectHeader = ^TImageCorILMethodSectHeader;
+  TImageCorILMethodSectHeader = packed record
+  case Boolean of
+    True:  ( Small: TImageCorILMethodSectSmall );
+    False: ( Fat:   TImageCorILMethodSectFat   );
+  end;
+
+  IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT = packed record
+    Flags,
+    TryOffset,
+    TryLength,             // relative to start of try block
+    HandlerOffset,
+    HandlerLength: DWORD;  // relative to start of handler
+    case Boolean of
+      True:  ( ClassToken: DWORD );   // use for type-based exception handlers
+      False: ( FilterOffset: DWORD ); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
+  end;
+  TImageCorILMethodSectEHClauseFat = IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT;
+  PImageCorILMethodSectEHClauseFat = ^TImageCorILMethodSectEHClauseFat;
+
+  IMAGE_COR_ILMETHOD_SECT_EH_FAT = packed record
+    SectFat: IMAGE_COR_ILMETHOD_SECT_FAT;
+    Clauses: array[0..MaxWord-1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT; // actually variable size
+  end;
+  TImageCorILMethodSectEHFat = IMAGE_COR_ILMETHOD_SECT_EH_FAT;
+  PImageCorILMethodSectEHFat = ^TImageCorILMethodSectEHFat;
+
+  IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL = packed record
+    Flags,
+    TryOffset: Word;
+    TryLength: Byte;     // relative to start of try block
+    HandlerOffset: Word;
+    HandlerLength: Byte; // relative to start of handler
+    case Boolean of
+      True:  ( ClassToken: DWORD );   // use for type-based exception handlers
+      False: ( FilterOffset: DWORD ); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
+  end;
+  TImageCorILMethodSectEHClauseSmall = IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL;
+  PImageCorILMethodSectEHClauseSmall = ^TImageCorILMethodSectEHClauseSmall;
+
+  IMAGE_COR_ILMETHOD_SECT_EH_SMALL = packed record
+    SectSmall: IMAGE_COR_ILMETHOD_SECT_SMALL;
+    Clauses: array[0..MaxWord-1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL; // actually variable size
+  end;
+  TImageCorILMethodSectEHSmall = IMAGE_COR_ILMETHOD_SECT_EH_SMALL;
+  PImageCorILMethodSectEHSmall = ^TImageCorILMethodSectEHSmall;
+
+  IMAGE_COR_ILMETHOD_SECT_EH = packed record
+  case Boolean of
+    True:  ( Small: IMAGE_COR_ILMETHOD_SECT_EH_SMALL );
+    False: ( Fat:   IMAGE_COR_ILMETHOD_SECT_EH_FAT   );
+  end;
+  TImageCorILMethodSectEH = IMAGE_COR_ILMETHOD_SECT_EH;
+  PImageCorILMethodSectEH = ^TImageCorILMethodSectEH;
+
+  TJclClrCodeBlock = record
+    Offset, Length: DWORD;
+  end;
+
+  TJclClrExceptionHandler = class
+  private
+    FFlags: DWORD;
+    FFilterOffset: DWORD;
+    FTryBlock: TJclClrCodeBlock;
+    FHandlerBlock: TJclClrCodeBlock;
+    FClassToken: TJclClrToken;
+  public
+    constructor Create(const EHClause: TImageCorILMethodSectEHClauseSmall); overload;
+    constructor Create(const EHClause: TImageCorILMethodSectEHClauseFat); overload;
+
+    property Flags: DWORD read FFlags;
+
+    property TryBlock: TJclClrCodeBlock read FTryBlock;
+    property HandlerBlock: TJclClrCodeBlock read FHandlerBlock;
+
+    property ClassToken: TJclClrToken read FClassToken;
+    property FilterOffset: DWORD read FFilterOffset;
+  end;
+
+  TJclClrMethodBody = class
+  private
+    FMethod: TJclClrTableMethodDefRow;
+    FSize: DWORD;
+    FCode: Pointer;
+    FMaxStack: DWORD;
+    FLocalVarSignToken: TJclClrToken;
+
+    FEHTable: TObjectList;
+
+    procedure AddEHTable(EHTable: PImageCorILMethodSectEH);
+    procedure AddOptILTable(OptILTable: Pointer; Size: Integer);
+
+    procedure ParseMoreSections(SectHeader: PImageCorILMethodSectHeader);
+
+    function GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
+    function GetExceptionHandlerCount: Integer;
+  public
+    constructor Create(const AMethod: TJclClrTableMethodDefRow);
+    destructor Destroy; override;
+
+    property Method: TJclClrTableMethodDefRow read FMethod;
+
+    property Size: DWORD read FSize;
+    property Code: Pointer read FCode;
+
+    property MaxStack: DWORD read FMaxStack;
+    property LocalVarSignToken: TJclClrToken read FLocalVarSignToken;
+
+    property ExceptionHandlers[const Idx: Integer]: TJclClrExceptionHandler read GetExceptionHandler;
+    property ExceptionHandlerCount: Integer read GetExceptionHandlerCount;
+  end;
+
   TJclClrTableMethodDefRow = class(TJclClrTableRow)
   private
     FRVA: DWORD;
@@ -861,6 +1009,7 @@ type
     FParamListIdx: DWORD;
     FParentToken: TJclClrTableTypeDefRow;
     FParams: TList;
+    FMethodBody: TJclClrMethodBody;
     function GetName: WideString;
     function GetSignature: TJclClrBlobRecord;
     function GetParam(const Idx: Integer): TJclClrTableParamDefRow;
@@ -891,6 +1040,8 @@ type
     property HasParam: Boolean read GetHasParam;
     property Params[const Idx: Integer]: TJclClrTableParamDefRow read GetParam;
     property ParamCount: Integer read GetParamCount;
+
+    property MethodBody: TJclClrMethodBody read FMethodBody;
   end;
 
   TJclClrTableMethodDef = class(TJclClrTable)
@@ -1544,6 +1695,11 @@ const
 
   ClrTablePropertyFlagMapping: array[TJclClrTablePropertyFlag] of Word =
   (prSpecialName, prRTSpecialName, prHasDefault);
+
+function IsBitSet(const Value, Flag: DWORD): Boolean;
+begin
+  Result := (Value and Flag) = Flag;
+end;
 
 type
   TJclClrSignature = class
@@ -2919,6 +3075,7 @@ begin
   FFlagMask   := Table.ReadWord;
   FSequence   := Table.ReadWord;
   FNameOffset := Table.ReadIndex(hkString);
+
   FMethod     := nil;
   FFlags      := ParamFlags(FFlagMask);
 end;
@@ -2996,6 +3153,163 @@ begin
   Result := TJclClrTableParamPtrRow;
 end;
 
+// Indicates the format for the COR_ILMETHOD header
+const CorILMethod_FormatShift     = 3;
+const CorILMethod_FormatMask      = ((1 shl CorILMethod_FormatShift) - 1);
+
+const CorILMethod_TinyFormat      = $0002;
+const CorILMethod_FatFormat       = $0003;
+
+const CorILMethod_TinyFormatEven  = $0002;
+const CorILMethod_TinyFormatOdd   = $0006;
+
+const CorILMethod_InitLocals      = $0010;
+const CorILMethod_MoreSects       = $0008;
+
+const CorILMethod_Sect_Reserved   = 0;
+const CorILMethod_Sect_EHTable    = 1;
+const CorILMethod_Sect_OptILTable = 2;
+
+const CorILMethod_Sect_KindMask   = $3F; // The mask for decoding the type code
+const CorILMethod_Sect_FatFormat  = $40; // fat format
+const CorILMethod_Sect_MoreSects  = $80; // there is another attribute after this one
+
+const COR_ILEXCEPTION_CLAUSE_NONE       = $0000; // This is a typed handler
+const COR_ILEXCEPTION_CLAUSE_OFFSETLEN  = $0000; // Deprecated
+const COR_ILEXCEPTION_CLAUSE_DEPRECATED = $0000; // Deprecated
+const COR_ILEXCEPTION_CLAUSE_FILTER     = $0001; // If this bit is on, then this EH entry is for a filter
+const COR_ILEXCEPTION_CLAUSE_FINALLY    = $0002; // This clause is a finally clause
+const COR_ILEXCEPTION_CLAUSE_FAULT      = $0004; // Fault clause (finally that is called on exception only)
+
+{ TJclClrExceptionHandler }
+
+constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseSmall);
+begin
+  FFlags               := EHClause.Flags;
+  FTryBlock.Offset     := EHClause.TryOffset;
+  FTryBlock.Length     := EHClause.TryLength;
+  FHandlerBlock.Offset := EHClause.HandlerOffset;
+  FHandlerBlock.Length := EHClause.HandlerLength;
+  if (FFlags and COR_ILEXCEPTION_CLAUSE_FILTER) = COR_ILEXCEPTION_CLAUSE_FILTER then
+  begin
+    FClassToken   := 0;
+    FFilterOffset := EHClause.FilterOffset;
+  end
+  else
+  begin
+    FClassToken   := EHClause.ClassToken;
+    FFilterOffset := 0;
+  end;
+end;
+
+constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseFat);
+begin
+  FFlags               := EHClause.Flags;
+  FTryBlock.Offset     := EHClause.TryOffset;
+  FTryBlock.Length     := EHClause.TryLength;
+  FHandlerBlock.Offset := EHClause.HandlerOffset;
+  FHandlerBlock.Length := EHClause.HandlerLength;
+  if (FFlags and COR_ILEXCEPTION_CLAUSE_FILTER) = COR_ILEXCEPTION_CLAUSE_FILTER then
+  begin
+    FClassToken   := 0;
+    FFilterOffset := EHClause.FilterOffset;
+  end
+  else
+  begin
+    FClassToken   := EHClause.ClassToken;
+    FFilterOffset := 0;
+  end;
+end;
+
+{ TJclClrMethodBody }
+
+constructor TJclClrMethodBody.Create(const AMethod: TJclClrTableMethodDefRow);
+var
+  ILMethod: PImageCorILMethodHeader;
+begin
+  FMethod  := AMethod;
+  FEHTable := TObjectList.Create;
+
+  ILMethod := FMethod.Table.Stream.Metadata.Image.RvaToVa(FMethod.RVA);
+  if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
+  begin
+    FSize              := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
+    FCode              := Pointer(DWORD(ILMethod) + 1);
+    FMaxStack          := 0;
+    FLocalVarSignToken := 0;
+  end
+  else
+  begin
+    FSize              := ILMethod.Fat.CodeSize;
+    FCode              := Pointer(DWORD(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
+    FMaxStack          := ILMethod.Fat.MaxStack;
+    FLocalVarSignToken := ILMethod.Fat.LocalVarSigTok;
+
+    if IsBitSet(ILMethod.Fat.Flags_Size, CorILMethod_MoreSects) then
+      ParseMoreSections(Pointer((DWORD(FCode) + FSize + 1) and not 1));
+  end;
+end;
+
+destructor TJclClrMethodBody.Destroy;
+begin
+  FreeAndNil(FEHTable);
+
+  inherited;
+end;
+
+procedure TJclClrMethodBody.AddEHTable(EHTable: PImageCorILMethodSectEH);
+var
+  I, Count: Integer;
+  FatFormat: Boolean;
+begin
+  FatFormat := IsBitSet( EHTable.Small.SectSmall.Kind, CorILMethod_Sect_FatFormat);
+  if FatFormat then
+    Count := ((EHTable.Fat.SectFat.Kind_DataSize shr 8) - SizeOf(DWORD)) div SizeOf(TImageCorILMethodSectEHClauseFat)
+  else
+    Count := (EHTable.Small.SectSmall.Datasize - SizeOf(DWORD)) div SizeOf(TImageCorILMethodSectEHClauseSmall);
+
+  for I:=0 to Count-1 do
+  begin
+    if FatFormat then
+      FEHTable.Add(TJclClrExceptionHandler.Create(EHTable.Fat.Clauses[I]))
+    else
+      FEHTable.Add(TJclClrExceptionHandler.Create(EHTable.Small.Clauses[I]));
+  end;
+end;
+
+procedure TJclClrMethodBody.AddOptILTable(OptILTable: Pointer; Size: Integer);
+begin
+
+end;
+
+procedure TJclClrMethodBody.ParseMoreSections(SectHeader: PImageCorILMethodSectHeader);
+var
+  SectSize: DWORD;
+begin
+  if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_FatFormat) then
+    SectSize := SectHeader.Fat.Kind_DataSize shr 8
+  else
+    SectSize := SectHeader.Small.Datasize;
+
+  if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_EHTable) then
+    AddEHTable(PImageCorILMethodSectEH(SectHeader))
+  else if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_OptILTable) then
+    AddOptILTable(Pointer(DWORD(FCode) + FSize), SectSize);
+
+  if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_MoreSects) then
+    ParseMoreSections(Pointer(DWORD(SectHeader) + SizeOf(TImageCorILMethodSectHeader) + SectSize));
+end;
+
+function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
+begin
+  Result := TJclClrExceptionHandler(FEHTable.Items[Idx]);
+end;
+
+function TJclClrMethodBody.GetExceptionHandlerCount: Integer;
+begin
+  Result := FEHTable.Count;
+end;
+
 { TJclClrTableMethodDefRow }
 
 constructor TJclClrTableMethodDefRow.Create(const ATable: TJclClrTable);
@@ -3008,8 +3322,11 @@ begin
   FNameOffset   := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
   FParamListIdx := Table.ReadIndex([ttParamDef]);
+  
   FParentToken  := nil;
   FParams       := nil;
+
+  FMethodBody   := TJclClrMethodBody.Create(Self);
 end;
 
 destructor TJclClrTableMethodDefRow.Destroy;
@@ -3134,8 +3451,7 @@ end;
 
 { TJclClrTableMethodImplRow }
 
-constructor TJclClrTableMethodImplRow.Create(
-  const ATable: TJclClrTable);
+constructor TJclClrTableMethodImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
@@ -3159,8 +3475,7 @@ end;
 
 { TJclClrTableMethodSemanticsRow }
 
-constructor TJclClrTableMethodSemanticsRow.Create(
-  const ATable: TJclClrTable);
+constructor TJclClrTableMethodSemanticsRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
