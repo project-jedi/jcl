@@ -367,7 +367,31 @@ Count=1
 1=StrStringToEscaped
 <DECL>-------------------------------------------------------------------------
 [Declaration]
-procedure StrLower(var S: AnsiString);
+function StrLower(const S: AnsiString): AnsiString;
+[ShortDescr]
+Lowercases all characters in a string
+[Description]
+StrLower returns a copy of the string, converted to lowercase. That is, if you pass in 'Project JEDI' you'll get 'project jedi'.
+[Parameters]
+Count=1
+1=S:AnsiString=String to convert to lowercase.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Transformation Routines
+Author=Pelle F. S. Liljendal;pelle@liljendal.dk
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=StrLowerInPLace
+2=StrLowerBuff
+3=StrUpper
+4=StrUpperInPlace
+5=StrUpperBuff
+<DECL>-------------------------------------------------------------------------
+[Declaration]
+procedure StrLowerInPlace(var S: AnsiString);
 [ShortDescr]
 Lowercases all characters in a string
 [Description]
@@ -383,8 +407,12 @@ SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 [SeeAlso]
-Count=1
-1=StrUpper
+Count=5
+1=StrLower
+2=StrLowerBuff
+3=StrUpper
+4=StrUpperInPlace
+5=StrUpperBuff
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 procedure StrLowerBuff(var P: PAnsiChar);
@@ -403,8 +431,12 @@ SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 [SeeAlso]
-Count=1
-1=StrUpper
+Count=5
+1=StrLower
+2=StrLowerInPlace
+3=StrUpper
+4=StrUpperInPlace
+5=StrUpperBuff
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex, FromIndex, Count: Integer);
@@ -814,7 +846,31 @@ Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
-procedure StrUpper(var S: AnsiString);
+function StrUpper(const S: AnsiString): AnsiString;
+[ShortDescr]
+Uppercases all characters in a string
+[Description]
+StrUpper returns a copy of the string, converted to uppercase. That is, if you pass in 'Project JEDI' you'll get 'PROJECT JEDI'.
+[Parameters]
+Count=1
+1=S:AnsiString=String to convert to uppercase.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Transformation Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=StrUpperInPlace
+2=StrUpperBuff
+3=StrLower
+4=StrLowerInPlace
+5=StrLowerBuff
+<DECL>-------------------------------------------------------------------------
+[Declaration]
+procedure StrUpperInPlace(var S: AnsiString);
 [ShortDescr]
 Uppercases all characters in a string
 [Description]
@@ -830,8 +886,12 @@ SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 [SeeAlso]
-Count=1
-1=StrLower
+Count=5
+1=StrUpper
+2=StrUpperBuff
+3=StrLower
+4=StrLowerInPlace
+5=StrLowerBuff
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 procedure StrUpperBuff(S: PAnsiChar);
@@ -850,8 +910,12 @@ SubCat=String Transformation Routines
 Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 [SeeAlso]
-Count=1
-1=StrLower
+Count=5
+1=StrUpper
+2=StrUpperInPlace
+3=StrLower
+4=StrLowerInPlace
+5=StrLowerBuff
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure StrAddRef(var S: AnsiString);
