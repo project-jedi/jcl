@@ -25,7 +25,7 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JclStrings;
+eunit JclStrings;
 
 {$I JCL.INC}
 
@@ -3550,27 +3550,17 @@ end;
 
 function FileToString(const FileName: AnsiString): AnsiString;
 var
-  F: File;
-  Size: Integer;
-  Buffer: Pointer;
-  SaveFileMode: integer;
+  fs: TFileStream;
+  len: Integer;
 begin
-  Assert(FileExists(FileName));
-  SaveFileMode := FileMode;
+  fs := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    FileMode := fmOpenRead;
-    AssignFile(F, FileName);
-    Reset(F, 1);
+    len := fs.Size;
+    SetLength(Result, len);
+    if len > 0 then
+      fs.ReadBuffer(Result[1], len);
   finally
-    FileMode := SaveFileMode;
-  end;
-  try
-    Size := FileSize(F);
-    SetLength(Result, Size);
-    Buffer := PChar(Result);
-    BlockRead(F, Buffer^, Size);
-  finally
-    CloseFile(F);
+    fs.Free;
   end;
 end;
 
@@ -3578,18 +3568,16 @@ end;
 
 procedure StringToFile(const FileName, Contents: AnsiString);
 var
-  F: File;
-  Size: Integer;
-  Buffer: Pointer;
+  fs: TFileStream;
+  len: Integer;
 begin
-  AssignFile(F, FileName);
-  Rewrite(F, 1);
+  fs := TFileStream.Create(FileName, fmCreate);
   try
-    Size := Length(Contents);
-    Buffer := PChar(Contents);
-    BlockWrite(F, Buffer^, Size);
+    len := Length(Contents);
+    if len > 0 then
+      fs.WriteBuffer(Contents[1], Length(Contents) e;
   finally
-    CloseFile(F);
+    fs.Free;
   end;
 end;
 
