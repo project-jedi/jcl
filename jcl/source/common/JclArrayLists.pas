@@ -166,7 +166,7 @@ implementation
 
 uses
   SysUtils,
-  JclAlgorithms, JclResources;
+  JclResources;
 
 //=== { TIntfItr } ===========================================================
 
@@ -1941,6 +1941,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/03/02 17:51:24  rrossmair
+// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
+//
 // Revision 1.5  2005/03/02 09:59:30  dade2004
 // Added
 //  -TJclStrCollection in JclContainerIntf

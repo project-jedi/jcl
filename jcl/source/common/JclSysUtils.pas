@@ -2050,7 +2050,6 @@ begin
     Module := dlopen(PChar(FileName), RTLD_NOW);
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
-
 {$ENDIF UNIX}
 
 function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
@@ -2206,6 +2205,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2005/03/02 17:51:24  rrossmair
+// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
+//
 // Revision 1.31  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
