@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: June 06, 2001                                             }
+{ Last modified: June 07, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -970,13 +970,13 @@ implementation
 
 {$R JclUnicode.res}
 
-uses                                          
+uses
   {$IFDEF DELPHI6_UP}
   RtlConsts,
   {$ELSE}
   Consts,
   {$ENDIF}
-  JclSynch, SysUtils, JclResources;
+  JclBase, JclSynch, SysUtils, JclResources;
   
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
