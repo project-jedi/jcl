@@ -22,7 +22,7 @@
 { versions of Delphi as well as FPC.                                           }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 29, 2001                                                }
+{ Last modified: June 6, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -30,7 +30,6 @@ unit JclBase;
 
 {$I JCL.INC}
 
-{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -291,7 +290,16 @@ type
 
 {$ENDIF DELPHI5_UP}
 
-implementation
+//------------------------------------------------------------------------------
+// Cross-Platform Compatibility
+//------------------------------------------------------------------------------
+
+{$IFNDEF DELPHI6_UP}
+procedure RaiseLastOSError;
+{$ENDIF}
+
+
+implementation
 
 uses
   JclResources;
@@ -593,7 +601,19 @@ procedure TObjectList.SetItems(Index: Integer; const Value: TObject);
 begin
   Put(Index, Value);
 end;
-
 {$ENDIF DELPHI5_UP}
+
+
+//==============================================================================
+// Cross=Platform Compatibility
+//==============================================================================
+
+{$IFNDEF DELPHI6_UP}
+procedure RaiseLastOSError;
+begin
+  RaiseLastWin32Error;
+end;
+{$ENDIF}
+
 
 end.
