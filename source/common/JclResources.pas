@@ -80,9 +80,15 @@ resourcestring
 // JclFileUtils
 //------------------------------------------------------------------------------
 
+resourcestring
+
+  // Path manipulation
+
+  RsPathInvalidDrive = '%s is not a valid drive';
+
+
   // TJclFileVersionInfo
 
-resourcestring
   RsFileUtilsNoVersionInfo = 'File contains no version information';
   RsFileUtilsLanguageIndex = 'Illegal language index';
 
