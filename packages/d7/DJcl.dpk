@@ -31,7 +31,7 @@ requires
   rtl;
 
 contains
-  JclUnitConv in '..\..\source\common\JclUnitConv.pas',
+  Jcl8087 in '..\..\source\common\Jcl8087.pas',
   JclBase in '..\..\source\common\JclBase.pas',
   JclComplex in '..\..\source\common\JclComplex.pas',
   JclCounter in '..\..\source\common\JclCounter.pas',
@@ -57,7 +57,8 @@ contains
   JclStrings in '..\..\source\common\JclStrings.pas',
   JclSysInfo in '..\..\source\common\JclSysInfo.pas',
   JclSysUtils in '..\..\source\common\JclSysUtils.pas',
-  Jcl8087 in '..\..\source\common\Jcl8087.pas',
+  JclUnitConv in '..\..\source\common\JclUnitConv.pas',
+  JclWideStrings in '..\..\source\common\JclWideStrings.pas',
   Snmp in '..\..\source\windows\Snmp.pas',
   JclCIL in '..\..\source\windows\JclCIL.pas',
   JclCLR in '..\..\source\windows\JclCLR.pas',

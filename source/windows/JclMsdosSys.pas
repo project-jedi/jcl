@@ -31,15 +31,14 @@
 unit JclMsdosSys;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 
 uses
-  SysUtils, Classes;
+  Classes, SysUtils;
 
 type
-{ IJclMsdosSys interface }
-
   IJclMsdosSys = interface
   ['{3E1C7E48-49E5-408B-86D2-9924D223B5C5}']
     // Property access methods
@@ -734,6 +733,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/08/09 06:38:08  marquardt
+// add JvWStrUtils.pas as JclWideStrings.pas
+//
 // Revision 1.4  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

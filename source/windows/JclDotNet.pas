@@ -676,21 +676,24 @@ end;
 
 function TJclClrObject.GetField(const Name: WideString): TJclClrField;
 begin
-
+  // (rom) added to suppress warning until implementation
+  Result := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclClrObject.GetProperty(const Name: WideString): TJclClrProperty;
 begin
-
+  // (rom) added to suppress warning until implementation
+  Result := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclClrObject.GetMethod(const Name: WideString): TJclClrMethod;
 begin
-
+  // (rom) added to suppress warning until implementation
+  Result := nil;
 end;
 
 //==================================================================================================
@@ -858,6 +861,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/09 06:38:08  marquardt
+// add JvWStrUtils.pas as JclWideStrings.pas
+//
 // Revision 1.8  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //

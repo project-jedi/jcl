@@ -18,12 +18,12 @@ Contributers:
 You may retrieve the latest version of this file at the Project JEDI's JCL home page,
 located at http://jcl.sourceforge.net
 
-This is a light weight Unicode unit. For more features use JclUnicode.
+This is a lightweight Unicode unit. For more features use JclUnicode.
 
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit JclWStrUtils;
+unit JclWideStrings;
 
 {$I jcl.inc}
 
