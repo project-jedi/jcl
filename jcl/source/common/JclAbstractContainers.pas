@@ -10,11 +10,15 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is AbstractContainer.pas.                                                      }
+{ The Original Code is AbstractContainer.pas and DCL_Util.pas.                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
 { Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
 { All rights reserved.                                                                             }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{   Daniele Teti (dade2004)                                                                        }
+{   Robert Marquardt (marquardt)                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -35,9 +39,9 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+{$IFDEF HAS_UNIT_LIBC}
   Libc,
-{$ENDIF UNIX}
+{$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes, JclBase, JclContainerIntf;
 
 type
@@ -246,9 +250,19 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/03/02 17:48:54  rrossmair
+// - replaced $IFDEF UNIX by $IFDEF HAS_UNIT_LIBC, fixed header
+//
 // Revision 1.2  2005/03/02 09:59:30  dade2004
-// - added TJclStrCollection, which now serves as a common ancestor to all classes implementing IJclStrCollection.
-// - replaced and bug-fixed JclAlgorithms.DCLAppendDelimited() by TJclStrCollection.AppendDelimited
+// Added
+//  -TJclStrCollection in JclContainerIntf
+//        Every common methods for IJclStrCollection are implemented here
+//
+// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
+// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
+//
+// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
+// relative method in TJclStrCollection
 //
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
