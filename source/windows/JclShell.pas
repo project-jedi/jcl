@@ -136,7 +136,7 @@ procedure ShellLinkFree(var Link: TShellLink);
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
-function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;  
+function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Miscellanuous
@@ -170,6 +170,8 @@ function ShellExecAndWait(const FileName: string; const Parameters: string = '';
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
 function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
+
+function GetFileNameIcon(const FileName: string; Flags: Cardinal = 0): HICON;
 
 type
   TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
@@ -1401,6 +1403,24 @@ begin
   end
   else
     Result := '';
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetFileNameIcon(const FileName: string; Flags: Cardinal = 0): HICON;
+var
+  FileInfo: TSHFileInfo;
+  ImageList: HIMAGELIST;
+begin
+  FillChar(FileInfo, SizeOf(FileInfo), #0);
+  if Flags = 0 then
+    Flags := SHGFI_SHELLICONSIZE;
+  ImageList := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo),
+    Flags or SHGFI_SYSICONINDEX);
+  if ImageList <> 0 then
+    Result := ImageList_ExtractIcon(0, ImageList, FileInfo.iIcon)
+  else
+    Result := 0;
 end;
 
 end.
