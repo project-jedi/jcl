@@ -469,9 +469,17 @@
 
 {$IFDEF LINUX}
   {$DEFINE UNIX}
-  {$DEFINE COMPLIB_CLX}
+  {$DEFINE VisualCLX}
 {$ENDIF}
 
-{$IFNDEF COMPLIB_CLX}
-  {$DEFINE COMPLIB_VCL}
+{$IFNDEF VisualCLX}
+  {$DEFINE VCL}
+{$ENDIF}
+
+{$IFDEF VisualCLX}
+  {$DEFINE COMPLIB_CLX} // kept for backward compatibility, use VisualCLX instead
+{$ENDIF}
+
+{$IFDEF VCL}
+  {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
 {$ENDIF}
