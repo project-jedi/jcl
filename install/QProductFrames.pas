@@ -24,7 +24,10 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.8  2004/03/17 17:39:03  rrossmair
+// Revision 1.9  2004/03/18 20:26:26  rrossmair
+// fixed again
+//
+// Revision 1.7  2004/03/17 17:39:03  rrossmair
 // Win32 installation fixed
 //
 // Revision 1.6  2004/03/15 01:25:07  rrossmair
