@@ -93,6 +93,8 @@ function GetFileLastWrite(const FileName: string): TFileTime;
 function GetFileLastAccess(const FileName: string): TFileTime;
 function GetFileCreation(const FileName: string): TFileTime;
 function GetModulePath(const Module: HMODULE): string;
+function GetSizeOfFile(const FileName: string): Int64; overload;
+function GetSizeOfFile(Handle: THandle): Int64; overload;
 function IsDirectory(const FileName: string): Boolean;
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): DWORD; // TODO DOC MASSIMO
@@ -1268,6 +1270,33 @@ begin
   SetLength(Result, L);
   L := Windows.GetModuleFileName(Module, Pointer(Result), L);
   SetLength(Result, L);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSizeOfFile(const FileName: string): Int64;
+var
+  Handle: THandle;
+  FindData: TWin32FindData;
+begin
+  Result := 0;
+  Handle := FindFirstFile(PChar(FileName), FindData);
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    Windows.FindClose(Handle);
+    Result := (FindData.nFileSizeHigh shl 32) + FindData.nFileSizeLow;
+  end
+  else
+    RaiseLastWin32Error;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSizeOfFile(Handle: THandle): Int64;
+var
+  Size: TULargeInteger absolute Result;
+begin
+  Size.LowPart := GetFileSize(Handle, @Size.HighPart);
 end;
 
 //------------------------------------------------------------------------------
