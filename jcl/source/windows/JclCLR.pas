@@ -1359,6 +1359,9 @@ end;
 
 function TJclPeMetadata.GetToken(const AToken: TJclClrToken): TJclClrTableRow;
 begin
+  if AToken = 0 then
+    Result := nil
+  else
   try
     Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken)-1];
   except
