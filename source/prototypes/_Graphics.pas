@@ -178,8 +178,8 @@ type
     constructor CreatePoly(const Points: TDynPointArray; Count: Integer; FillMode: TPolyFillMode);
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
-    constructor CreateRect(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
-    constructor CreateRect(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
+    constructor CreateRect(const Top, Left, Bottom, Right: Integer); overload;
+    constructor CreateRect(const ARect: TRect); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
     constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
@@ -2382,14 +2382,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer);
 begin
   Create(CreateRectRgn(Top, Left, Bottom, Right), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateRect(const ARect: TRect);
 begin
   Create(CreateRectRgnIndirect(ARect), True);
 end;
@@ -6128,6 +6128,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.14  2004/07/16 03:50:35  rrossmair
+// fixed "not accesssible with BCB" warning for TJclRegion.CreateRect
+//
 // Revision 1.13  2004/07/15 05:15:41  rrossmair
 // TJclRegion: Handle ownership management added, some refactoring
 //
