@@ -34,6 +34,7 @@ contains
   Jcl8087 in '..\..\source\common\Jcl8087.pas',
   JclBase in '..\..\source\common\JclBase.pas',
   JclComplex in '..\..\source\common\JclComplex.pas',
+  JclCompression in '..\..\source\common\JclCompression.pas',
   JclCounter in '..\..\source\common\JclCounter.pas',
   JclDateTime in '..\..\source\common\JclDateTime.pas',
   JclEDI in '..\..\source\common\JclEDI.pas',
@@ -86,7 +87,6 @@ contains
   JclWinMIDI in '..\..\source\windows\JclWinMIDI.pas',
   JclAppInst in '..\..\source\windows\JclAppInst.pas',
   Hardlinks in '..\..\source\windows\Hardlinks.pas',
-  zlibh in '..\..\source\windows\zlibh.pas',
-  JclZlib in '..\..\source\common\JclZlib.pas';
+  zlibh in '..\..\source\windows\zlibh.pas';
 
 end.

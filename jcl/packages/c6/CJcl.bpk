@@ -18,29 +18,36 @@
       ..\..\lib\c6\obj\JclStatistics.obj ..\..\lib\c6\obj\JclStrHashMap.obj 
       ..\..\lib\c6\obj\JclStrings.obj ..\..\lib\c6\obj\JclSysInfo.obj 
       ..\..\lib\c6\obj\JclSysUtils.obj ..\..\lib\c6\obj\Jcl8087.obj 
-      ..\..\lib\c6\obj\Snmp.obj ..\..\lib\c6\obj\JclCIL.obj 
-      ..\..\lib\c6\obj\JclCLR.obj ..\..\lib\c6\obj\JclCOM.obj 
-      ..\..\lib\c6\obj\JclConsole.obj ..\..\lib\c6\obj\JclDebug.obj 
-      ..\..\lib\c6\obj\JclHookExcept.obj ..\..\lib\c6\obj\JclLANMan.obj 
-      ..\..\lib\c6\obj\JclLocales.obj ..\..\lib\c6\obj\JclMapi.obj 
-      ..\..\lib\c6\obj\JclMetadata.obj ..\..\lib\c6\obj\JclMiscel.obj 
-      ..\..\lib\c6\obj\JclMultimedia.obj ..\..\lib\c6\obj\JclNTFS.obj 
-      ..\..\lib\c6\obj\JclPeImage.obj ..\..\lib\c6\obj\JclRegistry.obj 
-      ..\..\lib\c6\obj\JclSecurity.obj ..\..\lib\c6\obj\JclShell.obj 
-      ..\..\lib\c6\obj\JclSvcCtrl.obj ..\..\lib\c6\obj\JclSynch.obj 
-      ..\..\lib\c6\obj\JclTD32.obj ..\..\lib\c6\obj\JclUnicode.obj 
-      ..\..\lib\c6\obj\JclWideStrings.obj ..\..\lib\c6\obj\JclWin32.obj
-      ..\..\lib\c6\obj\JclWinMIDI.obj ..\..\lib\c6\obj\JclAppInst.obj
-      ..\..\lib\c6\obj\JclZLib.obj ..\..\lib\c6\obj\zlibh.obj
-      ..\..\lib\c6\obj\Hardlinks.obj ..\..\lib\c6\obj\JclUnitVersioning.obj"/>
+      ..\..\lib\c6\obj\JclWideStrings.obj ..\..\lib\c6\obj\JclUnitVersioning.obj 
+      ..\..\lib\c6\obj\JclCompression.obj ..\..\lib\c6\obj\Snmp.obj 
+      ..\..\lib\c6\obj\JclCIL.obj ..\..\lib\c6\obj\JclCLR.obj 
+      ..\..\lib\c6\obj\JclCOM.obj ..\..\lib\c6\obj\JclConsole.obj 
+      ..\..\lib\c6\obj\JclDebug.obj ..\..\lib\c6\obj\JclHookExcept.obj 
+      ..\..\lib\c6\obj\JclLANMan.obj ..\..\lib\c6\obj\JclLocales.obj 
+      ..\..\lib\c6\obj\JclMapi.obj ..\..\lib\c6\obj\JclMetadata.obj 
+      ..\..\lib\c6\obj\JclMiscel.obj ..\..\lib\c6\obj\JclMultimedia.obj 
+      ..\..\lib\c6\obj\JclNTFS.obj ..\..\lib\c6\obj\JclPeImage.obj 
+      ..\..\lib\c6\obj\JclRegistry.obj ..\..\lib\c6\obj\JclSecurity.obj 
+      ..\..\lib\c6\obj\JclShell.obj ..\..\lib\c6\obj\JclSvcCtrl.obj 
+      ..\..\lib\c6\obj\JclSynch.obj ..\..\lib\c6\obj\JclTD32.obj 
+      ..\..\lib\c6\obj\JclUnicode.obj ..\..\lib\c6\obj\JclWin32.obj 
+      ..\..\lib\c6\obj\JclWinMIDI.obj ..\..\lib\c6\obj\Hardlinks.obj 
+      ..\..\lib\c6\obj\zlibh.obj ..\..\lib\c6\obj\JclAppInst.obj"/>
     <RESFILES value="CJcl.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <LIBRARIES value="indy.lib dbxcds.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib 
+      inetdbxpress.lib inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib 
+      visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib 
+      bdecds.lib cds.lib ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
+    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
+      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
+      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
+      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dbxcds.lib 
+      indy.lib"/>
     <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\source\common;..\..\source\windows"/>
@@ -58,14 +65,15 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\common -I$(BCB)\include
-      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\common 
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\lib\c6\obj -N0..\..\lib\c6\obj -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\lib\c6\obj -N0..\..\lib\c6\obj -I..\..\source -$YD -$W -$O- -$A8 
+      -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c6\obj -GB&quot;CJcl&quot; -D&quot;JEDI Code Library RTL package&quot; -aa -Tpp
+    <LFLAGS value="-I..\..\lib\c6\obj -GB&quot;CJcl&quot; -D&quot;JEDI Code Library RTL package&quot; -aa -Tpp 
       -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
@@ -78,7 +86,7 @@
   <FILELIST>
       <FILE FILENAME="CJcl.res" FORMNAME="" UNITNAME="CJcl.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="cjcl.cpp" FORMNAME="" UNITNAME="CJcl" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -108,7 +116,7 @@
       <FILE FILENAME="..\..\source\common\Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclWideStrings.pas" FORMNAME="" UNITNAME="JclWideStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclUnitVersioning.pas" FORMNAME="" UNITNAME="JclUnitVersioning" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\source\common\JclZLib.pas" FORMNAME="" UNITNAME="JclZLib" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclCompression.pas" FORMNAME="" UNITNAME="JclCompression" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\Snmp.pas" FORMNAME="" UNITNAME="Snmp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclCIL.pas" FORMNAME="" UNITNAME="JclCIL" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\windows\JclCLR.pas" FORMNAME="" UNITNAME="JclCLR" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
