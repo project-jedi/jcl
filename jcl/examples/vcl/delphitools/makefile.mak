@@ -15,7 +15,7 @@ JCL = ..\..\..\..
 #---------------------------------------------------------------------------------------------------
 VCLEXAMP = $(JCL)\examples\vcl
 INC = $(JCL)\source
-SRC = $(JCL)\lib\d7;..\bin;vcl\peimage
+SRC = $(JCL)\lib\d7;$(JCL)\lib\d6;$(JCL)\lib\d5
 BIN = $(JCL)\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
