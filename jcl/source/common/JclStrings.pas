@@ -886,7 +886,7 @@ begin
           else
             // '\x' at end of AnsiString is not escape sequence
             Result := Result + '\x';
-        '0'..'9':
+        '0'..'7':
           // start of octal escape sequence
           HandleOctEscapeSeq;
       else
