@@ -848,6 +848,7 @@ resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
   RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
   RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
+  RsWrongDataType        = '"%s\%s" is of wrong kind or size';
 
 //--------------------------------------------------------------------------------------------------
 // JclRTTI
@@ -1111,6 +1112,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.19  2004/10/18 16:22:13  marquardt
+// JclRegistry redesign to remove PH contributor
+//
 // Revision 1.18  2004/10/17 23:48:14  mthoma
 // Added OpenGL error messages.
 //
