@@ -192,6 +192,18 @@ type
 // Cross-Platform Compatibility
 //--------------------------------------------------------------------------------------------------
 
+const
+  // (rom) too basic for JclStrings
+  AnsiLineFeed       = AnsiChar(#10);
+  AnsiCarriageReturn = AnsiChar(#13);
+  AnsiCrLf           = AnsiString(#13#10);
+  {$IFDEF MSWINDOWS}
+  AnsiLineBreak = AnsiCrLf;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  AnsiLineBreak = AnsiLineFeed;
+  {$ENDIF UNIX}
+
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
@@ -301,6 +313,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2005/01/06 18:48:31  marquardt
+// AnsiLineBreak, AnsiLineFeed, AnsiCarriageReturn, AnsiCrLf moved to JclBase JclStrings now reexports the names
+//
 // Revision 1.26  2004/12/23 04:31:42  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
