@@ -269,8 +269,8 @@ type
                           out pAppDomain: IUnknown): HResult; stdcall;
     function GetDefaultDomain(out pAppDomain: IUnknown): HResult; stdcall;
     function EnumDomains(out hEnum: Pointer): HResult; stdcall;
-    function NextDomain(var hEnum: Pointer; out pAppDomain: IUnknown): HResult; stdcall;
-    function CloseEnum(var hEnum: Pointer): HResult; stdcall;
+    function NextDomain(hEnum: Pointer; out pAppDomain: IUnknown): HResult; stdcall;
+    function CloseEnum(hEnum: Pointer): HResult; stdcall;
     function CreateDomainEx(pwzFriendlyName: PWideChar; const pSetup: IUnknown; 
                             const pEvidence: IUnknown; out pAppDomain: IUnknown): HResult; stdcall;
     function CreateDomainSetup(out pAppDomainSetup: IUnknown): HResult; stdcall;
