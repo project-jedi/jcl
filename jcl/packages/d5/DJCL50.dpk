@@ -71,6 +71,7 @@ contains
   JclRTTI in '..\Source\JclRTTI.pas',
   LM in '..\Source\LM.pas',
   JclTD32 in '..\Source\JclTD32.pas',
+  JclSvcCtrl in '..\Source\JclSvcCtrl.pas',
   JclStrHashMap in '..\Source\JclStrHashMap.pas';
 
 end.
