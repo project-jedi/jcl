@@ -466,13 +466,12 @@ var
   ProcessorCount: Cardinal = 0;
   AllocGranularity: Cardinal = 0;
   PageSize: Cardinal = 0;
-  SHMalloc: IMalloc;
 
 implementation
 
 uses
   SysUtils, TLHelp32, Winsock,
-  JclFileUtils, JclRegistry, JclStrings, JclWin32;
+  JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==============================================================================
 // Environment
@@ -724,33 +723,6 @@ begin
     GetTempPath(Required, PChar(Result));
     StrResetLength(Result);
     Result := PathRemoveSeparator(Result);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function GetSpecialFolderLocation(const Folder: Integer): string;
-var
-  shBuff: PChar;
-  idRoot: PItemIDList;
-begin
-  Result  := '';
-  SetLength(Result, MAX_PATH);
-  shBuff := PChar(SHMalloc.Alloc(MAX_PATH));
-  if Assigned(shBuff) then begin
-    CoInitialize(nil);
-    try
-      SHGetSpecialFolderLocation(0, Folder, idRoot);
-      try
-        if SHGetPathFromIDList(idRoot, shBuff) then
-          Result := shBuff;
-      finally
-        SHMalloc.Free(idRoot);
-      end;
-    finally
-      SHMalloc.Free(shBuff);
-      CoUninitialize;
-    end;
   end;
 end;
 
@@ -2468,8 +2440,6 @@ begin
     wvWin2000:
       IsWin2K := True;
   end;
-
-  SHGetMalloc(SHMalloc);
 end;
 
 initialization
