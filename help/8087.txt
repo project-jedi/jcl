@@ -1,5 +1,189 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+T8087Exceptions = set of T8087Exception;
+T8087Exception = (emInvalidOp, emDenormalizedOperand, emZeroDivide, emOverflow, emUnderflow, emPrecision);
+[ShortDescr]
+Enumeration which describes the set of available FPU exception masks. Note that
+you can use the All8087Exceptions constant whenever you need a set which includes
+all exception flags.
+[Enumeration]
+Count=6
+1=emInvalidOp=Invalid operation mask.
+2=emDenormalizedOperand=Denormalized operation mask.
+3=emZeroDivide=Division by zero mask.
+4=emOverflow=Overflow mask.
+5=emUnderflow=Underflow mask.
+6=emPrecision=Precision error mask.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ClearPending8087Exceptions: T8087Exceptions;
+[ShortDescr]
+Clears all pending FPU exceptions.
+[Description]
+The ClearPending8087Exceptions clears all pending FPU exceptions.
+[Result]
+The result is the set of exception flags that were set before the entire mask
+was cleared.
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=T8087Exceptions;Types\T8087Exceptions
+2=GetPending8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetPending8087Exceptions: T8087Exceptions;
+[ShortDescr]
+Returns a set of pending FPU exception flags.
+[Description]
+The GetPending8087Exceptions routine returns a set of flags representing the
+pending FPU exceptions. Note that the pending exceptions are not cleared. To get
+the pending exceptions and clear them use the <REF>ClearPending8087Exceptions</REF>
+routine.
+[Result]
+The result is the set of pending FPU exceptions.
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=T8087Exceptions;Types\T8087Exceptions
+2=ClearPending8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetMasked8087Exceptions: T8087Exceptions;
+[ShortDescr]
+Returns the set of masked FPU exceptions.
+[Description]
+GetMasked8087Exceptions returns a set of flags representing the FPU exceptions
+that are currently masked (ie the exceptions ignored by the FPU).
+[Result]
+The result is the set of masked FPU exceptions.
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=T8087Exceptions;Types\T8087Exceptions
+2=SetMasked8087Exceptions
+3=Unmask8087Exceptions
+4=Mask8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+[ShortDescr]
+Sets the FPU exception mask.
+[Description]
+The SetMasked8087Exceptions routine sets the masked exception flags of the FPU's
+control word. In effect this means that afterwards the FPU no longer raises an
+exception of the kind included in the Exceptions parameter, instead it ignores
+the error situation. Note that exceptions previously masked are cleared if they
+do not appear in the Exception parameter.
+[Parameters]
+Count=2
+1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=Set of exceptions to mask.
+2=ClearBefore:Boolean=If set to True the routine clears pending exceptions, if any,
+before modifying the exception mask. If set to False the routine does not clear
+pending exceptions.
+[Result]
+The result is the exception mask before it was modified.
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=T8087Exceptions;Types\T8087Exceptions
+2=GetMasked8087Exceptions
+3=Unmask8087Exceptions
+4=Mask8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
+[ShortDescr]
+Masks additional exceptions.
+[Description]
+Mask8087Exceptions masks the exceptions specified by the Exceptions parameter.
+Unlike <REF>SetMasked8087Exceptions</REF> the original exception mask is left
+intact. Thus if for example the current exception mask equals [emInvalidOp, emDenormalizedOperand]
+and you call Mask8087Exceptions([emZeroDivide]) then upon return the exception
+mask equals [emInvalidOp, emDenormalizedOperand, emZeroDivide].
+[Parameters]
+Count=1
+1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=Set of exceptions to mask, in addition to the currently
+set of masked exceptions.
+[Result]
+The set of exceptions that we're masked upon routine entry. Upon exit the set of
+masked exceptions equals Result + Exceptions.
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=T8087Exceptions;Types\T8087Exceptions
+2=Unmask8087Exceptions
+3=GetMasked8087Exceptions
+4=SetMasked8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+[ShortDescr]
+Unmasks the specified exceptions.
+[Description]
+The Unmask8087Exceptions routine unmasks the exceptions specified by the Exceptions
+parameter. Note that exceptions not included in the Exceptions parameter are left
+unchanged, unlike <REF>SetMasked8087Exceptions</REF> which modifies the entire
+mask.
+[Parameters]
+Count=2
+1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=The set of exceptions to unmask.
+2=ClearBefore:Boolean=If set to True any pending exceptions are cleared before
+the routine returns, if set to False pending exceptions are not cleared.
+[Result]
+The result is the set of exceptions that were masked upon routine entry. 
+[Quick Info]
+BCB=3,4,5
+Unit=Jcl8087
+Category=Math Routines
+SubCat=Hardware
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=T8087Exceptions;Types\T8087Exceptions
+2=Mask8087Exceptions
+3=GetMasked8087Exceptions
+4=SetMasked8087Exceptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 T8087Precision = (pcSingle, pcReserved, pcDouble, pcExtended);
 [ShortDescr]
 Used for retrieving and setting the FPU precision control.
