@@ -347,6 +347,7 @@ object MainForm: TMainForm
           '')
         ParentFont = False
         ReadOnly = True
+        ScrollBars = ssBoth
         TabOrder = 0
       end
     end
