@@ -914,8 +914,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32); assembler;
-asm
+procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
+{asm
   // EAX - Color X
   // [EDX] - Color Y
   // ECX - Weight of X [0..255]
@@ -944,6 +944,9 @@ asm
 @1:     RET
 
 @2:     MOV       [EDX], EAX
+end;}
+begin
+  B := M_CombineReg(F, B, W);
 end;
 
 //------------------------------------------------------------------------------
