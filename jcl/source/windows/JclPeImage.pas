@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 24, 2003                                                                    }
+{ Last modified: October 3, 2003                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1027,7 +1027,6 @@ function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResu
 implementation
 
 uses
-  Consts,
   JclLogic, JclResources, JclSysUtils;
 
 const
@@ -2438,7 +2437,7 @@ end;
 
 function TJclPeResourceRawStream.Write(const Buffer; Count: Integer): Longint;
 begin
-  raise EJclPeImageError.CreateResRec(@SCantWriteResourceStreamError);
+  raise EJclPeImageError.CreateResRec(@RsPeReadOnlyStream);
 end;
 
 //==================================================================================================
@@ -5324,7 +5323,7 @@ end;
 
 function TJclPeSectionStream.Write(const Buffer; Count: Integer): Longint;
 begin
-  raise EJclPeImageError.CreateResRec(@SCantWriteResourceStreamError);
+  raise EJclPeImageError.CreateResRec(@RsPeReadOnlyStream);
 end;
 
 //==================================================================================================
