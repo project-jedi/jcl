@@ -584,7 +584,8 @@ var
   R: Integer;
   Expanded: string;
 begin
-  R := ExpandEnvironmentStrings(PChar(Value), nil, 0);
+  SetLength(Expanded, 1);
+  R := ExpandEnvironmentStrings(PChar(Value), PChar(Expanded), 0);
   SetLength(Expanded, R);
   Result := ExpandEnvironmentStrings(PChar(Value), PChar(Expanded), R) <> 0;
   if Result then
