@@ -270,19 +270,11 @@ end;
 //------------------------------------------------------------------------------
 
 procedure CheckOSVersion;
-var
-  NTVersion: TOSVersionInfo;
 begin
-  NTVersion.dwOSVersionInfoSize := sizeof(TOSVersionInfo);
-
-  if not GetVersionEx(NTVersion) then
-    raise EJclError.CreateResRec(@RsCreateProcOSVersionError);
-
-  if NTVersion.dwPlatformId <> VER_PLATFORM_WIN32_NT then
+  if Win32Platofrm <> VER_PLATFORM_WIN32_NT then
     raise EJclError.CreateResRec(@RsCreateProcNTRequiredError);
-
-  if NTVersion.dwBuildNumber < 1057 then  // NT 3.51 release build
-    raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);
+  if Win32BuildNumber < 1057 then
+    raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);  
 end;
 
 //------------------------------------------------------------------------------
