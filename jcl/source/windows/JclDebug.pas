@@ -90,6 +90,8 @@ type
     property ModuleFromAddress[Addr: Pointer]: TJclModuleInfo read GetModuleFromAddress;
   end;
 
+function JclValidateModuleAddress(Addr: Pointer): Boolean;
+
 //--------------------------------------------------------------------------------------------------
 // MAP file abstract parser
 //--------------------------------------------------------------------------------------------------
@@ -3282,7 +3284,7 @@ type
     destructor Destroy; override;
     function CreateModulesList: TJclModuleInfoList;
     procedure FreeModulesList(var ModulesList: TJclModuleInfoList);
-    procedure HookExceptionsInLibraries;
+    function ValidateAddress(Addr: Pointer): Boolean;
   end;
 
 var
@@ -3308,8 +3310,8 @@ begin
     begin
       SystemModulesOnly := not (stAllModules in JclStackTrackingOptions);
       Result := TJclModuleInfoList.Create(False, SystemModulesOnly);
-      // Add known Borland modules collected by DLL exception hooking code 
-      if SystemModulesOnly then
+      // Add known Borland modules collected by DLL exception hooking code
+      if SystemModulesOnly and JclHookedExceptModulesList(FHookedModules) then
         for I := Low(FHookedModules) to High(FHookedModules) do
           Result.AddModule(FHookedModules[I], True);
       if stStaticModuleList in JclStackTrackingOptions then
@@ -3346,16 +3348,23 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclGlobalModulesList.HookExceptionsInLibraries;
+function TJclGlobalModulesList.ValidateAddress(Addr: Pointer): Boolean;
+var
+  TempList: TJclModuleInfoList;
 begin
-  FLock.Enter;
+  TempList := CreateModulesList;
   try
-    // Return list of hooked or Borland modules to merge it in CreateModulesList method. Some
-    // modules could be Borland but not hooked if the module was compiled with packages. 
-    JclHookExceptionsInLibraries(FHookedModules, True);
+    Result := TempList.IsValidModuleAddress(Addr);
   finally
-    FLock.Leave;
+    FreeModulesList(TempList);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclValidateModuleAddress(Addr: Pointer): Boolean;
+begin
+  Result := GlobalModulesList.ValidateAddress(Addr);
 end;
 
 //==================================================================================================
@@ -3973,7 +3982,7 @@ function JclTrackExceptionsFromLibraries: Boolean;
 begin
   Result := TrackingActive;
   if Result then
-    GlobalModulesList.HookExceptionsInLibraries;
+    JclInitializeLibrariesHookExcept;
 end;
 
 //==================================================================================================
