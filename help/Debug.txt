@@ -240,7 +240,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); virtual; abstract;
+procedure ClassTableItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Len: Integer; SectionName, GroupName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a class item
 [Description]
@@ -263,7 +263,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); virtual; abstract;
+procedure SegmentItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Len: Integer; GroupName, UnitName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a segment item (i.e.. a Delphi unit)
 [Description]
@@ -286,7 +286,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
+procedure PublicsByNameItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Name: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a public item in the publics by name section.
 [Description]
@@ -309,7 +309,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
+procedure PublicsByValueItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Name: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a public item in the publics by value section.
 [Description]
@@ -332,7 +332,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); virtual; abstract;
+procedure LineNumberUnitItem(UnitName, UnitFileName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a unit declaration in the lines section.
 [Description]
@@ -354,7 +354,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress); virtual; abstract;
+procedure LineNumbersItem(LineNumber: Integer; const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>); virtual; abstract;
 [ShortDescr]
 Handler for a line declaration in the lines section.
 [Description]
@@ -383,7 +383,7 @@ Creates an instance of TJclAbstractMapParser
 The Create method instantiates a map-parser object. Since TJclAbstractMapParser
 is an abstract base class, you should not Create an instance of
 TJclAbstractMapParser directly, but rather of a descendant.</P><P>
-If the specified file exists, a TJclFileMappingStream will be assigned to
+If the specified file exists, a <REF Target"..\..\..\..\..\Files and IO\Streams\TJclFileMapping\TJclFileMapping">TJclFileMappingStream</REF> will be assigned to
 the Stream property, referencing the map file.
 [Parameters]
 Count=1
@@ -433,7 +433,7 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-class function MapStringToStr(MapString: PJclMapString): string;
+class function MapStringToStr(MapString: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>): string;
 [ShortDescr]
 Translates map file specific strings to a normal string.
 [Description]
@@ -671,6 +671,12 @@ Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=ModuleNameFromAddr
+2=ModuleStartFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ModuleNameFromAddr(Addr: DWORD): string;
@@ -692,6 +698,40 @@ Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleStartFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ModuleStartFromAddr(Addr: DWORD): DWORD;
+[ShortDescr]
+Returns the starting address of a module given an address.
+[Description]
+ModuleStartFromAddr returns the starting address of the Delphi unit that contains
+the specified address.
+[Parameters]
+Count=1
+1=Addr:DWORD=Address to get unit start for.
+[Result]
+The starting address of the Delphi unit that contains the specified address.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Map Parsers\TJclMapScanner
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ProcNameFromAddr(Addr: DWORD): string;
@@ -713,6 +753,12 @@ Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ModuleStartFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SourceNameFromAddr(Addr: DWORD): string;
@@ -731,6 +777,12 @@ Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ModuleStartFromAddr
+4=ProcNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclBinDebugGenerator = class (<REF Target"..\..\Map Parsers\TJclMapScanner\TJclMapScanner">TJclMapScanner</REF>)
@@ -753,7 +805,7 @@ procedure CreateData;
 Translates the map file
 [Description]
 CreateData translates the text based map file into a binary version and stores it
-in a memorystream, referenced by the <REF Target".\Properties\DataStream">DataStream</REF>
+in a memorystream, referenced by the <REF Target"..\Properties\DataStream">DataStream</REF>
 property. CreateData gets called by the Create method automatically.</P><P>
 Literal strings are compressed into a 6-bit character, which results in a compression of
 3:4. Furthermore, it doesn't store spaces and integers are stored as integer values (always
@@ -775,7 +827,7 @@ constructor Create(const MapFileName: TFileName);
 Creates an instance of TJclBinDebugGenerator
 [Description]
 The Create method instantiates a binary debug generator object. After calling the
-inherited Create from <REF Target"..\TJclMapScanner\TJclMapScanner">TJclMapScanner</REF>,
+inherited Create from <REF Target"..\..\TJclMapScanner\TJclMapScanner">TJclMapScanner</REF>,
 the <REF>CreateData</REF> method will be called to convert the text-based map file to a
 binary version.
 [Parameters]
@@ -814,7 +866,8 @@ Scans a binary version of a map file.
 [Description]
 TJclBinDebugScanner is like the TJclMapScanner except that it scans a binary map
 file. The binary file can be generated from a text-based map file by instantiating
-a TJclBinDebugGenerator object and saving the DataStream to a file.
+a <REF Target"..\TJclBinDebugGenerator\TJclBinDebugGenerator">TJclBinDebugGenerator</REF>-object 
+and saving the DataStream to a file.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -865,6 +918,12 @@ Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=ModuleNameFromAddr
+2=ModuleStartFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ModuleNameFromAddr(Addr: DWORD): string;
@@ -886,6 +945,40 @@ Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleStartFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ModuleStartFromAddr(Addr: DWORD): DWORD;
+[ShortDescr]
+Returns the starting address of a module given an address.
+[Description]
+ModuleStartFromAddr returns the starting address of the Delphi unit that contains
+the specified address.
+[Parameters]
+Count=1
+1=Addr:DWORD=Address to get unit start for.
+[Result]
+The starting address of the Delphi unit that contains the specified address.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ProcNameFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ProcNameFromAddr(Addr: DWORD): string;
@@ -907,6 +1000,12 @@ Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ModuleStartFromAddr
+4=SourceNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SourceNameFromAddr(Addr: DWORD): string;
@@ -925,6 +1024,12 @@ Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
+[SeeAlso]
+Count=4
+1=LineNumberFromAddr
+2=ModuleNameFromAddr
+3=ModuleStartFromAddr
+4=ProcNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ValidFormat: Boolean read FValidFormat;
@@ -949,7 +1054,7 @@ TJclLocationInfo = record
   ProcedureName: string;
   LineNumber: Integer;
   SourceName: string;
-  DebugInfo: <REF Target"TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>;
+  DebugInfo: <REF Target"..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>;
 end;
 [ShortDescr]
 Location info structure
@@ -963,8 +1068,8 @@ Count=6
 3=ProcedureName:string=Name of the procedure for the address.
 4=LineNumber:Integer=Line-number for the address.
 5=SourceName:string=Name of the source file for the address.
-6=DebugInfo:TJclDebugInfoSource=Other usefull information for the address. 
-See <REF Target"TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>
+6=DebugInfo:TJclDebugInfoSource=Other usefull information for the address.
+See <REF Target"..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>
 for more information.
 [Quick Info]
 Kind=Type
@@ -981,9 +1086,9 @@ TJclDebugInfoSource = class (TObject)
 [ShortDescr]
 Debug info location item.
 [Description]
-TJclDebugInfoSource is an abstract base class to hold location information. 
+TJclDebugInfoSource is an abstract base class to hold location information.
 Instances of descendants are created by the TJclDebugInfoList-object.</P><P>
-Descendants should override the <REF Target"Methods\InitializeSource">InitializeSource</REF> 
+Descendants should override the <REF Target"Methods\InitializeSource">InitializeSource</REF>
 and <REF Target"Methods\GetLocationInfo">GetLocationInfo</REF> methods.
 [Quick Info]
 BCB=4,5
@@ -1033,19 +1138,19 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; virtual; abstract;
+function GetLocationInfo(const Addr: Pointer; var Info: <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>): Boolean; virtual; abstract;
 [ShortDescr]
 Retreives information on a specified address.
 [Description]
-GetLocationInfo retreives information for the address specified by the Addr 
+GetLocationInfo retreives information for the address specified by the Addr
 parameter and returns it through the Info parameter.
 [Parameters]
 Count=2
 1=Addr:Pointer=Address to get information on
-2=Info:TJclLocationInfo=Structure that holds information on the address, if address 
+2=Info:TJclLocationInfo=Structure that holds information on the address, if address
 belongs to this object
 [Result]
-If the specified address exists within the module represented by this object the 
+If the specified address exists within the module represented by this object the
 function returns True and Info will hold the information for the specified address.
 If the address does not exist within the module, the function returns False.
 [Quick Info]
@@ -1095,8 +1200,8 @@ TJclDebugInfoList = class (TObjectList)
 [ShortDescr]
 Holds a list of debug info items
 [Description]
-TJclDebugInfoList holds a list of DebugInfo items requested. Items are created
-when needed, not when the list is created.
+TJclDebugInfoList holds a list of <REF Target"..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> 
+items requested. Items are created when needed, not when the list is created.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -1106,12 +1211,12 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
+function CreateDebugInfo(const Module: HMODULE): <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>;
 [ShortDescr]
-Creates a DebugInfoSource descendant for a module
+Creates a TJclDebugInfoSource descendant for a module
 [Description]
-CreateDebugInfo will atempt to create a TJclDebugInfoSource for the given module 
-and initializes it. The method tries to obtain the following types in order:
+CreateDebugInfo will atempt to create a <REF Target"..\TJclDebugInfoSource\..\TJclDebugInfoSource">TJclDebugInfoSource</REF>
+for the given module and initializes it. The method tries to obtain the following types in order:
 	<UL>
 		<LI>Text-based map file</LI>
 		<LI>Jcl Binary debug data resource</LI>
@@ -1123,8 +1228,9 @@ it will return the first that initialized correctly.
 Count=1
 1=Module:HMODULE=Module handle to create debug info for.
 [Result]
-If debug info could be obtained for the specified module, a TJclDebugInfoSource
-descendant will be returned, otherwise it returns nil. [Quick Info]
+If debug info could be obtained for the specified module, a <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>
+descendant will be returned, otherwise it returns nil.
+[Quick Info]
 Kind=Method
 Visibility=Protected
 BCB=4,5
@@ -1135,21 +1241,21 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function GetLocationInfo(const Addr: Pointer; var Info: <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>): Boolean;
 [ShortDescr]
 Retreives information on a specified address.
 [Description]
-GetLocationInfo retreives information for the address specified by the Addr 
+GetLocationInfo retreives information for the address specified by the Addr
 parameter and returns it through the Info parameter.
 [Parameters]
 Count=2
 1=Addr:Pointer=Address to get information on
-2=Info:TJclLocationInfo=Structure that holds information on the address, if address 
+2=Info:TJclLocationInfo=Structure that holds information on the address, if address
 belongs to any module in the current process.
 [Result]
-If the specified address exists within the curent process the 
-function returns True and Info will hold the information for the specified address.
-If the address does not exist within the curretn process, the function returns False.
+If the specified address exists within the curent process the function returns True 
+and Info will hold the information for the specified address. If the address does 
+not exist within the current process, the function returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1161,11 +1267,11 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property ItemFromModule[const Module: HMODULE]: TJclDebugInfoSource read GetItemFromModule;
+property ItemFromModule[const Module: HMODULE]: <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> read GetItemFromModule;
 [ShortDescr]
 Gets a DebugInfo item for the specified module.
 [Description]
-ItemFromModule returns a DebugInfo item for the specified module. If the item
+ItemFromModule returns a <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>-item for the specified module. If the item
 hasn't been created, it will try to do so.
 [Quick Info]
 Kind=Property
@@ -1178,11 +1284,11 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property Items[Index: Integer]: TJclDebugInfoSource read GetItems;
+property Items[Index: Integer]: <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> read GetItems;
 [ShortDescr]
 Returns the debug info item at the specified index
 [Description]
-Items returns the debug info item at the specified index.
+Items returns the <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>-item at the specified index.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -1321,7 +1427,7 @@ GetLocationInfo returns a TJclLocationInfo structure for the specified address.
 Count=1
 1=Addr:Pointer=Addres to obtain information on.
 [Result]
-This function returns a TJclLocationInfo record filled with any information it 
+This function returns a TJclLocationInfo record filled with any information it
 could find.
 [Quick Info]
 BCB=3,4,5
@@ -1368,7 +1474,7 @@ Clears the list of debug information items.
 ClearLocationData clears the list of debug information items created so far. All
 routines that request location information use this list. If many request for many
 different modules have been made, this could consume a lot of memory. By clearing
-the list, the memory is release, but items will be added for any location request 
+the list, the memory is release, but items will be added for any location request
 made later on.
 [Quick Info]
 BCB=3,4,5
@@ -1541,7 +1647,7 @@ Count=9
 function __MAP__(const Level: Integer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 [ShortDescr]
-Returns the file name, unit name, procedure name and line number at which a 
+Returns the file name, unit name, procedure name and line number at which a
 routine is executing.
 [Description]
 __MAP__ combines the __FILE__, __MODULE, __PROC__ and __LINE__ routines into a
@@ -1736,7 +1842,7 @@ function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
 [ShortDescr]
 Returns the file name, unit name, procedure name and line number given an address.
 [Description]
-__MAP_OF_ADDR__ combines the __FILE_OF_ADDR__, __MODULE_OF_ADDR__, __PROC_OF_ADDR__ 
+__MAP_OF_ADDR__ combines the __FILE_OF_ADDR__, __MODULE_OF_ADDR__, __PROC_OF_ADDR__
 and __LINE_OF_ADDR__ routines into a single call.
 [Parameters]
 Count=5
@@ -1852,7 +1958,7 @@ property LogicalAddress: DWORD read GetLogicalAddress;
 [ShortDescr]
 Retreives the logical address for the caller
 [Description]
-LogicalAddress retreives teh logical address for the caller. It does so by 
+LogicalAddress retreives teh logical address for the caller. It does so by
 subtracting the caller's module base address from the caller's address.
 [Quick Info]
 BCB=4,5
@@ -1902,7 +2008,7 @@ Instantiates a stack list.
 Create instantiates a stack list and immediately executes the trace.
 [Parameters]
 Count=3
-1=Raw:Boolean=When set to False, the stack is traced by means of the EBP frame, 
+1=Raw:Boolean=When set to False, the stack is traced by means of the EBP frame,
 when set to True, all DWORDs are checked for valid caller addresses.
 2=AIgnoreLevels:DWORD=Number of callers to ignore upon tracing.
 3=FirstCaller:Pointer=If not nil, an explicit TJclStackInfoItem is added to the
@@ -1958,7 +2064,7 @@ property IgnoreLevels: DWORD read FIgnoreLevels;
 [ShortDescr]
 Number of levels ignored in the trace
 [Description]
-IgnoreLevels is the number of levels that were ignored when the trace started. This 
+IgnoreLevels is the number of levels that were ignored when the trace started. This
 number was given upon creation of the list.
 [Quick Info]
 BCB=4,5
@@ -1999,5 +2105,614 @@ Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+[ShortDescr]
+Creates a stack list.
+[Description]
+JclCreateStackList creates a list of all stack frames. The resulting TJclStackInfoList
+is also stored internally and can be obtained again by calling <REF>JclLastExceptStackList</REF>.
+[Parameters]
+Count=3
+1=Raw:Boolean=When set to False, the stack is traced by means of the EBP frame,
+when set to True, all DWORDs are checked for valid caller addresses.
+2=AIgnoreLevels:Integer=Number of callers to ignore upon tracing.
+3=FirstCaller:Pointer=If not nil, an explicit TJclStackInfoItem is added to the
+list, pointing to the FirstCaller.
+[Result]
+A reference to the stack list.
+[Notes]
+Count=1
+1=Do not free this object, it's freed internally when a new one needs to be created.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclLastExceptStackList: TJclStackInfoList;
+[ShortDescr]
+Retreives the last generated stack info list.
+[Description]
+JclLastExceptStackList retreives the last generated stack info list by a call
+through JclCreateStackList. Note that JclCreateStackList also get's called when
+an exception occurs and the global variable StackTrackingEnable is set to True.
+[Result]
+A reference to the last generated stack list.
+[Notes]
+Count=1
+1=Do not free this object, it's freed internally when a new one needs to be created.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+JmpInstruction = packed record
+  opCode: Byte;
+  distance: Longint;
+end;
+[ShortDescr]
+Disected jump instruction
+[Description]
+JmpInstruction represents a assembler JMP instruction.
+[RecordFields]
+Count=2
+1=opCode:Byte=opCode for the JMP instruction.
+2=distance:Longint=Offset in the JMP instruction.
+[Notes]
+Count=1
+1=This type is copied from System.pas
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Borland
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TExcDescEntry = record
+  vTable: Pointer;
+  handler: Pointer;
+end;
+[ShortDescr]
+Except on... handler item
+[Description]
+TExcDescEntry represents an item in an except on... handler.
+[RecordFields]
+Count=2
+1=vTable:Pointer=Pointer to the Virtual Method table of an Exception class.
+2=handler:Pointer=Pointer to the handler for the exception class.
+[Notes]
+Count=1
+1=This type is copied from System.pas
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Borland
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PExcDesc = ^TExcDesc;
+TExcDesc = packed record
+  jmp: <REF>JmpInstruction</REF>;
+  case Integer of
+    0:      (instructions: array [0..0] of Byte);
+    1:      (cnt: Integer; excTab: array [0..0] of <REF>TExcDescEntry</REF>);
+end;
+[ShortDescr]
+Except frame descriptor
+[Description]
+TExcDesc is an except frame descriptor.<BR>For Borland modules this usually means
+a JMP instruction to either HandleFinally, HandleAnyException, HandleOnException or
+HandleAutoException. Incase of an HandleOnException, the JMP is followed by a table
+containing the Exception classes to handle and their handlers. In other cases
+the JMP is followed by the code to execute.</P><P>For non-Borland modules, the frame
+descriptor is undefined (but it always starts with executable code).
+[RecordFields]
+Count=4
+1=jmp:JmpInstruction=Holds the JMP-instruction incase of Borland code
+2=instructions: array[0..0] of Byte=Handler instructions for non "except on..."-blocks
+3=cnt:Integer=Number of exception classes defined in an "except on..."-block
+4=excTab:array[0..0] of TExcDescEntry=Table of on-definitions and there handlers in an "except on..."-block
+[Notes]
+Count=1
+1=This type is copied from System.pas
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Borland
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PExcFrame = ^TExcFrame;
+TExcFrame =  record
+  next: PExcFrame;
+  desc: <REF>PExcDesc</REF>;
+  hEBP: Pointer;
+  case Integer of
+  0:  ( );
+  1:  ( ConstructedObject: Pointer );
+  2:  ( SelfOfMethod: Pointer );
+end;
+[ShortDescr]
+Except frame
+[Description]
+TExcFrame is an except frame. It holds a reference to the next frame (if any), the
+location of the frame (which should always start with executable code) and the
+handlers EBP frame. Incase of Borland modules, it could also contain a reference to
+the object being constructed (this is the case for the implicit except frame for
+constructors) or a reference to Self of the method containing the handler.
+[RecordFields]
+Count=5
+1=next:PExcFrame=Link to next except frame or -1(!) if there is no next frame.
+2=desc:PExcDesc=Pointer to handler (non-Borland modules) or frame descriptor (Borland modules)
+3=hEBP:Pointer=Value of the handlers EBP-frame
+4=ConstructedObject:Pointer=Pointer to object being constructed. This is used by
+the compiler to allow for destruction of the object when an exception occured.
+5=SelfOfMethod:Pointer=Pointer to Self of the method containing the handler.
+[Notes]
+Count=1
+1=This type is copied from System.pas
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Borland
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TExcFrameType = (eftUnknown, eftFinally, eftAnyException, eftOnException,
+  eftAutoException);
+[ShortDescr]
+Exception frame kind.
+[Description]
+TExcFrameType determines the exception frame type.
+[Enumeration]
+Count=5
+1=eftUnknown=Unknown exception frame (most likely an exception frame inside a
+non-Borland library.
+2=eftFinally=A try...finally frame
+3=eftAnyException=A try...except frame
+4=eftOnException=A try...except on.... frame
+5=eftAutoException=A try..except frame around an automated call (these are implicit
+frames inserted by the compiler).
+[Quick Info]
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclExceptFrame = class(TObject)
+[ShortDescr]
+Except frame item.
+[Description]
+TJclExceptFrame holds information on an except frame.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AExcFrame: <REF Target"..\Types\PExcFrame">PExcFrame</REF>);
+[ShortDescr]
+Instantiates an except frame object.
+[Description]
+Create instantiates an except frame object, links it to a <REF Target"..\Types\PExcFrame">PExcFrame</REF>
+and determines it's type.
+[Parameters]
+Count=1
+1=AExcFrame:PExcFrame=Reference to the except frame on the stack to create this
+item for.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Handles(ExceptObj: TObject): Boolean;
+[ShortDescr]
+Checks if an exception will be handled by the frame.
+[Description]
+Handles checks if an exception would be handled by the frame. An eftFinally frame
+will never handle an exception (although the code would be executed). eftUnknown
+frames are assumed to handle the exception (there's no way of knowing for sure)
+as are eftAnyException and eftAutoException frames. For eftOnException the handler
+table is scanned to check for an appropiate handler.
+[Parameters]
+Count=1
+1=ExceptObj:TObject=Exception object to check.
+[Result]
+If the frame will handle the exception the function returns True, otherwise it
+returns False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
+[ShortDescr]
+Checks if an exception will be handled by the frame and at which location.
+[Description]
+HandlerInfo checks if an exception would be handled by the frame and where the
+handler is located. An eftFinally frame will never handle an exception (although
+the code would be executed). eftUnknown frames are assumed to handle the exception
+(there's no way of knowing for sure) as are eftAnyException and eftAutoException
+frames. For eftOnException the handler table is scanned to check for an appropiate
+handler.
+[Parameters]
+Count=2
+1=ExceptObj:TObject=Exception object to check.
+2=HandlerAt:Pointer=Pointer to handler for the exception object (if one exists).
+[Result]
+If the frame will handle the exception the function returns True and the HandlerAt
+parameter will contain the address of the handler. If the frame won't handle the
+exception the function returns False and HandlerAt will be undefined.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ExcFrame: PExcFrame read FExcFrame;
+[ShortDescr]
+Reference to the ExceptFrame on the stack.
+[Description]
+ExcFrame is a reference to except frame on the stack. It is not wise to modify
+the memory pointed to by ExcFrame
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FrameType: TExcFrameType read FFrameType;
+[ShortDescr]
+Holds the frame kind.
+[Description]
+FrameType holds the kind of except frame this object references. The type is
+determined when the object is created by checking the code and see if it jumps
+to any of the known Borland handlers.
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclExceptFrameList = class(TObjectList)
+[ShortDescr]
+List of except frame item.
+[Description]
+TStackInfoItem holds stack information.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AIgnoreLevels: Integer);
+[ShortDescr]
+Instantiates an except frame list object.
+[Description]
+Create instantiates an except frame list object, set's an initial value for
+the IgnoreLevels-property and starts the trace by calling TraceExceptionFrames.
+[Parameters]
+Count=1
+1=AIgnoreLevels:Integer=Number of levels to ignore on tracing.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TraceExceptionFrames;
+[ShortDescr]
+Traces the except frames.
+[Description]
+TraceExceptionFrames clears the current list and traces the except frames stack.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclExceptFrame read GetItems;
+[ShortDescr]
+Reference to the except frame objects.
+[Description]
+Items is a reference to the list of except frame object found during the last
+trace.
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IgnoreLevels: Integer read FIgnoreLevels write FIgnoreLevels;
+[ShortDescr]
+Number of levels to ignore on tracing.
+[Description]
+IgnoreLevels shows the number of levels ignored on the last trace or sets the
+number of levels to ignore on the next trace.
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclCreateExceptFrameList(AIgnoreLevels: Integer): <REF Target"TJclExceptFrameList\TJclExceptFrameList">TJclExceptFrameList</REF>;
+[ShortDescr]
+Creates an exception frame list.
+[Description]
+JclCreateExceptFrameList creates a list of all try...except and / or try...finally
+frames currently set. The resulting <REF Target"TJclExceptFrameList\TJclExceptFrameList">TJclExceptFrameList</REF>
+is also stored internally and can be obtained again by calling <REF>JclLastExceptFrameList</REF>.
+[Parameters]
+Count=1
+1=AIgnoreLevels:Integer=Number of levels to ignore. This is useful to strip-out
+any try...except/finally blocks in the currently executing routine.
+[Result]
+A reference to the exception frame list.
+[Notes]
+Count=1
+1=Do not free this object, it's freed internally when a new one needs to be created.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclLastExceptFrameList: TJclExceptFrameList;
+[ShortDescr]
+Retreives the last generated except frame list.
+[Description]
+JclLastExceptFrameList retreives the last generated except frame list by a call
+through <REF>JclCreateExceptFrameList</REF>. Note that JclCreateStackList also get's called when
+an exception occurs and the global variable ExceptionFrameTrackingEnable is set to True.
+[Result]
+A reference to the last generated exception frame list.
+[Notes]
+Count=1
+1=Do not free this object, it's freed internally when a new one needs to be created.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
+[ShortDescr]
+Exception notify event types.
+[Description]
+TJclExceptNotify<I>xxxx</I> are exception notify events.
+[Parameters]
+Count=3
+1=ExceptObj:TObject=Exception object
+2=ExceptAddr:Pointer=Address where exception occured
+3=OSException:Boolean=If the exception occured outside of any Borland module,
+this parameter is True, otherwise it is False.
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclHookExceptions: Boolean;
+[ShortDescr]
+Enables exception hooking.
+[Description]
+JclHookExceptions enables exception hooking. After a succesful call, all
+exceptions will be routed through an internal handler first. Note that to actually
+get notified of exceptions you should set at least one of the notify event
+variables to your own handler. Additionally you can also enable stack tracking
+and / or except frame tracking to occur automatically on any exception.
+[Result]
+If the hook was succesful, the function returns True, otherwise it returns False.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclUnhookExceptions: Boolean;
+[ShortDescr]
+Disables exception hooking.
+[Description]
+JclUnhookExceptions disables the exception hooking.
+[Result]
+If exceptions where hooked and the function succeeded in unhooking them, the
+function returns True, otherwise it returns False.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclExceptionsHooked: Boolean;
+[ShortDescr]
+Determines if exceptions are hooked.
+[Description]
+JclExceptionsHooked determines if exceptions are currently hooked.
+[Result]
+If exceptions are hooked, the function returns True, otherwise it returns False.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+ExceptNotifyProc: TJclExceptNotifyProc;
+[ShortDescr]
+Exception notify routine place holder.
+[Description]
+ExceptNotifyProc is a procedural type variable pointing to a notifier routine
+which gets called when an exception occurs and exceptions are hooked through a
+previous call to JclHookExceptions.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+ExceptNotifyMethod: TJclExceptNotifyMethod;
+[ShortDescr]
+Exception notify method place holder.
+[Description]
+ExceptNotifyMethod is a procedural type variable pointing to a notifier method
+which gets called when an exception occurs and exceptions are hooked through a
+previous call to JclHookExceptions.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+StackTrackingEnable: Boolean;
+[ShortDescr]
+Stack tracking enabled for hooked exceptions.
+[Description]
+StackTrackingEnable is a flag that enables or disables automatic stack tracking
+when exception hooking is on.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+RawStackTracking: Boolean;
+[ShortDescr]
+Raw tack tracking enabled for hooked exceptions.
+[Description]
+RawStackTracking is a flag that enables or disables raw stack tracking
+when exception hooking is on and stack tracking is enabled.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+ExceptionFrameTrackingEnable: Boolean;
+[ShortDescr]
+Except frame tracking enabled for hooked exceptions.
+[Description]
+ExceptionFrameTrackingEnable is a flag that enables or disables exception frame
+tracking when exception hooking is on.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
