@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is Jcl8087.pas.                                                                }
+{ The Original Code is JclMath.pas.                                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)                       }
@@ -685,16 +685,15 @@ end;
 
 function ArcCot(X: Float): Float;
 begin
-  Result := -Arctan(X) + PiOn2;
+  DomainCheck(X = 0);
+  Result := arctan(1 / X);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ArcCsc(X: Float): Float;
 begin
-  DomainCheck(Abs(X) >= 1.0);
-
-  Result := Arctan(1.0 / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
+  Result := arcsec(x / sqrt(x * x -1));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -710,8 +709,8 @@ function ArcSec(X: Float): Float;
   end;
 
 begin
-  DomainCheck(Abs(X) >= 1.0);
-  Result := FArcTan(X / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
+  DomainCheck(X <= 0);
+  Result := FArcTan(sqrt(x*x - 1));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -748,7 +747,9 @@ function ArcTan(X: Float): Float;
   end;
 
 begin
-  DomainCheck(X < 0.0);
+  DomainCheck(X < -Pi);
+  DomainCheck(X > Pi);
+
   Result := FArcTan(X);
 end;
 
@@ -1692,14 +1693,14 @@ function Ackermann(const A, B: Integer): Integer;
 begin
   if a = 0 then
   begin
-    Result := a + 1;
+    Result := b + 1;
     Exit;
   end;
 
   if b = 0 then
-      Result := Ackermann(a-1, 1)
+    Result := Ackermann(a-1, 1)
   else
-     Result := Ackermann(a-1, Ackermann(a, b-1));
+    Result := Ackermann(a-1, Ackermann(a, b-1));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1717,7 +1718,7 @@ begin
 
   if (n = 1) or (n = 2) then
   begin
-    Result :0 1;
+    Result := 1;
     Exit;
   end;
 
