@@ -1,6 +1,6 @@
 package DJcl50;
 
-{$R *.RES}
+{$R *.res}
 {$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}

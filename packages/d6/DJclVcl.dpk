@@ -1,6 +1,6 @@
 package DJclVcl;
 
-{$R *.RES}
+{$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
