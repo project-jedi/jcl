@@ -743,7 +743,7 @@ begin
                  nil,{PQrySvcCnfg^.lpDependencies,}
                  nil, {PQrySvcCnfg^.lpServiceStartName,}
                  nil,{password-write only-not readable}
-                 PQrySvcCnfg^.lpDisplayName,
+                 PQrySvcCnfg^.lpDisplayName
                  ));
     finally
       FreeMem(PQrySvcCnfg);
@@ -1601,6 +1601,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/12/22 09:21:32  rrossmair
+// - removed superfluous comma in line 746 (which D7's parser did tolerate, but those of D5 and D6 did not)
+//
 // Revision 1.29  2004/12/21 12:24:51  rikbarker
 // Added code by Warren Postma to allow modification of service start type. (Disabled, Automatic etc)
 // Added three new helper functions,
