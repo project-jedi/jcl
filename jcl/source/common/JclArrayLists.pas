@@ -1145,7 +1145,7 @@ begin
   Result := False;
 
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
 
   if ACollection = nil then
     Exit;
@@ -1952,6 +1952,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/03/08 15:14:00  dade2004
+// Fixed some bug on
+// IJclStrList.InsertAll implementation
+//
 // Revision 1.9  2005/03/08 15:03:08  dade2004
 // Fixed some bug on
 // IJclStrList.InsertAll implementation
