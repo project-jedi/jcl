@@ -202,7 +202,7 @@ type
     destructor Destroy; override;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
-    function TranslationMacthesLanguages: Boolean;
+    function TranslationMatchesLanguages(Exact: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
     property BinFileVersion: string read GetBinFileVersion;
     property BinProductVersion: string read GetBinProductVersion;
     property Comments: string index 1 read GetVersionKeyValue;
@@ -2329,7 +2329,7 @@ var
                Value := ''
              else
              if IsUnicode then
-               Value := PWideChar(Data)
+               Value := WideCharLenToString(PWideChar(Data), ValueLen)
              else
                Value := PAnsiChar(Data);
         else
@@ -2530,18 +2530,25 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclFileVersionInfo.TranslationMacthesLanguages: Boolean;
+function TJclFileVersionInfo.TranslationMatchesLanguages(Exact: Boolean): Boolean;
 var
-  I: Integer;
+  TransIndex, LangIndex: Integer;
+  TranslationPair: DWORD;
 begin
-  Result := (LanguageCount = TranslationCount);
+  Result := (LanguageCount = TranslationCount) or (not Exact and (TranslationCount > 0));
   if Result then
-    for I := 0 to LanguageCount - 1 do
-      if FLanguages[I].Pair <> FTranslations[I].Pair then
+    for TransIndex := 0 to TranslationCount - 1 do
+    begin
+      TranslationPair := FTranslations[TransIndex].Pair;
+      LangIndex := LanguageCount - 1;
+      while (LangIndex >= 0) and (TranslationPair <> FLanguages[LangIndex].Pair) do
+        Dec(LangIndex);
+      if LangIndex < 0 then
       begin
         Result := False;
         Break;
       end;
+    end;  
 end;
 
 //------------------------------------------------------------------------------
