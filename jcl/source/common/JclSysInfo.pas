@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 18, 2000                                              }
+{ Last modified: October 27, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -30,6 +30,8 @@
 //  [MVB]      IsWinNT initialization restored per MVB's request
 //  (rom)      Trim() ed Win32CSDVersion per Petr Vones bug report
 //  (rom)      added new RunningProcessesList from Petr Vones
+//  [MVB]      removed buildnumber check in GetWindowsVersion because it prevents
+//             correct recognition of some versions.
 
 unit JclSysInfo;
 
@@ -831,22 +833,7 @@ end;
 //==============================================================================
 
 function GetWindowsVersion: TWindowsVersion;
-const
-  BuildNumbers: array [TWindowsVersion] of Integer =
-    (0, 0, 67109975, 67766222, 67766446, 0, 1381, 2195);
 begin
-// TWindowsVersion = (wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinNT3, wvWinNT4, wvWin2000);
-//===========================================================================================
-// Win32Platform        1           1           1        1          2         2          2
-// Win32MajorVersion    4           4           4        4          3         4          5
-// Win32MinorVersion    0           0           10       10         ?         0          0
-// Win32BuildNumber     ?        67109975    67766222  67766446     ?        1381       2195
-// Win32CSDVersion      ?        '[ ]B'         ''      '[ ]A'      SP        SP         SP
-// "Qamar Ali" <MQamar@geocities.com>
-// "Brian Cahill" <BrianCahill@SoftHome.net>
-// "Anthony Steele"
-// "Thomas Siebers" <thomas.siebers@planet-interkom.de>
-// "Nial R. Scott" <niall@gryphonsd.co.uk>
   Result := wvUnknown;
   case Win32Platform of
     VER_PLATFORM_WIN32_WINDOWS:
@@ -872,9 +859,6 @@ begin
           Result := wvWin2000;
       end;
   end;
-  if (BuildNumbers[Result] <> 0) and
-     (Win32BuildNumber <> BuildNumbers[Result]) then
-    Result := wvUnknown;
 end;
 
 //------------------------------------------------------------------------------
