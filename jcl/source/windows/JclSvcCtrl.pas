@@ -36,11 +36,7 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
-  WinSvc,
+  Windows, Classes, SysUtils, Contnrs, WinSvc,
   JclBase, JclSysUtils;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -358,7 +354,7 @@ implementation
 
 uses
   RegStr, Math,
-  JclRegistry, JclSysInfo;
+  JclStrings, JclRegistry, JclSysInfo;
 
 const
   INVALID_SCM_HANDLE = 0;
@@ -1049,7 +1045,8 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     end;
   end;
 
-  procedure EnumServiceGroups;
+  { TODO : Delete after Test }
+  {procedure EnumServiceGroups;
   const
     cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
     cValList              = 'List';
@@ -1072,6 +1069,24 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
         Inc(pch, StrLen(pch) + 1);
       end;
     end;
+  end;}
+
+  { TODO -cTest : Test, if OK delete function above }
+  { TODO -cHelp : Contributer Peter J. Haas }
+  procedure EnumServiceGroups;
+  const
+    cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
+    cValList              = 'List';
+  var
+    S: WideString;
+    List: TDynStringArray;
+    I: Integer;
+  begin
+    // Get the service groups
+    S := RegReadBinaryAsWideString(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList);
+    MultiWideStringToStrings(List, S);
+    for I := Low(List) to High(List) do
+      AddGroup(TJclServiceGroup.Create(Self, List[I], GetGroupCount));
   end;
 
   procedure RefreshAllServices;
@@ -1362,6 +1377,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/12 22:04:38  peterjhaas
+// Bugfix: TJclSCManager.Refresh EnumServiceGroups
+//
 // Revision 1.9  2004/04/08 19:49:26  mthoma
 // Fixed 0000521, 0000848. Range check error in TJclSCManager.Refresh and TJclSCManager raises exception when free'd .
 //
