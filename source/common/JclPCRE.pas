@@ -12,24 +12,33 @@
 {                                                                                                  }
 { The Original Code is JclPCRE.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Peter Thornqvist.                                  }
+{ Portions created by Peter Thornqvist are Copyright (C) of Peter Thornqvist. All rights reserved. }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Class wrapper for PCRE (PERL Compatible Regular Expression)                                      }
 {                                                                                                  }
 { Unit owner: Peter Thörnqvist                                                                     }
-{ Last modified: April 30, 2004                                                                    }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
-//$Id$
 
 unit JclPCRE;
 
 interface
+
 uses
-  Windows, Classes, SysUtils;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  Classes, SysUtils;
 
 type
   EPCREError = class(Exception)
@@ -78,6 +87,7 @@ type
   end;
 
 implementation
+
 uses
   pcre;
 
@@ -240,6 +250,13 @@ initialization
   LoadPCRE;
 finalization
   UnloadPCRE;
+
+// History:
+
+// $Log$
+// Revision 1.2  2004/07/26 05:13:52  rrossmair
+// made it compile under Kylix (no functional tests performed yet)
+//  
 
 end.
 

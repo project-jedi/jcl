@@ -12,22 +12,27 @@
 {                                                                                                  }
 { The Original Code is JclPRCE.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Peter Thornqvist.                                  }
+{ Portions created by Peter Thornqvist are Copyright (C) of Peter Thornqvist. All rights reserved. }
 { Portions created by University of Cambridge are                                                  }
 { Copyright (C) 1997-2001 by University of Cambridge.                                              }
 {                                                                                                  }
-{The latest release of PCRE is always available from                                               }
-{ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-xxx.tar.gz                             }
+{ Contributor(s):                                                                                  }
+{   Robert Rossmair (rrossmair)                                                                    }
+{                                                                                                  }
+{ The latest release of PCRE is always available from                                              }
+{ ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-xxx.tar.gz                            }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Header conversion of pcre.h                                                                      }
 {                                                                                                  }
 { Unit owner: Peter Thornqvist                                                                     }
-{ Last modified: April 30, 2004                                                                    }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
-//$Id$
+
+{$I jedi.inc}
 
 unit pcre;
 
@@ -181,7 +186,7 @@ function pcre_info(const code: PPCRE; optptr, firstcharptr: PInteger): integer; 
 function pcre_version: PChar; cdecl;
 {$EXTERNALSYM pcre_version}
 
-// Don't use! These does *not* work!!!
+// Don't use! These do *not* work!!!
 function pcre_malloc(Size: integer): Pointer; cdecl;
 {$EXTERNALSYM pcre_malloc}
 procedure pcre_free(P: Pointer); cdecl;
@@ -250,14 +255,42 @@ function LoadPCRE: Boolean;
 procedure UnloadPCRE;
 
 implementation
+
 uses
+  {$IFDEF MSWINDOWS}
   Windows;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF UNIX}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc;
+  {$ELSE ~HAS_UNIT_LIBC}
+  dl;
+  {$ENDIF ~HAS_UNIT_LIBC}
+  {$ENDIF UNIX}
+
+type
+  {$IFDEF MSWINDOWS}
+  TModuleHandle = HINST;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  TModuleHandle = Pointer;
+  {$ENDIF LINUX}
+
 const
-  pcreDLL = 'pcre.dll';
+  {$IFDEF MSWINDOWS}
+  libpcremodulename = 'pcre.dll';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  libpcremodulename = 'libpcre.so.0';
+  INVALID_HANDLE_VALUE = TModuleHandle(0);
+  {$ENDIF UNIX}
 
 {$IFDEF PCRE_LINKONREQUEST}
 var
-  PCRELib: THandle = INVALID_HANDLE_VALUE;
+  PCRELib: TModuleHandle = INVALID_HANDLE_VALUE;
 {$ENDIF}
 
 function IsPCRELoaded: Boolean;
@@ -270,28 +303,44 @@ begin
 end;
 
 function LoadPCRE: Boolean;
+
+  function GetSymbol(SymbolName: PChar): Pointer;
+  begin
+    {$IFDEF MSWINDOWS}
+    Result := GetProcAddress(PCRELib, PChar(SymbolName));
+    {$ENDIF MSWINDOWS}
+    {$IFDEF UNIX}
+    Result := dlsym(PCRELib, PChar(SymbolName));
+    {$ENDIF UNIX}
+  end;
+
 begin
 {$IFDEF PCRE_LINKONREQUEST}
   if PCRELib = INVALID_HANDLE_VALUE then
-    PCRELib := LoadLibrary(pcreDLL);
+    {$IFDEF MSWINDOWS}
+    PCRELib := LoadLibrary(libpcremodulename);
+    {$ENDIF MSWINDOWS}
+    {$IFDEF UNIX}
+    PCRELib := dlopen(PChar(libpcremodulename), RTLD_NOW);
+    {$ENDIF UNIX}
   Result := PCRELib <> INVALID_HANDLE_VALUE;
   if Result then
   begin
-    @pcre_compile := GetProcAddress(PCRELib, 'pcre_compile');
-    @pcre_copy_substring := GetProcAddress(PCRELib, 'pcre_copy_substring');
-    @pcre_exec := GetProcAddress(PCRELib, 'pcre_exec');
-    @pcre_study := GetProcAddress(PCRELib, 'pcre_study');
-    @pcre_get_substring := GetProcAddress(PCRELib, 'pcre_get_substring');
-    @pcre_get_substring_list := GetProcAddress(PCRELib, 'pcre_get_substring_list');
-    @pcre_free_substring := GetProcAddress(PCRELib, 'pcre_free_substring');
-    @pcre_free_substring_list := GetProcAddress(PCRELib, 'pcre_free_substring_list');
-    @pcre_maketables := GetProcAddress(PCRELib, 'pcre_maketables');
-    @pcre_fullinfo := GetProcAddress(PCRELib, 'pcre_fullinfo');
-    @pcre_info := GetProcAddress(PCRELib, 'pcre_info');
-    @pcre_version := GetProcAddress(PCRELib, 'pcre_version');
+    @pcre_compile := GetSymbol('pcre_compile');
+    @pcre_copy_substring := GetSymbol('pcre_copy_substring');
+    @pcre_exec := GetSymbol('pcre_exec');
+    @pcre_study := GetSymbol('pcre_study');
+    @pcre_get_substring := GetSymbol('pcre_get_substring');
+    @pcre_get_substring_list := GetSymbol('pcre_get_substring_list');
+    @pcre_free_substring := GetSymbol('pcre_free_substring');
+    @pcre_free_substring_list := GetSymbol('pcre_free_substring_list');
+    @pcre_maketables := GetSymbol('pcre_maketables');
+    @pcre_fullinfo := GetSymbol('pcre_fullinfo');
+    @pcre_info := GetSymbol('pcre_info');
+    @pcre_version := GetSymbol('pcre_version');
 
-    @pcre_malloc := GetProcAddress(PCRELib, 'pcre_malloc');
-    @pcre_free := GetProcAddress(PCRELib, 'pcre_free');
+    @pcre_malloc := GetSymbol('pcre_malloc');
+    @pcre_free := GetSymbol('pcre_free');
   end
   else
     UnloadPCRE;
@@ -304,7 +353,12 @@ procedure UnloadPCRE;
 begin
 {$IFDEF PCRE_LINKONREQUEST}
   if PCRELib <> INVALID_HANDLE_VALUE then
+    {$IFDEF MSWINDOWS}
     FreeLibrary(PCRELib);
+    {$ENDIF MSWINDOWS}
+    {$IFDEF UNIX}
+    dlclose(Pointer(PCRELib));
+    {$ENDIF UNIX}
   PCRELib := INVALID_HANDLE_VALUE;
   @pcre_compile := nil;
   @pcre_copy_substring := nil;
@@ -325,21 +379,28 @@ begin
 end;
 
 {$IFNDEF PCRE_LINKONREQUEST}
-function pcre_compile; external pcreDLL name 'pcre_compile';
-function pcre_copy_substring; external pcreDLL name 'pcre_copy_substring';
-function pcre_exec; external pcreDLL name 'pcre_exec';
-function pcre_study; external pcreDLL name 'pcre_study';
-function pcre_get_substring; external pcreDLL name 'pcre_get_substring';
-function pcre_get_substring_list; external pcreDLL name 'pcre_get_substring_list';
-procedure pcre_free_substring; external pcreDLL name 'pcre_free_substring';
-procedure pcre_free_substring_list; external pcreDLL name 'pcre_free_substring_list';
-function pcre_maketables; external pcreDLL name 'pcre_maketables';
-function pcre_fullinfo; external pcreDLL name 'pcre_fullinfo';
-function pcre_info; external pcreDLL name 'pcre_info';
-function pcre_version; external pcreDLL name 'pcre_version';
-function pcre_malloc; external pcreDLL name 'pcre_malloc';
-procedure pcre_free; external pcreDLL name 'pcre_free';
+function pcre_compile; external libpcremodulename name 'pcre_compile';
+function pcre_copy_substring; external libpcremodulename name 'pcre_copy_substring';
+function pcre_exec; external libpcremodulename name 'pcre_exec';
+function pcre_study; external libpcremodulename name 'pcre_study';
+function pcre_get_substring; external libpcremodulename name 'pcre_get_substring';
+function pcre_get_substring_list; external libpcremodulename name 'pcre_get_substring_list';
+procedure pcre_free_substring; external libpcremodulename name 'pcre_free_substring';
+procedure pcre_free_substring_list; external libpcremodulename name 'pcre_free_substring_list';
+function pcre_maketables; external libpcremodulename name 'pcre_maketables';
+function pcre_fullinfo; external libpcremodulename name 'pcre_fullinfo';
+function pcre_info; external libpcremodulename name 'pcre_info';
+function pcre_version; external libpcremodulename name 'pcre_version';
+function pcre_malloc; external libpcremodulename name 'pcre_malloc';
+procedure pcre_free; external libpcremodulename name 'pcre_free';
 {$ENDIF}
+
+// History
+
+// $Log$
+// Revision 1.2  2004/07/26 05:13:52  rrossmair
+// made it compile under Kylix (no functional tests performed yet)
+//
 
 end.
 
