@@ -2343,7 +2343,7 @@ function Intensity(const Color32: TColor32): Integer;
 begin
   Result := (Color32 and _B) * 21      // Blue
     + ((Color32 and _G) shr 8) * 174   // Green
-    + ((Color32 and _R) shr 16) * 61); // Red
+    + ((Color32 and _R) shr 16) * 61;  // Red
   Result := Result shr 8;
 end;
 
