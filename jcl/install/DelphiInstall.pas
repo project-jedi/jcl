@@ -272,6 +272,7 @@ type
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
     function FindFolderInDelphiPath(Folder: string; List: TStrings): Integer;
     function SubstitutePath(const Path: string): string;
+    function SupportsVisualCLX: Boolean;
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
     property Compiler: TJclDelphiCompiler read GetCompiler;
@@ -1621,6 +1622,15 @@ begin
         Name := Names[I];
         Result := StringReplace(Result, Format('$(%s)', [Name]), Values[Name], [rfReplaceAll, rfIgnoreCase]);
       end;
+end;
+
+function TJclDelphiInstallation.SupportsVisualCLX: Boolean;
+begin
+  {$IFDEF KYLIX}
+  Result := True;
+  {$ELSE}
+  Result := (Edition <> deSTD) and (VersionNumber >= 6);
+  {$ENDIF}
 end;
 
 //==================================================================================================
