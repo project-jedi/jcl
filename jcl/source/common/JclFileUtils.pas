@@ -3119,20 +3119,27 @@ end;
 // See the remark at the top of this section
 
 function ForceDirectories(Name: string): Boolean;
+var
+  ExtractPath: string;
 begin
   Result := True;
   if Length(Name) = 0 then
     raise EJclFileUtilsError.CreateResRec(@RsCannotCreateDir);
   Name := PathRemoveSeparator(Name);
   {$IFDEF MSWINDOWS}
-  if (Length(Name) < 3) or DirectoryExists(Name) or (ExtractFilePath(Name) = Name) then
+  ExtractPath := ExtractFilePath(Name);
+  if ((Length(Name) = 2) and (Copy(Name, 2,1) = ':')) or DirectoryExists(Name) or (ExtractPath = Name) then
     Exit;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   if (Length(Name) = 0) or DirectoryExists(Name) then
     Exit;
+  ExtractPath := ExtractFilePath(Name);
   {$ENDIF UNIX}
-  Result := ForceDirectories(ExtractFilePath(Name)) and CreateDir(Name);
+  if ExtractPath = '' then
+    Result := CreateDir(Name)
+  else
+    Result := ForceDirectories(ExtractPath) and CreateDir(Name);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -6030,6 +6037,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.38  2005/01/04 23:05:08  jfudickar
+// ForceDirectories fixed. Now it supports ForceDirectories('VersionCheck') or ForceDirectories('a\\b\\c\\d')
+//
 // Revision 1.37  2004/12/23 04:31:43  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
