@@ -1231,13 +1231,13 @@ var
   var
     NonDigitFound: Boolean;
   begin
-    // a valid machine name is a string composed of the set [a-z, A-Z, 0-9, -]
+    // a valid machine name is a string composed of the set [a-z, A-Z, 0-9, -, _]
     // but it may not consist entirely out of numbers
     Result := True;
     NonDigitFound := False;
     while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
     begin
-      if P^ in ['a'..'z', 'A'..'Z', '-'] then
+      if P^ in ['a'..'z', 'A'..'Z', '-', '_'] then
       begin
         NonDigitFound := True;
         Inc(P);
