@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 22, 2001                                              }
+{ Last modified: January 26, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -40,7 +40,9 @@ uses
 // Crash
 //------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Diagnostics
@@ -59,7 +61,7 @@ procedure TraceLocFmt(const Fmt: string; const Args: array of const);
 //------------------------------------------------------------------------------
 
 type
-  TJclMapAddress = record
+  TJclMapAddress = packed record
     Segment: Word;
     Offset: Integer;
   end;
@@ -173,6 +175,7 @@ type
 const
   JclDbgDataSignature = $4742444A; // JDBG
   JclDbgDataResName = 'JCLDEBUG';
+  JclDbgFileExtension = '.jdbg';
 
 type
   PJclDbgHeader = ^TJclDbgHeader;
@@ -184,16 +187,21 @@ type
     Symbols: Integer;
     LineNumbers: Integer;
     Words: Integer;
+    ModuleName: Integer;
+    CheckSum: Integer;
+    CheckSumValid: Boolean;
   end;
 
   TJclBinDebugGenerator = class (TJclMapScanner)
   private
     FDataStream: TMemoryStream;
+    FMapFileName: TFileName;
   protected
     procedure CreateData;
   public
     constructor Create(const MapFileName: TFileName); override;
     destructor Destroy; override;
+    function CalculateCheckSum: Boolean;
     property DataStream: TMemoryStream read FDataStream;
   end;
 
@@ -210,6 +218,7 @@ type
     FValidFormat: Boolean;
     FLineNumbers: array of TJclMapLineNumber;
     FProcNames: array of TJclBinDbgNameCache;
+    function GetModuleName: string;
   protected
     procedure CacheLineNumbers;
     procedure CacheProcNames;
@@ -219,18 +228,23 @@ type
     function ReadValue(var P: Pointer; var Value: Integer): Boolean;
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
+    function IsModuleNameValid(const Name: TFileName): Boolean;
     function LineNumberFromAddr(Addr: DWORD): Integer;
     function ProcNameFromAddr(Addr: DWORD): string;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function SourceNameFromAddr(Addr: DWORD): string;
+    property ModuleName: string read GetModuleName;
     property ValidFormat: Boolean read FValidFormat;
   end;
+
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
 
 //------------------------------------------------------------------------------
 // Source Locations
 //------------------------------------------------------------------------------
 
+type
   TJclDebugInfoSource = class;
 
   TJclLocationInfo = record
@@ -377,7 +391,7 @@ type
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
-    procedure AddToStrings(Strings: TStrings);
+    procedure AddToStrings(const Strings: TStrings);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
     property ThreadID: DWORD read FThreadID;
@@ -394,7 +408,8 @@ function JclLastExceptStackList: TJclStackInfoList;
 { TODO -cDOC : Marcel Bestebroer }
 
 type
-  JmpInstruction = packed record // from System.pas
+  PJmpInstruction = ^TJmpInstruction;
+  TJmpInstruction = packed record // from System.pas
     opCode: Byte;
     distance: Longint;
   end;
@@ -406,10 +421,13 @@ type
 
   PExcDesc = ^TExcDesc;
   TExcDesc = packed record // from System.pas
-    jmp: JmpInstruction;
+    jmp: TJmpInstruction;
     case Integer of
-      0:      (instructions: array [0..0] of Byte);
-      1{...}: (cnt: Integer; excTab: array [0..0{cnt-1}] of TExcDescEntry);
+      0: (
+        instructions: array [0..0] of Byte);
+      1: (
+        cnt: Integer;
+        excTab: array [0..0] of TExcDescEntry);
   end;
 
   PExcFrame = ^TExcFrame;
@@ -426,7 +444,7 @@ type
   TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
     efkAutoException);
 
-  TJclExceptFrame = class(TObject)
+  TJclExceptFrame = class (TObject)
   private
     FExcFrame: PExcFrame;
     FFrameKind: TExceptFrameKind;
@@ -441,7 +459,7 @@ type
     property FrameKind: TExceptFrameKind read FFrameKind;
   end;
 
-  TJclExceptFrameList = class(TObjectList)
+  TJclExceptFrameList = class (TObjectList)
   private
     FIgnoreLevels: Integer;
     function GetItems(Index: Integer): TJclExceptFrame;
@@ -487,7 +505,10 @@ var
 implementation
 
 uses
-  JclRegistry, JclStrings, JclSysUtils;
+  {$IFDEF WIN32}
+  JclRegistry,
+  {$ENDIF WIN32}
+  JclStrings, JclSysUtils;
 
 {$UNDEF StackFramesWasOn}
 {$IFOPT W+}
@@ -497,6 +518,8 @@ uses
 //==============================================================================
 // Crash
 //==============================================================================
+
+{$IFDEF WIN32}
 
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
 const
@@ -511,6 +534,8 @@ begin
   RegWriteInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName, Enabled);
   Result := RegReadInteger(HKEY_LOCAL_MACHINE, CrashCtrlScrollKey, CrashCtrlScrollName) = Enabled;
 end;
+
+{$ENDIF WIN32}
 
 //==============================================================================
 // Diagnostics
@@ -576,7 +601,7 @@ end;
 constructor TJclAbstractMapParser.Create(const MapFileName: TFileName);
 begin
   if FileExists(MapFileName) then
-    FStream := TJclFileMappingStream.Create(MapFileName);
+    FStream := TJclFileMappingStream.Create(MapFileName, fmOpenRead or fmShareDenyWrite);
 end;
 
 //------------------------------------------------------------------------------
@@ -691,7 +716,12 @@ var
             Result := Result * 16;
             Inc(Result, Ord(C) - Ord('A') + 10);
           end;
-        'H':
+        'a'..'f':
+          begin
+            Result := Result * 16;
+            Inc(Result, Ord(C) - Ord('a') + 10);
+          end;
+        'H', 'h':
           begin
             Inc(CurrPos);
             Break;
@@ -1077,7 +1107,7 @@ end;
 
 { Strings are compressed to following 6bit format (A..D represents characters) }
 { and terminated with 6bit #0 char. First char = #1 indicates non compressed   }
-{ text.                                                                        }
+{ text, #2 indicates compressed text with leading '@' character                }
 {                                                                              }
 { 7   6   5   4   3   2   1   0  |                                             }
 {---------------------------------                                             }
@@ -1090,6 +1120,26 @@ end;
 
 //------------------------------------------------------------------------------
 
+function SimpleCryptString(const S: string): string;
+var
+  I: Integer;
+  C: Byte;
+  P: PByte;
+begin
+  SetLength(Result, Length(S));
+  P := PByte(Result);
+  for I := 1 to Length(S) do
+  begin
+    C := Ord(S[I]);
+    if C <> $AA then
+      C := C xor $AA;
+    P^ := C;
+    Inc(P);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function DecodeNameString(const S: PChar): string;
 var
   I: Integer;
@@ -1098,11 +1148,16 @@ var
 begin
   Result := '';
   P := PByte(S);
-  if P^ = 1 then
-  begin
-    Inc(P);
-    Result := PChar(P);
-    Exit;
+  case P^ of
+    1: begin
+         Inc(P);
+         Result := SimpleCryptString(PChar(P));
+         Exit;
+       end;
+    2: begin
+         Result := '@';
+         Inc(P);
+       end;
   end;
   I := 0;
   C := 0;
@@ -1149,22 +1204,29 @@ function EncodeNameString(const S: string): string;
 const
   ValidChars = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 var
-  I: Integer;
+  I, StartIndex: Integer;
   C: Byte;
   P: PByte;
 begin
-  for I := 1 to Length(S) do
+  if (Length(S) > 1) and (S[1] = '@') then
+    StartIndex := 1
+  else
+    StartIndex := 0;
+  for I := StartIndex + 1 to Length(S) do
     if not (S[I] in ValidChars) then
     begin
-      Result := #1 + S + #0;
+      Result := #1 + SimpleCryptString(S) + #0;
       Exit;
     end;
-  SetLength(Result, Length(S));
+  SetLength(Result, Length(S) + StartIndex);
   P := Pointer(Result);
-  Dec(P);
-  for I := 0 to Length(S) do // including null terminator
+  if StartIndex = 1 then
+    P^ := 2 // store '@' leading char information
+  else
+    Dec(P);
+  for I := 0 to Length(S) - StartIndex do // including null char
   begin
-    C := Byte(S[I + 1]);
+    C := Byte(S[I + 1 + StartIndex]);
     case Char(C) of
       #0:
         C := 0;
@@ -1202,14 +1264,58 @@ begin
   SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
 end;
 
+//------------------------------------------------------------------------------
+
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
+var
+  JDbgFileName: TFileName;
+  Generator: TJclBinDebugGenerator;
+begin
+  JDbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
+  Generator := TJclBinDebugGenerator.Create(MapFileName);
+  try
+    Result := (Generator.DataStream.Size > 0) and Generator.CalculateCheckSum;
+    if Result then
+      Generator.DataStream.SaveToFile(JDbgFileName);
+  finally
+    Generator.Free;
+  end;
+end;
+
 //==============================================================================
 // TJclBinDebugGenerator
 //==============================================================================
+
+function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
+var
+  Header: PJclDbgHeader;
+  P, EndData: PChar;
+  CheckSum: Integer;
+begin
+  Result := DataStream.Size >= SizeOf(TJclDbgHeader);
+  if not Result then
+    Exit;
+  P := DataStream.Memory;
+  EndData := P + DataStream.Size;
+  Header := PJclDbgHeader(P);
+  CheckSum := 0;
+  Header^.CheckSum := 0;
+  Header^.CheckSumValid := True;
+  while P < EndData do
+  begin
+    Inc(CheckSum, PInteger(P)^);
+    Inc(PInteger(P));
+  end;
+  Header^.CheckSum := CheckSum;
+end;
+
+//------------------------------------------------------------------------------
 
 constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
 begin
   inherited;
   FDataStream := TMemoryStream.Create;
+  FMapFileName := MapFileName;
   if FStream <> nil then
     CreateData;
 end;
@@ -1284,6 +1390,9 @@ begin
 
     FileHeader.Signature := JclDbgDataSignature;
     FileHeader.Version := 1;
+    FileHeader.CheckSum := 0;
+    FileHeader.CheckSumValid := False;
+    FileHeader.ModuleName := AddWord(PathExtractFileNameNoExt(FMapFileName));
     FDataStream.WriteBuffer(FileHeader, SizeOf(FileHeader));
 
     FileHeader.Units := FDataStream.Position;
@@ -1348,6 +1457,9 @@ begin
 
     FileHeader.Words := FDataStream.Position;
     FDataStream.CopyFrom(WordStream, 0);
+    I := 0;
+    while FDataStream.Size mod 4 <> 0 do
+      FDataStream.WriteBuffer(I, 1);
     FDataStream.Seek(0, soFromBeginning);
     FDataStream.WriteBuffer(FileHeader, SizeOf(FileHeader));
   finally
@@ -1428,12 +1540,27 @@ end;
 
 procedure TJclBinDebugScanner.CheckFormat;
 var
-  P: Pointer;
+  CheckSum: Integer;
+  Data, EndData: PChar;
+  Header: PJclDbgHeader;
 begin
-  P := FStream.Memory;
-  FValidFormat := (P <> nil) and (FStream.Size > SizeOf(TJclDbgHeader)) and
-    (PJclDbgHeader(P)^.Signature = JclDbgDataSignature) and
-    (PJclDbgHeader(P)^.Version = 1);
+  Data := FStream.Memory;
+  Header := PJclDbgHeader(Data);
+  FValidFormat := (Data <> nil) and (FStream.Size > SizeOf(TJclDbgHeader)) and
+    (FStream.Size mod 4 = 0) and
+    (Header^.Signature = JclDbgDataSignature) and (Header^.Version = 1);
+  if FValidFormat and Header^.CheckSumValid then
+  begin
+    CheckSum := -Header^.CheckSum;
+    EndData := Data + FStream.Size;
+    while Data < EndData do
+    begin
+      Inc(CheckSum, PInteger(Data)^);
+      Inc(PInteger(Data));
+    end;
+    CheckSum := (CheckSum shr 8) or (CheckSum shl 24);
+    FValidFormat := (CheckSum = Header^.CheckSum);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1458,6 +1585,20 @@ begin
     P := PChar(DWORD(A) + DWORD(FStream.Memory) + DWORD(PJclDbgHeader(FStream.Memory)^.Words) - 1);
     Result := DecodeNameString(P);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclBinDebugScanner.GetModuleName: string;
+begin
+  Result := DataToStr(PJclDbgHeader(FStream.Memory)^.ModuleName);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclBinDebugScanner.IsModuleNameValid(const Name: TFileName): Boolean;
+begin
+  Result := AnsiSameText(ModuleName, PathExtractFileNameNoExt(Name));
 end;
 
 //------------------------------------------------------------------------------
@@ -1861,18 +2002,24 @@ end;
 //------------------------------------------------------------------------------
 
 function TJclDebugInfoBinary.InitializeSource: Boolean;
+var
+  JdbgFileName: TFileName;
 begin
   Result := FindResource(FModule, JclDbgDataResName, RT_RCDATA) <> 0;
   if Result then
     FStream := TResourceStream.Create(FModule, JclDbgDataResName, RT_RCDATA)
-{  else
+  else
   begin
-    Result := (PeMapImgFindSection(PeMapImgNtHeaders(Pointer(FModule)), JclDbgDataResName) <> nil);
+    JdbgFileName := ChangeFileExt(FileName, JclDbgFileExtension);
+    Result := FileExists(JdbgFileName);
     if Result then
-      FStream := TJclPeSectionStream.Create(FModule, JclDbgDataResName);
-  end};
+      FStream := TJclFileMappingStream.Create(JdbgFileName, fmOpenRead or fmShareDenyWrite);
+  end;    
   if Result then
+  begin
     FScanner := TJclBinDebugScanner.Create(FStream, True);
+    Result := FScanner.ValidFormat and FScanner.IsModuleNameValid(FileName);
+  end;
 end;
 
 //==============================================================================
@@ -1901,7 +2048,7 @@ begin
   RawName := not FBorImage.IsPackage;
   with FBorImage.ExportList do
   begin
-    SortList(esAddress);
+    SortList(esAddress, False);
     for I := Count - 1 downto 0 do
       if Items[I].Address <= VA then
       begin
@@ -1988,6 +2135,7 @@ end;
 //------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
+
 function Caller(Level: Integer): Pointer;
 begin
   with TJclStackInfoList.Create(False, 1, nil) do
@@ -2000,6 +2148,7 @@ begin
     Free;
   end;
 end;
+
 {$IFNDEF StackFramesWasOn}
   {$STACKFRAMES OFF}
 {$ENDIF StackFramesWasOn}
@@ -2139,9 +2288,9 @@ end;
 
 var
   ExceptStackInfo: TJclStackInfoList;
-  TopOfStack: DWORD = 0;
-  BaseOfCode: DWORD = 0;
-  TopOfCode: DWORD = 0;
+  TopOfStack: DWORD;
+  BaseOfCode: DWORD;
+  TopOfCode: DWORD;
   BaseOfStack: DWORD;
 
 //------------------------------------------------------------------------------
@@ -2169,9 +2318,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetStackTop: DWORD;
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
 // http://msdn.microsoft.com/library/periodic/period96/S2CE.htm
+
+function GetStackTop: DWORD; assembler;
 asm
   MOV EAX, FS:[4]
 end;
@@ -2209,12 +2359,13 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ValidCallSite(CodeAddr: DWORD): Boolean;
 // Validate that the code address is a valid code site
 //
 // Information from Intel Manual 24319102(2).pdf, Download the 6.5 MBs from:
 //  http://developer.intel.com/design/pentiumii/manuals/243191.htm
 //  Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
+
+function ValidCallSite(CodeAddr: DWORD): Boolean;
 var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
@@ -2227,7 +2378,7 @@ begin
   Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P)) and
     not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
 
-  // Now check to see if the instruction preceeding the return address
+  // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
   if Result then
   begin
@@ -2403,7 +2554,7 @@ begin
       // then pick up the callers address
       StackInfo.CallerAdr := StackPtr^;
 
-      // remeber to callers address so that we don't report it repeatedly
+      // remember to callers address so that we don't report it repeatedly
       PrevCaller := StackPtr^;
 
       // increase the stack level
@@ -2420,7 +2571,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclStackInfoList.AddToStrings(Strings: TStrings);
+procedure TJclStackInfoList.AddToStrings(const Strings: TStrings);
 var
   I: Integer;
 begin
@@ -2467,7 +2618,7 @@ end;
 // Exception frame info routines
 //==============================================================================
 
-function GetFS: Pointer;
+function GetFS: Pointer; assembler;
 asm
   XOR EAX, EAX
   MOV EAX, FS:[EAX]
@@ -2496,22 +2647,20 @@ end;
 
 procedure DoExceptFrameTrace;
 begin
-  { Ignore first 2 levels; the First level is an undefined frame (I haven't a
-    clue as to where it comes from. The second level is the try..finally block
-    in DoExceptNotify. }
+  // Ignore first 2 levels; the First level is an undefined frame (I haven't a
+  // clue as to where it comes from. The second level is the try..finally block
+  // in DoExceptNotify.
   JclCreateExceptFrameList(2);
 end;
 
 //------------------------------------------------------------------------------
 
-type
-  PJmpInstruction = ^JmpInstruction;
-  
 function GetJmpDest(Jmp: PJmpInstruction): DWORD;
 begin
   if Jmp.opCode = $E9 then
     Result := Longint(Jmp) + Jmp.distance + 5
-  else if Jmp.opCode = $EB then
+  else
+  if Jmp.opCode = $EB then
     Result := Longint(Jmp) + ShortInt(jmp.distance) + 2
   else
     Result := 0;
@@ -2537,11 +2686,14 @@ begin
       begin
         if (CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0) then
           FFrameKind := efkAnyException
-        else if (CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0) then
+        else
+        if (CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0) then
           FFrameKind := efkOnException
-        else if (CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0) then
+        else
+        if (CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0) then
           FFrameKind := efkAutoException
-        else if (CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0) then
+        else
+        if (CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0) then
           FFrameKind := efkFinally;
       end;
     end;
@@ -2596,7 +2748,8 @@ begin
     if Result then
       HandlerAt := ExcFrame.desc.excTab[I].handler;
   end
-  else if Result then
+  else
+  if Result then
   begin
     HandlerAt := Pointer(GetJmpDest(@ExcFrame.desc.instructions));
     if HandlerAt = nil then
@@ -2785,6 +2938,7 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
 
 initialization
 
