@@ -15,15 +15,17 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclResources;
 
@@ -966,6 +968,13 @@ resourcestring
   RsProductTypeProfessional     = 'Professional';
   RsProductTypeDatacenterServer = 'Datacenter Server';
 
+resourcestring
+  RsOpenGLInfoError = 'Err';
+  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
+  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
+  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
+  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
+  
 //--------------------------------------------------------------------------------------------------
 // JclSysUtils
 //--------------------------------------------------------------------------------------------------
@@ -975,6 +984,14 @@ resourcestring
   RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
   RsInvalidDigit = 'Invalid base %d digit ''%s'' encountered.';
   RsInvalidDigitValue = 'There is no valid base %d digit for decimal value %d';
+
+//--------------------------------------------------------------------------------------------------
+// JclTD32
+//--------------------------------------------------------------------------------------------------
+
+{ TODO : Currently don't used }
+//resourcestring
+//  RsSvcInvalidSvcState = 'Invalid service state: %.8x';
 
 //--------------------------------------------------------------------------------------------------
 // JclTD32
@@ -997,6 +1014,66 @@ resourcestring
   RsURERepeatRangeOpen     = 'Repetition range not closed, ''}'' is missing.';
   RsUREExpressionEmpty     = 'Expression is empty.';
 
+//--------------------------------------------------------------------------------------------------
+// JclZlib
+//--------------------------------------------------------------------------------------------------
+
+// zlib
+resourcestring
+  RsZlibNeedDict     = 'need dictionary';
+  RsZlibStreamEnd    = 'stream end';
+  RsZlibOK           = '';
+  RsZlibErrNo        = 'file error';
+  RsZlibStreamError  = 'stream error';
+  RsZlibDataError    = 'data error';
+  RsZlibMemError     = 'insufficient memory';
+  RsZlibBufError     = 'buffer error';
+  RsZlibVersionError = 'incompatible version';
+  RsZlibUnknownError = 'unknown zlib error';
+  RsZlibNoSetSize    = 'TZLibStream can''t perform set size';
+  RsZlibNoSeek       = 'TZLibStream can''t perform seek';
+  RsZlibNoWrite      = 'TZLibReader can''t write';
+  RsZlibNoRead       = 'TZLibWriter can''t read';
+
+// gzip
+resourcestring
+  RsGzipNoSetSize    = 'gzip stream can''t perform set size';
+  RsGzipNoSeek       = 'gzip stream can''t perform seek';
+  RsGzipNoWrite      = 'gzip reader can''t write';
+  RsGzipNoRead       = 'gzip writer can''t read';
+
+  RsGzipNoGZipStream          = 'no gzip stream';
+  RsGzipNoDeflate             = 'no deflate compression';
+  RsGzipMultipartNotSupported = 'multipart gzip files are not supported';
+  RsGzipEncryptedNotSupported = 'encrypted gzip files are not supported';
+  RsGzipUnknownFlags          = 'unknown flags';
+  RsGzipCRCError              = 'checksum error';
+  RsGzipSizeError             = 'uncompressed size error';
+
+// Tar
+resourcestring
+  RsTarOctalToIntInvalidCharacters = 'OctalToInt invalid characters: "%s"';
+  RsTarOctalToIntOutOfRange        = 'OctalToInt out of range: "%s"';
+  RsTarChecksumError               = 'TAR Checksum Error';
+  RsTarSetOctalOutOfRange          = 'SetOctal: out of range';
+
+//--------------------------------------------------------------------------------------------------
+// JclDITs
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsDITInvalidISODate     = '''%s'' is not a valid ISO date';
+  RsDITInvalidISOTime     = '''%s'' is not a valid ISO time';
+  RsDITInvalidISODateTime = '''%s'' is not a valid ISO date and time';
+  RsDITInvalidISOFloat    = '''%s'' is not a valid ISO float value';
+
 implementation
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:38:57  peterjhaas
+// Add resources for DIT and ZLib
+//
 
 end.
