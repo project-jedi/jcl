@@ -460,7 +460,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function _BlendReg(F, B: TColor32): TColor32; 
+function _BlendReg(F, B: TColor32): TColor32;
 {asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
@@ -495,8 +495,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function _BlendRegEx(F, B, M: TColor32): TColor32; assembler;
-asm
+function _BlendRegEx(F, B, M: TColor32): TColor32;
+{asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F multiplied by master alpha (M)
   // no checking for M = $FF, if this is the case Graphics32 uses BlendReg
@@ -504,57 +504,14 @@ asm
   // EAX <- F
   // EDX <- B
   // ECX <- M
-
-  // Check Fa > 0 ?
-        TEST    EAX, $FF000000  // Fa = 0? => Result := EDX
-        JZ      @1
-
-        PUSH    EBX
-
-  // Get weight W = Fa * M
         MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
         SHR     EBX, 24         // EBX  <-  00 00 00 Fa
         IMUL    ECX, EBX        // ECX  <-  00 00  W **
         SHR     ECX, 8          // ECX  <-  00 00 00  W
-        JZ      @1              // W = 0 ?  => Result := EDX
-
-  // P = W * F
-        MOV     EBX, EAX        // EBX  <-  ** Fr Fg Fb
-        AND     EAX, $00FF00FF  // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Fg 00
-        IMUL    EAX, ECX        // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8          // EBX  <-  00 00 00 Fg
-        IMUL    EBX, ECX        // EBX  <-  00 00 Pg **
-        ADD     EAX, bias
-        AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8          // EAX  <-  00 Pr ** Pb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Pg 00
-        OR      EAX, EBX        // EAX  <-  00 Pr Pg Pb
-
-  // W = 1 - W; Q = W * B
-        XOR     ECX, $000000FF  // ECX  <-  1 - ECX
-        MOV     EBX, EDX        // EBX  <-  00 Br Bg Bb
-        AND     EDX, $00FF00FF  // EDX  <-  00 Br 00 Bb
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Bg 00
-        IMUL    EDX, ECX        // EDX  <-  Qr ** Qb **
-        SHR     EBX, 8          // EBX  <-  00 00 00 Bg
-        IMUL    EBX, ECX        // EBX  <-  00 00 Qg **
-        ADD     EDX, bias
-        AND     EDX, $FF00FF00  // EDX  <-  Qr 00 Qb 00
-        SHR     EDX, 8          // EDX  <-  00 Qr ** Qb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Qg 00
-        OR      EBX, EDX        // EBX  <-  00 Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  00 Zr Zg Zb
-
-        POP     EBX
-        RET
-
-@1:     MOV     EAX, EDX
-        RET
+        JMP    _CombineReg
+end;}
+begin
+  Result := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
 
 //------------------------------------------------------------------------------
@@ -564,14 +521,20 @@ procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
   // EAX <- F
   // [EDX] <- B
   // ECX <- M
-        PUSH    EDX
+        PUSH    EBX
+        MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
+        SHR     EBX, 24         // EBX  <-  00 00 00 Fa
+        IMUL    ECX, EBX        // ECX  <-  00 00  W **
+        SHR     ECX, 8          // ECX  <-  00 00 00  W
+
+        MOV     EBX, EDX
         MOV     EDX, [EDX]
         CALL    _BlendRegEx
-        POP     EDX
-        MOV     [EDX], EAX
+        MOV     [EBX], EAX
+        POP     EBX
 end;}
 begin
-  B := _BlendRegEx(F, B, M);
+  B := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
 
 
