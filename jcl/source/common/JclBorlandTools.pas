@@ -170,6 +170,7 @@ type
   public
     destructor Destroy; override;
     function AddPackage(const FileName, Description: string): Boolean;
+    function RemovePackage(const FileName: string): Boolean;
     property Count: Integer read GetCount;
     property PackageDescriptions[Index: Integer]: string read GetPackageDescriptions;
     property PackageFileNames[Index: Integer]: string read GetPackageFileNames;
@@ -243,7 +244,7 @@ type
     function GetExeName: string; override;
   public
     function Execute(const CommandLine: string): Boolean; override;
-    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+    function MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
     function SupportsLibSuffix: Boolean;
   end;
 
@@ -356,6 +357,7 @@ type
     {$ENDIF MSWINDOWS}
     procedure ReadInformation;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
+    function RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
@@ -373,8 +375,12 @@ type
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function IsBDSPersonality: Boolean;
+    function RemoveFromDebugDCUPath(const Path: string): Boolean;
+    function RemoveFromLibrarySearchPath(const Path: string): Boolean;
+    function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
     function SubstitutePath(const Path: string): string;
     function SupportsVisualCLX: Boolean;
+    function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
     property DCC: TJclDCC read GetDCC;
@@ -437,7 +443,6 @@ type
     {$IFDEF KYLIX}
     function ConfigFileName(const Extension: string): string; override;
     {$ENDIF KYLIX}
-    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
   end;
 
   TTraverseMethod = function (Installation: TJclBorRADToolInstallation): Boolean of object;
@@ -607,6 +612,53 @@ const
 resourcestring
   RsBorlandStudioProjects = 'Borland Studio Projects';
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
+
+//--------------------------------------------------------------------------------------------------
+
+procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
+  const LibSuffix: PString = nil; const Description: PString = nil);
+const
+  DescriptionOption     = '{$DESCRIPTION ''';
+  LibSuffixOption       = '{$LIBSUFFIX ''';
+  RunOnlyOption         = '{$RUNONLY}';
+var
+  I: Integer;
+  S: string;
+  DPKFile: TStringList;
+begin
+  DPKFile := TStringList.Create;
+  try
+    DPKFile.LoadFromFile(DPKFileName);
+    Description^ := '';
+    LibSuffix^ := '';
+    RunOnly := False;
+    for I := 0 to DPKFile.Count - 1 do
+    begin
+      S := TrimRight(DPKFile[I]);
+      if Assigned(Description) and (Pos(DescriptionOption, S) = 1) then
+        Description^ := Copy(S, Length(DescriptionOption), Length(S) - Length(DescriptionOption))
+      else
+      if Assigned(LibSuffix) and (Pos(LibSuffixOption, S) = 1) then
+        LibSuffix^ := Copy(S, Length(LibSuffixOption), Length(S) - Length(LibSuffixOption))
+      else
+      if Pos(RunOnlyOption, S) = 1 then
+        RunOnly := True;
+    end;
+  finally
+    DPKFile.Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function BPLFileName(const BPLPath, DPKFileName: string): string;
+var
+  LibSuffix: string;
+  RunOnly: Boolean;
+begin
+  GetDPKFileInfo(DPKFileName, RunOnly, @LibSuffix);
+  Result := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(DPKFileName) + LibSuffix + '.bpl';
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1019,6 +1071,19 @@ begin
     end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
+begin
+  Result := Installation.ConfigData.ValueExists(KnownPackagesKeyName, FileName);
+  if Result then
+  begin
+    RemoveDisabled(FileName);
+    Installation.ConfigData.DeleteKey(KnownPackagesKeyName, FileName);
+    ReadPackages;
+  end;
+end;
+
 //==================================================================================================
 // TJclBorlandCommandLineTool
 //==================================================================================================
@@ -1138,20 +1203,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDCC.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+function TJclDCC.MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 const
   DOFDirectoriesSection = 'Directories';
   UnitOutputDirName     = 'UnitOutputDir';
   SearchPathName        = 'SearchPath';
-  DescriptionOption     = '{$DESCRIPTION ''';
-  LibSuffixOption       = '{$LIBSUFFIX ''';
-  RunOnlyOption         = '{$RUNONLY}';
 var
-  SaveDir, Description, LibSuffix, BPLFileName, S: string;
-  RunOnly: Boolean;
+  SaveDir, S: string;
   OptionsFile: TIniFile;
-  DPKFile: TStringList;
-  I: Integer;
 begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(PackageName) + '.');
@@ -1172,35 +1231,6 @@ begin
     Result := Execute(StrDoubleQuote(StrTrimQuotes(PackageName)));
   finally
     SetCurrentDir(SaveDir);
-  end;
-  if Result then
-  begin
-    DPKFile := TStringList.Create;
-    try
-      DPKFile.LoadFromFile(PackageName);
-      Description := '';
-      LibSuffix := '';
-      RunOnly := False;
-      for I := 0 to DPKFile.Count - 1 do
-      begin
-        S := TrimRight(DPKFile[I]);
-        if Pos(DescriptionOption, S) = 1 then
-          Description := Copy(S, Length(DescriptionOption), Length(S) - Length(DescriptionOption))
-        else
-        if Pos(LibSuffixOption, S) = 1 then
-          LibSuffix := Copy(S, Length(LibSuffixOption), Length(S) - Length(LibSuffixOption))
-        else
-        if Pos(RunOnlyOption, S) = 1 then
-          RunOnly := True;
-      end;
-      if not RunOnly then
-      begin
-        BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
-        Result := Installation.IdePackages.AddPackage(BPLFileName, Description);
-      end;
-    finally
-      DPKFile.Free;
-    end;
   end;
 end;
 
@@ -1473,7 +1503,20 @@ function TJclBorRADToolRepository.GetPages: TStrings;
 begin
   Result := FPages;
 end;
+(*
+//--------------------------------------------------------------------------------------------------
 
+procedure TJclBorRADToolRepository.RemoveObject(const FileName: string);
+var
+  SectionName: string;
+begin
+  GetIniFile;
+  SectionName := AnsiUpperCase(PathRemoveExtension(FileName));
+  FIniFile.EraseSection(FileName);
+  FIniFile.EraseSection(SectionName);
+  CloseIniFile;
+end;
+*)
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolRepository.RemoveObjects(const PartialPath, FileName, ObjectType: string);
@@ -1651,6 +1694,39 @@ begin
   finally
     PathItems.Free;
     NewItems.Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
+var
+  PathItems, RemoveItems: TStringList;
+  Folder: string;
+  I, J: Integer;
+begin
+  Result := False;
+  PathItems := nil;
+  RemoveItems := nil;
+  try
+    PathItems := TStringList.Create;
+    RemoveItems := TStringList.Create;
+    ExtractPaths(Path, PathItems);
+    ExtractPaths(ItemsToRemove, RemoveItems);
+    for I := 0 to RemoveItems.Count - 1 do
+    begin
+      Folder := RemoveItems[I];
+      J := FindFolderInPath(Folder, PathItems);
+      if J <> -1 then
+      begin
+        PathItems.Delete(J);
+        Result := True;
+      end;
+      StringsToStr(PathItems, PathSep, False);
+    end;
+  finally
+    PathItems.Free;
+    RemoveItems.Free;
   end;
 end;
 
@@ -1968,11 +2044,27 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+var
+  BPLFileName, Description, LibSuffix: string;
+  RunOnly: Boolean;
 begin
-  {$IFDEF MSWINDOWS}
-  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
-  {$ENDIF MSWINDOWS}
-  Result := False;
+  Result := DCC.MakePackage(PackageName, BPLPath, DCPPath);
+  if Result then
+  begin
+    GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+    if not RunOnly then
+    begin
+      BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
+      Result := IdePackages.AddPackage(BPLFileName, Description);
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+begin
+  Result := IdePackages.RemovePackage(BPLFileName(BPLPath, PackageName));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1984,6 +2076,39 @@ begin
   {$ELSE}
   Result := False;
   {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.RemoveFromDebugDCUPath(const Path: string): Boolean;
+var
+  TempDebugDCUPath: TJclBorRADToolPath;
+begin
+  TempDebugDCUPath := DebugDCUPath;
+  Result := RemoveFromPath(TempDebugDCUPath, Path);
+  DebugDCUPath := TempDebugDCUPath;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.RemoveFromLibrarySearchPath(const Path: string): Boolean;
+var
+  TempLibraryPath: TJclBorRADToolPath;
+begin
+  TempLibraryPath := LibrarySearchPath;
+  Result := RemoveFromPath(TempLibraryPath, Path);
+  LibrarySearchPath := TempLibraryPath;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
+var
+  TempLibraryPath: TJclBorRADToolPath;
+begin
+  TempLibraryPath := LibraryBrowsingPath;
+  Result := RemoveFromPath(TempLibraryPath, Path);
+  LibraryBrowsingPath := TempLibraryPath;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2165,19 +2290,19 @@ var
   SaveDir, PackagePath: string;
 begin
   if IsDelphiPackage(PackageName) then
+    Result := inherited InstallPackage(PackageName, BPLPath, DCPPath)
+  else
   begin
-    Result := DCC.InstallPackage(PackageName, BPLPath, DCPPath);
-    Exit;
-  end;
-  PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
-  SaveDir := GetCurrentDir;
-  SetCurrentDir(PackagePath);
-  try
-    // Kylix bpr2mak doesn't like full file names
-    Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName));
-    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(StrTrimQuotes(ChangeFileExt(PackageName, '.mak')))]));
-  finally
-    SetCurrentDir(SaveDir);
+    PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
+    SaveDir := GetCurrentDir;
+    SetCurrentDir(PackagePath);
+    try
+      // Kylix bpr2mak doesn't like full file names
+      Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName));
+      Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(StrTrimQuotes(ChangeFileExt(PackageName, '.mak')))]));
+    finally
+      SetCurrentDir(SaveDir);
+    end;
   end;
 end;
 
@@ -2226,13 +2351,6 @@ begin
   else
     Result := 0;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclDelphiInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
-begin
-  Result := DCC.InstallPackage(PackageName, BPLPath, DCPPath);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2512,6 +2630,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2005/02/03 05:17:54  rrossmair
+// - some uninstall support added
+// - refactoring: TJclDCC.InstallPackage replaced by TJclDCC.MakelPackage, IDE installation part moved to TJclBorRADToolInstallation.InstallPackage
+//
 // Revision 1.30  2004/12/23 04:31:42  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
