@@ -24,9 +24,6 @@ object ProductFrame: TProductFrame
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      393
-      410)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -56,9 +53,6 @@ object ProductFrame: TProductFrame
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      409
-      410)
     object Label2: TLabel
       Left = 5
       Top = 8
@@ -82,9 +76,6 @@ object ProductFrame: TProductFrame
       Anchors = [akLeft, akRight, akBottom]
       Caption = '&Advanced Options'
       TabOrder = 1
-      DesignSize = (
-        397
-        81)
       object Label3: TLabel
         Left = 8
         Top = 19
