@@ -8,6 +8,9 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
+VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x.\Q
+VclOptions      = -c -dVCL -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -uKYLIX -x.\\
+#---------------------------------------------------------------------------------------------------
 SRC = ..\source
 UNIT = $(ROOT)\Lib;$(SRC)\common;$(SRC)\windows
 RES =
@@ -16,8 +19,9 @@ MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
+DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $.
 BRCC = $(ROOT)\bin\brcc32.exe $**
+jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
 default:	clean install
 #---------------------------------------------------------------------------------------------------
@@ -27,9 +31,11 @@ default:	clean install
   if exist *.dcu del *.dcu
 
 $(BIN)\JediInstaller.exe: \
+                VclUnits \
                 JediInstaller.dpr
 
 $(BIN)\QJediInstaller.exe: \
+                ClxUnits \
                 QJediInstaller.dpr
 
 install:        $(BIN)\JediInstaller.exe
@@ -37,7 +43,7 @@ install:        $(BIN)\JediInstaller.exe
         bin\JediInstaller.exe
         cd install
 
-qinstall:  $(BIN)\QJediInstaller.exe
+qinstall:       $(BIN)\QJediInstaller.exe
         cd ..
         bin\QJediInstaller.exe
         cd install
@@ -50,7 +56,34 @@ clean:
         -@del /q /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.o *.obj
         cd install
 
-prototypes:
-        cd prototypes
-        make
-        cd ..
+prototypes: VclUnits ClxUnits
+
+VclUnits:       .\JclInstall.pas \
+                JediInstallIntf.pas \
+                ProductFrames.pas \
+                JediInstallerMain.pas
+
+ClxUnits:       QJclInstall.pas \
+                QJediInstallIntf.pas \
+                QProductFrames.pas \
+                QJediInstallerMain.pas
+
+{prototypes}.pas{.}.pas:
+	$(jpp) $(VclOptions) $<
+
+QJclInstall.pas: \
+        prototypes\JclInstall.pas
+        $(jpp) $(VClxOptions) $?
+
+QJediInstallIntf.pas: \
+        prototypes\JediInstallIntf.pas
+        $(jpp) $(VClxOptions) $?
+
+QProductFrames.pas: \
+        prototypes\ProductFrames.pas
+        $(jpp) $(VClxOptions) $?
+
+QJediInstallerMain.pas: \
+        prototypes\JediInstallerMain.pas
+        $(jpp) $(VClxOptions) $?
+
