@@ -611,6 +611,9 @@ begin
 end;
 
 function TJclClrILGenerator.DumpIL(Options: TJclInstructionDumpILOptions): string;
+var
+  I, J, Indent: Integer;
+
   function FlagsToName(Flags: TJclClrExceptionClauseFlags): string;
   begin
     if cfFinally in Flags then
@@ -622,16 +625,15 @@ function TJclClrILGenerator.DumpIL(Options: TJclInstructionDumpILOptions): strin
     else
       Result := 'catch';
   end;
-var
-  I, J, Indent: Integer;
-  IndentStr: string;
+  function IndentStr: string;
+  begin
+    Result := DupeString('  ', Indent);
+  end;
 begin
   Indent := 0;
 
   with TStringList.Create do
   try
-    IndentStr := DupeString('  ', Indent);
-
     for I:=0 to InstructionCount-1 do
     begin
       for J:=0 to Method.ExceptionHandlerCount-1 do
@@ -645,8 +647,8 @@ begin
         end;
         if Instructions[I].Offset = (TryBlock.Offset + TryBlock.Length) then
         begin
-          Add(IndentStr + '}  // end .try');
           Dec(Indent);
+          Add(IndentStr + '}  // end .try');
         end;
         if Instructions[I].Offset = HandlerBlock.Offset then
         begin
@@ -656,11 +658,11 @@ begin
         end;
         if Instructions[I].Offset = (HandlerBlock.Offset + HandlerBlock.Length) then
         begin
-          Add(IndentStr + '}  // end ' + FlagsToName(Flags));
           Dec(Indent);
+          Add(IndentStr + '}  // end ' + FlagsToName(Flags));
         end;
       end;
-      Add(DupeString('  ', Indent) + Instructions[I].DumpIL(Options));
+      Add(IndentStr + Instructions[I].DumpIL(Options));
     end;
 
     Result := Text;
@@ -945,8 +947,8 @@ begin
         end;
         Result := Result + ' /* ' + IntToHex(TVarData(FParam).VLongWord, 8) + ' */';
       end;
-      ptSOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VShortInt - 1);
-      ptLOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VInteger - 1);
+      ptSOff:  Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VShortInt - 1);
+      ptLOff:  Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
       ptArray:
       begin
         for I:= VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
