@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 08, 2002                                                                    }
+{ Last modified: April 19, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -190,6 +190,8 @@ type
     Flags: FLAGS;
   end;
 
+  TJclTaskWindowsList = array of HWND;
+
   TJclEmail = class (TJclSimpleMapi)
   private
     FAttachments: TStrings;
@@ -203,9 +205,10 @@ type
     FSeedMessageID: string;
     FSessionHandle: THandle;
     FSubject: string;
+    FTaskWindowList: TJclTaskWindowsList;
+    function GetParentWnd: HWND;
     function GetUserLogged: Boolean;
     procedure SetBody(const Value: string);
-    function GetParentWnd: HWND;
   protected
     procedure BeforeUnloadClientLib; override;
     procedure DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
@@ -224,7 +227,9 @@ type
     function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
     function Read(const Options: TJclEmailReadOptions = []): Boolean;
     function ResolveName(var Name, Address: string; ShowDialog: Boolean = False): Boolean;
+    procedure RestoreTaskWindows;
     function Save: Boolean;
+    procedure SaveTaskWindows;
     function Send(ShowDialog: Boolean = True): Boolean;
     procedure SortAttachments;
     property Attachments: TStrings read FAttachments;
@@ -357,6 +362,64 @@ begin
   else
     Result := '';
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RestoreTaskWindowsList(const List: TJclTaskWindowsList);
+var
+  I: Integer;
+
+  function RestoreTaskWnds(Wnd: HWND; List: TJclTaskWindowsList): BOOL; stdcall;
+  var
+    I: Integer;
+    EnableIt: Boolean;
+  begin
+    if IsWindowVisible(Wnd) then
+    begin
+      EnableIt := False;
+      for I := 1 to Length(List) - 1 do
+        if List[I] = Wnd then
+        begin
+          EnableIt := True;
+          Break;
+        end;
+      EnableWindow(Wnd, EnableIt);
+    end;
+    Result := True;
+  end;
+
+begin
+  if Length(List) > 0 then
+  begin
+    EnumThreadWindows(MainThreadID, @RestoreTaskWnds, Integer(List));
+    for I := 0 to Length(List) - 1 do
+      EnableWindow(List[I], True);
+    SetFocus(List[0]);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SaveTaskWindowsList: TJclTaskWindowsList;
+
+  function SaveTaskWnds(Wnd: HWND; var Data: TJclTaskWindowsList): BOOL; stdcall;
+  var
+    C: Integer;
+  begin
+    if IsWindowVisible(Wnd) and IsWindowEnabled(Wnd) then
+    begin
+      C := Length(Data);
+      SetLength(Data, C + 1);
+      Data[C] := Wnd;
+    end;
+    Result := True;
+  end;
+
+begin
+  SetLength(Result, 1);
+  Result[0] := GetFocus;
+  EnumThreadWindows(MainThreadID, @SaveTaskWnds, Integer(@Result));
 end;
 
 //==================================================================================================
@@ -1211,9 +1274,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclEmail.RestoreTaskWindows;
+begin
+  RestoreTaskWindowsList(FTaskWindowList);
+  FTaskWindowList := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclEmail.Save: Boolean;
 begin
   Result := InternalSendOrSave(True, False);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclEmail.SaveTaskWindows;
+begin
+  FTaskWindowList := SaveTaskWindowsList;
 end;
 
 //--------------------------------------------------------------------------------------------------
