@@ -1,9 +1,4 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
-
-{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -19,14 +14,22 @@
 { The Initial Developer of the Original Code is Peter J. Haas. Portions created by Peter J. Haas   }
 { are Copyright (C) 2001 Peter J. Haas. All Rights Reserved.                                       }
 {                                                                                                  }
-{ The Original Code Version 2.0 is: JclDITs.pas.                                                   } 
+{ The Original Code Version 2.0 is: JclDITs.pas.                                                   }
 { The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
 { Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
 { You may retrieve the latest version of the Original Code at the homepage                         }
 { of Peter J. Haas (delphi@pjh2.de) located at http://delphi.pjh2.de/                              }
 {                                                                                                  }
+{--------------------------------------------------------------------------------------------------}
+{                                                                                                  }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he donated to the JCL.       }
+{        He is not to be held responsible for modifications applied after this date.               }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.                         }
+{                                                                                                  }
+{--------------------------------------------------------------------------------------------------}
+{                                                                                                  }
 {  Contributor(s):                                                                                 }
-{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{    Peter J. Haas (peterjhaas)                                                                    }
 {    Robert Rossmair (rrossmair)                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
@@ -44,30 +47,21 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-
-
 // Last modified: $Date$
 // For history see end of file
 
-
 {$I jcl.inc}
-
 
 unit JclDITs;
 
 interface
+
 uses
   SysUtils;
-  
-
-
-
-
 
 //--------------------------------------------------------------------------------------------------
 // Date and Time Data Interchange (ISO 8601)
 //--------------------------------------------------------------------------------------------------
-
 
 type
   TISODateTimeOption = (dtoDate, dtoTime, dtoMilliseconds, dtoBasic);
@@ -154,12 +148,9 @@ function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTi
 function ISOStrToDateTime(const Value: String): TDateTime;
 function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 
-
-
 //--------------------------------------------------------------------------------------------------
 // Float Data Interchange (ISO 31-0)
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts a float value to a string
 // DecimalSeparator is decimal separator, no thousand separator
@@ -188,18 +179,14 @@ function ISOTextToFloat(Value: String; out Float: Extended): Boolean;
 function ISOStrToFloat(const Value: String): Extended;
 function ISOStrToFloatDef(const Value: String; const Default: Extended): Extended;
 
-
 implementation
 
 uses
   JclResources;
 
-
-
 //==================================================================================================
 // Date and Time Data Interchange (ISO 8601)
 //==================================================================================================
-
 
 // Convert TDateTime to string
 function ISODateTimeToStrCustom(const Value: TDateTime;
@@ -207,7 +194,7 @@ function ISODateTimeToStrCustom(const Value: TDateTime;
   DateTimeSeparator: TISODateTimeSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = dtsT{$ENDIF}): String;
 var
   DTFormat: String;
-  
+
 begin
   // Parameter check
   if Options = [] then
@@ -244,9 +231,7 @@ begin
   
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts TDateTime to date string 'YYYY-MM-DD'
 function ISODateToStr(const Value: TDateTime): String;
@@ -254,9 +239,7 @@ begin
   Result := FormatDateTime(ISODateFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts TDateTime to time string 'hh:mm:ss'
 function ISOTimeToStr(const Value: TDateTime): String;
@@ -264,9 +247,7 @@ begin
   Result := FormatDateTime(ISOTimeFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
 function ISODateTimeToStr(const Value: TDateTime): String;
@@ -274,9 +255,7 @@ begin
   Result := FormatDateTime(ISODateTimeFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts TDateTime to date string 'YYYYMMDD'
 function ISOBasicDateToStr(const Value: TDateTime): String;
@@ -284,9 +263,7 @@ begin
   Result := FormatDateTime(ISOBasicDateFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Convert TDateTime to time string 'hhmmss'
 function ISOBasicTimeToStr(const Value: TDateTime): String;
@@ -294,9 +271,7 @@ begin
   Result := FormatDateTime(ISOBasicTimeFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts TDateTime to date time string 'YYYYMMDDThhmmss'
 function ISOBasicDateTimeToStr(const Value: TDateTime): String;
@@ -304,9 +279,7 @@ begin
   Result := FormatDateTime(ISOBasicDateTimeFormat, Value);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function CheckDateTimeFormat(const Value, DTFormat: String): Boolean;
 var
@@ -331,9 +304,7 @@ begin
   Result := True;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO date string to TDateTime and replace the date part of Date
 function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
@@ -359,9 +330,7 @@ begin
   end;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO time string to TDateTime and replace the time part of Time
 function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
@@ -439,9 +408,7 @@ begin
   end;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
@@ -463,9 +430,7 @@ begin
   end;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO date string to TDateTime
 // Valid strings:
@@ -481,9 +446,7 @@ begin
     {$ENDIF DELPHI3}
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function ISOStrToDateDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
@@ -492,9 +455,7 @@ begin
     Result := Default;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO time string to TDateTime
 // Valid strings:
@@ -511,9 +472,7 @@ begin
     {$ENDIF DELPHI3}
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
@@ -522,9 +481,7 @@ begin
     Result := Default;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
@@ -538,9 +495,7 @@ begin
     {$ENDIF DELPHI3}
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
@@ -548,11 +503,9 @@ begin
     Result := Default;
 end;
 
-
 //==================================================================================================
 // Float Data Interchange (ISO 31-0)
 //==================================================================================================
-
 
 function ISOFloatRecToStr(const Rec: TFloatRec;
   DecimalSeparator: TISOFloatDecimalSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = fdsComma{$ENDIF}): String;
@@ -596,9 +549,7 @@ begin
   end;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Convert a float value to string
 // with DecimalSeparator as decimal separator and without thousand separator
@@ -616,9 +567,7 @@ begin
   Result := ISOFloatRecToStr(FloatRec, DecimalSeparator);
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 // Convert a string to a float value
 // Decimal separator ',' or '.'
@@ -660,9 +609,7 @@ begin
   end;
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function ISOStrToFloat(const Value: String): Extended;
 begin
@@ -674,17 +621,13 @@ begin
     {$ENDIF DELPHI3}
 end;
 
-
 //--------------------------------------------------------------------------------------------------
-
 
 function ISOStrToFloatDef(const Value: String; const Default: Extended): Extended;
 begin
   if not ISOTextToFloat(Value, Result) then
     Result := Default;
 end;
-
-// ****************************************************************************
 
 //  History:
 //   2001-09-10  Version 1.0
@@ -699,8 +642,8 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
-//   Revision 1.4  2004/05/08 08:44:17  rrossmair
-//   introduced & applied symbol HAS_UNIT_LIBC
+//   Revision 1.5  2004/05/31 22:04:22  rrossmair
+//   added PJH disclaimer; some formatting. Not longer generated file.
 //
 //   Revision 1.4  2004/05/05 05:50:40  rrossmair
 //   fixed typo: '}' instead of ')'
