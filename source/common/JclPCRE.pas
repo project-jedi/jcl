@@ -248,7 +248,13 @@ begin
   inherited Create(Msg);
 end;
 
+procedure LibNotLoadedHandler; cdecl;
+begin
+  raise EPCREError.Create('PCRE library not loaded', 0);
+end;
+
 initialization
+  pcre.LibNotLoadedHandler := LibNotLoadedHandler;
   LoadPCRE;
 
 finalization
@@ -257,6 +263,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/11/06 02:20:20  rrossmair
+// - better handling of calls into DLL when it got not loaded.
+//
 // Revision 1.5  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //
