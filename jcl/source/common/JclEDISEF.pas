@@ -17,13 +17,13 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ EDI Standard Exchange Format (*.sef) File Parser Unit (In Development Version)                   }
+{ EDI Standard Exchange Format (*.sef) File Parser Unit                                            }
 {                                                                                                  }
 { This unit is still in development and is currently experimental                                  }
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: July, 20, 2003                                                                     }
-{ Last modified: October 1, 2003                                                                   }
+{ Last modified: October 14, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -59,7 +59,7 @@ const
   SectionTag_TEXT = '';
   SectionTag_ = '';
 
-  Value_GreaterThan1 = 99999;
+  Value_UndefinedMaximum = 99999;
 
   EDISEFComsUserAttributePeriod = '.';
   EDISEFComsUserAttributeExclamationPoint = '!';
@@ -83,6 +83,7 @@ type
 
   TEDISEFComsUserAttributes = (caPeriod, caExclamationPoint, caDollarSign, caHyphen, caAmpersand);
 
+  TEDISEFObject = class(TEDIObject);
   TEDISEFDataObject = class;
   TEDISEFDataObjectGroup = class;
   TEDISEFElement = class;
@@ -102,7 +103,7 @@ type
 //  EDI SEF Data Object
 //--------------------------------------------------------------------------------------------------
 
-  TEDISEFDataObject = class(TEDIObject)
+  TEDISEFDataObject = class(TEDISEFObject)
   protected
     FState: TEDIDataObjectDataState;
     FId: string;
@@ -158,9 +159,9 @@ type
     function Prior: TEDISEFDataObjectListItem; reintroduce;
     function Last: TEDISEFDataObjectListItem; reintroduce;
     //
+    procedure AddByNameOrId(EDISEFDataObject: TEDISEFDataObject; Name: string = '');
     function FindItemByName(Name: string): TEDISEFDataObjectListItem;
     function GetObjectByItemByName(Name: string): TEDISEFDataObject;
-    procedure AppendEDISEFDataObject(EDISEFDataObject: TEDISEFDataObject; Name: string = '');
     //
     property EDISEFDataObject[Index: Integer]: TEDISEFDataObject read GetEDISEFDataObject
       write SetEDISEFDataObject; default;
@@ -325,7 +326,8 @@ type
 
   TEDISEFSet = class(TEDISEFDataObjectGroup)
   private
-    procedure InternalDisassemble(Data: string; ELMSList, COMSList, SEGSList: TEDISEFDataObjectList);
+    procedure InternalDisassemble(Data: string;
+      ELMSList, COMSList, SEGSList: TEDISEFDataObjectList);
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -381,7 +383,8 @@ type
 //  Procedures
 //--------------------------------------------------------------------------------------------------
 
-function GetEDISEFComsUserAttributeDescription(Attribute: TEDISEFComsUserAttributes): string; overload;
+function GetEDISEFComsUserAttributeDescription(
+  Attribute: TEDISEFComsUserAttributes): string; overload;
 function GetEDISEFComsUserAttributeDescription(Attribute: string): string; overload;
 
 procedure ParseELMSDataOfELMSDefinition(Data: string; Element: TEDISEFElement);
@@ -418,7 +421,7 @@ procedure ParseTableDataOfSETSDefinition(Data: string; Table: TEDISEFTable;
 implementation
 
 uses
-  JclBase, JclResources, JclStrings;
+  JclResources, JclStrings;
 
 //--------------------------------------------------------------------------------------------------
 //  Procedures
@@ -455,7 +458,7 @@ procedure ParseELMSDataOfELMSDefinition(Data: string; Element: TEDISEFElement);
 var
   Temp: TStrings;
 begin
-  //Clear any old values
+  // Clear any old values
   Element.UserAttribute := '';
   Element.Ordinal := -1;
   Element.ElementType := '';
@@ -492,7 +495,7 @@ var
   I, J, K, L, M, N, O: Integer;
   ListItem: TEDISEFDataObjectListItem;
 begin
-  //Clear any old values
+  // Clear any old values
   Element.UserAttribute := '';
   Element.Ordinal := -1;
   Element.ElementType := '';
@@ -500,7 +503,7 @@ begin
   Element.MaximumLength := 0;
   Element.RequirementDesignator := 'O';
   Element.RepeatCount := 0;
-  //Parse User Attribute
+  // Parse User Attribute
   if Data[1] in EDISEFComsUserAttributeSet then
   begin
     Element.UserAttribute := Data[1];
@@ -510,29 +513,29 @@ begin
   begin
     I := 1;
   end;
-  //Get delimiter locations
+  // Get delimiter locations
   J := StrSearch('@', Data, 1);
   K := StrSearch(';', Data, 1);
   L := StrSearch(':', Data, 1);
   M := StrSearch(',', Data, 1);
   O := Length(Data) + 1;
-  //Parse Id using the closest delimiter
+  // Parse Id using the closest delimiter
   N := O;
   if J <> 0 then if N > J then N := J;
   if K <> 0 then if N > K then N := K;
   if L <> 0 then if N > L then N := L;
   if M <> 0 then if N > M then N := M;
   Element.Id := Copy(Data, I, N - I);
-  //Get Default Values
+  // Get Default Values
   if ELMSList <> nil then
   begin
     ListItem := ELMSList.FindItemByName(Element.Id);
     if ListItem <> nil then
     begin
       Element.Assign(TEDISEFElement(ListItem.EDISEFDataObject));
-    end; //if
+    end; // if
   end;
-  //Parse other attributes
+  // Parse other attributes
   if J <> 0 then
   begin
     Inc(J);
@@ -549,7 +552,6 @@ begin
     if L <> 0 then if N > L then N := L;
     if M <> 0 then if N > M then N := M;
     if (N - K) > 0 then Element.MinimumLength := StrToInt(Copy(Data, K, N - K));
-
   end;
   if L <> 0 then
   begin
@@ -565,7 +567,8 @@ begin
   end;
 end;
 
-function CombineELMSDataOfCOMSorSEGSDefinition(Element: TEDISEFElement; ELMSList: TEDISEFDataObjectList): string;
+function CombineELMSDataOfCOMSorSEGSDefinition(Element: TEDISEFElement;
+  ELMSList: TEDISEFDataObjectList): string;
 var
   CompareElement: TEDISEFElement;
   ListItem: TEDISEFDataObjectListItem;
@@ -575,7 +578,7 @@ begin
   Result := Result + Element.Id;
   if Element.Ordinal <> -1 then
     Result := Result + '@' + IntToStr(Element.Ordinal);
-  //Get Default Values
+  // Get Default Values
   CompareElement := nil;
   if ELMSList <> nil then
   begin
@@ -583,9 +586,9 @@ begin
     if ListItem <> nil then
     begin
       CompareElement := TEDISEFElement(ListItem.EDISEFDataObject);
-    end; //if
+    end; // if
   end;
-  //Test for changes in default values
+  // Test for changes in default values
   if CompareElement <> nil then
   begin
     if (CompareElement.MinimumLength <> Element.MinimumLength) or
@@ -619,7 +622,7 @@ var
   I, J, K, L, M, N, O, P: Integer;
   ListItem: TEDISEFDataObjectListItem;
 begin
-  //Clear any old values
+  // Clear any old values
   Element.UserAttribute := '';
   Element.Ordinal := -1;
   Element.ElementType := '';
@@ -627,7 +630,7 @@ begin
   Element.MaximumLength := 0;
   Element.RequirementDesignator := 'O';
   Element.RepeatCount := 0;
-  //Parse User Attribute
+  // Parse User Attribute
   if Data[1] in EDISEFComsUserAttributeSet then
   begin
     Element.UserAttribute := Data[1];
@@ -637,30 +640,30 @@ begin
   begin
     I := 1;
   end;
-  //Get delimiter locations
+  // Get delimiter locations
   J := StrSearch('@', Data, 1);
   K := StrSearch(';', Data, 1);
   L := StrSearch(':', Data, 1);
   M := StrSearch(',', Data, 1);
   N := StrSearch(',', Data, M + 1);
   P := Length(Data) + 1;
-  //Parse Id
+  // Parse Id
   O := P;
   if J <> 0 then if O > J then O := J;
   if K <> 0 then if O > K then O := K;
   if L <> 0 then if O > L then O := L;
   if M <> 0 then if O > M then O := M;
   Element.Id := Copy(Data, I, O - I);
-  //Get Default Values
+  // Get Default Values
   if ELMSList <> nil then
   begin
     ListItem := ELMSList.FindItemByName(Element.Id);
     if ListItem <> nil then
     begin
       Element.Assign(TEDISEFElement(ListItem.EDISEFDataObject));
-    end; //if
+    end; // if
   end;
-  //Parse other attributes
+  // Parse other attributes
   if J <> 0 then
   begin
     Inc(J);
@@ -719,41 +722,41 @@ begin
   M := I;
   while I > 0 do
   begin
-    //Start search
+    // Start search
     I := StrSearch('[', Data, M);
     if I = 0 then Break;
     J := StrSearch(']', Data, M);
     K := StrSearch('{', Data, M);
     L := StrSearch('}', Data, M);
-    //Determine if data block to process is a repetition
-    if (I < K) or (K = 0) then //Normal data block
+    // Determine if data block to process is a repetition
+    if (I < K) or (K = 0) then // Normal data block
     begin
       SubElement := TEDISEFSubElement.Create(Element);
-      Element.EDISEFDataObjects.AppendEDISEFDataObject(SubElement);
+      Element.EDISEFDataObjects.AddByNameOrId(SubElement);
       SubElement.Data := Copy(Data, I + 1, (J - I) - 1);
       SubElement.Disassemble;
       M := J + 1;
     end
-    else //Repeating data block (K = 1 on the first pass)
+    else // Repeating data block (K = 1 on the first pass)
     begin
-      //Get repeat count
+      // Get repeat count
       N := StrSearch('[', Data, K);
       RepeatCount := StrToInt(Copy(Data, K + 1, (N - K) - 1));
-      //Correct start position
+      // Correct start position
       K := StrSearch('[', Data, K);
-      //Validate end position
+      // Validate end position
       N := StrSearch('{', Data, K + 1);
-      while (N <> 0) and (N < L) do //Detect nested repetition
+      while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); //Search for nested repetition
-        L := StrSearch('}', Data, L + 1); //Correct end position
+        N := StrSearch('{', Data, N + 1); // Search for nested repetition
+        L := StrSearch('}', Data, L + 1); // Correct end position
       end;
-      //Copy data for repetition
+      // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
       M := L + 1;
-      //Handle Repeating Data Block
+      // Handle Repeating Data Block
       RepeatingPattern := TEDISEFRepeatingPattern.Create(Element);
-      Element.EDISEFDataObjects.AppendEDISEFDataObject(RepeatingPattern);
+      Element.EDISEFDataObjects.AddByNameOrId(RepeatingPattern);
       RepeatingPattern.RepeatCount := RepeatCount;
       RepeatingPattern.Data := RepeatData;
       RepeatingPattern.Disassemble;
@@ -762,8 +765,8 @@ begin
       //begin
       //  InternalParseCOMSDataOfCOMSDefinition(RepeatData, Element, ELMSList);
       //end;
-    end; //if
-  end; //while
+    end; // if
+  end; // while
 end;
 
 procedure ParseCOMSDataOfCOMSDefinition(Data: string; CompositeElement: TEDISEFCompositeElement;
@@ -846,20 +849,20 @@ begin
   M := I;
   while I > 0 do
   begin
-    //Start search
+    // Start search
     I := StrSearch('[', Data, M);
     if I = 0 then Break;
     J := StrSearch(']', Data, M);
     K := StrSearch('{', Data, M);
     L := StrSearch('}', Data, M);
-    //Determine if data block to process is a repetition
-    if (I < K) or (K = 0) then //Normal data block
+    // Determine if data block to process is a repetition
+    if (I < K) or (K = 0) then // Normal data block
     begin
       ElementData := Copy(Data, I + 1, (J - I) - 1);
       if ElementData[1] = 'C' then
       begin
         CompositeElement := TEDISEFCompositeElement.Create(Segment);
-        Segment.EDISEFDataObjects.AppendEDISEFDataObject(CompositeElement);
+        Segment.EDISEFDataObjects.AddByNameOrId(CompositeElement);
         CompositeElement.SEFFile := SEFFile;
         CompositeElement.Data := ElementData;
         CompositeElement.Disassemble;
@@ -867,33 +870,33 @@ begin
       else
       begin
         Element := TEDISEFElement.Create(Segment);
-        Segment.EDISEFDataObjects.AppendEDISEFDataObject(Element);
+        Segment.EDISEFDataObjects.AddByNameOrId(Element);
         Element.SEFFile := SEFFile;
         Element.Data := ElementData;
         Element.Disassemble;
-      end; //if
+      end; // if
       M := J + 1;
     end
-    else //Repeating data block (K = 1 on the first pass)
+    else // Repeating data block (K = 1 on the first pass)
     begin
-      //Get repeat count
+      // Get repeat count
       N := StrSearch('[', Data, K);
       RepeatCount := StrToInt(Copy(Data, K + 1, (N - K) - 1));
-      //Correct start position
+      // Correct start position
       K := StrSearch('[', Data, K);
-      //Validate end position
+      // Validate end position
       N := StrSearch('{', Data, K + 1);
-      while (N <> 0) and (N < L) do //Detect nested repetition
+      while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); //Search for nested repetition
-        L := StrSearch('}', Data, L + 1); //Correct end position
+        N := StrSearch('{', Data, N + 1); // Search for nested repetition
+        L := StrSearch('}', Data, L + 1); // Correct end position
       end;
-      //Copy data for repetition
+      // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
       M := L + 1;
-      //Handle Repeating Data Block
+      // Handle Repeating Data Block
       RepeatingPattern := TEDISEFRepeatingPattern.Create(Segment);
-      Segment.EDISEFDataObjects.AppendEDISEFDataObject(RepeatingPattern);
+      Segment.EDISEFDataObjects.AddByNameOrId(RepeatingPattern);
       RepeatingPattern.RepeatCount := RepeatCount;
       RepeatingPattern.Data := RepeatData;
       RepeatingPattern.Disassemble;
@@ -953,7 +956,7 @@ begin
     end;
     if Temp.Count >= 3 then
     begin
-      if Temp[2] = '>1' then Temp[2] := IntToStr(Value_GreaterThan1);
+      if Temp[2] = '>1' then Temp[2] := IntToStr(Value_UndefinedMaximum);
       Segment.MaximumUse := StrToInt(Temp[2]);
     end;
   finally
@@ -976,7 +979,7 @@ begin
     if (Segment.RequirementDesignator = '') or
        (Segment.RequirementDesignator = 'O') then
       Result := Result + ',';
-    if Segment.MaximumUse = Value_GreaterThan1 then
+    if Segment.MaximumUse = Value_UndefinedMaximum then
       Result := Result + ',>1'
     else
       Result := Result + ',' + IntToStr(Segment.MaximumUse);
@@ -997,57 +1000,59 @@ begin
   Loop.EDISEFDataObjects.Clear;
   I := 1;
   M := I;
-  //Search for Loops and Segments
+  // Search for Loops and Segments
   while I > 0 do
   begin
-    //Start search
+    // Start search
     I := StrSearch('[', Data, M);
     if I = 0 then Break;
     J := StrSearch(']', Data, M);
     K := StrSearch('{', Data, M);
     L := StrSearch('}', Data, M);
-    //Determine if data block to process is a repetition
-    if (I < K) or (K = 0) then //Normal data block
+    // Determine if data block to process is a repetition
+    if (I < K) or (K = 0) then // Normal data block
     begin
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
       Segment := TEDISEFSegment.Create(Loop);
-      Loop.EDISEFDataObjects.AppendEDISEFDataObject(Segment);
+      Loop.EDISEFDataObjects.AddByNameOrId(Segment);
       Segment.SEFFile := SEFFile;
       Segment.Data := SegmentData;
       Segment.Disassemble;
+      if Loop.Id = '' then
+        Loop.Id := Segment.Id;
       M := J + 1;
     end
-    else //Repeating data block (K = 1 on the first pass)
+    else // Repeating data block (K = 1 on the first pass)
     begin
       N := StrSearch('[', Data, K);
       J := StrSearch('+', Data, K);
       if (J < N) and (J <> 0) then N := J;
-      //Get Loop Id
+      // Get Loop Id
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
       J := StrSearch(':', RepeatData, 1);
       LoopId := Copy(RepeatData, 1, J - 1);
-      //Get Repeat Count
+      // Get Repeat Count
       RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
-      if RepeatData = '>1' then RepeatData := IntToStr(Value_GreaterThan1);
+      if RepeatData = '>1' then RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then RepeatData := '1';
       RepeatCount := StrToInt(RepeatData);
-      //Correct start position
+      // Correct start position
       K := StrSearch('[', Data, K);
-      //Validate end position
+      // Validate end position
       N := StrSearch('{', Data, K + 1);
-      while (N <> 0) and (N < L) do //Detect nested repetition
+      while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); //Search for nested repetition
-        L := StrSearch('}', Data, L + 1); //Correct end position
+        N := StrSearch('{', Data, N + 1); // Search for nested repetition
+        L := StrSearch('}', Data, L + 1); // Correct end position
       end;
-      //Copy data for repetition
+      // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
       //
       M := L + 1;
-      //Create Loop Object
+      // Create Loop Object
       NestedLoop := TEDISEFLoop.Create(Loop);
-      Loop.EDISEFDataObjects.AppendEDISEFDataObject(NestedLoop);
+      Loop.EDISEFDataObjects.AddByNameOrId(NestedLoop);
       NestedLoop.SEFFile := SEFFile;
       NestedLoop.LoopId := LoopId;
       NestedLoop.MaximumRepeat := RepeatCount;
@@ -1058,8 +1063,8 @@ begin
         ListItem := NestedLoop.EDISEFDataObjects.First;
         NestedLoop.LoopId := ListItem.EDISEFDataObject.Id;
       end;
-    end; //if
-  end; //while
+    end; // if
+  end; // while
 end;
 
 procedure ParseTableDataOfSETSDefinition(Data: string; Table: TEDISEFTable;
@@ -1076,57 +1081,57 @@ begin
   Table.EDISEFDataObjects.Clear;
   I := 1;
   M := I;
-  //Search for Loops and Segments
+  // Search for Loops and Segments
   while I > 0 do
   begin
-    //Start search
+    // Start search
     I := StrSearch('[', Data, M);
     if I = 0 then Break;
     J := StrSearch(']', Data, M);
     K := StrSearch('{', Data, M);
     L := StrSearch('}', Data, M);
-    //Determine if data block to process is a repetition
-    if (I < K) or (K = 0) then //Normal data block
+    // Determine if data block to process is a repetition
+    if (I < K) or (K = 0) then // Normal data block
     begin
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
       Segment := TEDISEFSegment.Create(Table);
-      Table.EDISEFDataObjects.AppendEDISEFDataObject(Segment);
+      Table.EDISEFDataObjects.AddByNameOrId(Segment);
       Segment.SEFFile := SEFFile;
       Segment.Data := SegmentData;
       Segment.Disassemble;
       M := J + 1;
     end
-    else //Repeating data block (K = 1 on the first pass)
+    else // Repeating data block (K = 1 on the first pass)
     begin
       N := StrSearch('[', Data, K);
       J := StrSearch('+', Data, K);
       if (J < N) and (J <> 0) then N := J;
-      //Get Loop Id
+      // Get Loop Id
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
       J := StrSearch(':', RepeatData, 1);
       LoopId := Copy(RepeatData, 1, J - 1);
-      //Get Repeat Count
+      // Get Repeat Count
       RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
-      if RepeatData = '>1' then RepeatData := IntToStr(Value_GreaterThan1);
+      if RepeatData = '>1' then RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then RepeatData := '1';
       RepeatCount := StrToInt(RepeatData);
-      //Correct start position
+      // Correct start position
       K := StrSearch('[', Data, K);
-      //Validate end position
+      // Validate end position
       N := StrSearch('{', Data, K + 1);
-      while (N <> 0) and (N < L) do //Detect nested repetition
+      while (N <> 0) and (N < L) do // Detect nested repetition
       begin
-        N := StrSearch('{', Data, N + 1); //Search for nested repetition
-        L := StrSearch('}', Data, L + 1); //Correct end position
+        N := StrSearch('{', Data, N + 1); // Search for nested repetition
+        L := StrSearch('}', Data, L + 1); // Correct end position
       end;
-      //Copy data for repetition
+      // Copy data for repetition
       RepeatData := Copy(Data, K, L - K);
       //
       M := L + 1;
-      //Create Loop Object
+      // Create Loop Object
       Loop := TEDISEFLoop.Create(Table);
-      Table.EDISEFDataObjects.AppendEDISEFDataObject(Loop);
+      Table.EDISEFDataObjects.AddByNameOrId(Loop);
       Loop.SEFFile := SEFFile;
       Loop.LoopId := LoopId;
       Loop.MaximumRepeat := RepeatCount;
@@ -1137,8 +1142,8 @@ begin
         ListItem := Loop.EDISEFDataObjects.First;
         Loop.LoopId := ListItem.EDISEFDataObject.Id;
       end;
-    end; //if
-  end; //while
+    end; // if
+  end; // while
 end;
 
 { TEDISEFDataObject }
@@ -1154,7 +1159,10 @@ begin
   if Assigned(Parent) then
   begin
     FParent := Parent;
-    FSEFFile := Parent.SEFFile;
+    if Parent is TEDISEFFile then
+      FSEFFile := TEDISEFFile(Parent)
+    else
+      FSEFFile := Parent.SEFFile;
   end;
 end;
 
@@ -1188,12 +1196,12 @@ end;
 
 { TEDISEFDataObjectList }
 
-procedure TEDISEFDataObjectList.AppendEDISEFDataObject(EDISEFDataObject: TEDISEFDataObject;
+procedure TEDISEFDataObjectList.AddByNameOrId(EDISEFDataObject: TEDISEFDataObject;
   Name: string = '');
 var
   ListItem: TEDISEFDataObjectListItem;
 begin
-  ListItem := TEDISEFDataObjectListItem(CreateListItem(FLastItem, EDISEFDataObject)); //TEDISEFDataObjectListItem.Create(Self, FLastItem);
+  ListItem := TEDISEFDataObjectListItem(CreateListItem(FLastItem, EDISEFDataObject));
   if Name <> '' then
     ListItem.Name := Name
   else
@@ -1316,8 +1324,8 @@ end;
 
 procedure TEDISEFElement.Assign(EDISEFElement: TEDISEFElement);
 begin
-//  FUserAttribute := EDISEFElement.UserAttribute;
-//  FOrdinal := EDISEFElement.Ordinal;
+  // FUserAttribute := EDISEFElement.UserAttribute;
+  // FOrdinal := EDISEFElement.Ordinal;
   FId := EDISEFElement.ElementId;
   FElementType := EDISEFElement.ElementType;
   FMinimumLength := EDISEFElement.MinimumLength;
@@ -1437,7 +1445,7 @@ begin
     begin
       Result := CombineCOMSDataOfSEGSDefinition(Self);
     end;
-  end; //if
+  end; // if
 end;
 
 procedure TEDISEFCompositeElement.Assign(CompositeElement: TEDISEFCompositeElement);
@@ -1460,23 +1468,23 @@ begin
         SubElement := TEDISEFSubElement(ListItem.EDISEFDataObject);
         SubElement := SubElement.Clone;
         SubElement.Parent := Self;
-        FEDISEFDataObjects.AppendEDISEFDataObject(SubElement);
+        FEDISEFDataObjects.AddByNameOrId(SubElement);
       end
       else if ListItem.EDISEFDataObject is TEDISEFRepeatingPattern then
       begin
         RepeatingPattern := TEDISEFRepeatingPattern(ListItem.EDISEFDataObject);
         RepeatingPattern := RepeatingPattern.Clone;
         RepeatingPattern.Parent := Self;
-        FEDISEFDataObjects.AppendEDISEFDataObject(RepeatingPattern);
-      end; //if
+        FEDISEFDataObjects.AddByNameOrId(RepeatingPattern);
+      end; // if
     end
     else
     begin
       SubElement := TEDISEFSubElement.Create(Self);
-      FEDISEFDataObjects.AppendEDISEFDataObject(SubElement);
+      FEDISEFDataObjects.AddByNameOrId(SubElement);
     end;
     ListItem := CompositeElement.Elements.Next;
-  end; //while
+  end; // while
 end;
 
 function TEDISEFCompositeElement.Clone: TEDISEFCompositeElement;
@@ -1500,23 +1508,23 @@ begin
         SubElement := TEDISEFSubElement(ListItem.EDISEFDataObject);
         SubElement := SubElement.Clone;
         SubElement.Parent := Result;
-        Result.Elements.AppendEDISEFDataObject(SubElement);
+        Result.Elements.AddByNameOrId(SubElement);
       end
       else if ListItem.EDISEFDataObject is TEDISEFRepeatingPattern then
       begin
         RepeatingPattern := TEDISEFRepeatingPattern(ListItem.EDISEFDataObject);
         RepeatingPattern := RepeatingPattern.Clone;
         RepeatingPattern.Parent := Result;
-        Result.Elements.AppendEDISEFDataObject(RepeatingPattern);
+        Result.Elements.AddByNameOrId(RepeatingPattern);
       end;
     end
     else
     begin
       SubElement := TEDISEFSubElement.Create(Self);
-      Result.Elements.AppendEDISEFDataObject(SubElement);
+      Result.Elements.AddByNameOrId(SubElement);
     end;
     ListItem := FEDISEFDataObjects.Next;
-  end; //while
+  end; // while
 end;
 
 constructor TEDISEFCompositeElement.Create(Parent: TEDISEFDataObject);
@@ -1545,7 +1553,7 @@ begin
     begin
       ParseCOMSDataOfSEGSDefinition(FData, Self, FSEFFile.COMS);
     end;
-  end; //if
+  end; // if
 end;
 
 { TEDISEFSegment }
@@ -1560,7 +1568,7 @@ begin
   else if (FParent is TEDISEFTable) or (FParent is TEDISEFLoop) then
   begin
     Result := CombineSEGSDataOfSETSDefinition(Self);
-  end; //if
+  end; // if
 end;
 
 procedure TEDISEFSegment.Assign(Segment: TEDISEFSegment);
@@ -1587,9 +1595,9 @@ begin
     begin
       EDISEFDataObject := TEDISEFElement.Create(Self);
     end;
-    FEDISEFDataObjects.AppendEDISEFDataObject(EDISEFDataObject);
+    FEDISEFDataObjects.AddByNameOrId(EDISEFDataObject);
     ListItem := Segment.Elements.Next;
-  end; //while
+  end; // while
 end;
 
 function TEDISEFSegment.Clone: TEDISEFSegment;
@@ -1618,7 +1626,7 @@ begin
   else if (FParent is TEDISEFTable) or (FParent is TEDISEFLoop) then
   begin
     ParseSEGSDataOfSETSDefinition(FData, Self, FSEFFile);
-  end; //if
+  end; // if
 end;
 
 { TEDISEFLoop }
@@ -1654,6 +1662,7 @@ end;
 constructor TEDISEFLoop.Create(Parent: TEDISEFDataObject);
 begin
   inherited;
+  FMaximumRepeat := Value_UndefinedMaximum;
 end;
 
 destructor TEDISEFLoop.Destroy;
@@ -1696,7 +1705,7 @@ end;
 
 procedure TEDISEFLoop.Disassemble;
 begin
-  //FParent is TEDISEFTable
+  // FParent is TEDISEFTable
   ParseLoopDataOfSETSDefinition(FData, Self, FSEFFile);
 end;
 
@@ -1734,15 +1743,16 @@ var
   SetData: string;
 begin
   FEDISEFDataObjects.Clear;
-  //FParent is TEDISEFFile
+  // FParent is TEDISEFFile
   I := StrSearch('=', FData, 1);
   FId := Copy(FData, 1, I - 1);
   SetData := Copy(FData, I + 1, Length(FData) - I);
-  //Parse the different sections. (Header, Detail, Summary)
+  // Parse the different sections. (Header, Detail, Summary)
   InternalDisassemble(SetData, FSEFFile.ELMS, FSEFFile.COMS, FSEFFile.SEGS);
 end;
 
-procedure TEDISEFSet.InternalDisassemble(Data: string; ELMSList, COMSList, SEGSList: TEDISEFDataObjectList);
+procedure TEDISEFSet.InternalDisassemble(Data: string;
+  ELMSList, COMSList, SEGSList: TEDISEFDataObjectList);
 var
   I, J: Integer;
   Table: TEDISEFTable;
@@ -1751,13 +1761,13 @@ begin
   I := 1;
   while I > 0 do
   begin
-    //Start search
+    // Start search
     I := StrSearch('^', Data, I);
     J := StrSearch('^', Data, I + 1);
     if I = 0 then
     begin
       Table := TEDISEFTable.Create(Self);
-      FEDISEFDataObjects.AppendEDISEFDataObject(Table);
+      FEDISEFDataObjects.AddByNameOrId(Table);
       Table.Data := Data;
       Table.Disassemble;
     end
@@ -1774,11 +1784,11 @@ begin
         I := J;
       end;
       Table := TEDISEFTable.Create(Self);
-      FEDISEFDataObjects.AppendEDISEFDataObject(Table);
+      FEDISEFDataObjects.AddByNameOrId(Table);
       Table.Data := TableData;
       Table.Disassemble;
-    end; //if
-  end; //while
+    end; // if
+  end; // while
 end;
 
 { TEDISEFFile }
@@ -1794,23 +1804,36 @@ begin
   if FEDISEFStd.Text <> '' then
     Result := Result + SectionTag_STD + #13#10;
   Result := Result + FEDISEFStd.Text + #13#10;
-  Result := Result + SectionTag_SETS + #13#10;
-  for I := 0 to FEDISEFSets.Count - 1 do
-    Result := Result + FEDISEFSets[I].Assemble + #13#10;
-  Result := Result + SectionTag_SEGS + #13#10;
-  for I := 0 to FEDISEFSegs.Count - 1 do
-    Result := Result + FEDISEFSegs[I].Assemble + #13#10;
-  Result := Result + SectionTag_COMS + #13#10;
-  for I := 0 to FEDISEFComs.Count - 1 do
-    Result := Result + FEDISEFComs[I].Assemble + #13#10;
-  Result := Result + SectionTag_ELMS + #13#10;
-  for I := 0 to FEDISEFElms.Count - 1 do
-    Result := Result + FEDISEFElms[I].Assemble + #13#10;
+  if FEDISEFSets.Count > 0 then
+  begin
+    Result := Result + SectionTag_SETS + #13#10;
+    for I := 0 to FEDISEFSets.Count - 1 do
+      Result := Result + FEDISEFSets[I].Assemble + #13#10;
+  end;
+  if FEDISEFSegs.Count > 0 then
+  begin
+    Result := Result + SectionTag_SEGS + #13#10;
+    for I := 0 to FEDISEFSegs.Count - 1 do
+      Result := Result + FEDISEFSegs[I].Assemble + #13#10;
+  end;
+  if FEDISEFComs.Count > 0 then
+  begin
+    Result := Result + SectionTag_COMS + #13#10;
+    for I := 0 to FEDISEFComs.Count - 1 do
+      Result := Result + FEDISEFComs[I].Assemble + #13#10;
+  end;
+  if FEDISEFElms.Count > 0 then
+  begin
+    Result := Result + SectionTag_ELMS + #13#10;
+    for I := 0 to FEDISEFElms.Count - 1 do
+      Result := Result + FEDISEFElms[I].Assemble + #13#10;
+  end;
   if FEDISEFCodesList.Text <> '' then
   begin
     Result := Result + SectionTag_CODES + #13#10;
     Result := Result + FEDISEFCodesList.Text + #13#10;
   end;
+  FData := Result;
 end;
 
 function TEDISEFFile.Clone: TEDISEFFile;
@@ -1853,7 +1876,7 @@ var
 begin
   TempList := TStringList.Create;
   try
-    //.CODES
+    // .CODES
     FEDISEFCodesList.Clear;
     SearchResult := StrSearch(SectionTag_CODES, FData, 1);
     if SearchResult > 0 then
@@ -1869,7 +1892,7 @@ begin
         FEDISEFCodesList.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       end;
     end;
-    //.ELMS
+    // .ELMS
     TempList.Clear;
     FEDISEFElms.Clear;
     SearchResult := StrSearch(SectionTag_ELMS, FData, 1);
@@ -1891,10 +1914,10 @@ begin
         Element.Data := TempList[I];
         Element.SEFFile := Self;
         if Element.Data <> '' then Element.Disassemble;
-        FEDISEFElms.AppendEDISEFDataObject(Element, Element.Id);
-      end; //for
+        FEDISEFElms.AddByNameOrId(Element, Element.Id);
+      end; // for
     end;
-    //.COMS
+    // .COMS
     TempList.Clear;
     FEDISEFComs.Clear;
     SearchResult := StrSearch(SectionTag_COMS, FData, 1);
@@ -1919,10 +1942,10 @@ begin
         begin
           CompositeElement.Disassemble;
         end;
-        FEDISEFComs.AppendEDISEFDataObject(CompositeElement, CompositeElement.Id);
-      end; //for
+        FEDISEFComs.AddByNameOrId(CompositeElement, CompositeElement.Id);
+      end; // for
     end;
-    //.SEGS
+    // .SEGS
     TempList.Clear;
     FEDISEFSegs.Clear;
     SearchResult := StrSearch(SectionTag_SEGS, FData, 1);
@@ -1947,10 +1970,10 @@ begin
         begin
           Segment.Disassemble;
         end;
-        FEDISEFSegs.AppendEDISEFDataObject(Segment, Segment.Id);
-      end; //for
+        FEDISEFSegs.AddByNameOrId(Segment, Segment.Id);
+      end; // for
     end;
-    //.SETS
+    // .SETS
     TempList.Clear;
     FEDISEFSets.Clear;
     SearchResult := StrSearch(SectionTag_SETS, FData, 1);
@@ -1975,12 +1998,16 @@ begin
         begin
           TransactionSet.Disassemble;
         end;
-        FEDISEFSets.AppendEDISEFDataObject(TransactionSet, TransactionSet.Id);
-      end; //for
+        FEDISEFSets.AddByNameOrId(TransactionSet, TransactionSet.Id);
+      end; // for
     end;
-    //.STD
+    // .STD
     FEDISEFStd.Clear;
+    {$IFDEF DELPHI6_UP}
     FEDISEFStd.Delimiter := ',';
+    {$ELSE}
+
+    {$ENDIF}
     SearchResult := StrSearch(SectionTag_STD, FData, 1);
     if SearchResult > 0 then
     begin
@@ -1988,16 +2015,28 @@ begin
       SearchResult2 := StrSearch(#13#10 + '.', FData, SearchResult + 1);
       if SearchResult2 <> 0 then
       begin
+        {$IFDEF DELPHI6_UP}
         FEDISEFStd.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
+        {$ELSE}
+        FEDISEFStd.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
+        {$ENDIF}
       end
       else
       begin
+        {$IFDEF DELPHI6_UP}
         FEDISEFStd.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+        {$ELSE}
+        FEDISEFStd.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+        {$ENDIF}
       end;
     end;
-    //.INI
+    // .INI
     FEDISEFIni.Clear;
+    {$IFDEF DELPHI6_UP}
     FEDISEFIni.Delimiter := ',';
+    {$ELSE}
+
+    {$ENDIF}
     SearchResult := StrSearch(SectionTag_INI, FData, 1);
     if SearchResult > 0 then
     begin
@@ -2012,7 +2051,7 @@ begin
         FEDISEFIni.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       end;
     end;
-    //.VER
+    // .VER
     FEDISEFVer := '';
     SearchResult := StrSearch(SectionTag_VER, FData, 1);
     if SearchResult > 0 then
@@ -2088,7 +2127,7 @@ end;
 
 procedure TEDISEFTable.Disassemble;
 begin
-  //FParent is TEDISEFTable
+  // FParent is TEDISEFTable
   ParseTableDataOfSETSDefinition(FData, Self, FSEFFile);
 end;
 
@@ -2143,10 +2182,10 @@ begin
       else if ListItem.EDISEFDataObject is TEDISEFRepeatingPattern then
         SEFDataObject := TEDISEFRepeatingPattern(SEFDataObject).Clone;
       SEFDataObject.Parent := Result;
-      Result.EDISEFDataObjects.AppendEDISEFDataObject(SEFDataObject);
-    end; //if
+      Result.EDISEFDataObjects.AddByNameOrId(SEFDataObject);
+    end; // if
     ListItem := FEDISEFDataObjects.Next;
-  end; //while
+  end; // while
 end;
 
 constructor TEDISEFRepeatingPattern.Create(Parent: TEDISEFDataObject);
