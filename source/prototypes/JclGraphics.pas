@@ -425,7 +425,7 @@ function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$IFDEF COMPILER4_UP}
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
-{$ENDIF}
+{$ENDIF COMPILER4_UP}
 
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
@@ -484,7 +484,7 @@ uses
   ClipBrd, CommCtrl, Controls, Math, ShellApi,
   {$IFDEF COMPILER4_UP}
   ImgList, JPeg,
-  {$ENDIF}
+  {$ENDIF COMPILER4_UP}
   JclLogic, JclResources, JclSysUtils;
 
 type
@@ -1634,7 +1634,7 @@ begin
   end;
 end;
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 //------------------------------------------------------------------------------
 
@@ -4469,7 +4469,7 @@ begin
       {$ELSE}
       // TODO implement
       // FBytes := Copy(TJclByteMap(Source).Bytes, 0, FWidth * FHeight);
-      {$ENDIF}
+      {$ENDIF SUPPORTS_DYNAMICARRAYS}
     end
     else
     if Source is TJclBitmap32 then
@@ -4639,7 +4639,7 @@ begin
   {$ELSE}
   // TODO implement
   // SetLength(FBytes, Width * Height);
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Changed;
 end;
 
