@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclShell;
@@ -1323,7 +1323,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function ShellRasDial(const EntryName: string): Boolean;
 var
   Info: TRasDialDlg;
@@ -1342,6 +1341,8 @@ end;
 
 // You can pass simple name of standard system control panel (e.g. 'timedate')
 // or full qualified file name (Window 95 only? doesn't work on Win2K!)
+// MT: Added support for Windows 98..XP. Have no win95 anymore so I have to
+//     trust that the original version works on Windows 95 and Windows 95OSR2.
 
 function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer): Boolean;
 var
@@ -1352,8 +1353,14 @@ begin
   else
     FileName := NameOrFileName;
   if FileExists(FileName) then
-    Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
-      [FileName, AppletNumber]), '', SW_SHOWNORMAL)
+  begin
+    if (IsWin95 or IsWin95OSR2) then
+      Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
+        [FileName, AppletNumber]), '', SW_SHOWNORMAL)
+    else
+      Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s",,%d',
+        [FileName, AppletNumber]), '', SW_SHOWNORMAL)
+  end
   else
   begin
     Result := False;
@@ -1430,6 +1437,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/04/09 20:46:30  mthoma
+// Fixed 0000923 (ShellRunControlPanel). Changed $data$ to date.
+//
 // Revision 1.8  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
