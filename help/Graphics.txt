@@ -166,7 +166,7 @@ Count=2
 1=Color:TColor=The color whose Red component to set.
 2=Red:Byte=New intensity for the Red component.
 [Result]
-Copy of the supplied color after the Red component is modified.
+Copy of the supplied color after the Red component has been modified.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -192,7 +192,7 @@ Count=2
 1=Color:TColor=The color whose Green component to set.
 2=Green:Byte=New intensity for the Green component.
 [Result]
-Copy of the supplied color after the Green component is modified.
+Copy of the supplied color after the Green component has been modified.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -218,7 +218,7 @@ Count=2
 1=Color:TColor=The color whose Blue component to set.
 2=Blue:Byte=New intensity for the Blue component.
 [Result]
-Copy of the supplied color after the Blue component is modified.
+Copy of the supplied color after the Blue component has been modified.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -238,7 +238,7 @@ function SetColorFlag(const Color: TColor; Flag: Byte): TColor;
 [ShortDescr]
 Sets the Flag component of a TColor.
 [Description]
-SetColorFlag sets intensity of the Flag component of a TColor. The Flag component
+SetColorFlag sets the Flag component of a TColor. The Flag component
 is contained in the high order byte of the TColor value and determines how
 Delphi displays the color. Currently this can be either 0, 1, or 2 and have the
 following meaning:
@@ -260,7 +260,7 @@ Count=2
 1=Color:TColor=The color whose Flag component to set.
 2=Flag:Byte=Value for the Flag component. Valid values are 0,1 and 2. See the description above.
 [Result]
-Copy of the supplied color after the Flag component is modified.
+Copy of the supplied color after the Flag component has been modified.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -514,7 +514,7 @@ function RectIsEmpty(const R: TRect): Boolean;
 Tests if the rectangle is empty.
 [Description]
 RectIsEmpty tests if the specified rectangle is empty, that is, if the rectangle's
-wdth and height are 0.
+width and height are 0.
 [Parameters]
 Count=1
 1=R:TRect=The rectangle to test.
@@ -657,7 +657,7 @@ function NullRect: TRect;
 [ShortDescr]
 Returns a null rectangle.
 [Description]
-NullRect returns a null rectangle. A null rectangle is a rectangle with all it's
+NullRect returns a null rectangle. A null rectangle is a rectangle with all its
 members initialized to 0. Some functions return a null rectangle to indicate failure.
 [Result]
 The null rectangle.
@@ -828,7 +828,7 @@ function RectBounds(Left, Top, Width, Height: Integer): TRect;
 [ShortDescr]
 Initializes a rectangle by bounds.
 [Description]
-RectBounds returns a rectangle with it's top-left corner set to the combination
+RectBounds returns a rectangle with its top-left corner set to the combination
 of Left and Top and with a width and height of Width and Height respectively.
 [Parameters]
 Count=4
@@ -938,8 +938,8 @@ affect the width and height of the rectangle.
 [Parameters]
 Count=3
 1=R:TRect=The rectangle to move.
-2=DeltaX:Integer=The amount to move the rectangle in the horizontal dimension.
-3=DeltaY:Integer=The amount to move the rectangle in the vertical dimension.
+2=DeltaX:Integer=The amount to move the rectangle in the horizontal direction.
+3=DeltaY:Integer=The amount to move the rectangle in the vertical direction.
 [Quick Info]
 Unit=JclGraphics
 Category=Graphics
@@ -1125,7 +1125,7 @@ procedure BitmapToJPeg(const FileName: string);
 Converts a bitmap to a JPEG.
 [Description]
 BitmapToJPeg converts a bitmap file to a JPEG file. The destination file is
-saved with the same name as the source bitmap file but with the extension 'jpg'.
+saved with the same name as the source bitmap file but with the extension '.jpg'.
 If the function fails at any point it raises an exception.
 [Parameters]
 Count=1
@@ -1384,10 +1384,10 @@ BCB=3,4,5
 procedure CIELAB2BGR(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
 procedure CIELAB2BGR(LSource, aSource, bSource: PByte; Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
 [ShortDescr]
-Conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
+Conversion of the CIE L*a*b color space to RGB using a two step approach assuming a D65 white point,
 first a conversion to CIE XYZ is performed and then from there to RGB.
 [Description]
-Conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
+Conversion of the CIE L*a*b color space to RGB using a two step approach assuming a D65 white point,
 first a conversion to CIE XYZ is performed and then from there to RGB.
 [Parameters]
 Count=3
