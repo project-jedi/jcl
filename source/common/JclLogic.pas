@@ -1125,7 +1125,7 @@ begin
   H := Min(Byte(BitsPerByte - 1), High(B));
   for I := 0 to H do
     if B[I] then
-      SetBit(Dest, TBitRange(I));
+      Dest := SetBit(Dest, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
@@ -1138,7 +1138,7 @@ begin
   H := Min(Word(BitsPerWord - 1), High(B));
   for I := 0 to H do
     if B[I] then
-      SetBit(Dest, TBitRange(I));
+      Dest := SetBit(Dest, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
@@ -1151,7 +1151,7 @@ begin
   H := Min(Integer(BitsPerInteger - 1), High(B));
   for I := 0 to H do
     if B[I] then
-      SetBit(Dest, TBitRange(I));
+      Dest := SetBit(Dest, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
@@ -1164,7 +1164,7 @@ begin
   H := Min(Int64(BitsPerInt64 - 1), High(B));
   for I := 0 to H do
     if B[I] then
-      SetBit(Dest, TBitRange(I));
+      Dest := SetBit(Dest, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
