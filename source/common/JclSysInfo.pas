@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: May 5, 2002                                                                       }
+{ Last modified: May 26, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -3132,32 +3132,39 @@ end;
 // Keyboard Information
 //==================================================================================================
 
-function GetKeyState(const VirtualKey: Cardinal): Boolean;
+function GetKeybStateHelper(VirtualKey: Cardinal; Mask: Byte): Boolean;
 var
   Keys: TKeyboardState;
 begin
-  Result := GetKeyBoardState(Keys) and (Keys[VirtualKey] and $01 <> 0);
+  Result := GetKeyBoardState(Keys) and (Keys[VirtualKey] and Mask <> 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetKeyState(const VirtualKey: Cardinal): Boolean;
+begin
+  Result := GetKeybStateHelper(VirtualKey, $80);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function GetNumLockKeyState: Boolean;
 begin
-  Result := GetKeyState(VK_NUMLOCK);
+  Result := GetKeybStateHelper(VK_NUMLOCK, $01);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function GetScrollLockKeyState: Boolean;
 begin
-  Result := GetKeyState(VK_SCROLL);
+  Result := GetKeybStateHelper(VK_SCROLL, $01);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function GetCapsLockKeyState: Boolean;
 begin
-  Result := GetKeyState(VK_CAPITAL);
+  Result := GetKeybStateHelper(VK_CAPITAL, $01);
 end;
 
 //==================================================================================================
