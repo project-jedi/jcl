@@ -114,6 +114,9 @@ const
   {$IFDEF MSWINDOWS}
   AnsiLineBreak      = AnsiCrLf;
   {$ENDIF}
+  {$IFDEF UNIX}
+  AnsiLineBreak      = AnsiLineFeed;
+  {$ENDIF}
 
 // Misc. character sets
 
