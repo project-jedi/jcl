@@ -23,7 +23,7 @@
 
 // TODO/Issues:
 // - Uninstall functionality lacking 
-// - Progress display doesn't take unchecked features into account 
+// - Progress display doesn't take unchecked features into account
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJclInstall{$ELSE}JclInstall{$ENDIF};{$ENDIF}
 
@@ -857,7 +857,7 @@ procedure TJclInstall.WriteInstallLog(const Msg: string);
 var
   N: Integer;
 begin
-  N := Length(Msg);
+  N := StrCharCount(Msg, AnsiLineFeed);
   Inc(FVersionLogSize, N);
   Inc(FLogSize, N);
   ShowProgress;
