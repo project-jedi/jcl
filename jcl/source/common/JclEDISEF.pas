@@ -531,7 +531,7 @@ type
     procedure ParseINI;
     procedure ParseVER;
     // EDI SDK SEF Extensions
-    procedure ParseELMSExt;
+    //procedure ParseELMSExt;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -2984,10 +2984,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDISEFFile.ParseELMSExt;
+{procedure TEDISEFFile.ParseELMSExt;
 begin
 // ToDo:
-end;
+end;}
 
 //--------------------------------------------------------------------------------------------------
 
