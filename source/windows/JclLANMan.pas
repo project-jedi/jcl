@@ -22,7 +22,7 @@
 { tasks. As the name implies, it uses the LAN Manager API.                     }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: May 07, 2001                                                  }
+{ Last modified: June 07, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -71,8 +71,6 @@ function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): str
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): boolean;
 
-function GetFileOwner(FileName: string; var Domain, Username: string): Boolean;
-
 implementation
 
 uses
@@ -114,7 +112,6 @@ begin
 
   err := NetUserAdd(PWideChar(wServer), 2, @details, @parmErr);
   Result := (err = NERR_SUCCESS);
-  // callers should call RaiseLastWin32Error to get detailed error information
 end;
 
 //------------------------------------------------------------------------------
@@ -396,6 +393,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 var
   Parts: TStrings;
@@ -414,6 +413,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function IsLocalAccount(const AccountName: string): boolean;
 var
   Domain: string;
@@ -423,67 +424,4 @@ begin
   Result := (Domain = '');
 end;
 
-//------------------------------------------------------------------------------
-
-(* incomplete. see MSDN Knowledegbase article ID Q157234 for full C source
-function LookupAccountNameFromRID(const Server: string; const RID: TNetWellKnownRID): string;
-var
-  wServer: WideString;
-  UserModalsInfo: Pointer;
-  SubAuthorityCount: UCHAR;
-  sd: PSID;
-begin
-  wServer := Server;
-  if NetUserModalsGet(PWideChar(wServer), 2, UserModalsInfo) <> NERR_SUCCESS then
-    RaiseLastWin32Error
-  else
-  begin
-    SubAuthorityCount := GetSidSubAuthorityCount(PUserModalsInfo2(UserModalsInfo)^.usrmod2_domain_id)^;
-  end;
-end;
-*)
-
-//------------------------------------------------------------------------------
-
-function GetFileOwner(FileName: string;
-   var Domain, Username: string): Boolean;
-var
-   SecDescr: PSecurityDescriptor;
-   SizeNeeded, SizeNeeded2: DWORD;
-   OwnerSID: PSID;
-   OwnerDefault: BOOL;
-   OwnerName, DomainName: PChar;
-   OwnerType: SID_NAME_USE;
-begin
-   GetFileOwner := False;
-   GetMem(SecDescr,1024);
-   GetMem(OwnerSID,SizeOf(PSID));
-   GetMem(OwnerName,1024);
-   GetMem(DomainName,1024);
-   try
-      if not GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION,
-                             SecDescr,1024,SizeNeeded) then
-	      exit;
-      if not GetSecurityDescriptorOwner(SecDescr, OwnerSID,OwnerDefault) then
-        exit;
-      SizeNeeded := 1024;
-      SizeNeeded2 := 1024;
-      if not LookupAccountSID(nil, OwnerSID, OwnerName, SizeNeeded,
-                              DomainName, SizeNeeded2, OwnerType) then
-	      exit;
-      Domain := DomainName;
-      Username := OwnerName;
-   finally
-      FreeMem(SecDescr);
-      FreeMem(OwnerName);
-      FreeMem(DomainName);
-   end;
-   GetFileOwner := True;
-end;
-
-
-
-
 end.
-
-
