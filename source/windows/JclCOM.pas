@@ -22,7 +22,7 @@
 { This unit contains Various COM (Component Object Model) utility routines.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 30, 2000                                              }
+{ Last modified: April 29, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -34,6 +34,7 @@ unit JclCOM;
 
 interface
 
+function IsDCOMInstalled: Boolean;
 function IsDCOMEnabled: Boolean;
 function GetDCOMVersion: string;
 function GetMDACVersion: string;
@@ -43,7 +44,27 @@ implementation
 uses
   Windows, ActiveX,
   SysUtils,
-  JclFileUtils, JclRegistry, JclSysUtils, JclWin32;
+  JclFileUtils, JclRegistry, JclSysInfo, JclSysUtils, JclWin32;
+
+function IsDCOMInstalled: Boolean;
+var
+  OLE32: HModule;
+begin
+  // DCOM is installed by default on all but Windows 95
+  Result := not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2]);
+  if not Result then
+  begin
+    OLE32 := LoadLibrary(PChar('OLE32.dll'));
+    if OLE32 > HINSTANCE_ERROR then
+    try
+      Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
+    finally
+      FreeLibrary(OLE32);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
 
 function IsDCOMEnabled: Boolean;
 var
@@ -59,12 +80,17 @@ function GetDCOMVersion: string;
 const
   DCOMVersionKey = 'CLSID\{bdc67890-4fc0-11d0-a805-00aa006d2ea4}\InstalledVersion';
 begin
+  // note: this does not work on Windows NT/2000!
+  // for a list of DCOM versions: http://support.microsoft.com/support/kb/articles/Q235/6/38.ASP
   Result := '';
-  if IsDCOMEnabled then
-    Result := RegReadString(HKEY_CLASSES_ROOT, DCOMVersionKey, '');
+  if IsDCOMEnabled then Result := RegReadString(HKEY_CLASSES_ROOT, DCOMVersionKey, '');
 end;
 
 //------------------------------------------------------------------------------
+
+// Note: checking whether MDAC is installed at all can be done by querying the
+// Software\Microsoft\DataAccess key for the FullInstallVer or Fill32InstallVer
+// values. Windows 2000 always installs MDAC?
 
 function GetMDACVersion: string;
 var
