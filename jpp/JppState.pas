@@ -114,6 +114,14 @@ implementation
 
 { TSimplePppState }
 
+const
+// D5 compatibility
+{$IFDEF LINUX}
+  PathDelim = '/';
+{$ELSE}
+  PathDelim = '\';
+{$ENDIF}
+
 constructor TSimplePppState.Create(AHashSize: Cardinal);
 begin
   FHashSize := AHashSize;
