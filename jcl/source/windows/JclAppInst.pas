@@ -24,7 +24,7 @@
 { these instance including a notifaction mechanisme.                           }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 29, 2000                                              }
+{ Last modified: February 12, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -475,15 +475,10 @@ end;
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: DWORD; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
 var
-  MultiStr: PChar;
+  S: string;
 begin
-  StringsToMultiSz(MultiStr, Strings);
-  try
-    Result := SendData(WindowClassName, DataKind, MultiStr, SizeOfMem(MultiStr),
-      OriginatorWnd);
-  finally
-    FreeMultiSz(MultiStr);
-  end;      
+  S := Strings.Text;
+  Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
 end;
 
 //------------------------------------------------------------------------------
@@ -574,10 +569,15 @@ end;
 //------------------------------------------------------------------------------
 
 procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
+var
+  S: string;
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
-      MultiSzToStrings(Strings, CopyDataStruct^.lpData);
+    begin
+      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+      Strings.Text := S;
+    end;  
 end;
 
 //------------------------------------------------------------------------------
