@@ -35,12 +35,13 @@ itself). Also, notifications as well as user messages are sent to both the main
 form and to the application message queue. Therefore instead of overriding
 WndProc you could have also used the TApplication.OnMessage event.
 [Quick Info]
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 AI_INSTANCECREATED = $0001;
@@ -54,12 +55,13 @@ set to the Process ID of the instance being created. Note that the message is al
 sent to the application instance under construction.
 [Quick Info]
 Kind=Constant
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=AI_INSTANCEDESTROYED
@@ -77,12 +79,13 @@ set to the Process ID of the instance being destroyed. Note that the message is 
 sent to the application instance which is exiting.
 [Quick Info]
 Kind=Constant
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=AI_INSTANCECREATED
@@ -99,12 +102,13 @@ MessageID property, WParam set to AI_USERMSG and LParam set to the parameter
 specified in the method call.
 [Quick Info]
 Kind=Constant
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=AI_INSTANCECREATED
@@ -128,12 +132,13 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=SetForegroundWindow98
@@ -155,12 +160,13 @@ If the function succeeds it returns the requested handle, otherwise it returns 0
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 class procedure KillInstance;
@@ -171,12 +177,13 @@ KillInstance terminates the application by calling Halt.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 class function SetForegroundWindow98(const Wnd: HWND): Boolean;
@@ -196,12 +203,13 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BringAppWindowToFront
@@ -225,12 +233,13 @@ otherwise the result is False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CheckSingleInstance
@@ -249,12 +258,13 @@ terminates itself (as such the routine never returns).
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CheckSingleInstance
@@ -271,12 +281,13 @@ of the process is brought into the foreground.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CheckInstance
@@ -296,12 +307,13 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure UserNotify(const Param: Longint);
@@ -313,12 +325,13 @@ to AI_USERMSG and LParam set to the specified parameter.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MessageID: DWORD read FMessageID;
@@ -330,12 +343,13 @@ notification messages (ie instance creation and destruction).
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ProcessIDs[Index: Integer]: DWORD read GetProcessIDs;
@@ -353,12 +367,13 @@ returned process ID.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=InstanceCount
@@ -378,12 +393,13 @@ from the <REF>ProcessIDs</REF> property.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=InstanceCount
@@ -401,12 +417,13 @@ Upon failure the property reads -1.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ProcessIDs
@@ -422,12 +439,13 @@ the highest valid index into the <REF>ProcessIDs</REF> array property.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=3,4,5
 Unit=JclAppInst
 Category=Libraries, Processes and Threads
 SubCat=TJclAppInstances
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=ProcessIDs
