@@ -30,7 +30,8 @@
 { Name changed GetCenturyBaseYear -> CenturyBaseYear                           }
 {                                                                              }
 { function GetWeekNumber(Today: TDateTime): string;  ->                        }
-{ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;}
+{ function ISOWeekNumber(DateTime: TDateTime;                                  }
+{   var YearOfWeekDay: Integer): Integer;                                      }
 {                                                                              }
 { Added overload function IsLeapYear(Year: Integer): Boolean;                  }
 { to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear       }
@@ -74,7 +75,8 @@
 { Attention: must be done in the Help, too                                     }
 {                                                                              }
 { 000716:                                                                      }
-{ Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate}
+{ Support for negative dates and Year >= 10000 added for                       }
+{ DecodeDate and EncodeDate                                                    }
 {                                                                              }
 { 000809:                                                                      }
 { added functions                                                              }
@@ -99,26 +101,24 @@
 {                                                                              }
 { 001015                                                                       }
 { avoiding "absolute" (in locations where stated)                              }
-{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate}
+{ extended functionality for MakeYear4Digit: can pass Result unchanged         }
+{ if appropriate                                                               }
 { added function FATDatesEqual                                                 }
 {                                                                              }
 { 001019                                                                       }
 { changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
-
+{                                                                              }
 { TODO:                                                                        }
 { Help for FATDatesEqual                                                       }
-
-
-{ in Help:                                                                     }
-{  We do all conversions (but thoses provided by Delphi anyway)  between       }
-{  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus             }
-{  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                   }
 {                                                                              }
+{ in Help:                                                                     }
+{  We do all conversions (but thoses provided by Delphi anyway) between        }
+{  TDateTime, TDosDateTime, TFileTime and TSystemTime         plus             }
+{  TDateTime, TDosDateTime, TFileTime, TSystemTime to string                   }
 {                                                                              }
 {******************************************************************************}
 
 unit JclDateTime;
-
 
 interface
 
@@ -126,38 +126,37 @@ uses
   Windows, SysUtils,
   JclBase, JclResources;
 
-function EncodeDate(Year: Integer; Month, Day: Word): TDateTime;
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime;
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); overload;
-procedure DecodeDate(Date: TDateTime; var Year, Month, Day: integer); overload;
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer); overload;
 
-function CenturyOfDate(DateTime: TDateTime): Integer;
-function CenturyBaseYear(DateTime: TDateTime): Integer;
-function DayOfDate(DateTime: TDateTime): Integer;
-function MonthOfDate(DateTime: TDateTime): Integer;
-function YearOfDate(DateTime: TDateTime): Integer;
-function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;  overload;
-function DayOfTheYear(DateTime: TDateTime): Integer; overload;
-function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
+function CenturyOfDate(const DateTime: TDateTime): Integer;
+function CenturyBaseYear(const DateTime: TDateTime): Integer;
+function DayOfDate(const DateTime: TDateTime): Integer;
+function MonthOfDate(const DateTime: TDateTime): Integer;
+function YearOfDate(const DateTime: TDateTime): Integer;
+function DayOfTheYear(const DateTime: TDateTime; var Year: Integer): Integer; overload;
+function DayOfTheYear(const DateTime: TDateTime): Integer; overload;
+function DayOfTheYearToDateTime(const Year, Day: Integer): TDateTime;
 
-function HourOfTime(DateTime: TDateTime): Integer;
-function MinuteOfTime(DateTime: TDateTime): Integer;
-function SecondOfTime(DateTime: TDateTime): Integer;
+function HourOfTime(const DateTime: TDateTime): Integer;
+function MinuteOfTime(const DateTime: TDateTime): Integer;
+function SecondOfTime(const DateTime: TDateTime): Integer;
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime): Integer; overload;
-function ISOWeekToDateTime(Year, Week, Day: Integer): TDateTime;
-function IsLeapYear(Year: Integer): Boolean;  overload;
-function IsLeapYear(DateTime: TDateTime): Boolean;  overload;
-function DaysInMonth(DateTime: TDateTime): Integer;
-function Make4DigitYear(Year, pivot: Integer): Integer;
+function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
+function IsLeapYear(const Year: Integer): Boolean; overload;
+function IsLeapYear(const DateTime: TDateTime): Boolean; overload;
+function DaysInMonth(const DateTime: TDateTime): Integer;
+function Make4DigitYear(Year, Pivot: Integer): Integer;
 function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
-function EasterSunday(Year: Integer): TDateTime;
-function FormatDateTime(Form: string; DateTime: TDateTime): String;
-function FATDatesEqual(FileTime1, FileTime2: Int64): Boolean; overload;
-function FATDatesEqual(FileTime1, FileTime2: TFileTime): Boolean; overload;
-
+function EasterSunday(const Year: Integer): TDateTime;
+function FormatDateTime(Form: string; DateTime: TDateTime): string;
+function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean; overload;
+function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean; overload;
 
 //------------------------------------------------------------------------------
 // Conversion
@@ -200,10 +199,9 @@ function SystemTimeToStr(const SystemTime: TSystemTime): string;
 // Filedates
 //------------------------------------------------------------------------------
 
-function CreationDateTimeOfFile(const sr: TSearchRec): TDateTime;
-function LastAccessDateTimeOfFile(const sr: TSearchRec): TDateTime;
-function LastWriteDateTimeOfFile(const sr: TSearchRec): TDateTime;
-
+function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
+function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
+function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 
 type
   EJclDateTimeError = class (EJclError);
@@ -229,19 +227,18 @@ const
 
   // Weekday to start the week
   //   1 : Sonday
-  //   2 : Monday (according to  ISO 8601)
-  ISOFirstWeekDay  = 2;
+  //   2 : Monday (according to ISO 8601)
+  ISOFirstWeekDay = 2;
 
   // minmimum number of days of the year in the first week of the year week
   //   1 : week one starts at 1/1
   //   4 : first week has at least four days (according to ISO 8601)
   //   7 : first full week
-  ISOFirstWeekMinDays  = 4;
-
+  ISOFirstWeekMinDays = 4;
 
 //------------------------------------------------------------------------------
 
-function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; overload;
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 begin
   if (Year > 0) and (Year < EncodeDateMaxYear+1) then
     Result := SysUtils.EncodeDate(Year, Month, Day)
@@ -254,7 +251,7 @@ begin
               // the last day of year -1 (-693594) to the first days of year 1
       Result := (Year-1) * DaysPerYear + DateTimeBaseDay // BaseDate is 1/1/1
                 + SolarDifference;                       // guarantee a smooth transition at 1/1/10000
-    Result := Trunc(result);
+    Result := Trunc(Result);
     Result := Result + (Month-1) * DaysPerMonth;
     Result := Round(Result) + (Day-1);
   end;
@@ -269,9 +266,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure DecodeDate(Date: TDateTime; var Year, Month, Day: integer); overload;
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer); overload;
 var
-   WMonth, WDay: Word;
+  WMonth, WDay: Word;
 begin
   DecodeDate(Date, Year, WMonth, WDay);
   Month := Wmonth;
@@ -282,8 +279,8 @@ end;
 
 procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); overload;
 var
-  WYear : Word;
-  RDays, RMonths : TDateTime;
+  WYear: Word;
+  RDays, RMonths: TDateTime;
 begin
   if (Date >= DateTimeBaseDay) and (Date < DateTimeMaxDay) then
   begin
@@ -298,7 +295,7 @@ begin
               // for some historical reason year 0 does not exist so we switch from
               // the last day of year -1 (-693594) to the first days of year 1
     else                                      // Year >= 10000
-      Date := Date  - SolarDifference;        // guarantee a smooth transition at 1/1/10000
+      Date := Date - SolarDifference;         // guarantee a smooth transition at 1/1/10000
     RDays   := Date - DateTimeBaseDay;        // Days relative to 1/1/0001
     RMonths := RDays / DaysPerMonth;          // "Months" relative to 1/1/0001
     RMonths := RMonths - Year * 12.0;         // 12 "Months" per Year
@@ -328,24 +325,25 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CenturyBaseYear(DateTime: TDateTime): Integer;
+function CenturyBaseYear(const DateTime: TDateTime): Integer;
 var
-  Y : integer;
+  Y: Integer;
 begin
   Y := YearOfDate(DateTime);
   Result := (Y div 100) * 100;
-  if y > 0 then
+  if Y > 0 then
   else
     Result := Result - 100;
 end;
 
 //------------------------------------------------------------------------------
 
-function CenturyOfDate(DateTime: TDateTime): Integer;
-var Y : Integer;
+function CenturyOfDate(const DateTime: TDateTime): Integer;
+var
+  Y: Integer;
 begin
   Y := YearOfDate(DateTime);
-  if y > 0 then
+  if Y > 0 then
     Result := (Y div 100) + 1
   else
     Result := (Y div 100) - 1;
@@ -353,9 +351,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DayOfDate(DateTime: TDateTime): Integer;
+function DayOfDate(const DateTime: TDateTime): Integer;
 var
-  Y : Integer;
+  Y: Integer;
   M, D: Word;
 begin
   DecodeDate(DateTime, Y, M, D);
@@ -364,9 +362,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MonthOfDate(DateTime: TDateTime): Integer;
+function MonthOfDate(const DateTime: TDateTime): Integer;
 var
-  Y : Integer;
+  Y: Integer;
   M, D: Word;
 begin
   DecodeDate(DateTime, Y, M, D);
@@ -375,7 +373,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function YearOfDate(DateTime: TDateTime): Integer;
+function YearOfDate(const DateTime: TDateTime): Integer;
 var
   M, D: Word;
 begin
@@ -384,34 +382,36 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;
-var Month, Day: Word;
-    DT: TDateTime;
+function DayOfTheYear(const DateTime: TDateTime; var Year: Integer): Integer;
+var
+  Month, Day: Word;
+  DT: TDateTime;
 begin
-   DecodeDate(DateTime, Year, Month, Day);
-   DT := EncodeDate(Year, 1, 1);
-   Result := Trunc(DateTime);
-   Result := Result - Trunc(DT) + 1;
+  DecodeDate(DateTime, Year, Month, Day);
+  DT := EncodeDate(Year, 1, 1);
+  Result := Trunc(DateTime);
+  Result := Result - Trunc(DT) + 1;
 end;
 
 //------------------------------------------------------------------------------
 
-function DayOfTheYear(DateTime: TDateTime): Integer;
-var Year: integer;
+function DayOfTheYear(const DateTime: TDateTime): Integer;
+var
+  Year: Integer;
 begin
-   Result := DayOfTheYear(DateTime, Year);
+  Result := DayOfTheYear(DateTime, Year);
 end;
 
 //------------------------------------------------------------------------------
 
-function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
+function DayOfTheYearToDateTime(const Year, Day: Integer): TDateTime;
 begin
-   Result := EncodeDate(Year, 1, 1) + Day - 1;
+  Result := EncodeDate(Year, 1, 1) + Day - 1;
 end;
 
 //------------------------------------------------------------------------------
 
-function HourOfTime(DateTime: TDateTime): Integer;
+function HourOfTime(const DateTime: TDateTime): Integer;
 var
   H, M, S, MS: Word;
 begin
@@ -421,7 +421,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MinuteOfTime(DateTime: TDateTime): Integer;
+function MinuteOfTime(const DateTime: TDateTime): Integer;
 var
   H, M, S, MS: Word;
 begin
@@ -431,7 +431,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function SecondOfTime(DateTime: TDateTime): Integer;
+function SecondOfTime(const DateTime: TDateTime): Integer;
 var
   H, M, S, MS: Word;
 begin
@@ -455,15 +455,15 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DaysInMonth(DateTime: TDateTime): Integer;
+function DaysInMonth(const DateTime: TDateTime): Integer;
 var
   M: Integer;
 begin
   M := MonthOfDate(DateTime);
-  if (M = 2) and IsLeapYear(DateTime) then    // Compiler Setting should be  { $B–}
-    Result := 29
-  else
-    Result := DaysInMonths[M];
+  Result := DaysInMonths[M];
+  if M = 2 then
+    if IsLeapYear(DateTime) then
+      Result := 29;
 end;
 
 //------------------------------------------------------------------------------
@@ -471,59 +471,62 @@ end;
 // DayOfWeek function returns integer 1..7 equivalent to Sunday..Saturday.
 // ISO 8601 weeks start with Monday and the first week of a year is the one which
 // includes the first Thursday
+
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer;
 var
-  Month,Day : Word;
-
+  Month, Day: Word;
 begin
-  WeekDay:=((DayOfWeek(DateTime) - ISOFirstWeekDay + 7) mod 7)+1;
-  DateTime:=DateTime - WeekDay + 8 - ISOFirstWeekMinDays;
+  WeekDay := ((DayOfWeek(DateTime) - ISOFirstWeekDay + 7) mod 7) + 1;
+  DateTime := DateTime - WeekDay + 8 - ISOFirstWeekMinDays;
   DecodeDate(DateTime, YearOfWeekNumber, Month, Day);
-  result:=(Trunc(DateTime - EncodeDate(YearOfWeekNumber, 1, 1)) div 7)+1;
+  Result := (Trunc(DateTime - EncodeDate(YearOfWeekNumber, 1, 1)) div 7) + 1;
 end;
 
 //------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
-var dummy : Integer;
+var
+  Dummy: Integer;
 begin
-  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, dummy);
+  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, Dummy);
 end;
 
 //------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime): Integer;
-var dummy1, dummy2 : Integer;
+var
+  Dummy1, Dummy2: Integer;
 begin
-  Result := ISOWeekNumber(DateTime, dummy1, dummy2);
+  Result := ISOWeekNumber(DateTime, Dummy1, Dummy2);
 end;
 
 //------------------------------------------------------------------------------
 
-
-function ISOWeekToDateTime(Year, Week, Day:Integer):TDateTime;
+function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
 begin
-  Result:=EncodeDate(Year, 1, ISOFirstWeekMinDays);
-  Result:=Result + (Week - 1) * 7 - ((DayOfWeek(Result) + (7 - ISOFirstWeekDay)) mod 7) + Day - 1;
+  Result := EncodeDate(Year, 1, ISOFirstWeekMinDays);
+  Result := Result + (Week - 1) * 7 - ((DayOfWeek(Result) + (7 - ISOFirstWeekDay)) mod 7) + Day - 1;
 end;
 
 //------------------------------------------------------------------------------
 
+// The original Gregorian rule for all who want to learn it
+// Result := (Year mod 4 = 0) and ((Year mod 100 <> 0) or (Year mod 400 = 0));
 
-function IsLeapYear(Year: Integer): Boolean;
+function IsLeapYear(const Year: Integer): Boolean;
 begin
-  // Result := (Year mod 4 = 0) and ((Year mod 100 <> 0) or (Year mod 400 = 0));
   Result := SysUtils.IsLeapYear(Year);
 end;
 
-function IsLeapYear(DateTime: TDateTime): Boolean;
+//------------------------------------------------------------------------------
+
+function IsLeapYear(const DateTime: TDateTime): Boolean;
 begin
   Result := IsLeapYear(YearOfDate(DateTime));
 end;
 
 //------------------------------------------------------------------------------
 
-(* older version*)
 function Make4DigitYear(Year, Pivot: Integer): Integer;
 begin
   // TODO
@@ -538,41 +541,40 @@ begin
     Result := 1900 + Year;
 end;
 
-(* newer version *)
-{ "window" technique for years to translate 2 digits to 4 digits.
-   The window is 100 years wide
-   The windowsill year is the lower edge of the window
-  A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year
- if WindowsillYear is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039
- The system default is 1950
-}
-function MakeYear4Digit (Year, WindowsillYear: integer): integer;
+//------------------------------------------------------------------------------
+
+// "window" technique for years to translate 2 digits to 4 digits.
+// The window is 100 years wide
+// The windowsill year is the lower edge of the window
+// A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year
+// if WindowsillYear is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039
+// The system default is 1950
+
+function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
 var
-  CC, Y: integer;
+  CC, Y: Integer;
 begin
-  { have come across this specific problem : y2K read as year 100 }
+  // have come across this specific problem : y2K read as year 100
   if Year = 100 then
     Year := 0;
-  { turn 2 digit years to 4 digits }
+  // turn 2 digit years to 4 digits
   Y := Year mod 100;
   CC := (WindowsillYear div 100) * 100;
-  Result := Y + CC; // give the result the same century as the windowsill
-  if Result < WindowsillYear then //  cannot be lower than the windowsill
+  Result := Y + CC;  // give the result the same century as the windowsill
+  if Result < WindowsillYear then   // cannot be lower than the windowsill
     Result := Result + 100;
   if (Year >= 100) or (Year < 0) then
-    assert (Year = Result); // assert: no unwanted century translation
+    Assert(Year = Result);  // Assert: no unwanted century translation
 end;
-
 
 //------------------------------------------------------------------------------
 
-function EasterSunday(Year: Integer): TDateTime;
-{----------------------------------------------------------------}
-{ Calculates and returns Easter Day for specified year.          }
-{ Originally from Mark Lussier, AppVision <MLussier@best.com>.   }
-{ Corrected to prevent integer overflow if it is inadvertently   }
-{ passed a year of 6554 or greater.                              }
-{----------------------------------------------------------------}
+// Calculates and returns Easter Day for specified year.
+// Originally from Mark Lussier, AppVision <MLussier@best.com>.
+// Corrected to prevent integer overflow if it is inadvertedly
+// passed a year of 6554 or greater.
+
+function EasterSunday(const Year: Integer): TDateTime;
 var
   nMonth, nDay, nMoon, nEpact, nSunday,
   nGold, nCent, nCorx, nCorz: Integer;
@@ -592,24 +594,24 @@ begin
   { Set Epact - specifies occurrence of full moon: }
   nEpact := (11 * nGold + 20 + nCorz - nCorx) mod 30;
   if nEpact < 0 then
-   nEpact := nEpact + 30;
+    nEpact := nEpact + 30;
   if ((nEpact = 25) and (nGold > 11)) or (nEpact = 24) then
-   nEpact := nEpact + 1;
+    nEpact := nEpact + 1;
   { Find Full Moon: }
   nMoon := 44 - nEpact;
   if nMoon < 21 then
-   nMoon := nMoon + 30;
+    nMoon := nMoon + 30;
   { Advance to Sunday: }
   nMoon := nMoon + 7 - ((nSunday + nMoon) mod 7);
   if nMoon > 31 then
   begin
-   nMonth := 4;
-   nDay   := nMoon - 31;
+    nMonth := 4;
+    nDay   := nMoon - 31;
   end
   else
   begin
-   nMonth := 3;
-   nDay   := nMoon;
+    nMonth := 3;
+    nDay   := nMoon;
   end;
   Result := EncodeDate(Year, nMonth, nDay);
 end;
@@ -684,7 +686,6 @@ end;
 //  Result := SystemTimeToDateTime(SystemTime);
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
-//  var F64: Int64 absolute FileTime;
 begin
   Result := Int64(FileTime) / FileTimeStep;
   Result := Result + FileTimeBase;
@@ -711,10 +712,11 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 var
   E: Extended;
-  F64: Int64; // absolute Result;
+  F64: Int64;
 begin
   E := (DateTime - FileTimeBase) * FileTimeStep;
   F64 := Round(E);
@@ -795,7 +797,7 @@ end;
 
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime;
 begin
-   SysUtils.DateTimeToSystemTime(DateTime, Result);
+  SysUtils.DateTimeToSystemTime(DateTime, Result);
 end;
 
 //------------------------------------------------------------------------------
@@ -816,7 +818,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
 
 function FileTimeToStr(const FileTime: TFileTime): string;
 var
@@ -848,45 +849,46 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CreationDateTimeOfFile(const sr: TSearchRec): TDateTime;
+function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
-  Result := FileTimeToDateTime(sr.FindData.ftCreationTime);
+  Result := FileTimeToDateTime(Sr.FindData.ftCreationTime);
 end;
 
 //------------------------------------------------------------------------------
 
-function LastAccessDateTimeOfFile(const sr: TSearchRec): TDateTime;
+function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
-  Result := FileTimeToDateTime(sr.FindData.ftLastAccessTime);
+  Result := FileTimeToDateTime(Sr.FindData.ftLastAccessTime);
 end;
 
 //------------------------------------------------------------------------------
 
-function LastWriteDateTimeOfFile(const sr: TSearchRec): TDateTime;
+function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
-  Result := FileTimeToDateTime(sr.FindData.ftLastWriteTime);
+  Result := FileTimeToDateTime(Sr.FindData.ftLastWriteTime);
 end;
 
 //------------------------------------------------------------------------------
 
-function FormatDateTime(Form: String; DateTime: TDateTime): String;
-(* Additional format tokens (also available in upper case):
-   w: Week no according to ISO
-   ww: Week no according to ISO forced two digits
-   i: Year of the ISO-week denoted by w (4 digits for 1000..9999)
-   ii: Year of the ISO-week denoted by w forced two digits
-   e: Number of the Day in the ISO-week denoted by w (ISO-Notation 1=Monday...)
-   f: Number of the Day in the year denoted by y
-   fff: Number of the Day in the year denoted by y forced three digits*)
+// Additional format tokens (also available in upper case):
+// w: Week no according to ISO
+// ww: Week no according to ISO forced two digits
+// i: Year of the ISO-week denoted by w (4 digits for 1000..9999)
+// ii: Year of the ISO-week denoted by w forced two digits
+// e: Number of the Day in the ISO-week denoted by w (ISO-Notation 1=Monday...)
+// f: Number of the Day in the year denoted by y
+// fff: Number of the Day in the year denoted by y forced three digits
+
+function FormatDateTime(Form: string; DateTime: TDateTime): string;
 var
-  n: integer;
-  ISODay, ISOWeek, ISOYear, DayOfYear, yy : Integer;
+  n: Integer;
+  ISODay, ISOWeek, ISOYear, DayOfYear, yy: Integer;
 
   procedure Digest;
   begin
     if n > 1 then
     begin
-      Result := Result + copy(Form, 1, n-1);
+      Result := Result + Copy(Form, 1, n-1);
       Delete(Form, 1, n-1);
       n := 1;
     end;
@@ -904,7 +906,7 @@ begin
       begin
         Inc(n);
         Digest;
-        n := pos('"', Form);
+        n := Pos('"', Form);
         if n = 0 then
         begin
           Result := Result + Form;
@@ -921,7 +923,7 @@ begin
       begin
         Inc(n);
         Digest;
-        n := pos('''', Form);
+        n := Pos('''', Form);
         if n = 0 then
         begin
           Result := Result + Form;
@@ -939,24 +941,24 @@ begin
         Digest;
         if ISOWeek = 0 then
           ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
-        if (Length(Form)>1) and ((Form[2]='i') or (Form[2]='I')) then
+        if (Length(Form) > 1) and ((Form[2] = 'i') or (Form[2] = 'I')) then
         begin              // <ii>
-          if (Length(Form)>2) and ((Form[3]='i') or (Form[3]='I')) then
+          if (Length(Form) > 2) and ((Form[3] = 'i') or (Form[3] = 'I')) then
           begin
-            if (Length(Form)>3) and ((Form[4]='i') or (Form[4]='I')) then
+            if (Length(Form) > 3) and ((Form[4] = 'i') or (Form[4] = 'I')) then
             begin        // <iiii>
-              Delete(Form,1,4);
+              Delete(Form, 1, 4);
               Result := Result + '"' + IntToStr(ISOYear) + '"';
             end
             else
             begin        // <iii>
-              Delete(Form,1,3);
+              Delete(Form, 1, 3);
               Result := Result + '"' + IntToStr(ISOYear) + '"';
             end;
           end
           else
           begin           // <ii>
-            Delete(Form,1,2);
+            Delete(Form, 1, 2);
             Result := Result + '"';
             if ISOYear < 10 then
               Result := Result + '0';
@@ -968,18 +970,18 @@ begin
         end
         else
         begin               // <i>
-          Delete(Form,1,1);
+          Delete(Form, 1, 1);
           Result := Result + '"' + IntToStr(ISOYear) + '"';
         end;
       end;
-      'w', 'W':              //ISO Week
+      'w', 'W':              // ISO Week
       begin
-        digest;
+        Digest;
         if ISOWeek = 0 then
           ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
-        if (Length(Form)>1) and ((Form[2]='w') or (Form[2]='W')) then
+        if (Length(Form) > 1) and ((Form[2] = 'w') or (Form[2] = 'W')) then
         begin               // <ww>
-          Delete(Form,1,2);
+          Delete(Form, 1, 2);
           Result := Result + '"';
           if ISOWeek < 10 then
             Result := Result + '0';
@@ -987,30 +989,30 @@ begin
         end
         else
         begin               // <w>
-          Delete(Form,1,1);
+          Delete(Form, 1, 1);
           Result := Result + '"' + IntToStr(ISOWeek) + '"';
         end;
       end;
-      'e', 'E':   //ISO Week Day
+      'e', 'E':   // ISO Week Day
       begin
-        digest;
+        Digest;
         if ISOWeek = 0 then
           ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
-        Delete(Form,1,1);
+        Delete(Form, 1, 1);
         Result := Result + '"' + IntToStr(ISODay) + '"';
       end;
-      'f', 'F':   //Day of the Year
+      'f', 'F':   // Day of the Year
       begin
-        digest;
+        Digest;
         if DayOfYear = 0 then
           DayOfYear := DayOfTheYear(DateTime);
-        if (Length(Form)>1) and ((Form[2]='f') or (Form[2]='F')) then
+        if (Length(Form) > 1) and ((Form[2] = 'f') or (Form[2] = 'F')) then
         begin
-          if (Length(Form)>2) and ((Form[3]='f') or (Form[3]='F')) then
+          if (Length(Form) > 2) and ((Form[3] = 'f') or (Form[3] = 'F')) then
           begin            // <fff>
-            Delete(Form,1,3);
+            Delete(Form, 1, 3);
             Result := Result + '"';
-            if DayOfYear < 10  then
+            if DayOfYear < 10 then
               Result := Result + '0';
             if DayOfYear < 100 then
               Result := Result + '0';
@@ -1018,7 +1020,7 @@ begin
           end
           else
           begin            // <ff>
-            Delete(Form,1,2);
+            Delete(Form, 1, 2);
             Result := Result + '"';
             if DayOfYear < 10 then
               Result := Result + '0';
@@ -1027,7 +1029,7 @@ begin
         end
         else
         begin               // <f>
-          Delete(Form,1,1);
+          Delete(Form, 1, 1);
           Result := Result + '"' + IntToStr(DayOfYear) + '"';
         end
       end;
@@ -1037,33 +1039,26 @@ begin
       end;
     end;
   end;
-  Result := Result + Form;
-  Result := SysUtils.FormatDateTime(Result, DateTime);
+  Result := SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
 //------------------------------------------------------------------------------
 
+// FAT has a granularity of 2 seconds
+// The intervals are /10 of a second
 
-
-function FATDatesEqual(FileTime1, FileTime2: Int64): Boolean;
-{ FAT has a granularity of 2 seconds
-  The intervals are /10 of a second }
+function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean;
 const
   ALLOWED_FAT_FILE_TIME_VARIATION = 20;
 begin
   Result := Abs(FileTime1-FileTime2) <= ALLOWED_FAT_FILE_TIME_VARIATION;
 end;
 
-function FATDatesEqual(FileTime1, FileTime2: TFileTime): Boolean;
-//var  F641: Int64 absolute fdt1;
-//     F642: Int64 absolute fdt2;
-begin
-   Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
-end;
-
 //------------------------------------------------------------------------------
 
+function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean;
+begin
+  Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
+end;
 
 end.
-
-
