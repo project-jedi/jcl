@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: July 29, 2001                                                                     }
+{ Last modified: March 07, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -209,6 +209,13 @@ function GetClassParent(AClass: TClass): TClass;
 
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
+
+//--------------------------------------------------------------------------------------------------
+// Interface information
+//--------------------------------------------------------------------------------------------------
+
+function GetImplementorOfInterface(const I: IInterface): TObject;
+{ TODO -cDOC : Original code by Hallvard Vassbotn }
 
 //--------------------------------------------------------------------------------------------------
 // Numeric formatting routines
@@ -944,6 +951,48 @@ asm
 @False:
         MOV     Result, False
 @Exit:
+end;
+
+//==================================================================================================
+// Interface information
+//==================================================================================================
+
+function GetImplementorOfInterface(const I: IInterface): TObject;
+const
+  AddByte = $04244483; // opcode for ADD DWORD PTR [ESP+4], Shortint
+  AddLong = $04244481; // opcode for ADD DWORD PTR [ESP+4], Longint
+type
+  PAdjustSelfThunk = ^TAdjustSelfThunk;
+  TAdjustSelfThunk = packed record
+    case AddInstruction: LongInt of
+      AddByte: (AdjustmentByte: ShortInt);
+      AddLong: (AdjustmentLong: LongInt);
+  end;
+  PInterfaceMT = ^TInterfaceMT;
+  TInterfaceMT = packed record
+    QueryInterfaceThunk: PAdjustSelfThunk;
+  end;
+  TInterfaceRef = ^PInterfaceMT;
+var
+  QueryInterfaceThunk: PAdjustSelfThunk;
+begin
+  try
+    Result := Pointer(I);
+    if Assigned(Result) then
+    begin
+      QueryInterfaceThunk := TInterfaceRef(I)^.QueryInterfaceThunk;
+      case QueryInterfaceThunk.AddInstruction of
+        AddByte:
+          Inc(PChar(Result), QueryInterfaceThunk.AdjustmentByte);
+        AddLong:
+          Inc(PChar(Result), QueryInterfaceThunk.AdjustmentLong);
+      else
+        Result := nil;
+      end;
+    end;
+  except
+    Result := nil;
+  end;
 end;
 
 //==================================================================================================
