@@ -563,4 +563,23 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+function ChiSquare(const X: TDynFloatArray): Float;     // TODO
+var
+  I, L: Integer;
+  Sum: Float;
+begin
+  L := GetDynLengthNotNull(X);
+
+  Result := Sqr(X[0]);
+  Sum := X[0];
+
+  for I := 1 to L - 1 do
+  begin
+    Result := Result + Sqr(X[I]);
+    Sum := Sum + X[I];
+  end;
+end;
+
 end.
