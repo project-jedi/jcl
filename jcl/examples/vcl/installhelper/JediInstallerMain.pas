@@ -141,7 +141,7 @@ uses
 
 const
   DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
-  DelphiJediURL     = 'http://delphi-jedi.org';
+  DelphiJediURL     = 'http://homepages.borland.com/jedi'; // delphi-jedi.org';
 
 resourcestring
   RsCantFindFiles   = 'Can not find installation files, check your installation.';
