@@ -65,6 +65,14 @@ const
   NA_LoopId = 'N/A'; // Constant used for loop id comparison
   ElementSpecId_Reserved = 'Reserved';
 
+  EDIDataType_Numeric = 'N';
+  EDIDataType_Decimal = 'R';
+  EDIDataType_Identifier = 'ID';
+  EDIDataType_String = 'AN';
+  EDIDataType_Date = 'DT';
+  EDIDataType_Time = 'TM';
+  EDIDataType_Binary = 'B';
+
 {$IFDEF ENABLE_EDI_DEBUGGING}
 var
   Debug_EDIDataObjectsCreated: Int64;
