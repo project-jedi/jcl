@@ -238,6 +238,7 @@ type
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
+    procedure SaveOptionsToFile(const ConfigFileName: string);
   public
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -1077,10 +1078,33 @@ end;
 procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
 var
   S: string;
+
+  {$IFDEF MSWINDOWS}
+  // to avoid the 126 character limit of DCC32 (and eventually other command line tools)
+  // which shows up with misleading error messages ("Fatal: System.pas not found") or
+  // might even cause AVs
+  procedure ConvertToShortPathNames(var Paths: string);
+  var
+    List: TStringList;
+    I: Integer;
+  begin
+    List := TStringList.Create;
+    try
+      StrToStrings(Paths, PathSep, List);
+      for I := 0 to List.Count - 1 do
+        List[I] := PathGetShortName(List[I]);
+      Paths := StringsToStr(List, PathSep);
+    finally
+      List.Free;
+    end;
+  end;
+  {$ENDIF MSWINDOWS}
+
 begin
   S := PathRemoveSeparator(Path);
   {$IFDEF MSWINDOWS}
   S := LowerCase(S); // file names are case insensitive
+  ConvertToShortPathNames(S);
   {$ENDIF MSWINDOWS}
   { TODO : If we were sure that options are always case-insensitive
            for Borland tools, we could use UpperCase(Option) below. }
@@ -1158,10 +1182,81 @@ const
   {$ENDIF KYLIX}
 begin
   FOutput := '';
-  FOptions.SaveToFile(ConfFileName);
+  SaveOptionsToFile(ConfFileName);
   Result := inherited Execute(CommandLine);
   DeleteFile(ConfFileName);
 end;
+
+procedure TJclDCC.SaveOptionsToFile(const ConfigFileName: string);
+{$IFDEF MSWINDOWS}
+
+  function IsPathOption(const S: string; out Len: Integer): Boolean;
+  begin
+    case UpCase(S[2]) of
+      'E', 'I', 'O', 'R', 'U':
+        begin
+          Result := True;
+          Len := 2;
+        end;
+      'L':
+        begin
+          Result := UpCase(S[3]) in ['E', 'N'];
+          Len := 3;
+        end;
+      'N':
+        begin
+          Result := True;
+          if S[3] in ['0'..'9'] then
+            Len := 3
+          else
+            Len := 2;
+        end;
+    else
+      Result := False;
+    end;
+  end;
+
+var
+  I, J: Integer;
+  List: TStringList;
+  S: string;
+  F: TextFile;
+begin
+  AssignFile(F, ConfigFileName);
+  Rewrite(F);
+  List := TStringList.Create;
+  try
+    for I := 0 to Options.Count - 1 do
+    begin
+      S := Options[I];
+      if IsPathOption(S, J) then
+      begin
+        Write(F, Copy(S, 1, J), '"');
+        StrToStrings(StrTrimQuotes(PChar(@S[J + 1])), PathSep, List);
+        // change to relative paths to avoid DCC32 126 character path limit
+        for J := 0 to List.Count - 1 do
+          List[J] := PathGetRelativePath(GetCurrentFolder, ExpandFileName(List[J]));
+        if List.Count > 0 then
+        begin
+          for J := 0 to List.Count - 2 do
+            Write(F, List[J], PathSep);
+          WriteLn(F, List[List.Count - 1], '"');
+        end;
+      end
+      else
+        WriteLn(F, S);
+    end;
+  finally
+    List.Free;
+  end;
+  CloseFile(F);
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  FOptions.SaveToFile(ConfFileName);
+end;
+{$ENDIF UNIX}
 
 function TJclDCC.GetExeName: string;
 begin
@@ -1193,7 +1288,12 @@ begin
     finally
       OptionsFile.Free;
     end;
+    {$IFDEF MSWINDOWS}
+    // quotes not required with short path names
+    Result := Execute(StrTrimQuotes(PathGetShortName(PackageName)));
+    {$ELSE}
     Result := Execute(StrDoubleQuote(StrTrimQuotes(PackageName)));
+    {$ENDIF}
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -1472,13 +1572,13 @@ begin
   {$IFDEF KYLIX}
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
   FMake := TJclCommandLineTool.Create('make');
-  {$ELSE}
+  {$ELSE ~KYLIX}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
   FMake := TJclBorlandMake.Create(Self);
   // Set option "-l+", which enables use of long command lines.  Should be
   // default, but there have been reports indicating that's not always the case.
   FMake.Options.Add('-l+');
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
   FGlobals := TStringList.Create;
   ReadInformation;
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
@@ -2410,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.39  2005/03/21 04:05:31  rrossmair
+// - workarounds for DCC32 126 character path limit
+//
 // Revision 1.38  2005/03/14 04:03:21  rrossmair
 // - fixed TJclBorRADToolIdePackages.RemovePackage
 //

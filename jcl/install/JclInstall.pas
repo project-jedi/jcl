@@ -536,11 +536,13 @@ begin
   FTarget := InstallTarget;
   InstallTarget.DCC.OutputCallback := WriteLog;
   InstallTarget.Make.OutputCallback := WriteLog;
-  if InstallTarget is TJclBCBInstallation then
-    TJclBCBInstallation(InstallTarget).Bpr2Mak.OutputCallback := WriteLog;
   FDebugDcuDir := MakePath(Distribution.FLibDebugDirMask);
   FLibDir := MakePath(Distribution.FLibDirMask);
-  FLibObjDir := MakePath(Distribution.FLibObjDirMask);
+  if InstallTarget is TJclBCBInstallation then
+  begin
+    FLibObjDir := MakePath(Distribution.FLibObjDirMask);
+    TJclBCBInstallation(InstallTarget).Bpr2Mak.OutputCallback := WriteLog;
+  end;
   FDefines := TStringList.Create;
   FUnits := TStringList.Create;
 end;
@@ -1225,8 +1227,7 @@ begin
   {$IFDEF KYLIX}
   Result := Format(FormatStr, [Target.VersionNumber]);
   {$ELSE ~KYLIX}
-  with Target do
-    Result := Format(FormatStr, [Prefixes[RADToolKind], VersionNumber]);
+  Result := PathGetShortName(Format(FormatStr, [Prefixes[Target.RADToolKind], Target.VersionNumber]));
   {$ENDIF ~KYLIX}
 end;
 
@@ -1525,8 +1526,12 @@ end;
 function TJclDistribution.InitInformation(const ApplicationFileName: string): Boolean;
 var
   I: Integer;
+  ExceptDialogsPath: string;
 begin
   FJclPath := PathAddSeparator(ExpandFileName(PathExtractFileDirFixed(ApplicationFileName) + '..'));
+  {$IFDEF MSWINDOWS}
+  FJclPath := PathGetShortName(FJclPath);
+  {$ENDIF MSWINDOWS}
   FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
   FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
   FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
@@ -1538,15 +1543,17 @@ begin
       Format('%s' + PathSeparator + '%s' + PathSep, [FJclSourceDir, JclSourceDirs[I]]);
 
   {$IFDEF MSWINDOWS}
-  FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
+  ExceptDialogsPath := PathGetShortName(FJclPath + DialogsPath);
+  FClxDialogFileName := AnsiUpperCase(ExceptDialogsPath + ClxDialogFileName);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  FClxDialogFileName := FJclPath + DialogsPath + ClxDialogFileName;
+  ExceptDialogsPath := FJclPath + DialogsPath;
+  FClxDialogFileName := ExceptDialogsPath + ClxDialogFileName;
   {$ENDIF UNIX}
   FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ico');
   {$IFDEF MSWINDOWS}
-  FVclDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDialogFileName);
-  FVclDialogSendFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDlgSndFileName);
+  FVclDialogFileName := AnsiUpperCase(ExceptDialogsPath + VclDialogFileName);
+  FVclDialogSendFileName := AnsiUpperCase(ExceptDialogsPath + VclDlgSndFileName);
   FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
   FVclDialogSendIconFileName := ChangeFileExt(FVclDialogSendFileName, '.ico');
   {$ENDIF MSWINDOWS}
@@ -1692,8 +1699,8 @@ end;
 // History:
 
 // $Log$
-// Revision 1.58  2005/03/20 04:53:59  rrossmair
-// - create .dcp files for C++Builder now
+// Revision 1.59  2005/03/21 04:03:58  rrossmair
+// - workarounds for DCC32 126 character path limit
 //
 // Revision 1.57  2005/03/16 18:11:33  rrossmair
 // - "Copy HPP files to ..." options now checked by default.
