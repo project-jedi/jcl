@@ -52,7 +52,9 @@
 {.$DEFINE HOOK_DLL_EXCEPTIONS}
 
 {$IFDEF DELPHI6_UP}
-  {$WARN SYMBOL_PLATFORM OFF}  // Platform warnings off
+  // Platform warnings off
+  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 
 {$IFDEF DELPHI7_UP}
