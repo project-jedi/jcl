@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: March 12, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -350,17 +350,46 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
+
+  // Multimedia timer
+
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
   RsMmTimerBeginPeriod = 'The supplied timer period value is out of range';
   RsMmSetEvent         = 'Error setting multimedia event timer';
   RsMmInconsistentId   = 'Multimedia timer callback was called with inconsistent Id';
   RsMmTimerActive      = 'This operation cannot be performed while the timer is active';
 
-  RsMmNoCdAudio        = 'Cannot open CDAUDIO-Device';
+  // Audio Mixer
+
+  RsMmMixerSource      = 'Source';
+  RsMmMixerDestination = 'Destination';
+  RsMmMixerUndefined   = 'Undefined';
+  RsMmMixerDigital     = 'Digital';
+  RsMmMixerLine        = 'Line';
+  RsMmMixerMonitor     = 'Monitor';
+  RsMmMixerSpeakers    = 'Speakers';
+  RsMmMixerHeadphones  = 'Headphones';
+  RsMmMixerTelephone   = 'Telephone';
+  RsMmMixerWaveIn      = 'Waveform-audio input';
+  RsMmMixerVoiceIn     = 'Voice input';
+  RsMmMixerMicrophone  = 'Microphone';
+  RsMmMixerSynthesizer = 'Synthesizer';
+  RsMmMixerCompactDisc = 'Compact disc';
+  RsMmMixerPcSpeaker   = 'PC speaker';
+  RsMmMixerWaveOut     = 'Waveform-audio output';
+  RsMmMixerAuxiliary   = 'Auxiliary audio line';
+  RsMmMixerAnalog      = 'Analog';
+  RsMmMixerNoDevices   = 'No mixer device found';
+  RsMmMixerCtlNotFound = 'Line control (%s, %.8x) not found';
+
+  // EJclMciError
 
   RsMmUnknownError     = 'Unknown MCI error No. %d';
   RsMmMciErrorPrefix   = 'MCI-Error: ';
 
+  // CD audio routines
+
+  RsMmNoCdAudio        = 'Cannot open CDAUDIO-Device';
   RsMmCdTrackNo        = 'Track: %.2u';
   RsMMCdTimeFormat     = '%2u:%.2u';
   RsMMTrackAudio       = 'Audio';
