@@ -157,22 +157,22 @@ procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   const Abort: PBoolean = nil);
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
-  const Abort: PBoolean = nil {$IFDEF UNIX}; DereferenceSymLinks: Boolean = True {$ENDIF});
+  const Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF});
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
-function DirectoryExists(const Name: string): Boolean;
+{$ENDIF MSWINDOWS}
+function DirectoryExists(const Name: string{$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
 {$ENDIF MSWINDOWS}
 function FileExists(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
-{$IFDEF MSWINDOWS}
 function FileGetDisplayName(const FileName: string): string;
-{$ENDIF MSWINDOWS}
 function FileGetSize(const FileName: string): Integer;
 {$IFDEF MSWINDOWS}
 function FileGetTempName(const Prefix: string): string;
@@ -193,7 +193,7 @@ function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): B
 function GetFileInformation(const FileName: string): TSearchRec; overload;
 {$IFDEF UNIX}
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const DereferenceSymLinks: Boolean): Integer;
+  const ResolveSymLinks: Boolean): Integer;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime; overload;
@@ -204,15 +204,15 @@ function GetFileCreation(const FileName: string): TFileTime; overload;
 function GetFileCreation(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
-function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
-function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
-function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
-function GetFileLastAttrChange(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
+function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastWrite(const FileName: string; ResolveSymLinks: Boolean = True): Integer; overload;
+function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastAccess(const FileName: string; ResolveSymLinks: Boolean = True): Integer; overload;
+function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean = True): Boolean; overload;
+function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean = True): Integer; overload;
 {$ENDIF UNIX}
 function GetModulePath(const Module: HMODULE): string;
 function GetSizeOfFile(const FileName: string): Int64; overload;
@@ -221,8 +221,8 @@ function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 {$ENDIF MSWINDOWS}
-function IsDirectory(const FileName: string): Boolean;
-function IsRootDirectory(const FileName: string): Boolean;
+function IsDirectory(const FileName: string{$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
+function IsRootDirectory(const CanonicFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): THandle;
@@ -242,8 +242,9 @@ function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
+function CreateSymbolicLink(const Name, Target: string): Boolean;
 { This function gets the value of the symbolic link filename. }
-function ResolveSymLink(const Name: string): string;
+function SymbolicLinkTarget(const Name: string): string;
 {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
@@ -2489,8 +2490,19 @@ begin
   R := GetFileAttributes(PChar(Name));
   Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+function DirectoryExists(const Name: string; ResolveSymLinks: Boolean): Boolean;
+{TODOc Author: Robert Rossmair}
+begin
+  Result := IsDirectory(Name, ResolveSymLinks);
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function DiskInDrive(Drive: Char): Boolean;
 var
@@ -2570,9 +2582,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 function FileGetDisplayName(const FileName: string): string;
+{$IFDEF MSWINDOWS}
 var
   FileInfo: TSHFileInfo;
 begin
@@ -2582,8 +2593,12 @@ begin
   else
     Result := FileName;
 end;
-
+{$ELSE}
+begin
+  Result := FileName;
+end;
 {$ENDIF MSWINDOWS}
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2686,9 +2701,14 @@ begin
   if Length(Name) = 0 then
     raise EJclFileUtilsError.CreateResRec(@RsCannotCreateDir);
   Name := PathRemoveSeparator(Name);
-  if (Length(Name) < 3) or DirectoryExists(Name)
-    or (ExtractFilePath(Name) = Name) then
+  {$IFDEF MSWINDOWS}
+  if (Length(Name) < 3) or DirectoryExists(Name) or (ExtractFilePath(Name) = Name) then
     Exit;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  if (Length(Name) = 0) or DirectoryExists(Name) then
+    Exit;
+  {$ENDIF UNIX}
   Result := ForceDirectories(ExtractFilePath(Name)) and CreateDir(Name);
 end;
 
@@ -2869,10 +2889,12 @@ end;
 
 {$IFDEF UNIX}
 
+{TODOc Author: Robert Rossmair}
+
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const DereferenceSymLinks: Boolean): Integer;
+  const ResolveSymLinks: Boolean): Integer;
 begin
-  if DereferenceSymLinks then
+  if ResolveSymLinks then
     Result := stat64(PChar(FileName), StatBuf)
   else
     Result := lstat64(PChar(FileName), StatBuf);
@@ -2902,29 +2924,29 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     TimeStamp := Buf.st_mtime
 end;
 
-function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     LocalTime := FileDateToDateTime(Buf.st_mtime);
 end;
 
-function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
+function GetFileLastWrite(const FileName: string; ResolveSymLinks: Boolean): Integer;
 var
   Buf: TStatBuf64;
 begin
-  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
     Result := Buf.st_mtime
   else
     Result := -1;
@@ -2954,29 +2976,29 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     TimeStamp := Buf.st_atime
 end;
 
-function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     LocalTime := FileDateToDateTime(Buf.st_atime);
 end;
 
-function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
+function GetFileLastAccess(const FileName: string; ResolveSymLinks: Boolean): Integer;
 var
   Buf: TStatBuf64;
 begin
-  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
     Result := Buf.st_atime
   else
     Result := -1;
@@ -3008,29 +3030,29 @@ end;
 
 {$IFDEF UNIX}
 
-function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     TimeStamp := Buf.st_ctime
 end;
 
-function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; ResolveSymLinks: Boolean): Boolean;
 var
   Buf: TStatBuf64;
 begin
-  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  Result := GetFileStatus(FileName, Buf, ResolveSymLinks) = 0;
   if Result then
     LocalTime := FileDateToDateTime(Buf.st_ctime);
 end;
 
-function GetFileLastAttrChange(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
+function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean): Integer;
 var
   Buf: TStatBuf64;
 begin
-  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
     Result := Buf.st_ctime
   else
     Result := -1;
@@ -3167,8 +3189,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function IsDirectory(const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
+function IsDirectory(const FileName: string): Boolean;
 var
   R: DWORD;
 begin
@@ -3177,25 +3199,31 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
+function IsDirectory(const FileName: string; ResolveSymLinks: Boolean): Boolean;
+{TODOc Author: Robert Rossmair}
+var
+  Buf: TStatBuf64;
 begin
-  Result := DirectoryExists(FileName);
+  Result := False;
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
+    Result := S_ISDIR(Buf.st_mode);
 end;
 {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
-function IsRootDirectory(const FileName: string): Boolean;
+function IsRootDirectory(const CanonicFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 var
   I: Integer;
 begin
-  I := Pos(':\', FileName);
-  Result := (I > 0) and (I + 1 = Length(FileName));
+  I := Pos(':\', CanonicFileName);
+  Result := (I > 0) and (I + 1 = Length(CanonicFileName));
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
-  Result := FileName = PathSeparator;
+  Result := CanonicFileName = PathSeparator;
 end;
 {$ENDIF UNIX}
 
@@ -3500,7 +3528,14 @@ end;
 
 {$IFDEF UNIX}
 
-function ResolveSymLink(const Name: string): string;
+function CreateSymbolicLink(const Name, Target: string): Boolean;
+begin
+  Result := symlink(PChar(Target), PChar(Name)) = 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SymbolicLinkTarget(const Name: string): string;
 var
   N, BufLen: Integer;
 begin
@@ -4492,6 +4527,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function IsFileNameMatch(FileName: string; const Mask: string;
+  const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  if Pos('.', FileName) = 0 then
+    FileName := FileName + '.';  // file names w/o extension match '*.'
+  {$ENDIF}
+  if CaseSensitive then
+    Result := StrMatches(Mask, FileName)
+  else
+    Result := StrMatches(AnsiUpperCase(Mask), AnsiUpperCase(FileName));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function CanonicalizedSearchPath(const Directory: string): string;
 begin
   Result := PathCanonicalize(Directory);
@@ -4544,8 +4594,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
-  const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
-  const Abort: PBoolean = nil {$IFDEF UNIX}; DereferenceSymLinks: Boolean = True {$ENDIF});
+  const IncludeHiddenDirectories: Boolean; const SubDirectoriesMask: string;
+  const Abort: PBoolean{$IFDEF UNIX}; ResolveSymLinks: Boolean{$ENDIF});
 var
   RootDir: string;
   Attr: Integer;
@@ -4567,7 +4617,7 @@ var
         if (DirInfo.Name <> '.') and (DirInfo.Name <> '..') and
           {$IFDEF UNIX}
           (IncludeHiddenDirectories or (Pos('.', DirInfo.Name) <> 1)) and
-          ((DirInfo.Attr and faSymLink = 0) or DereferenceSymLinks) and
+          ((DirInfo.Attr and faSymLink = 0) or ResolveSymLinks) and
           {$ENDIF UNIX}
           (DirInfo.Attr and faDirectory <> 0) then
         begin
@@ -4759,12 +4809,12 @@ type
     FIncludeHiddenSubDirectories: Boolean;
     FNotifyOnTermination: Boolean;
     FCaseSensitiveSearch: Boolean;
+    FAllNamesMatch: Boolean;
     procedure EnterDirectory;
     procedure AsyncProcessDirectory(const Directory: string);
     procedure SyncProcessDirectory(const Directory: string);
     procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
     procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
-    function GetFileMasks: TStrings;
     procedure SetFileMasks(const Value: TStrings);
   protected
     procedure DoTerminate; override;
@@ -4774,8 +4824,9 @@ type
     procedure ProcessDirectory;
     procedure ProcessDirFiles;
     procedure ProcessFile;
+    property AllNamesMatch: Boolean read FAllNamesMatch;
     property CaseSensitiveSearch: Boolean read FCaseSensitiveSearch write FCaseSensitiveSearch;
-    property FileMasks: TStrings read GetFileMasks write SetFileMasks;
+    property FileMasks: TStrings read FFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
     property Directory: string read FDirectory write FDirectory;
@@ -4798,6 +4849,7 @@ type
 constructor TEnumFileThread.Create;
 begin
   inherited Create(True);
+  FFileMasks := TStringList.Create;
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
   FFileSizeMax := High(FFileSizeMax);
@@ -4906,26 +4958,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function IsFileNameMatch(FileName: string; const Mask: string;
-  const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  if Pos('.', FileName) = 0 then
-    FileName := FileName + '.';  // file names w/o extension match mask '*.'
-  {$ENDIF}
-  if CaseSensitive then
-    Result := StrMatches(Mask, FileName)
-  else
-    Result := StrMatches(AnsiUpperCase(Mask), AnsiUpperCase(FileName));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function TEnumFileThread.FileNameMatchesMask: Boolean;
 var
   I: Integer;
 begin
-  Result := FFileMasks = nil;
+  Result := AllNamesMatch;
   if not Result then
     for I := 0 to FFileMasks.Count - 1 do
       if IsFileNameMatch(FFileInfo.Name, FFileMasks[I], CaseSensitiveSearch) then
@@ -4965,30 +5002,19 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TEnumFileThread.GetFileMasks: TStrings;
-begin
-  if not Assigned(FFileMasks) then
-    FFileMasks := TStringList.Create;
-  Result := FFileMasks;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TEnumFileThread.SetFileMasks(const Value: TStrings);
 var
   I: Integer;
-  FindAll: Boolean;
 begin
-  FindAll := False;
-  if Value.Count >= 1 then
-    for I := 0 to Value.Count - 1 do
-      if (Value[I] = '*') {$IFDEF MSWINDOWS} or (Value[I] = '*.*') {$ENDIF} then
-      begin
-        FindAll := True;
-        Break;
-      end;
-  if FindAll then
-    FreeAndNil(FFileMasks) // compare FileNameMatchesMask
+  FAllNamesMatch := Value.Count = 0;
+  for I := 0 to Value.Count - 1 do
+    if (Value[I] = '*') {$IFDEF MSWINDOWS} or (Value[I] = '*.*') {$ENDIF} then
+    begin
+      FAllNamesMatch := True;
+      Break;
+    end;
+  if FAllNamesMatch then
+    FileMasks.Clear
   else
     FileMasks.Assign(Value);
 end;
