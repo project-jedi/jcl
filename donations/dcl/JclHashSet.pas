@@ -32,10 +32,11 @@ unit JclHashSet;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer, Classes, Dialogs;
 
 type
-  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
+  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet,
+      IIntfCloneable)
   private
     FMap: IIntfIntfMap;
   protected
@@ -64,7 +65,8 @@ type
     destructor Destroy; override;
   end;
 
-  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet, ICloneable)
+  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet,
+      ICloneable)
   private
     FMap: IStrMap;
   protected
@@ -82,6 +84,15 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
+    //Daniele Teti 27/12/2004
+    procedure LoadFromStrings(Strings: TStrings);
+    procedure SaveToStrings(Strings: TStrings);
+    procedure AppendToStrings(Strings: TStrings);
+    procedure AppendFromStrings(Strings: TStrings);
+    function GetAsStrings: TStringList;
+    function GetAsDelimited(Separator: string = sLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
     { IIntfSet }
     procedure Intersect(ACollection: IStrCollection);
     procedure Subtract(ACollection: IStrCollection);
@@ -118,11 +129,15 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject:
+      Boolean = False);
     destructor Destroy; override;
   end;
 
 implementation
+
+uses
+  jclStrings;
 
 const
   // (rom) this needs an explanation
@@ -131,7 +146,7 @@ const
 var
   IRefUnique: IInterface = nil;
 
-//=== { TJclIntfHashSet } ====================================================
+  //=== { TJclIntfHashSet } ====================================================
 
 constructor TJclIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
@@ -195,11 +210,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
@@ -315,7 +330,12 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+  begin
+    //Result := Result or Add(It.Next);
+    //Daniele Teti 28/12/2004
+    if Add(It.Next) then
+      Result := True;
+  end;
 end;
 
 procedure TJclStrHashSet.Clear;
@@ -346,11 +366,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclStrHashSet.Equals(ACollection: IStrCollection): Boolean;
@@ -405,7 +425,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    //Result := Result and Remove(It.Next);
+
+    //Daniele Teti 28/12/2004
+    if not Remove(It.Next) then
+      Result := False;
 end;
 
 function TJclStrHashSet.RetainAll(ACollection: IStrCollection): Boolean;
@@ -438,7 +462,8 @@ end;
 
 //=== { TJclHashSet } ========================================================
 
-constructor TJclHashSet.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
+constructor TJclHashSet.Create(Capacity: Integer = DCLDefaultCapacity;
+  AOwnsObject: Boolean = False);
 begin
   inherited Create;
   FMap := TJclHashMap.Create(Capacity, AOwnsObject);
@@ -497,11 +522,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclHashSet.Equals(ACollection: ICollection): Boolean;
@@ -585,6 +610,87 @@ end;
 procedure TJclHashSet.Union(ACollection: ICollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclStrHashSet.GetAsStrings: TStringList;
+begin
+  Result := TStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclStrHashSet.LoadFromStrings(Strings: TStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclStrHashSet.AppendToStrings(Strings: TStrings);
+var
+  it: IStrIterator;
+begin
+  it := First;
+  Strings.BeginUpdate;
+  while it.HasNext do
+    Strings.Add(it.Next);
+  Strings.EndUpdate;
+end;
+
+procedure TJclStrHashSet.SaveToStrings(Strings: TStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+
+procedure TJclStrHashSet.AppendFromStrings(Strings: TStrings);
+var
+  i: Cardinal;
+begin
+  if Strings.Count > 0 then
+    for i := 0 to Pred(Strings.Count) do
+      Add(Strings[i]);
+end;
+
+function TJclStrHashSet.GetAsDelimited(Separator: string): string;
+var
+  it: IStrIterator;
+begin
+  it := First;
+  Result := '';
+  while it.HasNext do
+    Result := Result + Separator + it.Next;
+  if Length(Result) > Length(Separator) then
+    Delete(Result, 1, Length(Separator));
+end;
+
+procedure TJclStrHashSet.LoadDelimited(AString, Separator: string);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclStrHashSet.AppendDelimited(AString, Separator: string);
+var
+  item: string;
+  SepLen: Cardinal;
+begin
+  if Pos(Separator, AString) > 0 then
+  begin
+    SepLen := Length(Separator);
+    repeat
+      item := StrBefore(Separator, AString);
+      Add(Item);
+      Delete(AString, 1, Length(Item) + SepLen);
+    until Pos(Separator, AString) = 0;
+    if Length(AString) > 0 then //ex. hello#world
+      Add(AString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
 end;
 
 end.

@@ -32,11 +32,11 @@ unit JclVector;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer, Classes;
 
 type
   TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
-    IIntfArray, IIntfCloneable)
+      IIntfArray, IIntfCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -62,7 +62,8 @@ type
     function Size: Integer;
     { IIntfList }
     procedure Add(Index: Integer; AObject: IInterface); overload;
-    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
+    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+      overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AObject: IInterface): Integer;
     function LastIndexOf(AObject: IInterface): Integer;
@@ -72,12 +73,13 @@ type
 
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
-    procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
+    procedure AfterConstruction; override;
+    // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
   TJclStrVector = class(TJclAbstractContainer, IStrCollection, IStrList,
-    IStrArray, ICloneable)
+      IStrArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -101,9 +103,19 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
+    //Daniele Teti 27/12/2004
+    procedure LoadFromStrings(Strings: TStrings);
+    procedure SaveToStrings(Strings: TStrings);
+    procedure AppendToStrings(Strings: TStrings);
+    procedure AppendFromStrings(Strings: TStrings);
+    function GetAsStrings: TStringList;
+    function GetAsDelimited(Separator: string = sLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
     { IStrList }
     procedure Add(Index: Integer; const AString: string); overload;
-    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
+    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+      overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -113,11 +125,13 @@ type
 
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
-    procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
+    procedure AfterConstruction; override;
+    // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
-  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray, ICloneable)
+  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray,
+      ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -143,7 +157,8 @@ type
     function Size: Integer;
     { IList }
     procedure Add(Index: Integer; AObject: TObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    function AddAll(Index: Integer; ACollection: ICollection): Boolean;
+      overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -153,13 +168,18 @@ type
     { ICloneable }
     function Clone: TObject;
 
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects:
+      Boolean = True);
     destructor Destroy; override;
-    procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
+    procedure AfterConstruction; override;
+    // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
 implementation
+
+uses
+  JclStrings;
 
 type
   TIntfItr = class(TJclAbstractContainer, IIntfIterator)
@@ -231,7 +251,7 @@ type
     destructor Destroy; override;
   end;
 
-//=== { TIntfItr } ===========================================================
+  //=== { TIntfItr } ===========================================================
 
 constructor TIntfItr.Create(OwnList: TJclIntfVector);
 begin
@@ -406,10 +426,10 @@ end;
 
 procedure TStrItr.SetString(const AString: string);
 begin
-{
-  if FLastRet = -1 then
-    raise EDCLIllegalState.Create(SIllegalState);
-  }
+  {
+    if FLastRet = -1 then
+      raise EDCLIllegalState.Create(SIllegalState);
+    }
   FOwnList.Items[FCursor] := AString;
 end;
 
@@ -499,10 +519,10 @@ end;
 
 procedure TItr.SetObject(AObject: TObject);
 begin
-{
-  if FLastRet = -1 then
-    raise EDCLIllegalState.Create(SIllegalState);
-}
+  {
+    if FLastRet = -1 then
+      raise EDCLIllegalState.Create(SIllegalState);
+  }
   FOwnList.Items[FCursor] := AObject;
 end;
 
@@ -540,7 +560,8 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection):
+  Boolean;
 var
   It: IIntfIterator;
   Size: Integer;
@@ -617,11 +638,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclIntfVector.Equals(ACollection: IIntfCollection): Boolean;
@@ -841,7 +862,8 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection):
+  Boolean;
 var
   It: IStrIterator;
   Size: Integer;
@@ -913,11 +935,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclStrVector.Equals(ACollection: IStrCollection): Boolean;
@@ -1083,7 +1105,8 @@ end;
 
 //=== { TJclVector } =========================================================
 
-constructor TJclVector.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
+constructor TJclVector.Create(Capacity: Integer = DCLDefaultCapacity;
+  AOwnsObjects: Boolean = True);
 begin
   inherited Create;
   FCount := 0;
@@ -1164,7 +1187,8 @@ function TJclVector.Clone: TObject;
 var
   NewList: TJclVector;
 begin
-  NewList := TJclVector.Create(FCapacity, False); // Only one can have FOwnsObject = True
+  NewList := TJclVector.Create(FCapacity, False);
+  // Only one can have FOwnsObject = True
   NewList.AddAll(Self);
   Result := NewList;
 end;
@@ -1193,11 +1217,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 function TJclVector.Equals(ACollection: ICollection): Boolean;
@@ -1376,6 +1400,87 @@ end;
 
 procedure TJclVector.BeforeDestruction;
 begin
+end;
+
+function TJclStrVector.GetAsStrings: TStringList;
+begin
+  Result := TStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclStrVector.LoadFromStrings(Strings: TStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclStrVector.AppendToStrings(Strings: TStrings);
+var
+  it: IStrIterator;
+begin
+  it := First;
+  Strings.BeginUpdate;
+  while it.HasNext do
+    Strings.Add(it.Next);
+  Strings.EndUpdate;
+end;
+
+procedure TJclStrVector.SaveToStrings(Strings: TStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+
+procedure TJclStrVector.AppendFromStrings(Strings: TStrings);
+var
+  i: Cardinal;
+begin
+  if Strings.Count > 0 then
+    for i := 0 to Pred(Strings.Count) do
+      Add(Strings[i]);
+end;
+
+function TJclStrVector.GetAsDelimited(Separator: string): string;
+var
+  it: IStrIterator;
+begin
+  it := First;
+  Result := '';
+  while it.HasNext do
+    Result := Result + Separator + it.Next;
+  if Length(Result) > Length(Separator) then
+    Delete(Result, 1, Length(Separator));
+end;
+
+procedure TJclStrVector.LoadDelimited(AString, Separator: string);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclStrVector.AppendDelimited(AString, Separator: string);
+var
+  item: string;
+  SepLen: Cardinal;
+begin
+  if Pos(Separator, AString) > 0 then
+  begin
+    SepLen := Length(Separator);
+    repeat
+      item := StrBefore(Separator, AString);
+      Add(Item);
+      Delete(AString, 1, Length(Item) + SepLen);
+    until Pos(Separator, AString) = 0;
+    if Length(AString) > 0 then //ex. hello#world
+      Add(AString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
 end;
 
 end.

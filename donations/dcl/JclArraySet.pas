@@ -71,21 +71,21 @@ implementation
 
 function TJclIntfArraySet.Add(AObject: IInterface): Boolean;
 begin
-  Result := not Contains(AObject);
-  if Result then
-    inherited Add(AObject);
+Result := not contains(AObject);
+if Result then
+  inherited Add(AObject);
 end;
 
 function TJclIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -113,21 +113,21 @@ end;
 
 function TJclStrArraySet.Add(const AString: string): Boolean;
 begin
-  Result := not Contains(AString);
-  if Result then
-    inherited Add(AString);
+Result := not contains(AString);
+if Result then
+  inherited Add(AString);
 end;
 
 function TJclStrArraySet.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -155,21 +155,21 @@ end;
 
 function TJclArraySet.Add(AObject: TObject): Boolean;
 begin
-  Result := not Contains(AObject);
-  if Result then
-    inherited Add(AObject);
+Result := not contains(AObject);
+if Result then
+  inherited Add(AObject);
 end;
 
 function TJclArraySet.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -194,3 +194,4 @@ begin
 end;
 
 end.
+

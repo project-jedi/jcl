@@ -294,13 +294,13 @@ end;
 procedure TJclIntfIntfHashMap.Clear;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FCapacity - 1 do
   begin
     for J := 0 to FBuckets[I].Count - 1 do
@@ -318,13 +318,13 @@ var
   I, J: Integer;
   NewEntryArray: TJclIntfIntfEntryArray;
   NewMap: TJclIntfIntfHashMap;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   NewMap := TJclIntfIntfHashMap.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
   begin
@@ -344,13 +344,13 @@ function TJclIntfIntfHashMap.ContainsKey(Key: IInterface): Boolean;
 var
   I: Integer;
   Bucket: PJclIntfIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Key = nil then
     Exit;
@@ -367,13 +367,13 @@ function TJclIntfIntfHashMap.ContainsValue(Value: IInterface): Boolean;
 var
   I, J: Integer;
   Bucket: PJclIntfIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Value = nil then
     Exit;
@@ -392,13 +392,13 @@ end;
 function TJclIntfIntfHashMap.Equals(AMap: IIntfIntfMap): Boolean;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AMap = nil then
     Exit;
@@ -428,13 +428,13 @@ function TJclIntfIntfHashMap.GetValue(Key: IInterface): IInterface;
 var
   I: Integer;
   Bucket: PJclIntfIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = nil then
     Exit;
@@ -474,13 +474,13 @@ end;
 function TJclIntfIntfHashMap.KeySet: IIntfSet;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclIntfArraySet.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -491,13 +491,13 @@ procedure TJclIntfIntfHashMap.PutAll(AMap: IIntfIntfMap);
 var
   It: IIntfIterator;
   Key: IInterface;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if AMap = nil then
     Exit;
   It := AMap.KeySet.First;
@@ -513,13 +513,13 @@ var
   Index: Integer;
   Bucket: PJclIntfIntfBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Key = nil then
     Exit;
   if Value = nil then
@@ -544,13 +544,13 @@ function TJclIntfIntfHashMap.Remove(Key: IInterface): IInterface;
 var
   Bucket: PJclIntfIntfBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = nil then
     Exit;
@@ -575,13 +575,13 @@ end;
 function TJclIntfIntfHashMap.Values: IIntfCollection;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclIntfArrayList.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -611,13 +611,13 @@ end;
 procedure TJclStrIntfHashMap.Clear;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FCapacity - 1 do
   begin
     for J := 0 to FBuckets[I].Count - 1 do
@@ -635,13 +635,13 @@ var
   I, J: Integer;
   NewEntryArray: TJclStrIntfEntryArray;
   NewMap: TJclStrIntfHashMap;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   NewMap := TJclStrIntfHashMap.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
   begin
@@ -661,13 +661,13 @@ function TJclStrIntfHashMap.ContainsKey(const Key: string): Boolean;
 var
   I: Integer;
   Bucket: PJclStrIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Key = '' then
     Exit;
@@ -684,13 +684,13 @@ function TJclStrIntfHashMap.ContainsValue(Value: IInterface): Boolean;
 var
   I, J: Integer;
   Bucket: PJclStrIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Value = nil then
     Exit;
@@ -709,13 +709,13 @@ end;
 function TJclStrIntfHashMap.Equals(AMap: IStrIntfMap): Boolean;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AMap = nil then
     Exit;
@@ -746,13 +746,13 @@ var
   I: Integer;
   Index: Integer;
   Bucket: PJclStrIntfBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = '' then
     Exit;
@@ -788,13 +788,13 @@ end;
 function TJclStrIntfHashMap.HashString(const Key: string): Cardinal;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := 0;
   for I := 1 to Length(Key) do
     Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
@@ -807,14 +807,14 @@ end;
 
 function TJclStrIntfHashMap.KeySet: IStrSet;
 var
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   I, J: Integer;
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclStrArraySet.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -825,13 +825,13 @@ procedure TJclStrIntfHashMap.PutAll(AMap: IStrIntfMap);
 var
   It: IStrIterator;
   Key: string;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if AMap = nil then
     Exit;
   It := AMap.KeySet.First;
@@ -847,13 +847,13 @@ var
   Index: Integer;
   Bucket: PJclStrIntfBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Key = '' then
     Exit;
   if Value = nil then
@@ -878,13 +878,13 @@ function TJclStrIntfHashMap.Remove(const Key: string): IInterface;
 var
   Bucket: PJclStrIntfBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = '' then
     Exit;
@@ -909,13 +909,13 @@ end;
 function TJclStrIntfHashMap.Values: IIntfCollection;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclIntfArrayList.Create;
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -945,13 +945,13 @@ end;
 procedure TJclStrStrHashMap.Clear;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FCapacity - 1 do
   begin
     for J := 0 to FBuckets[I].Count - 1 do
@@ -969,13 +969,13 @@ var
   I, J: Integer;
   NewEntryArray: TJclStrStrEntryArray;
   NewMap: TJclStrStrHashMap;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   NewMap := TJclStrStrHashMap.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
   begin
@@ -995,13 +995,13 @@ function TJclStrStrHashMap.ContainsKey(const Key: string): Boolean;
 var
   I: Integer;
   Bucket: PJclStrStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Key = '' then
     Exit;
@@ -1018,13 +1018,13 @@ function TJclStrStrHashMap.ContainsValue(const Value: string): Boolean;
 var
   I, J: Integer;
   Bucket: PJclStrStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Value = '' then
     Exit;
@@ -1043,13 +1043,13 @@ end;
 function TJclStrStrHashMap.Equals(AMap: IStrStrMap): Boolean;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AMap = nil then
     Exit;
@@ -1079,13 +1079,13 @@ function TJclStrStrHashMap.GetValue(const Key: string): string;
 var
   I: Integer;
   Bucket: PJclStrStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := '';
   if Key = '' then
     Exit;
@@ -1126,13 +1126,13 @@ function TJclStrStrHashMap.KeyOfValue(const Value: string): string;
 var
   I, J: Integer;
   Bucket: PJclStrStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Value = '' then
     Exit;
   for J := 0 to FCapacity - 1 do
@@ -1151,13 +1151,13 @@ end;
 function TJclStrStrHashMap.KeySet: IStrSet;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclStrArraySet.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1168,13 +1168,13 @@ procedure TJclStrStrHashMap.PutAll(AMap: IStrStrMap);
 var
   It: IStrIterator;
   Key: string;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if AMap = nil then
     Exit;
   It := AMap.KeySet.First;
@@ -1190,13 +1190,13 @@ var
   Index: Integer;
   Bucket: PJclStrStrBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Key = '' then
     Exit;
   if Value = '' then
@@ -1221,13 +1221,13 @@ function TJclStrStrHashMap.Remove(const Key: string): string;
 var
   Bucket: PJclStrStrBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := '';
   if Key = '' then
     Exit;
@@ -1252,13 +1252,13 @@ end;
 function TJclStrStrHashMap.Values: IStrCollection;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclStrArrayList.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1268,13 +1268,13 @@ end;
 function TJclStrStrHashMap.HashString(const Key: string): Cardinal;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := 0;
   for I := 1 to Length(Key) do
     Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
@@ -1304,13 +1304,13 @@ end;
 procedure TJclStrHashMap.Clear;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FCapacity - 1 do
   begin
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1328,13 +1328,13 @@ var
   I, J: Integer;
   NewEntryArray: TJclStrEntryArray;
   NewMap: TJclStrHashMap;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   NewMap := TJclStrHashMap.Create(FCapacity, False); // Only one can have FOwnsObjects = True
   for I := 0 to FCapacity - 1 do
   begin
@@ -1354,13 +1354,13 @@ function TJclStrHashMap.ContainsKey(const Key: string): Boolean;
 var
   I: Integer;
   Bucket: PJclStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Key = '' then
     Exit;
@@ -1377,13 +1377,13 @@ function TJclStrHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
   Bucket: PJclStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Value = nil then
     Exit;
@@ -1402,13 +1402,13 @@ end;
 function TJclStrHashMap.Equals(AMap: IStrMap): Boolean;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AMap = nil then
     Exit;
@@ -1438,13 +1438,13 @@ function TJclStrHashMap.GetValue(const Key: string): TObject;
 var
   I: Integer;
   Bucket: PJclStrBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = '' then
     Exit;
@@ -1484,19 +1484,19 @@ const
   A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   Result := Trunc(FCapacity * (Frac(Key * A)));
-//  Result := LongRec(Key).Bytes[1] and $FF;
+  //  Result := LongRec(Key).Bytes[1] and $FF;
 end;
 
 function TJclStrHashMap.HashString(const Key: string): Cardinal;
 var
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := 0;
   for I := 1 to Length(Key) do
     Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
@@ -1510,13 +1510,13 @@ end;
 function TJclStrHashMap.KeySet: IStrSet;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclStrArraySet.Create(FCapacity);
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1527,13 +1527,13 @@ procedure TJclStrHashMap.PutAll(AMap: IStrMap);
 var
   It: IStrIterator;
   Key: string;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if AMap = nil then
     Exit;
   It := AMap.KeySet.First;
@@ -1549,13 +1549,13 @@ var
   Index: Integer;
   Bucket: PJclStrBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Key = '' then
     Exit;
   if Value = nil then
@@ -1580,13 +1580,13 @@ function TJclStrHashMap.Remove(const Key: string): TObject;
 var
   Bucket: PJclStrBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = '' then
     Exit;
@@ -1614,13 +1614,13 @@ end;
 function TJclStrHashMap.Values: ICollection;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclArrayList.Create(FCapacity, False); // NEVER Owns Objects !
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1651,13 +1651,13 @@ end;
 procedure TJclHashMap.Clear;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   for I := 0 to FCapacity - 1 do
   begin
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1675,13 +1675,13 @@ var
   I, J: Integer;
   NewEntryArray: TJclEntryArray;
   NewMap: TJclHashMap;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   NewMap := TJclHashMap.Create(FCapacity, FOwnsObjects);
   for I := 0 to FCapacity - 1 do
   begin
@@ -1701,13 +1701,13 @@ function TJclHashMap.ContainsKey(Key: TObject): Boolean;
 var
   I: Integer;
   Bucket: PJclBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Key = nil then
     Exit;
@@ -1724,13 +1724,13 @@ function TJclHashMap.ContainsValue(Value: TObject): Boolean;
 var
   I, J: Integer;
   Bucket: PJclBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if Value = nil then
     Exit;
@@ -1749,13 +1749,13 @@ end;
 function TJclHashMap.Equals(AMap: IMap): Boolean;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AMap = nil then
     Exit;
@@ -1794,13 +1794,13 @@ function TJclHashMap.GetValue(Key: TObject): TObject;
 var
   I: Integer;
   Bucket: PJclBucket;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = nil then
     Exit;
@@ -1831,7 +1831,7 @@ const
   A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   Result := Trunc(FCapacity * (Frac(Key * A)));
-//  Result := LongRec(Key).Bytes[1] and $FF;
+  //  Result := LongRec(Key).Bytes[1] and $FF;
 end;
 
 function TJclHashMap.IsEmpty: Boolean;
@@ -1842,13 +1842,13 @@ end;
 function TJclHashMap.KeySet: ISet;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclArraySet.Create(FCapacity, False); // NEVER Owns Objects !
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
@@ -1859,13 +1859,13 @@ procedure TJclHashMap.PutAll(AMap: IMap);
 var
   It: IIterator;
   Key: TObject;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if AMap = nil then
     Exit;
   It := AMap.KeySet.First;
@@ -1881,13 +1881,13 @@ var
   Index: Integer;
   Bucket: PJclBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if Key = nil then
     Exit;
   if Value = nil then
@@ -1914,13 +1914,13 @@ function TJclHashMap.Remove(Key: TObject): TObject;
 var
   Bucket: PJclBucket;
   I: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := nil;
   if Key = nil then
     Exit;
@@ -1948,13 +1948,13 @@ end;
 function TJclHashMap.Values: ICollection;
 var
   I, J: Integer;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := TJclArrayList.Create(FCapacity, False); // NEVER Owns Objects !
   for I := 0 to FCapacity - 1 do
     for J := 0 to FBuckets[I].Count - 1 do
