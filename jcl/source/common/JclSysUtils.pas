@@ -1663,6 +1663,7 @@ var
   IntDigits, FracDigits: Integer;
   FirstDigitPos, Prec: Integer;
   I, J, N: Integer;
+  K: Int64;
   X: Extended;
   HighDigit: Char;
 
@@ -1713,7 +1714,13 @@ begin
     Inc(IntDigits, FExpDivision - 1);
   end;
 
-  Mantissa := IntToStr(Sgn(Value) * Trunc(X), FirstDigitPos);
+{ TODO : Here's a problem if X > High(Int64).
+It *seems* to surface only if ExponentDivision > 12, but it
+has not been investigated if ExponentDivision <= 12 is safe. }
+  K := Int(X);
+  if Value < 0 then
+    K := -K;
+  Mantissa := IntToStr(K, FirstDigitPos);
 
   FracDigits := Prec - IntDigits;
   if FracDigits > NumberOfFractionalDigits then
@@ -1876,9 +1883,12 @@ end;
 procedure TJclNumericFormat.SetExpDivision(const Value: Integer);
 begin
   if Value <= 1 then
-    FExpDivision := 1
+    Value := 1
   else
-    FExpDivision := Value;
+  // see TODO in GetMantissaExp
+  if Value > 12 then
+    Value := 12;
+  FExpDivision := Value;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1887,7 +1897,10 @@ procedure TJclNumericFormat.SetPrecision(const Value: TDigitCount);
 begin
   FWantedPrecision := Value;
   // Do not display more digits than Float precision justifies
-  FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
+  if Base = 2 then
+    FPrecision := BinaryPrecision
+  else
+    FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
   if Value < FPrecision then
     FPrecision := Value;
 end;
