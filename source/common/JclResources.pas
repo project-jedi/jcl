@@ -97,6 +97,35 @@ resourcestring
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
 
 //--------------------------------------------------------------------------------------------------
+// JclDialogs
+//--------------------------------------------------------------------------------------------------
+
+  // DSA dialogs
+  
+resourcestring
+  sDSARegKeyCreateError = 'Unable to create key %s';
+  sDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
+  sDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
+  sDSADialogIDNotFound = 'DSA dialog %d does not exist.';
+  sDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
+  sDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
+  sDSAKeyNotFound = 'Key %s does not exist.';
+  sDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
+
+  sDSAAccessBool = 'Boolean';
+  sDSAAccessFloat = 'Float';
+  sDSAAccessInt64 = 'Int64';
+  sDSAAccessInt = 'Integer';
+  sDSAAccessString = 'string';
+
+  sDSActkShowText = 'Don''t show this dialog again';
+  sDSActkAskText = 'Don''t ask me again';
+  sDSActkWarnText = 'Don''t warn me again';
+
+  sDSAStateValueName = 'DSA_State'; // do not localize
+  sDSAStateLastResultName = 'LastResult'; // do not localize
+
+//--------------------------------------------------------------------------------------------------
 // JclExprEval
 //--------------------------------------------------------------------------------------------------
 
