@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: January 20, 2002                                                                  }
+{ Last modified: February 21, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -243,6 +243,7 @@ type
 function OSIdentToString(const OSIdent: DWORD): string;
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD = 0): string;
 function VersionResourceAvailable(const FileName: string): Boolean;
+function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Streams
@@ -2423,6 +2424,30 @@ begin
   begin
     SetLength(Buffer, Size);
     Result := GetFileVersionInfo(PChar(FileName), Handle, Size, PChar(Buffer));
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
+var
+  Size, FixInfoLen: DWORD;
+  Handle: THandle;
+  Buffer: string;
+  FixInfoBuf: PVSFixedFileInfo;
+begin
+  Result := False;
+  Size := GetFileVersionInfoSize(PChar(FileName), Handle);
+  if Size > 0 then
+  begin
+    SetLength(Buffer, Size);
+    if GetFileVersionInfo(PChar(FileName), Handle, Size, Pointer(Buffer)) and
+      VerQueryValue(Pointer(Buffer), '\', Pointer(FixInfoBuf), FixInfoLen) and
+      (FixInfoLen = SizeOf(TVSFixedFileInfo)) then
+    begin
+      Result := True;
+      FixedInfo := FixInfoBuf^;
+    end;
   end;
 end;
 
