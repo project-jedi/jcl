@@ -338,6 +338,7 @@ var
 begin
   Buffer := nil;
   Length := 0;
+  LastError := 0;
   B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
   while (not B) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) do
   begin
@@ -349,7 +350,7 @@ begin
   begin
     FreeMem(Buffer);
     SetLastError(LastError);
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   end;
 end;
 
