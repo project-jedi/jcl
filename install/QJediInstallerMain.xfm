@@ -218,9 +218,9 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 16
       Top = 14
-      Width = 345
+      Width = 282
       Height = 23
-      Caption = 'Project JEDI X-Platform Delphi Installer'
+      Caption = 'Project JEDI X-Platform Installer'
       Font.Color = clText
       Font.Height = 21
       Font.Name = 'helvetica'

@@ -24,7 +24,10 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.7  2004/03/13 09:07:58  rrossmair
+// Revision 1.8  2004/03/15 01:23:22  rrossmair
+// minor improvements
+//
+// Revision 1.9  2004/03/13 09:06:23  rrossmair
 // minor fixes
 //
 // Revision 1.8  2004/03/13 07:46:49  rrossmair
@@ -208,7 +211,8 @@ const
 
 resourcestring
   RsSourceLibHint   = 'Adds "%s" to the Library Path';
-  RsStatusMessage   = 'Installing %s ...';
+  RsStatusMessage   = 'Installing %s...';
+  RsStatusDetailMessage = 'Installing %s for %s...';
   RsInstallFailed   = 'Installation of %s failed, see JediInstaller.log for details.';
   RsLibDescriptor   = '%s library %sunits for %s';
   
@@ -365,19 +369,18 @@ begin
       if Success then
       {$ENDIF}
       try
-        for I := 0 to Units.Count - 1 do
-        begin
-          Execute(Units[I]);
-          Tool.WriteInstallLog(Format('Compiling %s.dcu ...', [Units[i]]));
-          Tool.WriteInstallLog(Installation.DCC.Output);
-          {$IFDEF KYLIX}
-          J := Options.Add('-P');   // generate position independent code (PIC)
-          Execute(Units[I]);
-          Options.Delete(J);        // remove PIC option
-          Tool.WriteInstallLog(Format('Compiling %s.dpu...', [Units[i]]));
-          Tool.WriteInstallLog(Installation.DCC.Output);
-          {$ENDIF KYLIX}
-        end;
+        Execute(StringsToStr(Units, ' ', False));
+        Tool.WriteInstallLog('');
+        Tool.WriteInstallLog('Compiling .dcu files...');
+        Tool.WriteInstallLog(Installation.DCC.Output);
+        {$IFDEF KYLIX}
+        J := Options.Add('-P');   // generate position independent code (PIC)
+        Execute(StringsToStr(Units, ' ', False));
+        Options.Delete(J);        // remove PIC option
+        Tool.WriteInstallLog('');
+        Tool.WriteInstallLog('Compiling dpu...');
+        Tool.WriteInstallLog(Installation.DCC.Output);
+        {$ENDIF KYLIX}
       finally
         SetCurrentDir(SaveDir);
       end;
@@ -385,8 +388,6 @@ begin
   finally
     Units.Free;
   end;
-  Tool.WriteInstallLog('');
-  Tool.UpdateStatus('');
   {if not Result then
     Tool.MessageBox(Format(RsInstallFailed, [LibDescriptor]), MB_OK or MB_ICONERROR);}
 end;
@@ -528,7 +529,7 @@ var
 begin
   PackageFileName := FJclPath + Format(Name, [Installation.VersionNumber]);
   Tool.WriteInstallLog(Format('Installing package %s', [PackageFileName]));
-  Tool.UpdateStatus(Format(RsStatusMessage, [ExtractFileName(PackageFileName)]));
+  Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Installation.Name]));
   Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
     Tool.DCPPath(Installation));
   Tool.WriteInstallLog(Installation.DCC.Output);
@@ -539,7 +540,6 @@ begin
     Tool.WriteInstallLog(Make.Output);
   end;
   Tool.WriteInstallLog('');
-  Tool.UpdateStatus('');
   if not Result then
     Tool.MessageBox(Format(RsInstallFailed, [PackageFileName]), mtError);
 end;

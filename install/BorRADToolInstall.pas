@@ -23,13 +23,15 @@
 { installation tasks.                                                                              }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 9, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.8  2004/03/15 01:23:22  rrossmair
+// minor improvements
+//
 // Revision 1.7  2004/03/14 08:44:30  rrossmair
-// fix: update rc-file & free ConfigData in TJclBorRADToolInstallation
+// fix: update rc-file & free ConfigData in TJclBorRADToolInstallation.Destroy
 //
 // Revision 1.6  2004/03/13 09:07:58  rrossmair
 // minor fixes
@@ -1027,26 +1029,19 @@ end;
 //==================================================================================================
 
 function TJclDCC.Execute(const CommandLine: string): Boolean;
-{$IFDEF WIN32}
 const
-  DCC32CFGFileName = 'DCC32.CFG';
-begin
-  FOutput := '';
-  FOptions.SaveToFile(DCC32CFGFileName);
-  Result := inherited Execute(CommandLine);
-  DeleteFile(DCC32CFGFileName);
-end;
+{$IFDEF WIN32}
+  ConfFileName = 'DCC32.CFG';
 {$ENDIF WIN32}
 {$IFDEF KYLIX}
-const
-  DCCConfFileName = 'dcc.conf';
+  ConfFileName = 'dcc.conf';
+{$ENDIF KYLIX}
 begin
   FOutput := '';
-  FOptions.SaveToFile(DCCConfFileName);
+  FOptions.SaveToFile(ConfFileName);
   Result := inherited Execute(CommandLine);
-  DeleteFile(DCCConfFileName);
+  DeleteFile(ConfFileName);
 end;
-{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1536,7 +1531,9 @@ begin
   {$ENDIF}
   FreeAndNil(FPalette);
   FreeAndNil(FGlobals);
-  FConfigData.UpdateFile;
+  {$IFDEF KYLIX}
+  FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
+  {$ENDIF KYLIX}
   FreeAndNil(FConfigData);
   inherited;
 end;
