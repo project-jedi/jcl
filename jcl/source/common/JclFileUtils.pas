@@ -2130,9 +2130,9 @@ begin
     NameWild := FWildChars[I] and 1 = 1;
     ExtWild := FWildChars[I] and 2 = 2;
     if ( (not NameWild and StrSame(FNames[I], NamePart)) or
-      (NameWild and (StrMatch(FNames[I], NamePart) = 1)) ) and
+      (NameWild and (StrMatch(FNames[I], NamePart, 1) = 1)) ) and
       ( (not ExtWild and StrSame(FExts[I], ExtPart)) or
-      (ExtWild and (StrMatch(FExts[I], ExtPart) = 1)) ) then
+      (ExtWild and (StrMatch(FExts[I], ExtPart, 1) = 1)) ) then
     begin
       Result := True;
       Break;
