@@ -358,7 +358,7 @@ implementation
 
 uses
   Math,
-  JclRegistry, JclResources, JclSysInfo, JclWin32;
+  JclRegistry, JclSysInfo;
 
 const
   INVALID_SCM_HANDLE = 0;

@@ -29,7 +29,7 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Messages, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, Dialogs, Graphics,
+  Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
   JclPeImage;
 
 type
@@ -88,7 +88,8 @@ function InitializeFavOpenDialog: TFavOpenDialog;
 implementation
 
 uses
-  CommDlg, Dlgs, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
+  Forms, CommDlg, Dlgs,
+  JclFileUtils, JclStrings, JclSysInfo;
 
 {$R FavDlg.res}
 

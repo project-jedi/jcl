@@ -139,7 +139,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
+  JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 { Implementation Constants - may be reused by more than one routine }
 

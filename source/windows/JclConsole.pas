@@ -399,7 +399,7 @@ implementation
 
 uses
   Math, TypInfo,
-  JclFileUtils, JclResources, JclSysUtils;
+  JclFileUtils, JclResources;
 
 //--------------------------------------------------------------------------------------------------
 

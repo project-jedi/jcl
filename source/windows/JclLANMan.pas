@@ -37,7 +37,7 @@ unit JclLANMan;
 interface
 
 uses
-  Windows, Classes;
+  Windows, SysUtils, Classes;
 
 //--------------------------------------------------------------------------------------------------
 // User Management
@@ -82,7 +82,6 @@ function IsLocalAccount(const AccountName: string): Boolean;
 implementation
 
 uses
-  SysUtils,
   LM, JclBase, JclStrings, JclWin32;
 
 //--------------------------------------------------------------------------------------------------

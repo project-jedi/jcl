@@ -684,7 +684,6 @@ type
 implementation
 
 uses
-  Math,
   JclResources, JclSysUtils;
 
 const

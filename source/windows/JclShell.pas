@@ -42,7 +42,7 @@ uses
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF}
-  JclBase, JclWin32;
+  JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // Files and Folders
@@ -186,7 +186,7 @@ uses
   {$IFNDEF FPC}
   CommCtrl,
   {$ENDIF FPC}
-  ComObj, Messages, ShellApi,
+  Messages, ShellApi,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 const

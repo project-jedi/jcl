@@ -39,7 +39,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, Contnrs,
-  JclBase, JclWin32;
+  JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // System locales
@@ -306,7 +306,7 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE
 implementation
 
 uses
-  JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
 
 const
   JclMaxKeyboardLayouts = 16;

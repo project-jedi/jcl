@@ -26,9 +26,8 @@ unit ProjAnalyzerFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JclDebug, ComCtrls, StdCtrls, ExtCtrls, ImgList, ToolWin, ActnList, Menus,
-  ClipBrd;
+  Windows, SysUtils, Classes, Controls, Forms, Dialogs,
+  JclDebug, ComCtrls, ActnList, Menus, ClipBrd, ImgList, ToolWin;
 
 type
   TUnitItem = record
@@ -110,7 +109,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JclLogic, JclPeImage, JclStrings, JclSysUtils;
+  JclLogic, JclPeImage, JclStrings;
 
 resourcestring
   RsFormCaption = 'Project Analyzer - %s';

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {**************************************************************************************************}
@@ -23,12 +23,12 @@
 {                                                                                                  }
 { (C)opyright 1997-1999 Anders Melander                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
-{                                                                                                  }
-{ Last modified: Nov 25, 2003                                                                      }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 
 unit  JclQGraphics ;
@@ -42,11 +42,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
+  Classes,
   
-  Types, SyncObjs,
-  QGraphics,
-  JclQGraphUtils,
+  Types, QGraphics,
+  JclQGraphUtils, 
   
   JclBase;
 
@@ -182,12 +181,12 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 implementation
 
 uses
-  TypInfo, Math,
+  Math,
   {$IFDEF MSWINDOWS}
   CommCtrl, ShellApi,
   
   {$ENDIF MSWINDOWS}
-  JclLogic, JclResources, JclSysUtils;
+  JclLogic;
 
 type
   TRGBInt = record

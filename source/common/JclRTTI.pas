@@ -382,11 +382,9 @@ implementation
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ELSE}
-  Consts,
   {$ENDIF}
   SysConst,
-  JclLogic, JclResources, JclStrings, JclSysUtils;
+  JclLogic, JclResources, JclStrings;
 
 //--------------------------------------------------------------------------------------------------
 // TJclInfoWriter

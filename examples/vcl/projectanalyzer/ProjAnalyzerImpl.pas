@@ -29,7 +29,7 @@ unit ProjAnalyzerImpl;
 interface
 
 uses
-  Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
+  Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
   Forms, JclOtaUtils;
 
 type
@@ -56,7 +56,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclPeImage, JclStrings, JclSysUtils,
+  JclDebug, JclFileUtils,
   ProjAnalyzerFrm;
 
 resourcestring

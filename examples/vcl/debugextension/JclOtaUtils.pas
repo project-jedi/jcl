@@ -102,7 +102,7 @@ uses
   Variants,
   {$ENDIF DELPHI6_UP}
   SysUtils, ImageHlp,
-  JclBase, JclFileUtils, JclRegistry, JclStrings, JclSysUtils;
+  JclFileUtils, JclRegistry, JclStrings;
 
 //==================================================================================================
 // TJclOTAUtils

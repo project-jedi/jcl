@@ -892,7 +892,7 @@ uses
   {$ENDIF}
   JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
-  JclResources, JclStrings, JclSysUtils;
+  JclResources, JclStrings;
 
 { Some general notes:
 

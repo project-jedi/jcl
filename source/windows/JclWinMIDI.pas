@@ -36,7 +36,7 @@ Error // This Unit contains code specific to the MS Windows platform
 interface
 
 uses
-  SysUtils, Classes, Windows, MMSystem, JclBase, JclMIDI;
+  SysUtils, Classes, Windows, MMSystem, JclMIDI;
 
 type
   TStereoChannel = (scLeft, scRight);

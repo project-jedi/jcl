@@ -40,7 +40,7 @@ interface
 uses
   Windows, ActiveX,
   {$IFNDEF FPC}
-  WinSvc, AccCtrl, AclApi, ShlObj,
+  AccCtrl,
   {$IFNDEF BCB5}
   ImageHlp,
   {$ENDIF BCB5}

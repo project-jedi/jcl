@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Classes, Messages,
-  JclBase, JclFileUtils, JclSynch;
+  JclFileUtils, JclSynch;
 
 //--------------------------------------------------------------------------------------------------
 // Message constants and types
@@ -114,7 +114,7 @@ implementation
 
 uses
   SysUtils,
-  JclStrings, JclSysUtils;
+  JclStrings;
 
 {$IFDEF FPC}  // missing declaration from unit Messages
 type

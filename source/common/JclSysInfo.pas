@@ -41,7 +41,7 @@ uses
   Libc,
   {$ENDIF}
   {$IFDEF MSWINDOWS}
-  Windows, ActiveX, {$IFNDEF FPC} ShlObj, {$ENDIF}
+  Windows, {$IFNDEF FPC} ShlObj, {$ENDIF}
   {$ENDIF}
   Classes, JclResources;
 
