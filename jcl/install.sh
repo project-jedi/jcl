@@ -11,5 +11,3 @@ cd install
 $DCC QJediInstaller.dpr         # build...
 ../bin/QJediInstaller           # ...and run installer
 rm *.dcu                        # clean up source directories
-rm ../source/common/*.dcu
-
