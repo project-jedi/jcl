@@ -217,14 +217,7 @@ end;
 
 procedure TIntfItr.Add(AInterface: IInterface);
 begin
-  with FOwnList do
-  begin
-    System.Move(FItems[FCursor], FItems[FCursor + 1],
-      (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(FItems);
-    FItems[FCursor] := AInterface;
-    Inc(FCount);
-  end;
+  FOwnList.Insert(FCursor, AInterface);
   Inc(FSize);
   Inc(FCursor);
   FLastRet := -1;
@@ -330,14 +323,7 @@ end;
 
 procedure TStrItr.Add(const AString: string);
 begin
-  with FOwnList do
-  begin
-    System.Move(FItems[FCursor], FItems[FCursor + 1],
-      (FOwnList.FCount - FCursor) * SizeOf(string));
-    FCapacity := Length(FItems);
-    FItems[FCursor] := AString;
-    Inc(FOwnList.FCount);
-  end;
+  FOwnList.Insert(FCursor, AString);
   Inc(FSize);
   Inc(FCursor);
   FLastRet := -1;
@@ -447,14 +433,7 @@ end;
 
 procedure TItr.Add(AObject: TObject);
 begin
-  with FOwnList do
-  begin
-    System.Move(FItems[FCursor], FItems[FCursor + 1],
-      (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(FItems);
-    FItems[FCursor] := AObject;
-    Inc(FCount);
-  end;
+  FOwnList.Insert(FCursor, AObject);
   Inc(FSize);
   Inc(FCursor);
   FLastRet := -1;
@@ -543,9 +522,11 @@ procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
-  System.Move(FItems[Index], FItems[Index - 1],
+  if FCount = FCapacity then
+    Grow;
+  System.Move(FItems[Index], FItems[Index + 1],
     (FCount - Index) * SizeOf(IInterface));
-  FCapacity := Length(FItems);
+  FItems[Index]._AddRef; // keep ref counter happy 
   FItems[Index] := AInterface;
   Inc(FCount);
 end;
@@ -559,7 +540,6 @@ begin
   Result := True;
 end;
 
-{ TODO : Test }
 function TJclIntfVector.InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
@@ -844,8 +824,10 @@ procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
-  System.Move(FItems[Index], FItems[Index - 1], (FCount - Index) * SizeOf(string));
-  FCapacity := Length(FItems);
+  if FCount = FCapacity then
+    Grow;
+  System.Move(FItems[Index], FItems[Index + 1], (FCount - Index) * SizeOf(string));
+  FillChar(FItems[Index], SizeOf(FItems[Index]), 0); // keep ref counter happy 
   FItems[Index] := AString;
   Inc(FCount);
 end;
@@ -1144,9 +1126,10 @@ procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
-  System.Move(FItems[Index], FItems[Index - 1],
+  if FCount = FCapacity then
+    Grow;
+  System.Move(FItems[Index], FItems[Index + 1],
     (FCount - Index) * SizeOf(TObject));
-  FCapacity := Length(FItems);
   FItems[Index] := AObject;
   Inc(FCount);
 end;
@@ -1160,7 +1143,6 @@ begin
   Result := True;
 end;
 
-{ TODO : Test }
 function TJclVector.InsertAll(Index: Integer; ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
@@ -1431,6 +1413,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/03/12 06:01:06  rrossmair
+// - fixed collection insert, iterator add methods
+//
 // Revision 1.9  2005/03/12 05:22:07  rrossmair
 // - InsertAll methods fixed
 //
