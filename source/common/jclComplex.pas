@@ -28,8 +28,6 @@ unit JclComplex;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
-
 interface
 
 uses
