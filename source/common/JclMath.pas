@@ -23,7 +23,7 @@
 { routines, NAN and INF support and more.                                      }
 {                                                                              }
 { Unit owner: Matthias Thoma                                                   }
-{ Last modified: January 30, 2001                                              }
+{ Last modified: April 5, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -73,15 +73,7 @@ const
 
 
 const
-  {$IFDEF MATH_ANGLES_DEGREES}
-  MaxAngle: Float = 528460290590760220769.3238897268; // 2^63 * DegPerRad
-  {$ENDIF MATH_ANGLES_DEGREES}
-  {$IFDEF MATH_ANGLES_GRADS}
-  MaxAngle: Float = 587178100656400245299.24876636311; // 2^63 * GradPerRad
-  {$ENDIF MATH_ANGLES_GRADS}
-  {$IFDEF MATH_ANGLES_RADIANS}
   MaxAngle: Float = 9223372036854775808.0; // 2^63 Rad
-  {$ENDIF MATH_ANGLES_RADIANS}
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   MaxTanH: Float = 5678.2617031470719747459655389854; // Ln(2^16384)/2
@@ -645,12 +637,6 @@ function ArcCos(X: Float): Float;
           FXCH
           FPATAN
           FWAIT
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FRadToDeg
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FRadToGrad
-          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
@@ -663,12 +649,6 @@ end;
 function ArcCot(X: Float): Float;
 begin
   Result := -Arctan(X) + PiOn2;
-  {$IFDEF MATH_ANGLES_DEGREES}
-  Result := RadToDeg(Result);
-  {$ENDIF MATH_ANGLES_DEGREES}
-  {$IFDEF MATH_ANGLES_GRADS}
-  Result := RadToGrad(Result);
-  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -678,12 +658,6 @@ begin
   DomainCheck(Abs(X) >= 1.0);
 
   Result := Arctan(1.0 / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
-  {$IFDEF MATH_ANGLES_DEGREES}
-  Result := RadToDeg(Result);
-  {$ENDIF MATH_ANGLES_DEGREES}
-  {$IFDEF MATH_ANGLES_GRADS}
-  Result := RadToGrad(Result);
-  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -701,12 +675,6 @@ function ArcSec(X: Float): Float;
 begin
   DomainCheck(Abs(X) >= 1.0);
   Result := FArcTan(X / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
-  {$IFDEF MATH_ANGLES_DEGREES}
-  Result := RadToDeg(Result);
-  {$ENDIF MATH_ANGLES_DEGREES}
-  {$IFDEF MATH_ANGLES_GRADS}
-  Result := RadToGrad(Result);
-  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -723,12 +691,6 @@ function ArcSin(X: Float): Float;
           FSQRT
           FPATAN
           FWAIT
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FRadToDeg
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FRadToGrad
-          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
@@ -746,12 +708,6 @@ function ArcTan(X: Float): Float;
           FLD1
           FPATAN
           FWAIT
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FRadToDeg
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FRadToGrad
-          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
@@ -769,12 +725,6 @@ function ArcTan2(Y, X: Float): Float;
           FLD     X
           FPATAN
           FWAIT
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FRadToDeg
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FRadToGrad
-          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
@@ -789,12 +739,6 @@ function Cos(X: Float): Float;
   function FCos(X: Float): Float; assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FCOS
           FWAIT
   end;
@@ -811,12 +755,6 @@ function Cot(X: Float): Float;
   function FCot(X: Float): Float; assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FPTAN
           FDIVRP
           FWAIT
@@ -848,12 +786,6 @@ function Sec(X: Float): Float;
   function FSec(X: Float): Float; assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FCOS
           FLD1
           FDIVRP
@@ -873,12 +805,6 @@ function Sin(X: Float): Float;
   function FSin(X: Float): Float; assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FSIN
           FWAIT
   end;
@@ -895,12 +821,6 @@ procedure SinCos(X: Float; var Sin, Cos: Float);
   procedure FSinCos(X: Float; var Sin, Cos: Float); assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLE_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLE_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FSINCOS
           FSTP    TByte PTR [EDX]
           FSTP    TByte PTR [EAX]
@@ -919,12 +839,6 @@ function Tan(X: Float): Float;
   function FTan(X: Float): Float; assembler;
   asm
           FLD     X
-          {$IFDEF MATH_ANGLES_DEGREES}
-          CALL    FDegToRad
-          {$ENDIF MATH_ANGLES_DEGREES}
-          {$IFDEF MATH_ANGLES_GRADS}
-          CALL    FGradToRad
-          {$ENDIF MATH_ANGLES_GRADS}
           FPTAN
           FSTP    ST(0)
           FWAIT
@@ -3109,7 +3023,7 @@ begin
   if F = 0 then
     Assign(StrToFloat(S))
   else
-    Assign(StrToInt(Copy(S,1,F - 1)), StrToInt(Copy(S, F + 1,Length(s))));
+    Assign(StrToInt(Trim(Copy(S,1,F - 1))), StrToInt(Trim(Copy(S, F + 1,Length(s)))));
 end;
 
 //------------------------------------------------------------------------------
