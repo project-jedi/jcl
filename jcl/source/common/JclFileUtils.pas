@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 2, 2002                                                                 }
+{ Last modified: November 29, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -246,10 +246,32 @@ function OSIdentToString(const OSIdent: DWORD): string;
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD = 0): string;
 
 function VersionResourceAvailable(const FileName: string): Boolean;
-function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
+
+//--------------------------------------------------------------------------------------------------
+// Version Info formatting
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFileVersionFormat = (vfMajorMinor, vfFull);
 
 function FormatVersionString(const HiV, LoV: Word): string; overload;
 function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
+function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string; overload;
+
+//--------------------------------------------------------------------------------------------------
+// Version Info extracting
+//--------------------------------------------------------------------------------------------------
+
+procedure VersionExtractFileInfo(const FixedInfo: TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
+procedure VersionExtractProductInfo(const FixedInfo: TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
+
+//--------------------------------------------------------------------------------------------------
+// Fixed Version Info routines
+//--------------------------------------------------------------------------------------------------
+
+function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
+function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFileVersionFormat = vfFull;
+  const NotAvailableText: string = ''): string;
 
 //--------------------------------------------------------------------------------------------------
 // Streams
@@ -2805,7 +2827,61 @@ begin
   end;
 end;
 
+//==================================================================================================
+// Version Info formatting
+//==================================================================================================
+
+function FormatVersionString(const HiV, LoV: Word): string;
+begin
+  Result := Format('%u.%.2u', [HiV, LoV]);
+end;
+
 //--------------------------------------------------------------------------------------------------
+
+function FormatVersionString(const Major, Minor, Build, Revision: Word): string;
+begin
+  Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat): string;
+begin
+  with FixedInfo do
+    case VersionFormat of
+      vfMajorMinor:
+        Result := Format('%u.%u', [HiWord(dwFileVersionMS), LoWord(dwFileVersionMS)]);
+      vfFull:
+        Result := Format('%u.%u.%u.%u', [HiWord(dwFileVersionMS), LoWord(dwFileVersionMS),
+          HiWord(dwFileVersionLS), LoWord(dwFileVersionLS)]);
+    end;
+end;
+
+//==================================================================================================
+// Version Info extracting
+//==================================================================================================
+
+procedure VersionExtractFileInfo(const FixedInfo: TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
+begin
+  Major := HiWord(FixedInfo.dwFileVersionMS);
+  Minor := LoWord(FixedInfo.dwFileVersionMS);
+  Build := HiWord(FixedInfo.dwFileVersionLS);
+  Revision := LoWord(FixedInfo.dwFileVersionLS);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure VersionExtractProductInfo(const FixedInfo: TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
+begin
+  Major := HiWord(FixedInfo.dwProductVersionMS);
+  Minor := LoWord(FixedInfo.dwProductVersionMS);
+  Build := HiWord(FixedInfo.dwProductVersionLS);
+  Revision := LoWord(FixedInfo.dwProductVersionLS);
+end;
+
+//==================================================================================================
+// Fixed Version Info routines
+//==================================================================================================
 
 function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
 var
@@ -2831,16 +2907,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function FormatVersionString(const HiV, LoV: Word): string;
+function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFileVersionFormat;
+  const NotAvailableText: string): string;
+var
+  FixedInfo: TVSFixedFileInfo;
 begin
-  Result := Format('%u.%.2u', [HiV, LoV]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function FormatVersionString(const Major, Minor, Build, Revision: Word): string;
-begin
-  Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
+  if VersionFixedFileInfo(FileName, FixedInfo) then
+    Result := FormatVersionString(FixedInfo, VersionFormat)
+  else
+    Result := NotAvailableText;
 end;
 
 //==================================================================================================
