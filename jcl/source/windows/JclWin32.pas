@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: July 18, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -772,6 +772,18 @@ function InitNetbios: Boolean;
 function NetBios(P: PNCB): Byte;
 
 //==================================================================================================
+// JclMiscel
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
+// Missing Reason.h translations
+//--------------------------------------------------------------------------------------------------
+
+const
+  SHTDN_REASON_MAJOR_APPLICATION          = $00040000;
+  SHTDN_REASON_MINOR_OTHER                = $00000000;
+
+//==================================================================================================
 // JclPeImage
 //==================================================================================================
 
@@ -1490,6 +1502,9 @@ const
 
   {$EXTERNALSYM PNCB}
   {$EXTERNALSYM ASTAT}
+
+  {$EXTERNALSYM SHTDN_REASON_MAJOR_APPLICATION}
+  {$EXTERNALSYM SHTDN_REASON_MINOR_OTHER}
 
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT}
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR}
