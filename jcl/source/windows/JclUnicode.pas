@@ -1018,11 +1018,11 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  {.$IFDEF HAS_UNIT_RTLCONSTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {.$ELSE}
+  {$ELSE}
   Consts,
-  {.$ENDIF}
+  {$ENDIF}
   SysUtils,
   JclBase, JclResources, JclSynch;
 
