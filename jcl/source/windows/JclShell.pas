@@ -22,7 +22,7 @@
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: April 29, 2001                                                                    }
+{ Last modified: May 26, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Graphics, ShlObj, SysUtils,
-  JclBase;
+  JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // Files and Folders
@@ -144,17 +144,6 @@ function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
 //--------------------------------------------------------------------------------------------------
 // Miscellanuous
 //--------------------------------------------------------------------------------------------------
-
-type
-  PDllVersionInfo = ^TDllVersionInfo;
-  _DllVersionInfo = packed record
-    cbSize: DWORD;
-    dwMajorVersion: DWORD;
-    dwMinorVersion: DWORD;
-    dwBuildNumber: DWORD;
-    dwPlatformId: DWORD;
-  end;
-  TDllVersionInfo = _DllVersionInfo;
 
 function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
 
@@ -523,7 +512,6 @@ var
   CallbackWindow: HWND;
 begin
   Result := False;
-  // TODO If Folder = nil then PidlBindToParent ?
   if (Item = nil) or (Folder = nil) then
     Exit;
   Folder.GetUIObjectOf(Handle, 1, Item, IID_IContextMenu, nil,
@@ -1117,7 +1105,6 @@ begin
   Result := '';
   if (Item = nil) or (Folder = nil) then
     Exit;
-  // TODO if Folder = nil PidlBindToParent() ...
   if Succeeded(Folder.GetUIObjectOf(0, 1, Item, IQueryInfo, nil,
     Pointer(QueryInfo))) then
   begin
@@ -1305,26 +1292,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-type
-  PRasDialDlg = ^TRasDialDlg;
-  TRasDialDlg = packed record
-    dwSize: DWORD;
-    hwndOwner: HWND;
-    dwFlags: DWORD;
-    xDlg: Longint;
-    yDlg: Longint;
-    dwSubEntry: DWORD;
-    dwError: DWORD;
-    reserved: Longword;
-    reserved2: Longword;
-  end;
-
-type
-  TRasDialDlgA = function (lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
-
-// TODO Move declarations to JclWin32 and abstract the dynamic linking behind
-// a proper interface.
 
 function ShellRasDial(const EntryName: string): Boolean;
 var
