@@ -16,7 +16,8 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 30, 2000                                                 }
+{ Last modified: January 29, 2001                                              }
+{                by Roland for use under BCB5                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -57,7 +58,15 @@ type
     rfLanczos3, rfMitchell);
 
   { Matrix declaration for transformation }
-  TMatrix3d = array [0..2, 0..2] of Extended;  // 3x3 double precision
+  //  modify Jan 28, 2001 for use under BCB5
+  //         the compiler show error 245 "language feature ist not available"
+  //         wie must take a record and under this we can use the static array
+  //  Note:  the sourcecode modify general from M[] to M.A[] !!!!!
+  //  TMatrix3d = array [0..2, 0..2] of Extended;  // 3x3 double precision
+
+  TMatrix3d = record
+    A: array [0..2, 0..2] of Extended;
+  end;
 
   TDynDynPointArrayArrayF = array of TDynPointArrayF;
 
@@ -75,11 +84,19 @@ type
   TJclRegionBitmapMode = (rmInclude, rmExclude);
   TJclRegionKind = (rkNull, rkSimple, rkComplex, rkError);
 
-const
-  IdentityMatrix: TMatrix3d = (
-    (1, 0, 0),
-    (0, 1, 0),
-    (0, 0, 1));
+//  modify Jan 28, 2001 for use under BCB5
+//         the compiler show error 245 "language feature ist not available"
+//         wie must take a record and under this we can use the static array
+//  Note:  for init the array we used initialisation at the end of this unit
+//
+//  const
+//    IdentityMatrix: TMatrix3d = (
+//      (1, 0, 0),
+//      (0, 1, 0),
+//      (0, 0, 1));
+
+var
+  IdentityMatrix: TMatrix3d;
 
 //------------------------------------------------------------------------------
 // Classes
@@ -4780,30 +4797,30 @@ var
   b1, b2, b3: Extended;
   c1, c2, c3: Extended;
 begin
-  a1 := M[0,0]; a2:= M[0,1]; a3 := M[0,2];
-  b1 := M[1,0]; b2:= M[1,1]; b3 := M[1,2];
-  c1 := M[2,0]; c2:= M[2,1]; c3 := M[2,2];
+  a1 := M.A[0,0]; a2:= M.A[0,1]; a3 := M.A[0,2];
+  b1 := M.A[1,0]; b2:= M.A[1,1]; b3 := M.A[1,2];
+  c1 := M.A[2,0]; c2:= M.A[2,1]; c3 := M.A[2,2];
 
-  M[0,0]:=  _DET(b2, b3, c2, c3);
-  M[0,1]:= -_DET(a2, a3, c2, c3);
-  M[0,2]:=  _DET(a2, a3, b2, b3);
+  M.A[0,0]:=  _DET(b2, b3, c2, c3);
+  M.A[0,1]:= -_DET(a2, a3, c2, c3);
+  M.A[0,2]:=  _DET(a2, a3, b2, b3);
 
-  M[1,0]:= -_DET(b1, b3, c1, c3);
-  M[1,1]:=  _DET(a1, a3, c1, c3);
-  M[1,2]:= -_DET(a1, a3, b1, b3);
+  M.A[1,0]:= -_DET(b1, b3, c1, c3);
+  M.A[1,1]:=  _DET(a1, a3, c1, c3);
+  M.A[1,2]:= -_DET(a1, a3, b1, b3);
 
-  M[2,0]:=  _DET(b1, b2, c1, c2);
-  M[2,1]:= -_DET(a1, a2, c1, c2);
-  M[2,2]:=  _DET(a1, a2, b1, b2);
+  M.A[2,0]:=  _DET(b1, b2, c1, c2);
+  M.A[2,1]:= -_DET(a1, a2, c1, c2);
+  M.A[2,2]:=  _DET(a1, a2, b1, b2);
 end;
 
 //------------------------------------------------------------------------------
 
 function Determinant(const M: TMatrix3d): Extended;
 begin
-  Result := _DET(M[0,0], M[1,0], M[2,0],
-                 M[0,1], M[1,1], M[2,1],
-                 M[0,2], M[1,2], M[2,2]);
+  Result := _DET(M.A[0,0], M.A[1,0], M.A[2,0],
+                 M.A[0,1], M.A[1,1], M.A[2,1],
+                 M.A[0,2], M.A[1,2], M.A[2,2]);
 end;
 
 //------------------------------------------------------------------------------
@@ -4814,7 +4831,7 @@ var
 begin
   for i := 0 to 2 do
     for j := 0 to 2 do
-      M[i,j] := M[i,j] * Factor;
+      M.A[i,j] := M.A[i,j] * Factor;
 end;
 
 //------------------------------------------------------------------------------
@@ -4841,10 +4858,10 @@ var
 begin
   for i := 0 to 2 do
     for j := 0 to 2 do
-      Result[i, j] :=
-        M1[0, j] * M2[i, 0] +
-        M1[1, j] * M2[i, 1] +
-        M1[2, j] * M2[i, 2];
+      Result.A[i, j] :=
+        M1.A[0, j] * M2.A[i, 0] +
+        M1.A[1, j] * M2.A[i, 1] +
+        M1.A[2, j] * M2.A[i, 2];
 end;
 
 //------------------------------------------------------------------------------
@@ -4857,9 +4874,9 @@ type
 
 function VectorTransform(const M: TMatrix3d; const V: TVector3d): TVector3d;
 begin
-  Result[0] := M[0,0] * V[0] + M[1,0] * V[1] + M[2,0] * V[2];
-  Result[1] := M[0,1] * V[0] + M[1,1] * V[1] + M[2,1] * V[2];
-  Result[2] := M[0,2] * V[0] + M[1,2] * V[1] + M[2,2] * V[2];
+  Result[0] := M.A[0,0] * V[0] + M.A[1,0] * V[1] + M.A[2,0] * V[2];
+  Result[1] := M.A[0,1] * V[0] + M.A[1,1] * V[1] + M.A[2,1] * V[2];
+  Result[2] := M.A[0,2] * V[0] + M.A[1,2] * V[1] + M.A[2,2] * V[2];
 end;
 
 //==============================================================================
@@ -4908,8 +4925,8 @@ begin
   InvertMatrix(M);
 
   // calculate a fixed point (4096) factors
-  A := Round(M[0,0] * 4096); B := Round(M[1,0] * 4096); C := Round(M[2,0] * 4096);
-  D := Round(M[0,1] * 4096); E := Round(M[1,1] * 4096); F := Round(M[2,1] * 4096);
+  A := Round(M.A[0,0] * 4096); B := Round(M.A[1,0] * 4096); C := Round(M.A[2,0] * 4096);
+  D := Round(M.A[0,1] * 4096); E := Round(M.A[1,1] * 4096); F := Round(M.A[2,1] * 4096);
 end;
 
 //------------------------------------------------------------------------------
@@ -4923,8 +4940,8 @@ begin
     Translate(-Cx, -Cy);
   SinCos(DegToRad(Alpha), S, C);
   M := IdentityMatrix;
-  M[0,0] := C;   M[1,0] := S;
-  M[0,1] := -S;  M[1,1] := C;
+  M.A[0,0] := C;   M.A[1,0] := S;
+  M.A[0,1] := -S;  M.A[1,1] := C;
   FMatrix := Mult(M, FMatrix);
   if (Cx <> 0) and (Cy <> 0) then
     Translate(Cx, Cy);
@@ -4937,8 +4954,8 @@ var
   M: TMatrix3d;
 begin
   M := IdentityMatrix;
-  M[0,0] := Sx;
-  M[1,1] := Sy;
+  M.A[0,0] := Sx;
+  M.A[1,1] := Sy;
   FMatrix := Mult(M, FMatrix);
 end;
 
@@ -4949,8 +4966,8 @@ var
   M: TMatrix3d;
 begin
   M := IdentityMatrix;
-  M[1, 0] := Fx;
-  M[0, 1] := Fy;
+  M.A[1, 0] := Fx;
+  M.A[0, 1] := Fy;
   FMatrix := Mult(M, FMatrix);
 end;
 
@@ -4979,8 +4996,8 @@ var
   M: TMatrix3d;
 begin
   M := IdentityMatrix;
-  M[2,0] := Dx;
-  M[2,1] := Dy;
+  M.A[2,0] := Dx;
+  M.A[2,1] := Dy;
   FMatrix := Mult(M, FMatrix);
 end;
 
@@ -5792,11 +5809,23 @@ begin
     GAMMA_TABLE[i] := Round(255 * Power(i / 255, Gamma));
 end;
 
+//  modify Jan 28, 2001 for use under BCB5
+//         the compiler show error 245 "language feature ist not available"
+//         wie must take a record and under this we can use the static array
+
+procedure SetIdentityMatrix;
+begin
+  IdentityMatrix.A[0,0] := 1.0; IdentityMatrix.A[0,1] := 0.0; IdentityMatrix.A[0,2] := 0.0;
+  IdentityMatrix.A[1,0] := 0.0; IdentityMatrix.A[1,1] := 1.0; IdentityMatrix.A[1,2] := 0.0;
+  IdentityMatrix.A[2,0] := 0.0; IdentityMatrix.A[2,1] := 0.0; IdentityMatrix.A[2,2] := 1.0;
+end;
+
 //==============================================================================
 // Initialization and Finalization
 //==============================================================================
 
 initialization
+  SetIdentityMatrix;
   SetGamma(0.7);
 
 end.
