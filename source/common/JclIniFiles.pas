@@ -33,7 +33,7 @@ interface
 {$IFDEF WIN32}
 uses
   Windows;
-{$ENDIF}
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Initialization (ini) Files
