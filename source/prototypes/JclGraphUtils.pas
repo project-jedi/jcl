@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: May 28, 2000                                                  }
+{ Last modified: May 17, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 //
@@ -53,6 +53,17 @@ type
   TBlendMemEx  = procedure (F: TColor32; var B: TColor32; M: TColor32);
   TBlendLine   = procedure (Src, Dst: PColor32; Count: Integer);
   TBlendLineEx = procedure (Src, Dst: PColor32; Count: Integer; M: TColor32);
+
+  { Auxiliary structure to support TColor manipulation}
+  TColorRec = packed record
+    case Integer of
+      0: (Value: Longint);
+      1: (Red, Green, Blue: Byte);
+      2: (R, G, B, Flag: Byte);
+      {$IFDEF WIN32}
+      3: (Index: Word); // GetSysColor, PaletteIndex
+      {$ENDIF WIN32}
+  end;
 
 const
   { Some predefined color constants }
@@ -144,7 +155,7 @@ function RectWidth(const R: TRect): Integer;
 // Color
 //------------------------------------------------------------------------------
 
-procedure GetRGBValue(const Color: TColor; var Red, Green, Blue: Byte);
+procedure GetRGBValue(const Color: TColor; out Red, Green, Blue: Byte);
 function SetRGBValue(Red, Green, Blue: Byte): TColor;
 function GetColorBlue(const Color: TColor): Byte;
 function GetColorFlag(const Color: TColor): Byte;
@@ -169,12 +180,12 @@ procedure RGBToBGR(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal
 procedure RGBToBGR(R, G, B, Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
 procedure RGBAToBGRA(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal);
 
-procedure WinColorToOpenGLColor(Color: TColor; var Red, Green, Blue: Float);
+procedure WinColorToOpenGLColor(Color: TColor; out Red, Green, Blue: Float);
 function OpenGLColorToWinColor(Red, Green, Blue: Float): TColor;
 
 function Color32(WinColor: TColor): TColor32; overload;
 function Color32(R, G, B: Byte; A: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = $FF {$ENDIF}): TColor32; overload;
-function Color32(Index: Byte; var Palette: TPalette32): TColor32; overload;
+function Color32(Index: Byte; const Palette: TPalette32): TColor32; overload;
 function Gray32(Intensity: Byte; Alpha: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = $FF {$ENDIF}): TColor32;
 function WinColor(Color32: TColor32): TColor;
 
@@ -1559,111 +1570,158 @@ end;
 // Color
 //==============================================================================
 
-procedure GetRGBValue(const Color: TColor; var Red, Green, Blue: Byte);
+const
+  MaxBytePercent = High(Byte) * 0.01;
+
+procedure GetRGBValue(const Color: TColor; out Red, Green, Blue: Byte);
+var
+  Temp: TColorRec;
 begin
-  Blue := Color and $FF;
-  Green := (Color shr 8) and $FF;
-  Red := (Color shr 16) and $FF;
+  Temp.Value := ColorToRGB(Color);
+  Red := Temp.R;
+  Green := Temp.G;
+  Blue := Temp.B;
 end;
 
 //------------------------------------------------------------------------------
 
 function SetRGBValue(Red, Green, Blue: Byte): TColor;
 begin
-  Result := $00;   // Flag
-  Result := (Result shl 8) or Red;
-  Result := (Result shl 8) or Green;
-  Result := (Result shl 8) or Blue;
+  TColorRec(Result).Red := Red;
+  TColorRec(Result).Green := Green;
+  TColorRec(Result).Blue := Blue;
+  TColorRec(Result).Flag := 0;
 end;
 
 //------------------------------------------------------------------------------
 
 function SetColorFlag(const Color: TColor; Flag: Byte): TColor;
 begin
-  Result := (Color and $00FFFFFF) or (Flag shl 24);
+  Result := Color;
+  TColorRec(Result).Flag := Flag;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetColorFlag(const Color: TColor): Byte;
 begin
-  Result := (Color and $FF000000) shr 24;
+  Result := TColorRec(Color).Flag;
 end;
 
 //------------------------------------------------------------------------------
 
 function SetColorRed(const Color: TColor; Red: Byte): TColor;
 begin
-  Result := (Color and $FF00FFFF) or (Red shl 16);
+  Result := ColorToRGB(Color);
+  TColorRec(Result).Red := Red;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetColorRed(const Color: TColor): Byte;
+var
+  Temp: TColorRec;
 begin
-  Result := (Color and $00FF0000) shr 16;
+  Temp.Value := ColorToRGB(Color);
+  Result := Temp.Red;
 end;
 
 //------------------------------------------------------------------------------
 
 function SetColorGreen(const Color: TColor; Green: Byte): TColor;
 begin
-  Result := (Color and $FFFF00FF) or (Green shl 8);
+  Result := ColorToRGB(Color);
+  TColorRec(Result).Green := Green;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetColorGreen(const Color: TColor): Byte;
+var
+  Temp: TColorRec;
 begin
-  Result := (Color and $0000FF00) shr 8;
+  Temp.Value := ColorToRGB(Color);
+  Result := Temp.Green;
 end;
 
 //------------------------------------------------------------------------------
 
 function SetColorBlue(const Color: TColor; Blue: Byte): TColor;
 begin
-  Result := (Color and $FFFFFF00) or (Blue);
+  Result := ColorToRGB(Color);
+  TColorRec(Result).Blue := Blue;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetColorBlue(const Color: TColor): Byte;
+var
+  Temp: TColorRec;
 begin
-  Result := (Color and $000000FF);
+  Temp.Value := ColorToRGB(Color);
+  Result := Temp.Blue;
 end;
 
 //------------------------------------------------------------------------------
 
 function BrightColor(Color: TColor; Pct: Extended): TColor;
+var
+  Temp: TColorRec;
 begin
-  Result := Color;
-  SetColorRed(Result, BrightColorChannel(GetColorRed(Result), Pct));
-  SetColorGreen(Result, BrightColorChannel(GetColorGreen(Result), Pct));
-  SetColorBlue(Result, BrightColorChannel(GetColorBlue(Result), Pct));
+  Temp.Value := ColorToRGB(Color);
+  Temp.R := BrightColorChannel(Temp.R, Pct);
+  Temp.G := BrightColorChannel(Temp.G, Pct);
+  Temp.B := BrightColorChannel(Temp.B, Pct);
+  Result := Temp.Value;
 end;
 
 //------------------------------------------------------------------------------
 
 function BrightColorChannel(Channel: Byte; Pct: Extended): Byte;
+var
+  Temp: Integer;
 begin
-  Result := Trunc(Channel + ((Pct * 255.0) / 100.0)) and $FF;
+  if Pct < 0 then
+    Result := DarkColorChannel(Channel, -Pct)
+  else
+  begin
+    Temp := Round(Channel + Pct * MaxBytePercent);
+    if Temp > High(Result) then
+      Result := High(Result)
+    else
+      Result := Temp;
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
 function DarkColor(Color: TColor; Pct: Extended): TColor;
+var
+  Temp: TColorRec;
 begin
-  Result := Color;
-  SetColorRed(Result, DarkColorChannel(GetColorRed(Result), Pct));
-  SetColorGreen(Result, DarkColorChannel(GetColorGreen(Result), Pct));
-  SetColorBlue(Result, DarkColorChannel(GetColorBlue(Result), Pct));
+  Temp.Value := ColorToRGB(Color);
+  Temp.R := DarkColorChannel(Temp.R, Pct);
+  Temp.G := DarkColorChannel(Temp.G, Pct);
+  Temp.B := DarkColorChannel(Temp.B, Pct);
+  Result := Temp.Value;
 end;
 
 //------------------------------------------------------------------------------
 
 function DarkColorChannel(Channel: Byte; Pct: Extended): Byte;
+var
+  Temp: Integer;
 begin
-  Result := Trunc(Channel - ((Pct * 255.0) / 100.0)) and $FF;
+  if Pct < 0 then
+    Result := BrightColorChannel(Channel, -Pct)
+  else
+  begin
+    Temp := Round(Channel - Pct * MaxBytePercent);
+    if Temp < Low(Result) then
+      Result := Low(Result)
+    else
+      Result := Temp;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -2137,30 +2195,27 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure WinColorToOpenGLColor(Color: TColor; var Red, Green, Blue: Float);
+procedure WinColorToOpenGLColor(Color: TColor; out Red, Green, Blue: Float);
 var
-  RedComponent: Byte;
-  GreenComponent: Byte;
-  BlueComponent: Byte;
+  Temp: TColorRec;
 begin
-  GetRGBValue(Color, RedComponent, GreenComponent, BlueComponent);
-  Red   := (RedComponent / 255.0);
-  Green := (GreenComponent / 255.0);
-  Blue  := (BlueComponent / 255.0);
+  Temp.Value := ColorToRGB(Color);
+  Red   := (Temp.R / High(Temp.R));
+  Green := (Temp.G / High(Temp.G));
+  Blue  := (Temp.B / High(Temp.B));
 end;
 
 //------------------------------------------------------------------------------
 
 function OpenGLColorToWinColor(Red, Green, Blue: Float): TColor;
 var
-  RedComponent: Byte;
-  GreenComponent: Byte;
-  BlueComponent: Byte;
+  Temp: TColorRec;
 begin
-  RedComponent   := Trunc(Red * 255.0);
-  GreenComponent := Trunc(Green * 255.0);
-  BlueComponent  := Trunc(Blue * 255.0);
-  Result := SetRGBValue(RedComponent, GreenComponent, BlueComponent);
+  Temp.R := Round(Red   * High(Temp.R));
+  Temp.G := Round(Green * High(Temp.G));
+  Temp.B := Round(Blue  * High(Temp.B));
+  Temp.Flag := 0;
+  Result := Temp.Value;
 end;
 
 //------------------------------------------------------------------------------
@@ -2180,7 +2235,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Color32(Index: Byte; var Palette: TPalette32): TColor32; overload;
+function Color32(Index: Byte; const Palette: TPalette32): TColor32; overload;
 begin
   Result := Palette[Index];
 end;
