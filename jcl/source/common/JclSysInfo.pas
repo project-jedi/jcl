@@ -29,7 +29,7 @@
 
 unit JclSysInfo;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
