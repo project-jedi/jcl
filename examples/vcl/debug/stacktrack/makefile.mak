@@ -1,6 +1,6 @@
 #--------------------------------------------------------------------------------------------------#
 #                                                                                                  #
-# JCL Examples                                                                                     #
+# JCL Stack Track Examples                                                                         #
 #                                                                                                  #
 #--------------------------------------------------------------------------------------------------#
 
@@ -13,17 +13,15 @@ JCL = ..\..\..\..
 !endif
 
 #---------------------------------------------------------------------------------------------------
-VCLEXAMP = $(JCL)\examples\vcl
+VclExamples = $(JCL)\examples\vcl
 INC = $(JCL)\source
 SRC = $(JCL)\lib\d7;..\bin;vcl\peimage
 BIN = $(JCL)\bin
-DCU = $(JCL)\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS)
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -w -u$(SRC) $&
-DCCU = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -n$(DCU) -q -w $**
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -w -u$(SRC)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 MAKEJCLDBG = $(BIN)\makejcldbg.exe -j
 #---------------------------------------------------------------------------------------------------
@@ -41,29 +39,28 @@ default: \
 #                                                                                                  #
 #--------------------------------------------------------------------------------------------------#
 
+.path.dpr = $(VclExamples)\debug\stacktrack;$(VclExamples)\debugextension\tools
+.path.pas = $(VclExamples)\debug\stacktrack;$(VclExamples)\debugextension\tools
+
+.dpr.exe:
+  $(DCC) $<
+
 .dpr.dll:
-  $(DCC) -gd -dHOOK_DLL_EXCEPTIONS
+  $(DCC) -gd -dHOOK_DLL_EXCEPTIONS $&
   $(MAKEJCLDBG) $(MAP)
   del $(MAP)
   del $(DRC)
 
-$(BIN)\MakeJclDbg.exe: $(VCLEXAMP)\debugextension\tools\MakeJclDbg.dpr
-  pushd $(VCLEXAMP)\debugextension\tools
-  cd $(VCLEXAMP)\debugextension\tools
-  dir
-  popd
-
-#  $(MAKE) -fmakefile.mak
-  # cd $(VCLEXAMP)\debugextension\tools
+$(BIN)\MakeJclDbg.exe: $(VclExamples)\debugextension\tools\MakeJclDbg.dpr
 
 $(BIN)\StackTrackExample.exe: StackTrackExample.dpr
-  $(DCC) -gd
+  $(DCC) -gd $&
   $(MAKEJCLDBG) $(MAP)
   del $(MAP)
   del $(DRC)
 
 $(BIN)\StackTrackDLLsExample.exe: StackTrackDLLsExample.dpr
-  $(DCC) -gd -dHOOK_DLL_EXCEPTIONS
+  $(DCC) -gd -dHOOK_DLL_EXCEPTIONS $&
   $(MAKEJCLDBG) $(MAP)
   del $(MAP)
   del $(DRC)
