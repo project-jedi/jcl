@@ -15,13 +15,14 @@ Count=6
 5=emUnderflow=Underflow mask.
 6=emPrecision=Precision error mask.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 All8087Exceptions = [Low(T8087Exception)..High(T8087Exception)];
@@ -36,8 +37,9 @@ Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ClearPending8087Exceptions: T8087Exceptions;
@@ -49,12 +51,13 @@ The ClearPending8087Exceptions clears all pending FPU exceptions.
 The result is the set of exception flags that were set before the entire mask
 was cleared.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=T8087Exceptions;Types\T8087Exceptions
@@ -72,12 +75,13 @@ routine.
 [Result]
 The result is the set of pending FPU exceptions.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=T8087Exceptions;Types\T8087Exceptions
@@ -93,12 +97,13 @@ that are currently masked (ie the exceptions ignored by the FPU).
 [Result]
 The result is the set of masked FPU exceptions.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=T8087Exceptions;Types\T8087Exceptions
@@ -125,12 +130,13 @@ pending exceptions.
 [Result]
 The result is the exception mask before it was modified.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=T8087Exceptions;Types\T8087Exceptions
@@ -156,12 +162,13 @@ set of masked exceptions.
 The set of exceptions that were masked upon routine entry. Upon exit the set of
 masked exceptions equals Result + Exceptions.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=T8087Exceptions;Types\T8087Exceptions
@@ -186,12 +193,13 @@ the routine returns, if set to False pending exceptions are not cleared.
 [Result]
 The result is the set of exceptions that were masked upon routine entry. 
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=T8087Exceptions;Types\T8087Exceptions
@@ -210,13 +218,14 @@ Count=4
 3=pcDouble=Double precision (long)
 4=pcExtended=Extended precision (temporary)
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 T8087Rounding = (rcNearestOrEven, rcDownInfinity, rcUpInfinity, rcChopOrTruncate);
@@ -229,13 +238,14 @@ Count=4
 3=rcUpInfinity=Rounds up towards positive infinity
 4=rcChopOrTruncate=Chops or truncates towards zero
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Get8087Rounding;..\Get8087Rounding
@@ -250,13 +260,14 @@ Count=2
 1=icProjective=Infinity is always assumed to be unsigned.
 2=icAffine=Allows positive and negative infinity.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Set8087Precision;..\Set8087Precision
@@ -277,12 +288,13 @@ for the possible values and their meaning.
 [Result]
 The previous infinity setting of the FPU.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Set8087Precision
@@ -308,12 +320,13 @@ for the possible values and their meaning.
 [Result]
 The previous precision setting of the FPU.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Set8087Infinity
@@ -339,12 +352,13 @@ for the possible values and their meaning.
 [Result]
 The previous rounding setting of the FPU.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Set8087Infinity
@@ -367,12 +381,13 @@ The infinity setting of the FPU in the form of an enumerated type.
 See <REF Target"Types\T8087Infinity">T8087Infinity</REF> for the possible values
 and their meaning.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Get8087Precision
@@ -394,12 +409,13 @@ coprocessor.
 The precision setting of the FPU. See <REF Target"Types\T8087Precision">T8087Precision</REF>
 for the possible values and their meaning.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Get8087Infinity
@@ -421,12 +437,13 @@ coprocessor.
 The rounding setting of the FPU. See <REF Target"Types\T8087Rounding">T8087Rounding</REF>
 for more information about the possible values and their meaning.
 [Quick Info]
-BCB=3,4,5
 Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=7
 1=Get8087Infinity
@@ -450,12 +467,13 @@ Count=1
 [Result]
 Previous value of the control word.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hardware
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Get8087ControlWord
@@ -530,13 +548,14 @@ as they shield you from the low level bit manipulation.
 [Result]
 The 80x87 control word.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hardware
 SubCat=Hardware
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Get8087StatusWord
@@ -613,12 +632,13 @@ The contents of the 80x87 status word.<BR>
  </TR>
  </TABLE>
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Set8087ControlWord
