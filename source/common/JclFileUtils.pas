@@ -2636,29 +2636,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// todoc Author: Jeff
-
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 begin
   if Move then
-    Result := MoveFile(PChar(FileName), PChar(GetBackupFileName(FileName)))
+    Result := MoveFileEx(PChar(FileName), PChar(GetBackupFileName(FileName)), MOVEFILE_REPLACE_EXISTING)
   else
     Result := CopyFile(PChar(FileName), PChar(GetBackupFileName(FileName)), False)
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-// todoc Author: Jeff
-
 function Win32RestoreFile(const FileName: string): Boolean;
-var
+var 
   TempFileName: string;
 begin
   Result := False;
   TempFileName := FileGetTempName('');
-  if MoveFile(PChar(GetBackupFileName(FileName)), PChar(TempFileName)) then
-    if Win32BackupFile(FileName, False) then
-      Result := MoveFile(PChar(TempFileName), PChar(FileName));
+
+   if MoveFileEx(PChar(GetBackupFileName(FileName)), PChar(TempFileName), MOVEFILE_REPLACE_EXISTING) then
+     if Win32BackupFile(FileName, False) then
+       Result := MoveFileEx(PChar(TempFileName), PChar(FileName), MOVEFILE_REPLACE_EXISTING); 
 end;
 
 //==================================================================================================
