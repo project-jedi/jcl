@@ -43,8 +43,15 @@
 program jpp;
 
 uses
+  {$IFDEF MSWINDOWS}
   Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Libc,
+  {$ENDIF}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
+  {$ENDIF HAS_UNIT_TYPES}
   SysUtils,
   Classes,
   TypInfo,
