@@ -24,7 +24,7 @@
 { these instance including a notifaction mechanism.                            }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: August 28, 2001                                               }
+{ Last modified: January 22, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -51,6 +51,7 @@ const
   AI_USERMSG = $0003;
 
   AppInstDataKindNoData = -1;
+  AppInstCmdLineDataKind = 1;
 
 //------------------------------------------------------------------------------
 // Application instances manager class
@@ -82,6 +83,7 @@ type
     function CheckInstance(const MaxInstances: Word): Boolean;
     procedure CheckMultipleInstances(const MaxInstances: Word);
     procedure CheckSingleInstance;
+    function SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
     function SendData(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       const Data: Pointer; const Size: Integer; const OriginatorWnd: HWND): Boolean;
     function SendString(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
@@ -413,6 +415,23 @@ begin
     FOptex.Leave;
   end;
   NotifyInstances(AI_INSTANCEDESTROYED, FCPID);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
+var
+  TempList: TStringList;
+  I: Integer;
+begin
+  TempList := TStringList.Create;
+  try
+    for I := 1 to ParamCount do
+      TempList.Add(ParamStr(I));
+    Result := SendStrings(WindowClassName, AppInstCmdLineDataKind, TempList, OriginatorWnd);
+  finally
+    TempList.Free;
+  end;
 end;
 
 //------------------------------------------------------------------------------
