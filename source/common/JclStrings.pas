@@ -28,6 +28,8 @@
 // mvb 20 jan 2002 added AllowEmptyString parameter to StringsToStr function
 // mvb 20 jan 2002 added AddStringToStrings() by Jeff
 
+// - StrIToStrings default parameter now true
+// - StrToStrings default parameter now true
 // - Rewrote StrSmartCase to fix a bug.
 // - Fixed a bug in StrIsAlphaNumUnderscore
 // - Fixed a bug in StrIsSubset
@@ -321,8 +323,8 @@ procedure FreeMultiSz(var Dest: PChar);
 // TStrings Manipulation
 //--------------------------------------------------------------------------------------------------
 
-procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
-procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
+procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: AnsiString;const AllowEmptyString: Boolean = True): AnsiString;
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
@@ -1445,14 +1447,16 @@ var
   Source, Dest: PChar;
 
 begin
+  Result := '';
+
   if Delimiters = [] then
     Include(Delimiters, AnsiSpace);
 
   if S <> '' then
   begin
-    SetLength(Result, Length(S));
     Result := S;
-
+    UniqueString(Result);
+    
     Source  := PChar(S);
     Dest := PChar(Result);
 
@@ -3317,7 +3321,7 @@ end;
 // TStrings Manipulation
 //==================================================================================================
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
+procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   Left: AnsiString;
@@ -3340,7 +3344,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = False);
+procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   LowerCaseStr: string;
