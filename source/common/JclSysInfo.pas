@@ -1750,7 +1750,7 @@ const
   RegLocalEnvironment = '\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\';
   RegUserEnvironment = '\Environment\';
 var
-  KeyNames, stlTemp: TStringList;
+  KeyNames, stlTemp: TStrings;
   strTemp, strName, strValue: string;
   I: Integer;
 begin
@@ -1768,29 +1768,35 @@ begin
   // get environment strings from local machine
   if eoLocalMachine in Options then
   begin
-    KeyNames := RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment);
-    for I := 0 to KeyNames.Count - 1 do
+    KeyNames := TStringList.Create;
+    if RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment, KeyNames) then
     begin
-      strName := KeyNames[I];
-      strValue := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, strName);
-      ExpandEnvironmentVar(strValue);
-      stlTemp.Add(strName + '=' + strValue);
+      for I := 0 to KeyNames.Count - 1 do
+      begin
+        strName := KeyNames[I];
+        strValue := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, strName);
+        ExpandEnvironmentVar(strValue);
+        stlTemp.Add(strName + '=' + strValue);
+      end;
+      KeyNames.Free;
     end;
-    KeyNames.Free;
   end;
 
   // get environment strings from current user
   if eoCurrentUser in Options then
   begin
-    KeyNames := RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment);
-    for I := 0 to KeyNames.Count - 1 do
+    KeyNames := TStringLIst.Create;
+    if RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment, KeyNames) then
     begin
-      strName := KeyNames[I];
-      strValue := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, strName);
-      ExpandEnvironmentVar(strValue);
-      stlTemp.Add(strName + '=' + strValue);
+      for I := 0 to KeyNames.Count - 1 do
+      begin
+        strName := KeyNames[I];
+        strValue := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, strName);
+        ExpandEnvironmentVar(strValue);
+        stlTemp.Add(strName + '=' + strValue);
+      end;
+      KeyNames.Free;
     end;
-    KeyNames.Free;
   end;
 
   // transform stringlist into multi-PChar
