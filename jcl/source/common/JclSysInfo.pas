@@ -610,10 +610,10 @@ uses
   SysUtils,
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
-  JclRegistry,
+  JclRegistry, JclWin32,
   {$IFNDEF FPC}
   TLHelp32, PsApi,
-  JclShell, JclWin32,
+  JclShell,
   {$ENDIF FPC}
   {$ENDIF MSWINDOWS}
   JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
@@ -685,9 +685,9 @@ function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolea
 var
   R: DWORD;
 begin
-  R := GetEnvironmentVariable(PChar(Name), nil, 0);
+  R := Windows.GetEnvironmentVariable(PChar(Name), nil, 0);
   SetLength(Value, R);
-  R := GetEnvironmentVariable(PChar(Name), PChar(Value), R);
+  R := Windows.GetEnvironmentVariable(PChar(Name), PChar(Value), R);
   Result := R <> 0;
   if not Result then
     Value := ''
@@ -1313,7 +1313,7 @@ end;
 function GetUserDomainName(const CurUser: string): string;
 var
   Count1, Count2: DWORD;
-  Sd: PSecurityDescriptor;
+  Sd: PSID; // PSecurityDescriptor; // FPC requires PSID
   Snu: SID_Name_Use;
 begin
   Count1 := 0;
