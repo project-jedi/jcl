@@ -985,33 +985,36 @@ begin
   ClearValue;
   for I := 0 to Pred(Strings.Count) do
   begin
-    FirstIdent := Trim(Strings[I]);
-    RangePos := Pos('..', FirstIdent);
-    if RangePos > 0 then
+    if Trim(Strings[I]) <> '' then
     begin
-      LastIdent := Trim(StrRestOf(FirstIdent, RangePos + 2));
-      FirstIdent := Trim(Copy(FirstIdent, 1, RangePos - 1));
-    end
-    else
-      LastIdent := FirstIdent;
-    if BaseInfo.TypeKind = tkEnumeration then
-    begin
-      FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
-      LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
-      if FirstOrd = -1 then
-        raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
-      if LastOrd = -1 then
-        raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
-    end
-    else
-    begin
-      FirstOrd := StrToInt(FirstIdent);
-      LastOrd := StrToInt(LastIdent);
+      FirstIdent := Trim(Strings[I]);
+      RangePos := Pos('..', FirstIdent);
+      if RangePos > 0 then
+      begin
+        LastIdent := Trim(StrRestOf(FirstIdent, RangePos + 2));
+        FirstIdent := Trim(Copy(FirstIdent, 1, RangePos - 1));
+      end
+      else
+        LastIdent := FirstIdent;
+      if BaseInfo.TypeKind = tkEnumeration then
+      begin
+        FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
+        LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
+        if FirstOrd = -1 then
+          raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
+        if LastOrd = -1 then
+          raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
+      end
+      else
+      begin
+        FirstOrd := StrToInt(FirstIdent);
+        LastOrd := StrToInt(LastIdent);
+      end;
+      Dec(FirstOrd, BaseInfo.MinValue);
+      Dec(LastOrd, BaseInfo.MinValue);
+      for CurOrd := FirstOrd to LastOrd do
+        SetBitBuffer(Value, CurOrd + FirstBit);
     end;
-    Dec(FirstOrd, BaseInfo.MinValue);
-    Dec(LastOrd, BaseInfo.MinValue);
-    for CurOrd := FirstOrd to LastOrd do
-      SetBitBuffer(Value, CurOrd + FirstBit);
   end;
 end;
 
