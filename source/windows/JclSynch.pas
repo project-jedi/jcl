@@ -848,11 +848,12 @@ end;
 // TJclMutex
 //==============================================================================
 
-constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean;
-  const Name: string);
+constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
+const
+  InitialOwners: array [Boolean] of DWORD = (0, 1);
 begin
   FName := Name;
-  FHandle := CreateMutex(SecAttr, InitialOwner, PChar(Name));
+  FHandle := JclWin32.CreateMutex(SecAttr, InitialOwners[InitialOwner], PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateResRec(@RsSynchCreateMutex);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
