@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 20, 2000                                              }
+{ Last modified: November 21, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -53,9 +53,11 @@ function Set8087ControlWord(const Control: Word): Word;
 function ClearPending8087Exceptions: T8087Exceptions;
 function GetPending8087Exceptions: T8087Exceptions;
 function GetMasked8087Exceptions: T8087Exceptions;
-function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+function SetMasked8087Exceptions(Exceptions: T8087Exceptions;
+  ClearBefore: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True{$ENDIF}): T8087Exceptions;
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
-function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+function Unmask8087Exceptions(Exceptions: T8087Exceptions;
+  ClearBefore: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True{$ENDIF}): T8087Exceptions;
 
 implementation
 
