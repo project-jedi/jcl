@@ -16,7 +16,7 @@
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
 { Contributors:                                                                                    }
-{   Flier Lu (flier)                                                                                      }
+{   Flier Lu (flier)                                                                               }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
@@ -39,15 +39,9 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Messages,
-  Classes, SysUtils,                     
-  {$IFDEF RTL130_UP}
-  Contnrs, JclUnicode,
-  {$ENDIF RTL130_UP}
+  Windows, Messages, Classes, SysUtils, Contnrs,
   MSTask, MSTaskError,
-  JclBase, JclSysUtils, JclSysInfo;
-
-{ TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
+  JclBase, JclSysUtils, JclSysInfo{$IFNDEF RTL140_UP}, JclUnicode{$ENDIF};
 
 type
   TDateTimeArray = array of TDateTime;
@@ -247,7 +241,8 @@ function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
 implementation
 
 uses
-  ActiveX, ComObj, CommCtrl, WinSvc,
+  ActiveX, ComObj, CommCtrl,
+  {$IFDEF FPC} JwaWinSvc, {$ELSE} WinSvc, {$ENDIF}
   JclSvcCtrl;
 
 const
@@ -397,7 +392,7 @@ var
 begin
   Language := GetUserDefaultLCID;
   for Result := 0 to TaskCount-1 do
-    if JclUnicode.WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
+    if {$IFNDEF RTL140_UP}JclUnicode.{$ENDIF}WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
     begin
       Delete(Result);
       Exit;
@@ -1218,6 +1213,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/05/06 23:43:22  rrossmair
+// minor improvements
+//
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
