@@ -28,7 +28,7 @@
 
 unit JclSecurity;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
