@@ -66,6 +66,7 @@
       ..\..\lib\c5\obj\JclWin32.obj
       ..\..\lib\c5\obj\JclWinMIDI.obj
       ..\..\lib\c5\obj\JclAppInst.obj
+      ..\..\lib\c5\obj\Hardlinks.obj
       ..\..\lib\c5\obj\zlibh.obj
       ..\..\lib\c5\obj\JclPrint.obj
       ..\..\lib\c5\obj\JclGraphUtils.obj

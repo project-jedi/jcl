@@ -66,6 +66,7 @@
     <File Name="..\..\source\windows\JclUnicode.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\Hardlinks.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="C5,D5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="C5,D5" Formname="" Condition=""/>
