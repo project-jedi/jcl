@@ -7,7 +7,7 @@ end;
 
 function PRIMARYLANGID(LangId: WORD): WORD;
 begin
-  Result := LangId and $3FF;
+  Result := LangId and $03FF;
 end;
 
 function SUBLANGID(LangId: WORD): WORD;
@@ -32,12 +32,12 @@ end;
 
 function SORTIDFROMLCID(LocaleId: LCID): WORD;
 begin
-  Result := WORD((DWORD(LocaleId) shr 16) and $F);
+  Result := WORD((DWORD(LocaleId) shr 16) and $000F);
 end;
 
 function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 begin
-  Result := WORD((DWORD(LocaleId) shr 20) and $F);
+  Result := WORD((DWORD(LocaleId) shr 20) and $000F);
 end;
 
 // line 9149
@@ -67,25 +67,25 @@ end;
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
 begin
   Result := PImageSectionHeader(Cardinal(NtHeader) +
-      FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
-      NtHeader^.FileHeader.SizeOfOptionalHeader);
+    FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
+    NtHeader^.FileHeader.SizeOfOptionalHeader);
 end;
 
 // line 9204
 
 function IMAGE_ORDINAL64(Ordinal: ULONGLONG): ULONGLONG;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $FFFF);
 end;
 
 function IMAGE_ORDINAL32(Ordinal: DWORD): DWORD;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $0000FFFF);
 end;
 
 function IMAGE_ORDINAL(Ordinal: DWORD): DWORD;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $0000FFFF);
 end;
 
 function IMAGE_SNAP_BY_ORDINAL64(Ordinal: ULONGLONG): Boolean;

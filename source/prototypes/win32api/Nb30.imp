@@ -1,3 +1,5 @@
+{$IFDEF MSWINDOWS}
+
 var
   _Netbios: Pointer;
 
@@ -10,3 +12,5 @@ begin
     jmp [_Netbios]
   end;
 end;
+
+{$ENDIF MSWINDOWS}

@@ -31,6 +31,8 @@ const
 
 // line 3189
   
+{$IFDEF MSWINDOWS}
+
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
 {$EXTERNALSYM BackupSeek}
@@ -125,3 +127,4 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
   lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
 {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
 
+{$ENDIF MSWINDOWS}

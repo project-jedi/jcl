@@ -166,8 +166,14 @@ type
   {$EXTERNALSYM USHORT}
 
 
+//==================================================================================================
 // presumable from any older WinNT.h or from WinIfs.h
+//==================================================================================================
+
+//--------------------------------------------------------------------------------------------------
 // NTFS Reparse Points
+//--------------------------------------------------------------------------------------------------
+
 // The reparse structure is used by layered drivers to store data in a
 // reparse point. The constraints on reparse tags are defined below.
 // This version of the reparse data buffer is only for Microsoft tags.
@@ -260,6 +266,8 @@ type
 const
   {$EXTERNALSYM IO_REPARSE_TAG_VALID_VALUES}
   IO_REPARSE_TAG_VALID_VALUES = DWORD($E000FFFF);
+
+//==================================================================================================
 
 // from JwaWinNT.pas (few declarations from JwaWinType)
 
@@ -2918,6 +2926,7 @@ const
 
 // line 3189
   
+
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
 {$EXTERNALSYM BackupSeek}
@@ -3029,7 +3038,6 @@ function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
-
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -4334,6 +4342,7 @@ const
 // Function Prototypes - User
 //
 
+
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
 
@@ -4366,6 +4375,7 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
+
 
 //
 //  Data Structures - User
@@ -4482,10 +4492,11 @@ const
   UF_SERVER_TRUST_ACCOUNT      = $2000;
   {$EXTERNALSYM UF_SERVER_TRUST_ACCOUNT}
 
-  UF_MACHINE_ACCOUNT_MASK = (UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT);
+  UF_MACHINE_ACCOUNT_MASK = UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
   {$EXTERNALSYM UF_MACHINE_ACCOUNT_MASK}
 
-  UF_ACCOUNT_TYPE_MASK = UF_TEMP_DUPLICATE_ACCOUNT or UF_NORMAL_ACCOUNT or UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
+  UF_ACCOUNT_TYPE_MASK = UF_TEMP_DUPLICATE_ACCOUNT or UF_NORMAL_ACCOUNT or
+    UF_INTERDOMAIN_TRUST_ACCOUNT or UF_WORKSTATION_TRUST_ACCOUNT or UF_SERVER_TRUST_ACCOUNT;
   {$EXTERNALSYM UF_ACCOUNT_TYPE_MASK}
 
   UF_DONT_EXPIRE_PASSWD                     = $10000;
@@ -4509,23 +4520,23 @@ const
 
 
   UF_SETTABLE_BITS =
-                    UF_SCRIPT or
-                    UF_ACCOUNTDISABLE or
-                    UF_LOCKOUT or
-                    UF_HOMEDIR_REQUIRED or
-                    UF_PASSWD_NOTREQD or
-                    UF_PASSWD_CANT_CHANGE or
-                    UF_ACCOUNT_TYPE_MASK or
-                    UF_DONT_EXPIRE_PASSWD or
-                    UF_MNS_LOGON_ACCOUNT or
-                    UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED or
-                    UF_SMARTCARD_REQUIRED or
-                    UF_TRUSTED_FOR_DELEGATION or
-                    UF_NOT_DELEGATED or
-                    UF_USE_DES_KEY_ONLY or
-                    UF_DONT_REQUIRE_PREAUTH or
-                    UF_PASSWORD_EXPIRED or
-                    UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION;
+    UF_SCRIPT or
+    UF_ACCOUNTDISABLE or
+    UF_LOCKOUT or
+    UF_HOMEDIR_REQUIRED or
+    UF_PASSWD_NOTREQD or
+    UF_PASSWD_CANT_CHANGE or
+    UF_ACCOUNT_TYPE_MASK or
+    UF_DONT_EXPIRE_PASSWD or
+    UF_MNS_LOGON_ACCOUNT or
+    UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED or
+    UF_SMARTCARD_REQUIRED or
+    UF_TRUSTED_FOR_DELEGATION or
+    UF_NOT_DELEGATED or
+    UF_USE_DES_KEY_ONLY or
+    UF_DONT_REQUIRE_PREAUTH or
+    UF_PASSWORD_EXPIRED or
+    UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION;
   {$EXTERNALSYM UF_SETTABLE_BITS}
 
 // line 1056
@@ -4571,6 +4582,7 @@ const
 // Function Prototypes
 //
 
+
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
 
@@ -4598,6 +4610,7 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
+
 
 //
 //  Data Structures - Group
@@ -4641,6 +4654,7 @@ type
 // Function Prototypes
 //
 
+
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
 
@@ -4674,6 +4688,7 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
+
 
 //
 //  Data Structures - LocalGroup
@@ -4775,7 +4790,6 @@ type
   {$EXTERNALSYM LOCALGROUP_MEMBERS_INFO_3}
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
-
 
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
@@ -5202,7 +5216,6 @@ const
 
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
-
 
 type
   PRasDialDlg = ^TRasDialDlg;
@@ -6369,6 +6382,7 @@ type
 
 // line 1635
 
+
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 {$EXTERNALSYM GetCalendarInfoA}
@@ -6625,6 +6639,7 @@ begin
   end;
 end;
 
+
 const
   aclapilib = 'advapi32.dll';
 
@@ -6640,6 +6655,7 @@ begin
     jmp [_SetNamedSecurityInfoW]
   end;
 end;
+
 
 
 const
@@ -6774,6 +6790,8 @@ begin
     jmp [_UnDecorateSymbolName]
   end;
 end;
+
+
 
 
 var
@@ -7180,6 +7198,7 @@ begin
 end;
 
 
+
 var
   _NetApiBufferFree: Pointer;
 
@@ -7193,6 +7212,8 @@ begin
   end;
 end;
 
+
+
 var
   _Netbios: Pointer;
 
@@ -7205,6 +7226,8 @@ begin
     jmp [_Netbios]
   end;
 end;
+
+
 
 var
   _BackupSeek: Pointer;
@@ -7370,6 +7393,7 @@ begin
 end;
 
 
+
 var
   _GetCalendarInfoA: Pointer;
 
@@ -7419,7 +7443,7 @@ end;
 
 function PRIMARYLANGID(LangId: WORD): WORD;
 begin
-  Result := LangId and $3FF;
+  Result := LangId and $03FF;
 end;
 
 function SUBLANGID(LangId: WORD): WORD;
@@ -7444,12 +7468,12 @@ end;
 
 function SORTIDFROMLCID(LocaleId: LCID): WORD;
 begin
-  Result := WORD((DWORD(LocaleId) shr 16) and $F);
+  Result := WORD((DWORD(LocaleId) shr 16) and $000F);
 end;
 
 function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 begin
-  Result := WORD((DWORD(LocaleId) shr 20) and $F);
+  Result := WORD((DWORD(LocaleId) shr 20) and $000F);
 end;
 
 // line 9149
@@ -7479,25 +7503,25 @@ end;
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
 begin
   Result := PImageSectionHeader(Cardinal(NtHeader) +
-      FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
-      NtHeader^.FileHeader.SizeOfOptionalHeader);
+    FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
+    NtHeader^.FileHeader.SizeOfOptionalHeader);
 end;
 
 // line 9204
 
 function IMAGE_ORDINAL64(Ordinal: ULONGLONG): ULONGLONG;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $FFFF);
 end;
 
 function IMAGE_ORDINAL32(Ordinal: DWORD): DWORD;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $0000FFFF);
 end;
 
 function IMAGE_ORDINAL(Ordinal: DWORD): DWORD;
 begin
-  Result := (Ordinal and $ffff);
+  Result := (Ordinal and $0000FFFF);
 end;
 
 function IMAGE_SNAP_BY_ORDINAL64(Ordinal: ULONGLONG): Boolean;
