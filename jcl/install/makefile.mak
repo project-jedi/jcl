@@ -53,7 +53,7 @@ qinstall:       $(BIN)\QJediInstaller.exe
 clean:
         cd ..
         @echo cleaning up first...
-        -@del /q /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.o *.obj
+	-@del /q /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o *.obj
         cd install
 
 prototypes: VclUnits ClxUnits
