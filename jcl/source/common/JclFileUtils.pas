@@ -868,17 +868,17 @@ type
 // Deprecated, do not use
 {$IFDEF MSWINDOWS}
 function PathGetLongName2(const Path: string): string;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF ~FPC}
 function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32RestoreFile(const FileName: string): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF MSWINDOWS}
 
 {$ENDIF ~DROP_OBSOLETE_CODE}
@@ -952,7 +952,7 @@ begin
   FileHandle := FileCreateTemp(FFileName);
   // (rom) is it really wise to throw an exception before calling inherited?
   if FileHandle = INVALID_HANDLE_VALUE then
-    raise EJclTempFileStreamError.CreateResRec(@RsFileStreamCreate);
+    raise EJclTempFileStreamError.CreateRes(@RsFileStreamCreate);
   inherited Create(FileHandle);
 end;
 
@@ -975,7 +975,7 @@ var
 begin
   inherited Create;
   if FileMap = nil then
-    raise EJclFileMappingViewError.CreateResRec(@RsViewNeedsMapping);
+    raise EJclFileMappingViewError.CreateRes(@RsViewNeedsMapping);
   FFileMapping := FileMap;
   // Offset must be a multiple of system memory allocation granularity
   RoundToAllocGranularity64(ViewOffset, FFileMapping.RoundViewOffset = rvUp);
@@ -984,7 +984,7 @@ begin
   FOffsetLow := OffsetLow;
   BaseAddress := MapViewOfFile(FFileMapping.Handle, Access, FOffsetHigh, FOffsetLow, Size);
   if BaseAddress = nil then
-    raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+    raise EJclFileMappingViewError.CreateRes(@RsCreateFileMappingView);
   // If we are mapping a file and size = 0 then MapViewOfFile has mapped the entire file. We must
   // figure out the size ourselves before we can call SetPointer. Since in case of failure to
   // retrieve the size we raise an exception, we also have to explicitly unmap the view which
@@ -995,7 +995,7 @@ begin
     if Size = DWORD(-1) then
     begin
       UnMapViewOfFile(BaseAddress);
-      raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+      raise EJclFileMappingViewError.CreateRes(@RsFailedToObtainSize);
     end;
   end;
   SetPointer(BaseAddress, Size);
@@ -1010,7 +1010,7 @@ var
 begin
   inherited Create;
   if FileMap = nil then
-    raise EJclFileMappingViewError.CreateResRec(@RsViewNeedsMapping);
+    raise EJclFileMappingViewError.CreateRes(@RsViewNeedsMapping);
   FFileMapping := FileMap;
   // Offset must be a multiple of system memory allocation granularity
   RoundToAllocGranularity64(ViewOffset, FFileMapping.RoundViewOffset = rvUp);
@@ -1021,7 +1021,7 @@ begin
   BaseAddress := MapViewOfFileEx(FFileMapping.Handle, Access, FOffsetHigh,
     FOffsetLow, Size, Address);
   if BaseAddress = nil then
-    raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+    raise EJclFileMappingViewError.CreateRes(@RsCreateFileMappingView);
   // If we are mapping a file and size = 0 then MapViewOfFile has mapped the entire file. We must
   // figure out the size ourselves before we can call SetPointer. Since in case of failure to
   // retrieve the size we raise an exception, we also have to explicitly unmap the view which
@@ -1032,7 +1032,7 @@ begin
     if Size = DWORD(-1) then
     begin
       UnMapViewOfFile(BaseAddress);
-      raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+      raise EJclFileMappingViewError.CreateRes(@RsFailedToObtainSize);
     end;
   end;
   SetPointer(BaseAddress, Size);
@@ -1087,7 +1087,7 @@ end;
 procedure TJclFileMappingView.LoadFromStream(const Stream: TStream);
 begin
   if Stream.Size > Size then
-    raise EJclFileMappingViewError.CreateResRec(@RsLoadFromStreamSize);
+    raise EJclFileMappingViewError.CreateRes(@RsLoadFromStreamSize);
   Stream.Position := 0;
   Stream.ReadBuffer(Memory^, Stream.Size);
 end;
@@ -1189,7 +1189,7 @@ begin
   FHandle := CreateFileMapping(FileHandle, SecAttr, Protect, MaximumSizeHigh,
     MaximumSizeLow, PChar(Name));
   if FHandle = 0 then
-    raise EJclFileMappingError.CreateResRec(@RsCreateFileMapping);
+    raise EJclFileMappingError.CreateRes(@RsCreateFileMapping);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
@@ -1200,7 +1200,7 @@ begin
   FName := Name;
   FHandle := OpenFileMapping(DesiredAccess, InheritHandle, PChar(Name));
   if FHandle = 0 then
-    raise EJclFileMappingError.CreateResRec(@RsCreateFileMapping);
+    raise EJclFileMappingError.CreateRes(@RsCreateFileMapping);
 end;
 
 //=== { TJclFileMapping } ====================================================
@@ -1213,7 +1213,7 @@ begin
   inherited Create;
   FFileHandle := THandle(FileOpen(FileName, FileMode));
   if FFileHandle = INVALID_HANDLE_VALUE then
-    raise EJclFileMappingError.CreateResRec(@RsFileMappingOpenFile);
+    raise EJclFileMappingError.CreateRes(@RsFileMappingOpenFile);
   InternalCreate(FFileHandle, Name, Protect, MaximumSize, SecAttr);
 end;
 
@@ -1223,7 +1223,7 @@ begin
   FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
   if FileHandle = INVALID_HANDLE_VALUE then
-    raise EJclFileMappingError.CreateResRec(@RsFileMappingInvalidHandle);
+    raise EJclFileMappingError.CreateRes(@RsFileMappingInvalidHandle);
   InternalCreate(FileHandle, Name, Protect, MaximumSize, SecAttr);
   // Duplicate the handle into FFileHandle as opposed to assigning it directly. This will cause
   // FFileHandle to retrieve a unique copy which is independent of FileHandle. This makes the
@@ -1274,20 +1274,20 @@ begin
   if FMapping = 0 then
   begin
     Close;
-    raise EJclFileMappingError.CreateResRec(@RsCreateFileMapping);
+    raise EJclFileMappingError.CreateRes(@RsCreateFileMapping);
   end;
   BaseAddress := MapViewOfFile(FMapping, Access, 0, 0, 0);
   if BaseAddress = nil then
   begin
     Close;
-    raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+    raise EJclFileMappingViewError.CreateRes(@RsCreateFileMappingView);
   end;
   Size := GetFileSize(FFileHandle, nil);
   if Size = DWORD(-1) then
   begin
     UnMapViewOfFile(BaseAddress);
     Close;
-    raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+    raise EJclFileMappingViewError.CreateRes(@RsFailedToObtainSize);
   end;
   SetPointer(BaseAddress, Size);
 end;
@@ -1423,7 +1423,7 @@ end;
 function TJclMappedTextReader.GetChars(Index: Integer): Char;
 begin
   if (Index < 0) or (Index >= Size) then
-    raise EJclError.CreateResRec(@RsFileIndexOutOfRange);
+    raise EJclError.CreateRes(@RsFileIndexOutOfRange);
   Result := Char(PByte(FContent + Index)^);
 end;
 
@@ -1676,7 +1676,7 @@ begin
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
-    raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
+    raise EJclPathError.CreateResFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
   {$ENDIF MSWINDOWS}
 end;
 
@@ -1990,7 +1990,7 @@ var
   begin
     Result := Pos(PathSeparator, Path) = 1;
   end;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 
 begin
   Origin := PathCanonicalize(Origin);
@@ -2367,7 +2367,7 @@ var
   PartialResult: Boolean;
   Attr: DWORD;
 begin
-  Assert(Path <> '', RsDelTreePathIsEmpty);
+  Assert(Path <> '', LoadResString(@RsDelTreePathIsEmpty));
   {$IFNDEF ASSERTIONS_ON}
   if Path = '' then
   begin
@@ -2876,7 +2876,7 @@ var
 begin
   Result := True;
   if Length(Name) = 0 then
-    raise EJclFileUtilsError.CreateResRec(@RsCannotCreateDir);
+    raise EJclFileUtilsError.CreateRes(@RsCannotCreateDir);
   Name := PathRemoveSeparator(Name);
   {$IFDEF MSWINDOWS}
   ExtractPath := ExtractFilePath(Name);
@@ -2955,7 +2955,7 @@ var
   DriveStr: string;
 begin
   if not (Drive in ['a'..'z', 'A'..'Z']) then
-    raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [Drive]);
+    raise EJclPathError.CreateResFmt(@RsPathInvalidDrive, [Drive]);
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
@@ -3345,7 +3345,7 @@ begin
     if Handle <> INVALID_HANDLE_VALUE then
     try
       if not GetFileInformationByHandle(Handle, FileInfo) then
-        raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+        raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
       Result.dwFileAttributes := FileInfo.dwFileAttributes;
       Result.ftCreationTime := FileInfo.ftCreationTime;
       Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
@@ -3356,12 +3356,12 @@ begin
       CloseHandle(Handle);
     end
     else
-      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+      raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end
   else
   begin
     if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
-      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+      raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
 
@@ -3911,7 +3911,7 @@ var
 begin
   Size := GetFileVersionInfoSize(PChar(FileName), Handle);
   if Size = 0 then
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
+    raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsNoVersionInfo);
   SetLength(FBuffer, Size);
   Win32Check(GetFileVersionInfo(PChar(FileName), Handle, Size, PChar(FBuffer)));
   ExtractData;
@@ -3927,7 +3927,7 @@ end;
 procedure TJclFileVersionInfo.CheckLanguageIndex(Value: Integer);
 begin
   if (Value < 0) or (Value >= LanguageCount) then
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
+    raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsLanguageIndex);
 end;
 
 procedure TJclFileVersionInfo.CreateItemsForLanguage;
@@ -4111,7 +4111,7 @@ begin
     CreateItemsForLanguage;
   end;
   if Error then
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
+    raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsNoVersionInfo);
 end;
 
 procedure TJclFileVersionInfo.ExtractFlags;
@@ -5432,6 +5432,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.41  2005/03/08 08:33:16  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.40  2005/03/01 20:16:17  rrossmair
 // - fixed issue #0002696: GetBackupFileName() fails when used with extensionless filename
 //

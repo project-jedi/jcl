@@ -213,7 +213,7 @@ begin
   Defaults.DesiredAccess := PRINTER_ACCESS_USE;
   Count := Length(Data);
   if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
-    raise EJclPrinterError.CreateResRec(@RsInvalidPrinter);
+    raise EJclPrinterError.CreateRes(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
   DocInfo.DocName := PChar(RsSpoolerDocName);
   DocInfo.OutputFile := nil;
@@ -221,24 +221,24 @@ begin
   try
     // Inform the spooler the document is beginning
     if StartDocPrinter(PrinterHandle, 1, @DocInfo) = 0 then
-      EJclPrinterError.CreateResRec(@RsNAStartDocument);
+      EJclPrinterError.CreateRes(@RsNAStartDocument);
     try
       // Start a page
       if not StartPagePrinter(PrinterHandle) then
-        EJclPrinterError.CreateResRec(@RsNAStartPage);
+        EJclPrinterError.CreateRes(@RsNAStartPage);
       try
         // Send the data to the printer
         if not WritePrinter(PrinterHandle, @Data, Count, BytesWritten) then
-          EJclPrinterError.CreateResRec(@RsNASendData);
+          EJclPrinterError.CreateRes(@RsNASendData);
       finally
         // End the page
         if not EndPagePrinter(PrinterHandle) then
-          EJclPrinterError.CreateResRec(@RsNAEndPage);
+          EJclPrinterError.CreateRes(@RsNAEndPage);
       end;
     finally
       // Inform the spooler that the document is ending
       if not EndDocPrinter(PrinterHandle) then
-        EJclPrinterError.CreateResRec(@RsNAEndDocument);
+        EJclPrinterError.CreateRes(@RsNAEndDocument);
     end;
   finally
     // Tidy up the printer handle
@@ -246,7 +246,7 @@ begin
   end;
   // Check to see if correct number of bytes written
   if BytesWritten <> Count then
-    EJclPrinterError.CreateResRec(@RsNATransmission);
+    EJclPrinterError.CreateRes(@RsNATransmission);
 end;
 
 procedure SetPrinterPixelsPerInch;
@@ -526,7 +526,7 @@ begin
     NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_Bins,
       PChar(FBinArray), FDeviceMode);
     if NumBinsRec <> FNumBins then
-      raise EJclPrinterError.CreateResRec(@RsRetrievingSource);
+      raise EJclPrinterError.CreateRes(@RsRetrievingSource);
   end;
 end;
 
@@ -543,7 +543,7 @@ begin
     NumPapersRec := DeviceCapabilities(FDevice, FPort, DC_Papers,
       PChar(FPaperArray), FDeviceMode);
     if NumPapersRec <> FNumPapers then
-      raise EJclPrinterError.CreateResRec(@RsRetrievingPaperSource);
+      raise EJclPrinterError.CreateRes(@RsRetrievingPaperSource);
   end
   else
     FPaperArray := nil;
@@ -649,7 +649,7 @@ begin
     NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_BinNames,
       PChar(BinArray), FDeviceMode);
     if NumBinsRec <> FNumBins then
-      raise EJclPrinterError.CreateResRec(@RsRetrievingSource);
+      raise EJclPrinterError.CreateRes(@RsRetrievingSource);
     for Idx := 1 to NumBinsRec do
     begin
       BinStr := StrPas(BinArray^[Idx]);
@@ -748,7 +748,7 @@ begin
   begin
     FDeviceMode := nil;
     if not Creating then
-      raise EJclPrinterError.CreateResRec(@RsDeviceMode);
+      raise EJclPrinterError.CreateRes(@RsDeviceMode);
     FPrinter := -99;
   end;
   Res := GetPrinterResolution;
@@ -776,7 +776,7 @@ begin
       FDeviceMode^, FDeviceMode^,
       DM_IN_BUFFER or DM_OUT_BUFFER);
     if ExtDevCode <> IDOK then
-      raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter);
+      raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
   finally
     ClosePrinter(DrvHandle);
   end;
@@ -792,7 +792,7 @@ begin
   ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
     FDeviceMode^, FDeviceMode^, DM_IN_BUFFER or DM_UPDATE);
   if ExtDevCode <> IDOK then
-    raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter)
+    raise EJclPrinterError.CreateRes(@RsUpdatingPrinter)
   else
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0);
   ClosePrinter(DrvHandle);
@@ -1117,7 +1117,7 @@ begin
   if FNumBins = 0 then
     Exit;
   if BinNum > FNumBins then
-    raise EJclPrinterError.CreateResRec(@RsIndexOutOfRange)
+    raise EJclPrinterError.CreateRes(@RsIndexOutOfRange)
   else
     DefaultSource := FBinArray^[BinNum];
 end;
@@ -1143,7 +1143,7 @@ begin
   if FNumPapers = 0 then
     Exit;
   if PaperNum > FNumPapers then
-    raise EJclPrinterError.CreateResRec(@RsIndexOutOfRangePaper)
+    raise EJclPrinterError.CreateRes(@RsIndexOutOfRangePaper)
   else
     PaperSize := FPaperArray^[PaperNum];
 end;
@@ -1174,6 +1174,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2005/03/08 08:33:20  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.19  2005/03/05 06:31:19  rrossmair
 // - allow conditional compilation for deprecated code (symbol DROP_OBSOLETE_CODE)
 //

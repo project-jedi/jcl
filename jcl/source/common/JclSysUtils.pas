@@ -326,7 +326,7 @@ type
   TTextHandler = procedure(const Text: string) of object;
 
 const
-  ABORT_EXIT_CODE = {$IFDEF MSWINDOWS}ERROR_CANCELLED {$ELSE} 1223 {$ENDIF}; 
+  ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF}; 
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
@@ -1031,7 +1031,7 @@ end;
 
 function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
 begin
-  raise EJclError.CreateResRec(@RsCannotWriteRefStream);
+  raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
 
 //=== replacement for the C distfix operator ? : =============================
@@ -1133,10 +1133,10 @@ begin
   //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
   // better VirtualProtect, direct patch, VirtualProtect
   if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
 
   if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
 
   // make sure that everything keeps working in a dual processor setting
   FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
@@ -1290,9 +1290,9 @@ begin
   //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
   // better VirtualProtect, direct patch, VirtualProtect
   if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
   if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
   // make sure that everything keeps working in a dual processor setting
   FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
@@ -2030,7 +2030,7 @@ begin
       Result := Char(getchar);
     end
     else
-      raise EJclError.CreateResRec(@RsReadKeyError);
+      raise EJclError.CreateRes(@RsReadKeyError);
   finally
     //Restore Original Terminal Settings
     tcsetattr(stdin, TCSANOW, SaveTerminalSettings);
@@ -2176,7 +2176,7 @@ begin
       (LowerCasedText = LowerCase(DefaultFalseBoolStr)) or (LowerCasedText = LowerCase(DefaultNoBoolStr)) or
       (LowerCasedText = LowerCase(DefaultFalseBoolStr[1])) or (LowerCasedText = LowerCase(DefaultNoBoolStr[1])));
     if Result then
-      raise EJclConversionError.CreateResRecFmt(@RsStringToBoolean, [S]);
+      raise EJclConversionError.CreateResFmt(@RsStringToBoolean, [S]);
   end;
 end;
 
@@ -2219,7 +2219,7 @@ function JclStringToGUID(const S: string): TGUID;
 begin
   if (Length(S) <> 38) or (S[1] <> '{') or (S[10] <> '-') or (S[15] <> '-') or
       (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
-    raise EJclConversionError.CreateResRecFmt(@RsInvalidGUIDString, [S]);
+    raise EJclConversionError.CreateResFmt(@RsInvalidGUIDString, [S]);
   Result.D1 := StrToInt('$' + Copy(S, 2, 8));
   Result.D2 := StrToInt('$' + Copy(S, 11, 4));
   Result.D3 := StrToInt('$' + Copy(S, 16, 4));
@@ -2236,6 +2236,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.34  2005/03/08 08:33:18  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.33  2005/03/06 18:15:03  marquardt
 // JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
 //

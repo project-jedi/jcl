@@ -3249,7 +3249,7 @@ begin
   for Result := Low(TJclClrTableManifestResourceVisibility) to High(TJclClrTableManifestResourceVisibility) do
     if (FFlags and mrVisibilityMask) = ManifestResourceVisibilityMapping[Result] then
       Exit;
-  raise EJclMetadataError.CreateResRecFmt(@RsUnknownManifestResource, [FFlags and mrVisibilityMask]);
+  raise EJclMetadataError.CreateResFmt(@RsUnknownManifestResource, [FFlags and mrVisibilityMask]);
 end;
 
 function TJclClrTableManifestResource.GetRow(
@@ -4315,7 +4315,7 @@ begin
     tdExplicitLayout:
       Result := clExplicit;
   else
-    raise EJclMetadataError.CreateResRecFmt(@RsUnknownClassLayout, [FFlags and tdLayoutMask]);
+    raise EJclMetadataError.CreateResFmt(@RsUnknownClassLayout, [FFlags and tdLayoutMask]);
   end;
 end;
 
@@ -4337,7 +4337,7 @@ begin
     tdAutoClass:
       Result := sfAutoChar;
   else
-    raise EJclMetadataError.CreateResRecFmt(@RsUnknownStringFormatting, [FFlags and tdStringFormatMask]);
+    raise EJclMetadataError.CreateResFmt(@RsUnknownStringFormatting, [FFlags and tdStringFormatMask]);
   end;
 end;
 
@@ -4634,11 +4634,11 @@ begin
   Sign := ReadByte;
 
   if (Sign and IMAGE_CEE_CS_CALLCONV_MASK) <> IMAGE_CEE_CS_CALLCONV_LOCAL_SIG then
-    raise EJclMetadataError.CreateResRecFmt(@RsNoLocalVarSig, [IntToHex(Sign, 2)]);
+    raise EJclMetadataError.CreateResFmt(@RsNoLocalVarSig, [IntToHex(Sign, 2)]);
 
   VarCount := ReadValue;
   if (VarCount < 1) or ($FFFE < VarCount) then
-    raise EJclMetadataError.CreateResRecFmt(@RsLocalVarSigOutOfRange, [VarCount]);
+    raise EJclMetadataError.CreateResFmt(@RsLocalVarSigOutOfRange, [VarCount]);
 
   FLocalVars := TObjectList.Create;
 
@@ -4811,6 +4811,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.13  2005/03/06 18:15:03  marquardt
 // JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
 //

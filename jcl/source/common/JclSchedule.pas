@@ -614,7 +614,7 @@ begin
   if Value <> FStartTime then
   begin
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateResRec(@RsScheduleInvalidTime);
+      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
     FStartTime := Value;
     if EndTime < StartTime then
       FEndTime := Value;
@@ -626,9 +626,9 @@ begin
   if Value <> FEndTime then
   begin
     if Value < FStartTime then
-      raise ESchedule.CreateResRec(@RsScheduleEndBeforeStart);
+      raise ESchedule.CreateRes(@RsScheduleEndBeforeStart);
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateResRec(@RsScheduleInvalidTime);
+      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
     FEndTime := Value;
   end;
 end;
@@ -638,7 +638,7 @@ begin
   if Value <> FInterval then
   begin
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateResRec(@RsScheduleInvalidTime);
+      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
     if Value = 0 then
     begin
       FEndTime := FStartTime;
@@ -743,7 +743,7 @@ procedure TDailySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateResRec(@RsScheduleIntervalZero);
+    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
   if FEveryWeekDay then
     FEveryWeekDay := False;
   if Value <> FInterval then
@@ -833,7 +833,7 @@ procedure TWeeklySchedule.SetDaysOfWeek(Value: TScheduleWeekDays);
 begin
   CheckInterfaceAllowed;
   if Value = [] then
-    raise ESchedule.CreateResRec(@RsScheduleNoDaySpecified);
+    raise ESchedule.CreateRes(@RsScheduleNoDaySpecified);
   FDaysOfWeek := Value;
 end;
 
@@ -841,7 +841,7 @@ procedure TWeeklySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateResRec(@RsScheduleIntervalZero);
+    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
   FInterval := Value;
 end;
 
@@ -1144,7 +1144,7 @@ function TMonthlySchedule.GetIndexValue: Integer;
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
-    raise ESchedule.CreateResRec(@RsScheduleIndexValueSup);
+    raise ESchedule.CreateRes(@RsScheduleIndexValueSup);
   Result := FIndexValue;
 end;
 
@@ -1170,9 +1170,9 @@ procedure TMonthlySchedule.SetIndexValue(Value: Integer);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
-    raise ESchedule.CreateResRec(@RsScheduleIndexValueSup);
+    raise ESchedule.CreateRes(@RsScheduleIndexValueSup);
   if Value = 0 then
-    raise ESchedule.CreateResRec(@RsScheduleIndexValueZero);
+    raise ESchedule.CreateRes(@RsScheduleIndexValueZero);
   FIndexValue := Value;
 end;
 
@@ -1180,9 +1180,9 @@ procedure TMonthlySchedule.SetDay(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikNone]) then
-    raise ESchedule.CreateResRec(@RsScheduleDayNotSupported);
+    raise ESchedule.CreateRes(@RsScheduleDayNotSupported);
   if (Value = 0) or (Value > 31) then
-    raise ESchedule.CreateResRec(@RsScheduleDayInRange);
+    raise ESchedule.CreateRes(@RsScheduleDayInRange);
   FDay := Value;
 end;
 
@@ -1190,7 +1190,7 @@ procedure TMonthlySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateResRec(@RsScheduleIntervalZero);
+    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
   FInterval := Value;
 end;
 
@@ -1285,7 +1285,7 @@ procedure TYearlySchedule.SetMonth(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if (Value < 1) or (Value > 12) then
-    raise ESchedule.CreateResRec(@RsScheduleMonthInRange);
+    raise ESchedule.CreateRes(@RsScheduleMonthInRange);
   FMonth := Value;
 end;
 
@@ -1573,6 +1573,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

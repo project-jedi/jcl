@@ -99,7 +99,7 @@ begin
   FHead := 0;
   FTail := 0;
   if ACapacity < 1 then
-    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+    raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -179,7 +179,7 @@ begin
   FHead := 0;
   FTail := 0;
   if ACapacity < 1 then
-    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+    raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -257,7 +257,7 @@ constructor TJclQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   if ACapacity < 1 then
-    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+    raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -332,6 +332,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.3  2005/02/27 11:36:20  marquardt
 // fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
 //

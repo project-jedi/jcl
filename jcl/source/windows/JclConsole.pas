@@ -456,6 +456,7 @@ var
 begin
   try
     Console := TJclConsole.Default;
+    Result := True;
     case CtrlType of
       CTRL_C_EVENT:
         if Assigned(Console.OnCtrlC) then
@@ -473,10 +474,12 @@ begin
         if Assigned(Console.OnShutdown) then
           Console.OnShutdown(Console);
     else
-      Assert(False, 'Unknown Ctrl Event');
+      // (rom) disabled. Makes function result unpredictable.
+      //Assert(False, 'Unknown Ctrl Event');
+      Result := False;
     end;
-    Result := True;
   except
+    // (rom) dubious. An exception implies that an event has been handled.
     Result := False;
   end;
 end;
@@ -1385,7 +1388,7 @@ begin
   if AEvent in [ceCtrlC, ceCtrlBreak] then
     Win32Check(GenerateConsoleCtrlEvent(CtrlEventMapping[AEvent], ProcessGroupId))
   else
-    raise EJclError.CreateResRecFmt(@RsCannotRaiseSignal,
+    raise EJclError.CreateResFmt(@RsCannotRaiseSignal,
       [GetEnumName(TypeInfo(TJclInputCtrlEvent), Integer(AEvent))]);
 end;
 
@@ -1451,6 +1454,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.15  2005/03/04 06:40:26  marquardt
 // changed overloaded constructors to constructor with default parameter (BCB friendly)
 //

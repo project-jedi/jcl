@@ -2207,7 +2207,7 @@ end;
 
 function TJclPeResourceRawStream.Write(const Buffer; Count: Integer): Longint;
 begin
-  raise EJclPeImageError.CreateResRec(@RsPeReadOnlyStream);
+  raise EJclPeImageError.CreateRes(@RsPeReadOnlyStream);
 end;
 
 //=== { TJclPeResourceItem } =================================================
@@ -2284,7 +2284,7 @@ begin
       Exit;
     end
     else
-      raise EJclPeImageError.CreateResRec(@RsPeNotResDir);
+      raise EJclPeImageError.CreateRes(@RsPeNotResDir);
   end;
   if FList = nil then
     FList := FImage.ResourceListCreate(SubDirData, Self);
@@ -2796,7 +2796,7 @@ end;
 procedure TJclPeImage.CheckNotAttached;
 begin
   if FAttachedImage then
-    raise EJclPeImageError.CreateResRec(@RsPeNotAvailableForAttached);
+    raise EJclPeImageError.CreateRes(@RsPeNotAvailableForAttached);
 end;
 
 procedure TJclPeImage.Clear;
@@ -3415,9 +3415,9 @@ begin
   if not FNoExceptions then
     case FStatus of
       stNotPE:
-        raise EJclPeImageError.CreateResRec(@RsPeNotPE);
+        raise EJclPeImageError.CreateRes(@RsPeNotPE);
       stNotFound:
-        raise EJclPeImageError.CreateResRecFmt(@RsPeCantOpen, [FFileName]);
+        raise EJclPeImageError.CreateResFmt(@RsPeCantOpen, [FFileName]);
       stError:
         RaiseLastOSError;
     end;
@@ -4894,10 +4894,10 @@ begin
   FInstance := Instance;
   NtHeaders := PeMapImgNtHeaders(Pointer(Instance));
   if NtHeaders = nil then
-    raise EJclPeImageError.CreateResRec(@RsPeNotPE);
+    raise EJclPeImageError.CreateRes(@RsPeNotPE);
   Header := PeMapImgFindSection(NtHeaders, ASectionName);
   if Header = nil then
-    raise EJclPeImageError.CreateResRecFmt(@RsPeSectionNotFound, [ASectionName]);
+    raise EJclPeImageError.CreateResFmt(@RsPeSectionNotFound, [ASectionName]);
   // Borland and Microsoft seems to have swapped the meaning of this items.
   DataSize := Min(Header^.SizeOfRawData, Header^.Misc.VirtualSize);
   SetPointer(Pointer(FInstance + Header^.VirtualAddress), DataSize);
@@ -4906,7 +4906,7 @@ end;
 
 function TJclPeSectionStream.Write(const Buffer; Count: Integer): Longint;
 begin
-  raise EJclPeImageError.CreateResRec(@RsPeReadOnlyStream);
+  raise EJclPeImageError.CreateRes(@RsPeReadOnlyStream);
 end;
 
 //=== { TJclPeMapImgHookItem } ===============================================
@@ -5385,6 +5385,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.21  2005/02/25 07:20:16  marquardt
 // add section lines
 //

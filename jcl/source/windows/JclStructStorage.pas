@@ -62,10 +62,11 @@ unit JclStructStorage;
 interface
 
 uses
-  Windows, Classes, SysUtils, ActiveX;
+  Windows, Classes, SysUtils, ActiveX,
+  JclBase;
 
 type
-  EJclStructStorageError = class(Exception);
+  EJclStructStorageError = class(EJclError);
   TJclStructStorageAccessMode = (smOpenRead, smOpenWrite, smCreate, smShareDenyRead, smShareDenyWrite, smTransacted);
   TJclStructStorageAccessModes = set of TJclStructStorageAccessMode;
 
@@ -219,7 +220,8 @@ procedure CoMallocFree(P: Pointer);
 implementation
 
 uses
-  ComObj;
+  ComObj,
+  JclResources;
 
 var
   FMalloc: IMalloc = nil;
@@ -666,7 +668,7 @@ end;
 procedure TJclStructStorageStream.Check;
 begin
   if FStream = nil then
-    raise EJclStructStorageError.Create('IStream is nil');
+    raise EJclStructStorageError.CreateRes(@RsIStreamNil);
 end;
 
 function TJclStructStorageStream.CheckResult(HR: HRESULT): Boolean;
@@ -760,6 +762,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/03/08 08:33:23  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.7  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

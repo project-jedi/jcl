@@ -2428,7 +2428,7 @@ var
 
   procedure FunctionFailedError(Name: string);
   begin
-    raise EJclError.CreateResRecFmt(@RsEOpenGLInfo, [Name]);
+    raise EJclError.CreateResFmt(@RsEOpenGLInfo, [Name]);
   end;
 
 begin
@@ -3995,6 +3995,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.40  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.39  2005/03/03 15:35:59  rikbarker
 // Windows 2003 Fix for NTProductType and GetWindowsServicePackVersion
 //

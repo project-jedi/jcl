@@ -1173,11 +1173,11 @@ begin
       begin
         Result := CompileExpr(True);
         if Lexer.CurrTok <> etRParen then
-          raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
+          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
         Lexer.NextTok;
       end;
   else
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
 end;
 
@@ -1190,11 +1190,11 @@ var
 begin
   { find symbol }
   if FContext = nil then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
   Sym := FContext.Find(Lexer.TokenAsString);
   if Sym = nil then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
 
   Lexer.NextTok;
@@ -1230,7 +1230,7 @@ begin
 
   if (Lexer.CurrTok <> etEof) then
   begin
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
   end;
 end;
@@ -1344,7 +1344,7 @@ begin
      begin
         Result := EvalExpr(True);
         if Lexer.CurrTok <> etRParen then
-          raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
+          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
         Lexer.NextTok;
       end;
     etNumber:
@@ -1353,7 +1353,7 @@ begin
         Lexer.NextTok;
       end;
     else
-      raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
+      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
    end;
 end;
 
@@ -1365,11 +1365,11 @@ var
 begin
   { find symbol }
   if Context = nil then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
   Sym := FContext.Find(Lexer.TokenAsString);
   if Sym = nil then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalUnknownSymbol,
       [Lexer.TokenAsString]);
 
   Lexer.NextTok;
@@ -3202,35 +3202,35 @@ end;
 function TExprAbstractFuncSym.CompileFirstArg: TExprNode;
 begin
   if Lexer.CurrTok <> etLParen then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalFirstArg);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFirstArg);
   Result := CompileParser.CompileExpr(True);
 end;
 
 function TExprAbstractFuncSym.CompileNextArg: TExprNode;
 begin
   if Lexer.CurrTok <> etComma then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalNextArg);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalNextArg);
   Result := CompileParser.CompileExpr(True);
 end;
 
 function TExprAbstractFuncSym.EvalFirstArg: TFloat;
 begin
   if Lexer.CurrTok <> etLParen then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalFirstArg);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFirstArg);
   Result := EvalParser.EvalExpr(True);
 end;
 
 function TExprAbstractFuncSym.EvalNextArg: TFloat;
 begin
   if Lexer.CurrTok <> etComma then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalNextArg);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalNextArg);
   Result := EvalParser.EvalExpr(True);
 end;
 
 procedure TExprAbstractFuncSym.EndArgs;
 begin
   if Lexer.CurrTok <> etRParen then
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalEndArgs);
+    raise EJclExprEvalError.CreateRes(@RsExprEvalEndArgs);
   Lexer.NextTok;
 end;
 
@@ -3960,7 +3960,7 @@ begin
     Expr := '';
     FExprHash.Iterate(@Ifr, IterateFindIce);
     if not Found then
-      raise EJclExprEvalError.CreateResRec(@RsExprEvalExprPtrNotFound);
+      raise EJclExprEvalError.CreateRes(@RsExprEvalExprPtrNotFound);
     Remove(Expr);
   end;
 end;
@@ -3970,10 +3970,10 @@ var
   Ice: TInternalCompiledExpression;
 begin
   if not FExprHash.Find(AExpr, Ice) then
-    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalExprNotFound, [AExpr]);
+    raise EJclExprEvalError.CreateResFmt(@RsExprEvalExprNotFound, [AExpr]);
 
   Ice.RefCount := Ice.RefCount - 1;
-  Assert(Ice.RefCount >= 0, RsExprEvalExprRefCountAssertion);
+  Assert(Ice.RefCount >= 0, LoadResString(@RsExprEvalExprRefCountAssertion));
   if Ice.RefCount = 0 then
   begin
     Ice.Free;
@@ -3989,6 +3989,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/03/08 08:33:16  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.14  2005/02/26 23:27:25  mthoma
 // Fixed #150 - a valid expression followed by Rubbish doesn't throw an exception => Now it does.
 //

@@ -97,7 +97,7 @@ begin
 
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
-    raise EJclCounterError.CreateResRec(@RsNoCounter);
+    raise EJclCounterError.CreateRes(@RsNoCounter);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefore we have to divide by 10E5
@@ -132,7 +132,7 @@ begin
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStart) then  
-    raise EJclCounterError.CreateResRec(@RsNoCounter);
+    raise EJclCounterError.CreateRes(@RsNoCounter);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -144,7 +144,7 @@ function TJclCounter.Stop: Float;
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStop) then
-    raise EJclCounterError.CreateResRec(@RsNoCounter);
+    raise EJclCounterError.CreateRes(@RsNoCounter);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -162,7 +162,7 @@ var
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(TimeNow) then
-    raise EJclCounterError.CreateResRec(@RsNoCounter);
+    raise EJclCounterError.CreateRes(@RsNoCounter);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -209,6 +209,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.11  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //

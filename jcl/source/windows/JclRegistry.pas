@@ -221,22 +221,22 @@ const
 
 procedure ReadError(const Key: string);
 begin
-  raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key]);
+  raise EJclRegistryError.CreateResFmt(@RsUnableToOpenKeyRead, [Key]);
 end;
 
 procedure WriteError(const Key: string);
 begin
-  raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyWrite, [Key]);
+  raise EJclRegistryError.CreateResFmt(@RsUnableToOpenKeyWrite, [Key]);
 end;
 
 procedure ValueError(const Key, Name: string);
 begin
-  raise EJclRegistryError.CreateResRecFmt(@RsUnableToAccessValue, [Key, Name]);
+  raise EJclRegistryError.CreateResFmt(@RsUnableToAccessValue, [Key, Name]);
 end;
 
 procedure DataError(const Key, Name: string);
 begin
-  raise EJclRegistryError.CreateResRecFmt(@RsWrongDataType, [Key, Name]);
+  raise EJclRegistryError.CreateResFmt(@RsWrongDataType, [Key, Name]);
 end;
 
 function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; out RegPath: string): Boolean;
@@ -296,7 +296,7 @@ begin
     if StrPos(Key, RootKeys[I].Name) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
-        raise EJclRegistryError.CreateResRecFmt(@RsInconsistentPath, [Key])
+        raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])
       else
         Inc(Result, StrLen(RootKeys[I].Name));
       Break;
@@ -1394,6 +1394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.36  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.35  2005/02/25 07:20:16  marquardt
 // add section lines
 //

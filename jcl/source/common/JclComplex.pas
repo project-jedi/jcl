@@ -391,12 +391,12 @@ begin
     try
       RealPart := StrToFloat(Copy(StrToParse, 1, SignPos - 1));
     except
-      raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+      raise EJclMathError.CreateRes(@RsComplexInvalidString);
     end;
     try
       ImagPart := StrToFloat(Copy(StrToParse, SignPos, Length(StrToParse) - SignPos));
     except
-      raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+      raise EJclMathError.CreateRes(@RsComplexInvalidString);
     end;
   end
   else
@@ -407,7 +407,7 @@ begin
       try
         ImagPart := StrToFloat(Copy(StrToParse, 1, Length(StrToParse) - 1));
       except
-        raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+        raise EJclMathError.CreateRes(@RsComplexInvalidString);
       end;
     end
     else
@@ -415,7 +415,7 @@ begin
       try
         RealPart := StrToFloat(StrToParse);
       except
-        raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+        raise EJclMathError.CreateRes(@RsComplexInvalidString);
       end;
       ImagPart := 0.0;
     end;
@@ -431,19 +431,19 @@ begin
   StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, [' ']));
   AstPos := Pos('*', StrToParse);
   if AstPos = 0 then
-    raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+    raise EJclMathError.CreateRes(@RsComplexInvalidString);
   try
     Radius := StrToFloat(StrLeft(StrToParse, AstPos - 1));
   except
-    raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+    raise EJclMathError.CreateRes(@RsComplexInvalidString);
   end;
   AstPos := Pos('(', StrToParse);
   if AstPos = 0 then
-    raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+    raise EJclMathError.CreateRes(@RsComplexInvalidString);
   try
     Angle := StrToFloat(Copy(StrToParse, AstPos + 1, Length(StrToParse) - AstPos - 1));
   except
-    raise EJclMathError.CreateResRec(@RsComplexInvalidString);
+    raise EJclMathError.CreateRes(@RsComplexInvalidString);
   end;
   Assign(Radius, Angle, crPolar);
 end;
@@ -1528,6 +1528,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //

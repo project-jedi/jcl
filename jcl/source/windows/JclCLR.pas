@@ -885,7 +885,7 @@ function TJclClrTableRow.GetToken: TJclClrToken;
     for Result := Low(TJclClrTableKind) to High(TJclClrTableKind) do
       if ValidTableMapping[Result] = Table.ClassType then
         Exit;
-    raise Exception.Create('Unknown table - ' + ClassName);  
+    raise EJclError.CreateResFmt(@RsUnknownTableFmt, [LoadResString(@RsUnknownTable), ClassName]);
   end;
 
 begin
@@ -1740,6 +1740,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.13  2005/03/06 18:15:03  marquardt
 // JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
 //

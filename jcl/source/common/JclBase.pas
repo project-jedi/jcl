@@ -55,11 +55,7 @@ const
 
 // EJclError
 type
-  EJclError = class(Exception)
-  public
-    constructor CreateResRec(ResStringRec: PResStringRec);
-    constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
-  end;
+  EJclError = class(Exception);
 
 // EJclWin32Error
 {$IFDEF MSWINDOWS}
@@ -71,8 +67,8 @@ type
   public
     constructor Create(const Msg: string);
     constructor CreateFmt(const Msg: string; const Args: array of const);
-    constructor CreateRes(Ident: Integer);
-    constructor CreateResRec(ResStringRec: PResStringRec);
+    constructor CreateRes(Ident: Integer); overload;
+    constructor CreateRes(ResStringRec: PResStringRec); overload;
     property LastError: DWORD read FLastError;
     property LastErrorMsg: string read FLastErrorMsg;
   end;
@@ -189,26 +185,6 @@ implementation
 uses
   JclResources;
 
-//== { EJclError } ===========================================================
-
-constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
-begin
-  {$IFDEF FPC}
-  inherited Create(ResStringRec^);
-  {$ELSE}
-  inherited Create(LoadResString(ResStringRec));
-  {$ENDIF FPC}
-end;
-
-constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
-begin
-  {$IFDEF FPC}
-  inherited CreateFmt(ResStringRec^, Args);
-  {$ELSE}
-  inherited CreateFmt(LoadResString(ResStringRec), Args);
-  {$ENDIF FPC}
-end;
-
 //== { EJclWin32Error } ======================================================
 
 {$IFDEF MSWINDOWS}
@@ -217,31 +193,31 @@ constructor EJclWin32Error.Create(const Msg: string);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(Msg + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + #13 + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
+  inherited CreateFmt(Msg + AnsiLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
 end;
 
 constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(LoadStr(Ident) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(LoadStr(Ident) + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
-constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
+constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
   {$IFDEF FPC}
-  inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ELSE}
-  inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(LoadResString(ResStringRec) + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
 
@@ -273,6 +249,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.31  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -895,9 +895,9 @@ begin
           FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
           LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
           if FirstOrd = -1 then
-            raise EJclRTTIError.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
+            raise EJclRTTIError.CreateResFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
           if LastOrd = -1 then
-            raise EJclRTTIError.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
+            raise EJclRTTIError.CreateResFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
         end
         else
         begin
@@ -2138,7 +2138,7 @@ begin
   BaseInfo := JclTypeInfo(BaseType);
   BaseKind := BaseInfo.TypeKind;
   if BaseInfo.TypeKind <> tkEnumeration then
-    raise EJclRTTIError.CreateResRecFmt(@RsRTTIInvalidBaseType, [BaseInfo.Name,
+    raise EJclRTTIError.CreateResFmt(@RsRTTIInvalidBaseType, [BaseInfo.Name,
       JclEnumValueToIdent(System.TypeInfo(TTypeKind), BaseKind)]);
   with BaseInfo as IJclEnumerationTypeInfo do
   begin
@@ -2233,7 +2233,7 @@ begin
       TmpVal := StrToInt64(Value);
       if (RangeInfo <> nil) and ((TmpVal < RangeInfo.MinValue) or
           (TmpVal > RangeInfo.MaxValue)) then
-        raise EConvertError.CreateFmt(LoadResString(@SInvalidInteger), [Value]);
+        raise EConvertError.CreateResFmt(@SInvalidInteger, [Value]);
       Result := Integer(TmpVal);
     end
     else
@@ -2356,7 +2356,7 @@ begin
   EnumMax := GetTypeData(CompType).MaxValue;
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   if (EnumMax - EnumMin) > 32 then
-    raise EJclRTTIError.CreateResRecFmt(@RsRTTIValueOutOfRange,
+    raise EJclRTTIError.CreateResFmt(@RsRTTIValueOutOfRange,
       [IntToStr(EnumMax - EnumMin) + ' ' + LoadResString(@RsRTTIBits)]);
   BitShift := EnumMin mod 8;
   Move(SetVar, TmpInt64, ResBytes + 1);
@@ -2493,7 +2493,7 @@ begin
   if (AnObj = nil) or (AnObj is AClass) then
     Result := AnObj
   else
-    raise EInvalidCast.Create(SInvalidCast);
+    raise EInvalidCast.CreateRes(@SInvalidCast);
 end;
 
 initialization
@@ -2506,6 +2506,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.20  2005/03/06 18:15:02  marquardt
 // JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
 //

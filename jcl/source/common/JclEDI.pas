@@ -647,7 +647,7 @@ begin
   if IndexIsValid(Index) then
     FEDIDataObjects.Delete(Index)
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
 end;
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
@@ -670,7 +670,7 @@ begin
     end;
   end
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError011, [IntToStr(Index)]);
 end;
 
 destructor TEDIDataObjectGroup.Destroy;
@@ -687,15 +687,15 @@ begin
       if Index <= FEDIDataObjects.Count - 1 then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+          raise EJclEDIError.CreateResFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
         Result := FEDIDataObjects[Index];
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
@@ -771,11 +771,11 @@ begin
           FEDIDataObjects[Index].Parent := Self;
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
@@ -1422,12 +1422,12 @@ function TEDILoopStack.Debug: string;
 var
   I: Integer;
 begin
-  Result := 'Loop Stack' + #13#10;
+  Result := 'Loop Stack' + AnsiLineBreak;
   for I := 0 to High(FStack) do
     Result := Result + FStack[I].SegmentId + ', ' +
       FStack[I].OwnerLoopId + ', ' +
       FStack[I].ParentLoopId + ', ' +
-      IntToStr(FStack[I].SpecStartIndex) + #13#10;
+      IntToStr(FStack[I].SpecStartIndex) + AnsiLineBreak;
 end;
 
 procedure TEDILoopStack.DoAddLoop(StackRecord: TEDILoopStackRecord;
@@ -1452,7 +1452,7 @@ begin
       Result := Low(FStack);
   end
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError057, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError057, [IntToStr(Index)]);
 end;
 
 function TEDILoopStack.GetSize: Integer;
@@ -1472,11 +1472,11 @@ begin
       if Index <= High(FStack) then
         Result := FStack[Index]
       else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError054, [IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@RsEDIError054, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError055, [IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@RsEDIError055, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError056, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError056, [IntToStr(Index)]);
 end;
 
 procedure TEDILoopStack.Pop(Index: Integer);

@@ -191,11 +191,13 @@ const
   FixedPrecision = 18;
   MaxFloatPrecision = 18;
   // Mostly used for error reporting
-  AllowedFloatTypes: TDelphiSet = [vtExtended, vtCurrency{$IFDEF FORMAT_EXTENSIONS}, vtVariant{$ENDIF}];
-  AllowedIntegerTypes: TDelphiSet = [vtInteger, vtInt64{$IFDEF FORMAT_EXTENSIONS}, vtVariant{$ENDIF}];
-  AllowedStarTypes: TDelphiSet = [vtInteger{$IFDEF FORMAT_EXTENSIONS}, vtInt64, vtVariant{$ENDIF}];
-  AllowedPointerTypes: TDelphiSet = [vtPointer{$IFDEF FORMAT_EXTENSIONS}, vtInterface, vtObject, vtPChar, vtPWideChar{$ENDIF}];
-  AllowedStringTypes: TDelphiSet = [vtChar, vtWideChar, vtString, vtPChar, vtPWideChar, vtVariant, vtAnsiString, vtWideString{$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}];
+  AllowedFloatTypes: TDelphiSet = [vtExtended, vtCurrency {$IFDEF FORMAT_EXTENSIONS}, vtVariant {$ENDIF}];
+  AllowedIntegerTypes: TDelphiSet = [vtInteger, vtInt64 {$IFDEF FORMAT_EXTENSIONS}, vtVariant {$ENDIF}];
+  AllowedStarTypes: TDelphiSet = [vtInteger {$IFDEF FORMAT_EXTENSIONS}, vtInt64, vtVariant {$ENDIF}];
+  AllowedPointerTypes: TDelphiSet = [vtPointer
+    {$IFDEF FORMAT_EXTENSIONS}, vtInterface, vtObject, vtPChar, vtPWideChar {$ENDIF}];
+  AllowedStringTypes: TDelphiSet = [vtChar, vtWideChar, vtString, vtPChar, vtPWideChar,
+    vtVariant, vtAnsiString, vtWideString {$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass {$ENDIF}];
 var
   // Basic parsing values
   State: TState; // Maintain the finite-state machine
@@ -781,6 +783,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/08 08:33:23  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.6  2005/03/01 00:55:50  ahuser
 // Delphi 2005 compiler bug workaround
 //

@@ -344,13 +344,13 @@ var
 
 procedure OutOfResources;
 begin
-  raise EOutOfResources.Create(SOutOfResources);
+  raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
 procedure GDIError;
 var
   ErrorCode: Integer;
-  Buf: array [Byte] of Char;
+  Buf: array [0..255] of Char;
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
@@ -1529,7 +1529,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1595,7 +1595,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1782,7 +1782,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1838,7 +1838,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1885,7 +1885,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 

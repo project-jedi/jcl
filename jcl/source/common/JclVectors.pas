@@ -542,7 +542,7 @@ end;
 procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   System.Move(FItems[Index], FItems[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(FItems);
@@ -566,7 +566,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -730,7 +730,7 @@ end;
 function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   Result := FItems[Index];
   FItems[Index] := nil;
   System.Move(FItems[Index + 1], FItems[Index],
@@ -782,7 +782,7 @@ end;
 procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   FItems[Index] := AInterface;
 end;
 
@@ -834,7 +834,7 @@ end;
 procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   System.Move(FItems[Index], FItems[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(FItems);
   FItems[Index] := AString;
@@ -870,7 +870,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1046,7 +1046,7 @@ end;
 function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   Result := FItems[Index];
   FItems[Index] := '';
   System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(string));
@@ -1080,7 +1080,7 @@ end;
 procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   FItems[Index] := AString;
 end;
 
@@ -1126,7 +1126,7 @@ end;
 procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   System.Move(FItems[Index], FItems[Index - 1],
     (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(FItems);
@@ -1150,7 +1150,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1340,7 +1340,7 @@ end;
 function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   Result := FItems[Index];
   FreeObject(FItems[Index]);
   System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(TObject));
@@ -1374,7 +1374,7 @@ end;
 procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   FItems[Index] := AObject;
 end;
 
@@ -1407,6 +1407,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/03/08 08:33:18  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.7  2005/03/03 08:02:57  marquardt
 // various style cleanings, bugfixes and improvements
 //

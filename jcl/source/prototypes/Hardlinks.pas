@@ -201,15 +201,15 @@ uses
 {$IFNDEF PREFERAPI}
 // We prefer the homegrown version - use the static version
 function CreateHardLinkW(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-  {$IFDEF STDCALL}stdcall;{$ENDIF} // Makes the actual call STDCALL
+  {$IFDEF STDCALL} stdcall; {$ENDIF} // Makes the actual call STDCALL
 function CreateHardLinkA(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-  {$IFDEF STDCALL}stdcall;{$ENDIF} // Makes the actual call STDCALL
+  {$IFDEF STDCALL} stdcall; {$ENDIF} // Makes the actual call STDCALL
 {$ELSE PREFERAPI}
 // Well, we did not decide yet ;) - bind to either address, depending on whether
 // the API could be found.
 type
-  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;{$IFDEF STDCALL} stdcall;{$ENDIF}
-  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;{$IFDEF STDCALL} stdcall;{$ENDIF}
+  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL; {$IFDEF STDCALL} stdcall; {$ENDIF}
+  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL; {$IFDEF STDCALL} stdcall; {$ENDIF}
 var
   CreateHardLinkW: TFNCreateHardLinkW = nil;
   CreateHardLinkA: TFNCreateHardLinkA = nil;
@@ -824,7 +824,7 @@ var
 {$ENDIF PREFERAPI}
 
 initialization
-{$IFDEF PREFERAPI}
+  {$IFDEF PREFERAPI}
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -835,9 +835,9 @@ initialization
   // If they could not be retrieved resort to our home-grown version
   if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then
   begin
-{$ENDIF}
+  {$ENDIF PREFERAPI}
 
-{$IFDEF RTDL}
+  {$IFDEF RTDL}
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -874,13 +874,13 @@ initialization
       Assigned(@RtlDetermineDosPathNameType_U) and
       Assigned(@RtlNtStatusToDosError);
   end;
-{$ENDIF RTDL}
+  {$ENDIF RTDL}
 
-{$IFDEF PREFERAPI}
+  {$IFDEF PREFERAPI}
     @CreateHardLinkA := @MyCreateHardLinkA;
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
-{$ENDIF PREFERAPI}
+  {$ENDIF PREFERAPI}
 
 {$IFNDEF JCL}
 //--------------------------------------------------------------------------------------------------
@@ -890,6 +890,9 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.12  2005/03/08 08:33:18  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.11  2005/03/06 11:03:29  assarbad
 // - Changed prototype of RtlDosPathNameToNtPathName_U()
 //

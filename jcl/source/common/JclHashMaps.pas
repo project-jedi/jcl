@@ -1159,7 +1159,7 @@ begin
         Exit;
       end;
   end;
-  raise EJclError.CreateFmt(RsEValueNotFound, [Value]);
+  raise EJclError.CreateResFmt(@RsEValueNotFound, [Value]);
 end;
 
 function TJclStrStrHashMap.KeySet: IJclStrSet;
@@ -1984,6 +1984,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/08 08:33:16  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.3  2005/02/27 11:36:20  marquardt
 // fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
 //

@@ -672,8 +672,10 @@ resourcestring
 
 //=== JclClr =================================================================
 resourcestring
-  RsClrCopyright = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  #13#10 +
-    '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  #13#10;
+  RsClrCopyright    = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  sLineBreak +
+    '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  sLineBreak;
+  RsUnknownTableFmt = '%s%s';
+  RsUnknownTable    = 'Unknown table - ';
 
 //=== JclCOM =================================================================
 resourcestring
@@ -1117,7 +1119,7 @@ resourcestring
   RsCreateProcSetStationSecurityError = 'Cannot set WindowStation "%s" security.';
   RsCreateProcSetDesktopSecurityError = 'Cannot set Desktop "%s" security.';
   RsCreateProcPrivilegesMissing       = 'This account does not have one (or more) of ' +
-    'the following privileges: ' + '"%s"(%s)' + #13 + '"%s"(%s)' + #13;
+    'the following privileges: ' + '"%s"(%s)' + sLineBreak + '"%s"(%s)' + sLineBreak;
   RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
   RsCreateProcFailed                  = 'CreateProcessAsUser failed';
 
@@ -1170,14 +1172,14 @@ resourcestring
 
 //=== JclPCRE ================================================================
 resourcestring
-  SErrNoMatch      = 'No match';
-  SErrNull         = 'Required value is null';
-  SErrBadOption    = 'Bad option';
-  SErrBadMagic     = 'Bad magic';
-  SErrUnknownNode  = 'Unknown node';
-  SErrNoMemory     = 'Out of memory';
-  SErrNoSubString  = 'No substring';
-  SErrLibNotLoaded = 'PCRE library not loaded';
+  RsErrNoMatch      = 'No match';
+  RsErrNull         = 'Required value is null';
+  RsErrBadOption    = 'Bad option';
+  RsErrBadMagic     = 'Bad magic';
+  RsErrUnknownNode  = 'Unknown node';
+  RsErrNoMemory     = 'Out of memory';
+  RsErrNoSubString  = 'No substring';
+  RsErrLibNotLoaded = 'PCRE library not loaded';
 
 //=== JclPeImage =============================================================
 resourcestring
@@ -1451,6 +1453,10 @@ resourcestring
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
 
+//=== JclStructStorage =======================================================
+resourcestring
+  RsIStreamNil = 'IStream is nil';
+
 //=== JclSynch ===============================================================
 resourcestring
   RsSynchAttachWin32Handle    = 'Invalid handle to TJclWin32HandleObject.Attach';
@@ -1574,14 +1580,18 @@ resourcestring
 
 //=== JclUnicode =============================================================
 resourcestring
-  RsUREBaseString          = 'Error in regular expression: %s' + #13;
-  RsUREUnexpectedEOS       = 'Unexpected end of pattern.';
-  RsURECharacterClassOpen  = 'Character class not closed, '']'' is missing.';
-  RsUREUnbalancedGroup     = 'Unbalanced group expression, '')'' is missing.';
-  RsUREInvalidCharProperty = 'A character property is invalid';
-  RsUREInvalidRepeatRange  = 'Invalid repetition range.';
-  RsURERepeatRangeOpen     = 'Repetition range not closed, ''}'' is missing.';
-  RsUREExpressionEmpty     = 'Expression is empty.';
+  RsUREErrorFmt               = '%s%s%s';
+  RsUREBaseString             = 'Error in regular expression: %s' + sLineBreak;
+  RsUREUnexpectedEOS          = 'Unexpected end of pattern.';
+  RsURECharacterClassOpen     = 'Character class not closed, '']'' is missing.';
+  RsUREUnbalancedGroup        = 'Unbalanced group expression, '')'' is missing.';
+  RsUREInvalidCharProperty    = 'A character property is invalid';
+  RsUREInvalidRepeatRange     = 'Invalid repetition range.';
+  RsURERepeatRangeOpen        = 'Repetition range not closed, ''}'' is missing.';
+  RsUREExpressionEmpty        = 'Expression is empty.';
+  RsCasedUnicodeChar          = 'cased Unicode character > $FFFF found';
+  RsDecomposedUnicodeChar     = 'decomposed Unicode character > $FFFF found';
+  RsCombiningClassUnicodeChar = 'combining class for Unicode character > $FFFF found';
 
 //=== JclUnitConv ============================================================
 resourcestring
@@ -1626,6 +1636,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.31  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.30  2005/03/07 17:27:57  marquardt
 // reworked for resorucestrings
 //

@@ -345,7 +345,7 @@ begin
   FEvent := nil;
   FillChar(FTimeCaps, SizeOf(FTimeCaps), #0);
   if timeGetDevCaps(@FTimeCaps, SizeOf(FTimeCaps)) = TIMERR_STRUCT then
-    raise EJclMmTimerError.CreateResRec(@RsMmTimerGetCaps);
+    raise EJclMmTimerError.CreateRes(@RsMmTimerGetCaps);
   FPeriod := FTimeCaps.wPeriodMin;
   if Notification <> nkCallback then
     FEvent := TJclEvent.Create(nil, Notification = nkSetEvent, False, '');
@@ -375,7 +375,7 @@ var
   TimerCallback: TFNTimeCallBack;
 begin
   if FTimerId <> 0 then
-    raise EJclMmTimerError.CreateResRec(@RsMmTimerActive);
+    raise EJclMmTimerError.CreateRes(@RsMmTimerActive);
   Event := 0;
   TimerCallback := nil;
   case FKind of
@@ -405,7 +405,7 @@ begin
   if timeBeginPeriod(FPeriod) = TIMERR_NOERROR then
     FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack, DWORD(Self), Event);
   if FTimerId = 0 then
-    raise EJclMmTimerError.CreateResRec(@RsMmSetEvent);
+    raise EJclMmTimerError.CreateRes(@RsMmSetEvent);
 end;
 
 function TJclMultimediaTimer.Elapsed(const Update: Boolean): Cardinal;
@@ -462,7 +462,7 @@ end;
 procedure TJclMultimediaTimer.SetPeriod(Value: Cardinal);
 begin
   if FTimerId <> 0 then
-    raise EJclMmTimerError.CreateResRec(@RsMmTimerActive);
+    raise EJclMmTimerError.CreateRes(@RsMmTimerActive);
   FPeriod := Value;
 end;
 
@@ -474,7 +474,7 @@ procedure TJclMultimediaTimer.Timer(Id: Cardinal);
 begin
   { TODO : A exception in the callbacl i very likely very critically }
   if Id <> FTimerId then
-    raise EJclMmTimerError.CreateResRec(@RsMmInconsistentId);
+    raise EJclMmTimerError.CreateRes(@RsMmInconsistentId);
   if Assigned(FOnTimer) then
     FOnTimer(Self);
 end;
@@ -1031,7 +1031,7 @@ begin
   if LineControl <> nil then
     LineControl.UniformValue := Value
   else
-    raise EJclMixerError.CreateResRecFmt(@RsMmMixerCtlNotFound,
+    raise EJclMixerError.CreateResFmt(@RsMmMixerCtlNotFound,
       [TJclMixerLine.ComponentTypeToString(ComponentType), ControlType]);
 end;
 
@@ -1075,7 +1075,7 @@ end;
 function TJclMixer.GetFirstDevice: TJclMixerDevice;
 begin
   if DeviceCount = 0 then
-    raise EJclMixerError.CreateResRec(@RsMmMixerNoDevices);
+    raise EJclMixerError.CreateRes(@RsMmMixerNoDevices);
   Result := Devices[0];
 end;
 
@@ -1141,7 +1141,7 @@ constructor EJclMciError.Create(MciErrNo: MCIERROR; const Msg: string);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(Msg + #13 + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(Msg + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
@@ -1149,14 +1149,14 @@ constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited CreateFmt(Msg + #13 + RsMmMciErrorPrefix + FMciErrorMsg, Args);
+  inherited CreateFmt(Msg + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg, Args);
 end;
 
 constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(LoadStr(Ident)+ #13 + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(LoadStr(Ident)+ AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
@@ -1210,7 +1210,7 @@ const
 var
   Mci: TMCI_Open_Parms;
 begin
-  MMCheck(OpenCdMciDevice(Mci, Drive), RsMmNoCdAudio);
+  MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
     MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, OpenCmd[OpenMode], 0));
   finally
@@ -1223,7 +1223,7 @@ var
   Mci: TMCI_Open_Parms;
   StatusParams: TMCI_Status_Parms;
 begin
-  MMCheck(OpenCdMciDevice(Mci, Drive), RsMmNoCdAudio);
+  MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
     FillChar(StatusParams, SizeOf(StatusParams), 0);
     StatusParams.dwItem := MCI_STATUS_MEDIA_PRESENT;
@@ -1244,7 +1244,7 @@ var
   Buffer: array [0..255] of Char;
 begin
   Result := '';
-  MMCheck(OpenCdMciDevice(Mci, Drive), RsMmNoCdAudio);
+  MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
     InfoParams.dwCallback := 0;
     InfoParams.lpstrReturn := Buffer;
@@ -1277,7 +1277,7 @@ var
   end;
 
 begin
-  MMCheck(OpenCdMciDevice(Mci, Drive), RsMmNoCdAudio);
+  MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
     FillChar(SetParams, SizeOf(SetParams), 0);
     SetParams.dwTimeFormat := MCI_FORMAT_MSF;
@@ -1345,6 +1345,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.16  2005/02/25 07:20:16  marquardt
 // add section lines
 //

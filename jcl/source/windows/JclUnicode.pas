@@ -153,7 +153,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes;
+  Classes,
+  JclBase;
 
 {$IFNDEF FPC}
  {$IFDEF MSWINDOWS}
@@ -1010,6 +1011,9 @@ var
 
 {$ENDIF SUPPORTS_WIDESTRING}
 
+type
+  EJclUnicodeError = class(EJclError);
+
 implementation
 
 {$IFDEF SUPPORTS_WIDESTRING}
@@ -1032,7 +1036,7 @@ uses
   {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils,
-  JclBase, JclResources, JclSynch;
+  JclResources, JclSynch;
 
 const
   {$IFDEF FPC} // declarations from unit [Rtl]Consts
@@ -1198,7 +1202,7 @@ begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
 
-          Assert(Code < $10000, 'cased Unicode character > $FFFF found');
+          Assert(Code < $10000, LoadResString(@RsCasedUnicodeChar));
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 8) and $FF;
           Second := Code and $FF;
@@ -1342,7 +1346,7 @@ begin
         begin
           Stream.ReadBuffer(Code, 4);
 
-          Assert((Code and not $40000000) < $10000, 'decomposed Unicode character > $FFFF found');
+          Assert((Code and not $40000000) < $10000, LoadResString(@RsDecomposedUnicodeChar));
 
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 8) and $FF;
@@ -1488,7 +1492,7 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
-                Assert(K < $10000, 'combining class for Unicode character > $FFFF found');
+                Assert(K < $10000, LoadResString(@RsCombiningClassUnicodeChar));
                 
                 First := (K shr 8) and $FF;
                 Second := K and $FF;
@@ -3777,6 +3781,15 @@ var
   State: Cardinal;
   Run: PUcState;
   TP: Integer;
+
+  procedure UREError(Text: string; RE: PWideChar);
+  var
+    S: string;
+  begin
+    S := RE;
+    raise EJclUnicodeError.CreateResFmt(@RsUREErrorFmt, [LoadResString(@RsUREBaseString), Text, S]);
+  end;
+
 begin
   // be paranoid
   if (RE <> nil) and (RE^ <> WideNull) and (RELength > 0) then
@@ -3857,20 +3870,20 @@ begin
       // there might be an error while parsing the pattern, show it if so
       case FUREBuffer.Error of
         _URE_UNEXPECTED_EOS:
-          raise Exception.CreateFmt(RsUREBaseString + RsUREUnexpectedEOS, [RE]);
+          UREError(LoadResString(@RsUREUnexpectedEOS), RE);
         _URE_CCLASS_OPEN:
-          raise Exception.CreateFmt(RsUREBaseString + RsURECharacterClassOpen, [RE]);
+          UREError(LoadResString(@RsURECharacterClassOpen), RE);
         _URE_UNBALANCED_GROUP:
-          raise Exception.CreateFmt(RsUREBaseString + RsUREUnbalancedGroup, [RE]);
+          UREError(LoadResString(@RsUREUnbalancedGroup), RE);
         _URE_INVALID_PROPERTY:
-          raise Exception.CreateFmt(RsUREBaseString + RsUREInvalidCharProperty, [RE]);
+          UREError(LoadResString(@RsUREInvalidCharProperty), RE);
         _URE_INVALID_RANGE:
-          raise Exception.CreateFmt(RsUREBaseString + RsUREInvalidRepeatRange, [RE]);
+          UREError(LoadResString(@RsUREInvalidRepeatRange), RE);
         _URE_RANGE_OPEN:
-          raise Exception.CreateFmt(RsUREBaseString + RsURERepeatRangeOpen, [RE]);
+          UREError(LoadResString(@RsURERepeatRangeOpen), RE);
       else
         // expression was empty
-        raise Exception.Create(RsUREExpressionEmpty);
+        raise EJclUnicodeError.CreateRes(@RsUREExpressionEmpty);
       end;
     end;
   end;
@@ -7165,6 +7178,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2005/03/08 08:33:23  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.21  2005/03/01 15:37:40  marquardt
 // addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
 //

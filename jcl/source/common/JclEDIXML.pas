@@ -697,7 +697,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError047);
+      raise EJclEDIError.CreateRes(@EDIXMLError047);
   end;
 
   OriginalData := FData;
@@ -736,7 +736,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError046);
+      raise EJclEDIError.CreateRes(@EDIXMLError046);
   end;
   // Set next start positon
   StartPos := 1;
@@ -749,7 +749,7 @@ begin
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError048);
+    raise EJclEDIError.CreateRes(@EDIXMLError048);
   // Set data start positon
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Check for CData tag
@@ -773,10 +773,10 @@ begin
       FData := Copy(FData, StartPos, (EndPos - StartPos));
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError050);
+      raise EJclEDIError.CreateRes(@EDIXMLError050);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError049);
+    raise EJclEDIError.CreateRes(@EDIXMLError049);
   // Handle Entity Reference Characters
   StrReplace(FData, EDIXML_HTMLLessThanSign, EDIXML_LessThanSign, [rfReplaceAll]);
   StrReplace(FData, EDIXML_HTMLGreaterThanSign, EDIXML_GreaterThanSign, [rfReplaceAll]);
@@ -896,7 +896,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError042);
+      raise EJclEDIError.CreateRes(@EDIXMLError042);
   end;
 
   AttributeString := FAttributes.CombineAttributes;
@@ -946,7 +946,7 @@ begin
     SetLength(FElements, High(FElements));
   end
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError058, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError058, [IntToStr(Index)]);
 end;
 
 procedure TEDIXMLSegment.DeleteElements;
@@ -979,7 +979,7 @@ begin
     SetLength(FElements, Length(FElements) - Count);
   end
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError058, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError058, [IntToStr(Index)]);
 end;
 
 procedure TEDIXMLSegment.Disassemble;
@@ -993,7 +993,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError041);
+      raise EJclEDIError.CreateRes(@EDIXMLError041);
   end;
   // Set next start positon
   StartPos := 1;
@@ -1007,7 +1007,7 @@ begin
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError043);
+    raise EJclEDIError.CreateRes(@EDIXMLError043);
   // Set next start positon
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Search for element
@@ -1027,10 +1027,10 @@ begin
         FElements[I].Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError050);
+        raise EJclEDIError.CreateRes(@EDIXMLError050);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError049);
+      raise EJclEDIError.CreateRes(@EDIXMLError049);
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for element
@@ -1048,15 +1048,15 @@ begin
       if Index <= High(FElements) then
       begin
         if not Assigned(FElements[Index]) then
-          raise EJclEDIError.CreateResRecFmt(@EDIXMLError057, [IntToStr(Index)]);
+          raise EJclEDIError.CreateResFmt(@EDIXMLError057, [IntToStr(Index)]);
         Result := FElements[Index];
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@EDIXMLError056, [IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@EDIXMLError056, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError055, [IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@EDIXMLError055, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError054, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError054, [IntToStr(Index)]);
 end;
 
 function TEDIXMLSegment.GetIndexPositionFromParent: Integer;
@@ -1225,11 +1225,11 @@ begin
         FElements[Index] := Element;
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@EDIXMLError053, [IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@EDIXMLError053, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError052, [IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@EDIXMLError052, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError051, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError051, [IntToStr(Index)]);
 end;
 
 //=== { TEDIXMLTransactionSetSegment } =======================================
@@ -1374,7 +1374,7 @@ begin
     SetLength(FEDIDataObjects, High(FEDIDataObjects));
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError040);
+    raise EJclEDIError.CreateRes(@EDIXMLError040);
 end;
 
 procedure TEDIXMLDataObjectGroup.DeleteEDIDataObjects;
@@ -1394,15 +1394,15 @@ begin
       if Index <= High(FEDIDataObjects) then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateResRecFmt(@EDIXMLError039, [IntToStr(Index)]);
+          raise EJclEDIError.CreateResFmt(@EDIXMLError039, [IntToStr(Index)]);
         Result := FEDIDataObjects[Index];
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@EDIXMLError038, [IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@EDIXMLError038, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError037, [IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@EDIXMLError037, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError036, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError036, [IntToStr(Index)]);
 end;
 
 function TEDIXMLDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
@@ -1485,11 +1485,11 @@ begin
         FEDIDataObjects[Index] := EDIDataObject;
       end
       else
-        raise EJclEDIError.CreateResRecFmt(@EDIXMLError035, [IntToStr(Index)])
+        raise EJclEDIError.CreateResFmt(@EDIXMLError035, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError034, [IntToStr(Index)])
+      raise EJclEDIError.CreateResFmt(@EDIXMLError034, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResRecFmt(@EDIXMLError033, [IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@EDIXMLError033, [IntToStr(Index)]);
 end;
 
 //=== { TEDIXMLTransactionSetLoop } ==========================================
@@ -1525,7 +1525,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError030);
+      raise EJclEDIError.CreateRes(@EDIXMLError030);
   end;
 
   AttributeString := FAttributes.CombineAttributes;
@@ -1560,7 +1560,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError029);
+      raise EJclEDIError.CreateRes(@EDIXMLError029);
   end;
   // Set next start positon
   StartPos := 1;
@@ -1574,7 +1574,7 @@ begin
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError031);
+    raise EJclEDIError.CreateRes(@EDIXMLError031);
   // Set next start positon
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Determine the nearest tag to search for
@@ -1607,10 +1607,10 @@ begin
           EDIDataObjects[I].Disassemble;
         end
         else
-          raise EJclEDIError.CreateResRec(@EDIXMLError045);
+          raise EJclEDIError.CreateRes(@EDIXMLError045);
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError044);
+        raise EJclEDIError.CreateRes(@EDIXMLError044);
     end
     else
     begin
@@ -1645,10 +1645,10 @@ begin
           EDIDataObjects[I].Disassemble;
         end
         else
-          raise EJclEDIError.CreateResRec(@EDIXMLError032);
+          raise EJclEDIError.CreateRes(@EDIXMLError032);
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError031);
+        raise EJclEDIError.CreateRes(@EDIXMLError031);
     end;
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
@@ -1706,7 +1706,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError026);
+      raise EJclEDIError.CreateRes(@EDIXMLError026);
   end;
 
   AttributeString := FAttributes.CombineAttributes;
@@ -1741,7 +1741,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError025);
+      raise EJclEDIError.CreateRes(@EDIXMLError025);
   end;
   // Set next start positon
   StartPos := 1;
@@ -1771,10 +1771,10 @@ begin
           EDIDataObjects[I].Disassemble;
         end
         else
-          raise EJclEDIError.CreateResRec(@EDIXMLError045);
+          raise EJclEDIError.CreateRes(@EDIXMLError045);
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError044);
+        raise EJclEDIError.CreateRes(@EDIXMLError044);
     end
     else
     begin
@@ -1809,10 +1809,10 @@ begin
           EDIDataObjects[I].Disassemble;
         end
         else
-          raise EJclEDIError.CreateResRec(@EDIXMLError032);
+          raise EJclEDIError.CreateRes(@EDIXMLError032);
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError031);
+        raise EJclEDIError.CreateRes(@EDIXMLError031);
     end;
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
@@ -1846,7 +1846,7 @@ begin
     else
     begin
       FSTSegment := nil;
-      raise EJclEDIError.CreateResRec(@EDIXMLError059);
+      raise EJclEDIError.CreateRes(@EDIXMLError059);
     end;
 
     if FSESegment.Attributes.GetAttributeValue(XMLAttribute_Id) = XMLTag_TSTSegmentId then
@@ -1863,14 +1863,14 @@ begin
     else
     begin
       FSESegment := nil;
-      raise EJclEDIError.CreateResRec(@EDIXMLError060);
+      raise EJclEDIError.CreateRes(@EDIXMLError060);
     end;
   end
   else
   begin
     FSTSegment := nil;
     FSESegment := nil;
-    raise EJclEDIError.CreateResRec(@EDIXMLError061);
+    raise EJclEDIError.CreateRes(@EDIXMLError061);
   end;
   FData := '';
   //
@@ -1920,7 +1920,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError016);
+      raise EJclEDIError.CreateRes(@EDIXMLError016);
   end;
 
   AttributeString := FAttributes.CombineAttributes;
@@ -1953,7 +1953,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError015);
+      raise EJclEDIError.CreateRes(@EDIXMLError015);
   end;
   // Search for Functional Group Header
   StartPos := 1;
@@ -1974,13 +1974,13 @@ begin
         FGSSegment.Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError021);
+        raise EJclEDIError.CreateRes(@EDIXMLError021);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError020);
+      raise EJclEDIError.CreateRes(@EDIXMLError020);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError019);
+    raise EJclEDIError.CreateRes(@EDIXMLError019);
   // Set next start positon
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Search for Transaction Set
@@ -2000,10 +2000,10 @@ begin
         EDIDataObjects[I].Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError028);
+        raise EJclEDIError.CreateRes(@EDIXMLError028);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError027);
+      raise EJclEDIError.CreateRes(@EDIXMLError027);
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Transaction Set
@@ -2027,13 +2027,13 @@ begin
         FGESegment.Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError024);
+        raise EJclEDIError.CreateRes(@EDIXMLError024);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError023);
+      raise EJclEDIError.CreateRes(@EDIXMLError023);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError022);
+    raise EJclEDIError.CreateRes(@EDIXMLError022);
   FData := '';
   //
   FState := ediDisassembled;
@@ -2080,7 +2080,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError005);
+      raise EJclEDIError.CreateRes(@EDIXMLError005);
   end;
 
   AttributeString := FAttributes.CombineAttributes;
@@ -2113,7 +2113,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError006);
+      raise EJclEDIError.CreateRes(@EDIXMLError006);
   end;
   // Search for Interchange Control Header
   StartPos := 1;
@@ -2134,13 +2134,13 @@ begin
         FISASegment.Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError011);
+        raise EJclEDIError.CreateRes(@EDIXMLError011);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError010);
+      raise EJclEDIError.CreateRes(@EDIXMLError010);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError009);
+    raise EJclEDIError.CreateRes(@EDIXMLError009);
   // Set next start position. Move past the delimiter
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Search for Functional Group
@@ -2160,10 +2160,10 @@ begin
         EDIDataObjects[I].Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError018);
+        raise EJclEDIError.CreateRes(@EDIXMLError018);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError017);
+      raise EJclEDIError.CreateRes(@EDIXMLError017);
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Functional Group
@@ -2187,13 +2187,13 @@ begin
         FIEASegment.Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError014);
+        raise EJclEDIError.CreateRes(@EDIXMLError014);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError013);
+      raise EJclEDIError.CreateRes(@EDIXMLError013);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError012);
+    raise EJclEDIError.CreateRes(@EDIXMLError012);
   FData := '';
   //
   FState := ediDisassembled;
@@ -2237,7 +2237,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError004);
+      raise EJclEDIError.CreateRes(@EDIXMLError004);
   end;
 
   FData := FEDIXMLFileHeader.OutputXMLHeader;
@@ -2273,7 +2273,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      raise EJclEDIError.CreateResRec(@EDIXMLError003);
+      raise EJclEDIError.CreateRes(@EDIXMLError003);
   end;
   // Search for XML file heaer
   StartPos := 1;
@@ -2318,10 +2318,10 @@ begin
         FEDIDataObjects[I].Disassemble;
       end
       else
-        raise EJclEDIError.CreateResRec(@EDIXMLError008);
+        raise EJclEDIError.CreateRes(@EDIXMLError008);
     end
     else
-      raise EJclEDIError.CreateResRec(@EDIXMLError007);
+      raise EJclEDIError.CreateRes(@EDIXMLError007);
     // Set next start position. Move past the delimiter
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Interchange
@@ -2359,7 +2359,7 @@ begin
     FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError001);
+    raise EJclEDIError.CreateRes(@EDIXMLError001);
 end;
 
 procedure TEDIXMLFile.LoadFromFile(const FileName: string);
@@ -2388,7 +2388,7 @@ begin
     end;
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError002);
+    raise EJclEDIError.CreateRes(@EDIXMLError002);
 end;
 
 procedure TEDIXMLFile.SaveToFile;
@@ -2405,7 +2405,7 @@ begin
     end;
   end
   else
-    raise EJclEDIError.CreateResRec(@EDIXMLError002);
+    raise EJclEDIError.CreateRes(@EDIXMLError002);
 end;
 
 //=== { TEDIXMLFileHeader } ==================================================
@@ -2537,7 +2537,7 @@ begin
       ConvertTransactionSetLoopToEDI(Result, XMLLoop);
     end
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError062, [XMLTransactionSet[I].ClassName]);
+      raise EJclEDIError.CreateResFmt(@EDIXMLError062, [XMLTransactionSet[I].ClassName]);
   end;
 end;
 
@@ -2634,7 +2634,7 @@ begin
       ConvertTransactionSetLoopToEDI(EDITransactionSet, nXMLLoop);
     end
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError062, [XMLLoop[I].ClassName]);
+      raise EJclEDIError.CreateResFmt(@EDIXMLError062, [XMLLoop[I].ClassName]);
   end;
 end;
 
@@ -2665,7 +2665,7 @@ begin
       ConvertTransactionSetLoopToXML(nEDILoop, nXMLLoop);
     end
     else
-      raise EJclEDIError.CreateResRecFmt(@EDIXMLError062, [EDILoop[I].ClassName]);
+      raise EJclEDIError.CreateResFmt(@EDIXMLError062, [EDILoop[I].ClassName]);
   end;
 end;
 

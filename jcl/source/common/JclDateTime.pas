@@ -281,7 +281,7 @@ end;
 procedure ResultCheck(Val: LongBool);
 begin
   if not Val then
-    raise EJclDateTimeError.Create(RsDateConversion);
+    raise EJclDateTimeError.CreateRes(@RsDateConversion);
 end;
 
 function CenturyBaseYear(const DateTime: TDateTime): Integer;
@@ -605,7 +605,6 @@ end;
 // Conversion
 
 {$IFDEF MSWINDOWS}
-
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
   TimeZoneInfo: TTimeZoneInformation;
@@ -617,27 +616,25 @@ begin
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime - (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
   else
-    raise EJclDateTimeError.Create(RsMakeUTCTime);
+    raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
-
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
-  timenow: time_t;
-  local, UTCTime: TUnixTime;
-  offset: double;
-
+  TimeNow: time_t;
+  Local, UTCTime: TUnixTime;
+  Offset: Double;
 begin
-  timenow := __time(nil);
-  UTCTime := gmtime(@timenow)^;
-  local   := localtime(@timenow)^;
-  offset  := difftime(mktime(UTCTime), mktime(local));
-  result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
+  TimeNow := __time(nil);
+  UTCTime := gmtime(@TimeNow)^;
+  Local   := localtime(@TimeNow)^;
+  Offset  := difftime(mktime(UTCTime), mktime(Local));
+  Result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
 end;
-{$ENDIF}
+{$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
@@ -651,28 +648,25 @@ begin
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime + (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
   else
-    raise EJclDateTimeError.Create(RsMakeUTCTime);
+    raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
-
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
-  timenow: time_t;
-  local, UTCTime: TUnixTime;
-  offset: double;
-
+  TimeNow: time_t;
+  Local, UTCTime: TUnixTime;
+  Offset: Double;
 begin
-  timenow := __time(nil);
-  UTCTime := gmtime(@timenow)^;
-  local   := localtime(@timenow)^;
-  offset  := difftime(mktime(UTCTime), mktime(local));
-  result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
+  TimeNow := __time(nil);
+  UTCTime := gmtime(@TimeNow)^;
+  Local   := localtime(@TimeNow)^;
+  Offset  := difftime(mktime(UTCTime), mktime(Local));
+  Result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
 end;
-{$ENDIF}
-
+{$ENDIF UNIX}
 
 function HoursToMSecs(Hours: Integer): Integer;
 begin
@@ -1120,6 +1114,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2005/03/08 08:33:16  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.18  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //

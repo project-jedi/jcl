@@ -502,7 +502,7 @@ begin
   { TODO -cTest : D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if not Assigned(Stream) then
-    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
+    raise EInvalidParam.CreateRes(@RsComInvalidParam);
 
   if Stream.Size > 0 then
   begin
@@ -540,7 +540,7 @@ begin
   { TODO -cTest : D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if not Assigned(Stream) then
-    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
+    raise EInvalidParam.CreateRes(@RsComInvalidParam);
 
   iSize := SizeOfIStreamContents(Stream);
   if iSize > 0 then
@@ -555,7 +555,7 @@ begin
 
           if iReadCount <> iSize then
             { Error!  Didn't read all content! }
-            raise EInOutError.Create(RsComFailedStreamRead);
+            raise EInOutError.CreateRes(@RsComFailedStreamRead);
         finally
           VarArrayUnlock(Result);
         end;
@@ -583,7 +583,7 @@ begin
   { TODO -cTest : D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
-    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
+    raise EInvalidParam.CreateRes(@RsComInvalidParam);
 
   { TODO : Should we allow them to write to the Stream, not matter what position it is at? }
   if Assigned(Stream) then
@@ -611,7 +611,7 @@ begin
   { TODO -cTest : D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
-    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
+    raise EInvalidParam.CreateRes(@RsComInvalidParam);
 
   bCreated := False;
 
@@ -635,7 +635,7 @@ begin
         Stream.Write(pLocked, iSize, @iWriteCount);
 
         if iWriteCount <> iSize then
-          raise EInOutError.Create(RsComFailedStreamWrite);
+          raise EInOutError.CreateRes(@RsComFailedStreamWrite);
       finally
         VarArrayUnlock(VarArray);
         ResetIStreamToStart(Stream);
@@ -652,6 +652,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/25 07:20:15  marquardt
 // add section lines
 //
