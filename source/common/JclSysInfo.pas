@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: February 21, 2002                                                                 }
+{ Last modified: February 27, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -129,7 +129,9 @@ type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
-function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
+function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
+function ModuleFromAddr(const Addr: Pointer): HMODULE;
+function IsSystemModule(const Module: HMODULE): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
@@ -1331,16 +1333,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
+function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean): Boolean;
 
   procedure AddToList(ProcessHandle: THandle; Module: HMODULE);
   var
     FileName: array [0..MAX_PATH] of Char;
     ModuleInfo: TModuleInfo;
   begin
-    if (GetModuleFileNameEx(ProcessHandle, Module, Filename, SizeOf(Filename)) > 0) and
-       (GetModuleInformation(ProcessHandle, Module, @ModuleInfo, SizeOf(ModuleInfo))) then
-      List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
+    if GetModuleInformation(ProcessHandle, Module, @ModuleInfo, SizeOf(ModuleInfo)) then
+    begin
+      if HandlesOnly then
+        List.AddObject('', Pointer(ModuleInfo.lpBaseOfDll))
+      else
+      if GetModuleFileNameEx(ProcessHandle, Module, Filename, SizeOf(Filename)) > 0 then
+        List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
+    end;
   end;
 
   function EnumModulesVQ(ProcessHandle: THandle): Boolean;
@@ -1410,7 +1417,10 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
       Next := Module32First(SnapProcHandle, Module);
       while Next do
       begin
-        List.AddObject(Module.szExePath, Pointer(Module.hModule));
+        if HandlesOnly then
+          List.AddObject('', Pointer(Module.hModule))
+        else
+          List.AddObject(Module.szExePath, Pointer(Module.hModule));
         Next := Module32Next(SnapProcHandle, Module);
       end;
     finally
@@ -1423,6 +1433,41 @@ begin
     Result := EnumModulesPS
   else
     Result := EnumModulesTH;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ModuleFromAddr(const Addr: Pointer): HMODULE;
+var
+  MI: TMemoryBasicInformation;
+begin
+  VirtualQuery(Addr, MI, SizeOf(MI));
+  if MI.State <> MEM_COMMIT then
+    Result := 0
+  else
+    Result := HMODULE(MI.AllocationBase);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsSystemModule(const Module: HMODULE): Boolean;
+var
+  CurModule: PLibModule;
+begin
+  Result := False;
+  if Module <> 0 then
+  begin
+    CurModule := LibModuleList;
+    while CurModule <> nil do
+    begin
+      if CurModule.Instance = Module then
+      begin
+        Result := True;
+        Break;
+      end;
+      CurModule := CurModule.Next;
+    end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
