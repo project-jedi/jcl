@@ -20,7 +20,9 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Olivier Sannier (obones)                                                                       }
 {   Petr Vones (pvones)                                                                            }
+{   Rik Barker (rikbarker)                                                                         }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Warren Postma                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -213,6 +215,7 @@ type
     FWin32ExitCode: DWORD;
     FGroup: TJclServiceGroup;
     FControlsAccepted: TJclServiceControlAccepteds;
+    FCommitNeeded:Boolean;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
     function GetDependentService(const Idx: Integer): TJclNtService;
@@ -230,9 +233,12 @@ type
     procedure UpdateDependents;
     procedure UpdateStatus(const SvcStatus: TServiceStatus);
     procedure UpdateConfig(const SvcConfig: TQueryServiceConfig);
+    procedure CommitConfig(var SvcConfig: TQueryServiceConfig);
+    procedure SetStartType( aStartType:TJclServiceStartType );
   public
     destructor Destroy; override;
     procedure Refresh;
+    procedure Commit;
     procedure Delete;
     function Controls(const ControlType: DWORD; const ADesiredAccess: DWORD = DefaultSvcDesiredAccess): TServiceStatus;
     procedure Start(const Args: array of string; const Sync: Boolean = True); overload;
@@ -257,7 +263,7 @@ type
     property DependentByServiceCount: Integer read GetDependentByServiceCount;
     property ServiceTypes: TJclServiceTypes read FServiceTypes;
     property ServiceState: TJclServiceState read FServiceState;
-    property StartType: TJclServiceStartType read FStartType;
+    property StartType: TJclServiceStartType read FStartType write SetStartType;
     property ErrorControlType: TJclServiceErrorControlType read FErrorControlType;
     property Win32ExitCode: DWORD read FWin32ExitCode;
     property Group: TJclServiceGroup read FGroup;
@@ -361,6 +367,10 @@ type
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 
+function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
+function StopServiceByName(const AServer, AServiceName: String):Boolean;
+function StartServiceByName(const AServer,AServiceName: String):Boolean;
+
 implementation
 
 uses
@@ -457,6 +467,16 @@ begin
     else
       Close;
     Assert(Value = GetActive);
+  end;
+end;
+
+
+procedure TJclNtService.SetStartType( aStartType:TJclServiceStartType );
+begin
+  if aStartType <> FStartType then
+  begin
+    FStartType := aStartType;
+    FCommitNeeded := True;
   end;
 end;
 
@@ -559,6 +579,7 @@ begin
   Win32Check(QueryServiceStatus(FHandle, Result));
 end;
 
+
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.UpdateStatus(const SvcStatus: TServiceStatus);
@@ -626,6 +647,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclNtService.CommitConfig(var SvcConfig: TQueryServiceConfig);
+begin
+  with SvcConfig do
+  begin
+    StrCopy( lpBinaryPathName, PChar(FFileName));
+    dwStartType      := Ord(FStartType);    {TJclServiceStartType}
+    dwErrorControl   := Ord(FErrorControlType);  {TJclServiceErrorControlType}
+    //UpdateLoadOrderGroup;
+    //UpdateDependencies;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclNtService.Open(const ADesiredAccess: DWORD);
 begin
   Assert((ADesiredAccess and (not SERVICE_ALL_ACCESS)) = 0);
@@ -673,6 +708,51 @@ begin
     Close;
   end;
 end;
+
+// Commit is reverse of Refresh.
+procedure TJclNtService.Commit;
+var
+  Ret: BOOL;
+  BytesNeeded: DWORD;
+  PQrySvcCnfg: PQueryServiceConfig;
+begin
+ if not FCommitNeeded then exit;
+ FCommitNeeded := false;
+
+  Open(SERVICE_CHANGE_CONFIG or SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
+  try
+    //UpdateDescription;
+    //UpdateStatus(GetServiceStatus);
+    try
+      PQrySvcCnfg := nil;
+      BytesNeeded := 4096;
+      repeat
+        ReallocMem(PQrySvcCnfg, BytesNeeded);
+        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded, BytesNeeded);
+      until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
+      Win32Check(Ret);
+
+      CommitConfig(PQrySvcCnfg^);
+      Win32Check(ChangeServiceConfig( Handle,
+                 PQrySvcCnfg^.dwServiceType,
+                 PQrySvcCnfg^.dwStartType,
+                 PQrySvcCnfg^.dwErrorControl,
+                 nil,{PQrySvcCnfg^.lpBinaryPathName,}
+                 nil,{PQrySvcCnfg^.lpLoadOrderGroup,}
+                 nil,{PQrySvcCnfg^.dwTagId,}
+                 nil,{PQrySvcCnfg^.lpDependencies,}
+                 nil, {PQrySvcCnfg^.lpServiceStartName,}
+                 nil,{password-write only-not readable}
+                 PQrySvcCnfg^.lpDisplayName,
+                 ));
+    finally
+      FreeMem(PQrySvcCnfg);
+    end;
+  finally
+    Close;
+  end;
+end;
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1397,6 +1477,78 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
+var
+  ServiceHandle,
+  SCMHandle: DWORD;
+  SCMAccess,Access:DWORD;
+  ServiceStatus: TServiceStatus;
+begin
+  Result:=ssUnknown;
+
+  SCMAccess:=SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
+  Access:=SERVICE_INTERROGATE or GENERIC_READ;
+
+  SCMHandle:= OpenSCManager(PChar(AServer), Nil, SCMAccess);
+  if SCMHandle <> 0 then
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
+    if ServiceHandle <> 0 then
+    try
+      if QueryServiceStatus(ServiceHandle,ServiceStatus) then
+        Result:=TJclServiceState(ServiceStatus.dwCurrentState);
+    finally
+      CloseServiceHandle(ServiceHandle);
+    end;
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
+end;
+
+function StartServiceByName(const AServer,AServiceName: String):Boolean;
+var
+  ServiceHandle,
+  SCMHandle: DWORD;
+  p: PChar;
+begin
+  p:=nil;
+  Result:=False;
+
+  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  if SCMHandle <> 0 then
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    if ServiceHandle <> 0 then
+      Result:=StartService(ServiceHandle,0,p);
+
+    CloseServiceHandle(ServiceHandle);
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
+end;
+
+function StopServiceByName(const AServer, AServiceName: String):Boolean;
+var
+  ServiceHandle,
+  SCMHandle: DWORD;
+  SS: _Service_Status;
+begin
+  Result:=False;
+
+  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  if SCMHandle <> 0 then
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    if ServiceHandle <> 0 then
+      Result:=ControlService(ServiceHandle,SERVICE_CONTROL_STOP,SS);
+
+    CloseServiceHandle(ServiceHandle);
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 var
@@ -1449,6 +1601,13 @@ end;
 // History:
 
 // $Log$
+// Revision 1.29  2004/12/21 12:24:51  rikbarker
+// Added code by Warren Postma to allow modification of service start type. (Disabled, Automatic etc)
+// Added three new helper functions,
+//    GetServiceStatusByName
+//    StartServiceByName
+//    StopServiceByName
+//
 // Revision 1.28  2004/10/24 01:36:26  mthoma
 // history cleaned.
 //
