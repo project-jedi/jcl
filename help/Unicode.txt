@@ -578,8 +578,460 @@ character, for example a non breaking space.
 Count=1
 1=Code:UCS4=The unicode codepoint (character) to test.
 [Result]
-If the specified codepoint is a final punctuation character the function returns
+If the specified codepoint is a non breaking character the function returns
 True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsMark(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a mark of some kind.
+[Description]
+UnicodeIsMark tests whether the specified unicode codepoint is a mark of some
+kind.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a mark character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsModifier(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a modifier.
+[Description]
+UnicodeIsModifier tests whether the specified unicode codepoint is a modifier.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a modifier character the function returns
+True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsLetterNumber(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a number represented by a letter.
+[Description]
+UnicodeIsLetterNumber tests whether the specified unicode codepoint is a number by a
+letter.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a letter character representing a number the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsConnectionPunctuation(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a connection punctuation.
+[Description]
+UnicodeIsConnectionPunctuation tests whether the specified unicode codepoint is
+a connection punctuation, for example an underscore
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a connection punctuation character the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsDash(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a math character.
+[Description]
+UnicodeIsDash tests whether the specified unicode codepoint is a math
+character, for example a hyphen.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a math character the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsMath(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a dash punctuation.
+[Description]
+UnicodeIsMath tests whether the specified unicode codepoint is a dash
+punctuation, for example a plus sign.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a dash punctuation character the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsCurrency(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a dash punctuation.
+[Description]
+UnicodeIsCurrency tests whether the specified unicode codepoint is a currency symbol,
+for example the dollar sign.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a currency symbol the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsModifierSymbol(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a modifier symbol.
+[Description]
+UnicodeIsModifierSymbol tests whether the specified unicode codepoint is a
+modifier symbol, for example the grave accent.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a modifier symbol the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsNonSpacingMark(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a non-spacing mark.
+[Description]
+UnicodeIsNonSpacingMark tests whether the specified unicode codepoint is a
+non-spacing mark, for example the combining grave accent.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a non-spacing mark the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSpacingMark(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a spacing mark.
+[Description]
+UnicodeIsSpacingMark tests whether the specified unicode codepoint is a
+spacing mark, for example the Bengali vowel sign AA.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a spacing mark the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsEnclosing(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is enclosing.
+[Description]
+UnicodeIsEnclosing tests whether the specified unicode codepoint is enclosing,
+for example the enclosing box.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is enclosing the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsPrivate(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is from the private use area.
+[Description]
+UnicodeIsPrivate tests whether the specified unicode codepoint is from the
+private use area.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is from the private use area the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsSurrogate(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is one of the surrogate codes.
+[Description]
+UnicodeIsSurrogate tests whether the specified unicode codepoint is one of the
+surrogate codes.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is one of the surrogate codes the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsLineSeparator(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a line separator character.
+[Description]
+UnicodeIsLineSeparator tests whether the specified unicode codepoint is a line
+separator character.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a line separator character the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a paragraph separator character.
+[Description]
+UnicodeIsParagraphSeparator tests whether the specified unicode codepoint is a
+paragraph separator character.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a paragraph separator character the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsIdentifierStart(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a paragraph separator character.
+[Description]
+UnicodeIsIdentifierStart tests whether the specified unicode codepoint is a
+character that can begin an identifier, ie. the character must be a letter
+(upper-, lower- or titlecase or other) or a letter representing a number.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint can begin an identifier the
+function returns True, otherwise the function returns False.
+[Notes]
+Count=1
+1=UnicodeIsIdentifierStart could be replace by (UnicodeIsAlpha <B>or</B>
+UnicodeIsLetterNumber) <B>and not</B> UnicodeIsModifier
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsIdentifierPart(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a paragraph separator character.
+[Description]
+UnicodeIsIdentifierPart tests whether the specified unicode codepoint is a
+character that can be in an identifier, ie. the character must be a letter
+(upper-, lower- or titlecase or other), a letter representing a number,
+a mark (non-spacing or spacing combining), a decimal digit, a connecting
+punctuation or a format control character.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint can be in an identifier the
+function returns True, otherwise the function returns False.
+[Notes]
+Count=1
+1=UnicodeIsIdentifierStart could be replace by (UnicodeIsIdentifierStart <B>or</B>
+UnicodeIsNonSpacingMark <B>or</B> UnicodeIsSpacingMark <B>or</B> UnicodeIsDigit <B>or</B>
+UnicodeIsConnectionPunctuation <B>or</B> UnicodeIsFormatControl
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsDefined(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is defined.
+[Description]
+UnicodeIsDefined tests whether the specified unicode codepoint is defined (ie.
+it appears in one of the data files).
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is defined the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsUndefined(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is undefined.
+[Description]
+UnicodeIsUndefined tests whether the specified unicode codepoint is undefined
+(ie. a non-unicode character).
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is undefined the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsHan(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a Han ideograph.
+[Description]
+UnicodeIsHan tests whether the specified unicode codepoint is a Han ideograph.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a Han ideograph the
+function returns True, otherwise the function returns False.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Character test routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnicodeIsHangul(C: UCS4): Boolean;
+[ShortDescr]
+Tests whether the codepoint is a Hangul syllable.
+[Description]
+UnicodeIsHangul tests whether the specified unicode codepoint is a pre-composed
+Hangul syllable.
+[Parameters]
+Count=1
+1=C:UCS4=The unicode codepoint (character) to test.
+[Result]
+If the specified codepoint is a Hangul syllable the
+function returns True, otherwise the function returns False.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -1070,6 +1522,25 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function WideTitleCaseString(const S: WideString): WideString;
+[ShortDescr]
+Converts the supplied WideString to all titlecase.
+[Description]
+Converts the supplied WideString to all titlecase.
+[Parameters]
+Count=1
+1=S:WideString=The string to convert to titlecase.
+[Result]
+The titlecased string.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function WideLoCase(C: WideChar): WideChar;
 [ShortDescr]
 Converts the specified character into lower case.
@@ -1108,6 +1579,25 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function WideTitleCaseChar(C: WideChar): WideChar;
+[ShortDescr]
+Converts the specified character into title case.
+[Description]
+Converts the specified character into title case.
+[Parameters]
+Count=1
+1=C:WideChar=The character to convert to title case.
+[Result]
+The titlecase character.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function WideDecompose(const S: WideString): WideString;
 [ShortDescr]
 Performs a decomposition of all characters in the supplied string.
@@ -1134,7 +1624,7 @@ function WideCompose(const S: WideString): WideString;
 Transforms a string into a composed string.
 [Description]
 Returns a string with all the characters of S, but if it is possible to combine
-characters then they are composed.  For example, the two base characters E and ^ 
+characters then they are composed.  For example, the two base characters E and ^
 are combined into the composite character Ê.
 [Parameters]
 Count=1
@@ -1144,6 +1634,25 @@ The string with all characters composed, where possible.
 [Notes]
 Count=1
 1=This function is not implemented yet.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WideComposeHangul(Source: WideString): WideString;
+[ShortDescr]
+Transforms a string into a composed string.
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Source:WideString=The string for which to compose the individual characters.
+[Result]
+The string with all characters composed, where possible.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -1342,6 +1851,25 @@ Count=1
 additional Cardinal is stored at offset -4 of the returned pointer and is used to
 hold the size of the buffer. You can use the <REF>StrBufSizeW</REF> function to
 query for this value.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=Null terminated strings
+Author=Mike Lischke;public@lischke-online.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrBufSizeW(Str: PWideChar): Cardinal;
+[ShortDescr]
+Returns the buffer size for a null-terminated wide string.
+[Description]
+Returns the buffer size allocatied for the specified null-terminated wide string.
+[Parameters]
+Count=1
+1=Str:PWideChar=Null-terminated wide string
+[Result]
+Size of the buffer allocated for the null-terminated wide string.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -1867,6 +2395,7 @@ BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharSetFromLocale(Language: LCID): TFontCharSet;
+type TFontCharset = 0..255;
 [ShortDescr]
 Returns character set information for a given locale.
 [Description]
@@ -2126,9 +2655,9 @@ BCB=3,4,5
 [Declaration]
 function WideStringToStringEx(const WS: WideString; CodePage: Word): String;
 [ShortDescr]
-WideStrinToStringEx maps a WideString to a string based on the specified codepage.
+WideStringToStringEx maps a WideString to a string based on the specified codepage.
 [Description]
-WideStrinToStringEx maps a WideString to a string based on the specified codepage.
+WideStringToStringEx maps a WideString to a string based on the specified codepage.
 [Parameters]
 Count=2
 1=WS:WideString=The WideString to convert.
