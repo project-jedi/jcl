@@ -3188,3 +3188,215 @@ AnsiSingleQuote          Single Quote                     #39
 @@AnsiLineBreak
 <ALIAS AnsiNull>
 
+
+@@AddStringToStrings@string@TStrings@Boolean
+Description
+Add a string to an object of TStrings. If a string already
+exists in the list and there is a uniqueness requirement in
+place, the string is not added.
+
+Summary
+Add a string to TStrings instance if conditions met.
+
+Parameters
+S :         String to be added.
+Strings :   TStrings object to which the string specified by <B>S </B>should
+            be added.
+Unique :    Determines whether the the uniqueness check should be
+            performed before adding the string.
+
+
+Returns
+The function returns <B>True </B>if the string was added, <B>False
+</B>otherwise.
+
+
+
+QuickInfo
+ Unit: JclRegistry
+  Category: Registry and Ini files
+  Donator: Jean-Fabien Connault
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+
+@@StrToFloatSafe@AnsiString
+Description
+The function <B>StrToFloatSafe </B>attempts to convert the
+string passed as a parameter to its float value. It handles
+correctly decimal and float separators as well as negative
+sign. Function also handles national settings for thousand
+separator (see <B>ThousandSeparator </B>variable).
+
+
+
+Summary
+The function <B>StrToFloatSafe</B> attempts to convert the
+string passed as a parameter to its float value.
+
+Parameters
+S :   String to be converted to float value 
+
+Returns
+Float value of the string <B>S </B>passed as a parameter. If
+error occurs, the function returns <B>0.00</B>
+
+QuickInfo
+Unit: JclStrings
+  Category: String manipulation
+  Donator: Azret Botash
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+@@StrIToStrings@AnsiString@AnsiString@TStrings@Boolean
+Description
+<B>StrIToStrings</B> converts the supplied string, which
+supposedly is a list of strings packed into a single string
+variable, to a TStrings. The function uses the supplied
+separator string to separate the string into its individual
+elements.
+
+For example, if you call the function like this:
+StrIToStrings('Project JEDI Rules', ' ', List) then on return
+list will contain three items, namely 'Project', 'JEDI', and
+'Rules'. As this example shows, the last string doesn't have
+to be terminated by the separator string although it is
+allowed.
+
+
+
+Note
+The function differs from StrToString since it does not
+perform any case conversion of the string passed as the
+parameter.
+
+
+
+The list will be cleared by this function before adding the
+elements.
+
+Summary
+Converts a string into a list of strings using the specified
+separator character.
+
+
+
+Parameters
+S :                  The string to split into elements
+Sep :                The string that separates the individual elements
+List :               A TStrings derivative that receives the individual
+                     elements
+AllowEmptyString :   Specifies whether empty strings can be added to the
+                     list or not
+
+
+QuickInfo
+Unit: JclStrings
+Category: String manipulation
+Donator: Anthony Steele
+Delphi Versions: 4,5,6
+Kylix Versions: 1
+Free Pascal Compiler Versions: 1.x
+
+
+See Also
+<LINK StrToStrings, StrToStrings> 
+
+@@JclStrings.pas
+The module <B>JclStrings</B> contains routines for strings
+manipulation, conversion and transformation.
+
+@@StrToIntSafe@AnsiString
+Description
+
+
+Summary
+The function <B>StrToIntSafe</B> attempts to convert the
+string passed as a parameter to its integer value.
+
+Parameters
+S :   String to be converted to integer value
+
+Returns
+Integer value of the string <B>S </B>passed as a parameter.
+If error occurs, the function returns <B>0</B>
+
+QuickInfo
+Unit: JclStrings
+  Category: String manipulation
+  Donator: Azret Botash
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+Description
+The function <B>StrToIntSafe </B>attempts to convert the
+string passed as a parameter to its integer value. The
+function handles correctly national settings ofr thousand
+separator (see <B>ThousandSeparator</B> variable) as well as
+negative sign.
+
+@@EJclStringError
+Summary
+Class of exceptions that are risen by JclStrings unit's
+routines.
+
+@@PCharVector
+Description
+
+Summary
+<B>PCharVector </B>type represents an array of pointers to
+PChars.
+
+QuickInfo
+ Unit: JclStrings
+  Category: String manipulation
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+See Also
+PCharVectorToStrings, PCharVectorCount, FreePCharVector
+
+Description
+A PCharVector is an array of PChar's where each PChar points
+to a null terminated string. The array is delimited by a nil
+(NULL) pointer. In the Windows API this is usually typed as a
+PPSTR. This type is being operated by the following routines:
+<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
+<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>.
+
+
+
+
+
+See Also
+<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
+<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>
+
+@@AnsiDecDigits
+Summary
+Specifies the enumeration type containing digits from 0 to 9.
+
+Description
+The enumeration <B>AnsiDecDigits </B>contains all valid
+digits for decimal number representation.
+
+@@AnsiHexDigits
+Description
+The enumeration <B>AnsiHexDigits </B>contains all valid
+digits from 0 to 9 and letters of latin alphabet from A to F
+in both lower and upper cases for hexadecimal numbers
+representation.
+
+Summary
+Specifies enumeration typcontaining all valid characters for
+hexadecimal numbers representation.
+
+Note
+gsfdgsfsfg sfg sf sgsfd gsfd s sfdg sdfg s f sfg
+sdfgsfdgsgssfsdfs fg
