@@ -40,20 +40,9 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclFileUtils, JclPeImage;
+  JclBase, JclSysUtils, JclFileUtils, JclPeImage;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
-//==================================================================================================
-// TJclReferenceMemoryStream
-//==================================================================================================
-{ TODO : Move TJclReferenceMemoryStream to JclSysUtil unit or other }
-type
-  TJclReferenceMemoryStream = class (TCustomMemoryStream)
-  public
-    constructor Create(const Ptr: Pointer; Size: Longint);
-    function Write(const Buffer; Count: Longint): Longint; override;
-  end;
 
 const
   MAX_CLASS_NAME = 1024;
@@ -1160,33 +1149,6 @@ const
     TJclPeCLRTableNestedClass,          //  $29
     TJclPeCLRTable,                     //  $2A
     TJclPeCLRTable);                    //  $2B
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
-begin
-  Assert(not IsBadReadPtr(Ptr, Size));
-  inherited Create;
-  SetPointer(Ptr, Size);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
-begin
-  raise EJclError.CreateResRec(@RsCannotWriteRefStream);
-end;
-
-{ TODO -cDesign : Move FormatVersionString to other unit }
-function FormatVersionString(const HiV, LoV: Word): string; overload;
-begin
-  Result := Format('%u.%.2u', [HiV, LoV]);
-end;
-
-function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
-begin
-  Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
-end;
 
 { TJclPeCLRStream }
 
