@@ -25,14 +25,17 @@
       ../../lib/k3/obj/JclMIDI.o 
       ../../lib/k3/obj/JclMime.o 
       ../../lib/k3/obj/JclResources.o 
-      ../../lib/k3/obj/JclRTTI.o 
+      ../../lib/k3/obj/JclRTTI.o
       ../../lib/k3/obj/JclSchedule.o 
       ../../lib/k3/obj/JclStatistics.o 
       ../../lib/k3/obj/JclStrHashMap.o 
       ../../lib/k3/obj/JclStrings.o 
       ../../lib/k3/obj/JclSysInfo.o 
       ../../lib/k3/obj/JclSysUtils.o 
-      ../../lib/k3/obj/JclUnitConv.o"/>
+      ../../lib/k3/obj/JclUnitConv.o
+      ../../lib/k3/obj/JclValidation.o
+      ../../lib/k3/obj/JclWideStrings.o
+      ../../lib/k3/obj/JclUnitVersioning.o"/>
     <RESFILES value="CJcl.res"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -104,6 +107,8 @@
       <FILE FILENAME="../../source/common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclWideStrings.pas" FORMNAME="" UNITNAME="JclWideStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclUnitVersioning.pas" FORMNAME="" UNITNAME="JclUnitVersioning" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
