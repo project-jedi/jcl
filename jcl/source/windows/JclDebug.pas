@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 6, 2003                                                                     }
+{ Last modified: July 8, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -522,7 +522,7 @@ type
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -3405,7 +3405,7 @@ end;
 
 procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 var
-  IgnoreLevels: Integer;
+  IgnoreLevels: DWORD;
   FirstCaller: Pointer;
   RawMode: Boolean;
 begin
@@ -3444,7 +3444,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
 begin
   Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
   GlobalStackList.AddObject(Result);
