@@ -72,13 +72,11 @@ uses
 {$HPPEMIT '#include "WinNT.h"'}
 {$HPPEMIT '#include "WinBase.h"'}
 {$HPPEMIT '#include "BaseTsd.h"'}
-{$HPPEMIT '#include "aclapi.h"'}
 {$HPPEMIT '#include "ImageHlp.h"'}
 {$HPPEMIT '#include "lm.h"'}
 {$HPPEMIT '#include "Nb30.h"'}
 {$HPPEMIT '#include "RasDlg.h"'}
 {$HPPEMIT '#include "Reason.h"'}
-{$HPPEMIT '#include "ShlObj.h"'}
 {$HPPEMIT '#include "ShlWApi.h"'}
 {$HPPEMIT '#include "WinError.h"'}
 {$HPPEMIT '#include "WinIoCtl.h"'}
@@ -213,6 +211,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2004/11/04 12:55:21  obones
+// BCB compatibility fix: aclapi.h and shlobj.h must not be included.
+//
 // Revision 1.31  2004/10/30 08:20:09  rrossmair
 // fixed BCB-related bugs
 //
