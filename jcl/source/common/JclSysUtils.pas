@@ -27,6 +27,7 @@
 {   Python                                                                                         }
 {   Alexander Radchenko,                                                                           }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Uwe Schuster (uschuster)                                                                       }
 {   Jeroen Speldekamp                                                                              }
 {   Anthony Steele                                                                                 }
 {   Rudy Velthuis,                                                                                 }
@@ -365,8 +366,13 @@ type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
 
-function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False): Cardinal; overload;
-function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False): Cardinal; overload;
+const
+  ABORT_EXIT_CODE = {$IFDEF MSWINDOWS}ERROR_CANCELLED {$ELSE} 1223 {$ENDIF}; 
+
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
+  AbortPtr: PBoolean = nil): Cardinal; overload;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
+  AbortPtr: PBoolean = nil): Cardinal; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
@@ -1548,9 +1554,9 @@ const
 type
   PAdjustSelfThunk = ^TAdjustSelfThunk;
   TAdjustSelfThunk = packed record
-    case AddInstruction: LongInt of
+    case AddInstruction: Longint of
       AddByte: (AdjustmentByte: ShortInt);
-      AddLong: (AdjustmentLong: LongInt);
+      AddLong: (AdjustmentLong: Longint);
   end;
   PInterfaceMT = ^TInterfaceMT;
   TInterfaceMT = packed record
@@ -2103,7 +2109,8 @@ begin
   SetLength(Result, OutPos - 1);
 end;
 
-function InternalExecute(const CommandLine: string; var Output: string; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal;
+function InternalExecute(const CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
+  RawOutput: Boolean; AbortPtr: PBoolean): Cardinal;
 const
   BufferSize = 255;
 var
@@ -2171,8 +2178,12 @@ begin
     ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
-    while ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
+    if AbortPtr <> nil then
+      AbortPtr^ := False;
+    while ((AbortPtr = nil) or not AbortPtr^) and ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
       ProcessBuffer;
+    if (AbortPtr <> nil) and AbortPtr^ then
+      TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
     if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
       not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
         Result := $FFFFFFFF;
@@ -2190,6 +2201,7 @@ var
 begin
   Cmd := Format('%s 2>&1', [CommandLine]);
   Pipe := Libc.popen(PChar(Cmd), 'r');
+  { TODO : handle Abort }
   repeat
     PipeBytesRead := fread_unlocked(@Buffer, 1, BufferSize, Pipe);
     if PipeBytesRead > 0 then
@@ -2214,20 +2226,22 @@ end;
 RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
-function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean): Cardinal;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
+  AbortPtr: PBoolean = nil): Cardinal;
 begin
-  Result := InternalExecute(CommandLine, Output, nil, RawOutput);
+  Result := InternalExecute(CommandLine, Output, nil, RawOutput, AbortPtr);
 end;
 
 { TODO -cHelp :
 Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
-function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean): Cardinal; overload;
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
+  AbortPtr: PBoolean = nil): Cardinal; overload;
 var
   Dummy: string;
 begin
-  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput);
+  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput, AbortPtr);
 end;
 
 //==================================================================================================
@@ -2428,6 +2442,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2004/11/28 16:37:26  uschuster
+// added possibility to abort Execute
+//
 // Revision 1.26  2004/11/18 00:46:49  rrossmair
 // - Execute() fixed
 //
