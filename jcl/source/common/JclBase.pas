@@ -39,10 +39,10 @@ uses
 //------------------------------------------------------------------------------
 
 const
-  JclVersionMajor   = 0;   // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 4;   // third minor release
-  JclVersionRelease = 0;   // 0=pre-release|beta/1=release
-  JclVersionBuild   = 214; // days since march 1, 2000
+  JclVersionMajor   = 1;   // 0=pre-release|beta/1, 2, ...=final
+  JclVersionMinor   = 0;   // third minor release
+  JclVersionRelease = 1;   // 0=pre-release|beta/1=release
+  JclVersionBuild   = 336; // days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -119,17 +119,6 @@ type
 
 type
   PPointer = ^Pointer;
-(*
-  PByte = ^Byte;
-  PCardinal = ^Cardinal;
-  PDouble = ^Double;
-  PInteger = ^Integer;
-  PLongWord = ^LongWord;
-  PLongint= ^Longint;
-  PShortint = ^Shortint;
-  PSmallInt = ^Smallint;
-  PWord = ^Word;
-*)
 
 {$IFNDEF SUPPORTS_INT64}
 
@@ -144,10 +133,10 @@ type
     0: (
       LowPart: DWORD;
       HighPart: Longint);
-  {$IFNDEF BCB3}
+    {$IFNDEF BCB3}
     1: (
       QuadPart: LONGLONG);
-  {$ENDIF BCB3}
+    {$ENDIF BCB3}
   end;
 
 procedure I64Assign(var I: Int64; const Low, High: Longint);
@@ -305,20 +294,20 @@ uses
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
-  {$IFNDEF FPC}
-  inherited Create(LoadResString(ResStringRec));
-  {$ELSE}
+  {$IFDEF FPC}
   inherited Create(ResStringRec^);
+  {$ELSE}
+  inherited Create(LoadResString(ResStringRec));
   {$ENDIF FPC}
 end;
 
 constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec;
   const Args: array of const);
 begin
-  {$IFNDEF FPC}
-  inherited CreateFmt(LoadResString(ResStringRec), Args);
-  {$ELSE}
+  {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^, Args);
+  {$ELSE}
+  inherited CreateFmt(LoadResString(ResStringRec), Args);
   {$ENDIF FPC}
 end;
 
@@ -328,12 +317,28 @@ end;
 //==============================================================================
 
 {$IFDEF FPC}
+{$IFDEF WIN32}
 
-function SysErrorMessage(ErrNo: Integer): string;  // TODO: Better Implementation
+function SysErrorMessage(ErrNo: Integer): string;
+var
+  Siz: Integer;
+  Buffer: array [0..1024] of Char;
 begin
-  Result := 'Win32 Error';
+  Siz := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
+    nil, ErrNo, 0, Buffer, SizeOf(Buffer), nil);
+  while (Siz > 0) and (Buffer[Siz-1] in [#0..#32, '.']) do
+    Dec(Siz);
+  SetString(Result, Buffer, Siz);
 end;
 
+{$ELSE}
+
+function SysErrorMessage(ErrNo: Integer): string;
+begin
+  Result := Format('Win32 Error %d (%x)', [ErrNo, ErrNo]);
+end;
+
+{$ENDIF WIN32}
 {$ENDIF FPC}
 
 //==============================================================================
@@ -373,10 +378,10 @@ constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  {$IFNDEF FPC}
-  inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE}
+  {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  {$ELSE}
+  inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
 
