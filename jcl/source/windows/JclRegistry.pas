@@ -21,7 +21,7 @@
 {   Stephane Fillon                                                                                }
 {   Eric S.Fisher                                                                                  }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Manlio Laschena (manlio)                                                                       }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -62,106 +62,74 @@ function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Long
 function RegDeleteEntry(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 function RegDeleteKeyTree(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegGetDataSize(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataSize: Cardinal): Boolean;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegGetDataType(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataType: Cardinal): Boolean;
 function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
 function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
-{ TODO -cHelp : Contributor: Peter J. Haas }
-function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
-{ TODO -cHelp : Contributor: Peter J. Haas }
-function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
+
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
-{ TODO -cHelp : Contributor: Peter J. Haas }
-function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: AnsiString): AnsiString;
-{ TODO -cHelp : Contributor: Peter J. Haas }
-function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: WideString): WideString;
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: string): string;
-{ TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
-{ TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
-{ TODO -cHelp : Author: Peter J. Haas }
+function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
+function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: AnsiString): AnsiString;
+function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
+function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: WideString): WideString;
+
 function RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string): string; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; const Def: AnsiString): AnsiString;
-{ TODO -cHelp : Author: Peter J. Haas }
-function RegReadMultiWideStringDef(const RootKey: DelphiHKEY; const Key, Name: WideString; const Def: WideString): WideString;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; const Def: string): string; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings); overload;
+function RegReadMultiAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
+function RegReadMultiAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; const Def: AnsiString): AnsiString;
+function RegReadMultiWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
+function RegReadMultiWideStringDef(const RootKey: DelphiHKEY; const Key, Name: WideString; const Def: WideString): WideString;
+
 function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynByteArray); overload;
 function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   out Value: TDynByteArray; const Def: TDynByteArray); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
+
 function RegReadBinaryAsAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadBinaryAsAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: string;
   const Def: AnsiString): AnsiString;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadBinaryAsWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
-{ TODO -cHelp : Author: Peter J. Haas }
 function RegReadBinaryAsWideStringDef(const RootKey: DelphiHKEY; const Key, Name: string;
   const Def: WideString): WideString;
 
 procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; Value: Boolean);
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; Value: Cardinal);
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64);
-{ TODO -cHelp : Contributor: Peter J. Haas }
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString);
-{ TODO -cHelp : Contributor: Peter J. Haas }
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name, Value: WideString);
-{ TODO -cHelp : Contributor: Peter J. Haas }
+
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
-{ TODO -cHelp : Author: Peter J. Haas }
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString);
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name, Value: WideString);
+
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: string); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: array of String); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
+
 procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
-{ TODO -cHelp : RegKeyExists }
 {
 From: Jean-Fabien Connault [mailto:cycocrew@worldnet.fr]
 Descr: Test whether a registry key exists as a subkey of RootKey
@@ -209,18 +177,20 @@ function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName
 // obsolete functions
 //--------------------------------------------------------------------------------------------------
 
-// This function create / read invalid 8 byte REG_DWORD values.
-{ TODO -cHelp : Contributor: Peter J. Haas }
-{ TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
-                Use RegReadInt64 instead. }
+{$IFNDEF DROP_OBSOLETE_CODE}
+
+// This obsolete functions create resp. read invalid 8 byte REG_DWORD values.
+// Do not use.
+
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
-{ TODO -cHelp : Contributor: Peter J. Haas }
-{ TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
-                Use RegReadInt64 instead. }
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
-{ TODO -cHelp : Obsolete, this function create invalid 8 byte REG_DWORD keys
-                Use RegWriteInt64 instead (this create REG_QWORD values). }
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+
 procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 implementation
 
@@ -1403,6 +1373,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/05/19 21:43:36  rrossmair
+// processed help TODOs
+//
 // Revision 1.12  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
