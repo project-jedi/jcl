@@ -33,7 +33,7 @@ unit JclCOM;
 interface
 
 uses
-  ActiveX, Classes,
+  Windows, ActiveX, Classes,
   JclBase;
 
 //--------------------------------------------------------------------------------------------------
@@ -129,7 +129,10 @@ procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overl
 implementation
 
 uses
-  Windows, SysUtils,
+  {$IFDEF FPC}
+  Types,
+  {$ENDIF}
+  SysUtils,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
