@@ -71,24 +71,22 @@ const
 
   Value_UndefinedMaximum = 99999;
 
-  EDISEFComsUserAttributePeriod = '.';
-  EDISEFComsUserAttributeExclamationPoint = '!';
-  EDISEFComsUserAttributeDollarSign = '$';
-  EDISEFComsUserAttributeHyphen = '-';
-  EDISEFComsUserAttributeAmpersand = '&';
+  EDISEFUserAttributePeriod = '.';
+  EDISEFUserAttributeExclamationPoint = '!';
+  EDISEFUserAttributeDollarSign = '$';
+  EDISEFUserAttributeHyphen = '-';
+  EDISEFUserAttributeAmpersand = '&';
 
-  EDISEFComsUserAttributePeriodDesc = 'Not Used';
-  EDISEFComsUserAttributeExclamationPointDesc = 'Mandatory';
-  EDISEFComsUserAttributeDollarSignDesc = 'Recommended';
-  EDISEFComsUserAttributeHyphenDesc = 'Not Recommended';
-  EDISEFComsUserAttributeAmpersandDesc = 'Dependent';
+  EDISEFUserAttributePeriodDesc = 'Not Used';
+  EDISEFUserAttributeExclamationPointDesc = 'Mandatory';
+  EDISEFUserAttributeDollarSignDesc = 'Recommended';
+  EDISEFUserAttributeHyphenDesc = 'Not Recommended';
+  EDISEFUserAttributeAmpersandDesc = 'Dependent';
 
-  EDISEFComsUserAttributeSet =
-    [EDISEFComsUserAttributePeriod, EDISEFComsUserAttributeExclamationPoint,
-     EDISEFComsUserAttributeDollarSign, EDISEFComsUserAttributeHyphen,
-     EDISEFComsUserAttributeAmpersand];
-
-  // EDI SEF Text,Sets Constants
+  EDISEFUserAttributeSet =
+    [EDISEFUserAttributePeriod, EDISEFUserAttributeExclamationPoint,
+     EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
+     EDISEFUserAttributeAmpersand];
 
 resourcestring
   // Transaction Set:850
@@ -114,6 +112,10 @@ resourcestring
   SEFTextSetsCode_Elm4_Desc = 'Level 3 note on element or composite.';
 
 const
+  // EDI SEF Text,Sets Constants
+  SEFTextCR = '\r'; //carriage return
+  SEFTextLF = '\n'; //line feed
+  SEFTextCRLF = SEFTextCR + SEFTextLF;
   // Transaction Set:850
   SEFTextSetsCode_Set0 = '0'; // Transaction Set or message title.
   SEFTextSetsCode_Set1 = '1'; // Transaction Set functional group (X12).
@@ -274,6 +276,9 @@ type
   TEDISEFWhereType = (twUnknown, twSet, twSegment, twElementOrCompositeElement, twSubElement);
 
   TEDISEFText = class(TEDIObject)
+  private
+    function GetText: string;
+    procedure SetText(const Value: string);
   protected
     FData: string;
     FEDISEFWhereType: TEDISEFWhereType;
@@ -293,7 +298,7 @@ type
     property WhereLocation: TStrings read FWhereLocation;
     property Where: string read FWhere;
     property What: string read FWhat;
-    property Text: string read FText write FText;
+    property Text: string read GetText write SetText;
   end;
 
   TEDISEFTextSet = class(TEDISEFText)
@@ -556,9 +561,9 @@ type
 //  Procedures
 //--------------------------------------------------------------------------------------------------
 
-function GetEDISEFComsUserAttributeDescription(
+function GetEDISEFUserAttributeDescription(
   Attribute: TEDISEFComsUserAttributes): string; overload;
-function GetEDISEFComsUserAttributeDescription(Attribute: string): string; overload;
+function GetEDISEFUserAttributeDescription(Attribute: string): string; overload;
 
 procedure ParseELMSDataOfELMSDefinition(Data: string; Element: TEDISEFElement);
 function CombineELMSDataOfELMSDefinition(Element: TEDISEFElement): string;
@@ -620,24 +625,26 @@ const
   SEFDelimiter_Period = '.';
   SEFDelimiter_Caret = '^';
   SEFDelimiter_PlusSign = '+';
+  SEFDelimiter_MinusSign = '-';
+  SEFDelimiter_Asterisk = '*';  
 
 //--------------------------------------------------------------------------------------------------
 //  Procedures
 //--------------------------------------------------------------------------------------------------
 
-function GetEDISEFComsUserAttributeDescription(Attribute: TEDISEFComsUserAttributes): string;
+function GetEDISEFUserAttributeDescription(Attribute: TEDISEFComsUserAttributes): string;
 begin
   case Attribute of
     caPeriod:
-      Result := EDISEFComsUserAttributePeriodDesc;
+      Result := EDISEFUserAttributePeriodDesc;
     caExclamationPoint:
-      Result := EDISEFComsUserAttributeExclamationPointDesc;
+      Result := EDISEFUserAttributeExclamationPointDesc;
     caDollarSign:
-      Result := EDISEFComsUserAttributeDollarSignDesc;
+      Result := EDISEFUserAttributeDollarSignDesc;
     caHyphen:
-      Result := EDISEFComsUserAttributeHyphenDesc;
+      Result := EDISEFUserAttributeHyphenDesc;
     caAmpersand:
-      Result := EDISEFComsUserAttributeAmpersandDesc;
+      Result := EDISEFUserAttributeAmpersandDesc;
   else
     Result := RsUnknownAttribute;
   end;
@@ -645,21 +652,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetEDISEFComsUserAttributeDescription(Attribute: string): string;
+function GetEDISEFUserAttributeDescription(Attribute: string): string;
 begin
   if Attribute = '' then
     Attribute := Value_QuestionMark;
   case Attribute[1] of
-    EDISEFComsUserAttributePeriod:
-      Result := EDISEFComsUserAttributePeriodDesc;
-    EDISEFComsUserAttributeExclamationPoint:
-      Result := EDISEFComsUserAttributeExclamationPointDesc;
-    EDISEFComsUserAttributeDollarSign:
-      Result := EDISEFComsUserAttributeDollarSignDesc;
-    EDISEFComsUserAttributeHyphen:
-      Result := EDISEFComsUserAttributeHyphenDesc;
-    EDISEFComsUserAttributeAmpersand:
-      Result := EDISEFComsUserAttributeAmpersandDesc;
+    EDISEFUserAttributePeriod:
+      Result := EDISEFUserAttributePeriodDesc;
+    EDISEFUserAttributeExclamationPoint:
+      Result := EDISEFUserAttributeExclamationPointDesc;
+    EDISEFUserAttributeDollarSign:
+      Result := EDISEFUserAttributeDollarSignDesc;
+    EDISEFUserAttributeHyphen:
+      Result := EDISEFUserAttributeHyphenDesc;
+    EDISEFUserAttributeAmpersand:
+      Result := EDISEFUserAttributeAmpersandDesc;
   else
     Result := RsUnknownAttribute;
   end;
@@ -725,7 +732,7 @@ begin
   Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 1;
   // Parse User Attribute
-  if Data[1] in EDISEFComsUserAttributeSet then
+  if Data[1] in EDISEFUserAttributeSet then
   begin
     Element.UserAttribute := Data[1];
     I := 2;
@@ -891,7 +898,7 @@ begin
   Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 1;
   // Parse User Attribute
-  if Data[1] in EDISEFComsUserAttributeSet then
+  if Data[1] in EDISEFUserAttributeSet then
   begin
     Element.UserAttribute := Data[1];
     I := 2;
@@ -1249,7 +1256,9 @@ var
   Temp: TStrings;
   ListItem: TEDISEFDataObjectListItem;
   SegmentDef: TEDISEFSegment;
+  I, J, K: Integer;
 begin
+  Segment.UserAttribute := '';
   Segment.Ordinal := -1;
   Segment.RequirementDesignator := Value_Optional;
   Segment.MaximumUse := 1;
@@ -1258,7 +1267,23 @@ begin
   try
     Temp.CommaText := Data;
     if Temp.Count >= 1 then
-      Segment.Id := Temp[0];
+    begin
+      I := 1;
+      // Parse User Attribute
+      if Temp[0][1] in EDISEFUserAttributeSet then
+      begin
+        Segment.UserAttribute := Temp[0][1];
+        I := 2;
+      end;
+      J := StrSearch(SEFDelimiter_Asterisk, Temp[0], 1);
+      K := StrSearch(SEFDelimiter_AtSign, Temp[0], 1);
+      if (K < J) and (K <> 0) then
+        J := K;
+      if J = 0 then
+        Segment.Id := Temp[0]
+      else
+        Segment.Id := Copy(Temp[0], I, J - I);
+    end;
     ListItem := SEFFile.SEGS.FindItemByName(Segment.Id);
     if (ListItem <> nil) and (ListItem.EDISEFDataObject <> nil) then
     begin
@@ -1351,14 +1376,26 @@ begin
     begin
       N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       J := StrSearch(SEFDelimiter_PlusSign, Data, K);
+      M := StrSearch(SEFDelimiter_MinusSign, Data, K);
+      // Adjustments
       if (J < N) and (J <> 0) then
         N := J;
-      // Get Loop Id
+      if (M < N) and (M <> 0) then
+        N := M;
+      // Get Loop Id: <Id>:<Repeat>+<Number>[<Id>]..."
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
       J := StrSearch(SEFDelimiter_Colon, RepeatData, 1);
-      LoopId := Copy(RepeatData, 1, J - 1);
+      if J = 0 then
+      begin
+        LoopId := RepeatData;
+        RepeatData := '';
+      end
+      else
+      begin
+        LoopId := Copy(RepeatData, 1, J - 1);
+        RepeatData := Copy(RepeatData, J + 1, Length(RepeatData) - J);
+      end;
       // Get Repeat Count
-      RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
       if RepeatData = Value_GreaterThanOne then
         RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then
@@ -1436,20 +1473,32 @@ begin
     begin
       N := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       J := StrSearch(SEFDelimiter_PlusSign, Data, K);
+      M := StrSearch(SEFDelimiter_MinusSign, Data, K);
+      // Adjustments
       if (J < N) and (J <> 0) then
         N := J;
-      // Get Loop Id
+      if (M < N) and (M <> 0) then
+        N := M;
+      // Get Loop Id: <Id>:<Repeat><+or-><Number>[<Id>]..."
       RepeatData := Copy(Data, K + 1, (N - K) - 1);
       J := StrSearch(SEFDelimiter_Colon, RepeatData, 1);
-      LoopId := Copy(RepeatData, 1, J - 1);
+      if J = 0 then
+      begin
+        LoopId := RepeatData;
+        RepeatData := '';
+      end
+      else
+      begin
+        LoopId := Copy(RepeatData, 1, J - 1);
+        RepeatData := Copy(RepeatData, J + 1, Length(RepeatData) - J);
+      end;
       // Get Repeat Count
-      RepeatData := Copy(RepeatData, J + 1, Length(RepeatData));
       if RepeatData = Value_GreaterThanOne then
         RepeatData := IntToStr(Value_UndefinedMaximum);
       if RepeatData = '' then
         RepeatData := Value_One;
       RepeatCount := StrToInt(RepeatData);
-      // Correct start position
+      // Correct start position (Move to first "[<Id>]")
       K := StrSearch(SEFDelimiter_OpeningBracket, Data, K);
       // Validate end position
       N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
@@ -2754,7 +2803,7 @@ end;
 
 procedure TEDISEFFile.Disassemble;
 begin
-  // Must parse file in reverse in order to build specification from the dictionary values
+  // Must parse file in reverse order to build specification from the dictionary values
   // .TEXT,SETS
   ParseTextSets;
   // .CODES
@@ -2933,40 +2982,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseELMSExt;
-{
-var
-  TempList: TStrings;
-  SearchResult, SearchResult2, I: Integer;
-  Element: TEDISEFElement;
-}
 begin
-{
-  TempList := TStringList.Create;
-  try
-    FEDISEFElms.Clear;
-    SearchResult := StrSearch(SectionTag_EDISDK_ELMSEXT, FData, 1);
-    if SearchResult > 0 then
-    begin
-      SearchResult := SearchResult + Length(SectionTag_ELMS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
-      if SearchResult2 <> 0 then
-        TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
-      else
-        TempList.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      for I := 0 to TempList.Count - 1 do
-      begin
-        Element := TEDISEFElement.Create(Self);
-        Element.Data := TempList[I];
-        Element.SEFFile := Self;
-        if Element.Data <> '' then
-          Element.Disassemble;
-        FEDISEFElms.AddByNameOrId(Element, Element.Id);
-      end;
-    end;
-  finally
-    TempList.Free;
-  end;
-}
+// ToDo:
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3278,10 +3295,10 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFTextSet
+// TEDISEFText
 //==================================================================================================
 
-{ TEDISEFTextSet }
+{ TEDISEFText }
 
 function TEDISEFText.Assemble: string;
 var
@@ -3344,9 +3361,32 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TEDISEFText.GetText: string;
+begin
+  Result := FText;
+  Result := JclEDI.StringReplace(Result, SEFTextCRLF, AnsiCrLf, [rfReplaceAll]);
+  Result := JclEDI.StringReplace(Result, SEFTextCR, AnsiCarriageReturn, [rfReplaceAll]);
+  Result := JclEDI.StringReplace(Result, SEFTextLF, AnsiLineFeed, [rfReplaceAll]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDISEFText.SetData(const Value: string);
 begin
   FData := Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDISEFText.SetText(const Value: string);
+var
+  Temp: string;
+begin
+  Temp := Value;
+  Temp := JclEDI.StringReplace(Temp, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
+  Temp := JclEDI.StringReplace(Temp, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Temp := JclEDI.StringReplace(Temp, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  FText := Temp;
 end;
 
 //==================================================================================================
