@@ -1158,6 +1158,7 @@ begin
   while It.HasNext do
   begin
     // (rom) inlining Add() gives about 5 percent performance increase
+    // without THREADSAFE and about 30 percent with THREADSAFE
     if FSize = FCapacity then
       Grow;
     FElementData[FSize] := It.Next;

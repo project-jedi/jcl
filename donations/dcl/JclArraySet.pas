@@ -96,7 +96,7 @@ end;
 
 procedure TJclIntfArraySet.Intersect(ACollection: IIntfCollection);
 begin
-  RetainAll(ACollection)
+  RetainAll(ACollection);
 end;
 
 procedure TJclIntfArraySet.Subtract(ACollection: IIntfCollection);

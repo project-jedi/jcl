@@ -50,7 +50,8 @@ function IntfSimpleCompare(Obj1, Obj2: IInterface): Integer;
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 
-function IntegerCompare(Obj1, Obj2: TObject): Integer;
+function IntegerCompare(Obj1, Obj2: Pointer): Integer;
+function AddressCompare(Obj1, Obj2: Pointer): Integer;
 
 // Apply algorithms
 procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
@@ -125,7 +126,8 @@ end;
 
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 begin
-  Result := CompareText(Obj1, Obj2);
+  // (rom) changed to case sensitive compare
+  Result := CompareStr(Obj1, Obj2);
 end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
@@ -133,9 +135,20 @@ begin
   Result := Ord(Obj1 <> Obj2);
 end;
 
-function IntegerCompare(Obj1, Obj2: TObject): Integer;
+function IntegerCompare(Obj1, Obj2: Pointer): Integer;
 begin
   Result := Integer(Obj1) - Integer(Obj2);
+end;
+
+function AddressCompare(Obj1, Obj2: Pointer): Integer;
+begin
+  if Cardinal(Obj1) < Cardinal(Obj2) then
+    Result := -1
+  else
+  if Cardinal(Obj1) > Cardinal(Obj2) then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction);

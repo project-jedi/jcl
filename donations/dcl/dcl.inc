@@ -1,4 +1,4 @@
 {$I jedi.inc}
 
-{.DEFINE THREADSAFE}
+{$DEFINE THREADSAFE}
 

@@ -329,12 +329,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
-    //Result := Add(It.Next) or Result;
-    //Daniele Teti 28/12/2004
-    if Add(It.Next) then
-      Result := True;
-  end;
+    Result := Add(It.Next) or Result;
 end;
 
 procedure TJclStrHashSet.Clear;
