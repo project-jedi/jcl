@@ -23,7 +23,7 @@
 {   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: December 20, 2003                                                                 }
+{ Last modified: January 4, 2004                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -95,12 +95,23 @@ type
     ReadProc, WriteProc: TStreamProc;
   end;
 
+  PJclDFMPropertyProcRec = ^TJclDFMPropertyProcRec;
+  TJclDFMPropertyProcRec = record
+    case Binary: Boolean of
+      False: (StdPropertyProcRecPtr: PJclDFMStdPropertyProcRec);
+      True: (BinaryPropertyProcRecPtr: PJclDFMBinaryPropertyProcRec);
+  end;
+
+  // (usc) properties Count and Items should be enough -> remove Binary... and Std...
   TJclDFMFiler = class(TFiler)
   private
+    FAllPropertyList: TList;
     FBinaryPropertyProcList: TList;
     FStdPropertyProcList: TList;
     function GetBinaryCount: Integer;
     function GetBinaryPropertyProcRec(AIndex: Integer): TJclDFMBinaryPropertyProcRec;
+    function GetCount: Integer;
+    function GetItems(AIndex: Integer): TJclDFMPropertyProcRec;
     function GetStdCount: Integer;
     function GetStdPropertyProcRec(AIndex: Integer): TJclDFMStdPropertyProcRec;
   public
@@ -120,6 +131,8 @@ type
     property BinaryCount: Integer read GetBinaryCount;
     property BinaryItems[AIndex: Integer]: TJclDFMBinaryPropertyProcRec read
       GetBinaryPropertyProcRec;
+    property Count: Integer read GetCount;
+    property Items[AIndex: Integer]: TJclDFMPropertyProcRec read GetItems;
     property StdCount: Integer read GetStdCount;
     property StdItems[AIndex: Integer]: TJclDFMStdPropertyProcRec read
       GetStdPropertyProcRec;
@@ -133,7 +146,7 @@ type
   // (rom) these names are too short  use dwlDelphi1 etc
   // (usc) vcl1, ..., vcl7 and clx1, clx2, clx3 (or clx140, clx141, clx145)
   //       might fit better
-  TJclDFMWriteLevel = (dwlD1, dwlD2, dwlD3, dwlD4, dwlD5, dwlD6, dwlD7);
+  TJclDFMWriteLevel = (dwlVCL1, dwlVCL2, dwlVCL3, dwlVCL4, dwlVCL5, dwlVCL6, dwlVCL7);
 
   TJclDFMLevelItemRec = record
     MinimumWriteLevel: TJclDFMWriteLevel;
@@ -141,16 +154,16 @@ type
   end;
 
 const
-  // (usc) not in use an will be moved out
+  // (usc) not in use and will be moved out
   DFMPropertyList: array [0..6] of TJclDFMLevelItemRec =
    (
-    (MinimumWriteLevel: dwlD6; PropertyName: '*.DesignSize'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TPageControl.TabIndex'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TJvPageControl.TabIndex'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TImage.Proportional'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TJvComboBox.AutoDropDown'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.AutoDropDown'),
-    (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.OnCloseUp')
+    (MinimumWriteLevel: dwlVCL6; PropertyName: '*.DesignSize'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TPageControl.TabIndex'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TJvPageControl.TabIndex'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TImage.Proportional'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TJvComboBox.AutoDropDown'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TComboBox.AutoDropDown'),
+    (MinimumWriteLevel: dwlVCL6; PropertyName: 'TComboBox.OnCloseUp')
    );
 
 type
@@ -188,6 +201,7 @@ type
     FName: string;
     FTyp: TValueType;
     procedure FreeData;
+    function GetAsBoolean: Boolean;
     // (rom) maybe GetAsDFMCollection?
     function GetAsCollectionProperty: TJclDFMCollectionProperty;
     function GetAsDFMProperties: TJclDFMProperties;
@@ -199,6 +213,7 @@ type
     function GetAsStrings: TStrings;
     function GetAsWideString: WideString;
     procedure ReadValue(AReader: TJclDFMReader);
+    procedure SetAsBoolean(AValue: Boolean);
     procedure SetAsExtended(AValue: Extended);
     procedure SetAsInt64(AValue: Int64);
     procedure SetAsInteger(AValue: Integer);
@@ -213,6 +228,7 @@ type
     procedure ReadProperty(AReader: TJclDFMReader);
     procedure WriteProperty(AWriter: TJclDFMWriter);
 
+    property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
     property AsCollectionProperty: TJclDFMCollectionProperty read
       GetAsCollectionProperty;
     property AsDFMProperties: TJclDFMProperties read GetAsDFMProperties;
@@ -386,6 +402,7 @@ begin
   inherited Create(Stream, BufSize);
   FStdPropertyProcList := TList.Create;
   FBinaryPropertyProcList := TList.Create;
+  FAllPropertyList := TList.Create;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -395,6 +412,7 @@ begin
   ClearPropertyLists;
   FStdPropertyProcList.Free;
   FBinaryPropertyProcList.Free;
+  FAllPropertyList.Free;
   inherited Destroy;
 end;
 
@@ -416,6 +434,12 @@ begin
       Dispose(FBinaryPropertyProcList[I]);
     FBinaryPropertyProcList.Clear;
   end;
+  if FAllPropertyList.Count > 0 then
+  begin
+    for I := 0 to FAllPropertyList.Count - 1 do
+      Dispose(FAllPropertyList[I]);
+    FAllPropertyList.Clear;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -425,12 +449,17 @@ procedure TJclDFMFiler.DefineBinaryProperty(const Name: string;
   HasData: Boolean);
 var
   PBinaryPropertyRec: PJclDFMBinaryPropertyProcRec;
+  PropertyRecPtr: PJclDFMPropertyProcRec;
 begin
   New(PBinaryPropertyRec);
   PBinaryPropertyRec^.Name := Name;
   PBinaryPropertyRec^.ReadProc := ReadData;
   PBinaryPropertyRec^.WriteProc := WriteData;
   FBinaryPropertyProcList.Add(PBinaryPropertyRec);
+  New(PropertyRecPtr);
+  PropertyRecPtr^.Binary := True;
+  PropertyRecPtr^.BinaryPropertyProcRecPtr := PBinaryPropertyRec;
+  FAllPropertyList.Add(PropertyRecPtr);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -440,12 +469,17 @@ procedure TJclDFMFiler.DefineProperty(const Name: string;
   HasData: Boolean);
 var
   PStdPropertyRec: PJclDFMStdPropertyProcRec;
+  PropertyRecPtr: PJclDFMPropertyProcRec;
 begin
   New(PStdPropertyRec);
   PStdPropertyRec^.Name := Name;
   PStdPropertyRec^.ReadProc := ReadData;
   PStdPropertyRec^.WriteProc := WriteData;
   FStdPropertyProcList.Add(PStdPropertyRec);
+  New(PropertyRecPtr);
+  PropertyRecPtr^.Binary := False;
+  PropertyRecPtr^.StdPropertyProcRecPtr := PStdPropertyRec;
+  FAllPropertyList.Add(PropertyRecPtr);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -483,6 +517,20 @@ begin
         Result := ReadProc;
         Break;
       end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDFMFiler.GetCount: Integer;
+begin
+  Result := FAllPropertyList.Count;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDFMFiler.GetItems(AIndex: Integer): TJclDFMPropertyProcRec;
+begin
+  Result := PJclDFMPropertyProcRec(FAllPropertyList[AIndex])^;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -532,25 +580,25 @@ begin
 //it doesn't compile with D3 or lower because of overload, int64 and widestrings
 //but it's not dangerous to list it here
   {$IFDEF DELPHI1_UP}
-  FWriteLevel := dwlD1;
+  FWriteLevel := dwlVCL1;
   {$ENDIF}
   {$IFDEF DELPHI2_UP}
-  FWriteLevel := dwlD2;
+  FWriteLevel := dwlVCL2;
   {$ENDIF}
   {$IFDEF DELPHI3_UP}
-  FWriteLevel := dwlD3;
+  FWriteLevel := dwlVCL3;
   {$ENDIF}
   {$IFDEF DELPHI4_UP}
-  FWriteLevel := dwlD4;
+  FWriteLevel := dwlVCL4;
   {$ENDIF}
   {$IFDEF DELPHI5_UP}
-  FWriteLevel := dwlD5;
+  FWriteLevel := dwlVCL5;
   {$ENDIF}
   {$IFDEF DELPHI6_UP}
-  FWriteLevel := dwlD6;
+  FWriteLevel := dwlVCL6;
   {$ENDIF}
   {$IFDEF DELPHI7_UP}
-  FWriteLevel := dwlD7;
+  FWriteLevel := dwlVCL7;
   {$ENDIF}
 end;
 
@@ -566,7 +614,7 @@ end;
 
 function TJclDFMWriter.GetSkipUnicode: Boolean;
 begin
-  Result := FWriteLevel < dwlD6;
+  Result := FWriteLevel < dwlVCL6;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -673,6 +721,13 @@ begin
     else
       FreeMem(FData); //vaExtended, vaSingle, vaCurrency, vaDate, vaInt64
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDFMProperty.GetAsBoolean: Boolean;
+begin
+  Result := FTyp = vaTrue;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -904,6 +959,25 @@ begin
       AsInt64 := AReader.ReadInt64;
     else
       AReader.SkipValue;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDFMProperty.SetAsBoolean(AValue: Boolean);
+begin
+  if FTyp in [vaFalse, vaTrue] then
+  begin
+    if not AValue then
+    begin
+      SetTyp(vaFalse); //todo - extern Typ := AReader.ReadValue ?
+      AsString := 'False';
+    end
+    else
+    begin
+      SetTyp(vaTrue); //todo - extern Typ := AReader.ReadValue ?
+      AsString := 'True';
+    end;
   end;
 end;
 
