@@ -19,8 +19,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Pointer manipulation
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PCharOrNil
@@ -45,8 +46,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Pointer manipulation
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PWideCharOrNil
@@ -74,8 +76,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Numeric formatting routines
 Author=Anthony Steele;anthony@southeaster.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
@@ -106,8 +109,9 @@ If Condition evaluates to True TruePart is returned, otherwise FalsePart is retu
 Unit=JclSysUtils
 Category=Base Services
 Author=Bernhard Berger;bernhardberger@yahoo.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SizeOfMem(const P: Pointer): Integer;
@@ -135,7 +139,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Pointer manipulation
 Author=Robert R. Marsh;maps@rmarsh.com
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure FreeAndNil(var Obj);
@@ -157,7 +163,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Pointer manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FreeMemAndNil
@@ -181,7 +189,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Pointer manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FreeAndNil
@@ -203,7 +213,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Pointer manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetVirtualMethodCount(AClass: TClass): Integer;
@@ -224,7 +236,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\VMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetVirtualMethod
@@ -251,7 +265,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\VMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetVirtualMethodCount
@@ -281,7 +297,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\VMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GetVirtualMethodCount
@@ -305,7 +323,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
@@ -329,7 +349,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TDynamicIndexList;..\TDynamicIndexList
@@ -348,7 +370,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
@@ -371,7 +395,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TDynamicAddressList;Types\TDynamicAddressList
@@ -390,7 +416,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean;
@@ -433,7 +461,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetInitTable(AClass: TClass): PTypeInfo;
@@ -457,7 +487,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetFieldTable(AClass: TClass): PFieldTable;
@@ -476,7 +508,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TFieldTable;Types\TFieldTable
@@ -504,7 +538,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TFieldClassTable = packed record
@@ -527,7 +563,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TFieldEntry
@@ -554,7 +592,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMethodTable(AClass: TClass): PMethodTable;
@@ -574,7 +614,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TMethodTable;Types\TMethodTable
@@ -607,7 +649,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 [Declaration]
@@ -629,7 +673,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TMethodEntry;Types\TMethodEntry
@@ -657,7 +703,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\DMT
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
@@ -679,7 +727,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\Miscellanuous
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetClassParent
@@ -702,7 +752,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\Miscellanuous
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=SetClassParent
@@ -725,7 +777,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\Miscellanuous
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=IsObject
@@ -748,7 +802,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Class Manipulation\Miscellanuous
 Author=Python;python@softhome.net
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=IsClass
@@ -787,8 +843,9 @@ Category=Memory, Classes and Objects
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Guard
@@ -814,8 +871,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetItem: Pointer;
@@ -834,8 +892,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure FreeItem;
@@ -852,8 +911,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Item: Pointer read GetItem;
@@ -869,8 +929,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards\ISafeGuard
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
@@ -914,8 +975,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=GuardGetMem
@@ -945,8 +1007,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Guard
@@ -978,8 +1041,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Guards
 Author=Rudy Velthuis;rvelthuis@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Guard
@@ -1003,8 +1067,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Miscellanuous
 Author=Heri Bender;HBender@Ergonomics.ch
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FreeObjectList
@@ -1027,8 +1092,9 @@ Unit=JclSysUtils
 Category=Memory, Classes and Objects
 SubCat=Miscellanuous
 Author=Heri Bender;HBender@Ergonomics.ch
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ClearObjectList
@@ -1045,8 +1111,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
@@ -1061,8 +1128,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
@@ -1084,8 +1152,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LoadModuleEx
@@ -1113,8 +1182,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LoadModule
@@ -1140,8 +1210,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LoadModule
@@ -1167,8 +1238,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetModuleSymbolEx
@@ -1197,8 +1269,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetModuleSymbol
@@ -1227,8 +1300,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=WriteModuleData
@@ -1259,8 +1333,9 @@ Unit=JclSysUtils
 Category=Base Services
 SubCat=Dynamic loading
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ReadModuleData
