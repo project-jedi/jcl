@@ -9,8 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL50.bpl IdeOpenDlgFavorite50.bpl JclDebugIde50.bpl \
-  ProjectAnalyzer50.bpl ThreadNameExpert50.bpl
+PROJECTS = DJCL50.bpl IdeOpenDlgFavoriteD50.bpl JclDebugIdeD50.bpl \
+  ProjectAnalyzerD50.bpl ThreadNameExpertD50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -18,16 +18,16 @@ default: $(PROJECTS)
 DJCL50.bpl: d5\DJCL50.dpk
   $(DCC)
 
-JclDebugIde50.bpl: ..\examples\vcl\debugextension\JclDebugIde50.dpk
+JclDebugIdeD50.bpl: ..\examples\vcl\debugextension\JclDebugIdeD50.dpk
   $(DCC)
 
-ThreadNameExpert50.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpert50.dpk
+ThreadNameExpertD50.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertD50.dpk
   $(DCC)
 
-ProjectAnalyzer50.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzer50.dpk
+ProjectAnalyzerD50.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD50.dpk
   $(DCC)
 
-IdeOpenDlgFavorite50.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavorite50.dpk
+IdeOpenDlgFavoriteD50.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD50.dpk
   $(DCC)
 
 
