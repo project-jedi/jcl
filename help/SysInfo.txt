@@ -2570,3 +2570,157 @@ Count=27
 25=GetInternetCacheFolder;GetInternetCacheFolder
 26=GetCookiesFolder;GetCookiesFolder
 27=GetProgramsFolder;GetProgramsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAPMLineStatus: TAPMLineStatus;
+[ShortDescr]
+Returns the line status of the APM system.
+[Description]
+This function checks the line status of the APM system. If the PC is connected
+to a power plug, it is considered "online", otherwise "offline".
+[Result]
+The status of the APM system, see <REF Target"Types\TAPMLineStatus">TAPMLineStatus</REF> for possible values.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=TAPMLineStatus;Types\TAPMLineStatus
+2=GetAPMBatteryFlag
+3=TAPMBatteryFlag;Types\TAPMBatteryFlag
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
+[ShortDescr]
+Enumeration of APM line stati. Used as function result by
+<REF Target"..\GetAPMLineStatus">GetAPMLineStatus</REF>
+[Enumeration]
+Count=3
+1=alsUnknown=Unknown line status. This will be the result if the function could
+not determine the current line status.
+2=alsOnline=The PC is connected to a power plug.
+3=alsOffline=The PC is not connected to a power plug. That is, it is using the
+built-in battery.
+[Quick Info]
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+[SeeAlso]
+Count=3
+1=GetAPMLineStatus;..\GetAPMLineStatus
+2=GetAPMBatteryFlag;..\GetAPMBatteryFlag
+3=TAPMBatteryFlag
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TAPMBatteryFlag = (abfHigh, abfLow, abfCritical, abfCharging, abfNoBattery, abfUnknown);
+[ShortDescr]
+Enumeration of APM battery flags. Used as function result by
+<REF Target"..\GetAPMBatteryFlag">GetAPMBatteryFlag</REF>
+[Enumeration]
+Count=3
+1=abfUnknown=Unknown battery status. The system could not read the battery status.
+2=abfHigh=The battery is charged.
+3=abfLow=The battery is semi-charged.
+4=abfCritical=The battery is almost empty. The user should close all applications
+and shut down the system in order to prevent loss of data.
+5=abfCharging=The battery is being charged.
+6=abfNoBattery=No battery present. Under normal circumstances, the system is
+attached to a power plug when you get this result.
+[Quick Info]
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+[SeeAlso]
+Count=3
+1=GetAPMLineStatus;..\GetAPMLineStatus
+2=GetAPMBatteryFlag;..\GetAPMBatteryFlag
+3=TAPMLineStatus
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAPMBatteryFlag: TAPMBatteryFlag;
+[ShortDescr]
+Returns the charge status of the system battery.
+[Description]
+This function returns the charge status of the system battery.
+[Result]
+The status of the system battery, see <REF Target"Types\TAPMBatteryFlag">TAPMBatteryFlag</REF> for possible values.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=TAPMBatteryFlag;Types\TAPMBatteryFlag
+2=GetAPMLineStatus
+3=TAPMLineStatus;Types\TAPMLineStatus
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAPMBatteryLifePercent: Integer;
+[ShortDescr]
+Returns the percentage of full battery charge remaining.
+[Description]
+Returns the percentage of full battery charge remaining. The range of this value
+may be within 0 to 100, or 255 if the percentage is unknown.
+[Result]
+The percentage of full battery charge remaining.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAPMBatteryLifeTime: Integer;
+[ShortDescr]
+Returns the number of seconds of battery life reamining, or -1 if this time is
+unknown.
+[Description]
+Returns the number of seconds of battery life reamining, or -1 if this time is
+unknown.
+[Result]
+The remaining battery life time in minutes.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetAPMBatteryFullLifeTime: Integer;
+[ShortDescr]
+Returns the number of seconds of battery life minutes when at full charge, or -1
+if full batery lifetime is unknown.
+[Description]
+Returns the number of seconds of battery life minutes when at full charge, or -1
+if full batery lifetime is unknown.
+[Result]
+The number of seconds of battery life minutes when at full charge.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Power Management
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later
+Windows 95/98=Requires Windows 95 or later.
