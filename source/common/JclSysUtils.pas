@@ -20,7 +20,7 @@
 { Description: Various pointer and class related routines.                                         }
 { Unit Owner: Jeroen Speldekamp                                                                    }
 {                                                                                                  }
-{ Last modified: October 15, 2003                                                                     }
+{ Last modified: November 27, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -176,7 +176,9 @@ type
 // Virtual Methods
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
+{$ENDIF}
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 
@@ -194,7 +196,9 @@ function GetDynamicMethodCount(AClass: TClass): Integer;
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList;
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean;
+{$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer;
+{$ENDIF}
 
 { init table methods }
 
@@ -253,8 +257,10 @@ function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 function GetClassParent(AClass: TClass): TClass;
 
+{$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 // Interface information
@@ -268,7 +274,7 @@ function GetImplementorOfInterface(const I: IInterface): TObject;
 
 type
   TDigitCount = 0..255;
-  TDigitValue = 0..35;  // '0'..'9', 'A'..'Z'
+  TDigitValue = -1..35;  // invalid, '0'..'9', 'A'..'Z'
   TNumericSystemBase = 2..Succ(High(TDigitValue));
 
   TJclNumericFormat = class(TObject)
@@ -368,8 +374,10 @@ function BoolToInt(B: Boolean): Integer;
 // RTL package information
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
+{$ENDIF}
 
 implementation
 
@@ -1255,6 +1263,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
 var
   BeginVMT: Longint;
@@ -1282,6 +1291,7 @@ begin
 
   Result := (EndVMT - BeginVMT) div SizeOf(Pointer);
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1376,10 +1386,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
         CALL    System.@FindDynaClass
 end;
+{$ENDIF}
 
 //==================================================================================================
 // Interface Table
@@ -1435,6 +1447,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean; assembler;
 asm
         CMP     Address, Address.vmtSelfPtr
@@ -1445,9 +1458,11 @@ asm
         MOV     Result, False
 @Exit:
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 function IsObject(Address: Pointer): Boolean; assembler;
 asm
 // or IsClass(Pointer(Address^));
@@ -1460,6 +1475,7 @@ asm
         MOV     Result, False
 @Exit:
 end;
+{$ENDIF}
 
 //==================================================================================================
 // Interface information
@@ -2101,6 +2117,8 @@ end;
 // RTL package information
 //==================================================================================================
 
+{$IFNDEF FPC}
+
 function SystemTObjectInstance: LongWord;
 begin
   Result := FindClassHInstance(System.TObject);
@@ -2112,5 +2130,7 @@ function IsCompiledWithPackages: Boolean;
 begin
   Result := SystemTObjectInstance <> HInstance;
 end;
+
+{$ENDIF}
 
 end.
