@@ -1,0 +1,259 @@
+@@AllowRegKeyForEveryone
+<GROUP Security.AccessControl>
+Summary:
+  Allows full access to everyone for a registry key.
+Description:
+
+  AllowRegKeyForEveryone sets the dacl of the specified registry key to NULL thereby
+  granting full access to everyone. Be careful with this one because you can do
+  real damage on the registry!
+Parameters:
+  Key - The rootkey of the specified path. Can be one of the HKEY_XXX constants.
+  Path - Path of the registry key for which to set full access to everyone.
+Result:
+
+  If the function succeeds it returns True, otherwise it returns False.
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: John C Molyneux
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4.0 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@CreateNullDacl
+<GROUP Security.AccessControl>
+Summary:
+  Initializes a security attributes structure for NULL access and optional inheritability.
+Description:
+
+  CreateNullDacl initializes a TSecurityAttributes structure for the creation of
+  an optionally inheritable object with a NULL dacl.
+  The TSecurityAttributes lpSecurityDescriptor member is initialized with a NULL
+  dacl. This will result in the created object allowing full access to everyone.
+  Make sure you read the Notes section for memory issues.
+Parameters:
+  Sa - The TSecurityAttributes structure to initialize.
+  Inheritable - Specifies inheritability. The bInheritHandle member of Sa is set to the same value as the Inheritable parameter.
+Result:
+
+  A pointer to the passed in TSecurityAttributes structure. This allows you to write
+  code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
+Notes:
+
+  The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@CreateInheritable
+<GROUP Security.AccessControl>
+Summary:
+  Initializes a security attributes structure for inheritable object creation.
+Description:
+
+  CreateInheritable initializes a TSecurityAttributes structure for
+  the creation of an inheritable object. Meaning the bInheritHandle member is set
+  to True allowing processes spawned by the current process to inherit the handle
+  to the object that was created with this TSecurityAttributes structure.
+Parameters:
+  Sa - The TSecurityAttributes structure whose fInheritHandle member to set to True resulting in an inheritable object.
+Result:
+
+  A pointer to the passed in TSecurityAttributes structure. This allows you to write
+  code such as CreateFile(..., CreateInheritable(Sa), ...).
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@IsPrivilegeEnabled
+<GROUP Security.Privileges>
+Summary:
+  Tests if the specified Privilege is enabled.
+Description:
+
+  IsPrivilegeEnabled tests whether the specified privilege is enabled for the current
+  thread. If the thread is currently impersonating a client the test is made against
+  the credentials of that client, otherwise the test is made against the credentials
+  of the user associated with the process that the calling thread runs in.
+Parameters:
+  Privilege - The privilege to check for.  This is one of the SE_Xxx constants as documented in the Platform SDK under Security | Access Control | Access Control | Access Control Reference | Windows NT Privileges. For example, you can pass in SE_DEBUG_NAME to test if the debugging privilege is enabled.
+Result:
+
+  If the specified privilege is enabled for the calling thread then the function
+  returns True, otherwise the function returns False - this is also the return
+  value if the function fails in retrieving the status of the specified privilege.
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@EnableProcessPrivilege
+<GROUP Security.Privileges>
+Summary:
+  Enables or disables a privilege for the process.
+Description:
+
+  EnableProcessPrivilege enables or disables the specified privilege for the
+  current process. You can, for example, enable the debug privilege by using this
+  function. The user associated with the calling process must already have
+  TOKEN_ADJUST_PRIVILEGES access.
+Parameters:
+  Enable - If True the function attempts to enable the specified privilege. If False the function attempts to disable the specified privilege.
+  Privilege - The privilege to enable/disable. This is one of the SE_Xxx constants as documented in the Platform SDK under Security | Access Control | Access Control | Access Control Reference | Windows NT Privileges. For example, you can pass in SE_DEBUG_NAME to enable or disable the debugging privilege.
+Result:
+
+  If the function succeeds the result is True, otherwise the result is False. Failure
+  is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
+  to enable or disable privileges.
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@EnableThreadPrivilege
+<GROUP Security.Privileges>
+Summary:
+  Enables or disables a privilege for the thread.
+Description:
+
+  EnableThreadPrivilege enables or disables the specified privilege for the
+  calling thread. You can, for example, enable the debug privilege by using this
+  function. The user associated with the calling process must already have
+  TOKEN_ADJUST_PRIVILEGES access. If the thread is currently impersonating a client
+  then the client must have the appropriate access.
+Parameters:
+  Enable - If True the function attempts to enable the specified privilege. If False the function attempts to disable the specified privilege.
+  Privilege - The privilege to enable/disable. This is one of the SE_Xxx constants as documented in the Platform SDK under Security | Access Control | Access Control | Access Control Reference | Windows NT Privileges. For example, you can pass in SE_DEBUG_NAME to enable or disable the debugging privilege.
+Result:
+
+  If the function succeeds the result is True, otherwise the result is False. Failure
+  is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
+  to enable or disable privileges.
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@IsAdministrator
+<GROUP Security.Privileges>
+Summary:
+  Tests whether the process is running in the user context of a local administrator.
+Description:
+
+  The IsAdministrator function tests if the calling process is running in the
+  context of a user with local administrative rights. That is, if the user is an
+  administrator.
+Result:
+
+  If the process is running in the user context of a local administrator the function
+  returns True, otherwise it returns False.
+Quick info:
+  Unit: JclSecurity
+  Category: Security
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@LookupAccountBySid
+Summary:
+  Returns the name and domain of an alias, user or group.
+Description:
+
+  LookupAccountBySid looks up the domain and account-name of the principal identified
+  by the supplied security identifier. This principal can be an alias, user or group
+  either local or domain. If the function fails it raises an exception (EOSError).
+Parameters:
+  Sid - Security Identifier of the account for which to lookup the domain and account-name.
+  Name - Returns the account-name of the principal identified by Sid.
+  Domain - Returns the domain-name in which the principal identified by Sid is located (if any).
+Quick info:
+  Unit: JclSecurity
+  Category: Account Information
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@QueryTokenInformation
+Summary:
+  Wrapper for the GetTokenInformation Windows API function.
+Description:
+
+  QuerytokenInformation is a wrapper for the GetTokenInformation Windows API function
+  which relieves the user of buffer management. For more information about the purpose
+  of this funcion look up the GetTokenInformation function in the Platform SDK. If
+  the function fails it raises an exception.
+Parameters:
+  Token - Handle to an access token to query for information.
+  InformationClass - The type of information to retrieve.
+  Buffer - Upon success reveices a buffer containing the requested information. This buffer must be freed by the caller by using the FreeMem function. Upon failure the buffer is undefined and should not be freed.
+Quick info:
+  Unit: JclSecurity
+  Category: Account Information
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
+@@GetInteractiveUserName
+Summary:
+  Returns the name of the interactive user.
+Description:
+
+  Returns the name of the interactive user (if any) in the form <domain>\<username>.
+  If the function fails it raises and exception (also true when the shell is
+  not running, ie no user is interactively logged on). This function, unlike
+  the much easier GetUserName, can be called from a service running in the
+  localsystem security context. It can not be called from a service running in
+  another security context unless appropriate measures have been taken to grant
+  the service sufficient access (PROCESS_ALL_ACCESS for the shell process and
+  TOKEN_QUERY for the interactive user account token). That's kind of difficult
+  to achieve so it's safe to say, don't use this function from any service
+  accept one running in the localsystem security context.
+Result:
+
+  The name of the interactively logged on user, if any, in the format domain\username.
+Quick info:
+  Unit: JclSecurity
+  Category: Account Information
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Unsupported.
+--------------------------------------------------------------------------------
