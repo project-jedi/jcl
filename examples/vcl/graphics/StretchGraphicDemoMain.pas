@@ -188,13 +188,6 @@ begin
   FResamplingFilter := rfSpline; // rfLanczos3;
   FPreserveAspectRatio := True;
   UpdateNavButtons;
-  if ParamCount > 0 then
-  with OpenDialog do
-  begin
-    FileName := ParamStr(1);
-    InitialDir := ExtractFileDir(FileName);
-    LoadFile(FileName);
-  end;
 {$IFDEF HasShellCtrls}
   FShellChangeNotifier := TShellChangeNotifier.Create(Self);
   with FShellChangeNotifier do
@@ -212,6 +205,13 @@ begin
 {$IFDEF VCL}
   DragAcceptFiles(Handle, True);
 {$ENDIF VCL}
+  if ParamCount > 0 then
+  with OpenDialog do
+  begin
+    FileName := ParamStr(1);
+    InitialDir := ExtractFileDir(FileName);
+    LoadFile(FileName);
+  end;
 end;
 
 {$IFDEF VCL}
