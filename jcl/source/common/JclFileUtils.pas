@@ -1971,8 +1971,10 @@ end;
 
 function PathGetRelativePath(Origin, Destination: string): string;
 var
+  {$IFDEF MSWINDOWS}
   OrigDrive: string;
   DestDrive: string;
+  {$ENDIF MSWINDOWS}
   OrigList: TStringList;
   DestList: TStringList;
   DiffIndex: Integer;
@@ -1992,19 +1994,30 @@ var
   end;
   {$ENDIF MSWINDOWS}
 
+  function Equal(const Path1, Path2: string): Boolean;
+  begin
+    {$IFDEF MSWINDOWS}  // case insensitive
+    Result := AnsiSameText(Path1, Path2);
+    {$ELSE}             // case sensitive
+    Result := Path1 = Path2;
+    {$ENDIF}
+  end;
+
 begin
   Origin := PathCanonicalize(Origin);
   Destination := PathCanonicalize(Destination);
+  {$IFDEF MSWINDOWS}
   OrigDrive := ExtractFileDrive(Origin);
   DestDrive := ExtractFileDrive(Destination);
-  if (Origin = Destination) or (Destination = '') then
-    Result := ''
+  {$ENDIF MSWINDOWS}
+  if Equal(Origin, Destination) or (Destination = '') then
+    Result := '.'
   else
   if Origin = '' then
     Result := Destination
   else
   {$IFDEF MSWINDOWS}
-  if (DestDrive <> '') and ((OrigDrive = '') or ((OrigDrive <> '') and (OrigDrive <> DestDrive))) then
+  if (DestDrive <> '') and ((OrigDrive = '') or ((OrigDrive <> '') and not Equal(OrigDrive, DestDrive))) then
     Result := Destination
   else
   if (OrigDrive <> '') and (Pos('\', Destination) = 1) then
@@ -2030,11 +2043,7 @@ begin
         if DestList.Count < DiffIndex then
           DiffIndex := DestList.Count;
         for I := 0 to DiffIndex - 1 do
-        {$IFDEF MSWINDOWS} // case insensitive
-          if not StrSame(OrigList[I], DestList[I]) then
-        {$ELSE}            // case sensitive
-          if OrigList[I] <> DestList[I] then
-        {$ENDIF }
+          if not Equal(OrigList[I], DestList[I]) then
           begin
             DiffIndex := I;
             Break;
@@ -5430,6 +5439,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.43  2005/03/19 02:02:59  rrossmair
+// - fixed PathGetRelativePath
+//
 // Revision 1.42  2005/03/08 16:10:08  marquardt
 // standard char sets extended and used, some optimizations for string literals
 //
