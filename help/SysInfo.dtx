@@ -1,3 +1,10 @@
+@@JclSysInfo.pas
+<GROUP SystemInformationRoutines>
+Summary
+  This unit contains routines and classes to retrieve various pieces of system information.
+  Examples are the location of standard folders, settings of environment variables,
+  processor details and the OS version.
+--------------------------------------------------------------------------------
 @@$SystemInformationRoutines
 <GROUP JCL>
 <TITLE System Information Routines>
@@ -284,7 +291,7 @@ Quick info:
   Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@ProcessorCount
-<GROUP SystemInformationRoutines>
+<GROUP SystemInformationRoutines.Hardware>
 Summary:
   Number of processors.
 Description:
@@ -294,13 +301,56 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AllocGranularity
-<GROUP SystemInformationRoutines>
+<GROUP SystemInformationRoutines.Memory>
 Summary:
   Systems memory allocation granularity.
 Description:
   AllocGranularity contains the systems virtual memory allocation granularity.
 Quick info:
   Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@GetCommonAppdataFolder
+<GROUP SystemInformationRoutines.CommonFolders>
+Summary:
+  Returns the application data folder for all users.
+Description:
+  GetCommonAppdataFolder returns the folder holding application data shared by
+  all users. A typical path is C:\Documents and Settings\All Users\Application Data.
+Result:
+  The current directory for the calling process or an empty string on failure.
+Note:
+  Requires shell v 5.00 and upwards.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
+Quick info:
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetCurrentFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -311,7 +361,7 @@ Description:
 Result:
   The current directory for the calling process or an empty string on failure.
 Quick info:
-  Donator: Robert Marquardt
+  Donators: Robert Marquardt (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@DelEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -330,7 +380,7 @@ See also:
   GetEnvironmentVars
   SetEnvironmentVar
 Quick info:
-  Donator: Marcel van Brakel
+  Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@ExpandEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -352,7 +402,7 @@ See also:
   GetEnvironmentVars
   SetEnvironmentVar
 Quick info:
-  Donator: Marcel van Brakel
+  Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -376,7 +426,7 @@ See also:
   GetEnvironmentVars
   SetEnvironmentVar
 Quick info:
-  Donator: Marcel van Brakel
+  Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVars
 <GROUP SystemInformationRoutines.Environment>
@@ -403,7 +453,7 @@ See also:
   GetEnvironmentVar
   SetEnvironmentVar
 Quick info:
-  Donator: Marcel van Brakel
+  Donators: Marcel van Brakel (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@SetEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -423,7 +473,7 @@ See also:
   GetEnvironmentVar
   GetEnvironmentVars
 Quick info:
-  Donator: Marcel van Brakel
+  Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@TWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -459,6 +509,8 @@ Quick info:
   Windows 2000
 @@TWindowsVersion.wvWinXP
   Windows XP
+@@TWindowsVersion.wvWin2003
+  Windows Server 2003
 --------------------------------------------------------------------------------
 @@GetWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -479,6 +531,61 @@ See also:
   NtProductType
 Quick info:
   Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@GetOSVersionString
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the operation system version as a string.
+Description:
+  GetOSVersionString returns the operation system version and release/service
+  pack information as a string. For example, 'Linux 2.6.5' or 'Windows 2000 SP4'.
+Result:
+  The operating sytem version and release/service pack information as a string,
+  or an empty string if the OS is not recognized.
+See also:
+  GetWindowsVersionString, GetWindowsServicePackVersionString
+Autor:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@GetWindowsVersionString
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows version as a string.
+Description:
+  GetWindowsVersionString returns the Windows version as a string. For example, 'Windows 2000'.
+Result:
+  The Windows version as a string or an empty string if the OS is not recognized.
+See also:
+  GetWindowsVersion
+Quick info:
+  Autor: Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@GetWindowsServicePackVersion
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the installed service pack
+Description:
+  Returns the major version number of the latest installed Windows Service Pack.
+Result:
+  The major version number of the latest installed Service Pack. In case of failure, or it
+  no Service Pack is installed, the function returns 0.
+See Also:
+  GetWindowsVersion, GetWindowsServicePackVersionString
+Quick Info:
+  Author: Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@GetWindowsServicePackVersionString
+Summary:
+  Returns the installed service pack as a string
+Description:
+  Returns the major version number of the latest installed Windows Service Pack as a string.
+Result:
+  The major version number of the latest installed Service Pack. In case of failure, or if
+  no Service Pack is installed, the function returns an empty string.
+See Also:
+  GetWindowsServicePackVersion, GetWindowsVersionString
+Quick Info:
+  Author: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TestFDIVInstruction
 <GROUP SystemInformationRoutines.Hardware>
@@ -782,7 +889,7 @@ Summary:
 Description:
   GetCpuInfo returns extensive information about the CPU (Central Processing Unit).
   It returns 'generic' information such as type, speed and manufacturer information
-  as well as brand specific information for Intel, AMD, Cyrix, and Transmeta 
+  as well as brand specific information for Intel, AMD, Cyrix, and Transmeta
   processors. This function includes support for the Intel 486 to Pentium 4, 
   AMD AM486 to Athlon, Cyrix Media GX to 6x86MX, and Crusoe.
 Parameters:
@@ -840,7 +947,7 @@ Notes:
 See also:
   GetLocalUserName
 Quick info:
-  Donator: Nick Hodges
+  Donators: Nick Hodges (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetLocalUserName
 <GROUP SystemInformationRoutines.Identification>
@@ -857,7 +964,7 @@ Notes:
 See also:
   GetLocalComputerName
 Quick info:
-  Donator: Nick Hodges
+  Donators: Nick Hodges (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetProgramFilesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -912,6 +1019,8 @@ Description:
 Result:
   The BIOS release date, if successful. The system base date (12/30/1899), if
   there has been a problem.
+Note: This information is accurate only if you have not updated or
+  changed the BIOS since you last ran Windows Setup.
 See also:
   GetBIOSName
   GetBIOSCopyright
@@ -927,6 +1036,11 @@ Description:
   Returns the name of the BIOS.
 Result:
   The BIOS name, if successful. An empty string otherwise.
+Notes:
+  This information is accurate only if you have not updated or
+  changed the BIOS since you last ran Windows 95/98 or Windows Millennium
+  Edition (Me) Setup.
+  The result is valid for Win9x/ME only; under Windows NT/2000/XP/2003, an empty string is returned.
 See also:
   GetBIOSDate
   GetBIOSCopyright
@@ -1139,6 +1253,51 @@ See also:
 Quick info:
   Donator: Nick Hodges
 --------------------------------------------------------------------------------
+@@IsWinNT31
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows NT 3.1
+Description:
+  IsWinNT3 returns whether or not the system is running Windows NT 3.1.
+Result:
+  If the system is running Windows NT 3.1 the result is True otherwise the result is False.
+See also:
+  IsWin3
+  IsWin35
+  NtProductType
+Quick info:
+  Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@IsWinNT35
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows NT 3.5
+Description:
+  IsWinNT3 returns whether or not the system is running Windows NT 3.5.
+Result:
+  If the system is running Windows NT 3.5 the result is True otherwise the result is False.
+See also:
+  IsWin3
+  IsWin31
+  NtProductType
+Quick info:
+  Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@IsWinNT351
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows NT 3.5.1
+Description:
+  IsWinNT3 returns whether or not the system is running Windows NT 3.5.1.
+Result:
+  If the system is running Windows NT 3.5.1 the result is True otherwise the result is False.
+See also:
+  IsWin3
+  IsWin35
+  NtProductType
+Quick info:
+  Donator: Nick Hodges
+--------------------------------------------------------------------------------
 @@IsWinNT4
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
@@ -1172,8 +1331,28 @@ See also:
   NtProductType
   IsWinNT4
   IsWinXP
+  IsWin2003
 Quick info:
   Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@IsWin2003
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Server 2003.
+Description:
+  IsWin2003 returns whether or not the system is running Windows Server 2003.
+Result:
+  If the system is running Windows Server 2003 the result is True otherwise the result is False.
+See also:
+  IsWinNT3
+  IsWin95
+  IsWin98
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  NtProductType
+Quick info:
+  Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@NtProductType
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1184,13 +1363,16 @@ Description:
 Result:
   The edition of Windows NT. This is one of the values in the TNtProductType
   enumeration which is defined as:
-  TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
-   
+  TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer, ptPersonal, ptProfessional, ptDatacenterServer);
+
    * ptUnknown Edition could not be determined. Most likely the system is not running NT
    * ptWorkStation The system is running Windows NT workstation or Windows 2000 professional.
    * ptServer The system is running Windows NT/2000Windows 2000 Server
    * ptAdvancedServer The system is running Windows NT/2000 Server as a (primary or backup) domain controller.
-   
+   * ptPersonal The system is running Windows XP Personal
+   * ptProfessional The system is running Windows 2000/XP Professional
+   * ptDatacenterServer The system is running Windows 2000 DataCenter server
+
 Notes:
   On platforms other then Windows NT/2000 this function always returns ptUnknown.
 See also:
@@ -1198,6 +1380,20 @@ See also:
   IsWin2K
 Quick info:
   Donator: Marcel van Brakel
+  Contributors: Scott Price, Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@NtProductTypeString
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows NT product type as a string.
+Description:
+  NtProductTypeString returns the NT product type as a string. For example 'Workstation'.
+Result:
+  The NT product type as a string or an empty string if the product type is not recognized.
+See also:
+  NtProductType
+Quick info:
+  Autor: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@CreateEnvironmentBlock
 <GROUP SystemInformationRoutines.Environment>
@@ -1251,6 +1447,7 @@ Summary:
   Returns the name of the domain where a user account resides.
 Description:
   GetUserDomainName returns the name of the domain where a user account resides.
+  Under Win9x/ME, an empty string will be returned.
 Parameters:
   CurUser - The name of the user account to look up.
 Result:
@@ -1258,6 +1455,7 @@ Result:
   or an empty string if the function fails.
 Notes:
   The function tries to find the user account on the local system first. Next, the primary domain is checked. If the name is not found there, trusted domains are checked.
+  GetUserDomainName relies on LookupAccountName, which is not implemented by Win9x/ME, and will return an empty result string on these platforms.
 See also:
   GetDomainName
   GetLocalUserName
@@ -1278,11 +1476,12 @@ Result:
   the function fails.
 Notes:
   The function determines the name of the domain by checking which domain the currently logged in user is belonging to.
+  Under Win9x/ME, the result will be an empty string.
 See also:
   GetUserDomainName
   GetLocalUserName
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetDesktopFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1314,6 +1513,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1359,6 +1559,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1399,6 +1600,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1408,7 +1610,7 @@ See also:
   GetHistoryFolder
   GetProgramsFolder
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFavoritesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1440,6 +1642,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1482,6 +1685,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1523,6 +1727,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1564,6 +1769,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1605,6 +1811,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1647,6 +1854,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1688,6 +1896,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1729,6 +1938,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1771,6 +1981,7 @@ See also:
   GetCommonProgramsFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1813,6 +2024,7 @@ See also:
   GetCommonStartmenuFolder
   GetCommonStartupFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1855,6 +2067,7 @@ See also:
   GetCommonStartmenuFolder
   GetCommonProgramsFolder
   GetCommonDesktopdirectoryFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -1897,6 +2110,7 @@ See also:
   GetCommonStartmenuFolder
   GetCommonProgramsFolder
   GetCommonStartupFolder
+  GetCommonAppdataFolder
   GetAppdataFolder
   GetPrinthoodFolder
   GetCommonFavoritesFolder
@@ -2345,7 +2559,7 @@ Result:
 See also:
   GetSwapFileUsage
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileSize
 <GROUP SystemInformationRoutines.Memory>
@@ -2358,7 +2572,7 @@ Result:
 See also:
   GetSwapFileUsage
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileUsage
 <GROUP SystemInformationRoutines.Memory>
@@ -2373,7 +2587,7 @@ See also:
   GetMemoryLoad
   GetSwapFileSize
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPhysicalMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2386,7 +2600,7 @@ Result:
 See also:
   GetFreePhysicalMemory
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFreePhysicalMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2399,7 +2613,7 @@ Result:
 See also:
   GetTotalPhysicalMemory
 Quick info:
-  Donator: Peter Friese
+  Donators: Peter Friese (Win32), André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPageFileMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2518,3 +2732,66 @@ See also:
   GetScrollLockKeyState
 Quick info:
   Donator: Peter Friese
+--------------------------------------------------------------------------------
+@@GetOpenGLVersion
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the current OpenGL library version string
+Description:
+  Takes a WinControl against which to perform the tests, and then returns
+  the Version String information provided by the current OpenGL library.
+Result:
+  Surfaces the information provided by the OpenGL library (if any) relating to
+  the version and vendor of the OpenGL library in the parameters passed.
+Author:
+  Scott Price
+--------------------------------------------------------------------------------
+@@GetOpenGLVersion
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the current OpenGL library version string (for window rendering)
+Description:
+  Takes a WinControl against which to perform the tests, and then returns
+  the information provided by the OpenGL library (if any) relating to
+  the version and vendor in the parameters passed.
+Parameters:
+  Win: HWND - Handle of the window to use for rendering
+  Version: AnsiString - the string to receive the library version information
+  Vendor: AnsiString - the string to receive the library vendor information
+Result:
+  Surfaces the information provided by the OpenGL library (if any) relating to
+  the version and vendor of the OpenGL library in the parameters passed.
+Author:
+  Scott Price
+Contributor:
+  Peter J. Haas
+--------------------------------------------------------------------------------
+@@GetOpenGLVersionBitmapRendering
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the current OpenGL library version string (for bitmap rendering)
+Description:
+  Creates a bitmap against which to perform the tests, and then returns the
+  information provided by the OpenGL library (if any) relating to the version
+  and vendor in the parameters passed.
+Parameters:
+  Version: AnsiString - the string to receive the library version information
+  Vendor: AnsiString - the string to receive the library vendor information
+Result:
+  True, if successful, False otherwise.
+Author:
+  Scott Price
+Contributor:
+  Peter J. Haas
+--------------------------------------------------------------------------------
+@@PageSize
+<GROUP SystemInformationRoutines.Memory>
+Summary:
+  Holds the value of the system's virtual memory page size
+Description:
+  Specifies the page size and the granularity of page protection and commitment.
+  This is the page size used by the VirtualAlloc function.
+Platform:
+  Windows
+--------------------------------------------------------------------------------
+
