@@ -139,6 +139,7 @@ type
     FOnStarting: TInstallationEvent;
     FOnEnding: TInstallationEvent;
     FOnProgress: TInstallationProgressEvent;
+    FInstalling: Boolean;
     function CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
     function GetTargetInstall(Installation: TJclBorRADToolInstallation): TJclInstallation;
     procedure InitInstallationTargets;
@@ -165,6 +166,7 @@ type
     function Supports(Target: TJclBorRADToolInstallation): Boolean;
     property ChmHelpFileName: string read FJclChmHelpFileName;
     property HlpHelpFileName: string read FJclHlpHelpFileName;
+    property Installing: Boolean read FInstalling;
     property Path: string read FJclPath;
     property SourceDir: string read FJclSourceDir;
     property SourcePath: string read FJclSourcePath;
@@ -1132,8 +1134,9 @@ begin
       RemoveHelpFromIdeTools;
     {$ENDIF MSWINDOWS}
   end;
-  if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
-    Progress(ProgressWeight(Option));
+  if not Distribution.Installing then
+    if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
+      Progress(ProgressWeight(Option));
 end;
 
 procedure TJclInstallation.InstallationStarted;
@@ -1595,6 +1598,7 @@ function TJclDistribution.Install: Boolean;
 var
   I: Integer;
 begin
+  FInstalling := True; // tell UninstallOption not to call Progress()
   Result := True;
   try
     InitProgress;
@@ -1605,6 +1609,7 @@ begin
     end;
   finally
     Tool.UpdateStatus('');
+    FInstalling := False;
   end;
 end;
 
@@ -1697,6 +1702,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.63  2005/03/24 20:41:32  rrossmair
+// - fixed installation progress computation.
+//
 // Revision 1.62  2005/03/23 04:28:49  rrossmair
 // - removed make -fBCB5-dcc32.cfg.mak (handled by build.exe now)
 //
