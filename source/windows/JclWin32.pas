@@ -95,9 +95,9 @@ const
 //==============================================================================
 
 type
-  TCoCreateInstanceExProc = function (const clsid: TCLSID;
-    unkOuter: IUnknown; dwClsCtx: Longint; ServerInfo: PCoServerInfo;
-    dwCount: Longint; rgmqResults: PMultiQIArray): HResult stdcall;
+  TCoCreateInstanceExProc = function (const clsid: TGUID;
+    unkOuter: IUnknown; dwClsCtx: Longint; ServerInfo: Pointer{PCoServerInfo};
+    dwCount: Longint; rgmqResults: Pointer{PMultiQIArray}): HResult stdcall;
 
 //==============================================================================
 // Security related declarations from winnt.h
@@ -176,6 +176,9 @@ const
 // TODO SetNamedSecurityInfo is incorrectly declared, at least for Windows 2000
 // it is. D5 unit tries to import from aclapi.dll but it is located in advapi3.dll
 // Have to check whether this is also true for Windows NT 4.
+
+type
+  PPSID = ^PSID;
 
 function SetNamedSecurityInfoW(pObjectName: PWideChar; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; ppsidOwner, ppsidGroup: PPSID; ppDacl,
