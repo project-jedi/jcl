@@ -8,8 +8,8 @@
   <C6Libs/>
   <Requires>
     <Package Name="rtl" Targets="C6,D6,D7,K3,D9" Condition=""/>
-    <Package Name="vcl50" Targets="C5,D5" Condition=""/>
-    <Package Name="vcljpg50" Targets="C5,D5" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcljpg50" Targets="c5,d5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\common\Jcl8087.pas" Targets="C5,C6,D5,D6,D7,K3,D9" Formname="" Condition=""/>
