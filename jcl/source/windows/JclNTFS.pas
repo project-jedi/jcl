@@ -272,6 +272,9 @@ function NtfsDeleteHardLinks(const FileName: string): Boolean;
 implementation
 
 uses
+  {$IFDEF FPC}
+  WinSysUt,
+  {$ENDIF FPC}
   SysUtils,
   JclFileUtils, JclResources, JclSecurity;
 
@@ -1393,6 +1396,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/13 07:46:06  rrossmair
+// changes for FPC 1.9.3+ compatibility
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

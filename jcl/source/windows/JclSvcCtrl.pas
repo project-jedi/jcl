@@ -364,7 +364,7 @@ implementation
 
 uses
   {$IFDEF FPC}
-  JwaRegStr,
+  WinSysUt, JwaRegStr,
   {$ELSE}
   RegStr,
   {$ENDIF}
@@ -1448,6 +1448,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/05/13 07:46:06  rrossmair
+// changes for FPC 1.9.3+ compatibility
+//
 // Revision 1.15  2004/05/06 23:41:33  rrossmair
 // fix: $IFDEF FPC left empty const section
 //

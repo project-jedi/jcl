@@ -915,9 +915,11 @@ implementation
 uses
   {$IFDEF MSWINDOWS}
   ShellApi,
-  {$IFNDEF FPC}
+  {$IFDEF FPC}
+  WinSysUt,
+  {$ELSE ~FPC}
   ActiveX, ShlObj, JclShell,
-  {$ENDIF}
+  {$ENDIF ~FPC}
   JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
   JclResources, JclStrings;
@@ -5749,6 +5751,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/05/13 07:46:05  rrossmair
+// changes for FPC 1.9.3+ compatibility
+//
 // Revision 1.16  2004/05/09 11:19:13  rrossmair
 // Contributor list update
 //
