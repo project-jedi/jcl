@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 26, 2001                                              }
+{ Last modified: January 31, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -350,8 +350,6 @@ function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
 // Stack info routines
 //------------------------------------------------------------------------------
 
-{ TODO -cDOC : Hallvard Vassbotn }
-
 type
   PDWORDArray = ^TDWORDArray;
   TDWORDArray = array [0..(MaxInt - $F) div SizeOf(DWORD)] of DWORD;
@@ -404,8 +402,6 @@ function JclLastExceptStackList: TJclStackInfoList;
 //------------------------------------------------------------------------------
 // Exception frame info routines
 //------------------------------------------------------------------------------
-
-{ TODO -cDOC : Marcel Bestebroer }
 
 type
   PJmpInstruction = ^TJmpInstruction;
@@ -478,8 +474,6 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 //------------------------------------------------------------------------------
 // Exception hooking
 //------------------------------------------------------------------------------
-
-{ TODO -cDOC : Hallvard Vassbotn }
 
 type
   TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
@@ -1333,7 +1327,6 @@ var
   FileHeader: TJclDbgHeader;
   WordList: TStringList;
   WordStream: TMemoryStream;
-
   I, D: Integer;
   S: string;
   L1, L2, L3: Integer;
@@ -2010,7 +2003,9 @@ end;
 function TJclDebugInfoBinary.InitializeSource: Boolean;
 var
   JdbgFileName: TFileName;
+  VerifyFileName: Boolean;
 begin
+  VerifyFileName := False;
   Result := FindResource(FModule, JclDbgDataResName, RT_RCDATA) <> 0;
   if Result then
     FStream := TResourceStream.Create(FModule, JclDbgDataResName, RT_RCDATA)
@@ -2019,12 +2014,16 @@ begin
     JdbgFileName := ChangeFileExt(FileName, JclDbgFileExtension);
     Result := FileExists(JdbgFileName);
     if Result then
+    begin
       FStream := TJclFileMappingStream.Create(JdbgFileName, fmOpenRead or fmShareDenyWrite);
-  end;    
+      VerifyFileName := True;
+    end;
+  end;
   if Result then
   begin
     FScanner := TJclBinDebugScanner.Create(FStream, True);
-    Result := FScanner.ValidFormat and FScanner.IsModuleNameValid(FileName);
+    Result := FScanner.ValidFormat and
+      (not VerifyFileName or FScanner.IsModuleNameValid(FileName));
   end;
 end;
 
