@@ -1057,14 +1057,15 @@ begin
       {$I+}
       if IOResult = 0 then
       begin
-        if Edition.Typ = BCB then
+        if Edition.Typ <> Delphi then
           WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
         else
           WriteLn(f, '-u"', Edition.RootDir, '\lib"');
         CloseFile(f);
-      end;
+      end
+      else
       begin
-        WriteLn('You do not have the required permission to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
+        WriteLn('You do not have the required permissions to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
         Halt(0);
       end;
     end;
