@@ -43,10 +43,7 @@ uses
   Windows,
   JclBase;
 
-//--------------------------------------------------------------------------------------------------
 // StrLstLoadSave
-//--------------------------------------------------------------------------------------------------
-
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
@@ -60,10 +57,7 @@ function PowerOffOS: Boolean;
 function ShutDownOS: Boolean;
 function RebootOS: Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // CreateProcAsUser
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclCreateProcessError = class(EJclWin32Error);
 
@@ -80,8 +74,6 @@ implementation
 uses
   SysUtils,
   JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
-
-//==================================================================================================
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 var
@@ -121,8 +113,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 var
   StartupInfo: TStartupInfo;
@@ -141,8 +131,6 @@ begin
     CloseHandle(ProcessInfo.hProcess);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 var
@@ -168,14 +156,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean): Cardinal;
 begin
   Result := Execute(Cmd, Output, RawOutput);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LogOffOS: Boolean;
 begin
@@ -185,16 +169,12 @@ begin
   { TODO : implement at least LINUX variants throwing an exception }
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PowerOffOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_POWEROFF);
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ShutDownOS: Boolean;
 begin
@@ -203,16 +183,12 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RebootOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_Reboot);
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ExitWindows(ExitCode: Cardinal): Boolean;
 begin
@@ -222,8 +198,6 @@ begin
   else
     Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 var
@@ -241,8 +215,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure CheckOSVersion;
 begin
   if Win32Platform <> VER_PLATFORM_WIN32_NT then
@@ -251,14 +223,10 @@ begin
     raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
 begin
   CreateProcAsUserEx(UserDomain, UserName, Password, CommandLine, nil);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cTest : Check for Win9x }
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
@@ -371,6 +339,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.11  2004/10/25 06:58:44  rrossmair
 // - fixed bug #0002065
 // - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()

@@ -226,9 +226,7 @@ const
     TASK_FLAG_RUN_IF_CONNECTED_TO_INTERNET, TASK_FLAG_RESTART_ON_IDLE_RESUME,
     TASK_FLAG_SYSTEM_REQUIRED, TASK_FLAG_RUN_ONLY_IF_LOGGED_ON);
 
-//==================================================================================================
-// TJclTaskSchedule
-//==================================================================================================
+//== { TJclTaskSchedule } ====================================================
 
 constructor TJclTaskSchedule.Create;
 begin
@@ -236,23 +234,17 @@ begin
   FTasks := TObjectList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclTaskSchedule.Create(const ComputerName: WideString);
 begin
   Create;
   SetTargetComputer(ComputerName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclTaskSchedule.Destroy;
 begin
   FreeAndNil(FTasks);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskSchedule.GetTargetComputer: WideString;
 var
@@ -263,14 +255,10 @@ begin
   CoTaskMemFree(ComputerName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTaskSchedule.SetTargetComputer(const Value: WideString);
 begin
   OleCheck(FTaskScheduler.SetTargetComputer(PWideCharOrNil(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclTaskSchedule.IsRunning: Boolean;
 
@@ -298,8 +286,6 @@ begin
   else
     Result := IsRunning9x;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class procedure TJclTaskSchedule.Start;
 
@@ -341,8 +327,6 @@ begin
     Start9x;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class procedure TJclTaskSchedule.Stop;
 
   procedure Stop9x;
@@ -380,21 +364,15 @@ begin
     Stop9x;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskSchedule.GetTask(const Idx: Integer): TJclScheduledTask;
 begin
   Result := TJclScheduledTask(FTasks.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskSchedule.GetTaskCount: Integer;
 begin
   Result := FTasks.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclTaskSchedule.Refresh;
 var
@@ -420,8 +398,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskSchedule.Add(const TaskName: WideString): TJclScheduledTask;
 var
   TaskClsId: TCLSID;
@@ -438,14 +414,10 @@ begin
   FTasks.Add(Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTaskSchedule.Delete(const Idx: Integer);
 begin
   Remove(Tasks[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskSchedule.Remove(const TaskName: WideString): Integer;
 begin
@@ -458,8 +430,6 @@ begin
   Result := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskSchedule.Remove(const TaskIntf: ITask): Integer;
 begin
   for Result := 0 to TaskCount-1 do
@@ -470,8 +440,6 @@ begin
     end;
   Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskSchedule.Remove(const ATask: TJclScheduledTask): Integer;
 begin
@@ -484,16 +452,12 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclTaskTrigger
-//==================================================================================================
+//=== { TJclTaskTrigger } ====================================================
 
 procedure TJclTaskTrigger.SetTaskTrigger(const Value: ITaskTrigger);
 begin
   FTaskTrigger := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskTrigger.GetTrigger: TTaskTrigger;
 begin
@@ -501,14 +465,10 @@ begin
   OleCheck(TaskTrigger.GetTrigger(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTaskTrigger.SetTrigger(const Value: TTaskTrigger);
 begin
   OleCheck(TaskTrigger.SetTrigger(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskTrigger.GetTriggerString: WideString;
 var
@@ -519,9 +479,7 @@ begin
   CoTaskMemFree(Trigger);
 end;
 
-//==================================================================================================
-// TJclTaskTriggers
-//==================================================================================================
+//=== { TJclTaskTriggers } ===================================================
 
 constructor TJclTaskTriggers.Create(AWorkItem: TJclScheduledWorkItem);
 begin
@@ -529,28 +487,20 @@ begin
   FWorkItem := AWorkItem;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskTriggers.GetItem(Index: Integer): TJclTaskTrigger;
 begin
   Result := TJclTaskTrigger(inherited GetItem(Index));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclTaskTriggers.SetItem(Index: Integer; Value: TJclTaskTrigger);
 begin
   inherited SetItem(Index, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskTriggers.GetOwner: TPersistent;
 begin
   Result := FWorkItem;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskTriggers.Add(ATrigger: ITaskTrigger): TJclTaskTrigger;
 begin
@@ -558,14 +508,10 @@ begin
   Result.SetTaskTrigger(ATrigger);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskTriggers.Add: TJclTaskTrigger;
 begin
   Result := TJclTaskTrigger(inherited Add);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTaskTriggers.AddItem(Item: TJclTaskTrigger; Index: Integer): TJclTaskTrigger;
 begin
@@ -583,16 +529,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTaskTriggers.Insert(Index: Integer): TJclTaskTrigger;
 begin
   Result := AddItem(nil, Index);
 end;
 
-//==================================================================================================
-// TJclScheduledWorkItem
-//==================================================================================================
+//=== { TJclScheduledWorkItem } ==============================================
 
 constructor TJclScheduledWorkItem.Create(const ATaskName: WideString;
   const AScheduledWorkItem: IScheduledWorkItem);
@@ -604,8 +546,6 @@ begin
   FTriggers := TJclTaskTriggers.Create(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclScheduledWorkItem.Destroy;
 begin
   FreeAndNil(FTriggers);
@@ -613,28 +553,20 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.Save;
 begin
   OleCheck((FScheduledWorkItem as IPersistFile).Save(nil, True));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclScheduledWorkItem.Run;
 begin
   OleCheck(FScheduledWorkItem.Run);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.Terminate;
 begin
   OleCheck(FScheduledWorkItem.Terminate);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetAccountName: WideString;
 var
@@ -654,8 +586,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetAccountInformation(const Name, Password: WideString);
 begin
   if IsWinNT then  // ignore this method in Win9x/ME
@@ -665,21 +595,15 @@ begin
       OleCheck(FScheduledWorkItem.SetAccountInformation(PWideChar(Name), PWideChar(Password)));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetAccountName(const Value: WideString);
 begin
   SetAccountInformation(Value, '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetPassword(const Value: WideString);
 begin
   SetAccountInformation(GetAccountName, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetComment: WideString;
 var
@@ -690,14 +614,10 @@ begin
   CoTaskMemFree(Comment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetComment(const Value: WideString);
 begin
   OleCheck(FScheduledWorkItem.SetComment(PWideChar(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetCreator: WideString;
 var
@@ -708,21 +628,15 @@ begin
   CoTaskMemFree(Creator);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetCreator(const Value: WideString);
 begin
   OleCheck(FScheduledWorkItem.SetCreator(PWideChar(Value)));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetExitCode: DWORD;
 begin
   OleCheck(FScheduledWorkItem.GetExitCode(Result));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetDeadlineMinutes: Word;
 var
@@ -731,8 +645,6 @@ begin
   OleCheck(FScheduledWorkItem.GetIdleWait(Result, Dummy));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetIdleMinutes: Word;
 var
   Dummy: Word;
@@ -740,21 +652,15 @@ begin
   OleCheck(FScheduledWorkItem.GetIdleWait(Dummy, Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetMostRecentRunTime: TSystemTime;
 begin
   OleCheck(FScheduledWorkItem.GetMostRecentRunTime(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetNextRunTime: TSystemTime;
 begin
   OleCheck(FScheduledWorkItem.GetNextRunTime(Result));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetRunTimes(const BeginTime, EndTime: TDateTime): TDateTimeArray;
 var
@@ -781,8 +687,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetStatus: TJclScheduledTaskStatus;
 var
   Status: HRESULT;
@@ -802,35 +706,25 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetErrorRetryCount: Word;
 begin
   OleCheck(FScheduledWorkItem.GetErrorRetryCount(Result));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclScheduledWorkItem.SetErrorRetryCount(const Value: Word);
 begin
   OleCheck(FScheduledWorkItem.SetErrorRetryCount(Value));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetErrorRetryInterval: Word;
 begin
   OleCheck(FScheduledWorkItem.GetErrorRetryInterval(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetErrorRetryInterval(const Value: Word);
 begin
   OleCheck(FScheduledWorkItem.SetErrorRetryInterval(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetFlags: TJclScheduledTaskFlags;
 var
@@ -844,8 +738,6 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetFlags(const Value: TJclScheduledTaskFlags);
 var
   AFlags: DWORD;
@@ -857,8 +749,6 @@ begin
       AFlags := AFlags or TaskFlagMapping[AFlag];
   OleCheck(FScheduledWorkItem.SetFlags(AFlags));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetData: TStream;
 var
@@ -877,16 +767,12 @@ begin
   Result := FData;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledWorkItem.SetData(const Value: TStream);
 begin
   FData.Clear;
   FData.CopyFrom(Value, 0);
   OleCheck(FScheduledWorkItem.SetWorkItemData(FData.Size, PByte(FData.Memory)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclScheduledWorkItem.Refresh;
 var
@@ -904,23 +790,17 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledWorkItem.GetTriggerCount: Integer;
 begin
   Result := FTriggers.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetTrigger(const Idx: Integer): TJclTaskTrigger;
 begin
   Result := TJclTaskTrigger(FTriggers.Items[Idx]);
 end;
 
-//==================================================================================================
-// TJclScheduledTask
-//==================================================================================================
+//=== { TJclScheduledTask } ==================================================
 
 function TJclScheduledTask.GetApplicationName: WideString;
 var
@@ -931,28 +811,20 @@ begin
   CoTaskMemFree(AppName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetApplicationName(const Value: WideString);
 begin
   OleCheck(Task.SetApplicationName(PWideChar(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.GetMaxRunTime: DWORD;
 begin
   OleCheck(Task.GetMaxRunTime(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetMaxRunTime(const Value: DWORD);
 begin
   OleCheck(Task.SetMaxRunTime(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.GetParameters: WideString;
 var
@@ -963,42 +835,30 @@ begin
   CoTaskMemFree(Parameters);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetParameters(const Value: WideString);
 begin
   OleCheck(Task.SetParameters(PWideChar(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.GetPriority: DWORD;
 begin
   OleCheck(Task.GetPriority(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetPriority(const Value: DWORD);
 begin
   OleCheck(Task.SetPriority(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.GetTaskFlags: DWORD;
 begin
   OleCheck(Task.GetTaskFlags(Result));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetTaskFlags(const Value: DWORD);
 begin
   OleCheck(Task.SetTaskFlags(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.GetWorkingDirectory: WideString;
 var
@@ -1009,14 +869,10 @@ begin
   CoTaskMemFree(WorkingDir);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclScheduledTask.SetWorkingDirectory(const Value: WideString);
 begin
   OleCheck(Task.SetWorkingDirectory(PWideChar(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclScheduledTask.ShowPage(Pages: TJclScheduleTaskPropertyPages): Boolean;
 var
@@ -1035,8 +891,6 @@ begin
   Result := PropertySheet(PropHeader) > 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclScheduledTask.GetTask: ITask;
 begin
   Result := ScheduledWorkItem as ITask;
@@ -1045,6 +899,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2005/02/24 16:34:53  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.19  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

@@ -233,8 +233,6 @@ const
   RectZero: TRectCoord = (X: 0.0; Y: 0.0);
   RectInfinity: TRectCoord = (X: Infinity; Y: Infinity);
 
-//--------------------------------------------------------------------------------------------------
-
 function Coordinates(const cX, cY: Float; CoordType: TComplexKind): TCoords;
 begin
   case CoordType of
@@ -255,15 +253,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectCoord(X, Y: Float): TRectCoord; overload;
 begin
   Result.X := X;
   Result.Y := Y;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectCoord(Value: TJclComplex): TRectCoord; overload;
 begin
@@ -271,9 +265,7 @@ begin
   Result.Y := Value.FCoord.Y;
 end;
 
-//==================================================================================================
-// TJclComplex
-//==================================================================================================
+//=== { TJclComplex } ========================================================
 
 constructor TJclComplex.Create;
 begin
@@ -282,16 +274,12 @@ begin
   FFracLen := MaxFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclComplex.Create(const X, Y: Float; const ComplexType: TComplexKind);
 begin
   inherited Create;
   Assign(X, Y, ComplexType);
   FFracLen := MaxFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclComplex.FillCoords(const ComplexType: TComplexKind);
 begin
@@ -321,16 +309,12 @@ begin
   MiscalcComplex;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.MiscalcSingle(const X: Float): Float;
 begin
   Result := X;
   if Abs(Result) < ComplexPrecision then
     Result := 0.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclComplex.MiscalcComplex; // eliminates miscalculation
 begin
@@ -343,14 +327,10 @@ begin
     FCoord.Theta := MiscalcSingle(FCoord.Theta);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.Assign(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 begin
   Result := Assign(Coordinates(X, Y, ComplexType), ComplexType);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.Assign(const Coord: TCoords; const ComplexType: TComplexKind): TJclComplex;
 begin
@@ -360,21 +340,15 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.AssignZero: TJclComplex;
 begin
   Result := Assign(0.0, 0.0, crRectangular);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.AssignOne: TJclComplex;
 begin
   Result := Assign(1.0, 0.0, crRectangular);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.GetRectangularString: string;
 begin
@@ -397,15 +371,11 @@ begin
     Result := FormatExtended(FCoord.Y) + 'i';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.GetPolarString: string;
 begin
   FillCoords(crRectangular);
   Result := FormatExtended(FCoord.R) + '*CIS(' + FormatExtended(FCoord.Theta) + ')';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclComplex.SetRectangularString(StrToParse: string);
 var
@@ -453,8 +423,6 @@ begin
   Assign(RealPart, ImagPart, crRectangular);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclComplex.SetPolarString(StrToParse: string);
 var
   AstPos: Integer;
@@ -480,25 +448,19 @@ begin
   Assign(Radius, Angle, crPolar);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.Duplicate: TJclComplex;
 begin
   Result := TJclComplex.Create(FCoord.X, FCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
 
-//==================================================================================================
-// arithmetics
-//==================================================================================================
+//=== arithmetics ============================================================
 
 function TJclComplex.CoreAdd(const First, Second: TRectCoord): TRectCoord;
 begin
   Result.X := First.X + Second.X;
   Result.Y := First.Y + Second.Y;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CAdd(const AddValue: TJclComplex): TJclComplex;
 var
@@ -509,8 +471,6 @@ begin
   FCoord.Y := ResCoord.Y;
   Result := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CAdd(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -524,8 +484,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewAdd(const AddValue: TJclComplex): TJclComplex;
 var
   ResCoord: TRectCoord;
@@ -534,8 +492,6 @@ begin
   Result := TJclComplex.Create(ResCoord.X, ResCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewAdd(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -549,8 +505,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreDiv(const First, Second: TRectCoord): TRectCoord;
 var
   Denom: Float;
@@ -559,8 +513,6 @@ begin
   Result.X := (First.X * Second.X + First.Y * Second.Y) / Denom;
   Result.Y := (First.Y * Second.X - First.X * Second.Y) / Denom;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CDiv(const DivValue: TJclComplex): TJclComplex;
 var
@@ -571,8 +523,6 @@ begin
   FCoord.Y := ResCoord.Y;
   Result := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CDiv(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -586,8 +536,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewDiv(const DivValue: TJclComplex): TJclComplex;
 var
   ResCoord: TRectCoord;
@@ -596,8 +544,6 @@ begin
   Result := TJclComplex.Create(ResCoord.X, ResCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewDiv(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -611,15 +557,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreMul(const First, Second: TRectCoord): TRectCoord;
 begin
   Result.X := First.X * Second.X - First.Y * Second.Y;
   Result.Y := First.X * Second.Y + First.Y * Second.X;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CMul(const MulValue: TJclComplex): TJclComplex;
 var
@@ -630,8 +572,6 @@ begin
   FCoord.Y := ResCoord.Y;
   Result := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CMul(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -645,8 +585,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewMul(const MulValue: TJclComplex): TJclComplex;
 var
   ResCoord: TRectCoord;
@@ -655,8 +593,6 @@ begin
   Result := TJclComplex.Create(ResCoord.X, ResCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewMul(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -670,15 +606,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreSub(const First, Second: TRectCoord): TRectCoord;
 begin
   Result.X := First.X - Second.X;
   Result.Y := First.Y - Second.Y;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CSub(const SubValue: TJclComplex): TJclComplex;
 var
@@ -689,8 +621,6 @@ begin
   FCoord.Y := ResValue.Y;
   Result := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CSub(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -704,8 +634,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewSub(const SubValue: TJclComplex): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -714,8 +642,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewSub(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -729,8 +655,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNeg;
 begin
   FCoord.X := -FCoord.X;
@@ -738,15 +662,11 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewNeg;
 begin
   Result := TJclComplex.Create(-FCoord.X, -FCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CConjugate;
 begin
@@ -754,25 +674,19 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewConjugate;
 begin
   Result := TJclComplex.Create(FCoord.X, -FCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
 
-//==================================================================================================
-// natural log and exponential functions
-//==================================================================================================
+//=== natural log and exponential functions ==================================
 
 function TJclComplex.CoreLn(const LnValue: TRectCoord): TRectCoord;
 begin
   Result.X := System.Ln(LnValue.X);
   Result.Y := NormalizeAngle(LnValue.Y);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CLn: TJclComplex;
 var
@@ -785,8 +699,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewLn: TJclComplex;
 var
   ResCoord: TRectCoord;
@@ -797,8 +709,6 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreExp(const ExpValue: TRectCoord): TRectCoord;
 var
   ExpX: Float;
@@ -807,8 +717,6 @@ begin
   Result.X := ExpX * Cos(ExpValue.Y);
   Result.Y := ExpX * Sin(ExpValue.Y);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CExp: TJclComplex;
 var
@@ -820,8 +728,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewExp: TJclComplex;
 var
   ResCoord: TRectCoord;
@@ -830,8 +736,6 @@ begin
   Result := TJclComplex.Create(ResCoord.X, ResCoord.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CorePwr(First, Second, Polar: TRectCoord): TRectCoord;
 begin
@@ -848,8 +752,6 @@ begin
     Result := CoreExp(CoreMul(Second, CoreLn(Polar)));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CPwr(const PwrValue: TJclComplex): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -860,8 +762,6 @@ begin
   FCoord.Y := ResValue.Y;
   Result := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CPwr(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -875,8 +775,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewPwr(PwrValue: TJclComplex): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -886,8 +784,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewPwr(const X, Y: Float; const ComplexType: TComplexKind): TJclComplex;
 var
@@ -900,8 +796,6 @@ begin
     NewComplex.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreIntPwr(First: TRectCoord; const Polar: TRectCoord; const Pwr: Integer): TRectCoord;
 begin
@@ -916,8 +810,6 @@ begin
     Result := RectCoord(PowerInt(Polar.X, Pwr), NormalizeAngle(Pwr * Polar.Y));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CIntPwr(const Pwr: Integer): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -930,8 +822,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewIntPwr(const Pwr: Integer): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -941,8 +831,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crPolar);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreRealPwr(First: TRectCoord; const Polar: TRectCoord; const Pwr: Float): TRectCoord;
 begin
@@ -957,8 +845,6 @@ begin
     Result := RectCoord(Power(Polar.X, Pwr), NormalizeAngle(Pwr * Polar.Y));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CRealPwr(const Pwr: Float): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -971,8 +857,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewRealPwr(const Pwr: Float): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -983,8 +867,6 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreRoot(First: TRectCoord; const Polar: TRectCoord; const K, N: Word): TRectCoord;
 begin
   First.X := MiscalcSingle(First.X);
@@ -994,8 +876,6 @@ begin
   else
     Result := RectCoord(Power(Polar.X, 1.0 / N), NormalizeAngle((Polar.Y + K * TwoPi) / N));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CRoot(const K, N: Word): TJclComplex;
 var
@@ -1009,8 +889,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewRoot(const K, N: Word): TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1021,30 +899,22 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CSqrt: TJclComplex;
 begin
   Result := CRoot(0, 2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CNewSqrt: TJclComplex;
 begin
   Result := CNewRoot(0, 2);
 end;
 
-//--------------------------------------------------------------------------------------------------
-// trigonometric functions
-//--------------------------------------------------------------------------------------------------
+//=== trigonometric functions ================================================
 
 function TJclComplex.CoreCos(const Value: TRectCoord): TRectCoord;
 begin
   Result := RectCoord(Cos(Value.X) * CosH(Value.Y), -Sin(Value.X) * SinH(Value.Y));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CCos: TJclComplex;
 var
@@ -1056,8 +926,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCos: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1067,14 +935,10 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreSin(const Value: TRectCoord): TRectCoord;
 begin
   Result := RectCoord(Sin(Value.X) * CosH(Value.Y), Cos(Value.X) * SinH(Value.Y));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CSin: TJclComplex;
 var
@@ -1086,8 +950,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewSin: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1096,8 +958,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreTan(const Value: TRectCoord): TRectCoord;
 var
@@ -1110,8 +970,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CTan: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1122,8 +980,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewTan: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1132,8 +988,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreCot(const Value: TRectCoord): TRectCoord;
 var
@@ -1146,8 +1000,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CCot: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1158,8 +1010,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCot: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1168,8 +1018,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreSec(const Value: TRectCoord): TRectCoord;
 var
@@ -1182,8 +1030,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CSec: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1194,8 +1040,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewSec: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1204,8 +1048,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreCsc(const Value: TRectCoord): TRectCoord;
 var
@@ -1218,8 +1060,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CCsc: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1230,8 +1070,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCsc: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1241,16 +1079,12 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//==================================================================================================
-// hyperbolic functions
-//==================================================================================================
+//=== hyperbolic functions ===================================================
 
 function TJclComplex.CoreCosH(const Value: TRectCoord): TRectCoord;
 begin
   Result := RectCoord(CosH(Value.X) * Cos(Value.Y), SinH(Value.X) * Sin(Value.Y));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CCosH: TJclComplex;
 var
@@ -1262,8 +1096,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCosH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1273,14 +1105,10 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CoreSinH(const Value: TRectCoord): TRectCoord;
 begin
   Result := RectCoord(SinH(Value.X) * Cos(Value.Y), CosH(Value.X) * Sin(Value.Y));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CSinH: TJclComplex;
 var
@@ -1292,8 +1120,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewSinH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1302,8 +1128,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreTanH(const Value: TRectCoord): TRectCoord;
 var
@@ -1316,8 +1140,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CTanH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1328,8 +1150,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewTanH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1338,8 +1158,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreCotH(const Value: TRectCoord): TRectCoord;
 var
@@ -1352,8 +1170,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CCotH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1364,8 +1180,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCotH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1374,8 +1188,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreSecH(const Value: TRectCoord): TRectCoord;
 var
@@ -1388,8 +1200,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CSecH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1400,8 +1210,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewSecH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1410,8 +1218,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreCscH(const Value: TRectCoord): TRectCoord;
 var
@@ -1424,8 +1230,6 @@ begin
     Result := RectInfinity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CCscH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1436,8 +1240,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewCscH: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1447,9 +1249,7 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//==================================================================================================
-// complex Bessel functions of order zero
-//==================================================================================================
+//=== complex Bessel functions of order zero =================================
 
 function TJclComplex.CoreI0(const Value: TRectCoord): TRectCoord;
 var
@@ -1472,8 +1272,6 @@ begin
   until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CI0: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1484,8 +1282,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewI0: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1494,8 +1290,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreJ0(const Value: TRectCoord): TRectCoord;
 var
@@ -1524,8 +1318,6 @@ begin
   until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CJ0: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1536,8 +1328,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewJ0: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1546,8 +1336,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreApproxLnGamma(const Value: TRectCoord): TRectCoord;
 const
@@ -1577,8 +1365,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CApproxLnGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1589,8 +1375,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewApproxLnGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1599,8 +1383,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreLnGamma(Value: TRectCoord): TRectCoord;
 var
@@ -1633,8 +1415,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CLnGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1645,8 +1425,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewLnGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1655,8 +1433,6 @@ begin
   Result := TJclComplex.Create(ResValue.X, ResValue.Y, crRectangular);
   Result.FFracLen := FFracLen;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.CoreGamma(const Value: TRectCoord): TRectCoord;
 var
@@ -1672,8 +1448,6 @@ begin
       Result := CoreExp(lnz);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1684,8 +1458,6 @@ begin
   Result := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.CNewGamma: TJclComplex;
 var
   ResValue: TRectCoord;
@@ -1695,44 +1467,32 @@ begin
   Result.FFracLen := FFracLen;
 end;
 
-//==================================================================================================
-// miscellaneous
-//==================================================================================================
+//=== miscellaneous ==========================================================
 
 function TJclComplex.AbsoluteValue: Float;
 begin
   Result := Sqrt(Sqr(FCoord.X) + Sqr(FCoord.Y));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.AbsoluteValue(const Coord: TRectCoord): Float;
 begin
   Result := Sqrt(Sqr(Coord.X) + Sqr(Coord.Y));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.AbsoluteValueSqr: Float;
 begin
   Result := Sqr(FCoord.X) + Sqr(FCoord.Y);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.AbsoluteValueSqr(const Coord: TRectCoord): Float;
 begin
   Result := Sqr(Coord.X) + Sqr(Coord.Y);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.FormatExtended(const X: Float): string;
 begin
   Result := FloatToStrF(X, ffFixed, FFracLen, FFracLen);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclComplex.SetFracLen(const X: Byte);
 begin
@@ -1742,23 +1502,17 @@ begin
     FFracLen := X;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.GetRadius: Float;
 begin
   FillCoords(crRectangular);
   Result := FCoord.R;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclComplex.GetAngle: Float;
 begin
   FillCoords(crRectangular);
   Result := FCoord.Theta;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclComplex.NormalizeAngle(Value: Float): Float;
 begin
@@ -1774,6 +1528,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.11  2005/02/13 09:55:20  mthoma
 // Fixed:  0000060: Don's use parameter 'Value' in trigonometric functions
 //

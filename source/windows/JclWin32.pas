@@ -166,14 +166,8 @@ type
   {$EXTERNALSYM USHORT}
 
 
-//==================================================================================================
 // presumable from any older WinNT.h or from WinIfs.h
-//==================================================================================================
-
-//--------------------------------------------------------------------------------------------------
 // NTFS Reparse Points
-//--------------------------------------------------------------------------------------------------
-
 // The reparse structure is used by layered drivers to store data in a
 // reparse point. The constraints on reparse tags are defined below.
 // This version of the reparse data buffer is only for Microsoft tags.
@@ -266,8 +260,6 @@ type
 const
   {$EXTERNALSYM IO_REPARSE_TAG_VALID_VALUES}
   IO_REPARSE_TAG_VALID_VALUES = DWORD($E000FFFF);
-
-//==================================================================================================
 
 // from JwaWinNT.pas (few declarations from JwaWinType)
 

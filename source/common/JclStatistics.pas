@@ -84,16 +84,12 @@ implementation
 uses
   JclLogic, JclResources, JclSysUtils;
 
-//==================================================================================================
-// Local helpers
-//==================================================================================================
+//=== Local helpers ==========================================================
 
 function GetDynLength(const X: TDynFloatArray): Integer;
 begin
   Result := Length(X);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDynLengthNotNull(const X: TDynFloatArray): Integer;
 begin
@@ -102,14 +98,10 @@ begin
     raise EJclMathError.CreateResRec(@RsEmptyArray);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure InvalidSampleSize(SampleSize: Integer);
 begin
   raise EJclStatisticsError.CreateResRecFmt(@RsInvalidSampleSize, [SampleSize]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
 begin
@@ -118,16 +110,12 @@ begin
     InvalidSampleSize(Result);
 end;
 
-//==================================================================================================
-// Mean Functions
-//==================================================================================================
+//=== Mean Functions =========================================================
 
 function ArithmeticMean(const X: TDynFloatArray): Float;
 begin
   Result := SumFloatArray(X) / Length(X);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GeometricMean(const X: TDynFloatArray): Float;
 var
@@ -144,8 +132,6 @@ begin
   Result := Power(Result, 1 / N);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HarmonicMean(const X: TDynFloatArray): Float;
 var
   I, N: Integer;
@@ -161,8 +147,6 @@ begin
   Result := N / Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HeronianMean(const A, B: Float): Float;
 begin
   Assert(A >= 0);
@@ -170,9 +154,7 @@ begin
   Result := (A + Sqrt(A * B) + B) / 3;
 end;
 
-//==================================================================================================
-// Miscellanous
-//==================================================================================================
+//=== Miscellanous ===========================================================
 
 function BinomialCoeff(N, R: Cardinal): Float;
 var
@@ -208,8 +190,6 @@ begin
 end;
 
 
-//--------------------------------------------------------------------------------------------------
-
 function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 var
   I, N: Integer;
@@ -222,8 +202,6 @@ begin
   Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MaxFloatArray(const B: TDynFloatArray): Float;
 var
   I, N: Integer;
@@ -234,8 +212,6 @@ begin
     if B[I] > Result then
       Result := B[I];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
@@ -252,8 +228,6 @@ begin
       Result := I;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // The FloatArray X must be presorted so Median can calculate the correct value.
 //            Y_{(n+1)/2}                     if N is odd
@@ -273,8 +247,6 @@ begin
     Result := (X[N div 2 - 1] + X[N div 2]) / 2;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MedianUnsorted(const X: TDynFloatArray): Float;
 var
   SortedList: TDynFloatArray;
@@ -289,8 +261,6 @@ begin
   Result := Median(SortedList);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MinFloatArray(const B: TDynFloatArray): Float;
 var
   I, N: Integer;
@@ -301,8 +271,6 @@ begin
     if B[I] < Result then
       Result := B[I];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
@@ -319,8 +287,6 @@ begin
       Result := I;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Permutation(N, R: Cardinal): Float;
 var
@@ -342,8 +308,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO -cDoc : Donator: Fred Hovey }
 function Combinations(N, R: Cardinal): Float;
 begin
@@ -353,8 +317,6 @@ begin
   else
    Result := Permutation(N, R) / Result;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cDoc : donator: Fred Hovey, contributor: Robert Rossmair }
 function SumOfSquares(const X: TDynFloatArray): Float;
@@ -373,16 +335,12 @@ begin
   Result := Result - Sum * Sum / N;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
 function PopulationVariance(const X: TDynFloatArray): Float;
 begin
   // Length(X) = 0 would cause SumOfSquares() to raise an exception before the division is executed.
   Result := SumOfSquares(X) / Length(X);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure PopulationVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 var
@@ -401,8 +359,6 @@ begin
   Variance := (SumSq / N) - Sqr(Mean);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
 function SampleVariance(const X: TDynFloatArray): Float;
 var
@@ -411,8 +367,6 @@ begin
   N := GetSampleSize(X, 2);
   Result := SumOfSquares(X) / (N - 1)
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
 procedure SampleVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
@@ -435,8 +389,6 @@ begin
   Variance := (SumSq - Sum * Sum / N) / (N - 1)
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
 function StdError(const X: TDynFloatArray): Float;
 begin
@@ -445,8 +397,6 @@ begin
   Result := Sqrt(SampleVariance(X) / Length(X));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
 function StdError(const Variance: Float; const SampleSize: Integer): Float;
 begin
@@ -454,8 +404,6 @@ begin
     InvalidSampleSize(SampleSize);
   Result := Sqrt(Variance / SampleSize);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SumFloatArray(const B: TDynFloatArray): Float;
 var
@@ -471,8 +419,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 var
   I, N: Integer;
@@ -486,8 +432,6 @@ begin
       Result := Result + Sqr(B[I] - Diff);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
 var
@@ -503,8 +447,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 var
   I, N: Integer;
@@ -518,8 +460,6 @@ begin
       Result := Result + X[I] * Y[I];
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ChiSquare(const X: TDynFloatArray): Float;  { TODO -cDoc : ChiSquare }
 var
@@ -539,6 +479,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.13  2004/12/17 05:33:02  marquardt
 // updates for DCL
 //

@@ -77,8 +77,6 @@ uses
                                                                                }
 {**************************************************************************************************}
 
-{ TJclCompressionStream }
-
 type
   TJclCompressionStream = class(TStream)
   private
@@ -99,26 +97,18 @@ type
     procedure Reset; virtual;
   end;
 
-{ TJclCompressStream }
-
-type
   TJclCompressStream = class(TJclCompressionStream)
   public
     function Flush: Integer; dynamic; abstract;
     constructor Create(Destination: TStream);
   end;
 
-  { TJclDecompressStream }
-
   TJclDecompressStream = class(TJclCompressionStream)
   public
     constructor Create(Source: TStream);
   end;
 
-//--------------------------------------------------------------------------------------------------
-// ZIP Support
-//--------------------------------------------------------------------------------------------------
-
+  // ZIP Support
   TJclCompressionLevel = Integer;
 
   TJclZLibCompressStream = class(TJclCompressStream)
@@ -166,43 +156,29 @@ type
     property WindowBits: Integer read FWindowBits write SetWindowBits;
   end;
 
-//--------------------------------------------------------------------------------------------------
-// GZIP Support
-//--------------------------------------------------------------------------------------------------
-
+  // GZIP Support
   TJclGZIPCompressionStream = class(TJclCompressionStream)
   end;
 
   TJclGZIPDecompressionStream = class(TJclDecompressStream)
   end;
 
-//--------------------------------------------------------------------------------------------------
-// RAR Support
-//--------------------------------------------------------------------------------------------------
-
-type
+  // RAR Support
   TJclRARCompressionStream = class(TJclCompressionStream)
   end;
 
   TJclRARDecompressionStream = class(TJclDecompressStream)
   end;
 
-//--------------------------------------------------------------------------------------------------
-// TAR Support
-//--------------------------------------------------------------------------------------------------
-
-type
+  // TAR Support
   TJclTARCompressionStream = class(TJclCompressionStream)
   end;
 
   TJclTARDecompressionStream = class(TJclDecompressStream)
   end;
 
-//--------------------------------------------------------------------------------------------------
-// BZIP2 Support
-//--------------------------------------------------------------------------------------------------
+  // BZIP2 Support
 (*
-type
   TJclBZIP2CompressStream = class(TJclCompressStream)
  private
     FDeflateInitialized: Boolean;
@@ -234,9 +210,7 @@ type
   end;
 *)
 
-type
   EJclCompressionError = class(EJclError);
-
 
 implementation
 
@@ -246,9 +220,7 @@ uses
 const
   JclDefaultBufferSize = 131072; // 128k
 
-//--------------------------------------------------------------------------------------------------
-// CompressionStream
-//--------------------------------------------------------------------------------------------------
+//=== { TJclCompressionStream } ==============================================
 
 constructor TJclCompressionStream.Create(Stream: TStream);
 begin
@@ -257,43 +229,31 @@ begin
   SetBufferSize(JclDefaultBufferSize);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclCompressionStream.Destroy;
 begin
   SetBufferSize(0);
   inherited Destroy;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclCompressionStream.Read(var Buffer; Count: Longint): Longint;
 begin
   raise EJclCompressionError.CreateResRec(@RsCompressionReadNotSupported);
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclCompressionStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclCompressionError.CreateResRec(@RsCompressionWriteNotSupported);
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclCompressionStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   raise EJclCompressionError.CreateResRec(@RsCompressionSeekNotSupported);
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclCompressionStream.Reset;
 begin
   raise EJclCompressionError.CreateResRec(@RsCompressionResetNotSupported);
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclCompressionStream.SetBufferSize(Size: Cardinal): Cardinal;
 begin
@@ -310,17 +270,13 @@ begin
   Result := FBufferSize;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclCompressionStream.Progress(Sender: TObject);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Sender);
 end;
 
-//-------------------------------------------------------------------------------------------------
-// CompressStream
-//-------------------------------------------------------------------------------------------------
+//=== { TJclCompressStream } =================================================
 
 constructor TJclCompressStream.Create(Destination: TStream);
 begin
@@ -328,9 +284,7 @@ begin
   FStream := Destination;
 end;
 
-//-------------------------------------------------------------------------------------------------
-// DecompressionStream
-//-------------------------------------------------------------------------------------------------
+//=== { TJclDecompressStream } ===============================================
 
 constructor TJclDecompressStream.Create(Source: TStream);
 begin
@@ -339,9 +293,7 @@ begin
 end;
 
 
-//-------------------------------------------------------------------------------------------------
-// TJclZLibCompressionStream
-//-------------------------------------------------------------------------------------------------
+//=== { TJclZLibCompressionStream } ==========================================
 
 { Error checking helper }
 
@@ -393,8 +345,6 @@ begin
   FDeflateInitialized := False;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 destructor TJclZLibCompressStream.Destroy;
 begin
   Flush;
@@ -410,8 +360,6 @@ begin
 
   inherited Destroy;
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclZLibCompressStream.Write(const Buffer; Count: Longint): Longint;
 begin
@@ -440,94 +388,76 @@ begin
   Result := Count;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclZLibCompressStream.Flush: Integer;
 begin
-    Result := 0;
+  Result := 0;
 
-    if FDeflateInitialized then
+  if FDeflateInitialized then
+  begin
+    ZLibRecord.next_in := nil;
+    ZLibRecord.avail_in := 0;
+
+    while (ZLibCheck(deflate(ZLibRecord, Z_FINISH)) <> Z_STREAM_END) and
+      (ZLibRecord.avail_out = 0) do
     begin
-      ZLibRecord.next_in := nil;
-      ZLibRecord.avail_in := 0;
+      FStream.WriteBuffer(FBuffer^, FBufferSize);
+      Progress(Self);
 
-      while (ZLibCheck(deflate(ZLibRecord, Z_FINISH)) <> Z_STREAM_END) and
-        (ZLibRecord.avail_out = 0) do
-      begin
-        FStream.WriteBuffer(FBuffer^, FBufferSize);
-        Progress(Self);
-        
-        ZLibRecord.next_out := FBuffer;
-        ZLibRecord.avail_out := FBufferSize;
-        Inc(Result, FBufferSize);
-      end;
-
-      if ZLibRecord.avail_out < FBufferSize then
-      begin
-        FStream.WriteBuffer(FBuffer^, FBufferSize-ZLibRecord.avail_out);
-        Progress(Self);
-        Inc(Result, FBufferSize - ZLibRecord.avail_out);
-        ZLibRecord.next_out := FBuffer;
-        ZLibRecord.avail_out := FBufferSize;
-      end;
+      ZLibRecord.next_out := FBuffer;
+      ZLibRecord.avail_out := FBufferSize;
+      Inc(Result, FBufferSize);
     end;
-end;
 
-//-------------------------------------------------------------------------------------------------
+    if ZLibRecord.avail_out < FBufferSize then
+    begin
+      FStream.WriteBuffer(FBuffer^, FBufferSize-ZLibRecord.avail_out);
+      Progress(Self);
+      Inc(Result, FBufferSize - ZLibRecord.avail_out);
+      ZLibRecord.next_out := FBuffer;
+      ZLibRecord.avail_out := FBufferSize;
+    end;
+  end;
+end;
 
 function TJclZLibCompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
-   if (Offset = 0) and (Origin = soFromCurrent) then
-    Result := ZLibRecord.total_in
-   else
-   if (Offset = 0) and (Origin = soFromBeginning) and (ZLibRecord.total_in = 0) then
-     Result := 0
-   else
-     Result := inherited Seek(Offset, Origin);
+  if (Offset = 0) and (Origin = soFromCurrent) then
+   Result := ZLibRecord.total_in
+  else
+  if (Offset = 0) and (Origin = soFromBeginning) and (ZLibRecord.total_in = 0) then
+    Result := 0
+  else
+    Result := inherited Seek(Offset, Origin);
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 procedure TJclZLibCompressStream.SetWindowBits(Value: Integer);
 begin
   FWindowBits := Value;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclZLibCompressStream.SetMethod(Value: Integer);
 begin
   FMethod := Value;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclZLibCompressStream.SetStrategy(Value: Integer);
 begin
   FStrategy := Value;
-
   if FDeflateInitialized then
     ZLibCheck(deflateParams(ZLibRecord, FCompressionLevel, FStrategy));
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 procedure TJclZLibCompressStream.SetMemLevel(Value: Integer);
 begin
   FMemLevel := Value;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclZLibCompressStream.SetCompressionLevel(Value: Integer);
 begin
   FCompressionLevel := Value;
-
   if FDeflateInitialized then
     ZLibCheck(deflateParams(ZLibRecord, FCompressionLevel, FStrategy));
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 procedure TJclZLibCompressStream.Reset;
 begin
@@ -539,9 +469,7 @@ begin
 end;
 
 
-//-------------------------------------------------------------------------------------------------
-// TJclZLibDecompressionStream
-//-------------------------------------------------------------------------------------------------
+//=== {  TJclZLibDecompressionStream } =======================================
 
 constructor TJclZLibDecompressStream.Create(Source: TStream);
 begin
@@ -562,8 +490,6 @@ begin
   FWindowBits := DEF_WBITS;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer);
 begin
   inherited Create(Source);
@@ -583,8 +509,6 @@ begin
   FWindowBits := WindowBits;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 destructor TJclZLibDecompressStream.Destroy;
 begin
   if FInflateInitialized then
@@ -595,8 +519,6 @@ begin
 
   inherited Destroy;
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclZLibDecompressStream.Read(var Buffer; Count: Longint): Longint;
 begin
@@ -634,8 +556,6 @@ begin
   Result := Count;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclZLibDecompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
@@ -644,16 +564,12 @@ begin
      Result := inherited Seek(Offset, Origin);
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 procedure TJclZLibDecompressStream.SetWindowBits(Value: Integer);
 begin
   FWindowBits := Value;
 end;
 
-//-------------------------------------------------------------------------------------------------
-// TJclBZLibCompressionStream
-//-------------------------------------------------------------------------------------------------
+//=== { TJclBZLibCompressionStream } =========================================
 (*
 { Error checking helper }
 
@@ -698,8 +614,6 @@ begin
   FDeflateInitialized := False;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 destructor TJclBZIP2CompressStream.Destroy;
 begin
   Flush;
@@ -708,8 +622,6 @@ begin
 
   inherited Destroy;
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclBZIP2CompressStream.Write(const Buffer; Count: Longint): Longint;
 begin
@@ -737,8 +649,6 @@ begin
 
   Result := Count;
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclBZIP2CompressStream.Flush: Integer;
 begin
@@ -770,8 +680,6 @@ begin
     end;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclBZIP2CompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
@@ -783,9 +691,7 @@ begin
      Result := inherited Seek(Offset, Origin);
 end;
 
-//-------------------------------------------------------------------------------------------------
-// TJclZLibDecompressionStream
-//-------------------------------------------------------------------------------------------------
+//=== { TJclZLibDecompressionStream } ========================================
 
 constructor TJclBZIP2DecompressStream.Create(Source: TStream);
 begin
@@ -807,8 +713,6 @@ begin
   FInflateInitialized := False;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 destructor TJclBZIP2DecompressStream.Destroy;
 begin
   if FInflateInitialized then
@@ -819,8 +723,6 @@ begin
 
   inherited Destroy;
 end;
-
-//-------------------------------------------------------------------------------------------------
 
 function TJclBZIP2DecompressStream.Read(var Buffer; Count: Longint): Longint;
 var
@@ -862,8 +764,6 @@ begin
   Result := Count;
 end;
 
-//-------------------------------------------------------------------------------------------------
-
 function TJclBZIP2DecompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
@@ -875,6 +775,9 @@ end;
 
 // History:
 // $Log$
+// Revision 1.6  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.5  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

@@ -122,15 +122,13 @@ begin
     raise EPCREError.Create(S, Value);
 end;
 
-//===== { TJclAnsiRegEx } ==========================================================================
+//=== { TJclAnsiRegEx } ======================================================
 
 constructor TJclAnsiRegEx.Create;
 begin
   inherited Create;
   FVectorSize := SizeOf(FVector) div SizeOf(Integer);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TJclAnsiRegEx.Destroy;
 begin
@@ -142,8 +140,6 @@ begin
   *)
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAnsiRegEx.Compile(const Pattern: AnsiString; Study, UserLocale: Boolean): Boolean;
 var
@@ -163,8 +159,6 @@ begin
   if Result and Study then
     FExtra := pcre_study(FCode, 0, @ErrPtr);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAnsiRegEx.GetAPIOptions(RunTime: Boolean): Integer;
 const
@@ -192,15 +186,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAnsiRegEx.GetCaptureCount: Integer;
 begin
   Result := FStringCount;
   //  PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @Result));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAnsiRegEx.GetCaptures(Index: Integer): AnsiString;
 var
@@ -209,8 +199,6 @@ begin
   PCRECheck(pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, Buffer, SizeOf(Buffer)));
   Result := AnsiString(Buffer);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAnsiRegEx.GetCapturesOffset(Index: Integer): TJclAnsiCaptureOffset;
 begin
@@ -222,8 +210,6 @@ begin
   Result.FirstPos := FVector[Index * 2];
   Result.LastPos := FVector[Index * 2 + 1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
 begin
@@ -240,7 +226,7 @@ begin
   Result := FStringCount > 0;
 end;
 
-//===== { EPCREError } ============================================================================
+//=== { EPCREError } =========================================================
 
 constructor EPCREError.Create(const Msg: AnsiString; ErrorCode: Integer);
 begin
@@ -263,6 +249,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.7  2004/11/09 07:53:07  rrossmair
 // - JclPCRE string extracted to JclResources
 //

@@ -232,8 +232,6 @@ implementation
 uses
   JclMath, JclResources;
 
-//--------------------------------------------------------------------------------------------------
-
 function HowAOneLinerCanBiteYou(const Step, Max: Longint): Longint;
 begin
   Result := MakePercentage(Step, Max);
@@ -245,9 +243,7 @@ begin
   Result := Round((Step * 100.0) / Max);
 end;
 
-{ Newly Added Temperature Routines }
-
-//--------------------------------------------------------------------------------------------------
+//=== Temperature conversion =================================================
 
 function CelsiusToFahrenheit(const Temperature: Float): Float;
 begin
@@ -261,8 +257,6 @@ begin
   // Alternative:  Result := Temperature * 1.8 + 32;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CelsiusToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
@@ -271,8 +265,6 @@ begin
   // K = °C + 273.15
   Result := Temperature + KelvinFreezingPoint;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CelsiusToRankine(const Temperature: Float): Float;
 begin
@@ -290,8 +282,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CelsiusToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
@@ -300,8 +290,6 @@ begin
   // °R = °C × 0.8
   Result := Temperature * 0.8;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function FahrenheitToCelsius(const Temperature: Float): Float;
 begin
@@ -314,8 +302,6 @@ begin
     (Temperature - FahrenheitFreezingPoint);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function FahrenheitToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
@@ -324,8 +310,6 @@ begin
   // K = (°F + 459.67) / 1.8
   Result := FahrenheitToCelsius(Temperature) + KelvinFreezingPoint;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function FahrenheitToRankine(const Temperature: Float): Float;
 begin
@@ -336,8 +320,6 @@ begin
   Result := Temperature + RankineAtFahrenheitZero;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function FahrenheitToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
@@ -346,8 +328,6 @@ begin
   // °R = (°F - 32) / 2.25
   Result := (Temperature - FahrenheitFreezingPoint) / 2.25;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KelvinToCelsius(const Temperature: Float): Float;
 begin
@@ -358,8 +338,6 @@ begin
   Result := Temperature - KelvinFreezingPoint;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KelvinToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
@@ -368,8 +346,6 @@ begin
   // °F = K × 1.8 - 459.67
   Result := FahrenheitToCelsius(Temperature - KelvinFreezingPoint);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KelvinToRankine(const Temperature: Float): Float;
 begin
@@ -380,8 +356,6 @@ begin
   Result := Temperature * 1.8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KelvinToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
@@ -390,8 +364,6 @@ begin
   // °R = (K - 273.15) × 0.8
   Result := (Temperature - KelvinFreezingPoint) * 0.8;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RankineToCelsius(const Temperature: Float): Float;
 begin
@@ -402,8 +374,6 @@ begin
   Result := (Temperature - RankineFreezingPoint) / 1.8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RankineToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
@@ -412,8 +382,6 @@ begin
   // °F = °R - 459.67
   Result := Temperature - RankineAtFahrenheitZero;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RankineToKelvin(const Temperature: Float): Float;
 begin
@@ -424,8 +392,6 @@ begin
   Result := Temperature / 1.8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RankineToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
@@ -434,8 +400,6 @@ begin
   // °R = (°Ra - 32 - 459.67) / 2.25
   Result := (Temperature - RankineFreezingPoint) / 2.25;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ReaumurToCelsius(const Temperature: Float): Float;
 begin
@@ -446,8 +410,6 @@ begin
   Result := Temperature * 1.25;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ReaumurToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
@@ -456,8 +418,6 @@ begin
   // °F = °R × 2.25 + 32
   Result := (Temperature * 2.25) + FahrenheitFreezingPoint;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ReaumurToKelvin(const Temperature: Float): Float;
 begin
@@ -468,8 +428,6 @@ begin
   Result := (Temperature * 1.25) + KelvinFreezingPoint;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ReaumurToRankine(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
@@ -479,195 +437,182 @@ begin
   Result := (Temperature * 2.25) + RankineFreezingPoint;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ConvertTemperature(const FromType, ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := 0.0;
 
   case FromType of
     { All conversions from Celcius to other formats are listed here }
-    ttCelsius:  begin
-      case ToType of
-        ttFahrenheit:  Result := CelsiusToFahrenheit(Temperature);
-        ttKelvin:  Result := CelsiusToKelvin(Temperature);
-        ttRankine:  Result := CelsiusToRankine(Temperature);
-        ttReaumur:  Result := CelsiusToReaumur(Temperature);
-      else
-        EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+    ttCelsius:
+      begin
+        case ToType of
+          ttFahrenheit:
+            Result := CelsiusToFahrenheit(Temperature);
+          ttKelvin:
+            Result := CelsiusToKelvin(Temperature);
+          ttRankine:
+            Result := CelsiusToRankine(Temperature);
+          ttReaumur:
+            Result := CelsiusToReaumur(Temperature);
+        else
+          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+        end;
       end;
-    end;
     { All conversions from Fahrenheit to other formats are listed here }
-    ttFahrenheit:  begin
-      case ToType of
-        ttCelsius:  Result := FahrenheitToCelsius(Temperature);
-        ttKelvin:  Result := FahrenheitToKelvin(Temperature);
-        ttRankine:  Result := FahrenheitToRankine(Temperature);
-        ttReaumur:  Result := FahrenheitToReaumur(Temperature);
-      else
-        EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+    ttFahrenheit:
+      begin
+        case ToType of
+          ttCelsius:
+            Result := FahrenheitToCelsius(Temperature);
+          ttKelvin:
+            Result := FahrenheitToKelvin(Temperature);
+          ttRankine:
+            Result := FahrenheitToRankine(Temperature);
+          ttReaumur:
+            Result := FahrenheitToReaumur(Temperature);
+        else
+          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+        end;
       end;
-    end;
     { All conversions from Kelvin to other formats are listed here }
-    ttKelvin:  begin
-      case ToType of
-        ttCelsius:  Result := KelvinToCelsius(Temperature);
-        ttFahrenheit:  Result := KelvinToFahrenheit(Temperature);
-        ttRankine:  Result := KelvinToRankine(Temperature);
-        ttReaumur:  Result := KelvinToReaumur(Temperature);
-      else
-        EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+    ttKelvin:
+      begin
+        case ToType of
+          ttCelsius:
+            Result := KelvinToCelsius(Temperature);
+          ttFahrenheit:
+            Result := KelvinToFahrenheit(Temperature);
+          ttRankine:
+            Result := KelvinToRankine(Temperature);
+          ttReaumur:
+            Result := KelvinToReaumur(Temperature);
+        else
+          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+        end;
       end;
-    end;
     { All conversions from Kelvin to other formats are listed here }
-    ttRankine:  begin
-      case ToType of
-        ttCelsius:  Result := RankineToCelsius(Temperature);
-        ttFahrenheit:  Result := RankineToFahrenheit(Temperature);
-        ttKelvin:  Result := RankineToKelvin(Temperature);
-        ttReaumur:  Result := RankineToReaumur(Temperature);
-      else
-        EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+    ttRankine:
+      begin
+        case ToType of
+          ttCelsius:
+            Result := RankineToCelsius(Temperature);
+          ttFahrenheit:
+            Result := RankineToFahrenheit(Temperature);
+          ttKelvin:
+            Result := RankineToKelvin(Temperature);
+          ttReaumur:
+            Result := RankineToReaumur(Temperature);
+        else
+          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+        end;
       end;
-    end;
     { All conversions from Reaumur to other formats are listed here }
-    ttReaumur:  begin
-      case ToType of
-        ttCelsius:  Result := ReaumurToCelsius(Temperature);
-        ttFahrenheit:  Result := ReaumurToFahrenheit(Temperature);
-        ttKelvin:  Result := ReaumurToKelvin(Temperature);
-        ttRankine:  Result := ReaumurToRankine(Temperature);
-      else
-        EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+    ttReaumur:
+      begin
+        case ToType of
+          ttCelsius:
+            Result := ReaumurToCelsius(Temperature);
+          ttFahrenheit:
+            Result := ReaumurToFahrenheit(Temperature);
+          ttKelvin:
+            Result := ReaumurToKelvin(Temperature);
+          ttRankine:
+            Result := ReaumurToRankine(Temperature);
+        else
+          EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+        end;
       end;
-    end;
   else
     raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['FromType']);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CelsiusTo(ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := ConvertTemperature(ttCelsius, ToType, Temperature);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function FahrenheitTo(ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := ConvertTemperature(ttFahrenheit, ToType, Temperature);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KelvinTo(ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := ConvertTemperature(ttKelvin, ToType, Temperature);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RankineTo(ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := ConvertTemperature(ttRankine, ToType, Temperature);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ReaumurTo(ToType: TTemperatureType; const Temperature: Float): Float;
 begin
   Result := ConvertTemperature(ttReaumur, ToType, Temperature);
 end;
 
-//==================================================================================================
-// Angle conversion
-//==================================================================================================
+//=== Angle conversion =======================================================
 
 function CycleToDeg(const Cycles: Float): Float;
 begin
   Result := Cycles * DegPerCycle;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CycleToGrad(const Cycles: Float): Float;
 begin
   Result := Cycles * GradPerCycle;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CycleToRad(const Cycles: Float): Float;
 begin
   Result := Cycles * RadPerCycle;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DegToGrad(const Degrees: Float): Float;
 begin
   Result := Degrees * GradPerDeg;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DegToCycle(const Degrees: Float): Float;
 begin
   Result := Degrees * CyclePerDeg;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DegToRad(const Degrees: Float): Float;
 begin
   Result := Degrees * RadPerDeg;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GradToCycle(const Grads: Float): Float;
 begin
   Result := Grads * CyclePerGrad;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GradToDeg(const Grads: Float): Float;
 begin
   Result := Grads * DegPerGrad;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GradToRad(const Grads: Float): Float;
 begin
   Result := Grads * RadPerGrad;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RadToCycle(const Radians: Float): Float;
 begin
   Result := Radians * CyclePerRad;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RadToDeg(const Radians: Float): Float;
 begin
   Result := Radians * DegPerRad;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RadToGrad(const Radians: Float): Float;
 begin
   Result := Radians * GradPerRad;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DmsToDeg(const D, M: Integer; const S: Float): Float;
 begin
@@ -677,14 +622,10 @@ begin
     Result := -Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DmsToRad(const D, M: Integer; const S: Float): Float;
 begin
   Result := DegToRad(DmsToDeg(D, M, S));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DegToDms(const Degrees: Float; out D, M: Integer; out S: Float);
 var
@@ -699,8 +640,6 @@ begin
     D := -D;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DegToDmsStr(const Degrees: Float; const SecondPrecision: Cardinal = 3): string;
 var
   D, M: Integer;
@@ -710,17 +649,13 @@ begin
   Result := Format('%d° %d'' %.*f"', [D, M, SecondPrecision, S]);
 end;
 
-//==================================================================================================
-// Coordinate conversion
-//==================================================================================================
+//=== Coordinate conversion ==================================================
 
 procedure CartesianToCylinder(const X, Y, Z: Float; out R, Phi, Zeta: Float);
 begin
   Zeta := Z;
   CartesianToPolar(X, Y, R, Phi);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure CartesianToPolar(const X, Y: Float; out R, Phi: Float);
 begin
@@ -729,8 +664,6 @@ begin
   if Phi < 0 then
     Phi := Phi + TwoPi;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Phi, Theta: Float);
 begin
@@ -743,8 +676,6 @@ begin
     Theta := ArcCos(Z/Rho);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure CylinderToCartesian(const R, Phi, Zeta: Float; out X, Y, Z: Float);
 var
   Sine, CoSine: Float;
@@ -755,8 +686,6 @@ begin
   Z := Zeta;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure PolarToCartesian(const R, Phi: Float; out X, Y: Float);
 var
   Sine, CoSine: Float;
@@ -765,8 +694,6 @@ begin
   X := R * CoSine;
   Y := R * Sine;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SphericToCartesian(const Rho, Theta, Phi: Float; out X, Y, Z: Float);
 var
@@ -780,272 +707,196 @@ begin
   Z := Rho * CoSineTheta;
 end;
 
-//==================================================================================================
-// Length conversion
-//==================================================================================================
+//=== Length conversion ======================================================
 
 function CmToInch(const Cm: Float): Float;
 begin
   Result := Cm / 2.54;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InchToCm(const Inch: Float): Float;
 begin
   Result := Inch * 2.54;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function FeetToMetre(const Feet: Float): Float;
 begin
   Result := Feet * 0.3048;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MetreToFeet(const Metre: Float): Float;
 begin
   Result := Metre / 0.3048;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function YardToMetre(const Yard: Float): Float;
 begin
   Result := Yard * 0.9144;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MetreToYard(const Metre: Float): Float;
 begin
   Result := Metre / 0.9144;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NmToKm(const Nm: Float): Float;
 begin
   Result := Nm * 1.852;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KmToNm(const Km: Float): Float;
 begin
   Result := Km / 1.852;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KmToSm(const Km: Float): Float;
 begin
   Result := Km / 1.609344;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SmToKm(const Sm: Float): Float;
 begin
   Result := Sm * 1.609344;
 end;
 
-//==================================================================================================
-// Volume conversion
-//==================================================================================================
+//=== Volume conversion ======================================================
 
 function LitreToGalUs(const Litre: Float): Float;
 begin
   Result := Litre / 3.785411784;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GalUsToLitre(const GalUs: Float): Float;
 begin
   Result := GalUs * 3.785411784;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GalUsToGalCan(const GalUs: Float): Float;
 begin
   Result := GalUs / 1.2009499255;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GalCanToGalUs(const GalCan: Float): Float;
 begin
   Result := GalCan * 1.2009499255;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GalUsToGalUk(const GalUs: Float): Float;
 begin
   Result := GalUs / 1.20095045385;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GalUkToGalUs(const GalUk: Float): Float;
 begin
   Result := GalUk * 1.20095045385;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LitreToGalCan(const Litre: Float): Float;
 begin
   Result := Litre / 4.54609;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GalCanToLitre(const GalCan: Float): Float;
 begin
   Result := GalCan * 4.54609;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LitreToGalUk(const Litre: Float): Float;
 begin
   Result := Litre / 4.54609;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GalUkToLitre(const GalUk: Float): Float;
 begin
   Result := GalUk * 4.54609;
 end;
 
-//==================================================================================================
-// Mass conversion
-//==================================================================================================
+//=== Mass conversion ========================================================
 
 function KgToLb(const Kg: Float): Float;
 begin
   Result := Kg / 0.45359237;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function LbToKg(const Lb: Float): Float;
 begin
   Result := Lb * 0.45359237;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KgToOz(const Kg: Float): Float;
 begin
   Result := Kg * 35.2739619496;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function OzToKg(const Oz: Float): Float;
 begin
   Result := Oz / 35.2739619496;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function QrUsToKg(const Qr: Float) : Float;
 begin
   Result := Qr * 11.34;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function QrUkToKg(const Qr: Float) : Float;
 begin
   Result := Qr * 12.7;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KgToQrUs(const Kg: Float) : Float;
 begin
   Result := Kg / 11.34;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KgToQrUk(const Kg: Float) : Float;
 begin
   Result := Kg / 12.7;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CwtUsToKg(const Cwt: Float) : Float;
 begin
   Result := Cwt * 45.35924;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CwtUkToKg(const Cwt: Float) : Float;
 begin
   Result := Cwt * 50.80235;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KgToCwtUs(const Kg: Float) : Float;
 begin
   Result := Kg / 45.35924;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KgToCwtUk(const Kg: Float) : Float;
 begin
   Result := Kg / 50.80235;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LtonToKg(const Lton: Float) : Float;
 begin
   Result := Lton * 1016.047;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StonToKg(const Ston: Float) : Float;
 begin
   Result := Ston * 907.1847;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KgToLton(const Kg: Float) : Float;
 begin
   Result := Kg / 1016.047;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KgToSton(const Kg: Float) : Float;
 begin
   Result := Kg / 907.1847;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function KgToKarat(const Kg: Float) : Float;
 begin
   Result := Kg / 0.0002;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function KaratToKg(const Karat: Float) : Float;
 begin
@@ -1053,88 +904,64 @@ begin
 end;
 
 
-//==================================================================================================
-// Pressure conversion
-//==================================================================================================
+//=== Pressure conversion ====================================================
 
 function PascalToBar(const Pa: Float): Float;
 begin
   Result := Pa / 100000.0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PascalToAt(const Pa: Float): Float;
 begin
   Result := Pa / (9.80665 * 10000.0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function PascalToTorr(const Pa: Float): Float;
 begin
   Result := Pa / 133.3224;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function BarToPascal(const Bar: Float): Float;
 begin
   Result := Bar * 100000.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AtToPascal(const At: Float): Float;
 begin
   Result := At * (9.80665 * 10000.0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TorrToPascal(const Torr: Float): Float;
 begin
   Result := Torr * 133.3224;
 end;
 
-//==================================================================================================
-// Other conversion
-//==================================================================================================
+//=== Other conversion =======================================================
 
 function KnotToMs(const Knot: Float): Float;
 begin
   Result := Knot * 0.514444444444;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HpElectricToWatt(const HpE: Float): Float;
 begin
   Result := HpE * 746.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function HpMetricToWatt(const HpM: Float): Float;
 begin
   Result := HpM * 735.4988;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MsToKnot(const Ms: Float): Float;
 begin
   Result := Ms / 0.514444444444;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WattToHpElectric(const W: Float): Float;
 begin
   Result := W / 746.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function WattToHpMetric(const W: Float): Float;
 begin
@@ -1144,6 +971,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.7  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //

@@ -48,10 +48,7 @@ interface
 uses
   Windows, SysUtils, Classes;
 
-//--------------------------------------------------------------------------------------------------
 // User Management
-//--------------------------------------------------------------------------------------------------
-
 type
   TNetUserFlag = (ufAccountDisable, ufHomedirRequired, ufLockout,
     ufPasswordNotRequired, ufPasswordCantChange, ufDontExpirePassword,
@@ -93,10 +90,7 @@ implementation
 uses
   JclBase, JclStrings, JclSysInfo, JclWin32;
 
-//--------------------------------------------------------------------------------------------------
 // User Management
-//--------------------------------------------------------------------------------------------------
-
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 var
@@ -134,16 +128,12 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CreateLocalAccount(const Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 begin
   Result := CreateAccount('', Username, Fullname, Password, Description, Homedir,
     Script, PassWordNeverExpires);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DeleteAccount(const Servername, Username: string): Boolean;
 var
@@ -156,14 +146,10 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DeleteLocalAccount(Username: string): Boolean;
 begin
   Result := DeleteAccount('', Username);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 var
@@ -184,8 +170,6 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
@@ -205,8 +189,6 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
@@ -217,8 +199,6 @@ begin
   Err := RtdlNetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
   Result := (Err = NERR_SUCCESS);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
@@ -251,8 +231,6 @@ begin
   RtdlNetApiBufferFree(Buffer);
   Result := (Err = NERR_SUCCESS);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
@@ -292,8 +270,6 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function LocalGroupExists(const Group: string): Boolean;
 var
   Groups: TStringList;
@@ -306,8 +282,6 @@ begin
     Groups.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GlobalGroupExists(const Server, Group: string): Boolean;
 var
@@ -322,8 +296,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
@@ -334,8 +306,6 @@ begin
   Err := RtdlNetGroupDel(PWideChar(wServername), PWideChar(wUsername));
   Result := (Err = NERR_SUCCESS);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 var
@@ -350,8 +320,6 @@ begin
   Err := RtdlNetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @Details, 1);
   Result := (Err = NERR_SUCCESS);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RIDToDWORD(const RID: TNetWellKnownRID): DWORD;
 begin
@@ -373,8 +341,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DWORDToRID(const RID: DWORD): TNetWellKnownRID;
 begin
   case RID of
@@ -394,8 +360,6 @@ begin
     Result := wkrEveryone;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 var
@@ -440,8 +404,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 var
   Parts: TStringList;
@@ -461,8 +423,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IsLocalAccount(const AccountName: string): Boolean;
 var
   Domain: string;
@@ -477,6 +437,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.10  2005/02/06 07:45:42  marquardt
 // fixed non-compiling IsLocalAccount
 //

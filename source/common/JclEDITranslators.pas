@@ -54,7 +54,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    //
     function TranslateToSEFElement(ElementSpec: TEDIElementSpec;
       Parent: TEDISEFFile): TEDISEFElement; overload;
     function TranslateToSEFElement(ElementSpec: TEDIElementSpec;
@@ -87,23 +86,17 @@ implementation
 uses
   JclStrings;
 
-//==================================================================================================
-// { TEDISpecToSEFTranslator }
-//==================================================================================================
+//=== { TEDISpecToSEFTranslator } ============================================
 
 constructor TEDISpecToSEFTranslator.Create;
 begin
   inherited Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISpecToSEFTranslator.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
   Parent: TEDISEFFile): TEDISEFElement;
@@ -114,8 +107,6 @@ begin
   Result.MinimumLength := ElementSpec.MinimumLength;
   Result.MaximumLength := ElementSpec.MaximumLength;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
   Parent: TEDISEFSegment): TEDISEFElement;
@@ -136,8 +127,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFFile): TEDISEFSegment;
 var
@@ -157,8 +146,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFTable): TEDISEFSegment;
 var
@@ -175,8 +162,6 @@ begin
     Result.MaximumUse := SegmentSpec.MaximumUsage;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFLoop): TEDISEFSegment;
@@ -195,8 +180,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
 var
@@ -210,8 +193,6 @@ begin
     EDIObject := SEFLoop;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFSet(TransactionSetSpec: TEDITransactionSetSpec;
   Parent: TEDISEFFile): TEDISEFSet;
@@ -292,8 +273,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISpecToSEFTranslator.TranslateToSEFFile(ICSpec: TEDIInterchangeControlSpec): TEDISEFFile;
 var
   F, T, S, E: Integer;
@@ -354,8 +333,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(ElementSpec: TEDIElementSpec;
   SEFElement: TEDISEFElement);
 var
@@ -374,8 +351,6 @@ begin
   Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
   SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm2, Data);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISpecToSEFTranslator.TranslateToSEFSegmentTEXTSETS(SegmentSpec: TEDISegmentSpec;
   SEFSegment: TEDISEFSegment);
@@ -407,16 +382,12 @@ begin
   end;
 end;
 
-//==================================================================================================
-// { TEDISEFToSpecTranslator }
-//==================================================================================================
+//=== { TEDISEFToSpecTranslator } ============================================
 
 constructor TEDISEFToSpecTranslator.Create;
 begin
   inherited Create;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TEDISEFToSpecTranslator.Destroy;
 begin

@@ -42,10 +42,7 @@ uses
   Windows, ActiveX, Classes,
   JclBase;
 
-//--------------------------------------------------------------------------------------------------
 // Various definitions
-//--------------------------------------------------------------------------------------------------
-
 const
   { Class ID's that may be reused }
   CLSID_StdComponentCategoriesMgr: TGUID = '{0002E005-0000-0000-C000-000000000046}';
@@ -59,26 +56,17 @@ type
   { For use with the Internet Explorer Component Categories Routines.  May be Reused. }
   TArrayCatID = array [0..0] of TGUID;
 
-//--------------------------------------------------------------------------------------------------
 // Exception classes
-//--------------------------------------------------------------------------------------------------
-
 type
   EInvalidParam = class(EJclError);
 
-//--------------------------------------------------------------------------------------------------
 // DCOM and MDAC Related Tests and Utility Routines
-//--------------------------------------------------------------------------------------------------
-
 function IsDCOMInstalled: Boolean;
 function IsDCOMEnabled: Boolean;
 function GetDCOMVersion: string;
 function GetMDACVersion: string;
 
-//--------------------------------------------------------------------------------------------------
 // Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
-//--------------------------------------------------------------------------------------------------
-
 { These routines will provide the ability to marshal an interface for a separate
   process or even for access by a separate machine.  However, to make things
   familiar to users of the existing CoMarshal... routine, I have kept the required
@@ -97,10 +85,7 @@ function MarshalInterMachineInterfaceInStream(const iid: TIID;
 function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
   unk: IUnknown; var VarArray: OleVariant): HRESULT;
 
-//--------------------------------------------------------------------------------------------------
 // Internet Explorer Component Categories Routines
-//--------------------------------------------------------------------------------------------------
-
 { These routines help with the registration of:
     - Safe-Initialization &
     - Safe-for-Scripting
@@ -114,9 +99,7 @@ function CreateComponentCategory(const CatID: TGUID; const sDescription: string)
 function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 
-//--------------------------------------------------------------------------------------------------
 // Stream Related Routines
-//--------------------------------------------------------------------------------------------------
 { IDE ISSUE:  These need to be at the bottom of the interface definition as otherwise
               the CTRL+SHIFT+ Up/Down arrows feature no-longer operates }
 
@@ -152,8 +135,6 @@ const
   { TODO : Utility routine here might need to be re-vamped with the
            use of JclUnicode unit in mind. }
 
-//--------------------------------------------------------------------------------------------------
-
 function StringToWideString(const Str: string): WideString;
 var
   iLen: Integer;
@@ -163,10 +144,7 @@ begin
   StringToWideChar(Str, PWideChar(Result), iLen);
 end;
 
-//==================================================================================================
 // DCOM and MDAC Related Tests and Utility Routines
-//==================================================================================================
-
 function IsDCOMInstalled: Boolean;
 var
   OLE32: HMODULE;
@@ -185,8 +163,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IsDCOMEnabled: Boolean;
 var
   RegValue: string;
@@ -194,8 +170,6 @@ begin
   RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\OLE', 'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDCOMVersion: string;
 const
@@ -210,8 +184,6 @@ begin
     { Possibly from DComExt.dll ‘Product Version’ }
     Result := 'DCOM Version Unknown';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { NOTE:  Checking whether MDAC is installed at all can be done by querying the
          Software\Microsoft\DataAccess key for the FullInstallVer or
@@ -237,10 +209,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
-//==================================================================================================
-
 function MarshalInterThreadInterfaceInVarArray(const iid: TIID; unk: IUnknown;
   var VarArray: OleVariant): HRESULT;
 var
@@ -282,8 +251,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MarshalInterProcessInterfaceInStream(const iid: TIID; unk: IUnknown;
   var stm: IStream): HRESULT;
 var
@@ -319,8 +286,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
   unk: IUnknown; var VarArray: OleVariant): HRESULT;
 var
@@ -339,8 +304,6 @@ begin
   if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
     Result := E_FAIL;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MarshalInterMachineInterfaceInStream(const iid: TIID; unk: IUnknown;
   var stm: IStream): HRESULT;
@@ -377,8 +340,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MarshalInterMachineInterfaceInVarArray(const iid: TIID; unk: IUnknown;
   var VarArray: OleVariant): HRESULT;
 var
@@ -398,10 +359,7 @@ begin
     Result := E_FAIL;
 end;
 
-//==================================================================================================
 // Internet Explorer Component Categories Routines
-//==================================================================================================
-
 function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
 var
   CatRegister: ICatRegister;
@@ -445,8 +403,6 @@ begin
   Result := hr;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 var
   CatRegister: ICatRegister;
@@ -471,8 +427,6 @@ begin
   { Return the appropriate Result }
   Result := hr;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 var
@@ -499,10 +453,7 @@ begin
   Result := hr;
 end;
 
-//==================================================================================================
 // Stream Related Routines
-//==================================================================================================
-
 function ResetIStreamToStart(Stream: IStream): Boolean;
 var
   i64Pos: Largeint;
@@ -525,8 +476,6 @@ begin
     Result := False;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SizeOfIStreamContents(Stream: IStream): Largeint;
 var
   stat: TStatStg;
@@ -538,8 +487,6 @@ begin
   else
     Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StreamToVariantArray(Stream: TStream): OleVariant;
 var
@@ -576,8 +523,6 @@ begin
     { Stream has no data! }
     Result := Null;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StreamToVariantArray(Stream: IStream): OleVariant;
 var
@@ -627,8 +572,6 @@ begin
     Result := Null;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream);
 var
   pLocked: Pointer;
@@ -653,8 +596,6 @@ begin
     Stream.Position := 0;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream);
 var
@@ -707,6 +648,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.10  2004/10/21 08:40:10  marquardt
 // style cleaning
 //

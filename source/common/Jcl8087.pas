@@ -74,8 +74,6 @@ implementation
 const
   X87ExceptBits = $3F;
 
-//--------------------------------------------------------------------------------------------------
-
 function Get8087ControlWord: Word; assembler;
 asm
         {$IFDEF FPC}
@@ -88,28 +86,20 @@ asm
         POP AX
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Get8087Infinity: T8087Infinity;
 begin
   Result := T8087Infinity((Get8087ControlWord and $1000) shr 12);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Get8087Precision: T8087Precision;
 begin
   Result := T8087Precision((Get8087ControlWord and $0300) shr 8);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Get8087Rounding: T8087Rounding;
 begin
   Result := T8087Rounding((Get8087ControlWord and $0C00) shr 10);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Get8087StatusWord(ClearExceptions: Boolean): Word; assembler;
 asm
@@ -121,8 +111,6 @@ asm
         FNSTSW  AX                    //   get status word (without clearing exceptions)
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
 var
   CW: Word;
@@ -131,8 +119,6 @@ begin
   Result := T8087Infinity((CW and $1000) shr 12);
   Set8087ControlWord((CW and $EFFF) or (Word(Infinity) shl 12));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Set8087Precision(const Precision: T8087Precision): T8087Precision;
 var
@@ -143,8 +129,6 @@ begin
   Set8087ControlWord((CW and $FCFF) or (Word(Precision) shl 8));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Set8087Rounding(const Rounding: T8087Rounding): T8087Rounding;
 var
   CW: Word;
@@ -153,8 +137,6 @@ begin
   Result := T8087Rounding((CW and $0C00) shr 10);
   Set8087ControlWord((CW and $F3FF) or (Word(Rounding) shl 10));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
@@ -174,8 +156,6 @@ asm
         {$ENDIF FPC}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ClearPending8087Exceptions: T8087Exceptions;
 asm
         FNSTSW  AX
@@ -183,15 +163,11 @@ asm
         FNCLEX
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetPending8087Exceptions: T8087Exceptions;
 asm
         FNSTSW  AX
         AND     AX, X87ExceptBits
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetMasked8087Exceptions: T8087Exceptions;
 asm
@@ -205,8 +181,6 @@ asm
         POP     AX
         AND     AX, X87ExceptBits
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 asm
@@ -235,16 +209,12 @@ asm
         AND     AX, X87ExceptBits
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
 begin
   Result := GetMasked8087Exceptions;
   Exceptions := Exceptions + Result;
   SetMasked8087Exceptions(Exceptions, False);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 begin
@@ -262,6 +232,9 @@ end;
 //   "Need imported data reference ($G) to access Default8087CW".
 
 // $Log$
+// Revision 1.7  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.6  2004/10/17 20:02:05  mthoma
 // Clean. Fileheader update (contributors list).
 //

@@ -271,8 +271,6 @@ uses
   {$ENDIF ~RTL140_UP}
 {$ENDIF BORLAND}
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF RTL130_DOWN // Delphi 5 Math unit has no Sign function }
 function Sign(A: Integer): Integer;
 begin
@@ -284,8 +282,6 @@ begin
     Result := 0;
 end;
 {$ENDIF RTL130_DOWN}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
@@ -301,9 +297,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-// WideChar functions
+//=== WideChar functions =====================================================
 
 function CharToWideChar(Ch: Char): WideChar;
 var
@@ -313,8 +307,6 @@ begin
   Result := WS[1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WideCharToChar(Ch: WideChar): AnsiChar;
 var
   S: AnsiString;
@@ -323,16 +315,12 @@ begin
   Result := S[1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-// PWideChar functions
+//=== PWideChar functions ====================================================
 
 procedure MoveWideChar(const Source; var Dest; Count: Integer);
 begin
   Move(Source, Dest, Count * SizeOf(WideChar));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrAllocW(WideSize: Cardinal): PWideChar;
 begin
@@ -341,8 +329,6 @@ begin
   else
     Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrNewW(const S: WideString): PWideChar;
 begin
@@ -354,16 +340,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure StrDisposeW(var P: PWideChar);
 begin
   if P <> nil then
     FreeMem(P);
   P := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrLICompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
@@ -374,8 +356,6 @@ begin
   Result := WideCompareText(P1, P2);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
   P1, P2: WideString;
@@ -385,8 +365,6 @@ begin
   SetString(P2, S2, Min(MaxLen, Cardinal(StrLenW(S2))));
   Result := WideCompareText(P1, P2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrCompW(S1, S2: PWideChar): Integer;
 var
@@ -409,8 +387,6 @@ begin
   end;
   Result := Sign(Integer(S1^) - Integer(S2^));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrLCompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
@@ -435,8 +411,6 @@ begin
   Result := Sign(Integer(S1^) - Integer(S2^));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrIComp(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
   NullWide: WideChar;
@@ -459,8 +433,6 @@ begin
   end;
   Result := Sign(Integer(S1^) - Integer(S2^));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
 var
@@ -493,8 +465,6 @@ begin
   Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrLenW(P: PWideChar): Integer;
 begin
   Result := 0;
@@ -502,8 +472,6 @@ begin
     while P[Result] <> #0 do
       Inc(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
 begin
@@ -513,8 +481,6 @@ begin
       Inc(Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrEndW(P: PWideChar): PWideChar;
 begin
   Result := P;
@@ -522,8 +488,6 @@ begin
     while Result^ <> #0 do
       Inc(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
 begin
@@ -541,8 +505,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
 begin
   if Dest <> nil then
@@ -558,8 +520,6 @@ begin
   end;
   Result := Dest;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 begin
@@ -578,8 +538,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrCatW(Dest, Source: PWideChar): PWideChar;
 begin
   Result := Dest;
@@ -587,8 +545,6 @@ begin
     Inc(Dest);
   StrCopyW(Dest, Source);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 begin
@@ -603,29 +559,21 @@ begin
   StrLCopyW(Dest, Source, MaxLen);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
 begin
   Result := Dest;
   Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
 var
@@ -643,9 +591,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-// WideString functions
+//=== WideString functions ===================================================
 
 function WidePos(const SubStr, S: WideString): Integer;
 var
@@ -657,8 +603,6 @@ begin
   else
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // original code by Mike Lischke (extracted from JclUnicode.pas)
 
@@ -702,8 +646,6 @@ begin
     Dest^ := Quote;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // original code by Mike Lischke (extracted from JclUnicode.pas)
 
@@ -759,8 +701,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 
 function TrimW(const S: WideString): WideString;
 // available from Delphi 7 up
@@ -787,8 +727,6 @@ begin
 end;
 {$ENDIF ~RTL150_UP}
 
-//--------------------------------------------------------------------------------------------------
-
 function TrimLeftW(const S: WideString): WideString;
 // available from Delphi 7 up
 {$IFDEF RTL150_UP}
@@ -807,8 +745,6 @@ begin
 end;
 {$ENDIF ~RTL150_UP}
 
-//--------------------------------------------------------------------------------------------------
-
 function TrimRightW(const S: WideString): WideString;
 // available from Delphi 7 up
 {$IFDEF RTL150_UP}
@@ -825,8 +761,6 @@ begin
   Result := Copy(S, 1, I);
 end;
 {$ENDIF ~RTL150_UP}
-
-//--------------------------------------------------------------------------------------------------
 
 // functions missing in Delphi 5 / FPC
 {$IFNDEF RTL140_UP}
@@ -845,8 +779,6 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WideCompareStr(const S1, S2: WideString): Integer;
 begin
   {$IFDEF MSWINDOWS}
@@ -861,8 +793,6 @@ begin
   {$ENDIF ~MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function WideUpperCase(const S: WideString): WideString;
 begin
   Result := S;
@@ -874,8 +804,6 @@ begin
     Result := UpperCase(Result);
     {$ENDIF ~MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function WideLowerCase(const S: WideString): WideString;
 begin
@@ -891,8 +819,6 @@ end;
 
 {$ENDIF ~RTL140_UP}
 
-//--------------------------------------------------------------------------------------------------
-
 function TrimLeftLengthW(const S: WideString): Integer;
 var
   Len: Integer;
@@ -903,8 +829,6 @@ begin
     Inc(Result);
   Result := Len - Result + 1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TrimRightLengthW(const S: WideString): Integer;
 begin
@@ -930,22 +854,16 @@ begin
   FQuoteChar := '"';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.Add(const S: WideString): Integer;
 begin
   Result := AddObject(S, nil);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.AddObject(const S: WideString; AObject: TObject): Integer;
 begin
   Result := Count;
   InsertObject(Result, S, AObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.AddStrings(Strings: TWStrings);
 var
@@ -955,8 +873,6 @@ begin
     AddObject(Strings.GetP(I)^, Strings.Objects[I]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.AddStrings(Strings: TStrings);
 var
   I: Integer;
@@ -964,8 +880,6 @@ begin
   for I := 0 to Strings.Count - 1 do
     AddObject(Strings.Strings[I], Strings.Objects[I]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.AddStringsTo(Dest: TStrings);
 var
@@ -975,14 +889,10 @@ begin
     Dest.AddObject(GetP(I)^, Objects[I]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.Append(const S: WideString);
 begin
   Add(S);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.Assign(Source: TPersistent);
 begin
@@ -1021,8 +931,6 @@ begin
     inherited Assign(Source);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.AssignTo(Dest: TPersistent);
 var
   I: Integer;
@@ -1049,8 +957,6 @@ begin
     inherited AssignTo(Dest);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.BeginUpdate;
 begin
   if FUpdateCount = 0 then
@@ -1058,14 +964,10 @@ begin
   Inc(FUpdateCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.CompareStrings(const S1, S2: WideString): Integer;
 begin
   Result := WideCompareText(S1, S2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.CreateAnsiStringList: TStrings;
 var
@@ -1082,8 +984,6 @@ begin
     raise;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.DefineProperties(Filer: TFiler);
 
@@ -1103,16 +1003,12 @@ begin
   Filer.DefineProperty('Strings', ReadData, WriteData, DoWrite);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     SetUpdateState(False);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.Equals(Strings: TStrings): Boolean;
 var
@@ -1128,8 +1024,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.Equals(Strings: TWStrings): Boolean;
 var
   I: Integer;
@@ -1143,8 +1037,6 @@ begin
     Result := True;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.Exchange(Index1, Index2: Integer);
 var
@@ -1164,8 +1056,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.ExtractName(const S: WideString): WideString;
 var
   Index: Integer;
@@ -1178,35 +1068,25 @@ begin
     SetLength(Result, 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.Get(Index: Integer): WideString;
 begin
   Result := GetP(Index)^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.GetCapacity: Integer;
 begin
   Result := Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetCommaText: WideString;
 begin
   Result := GetDelimtedTextEx(',', '"');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetDelimitedText: WideString;
 begin
   Result := GetDelimtedTextEx(FDelimiter, FQuoteChar);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.GetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
 var
@@ -1244,8 +1124,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetName(Index: Integer): WideString;
 var
   I: Integer;
@@ -1256,21 +1134,15 @@ begin
     SetLength(Result, I - 1);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetObject(Index: Integer): TObject;
 begin
   Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetText: PWideChar;
 begin
   Result := StrNewW(GetTextStr);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.GetTextStr: WideString;
 var
@@ -1302,8 +1174,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.GetValue(const Name: WideString): WideString;
 var
   Idx: Integer;
@@ -1314,8 +1184,6 @@ begin
   else
     Result := '';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.GetValueFromIndex(Index: Integer): WideString;
 var
@@ -1329,8 +1197,6 @@ begin
     Result := '';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.IndexOf(const S: WideString): Integer;
 begin
   for Result := 0 to Count - 1 do
@@ -1338,8 +1204,6 @@ begin
       Exit;
   Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStrings.IndexOfName(const Name: WideString): Integer;
 begin
@@ -1349,8 +1213,6 @@ begin
   Result := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStrings.IndexOfObject(AObject: TObject): Integer;
 begin
   for Result := 0 to Count - 1 do
@@ -1359,21 +1221,15 @@ begin
   Result := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.Insert(Index: Integer; const S: WideString);
 begin
   InsertObject(Index, S, nil);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.InsertObject(Index: Integer; const S: WideString;
   AObject: TObject);
 begin
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.LoadFromFile(const FileName: AnsiString;
   WideFileOptions: TWideFileOptions = []);
@@ -1387,8 +1243,6 @@ begin
     Stream.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.LoadFromStream(Stream: TStream;
   WideFileOptions: TWideFileOptions = []);
@@ -1428,8 +1282,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.Move(CurIndex, NewIndex: Integer);
 var
   TempObject: TObject;
@@ -1449,8 +1301,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.ReadData(Reader: TReader);
 begin
   BeginUpdate;
@@ -1468,8 +1318,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.SaveToFile(const FileName: AnsiString;
   WideFileOptions: TWideFileOptions = []);
 var
@@ -1482,8 +1330,6 @@ begin
     Stream.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SaveToStream(Stream: TStream;
   WideFileOptions: TWideFileOptions = []);
@@ -1509,27 +1355,19 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.SetCapacity(NewCapacity: Integer);
 begin
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SetCommaText(const Value: WideString);
 begin
   SetDelimtedTextEx(',', '"', Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.SetDelimitedText(const Value: WideString);
 begin
   SetDelimtedTextEx(Delimiter, QuoteChar, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar;
   const Value: WideString);
@@ -1586,14 +1424,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.SetText(Text: PWideChar);
 begin
   SetTextStr(Text);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SetTextStr(const Value: WideString);
 var
@@ -1640,13 +1474,9 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.SetUpdateState(Updating: Boolean);
 begin
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SetValue(const Name, Value: WideString);
 var
@@ -1659,8 +1489,6 @@ begin
   if Value <> '' then
     Add(Name + NameValueSeparator + Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStrings.SetValueFromIndex(Index: Integer; const Value: WideString);
 var
@@ -1682,8 +1510,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStrings.WriteData(Writer: TWriter);
 var
   I: Integer;
@@ -1702,8 +1528,6 @@ begin
   FList := TList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TWStringList.Destroy;
 begin
   FOnChange := nil;
@@ -1713,8 +1537,6 @@ begin
   FList.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStringList.AddObject(const S: WideString; AObject: TObject): Integer;
 begin
@@ -1731,23 +1553,17 @@ begin
   InsertObject(Result, S, AObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.Changed;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.Changing;
 begin
   if Assigned(FOnChanging) then
     FOnChanging(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.Clear;
 var
@@ -1767,8 +1583,6 @@ begin
     Changed;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStringList.CompareStrings(const S1, S2: WideString): Integer;
 begin
   if CaseSensitive then
@@ -1776,8 +1590,6 @@ begin
   else
     Result := WideCompareText(S1, S2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 threadvar
   CustomSortList: TWStringList;
@@ -1789,8 +1601,6 @@ begin
     CustomSortList.FList.IndexOf(Item1),
     CustomSortList.FList.IndexOf(Item2));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.CustomSort(Compare: TWStringListSortCompare);
 var
@@ -1811,8 +1621,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.Delete(Index: Integer);
 var
   Item: PWStringItem;
@@ -1827,8 +1635,6 @@ begin
     Changed;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.Exchange(Index1, Index2: Integer);
 begin
   if FUpdateCount = 0 then
@@ -1837,8 +1643,6 @@ begin
   if FUpdateCount = 0 then
     Changed;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStringList.Find(const S: WideString; var Index: Integer): Boolean;
 var
@@ -1875,42 +1679,30 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStringList.GetCapacity: Integer;
 begin
   Result := FList.Capacity;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStringList.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStringList.GetItem(Index: Integer): PWStringItem;
 begin
   Result := FList[Index];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStringList.GetObject(Index: Integer): TObject;
 begin
   Result := GetItem(Index).FObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWStringList.GetP(Index: Integer): PWideString;
 begin
   Result := Addr(GetItem(Index).FString);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWStringList.IndexOf(const S: WideString): Integer;
 begin
@@ -1927,8 +1719,6 @@ begin
     Result := -1;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.InsertObject(Index: Integer; const S: WideString;
   AObject: TObject);
@@ -1948,8 +1738,6 @@ begin
     Changed;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.Put(Index: Integer; const Value: WideString);
 begin
   if FUpdateCount = 0 then
@@ -1958,8 +1746,6 @@ begin
   if FUpdateCount = 0 then
     Changed;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.PutObject(Index: Integer; AObject: TObject);
 begin
@@ -1970,14 +1756,10 @@ begin
     Changed;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.SetCapacity(NewCapacity: Integer);
 begin
   FList.Capacity := NewCapacity;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.SetCaseSensitive(const Value: Boolean);
 begin
@@ -1991,8 +1773,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.SetSorted(Value: Boolean);
 begin
@@ -2008,8 +1788,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWStringList.SetUpdateState(Updating: Boolean);
 begin
   if Updating then
@@ -2018,14 +1796,10 @@ begin
     Changed;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DefaultSort(List: TWStringList; Index1, Index2: Integer): Integer;
 begin
   Result := List.CompareStrings(List.GetItem(Index1).FString, List.GetItem(Index2).FString);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWStringList.Sort;
 begin
@@ -2036,6 +1810,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.8  2005/02/14 00:47:23  rrossmair
 // - removed (redundant) comment in German language.
 //

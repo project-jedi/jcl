@@ -44,10 +44,7 @@ uses
   Classes, SysUtils, IniFiles, Contnrs,
   JclBase, JclSysUtils;
 
-//--------------------------------------------------------------------------------------------------
 // Various definitions
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclBorRADToolKind = (brDelphi, brCppBuilder); //, brBorlandDevStudio);
   {$IFDEF KYLIX}
@@ -92,10 +89,7 @@ const
     ('STD', 'PRO', 'CSS', 'ARC'); // 'ARC' is an assumption
   {$ENDIF ~KYLIX}
 
-//--------------------------------------------------------------------------------------------------
 // Installed versions information classes
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclBorRADToolInstallation = class;
 
@@ -492,9 +486,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo;
 
-//==================================================================================================
 // Internal
-//==================================================================================================
 
 type
   TUpdatePack = record
@@ -522,13 +514,13 @@ const
   PathSep = ';';
   {$ENDIF ~RTL140_UP}
 
-  MSHelpSystemKeyName           = 'SOFTWARE\Microsoft\Windows\Help';
+  MSHelpSystemKeyName = 'SOFTWARE\Microsoft\Windows\Help';
 
-  BCBKeyName                    = 'SOFTWARE\Borland\C++Builder';
-  BDSKeyName                    = 'SOFTWARE\Borland\BDS';
-  DelphiKeyName                 = 'SOFTWARE\Borland\Delphi';
+  BCBKeyName          = 'SOFTWARE\Borland\C++Builder';
+  BDSKeyName          = 'SOFTWARE\Borland\BDS';
+  DelphiKeyName       = 'SOFTWARE\Borland\Delphi';
 
-  BDSVersions: array[1..3] of TBDSVersionInfo = (
+  BDSVersions: array [1..3] of TBDSVersionInfo = (
     (
       Name: 'C#Builder';
       VersionStr: '1.0';
@@ -618,8 +610,6 @@ resourcestring
   RsBorlandStudioProjects = 'Borland Studio Projects';
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
 
-//--------------------------------------------------------------------------------------------------
-
 procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
   const LibSuffix: PString = nil; const Description: PString = nil);
 const
@@ -656,8 +646,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function BPLFileName(const BPLPath, DPKFileName: string): string;
 var
   LibSuffix: string;
@@ -666,8 +654,6 @@ begin
   GetDPKFileInfo(DPKFileName, RunOnly, @LibSuffix);
   Result := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(DPKFileName) + LibSuffix + '.bpl';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function IsDelphiPackage(const FileName: string): Boolean;
 begin
@@ -688,8 +674,6 @@ begin
   end;
   }
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -718,18 +702,14 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// TJclBorRADToolInstallationObject
-//==================================================================================================
+//=== { TJclBorRADToolInstallationObject } ===================================
 
 constructor TJclBorRADToolInstallationObject.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   FInstallation := AInstallation;
 end;
 
-//==================================================================================================
-// TJclBorlandOpenHelp
-//==================================================================================================
+//=== { TJclBorlandOpenHelp } ================================================
 
 {$IFDEF MSWINDOWS}
 
@@ -783,42 +763,30 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandOpenHelp.GetContentFileName: string;
 begin
   Result := ReadFileName(HelpContentFileName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetGidFileName: string;
 begin
   Result := ReadFileName(HelpGidFileName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandOpenHelp.GetIndexFileName: string;
 begin
   Result := ReadFileName(HelpIndexFileName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.GetLinkFileName: string;
 begin
   Result := ReadFileName(HelpLinkFileName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandOpenHelp.GetProjectFileName: string;
 begin
   Result := ReadFileName(HelpProjectFileName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.ReadFileName(const FormatName: string): string;
 var
@@ -838,8 +806,6 @@ begin
     Result := Format(FormatName, [RootDir, S, VersionNumber]);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandOpenHelp.RemoveHelpFile(const HelpFileName, IndexName: string): Boolean;
 var
@@ -893,9 +859,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// TJclBorRADToolIdeTool
-//==================================================================================================
+//== { TJclBorRADToolIdeTool } ===============================================
 
 constructor TJclBorRADToolIdeTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -903,22 +867,16 @@ begin
   FKey := TransferKeyName;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdeTool.CheckIndex(Index: Integer);
 begin
   if (Index < 0) or (Index >= Count) then
     raise EJclError.CreateResRec(@RsIndexOufOfRange);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeTool.GetCount: Integer;
 begin
   Result := Installation.ConfigData.ReadInteger(Key, TransferCountValueName, 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeTool.GetParameters(Index: Integer): string;
 begin
@@ -926,15 +884,11 @@ begin
   Result := Installation.ConfigData.ReadString(Key, Format(TransferParamsValueName, [Index]), '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeTool.GetPath(Index: Integer): string;
 begin
   CheckIndex(Index);
   Result := Installation.ConfigData.ReadString(Key, Format(TransferPathValueName, [Index]), '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeTool.GetTitle(Index: Integer): string;
 begin
@@ -942,15 +896,11 @@ begin
   Result := Installation.ConfigData.ReadString(Key, Format(TransferTitleValueName, [Index]), '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeTool.GetWorkingDir(Index: Integer): string;
 begin
   CheckIndex(Index);
   Result := Installation.ConfigData.ReadString(Key, Format(TransferWorkDirValueName, [Index]), '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeTool.IndexOfPath(const Value: string): Integer;
 var
@@ -965,8 +915,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeTool.IndexOfTitle(const Value: string): Integer;
 var
   I: Integer;
@@ -980,15 +928,11 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdeTool.SetCount(const Value: Integer);
 begin
   if Value > Count then
     Installation.ConfigData.WriteInteger(Key, TransferCountValueName, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolIdeTool.SetParameters(Index: Integer; const Value: string);
 begin
@@ -996,15 +940,11 @@ begin
   Installation.ConfigData.WriteString(Key, Format(TransferParamsValueName, [Index]), Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdeTool.SetPath(Index: Integer; const Value: string);
 begin
   CheckIndex(Index);
   Installation.ConfigData.WriteString(Key, Format(TransferPathValueName, [Index]), Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolIdeTool.SetTitle(Index: Integer; const Value: string);
 begin
@@ -1012,17 +952,13 @@ begin
   Installation.ConfigData.WriteString(Key, Format(TransferTitleValueName, [Index]), Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdeTool.SetWorkingDir(Index: Integer; const Value: string);
 begin
   CheckIndex(Index);
   Installation.ConfigData.WriteString(Key, Format(TransferWorkDirValueName, [Index]), Value);
 end;
 
-//==================================================================================================
-// TJclBorRADToolIdePackages
-//==================================================================================================
+//=== { TJclBorRADToolIdePackages } ==========================================
 
 constructor TJclBorRADToolIdePackages.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1036,16 +972,12 @@ begin
   ReadPackages;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolIdePackages.Destroy;
 begin
   FreeAndNil(FDisabledPackages);
   FreeAndNil(FKnownPackages);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string): Boolean;
 begin
@@ -1055,42 +987,30 @@ begin
   ReadPackages;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdePackages.GetCount: Integer;
 begin
   Result := FKnownPackages.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdePackages.GetPackageDescriptions(Index: Integer): string;
 begin
   Result := FKnownPackages.Values[FKnownPackages.Names[Index]];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdePackages.GetPackageDisabled(Index: Integer): Boolean;
 begin
   Result := Boolean(FKnownPackages.Objects[Index]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdePackages.GetPackageFileNames(Index: Integer): string;
 begin
   Result := PackageEntryToFileName(FKnownPackages.Names[Index]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdePackages.PackageEntryToFileName(const Entry: string): string;
 begin
   Result := {$IFDEF MSWINDOWS} PathGetLongName {$ENDIF} (Installation.SubstitutePath(Entry));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolIdePackages.ReadPackages;
 
@@ -1115,8 +1035,6 @@ begin
       FKnownPackages.Objects[I] := Pointer(True);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdePackages.RemoveDisabled(const FileName: string);
 var
   I: Integer;
@@ -1130,8 +1048,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
 begin
   Result := Installation.ConfigData.ValueExists(KnownPackagesKeyName, FileName);
@@ -1143,9 +1059,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclBorlandCommandLineTool
-//==================================================================================================
+//=== { TJclBorlandCommandLineTool } =========================================
 
 constructor TJclBorlandCommandLineTool.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1153,15 +1067,11 @@ begin
   FOptions := TStringList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorlandCommandLineTool.Destroy;
 begin
   FreeAndNil(FOptions);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
 var
@@ -1179,15 +1089,11 @@ begin
     Options.Add(S);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorlandCommandLineTool.CheckOutputValid;
 begin
   if Assigned(FOutputCallback) then
     raise EJclCommandLineToolError.CreateResFmt(@RsCmdLineToolOutputInvalid, [GetExeName]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
 begin
@@ -1197,8 +1103,6 @@ begin
     Result := JclSysUtils.Execute(Format('%s %s', [FileName, CommandLine]), FOutput) = 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandCommandLineTool.GetExeName: string;
 begin
   Result := '';
@@ -1207,8 +1111,6 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandCommandLineTool.GetFileName: string;
 begin
   Result := Installation.BinFolderName + GetExeName;
@@ -1216,14 +1118,10 @@ begin
     Result := AnsiQuotedStr(Result, '"');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandCommandLineTool.GetOptions: TStrings;
 begin
   Result := FOptions;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorlandCommandLineTool.GetOutput: string;
 begin
@@ -1231,31 +1129,23 @@ begin
   Result := FOutput;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorlandCommandLineTool.GetOutputCallback: TTextHandler;
 begin
   Result := FOutputCallback;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorlandCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
 begin
   FOutputCallback := CallbackMethod;
 end;
 
-//==================================================================================================
-// TJclDCC
-//==================================================================================================
+//=== { TJclDCC } ============================================================
 
 constructor TJclDCC.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
   SetDefaultOptions; // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclDCC.Execute(const CommandLine: string): Boolean;
 const
@@ -1272,14 +1162,10 @@ begin
   DeleteFile(ConfFileName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclDCC.GetExeName: string;
 begin
   Result := DCCExeName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclDCC.MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 const
@@ -1312,8 +1198,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDCC.SetDefaultOptions;
 begin
   Options.Clear;
@@ -1321,8 +1205,6 @@ begin
   if Installation.RadToolKind = brCppBuilder then
     AddPathOption('U', Installation.LibFolderName + PathAddSeparator('obj'));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclDCC.SupportsLibSuffix: Boolean;
 begin
@@ -1333,27 +1215,21 @@ begin
   {$ENDIF KYLIX}
 end;
 
-//==================================================================================================
-// TJclBorlandMake
-//==================================================================================================
+//=== { TJclBorlandMake } ====================================================
 
 function TJclBorlandMake.GetExeName: string;
 begin
   Result := MakeExeName;
 end;
 
-//==================================================================================================
-// TJclBpr2Mak
-//==================================================================================================
+//=== { TJclBpr2Mak } ========================================================
 
 function TJclBpr2Mak.GetExeName: string;
 begin
   Result := Bpr2MakExeName;
 end;
 
-//==================================================================================================
-// TJclBorRADToolPalette
-//==================================================================================================
+//=== { TJclBorRADToolPalette } ==============================================
 
 constructor TJclBorRADToolPalette.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1364,15 +1240,11 @@ begin
   ReadTabNames;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolPalette.Destroy;
 begin
   FreeAndNil(FTabNames);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolPalette.ComponentsOnTabToStrings(Index: Integer; Strings: TStrings;
   IncludeUnitName: Boolean; IncludeHiddenComponents: Boolean);
@@ -1423,8 +1295,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.DeleteTabName(const TabName: string): Boolean;
 var
   I: Integer;
@@ -1439,35 +1309,25 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.GetComponentsOnTab(Index: Integer): string;
 begin
   Result := Installation.ConfigData.ReadString(Key, FTabNames[Index], '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolPalette.GetHiddenComponentsOnTab(Index: Integer): string;
 begin
   Result := Installation.ConfigData.ReadString(Key, FTabNames[Index] + PaletteHiddenTag, '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.GetTabNameCount: Integer;
 begin
   Result := FTabNames.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.GetTabNames(Index: Integer): string;
 begin
   Result := FTabNames[Index];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolPalette.ReadTabNames;
 var
@@ -1492,16 +1352,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolPalette.TabNameExists(const TabName: string): Boolean;
 begin
   Result := FTabNames.IndexOf(TabName) <> -1;
 end;
 
-//==================================================================================================
-// TJclBorRADToolRepository
-//==================================================================================================
+//=== { TJclBorRADToolRepository } ===========================================
 
 constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1516,16 +1372,12 @@ begin
   CloseIniFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolRepository.Destroy;
 begin
   FreeAndNil(FPages);
   FreeAndNil(FIniFile);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolRepository.AddObject(const FileName, ObjectType, PageName, ObjectName,
   IconFileName, Description, Author, Designer: string; const Ancestor: string);
@@ -1551,14 +1403,10 @@ begin
   CloseIniFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolRepository.CloseIniFile;
 begin
   FreeAndNil(FIniFile);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolRepository.FindPage(const Name: string; OptionalIndex: Integer): string;
 var
@@ -1576,8 +1424,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolRepository.GetIniFile: TIniFile;
 begin
   if not Assigned(FIniFile) then
@@ -1585,14 +1431,10 @@ begin
   Result := FIniFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolRepository.GetPages: TStrings;
 begin
   Result := FPages;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolRepository.RemoveObjects(const PartialPath, FileName, ObjectType: string);
 var
@@ -1621,9 +1463,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclBorRADToolInstallation
-//==================================================================================================
+//=== { TJclBorRADToolInstallation } =========================================
 
 constructor TJclBorRADToolInstallation.Create;
 begin
@@ -1646,8 +1486,6 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolInstallation.Destroy;
 begin
   FreeAndNil(FRepository);
@@ -1666,8 +1504,6 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.AddToDebugDCUPath(const Path: string): Boolean;
 var
   TempDebugDCUPath: TJclBorRADToolPath;
@@ -1676,8 +1512,6 @@ begin
   Result := AddMissingPathItems(TempDebugDCUPath, Path);
   DebugDCUPath := TempDebugDCUPath;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.AddToLibrarySearchPath(const Path: string): Boolean;
 var
@@ -1688,8 +1522,6 @@ begin
   LibrarySearchPath := TempLibraryPath;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.AddToLibraryBrowsingPath(const Path: string): Boolean;
 var
   TempLibraryPath: TJclBorRADToolPath;
@@ -1698,8 +1530,6 @@ begin
   Result := AddMissingPathItems(TempLibraryPath, Path);
   LibraryBrowsingPath := TempLibraryPath;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.AnyInstanceRunning: Boolean;
 var
@@ -1723,8 +1553,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF KYLIX}
 function TJclBorRADToolInstallation.ConfigFileName(const Extension: string): string;
 begin
@@ -1732,14 +1560,10 @@ begin
 end;
 {$ENDIF KYLIX}
 
-//--------------------------------------------------------------------------------------------------
-
 class procedure TJclBorRADToolInstallation.ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
 begin
   StrToStrings(Path, PathSep, List);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
 var
@@ -1772,8 +1596,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
 var
   PathItems, RemoveItems: TStringList;
@@ -1805,8 +1627,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.FindFolderInPath(Folder: string; List: TStrings): Integer;
 var
   I: Integer;
@@ -1820,8 +1640,6 @@ begin
       Break;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : Donator: Adreas Hausladen }
 {$IFDEF MSWINDOWS}
@@ -1871,14 +1689,10 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetBPLOutputPath: string;
 begin
   Result := SubstitutePath(ConfigData.ReadString(LibraryKeyName, LibraryBPLOutputValueName, ''));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetDCC: TJclDCC;
 begin
@@ -1887,21 +1701,15 @@ begin
   Result := FDCC;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetDCPOutputPath: string;
 begin
   Result := SubstitutePath(ConfigData.ReadString(LibraryKeyName, LibraryDCPOutputValueName, ''));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetDebugDCUPath: string;
 begin
   Result := ConfigData.ReadString(DebuggingKeyName, DebugDCUPathValueName, '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetDefaultProjectsDir: string;
 begin
@@ -1917,16 +1725,12 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetDescription: string;
 begin
   Result := Format('%s %s', [Name, EditionAsText]);
   if InstalledUpdatePack > 0 then
     Result := Result + ' ' + Format(RsUpdatePackName, [InstalledUpdatePack]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetEditionAsText: string;
 begin
@@ -1961,8 +1765,6 @@ begin
     end;
   {$ENDIF KYLIX}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
 const
@@ -2000,14 +1802,10 @@ begin
   Result := FEnvironmentVariables;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetGlobals: TStrings;
 begin
   Result := FGlobals;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetIdeExeFileName: string;
 {$IFDEF KYLIX}
@@ -2023,8 +1821,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetIdeExeBuildNumber: string;
 begin
   {$IFDEF KYLIX}
@@ -2035,8 +1831,6 @@ begin
   {$ENDIF KYLIX}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetIdePackages: TJclBorRADToolIdePackages;
 begin
   if not Assigned(FIdePackages) then
@@ -2044,14 +1838,10 @@ begin
   Result := FIdePackages;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetLatestUpdatePack: Integer;
 begin
   Result := GetLatestUpdatePackForVersion(VersionNumber);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclBorRADToolInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
 begin
@@ -2059,21 +1849,15 @@ begin
   Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetLibrarySearchPath: TJclBorRADToolPath;
 begin
   Result := ConfigData.ReadString(LibraryKeyName, LibrarySearchPathValueName, '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetLibraryBrowsingPath: TJclBorRADToolPath;
 begin
   Result := ConfigData.ReadString(LibraryKeyName, LibraryBrowsingPathValueName, '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetName: string;
 begin
@@ -2084,16 +1868,12 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetPalette: TJclBorRADToolPalette;
 begin
   if not Assigned(FPalette) then
     FPalette := TJclBorRADToolPalette.Create(Self);
   Result := FPalette;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetRepository: TJclBorRADToolRepository;
 begin
@@ -2102,21 +1882,15 @@ begin
   Result := FRepository;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetUpdateNeeded: Boolean;
 begin
   Result := InstalledUpdatePack < LatestUpdatePack;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.GetValid: Boolean;
 begin
   Result := (ConfigData.FileName <> '') and (RootDir <> '') and FileExists(IdeExeFileName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
@@ -2134,8 +1908,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
@@ -2155,8 +1927,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.IsBDSPersonality: Boolean;
 begin
   {$IFDEF MSWINDOWS}
@@ -2166,14 +1936,10 @@ begin
   {$ENDIF}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.LibFolderName: string;
 begin
   Result := PathAddSeparator(RootDir) + PathAddSeparator('lib');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.RemoveFromDebugDCUPath(const Path: string): Boolean;
 var
@@ -2184,8 +1950,6 @@ begin
   DebugDCUPath := TempDebugDCUPath;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.RemoveFromLibrarySearchPath(const Path: string): Boolean;
 var
   TempLibraryPath: TJclBorRADToolPath;
@@ -2194,8 +1958,6 @@ begin
   Result := RemoveFromPath(TempLibraryPath, Path);
   LibrarySearchPath := TempLibraryPath;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
 var
@@ -2206,8 +1968,6 @@ begin
   LibraryBrowsingPath := TempLibraryPath;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
 begin
   Result := '';
@@ -2215,8 +1975,6 @@ begin
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclBorRADToolInstallation.RADToolKind: TJclBorRADToolKind;
 begin
@@ -2226,16 +1984,12 @@ begin
     Result := brDelphi;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclBorRADToolInstallation.RADToolName: string;
 begin
   {$IFDEF MSWINDOWS}
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolInstallation.ReadInformation;
 const
@@ -2288,28 +2042,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolInstallation.SetDebugDCUPath(const Value: string);
 begin
   ConfigData.WriteString(DebuggingKeyName, DebugDCUPathValueName, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolInstallation.SetLibrarySearchPath(const Value: TJclBorRADToolPath);
 begin
   ConfigData.WriteString(LibraryKeyName, LibrarySearchPathValueName, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolInstallation.SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
 begin
   ConfigData.WriteString(LibraryKeyName, LibraryBrowsingPathValueName, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.SubstitutePath(const Path: string): string;
 var
@@ -2328,8 +2074,6 @@ begin
   Result := StringReplace(Result, PathSeparator + PathSeparator, PathSeparator, [rfReplaceAll]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
 begin
   {$IFDEF KYLIX}
@@ -2339,9 +2083,7 @@ begin
   {$ENDIF KYLIX}
 end;
 
-//==================================================================================================
-// TJclBCBInstallation
-//==================================================================================================
+//=== { TJclBCBInstallation } ================================================
 
 constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
 begin
@@ -2349,15 +2091,11 @@ begin
   FBpr2Mak := TJclBpr2Mak.Create(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBCBInstallation.Destroy;
 begin
   FBpr2Mak.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF KYLIX}
 function TJclBCBInstallation.ConfigFileName(const Extension: string): string;
@@ -2365,8 +2103,6 @@ begin
   Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
 end;
 {$ENDIF KYLIX}
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclBCBInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
 begin
@@ -2377,8 +2113,6 @@ begin
     Result := 0;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBCBInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
@@ -2401,31 +2135,22 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclBCBInstallation.PackageSourceFileExtension: string;
 begin
   Result := '.bpk';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclBCBInstallation.RADToolName: string;
 begin
   Result := RsBCBName;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBCBInstallation.GetVclIncludeDir: string;
 begin
   Result := RootDir + RsVclIncludeDir;
 end;
 
-//==================================================================================================
-// TJclDelphiInstallation
-//==================================================================================================
-
+//=== { TJclDelphiInstallation } =============================================
 
 {$IFDEF KYLIX}
 function TJclDelphiInstallation.ConfigFileName(const Extension: string): string;
@@ -2433,8 +2158,6 @@ begin
   Result := Format('%s/.borland/delphi%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
 end;
 {$ENDIF KYLIX}
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclDelphiInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
 begin
@@ -2448,23 +2171,17 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclDelphiInstallation.PackageSourceFileExtension: string;
 begin
   Result := '.dpk';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclDelphiInstallation.RADToolName: string;
 begin
   Result := RsDelphiName;
 end;
 
-//==================================================================================================
-// TJclBorRADToolInstallations
-//==================================================================================================
+//=== { TJclBorRADToolInstallations } ======================================== 
 
 constructor TJclBorRADToolInstallations.Create;
 begin
@@ -2472,15 +2189,11 @@ begin
   ReadInstallations;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolInstallations.Destroy;
 begin
   FreeAndNil(FList);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.AnyInstanceRunning: Boolean;
 var
@@ -2494,8 +2207,6 @@ begin
       Break;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.AnyUpdatePackNeeded(var Text: string): Boolean;
 var
@@ -2511,14 +2222,10 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallations.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.GetBCBInstallationFromVersion(VersionNumber: Integer): TJclBorRADToolInstallation;
 var
@@ -2533,8 +2240,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallations.GetDelphiInstallationFromVersion(VersionNumber: Integer): TJclBorRADToolInstallation;
 var
   I: Integer;
@@ -2548,28 +2253,20 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallations.GetInstallations(Index: Integer): TJclBorRADToolInstallation;
 begin
   Result := TJclBorRADToolInstallation(FList[Index]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.GetBCBVersionInstalled(VersionNumber: Integer): Boolean;
 begin
   Result := BCBInstallationFromVersion[VersionNumber] <> nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallations.GetDelphiVersionInstalled(VersionNumber: Integer): Boolean;
 begin
   Result := DelphiInstallationFromVersion[VersionNumber] <> nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallations.Iterate(TraverseMethod: TTraverseMethod): Boolean;
 var
@@ -2579,8 +2276,6 @@ begin
   for I := 0 to Count - 1 do
     Result := Result and TraverseMethod(Installations[I]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolInstallations.ReadInstallations;
 {$IFDEF KYLIX}
@@ -2649,9 +2344,7 @@ begin
 end;
 {$ENDIF ~KYLIX}
 
-//==================================================================================================
-// TJclCommandLineTool
-//==================================================================================================
+//=== { TJclCommandLineTool } ================================================
 
 constructor TJclCommandLineTool.Create(const AExeName: string);
 begin
@@ -2660,15 +2353,11 @@ begin
   FExeName := AExeName;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclCommandLineTool.Destroy;
 begin
   FreeAndNil(FOptions);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclCommandLineTool.AddPathOption(const Option, Path: string);
 var
@@ -2684,8 +2373,6 @@ begin
     GetOptions.Add(S);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclCommandLineTool.Execute(const CommandLine: string): Boolean;
 begin
   if Assigned(FOutputCallback) then
@@ -2694,46 +2381,37 @@ begin
     Result := JclSysUtils.Execute(Format('"%s" %s', [ExeName, CommandLine]), FOutput) = 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclCommandLineTool.GetExeName: string;
 begin
   Result := FExeName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclCommandLineTool.GetOptions: TStrings;
 begin
   Result := FOptions;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclCommandLineTool.GetOutput: string;
 begin
   Result := FOutput;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclCommandLineTool.GetOutputCallback: TTextHandler;
 begin
   Result := FOutputCallback;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
 begin
   FOutputCallback := CallbackMethod;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // History:
 
 // $Log$
+// Revision 1.35  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.34  2005/02/23 07:53:13  rrossmair
 // - added TJclDCC.SetDefaultOptions, which includes the path(s) normally found in $(DELPHI)\bin\dcc32.cfg.
 // - AddPathOption() methods enhanced.

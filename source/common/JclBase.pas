@@ -44,10 +44,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils;
 
-//--------------------------------------------------------------------------------------------------
 // Version
-//--------------------------------------------------------------------------------------------------
-
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 94;   // Fourth minor release since JCL 1.90
@@ -56,10 +53,7 @@ const
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
-//--------------------------------------------------------------------------------------------------
 // EJclError
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclError = class(Exception)
   public
@@ -67,10 +61,7 @@ type
     constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
   end;
 
-//--------------------------------------------------------------------------------------------------
 // EJclWin32Error
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
 type
   EJclWin32Error = class(EJclError)
@@ -87,17 +78,11 @@ type
   end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // EJclInternalError
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclInternalError = class(EJclError);
 
-//--------------------------------------------------------------------------------------------------
 // Types
-//--------------------------------------------------------------------------------------------------
-
 type
   {$IFDEF MATH_EXTENDED_PRECISION}
   Float = Extended;
@@ -128,10 +113,7 @@ type
   UInt64 = Int64;
   {$ENDIF ~COMPILER7}
 
-//--------------------------------------------------------------------------------------------------
 // Interface compatibility
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF SUPPORTS_INTERFACE}
 {$IFNDEF FPC}
 {$IFNDEF RTL140_UP}
@@ -143,10 +125,7 @@ type
 {$ENDIF ~FPC}
 {$ENDIF SUPPORTS_INTERFACE}
 
-//--------------------------------------------------------------------------------------------------
 // Int64 support
-//--------------------------------------------------------------------------------------------------
-
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 
@@ -169,10 +148,7 @@ type
      (QuadPart: Int64);
   end;
 
-//--------------------------------------------------------------------------------------------------
 // Dynamic Array support
-//--------------------------------------------------------------------------------------------------
-
 type
   TDynByteArray       = array of Byte;
   TDynShortIntArray   = array of Shortint;
@@ -191,10 +167,7 @@ type
   TDynIInterfaceArray = array of IInterface;
   TDynObjectArray     = array of TObject;
 
-//--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
-//--------------------------------------------------------------------------------------------------
-
 const
   // (rom) too basic for JclStrings
   AnsiLineFeed       = AnsiChar(#10);
@@ -216,9 +189,7 @@ implementation
 uses
   JclResources;
 
-//==================================================================================================
-// EJclError
-//==================================================================================================
+//== { EJclError } ===========================================================
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
@@ -238,9 +209,7 @@ begin
   {$ENDIF FPC}
 end;
 
-//==================================================================================================
-// EJclWin32Error
-//==================================================================================================
+//== { EJclWin32Error } ======================================================
 
 {$IFDEF MSWINDOWS}
 
@@ -251,8 +220,6 @@ begin
   inherited CreateFmt(Msg + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
 begin
   FLastError := GetLastError;
@@ -260,16 +227,12 @@ begin
   inherited CreateFmt(Msg + #13 + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
   inherited CreateFmt(LoadStr(Ident) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
 begin
@@ -284,9 +247,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
 // Int64 support
-//==================================================================================================
 
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 begin
@@ -294,17 +255,13 @@ begin
   HighPart := TULargeInteger(I).HighPart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 begin
   TULargeInteger(I).LowPart := LowPart;
   TULargeInteger(I).HighPart := HighPart;
 end;
 
-//==================================================================================================
 // Cross Platform Compatibility
-//==================================================================================================
 
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
@@ -316,6 +273,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.30  2005/02/14 00:41:58  rrossmair
 // - supply PByte for D5/BCB5. Pbyte is required by JclMath.GetParity; including it here helps
 //   avoid inclusion of unit Windows in the uses clause of unit JclMath just because of PByte.

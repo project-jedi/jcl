@@ -43,10 +43,7 @@ uses
 type
   TStereoChannel = (scLeft, scRight);
   
-//--------------------------------------------------------------------------------------------------
 // MIDI Out
-//--------------------------------------------------------------------------------------------------
-
   IJclWinMidiOut = interface(IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
     // property access methods
@@ -63,18 +60,13 @@ function MidiOut(DeviceID: Cardinal): IJclWinMidiOut;
 procedure GetMidiOutputs(const List: TStrings);
 procedure MidiOutCheck(Code: MMResult);
 
-//--------------------------------------------------------------------------------------------------
 // MIDI In
-//--------------------------------------------------------------------------------------------------
-
 procedure MidiInCheck(Code: MMResult);
 
 implementation
 
 uses
   JclResources, JclStrings;
-
-//--------------------------------------------------------------------------------------------------
 
 var
   FMidiOutputs: TStringList = nil;
@@ -96,14 +88,10 @@ begin
   Result := FMidiOutputs;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure GetMidiOutputs(const List: TStrings);
 begin
   List.Assign(MidiOutputs);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetMidiInErrorMessage(const ErrorCode: MMRESULT): string;
 begin
@@ -114,8 +102,6 @@ begin
     Result := Format(RsMidiInUnknownError, [ErrorCode]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetMidiOutErrorMessage(const ErrorCode: MMRESULT): string;
 begin
   SetLength(Result, MAXERRORLENGTH-1);
@@ -125,15 +111,11 @@ begin
     Result := Format(RsMidiOutUnknownError, [ErrorCode]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure MidiInCheck(Code: MMResult);
 begin
   if Code <> MMSYSERR_NOERROR then
     raise EJclMidiError.Create(GetMidiInErrorMessage(Code));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure MidiOutCheck(Code: MMResult);
 begin
@@ -141,10 +123,7 @@ begin
     raise EJclMidiError.Create(GetMidiOutErrorMessage(Code));
 end;
 
-//==================================================================================================
 // MidiOut implementation
-//==================================================================================================
-
 type
   TMidiOut = class(TJclMidiOut, IJclWinMidiOut)
   private
@@ -170,8 +149,6 @@ type
     property Volume: Word read GetVolume write SetVolume;
   end;
 
-//--------------------------------------------------------------------------------------------------
-
 var
   MidiMapperDeviceID: Cardinal = MIDI_MAPPER;
 
@@ -196,8 +173,6 @@ begin
   Result := Device;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TMidiOut.Create(ADeviceID: Cardinal);
 begin
   inherited Create;
@@ -207,8 +182,6 @@ begin
   MidiOutCheck(midiOutGetID(FHandle, @FDeviceID));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TMidiOut.Destroy;
 begin
   inherited Destroy;
@@ -216,14 +189,10 @@ begin
   MidiOutputs.Objects[FDeviceID] := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMidiOut.GetName: string;
 begin
   Result := FDeviceCaps.szPName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TMidiOut.LongMessage(const Data: array of Byte);
 var
@@ -238,8 +207,6 @@ begin
   MidiOutCheck(midiOutLongMsg(FHandle, @Hdr, SizeOf(Hdr)));
   repeat until (Hdr.dwFlags and MHDR_DONE) <> 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TMidiOut.DoSendMessage(const Data: array of Byte);
 var
@@ -261,15 +228,11 @@ begin
   else LongMessage(Data);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMidiOut.GetChannelVolume(Channel: TStereoChannel): Word;
 begin
   midiOutGetVolume(FHandle, @FVolume);
   Result := FVolume;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TMidiOut.SetChannelVolume(Channel: TStereoChannel; const Value: Word);
 begin
@@ -279,21 +242,15 @@ begin
     SetLRVolume(ChannelVolume[scLeft], Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMidiOut.GetVolume: Word;
 begin
   Result := GetChannelVolume(scLeft);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TMidiOut.SetVolume(const Value: Word);
 begin
   SetLRVolume(Value, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TMidiOut.SetLRVolume(const LeftValue, RightValue: Word);
 var
@@ -312,8 +269,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 initialization
 
 finalization
@@ -322,6 +277,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/24 16:34:53  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.11  2004/10/17 21:00:16  mthoma
 // cleaning
 //

@@ -580,9 +580,7 @@ const
     ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,  ptVoid,   ptVoid,   ptVoid,  {18}
     ptVoid,   ptVoid,   ptVoid);                                                   {20}
 
-//==================================================================================================
-// TJclClrILGenerator
-//==================================================================================================
+//===  { TJclClrILGenerator } ================================================
 
 constructor TJclClrILGenerator.Create;
 begin
@@ -590,8 +588,6 @@ begin
   FMethod := nil;
   FInstructions := TObjectList.Create;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclClrILGenerator.Create(AMethod: TJclClrMethodBody);
 var
@@ -630,15 +626,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrILGenerator.Destroy;
 begin
   FreeAndNil(FInstructions);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrILGenerator.DumpIL(Options: TJclInstructionDumpILOptions): string;
 var
@@ -703,23 +695,17 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrILGenerator.GetInstructionCount: Integer;
 begin
   Result := FInstructions.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrILGenerator.GetInstruction(const Idx: Integer): TJclInstruction;
 begin
   Result := TJclInstruction(FInstructions[Idx]);
 end;
 
-//==================================================================================================
-// TJclInstruction
-//==================================================================================================
+//=== { TJclInstruction } ====================================================
 
 constructor TJclInstruction.Create(AOwner :TJclClrILGenerator; AOpCode: TJclOpCode);
 begin
@@ -728,14 +714,10 @@ begin
   FOpCode := AOpCode;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.GetWideOpCode: Boolean;
 begin
   Result := Integer(OpCode) > MaxByte;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclInstruction.GetRealOpCode: Byte;
 begin
@@ -745,35 +727,25 @@ begin
     Result := Integer(OpCode);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.GetParamType: TJclInstructionParamType;
 begin
   Result := OpCodeParamTypes[OpCode];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclInstruction.GetName: string;
 begin
   Result := OpCodeInfos[OpCode, itName];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.GetFullName: string;
 begin
   Result := OpCodeInfos[OpCode, itFullName];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.GetDescription: string;
 begin
   Result := OpCodeInfos[OpCode, itDescription]
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclInstruction.GetSize: DWORD;
 const
@@ -795,8 +767,6 @@ begin
   end;
   Result := OpCodeSize[OpCode in [opNop..opPrefixRef]] + Result;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclInstruction.Load(Stream: TStream);
 var
@@ -882,8 +852,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclInstruction.Save(Stream: TStream);
 var
   Code: Byte;
@@ -936,8 +904,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.DumpIL(Options: TJclInstructionDumpILOptions): string;
 var
   Opt: TJclInstructionDumpILOption;
@@ -952,14 +918,10 @@ begin
     Result := Result + ' // ' + DumpILOption(doComment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclInstruction.FormatLabel(Offset: Integer): string;
 begin
   Result := 'IL_' + IntToHex(Offset, 4);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclInstruction.DumpILOption(Option: TJclInstructionDumpILOption): string;
 
@@ -1085,6 +1047,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.9  2004/10/17 21:00:14  mthoma
 // cleaning
 //

@@ -249,16 +249,12 @@ var
   StgOpenStorageEx: TStgOpenStorageExFunc = nil;
   {$EXTERNALSYM StgOpenStorageEx}
 
-//--------------------------------------------------------------------------------------------------
-
 procedure CoMallocFree(P: Pointer);
 begin
   if FMalloc = nil then
     OleCheck(CoGetMalloc(1, FMalloc));
   FMalloc.Free(P);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AccessToMode(AccessMode: TJclStructStorageAccessModes): UINT;
 begin
@@ -318,8 +314,6 @@ begin
     // not strictly necessary, since STGM_SHARE_DENY_NONE = 0, but makes it more self-documenting
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // simpler and less convoluted than using StringToWideChar
 
 function StrToWChar(const S: string): PWideChar;
@@ -334,17 +328,13 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FreeWChar(W: PWideChar);
 begin
   if Assigned(W) then
     FreeMem(W);
 end;
 
-//==================================================================================================
-// { TJclStructStorageFolder }
-//==================================================================================================
+//=== { TJclStructStorageFolder } ============================================
 
 constructor TJclStructStorageFolder.Create(const FileName: string; AccessMode: TJclStructStorageAccessModes;
   OpenDirect: Boolean = False);
@@ -359,15 +349,11 @@ begin
     Check;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclStructStorageFolder.Destroy;
 begin
   FStorage := nil;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.Add(const Name: string;
   IsFolder: Boolean): Boolean;
@@ -389,8 +375,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.Delete(const Name: string): Boolean;
 var
   AName: PWideChar;
@@ -403,8 +387,6 @@ begin
     FreeWChar(AName);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclStructStorageFolder.Check;
 var
@@ -427,15 +409,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.CheckResult(HR: HRESULT): Boolean;
 begin
   Result := Succeeded(HR);
   FLastError := HR;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.GetFileStream(const Name: string; out Stream: TStream): Boolean;
 var
@@ -464,8 +442,6 @@ begin
     FreeWChar(AName);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.GetFolder(const Name: string; out Storage: TJclStructStorageFolder): Boolean;
 var
@@ -498,8 +474,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.GetSubItems(Strings: TStrings;
   Folders: Boolean): Boolean;
 var
@@ -529,8 +503,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.Rename(const OldName, NewName: string): Boolean;
 var
   PWO, PWN: PWideChar;
@@ -547,8 +519,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclStructStorageFolder.IsStructured(const FileName: string): HRESULT;
 var
   AName: PWideChar;
@@ -560,8 +530,6 @@ begin
     FreeWChar(AName);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclStructStorageFolder.Convert(const FileName: string): HRESULT;
 var
@@ -581,8 +549,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.GetStats(out Stat: TStatStg; IncludeName: Boolean): Boolean;
 const
   Flags: array [Boolean] of Longint =
@@ -591,8 +557,6 @@ begin
   Check;
   Result := CheckResult(FStorage.Stat(Stat, Flags[IncludeName]));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.SetElementTimes(const Name: string; Stat: TStatStg): Boolean;
 var
@@ -608,8 +572,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.Commit: Boolean;
 begin
   Check;
@@ -617,15 +579,11 @@ begin
     CheckResult(FStorage.Commit(STGC_OVERWRITE));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.Revert: Boolean;
 begin
   Check;
   Result := CheckResult(FStorage.Revert);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.CopyTo(const OldName, NewName: string; Dest: TJclStructStorageFolder): Boolean;
 var
@@ -646,8 +604,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclStructStorageFolder.AssignTo(Dest: TPersistent);
 begin
   if Dest is TJclStructStorageFolder then
@@ -659,8 +615,6 @@ begin
   else
     inherited AssignTo(Dest);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageFolder.MoveTo(const OldName, NewName: string;
   Dest: TJclStructStorageFolder): Boolean;
@@ -682,8 +636,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageFolder.GetName: string;
 var
   Stat: StatStg;
@@ -697,17 +649,13 @@ begin
     Result := FFileName;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclStructStorageFolder.FreeStats(var Stat: TStatStg);
 begin
   if Stat.pwcsName <> nil then
     CoMallocFree(Stat.pwcsName);
 end;
 
-//==================================================================================================
-// { TJclStructStorageStream }
-//==================================================================================================
+//=== { TJclStructStorageStream } ============================================
 
 destructor TJclStructStorageStream.Destroy;
 begin
@@ -715,23 +663,17 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclStructStorageStream.Check;
 begin
   if FStream = nil then
     raise EJclStructStorageError.Create('IStream is nil');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageStream.CheckResult(HR: HRESULT): Boolean;
 begin
   Result := Succeeded(HR);
   FlastError := HR;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageStream.Clone: TJclStructStorageStream;
 var
@@ -746,8 +688,6 @@ begin
     Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageStream.CopyTo(Stream: TJclStructStorageStream;
   Size: Int64): Boolean;
 var
@@ -758,15 +698,11 @@ begin
   Result := Succeeded(FStream.CopyTo(Stream.FStream, Size, DidRead, DidWrite));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclStructStorageStream.FreeStats(var Stat: TStatStg);
 begin
   if Stat.pwcsName <> nil then
     CoMallocFree(Stat.pwcsName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageStream.GetName: string;
 var
@@ -781,8 +717,6 @@ begin
     Result := Fname;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageStream.GetStats(out Stat: TStatStg; IncludeName: Boolean): Boolean;
 const
   Flags: array [Boolean] of Longint =
@@ -792,16 +726,12 @@ begin
   Result := CheckResult(FStream.Stat(Stat, Flags[IncludeName]));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclStructStorageStream.Read(var Buffer; Count: Longint): Longint;
 begin
   Check;
   if not Succeeded(FStream.Read(@Buffer, Count, @Result)) then
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageStream.Seek(Offset: Integer; Origin: Word): Longint;
 var
@@ -814,15 +744,11 @@ begin
     Result := N;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclStructStorageStream.SetSize(NewSize: Longint);
 begin
   Check;
   FStream.SetSize(NewSize);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclStructStorageStream.Write(const Buffer; Count: Longint): Longint;
 begin
@@ -834,6 +760,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.6  2004/10/02 05:47:29  marquardt
 // added check for incompatible jedi.inc
 // replaced jedi.inc with jvcl.inc

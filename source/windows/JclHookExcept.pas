@@ -39,10 +39,7 @@ interface
 uses
   Windows, SysUtils;
 
-//--------------------------------------------------------------------------------------------------
 // Exception hooking notifiers routines
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclExceptNotifyProc = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
   TJclExceptNotifyMethod = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
@@ -57,10 +54,7 @@ function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Bo
 
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 
-//--------------------------------------------------------------------------------------------------
 // Exception hooking routines
-//--------------------------------------------------------------------------------------------------
-
 function JclHookExceptions: Boolean;
 function JclUnhookExceptions: Boolean;
 function JclExceptionsHooked: Boolean;
@@ -68,20 +62,14 @@ function JclExceptionsHooked: Boolean;
 function JclHookExceptionsInModule(Module: HMODULE): Boolean;
 function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Exceptions hooking in libraries
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclModuleArray = array of HMODULE;
 
 function JclInitializeLibrariesHookExcept: Boolean;
 function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Hooking routines location info helper
-//--------------------------------------------------------------------------------------------------
-
 function JclBelongsHookedCode(Addr: Pointer): Boolean;
 
 implementation
@@ -151,17 +139,12 @@ threadvar
   Recursive: Boolean;
   NewResultExc: Exception;
 
-//==================================================================================================
 // Helper routines
-//==================================================================================================
-
 function RaiseExceptionAddress: Pointer;
 begin
   Result := GetProcAddress(GetModuleHandle(kernel32), 'RaiseException');
   Assert(Result <> nil);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure FreeNotifiers;
 var
@@ -177,10 +160,7 @@ begin
   FreeAndNil(Notifiers);
 end;
 
-//==================================================================================================
 // TNotifierItem
-//==================================================================================================
-
 constructor TNotifierItem.Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority);
 begin
   inherited Create;
@@ -188,16 +168,12 @@ begin
   FPriority := Priority;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TNotifierItem.Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority);
 begin
   inherited Create;
   FNotifyMethod := NotifyMethod;
   FPriority := Priority;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TNotifierItem.DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
@@ -207,8 +183,6 @@ begin
   if Assigned(FNotifyMethod) then
     FNotifyMethod(ExceptObj, ExceptAddr, OSException);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -240,8 +214,6 @@ begin
   end;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
   Arguments: PExceptionArguments); stdcall;
 const
@@ -258,8 +230,6 @@ begin
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HookedExceptObjProc(P: PExceptionRecord): Exception;
 var
   NewResultExcCache: Exception; // TLS optimization
@@ -275,8 +245,6 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
-//--------------------------------------------------------------------------------------------------
-
 // Do not change ordering of HookedRaiseException, HookedExceptObjProc and JclBelongsHookedCode routines
 function JclBelongsHookedCode(Addr: Pointer): Boolean;
 begin
@@ -284,8 +252,6 @@ begin
     (Cardinal(@HookedRaiseException) <= Cardinal(Addr)) and
     (Cardinal(@JclBelongsHookedCode) > Cardinal(Addr));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority): Boolean;
 begin
@@ -299,8 +265,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority): Boolean;
 begin
   Result := Assigned(NotifyMethod);
@@ -312,8 +276,6 @@ begin
       Notifiers.UnlockList;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProc): Boolean;
 var
@@ -338,8 +300,6 @@ begin
       Notifiers.UnlockList;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean;
 var
@@ -366,15 +326,11 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 begin
   Assert(Recursive);
   NewResultExc := NewExceptObj;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclHookExceptions: Boolean;
 var
@@ -398,8 +354,6 @@ begin
     Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclUnhookExceptions: Boolean;
 begin
   if ExceptionsHooked then
@@ -416,14 +370,10 @@ begin
     Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclExceptionsHooked: Boolean;
 begin
   Result := ExceptionsHooked;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclHookExceptionsInModule(Module: HMODULE): Boolean;
 begin
@@ -431,18 +381,13 @@ begin
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, RaiseExceptionAddress, @HookedRaiseException);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
 begin
   Result := ExceptionsHooked and
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, @HookedRaiseException, @Kernel32_RaiseException);
 end;
 
-//==================================================================================================
 // Exceptions hooking in libraries
-//==================================================================================================
-
 procedure JclHookExceptDebugHookProc(Module: HMODULE; Hook: Boolean); stdcall;
 begin
   if Hook then
@@ -450,8 +395,6 @@ begin
   else
     HookExceptModuleList.UnhookModule(Module);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CallExportedHookExceptProc(Module: HMODULE; Hook: Boolean): Boolean;
 var
@@ -467,8 +410,6 @@ begin
       HookExceptProc(Module, True);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclInitializeLibrariesHookExcept: Boolean;
 begin
@@ -486,8 +427,6 @@ begin
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 begin
   {$IFDEF HOOK_DLL_EXCEPTIONS}
@@ -499,8 +438,6 @@ begin
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FinalizeLibrariesHookExcept;
 begin
   FreeAndNil(HookExceptModuleList);
@@ -508,10 +445,7 @@ begin
     CallExportedHookExceptProc(SystemTObjectInstance, False);
 end;
 
-//==================================================================================================
 // TJclHookExceptModuleList
-//==================================================================================================
-
 constructor TJclHookExceptModuleList.Create;
 begin
   inherited Create;
@@ -520,16 +454,12 @@ begin
   JclHookExceptDebugHook := @JclHookExceptDebugHookProc;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclHookExceptModuleList.Destroy;
 begin
   JclHookExceptDebugHook := nil;
   FreeAndNil(FModules);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclHookExceptModuleList.HookModule(Module: HMODULE);
 begin
@@ -544,8 +474,6 @@ begin
     FModules.UnlockList;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclHookExceptModuleList.HookStaticModules;
 var
@@ -570,8 +498,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclHookExceptModuleList.JclHookExceptDebugHookAddr: Pointer;
 var
   HostModule: HMODULE;
@@ -579,8 +505,6 @@ begin
   HostModule := GetModuleHandle(nil);
   Result := GetProcAddress(HostModule, JclHookExceptDebugHookName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclHookExceptModuleList.List(var ModulesList: TJclModuleArray);
 var
@@ -596,8 +520,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclHookExceptModuleList.UnhookModule(Module: HMODULE);
 begin
   with FModules.LockList do
@@ -607,8 +529,6 @@ begin
     FModules.UnlockList;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 initialization
   Notifiers := TThreadList.Create;
@@ -622,6 +542,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.8  2004/10/17 21:00:15  mthoma
 // cleaning
 //

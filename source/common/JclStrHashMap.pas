@@ -134,37 +134,26 @@ type
 
 implementation
 
-//==================================================================================================
 // Case Sensitive & Insensitive Traits
-//==================================================================================================
-
 function TCaseSensitiveTraits.Compare(const L, R: string): Integer;
 begin
   Result := CompareStr(L, R);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TCaseSensitiveTraits.Hash(const S: string): Cardinal;
 begin
   Result := StrHash(S);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TCaseInsensitiveTraits.Compare(const L, R: string): Integer;
 begin
   Result := CompareText(L, R);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TCaseInsensitiveTraits.Hash(const S: string): Cardinal;
 begin
   Result := TextHash(S);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 var
   GlobalCaseSensitiveTraits: TCaseSensitiveTraits;
@@ -176,8 +165,6 @@ begin
   Result := GlobalCaseSensitiveTraits;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 var
   GlobalCaseInsensitiveTraits: TCaseInsensitiveTraits;
 
@@ -188,16 +175,12 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iterate_FreeObjects(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
   Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Iterate_Dispose(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
@@ -206,16 +189,12 @@ begin
   Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iterate_FreeMem(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
   FreeMem(AData);
   AData := nil;
   Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StrHash(const S: string): Cardinal;
 const
@@ -244,8 +223,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TextHash(const S: string): Cardinal;
 const
   cLongBits = 32;
@@ -273,8 +250,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DataHash(var AValue; ASize: Cardinal): THashValue;
 const
   cLongBits = 32;
@@ -300,9 +275,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TStringHashMap
-//==================================================================================================
+//=== { TStringHashMap } =====================================================
 
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
@@ -312,16 +285,12 @@ begin
   FTraits := ATraits;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TStringHashMap.Destroy;
 begin
   Clear;
   SetHashSize(0);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 type
   PPCollectNodeNode = ^PCollectNodeNode;
@@ -345,8 +314,6 @@ begin
   PCnn^.Str := ANode^^.Str;
   PCnn^.Ptr := ANode^^.Ptr;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var
@@ -415,8 +382,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.FindNode(const S: string): PPHashNode;
 var
   I: Cardinal;
@@ -450,8 +415,6 @@ begin
   Result := PPN;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.IterateNode(ANode: PHashNode; AUserData: Pointer;
   AIterateFunc: TIterateFunc): Boolean;
 begin
@@ -472,8 +435,6 @@ begin
   else
     Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TStringHashMap.IterateMethodNode(ANode: PHashNode; AUserData: Pointer;
   AIterateMethod: TIterateMethod): Boolean;
@@ -496,8 +457,6 @@ begin
     Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.NodeIterate(ANode: PPHashNode; AUserData: Pointer;
   AIterateFunc: TNodeIterateFunc);
 begin
@@ -508,8 +467,6 @@ begin
     NodeIterate(@ANode^.Right, AUserData, AIterateFunc);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.DeleteNode(var Q: PHashNode);
 var
@@ -590,8 +547,6 @@ begin
   FreeNode(T);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.DeleteNodes(var Q: PHashNode);
 begin
   if Q^.Left <> nil then
@@ -602,8 +557,6 @@ begin
   Q := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.AllocNode: PHashNode;
 begin
   New(Result);
@@ -611,14 +564,10 @@ begin
   Result^.Right := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.FreeNode(ANode: PHashNode);
 begin
   Dispose(ANode);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TStringHashMap.GetData(const S: string): Pointer;
 var
@@ -631,8 +580,6 @@ begin
   else
     Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.SetData(const S: string; P: Pointer);
 var
@@ -653,8 +600,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.Add(const S: string; const P{: Pointer});
 var
   PPN: PPHashNode;
@@ -674,8 +619,6 @@ begin
   else
     raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapDuplicate, [S]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 type
   PListNode = ^TListNode;
@@ -705,8 +648,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.RemoveData(const P{: Pointer});
 var
   DP: TDataParam;
@@ -729,8 +670,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.Remove(const S: string): Pointer;
 var
   PPN: PPHashNode;
@@ -746,8 +685,6 @@ begin
     raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapInvalidNode, [S]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.IterateMethod(AUserData: Pointer;
   AIterateMethod: TIterateMethod);
 var
@@ -758,8 +695,6 @@ begin
       Break;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TStringHashMap.Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
 var
   I: Integer;
@@ -769,8 +704,6 @@ begin
       Break;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.Has(const S: string): Boolean;
 var
   PPN: PPHashNode;
@@ -778,8 +711,6 @@ begin
   PPN := FindNode(S);
   Result := PPN^ <> nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TStringHashMap.Find(const S: string; var P{: Pointer}): Boolean;
 var
@@ -790,8 +721,6 @@ begin
   if Result then
     Pointer(P) := PPN^^.Ptr;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 type
   PFindDataResult = ^TFindDataResult;
@@ -813,8 +742,6 @@ begin
     PFdr^.Key := AStr;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TStringHashMap.FindData(const P{: Pointer}; var S: string): Boolean;
 var
   PFdr: PFindDataResult;
@@ -831,8 +758,6 @@ begin
     Dispose(PFdr);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.Clear;
 var
@@ -857,6 +782,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.11  2004/10/13 06:58:20  marquardt
 // normal style cleaning
 //

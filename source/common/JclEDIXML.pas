@@ -79,11 +79,8 @@ const
   XMLAttribute_OwnerLoopId = 'OwnerLoopId';
   XMLAttribute_ParentLoopId = 'ParentLoopId';
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Forward Class Declarations
-//--------------------------------------------------------------------------------------------------
-
 type
+  //  EDI Forward Class Declarations
   TEDIXMLObject = class(TEDIObject);
   TEDIXMLDataObject = class;
   TEDIXMLElement = class;
@@ -93,10 +90,7 @@ type
   TEDIXMLInterchangeControl = class;
   TEDIXMLFile = class;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Delimiters Object
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Delimiters Object
   TEDIXMLDelimiters = class(TEDIXMLObject)
   private
     FBeginTagDelimiter: string;
@@ -139,10 +133,7 @@ type
     property DoubleQuote: string read FDoubleQuote write FDoubleQuote;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI XML Attributes
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI XML Attributes
   TEDIXMLAttributes = class(TEDIXMLObject)
   private
     FAttributes: TStringList;
@@ -158,10 +149,7 @@ type
     function GetAttributeString(Name: string): string;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Data Object
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Data Object
   TEDIXMLObjectArray = array of TEDIXMLObject;
 
   TEDIXMLDataObject = class(TEDIXMLObject)
@@ -200,10 +188,7 @@ type
 
   TEDIXMLDataObjectArray = array of TEDIXMLDataObject;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Element
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Element
   TEDIXMLElement = class(TEDIXMLDataObject)
     FCData: Boolean;
   public
@@ -218,10 +203,7 @@ type
 
   TEDIXMLElementArray = array of TEDIXMLElement;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Data Object Group
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Data Object Group
   TEDIXMLDataObjectGroup = class(TEDIXMLDataObject)
   protected
     FEDIDataObjects: TEDIXMLDataObjectArray;
@@ -253,10 +235,7 @@ type
     property EDIDataObjects: TEDIXMLDataObjectArray read FEDIDataObjects write FEDIDataObjects;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Segment Classes
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Segment Classes
   TEDIXMLSegment = class(TEDIXMLDataObject)
   private
     FSegmentID: string;
@@ -318,10 +297,7 @@ type
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Transaction Set Loop
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Transaction Set Loop
   TEDIXMLTransactionSetLoop = class(TEDIXMLDataObjectGroup)
   private
     FParentTransactionSet: TEDIXMLTransactionSet;
@@ -337,10 +313,7 @@ type
       write FParentTransactionSet;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Transaction Set
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Transaction Set
   TEDIXMLTransactionSet = class(TEDIXMLTransactionSetLoop)
   private
     FSTSegment: TEDIXMLSegment;
@@ -357,10 +330,7 @@ type
     property SegmentSE: TEDIXMLSegment read FSESegment write FSESegment;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Functional Group
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Functional Group
   TEDIXMLFunctionalGroup = class(TEDIXMLDataObjectGroup)
   private
     FGSSegment: TEDIXMLSegment;
@@ -377,10 +347,7 @@ type
     property SegmentGE: TEDIXMLSegment read FGESegment write FGESegment;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Interchange Control
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Interchange Control
   TEDIXMLInterchangeControl = class(TEDIXMLDataObjectGroup)
   private
     FISASegment: TEDIXMLSegment;
@@ -397,10 +364,7 @@ type
     property SegmentIEA: TEDIXMLSegment read FIEASegment write FIEASegment;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI XML File Header
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI XML File Header
   TEDIXMLNameSpaceOption = (nsNone, nsDefault, nsQualified);
 
   TEDIXMLFileHeader = class(TEDIXMLObject)
@@ -422,10 +386,7 @@ type
       write FXMLNameSpaceOption;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI XML File
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI XML File
   TEDIXMLFile = class(TEDIXMLDataObjectGroup)
   private
     FFileID: Integer;
@@ -452,10 +413,7 @@ type
     property XMLFileHeader: TEDIXMLFileHeader read FEDIXMLFileHeader;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI XML Format Translator
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI XML Format Translator
   TEDIXMLANSIX12FormatTranslator = class(TEDIObject)
   private
     procedure ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
@@ -512,9 +470,7 @@ const
   Value_Windows1252 = 'windows-1252';
   Value_EDITRANSDOC = 'EDITRANSDOC';  
 
-//==================================================================================================
-// { TEDIXMLDelimiters }
-//==================================================================================================
+//=== { TEDIXMLDelimiters } ==================================================
 
 constructor TEDIXMLDelimiters.Create;
 begin
@@ -530,15 +486,11 @@ begin
   SetEndCDataDelimiter(EDIXMLDelimiter_CDATAEnd);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDelimiters.SetBeginCDataDelimiter(const Value: string);
 begin
   FBeginCDataDelimiter := Value;
   FBeginCDataLength := Length(FBeginCDataDelimiter);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLDelimiters.SetBeginOfEndTagDelimiter(const Value: string);
 begin
@@ -546,15 +498,11 @@ begin
   FBeginOfEndTagLength := Length(FBeginOfEndTagDelimiter);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDelimiters.SetBeginTagDelimiter(const Value: string);
 begin
   FBeginTagDelimiter := Value;
   FBeginTagLength := Length(FBeginTagDelimiter);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLDelimiters.SetEndCDataDelimiter(const Value: string);
 begin
@@ -562,17 +510,13 @@ begin
   FEndCDataLength := Length(FEndCDataDelimiter);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDelimiters.SetEndTagDelimiter(const Value: string);
 begin
   FEndTagDelimiter := Value;
   FEndTagLength := Length(FEndTagDelimiter);
 end;
 
-//==================================================================================================
-// { TEDIXMLAttributes }
-//==================================================================================================
+//=== { TEDIXMLAttributes } ==================================================
 
 constructor TEDIXMLAttributes.Create;
 begin
@@ -581,8 +525,6 @@ begin
   FDelimiters := TEDIXMLDelimiters.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLAttributes.Destroy;
 begin
   FDelimiters.Free;
@@ -590,16 +532,12 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLAttributes.CheckAttribute(Name, Value: string): Integer;
 begin
   Result := -1;
   if FAttributes.Values[Name] = Value then
     Result := FAttributes.IndexOfName(Name);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLAttributes.CombineAttributes: string;
 var
@@ -632,8 +570,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLAttributes.GetAttributeString(Name: string): string;
 var
   J, K: Integer;
@@ -650,14 +586,10 @@ begin
     QuoteDelimiter + FAttributes.Values[Name] + QuoteDelimiter;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLAttributes.GetAttributeValue(Name: string): string;
 begin
   Result := FAttributes.Values[Name];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLAttributes.ParseAttributes(XMLStartTag: string);
 var
@@ -697,16 +629,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLAttributes.SetAttribute(Name, Value: string);
 begin
   FAttributes.Values[Name] := Value;
 end;
 
-//==================================================================================================
-// { TEDIXMLDataObject }
-//==================================================================================================
+//=== { TEDIXMLDataObject } ==================================================
 
 constructor TEDIXMLDataObject.Create(Parent: TEDIXMLDataObject);
 begin
@@ -720,8 +648,6 @@ begin
   FAttributes := TEDIXMLAttributes.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLDataObject.Destroy;
 begin
   FAttributes.Free;
@@ -731,22 +657,16 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLDataObject.GetData: string;
 begin
   Result := FData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLDataObject.SetData(const Data: string);
 begin
   FData := Data;
   FLength := Length(FData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLDataObject.SetDelimiters(const Delimiters: TEDIXMLDelimiters);
 begin
@@ -755,9 +675,7 @@ begin
   FDelimiters := Delimiters;
 end;
 
-//==================================================================================================
-// { TEDIXMLElement }
-//==================================================================================================
+//=== { TEDIXMLElement } =====================================================
 
 constructor TEDIXMLElement.Create(Parent: TEDIXMLDataObject);
 begin
@@ -768,8 +686,6 @@ begin
   FEDIDOT := ediElement;
   FCData := False;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLElement.Assemble: string;
 var
@@ -809,8 +725,6 @@ begin
   Result := FData;
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLElement.Disassemble;
 var
@@ -873,8 +787,6 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLElement.GetIndexPositionFromParent: Integer;
 var
   I: Integer;
@@ -886,8 +798,6 @@ begin
         Result := I;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLElement.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
@@ -898,9 +808,7 @@ begin
       Result := Parent.Delimiters;
 end;
 
-//==================================================================================================
-// { TEDIXMLSegment }
-//==================================================================================================
+//=== { TEDIXMLSegment } =====================================================
 
 constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
 begin
@@ -913,8 +821,6 @@ begin
   AddElements(ElementCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject);
 begin
   if Assigned(Parent) and (Parent is TEDIXMLDataObjectGroup) then
@@ -925,15 +831,11 @@ begin
   SetLength(FElements, 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLSegment.Destroy;
 begin
   DeleteElements;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.AddElement: Integer;
 begin
@@ -941,8 +843,6 @@ begin
   FElements[High(FElements)] := InternalCreateElement;
   Result := High(FElements); // Return position of element
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.AddElements(Count: Integer): Integer;
 var
@@ -957,8 +857,6 @@ begin
     FElements[J] := InternalCreateElement;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.AppendElement(Element: TEDIXMLElement): Integer;
 begin
   SetLength(FElements, Length(FElements) + 1);
@@ -966,8 +864,6 @@ begin
   Element.Parent := Self;
   Result := High(FElements); // Return position of element
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.AppendElements(ElementArray: TEDIXMLElementArray): Integer;
 var
@@ -986,8 +882,6 @@ begin
     Inc(I);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.Assemble: string;
 var
@@ -1028,8 +922,6 @@ begin
   FState := ediAssembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLSegment.DeleteElement(Element: TEDIXMLElement);
 var
   I: Integer;
@@ -1038,8 +930,6 @@ begin
     if FElements[I] = Element then
       DeleteElement(I);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLSegment.DeleteElement(Index: Integer);
 var
@@ -1059,8 +949,6 @@ begin
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError058, [IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLSegment.DeleteElements;
 var
   I: Integer;
@@ -1071,8 +959,6 @@ begin
   // Resize
   SetLength(FElements, 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLSegment.DeleteElements(Index, Count: Integer);
 var
@@ -1095,8 +981,6 @@ begin
   else
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError058, [IntToStr(Index)]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLSegment.Disassemble;
 var
@@ -1157,8 +1041,6 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.GetElement(Index: Integer): TEDIXMLElement;
 begin
   if Length(FElements) > 0 then
@@ -1177,8 +1059,6 @@ begin
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError054, [IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.GetIndexPositionFromParent: Integer;
 var
   I: Integer;
@@ -1193,8 +1073,6 @@ begin
         Break;
       end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.InsertElement(InsertIndex: Integer): Integer;
 var
@@ -1216,8 +1094,6 @@ begin
     Result := AddElement;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.InsertElement(InsertIndex: Integer; Element: TEDIXMLElement): Integer;
 var
   I: Integer;
@@ -1238,8 +1114,6 @@ begin
   else
     Result := AppendElement(Element);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.InsertElements(InsertIndex: Integer;
   ElementArray: TEDIXMLElementArray): Integer;
@@ -1272,8 +1146,6 @@ begin
     Result := AppendElements(ElementArray);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.InsertElements(InsertIndex, Count: Integer): Integer;
 var
   I: Integer;
@@ -1297,8 +1169,6 @@ begin
   else
     Result := AddElements(Count);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
@@ -1340,14 +1210,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLSegment.InternalCreateElement: TEDIXMLElement;
 begin
   Result := TEDIXMLElement.Create(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLSegment.SetElement(Index: Integer; Element: TEDIXMLElement);
 begin
@@ -1366,9 +1232,7 @@ begin
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError051, [IntToStr(Index)]);
 end;
 
-//==================================================================================================
-// { TEDIXMLTransactionSetSegment }
-//==================================================================================================
+//=== { TEDIXMLTransactionSetSegment } =======================================
 
 constructor TEDIXMLTransactionSetSegment.Create(Parent: TEDIXMLDataObject);
 begin
@@ -1377,8 +1241,6 @@ begin
     FParent := Parent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIXMLTransactionSetSegment.Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
@@ -1386,16 +1248,12 @@ begin
     FParent := Parent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLTransactionSetSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := inherited InternalAssignDelimiters;
 end;
 
-//==================================================================================================
-// { TEDIXMLFunctionalGroupSegment }
-//==================================================================================================
+//=== { TEDIXMLFunctionalGroupSegment } ======================================
 
 constructor TEDIXMLFunctionalGroupSegment.Create(Parent: TEDIXMLDataObject);
 begin
@@ -1404,8 +1262,6 @@ begin
     FParent := Parent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIXMLFunctionalGroupSegment.Create(Parent: TEDIXMLDataObject;
   ElementCount: Integer);
 begin
@@ -1413,8 +1269,6 @@ begin
   if Assigned(Parent) and (Parent is TEDIXMLFunctionalGroup) then
     FParent := Parent;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLFunctionalGroupSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
@@ -1431,9 +1285,7 @@ begin
         Result := Parent.Parent.Delimiters;
 end;
 
-//==================================================================================================
-// { TEDIXMLInterchangeControlSegment }
-//==================================================================================================
+//=== { TEDIXMLInterchangeControlSegment } ===================================
 
 constructor TEDIXMLInterchangeControlSegment.Create(Parent: TEDIXMLDataObject);
 begin
@@ -1442,8 +1294,6 @@ begin
     FParent := Parent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIXMLInterchangeControlSegment.Create(Parent: TEDIXMLDataObject;
   ElementCount: Integer);
 begin
@@ -1451,8 +1301,6 @@ begin
   if Assigned(Parent) and (Parent is TEDIXMLInterchangeControl) then
     FParent := Parent;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLInterchangeControlSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
@@ -1464,24 +1312,18 @@ begin
       Result := Parent.Delimiters;
 end;
 
-//==================================================================================================
-// { TEDIXMLDataObjectGroup }
-//==================================================================================================
+//=== { TEDIXMLDataObjectGroup } =============================================
 
 constructor TEDIXMLDataObjectGroup.Create(Parent: TEDIXMLDataObject);
 begin
   inherited Create(Parent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLDataObjectGroup.Destroy;
 begin
   DeleteEDIDataObjects;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLDataObjectGroup.AddGroup: Integer;
 var
@@ -1491,8 +1333,6 @@ begin
   Result := AppendEDIDataObject(EDIGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLDataObjectGroup.AddSegment: Integer;
 var
   EDISegment: TEDIXMLSegment;
@@ -1500,8 +1340,6 @@ begin
   EDISegment := TEDIXMLSegment.Create(Self);
   Result := AppendEDIDataObject(EDISegment);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIXMLDataObject): Integer;
 begin
@@ -1511,8 +1349,6 @@ begin
   Result := High(FEDIDataObjects);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIXMLDataObject);
 var
   I: Integer;
@@ -1521,8 +1357,6 @@ begin
     if FEDIDataObjects[I] = EDIDataObject then
       DeleteEDIDataObject(I);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLDataObjectGroup.DeleteEDIDataObject(Index: Integer);
 var
@@ -1543,8 +1377,6 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError040);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDataObjectGroup.DeleteEDIDataObjects;
 var
   I: Integer;
@@ -1554,8 +1386,6 @@ begin
   // Resize
   SetLength(FEDIDataObjects, 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIXMLDataObject;
 begin
@@ -1574,8 +1404,6 @@ begin
   else
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError036, [IntToStr(Index)]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
   EDIDataObject: TEDIXMLDataObject): Integer;
@@ -1599,8 +1427,6 @@ begin
     Result := AppendEDIDataObject(EDIDataObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLDataObjectGroup.InsertGroup(InsertIndex: Integer): Integer;
 var
   EDIGroup: TEDIXMLDataObjectGroup;
@@ -1609,8 +1435,6 @@ begin
   Result := InsertEDIDataObject(InsertIndex, EDIGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLDataObjectGroup.InsertSegment(InsertIndex: Integer): Integer;
 var
   EDISegment: TEDIXMLSegment;
@@ -1618,8 +1442,6 @@ begin
   EDISegment := TEDIXMLSegment.Create(Self);
   Result := InsertEDIDataObject(InsertIndex, EDISegment);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLDataObjectGroup.SearchForSegmentInDataString(Id: string;
   StartPos: Integer): Integer;
@@ -1653,8 +1475,6 @@ begin
   EDIXMLAttributes.Free;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIXMLDataObject);
 begin
   if Length(FEDIDataObjects) > 0 then
@@ -1672,9 +1492,7 @@ begin
     raise EJclEDIError.CreateResRecFmt(@EDIXMLError033, [IntToStr(Index)]);
 end;
 
-//==================================================================================================
-// { TEDIXMLTransactionSetLoop }
-//==================================================================================================
+//=== { TEDIXMLTransactionSetLoop } ==========================================
 
 constructor TEDIXMLTransactionSetLoop.Create(Parent: TEDIXMLDataObject);
 begin
@@ -1689,14 +1507,10 @@ begin
   FEDIDOT := ediLoop;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLTransactionSetLoop.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLTransactionSetLoop.Assemble: string;
 var
@@ -1733,8 +1547,6 @@ begin
 
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLTransactionSetLoop.Disassemble;
 var
@@ -1855,8 +1667,6 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLTransactionSetLoop.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
@@ -1864,16 +1674,12 @@ begin
     Result := Parent.Delimiters;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLTransactionSetLoop.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSetLoop.Create(Self);
 end;
 
-//==================================================================================================
-// { TEDIXMLTransactionSet }
-//==================================================================================================
+//=== { TEDIXMLTransactionSet } ==============================================
 
 constructor TEDIXMLTransactionSet.Create(Parent: TEDIXMLDataObject);
 begin
@@ -1882,14 +1688,10 @@ begin
   FEDIDOT := ediTransactionSet;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLTransactionSet.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLTransactionSet.Assemble: string;
 var
@@ -1926,8 +1728,6 @@ begin
 
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLTransactionSet.Disassemble;
 var
@@ -2077,8 +1877,6 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLTransactionSet.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
@@ -2091,16 +1889,12 @@ begin
         Result := Parent.Parent.Delimiters;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLTransactionSet.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSetLoop.Create(Self);
 end;
 
-//==================================================================================================
-// { TEDIXMLFunctionalGroup }
-//==================================================================================================
+//=== { TEDIXMLFunctionalGroup } =============================================
 
 constructor TEDIXMLFunctionalGroup.Create(Parent: TEDIXMLDataObject);
 begin
@@ -2108,14 +1902,10 @@ begin
   FEDIDOT := ediFunctionalGroup;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLFunctionalGroup.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLFunctionalGroup.Assemble: string;
 var
@@ -2152,8 +1942,6 @@ begin
 
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLFunctionalGroup.Disassemble;
 var
@@ -2251,8 +2039,6 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLFunctionalGroup.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
@@ -2262,16 +2048,12 @@ begin
       Result := Parent.Delimiters;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLFunctionalGroup.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSet.Create(Self);
 end;
 
-//==================================================================================================
-// { TEDIXMLInterchangeControl }
-//==================================================================================================
+//=== { TEDIXMLInterchangeControl } ==========================================
 
 constructor TEDIXMLInterchangeControl.Create(Parent: TEDIXMLDataObject);
 begin
@@ -2279,15 +2061,11 @@ begin
   FEDIDOT := ediInterchangeControl;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLInterchangeControl.Destroy;
 begin
   FreeAndNil(FDelimiters);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLInterchangeControl.Assemble: string;
 var
@@ -2324,8 +2102,6 @@ begin
 
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLInterchangeControl.Disassemble;
 var
@@ -2423,23 +2199,17 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLInterchangeControl.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := TEDIXMLDelimiters.Create;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLInterchangeControl.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLFunctionalGroup.Create(Self);
 end;
 
-//==================================================================================================
-// { TEDIXMLFile }
-//==================================================================================================
+//=== { TEDIXMLFile } ========================================================
 
 constructor TEDIXMLFile.Create(Parent: TEDIXMLDataObject);
 begin
@@ -2448,15 +2218,11 @@ begin
   FEDIDOT := ediFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLFile.Destroy;
 begin
   FEDIXMLFileHeader.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLFile.Assemble: string;
 var
@@ -2495,8 +2261,6 @@ begin
 
   FState := ediAssembled;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLFile.Disassemble;
 var
@@ -2568,21 +2332,15 @@ begin
   FState := ediDisassembled;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLFile.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := TEDIXMLDelimiters.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLFile.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLInterchangeControl.Create(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLFile.InternalLoadFromFile;
 var
@@ -2604,22 +2362,16 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError001);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLFile.LoadFromFile(const FileName: string);
 begin
   FFileName := FileName;
   InternalLoadFromFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLFile.ReLoadFromFile;
 begin
   InternalLoadFromFile;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLFile.SaveAsToFile(const FileName: string);
 var
@@ -2639,8 +2391,6 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError002);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLFile.SaveToFile;
 var
   EDIFileStream: TFileStream;
@@ -2658,9 +2408,7 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError002);
 end;
 
-//==================================================================================================
-//  { TEDIXMLFileHeader }
-//==================================================================================================
+//=== { TEDIXMLFileHeader } ==================================================
 
 constructor TEDIXMLFileHeader.Create;
 begin
@@ -2674,8 +2422,6 @@ begin
   FAttributes.SetAttribute(EDIXMLAttributeStr_xmlnsEDI, Value_EDITRANSDOC);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLFileHeader.Destroy;
 begin
   FDelimiters.Free;
@@ -2683,14 +2429,10 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLFileHeader.OutputAdditionalXMLHeaderAttributes: string;
 begin
   Result := '';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLFileHeader.OutputXMLHeader: string;
 var
@@ -2717,30 +2459,23 @@ begin
   Result := Result + EDIXMLDelimiter_FileHeaderEnd;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIXMLFileHeader.ParseXMLHeader(XMLHeader: string);
 begin
   FAttributes.ParseAttributes(XMLHeader);
 end;
 
-//==================================================================================================
-// { TEDIXMLANSIX12FormatTranslator }
-//==================================================================================================
+//=== { TEDIXMLANSIX12FormatTranslator } =====================================
 
 constructor TEDIXMLANSIX12FormatTranslator.Create;
 begin
   inherited Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIXMLANSIX12FormatTranslator.Destroy;
 begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
 function TEDIXMLANSIX12FormatTranslator.ConvertToEDISegment(
   XMLSegment: TEDIXMLSegment): TEDISegment;
 var
@@ -2763,8 +2498,6 @@ begin
     Result[xmlE].Data := XMLSegment[ediE].Data;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLANSIX12FormatTranslator.ConvertToEDITransaction(
   XMLTransactionSet: TEDIXMLTransactionSet): TEDITransactionSet;
@@ -2808,8 +2541,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLANSIX12FormatTranslator.ConvertToXMLSegment(
   EDISegment: TEDISegment): TEDIXMLSegment;
 var
@@ -2832,8 +2563,6 @@ begin
     Result[xmlE].Data := EDISegment[ediE].Data;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIXMLANSIX12FormatTranslator.ConvertToXMLTransaction(
   EDITransactionSet: TEDITransactionSet;
@@ -2860,8 +2589,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIXMLANSIX12FormatTranslator.ConvertToXMLTransaction(
   EDITransactionSet: TEDITransactionSet): TEDIXMLTransactionSet;
 var
@@ -2882,8 +2609,6 @@ begin
   XMLSegment := ConvertToXMLSegment(EDITransactionSet.SegmentSE);
   Result.AppendEDIDataObject(XMLSegment);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToEDI(
   EDITransactionSet: TEDITransactionSet;
@@ -2912,8 +2637,6 @@ begin
       raise EJclEDIError.CreateResRecFmt(@EDIXMLError062, [XMLLoop[I].ClassName]);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToXML(
   EDILoop: TEDITransactionSetLoop; XMLLoop: TEDIXMLTransactionSetLoop);

@@ -1071,12 +1071,13 @@ initialization
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
 {$ENDIF PREFERAPI}
 
-//--------------------------------------------------------------------------------------------------
-
 // History:
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.9  2005/02/24 16:34:41  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.8  2004/10/29 05:46:36  marquardt
 // style cleaning
 //

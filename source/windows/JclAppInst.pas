@@ -45,10 +45,7 @@ uses
   Windows, Classes, Messages,
   JclFileUtils, JclSynch;
 
-//--------------------------------------------------------------------------------------------------
 // Message constants and types
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclAppInstDataKind = Integer;
 
@@ -60,10 +57,7 @@ const
   AppInstDataKindNoData = -1;
   AppInstCmdLineDataKind = 1;
 
-//--------------------------------------------------------------------------------------------------
 // Application instances manager class
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclAppInstances = class(TObject)
   private
@@ -110,10 +104,7 @@ type
 function JclAppInstances: TJclAppInstances; overload;
 function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; overload;
 
-//--------------------------------------------------------------------------------------------------
 // Interprocess communication routines
-//--------------------------------------------------------------------------------------------------
-
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 procedure ReadMessageString(const Message: TMessage; var S: string);
@@ -166,9 +157,7 @@ var
   AppInstances: TJclAppInstances;
   ExplicitUniqueAppId: string;
 
-//==================================================================================================
-// TJclAppInstances
-//==================================================================================================
+//=== { TJclAppInstances } ===================================================
 
 constructor TJclAppInstances.Create;
 begin
@@ -176,8 +165,6 @@ begin
   FCPID := GetCurrentProcessId;
   InitData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TJclAppInstances.Destroy;
 begin
@@ -188,16 +175,12 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclAppInstances.BringAppWindowToFront(const Wnd: HWND): Boolean;
 begin
   if IsIconic(Wnd) then
     SendMessage(Wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
   Result := SetForegroundWindow98(Wnd);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.CheckInstance(const MaxInstances: Word): Boolean;
 begin
@@ -218,8 +201,6 @@ begin
     NotifyInstances(AI_INSTANCECREATED, Integer(FCPID));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclAppInstances.CheckMultipleInstances(const MaxInstances: Word);
 begin
   if not CheckInstance(MaxInstances) then
@@ -229,14 +210,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclAppInstances.CheckSingleInstance;
 begin
   CheckMultipleInstances(1);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): HWND;
 type
@@ -271,14 +248,10 @@ begin
   Result := TopLevelWnd.Wnd;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAppInstances.GetAppWnds(Index: Integer): HWND;
 begin
   Result := GetApplicationWnd(GetProcessIDs(Index));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetInstanceCount: Integer;
 begin
@@ -289,8 +262,6 @@ begin
     FOptex.Leave;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetInstanceIndex(ProcessID: DWORD): Integer;
 var
@@ -313,8 +284,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAppInstances.GetProcessIDs(Index: Integer): DWORD;
 begin
   FOptex.Enter;
@@ -328,8 +297,6 @@ begin
     FOptex.Leave;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.InitData;
 var
@@ -354,14 +321,10 @@ begin
   FMessageID := RegisterWindowMessage(PChar(UniqueAppID + JclAIMessage));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class procedure TJclAppInstances.KillInstance;
 begin
   Halt(0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.NotifyInstances(const W, L: Integer);
 var
@@ -402,8 +365,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclAppInstances.RemoveInstance;
 var
   I: Integer;
@@ -425,8 +386,6 @@ begin
   NotifyInstances(AI_INSTANCEDESTROYED, Integer(FCPID));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
 var
   TempList: TStringList;
@@ -441,8 +400,6 @@ begin
     TempList.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendData(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind;
@@ -501,8 +458,6 @@ begin
   Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string;
   OriginatorWnd: HWND): Boolean;
@@ -510,8 +465,6 @@ begin
   Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
     OriginatorWnd);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings;
@@ -522,8 +475,6 @@ begin
   S := Strings.Text;
   Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: HWND): Boolean;
 var
@@ -548,21 +499,15 @@ begin
     Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclAppInstances.SwitchTo(const Index: Integer): Boolean;
 begin
   Result := BringAppWindowToFront(AppWnds[Index]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclAppInstances.UserNotify(const Param: Integer);
 begin
   NotifyInstances(AI_USERMSG, Param);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function JclAppInstances: TJclAppInstances;
 begin
@@ -571,8 +516,6 @@ begin
   Result := AppInstances;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances;
 begin
   Assert(AppInstances = nil);
@@ -580,10 +523,7 @@ begin
   Result := JclAppInstances;
 end;
 
-//==================================================================================================
 // Interprocess communication routines
-//==================================================================================================
-
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
 begin
   if (Message.Msg = WM_COPYDATA) and (TWMCopyData(Message).From <> IgnoredOriginatorWnd) then
@@ -598,8 +538,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 begin
   with TWMCopyData(Message) do
@@ -611,16 +549,12 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ReadMessageString(const Message: TMessage; var S: string);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
       SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 var
@@ -634,8 +568,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 initialization
 
 finalization
@@ -644,6 +576,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.12  2004/10/17 21:00:14  mthoma
 // cleaning
 //

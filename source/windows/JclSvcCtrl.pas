@@ -53,10 +53,7 @@ uses
   {$ENDIF FPC}
   JclBase, JclSysUtils;
 
-//--------------------------------------------------------------------------------------------------
 // Service Types
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceType =
    (stKernelDriver,        // SERVICE_KERNEL_DRIVER
@@ -74,10 +71,7 @@ const
   stWin32Service = [stWin32OwnProcess, stWin32ShareProcess];
   stAllTypeService = stDriverService + stWin32Service + [stAdapter, stInteractiveProcess];
 
-//--------------------------------------------------------------------------------------------------
 // Service State
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceState =
    (ssUnknown,         // Just fill the value 0
@@ -94,10 +88,7 @@ type
 const
   ssPendingStates = [ssStartPending, ssStopPending, ssContinuePending, ssPausePending];
 
-//--------------------------------------------------------------------------------------------------
 // Start Type
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceStartType =
    (sstBoot,      // SERVICE_BOOT_START
@@ -106,10 +97,7 @@ type
     sstDemand,    // SERVICE_DEMAND_START
     sstDisabled); // SERVICE_DISABLED
 
-//--------------------------------------------------------------------------------------------------
 // Error control type
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceErrorControlType =
    (ectIgnore,    // SSERVICE_ERROR_IGNORE
@@ -118,10 +106,7 @@ type
     ectCritical); // SERVICE_ERROR_CRITICAL
 
 
-//--------------------------------------------------------------------------------------------------
 // Controls Accepted
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceControlAccepted =
    (caStop,          // SERVICE_ACCEPT_STOP
@@ -130,10 +115,7 @@ type
 
   TJclServiceControlAccepteds = set of TJclServiceControlAccepted;
 
-//--------------------------------------------------------------------------------------------------
 // Service sort type
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceSortOrderType =
    (sotServiceName,
@@ -165,9 +147,7 @@ const
   DefaultSCMDesiredAccess = EveryoneSCMDesiredAccess;
   DefaultSvcDesiredAccess = SERVICE_ALL_ACCESS;
 
-//--------------------------------------------------------------------------------------------------
 // Service description
-//--------------------------------------------------------------------------------------------------
 const
   SERVICE_CONFIG_DESCRIPTION     = 1;
   {$EXTERNALSYM SERVICE_CONFIG_DESCRIPTION}
@@ -188,10 +168,7 @@ type
   TQueryServiceConfig2A = function(hService: SC_HANDLE; dwInfoLevel: DWORD;
     lpBuffer: PByte; cbBufSize: DWORD; var pcbBytesNeeded: DWORD): BOOL; stdcall;
 
-//--------------------------------------------------------------------------------------------------
 // Service related classes
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclServiceGroup = class;
   TJclSCManager = class;
@@ -394,9 +371,7 @@ const
   ServiceControlAcceptedMapping: array [TJclServiceControlAccepted] of DWORD =
     (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN);
 
-//==================================================================================================
-// TJclNtService
-//==================================================================================================
+//=== { TJclNtService } ======================================================
 
 constructor TJclNtService.Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
 begin
@@ -414,8 +389,6 @@ begin
   FSCManager.AddService(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclNtService.Destroy;
 begin
   FreeAndNil(FDependentServices);
@@ -423,8 +396,6 @@ begin
   FreeAndNil(FDependentByServices);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.UpdateDescription;
 var
@@ -449,14 +420,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNtService.GetActive: Boolean;
 begin
   Result := FHandle <> INVALID_SCM_HANDLE;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.SetActive(const Value: Boolean);
 begin
@@ -479,8 +446,6 @@ begin
     FCommitNeeded := True;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.UpdateDependents;
 var
@@ -524,35 +489,25 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNtService.GetDependentService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FDependentServices.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNtService.GetDependentServiceCount: Integer;
 begin
   Result := FDependentServices.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNtService.GetDependentGroup(const Idx: Integer): TJclServiceGroup;
 begin
   Result := TJclServiceGroup(FDependentGroups.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNtService.GetDependentGroupCount: Integer;
 begin
   Result := FDependentGroups.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNtService.GetDependentByService(const Idx: Integer): TJclNtService;
 begin
@@ -561,16 +516,12 @@ begin
   Result := TJclNtService(FDependentByServices.Items[Idx])
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNtService.GetDependentByServiceCount: Integer;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
   Result := FDependentByServices.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNtService.GetServiceStatus: TServiceStatus;
 begin
@@ -579,8 +530,6 @@ begin
   Win32Check(QueryServiceStatus(FHandle, Result));
 end;
 
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.UpdateStatus(const SvcStatus: TServiceStatus);
 begin
@@ -592,8 +541,6 @@ begin
     FWin32ExitCode := dwWin32ExitCode;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.UpdateConfig(const SvcConfig: TQueryServiceConfig);
 
@@ -645,8 +592,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.CommitConfig(var SvcConfig: TQueryServiceConfig);
 begin
   with SvcConfig do
@@ -659,8 +604,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Open(const ADesiredAccess: DWORD);
 begin
   Assert((ADesiredAccess and (not SERVICE_ALL_ACCESS)) = 0);
@@ -670,16 +613,12 @@ begin
   Win32Check(FHandle <> INVALID_SCM_HANDLE);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Close;
 begin
   Assert(Active);
   Win32Check(CloseServiceHandle(FHandle));
   FHandle := INVALID_SCM_HANDLE;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.Refresh;
 var
@@ -754,8 +693,6 @@ begin
 end;
 
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Delete;
 {$IFDEF FPC}
 const
@@ -769,8 +706,6 @@ begin
     Close;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.Start(const Args: array of string; const Sync: Boolean);
 type
@@ -802,14 +737,10 @@ begin
     WaitFor(ssRunning);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Start(const Sync: Boolean = True);
 begin
   Start([], Sync);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNtService.Controls(const ControlType: DWORD; const ADesiredAccess: DWORD): TServiceStatus;
 begin
@@ -821,16 +752,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Stop(const Sync: Boolean);
 begin
   Controls(SERVICE_CONTROL_STOP, SERVICE_STOP);
   if Sync then
     WaitFor(ssStopped);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.Pause(const Sync: Boolean);
 begin
@@ -839,16 +766,12 @@ begin
     WaitFor(ssPaused);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNtService.Continue(const Sync: Boolean);
 begin
   Controls(SERVICE_CONTROL_CONTINUE, SERVICE_PAUSE_CONTINUE);
   if Sync then
     WaitFor(ssRunning);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNtService.WaitFor(const State: TJclServiceState; const TimeOut: DWORD): Boolean;
 var
@@ -891,9 +814,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclServiceGroup
-//==================================================================================================
+//=== { TJclServiceGroup } ===================================================
 
 constructor TJclServiceGroup.Create(const ASCManager: TJclSCManager; const AName: string;
   const AOrder: Integer);
@@ -909,45 +830,33 @@ begin
   FServices := TList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclServiceGroup.Destroy;
 begin
   FreeAndNil(FServices);
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclServiceGroup.Add(const AService: TJclNtService): Integer;
 begin
   Result := FServices.Add(AService);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclServiceGroup.Remove(const AService: TJclNtService): Integer;
 begin
   Result := FServices.Remove(AService);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclServiceGroup.GetService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FServices.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclServiceGroup.GetServiceCount: Integer;
 begin
   Result := FServices.Count;
 end;
 
-//==================================================================================================
-// TJclSCManager
-//==================================================================================================
+//=== { TJclSCManager } ======================================================
 
 constructor TJclSCManager.Create(const AMachineName: string; const ADesiredAccess: DWORD;
   const ADatabaseName: string);
@@ -966,8 +875,6 @@ begin
   FQueryServiceConfig2A := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclSCManager.Destroy;
 begin
   FreeAndNil(FGroups);
@@ -977,49 +884,35 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.AddService(const AService: TJclNtService): Integer;
 begin
   Result := FServices.Add(AService);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.GetService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FServices.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetServiceCount: Integer;
 begin
   Result := FServices.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.AddGroup(const AGroup: TJclServiceGroup): Integer;
 begin
   Result := FGroups.Add(AGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetGroup(const Idx: Integer): TJclServiceGroup;
 begin
   Result := TJclServiceGroup(FGroups.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetGroupCount: Integer;
 begin
   Result := FGroups.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclSCManager.SetOrderAsc(const Value: Boolean);
 begin
@@ -1027,22 +920,16 @@ begin
     Sort(OrderType, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.SetOrderType(const Value: TJclServiceSortOrderType);
 begin
   if FOrderType <> Value then
     Sort(Value, FOrderAsc);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetActive: Boolean;
 begin
   Result := FHandle <> INVALID_SCM_HANDLE;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclSCManager.SetActive(const Value: Boolean);
 begin
@@ -1056,8 +943,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.Open;
 begin
   if not Active then
@@ -1067,16 +952,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.Close;
 begin
   if Active then
     Win32Check(CloseServiceHandle(FHandle));
   FHandle := INVALID_SCM_HANDLE;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclSCManager.Lock;
 begin
@@ -1086,8 +967,6 @@ begin
   Win32Check(FLock <> nil);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.Unlock;
 begin
   Assert(Active);
@@ -1096,15 +975,11 @@ begin
   Win32Check(UnlockServiceDatabase(FLock));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.Clear;
 begin
   FServices.Clear;
   FGroups.Clear;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
 
@@ -1209,8 +1084,6 @@ begin
   RefreshAllServices;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ServiceSortFunc(Item1, Item2: Pointer): Integer;
 var
   Svc1, Svc2: TJclNtService;
@@ -1243,16 +1116,12 @@ begin
     Result := -Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclSCManager.Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean);
 begin
   FOrderType := AOrderType;
   FOrderAsc := AOrderAsc;
   FServices.Sort(ServiceSortFunc);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
 var
@@ -1270,8 +1139,6 @@ begin
   end;
   NtSvc := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
   const AutoAdd: Boolean): Boolean;
@@ -1297,8 +1164,6 @@ begin
     SvcGrp := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetServiceLockStatus: PQueryServiceLockStatus;
 var
   Ret: BOOL;
@@ -1321,8 +1186,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.IsLocked: Boolean;
 var
   PQsls: PQueryServiceLockStatus;
@@ -1331,8 +1194,6 @@ begin
   Result := Assigned(PQsls) and (PQsls.fIsLocked <> 0);
   FreeMem(PQsls);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.LockOwner: string;
 var
@@ -1346,8 +1207,6 @@ begin
   FreeMem(PQsls);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.LockDuration: DWORD;
 var
   PQsls: PQueryServiceLockStatus;
@@ -1360,8 +1219,6 @@ begin
   FreeMem(PQsls);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSCManager.GetAdvApi32Handle: TModuleHandle;
 const
   cAdvApi32 = 'advapi32.dll'; // don't localize
@@ -1370,8 +1227,6 @@ begin
     LoadModule(FAdvApi32Handle, cAdvApi32);
   Result := FAdvApi32Handle;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO : Standard Rtdl }
 function TJclSCManager.GetQueryServiceConfig2A: TQueryServiceConfig2A;
@@ -1384,8 +1239,6 @@ begin
 
   Result := FQueryServiceConfig2A;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.Install(const ServiceName, DisplayName, ImageName, Description: string;
   ServiceTypes: TJclServiceTypes; StartType: TJclServiceStartType;
@@ -1428,8 +1281,6 @@ begin
   Result.Refresh;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclSCManager.ServiceType(const SvcType: TJclServiceTypes): DWORD;
 var
   AType: TJclServiceType;
@@ -1439,8 +1290,6 @@ begin
     if AType in SvcType then
       Result := Result or ServiceTypeMapping[AType];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclSCManager.ServiceType(const SvcType: DWORD): TJclServiceTypes;
 var
@@ -1452,8 +1301,6 @@ begin
       Include(Result, AType);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclSCManager.ControlAccepted(const CtrlAccepted: TJclServiceControlAccepteds): DWORD;
 var
   ACtrl: TJclServiceControlAccepted;
@@ -1463,8 +1310,6 @@ begin
     if ACtrl in CtrlAccepted then
       Result := Result or ServiceControlAcceptedMapping[ACtrl];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclSCManager.ControlAccepted(const CtrlAccepted: DWORD): TJclServiceControlAccepteds;
 var
@@ -1476,7 +1321,6 @@ begin
       Include(Result, ACtrl);
 end;
 
-//--------------------------------------------------------------------------------------------------
 function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
 var
   ServiceHandle,
@@ -1548,8 +1392,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 var
   ServiceStatus: TServiceStatus;
@@ -1559,8 +1401,6 @@ begin
 
   Result := ServiceStatus.dwCurrentState;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 var
@@ -1601,6 +1441,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.30  2004/12/22 09:21:32  rrossmair
 // - removed superfluous comma in line 746 (which D7's parser did tolerate, but those of D5 and D6 did not)
 //

@@ -166,10 +166,7 @@ type
     B3: Byte;
   end;
 
-//--------------------------------------------------------------------------------------------------
 // Wrapper functions & procedures
-//--------------------------------------------------------------------------------------------------
-
 function MimeEncodeString(const S: AnsiString): AnsiString;
 var
   L: Cardinal;
@@ -184,8 +181,6 @@ begin
     Result := '';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MimeEncodeStringNoCRLF(const S: AnsiString): AnsiString;
 var
   L: Cardinal;
@@ -199,8 +194,6 @@ begin
   else
     Result := '';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MimeDecodeString(const S: AnsiString): AnsiString;
 var
@@ -220,8 +213,6 @@ begin
   else
     Result := '';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DecodeHttpBasicAuthentication(const BasicCredentials: AnsiString; out UserId, PassWord: AnsiString);
 label
@@ -270,10 +261,7 @@ Fail:
   PassWord := '';
 end;
 
-//--------------------------------------------------------------------------------------------------
 // Helper functions
-//--------------------------------------------------------------------------------------------------
-
 function MimeEncodedSize(const InputSize: Cardinal): Cardinal;
 begin
   if InputSize > 0 then
@@ -282,24 +270,17 @@ begin
     Result := InputSize;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MimeEncodedSizeNoCRLF(const InputSize: Cardinal): Cardinal;
 begin
   Result := (InputSize + 2) div 3 * 4;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MimeDecodedSize(const InputSize: Cardinal): Cardinal;
 begin
   Result := (InputSize + 3) div 4 * 3;
 end;
 
-//--------------------------------------------------------------------------------------------------
 // Primary functions & procedures
-//--------------------------------------------------------------------------------------------------
-
 procedure MimeEncode(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 var
   IDelta, ODelta: Cardinal;
@@ -310,8 +291,6 @@ begin
   IDelta := IDelta * MIME_DECODED_LINE_BREAK;
   MimeEncodeNoCRLF(Pointer(Cardinal(@InputBuffer) + IDelta)^, InputByteCount - IDelta, Pointer(Cardinal(@OutputBuffer) + ODelta)^);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure MimeEncodeFullLines(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 var
@@ -362,8 +341,6 @@ begin
     Inc(InnerLimit, MIME_DECODED_LINE_BREAK);
   until InnerLimit > OuterLimit;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure MimeEncodeNoCRLF(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 var
@@ -431,10 +408,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
 // Decoding Core
-//--------------------------------------------------------------------------------------------------
-
 function MimeDecode(const InputBuffer; const InputBytesCount: Cardinal; out OutputBuffer): Cardinal;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
@@ -444,8 +418,6 @@ begin
   Result := MimeDecodePartial(InputBuffer, InputBytesCount, OutputBuffer, ByteBuffer, ByteBufferSpace);
   Inc(Result, MimeDecodePartialEnd(Pointer(Cardinal(@OutputBuffer) + Result)^, ByteBuffer, ByteBufferSpace));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MimeDecodePartial(const InputBuffer; const InputBytesCount: Cardinal; out OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
 var
@@ -490,8 +462,6 @@ begin
     Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MimeDecodePartialEnd(out OutputBuffer; const ByteBuffer: Cardinal; const ByteBufferSpace: Cardinal): Cardinal;
 var
   LByteBuffer: Cardinal;
@@ -516,10 +486,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
 // File Encoding & Decoding
-//--------------------------------------------------------------------------------------------------
-
 procedure MimeEncodeFile(const InputFileName, OutputFileName: AnsiString);
 var
   InputStream, OutputStream: TFileStream;
@@ -536,8 +503,6 @@ begin
     InputStream.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: AnsiString);
 var
@@ -556,8 +521,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure MimeDecodeFile(const InputFileName, OutputFileName: AnsiString);
 var
   InputStream, OutputStream: TFileStream;
@@ -575,10 +538,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
 // Stream Encoding & Decoding
-//--------------------------------------------------------------------------------------------------
-
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
   InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
@@ -605,8 +565,6 @@ begin
   OutputStream.Write(OutputBuffer, MimeEncodedSize(BytesRead));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure MimeEncodeStreamNoCRLF(const InputStream: TStream; const OutputStream: TStream);
 var
   InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
@@ -624,8 +582,6 @@ begin
   MimeEncodeNoCRLF(InputBuffer, BytesRead, OutputBuffer);
   OutputStream.Write(OutputBuffer, MimeEncodedSizeNoCRLF(BytesRead));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
@@ -648,6 +604,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.12  2005/02/13 22:24:25  rrossmair
 // moved PCardinal declaration from JclMime to JclBase
 //

@@ -120,10 +120,7 @@ type
 var
   IdentityMatrix: TMatrix3d;
 
-//--------------------------------------------------------------------------------------------------
 // Classes
-//--------------------------------------------------------------------------------------------------
-
 type
 
 
@@ -159,10 +156,7 @@ type
     property Matrix: TMatrix3d read FMatrix write FMatrix;
   end;
 
-//--------------------------------------------------------------------------------------------------
 // Bitmap Functions
-//--------------------------------------------------------------------------------------------------
-
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Source: TGraphic; Target: TBitmap); overload;
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
@@ -246,20 +240,14 @@ threadvar
   CurrentLineG: array of Integer;
   CurrentLineB: array of Integer;
 
-//==================================================================================================
 // Helper functions
-//==================================================================================================
-
 function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
 
-//==================================================================================================
 // Internal low level routines
-//==================================================================================================
-
 procedure FillLongword(var X; Count: Integer; Value: Longword);
 {asm
 // EAX = X
@@ -288,8 +276,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Clamp(Value: Integer): TColor32;
 begin
   if Value < 0 then
@@ -300,8 +286,6 @@ begin
   else
     Result := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TestSwap(var A, B: Integer);
 {asm
@@ -331,8 +315,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TestClip(var A, B: Integer; Size: Integer): Boolean;
 begin
   TestSwap(A, B); // now A = min(A,B) and B = max(A, B)
@@ -342,8 +324,6 @@ begin
     B := Size - 1;
   Result := B >= A;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Constrain(Value, Lo, Hi: Integer): Integer;
 begin
@@ -356,10 +336,7 @@ begin
     Result := Value;
 end;
 
-//==================================================================================================
 // Filter functions for stretching of TBitmaps
-//==================================================================================================
-
 // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
 
 function BitmapHermiteFilter(Value: Single): Single;
@@ -372,8 +349,6 @@ begin
     Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // This filter is also known as 'nearest neighbour' Filter.
 
 function BitmapBoxFilter(Value: Single): Single;
@@ -383,8 +358,6 @@ begin
   else
     Result := 0.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // aka 'linear' or 'bilinear' filter
 
@@ -397,8 +370,6 @@ begin
   else
     Result := 0.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BitmapBellFilter(Value: Single): Single;
 begin
@@ -415,8 +386,6 @@ begin
   else
     Result := 0.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // B-spline filter
 
@@ -441,8 +410,6 @@ begin
     Result := 0.0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function BitmapLanczos3Filter(Value: Single): Single;
 
   function SinC(Value: Single): Single;
@@ -464,8 +431,6 @@ begin
   else
     Result := 0.0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BitmapMitchellFilter(Value: Single): Single;
 const
@@ -497,8 +462,6 @@ begin
     Result := 0.0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 const
   FilterList: array [TResamplingFilter] of TBitmapFilterFunction =
    (
@@ -510,8 +473,6 @@ const
     BitmapLanczos3Filter,
     BitmapMitchellFilter
    );
-
-//--------------------------------------------------------------------------------------------------
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
 var
@@ -527,8 +488,6 @@ begin
     Inc(PByte(Run), Delta);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ApplyContributors(N: Integer; Contributors: TContributors): TBGRA;
 var
@@ -568,8 +527,6 @@ begin
     Result.B := IntToByte(RGB.B div Total);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // This is the actual scaling routine. Target must be allocated already with
 // sufficient size. Source must contain valid data, Radius must not be 0 and
@@ -806,10 +763,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Filter functions for TJclBitmap32
-//==================================================================================================
-
 type
   TPointRec = record
     Pos: Integer;
@@ -819,8 +773,6 @@ type
   TMappingTable = array of TCluster;
   TFilterFunc = function(Value: Extended): Extended;
 
-//--------------------------------------------------------------------------------------------------
-
 function NearestFilter(Value: Extended): Extended;
 begin
   if (Value > -0.5) and (Value <= 0.5) then
@@ -828,8 +780,6 @@ begin
   else
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LinearFilter(Value: Extended): Extended;
 begin
@@ -844,8 +794,6 @@ begin
   else
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SplineFilter(Value: Extended): Extended;
 var
@@ -866,8 +814,6 @@ begin
   else
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BuildMappingTable(DstWidth, SrcFrom, SrcWidth: Integer;
   StretchFilter: TStretchFilter): TMappingTable;
@@ -952,10 +898,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Bitmap Functions
-//==================================================================================================
-
 // Scales the source graphic to the given size (NewWidth, NewHeight) and stores the Result in Target.
 // Filter describes the filter function to be applied and Radius the size of the filter area.
 // Is Radius = 0 then the recommended filter area will be used (see DefaultFilterRadius).
@@ -988,8 +931,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Bitmap: TBitmap);
 begin
@@ -998,8 +939,6 @@ end;
 
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 var
   MemDC: HDC;
@@ -1015,14 +954,10 @@ end;
 
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function ExtractIconCount(const FileName: string): Integer;
 begin
   Result := ExtractIcon(HInstance, PChar(FileName), $FFFFFFFF);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 var
@@ -1037,8 +972,6 @@ begin
     ImageList_Destroy(ImgList);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function IconToBitmap(Icon: HICON): HBITMAP;
 var
@@ -1057,8 +990,6 @@ end;
 
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
 var
@@ -1111,16 +1042,12 @@ end;
 
 
 
-//==================================================================================================
 // Matrices
-//==================================================================================================
 { TODO -oWIMDC -cReplace : Insert JclMatrix support }
 function _DET(a1, a2, b1, b2: Extended): Extended; overload;
 begin
   Result := a1 * b2 - a2 * b1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended; overload;
 begin
@@ -1129,8 +1056,6 @@ begin
     b1 * (a2 * c3 - a3 * c2) +
     c1 * (a2 * b3 - a3 * b2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure Adjoint(var M: TMatrix3d);
 var
@@ -1163,8 +1088,6 @@ begin
   M.A[2, 2]:=  _DET(a1, a2, b1, b2);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Determinant(const M: TMatrix3d): Extended;
 begin
   Result := _DET(
@@ -1172,8 +1095,6 @@ begin
     M.A[0, 1], M.A[1, 1], M.A[2, 1],
     M.A[0, 2], M.A[1, 2], M.A[2, 2]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure Scale(var M: TMatrix3d; Factor: Extended);
 var
@@ -1183,8 +1104,6 @@ begin
     for J := 0 to 2 do
       M.A[I, J] := M.A[I, J] * Factor;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure InvertMatrix(var M: TMatrix3d);
 var
@@ -1200,8 +1119,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Mult(const M1, M2: TMatrix3d): TMatrix3d;
 var
   I, J: Integer;
@@ -1214,13 +1131,9 @@ begin
         M1.A[2, J] * M2.A[I, 2];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 type
   TVector3d = array [0..2] of Extended;
   TVector3i = array [0..2] of Integer;
-
-//--------------------------------------------------------------------------------------------------
 
 function VectorTransform(const M: TMatrix3d; const V: TVector3d): TVector3d;
 begin
@@ -1229,24 +1142,17 @@ begin
   Result[2] := M.A[0, 2] * V[0] + M.A[1, 2] * V[1] + M.A[2, 2] * V[2];
 end;
 
-//==================================================================================================
 // TJclLinearTransformation
-//==================================================================================================
-
 constructor TJclLinearTransformation.Create;
 begin
   inherited Create;
   Clear;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclLinearTransformation.Clear;
 begin
   FMatrix := IdentityMatrix;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclLinearTransformation.GetTransformedBounds(const Src: TRect): TRect;
 var
@@ -1279,8 +1185,6 @@ begin
   Result.Bottom := Round(Max(Max(V1[1], V2[1]), Max(V3[1], V4[1])) + 0.5);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclLinearTransformation.PrepareTransform;
 var
   M: TMatrix3d;
@@ -1296,8 +1200,6 @@ begin
   E := Round(M.A[1, 1] * 4096);
   F := Round(M.A[2, 1] * 4096);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Rotate(Cx, Cy, Alpha: Extended);
 var
@@ -1317,8 +1219,6 @@ begin
     Translate(Cx, Cy);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclLinearTransformation.Scale(Sx, Sy: Extended);
 var
   M: TMatrix3d;
@@ -1328,8 +1228,6 @@ begin
   M.A[1, 1] := Sy;
   FMatrix := Mult(M, FMatrix);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Skew(Fx, Fy: Extended);
 var
@@ -1341,8 +1239,6 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclLinearTransformation.Transform(DstX, DstY: Integer;
   out SrcX, SrcY: Integer);
 begin
@@ -1350,16 +1246,12 @@ begin
   SrcY := Sar(DstX * D + DstY * E + F, 12);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclLinearTransformation.Transform256(DstX, DstY: Integer;
   out SrcX256, SrcY256: Integer);
 begin
   SrcX256 := Sar(DstX * A + DstY * B + C, 4);
   SrcY256 := Sar(DstX * D + DstY * E + F, 4);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Translate(Dx, Dy: Extended);
 var
@@ -1371,12 +1263,7 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-//==================================================================================================
 // PolyLines and Polygons
-//==================================================================================================
-
-
-//--------------------------------------------------------------------------------------------------
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -1404,8 +1291,6 @@ begin
   until I >= R;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure SortLine(const ALine: TScanLine);
 var
   L: Integer;
@@ -1419,8 +1304,6 @@ begin
     QSortLine(ALine, 0, L - 1);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure SortLines(const ScanLines: TScanLines);
 var
   I: Integer;
@@ -1428,8 +1311,6 @@ begin
   for I := 0 to High(ScanLines) do
     SortLine(ScanLines[I]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure AddPolygon(const Points: TDynPointArray; BaseY: Integer;
   MaxX, MaxY: Integer; var ScanLines: TScanLines; SubSampleX: Boolean);
@@ -1551,10 +1432,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Gamma table support for opacities
-//==================================================================================================
-
 procedure SetGamma(Gamma: Single);
 var
   I: Integer;
@@ -1580,10 +1458,7 @@ begin
   IdentityMatrix.A[2, 2] := 1.0;
 end;
 
-//==================================================================================================
 // Initialization and Finalization
-//==================================================================================================
-
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);

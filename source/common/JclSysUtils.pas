@@ -56,10 +56,7 @@ uses
   Classes, TypInfo,
   JclBase;
 
-//--------------------------------------------------------------------------------------------------
 // Pointer manipulation
-//--------------------------------------------------------------------------------------------------
-
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
 function PCharOrNil(const S: string): PChar;
@@ -73,10 +70,7 @@ function SizeOfMem(const APointer: Pointer): Integer;
 function WriteProtectedMemory(BaseAddress, Buffer: Pointer; Size: Cardinal;
   out WrittenBytes: Cardinal): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Guards
-//--------------------------------------------------------------------------------------------------
-
 type
   ISafeGuard = interface
     function ReleaseItem: Pointer;
@@ -104,10 +98,7 @@ function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 
-//--------------------------------------------------------------------------------------------------
 // Binary search
-//--------------------------------------------------------------------------------------------------
-
 function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer;
   Nearest: Boolean = False): Integer;
 
@@ -117,10 +108,7 @@ type
 function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
   const Value; Nearest: Boolean = False): Integer;
 
-//--------------------------------------------------------------------------------------------------
 // Dynamic array sort and search routines
-//--------------------------------------------------------------------------------------------------
-
 type
   TDynArraySortCompare = function (Item1, Item2: Pointer): Integer;
 
@@ -150,17 +138,11 @@ function DynArrayCompareAnsiText(Item1, Item2: Pointer): Integer;
 function DynArrayCompareString(Item1, Item2: Pointer): Integer;
 function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 
-//--------------------------------------------------------------------------------------------------
 // Object lists
-//--------------------------------------------------------------------------------------------------
-
 procedure ClearObjectList(List: TList);
 procedure FreeObjectList(var List: TList);
 
-//--------------------------------------------------------------------------------------------------
 // Reference memory stream
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclReferenceMemoryStream = class(TCustomMemoryStream)
   public
@@ -168,10 +150,7 @@ type
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
-//--------------------------------------------------------------------------------------------------
 // Replacement for the C ternary conditional operator ? :
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte; overload;
@@ -188,27 +167,18 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Vari
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
-//--------------------------------------------------------------------------------------------------
 // Classes information and manipulation
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclVMTError = class(EJclError);
 
-//--------------------------------------------------------------------------------------------------
 // Virtual Methods
-//--------------------------------------------------------------------------------------------------
-
 {$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
 {$ENDIF ~FPC}
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 
-//--------------------------------------------------------------------------------------------------
 // Dynamic Methods
-//--------------------------------------------------------------------------------------------------
-
 type
   TDynamicIndexList = array [0..MaxInt div 16] of Word;
   PDynamicIndexList = ^TDynamicIndexList;
@@ -273,10 +243,7 @@ type
 function GetMethodTable(AClass: TClass): PMethodTable;
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 
-//--------------------------------------------------------------------------------------------------
 // Class Parent
-//--------------------------------------------------------------------------------------------------
-
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 function GetClassParent(AClass: TClass): TClass;
 
@@ -285,16 +252,10 @@ function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
 {$ENDIF ~FPC}
 
-//--------------------------------------------------------------------------------------------------
 // Interface information
-//--------------------------------------------------------------------------------------------------
-
 function GetImplementorOfInterface(const I: IInterface): TObject;
 
-//--------------------------------------------------------------------------------------------------
 // Numeric formatting routines
-//--------------------------------------------------------------------------------------------------
-
 type
   TDigitCount = 0..255;
   TDigitValue = -1..35;  // invalid, '0'..'9', 'A'..'Z'
@@ -359,10 +320,7 @@ type
 
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
-//--------------------------------------------------------------------------------------------------
 // Child processes
-//--------------------------------------------------------------------------------------------------
-
 type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
@@ -375,16 +333,10 @@ function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; Ra
 function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
 
-//--------------------------------------------------------------------------------------------------
 // Console Utilities
-//--------------------------------------------------------------------------------------------------
-
 function ReadKey: Char;
 
-//--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
-//--------------------------------------------------------------------------------------------------
-
 type
 {$IFDEF MSWINDOWS}
   TModuleHandle = HINST;
@@ -404,10 +356,7 @@ function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: 
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Conversion Utilities
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclConversionError = class(EJclError);
 
@@ -415,10 +364,7 @@ function StrToBoolean(const S: string): Boolean;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
-//--------------------------------------------------------------------------------------------------
 // RTL package information
-//--------------------------------------------------------------------------------------------------
-
 {$IFNDEF FPC}
 function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
@@ -443,17 +389,12 @@ uses
   SysUtils,
   JclResources, JclStrings, JclMath;
 
-//==================================================================================================
 // Pointer manipulation
-//==================================================================================================
-
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 begin
   GetMem(P, Size);
   FillChar(P^, Size, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure FreeMemAndNil(var P: Pointer);
 var
@@ -463,8 +404,6 @@ begin
   P := nil;
   FreeMem(Q);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function PCharOrNil(const S: string): PChar;
 begin
@@ -476,8 +415,6 @@ begin
   Result := Pointer(S);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF SUPPORTS_WIDESTRING}
 
 function PWideCharOrNil(const W: WideString): PWideChar;
@@ -486,8 +423,6 @@ begin
 end;
 
 {$ENDIF SUPPORTS_WIDESTRING}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 type
@@ -537,8 +472,6 @@ begin
 end;
 {$ENDIF LINUX}
 
-//--------------------------------------------------------------------------------------------------
-
 function WriteProtectedMemory(BaseAddress, Buffer: Pointer;
   Size: Cardinal; out WrittenBytes: Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
@@ -577,8 +510,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FlushInstructionCache;
 { TODO -cHelp : Author: Andreas Hausladen }
 begin
@@ -587,10 +518,7 @@ end;
 
 {$ENDIF LINUX}
 
-//==================================================================================================
 // Guards
-//==================================================================================================
-
 type
   TSafeGuard = class(TInterfacedObject, ISafeGuard)
   private
@@ -627,9 +555,7 @@ type
     procedure FreeItem(Index: Integer); override;
   end;
 
-//--------------------------------------------------------------------------------------------------
-// TSafeGuard
-//--------------------------------------------------------------------------------------------------
+//=== { TSafeGuard } =========================================================
 
 constructor TSafeGuard.Create(Mem: Pointer);
 begin
@@ -637,15 +563,11 @@ begin
   FItem := Mem;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TSafeGuard.Destroy;
 begin
   FreeItem;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TSafeGuard.ReleaseItem: Pointer;
 begin
@@ -653,14 +575,10 @@ begin
   FItem := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TSafeGuard.GetItem: Pointer;
 begin
   Result := FItem;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TSafeGuard.FreeItem;
 begin
@@ -669,16 +587,12 @@ begin
   FItem := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TObjSafeGuard
-//--------------------------------------------------------------------------------------------------
+//=== { TObjSafeGuard } ======================================================
 
 constructor TObjSafeGuard.Create(Obj: TObject);
 begin
   inherited Create(Pointer(Obj));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TObjSafeGuard.FreeItem;
 begin
@@ -689,17 +603,13 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TMultiSafeGuard
-//--------------------------------------------------------------------------------------------------
+//=== { TMultiSafeGuard } ====================================================
 
 constructor TMultiSafeGuard.Create;
 begin
   inherited Create;
   FItems := TList.Create;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TMultiSafeGuard.Destroy;
 var
@@ -710,15 +620,11 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMultiSafeGuard.AddItem(Mem: Pointer): Pointer;
 begin
   Result := Mem;
   FItems.Add(Mem);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TMultiSafeGuard.FreeItem(Index: Integer);
 begin
@@ -726,29 +632,21 @@ begin
   FItems.Delete(Index);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMultiSafeGuard.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TMultiSafeGuard.GetItem(Index: Integer): Pointer;
 begin
   Result := FItems[Index];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TMultiSafeGuard.ReleaseItem(Index: Integer): Pointer;
 begin
   Result := FItems[Index];
   FItems.Delete(Index);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
 begin
@@ -757,17 +655,13 @@ begin
   Result := SafeGuard.AddItem(Mem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TObjMultiSafeGuard
-//--------------------------------------------------------------------------------------------------
+//=== { TObjMultiSafeGuard } =================================================
 
 procedure TObjMultiSafeGuard.FreeItem(Index: Integer);
 begin
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 begin
@@ -776,15 +670,11 @@ begin
   Result := SafeGuard.AddItem(Obj);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 begin
   Result := Mem;
   SafeGuard := TSafeGuard.Create(Mem);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
 begin
@@ -792,15 +682,11 @@ begin
   SafeGuard := TObjSafeGuard.Create(Obj);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 begin
   GetMem(Result, Size);
   Guard(Result, SafeGuard);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 begin
@@ -808,9 +694,7 @@ begin
   Guard(Result, SafeGuard);
 end;
 
-//==================================================================================================
-// Binary search
-//==================================================================================================
+//=== Binary search ==========================================================
 
 function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer; Nearest: Boolean): Integer;
 var
@@ -846,8 +730,6 @@ begin
       Result := H;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
   const Value; Nearest: Boolean): Integer;
@@ -885,9 +767,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Dynamic array sort and search routines
-//==================================================================================================
+//=== Dynamic array sort and search routines =================================
 
 procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
 var
@@ -963,8 +843,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
   ValuePtr: Pointer; Nearest: Boolean): Integer;
 var
@@ -1001,8 +879,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { Various compare functions for basic types }
 
 function DynArrayCompareByte(Item1, Item2: Pointer): Integer;
@@ -1010,49 +886,35 @@ begin
   Result := PByte(Item1)^ - PByte(Item2)^;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareShortInt(Item1, Item2: Pointer): Integer;
 begin
   Result := PShortInt(Item1)^ - PShortInt(Item2)^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareWord(Item1, Item2: Pointer): Integer;
 begin
   Result := PWord(Item1)^ - PWord(Item2)^;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareSmallInt(Item1, Item2: Pointer): Integer;
 begin
   Result := PSmallInt(Item1)^ - PSmallInt(Item2)^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareInteger(Item1, Item2: Pointer): Integer;
 begin
   Result := PInteger(Item1)^ - PInteger(Item2)^;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareCardinal(Item1, Item2: Pointer): Integer;
 begin
   Result := PInteger(Item1)^ - PInteger(Item2)^;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareInt64(Item1, Item2: Pointer): Integer;
 begin
   Result := PInt64(Item1)^ - PInt64(Item2)^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareSingle(Item1, Item2: Pointer): Integer;
 begin
@@ -1065,8 +927,6 @@ begin
     Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareDouble(Item1, Item2: Pointer): Integer;
 begin
   if PDouble(Item1)^ < PDouble(Item2)^ then
@@ -1077,8 +937,6 @@ begin
   else
     Result := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareExtended(Item1, Item2: Pointer): Integer;
 begin
@@ -1091,8 +949,6 @@ begin
     Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareFloat(Item1, Item2: Pointer): Integer;
 begin
   if PFloat(Item1)^ < PFloat(Item2)^ then
@@ -1104,37 +960,27 @@ begin
     Result := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareAnsiString(Item1, Item2: Pointer): Integer;
 begin
   Result := AnsiCompareStr(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareAnsiText(Item1, Item2: Pointer): Integer;
 begin
   Result := AnsiCompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DynArrayCompareString(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareStr(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
 
-//==================================================================================================
-// Object lists
-//==================================================================================================
+//=== Object lists ===========================================================
 
 procedure ClearObjectList(List: TList);
 var
@@ -1159,8 +1005,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FreeObjectList(var List: TList);
 begin
   if List <> nil then
@@ -1170,9 +1014,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclReferenceMemoryStream
-//==================================================================================================
+//=== { TJclReferenceMemoryStream } ==========================================
 
 constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
 begin
@@ -1183,16 +1025,12 @@ begin
   SetPointer(Ptr, Size);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclError.CreateResRec(@RsCannotWriteRefStream);
 end;
 
-//==================================================================================================
-// replacement for the C distfix operator ? :
-//==================================================================================================
+//=== replacement for the C distfix operator ? : =============================
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string;
 begin
@@ -1202,8 +1040,6 @@ begin
     Result := FalsePart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char;
 begin
   if Condition then
@@ -1211,8 +1047,6 @@ begin
   else
     Result := FalsePart;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte;
 begin
@@ -1222,8 +1056,6 @@ begin
     Result := FalsePart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Integer;
 begin
   if Condition then
@@ -1231,8 +1063,6 @@ begin
   else
     Result := FalsePart;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal;
 begin
@@ -1242,8 +1072,6 @@ begin
     Result := FalsePart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 begin
   if Condition then
@@ -1251,8 +1079,6 @@ begin
   else
     Result := FalsePart;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean;
 begin
@@ -1262,8 +1088,6 @@ begin
     Result := FalsePart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer;
 begin
   if Condition then
@@ -1272,8 +1096,6 @@ begin
     Result := FalsePart;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64;
 begin
   if Condition then
@@ -1281,8 +1103,6 @@ begin
   else
     Result := FalsePart;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_VARIANT}
 {$IFDEF COMPILER6_UP}
@@ -1296,14 +1116,8 @@ end;
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
-//==================================================================================================
-// Classes information and manipulation
-//==================================================================================================
-
-//==================================================================================================
+//=== Classes information and manipulation ===================================
 // Virtual Methods
-//==================================================================================================
-
 // Helper method
 
 procedure SetVMTPointer(AClass: TClass; Offset: Integer; Value: Pointer);
@@ -1323,8 +1137,6 @@ begin
   // make sure that everything keeps working in a dual processor setting
   FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
@@ -1356,32 +1168,23 @@ begin
 end;
 {$ENDIF ~FPC}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
 begin
   Result := PPointer(Integer(AClass) + Index * SizeOf(Pointer))^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
 
-//==================================================================================================
 // Dynamic Methods
-//==================================================================================================
-
 type
   TvmtDynamicTable = packed record
     Count: Word;
    {IndexList: array [1..Count] of Word;
     AddressList: array [1..Count] of Pointer;}
   end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
@@ -1392,15 +1195,11 @@ asm
 @@Exit:
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
         MOV     EAX, [EAX].vmtDynamicTable
         ADD     EAX, 2
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
 asm
@@ -1410,8 +1209,6 @@ asm
         ADD     EAX, EDX
         ADD     EAX, 2
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean; assembler;
 // Mainly copied from System.GetDynaMethod
@@ -1447,8 +1244,6 @@ asm
         POP     EDI
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
@@ -1456,30 +1251,22 @@ asm
 end;
 {$ENDIF ~FPC}
 
-//==================================================================================================
-// Interface Table
-//==================================================================================================
+//=== Interface Table ========================================================
 
 function GetInitTable(AClass: TClass): PTypeInfo; assembler;
 asm
         MOV     EAX, [EAX].vmtInitTable
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetFieldTable(AClass: TClass): PFieldTable; assembler;
 asm
         MOV     EAX, [EAX].vmtFieldTable
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetMethodTable(AClass: TClass): PMethodTable; assembler;
 asm
         MOV     EAX, [EAX].vmtMethodTable
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
@@ -1488,9 +1275,7 @@ begin
     Inc(Cardinal(Result), Result^.EntrySize);
 end;
 
-//==================================================================================================
-// Class Parent methods
-//==================================================================================================
+//=== Class Parent methods ===================================================
 
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 var
@@ -1508,8 +1293,6 @@ begin
   FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
         MOV     EAX, [EAX].vmtParent
@@ -1518,8 +1301,6 @@ asm
         MOV     EAX, [EAX]
 @@Exit:
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean; assembler;
@@ -1533,8 +1314,6 @@ asm
 @Exit:
 end;
 {$ENDIF ~FPC}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}
 function IsObject(Address: Pointer): Boolean; assembler;
@@ -1551,9 +1330,7 @@ asm
 end;
 {$ENDIF ~FPC}
 
-//==================================================================================================
-// Interface information
-//==================================================================================================
+//=== Interface information ==================================================
 
 function GetImplementorOfInterface(const I: IInterface): TObject;
 { TODO -cDOC : Original code by Hallvard Vassbotn }
@@ -1595,9 +1372,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Numeric formatting routines
-//==================================================================================================
+//=== Numeric formatting routines ============================================
 
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 begin
@@ -1606,9 +1381,7 @@ begin
     Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-{ TJclNumericFormat }
+//=== { TJclNumericFormat } ==================================================
 
 { TODO -cHelp : Author: Robert Rossmair }
 { Digit:         converts a digit value (number) to a digit (char)
@@ -1630,10 +1403,6 @@ const
   BinaryPrecision = 24;
 {$ENDIF MATH_SINGLE_PRECISION}
 
-//--------------------------------------------------------------------------------------------------
-// TJclNumericFormat
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclNumericFormat.Create;
 begin
   inherited Create;
@@ -1650,14 +1419,10 @@ begin
   FDigitBlockSeparator := ThousandSeparator;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNumericFormat.InvalidDigit(Digit: Char);
 begin
   raise EConvertError.CreateResFmt(@RsInvalidDigit, [Base, Digit]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.Digit(DigitValue: TDigitValue): Char;
 begin
@@ -1667,8 +1432,6 @@ begin
   else
     Result := Chr(Ord('0') + DigitValue);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.GetDigitValue(Digit: Char): Integer;
 begin
@@ -1685,8 +1448,6 @@ begin
     Result := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.DigitValue(Digit: Char): TDigitValue;
 begin
   Result := GetDigitValue(Digit);
@@ -1694,14 +1455,10 @@ begin
     InvalidDigit(Digit);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.IsDigit(Value: Char): Boolean;
 begin
   Result := GetDigitValue(Value) <> -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.FloatToHTML(const Value: Float): string;
 var
@@ -1711,8 +1468,6 @@ begin
   GetMantissaExp(Value, Mantissa, Exponent);
   Result := Format('%s %s %d<sup>%d</sup>', [Mantissa, Multiplier, Base, Exponent]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
   out Mantissa: string; out Exponent: Integer);
@@ -1846,8 +1601,6 @@ has not been investigated if ExponentDivision <= 12 is safe. }
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.FloatToStr(const Value: Float): string;
 var
   Mantissa: string;
@@ -1857,16 +1610,12 @@ begin
   Result := Format('%s %s %d^%d', [Mantissa, Multiplier, Base, Exponent]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.IntToStr(const Value: Int64): string;
 var
   FirstDigitPos: Integer;
 begin
   Result := IntToStr(Value, FirstDigitPos);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.IntToStr(const Value: Int64; out FirstDigitPos: Integer): string;
 const
@@ -1934,15 +1683,11 @@ begin
   Dec(FirstDigitPos, I - 1);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNumericFormat.SetBase(const Value: TNumericSystemBase);
 begin
   FBase := Value;
   SetPrecision(FWantedPrecision);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNumericFormat.SetExpDivision(const Value: Integer);
 begin
@@ -1956,8 +1701,6 @@ begin
     FExpDivision := Value;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNumericFormat.SetPrecision(const Value: TDigitCount);
 begin
   FWantedPrecision := Value;
@@ -1970,8 +1713,6 @@ begin
     FPrecision := Value;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.Sign(Value: Char): Integer;
 begin
   Result := 0;
@@ -1980,8 +1721,6 @@ begin
   if Value = FSignChars[True] then
     Result := +1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.StrToInt(const Value: string): Int64;
 var
@@ -2019,65 +1758,47 @@ begin
     Result := -Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.ShowSign(const Value: Float): Boolean;
 begin
   Result := FShowPositiveSign or (Value < 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.ShowSign(const Value: Int64): Boolean;
 begin
   Result := FShowPositiveSign or (Value < 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.SignChar(const Value: Float): Char;
 begin
   Result := FSignChars[Value >= 0];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.SignChar(const Value: Int64): Char;
 begin
   Result := FSignChars[Value >= 0];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclNumericFormat.GetNegativeSign: Char;
 begin
   Result := FSignChars[False];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclNumericFormat.GetPositiveSign: Char;
 begin
   Result := FSignChars[True];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclNumericFormat.SetNegativeSign(const Value: Char);
 begin
   FSignChars[False] := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclNumericFormat.SetPositiveSign(const Value: Char);
 begin
   FSignChars[True] := Value;
 end;
 
-//==================================================================================================
-// Child processes
-//==================================================================================================
+//=== Child processes ========================================================
 
 // MuteCRTerminatedLines was "outsourced" from Win32ExecAndRedirectOutput
 
@@ -2254,9 +1975,7 @@ begin
   Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput, AbortPtr);
 end;
 
-//==================================================================================================
-// Console Utilities
-//==================================================================================================
+//=== Console Utilities ======================================================
 
 function ReadKey: Char;
 {$IFDEF MSWINDOWS}
@@ -2315,9 +2034,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-//==================================================================================================
-// Loading of modules (DLLs)
-//==================================================================================================
+//=== Loading of modules (DLLs) ==============================================
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
@@ -2336,8 +2053,6 @@ end;
 
 {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-
 function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
 begin
@@ -2353,8 +2068,6 @@ begin
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure UnloadModule(var Module: TModuleHandle);
 {$IFDEF MSWINDOWS}
@@ -2372,8 +2085,6 @@ begin
 end;
 {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
 {$IFDEF MSWINDOWS}
 begin
@@ -2389,8 +2100,6 @@ begin
     Result := dlsym(Module, PChar(SymbolName));
 end;
 {$ENDIF UNIX}
-
-//--------------------------------------------------------------------------------------------------
 
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 {$IFDEF MSWINDOWS}
@@ -2410,8 +2119,6 @@ begin
 end;
 {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
@@ -2421,8 +2128,6 @@ begin
   if Result then
     Move(Sym^, Buffer, Size);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 var
@@ -2434,9 +2139,7 @@ begin
     Move(Buffer, Sym^, Size);
 end;
 
-//==================================================================================================
-// Conversion Utilities
-//==================================================================================================
+//=== Conversion Utilities ===================================================
 
 { TODO -cHelp : StrToBoolean, IntToBool, BoolToInt }
 { Author: Jeff
@@ -2453,8 +2156,6 @@ const
 
   DefaultYesBoolStr   = 'Yes';   // DO NOT LOCALIZE
   DefaultNoBoolStr    = 'No';    // DO NOT LOCALIZE
-
-//--------------------------------------------------------------------------------------------------
 
 function StrToBoolean(const S: string): Boolean;
 var
@@ -2476,23 +2177,17 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IntToBool(I: Integer): Boolean;
 begin
   Result := I <> 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BoolToInt(B: Boolean): Integer;
 begin
   Result := Ord(B);
 end;
 
-//==================================================================================================
-// RTL package information
-//==================================================================================================
+//=== RTL package information ================================================
 
 {$IFNDEF FPC}
 
@@ -2500,8 +2195,6 @@ function SystemTObjectInstance: LongWord;
 begin
   Result := FindClassHInstance(System.TObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function IsCompiledWithPackages: Boolean;
 begin
@@ -2513,6 +2206,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.30  2004/12/27 17:11:57  rrossmair
 // - fixed Mantis #2433
 //

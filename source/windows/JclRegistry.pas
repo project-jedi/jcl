@@ -217,37 +217,26 @@ const
   cItems = 'Items';
   cRegBinKinds = [REG_SZ..REG_QWORD];  // all types
 
-//==================================================================================================
 // Internal helper routines
-//==================================================================================================
-
 procedure ReadError(const Key: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure WriteError(const Key: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyWrite, [Key]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ValueError(const Key, Name: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToAccessValue, [Key, Name]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure DataError(const Key, Name: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsWrongDataType, [Key, Name]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; out RegPath: string): Boolean;
 begin
@@ -271,8 +260,6 @@ begin
   end;
   Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RelativeKey(const RootKey: DelphiHKEY; Key: PChar): PChar;
 type
@@ -315,8 +302,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InternalRegOpenKeyEx(Key: HKEY; SubKey: PChar;
   ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint;
 var
@@ -330,8 +315,6 @@ begin
   else
     Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, samDesired, RegKey);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InternalRegQueryValueEx(Key: HKEY; ValueName: PChar;
   lpReserved: Pointer; lpType: PDWORD; lpData: PByte; lpcbData: PDWORD): Longint;
@@ -347,8 +330,6 @@ begin
     Result := RegQueryValueExA(Key, ValueName, lpReserved, lpType, lpData, lpcbData);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InternalRegSetValueEx(Key: HKEY; ValueName: PChar;
   Reserved: DWORD; dwType: DWORD; lpData: Pointer; cbData: DWORD): Longint; stdcall;
 var
@@ -362,8 +343,6 @@ begin
   else
     Result := RegSetValueExA(Key, PChar(ValueName), Reserved, dwType, lpData, cbData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure InternalGetData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; ExpectedSize: DWORD;
@@ -390,8 +369,6 @@ begin
   else
     ReadError(Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InternalGetString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean): string;
 var
@@ -427,8 +404,6 @@ begin
   else
     ReadError(Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean): WideString;
 var
@@ -469,8 +444,6 @@ begin
     ReadError(Key);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
 var
@@ -488,8 +461,6 @@ begin
   else
     WriteError(Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure InternalSetWideData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
@@ -509,10 +480,7 @@ begin
     WriteError(Key);
 end;
 
-//==================================================================================================
 // Registry
-//==================================================================================================
-
 function RegCreateKey(const RootKey: DelphiHKEY; const Key: string): Longint;
 var
   RegKey: HKEY;
@@ -522,14 +490,10 @@ begin
     RegCloseKey(RegKey);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Longint;
 begin
   Result := RegSetValue(RootKey, RelativeKey(RootKey, PChar(Key)), REG_SZ, PChar(Value), Length(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegDeleteEntry(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 var
@@ -546,8 +510,6 @@ begin
   else
     WriteError(Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegDeleteKeyTree(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
@@ -581,8 +543,6 @@ begin
       WriteError(Key);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegGetDataSize(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataSize: Cardinal): Boolean;
 var
@@ -596,8 +556,6 @@ begin
     RegCloseKey(RegKey);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegGetDataType(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataType: DWORD): Boolean;
@@ -613,21 +571,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 begin
   Result := RegReadInteger(RootKey, Key, Name) <> 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
 begin
   Result := RegReadIntegerDef(RootKey, Key, Name, Ord(Def)) <> 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 var
@@ -644,8 +596,6 @@ begin
   Result := Ret and $FFFFFFFF;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 begin
   try
@@ -654,8 +604,6 @@ begin
     Result := Def;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
 var
@@ -672,8 +620,6 @@ begin
   Result := Ret and $FFFFFFFF;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
 begin
   try
@@ -683,21 +629,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): DWORD;
 begin
   Result := RegReadCardinal(RootKey, Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: DWORD): DWORD;
 begin
   Result := RegReadCardinalDef(RootKey, Key, Name, Def);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 var
@@ -726,8 +666,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 begin
   try
@@ -736,8 +674,6 @@ begin
     Result := Def;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 var
@@ -760,8 +696,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
 begin
   try
@@ -770,8 +704,6 @@ begin
     Result := Def;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
 var
@@ -792,8 +724,6 @@ begin
       SizeOf(Result), DataType, @Result, DataSize);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadSingleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Single): Single;
 begin
   try
@@ -802,8 +732,6 @@ begin
     Result := Def;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
 var
@@ -824,8 +752,6 @@ begin
       SizeOf(Result), DataType, @Result, DataSize);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadDoubleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Double): Double;
 begin
   try
@@ -834,8 +760,6 @@ begin
     Result := Def;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
 var
@@ -856,8 +780,6 @@ begin
       SizeOf(Result), DataType, @Result, DataSize);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
 begin
   try
@@ -867,28 +789,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 begin
   Result := RegReadAnsiString(RootKey, Key, Name);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: string): string;
 begin
   Result := RegReadAnsiStringDef(RootKey, Key, Name, Def);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
 begin
   Result := InternalGetString(RootKey, Key, Name, False);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; Def: AnsiString): AnsiString;
 begin
@@ -899,14 +813,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: string): WideString;
 begin
   Result := InternalGetWideString(RootKey, Key, Name, False);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: WideString): WideString;
 begin
@@ -917,8 +827,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
 var
   S: string;
@@ -926,8 +834,6 @@ begin
   S := InternalGetString(RootKey, Key, Name, True);
   MultiSzToStrings(Value, PMultiSz(PChar(S)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings);
 begin
@@ -938,8 +844,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz;
 var
   S: string;
@@ -948,8 +852,6 @@ begin
   // always returns a newly allocated PMultiSz
   Result := MultiSzDup(PMultiSz(PChar(S)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PMultiSz): PMultiSz;
 begin
@@ -961,8 +863,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings);
 var
   S: WideString;
@@ -970,8 +870,6 @@ begin
   S := InternalGetWideString(RootKey, Key, Name, True);
   WideMultiSzToWideStrings(Value, PWideMultiSz(PWideChar(S)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TWideStrings);
 begin
@@ -982,8 +880,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz;
 var
   S: WideString;
@@ -992,8 +888,6 @@ begin
   // always returns a newly allocated PMultiWideSz
   Result := WideMultiSzDup(PWideMultiSz(PWideChar(S)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PWideMultiSz): PWideMultiSz;
 begin
@@ -1005,8 +899,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value;
   const ValueSize: Cardinal): Cardinal;
 var
@@ -1014,8 +906,6 @@ var
 begin
   InternalGetData(RootKey, Key, Name, cRegBinKinds, ValueSize, DataType, @Value, Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
@@ -1028,28 +918,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; Value: Boolean);
 begin
   RegWriteCardinal(RootKey, Key, Name, REG_DWORD, Cardinal(Ord(Value)));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Boolean);
 begin
   RegWriteCardinal(RootKey, Key, Name, DataType, Cardinal(Ord(Value)));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 begin
   RegWriteInteger(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Integer);
 var
@@ -1073,14 +955,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; Value: Cardinal);
 begin
   RegWriteCardinal(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Cardinal);
 var
@@ -1104,28 +982,20 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: DWORD);
 begin
   RegWriteCardinal(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: DWORD);
 begin
   RegWriteCardinal(RootKey, Key, Name, DataType, Cardinal(Value));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 begin
   RegWriteInt64(RootKey, Key, Name, REG_QWORD, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Int64);
 begin
@@ -1135,14 +1005,10 @@ begin
     RegWriteUInt64(RootKey, Key, Name, DataType, UInt64(Value));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64);
 begin
   RegWriteUInt64(RootKey, Key, Name, REG_QWORD, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: UInt64);
 begin
@@ -1155,14 +1021,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; Value: Single);
 begin
   RegWriteSingle(RootKey, Key, Name, REG_BINARY, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Single);
 begin
@@ -1175,14 +1037,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; Value: Double);
 begin
   RegWriteDouble(RootKey, Key, Name, REG_BINARY, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Double);
 begin
@@ -1195,14 +1053,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; Value: Extended);
 begin
   RegWriteExtended(RootKey, Key, Name, REG_BINARY, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Extended);
 begin
@@ -1215,28 +1069,20 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 begin
   RegWriteAnsiString(RootKey, Key, Name, REG_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: string);
 begin
   RegWriteAnsiString(RootKey, Key, Name, DataType, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString);
 begin
   RegWriteAnsiString(RootKey, Key, Name, REG_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal; Value: AnsiString);
 begin
@@ -1247,14 +1093,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; Value: WideString);
 begin
   RegWriteWideString(RootKey, Key, Name, REG_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString);
 begin
@@ -1269,14 +1111,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PMultiSz);
 begin
   RegWriteMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PMultiSz);
 begin
@@ -1287,14 +1125,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings);
 begin
   RegWriteMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TStrings);
 var
@@ -1313,14 +1147,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PWideMultiSz);
 begin
   RegWriteWideMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PWideMultiSz);
 begin
@@ -1333,14 +1163,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TWideStrings);
 begin
   RegWriteWideMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TWideStrings);
 var
@@ -1359,14 +1185,10 @@ begin
     DataError(Key, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 begin
   InternalSetData(RootKey, Key, Name, REG_BINARY, @Value, ValueSize);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 var
@@ -1378,8 +1200,6 @@ begin
     Result := RegDeleteEntry(Key, RegPath, Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
 var
   Key: HKEY;
@@ -1389,8 +1209,6 @@ begin
   if Result then
     RegWriteString(Key, RegPath, Name, Cmdline);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 var
@@ -1429,8 +1247,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 var
   RegKey: HKEY;
@@ -1467,8 +1283,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
@@ -1485,8 +1299,6 @@ begin
     ReadError(Key);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
@@ -1495,8 +1307,6 @@ begin
   if Result then
     RegCloseKey(RegKey);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegSaveList(const RootKey: DelphiHKEY; const Key: string;
   const ListName: string; const Items: TStrings): Boolean;
@@ -1515,8 +1325,6 @@ begin
     Result := True;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RegLoadList(const RootKey: DelphiHKEY; const Key: string;
   const ListName: string; const SaveTo: TStrings): Boolean;
@@ -1537,8 +1345,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName: string): Boolean;
 var
   I, N: Integer;
@@ -1555,8 +1361,6 @@ begin
         Break;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
 var
@@ -1588,6 +1392,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.34  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.33  2005/02/22 07:36:46  marquardt
 // minor cleanups
 //
