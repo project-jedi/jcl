@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 20, 2000                                             }
+{ Last modified: December 6, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -791,6 +791,7 @@ type
     function GetImageSectionCount: Integer;
     function GetImageSectionHeaders(Index: Integer): TImageSectionHeader;
     function GetImageSectionNames(Index: Integer): string;
+    function GetImageSectionNameFromRva(const Rva: DWORD): string;
     procedure SetFileName(const Value: TFileName);
   protected
     procedure AfterOpen; dynamic;
@@ -831,6 +832,7 @@ type
     property ImageSectionCount: Integer read GetImageSectionCount;
     property ImageSectionHeaders[Index: Integer]: TImageSectionHeader read GetImageSectionHeaders;
     property ImageSectionNames[Index: Integer]: string read GetImageSectionNames;
+    property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva; 
     property ImportList: TJclPeImportList read GetImportList;
     property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
     property LoadedImage: TLoadedImage read FLoadedImage;
@@ -2031,7 +2033,7 @@ begin
     Result := ''
   else
     with FExportList.FImage do
-      Result := GetSectionName(RvaToSection(Address));
+      Result := ImageSectionNameFromRva[Address];
 end;
 
 //==============================================================================
@@ -3058,7 +3060,7 @@ begin
         JclPeHeader_SizeOfOptionalHeader:
           Result := IntToHex(FileHeader.SizeOfOptionalHeader, 4);
         JclPeHeader_Characteristics:
-          Result := IntToHex(FileHeader.Characteristics, 8); // !
+          Result := IntToHex(FileHeader.Characteristics, 4);
         JclPeHeader_Magic:
           Result := IntToHex(OptionalHeader.Magic, 4);
         JclPeHeader_LinkerVersion:
@@ -3137,6 +3139,13 @@ end;
 function TJclPeImage.GetImageSectionNames(Index: Integer): string;
 begin
   Result := FImageSections[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.GetImageSectionNameFromRva(const Rva: DWORD): string;
+begin
+  Result := GetSectionName(RvaToSection(Rva));
 end;
 
 //------------------------------------------------------------------------------
@@ -3400,7 +3409,7 @@ var
   EndRVA: DWORD;
 begin
   Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
-  if Result = nil then // Borland seems to have missed physical size in some sections ?
+  if Result = nil then 
     for I := 0 to FImageSections.Count - 1 do
     begin
       SectionHeader := PImageSectionHeader(FImageSections.Objects[I]);
@@ -3656,14 +3665,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure PackageInfoProc(const Name: string; NameType: TNameType; Flags: Byte; Param: Pointer);
+procedure PackageInfoProc(const Name: string; NameType: TNameType; AFlags: Byte; Param: Pointer);
 begin
   with TJclPePackageInfo(Param) do
     case NameType of
       ntContainsUnit:
-        FContains.AddObject(Name, Pointer(Flags));
+        FContains.AddObject(Name, Pointer(AFlags));
       ntRequiresPackage:
-        FRequires.AddObject(Name, Pointer(Flags));
+        FRequires.AddObject(Name, Pointer(AFlags));
     end;
 end;
 
@@ -4928,6 +4937,7 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
 
 initialization
   GlobalCritSection := TJclCriticalSection.Create;
