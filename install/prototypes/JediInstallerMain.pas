@@ -115,6 +115,11 @@ type
       StandAlone: Boolean = False; Checked: Boolean = True): TObject;
     procedure HandleException(Sender: TObject; E: Exception);
     property JclDistribution: IJediInstall read FJclInstall;
+    // IJediInstallTool
+    function GetBPLPath(Installation: TJclBorRADToolInstallation): string;
+    function GetDCPPath(Installation: TJclBorRADToolInstallation): string;
+    procedure SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
+    procedure SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
   public
     procedure ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE}string{$ENDIF};
       var CanShow: Boolean; var HintInfo: THintInfo);
@@ -122,8 +127,6 @@ type
     procedure Install;
     function SystemPathValid(const Path: string): Boolean;
     // IJediInstallTool
-    function BPLPath(Installation: TJclBorRADToolInstallation): string;
-    function DCPPath(Installation: TJclBorRADToolInstallation): string;
     function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
     function GetBorRADToolInstallations: TJclBorRADToolInstallations;
     function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
@@ -133,6 +136,8 @@ type
     procedure UpdateStatus(const Text: string);
     procedure WriteInstallLog(Installation: TJclBorRADToolInstallation; const Text: string);
     property BorRADToolInstallations: TJclBorRADToolInstallations read FBorRADToolInstallations;
+    property BPLPath[Installation: TJclBorRADToolInstallation]: string read GetBPLPath write SetBPLPath;
+    property DCPPath[Installation: TJclBorRADToolInstallation]: string read GetDCPPath write SetDCPPath;
   end;
 
 var
@@ -158,9 +163,9 @@ uses
   JclInstall;
 
 const
-  {$IFNDEF COMPILER6_UP}
+  {$IFNDEF RTL140_UP}
   PathSep = ';';
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF RTL140_UP}
   {$IFDEF MSWINDOWS}
   SupportURLs: array[TJclBorRADToolKind] of string = (
                 'http://www.borland.com/devsupport/delphi/',
@@ -395,7 +400,7 @@ begin
     P.LogOutputLine(Text);
 end;
 
-function TMainForm.BPLPath(Installation: TJclBorRADToolInstallation): string;
+function TMainForm.GetBPLPath(Installation: TJclBorRADToolInstallation): string;
 var
   P: TProductFrame;
   Path: string;
@@ -406,7 +411,7 @@ begin
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
-function TMainForm.DCPPath(Installation: TJclBorRADToolInstallation): string;
+function TMainForm.GetDCPPath(Installation: TJclBorRADToolInstallation): string;
 var
   P: TProductFrame;
   Path: string;
@@ -582,6 +587,24 @@ begin
   for Result := Low(TDialogResponse) to High(TDialogResponse) do
     if DlgResult[Result] = Res then
       Break;
+end;
+
+procedure TMainForm.SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
+var
+  P: TProductFrame;
+begin
+  P := View(Installation);
+  if Assigned(P) then
+    P.BplPathEdit.Text := Value;
+end;
+
+procedure TMainForm.SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
+var
+  P: TProductFrame;
+begin
+  P := View(Installation);
+  if Assigned(P) then
+    P.DcpPathEdit.Text := Value;
 end;
 
 procedure TMainForm.SetReadme(const FileName: string);
