@@ -34,6 +34,9 @@ Parameters:
   X - The value for which to return the highest set bit.
 Result:
   The index of the highest bit set, or -1 if no bits are set.
+See also:
+  BitsLowest
+  CountBitsSet
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -54,6 +57,9 @@ Parameters:
   X - The value for which to return the lowest set bit.
 Result:
   The index of the lowest bit set, or -1 if no bits are set.
+See also:
+  BitsHighest
+  CountBitsSet
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -75,6 +81,11 @@ Parameters:
   Bit - The 0 based bit position of the bit to clear. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte, then Bit position is interpreted as Bit mod 8.
 Result:
   Copy of Value with the bit at position Bit cleared.
+See also:
+  TestBit
+  TestBits
+  ToggleBit
+  SetBit
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -96,6 +107,9 @@ Parameters:
   X - The value for which to determine the number of bits that are set.
 Result:
   The number of set bits or 0 if no bits are set.
+See also:
+  BitsLowest
+  BitsHighest
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -117,6 +131,9 @@ Parameters:
   X - The value for which to determine the number of bits that are cleared. This can be an Integer, Cardinal, Byte, Word or Int64.
 Result:
   The number of cleared bits or 0 if no bits are cleared.
+See also:
+  BitsLowest
+  BitsHighest
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -137,6 +154,8 @@ Parameters:
   Mask - The number of times to rotate.
 Result:
   The resulting integer after the rotation is performed.
+See also:
+  RRot
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -188,6 +207,8 @@ Parameters:
   Mask - The number of times to rotate.
 Result:
   The resulting integer after the rotation is performed.
+See also:
+  LRot
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -229,6 +250,11 @@ Parameters:
   Bit - The 0 based bit position of the bit to set. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte, then Bit position is interpreted as Bit mod 8.
 Result:
   Copy of Value with the bit at position Bit set.
+See also:
+  TestBit
+  ClearBit
+  ToggleBit
+  TestBits
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -250,6 +276,11 @@ Parameters:
   Bit - The 0 based bit position of the bit to test. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte then Bit position is interpreted as Bit mod 8. <b>Warning: </b> When calling this function you must cast a value passed to this parameter to a TBitRange as in: "TestBit(Value, TBitRange(1))" otherwise Delphi will incorrectly use the TestBit(Byte, TBitRange) overload instead of the correct overload. This is a known problem in the compiler, not an error in the JCL.
 Result:
   True if the bit at the specified position is set, False if it is cleared.
+See also:
+  TestBits
+  ClearBit
+  ToggleBit
+  SetBit
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -270,6 +301,11 @@ Parameters:
   Mask - The Mask containing the bits to test.
 Result:
   If all the bits in the Mask are also set in Value the result is True, otherwise it's False.
+See also:
+  TestBit
+  ClearBit
+  ToggleBit
+  SetBit
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -291,6 +327,11 @@ Parameters:
   Bit - The 0 based bit position of the bit to toggle. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte then Bit position is interpreted as Bit mod 8.
 Result:
   Copy of Value with the bit at position Bit toggled.
+See also:
+  TestBit
+  ClearBit
+  TestBits
+  SetBit
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -314,6 +355,8 @@ Description:
 Parameters:
   Dest - Integer type variable in which the appropriate bits are set/cleared.
   B - The array of Booleans to pack into a set of bits. Note that the upper bound of this array must not be larger then the size of the Dest parameters, in bits. Thus, for the Byte variant this array must not be larger then 8 elements.
+See also:
+  BitsToBooleans
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -341,6 +384,8 @@ Parameters:
   Bits - The set of bits to unpack to an array of Booleans.
   B - Array which receives the bits in Bits unpacked as Booleans.
   AllBits - If set to True the number of elements in the resulting array equals the number of bits in the Bits parameter (ie 8 for Byte, 16 for Word, etc). If False the number of elements in the resulting array equals the position of the highest set bit.
+See also:
+  BooleansToBits
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -359,6 +404,8 @@ Parameters:
   X - The value for which you want to now how many bits are needed to represent it.
 Result:
   The number of bits needed to represent the value.
+See also:
+  Digits
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -377,6 +424,8 @@ Parameters:
   X - The value for which you want to know how many digits it has.
 Result:
   The number of digits in the specified value.
+See also:
+  BitsNeeded
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -450,6 +499,10 @@ Parameters:
 Result:
   B contains the incremented value if within limit, otherwise it contains the original value.
   This same value is returned as the function result.
+See also:
+  DecLimit
+  DecLimitClamp
+  IncLimitClamp
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -475,6 +528,10 @@ Parameters:
 Result:
   B contains the decremented value if within limit, otherwise it contains the original value.
   This same value is returned as the function result.
+See also:
+  IncLimit
+  IncLimitClamp
+  DecLimitClamp
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -503,6 +560,10 @@ Result:
   value. This same value is returned as the function result.
 Notes:
   If upon entry the B variable is already smaller than the limit the variable is set to Limit.
+See also:
+  IncLimit
+  DecLimit
+  IncLimitClamp
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -531,6 +592,10 @@ Result:
   value. This same value is returned as the function result.
 Notes:
   If upon entry the B variable is already larger than the limit the variable is set to Limit.
+See also:
+  DecLimit
+  IncLimit
+  DecLimitClamp
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -550,6 +615,8 @@ Parameters:
   B2 - The second value.
 Result:
   The larger of the two values.
+See also:
+  Min
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
@@ -569,6 +636,8 @@ Parameters:
   B2 - The second value.
 Result:
   The smaller of the two values.
+See also:
+  Max
 Quick info:
   Unit: JclLogic
   Category: Ordinal Math and Logic
