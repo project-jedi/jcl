@@ -36,10 +36,10 @@ unit JclEDITranslators;
 interface
 
 uses
-  SysUtils, Classes, JclEDI, JclEDI_ANSIX12, JclEDISEF{, Dialogs};
+  SysUtils, Classes,
+  JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
-
   TEDISpecToSEFTranslator = class(TEDIObject)
   public
     constructor Create;
@@ -70,17 +70,23 @@ type
 
 implementation
 
-{ TEDISpecToSEFTranslator }
+//==================================================================================================
+// TEDISpecToSEFTranslator
+//==================================================================================================
 
 constructor TEDISpecToSEFTranslator.Create;
 begin
-  inherited;
+  inherited Create;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 destructor TEDISpecToSEFTranslator.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
   Parent: TEDISEFFile): TEDISEFElement;
@@ -92,6 +98,8 @@ begin
   Result.MaximumLength := ElementSpec.MaximumLength;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
   Parent: TEDISEFSegment): TEDISEFElement;
 var
@@ -101,9 +109,7 @@ begin
   Result.Id := ElementSpec.Id;
   ListItem := Parent.SEFFile.ELMS.FindItemByName(ElementSpec.Id);
   if ListItem <> nil then
-  begin
-    Result.Assign(TEDISEFElement(ListItem.EDISEFDataObject));
-  end
+    Result.Assign(TEDISEFElement(ListItem.EDISEFDataObject))
   else
   begin
     Result.ElementType := ElementSpec.ElementType;
@@ -112,6 +118,8 @@ begin
     Result.RequirementDesignator := ElementSpec.RequirementDesignator;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFFile): TEDISEFSegment;
@@ -130,6 +138,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFTable): TEDISEFSegment;
 var
@@ -139,15 +149,15 @@ begin
   Result.Id := SegmentSpec.Id;
   ListItem := Parent.SEFFile.SEGS.FindItemByName(SegmentSpec.Id);
   if ListItem <> nil then
-  begin
-    Result.Assign(TEDISEFSegment(ListItem.EDISEFDataObject));
-  end
+    Result.Assign(TEDISEFSegment(ListItem.EDISEFDataObject))
   else
   begin
     Result.RequirementDesignator := SegmentSpec.RequirementDesignator;
     Result.MaximumUse := SegmentSpec.MaximumUsage;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFLoop): TEDISEFSegment;
@@ -158,15 +168,15 @@ begin
   Result.Id := SegmentSpec.Id;
   ListItem := Parent.SEFFile.SEGS.FindItemByName(SegmentSpec.Id);
   if ListItem <> nil then
-  begin
-    Result.Assign(TEDISEFSegment(ListItem.EDISEFDataObject));
-  end
+    Result.Assign(TEDISEFSegment(ListItem.EDISEFDataObject))
   else
   begin
     Result.RequirementDesignator := SegmentSpec.RequirementDesignator;
     Result.MaximumUse := SegmentSpec.MaximumUsage;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
@@ -183,6 +193,8 @@ begin
   EDIObject := SEFLoop;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TEDISpecToSEFTranslator.TranslateToSEFSet(TransactionSetSpec: TEDITransactionSetSpec;
   Parent: TEDISEFFile): TEDISEFSet;
 var
@@ -190,7 +202,6 @@ var
   SegmentSpec: TEDISegmentSpec;
   SEFTable: TEDISEFTable;
   SEFLoop: TEDISEFLoop;
-
   LS: TEDILoopStack;
   LSR: TEDILoopStackRecord;
 begin
@@ -221,7 +232,8 @@ begin
       SEFTable := TEDISEFTable(LSR.EDIObject);
       SEFTable.EDISEFDataObjects.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, SEFTable));
     end
-    else if LSR.EDIObject is TEDISEFLoop then
+    else
+    if LSR.EDIObject is TEDISEFLoop then
     begin
       SEFLoop := TEDISEFLoop(LSR.EDIObject);
       SEFLoop.EDISEFDataObjects.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, SEFLoop))
@@ -230,6 +242,8 @@ begin
 
   LS.Free;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDISpecToSEFTranslator.TranslateToSEFFile(ICSpec: TEDIInterchangeControlSpec): TEDISEFFile;
 var
@@ -245,9 +259,7 @@ begin
   try
     //Fill Element Dictionary
     for F := 0 to ICSpec.FunctionalGroupCount - 1 do
-    begin
       for T := 0 to ICSpec[F].TransactionSetCount - 1 do
-      begin
         for S := 0 to ICSpec[F][T].SegmentCount - 1 do
         begin
           SegmentSpec := TEDISegmentSpec(ICSpec[F][T][S]);
@@ -255,71 +267,59 @@ begin
           begin
             ElementSpec := TEDIElementSpec(SegmentSpec[E]);
             if Result.ELMS.FindItemByName(ElementSpec.Id) = nil then
-            begin
-              Result.ELMS.AddByNameOrId(TranslateToSEFElement(ElementSpec, Result));
-            end
+              Result.ELMS.AddByNameOrId(TranslateToSEFElement(ElementSpec, Result))
             else
             begin
               //raise Exception.Create('Element Repeated - Incompatible File');
             end;
           end;
         end;
-      end;
-    end;
     //Fill Segment Dictionary
     for F := 0 to ICSpec.FunctionalGroupCount - 1 do
-    begin
       for T := 0 to ICSpec[F].TransactionSetCount - 1 do
-      begin
         for S := 0 to ICSpec[F][T].SegmentCount - 1 do
         begin
           SegmentSpec := TEDISegmentSpec(ICSpec[F][T][S]);
           if Result.SEGS.FindItemByName(SegmentSpec.Id) = nil then
-          begin
-            Result.SEGS.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, Result));
-          end
+            Result.SEGS.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, Result))
           else
           begin
             //raise Exception.Create('Segment Repeated - Incompatible File');
           end;
         end;
-      end;
-    end;
     //Fill Transaction Set Dictionary
     for F := 0 to ICSpec.FunctionalGroupCount - 1 do
-    begin
       for T := 0 to ICSpec[F].TransactionSetCount - 1 do
-      begin
         for S := 0 to ICSpec[F][T].SegmentCount - 1 do
         begin
           TransactionSetSpec := TEDITransactionSetSpec(ICSpec[F][T]);
           if Result.SETS.FindItemByName(TransactionSetSpec.Id) = nil then
-          begin
-            Result.SETS.AddByNameOrId(TranslateToSEFSet(TransactionSetSpec, Result));
-          end
+            Result.SETS.AddByNameOrId(TranslateToSEFSet(TransactionSetSpec, Result))
           else
           begin
             //raise Exception.Create('Segment Repeated - Incompatible File');
           end;
         end;
-      end;
-    end;
   finally
     ElementList.Free;
   end;
 
 end;
 
-{ TEDISEFToSpecTranslator }
+//==================================================================================================
+// TEDISEFToSpecTranslator
+//==================================================================================================
 
 constructor TEDISEFToSpecTranslator.Create;
 begin
-  inherited;
+  inherited Create;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 destructor TEDISEFToSpecTranslator.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 end.
