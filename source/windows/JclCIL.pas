@@ -186,8 +186,7 @@ type
     function GetInstructionCount: Integer;
     function GetInstruction(const Idx: Integer): TJclInstruction;
   public
-    constructor Create; overload;
-    constructor Create(AMethod: TJclClrMethodBody); overload;
+    constructor Create(AMethod: TJclClrMethodBody = nil);
     destructor Destroy; override;
     function DumpIL(Options: TJclInstructionDumpILOptions): string;
     property Method: TJclClrMethodBody read FMethod;
@@ -582,14 +581,7 @@ const
 
 //===  { TJclClrILGenerator } ================================================
 
-constructor TJclClrILGenerator.Create;
-begin
-  inherited Create;
-  FMethod := nil;
-  FInstructions := TObjectList.Create;
-end;
-
-constructor TJclClrILGenerator.Create(AMethod: TJclClrMethodBody);
+constructor TJclClrILGenerator.Create(AMethod: TJclClrMethodBody = nil);
 var
   OpCode: Byte;
   Stream: TMemoryStream;
@@ -598,7 +590,7 @@ begin
   inherited Create;
   FMethod := AMethod;
   FInstructions := TObjectList.Create;
-  if Assigned(Method) then
+  if Assigned(AMethod) then
   begin
     Stream := TMemoryStream.Create;
     try
@@ -1047,6 +1039,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/27 14:55:26  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.10  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //
