@@ -291,7 +291,7 @@ begin
         State.TriState[Lexer.TokenAsString] := ttUnknown;
         AddResult(Lexer.RawComment);
       end;
-    ttUndef: State.Undef(Lexer.TokenAsString);
+    ttDefined: State.Undef(Lexer.TokenAsString);
   end;
   NextToken;
 end;
@@ -400,6 +400,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/10/30 13:30:46  rrossmair
+// - fixed TJppParser.ParseUndef bug
+//
 // Revision 1.7  2004/06/21 00:14:14  rrossmair
 // - fixed ParseInclude
 // - eventually match $ELSE, $ENDIF to $IFOPT (otherwise not handled)
