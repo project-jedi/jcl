@@ -46,13 +46,18 @@ function OrdToBinary(const Value: Int64): string; overload;
 
 type
   TBitRange = Byte;
+  TBooleanArray = array of Boolean;
 
+function BitsHighest(X: Byte): Integer; overload;
+function BitsHighest(X: Word): Integer; overload;
 function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; assembler; overload;
 {$IFDEF SUPPORTS_INT64}
 function BitsHighest(X: Int64): Integer; overload;
 {$ENDIF}
 
+function BitsLowest(X: Byte): Integer; overload;
+function BitsLowest(X: Word): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
 function BitsLowest(X: Cardinal): Integer; assembler; overload;
 {$IFDEF SUPPORTS_INT64}
@@ -66,10 +71,19 @@ function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 {$ENDIF}
 
+function CountBitsSet(X: Byte): Integer; overload;
+function CountBitsSet(X: Word): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; assembler; overload;
 {$IFDEF SUPPORTS_INT64}
 function CountBitsSet(X: Int64): Integer; overload;
+{$ENDIF}
+
+function CountBitsCleared(X: Byte): Integer; overload;
+function CountBitsCleared(X: Word): Integer; overload;
+function CountBitsCleared(X: Integer): Integer; overload;
+{$IFDEF SUPPORTS_INT64}
+function CountBitsCleared(X: Int64): Integer; overload;
 {$ENDIF}
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
@@ -119,8 +133,28 @@ function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overloa
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 {$ENDIF}
 
-function BitsNeeded(const X: Cardinal): Byte;
-function Digits(const X: Cardinal): Byte;
+procedure BooleansToBits(var Dest: Byte; const B: array of Boolean); overload;
+procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
+procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
+{$IFDEF SUPPORTS_INT64}
+procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
+{$ENDIF}
+
+procedure BitsToBooleans(const Bits: Byte; B: TBooleanArray); overload;
+procedure BitsToBooleans(const Bits: Word; B: TBooleanArray); overload;
+procedure BitsToBooleans(const Bits: Integer; B: TBooleanArray); overload;
+{$IFDEF SUPPORTS_INT64}
+procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray); overload;
+{$ENDIF}
+
+function BitsNeeded(const X: Byte): Integer; overload;
+function BitsNeeded(const X: Word): Integer; overload;
+function BitsNeeded(const X: Integer): Integer; overload;
+{$IFDEF SUPPORTS_INT64}
+function BitsNeeded(const X: Int64): Integer; overload;
+{$ENDIF}
+
+function Digits(const X: Cardinal): Integer;
 
 //------------------------------------------------------------------------------
 // Arithmetic
@@ -290,6 +324,27 @@ end;
 
 //------------------------------------------------------------------------------
 
+function BitsHighest(X: Integer): Integer; overload;
+begin
+  Result := BitsHighest(Cardinal(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsHighest(X: Byte): Integer; overload;
+begin
+  Result := BitsHighest(Cardinal(X) and $FF);
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsHighest(X: Word): Integer; overload;
+begin
+  Result := BitsHighest(Cardinal(X) and $FFFF);
+end;
+
+//------------------------------------------------------------------------------
+
 {$IFDEF SUPPORTS_INT64}
 
 function BitsHighest(X: Int64): Integer; overload;
@@ -309,18 +364,32 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BitsHighest(X: Integer): Integer; overload;
-begin
-  Result := BitsHighest(Cardinal(X));
-end;
-
-//------------------------------------------------------------------------------
-
 function BitsLowest(X: Cardinal): Integer; assembler; overload;
 asm
         MOV     ECX, EAX
         MOV     EAX, -1
         BSF     EAX, ECX
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsLowest(X: Byte): Integer; overload;
+begin
+  Result := BitsLowest(Cardinal(X) and $FF);
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsLowest(X: Word): Integer; overload;
+begin
+  Result := BitsLowest(Cardinal(X) and $FFFF);
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsLowest(X: Integer): Integer; overload;
+begin
+  Result := BitsLowest(Cardinal(X));
 end;
 
 //------------------------------------------------------------------------------
@@ -341,13 +410,6 @@ begin
 end;
 
 {$ENDIF}
-
-//------------------------------------------------------------------------------
-
-function BitsLowest(X: Integer): Integer; overload;
-begin
-  Result := BitsLowest(Cardinal(X));
-end;
 
 //------------------------------------------------------------------------------
 
@@ -396,6 +458,27 @@ end;
 
 //------------------------------------------------------------------------------
 
+function CountBitsSet(X: Byte): Integer; overload;
+begin
+  Result := CountBitsSet(Cardinal(X) and $FF);
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsSet(X: Word): Integer; overload;
+begin
+  Result := CountBitsSet(Cardinal(X) and $FFFF);
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsSet(X: Integer): Integer; overload;
+begin
+  Result := CountBitsSet(Cardinal(X));
+end;
+
+//------------------------------------------------------------------------------
+
 {$IFDEF SUPPORTS_INT64}
 
 function CountBitsSet(X: Int64): Integer; overload;
@@ -407,9 +490,30 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Integer): Integer; overload;
+function CountBitsCleared(X: Byte): Integer; overload;
 begin
-  Result := CountBitsSet(Cardinal(X));
+  Result := 8 - CountBitsSet(Cardinal(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsCleared(X: Word): Integer; overload;
+begin
+  Result := 16 - CountBitsSet(Cardinal(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsCleared(X: Integer): Integer; overload;
+begin
+  Result := 32 - CountBitsSet(Cardinal(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsCleared(X: Int64): Integer; overload;
+begin
+  Result := 64 - CountBitsSet(Cardinal(X));
 end;
 
 //------------------------------------------------------------------------------
@@ -693,7 +797,107 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Digits(const X: Cardinal): Byte;
+procedure BooleansToBits(var Dest: Byte; const B: array of Boolean);
+var
+  I: Integer;
+begin
+  Dest := 0;
+  for I := 0 to High(B) do
+    if B[I] then
+      SetBit(Dest, I);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure BooleansToBits(var Dest: Word; const B: array of Boolean);
+var
+  I: Integer;
+begin
+  Dest := 0;
+  for I := 0 to High(B) do
+    if B[I] then
+      SetBit(Dest, I);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure BooleansToBits(var Dest: Integer; const B: array of Boolean);
+var
+  I: Integer;
+begin
+  Dest := 0;
+  for I := 0 to High(B) do
+    if B[I] then
+      SetBit(Dest, I);
+end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_INT64}
+
+procedure BooleansToBits(var Dest: Int64; const B: array of Boolean);
+var
+  I: Integer;
+begin
+  Dest := 0;
+  for I := 0 to High(B) do
+    if B[I] then
+      SetBit(Dest, I);
+end;
+
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+procedure BitsToBooleans(const Bits: Byte; B: TBooleanArray);
+var
+  I: Integer;
+begin
+  SetLength(B, BitsNeeded(Bits));
+  for I := 0 to High(B) do
+    B[I] := TestBit(Bits, I);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure BitsToBooleans(const Bits: Word; B: TBooleanArray);
+var
+  I: Integer;
+begin
+  SetLength(B, BitsNeeded(Bits));
+  for I := 0 to High(B) do
+    B[I] := TestBit(Bits, I);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure BitsToBooleans(const Bits: Integer; B: TBooleanArray);
+var
+  I: Integer;
+begin
+  SetLength(B, BitsNeeded(Bits));
+  for I := 0 to High(B) do
+    B[I] := TestBit(Bits, I);
+end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_INT64}
+
+procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray);
+var
+  I: Integer;
+begin
+  SetLength(B, BitsNeeded(Bits));
+  for I := 0 to High(B) do
+    B[I] := TestBit(Bits, I);
+end;
+
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+function Digits(const X: Cardinal): Integer;
 var
   Val: Cardinal;
 begin
@@ -707,12 +911,43 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BitsNeeded(const X: Cardinal): Byte;
+function BitsNeeded(const X: Byte): Integer;
 begin
   Result := BitsHighest(X) + 1;
   if Result = 0 then
     Result := 1;
 end;
+
+//------------------------------------------------------------------------------
+
+function BitsNeeded(const X: Word): Integer;
+begin
+  Result := BitsHighest(X) + 1;
+  if Result = 0 then
+    Result := 1;
+end;
+
+//------------------------------------------------------------------------------
+
+function BitsNeeded(const X: Integer): Integer;
+begin
+  Result := BitsHighest(X) + 1;
+  if Result = 0 then
+    Result := 1;
+end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_INT64}
+
+function BitsNeeded(const X: Int64): Integer;
+begin
+  Result := BitsHighest(X) + 1;
+  if Result = 0 then
+    Result := 1;
+end;
+
+{$ENDIF}
 
 //==============================================================================
 // Arithmetic
