@@ -35,7 +35,7 @@ requires
   DJcl;
 
 contains
-  JclQGraphUtils in '../../Source/VisCLX/JclQGraphUtils.pas',
-  JclQGraphics in '../../Source/VisCLX/JclQGraphics.pas';
+  JclQGraphUtils in '../../source/VisCLX/JclQGraphUtils.pas',
+  JclQGraphics in '../../source/VisCLX/JclQGraphics.pas';
 
 end.
