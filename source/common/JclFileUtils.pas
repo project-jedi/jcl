@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 05, 2000                                              }
+{ Last modified: October 20, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -60,12 +60,12 @@ function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
   CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
-function PathExtractFileDirFixed(const S: AnsiString): AnsiString; // TODOC Anthony
+function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathGetLongName(const Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
-function PathIsChild(const Path, Base: AnsiString): Boolean; // TODOC Anthony
+function PathIsChild(const Path, Base: AnsiString): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
 function PathIsUNC(const Path: string): Boolean;
 function PathRemoveSeparator(const Path: string): string;
@@ -79,7 +79,7 @@ type
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
-function CloseVolume(const Volume: THandle): Boolean; // TODO DOC MASSIMO
+function CloseVolume(var Volume: THandle): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
@@ -102,10 +102,10 @@ function GetFileCreation(const FileName: string): TFileTime;
 function GetModulePath(const Module: HMODULE): string;
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
-function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData; // TODOC Anthony
+function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 function IsDirectory(const FileName: string): Boolean;
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
-function OpenVolume(const Drive: Char): DWORD; // TODO DOC MASSIMO
+function OpenVolume(const Drive: Char): THandle;
 function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
 function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
 function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
@@ -965,7 +965,7 @@ begin
      \\[sharename\][filename] is not valid
      \\<x>:[whatever] is not valid
      \\machine\<x>:[<\pathname>|<\drivename>] is not valid
-     \\machine\<x>$[<\pathname>|<\drivename>] is not valid _is_ valid }
+     \\machine\<x>$[<\pathname>|<\drivename>] _is_ valid }
   {$ENDIF}
 end;
 
@@ -1022,9 +1022,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CloseVolume(const Volume: THandle): Boolean;
+function CloseVolume(var Volume: THandle): Boolean;
 begin
-  Result := CloseHandle(Volume);
+  if Volume <> INVALID_HANDLE_VALUE then
+  begin
+    Result := CloseHandle(Volume);
+    if Result then
+      Volume := INVALID_HANDLE_VALUE;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1237,9 +1242,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-resourcestring
-  RsCannotCreateDir = 'Unable to create directory'; // TODO move to Resources
-
 // This routine is copied from FileCtrl.pas to avoid dependency on that unit.
 // See the remark at the top of this section
 
@@ -1424,9 +1426,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-resourcestring // TODO MOVE TO RESOURCES
-  RsFileUtilsAttrUnavailable = 'Unable to retrieve attributes of %s';
-
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
   Handle: THandle;
@@ -1455,7 +1454,7 @@ begin
   else
   begin
     if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
-      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
 
@@ -1493,7 +1492,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function OpenVolume(const Drive: Char): DWORD;
+function OpenVolume(const Drive: Char): THandle;
 var
   VolumeName: array [0..6] of Char;
 begin
