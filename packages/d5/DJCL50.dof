@@ -25,7 +25,7 @@ W=0
 X=1
 Y=1
 Z=1
-ShowHints=1
+ShowHints=0
 ShowWarnings=1
 UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [Linker]
@@ -59,9 +59,9 @@ RootDir=
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
-MinorVer=0
+MinorVer=3
 Release=1
-Build=337
+Build=425
 Debug=0
 PreRelease=0
 Special=0
@@ -72,17 +72,11 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Project JEDI
 FileDescription=D5 design time package for JCL
-FileVersion=1.0.1.337
+FileVersion=1.3.1.425
 InternalName=DJCL50
 LegalCopyright=Copyright (C) 1999, 2001 Project JEDI
 LegalTrademarks=
 OriginalFilename=DJCL50.dpk
 ProductName=JEDI Code Library
-ProductVersion=1.0.1.337 Release 1.0
+ProductVersion=1.3.1.425 Release 1.0
 Comments=
-[HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[HistoryLists\hlSearchPath]
-Count=1
-Item0=..\Source
