@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: April 1, 2001                                                 }
+{ Last modified: April 11, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -339,8 +339,10 @@ function IsSystemModule(const Module: HMODULE): Boolean;
 
 function Caller(Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Pointer;
 
-function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
+function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
+function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): string;
+function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
 function FileByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
@@ -2381,34 +2383,56 @@ end;
 
 //------------------------------------------------------------------------------
 
+function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+begin
+  try
+    DebugInfoCritSect.Enter;
+    try
+      NeedDebugInfoList;
+      Result := DebugInfoList.GetLocationInfo(Addr, Info);
+    finally
+      DebugInfoCritSect.Leave;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean): string;
 var
   Info: TJclLocationInfo;
-  LocFound: Boolean;
 begin
-  DebugInfoCritSect.Enter;
-  try
-    NeedDebugInfoList;
-    LocFound := DebugInfoList.GetLocationInfo(Addr, Info);
-  finally
-    DebugInfoCritSect.Leave;
-  end;
-  if LocFound then
-    with Info do
-    begin
-      if LineNumber > 0 then
-        Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
-          ProcedureName, LineNumber, SourceName])
-      else
-      if UnitName <> '' then
-        Result := Format('[%p] %s.%s', [Addr, UnitName, ProcedureName])
-      else
-        Result := Format('[%p] %s', [Addr, ProcedureName]);
-    end
+  if GetLocationInfo(Addr, Info) then
+  with Info do
+  begin
+    if LineNumber > 0 then
+      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
+        ProcedureName, LineNumber, SourceName])
+    else
+    if UnitName <> '' then
+      Result := Format('[%p] %s.%s', [Addr, UnitName, ProcedureName])
+    else
+      Result := Format('[%p] %s', [Addr, ProcedureName]);
+  end
   else
     Result := Format('[%p]', [Addr]);
   if IncludeModuleName then
     Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(ModuleFromAddr(Addr)))]), Result, 11);
+end;
+
+//------------------------------------------------------------------------------
+
+function DebugInfoAvailable(const Module: HMODULE): Boolean;
+begin
+  DebugInfoCritSect.Enter;
+  try
+    NeedDebugInfoList;
+    Result := (DebugInfoList.ItemFromModule[Module] <> nil);
+  finally
+    DebugInfoCritSect.Leave;
+  end;
 end;
 
 //------------------------------------------------------------------------------
