@@ -67,33 +67,34 @@ type
     Color: TJclTreeColor;
   end;
 
-  TJclIntfBinaryTree = class(TJclAbstractContainer, IIntfCollection, IIntfTree, IIntfCloneable)
+  TJclIntfBinaryTree = class(TJclAbstractContainer, IJclIntfCollection,
+    IJclIntfTree, IJclIntfCloneable)
   private
     FComparator: TIntfCompare;
     FCount: Integer;
     FRoot: PJclIntfBinaryNode;
-    FTraverseOrder: TTraverseOrder;
+    FTraverseOrder: TJclTraverseOrder;
     procedure RotateLeft(Node: PJclIntfBinaryNode);
     procedure RotateRight(Node: PJclIntfBinaryNode);
   protected
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IIntfCollection): Boolean;
+    function AddAll(ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
     function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IIntfCollection): Boolean;
-    function Equals(ACollection: IIntfCollection): Boolean;
-    function First: IIntfIterator;
+    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
+    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function First: IJclIntfIterator;
     function IsEmpty: Boolean;
-    function Last: IIntfIterator;
+    function Last: IJclIntfIterator;
     function Remove(AInterface: IInterface): Boolean;
-    function RemoveAll(ACollection: IIntfCollection): Boolean;
-    function RetainAll(ACollection: IIntfCollection): Boolean;
+    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
-    { IIntfTree }
-    function GetTraverseOrder: TTraverseOrder;
-    procedure SetTraverseOrder(Value: TTraverseOrder);
-    { IIntfCloneable }
+    { IJclIntfTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclIntfCloneable }
     function Clone: IInterface;
   public
     constructor Create; overload;
@@ -101,28 +102,29 @@ type
     destructor Destroy; override;
   end;
 
-  TJclStrBinaryTree = class(TJclAbstractContainer, IStrCollection, IStrTree, ICloneable)
+  TJclStrBinaryTree = class(TJclAbstractContainer, IJclStrCollection,
+    IJclStrTree, IJclCloneable)
   private
     FComparator: TStrCompare;
     FCount: Integer;
     FRoot: PJclStrBinaryNode;
-    FTraverseOrder: TTraverseOrder;
+    FTraverseOrder: TJclTraverseOrder;
     procedure RotateLeft(Node: PJclStrBinaryNode);
     procedure RotateRight(Node: PJclStrBinaryNode);
   protected
-    { ICollection }
+    { IJclStrCollection }
     function Add(const AString: string): Boolean;
-    function AddAll(ACollection: IStrCollection): Boolean;
+    function AddAll(ACollection: IJclStrCollection): Boolean;
     procedure Clear;
     function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IStrCollection): Boolean;
-    function Equals(ACollection: IStrCollection): Boolean;
-    function First: IStrIterator;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean;
+    function Equals(ACollection: IJclStrCollection): Boolean;
+    function First: IJclStrIterator;
     function IsEmpty: Boolean;
-    function Last: IStrIterator;
+    function Last: IJclStrIterator;
     function Remove(const AString: string): Boolean;
-    function RemoveAll(ACollection: IStrCollection): Boolean;
-    function RetainAll(ACollection: IStrCollection): Boolean;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean;
+    function RetainAll(ACollection: IJclStrCollection): Boolean;
     function Size: Integer;
     //Daniele Teti 27/12/2004
     procedure LoadFromStrings(Strings: TStrings);
@@ -133,10 +135,10 @@ type
     function GetAsDelimited(Separator: string = AnsiLineBreak): string;
     procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
-    { IStrTree }
-    function GetTraverseOrder: TTraverseOrder;
-    procedure SetTraverseOrder(Value: TTraverseOrder);
-    { ICloneable }
+    { IJclStrTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclCloneable }
     function Clone: TObject;
   public
     constructor Create; overload;
@@ -144,33 +146,34 @@ type
     destructor Destroy; override;
   end;
 
-  TJclBinaryTree = class(TJclAbstractContainer, ICollection, ITree, ICloneable)
+  TJclBinaryTree = class(TJclAbstractContainer, IJclCollection, IJclTree,
+    IJclCloneable)
   private
     FComparator: TCompare;
     FCount: Integer;
     FRoot: PJclBinaryNode;
-    FTraverseOrder: TTraverseOrder;
+    FTraverseOrder: TJclTraverseOrder;
     procedure RotateLeft(Node: PJclBinaryNode);
     procedure RotateRight(Node: PJclBinaryNode);
   protected
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: ICollection): Boolean;
+    function AddAll(ACollection: IJclCollection): Boolean;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: ICollection): Boolean;
-    function Equals(ACollection: ICollection): Boolean;
-    function First: IIterator;
+    function ContainsAll(ACollection: IJclCollection): Boolean;
+    function Equals(ACollection: IJclCollection): Boolean;
+    function First: IJclIterator;
     function IsEmpty: Boolean;
-    function Last: IIterator;
+    function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean;
-    function RemoveAll(ACollection: ICollection): Boolean;
-    function RetainAll(ACollection: ICollection): Boolean;
+    function RemoveAll(ACollection: IJclCollection): Boolean;
+    function RetainAll(ACollection: IJclCollection): Boolean;
     function Size: Integer;
-    { ITree }
-    function GetTraverseOrder: TTraverseOrder;
-    procedure SetTraverseOrder(Value: TTraverseOrder);
-    { ICloneable }
+    { IJclTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclCloneable }
     function Clone: TObject;
   public
     constructor Create; overload;
@@ -181,18 +184,19 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils,
+  JclResources;
 
 //=== { TIntfItr } ===========================================================
 
 type
-  TIntfItr = class(TJclAbstractContainer, IIntfIterator)
+  TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
   private
     FCursor: PJclIntfBinaryNode;
     FOwnList: TJclIntfBinaryTree;
     FLastRet: PJclIntfBinaryNode;
   protected
-    { IIntfIterator }
+    { IJclIntfIterator }
     procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
@@ -264,7 +268,7 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
@@ -274,7 +278,7 @@ end;
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -304,9 +308,9 @@ end;
 //=== { TPreOrderIntfItr } ===================================================
 
 type
-  TPreOrderIntfItr = class(TIntfItr, IIntfIterator)
+  TPreOrderIntfItr = class(TIntfItr, IJclIntfIterator)
   protected
-    { IIntfIterator }
+    { IJclIntfIterator }
     function Next: IInterface; override;
     function Previous: IInterface; override;
   end;
@@ -374,9 +378,9 @@ end;
 //=== { TInOrderIntfItr } ====================================================
 
 type
-  TInOrderIntfItr = class(TIntfItr, IIntfIterator)
+  TInOrderIntfItr = class(TIntfItr, IJclIntfIterator)
   protected
-    { IIntfIterator }
+    { IJclIntfIterator }
     function Next: IInterface; override;
     function Previous: IInterface; override;
   end;
@@ -442,9 +446,9 @@ end;
 //=== { TPostOrderIntfItr } ==================================================
 
 type
-  TPostOrderIntfItr = class(TIntfItr, IIntfIterator)
+  TPostOrderIntfItr = class(TIntfItr, IJclIntfIterator)
   protected
-    { IIntfIterator }
+    { IJclIntfIterator }
     function Next: IInterface; override;
     function Previous: IInterface; override;
   end;
@@ -504,12 +508,12 @@ end;
 //=== { TStrItr } ============================================================
 
 type
-  TStrItr = class(TJclAbstractContainer, IStrIterator)
+  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
   protected
     FCursor: PJclStrBinaryNode;
     FOwnList: TJclStrBinaryTree;
     FLastRet: PJclStrBinaryNode;
-    { IStrIterator }
+    { IJclStrIterator }
     procedure Add(const AString: string);
     function GetString: string;
     function HasNext: Boolean;
@@ -581,7 +585,7 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
@@ -591,7 +595,7 @@ end;
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -621,9 +625,9 @@ end;
 //=== { TPreOrderStrItr } ====================================================
 
 type
-  TPreOrderStrItr = class(TStrItr, IStrIterator)
+  TPreOrderStrItr = class(TStrItr, IJclStrIterator)
   protected
-    { IStrIterator }
+    { IJclStrIterator }
     function Next: string; override;
     function Previous: string; override;
   end;
@@ -691,9 +695,9 @@ end;
 //=== { TInOrderStrItr } =====================================================
 
 type
-  TInOrderStrItr = class(TStrItr, IStrIterator)
+  TInOrderStrItr = class(TStrItr, IJclStrIterator)
   protected
-    { IStrIterator }
+    { IJclStrIterator }
     function Next: string; override;
     function Previous: string; override;
   end;
@@ -759,9 +763,9 @@ end;
 //=== { TPostOrderStrItr } ===================================================
 
 type
-  TPostOrderStrItr = class(TStrItr, IStrIterator)
+  TPostOrderStrItr = class(TStrItr, IJclStrIterator)
   protected
-    { IStrIterator }
+    { IJclStrIterator }
     function Next: string; override;
     function Previous: string; override;
   end;
@@ -821,12 +825,12 @@ end;
 //=== { TItr } ===============================================================
 
 type
-  TItr = class(TJclAbstractContainer, IIterator)
+  TItr = class(TJclAbstractContainer, IJclIterator)
   protected
     FCursor: PJclBinaryNode;
     FOwnList: TJclBinaryTree;
     FLastRet: PJclBinaryNode;
-    { IIntfIterator }
+    { IJclIntfIterator }
     procedure Add(AObject: TObject);
     function GetObject: TObject;
     function HasNext: Boolean;
@@ -899,7 +903,7 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
@@ -910,7 +914,7 @@ end;
 function TItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -940,9 +944,9 @@ end;
 //=== { TPreOrderItr } =======================================================
 
 type
-  TPreOrderItr = class(TItr, IIterator)
+  TPreOrderItr = class(TItr, IJclIterator)
   protected
-    { IIterator }
+    { IJclIterator }
     function Next: TObject; override;
     function Previous: TObject; override;
   end;
@@ -1010,9 +1014,9 @@ end;
 //=== { TInOrderItr } ========================================================
 
 type
-  TInOrderItr = class(TItr, IIterator)
+  TInOrderItr = class(TItr, IJclIterator)
   protected
-    { IIterator }
+    { IJclIterator }
     function Next: TObject; override;
     function Previous: TObject; override;
   end;
@@ -1078,9 +1082,9 @@ end;
 //=== { TPostOrderItr } ======================================================
 
 type
-  TPostOrderItr = class(TItr, IIterator)
+  TPostOrderItr = class(TItr, IJclIterator)
   protected
-    { IIterator }
+    { IJclIterator }
     function Next: TObject; override;
     function Previous: TObject; override;
   end;
@@ -1250,9 +1254,9 @@ begin
   Result := True;
 end;
 
-function TJclIntfBinaryTree.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfBinaryTree.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1424,9 +1428,9 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclIntfBinaryTree.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfBinaryTree.ContainsAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1446,9 +1450,9 @@ begin
     end;
 end;
 
-function TJclIntfBinaryTree.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfBinaryTree.Equals(ACollection: IJclIntfCollection): Boolean;
 var
-  It, ItSelf: IIntfIterator;
+  It, ItSelf: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1469,7 +1473,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfBinaryTree.First: IIntfIterator;
+function TJclIntfBinaryTree.First: IJclIntfIterator;
 begin
   case GetTraverseOrder of
     toPreOrder:
@@ -1481,7 +1485,7 @@ begin
   end;
 end;
 
-function TJclIntfBinaryTree.GetTraverseOrder: TTraverseOrder;
+function TJclIntfBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
 end;
@@ -1491,7 +1495,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclIntfBinaryTree.Last: IIntfIterator;
+function TJclIntfBinaryTree.Last: IJclIntfIterator;
 var
   Start: PJclIntfBinaryNode;
 begin
@@ -1735,9 +1739,9 @@ begin
   Dec(FCount);
 end;
 
-function TJclIntfBinaryTree.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfBinaryTree.RemoveAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1753,9 +1757,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfBinaryTree.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfBinaryTree.RetainAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1772,7 +1776,7 @@ begin
       It.Remove;
 end;
 
-procedure TJclIntfBinaryTree.SetTraverseOrder(Value: TTraverseOrder);
+procedure TJclIntfBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
 begin
   FTraverseOrder := Value;
 end;
@@ -1895,9 +1899,9 @@ begin
   Result := True;
 end;
 
-function TJclStrBinaryTree.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrBinaryTree.AddAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1932,7 +1936,7 @@ end;
 
 procedure TJclStrBinaryTree.AppendToStrings(Strings: TStrings);
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Strings.BeginUpdate;
@@ -1960,7 +1964,7 @@ end;
 
 function TJclStrBinaryTree.GetAsDelimited(Separator: string): string;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   It := First;
   Result := '';
@@ -2137,9 +2141,9 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclStrBinaryTree.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrBinaryTree.ContainsAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2159,9 +2163,9 @@ begin
     end;
 end;
 
-function TJclStrBinaryTree.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrBinaryTree.Equals(ACollection: IJclStrCollection): Boolean;
 var
-  It, ItSelf: IStrIterator;
+  It, ItSelf: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2182,7 +2186,7 @@ begin
   Result := True;
 end;
 
-function TJclStrBinaryTree.First: IStrIterator;
+function TJclStrBinaryTree.First: IJclStrIterator;
 begin
   case GetTraverseOrder of
     toPreOrder:
@@ -2194,7 +2198,7 @@ begin
   end;
 end;
 
-function TJclStrBinaryTree.GetTraverseOrder: TTraverseOrder;
+function TJclStrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
 end;
@@ -2204,7 +2208,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclStrBinaryTree.Last: IStrIterator;
+function TJclStrBinaryTree.Last: IJclStrIterator;
 var
   Start: PJclStrBinaryNode;
 begin
@@ -2402,9 +2406,9 @@ begin
   Dec(FCount);
 end;
 
-function TJclStrBinaryTree.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrBinaryTree.RemoveAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2420,9 +2424,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrBinaryTree.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrBinaryTree.RetainAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2485,7 +2489,7 @@ begin
   Node^.Parent := TempNode;
 end;
 
-procedure TJclStrBinaryTree.SetTraverseOrder(Value: TTraverseOrder);
+procedure TJclStrBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
 begin
   FTraverseOrder := Value;
 end;
@@ -2608,9 +2612,9 @@ begin
   Result := True;
 end;
 
-function TJclBinaryTree.AddAll(ACollection: ICollection): Boolean;
+function TJclBinaryTree.AddAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2782,9 +2786,9 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclBinaryTree.ContainsAll(ACollection: ICollection): Boolean;
+function TJclBinaryTree.ContainsAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2804,9 +2808,9 @@ begin
     end;
 end;
 
-function TJclBinaryTree.Equals(ACollection: ICollection): Boolean;
+function TJclBinaryTree.Equals(ACollection: IJclCollection): Boolean;
 var
-  It, ItSelf: IIterator;
+  It, ItSelf: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2827,7 +2831,7 @@ begin
   Result := True;
 end;
 
-function TJclBinaryTree.First: IIterator;
+function TJclBinaryTree.First: IJclIterator;
 begin
   case GetTraverseOrder of
     toPreOrder:
@@ -2839,7 +2843,7 @@ begin
   end;
 end;
 
-function TJclBinaryTree.GetTraverseOrder: TTraverseOrder;
+function TJclBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
 end;
@@ -2849,7 +2853,7 @@ begin
   Result := FCount = 0;
 end;
 
-function TJclBinaryTree.Last: IIterator;
+function TJclBinaryTree.Last: IJclIterator;
 var
   Start: PJclBinaryNode;
 begin
@@ -3047,9 +3051,9 @@ begin
   Dec(FCount);
 end;
 
-function TJclBinaryTree.RemoveAll(ACollection: ICollection): Boolean;
+function TJclBinaryTree.RemoveAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -3065,9 +3069,9 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclBinaryTree.RetainAll(ACollection: ICollection): Boolean;
+function TJclBinaryTree.RetainAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -3130,7 +3134,7 @@ begin
   Node^.Parent := TempNode;
 end;
 
-procedure TJclBinaryTree.SetTraverseOrder(Value: TTraverseOrder);
+procedure TJclBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
 begin
   FTraverseOrder := Value;
 end;
@@ -3143,6 +3147,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.2  2005/02/26 16:42:08  marquardt
 // deactivated THREADSAFE and fixed bugs stemming from that
 //

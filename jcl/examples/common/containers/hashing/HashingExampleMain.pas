@@ -106,10 +106,10 @@ end;
 
 procedure TMainForm.btnIntfIntfHashMapClick(Sender: TObject);
 var
-  Map: IIntfIntfMap;
+  Map: IJclIntfIntfMap;
   MyObject: IIntfMyObject;
   KeyObject: TInterfacedObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   Map := TJclIntfIntfHashMap.Create;
   MyObject := TIntfMyObject.Create;
@@ -128,7 +128,7 @@ end;
 
 procedure TMainForm.btnStrIntfHashMapClick(Sender: TObject);
 var
-  Map: IStrIntfMap;
+  Map: IJclStrIntfMap;
   MyObject: IIntfMyObject;
 begin
   Map := TJclStrIntfHashMap.Create;
@@ -147,10 +147,10 @@ end;
 
 procedure TMainForm.btnHashMapClick(Sender: TObject);
 var
-  Map: IMap;
+  Map: IJclMap;
   MyObject: TMyObject;
   KeyObject: TObject;
-  It: IIterator;
+  It: IJclIterator;
 begin
   Map := TJclHashMap.Create;
   MyObject := TMyObject.Create;
@@ -173,9 +173,9 @@ end;
 
 procedure TMainForm.btnIntfHashSetClick(Sender: TObject);
 var
-  MySet: IIntfSet;
+  MySet: IJclIntfSet;
   MyObject: IIntfMyObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   MySet := TJclIntfHashSet.Create;
   MyObject := TIntfMyObject.Create;
@@ -192,9 +192,9 @@ end;
 
 procedure TMainForm.btnHashSetClick(Sender: TObject);
 var
-  MySet: ISet;
+  MySet: IJclSet;
   MyObject: TMyObject;
-  It: IIterator;
+  It: IJclIterator;
 begin
   MySet := TJclHashSet.Create;
   MyObject := TMyObject.Create;
@@ -211,9 +211,9 @@ end;
 
 procedure TMainForm.btnIntfArraySetClick(Sender: TObject);
 var
-  MySet: IIntfSet;
+  MySet: IJclIntfSet;
   MyObject: IIntfMyObject;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   MySet := TJclIntfArraySet.Create;
   MyObject := TIntfMyObject.Create;
@@ -230,9 +230,9 @@ end;
 
 procedure TMainForm.btnArraySetClick(Sender: TObject);
 var
-  MySet: ISet;
+  MySet: IJclSet;
   MyObject: TMyObject;
-  It: IIterator;
+  It: IJclIterator;
 begin
   MySet := TJclArraySet.Create;
   MyObject := TMyObject.Create;
@@ -249,8 +249,8 @@ end;
 
 procedure TMainForm.btnStrStrHashMapClick(Sender: TObject);
 var
-  Map: IStrStrMap;
-  It: IStrIterator;
+  Map: IJclStrStrMap;
+  It: IJclStrIterator;
 begin
   Map := TJclStrStrHashMap.Create;
   Map.PutValue('MyKey1', 'MyString1');
@@ -272,9 +272,9 @@ type
 
 procedure TMainForm.btnStrHashMapClick(Sender: TObject);
 var
-  Map: IStrMap;
+  Map: IJclStrMap;
   MyObject: TMyObject;
-  //It: IStrIterator;
+  //It: IJclStrIterator;
   Links: TLinks;
 begin
   Map := TJclStrHashMap.Create;
@@ -298,8 +298,8 @@ end;
 
 procedure TMainForm.btnStrHashSetClick(Sender: TObject);
 var
-  MySet: IStrSet;
-  It: IStrIterator;
+  MySet: IJclStrSet;
+  It: IJclStrIterator;
 begin
   MySet := TJclStrHashSet.Create;
   MySet.Add('MyString');
@@ -313,8 +313,8 @@ end;
 
 procedure TMainForm.btnStrArraySetClick(Sender: TObject);
 var
-  MySet: IStrSet;
-  It: IStrIterator;
+  MySet: IJclStrSet;
+  It: IJclStrIterator;
   I: Integer;
 begin
   MySet := TJclStrArraySet.Create;

@@ -75,6 +75,9 @@ resourcestring
   RsPersonal         = 'Personal';
   RsProfessional     = 'Professional';
 
+  RsBorlandStudioProjects = 'Borland Studio Projects';
+  RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
+
 //=== JclCIL =================================================================
 resourcestring
   RsInstructionStreamInvalid = 'Invalid IL instruction stream';
@@ -102,6 +105,17 @@ resourcestring
 //=== JclConsole =============================================================
 resourcestring
   RsCannotRaiseSignal = 'Cannot raise %s signal.';
+
+//=== JclContainerIntf =======================================================
+resourcestring
+  RsEOutOfBounds = 'Out of bounds';
+  //RsENoSuchElement = 'No such element';
+  //RsEIllegalState = 'Illegal state';
+  //RsEConcurrentModification = 'Concurrent modification';
+  //RsEIllegalArgument = 'Illegal argument';
+  RsEOperationNotSupported = 'Operation not supported';
+  RsEValueNotFound = 'Value %s not found';
+  RsENoCollection = 'Collection = nil';
 
 //=== JclCounter =============================================================
 resourcestring
@@ -988,6 +1002,14 @@ resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
+//=== JclWideFormat ==========================================================
+resourcestring
+  RsFormatSyntaxError = 'Syntax error at index %u';
+  RsFormatNoArgument = 'No argument at index %u';
+  RsFormatBadArgumentType = 'Invalid argument type (%s) at index %u. Expected [%s]';
+  RsFormatBadArgumentTypeEx = 'Invalid argument type (%s) at index %u for format ''%s''. Expected [%s]';
+  RsFormatNoArgumentEx = 'No argument at index %u for format ''%s''';
+
 //=== JclWin32 ===============================================================
 resourcestring
   RsELibraryNotFound  = 'Library not found: %s';
@@ -1018,6 +1040,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.27  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.26  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -53,55 +53,55 @@ function SimpleCompare(Obj1, Obj2: TObject): Integer;
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 
 // Apply algorithms
-procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
-procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction); overload;
-procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction); overload;
+procedure Apply(First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
+procedure Apply(First: IJclStrIterator; Count: Integer; F: TStrApplyFunction); overload;
+procedure Apply(First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
 
 // Find algorithms
-function Find(First: IIntfIterator; Count: Integer; AInterface: IInterface;
-  AComparator: TIntfCompare): IIntfIterator; overload;
-function Find(First: IStrIterator; Count: Integer; const AString: string;
-  AComparator: TStrCompare): IStrIterator; overload;
-function Find(First: IIterator; Count: Integer; AObject: TObject;
-  AComparator: TCompare): IIterator; overload;
+function Find(First: IJclIntfIterator; Count: Integer; AInterface: IInterface;
+  AComparator: TIntfCompare): IJclIntfIterator; overload;
+function Find(First: IJclStrIterator; Count: Integer; const AString: string;
+  AComparator: TStrCompare): IJclStrIterator; overload;
+function Find(First: IJclIterator; Count: Integer; AObject: TObject;
+  AComparator: TCompare): IJclIterator; overload;
 
 // CountObject algorithms
-function CountObject(First: IIntfIterator; Count: Integer; AInterface: IInterface;
+function CountObject(First: IJclIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): Integer; overload;
-function CountObject(First: IStrIterator; Count: Integer; const AString: string;
+function CountObject(First: IJclStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): Integer; overload;
-function CountObject(First: IIterator; Count: Integer; AObject: TObject;
+function CountObject(First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): Integer; overload;
 
 // Copy algorithms
-procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator); overload;
-procedure Copy(First: IStrIterator; Count: Integer; Output: IStrIterator); overload;
-procedure Copy(First: IIterator; Count: Integer; Output: IIterator); overload;
+procedure Copy(First: IJclIntfIterator; Count: Integer; Output: IJclIntfIterator); overload;
+procedure Copy(First: IJclStrIterator; Count: Integer; Output: IJclStrIterator); overload;
+procedure Copy(First: IJclIterator; Count: Integer; Output: IJclIterator); overload;
 
 // Generate algorithms
-procedure Generate(List: IIntfList; Count: Integer; AInterface: IInterface); overload;
-procedure Generate(List: IStrList; Count: Integer; const AString: string); overload;
-procedure Generate(List: IList; Count: Integer; AObject: TObject); overload;
+procedure Generate(List: IJclIntfList; Count: Integer; AInterface: IInterface); overload;
+procedure Generate(List: IJclStrList; Count: Integer; const AString: string); overload;
+procedure Generate(List: IJclList; Count: Integer; AObject: TObject); overload;
 
 // Fill algorithms
-procedure Fill(First: IIntfIterator; Count: Integer; AInterface: IInterface); overload;
-procedure Fill(First: IStrIterator; Count: Integer; const AString: string); overload;
-procedure Fill(First: IIterator; Count: Integer; AObject: TObject); overload;
+procedure Fill(First: IJclIntfIterator; Count: Integer; AInterface: IInterface); overload;
+procedure Fill(First: IJclStrIterator; Count: Integer; const AString: string); overload;
+procedure Fill(First: IJclIterator; Count: Integer; AObject: TObject); overload;
 
 // Reverse algorithms
-procedure Reverse(First, Last: IIntfIterator); overload;
-procedure Reverse(First, Last: IStrIterator); overload;
-procedure Reverse(First, Last: IIterator); overload;
+procedure Reverse(First, Last: IJclIntfIterator); overload;
+procedure Reverse(First, Last: IJclStrIterator); overload;
+procedure Reverse(First, Last: IJclIterator); overload;
 
 type
   // Pointer functions for sort algorithms
-  TIntfSortProc = procedure(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare);
-  TStrSortProc = procedure(AList: IStrList; L, R: Integer; AComparator: TStrCompare);
-  TSortProc = procedure(AList: IList; L, R: Integer; AComparator: TCompare);
+  TIntfSortProc = procedure(AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
+  TStrSortProc = procedure(AList: IJclStrList; L, R: Integer; AComparator: TStrCompare);
+  TSortProc = procedure(AList: IJclList; L, R: Integer; AComparator: TCompare);
 
-procedure QuickSort(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
-procedure QuickSort(AList: IStrList; L, R: Integer; AComparator: TStrCompare); overload;
-procedure QuickSort(AList: IList; L, R: Integer; AComparator: TCompare); overload;
+procedure QuickSort(AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
+procedure QuickSort(AList: IJclStrList; L, R: Integer; AComparator: TStrCompare); overload;
+procedure QuickSort(AList: IJclList; L, R: Integer; AComparator: TCompare); overload;
 
 var
   IntfSortProc: TIntfSortProc = QuickSort;
@@ -109,11 +109,11 @@ var
   SortProc: TSortProc = QuickSort;
 
 // Sort algorithms
-procedure Sort(AList: IIntfList; First, Last: Integer; AComparator: TIntfCompare); overload;
-procedure Sort(AList: IStrList; First, Last: Integer; AComparator: TStrCompare); overload;
-procedure Sort(AList: IList; First, Last: Integer; AComparator: TCompare); overload;
+procedure Sort(AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare); overload;
+procedure Sort(AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
+procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
-procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
+procedure DCLAppendDelimited(Obj: IJclStrCollection; const AString, Separator: string);
 
 implementation
 
@@ -153,7 +153,7 @@ begin
   Result := Integer(Obj1) - Integer(Obj2);
 end;
 
-procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction);
+procedure Apply(First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction);
 var
   I: Integer;
 begin
@@ -167,7 +167,7 @@ begin
       Break;
 end;
 
-procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction);
+procedure Apply(First: IJclStrIterator; Count: Integer; F: TStrApplyFunction);
 var
   I: Integer;
 begin
@@ -181,7 +181,7 @@ begin
       Break;
 end;
 
-procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction);
+procedure Apply(First: IJclIterator; Count: Integer; F: TApplyFunction);
 var
   I: Integer;
 begin
@@ -195,8 +195,8 @@ begin
       Break;
 end;
 
-function Find(First: IIntfIterator; Count: Integer; AInterface: IInterface;
-  AComparator: TIntfCompare): IIntfIterator;
+function Find(First: IJclIntfIterator; Count: Integer; AInterface: IInterface;
+  AComparator: TIntfCompare): IJclIntfIterator;
 var
   I: Integer;
 begin
@@ -215,8 +215,8 @@ begin
       Break;
 end;
 
-function Find(First: IStrIterator; Count: Integer; const AString: string;
-  AComparator: TStrCompare): IStrIterator;
+function Find(First: IJclStrIterator; Count: Integer; const AString: string;
+  AComparator: TStrCompare): IJclStrIterator;
 var
   I: Integer;
 begin
@@ -235,8 +235,8 @@ begin
       Break;
 end;
 
-function Find(First: IIterator; Count: Integer; AObject: TObject;
-  AComparator: TCompare): IIterator;
+function Find(First: IJclIterator; Count: Integer; AObject: TObject;
+  AComparator: TCompare): IJclIterator;
 var
   I: Integer;
 begin
@@ -255,7 +255,7 @@ begin
       Break;
 end;
 
-function CountObject(First: IIntfIterator; Count: Integer; AInterface: IInterface;
+function CountObject(First: IJclIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): Integer;
 var
   I: Integer;
@@ -268,7 +268,7 @@ begin
       Break;
 end;
 
-function CountObject(First: IStrIterator; Count: Integer; const AString: string;
+function CountObject(First: IJclStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): Integer;
 var
   I: Integer;
@@ -281,7 +281,7 @@ begin
       Break;
 end;
 
-function CountObject(First: IIterator; Count: Integer; AObject: TObject;
+function CountObject(First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): Integer;
 var
   I: Integer;
@@ -294,7 +294,7 @@ begin
       Break;
 end;
 
-procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator);
+procedure Copy(First: IJclIntfIterator; Count: Integer; Output: IJclIntfIterator);
 var
   I: Integer;
 begin
@@ -309,7 +309,7 @@ begin
       Break;
 end;
 
-procedure Copy(First: IStrIterator; Count: Integer; Output: IStrIterator);
+procedure Copy(First: IJclStrIterator; Count: Integer; Output: IJclStrIterator);
 var
   I: Integer;
 begin
@@ -324,7 +324,7 @@ begin
       Break;
 end;
 
-procedure Copy(First: IIterator; Count: Integer; Output: IIterator);
+procedure Copy(First: IJclIterator; Count: Integer; Output: IJclIterator);
 var
   I: Integer;
 begin
@@ -339,7 +339,7 @@ begin
       Break;
 end;
 
-procedure Generate(List: IIntfList; Count: Integer; AInterface: IInterface);
+procedure Generate(List: IJclIntfList; Count: Integer; AInterface: IInterface);
 var
   I: Integer;
 begin
@@ -348,7 +348,7 @@ begin
     List.Add(AInterface);
 end;
 
-procedure Generate(List: IStrList; Count: Integer; const AString: string);
+procedure Generate(List: IJclStrList; Count: Integer; const AString: string);
 var
   I: Integer;
 begin
@@ -357,7 +357,7 @@ begin
     List.Add(AString);
 end;
 
-procedure Generate(List: IList; Count: Integer; AObject: TObject);
+procedure Generate(List: IJclList; Count: Integer; AObject: TObject);
 var
   I: Integer;
 begin
@@ -366,7 +366,7 @@ begin
     List.Add(AObject);
 end;
 
-procedure Fill(First: IIntfIterator; Count: Integer; AInterface: IInterface);
+procedure Fill(First: IJclIntfIterator; Count: Integer; AInterface: IInterface);
 var
   I: Integer;
 begin
@@ -380,7 +380,7 @@ begin
       Break;
 end;
 
-procedure Fill(First: IStrIterator; Count: Integer; const AString: string);
+procedure Fill(First: IJclStrIterator; Count: Integer; const AString: string);
 var
   I: Integer;
 begin
@@ -394,7 +394,7 @@ begin
       Break;
 end;
 
-procedure Fill(First: IIterator; Count: Integer; AObject: TObject);
+procedure Fill(First: IJclIterator; Count: Integer; AObject: TObject);
 var
   I: Integer;
 begin
@@ -408,7 +408,7 @@ begin
       Break;
 end;
 
-procedure Reverse(First, Last: IIntfIterator);
+procedure Reverse(First, Last: IJclIntfIterator);
 var
   Obj: IInterface;
 begin
@@ -426,7 +426,7 @@ begin
   end;
 end;
 
-procedure Reverse(First, Last: IStrIterator);
+procedure Reverse(First, Last: IJclStrIterator);
 var
   Obj: string;
 begin
@@ -444,7 +444,7 @@ begin
   end;
 end;
 
-procedure Reverse(First, Last: IIterator);
+procedure Reverse(First, Last: IJclIterator);
 var
   Obj: TObject;
 begin
@@ -462,7 +462,7 @@ begin
   end;
 end;
 
-procedure QuickSort(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare);
+procedure QuickSort(AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
 var
   I, J, P: Integer;
   Obj: IInterface;
@@ -496,7 +496,7 @@ begin
   until I >= R;
 end;
 
-procedure QuickSort(AList: IStrList; L, R: Integer; AComparator: TStrCompare);
+procedure QuickSort(AList: IJclStrList; L, R: Integer; AComparator: TStrCompare);
 var
   I, J, P: Integer;
   Obj: string;
@@ -530,7 +530,7 @@ begin
   until I >= R;
 end;
 
-procedure QuickSort(AList: IList; L, R: Integer; AComparator: TCompare);
+procedure QuickSort(AList: IJclList; L, R: Integer; AComparator: TCompare);
 var
   I, J, P: Integer;
   Obj: TObject;
@@ -564,22 +564,22 @@ begin
   until I >= R;
 end;
 
-procedure Sort(AList: IIntfList; First, Last: Integer; AComparator: TIntfCompare);
+procedure Sort(AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare);
 begin
   IntfSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(AList: IStrList; First, Last: Integer; AComparator: TStrCompare);
+procedure Sort(AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare);
 begin
   StrSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(AList: IList; First, Last: Integer; AComparator: TCompare);
+procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare);
 begin
   SortProc(AList, First, Last, AComparator);
 end;
 
-procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
+procedure DCLAppendDelimited(Obj: IJclStrCollection; const AString, Separator: string);
 var
   Item: string;
   SepLen: Integer;
@@ -609,6 +609,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.2  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

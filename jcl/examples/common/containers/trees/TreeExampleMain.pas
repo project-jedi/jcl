@@ -69,10 +69,10 @@ end;
 
 procedure TMainForm.btnIntfArrayTreeClick(Sender: TObject);
 var
-  Tree: IIntfTree;
+  Tree: IJclIntfTree;
   I: Integer;
   Obj: IIntfInteger;
-  It: IIntfIterator;
+  It: IJclIntfIterator;
 begin
   memoResult.Lines.Clear;
   Tree := TJclIntfBinaryTree.Create(IntfIntegerComparator);
@@ -100,9 +100,9 @@ end;
 
 procedure TMainForm.btnArrayTreeClick(Sender: TObject);
 var
-  Tree: ITree;
+  Tree: IJclTree;
   I: Integer;
-  It: IIterator;
+  It: IJclIterator;
 begin
   memoResult.Lines.Clear;
   Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare);
@@ -120,9 +120,9 @@ end;
 
 procedure TMainForm.btnStrBinaryTreeClick(Sender: TObject);
 var
-  Tree: IStrTree;
+  Tree: IJclStrTree;
   I: Integer;
-  It: IStrIterator;
+  It: IJclStrIterator;
 begin
   memoResult.Lines.Clear;
   Tree := TJclStrBinaryTree.Create(JclAlgorithms.StrSimpleCompare);

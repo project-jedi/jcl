@@ -35,58 +35,61 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
 
 type
-  TJclIntfArraySet = class(TJclIntfArrayList, IIntfCollection, IIntfSet, IIntfCloneable)
+  TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfSet,
+    IJclIntfCloneable)
   private
     function BinarySearch(AInterface: IInterface): Integer;
   protected
-    { IIntfCollection }
+    { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IIntfCollection): Boolean;
+    function AddAll(ACollection: IJclIntfCollection): Boolean;
     function Contains(AInterface: IInterface): Boolean;
-    { IIntfList }
+    { IJclIntfList }
     procedure Insert(Index: Integer; AInterface: IInterface); overload;
-    { IIntfSet }
-    procedure Intersect(ACollection: IIntfCollection);
-    procedure Subtract(ACollection: IIntfCollection);
-    procedure Union(ACollection: IIntfCollection);
+    { IJclIntfSet }
+    procedure Intersect(ACollection: IJclIntfCollection);
+    procedure Subtract(ACollection: IJclIntfCollection);
+    procedure Union(ACollection: IJclIntfCollection);
   end;
 
-  TJclStrArraySet = class(TJclStrArrayList, IStrCollection, IStrSet, ICloneable)
+  TJclStrArraySet = class(TJclStrArrayList, IJclStrCollection, IJclStrSet,
+    IJclCloneable)
   private
     function BinarySearch(const AString: string): Integer;
   protected
-    { IStrCollection }
+    { IJclStrCollection }
     function Add(const AString: string): Boolean;
-    function AddAll(ACollection: IStrCollection): Boolean;
+    function AddAll(ACollection: IJclStrCollection): Boolean;
     function Contains(const AString: string): Boolean;
-    { IStrList }
+    { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    { IStrSet }
-    procedure Intersect(ACollection: IStrCollection);
-    procedure Subtract(ACollection: IStrCollection);
-    procedure Union(ACollection: IStrCollection);
+    { IJclStrSet }
+    procedure Intersect(ACollection: IJclStrCollection);
+    procedure Subtract(ACollection: IJclStrCollection);
+    procedure Union(ACollection: IJclStrCollection);
   end;
 
-  TJclArraySet = class(TJclArrayList, ICollection, ISet, ICloneable)
+  TJclArraySet = class(TJclArrayList, IJclCollection, IJclSet, IJclCloneable)
   private
     function BinarySearch(AObject: TObject): Integer;
   protected
-    { ICollection }
+    { IJclCollection }
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: ICollection): Boolean;
+    function AddAll(ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
-    { IStrList }
+    { IJclStrList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    { ISet }
-    procedure Intersect(ACollection: ICollection);
-    procedure Subtract(ACollection: ICollection);
-    procedure Union(ACollection: ICollection);
+    { IJclSet }
+    procedure Intersect(ACollection: IJclCollection);
+    procedure Subtract(ACollection: IJclCollection);
+    procedure Union(ACollection: IJclCollection);
   end;
 
 implementation
 
 uses
-  SysUtils;
+  SysUtils,
+  JclResources;
 
 function ObjectCompare(Obj1, Obj2: TObject): Integer;
 begin
@@ -125,9 +128,9 @@ begin
     inherited Insert(Idx + 1, AInterface);
 end;
 
-function TJclIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfArraySet.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
-  It: IIntfIterator;
+  It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -182,20 +185,20 @@ end;
 
 procedure TJclIntfArraySet.Insert(Index: Integer; AInterface: IInterface);
 begin
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
-procedure TJclIntfArraySet.Intersect(ACollection: IIntfCollection);
+procedure TJclIntfArraySet.Intersect(ACollection: IJclIntfCollection);
 begin
   RetainAll(ACollection);
 end;
 
-procedure TJclIntfArraySet.Subtract(ACollection: IIntfCollection);
+procedure TJclIntfArraySet.Subtract(ACollection: IJclIntfCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclIntfArraySet.Union(ACollection: IIntfCollection);
+procedure TJclIntfArraySet.Union(ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
 end;
@@ -215,9 +218,9 @@ begin
     inherited Insert(Idx + 1, AString);
 end;
 
-function TJclStrArraySet.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrArraySet.AddAll(ACollection: IJclStrCollection): Boolean;
 var
-  It: IStrIterator;
+  It: IJclStrIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -272,20 +275,20 @@ end;
 
 procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
 begin
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
-procedure TJclStrArraySet.Intersect(ACollection: IStrCollection);
+procedure TJclStrArraySet.Intersect(ACollection: IJclStrCollection);
 begin
   RetainAll(ACollection);
 end;
 
-procedure TJclStrArraySet.Subtract(ACollection: IStrCollection);
+procedure TJclStrArraySet.Subtract(ACollection: IJclStrCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclStrArraySet.Union(ACollection: IStrCollection);
+procedure TJclStrArraySet.Union(ACollection: IJclStrCollection);
 begin
   AddAll(ACollection);
 end;
@@ -305,9 +308,9 @@ begin
     inherited Insert(Idx + 1, AObject);
 end;
 
-function TJclArraySet.AddAll(ACollection: ICollection): Boolean;
+function TJclArraySet.AddAll(ACollection: IJclCollection): Boolean;
 var
-  It: IIterator;
+  It: IJclIterator;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -362,20 +365,20 @@ end;
 
 procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
 begin
-  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
-procedure TJclArraySet.Intersect(ACollection: ICollection);
+procedure TJclArraySet.Intersect(ACollection: IJclCollection);
 begin
   RetainAll(ACollection);
 end;
 
-procedure TJclArraySet.Subtract(ACollection: ICollection);
+procedure TJclArraySet.Subtract(ACollection: IJclCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclArraySet.Union(ACollection: ICollection);
+procedure TJclArraySet.Union(ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;
@@ -383,6 +386,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

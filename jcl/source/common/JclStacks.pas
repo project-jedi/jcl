@@ -35,62 +35,62 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-  TJclIntfStack = class(TJclAbstractContainer, IIntfStack)
+  TJclIntfStack = class(TJclAbstractContainer, IJclIntfStack)
   private
     FElements: TDynIInterfaceArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-    { IIntfStack }
+    { IJclIntfStack }
     function Contains(AInterface: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
     procedure Push(AInterface: IInterface);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
-  TJclStrStack = class(TJclAbstractContainer, IStrStack)
+  TJclStrStack = class(TJclAbstractContainer, IJclStrStack)
   private
     FElements: TDynStringArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-    { IStrStack }
+    { IJclStrStack }
     function Contains(const AString: string): Boolean;
     function Empty: Boolean;
     function Pop: string;
     procedure Push(const AString: string);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
-  TJclStack = class(TJclAbstractContainer, IStack)
+  TJclStack = class(TJclAbstractContainer, IJclStack)
   private
     FElements: TDynObjectArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-    { IStack }
+    { IJclStack }
     function Contains(AObject: TObject): Boolean;
     function Empty: Boolean;
     function Pop: TObject;
     procedure Push(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity);
+    constructor Create(Capacity: Integer = DefaultContainerCapacity);
   end;
 
 implementation
 
 //=== { TJclIntfStack } ======================================================
 
-constructor TJclIntfStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfStack.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -169,7 +169,7 @@ end;
 
 //=== { TJclStrStack } =======================================================
 
-constructor TJclStrStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrStack.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -248,7 +248,7 @@ end;
 
 //=== { TJclStack } ==========================================================
 
-constructor TJclStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStack.Create(Capacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -329,6 +329,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/27 07:27:47  marquardt
+// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

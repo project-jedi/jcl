@@ -17,6 +17,9 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = True
   Scaled = False
+  DesignSize = (
+    489
+    252)
   PixelsPerInch = 96
   TextHeight = 13
   object btnIntfIntfHashMap: TButton
