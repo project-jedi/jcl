@@ -1,0 +1,863 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
+[ShortDescr]
+Creates an NTFS junction point.
+[Description]
+A junction point is similar to a softlink as available in other operating systems
+such as Linux. In a nutshell it is a directory which links to another directory.
+As such the junction point itself doesn't contain any data but when accessed
+redirects to another directory whose contents are accessed. The NtfsCreateJunctionPoint
+routine transforms a normal, empty directory into a junction point. Junction
+points are similar to <REF Target"NtfsMountVolume">volume mount points</REF>
+except that as opposed to mounting a volume, they 'mount' a directory.
+[Parameters]
+Count=2
+1=Source:string=Fully qualified path of the directory that is to be transformed
+into a juntion point. This directory must exist and be empty or the function fails.
+2=Destination:string=Fully qualified name of the target directory for the mountpoint.
+Naturally it must exist but doesn't have to be empty.
+[Result]
+If the function succeeds it returns True, otherwise it fails. Upon failure you
+can call GetLastError to get a more specific failure description. The most common
+reason for failure is that either the Source doesn't exist or isn't empty or
+that the destination directory doesn't exist.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsDeleteJunctionPoint
+2=NtfsGetJunctionPointDestination
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsDeleteJunctionPoint(const Source: string): Boolean;
+[ShortDescr]
+Deletes a junction point.
+[Description]
+The NtfsDeleteJunctionPoint routine deletes the specified junction point. Note
+that deletion in this context means that if the function succeeds the specified
+Source is no longer a junction point (the reparse tag which identifies it as
+a junction point is removed) but the directory itself will not be deleted, you'll
+just have an ordinary, empty directory.
+[Parameters]
+Count=1
+1=Source:string=The junction point to delete.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsCreateJunctionPoint
+2=NtfsGetJunctionPointDestination
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
+[ShortDescr]
+Returns the destination directory of a junction point.
+[Description]
+NtfsGetJunctionPointDestination returns the destinaton of a junction point. That
+is, it returns the directory to which Source is 'mounted'. Note that the returned
+directory string is prefixed with '\??'.
+[Parameters]
+Count=2
+1=Source:string=The junction point for which to retrieve the destination.
+2=Destination:string=Receives the destination of the junction point.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the latter
+case the contents of Destination are undefined.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsCreateJunctionPoint
+2=NtfsDeleteJunctionPoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
+[ShortDescr]
+Decommits storage for a specified range within a sparse file.
+[Description]
+NtfsZeroDataByHandle tells the NTFS filesystem to 'zero' the data in the specified
+range for the file identified by Handle. This in effect decommits storage for the
+specified range. That is, the specified range no longer occupies storage space.
+Subsequently reading a byte in this range will return 0. The range will remain
+uncommitted until you write to it again.
+[Parameters]
+Count=3
+1=FileName:string=Identifies the file for which you want to zero a range.
+2=First:Int64=Indicates the file offset, in bytes, of the start of the range to set to zeroes.
+3=Last:Int64=Indicates the byte offset of the first byte beyond the last zeroed byte.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=1
+1=NtfsZeroDataByHandle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
+[ShortDescr]
+Decommits storage for a specified range within a sparse file.
+[Description]
+NtfsZeroDataByHandle tells the NTFS filesystem to 'zero' the data in the specified
+range for the file identified by Handle. This in effect decommits storage for the
+specified range. That is, the specified range no longer occupies storage space.
+Subsequently reading a byte in this range will return 0. The range will remain
+uncommitted until you write to it again.
+[Parameters]
+Count=3
+1=Handle:THandle=Identifies the file for which you want to zero a range.
+2=First:Int64=Indicates the file offset, in bytes, of the start of the range to set to zeroes.
+3=Last:Int64=Indicates the byte offset of the first byte beyond the last zeroed byte.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=1
+1=NtfsZeroDataByName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsSparseStreamsSupported(const Volume: string): Boolean;
+[ShortDescr]
+Test if the volume supports sparse streams.
+[Description]
+NtfsSparseStreamsSupported tests if the filesystem specified by the Volume supports
+sparse streams. Currently only NTFS version 5.0 supports sparse streams and for
+all other filesystems the function always returns False.
+[Parameters]
+Count=1
+1=Volume:string=The volume to test e.g. 'c:'.
+[Result]
+If the specified volume supports sparse stream the function returns True, otherwise
+it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TNtfsAllocRanges = record
+  Entries: Integer;
+  Data: PFileAllocatedRangeBuffer;
+  MoreData: Boolean;
+end;
+[ShortDescr]
+TNtfsAllocRanges is initialized by a call
+to <REF Target"..\NtfsQueryAllocRanges">NtfsQueryAllocRanges</REF>. It
+holds the data that describes the allocated ranges in the file within the
+boundaries that the file was queried for. You can use the NtfsGetAllocRangeEntry
+to extract the individual entries from this record. WARNING: After you're done
+with this record you are responsible for freeing the memory associated with the
+Data member, i.e. you must call: FreeMem(Ranges.Data). 
+[RecordFields]
+Count=3
+1=Entries:Integer=The number of entries contained in the record.
+2=Data:PFileAllocatedRangeBuffer=Buffer that holds the actual data.
+3=MoreData:Boolean=True if there was more data than could be returned in this buffer.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsGetAllocRangeEntry;..\NtfsGetAllocRangeEntry
+2=NtfsQueryAllocRanges;..\NtfsQueryAllocRanges
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: Integer): TFileAllocatedRangeBuffer;
+[ShortDescr]
+Extracts an entry from the ranges record.
+[Description]
+NtfsGetAllocRangeEntry extracts an entry from the Ranges record returned from a
+call to <REF>NtfsQueryAllocRanges</REF>. The returned TFileAllocatedRangeBuffer record
+contains the following members:
+ <UL>
+ <LI>FileOffset: TLargeInteger The starting byte offset of the allocated range.
+ <LI>Length: TLargeInteger The length, in bytes, of the allocated range.
+ </UL>
+[Parameters]
+Count=2
+1=Ranges:<REF>Types\TNtfsAllocRange</REF>=The Ranges record returned from NtfsQueryAllocRanges.
+2=Index:Integer=0 based index of the entry to extract.
+[Result]
+The function returns the TFileAllocatedRangeBuffer at the specified Index. The
+index is asserted to be within range.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=3
+1=NtfsSetSparse
+2=TNtfsAllocRanges;Types\TNtfsAllocRanges
+3=NtfsQueryAllocRanges
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsQueryAllocRanges(const FileName: string; Offset, Count: Int64; out Ranges: TNtfsAllocRanges): Boolean;
+[ShortDescr]
+Queries the specified sparse file for the ranges that are actually allocated.
+[Description]
+A sparse file is a normal file but one which only uses disk space for those
+portions of the file that actually contain data. This however is not automatic,
+see the other NtfsXxxx functions and the Platform SDK for details. The
+NtfsQueryAllocRanges function queries the filesytem about the ranges of the
+specified sparse file that actually contain data and as such occupy disk space.
+For a normal, non-sparse file, the returned range is always 0 - FileSize. However,
+for a sparse file any number of ranges are possible. This function assumes that
+the file contains at most 256 ranges. If the file contains more ranges only the
+first 256 are returned. To query for the other ranges call NtfsQueryAllocRanges
+again, this time starting at offset = Entry.FileOffset + Entry.Length and with
+count = FILE_SIZE - offset (FILE_SIZE is the total size of the file and Entry
+is the last entry returned by the previous call). The <REF>TNtfsAllocRanges</REF>.MoreData
+is set to True if the file contained more 256 ranges. You can use the <REF>NtfsGetAllocRangeEntry</REF>
+function to extract the individual ranges from the returned Ranges variable.
+[Parameters]
+Count=4
+1=FileName:string=The name of the file whose allocated ranges you want to know.
+2=Offset:Int64=The starting offset, in bytes, of the range to query.
+3=Count:Int64=The length, in bytes, of the range to query.
+4=Range:<REF>TNtfsAllocRanges</REF>=On return contains the allocated ranges in the
+specified file within the boundaries of the specified range (Offset..Offset + Length).
+[Result]
+If the function succeeds the function returns True, otherwise it returns False.
+[Notes]
+Count=2
+1=The caller is responsible for freeing the memory associated with the Data member of the <REF>TNtfsAllocRanges</REF> record.
+2=Sparse files are only supported by NTFS version 5.0 and higher.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=3
+1=NtfsSetSparse
+2=TNtfsAllocRanges
+3=NtfsGetAllocRangeEntry
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetSparse(const FileName: string): Boolean;
+[ShortDescr]
+Tests whether the file is a sparse file.
+[Description]
+NtfsSetSparseFile tests if the specified file is a sparse file. A sparse file is
+a normal file but one which only uses disk space for those portions of the file
+that actually contain data. This however is not automatic, see the other NtfsXxxx
+functions and the Platform SDK for details.
+[Parameters]
+Count=1
+1=FileName:string=The file to test.
+[Result]
+If the specified file is a sparse file the function returns True, otherwise it
+returns False.
+[Notes]
+Count=1
+1=Sparse files are only supported by NTFS version 5.0 and higher.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=1
+1=NtfsSetSparse
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsSetSparse(const FileName: string): Boolean;
+[ShortDescr]
+Sets the sparse file attribute.
+[Description]
+NtfsSetSparseFile makes the specified file a sparse file. A sparse file is a
+normal file but one which only uses disk space for those portions of the file
+that actually contain data. This however is not automatic, see the other NtfsXxxx
+functions and the Platform SDK for details. Keep in mind that no storage is
+decommited until you call <REF>NtfsZeroDataByHandle</REF> or <REF>NtfsZeroDataByName</REF>.
+[Parameters]
+Count=1
+1=FileName:string=The file to make into a sparse file.
+[Result]
+If the function succeeds the return value is True, otherwise it's False.
+[Notes]
+Count=1
+1=Sparse files are only supported by NTFS version 5.0 and higher.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=3
+1=NtfsGetSparse
+2=NtfsZeroDataByHandle
+3=NtfsZeroDataByName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
+[ShortDescr]
+Deletes a reparse point.
+[Description]
+NtfsDeleteReparsePoint deletes the reparse point with a given tag for the
+specified file or directory.
+[Parameters]
+Count=2
+1=FileName:string=The fully qualified name of the file or directory whose associated
+reparse point to delete.
+2=ReparseTag:DWORD=The tag of the reparse point to delete.
+[Result]
+If the function succeeds the function returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=1
+1=NtfsSetReparsePoint
+2=NtfsGetReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TReparseGuidDataBuffer = record
+  ReparseTag: DWORD;
+  ReparseDataLength: WORD;
+  Reserved: WORD;
+  ReparseGuid: TGUID;
+  GenericReparseBuffer: TGenericReparseBuffer;
+end;
+PReparseGuidDataBuffer = ^TReparseGuidDataBuffer;
+TGenericReparseBuffer = record
+  DataBuffer: array [0..0] of BYTE;
+end;
+[ShortDescr]
+TGenericReparseBuffer is a generic record type used for reparse point operations
+on an NTFS volume.
+[Description]
+TGenericReparseBuffer is a generic record type used for reparse point operations
+on an NTFS volume.
+[RecordFields]
+Count=5
+1=ReparseTag:DWORD=Reparse tag. This member uniquely identifies the structure of the reparse data.
+2=ReparseDataLength:WORD=Size, in bytes, of the data in the GenericReparseBuffer member.
+3=Reserved:WORD=Reserved.
+4=ReparseGuid:TGUID=GUID which uniquely identifies the kind of reparse tag.
+5=GenericReparseBuffer:TGenericReparseBuffer=User defined data for the reparse point.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=3
+1=NtfsDeleteReparsePoint
+2=NtfsSetReparsePoint
+3=NtfsGetReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsSetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+[ShortDescr]
+Sets a reparse point for a file or directory.
+[Description]
+NtfsSetReparsePoint sets a reparse point on the specified file or directory.
+[Parameters]
+Count=2
+1=FileName:string=The fully qualified name of the file or directory with which to
+associate a reparse point.
+2=ReparseData:TReparseGuidDataBuffer=A TReparseGuidData record which contains the
+reparse point data.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsDeleteReparsePoint
+2=NtfsGetReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+[ShortDescr]
+Returns the reparse point data associated with the specified file or directory.
+[Description]
+NtfsGetReparsePoint returns the reparse point data associated with the specified
+file or directory.
+[Parameters]
+Count=2
+1=FileName:string=Fully qualified name of the file or directory of which to get
+the reparse data.
+2=ReparseData:TReparseGuidDataBuffer=A TReparseGuidDataBuffer record which receives
+the reparse data. Note that the ReparseDataLength and DataBuffer members must be
+properly intialized by the caller (e.g. allocate memory and initialize ReparseDataLength
+to the size of this memory).
+[Result]
+If the function succeeds in retrieving all reparse data it returns True. If the
+function succeeds in retrieving a part of the reparse data or fails completely
+it returns False and sets ReparseDataLength to the number of bytes retrieved.
+You can distinguish between no data and partial data by calling GetLastError which
+will return ERROR_INSUFFICIENT_BUFFER or ERROR_MORE_DATA respectively.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsDeleteReparsePoint
+2=NtfsSetReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
+[ShortDescr]
+Returns the reparse tag of a file or directory.
+[Description]
+NtfsGetReparseTag returns the reparse tag of the reparse point associated with
+the specified file or directory. If the specified file has no associated reparse
+point the function fails.
+[Parameters]
+Count=2
+1=Path:string=Fully qualified name of the file or directory for which you want
+to know the tag of the associated reparse point, if any.
+2=Tag:DWORD=If the function succeeds the Tag parameter receives the reparse tag
+of the reparse point associated with the file or directory. If the function fails
+the value is undefined.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the latter
+case the value of Tag is undefined.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsReparsePointsSupported
+2=NtfsFileHasReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsReparsePointsSupported(const Volume: string): Boolean;
+[ShortDescr]
+Returns whether a filesystem supports reparse points.
+[Description]
+NtfsReparsePointsSupported returns whether the filesystem installed on the
+specified Volume supports reparse points. Currently only the Windows 2000 version
+of NTFS (version 5) supports reparse points.
+[Parameters]
+Count=1
+1=Volume:string=Name of the volume to test. This parameter must be of the form
+x:\ or x: where x is the volume to test.
+[Result]
+If the specified volume supports reparse points the function returns True. If the
+volume does not support reparse points or the function fails, the return value is False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsGetReparseTag
+2=NtfsFileHasReparsePoint
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsFileHasReparsePoint(const Path: string): Boolean;
+[ShortDescr]
+Returns whether a specified file or directory has an associated reparse point.
+[Description]
+NtfsFileHasReparsePoint returns whether the specified file or directory has an
+associated reparse point. A reparse point can be set by an application or by the
+NTFS filesystem itself. For example, mount points are implemented using a reparse
+point. You can use <REF>NtfsGetReparseTag</REF> to extract the reparse tag of the
+reparse point associated with a file or directory. For the above example this
+would return the reserved value of IO_REPARSE_TAG_MOUNT_POINT.
+[Parameters]
+Count=1
+1=Path:string=Fully qualified name of the file or directory to test.
+[Result]
+If the function succeeds and the specified file or directory has an associated
+reparse point, the function returns True. Otherwise it returns False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsGetReparseTag
+2=NtfsReparsePointsSupported
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsIsFolderMountPoint(const Path: string): Boolean;
+[ShortDescr]
+Returns whether a directory is a mount point.
+[Description]
+NtfsIsFolderMountPoint returns whether the specified directory is actually a
+mount point.
+[Parameters]
+Count=1
+1=Path:string=The directory to test.
+[Result]
+If the function succeeds and the specified directory is a mount point the function
+returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsMountDeviceAsDrive
+2=NtfsMountVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
+[ShortDescr]
+Mounts a device as a drive.
+[Description]
+NtfsMountDeviceAsDrive mounts the specified device as the specified drive. That is,
+you can use this function to mount, for example, the CD-Rom drive as drive K. If
+the mounting succeeds you can then access the CD-Rom by specifying K. Note that
+a particular device can only be mounted once. If the specified device is already
+mounted to a drive, you must first delete that mount point using the DeleteVolumeMountPoint
+API function. Also, keep in mind that mounting a device can have side effects.
+For example mounting a volume (hard disk partition or cd-rom) which has an
+autorun file, will trigger execution of that autorun file (assuming the autorun
+feature is enabled).
+[Parameters]
+Count=2
+1=Device:string=The device to mount. This is a string of the form \Device\MyDevice
+where MyDevice is replaced with the appropriate device name. For example the
+first CD-Rom drive would be \Device\CdRom0 and the first partition on the
+harddrive would be \Device\HarddiskVolume1.
+2=Drive:Char=The drive letter to mount the device on. Note that if the drive already
+exist the previously mounted device is not automatically unmounted first. You must
+explicitly unmount it or the call will fail.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. Failure
+is usually due to the specified device already being mounted or the device name
+being incorrect. You can call GetLastError but this will usually simply return
+the error "parameter is incorrect".
+[Notes]
+Count=1
+1=Internally this function has to temporarily create a symbolic link for the
+specified device. This link is deleted as soon as possible. Although very unlikely,
+it is possible that deleting this link will fail. If so, the function raises an
+EJclNtfsError exception and exits <B>without</B> mounting the device. If this happens to
+you should try to delete the symbolic link at a later time and retry. See the
+implementation of this function for how to achieve this.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsIsFolderMountPoint
+2=NtfsMountVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
+[ShortDescr]
+Mounts a volume to a specified directory.
+[Description]
+NtfsMountVolume mounts the specified volume to the the specified mount point. You
+can, for example, use NtfsMoundVolume('c', 'd:\mnt\c\') to mount the C drive to
+the d:\mnt\c folder. If the call succeeds you can subsequently access the C drive
+through the d:\mnt\c folder.
+[Parameters]
+Count=2
+1=Volume:Char=The volume to mount.
+2=MountPoint:string=The directory to which the volume should be mounted. Note that
+if the directory doesn't exist yet it is automatically created.
+[Result]
+If the function succeeds it returns True otherwise it returns False.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=4,5
+Delphi=4,5
+Windows NT/2000=Requires Windows 2000 or later.
+Windows 95/98=Unsupported.
+Requirements=NTFS version 5.0 or later.
+[SeeAlso]
+Count=2
+1=NtfsIsFolderMountPoint
+2=NtfsMountDeviceAsDrive
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function UnLockVolume(var Handle: THandle): Boolean;
+[ShortDescr]
+Unlocks the specified volume.
+[Description]
+UnLockVolume unlocks a volume previously locked with <REF>LockVolume</REF>.
+[Parameters]
+Count=1
+1=Handle:THandle=The handle previously returned from <REF>LockVolume</REF>. If
+the function succeeds in closing unlocking the volume the handle is closed and no
+longer valid.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. The latter
+case either means that the specified handle was invalid or that the device
+could not be unlocked. In either case the Handle parameter is unaffected and
+retains it's value.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=LockVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LockVolume(const Volume: string; out Handle: THandle): Boolean;
+[ShortDescr]
+Locks the specified volume.
+[Description]
+LockVolume locks the specified volume. Locking a volume will give exclusive access
+to the specified volume to whomever owns the lock. Subsequent access to the
+volume must be performed through the returned handle. When you're done with the
+volume you must call <REF>UnLockVolume</REF>. Note that to lock a volume there
+can be no open files on the volume (even a single open file, by whatever process,
+will cause the function to fail).
+[Parameters]
+Count=2
+1=Volume:string=The volume to lock this must be a string in the format:
+ <UL>
+ <LI>X: Where X is the volume to lock, for example 'a:'
+ <LI>PHYSICALDRIVEX Where X is the 0 based hard disk number, for example 'PHYSICALDRIVE0'
+ </UL>
+ <B>Note:</B> Do not prepend the Volume name with a '\\.\'. This is done by the function.
+2=Handle:THandle=Receives a handle of the locked device upon successful return.
+[Result]
+If the function succeeds in locking the volume it returns True and a handle to
+the specified device in the Handle parameter. If it fails the function returns
+False and the Handle parameter is undefined.
+[Notes]
+Count=2
+1=You must have administrative privileges to lock a volume.
+2=The device is, according to Microsoft recommendations, opened with no buffering.
+This action imposes a number of 'limitations' for subsequent access to the device.
+For example the alignment of buffers must be on a multiple of the volume's sector
+size. See the Platform SDK for details.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=UnlockVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
+[ShortDescr]
+Sets the compression state of a file.
+[Description]
+NtfsSetCompression sets the compression state of the specified file or directory.
+The underlying filesystem must support per stream compression or this function will
+fail. Currently only LZNT1 is supported as the compression format but this may
+change in future releases of the Windows operating system.
+[Parameters]
+Count=2
+1=FileName:string=The name of the file for which you want to set the compression state.
+2=State:Short=The desired compression state.
+Currently this can be one of the following values:
+  <UL>
+  <LI>COMPRESSION_FORMAT_NONE Uncompress the file or directory.
+  <LI>COMPRESSION_FORMAT_LZNT1 Compress the file or directory with the LZNT1 format.
+  <LI>COMPRESSION_FORMAT_DEFAULT Compress the file or directory with the default format.
+  <LI>All other values: reserved for future use.
+  </UL>
+[Result]
+If the function succeeds in setting the compression state the result it True,
+otherwise it's False.
+[Notes]
+Count=1
+1=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=NtfsGetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
+[ShortDescr]
+Obtains the compression state of a file.
+[Description]
+NtfsGetCompression returns the compression state of the specified file or directory.
+The underlying filesystem must support per stream compression or this function will
+fail. Currently only LZNT1 is supported as the compression format but this may
+change in future releases of the Windows operating system.
+[Parameters]
+Count=2
+1=FileName:string=The name of the file you want to test.
+2=State:Short=Variable that receives the compression state of the specified file.
+Currently this can be one of the following values:
+  <UL>
+  <LI>COMPRESSION_FORMAT_NONE The file is not compressed.
+  <LI>COMPRESSION_FORMAT_LZNT1 The file is compressed with the LZNT1 format
+  <LI>All other values: Reserved for future use.
+  </UL>
+[Result]
+If the function succeeds in retrieving the compression state the result it True,
+otherwise it's False. In the latter case the content of the State parameter is
+undefined upon return.
+[Notes]
+Count=1
+1=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+[Quick Info]
+BCB=3,4,5
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=NtfsSetCompression
