@@ -1,0 +1,91 @@
+@@SetDisplayResolution
+Summary:
+  Changes the resolution of the screen.
+Description:
+
+  Dynamically changes the resolution (width and height) of the visible device
+  surface of the default display device. In simpler terms, changes the width and
+  height of the screen. If the function succeeds the system automatically sends a
+  WM_DISPLAYCHANGE message to all running applications.
+Parameters:
+  XRes - New Width of the screen, in pixels.
+  YRes - New Height of the screen, in pixels.
+Result:
+
+  Internally the ChangeDisplaySettings function is used to obtain the result. The possible return values are:
+    <TABLE>
+Value                   Meaning
+----------------------  ---------------------------------------------------------------------------------------------
+DISP_CHANGE_SUCCESSFUL  The settings change was successful.
+DISP_CHANGE_RESTART     The computer must be restarted in order for the graphics mode to work.
+DISP_CHANGE_BADFLAGS    An invalid set of flags was passed in.
+DISP_CHANGE_BADPARAM    An invalid parameter was passed in. This can include an invalid flag or combination of flags.
+DISP_CHANGE_FAILED      The display driver failed the specified graphics mode.
+DISP_CHANGE_BADMODE     The graphics mode is not supported.
+DISP_CHANGE_NOTUPDATED  <B>Windows NT/2000:</B> Unable to write settings to the registry.
+</TABLE>
+
+Quick info:
+  Unit: JclMiscel
+  Category: Miscellaneous
+  Donator: John C Molyneux
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@CreateProcAsUserEx
+Summary:
+  Spawns a new process in the context of the specified user account.
+Description:
+
+  CreateProcessAsUserEx launches a new process in the context of the specified user.
+  This user does not neccessarily have to be the same user as the currently logged in
+  user. You can use this function to run a child process in an adminstrative context,
+  although the calling process is running in a normal (i.e.:restricted) user context.
+Parameters:
+  UserDomain - Name of the domain the user account is contained in. If this parameter is '.', then the procedure will search only the local account database to look up the user account. If the parameter is nil, then the procedure will first search the local account database and then the trusted domain account databases until the specified account is found.
+  UserName - The name of the user account the new process is to be run in.
+  Password - The password for the specified user account.
+  CommandLine - This string specifies the command line for the application to be executed.
+  Environment - Points to an environment block for the new process. If this parameter is nil, the new process uses the environment of the calling process. You can create a new environment block using the CreateEnvironmentBlock function.
+Quick info:
+  Unit: JclMiscel
+  Category: Miscellaneous
+  Donator: Peter Friese
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@CreateProcAsUser
+Summary:
+  Spawns a new process in the context of the specified user account.
+Description:
+
+  CreateProcessAsUserEx launches a new process in the context of the specified user.
+  This user does not neccessarily have to be the same user as the currently logged in
+  user. You can use this function to run a child process in an adminstrative context,
+  although the calling process is running in a normal (i.e.:restricted) user context.
+Parameters:
+  UserDomain - Name of the domain the user account is contained in. If this parameter is '.', then the procedure will search only the local account database to look up the user account. If the parameter is nil, then the procedure will first search the local account database and then the trusted domain account databases until the specified account is found.
+  UserName - The name of the user account the new process is to be run in.
+  Password - The password for the specified user account.
+  CommandLine - This string specifies the command line for the application to be executed.
+Quick info:
+  Unit: JclMiscel
+  Category: Miscellaneous
+  Donator: Peter Friese
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@EJclCreateProcessError
+Summary:
+  Class for exceptions raised due to errors in the CreateProcAsUser / CreateProcAsUserEx procedure pair.
+Quick info:
+  Unit: JclMiscel
+  Category: Miscellaneous
+  Donator: Peter Friese
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
