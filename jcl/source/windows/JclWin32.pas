@@ -146,11 +146,11 @@ uses
   {$ENDIF FPC}
   JclBase;
 
-{$HPPEMIT '#include <winnt.h>'}   
+{$HPPEMIT '#include <winnt.h>'}
 {$HPPEMIT 'typedef _IMAGE_THUNK_DATA32 _IMAGE_THUNK_DATA;'}
 {$HPPEMIT 'typedef _IMAGE_TLS_DIRECTORY32 _IMAGE_TLS_DIRECTORY;'}
 
-{$HPPEMIT '#include <AclAPI.h>'}
+// {$HPPEMIT '#include <AclAPI.h>'}
 {$HPPEMIT '#include <BaseTsd.h>'}
 {$HPPEMIT '#include <ImageHlp.h>'}
 {$HPPEMIT '#include <LMaccess.h>'}
@@ -158,16 +158,16 @@ uses
 {$HPPEMIT '#include <LMcons.h>'}
 {$HPPEMIT '#include <LMErr.h>'}
 {$HPPEMIT '#include <nb30.h>'}
-{$HPPEMIT '#include <ntstatus.h>'}
+// {$HPPEMIT '#include <ntstatus.h>'}
 {$HPPEMIT '#include <Reason.h>'}
 {$HPPEMIT '#include <RasDlg.h>'}
-{$HPPEMIT '#include <ShlObj.h>'}
+// {$HPPEMIT '#include <ShlObj.h>'}
 {$HPPEMIT '#include <ShlWApi.h>'}
 {$HPPEMIT '#include <WinBase.h>'}
 {$HPPEMIT '#include <WinIoCtl.h>'}
 {$HPPEMIT '#include <WinNls.h>'}
 {$HPPEMIT '#include <WinSpool.h>'}
-{$HPPEMIT '#include <winternl.h>'}
+// {$HPPEMIT '#include <winternl.h>'}
 {$HPPEMIT '#include <WinUser.h>'}
 
 {$HPPEMIT '#include <delayimp.h>'}
@@ -2159,6 +2159,7 @@ const
   // Value to be used with APIs which have a "preferred maximum length"
   // parameter.  This value indicates that the API should just allocate
   // "as much as it takes."
+  {$EXTERNALSYM MAX_PREFERRED_LENGTH}
   MAX_PREFERRED_LENGTH = DWORD(-1);
 
 type
@@ -2361,6 +2362,7 @@ function RtdlNetApiBufferFree(Buffer: Pointer): NET_API_STATUS;
 //==================================================================================================
 
 const
+  {$EXTERNALSYM NERR_Success}
   NERR_Success = 0;  // Success
 
 //==================================================================================================
@@ -3790,6 +3792,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2004/04/08 19:59:11  ahuser
+// BCB compatibility
+//
 // Revision 1.14  2004/04/08 10:27:15  rrossmair
 // GetVersionEx overload added.
 //
