@@ -60,19 +60,14 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
-    // Kylix 3 for Delphi
-    D3TabSheet: TTabSheet;
-    D3Product: TProductFrame;
-    //
+    
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
-    //
     D6TabSheet: TTabSheet;
     D6Product: TProductFrame;
-    //
     D7TabSheet: TTabSheet;
     D7Product: TProductFrame;
-    //
+    
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -140,6 +135,9 @@ uses
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 const
+  {$IFNDEF COMPILER6_UP}
+  PathSep = ';';
+  {$ENDIF COMPILER6_UP}
   DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
   DelphiJediURL     = 'http://delphi-jedi.org';
   VersionSignature  = 'D%d';
@@ -254,7 +252,7 @@ var
 begin
   if GetEnvironmentVar('PATH', PathVar, False) then
   begin
-    StrToStrings(PathVar, ';', FSystemPaths, False);
+    StrToStrings(PathVar, PathSep, FSystemPaths, False);
     for I := 0 to FSystemPaths.Count - 1 do
     begin
       PathVar := StrTrimQuotes(FSystemPaths[I]);
@@ -411,9 +409,9 @@ end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
-  { TODO : implement for Unix }
   
   ShellExecEx(DelphiJediURL);
+  
   
 end;
 

@@ -23,7 +23,7 @@
 { installation tasks.                                                                              }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 13, 2004                                                                 }
+{ Last modified: February 16, 2004                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -33,7 +33,7 @@ unit DelphiInstall;
 
 {$IFNDEF KYLIX}
   {$WEAKPACKAGEUNIT ON}
-{$ENDIF KYLIX}
+{$ENDIF}
 
 interface
 
@@ -78,7 +78,11 @@ const
 //--------------------------------------------------------------------------------------------------
 
 type
+  {$IFDEF KYLIX}
+  TJclDelphiEdition = (deOPEN, dePRO, deSVR);
+  {$ELSE}
   TJclDelphiEdition = (deSTD, dePRO, deCSS);
+  {$ENDIF}
   TJclDelphiPath = string;
 
   TJclDelphiInstallation = class;
@@ -237,7 +241,7 @@ type
     FLatestUpdatePack: Integer;
     {$IFDEF MSWINDOWS}
     FOpenHelp: TJclDelphiOpenHelp;
-    {$ENDIF MSWINDOWS}
+    {$ENDIF}
     FPalette: TJclDelphiPalette;
     FRepository: TJclDelphiRepository;
     FVersionNumber: Byte;
@@ -291,7 +295,7 @@ type
     property LibraryBrowsingPath: TJclDelphiPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
     {$IFDEF MSWINDOWS}
     property OpenHelp: TJclDelphiOpenHelp read FOpenHelp;
-    {$ENDIF MSWINDOWS}
+    {$ENDIF}
     property ConfigData: TCustomIniFile read FConfigData;
     property Globals: TStrings read FGlobals;
     property Name: string read GetName;
@@ -345,13 +349,16 @@ type
     DelphiVersion: Byte;
     LatestUpdatePack: Integer;
   end;
+  {$IFDEF KYLIX}
+  TKylixVersion = 1..3;
+  {$ENDIF}
 
 const
   {$IFDEF MSWINDOWS}
   {$IFNDEF COMPILER6_UP}
   PathSep = ';';
   {$ENDIF COMPILER6_UP}
- 
+
   MSHelpSystemKeyName        = 'Software\Microsoft\Windows\Help';
 
   DelphiKeyName              = 'SOFTWARE\Borland\Delphi';
@@ -359,9 +366,9 @@ const
 
   {$IFDEF KYLIX}
   RootDirValueName           = 'DelphiRoot';
-  {$ELSE KYLIX}
+  {$ELSE}
   RootDirValueName           = 'RootDir';
-  {$ENDIF KYLIX}
+  {$ENDIF}
 
   VersionValueName           = 'Version';
 
@@ -394,7 +401,7 @@ const
   DelphiIdeFileName          = 'Bin\delphi32.exe';
   DelphiOptionsFileExtension = '.dof';
   DelphiRepositoryFileName   = 'Bin\delphi32.dro';
-  DCCFileName              = 'Bin\dcc32.exe';
+  DCCFileName                = 'Bin\dcc32.exe';
   DelphiHelpContentFileName  = 'Help\%s.ohc';
   DelphiHelpIndexFileName    = 'Help\%s.ohi';
   DelphiHelpLinkFileName     = 'Help\%s.ohl';
@@ -404,54 +411,57 @@ const
   DelphiHelpNamePart2        = 'd%d';
   {$ENDIF MSWINDOWS}
 
-  {$IFDEF UNIX}
+  {$IFDEF KYLIX}
   DelphiIdeFileName          = 'bin/delphi';
   DelphiOptionsFileExtension = '.kof';
-  DelphiRcFileNames: array[1..3] of string =
+
+  LibSuffixes: array[TKylixVersion] of Integer = (60, 65, 69);
+
+  DelphiRcFileNames: array[TKylixVersion] of string =
     (
       'delphi60rc',
-      'delphi61rc',
+      'delphi65rc',
       'delphi69rc'
     );
-  DelphiRepositoryFileNames: array[1..3] of string =
+  DelphiRepositoryFileNames: array[TKylixVersion] of string =
     (
       'delphi60dro',
-      'delphi61dro',
+      'delphi65dro',
       'delphi69dro'
     );
   DCCFileName              = 'bin/dcc';
   KylixHelpNamePart          = 'k%d';
-  {$ENDIF UNIX}
+  {$ENDIF KYLIX}
 
   LatestUpdatePacks: array [1..3] of TUpdatePack = ( // Updated Sep 5, 2002
-    {$IFDEF MSWINDOWS}
-    (DelphiVersion: 5; LatestUpdatePack: 1),
-    (DelphiVersion: 6; LatestUpdatePack: 2),
-    (DelphiVersion: 7; LatestUpdatePack: 0)
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
+    {$IFDEF KYLIX}
     (DelphiVersion: 1; LatestUpdatePack: 0),
     (DelphiVersion: 2; LatestUpdatePack: 0),
     (DelphiVersion: 3; LatestUpdatePack: 0)
-    {$ENDIF UNIX}
+    {$ELSE}
+    (DelphiVersion: 5; LatestUpdatePack: 1),
+    (DelphiVersion: 6; LatestUpdatePack: 2),
+    (DelphiVersion: 7; LatestUpdatePack: 0)
+    {$ENDIF}
   );
 
 resourcestring
   RsIndexOufOfRange = 'Index out of range';
-  {$IFDEF KYLIX}
-  RsDelphiName      = 'Kylix %d for Delphi %s';
-  {$ELSE KYLIX}
-  RsDelphiName      = 'Delphi %d %s';
-  {$ENDIF KYLIX}
   RsNeedUpdate      = 'You should install latest Update Pack #%d for %s';
   RsUpdatePackName  = 'Update Pack #%d';
-
-  RsArchitect       = 'Architect';
+  {$IFDEF KYLIX}
+  RsDelphiName      = 'Kylix %d for Delphi %s';
+  RsOpenEdition     = 'Open Edition';
+  RsServerDeveloper = 'Server Developer';
+  {$ELSE}
+  RsDelphiName      = 'Delphi %d %s';
   RsClientServer    = 'Client/Server';
-  RsEnterprise      = 'Enterprise';
-  RsProfessional    = 'Professional';
-  RsPersonal        = 'Personal';
   RsStandard        = 'Standard';
+  {$ENDIF}
+  RsArchitect       = 'Architect';
+  RsEnterprise      = 'Enterprise';
+  RsPersonal        = 'Personal';
+  RsProfessional    = 'Professional';
 
 //--------------------------------------------------------------------------------------------------
 
@@ -842,7 +852,7 @@ begin
   DeleteFile(DCC32CFGFileName);
 end;
 {$ENDIF WIN32}
-{$IFDEF UNIX}
+{$IFDEF KYLIX}
 const
   DCCConfFileName = 'dcc.conf';
 var
@@ -869,7 +879,7 @@ begin
   Result := ResultCode = 0;
   DeleteFile(DCCConfFileName);
 end;
-{$ENDIF UNIX}
+{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1149,7 +1159,7 @@ begin
   FFileName := Format('%s/.borland/%s', [GetPersonalFolder, DelphiRepositoryFileNames[Installation.VersionNumber]]);
   {$ELSE}
   FFileName := PathAddSeparator(Installation.RootDir) + DelphiRepositoryFileName;
-  {$ENDIF KYLIX}
+  {$ENDIF}
   FPages := TStringList.Create;
   IniFile.ReadSection(DelphiRepositoryPagesSection, FPages);
   CloseIniFile;
@@ -1283,17 +1293,17 @@ end;
 
 constructor TJclDelphiInstallation.Create;
 begin
-  {$IFDEF MSWINDOWS}
-  FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
-  {$ELSE}
+  {$IFDEF KYLIX}
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
+  {$ELSE}
+  FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
   {$ENDIF}
   FGlobals := TStringList.Create;
   ReadInformation;
   FIdeTools := TJclDelphiIdeTool.Create(Self);
-  {$IFDEF MSWINDOWS}
+  {$IFNDEF KYLIX}
   FOpenHelp := TJclDelphiOpenHelp.Create(Self);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1307,7 +1317,7 @@ begin
   FreeAndNil(FIdeTools);
   {$IFDEF MSWINDOWS}
   FreeAndNil(FOpenHelp);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF}
   FreeAndNil(FPalette);
   inherited;
 end;
@@ -1402,6 +1412,19 @@ end;
 
 function TJclDelphiInstallation.GetEditionAsText: string;
 begin
+  {$IFDEF KYLIX}
+  case Edition of
+    deOPEN:
+      Result := RsOpenEdition;
+    dePRO:
+      Result := RsProfessional;
+    deSVR:
+      if VersionNumber >= 2 then
+        Result := RsEnterprise
+      else
+        Result := RsServerDeveloper;
+  end;
+  {$ELSE KYLIX}
   case Edition of
     deSTD:
       if VersionNumber >= 6 then
@@ -1416,6 +1439,7 @@ begin
       else
         Result := RsClientServer;
   end;
+  {$ENDIF KYLIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1449,13 +1473,12 @@ end;
 
 function TJclDelphiInstallation.GetIdeExeBuildNumber: string;
 begin
-  {$IFDEF MSWINDOWS}
-  Result := VersionFixedFileInfoString(IdeExeFileName, vfFull);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF KYLIX}
   { TODO : determine Kylix IDE build # }
   Result := '?';
-  {$ENDIF UNIX}
+  {$ELSE}
+  Result := VersionFixedFileInfoString(IdeExeFileName, vfFull);
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1526,31 +1549,21 @@ end;
 
 procedure TJclDelphiInstallation.ReadInformation;
 const
-{$IFDEF UNIX}
+  {$IFDEF KYLIX}
   BinDir = 'bin/';
-{$ENDIF UNIX}
-{$IFDEF MSWINDOWS}
+  EditionNames: array [TJclDelphiEdition] of PChar = ('OPEN', 'PRO', 'SVR');
+  {$ELSE}
   BinDir = 'Bin\';
-{$ENDIF MSWINDOWS}
-  UpdateKeyName = 'Update #';
   EditionNames: array [TJclDelphiEdition] of PChar = ('STD', 'PRO', 'CSS');
+  {$ENDIF}
+  UpdateKeyName = 'Update #';
 var
   KeyLen, I: Integer;
   Key, KeyName: string;
   Ed: TJclDelphiEdition;
 begin
   Key := ConfigData.FileName;
-  {$IFDEF MSWINDOWS}
-  RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
-  FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, ConfigData.FileName, RootDirValueName, '');
-
-  KeyLen := Length(Key);
-  if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
-    FVersionNumber := Ord(Key[KeyLen - 2]) - 48
-  else
-    FVersionNumber := 0;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF KYLIX}
   ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
   FRootDir := Globals.Values[RootDirValueName];
 
@@ -1560,7 +1573,16 @@ begin
       FVersionNumber := I;
       Break;
     end;
-  {$ENDIF UNIX}
+  {$ELSE KYLIX}
+  RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
+  FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, ConfigData.FileName, RootDirValueName, '');
+
+  KeyLen := Length(Key);
+  if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
+    FVersionNumber := Ord(Key[KeyLen - 2]) - 48
+  else
+    FVersionNumber := 0;
+  {$ENDIF KYLIX}
 
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
   FIdeExeFileName := PathAddSeparator(RootDir) + DelphiIdeFileName;
@@ -1721,7 +1743,24 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclDelphiInstallations.ReadInstallations;
-{$IFDEF MSWINDOWS}
+{$IFDEF KYLIX}
+var
+  I: Integer;
+  Item: TJclDelphiInstallation;
+  RcFileName: string;
+begin
+  FList.Clear;
+  for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
+  begin
+    RcFileName := Format('%s/.borland/%s', [GetPersonalFolder, DelphiRcFileNames[I]]);
+    if FileExists(RcFileName) then
+    begin
+      Item := TJclDelphiInstallation.Create(RcFileName);
+      FList.Add(Item);
+    end;
+  end;
+end;
+{$ELSE KYLIX}
 var
   VersionNumbers: TStringList;
   I: Integer;
@@ -1745,25 +1784,7 @@ begin
     VersionNumbers.Free;
   end;
 end;
-{$ENDIF}
-{$IFDEF UNIX}
-var
-  I: Integer;
-  Item: TJclDelphiInstallation;
-  RcFileName: string;
-begin
-  FList.Clear;
-  for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
-  begin
-    RcFileName := Format('%s/.borland/%s', [GetPersonalFolder, DelphiRcFileNames[I]]);
-    if FileExists(RcFileName) then
-    begin
-      Item := TJclDelphiInstallation.Create(RcFileName);
-      FList.Add(Item);
-    end;
-  end;
-end;
-{$ENDIF UNIX}
+{$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 85
+  PixelsPerInch = 80
   object StatusBevel: TBevel
     Left = 8
     Top = 525
@@ -217,15 +217,15 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 8
       Top = 13
-      Width = 201
-      Height = 26
-      Caption = 'Project JEDI Delphi Installer'
+      Width = 306
+      Height = 27
+      Caption = 'Project JEDI X-Platform Delphi Installer'
       Font.Color = clText
       Font.Height = 16
       Font.Name = 'Verdana'
       Font.Pitch = fpVariable
-      Font.Style = []
-      Font.Weight = 40
+      Font.Style = [fsBold]
+      Font.Weight = 64
       ParentFont = False
     end
   end
@@ -355,6 +355,98 @@ object MainForm: TMainForm
       Caption = 'Delphi 7'
       ImageIndex = 3
       inline D7Product: TProductFrame
+        Left = 0
+        Top = 0
+        Width = 807
+        Height = 410
+        HorzScrollBar.Range = 398
+        Align = alClient
+        Color = clBackground
+        ParentColor = False
+        TabOrder = 0
+        inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
+          inherited TreeView: TTreeView
+            Images = ImageList
+            OnChange = TreeViewChange
+            OnCollapsing = TreeViewCollapsing
+          end
+        end
+        inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
+          inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
+            inherited BplPathEdit: TEdit
+              Height = 23
+              OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
+            end
+          end
+        end
+      end
+    end
+    object D1TabSheet: TTabSheet
+      Tag = 1
+      Caption = 'Kylix 1'
+      ImageIndex = 3
+      inline D1Product: TProductFrame
+        Left = 0
+        Top = 0
+        Width = 807
+        Height = 410
+        HorzScrollBar.Range = 398
+        Align = alClient
+        Color = clBackground
+        ParentColor = False
+        TabOrder = 0
+        inherited ComponentsTreePanel: TPanel
+          inherited Label1: TLabel
+            Height = 15
+          end
+          inherited TreeView: TTreeView
+            Images = ImageList
+            OnChange = TreeViewChange
+            OnCollapsing = TreeViewCollapsing
+          end
+        end
+        inherited InfoPanel: TPanel
+          inherited Label2: TLabel
+            Height = 15
+          end
+          inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Height = 15
+            end
+            inherited Label4: TLabel
+              Height = 15
+            end
+            inherited BplPathEdit: TEdit
+              Height = 23
+              OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 23
+            end
+          end
+        end
+      end
+    end
+    object D2TabSheet: TTabSheet
+      Tag = 2
+      Caption = 'Kylix 2'
+      ImageIndex = 3
+      inline D2Product: TProductFrame
         Left = 0
         Top = 0
         Width = 807

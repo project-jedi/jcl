@@ -23,6 +23,9 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  DesignSize = (
+    832
+    556)
   PixelsPerInch = 96
   TextHeight = 14
   object StatusBevel: TBevel
@@ -59,6 +62,9 @@ object MainForm: TMainForm
     BorderStyle = bsSingle
     Color = clCaptionText
     TabOrder = 2
+    DesignSize = (
+      828
+      45)
     object JediImage: TImage
       Left = 702
       Top = 7
@@ -257,18 +263,33 @@ object MainForm: TMainForm
     Top = 56
     Width = 815
     Height = 440
-    ActivePage = D5TabSheet
+    ActivePage = D7TabSheet
     Anchors = [akLeft, akTop, akRight, akBottom]
     MultiLine = True
+    TabIndex = 2
     TabOrder = 3
     object D5TabSheet: TTabSheet
       Tag = 5
       Caption = 'Delphi 5'
       ImageIndex = 3
       inline D5Product: TProductFrame
+        Left = 0
+        Top = 0
+        Width = 807
         Height = 411
+        HorzScrollBar.Range = 398
         Align = alClient
+        AutoScroll = False
+        TabOrder = 0
+        inherited Splitter: TSplitter
+          Height = 411
+        end
         inherited ComponentsTreePanel: TPanel
+          Height = 411
+          inherited Label1: TLabel
+            Width = 134
+            Height = 14
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -276,9 +297,26 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          Height = 411
+          inherited Label2: TLabel
+            Width = 53
+            Height = 14
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Width = 43
+              Height = 14
+            end
+            inherited Label4: TLabel
+              Width = 44
+              Height = 14
+            end
             inherited BplPathEdit: TEdit
+              Height = 22
               OnChange = BplPathEditChange
+            end
+            inherited DcpPathEdit: TEdit
+              Height = 22
             end
           end
         end
@@ -289,9 +327,23 @@ object MainForm: TMainForm
       Caption = 'Delphi 6'
       ImageIndex = 3
       inline D6Product: TProductFrame
+        Left = 0
+        Top = 0
+        Width = 807
         Height = 411
+        HorzScrollBar.Range = 398
         Align = alClient
+        AutoScroll = False
+        TabOrder = 0
+        inherited Splitter: TSplitter
+          Height = 411
+        end
         inherited ComponentsTreePanel: TPanel
+          Height = 411
+          inherited Label1: TLabel
+            Width = 134
+            Height = 14
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -299,7 +351,20 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          Height = 411
+          inherited Label2: TLabel
+            Width = 53
+            Height = 14
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Width = 43
+              Height = 14
+            end
+            inherited Label4: TLabel
+              Width = 44
+              Height = 14
+            end
             inherited BplPathEdit: TEdit
               OnChange = BplPathEditChange
             end
@@ -312,9 +377,23 @@ object MainForm: TMainForm
       Caption = 'Delphi 7'
       ImageIndex = 3
       inline D7Product: TProductFrame
+        Left = 0
+        Top = 0
+        Width = 807
         Height = 411
+        HorzScrollBar.Range = 398
         Align = alClient
+        AutoScroll = False
+        TabOrder = 0
+        inherited Splitter: TSplitter
+          Height = 411
+        end
         inherited ComponentsTreePanel: TPanel
+          Height = 411
+          inherited Label1: TLabel
+            Width = 134
+            Height = 14
+          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -322,32 +401,26 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
+          Height = 411
+          inherited Label2: TLabel
+            Width = 53
+            Height = 14
+          end
           inherited OptionsGroupBox: TGroupBox
+            inherited Label3: TLabel
+              Width = 43
+              Height = 14
+            end
+            inherited Label4: TLabel
+              Width = 44
+              Height = 14
+            end
             inherited BplPathEdit: TEdit
+              Height = 22
               OnChange = BplPathEditChange
             end
-          end
-        end
-      end
-    end
-    object D3TabSheet: TTabSheet
-      Tag = 3
-      Caption = 'Kylix 3'
-      ImageIndex = 3
-      inline D3Product: TProductFrame
-        Height = 411
-        Align = alClient
-        inherited ComponentsTreePanel: TPanel
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          inherited OptionsGroupBox: TGroupBox
-            inherited BplPathEdit: TEdit
-              OnChange = BplPathEditChange
+            inherited DcpPathEdit: TEdit
+              Height = 22
             end
           end
         end

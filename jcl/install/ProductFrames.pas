@@ -204,7 +204,7 @@ var
   I: Integer;
   Button: TButton;
   Edit: TEdit;
-  Directory:  string;
+  Directory:  string; 
 begin
   Button := Sender as TButton;
   Edit := nil;

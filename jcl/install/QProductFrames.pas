@@ -206,7 +206,7 @@ var
   I: Integer;
   Button: TButton;
   Edit: TEdit;
-  Directory: {$IFDEF UNIX} WideString; {$ENDIF} string;
+  Directory: {$IFDEF UNIX} WideString; {$ELSE} string; {$ENDIF}
 begin
   Button := Sender as TButton;
   Edit := nil;

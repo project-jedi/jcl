@@ -1,4 +1,4 @@
-{$IFNDEF Develop}program {$IFDEF VisualCLX}QJediInstaller{$ELSE}JediInstaller{$ENDIF};{$ENDIF}
+program {$IFDEF VisualCLX}QJediInstaller{$ELSE}JediInstaller{$ENDIF};
 
 uses
   {$IFDEF VisualCLX}
