@@ -18,10 +18,10 @@
 {                                                                              }
 {******************************************************************************}
 {                                                                              }
-{ Various classes and support routines for sending e-mail through MAPI         }
+{ Various classes and support routines for sending e-mail through Simple MAPI  }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 08, 2001                                             }
+{ Last modified: April 14, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -239,6 +239,10 @@ function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
   ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
   AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
 
+function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
+  const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+  AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+
 //------------------------------------------------------------------------------
 // MAPI Errors
 //------------------------------------------------------------------------------
@@ -250,7 +254,7 @@ function MapiErrorMessage(const ErrorCode: DWORD): string;
 implementation
 
 uses
-  Consts, Registry,
+  Registry,
   JclLogic, JclResources, JclSscanf, JclStrings, JclSysInfo, JclSysUtils;
 
 const
@@ -363,7 +367,7 @@ end;
 procedure TJclSimpleMapi.CheckListIndex(I: Integer);
 begin
   if (I < 0) or (I >= ClientCount) then
-    raise EJclMapiError.CreateResRecFmt(@SListIndexError, [I]);
+    raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
 end;
 
 //------------------------------------------------------------------------------
@@ -1166,6 +1170,24 @@ begin
     if AAttachment <> '' then
       Attachments.Add(AAttachment);
     Result := Send(ShowDialog);
+  finally
+    Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
+  const AAttachment: TFileName; AParentWND: HWND): Boolean;
+begin
+  with TJclEmail.Create do
+  try
+    ParentWnd := AParentWND;
+    Subject := ASubject;
+    Body := ABody;
+    if AAttachment <> '' then
+      Attachments.Add(AAttachment);
+    Result := Send(True);
   finally
     Free;
   end;
