@@ -23,7 +23,7 @@
 {   This is a preview - class and function names might be changed                                  }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: January 30, 2005                                                                  }
+{ Last modified: January 31, 2005                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -178,7 +178,6 @@ end;
 function ReadStringFromStream(AStream: TStream; var AString: string): Boolean;
 var
   StringLength: Integer;
-  PC: PChar;
 begin
   Result := False;
   AString := '';
@@ -190,7 +189,10 @@ begin
       if StringLength <= AStream.Size - AStream.Position then
       begin
         if StringLength > 0 then
+        begin
+          SetLength(AString, StringLength);
           AStream.Read(PChar(AString)^, StringLength);
+        end;
         Result := True;
       end;
     end;
