@@ -42,8 +42,7 @@ function GetMDACVersion: string;
 implementation
 
 uses
-  Windows, ActiveX,
-  SysUtils,
+  Windows, ActiveX, SysUtils,
   JclFileUtils, JclRegistry, JclSysInfo, JclSysUtils, JclWin32;
 
 function IsDCOMInstalled: Boolean;
@@ -83,7 +82,8 @@ begin
   // note: this does not work on Windows NT/2000!
   // for a list of DCOM versions: http://support.microsoft.com/support/kb/articles/Q235/6/38.ASP
   Result := '';
-  if IsDCOMEnabled then Result := RegReadString(HKEY_CLASSES_ROOT, DCOMVersionKey, '');
+  if IsDCOMEnabled then
+    Result := RegReadString(HKEY_CLASSES_ROOT, DCOMVersionKey, '');
 end;
 
 //------------------------------------------------------------------------------
@@ -111,6 +111,5 @@ begin
     end;
   end;
 end;
-
 
 end.
