@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 5, 2002                                                                 }
+{ Last modified: March 5, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -182,6 +182,18 @@ resourcestring
   EDIError072 = 'Could not delete element at index [%s].';
   EDIError073 = 'Could not delete element at index [%s].';
   EDIError074 = 'Could not assign delimiters to segment.  Assemble cancelled.';
+  EDIError075 = 'Could not get data object in transaction set loop at index [%s], Data object does not exist.';
+  EDIError076 = 'Could not get data object in transaction set loop at index [%s], Index too high.';
+  EDIError077 = 'Could not get data object in transaction set loop at index [%s], Index too low.';
+  EDIError078 = 'Could not get data object in transaction set loop at index [%s].';
+  EDIError079 = 'Could not set data object in transaction set loop at index [%s], Index too high.';
+  EDIError080 = 'Could not set data object in transaction set loop at index [%s], Index too low.';
+  EDIError081 = 'Could not set data object in transaction set loop at index [%s].';
+  EDIError082 = 'Loop in loop stack record at index [%s] does not exist.';
+  EDIError083 = 'Could not get loop stack record at index [%s], Index too high.';
+  EDIError084 = 'Could not get loop stack record at index [%s], Index too low.';
+  EDIError085 = 'Could not get loop stack record at index [%s].';
+  EDIError086 = 'Could not get safe loop stack index [%s].';
 
 //--------------------------------------------------------------------------------------------------
 // JclExprEval
