@@ -15,11 +15,25 @@
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Marcel Bestebroer, Marcel van Brakel, Azret Botash, Charlie Calvert, Wim De Cleen,             }
-{   Massimo Maria Ghisalberti, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, David Hervieux,        }
-{   Pelle F. S. Liljendal, Robert Marquardt, John Molyneux, Robert Rossmair,                       }
-{   Olivier Sannier (obones), André Snepvangers, Anthony Steele, Matthias Thoma, Rudy Velthuis     }
+{ Contributors:                                                                                    }
+{   Marcel Bestebroer                                                                              }
+{   Marcel van Brakel                                                                              }
+{   Azret Botash                                                                                   }
+{   Charlie Calvert                                                                                }
+{   Wim De Cleen                                                                                   }
+{   Massimo Maria Ghisalberti                                                                      }
+{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de                                                    }
+{   David Hervieux                                                                                 }
+{   Jeff                                                                                           }
+{   Pelle F. S. Liljendal                                                                          }
+{   Robert Marquardt (marquardt)                                                                   }
+{   John Molyneux                                                                                  }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   André Snepvangers (asn)                                                                        }
+{   Anthony Steele                                                                                 }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Rudy Velthuis                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -5735,6 +5749,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/05/09 11:19:13  rrossmair
+// Contributor list update
+//
 // Revision 1.15  2004/05/08 19:56:55  rrossmair
 // FPC-related improvements
 //
