@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 7, 2001                                               }
+{ Last modified: January 21, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -24,12 +24,18 @@ unit JclUnicode;
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
-//
-// 07-JAN-2001 ml:
-//   optimized character property, combining class etc. access
-// 06-JAN-2001 ml:
+//    
+// 20..21-JAN-2001:
+//   - StrUpperW, StrLowerW and StrTitleW removed because they potentially would need
+//     a reallocation to work correctly (use the WideString versions instead)
+//   - further improvements related to internal data
+//   - introduced TUnicodeBlock
+//   - CodeBlockFromChar improved                     
+// 07-JAN-2001:
+//   optimized access to character properties, combining class etc.
+// 06-JAN-2001:
 //   TWideStrings and TWideStringList improved
-// APR-DEC 2000 ml: versions 2.1 - 2.6
+// APR-DEC 2000: versions 2.1 - 2.6
 //   - preparation for public rlease
 //   - additional conversion routines
 //   - JCL compliance
@@ -42,12 +48,12 @@ unit JclUnicode;
 //   - composition and normalization support
 //   - normalization conformance tests applied
 //   - bug fixes
-// FEB-MAR 2000 ml: version 2.0
+// FEB-MAR 2000: version 2.0
 //   - Unicode regular expressions (URE) search class (TURESearch)
 //   - generic search engine base class for both the Boyer-Moore and the RE search class
 //   - whole word only search in UTBM, bug fixes in UTBM
 //   - string decompositon (including hangul)
-// OCT/99 - JAN/2000 ml: version 1.0
+// OCT/99 - JAN/2000: version 1.0
 //   - basic Unicode implementation, more than 100 WideString/UCS2 and UCS4 core functions
 //   - TWideStrings and TWideStringList classes
 //   - Unicode Tuned Boyer-Moore search class (TUTBMSearch)
@@ -55,14 +61,14 @@ unit JclUnicode;
 //   - low level Unicode UCS4 data import and functions
 //   - helper functions
 //
-//  Version 2.7
+//  Version 2.8
 //----------------------------------------------------------------------------------------------------------------------
 // This unit contains routines and classes to manage and work with Unicode/WideString strings.
 // You need Delphi 4 or higher to compile this code.
 //
 // Publicly available low level functions are all preceded by "Unicode..." (e.g.
 // in UnicodeToUpper) while the high level functions use the Str... or Wide...
-// naming scheme (e.g. WideUpperCase and WideUpperCase).
+// naming scheme (e.g. StrLICompW and WideUpperCase).
 //
 // The normalization implementation in this unit has successfully and completely passed the
 // official normative conformance testing as of Annex 9 in Technical Report #15
@@ -85,15 +91,15 @@ unit JclUnicode;
 //     there are limitations like maximum text lengths). Under Win9x conversions
 //     from and to MBCS are necessary which are bound to a particular locale and
 //     so very limited in general use. These comparisons should be changed so that
-//     the code in this unit is used.
+//     the code in this unit is used. 
 
 interface
 
 uses
-  {$ifdef WIN32}
+  {$IFDEF WIN32}
     Windows,
-  {$endif}
-    Classes;
+  {$ENDIF WIN32}
+    Classes; 
 
 const
   // definitions of often used characters:
@@ -144,24 +150,12 @@ type
   TUCS2Array = array of UCS2;
   TUCS4Array = array of UCS4;
 
-const
-  ReplacementCharacter: UCS4 = $0000FFFD;
-  MaximumUCS2: UCS4 = $0000FFFF;
-  MaximumUTF16: UCS4 = $0010FFFF;
-  MaximumUCS4: UCS4 = $7FFFFFFF;
-
-  SurrogateHighStart: UCS4 = $D800;
-  SurrogateHighEnd: UCS4 = $DBFF;
-  SurrogateLowStart: UCS4 = $DC00;
-  SurrogateLowEnd: UCS4 = $DFFF;
-
-type
   // various predefined or otherwise useful character property categories
   TCharacterCategory = (
     // normative categories
     ccLetterUppercase,
     ccLetterLowercase,
-    ccLetterTitlecase,
+    ccLetterTitlecase,                    
     ccMarkNonSpacing,
     ccMarkSpacingCombining,
     ccMarkEnclosing,
@@ -216,17 +210,119 @@ type
     ccQuotationMark,
     ccMirroring,
     ccSpaceOther,
-    ccAssigned,              // means there is a definition in the Unicode standard
-    ccLetterUniqueUpper      // special form of upper case
+    ccAssigned               // means there is a definition in the Unicode standard
   );
   TCharacterCategories = set of TCharacterCategory;
 
   // four forms of normalization are defined:
   TNormalizationForm = (
-    nfC,  // canonical decomposition followed by canonical composition
-    nfD,  // canonical decomposition
-    nfKC, // compatibility decomposition followed by a canonical composition
-    nfKD  // compatibility decomposition
+    nfNone, // do not normalize
+    nfC,    // canonical decomposition followed by canonical composition (this is most often used)
+    nfD,    // canonical decomposition
+    nfKC,   // compatibility decomposition followed by a canonical composition
+    nfKD    // compatibility decomposition
+  );
+
+  // An Unicode block usually corresponds to a particular language script but
+  // can also represent special characters, musical symbols and the like.
+  TUnicodeBlock = (
+    ubUndefined,
+    ubBasicLatin,
+    ubLatin1Supplement,
+    ubLatinExtendedA,
+    ubLatinExtendedB,
+    ubIPAExtensions,
+    ubSpacingModifierLetters,
+    ubCombiningDiacriticalMarks,
+    ubGreek,
+    ubCyrillic,
+    ubArmenian,
+    ubHebrew,
+    ubArabic,
+    ubSyriac,
+    ubThaana,
+    ubDevanagari,
+    ubBengali,
+    ubGurmukhi,
+    ubGujarati,
+    ubOriya,
+    ubTamil,
+    ubTelugu,
+    ubKannada,
+    ubMalayalam,
+    ubSinhala,
+    ubThai,
+    ubLao,
+    ubTibetan,
+    ubMyanmar,
+    ubGeorgian,
+    ubHangulJamo,
+    ubEthiopic,
+    ubCherokee,
+    ubUnifiedCanadianAboriginalSyllabics,
+    ubOgham,
+    ubRunic,
+    ubKhmer,
+    ubMongolian,
+    ubLatinExtendedAdditional,
+    ubGreekExtended,
+    ubGeneralPunctuation,
+    ubSuperscriptsAndSubscripts,
+    ubCurrencySymbols,
+    ubCombiningMarksForSymbols,
+    ubLetterlikeSymbols,
+    ubNumberForms,
+    ubArrows,
+    ubMathematicalOperators,
+    ubMiscellaneousTechnical,
+    ubControlPictures,
+    ubOpticalCharacterRecognition,
+    ubEnclosedAlphanumerics,
+    ubBoxDrawing,
+    ubBlockElements,
+    ubGeometricShapes,
+    ubMiscellaneousSymbols,
+    ubDingbats,
+    ubBraillePatterns,
+    ubCJKRadicalsSupplement,
+    ubKangxiRadicals,
+    ubIdeographicDescriptionCharacters,
+    ubCJKSymbolsAndPunctuation,
+    ubHiragana,
+    ubKatakana,
+    ubBopomofo,
+    ubHangulCompatibilityJamo,
+    ubKanbun,
+    ubBopomofoExtended,
+    ubEnclosedCJKLettersAndMonths,
+    ubCJKCompatibility,
+    ubCJKUnifiedIdeographsExtensionA,
+    ubCJKUnifiedIdeographs,
+    ubYiSyllables,
+    ubYiRadicals,
+    ubHangulSyllables,
+    ubHighSurrogates,
+    ubHighPrivateUseSurrogates,
+    ubLowSurrogates,
+    ubPrivateUse,
+    ubCJKCompatibilityIdeographs,
+    ubAlphabeticPresentationForms,
+    ubArabicPresentationFormsA,
+    ubCombiningHalfMarks,
+    ubCJKCompatibilityForms,
+    ubSmallFormVariants,
+    ubArabicPresentationFormsB,
+    ubSpecials,
+    ubHalfwidthAndFullwidthForms,
+    ubOldItalic,
+    ubGothic,
+    ubDeseret,
+    ubByzantineMusicalSymbols,
+    ubMusicalSymbols,
+    ubMathematicalAlphanumericSymbols,
+    ubCJKUnifiedIdeographsExtensionB,
+    ubCJKCompatibilityIdeographsSupplement,
+    ubTags
   );
 
   TWideStrings = class;
@@ -688,6 +784,17 @@ type
 
   TFontCharSet = 0..255;
 
+const
+  ReplacementCharacter: UCS4 = $0000FFFD;
+  MaximumUCS2: UCS4 = $0000FFFF;
+  MaximumUTF16: UCS4 = $0010FFFF;
+  MaximumUCS4: UCS4 = $7FFFFFFF;
+
+  SurrogateHighStart: UCS4 = $D800;
+  SurrogateHighEnd: UCS4 = $DBFF;
+  SurrogateLowStart: UCS4 = $DC00;
+  SurrogateLowEnd: UCS4 = $DFFF;
+
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
 //       In Kylix this is different. WideStrings are reference counted there, just like ANSI strings.
@@ -711,9 +818,6 @@ function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar; overload;
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
-function StrUpperW(Str: PWideChar): PWideChar;
-function StrLowerW(Str: PWideChar): PWideChar;
-function StrTitleW(Str: PWideChar): PWideChar;
 function StrAllocW(Size: Cardinal): PWideChar;
 function StrBufSizeW(Str: PWideChar): Cardinal;
 function StrNewW(Str: PWideChar): PWideChar;
@@ -724,7 +828,6 @@ procedure StrSwapByteOrder(Str: PWideChar);
 function WideAdjustLineBreaks(const S: WideString): WideString;
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;  //az
 function WideCompose(const S: WideString): WideString;
-
 function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
@@ -821,7 +924,7 @@ function UnicodeIsHangul(C: UCS4): Boolean;
 // Utility functions
 function CharSetFromLocale(Language: LCID): TFontCharSet;
 function CodePageFromLocale(Language: LCID): Integer;
-function CodeBlockFromChar(const C: WideChar): Cardinal;
+function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
 function KeyboardCodePage: Word;
 function KeyUnicode(C: Char): WideChar;
 function StringToWideStringEx(const S: string; CodePage: Word): WideString;
@@ -831,6 +934,12 @@ function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 // WideString conversion routines
 function WideStringToUTF8(S: WideString): AnsiString;
 function UTF8ToWideString(S: AnsiString): WideString;
+
+type
+  TCompareFunc = function (W1, W2: WideString; Locale: LCID): Integer;
+
+var
+  WideCompareText: TCompareFunc;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -845,7 +954,7 @@ implementation
 
 {$R JclUnicode.res}
 
-uses
+uses                                          
   Consts, SyncObjs, SysUtils, JclResources;
 
 const
@@ -860,18 +969,22 @@ const
   ClassEuropeanNumber = [ccEuropeanNumber, ccEuropeanNumberSeparator, ccEuropeanNumberTerminator];
 
   // used to negate a set of categories
-  ClassAll = [ccLetterUppercase..ccLetterUniqueUpper];
-
-type
-  TCompareFunc = function (W1, W2: WideString; Locale: LCID): Integer;
+  ClassAll = [ccLetterUppercase..ccAssigned];
 
 var
-  WideCompareText: TCompareFunc;
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
   LoadInProgress: TCriticalSection;
 
 //----------------- support for character categories -------------------------------------------------------------------
+
+// Character category data is quite a large block since every defined character in Unicode is assigned at least
+// one category. Because of this we cannot use a sparse matrix to provide quick access as implemented for
+// e.g. composition data.
+// The approach used here is based on the fact that an application seldomly uses all characters defined in Unicode
+// simultanously. In fact the opposite is true. Most application will use either Western Europe or Arabic or
+// Far East character data, but very rarely all together. Based on this fact is the implementation of virtual
+// memory using the systems paging file (aka file mapping) to load only into virtual memory what is used currently.
 
 type
   // start and stop of a range of code points
@@ -884,7 +997,7 @@ type
   TCategoriesArray = array of TCharacterCategories;
 
 var
-  // character categories, in form of a sparse, two stage matrix
+  // character categories, stored in the system's swap file and mapped on demand
   CategoriesLoaded: Boolean;
   Categories: array[Byte] of TCategoriesArray;
 
@@ -903,7 +1016,7 @@ var
   First,
   Second: Byte;
   J, K: Integer;
-
+  
 begin
   // Data already loaded?
   if not CategoriesLoaded then
@@ -923,7 +1036,7 @@ begin
           // b) read the size of the ranges and the ranges themself
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
-          begin
+          begin                                       
             SetLength(Buffer, Size);
             Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
 
@@ -931,6 +1044,9 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
+                if K > $FFFF then
+                  Break;
+                  
                 First := (K shr 8) and $FF;
                 Second := K and $FF;
                 // add second step array if not yet done
@@ -988,7 +1104,7 @@ var
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure LoadUnicodeCaseData;
+procedure LoadCaseMappingData;
 
 var
   Stream: TResourceStream;
@@ -1016,6 +1132,8 @@ begin
         begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
+
+          Assert(Code < $10000, 'cased Unicode character > $FFFF found');
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 8) and $FF;
           Second := Code and $FF;
@@ -1077,7 +1195,7 @@ var
 begin
   // load case mapping data if not already done
   if not CaseDataLoaded then
-    LoadUnicodeCaseData;
+    LoadCaseMappingData;
 
   First := (Code shr 8) and $FF;
   Second := Code and $FF;
@@ -1145,7 +1263,7 @@ const
 type
   TDecompositions = array of TUCS4Array;
   TDecompositionsArray = array[Byte] of TDecompositions;
-
+  
 var
   // list of decompositions, organized (again) as two stage matrix
   // Note: there are two tables, one for canonical decompositions and the other one
@@ -1156,7 +1274,7 @@ var
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure LoadUnicodeDecompositionData;
+procedure LoadDecompositionData;
 
 var
   Stream: TResourceStream;
@@ -1182,6 +1300,9 @@ begin
         for I := 0 to Size - 1 do
         begin
           Stream.ReadBuffer(Code, 4);
+
+          Assert((Code and not $40000000) < $10000, 'decomposed Unicode character > $FFFF found');
+
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 8) and $FF;
           Second := Code and $FF;
@@ -1255,7 +1376,7 @@ var
 begin
   // load decomposition data if not already done
   if not DecompositionsLoaded then
-    LoadUnicodeDecompositionData;
+    LoadDecompositionData;
 
   Result := nil;
 
@@ -1303,7 +1424,7 @@ var
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure LoadUnicodeCombiningClasses;
+procedure LoadCombiningClassData;
 
 var
   Stream: TResourceStream;
@@ -1341,6 +1462,8 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
+                Assert(K < $10000, 'combining class for Unicode character > $FFFF found');
+                
                 First := (K shr 8) and $FF;
                 Second := K and $FF;
                 // add second step array if not yet done
@@ -1366,11 +1489,11 @@ function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 var
   First,
   Second: Byte;
-
+  
 begin
   // load combining class data if not already done
   if not CCCsLoaded then
-    LoadUnicodeCombiningClasses;
+    LoadCombiningClassData;
 
   First := (Code shr 8) and $FF;
   Second := Code and $FF;
@@ -1397,7 +1520,7 @@ var
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure LoadUnicodeNumberData;
+procedure LoadNumberData;
 
 var
   Stream: TResourceStream;
@@ -1448,7 +1571,7 @@ var
 begin
   // load number data if not already done
   if NumberCodes = nil then
-    LoadUnicodeNumberData;
+    LoadNumberData;
 
   Result := False;
   L := 0;
@@ -1476,7 +1599,7 @@ end;
 
 type
   // maps between a pair of code points to a composite code point
-  // Note: the source pair is packed into one 4 byte value to speed up search.
+  // Note: the source pair is packed into one 4 byte value to speed up search. 
   TCompositionPair = record
     Code: Cardinal;
     Composition: UCS4;
@@ -2361,7 +2484,7 @@ var
   I: Integer;
   Run,
   ListEnd: PUCS2;
-
+  
 begin
   Run := np;
   ListEnd := Run + Limit;
@@ -2822,7 +2945,7 @@ var
   I: Integer;
   Run,
   ListEnd: PUCS2;
-
+  
 begin
   I := 0;
   Code := 0;
@@ -4217,7 +4340,7 @@ var
   Start, Stop: Cardinal;
   Run: PWideChar;
   RunLen: Cardinal;
-
+  
 begin
   ClearResults;
   Run := Text;
@@ -4336,7 +4459,7 @@ var
   I: Integer;
   S: WideString;
   CP: Integer;
-
+  
 begin
   BeginUpdate;
   try
@@ -4429,7 +4552,7 @@ var
   I: Integer;
   S: string;
   CP: Integer;
-
+  
 begin
   if Dest is TStrings then
   begin
@@ -4605,7 +4728,7 @@ var
   S: WideString;
   P: PWideChar;
   I, Count: Integer;
-
+  
 begin
   Count := GetCount;
   if (Count = 1) and (Get(0) = '') then
@@ -4703,7 +4826,7 @@ function TWideStrings.GetValue(const Name: WideString): WideString;
 
 var
   I: Integer;
-
+  
 begin
   I := IndexOfName(Name);
   if I >= 0 then
@@ -4768,7 +4891,7 @@ procedure TWideStrings.LoadFromFile(const FileName: string);
 
 var
   Stream: TStream;
-
+  
 begin
   try
     Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
@@ -4889,7 +5012,7 @@ end;
 procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
 
 // Saves the currently loaded text into the given stream. WithBOM determines whether to write a
-// byte order mark or not. Note: when saved as ANSI text there will never be a BOM.
+// byte order mark or not. Note: when saved as ANSI text there will never be a BOM. 
 
 var
   SW, BOM: WideString;
@@ -5041,14 +5164,17 @@ procedure TWideStrings.SetNormalizationForm(const Value: TNormalizationForm);
 
 var
   I: Integer;
-
+  
 begin
   if FNormalizationForm <> Value then
   begin
     FNormalizationForm := Value;
-    // renormalize all strings according to the new form
-    for I := 0 to GetCount - 1 do
-      Put(I, WideNormalize(Get(I), FNormalizationForm));
+    if FNormalizationForm <> nfNone then
+    begin
+      // renormalize all strings according to the new form
+      for I := 0 to GetCount - 1 do
+        Put(I, WideNormalize(Get(I), FNormalizationForm));
+    end;
   end;
 end;
 
@@ -5082,7 +5208,7 @@ var
   Len: Integer;
   W: WideString;
   Value: TValueType;
-
+  
 begin
   Value := vaWString;
   W := GetText;
@@ -5098,7 +5224,7 @@ destructor TWideStringList.Destroy;
 
 begin
   Clear;
-
+  
   inherited;
 end;
 
@@ -5329,7 +5455,7 @@ begin
   begin
     Pointer(FString) := nil; // avoid freeing the string, the address is now used in another element
     FObject := nil;
-    if Length(S) > 0 then
+    if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
       FString := WideNormalize(S, FNormalizationForm);
   end;
   Inc(FCount);
@@ -5346,7 +5472,11 @@ begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
   Changing;
-  FList[Index].FString := WideNormalize(S, FNormalizationForm);
+
+  if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
+    FList[Index].FString := WideNormalize(S, FNormalizationForm)
+  else
+    FList[Index].FString := S;
   Changed;
 end;
 
@@ -5508,7 +5638,7 @@ asm
        AND     ECX, 1
        REP     MOVSW
        JMP     @@2
-
+         
 @@1:
        LEA     ESI, [ESI + 2 * ECX - 2]
        LEA     EDI, [EDI + 2 * ECX - 2]
@@ -5772,7 +5902,7 @@ begin
     Folded1 := Folded1 + WideCaseFolding(Str1^);
     Inc(Str1);
   end;
-
+  
   Folded2 := '';
   while Str2^ <> #0 do
   begin
@@ -6055,7 +6185,7 @@ asm
        SUB     ECX, ESI
        JBE     @@2
        MOV     EDI, EBX
-       LEA     EBX, [ESI - 1]
+       LEA     EBX, [ESI - 1] 
 @@1:
        MOV     ESI, EDX
        LODSW
@@ -6077,51 +6207,6 @@ asm
        POP     EBX
        POP     ESI
        POP     EDI
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function StrUpperW(Str: PWideChar): PWideChar;
-
-// converts Str to upper case and returns it
-
-begin
-  Result := Str;
-  while Str^ <> WideNull do
-  begin
-    Str^ := WideChar(UnicodeToUpper(UCS4(Str^)));
-    Inc(Str);
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function StrLowerW(Str: PWideChar): PWideChar;
-
-// converts Str to lower case and returns it
-
-begin
-  Result := Str;
-  while Str^ <> WideNull do
-  begin
-    Str^ := WideChar(UnicodeToLower(UCS4(Str^)));
-    Inc(Str);
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function StrTitleW(Str: PWideChar): PWideChar;
-
-// converts Str to title case and returns it
-
-begin
-  Result := Str;
-  while Str^ <> WideNull do
-  begin
-    Str^ := WideChar(UnicodeToTitle(UCS4(Str^)));
-    Inc(Str);
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6417,7 +6502,7 @@ function WideTrimLeft(const S: WideString): WideString;
 
 var
   I, L: Integer;
-
+  
 begin
   L := Length(S);
   I := 1;
@@ -6595,7 +6680,7 @@ begin
       Inc(CompPos);
     end;
   end;
-  // since we have likely shorten the source string we should set the correct length on exit
+  // since we have likely shortened the source string we have to set the correct length on exit
   SetLength(Result, CompPos - 1);
 end;
 
@@ -6624,7 +6709,7 @@ begin
       // A swap is presumed to be rare (and a double-swap very rare),
       // so don't worry about efficiency here.
       if (CurrentClass > LastClass) and (LastClass > 0) then
-      begin
+      begin                                        
         // swap characters
         Temp := S[I];
         S[I] := S[I + 1];
@@ -6675,7 +6760,7 @@ var
   I, J: Integer;
   Decomp: TUCS4Array;
 
-begin
+begin  
   Result := '';
   Decomp := nil;
 
@@ -6699,7 +6784,7 @@ end;
 
 // Note that most of the assigned code points don't have a case mapping and are therefore
 // returned as they are. Other code points, however, might be converted into several characters
-// like the german ß (es-zed) whose upper case mapping is SS.
+// like the german ß (eszett) whose upper case mapping is SS.
 
 function WideCaseFolding(C: WideChar): WideString;
 
@@ -6867,10 +6952,10 @@ end;
 
 function UnicodeIsCased(C: UCS4): Boolean;
 
-// Is the character a "cased" character, i.e. either lower case, title case, upper case or unique upper case.
+// Is the character a "cased" character, i.e. either lower case, title case or upper case
 
 begin
-  Result := CategoryLookup(C, [ccLetterLowercase, ccLetterTitleCase, ccLetterUppercase, ccLetterUniqueUpper]);
+  Result := CategoryLookup(C, [ccLetterLowercase, ccLetterTitleCase, ccLetterUppercase]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6941,7 +7026,8 @@ function UnicodeIsPrintable(C: UCS4): Boolean;
 // Is the character printable?
 
 begin
-  Result := CategoryLookup(C, ClassMark + ClassNumber + ClassLetter + ClassPunctuation + ClassSymbol + [ccSeparatorSpace]);
+  Result := CategoryLookup(C, ClassMark + ClassNumber + ClassLetter + ClassPunctuation + ClassSymbol +
+    [ccSeparatorSpace]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7400,7 +7486,7 @@ end;
 // I need to fix a problem (introduced by MS) here. The first parameter can be a pointer
 // (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
 // As usual, lpSrc has been translated to a var parameter. But this does not work in
-// our case, hence the redeclaration of the function with a pointer as first parameter.
+// our case, hence the redeclaration of the function with a pointer as first parameter. 
 
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
   external 'gdi32.dll' name 'TranslateCharsetInfo';
@@ -7410,7 +7496,7 @@ function CharSetFromLocale(Language: LCID): TFontCharSet;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
-
+  
 begin
   CP:= CodePageFromLocale(Language);
   TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
@@ -7452,149 +7538,211 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function CodeBlockFromChar(const C: WideChar): Cardinal;
+function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
 
-// returns the Unicode code block to which C belongs
+// Returns an ID for the Unicode code block to which C belongs.
+// If C does not belong to any of the defined blocks then ubUndefined is returned.
+// Note: the code blocks listed here are based on Unicode Version 3.1.
 
 begin
   case C of
-    #$0000..#$007F: // Basic Latin
-      Result := 0;
-    #$0080..#$00FF: // Latin-1 Supplement
-      Result := 1;
-    #$0100..#$017F: // Latin Extended-A
-      Result := 2;
-    #$0180..#$024F: // Latin Extended-B
-      Result := 3;
-    #$0250..#$02AF: // IPA Extensions
-      Result := 4;
-    #$02B0..#$02FF: // Spacing Modifier Letters
-      Result := 5;
-    #$0300..#$036F: // Combining Diacritical Marks
-      Result := 6;
-    #$0370..#$03FF: // Greek
-      Result := 7;
-    #$0400..#$04FF: // Cyrillic
-      Result := 8;
-    #$0530..#$058F: // Armenian
-      Result := 9;
-    #$0590..#$05FF: // Hebrew
-      Result := 10;
-    #$0600..#$06FF: // Arabic
-      Result := 11;
-    #$0900..#$097F: // Devanagari
-      Result := 12;
-    #$0980..#$09FF: // Bengali
-      Result := 13;
-    #$0A00..#$0A7F: // Gurmukhi
-      Result := 14;
-    #$0A80..#$0AFF: // Gujarati
-      Result := 15;
-    #$0B00..#$0B7F: // Oriya
-      Result := 16;
-    #$0B80..#$0BFF: // Tamil
-      Result := 17;
-    #$0C00..#$0C7F: // Telugu
-      Result := 18;
-    #$0C80..#$0CFF: // Kannada
-      Result := 19;
-    #$0D00..#$0D7F: // Malayalam
-      Result := 20;
-    #$0E00..#$0E7F: // Thai
-      Result := 21;
-    #$0E80..#$0EFF: // Lao
-      Result := 22;
-    #$0F00..#$0FBF: // Tibetan
-      Result := 23;
-    #$10A0..#$10FF: // Georgian
-      Result := 24;
-    #$1100..#$11FF: // Hangul Jamo
-      Result := 25;
-    #$1E00..#$1EFF: // Latin Extended Additional
-      Result := 26;
-    #$1F00..#$1FFF: // Greek Extended
-      Result := 27;
-    #$2000..#$206F: // General Punctuation
-      Result := 28;
-    #$2070..#$209F: // Superscripts and Subscripts
-      Result := 29;
-    #$20A0..#$20CF: // Currency Symbols
-      Result := 30;
-    #$20D0..#$20FF: // Combining Marks for Symbols
-      Result := 31;
-    #$2100..#$214F: // Letterlike Symbols
-      Result := 32;
-    #$2150..#$218F: // Number Forms
-      Result := 33;
-    #$2190..#$21FF: // Arrows
-      Result := 34;
-    #$2200..#$22FF: // Mathematical Operators
-      Result := 35;
-    #$2300..#$23FF: // Miscellaneous Technical
-      Result := 36;
-    #$2400..#$243F: // Control Pictures
-      Result := 37;
-    #$2440..#$245F: // Optical Character Recognition
-      Result := 38;
-    #$2460..#$24FF: // Enclosed Alphanumerics
-      Result := 39;
-    #$2500..#$257F: // Box Drawing
-      Result := 40;
-    #$2580..#$259F: // Block Elements
-      Result := 41;
-    #$25A0..#$25FF: // Geometric Shapes
-      Result := 42;
-    #$2600..#$26FF: // Miscellaneous Symbols
-      Result := 43;
-    #$2700..#$27BF: // Dingbats
-      Result := 44;
-    #$3000..#$303F: // CJK Symbols and Punctuation
-      Result := 45;
-    #$3040..#$309F: // Hiragana
-      Result := 46;
-    #$30A0..#$30FF: // Katakana
-      Result := 47;
-    #$3100..#$312F: // Bopomofo
-      Result := 48;
-    #$3130..#$318F: // Hangul Compatibility Jamo
-      Result := 49;
-    #$3190..#$319F: // Kanbun
-      Result := 50;
-    #$3200..#$32FF: // Enclosed CJK Letters and Months
-      Result := 51;
-    #$3300..#$33FF: // CJK Compatibility
-      Result := 52;
-    #$4E00..#$9FFF: // CJK Unified Ideographs
-      Result := 53;
-    #$AC00..#$D7A3: // Hangul Syllables
-      Result := 54;
-    #$D800..#$DB7F: // High Surrogates
-      Result := 55;
-    #$DB80..#$DBFF: // High Private Use Surrogates
-      Result := 56;
-    #$DC00..#$DFFF: // Low Surrogates
-      Result := 57;
-    #$E000..#$F8FF: // Private Use
-      Result := 58;
-    #$F900..#$FAFF: // CJK Compatibility Ideographs
-      Result := 59;
-    #$FB00..#$FB4F: // Alphabetic Presentation Forms
-      Result := 60;
-    #$FB50..#$FDFF: // Arabic Presentation Forms-A
-      Result := 61;
-    #$FE20..#$FE2F: // Combining Half Marks
-      Result := 62;
-    #$FE30..#$FE4F: // CJK Compatibility Forms
-      Result := 63;
-    #$FE50..#$FE6F: // Small Form Variants
-      Result := 64;
-    #$FE70..#$FEFF: // Arabic Presentation Forms-B
-      Result := 65;
-    #$FF00..#$FFEF: // Halfwidth and Fullwidth Forms
-      Result := 66;
+    $0000..$007F:
+      Result := ubBasicLatin;
+    $0080..$00FF:
+      Result := ubLatin1Supplement;
+    $0100..$017F:
+      Result := ubLatinExtendedA;
+    $0180..$024F:
+      Result := ubLatinExtendedB;
+    $0250..$02AF:
+      Result := ubIPAExtensions;
+    $02B0..$02FF:
+      Result := ubSpacingModifierLetters;
+    $0300..$036F:
+      Result := ubCombiningDiacriticalMarks;
+    $0370..$03FF:
+      Result := ubGreek;
+    $0400..$04FF:
+      Result := ubCyrillic;
+    $0530..$058F:
+      Result := ubArmenian;
+    $0590..$05FF:
+      Result := ubHebrew;
+    $0600..$06FF:
+      Result := ubArabic;
+    $0700..$074F:
+      Result := ubSyriac;
+    $0780..$07BF:
+      Result := ubThaana;
+    $0900..$097F:
+      Result := ubDevanagari;
+    $0980..$09FF:
+      Result := ubBengali;
+    $0A00..$0A7F:
+      Result := ubGurmukhi;
+    $0A80..$0AFF:
+      Result := ubGujarati;
+    $0B00..$0B7F:
+      Result := ubOriya;
+    $0B80..$0BFF:
+      Result := ubTamil;
+    $0C00..$0C7F:
+      Result := ubTelugu;
+    $0C80..$0CFF:
+      Result := ubKannada;
+    $0D00..$0D7F:
+      Result := ubMalayalam;
+    $0D80..$0DFF:
+      Result := ubSinhala;
+    $0E00..$0E7F:
+      Result := ubThai;
+    $0E80..$0EFF:
+      Result := ubLao;
+    $0F00..$0FFF:
+      Result := ubTibetan;
+    $1000..$109F:
+      Result := ubMyanmar;
+    $10A0..$10FF:
+      Result := ubGeorgian;
+    $1100..$11FF:
+      Result := ubHangulJamo;
+    $1200..$137F:
+      Result := ubEthiopic;
+    $13A0..$13FF:
+      Result := ubCherokee;
+    $1400..$167F:
+      Result := ubUnifiedCanadianAboriginalSyllabics;
+    $1680..$169F:
+      Result := ubOgham;
+    $16A0..$16FF:
+      Result := ubRunic;
+    $1780..$17FF:
+      Result := ubKhmer;
+    $1800..$18AF:
+      Result := ubMongolian;
+    $1E00..$1EFF:
+      Result := ubLatinExtendedAdditional;
+    $1F00..$1FFF:
+      Result := ubGreekExtended;
+    $2000..$206F:
+      Result := ubGeneralPunctuation;
+    $2070..$209F:
+      Result := ubSuperscriptsAndSubscripts;
+    $20A0..$20CF:
+      Result := ubCurrencySymbols;
+    $20D0..$20FF:
+      Result := ubCombiningMarksForSymbols;
+    $2100..$214F:
+      Result := ubLetterlikeSymbols;
+    $2150..$218F:
+      Result := ubNumberForms;
+    $2190..$21FF:
+      Result := ubArrows;
+    $2200..$22FF:
+      Result := ubMathematicalOperators;
+    $2300..$23FF:
+      Result := ubMiscellaneousTechnical;
+    $2400..$243F:
+      Result := ubControlPictures;
+    $2440..$245F:
+      Result := ubOpticalCharacterRecognition;
+    $2460..$24FF:
+      Result := ubEnclosedAlphanumerics;
+    $2500..$257F:
+      Result := ubBoxDrawing;
+    $2580..$259F:
+      Result := ubBlockElements;
+    $25A0..$25FF:
+      Result := ubGeometricShapes;
+    $2600..$26FF:
+      Result := ubMiscellaneousSymbols;
+    $2700..$27BF:
+      Result := ubDingbats;
+    $2800..$28FF:
+      Result := ubBraillePatterns;
+    $2E80..$2EFF:
+      Result := ubCJKRadicalsSupplement;
+    $2F00..$2FDF:
+      Result := ubKangxiRadicals;
+    $2FF0..$2FFF:
+      Result := ubIdeographicDescriptionCharacters;
+    $3000..$303F:
+      Result := ubCJKSymbolsAndPunctuation;
+    $3040..$309F:
+      Result := ubHiragana;
+    $30A0..$30FF:
+      Result := ubKatakana;
+    $3100..$312F:
+      Result := ubBopomofo;
+    $3130..$318F:
+      Result := ubHangulCompatibilityJamo;
+    $3190..$319F:
+      Result := ubKanbun;
+    $31A0..$31BF:
+      Result := ubBopomofoExtended;
+    $3200..$32FF:
+      Result := ubEnclosedCJKLettersAndMonths;
+    $3300..$33FF:
+      Result := ubCJKCompatibility;
+    $3400..$4DB5:
+      Result := ubCJKUnifiedIdeographsExtensionA;
+    $4E00..$9FFF:
+      Result := ubCJKUnifiedIdeographs;
+    $A000..$A48F:
+      Result := ubYiSyllables;
+    $A490..$A4CF:
+      Result := ubYiRadicals;
+    $AC00..$D7A3:
+      Result := ubHangulSyllables;
+    $D800..$DB7F:
+      Result := ubHighSurrogates;
+    $DB80..$DBFF:
+      Result := ubHighPrivateUseSurrogates;
+    $DC00..$DFFF:
+      Result := ubLowSurrogates;
+    $E000..$F8FF,
+    $F0000..$FFFFD,
+    $100000..$10FFFD:
+      Result := ubPrivateUse;
+    $F900..$FAFF:
+      Result := ubCJKCompatibilityIdeographs;
+    $FB00..$FB4F:
+      Result := ubAlphabeticPresentationForms;
+    $FB50..$FDFF:
+      Result := ubArabicPresentationFormsA;
+    $FE20..$FE2F:
+      Result := ubCombiningHalfMarks;
+    $FE30..$FE4F:
+      Result := ubCJKCompatibilityForms;
+    $FE50..$FE6F:
+      Result := ubSmallFormVariants;
+    $FE70..$FEFE:
+      Result := ubArabicPresentationFormsB;
+    $FEFF..$FEFF,
+    $FFF0..$FFFD:
+      Result := ubSpecials;
+    $FF00..$FFEF:
+      Result := ubHalfwidthAndFullwidthForms;
+    $10300..$1032F:
+      Result := ubOldItalic;
+    $10330..$1034F:
+      Result := ubGothic;
+    $10400..$1044F:
+      Result := ubDeseret;
+    $1D000..$1D0FF:
+      Result := ubByzantineMusicalSymbols;
+    $1D100..$1D1FF:
+      Result := ubMusicalSymbols;
+    $1D400..$1D7FF:
+      Result := ubMathematicalAlphanumericSymbols;
+    $20000..$2A6D6:
+      Result := ubCJKUnifiedIdeographsExtensionB;
+    $2F800..$2FA1F:
+      Result := ubCJKCompatibilityIdeographsSupplement;
+    $E0000..$E007F:
+      Result := ubTags;
   else
-    // #$FFF0..#$FFFF Specials
-    Result := 67;
+    Result := ubUndefined;
   end;
 end;
 
@@ -7641,7 +7789,7 @@ function StringToWideStringEx(const S: string; CodePage: Word): WideString;
 
 var
   L: Integer;
-
+  
 begin
   L:= MultiByteToWideChar(CodePage, 0, PChar(S), -1, nil, 0);
   SetLength(Result, L - 1);
@@ -7720,25 +7868,25 @@ begin
       if Ch < $80 then
         BytesToWrite := 1
       else
-      if Ch < $800 then
-        BytesToWrite := 2
-      else
-      if Ch < $10000 then
-        BytesToWrite := 3
-      else
-      if Ch < $200000 then
-        BytesToWrite := 4
-      else
-      if Ch < $4000000 then
-        BytesToWrite := 5
-      else
-      if Ch <= MaximumUCS4 then
-        BytesToWrite := 6
-      else
-      begin
-        BytesToWrite := 2;
-        Ch := ReplacementCharacter;
-      end;
+        if Ch < $800 then
+          BytesToWrite := 2
+        else
+          if Ch < $10000 then
+            BytesToWrite := 3
+          else
+            if Ch < $200000 then
+              BytesToWrite := 4
+            else
+              if Ch < $4000000 then
+                BytesToWrite := 5
+              else
+                if Ch <= MaximumUCS4 then
+                  BytesToWrite := 6
+                else
+                begin
+                  BytesToWrite := 2;
+                  Ch := ReplacementCharacter;
+                end;
 
       for L := BytesToWrite downto 2 do
       begin
@@ -7791,22 +7939,32 @@ begin
         Inc(T);
       end
       else
-      if Ch > MaximumUCS4 then
-      begin
-        Result[T] := WideChar(ReplacementCharacter);
-        Inc(T);
-      end
-      else
-      begin
-        Ch := Ch - HalfBase;
-        Result[T] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
-        Inc(T);
-        Result[T] := WideChar((Ch and HalfMask) + SurrogateLowStart);
-        Inc(T);
-      end;
+        if Ch > MaximumUCS4 then
+        begin
+          Result[T] := WideChar(ReplacementCharacter);
+          Inc(T);
+        end
+        else
+        begin
+          Ch := Ch - HalfBase;
+          Result[T] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
+          Inc(T);
+          Result[T] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+          Inc(T);
+        end;
     end;
     SetLength(Result, T - 1); // now fix up length
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure FreeUnicodeData;
+
+// Frees all data which has been allocated and which is not automatically freed by Delphi.
+
+begin
+  LoadInProgress.Free;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7818,6 +7976,6 @@ initialization
     @WideCompareText := @CompareTextWin95;
 
 finalization
-  LoadInProgress.Free;
+  FreeUnicodeData;
 end.
 
