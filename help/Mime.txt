@@ -11,7 +11,9 @@ Kind=Type
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MimeEncodeString(const s: AnsiString): AnsiString;
@@ -28,7 +30,9 @@ MIME encoded string
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=MimeDecodeString
@@ -51,7 +55,9 @@ Decoded string
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=MimeEncodeString
@@ -80,7 +86,9 @@ Count=2
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=MimeDecodeStream
@@ -109,7 +117,9 @@ Count=2
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=MimeEncodeStream
@@ -132,7 +142,9 @@ Number of bytes needed for encoding
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=MimeEncode
@@ -155,7 +167,9 @@ Maximum number of bytes needed for decoding
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=MimeDecode
@@ -186,7 +200,9 @@ Count=3
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=MimeEncodedSize
@@ -217,7 +233,9 @@ Number of bytes actually written to the OutputBuffer
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=MimeDecodedSize
@@ -248,7 +266,9 @@ Number of bytes actually written to the OutputBuffer
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=MimeDecodePartialEnd
@@ -276,7 +296,9 @@ Number of bytes actually written to the OutputBuffer
 Unit=JclMime
 Category=MIME
 Author=Ralf Junker;ralfjunker@gmx.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=MimeDecodePartial
