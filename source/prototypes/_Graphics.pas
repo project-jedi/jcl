@@ -23,14 +23,15 @@
 { and Mike Lischke. Portions created by these individuals are Copyright (C) of these individuals.  }
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
-{   Charlie Calvert                                                                                }
-{   Robert Marquardt (marquardt)                                                                   }
+{ Contributors:                                                                                    }
 {   Alexander Radchenko                                                                            }
-{   Robert Rossmair (rrossmair)                                                                    }
+{   Charlie Calvert                                                                                }
+{   Marcel van Brakel                                                                              }
+{   Marcin Wieczorek                                                                               }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -6128,6 +6129,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.10  2004/05/14 15:20:44  rrossmair
+// added Marcin Wieczorek to Contributors list
+//
 // Revision 1.9  2004/05/05 22:16:40  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
