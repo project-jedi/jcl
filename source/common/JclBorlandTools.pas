@@ -962,13 +962,23 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolIdePackages.ReadPackages;
+
+  procedure ReadPackageList(const Name: string; List: TStringList);
+  var
+    ListIsSorted: Boolean;
+  begin
+    ListIsSorted := List.Sorted;
+    List.Sorted := False;
+    List.Clear;
+    Installation.ConfigData.ReadSectionValues(Name, List);
+    List.Sorted := ListIsSorted;
+  end;
+
 var
   I: Integer;
 begin
-  FDisabledPackages.Clear;
-  FKnownPackages.Clear;
-  Installation.ConfigData.ReadSection(KnownPackagesKeyName, FKnownPackages);
-  Installation.ConfigData.ReadSection(KnownPackagesKeyName, FDisabledPackages);
+  ReadPackageList(KnownPackagesKeyName, FKnownPackages);
+  ReadPackageList(DisabledPackagesKeyName, FDisabledPackages);
   for I := 0 to Count - 1 do
     if FDisabledPackages.IndexOfName(FKnownPackages.Names[I]) <> -1 then
       FKnownPackages.Objects[I] := Pointer(True);
@@ -1316,7 +1326,7 @@ begin
   begin
     TempList := TStringList.Create;
     try
-      Installation.ConfigData.ReadSection(Key, TempList);
+      Installation.ConfigData.ReadSectionValues(Key, TempList);
       for I := 0 to TempList.Count - 1 do
       begin
         S := TempList[I];
