@@ -45,8 +45,8 @@ type
 type
   TStringHashMapTraits = class(TObject)
   public
-    function Hash(const s: string): Cardinal; virtual; abstract;
-    function Compare(const l, r: string): Integer; virtual; abstract;
+    function Hash(const S: string): Cardinal; virtual; abstract;
+    function Compare(const L, R: string): Integer; virtual; abstract;
   end;
 
 function CaseSensitiveTraits: TStringHashMapTraits;
@@ -84,36 +84,36 @@ type
     function IterateMethodNode(ANode: PHashNode; AUserData: Pointer; AIterateMethod: TIterateMethod): Boolean;
     procedure NodeIterate(ANode: PPHashNode; AUserData: Pointer; AIterateFunc: TNodeIterateFunc);
     procedure SetHashSize(AHashSize: Cardinal);
-    procedure DeleteNodes(var q: PHashNode);
-    procedure DeleteNode(var q: PHashNode);
+    procedure DeleteNodes(var Q: PHashNode);
+    procedure DeleteNode(var Q: PHashNode);
   protected
-    function FindNode(const s: string): PPHashNode;
+    function FindNode(const S: string): PPHashNode;
     function AllocNode: PHashNode; virtual;
     procedure FreeNode(ANode: PHashNode); virtual;
-    function GetData(const s: string): Pointer;
-    procedure SetData(const s: string; p: Pointer);
+    function GetData(const S: string): Pointer;
+    procedure SetData(const S: string; P: Pointer);
   public
     constructor Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
     destructor Destroy; override;
-    procedure Add(const s: string; const p);
-    function Remove(const s: string): Pointer;
-    procedure RemoveData(const p);
+    procedure Add(const S: string; const P);
+    function Remove(const S: string): Pointer;
+    procedure RemoveData(const P);
     procedure Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
     procedure IterateMethod(AUserData: Pointer; AIterateMethod: TIterateMethod);
-    function Has(const s: string): Boolean;
-    function Find(const s: string; var p): Boolean;
-    function FindData(const p; var s: string): Boolean;
+    function Has(const S: string): Boolean;
+    function Find(const S: string; var P): Boolean;
+    function FindData(const P; var S: string): Boolean;
     procedure Clear;
     property Count: Cardinal read FCount;
-    property Data[const s: string]: Pointer read GetData write SetData; default;
+    property Data[const S: string]: Pointer read GetData write SetData; default;
     property Traits: TStringHashMapTraits read FTraits;
     property HashSize: Cardinal read FHashSize write SetHashSize;
   end;
 
-{ str=case sensitive, text=case insensitive }
+{ Str=case sensitive, text=case insensitive }
 
-function StrHash(const s: string): THashValue;
-function TextHash(const s: string): THashValue;
+function StrHash(const S: string): THashValue;
+function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
 function Iterate_FreeObjects(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 function Iterate_Dispose(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
@@ -122,14 +122,14 @@ function Iterate_FreeMem(AUserData: Pointer; const AStr: string; var AData: Poin
 type
   TCaseSensitiveTraits = class(TStringHashMapTraits)
   public
-    function Hash(const s: string): Cardinal; override;
-    function Compare(const l, r: string): Integer; override;
+    function Hash(const S: string): Cardinal; override;
+    function Compare(const L, R: string): Integer; override;
   end;
 
   TCaseInsensitiveTraits = class(TStringHashMapTraits)
   public
-    function Hash(const s: string): Cardinal; override;
-    function Compare(const l, r: string): Integer; override;
+    function Hash(const S: string): Cardinal; override;
+    function Compare(const L, R: string): Integer; override;
   end;
 
 implementation
@@ -138,54 +138,54 @@ implementation
 // Case Sensitive & Insensitive Traits
 //==================================================================================================
 
-function TCaseSensitiveTraits.Compare(const l, r: string): Integer;
+function TCaseSensitiveTraits.Compare(const L, R: string): Integer;
 begin
-  Result := CompareStr(l, r);
+  Result := CompareStr(L, R);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TCaseSensitiveTraits.Hash(const s: string): Cardinal;
+function TCaseSensitiveTraits.Hash(const S: string): Cardinal;
 begin
-  Result := StrHash(s);
+  Result := StrHash(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TCaseInsensitiveTraits.Compare(const l, r: string): Integer;
+function TCaseInsensitiveTraits.Compare(const L, R: string): Integer;
 begin
-  Result := CompareText(l, r);
+  Result := CompareText(L, R);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TCaseInsensitiveTraits.Hash(const s: string): Cardinal;
+function TCaseInsensitiveTraits.Hash(const S: string): Cardinal;
 begin
-  Result := TextHash(s);
+  Result := TextHash(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 var
-  _CaseSensitiveTraits: TCaseSensitiveTraits;
+  GlobalCaseSensitiveTraits: TCaseSensitiveTraits;
 
 function CaseSensitiveTraits: TStringHashMapTraits;
 begin
-  if _CaseSensitiveTraits = nil then
-    _CaseSensitiveTraits := TCaseSensitiveTraits.Create;
-  Result := _CaseSensitiveTraits;
+  if GlobalCaseSensitiveTraits = nil then
+    GlobalCaseSensitiveTraits := TCaseSensitiveTraits.Create;
+  Result := GlobalCaseSensitiveTraits;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 var
-  _CaseInsensitiveTraits: TCaseInsensitiveTraits;
+  GlobalCaseInsensitiveTraits: TCaseInsensitiveTraits;
 
 function CaseInsensitiveTraits: TStringHashMapTraits;
 begin
-  if _CaseInsensitiveTraits = nil then
-    _CaseInsensitiveTraits := TCaseInsensitiveTraits.Create;
-  Result := _CaseInsensitiveTraits;
+  if GlobalCaseInsensitiveTraits = nil then
+    GlobalCaseInsensitiveTraits := TCaseInsensitiveTraits.Create;
+  Result := GlobalCaseInsensitiveTraits;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -217,89 +217,86 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrHash(const s: string): Cardinal;
+function StrHash(const S: string): Cardinal;
+const
+  cLongBits = 32;
+  cOneEight = 4;
+  cThreeFourths = 24;
+  cHighBits = $F0000000;
 var
   I: Integer;
-  p: PChar;
-const
-  C_LongBits = 32;
-  C_OneEight = 4;
-  C_ThreeFourths = 24;
-  C_HighBits = $F0000000;
-var
-  temp: Cardinal;
+  P: PChar;
+  Temp: Cardinal;
 begin
   { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
-  p := PChar(s);
+  P := PChar(S);
 
-  I := Length(s);
+  I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl C_OneEight) + Ord(p^);
-    temp := Result and C_HighBits;
-    if temp <> 0 then
-      Result := (Result xor (temp shr C_ThreeFourths)) and (not C_HighBits);
+    Result := (Result shl cOneEight) + Ord(P^);
+    Temp := Result and cHighBits;
+    if Temp <> 0 then
+      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
     Dec(I);
-    Inc(p);
+    Inc(P);
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TextHash(const s: string): Cardinal;
+function TextHash(const S: string): Cardinal;
+const
+  cLongBits = 32;
+  cOneEight = 4;
+  cThreeFourths = 24;
+  cHighBits = $F0000000;
 var
   I: Integer;
-  p: PChar;
-const
-  C_LongBits = 32;
-  C_OneEight = 4;
-  C_ThreeFourths = 24;
-  C_HighBits = $F0000000;
-var
-  temp: Cardinal;
+  P: PChar;
+  Temp: Cardinal;
 begin
   { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
-  p := PChar(s);
+  P := PChar(S);
 
-  I := Length(s);
+  I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl C_OneEight) + Ord(UpCase(p^));
-    temp := Result and C_HighBits;
-    if temp <> 0 then
-      Result := (Result xor (temp shr C_ThreeFourths)) and (not C_HighBits);
+    Result := (Result shl cOneEight) + Ord(UpCase(P^));
+    Temp := Result and cHighBits;
+    if Temp <> 0 then
+      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
     Dec(I);
-    Inc(p);
+    Inc(P);
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-var
-  p: PChar;
 const
-  C_LongBits = 32;
-  C_OneEight = 4;
-  C_ThreeFourths = 24;
-  C_HighBits = $F0000000;
+  cLongBits = 32;
+  cOneEight = 4;
+  cThreeFourths = 24;
+  cHighBits = $F0000000;
 var
-  temp: Cardinal;
+  P: PChar;
+  Temp: Cardinal;
 begin
   { TODO : I should really be processing 4 bytes at once... }
   Result := 0;
-  p := @AValue;
+  P := @AValue;
 
   while ASize > 0 do
   begin
-    Result := (Result shl C_OneEight) + Ord(p^);
-    temp := Result and C_HighBits;
-    if temp <> 0 then
-      Result := (Result xor (temp shr C_ThreeFourths)) and (not C_HighBits);
+    Result := (Result shl cOneEight) + Ord(P^);
+    Temp := Result and cHighBits;
+    if Temp <> 0 then
+      Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
     Dec(ASize);
-    Inc(p);
+    Inc(P);
   end;
 end;
 
@@ -309,6 +306,7 @@ end;
 
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
+  inherited Create;
   Assert(ATraits <> nil, LoadResString(@RsStringHashMapNoTraits));
   SetHashSize(AHashSize);
   FTraits := ATraits;
@@ -329,53 +327,54 @@ type
   PPCollectNodeNode = ^PCollectNodeNode;
   PCollectNodeNode = ^TCollectNodeNode;
   TCollectNodeNode = record
-    next: PCollectNodeNode;
-    str: string;
-    ptr: Pointer;
+    Next: PCollectNodeNode;
+    Str: string;
+    Ptr: Pointer;
   end;
 
 procedure NodeIterate_CollectNodes(AUserData: Pointer; ANode: PPHashNode);
 var
-  ppcnn: PPCollectNodeNode;
-  pcnn: PCollectNodeNode;
+  PPCnn: PPCollectNodeNode;
+  PCnn: PCollectNodeNode;
 begin
-  ppcnn := PPCollectNodeNode(AUserData);
-  New(pcnn);
-  pcnn^.next := ppcnn^;
-  ppcnn^ := pcnn;
+  PPCnn := PPCollectNodeNode(AUserData);
+  New(PCnn);
+  PCnn^.Next := PPCnn^;
+  PPCnn^ := PCnn;
 
-  pcnn^.str := ANode^^.Str;
-  pcnn^.ptr := ANode^^.Ptr;
+  PCnn^.Str := ANode^^.Str;
+  PCnn^.Ptr := ANode^^.Ptr;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var
-  collect_list: PCollectNodeNode;
+  CollectList: PCollectNodeNode;
 
   procedure CollectNodes;
   var
     I: Integer;
   begin
-    collect_list := nil;
+    CollectList := nil;
     for I := 0 to FHashSize - 1 do
-      NodeIterate(@FList^[I], @collect_list, NodeIterate_CollectNodes);
+      NodeIterate(@FList^[I], @CollectList, NodeIterate_CollectNodes);
   end;
 
   procedure InsertNodes;
   var
-    pcnn, tmp: PCollectNodeNode;
+    PCnn, Tmp: PCollectNodeNode;
   begin
-    pcnn := collect_list;
-    while pcnn <> nil do
+    PCnn := CollectList;
+    while PCnn <> nil do
     begin
-      tmp := pcnn^.next;
-      Add(pcnn^.str, pcnn^.ptr);
-      Dispose(pcnn);
-      pcnn := tmp;
+      Tmp := PCnn^.Next;
+      Add(PCnn^.Str, PCnn^.Ptr);
+      Dispose(PCnn);
+      PCnn := Tmp;
     end;
   end;
+
 begin
   { 4 cases:
     we are empty, and AHashSize = 0 --> nothing to do
@@ -384,14 +383,14 @@ begin
     we are full, and AHashSize > 0 --> rehash }
 
   if FHashSize = 0 then
+  begin
     if AHashSize > 0 then
     begin
       GetMem(FList, AHashSize * SizeOf(FList^[0]));
       FillChar(FList^, AHashSize * SizeOf(FList^[0]), 0);
       FHashSize := AHashSize;
-    end
-    else
-      { nothing to do }
+    end;
+  end
   else
   begin
     if AHashSize > 0 then
@@ -418,37 +417,37 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.FindNode(const s: string): PPHashNode;
+function TStringHashMap.FindNode(const S: string): PPHashNode;
 var
   I: Cardinal;
-  r: Integer;
-  ppn: PPHashNode;
+  R: Integer;
+  PPN: PPHashNode;
 begin
-  { we start at the node offset by s in the hash list }
-  I := FTraits.Hash(s) mod FHashSize;
+  { we start at the node offset by S in the hash list }
+  I := FTraits.Hash(S) mod FHashSize;
 
-  ppn := @FList^[I];
+  PPN := @FList^[I];
 
-  if ppn^ <> nil then
+  if PPN^ <> nil then
     while True do
     begin
-      r := FTraits.Compare(s, ppn^^.Str);
+      R := FTraits.Compare(S, PPN^^.Str);
 
       { left, then right, then match }
-      if r < 0 then
-        ppn := @ppn^^.Left
+      if R < 0 then
+        PPN := @PPN^^.Left
       else
-      if r > 0 then
-        ppn := @ppn^^.Right
+      if R > 0 then
+        PPN := @PPN^^.Right
       else
         Break;
 
       { check for empty position after drilling left or right }
-      if ppn^ = nil then
+      if PPN^ = nil then
         Break;
     end;
 
-  Result := ppn;
+  Result := PPN;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -469,7 +468,8 @@ begin
     Result := IterateNode(ANode^.Right, AUserData, AIterateFunc);
     if not Result then
       Exit;
-  end else
+  end
+  else
     Result := True;
 end;
 
@@ -491,7 +491,8 @@ begin
     Result := IterateMethodNode(ANode^.Right, AUserData, AIterateMethod);
     if not Result then
       Exit;
-  end else
+  end
+  else
     Result := True;
 end;
 
@@ -510,70 +511,73 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TStringHashMap.DeleteNode(var q: PHashNode);
+procedure TStringHashMap.DeleteNode(var Q: PHashNode);
 var
-  t, r, s: PHashNode;
+  T, R, S: PHashNode;
 begin
-  { we must delete node q without destroying binary tree }
+  { we must delete node Q without destroying binary tree }
   { Knuth 6.2.2 D (pg 432 Vol 3 2nd ed) }
 
   { alternating between left / right delete to preserve decent
     performance over multiple insertion / deletion }
   FLeftDelete := not FLeftDelete;
 
-  { t will be the node we delete }
-  t := q;
+  { T will be the node we delete }
+  T := Q;
 
   if FLeftDelete then
   begin
-    if t^.Right = nil then
-      q := t^.Left
+    if T^.Right = nil then
+      Q := T^.Left
     else
     begin
-      r := t^.Right;
-      if r^.Left = nil then
+      R := T^.Right;
+      if R^.Left = nil then
       begin
-        r^.Left := t^.Left;
-        q := r;
-      end else
+        R^.Left := T^.Left;
+        Q := R;
+      end
+      else
       begin
-        s := r^.Left;
-        if s^.Left <> nil then
+        S := R^.Left;
+        if S^.Left <> nil then
           repeat
-            r := s;
-            s := r^.Left;
-          until s^.Left = nil;
-        { now, s = symmetric successor of q }
-        s^.Left := t^.Left;
-        r^.Left :=  s^.Right;
-        s^.Right := t^.Right;
-        q := s;
+            R := S;
+            S := R^.Left;
+          until S^.Left = nil;
+        { now, S = symmetric successor of Q }
+        S^.Left := T^.Left;
+        R^.Left :=  S^.Right;
+        S^.Right := T^.Right;
+        Q := S;
       end;
     end;
-  end else
+  end
+  else
   begin
-    if t^.Left = nil then
-      q := t^.Right
+    if T^.Left = nil then
+      Q := T^.Right
     else
     begin
-      r := t^.Left;
-      if r^.Right = nil then
+      R := T^.Left;
+      if R^.Right = nil then
       begin
-        r^.Right := t^.Right;
-        q := r;
-      end else
+        R^.Right := T^.Right;
+        Q := R;
+      end
+      else
       begin
-        s := r^.Right;
-        if s^.Right <> nil then
+        S := R^.Right;
+        if S^.Right <> nil then
           repeat
-            r := s;
-            s := r^.Right;
-          until s^.Right = nil;
-        { now, s = symmetric predecessor of q }
-        s^.Right := t^.Right;
-        r^.Right := s^.Left;
-        s^.Left := t^.Left;
-        q := s;
+            R := S;
+            S := R^.Right;
+          until S^.Right = nil;
+        { now, S = symmetric predecessor of Q }
+        S^.Right := T^.Right;
+        R^.Right := S^.Left;
+        S^.Left := T^.Left;
+        Q := S;
       end;
     end;
   end;
@@ -583,19 +587,19 @@ begin
 
     It's unlikely that FreeNode would raise an exception anyway. }
   Dec(FCount);
-  FreeNode(t);
+  FreeNode(T);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TStringHashMap.DeleteNodes(var q: PHashNode);
+procedure TStringHashMap.DeleteNodes(var Q: PHashNode);
 begin
-  if q^.Left <> nil then
-    DeleteNodes(q^.Left);
-  if q^.Right <> nil then
-    DeleteNodes(q^.Right);
-  FreeNode(q);
-  q := nil;
+  if Q^.Left <> nil then
+    DeleteNodes(Q^.Left);
+  if Q^.Right <> nil then
+    DeleteNodes(Q^.Right);
+  FreeNode(Q);
+  Q := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -616,58 +620,59 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.GetData(const s: string): Pointer;
+function TStringHashMap.GetData(const S: string): Pointer;
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
+  PPN := FindNode(S);
 
-  if ppn^ <> nil then
-    Result := ppn^^.Ptr
+  if PPN^ <> nil then
+    Result := PPN^^.Ptr
   else
     Result := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TStringHashMap.SetData(const s: string; p: Pointer);
+procedure TStringHashMap.SetData(const S: string; P: Pointer);
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
+  PPN := FindNode(S);
 
-  if ppn^ <> nil then
-    ppn^^.Ptr := p
+  if PPN^ <> nil then
+    PPN^^.Ptr := P
   else
   begin
     { add }
-    ppn^ := AllocNode;
+    PPN^ := AllocNode;
     { we increment after in case of exception }
     Inc(FCount);
-    ppn^^.Str := s;
-    ppn^^.Ptr := p;
+    PPN^^.Str := S;
+    PPN^^.Ptr := P;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TStringHashMap.Add(const s: string; const p{: Pointer});
+procedure TStringHashMap.Add(const S: string; const P{: Pointer});
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
+  PPN := FindNode(S);
 
-  { if reordered from SetData because ppn^ = nil is more common for Add }
-  if ppn^ = nil then
+  { if reordered from SetData because PPN^ = nil is more common for Add }
+  if PPN^ = nil then
   begin
     { add }
-    ppn^ := AllocNode;
+    PPN^ := AllocNode;
     { we increment after in case of exception }
     Inc(FCount);
-    ppn^^.Str := s;
-    ppn^^.Ptr := Pointer(p);
-  end else
-    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapDuplicate, [s]);
+    PPN^^.Str := S;
+    PPN^^.Ptr := Pointer(P);
+  end
+  else
+    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapDuplicate, [S]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -687,58 +692,58 @@ type
 
 procedure NodeIterate_BuildDataList(AUserData: Pointer; ANode: PPHashNode);
 var
-  dp: PDataParam;
-  t: PListNode;
+  DP: PDataParam;
+  T: PListNode;
 begin
-  dp := PDataParam(AUserData);
-  if dp.Data = ANode^^.Ptr then
+  DP := PDataParam(AUserData);
+  if DP.Data = ANode^^.Ptr then
   begin
-    New(t);
-    t^.Next := dp.Head;
-    t^.NodeLoc := ANode;
-    dp.Head := t;
+    New(T);
+    T^.Next := DP.Head;
+    T^.NodeLoc := ANode;
+    DP.Head := T;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TStringHashMap.RemoveData(const p{: Pointer});
+procedure TStringHashMap.RemoveData(const P{: Pointer});
 var
-  dp: TDataParam;
+  DP: TDataParam;
   I: Integer;
-  n, t: PListNode;
+  N, T: PListNode;
 begin
-  dp.Data := Pointer(p);
-  dp.Head := nil;
+  DP.Data := Pointer(P);
+  DP.Head := nil;
 
   for I := 0 to FHashSize - 1 do
-    NodeIterate(@FList^[I], @dp, NodeIterate_BuildDataList);
+    NodeIterate(@FList^[I], @DP, NodeIterate_BuildDataList);
 
-  n := dp.Head;
-  while n <> nil do
+  N := DP.Head;
+  while N <> nil do
   begin
-    DeleteNode(n^.NodeLoc^);
-    t := n;
-    n := n^.Next;
-    Dispose(t);
+    DeleteNode(N^.NodeLoc^);
+    T := N;
+    N := N^.Next;
+    Dispose(T);
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.Remove(const s: string): Pointer;
+function TStringHashMap.Remove(const S: string): Pointer;
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
+  PPN := FindNode(S);
 
-  if ppn^ <> nil then
+  if PPN^ <> nil then
   begin
-    Result := ppn^^.Ptr;
-    DeleteNode(ppn^);
+    Result := PPN^^.Ptr;
+    DeleteNode(PPN^);
   end
   else
-    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapInvalidNode, [s]);
+    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapInvalidNode, [S]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -766,24 +771,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.Has(const s: string): Boolean;
+function TStringHashMap.Has(const S: string): Boolean;
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
-  Result := ppn^ <> nil;
+  PPN := FindNode(S);
+  Result := PPN^ <> nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.Find(const s: string; var p{: Pointer}): Boolean;
+function TStringHashMap.Find(const S: string; var P{: Pointer}): Boolean;
 var
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
-  ppn := FindNode(s);
-  Result := ppn^ <> nil;
+  PPN := FindNode(S);
+  Result := PPN^ <> nil;
   if Result then
-    Pointer(p) := ppn^^.Ptr;
+    Pointer(P) := PPN^^.Ptr;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -799,31 +804,31 @@ type
 function Iterate_FindData(AUserData: Pointer; const AStr: string;
   var APtr: Pointer): Boolean;
 var
-  pfdr: PFindDataResult;
+  PFdr: PFindDataResult;
 begin
-  pfdr := PFindDataResult(AUserData);
-  pfdr^.Found := (APtr = pfdr^.ValueToFind);
-  Result := not pfdr^.Found;
-  if pfdr^.Found then
-    pfdr^.Key := AStr;
+  PFdr := PFindDataResult(AUserData);
+  PFdr^.Found := (APtr = PFdr^.ValueToFind);
+  Result := not PFdr^.Found;
+  if PFdr^.Found then
+    PFdr^.Key := AStr;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TStringHashMap.FindData(const p{: Pointer}; var s: string): Boolean;
+function TStringHashMap.FindData(const P{: Pointer}; var S: string): Boolean;
 var
-  pfdr: PFindDataResult;
+  PFdr: PFindDataResult;
 begin
-  New(pfdr);
+  New(PFdr);
   try
-    pfdr^.Found := False;
-    pfdr^.ValueToFind := Pointer(p);
-    Iterate(pfdr, Iterate_FindData);
-    Result := pfdr^.Found;
+    PFdr^.Found := False;
+    PFdr^.ValueToFind := Pointer(P);
+    Iterate(PFdr, Iterate_FindData);
+    Result := PFdr^.Found;
     if Result then
-      s := pfdr^.Key;
+      S := PFdr^.Key;
   finally
-    Dispose(pfdr);
+    Dispose(PFdr);
   end;
 end;
 
@@ -832,13 +837,13 @@ end;
 procedure TStringHashMap.Clear;
 var
   I: Integer;
-  ppn: PPHashNode;
+  PPN: PPHashNode;
 begin
   for I := 0 to FHashSize - 1 do
   begin
-    ppn := @FList^[I];
-    if ppn^ <> nil then
-      DeleteNodes(ppn^);
+    PPN := @FList^[I];
+    if PPN^ <> nil then
+      DeleteNodes(PPN^);
   end;
   FCount := 0;
 end;
@@ -846,12 +851,15 @@ end;
 initialization
 
 finalization
-  FreeAndNil(_CaseInsensitiveTraits);
-  FreeAndNil(_CaseSensitiveTraits);
+  FreeAndNil(GlobalCaseInsensitiveTraits);
+  FreeAndNil(GlobalCaseSensitiveTraits);
 
 // History:
 
 // $Log$
+// Revision 1.11  2004/10/13 06:58:20  marquardt
+// normal style cleaning
+//
 // Revision 1.10  2004/10/12 18:29:52  rrossmair
 // cleanup
 //
