@@ -1577,7 +1577,7 @@ end;
 
 function LCM(const X, Y: Cardinal): Cardinal;
 var
-  e: Integer;
+  e: Cardinal;
 
 begin
   e := GCD(X, Y);
@@ -1972,6 +1972,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function IsPrimeTD(N: Cardinal): Boolean;
+{ Trial Division Algorithm }
 var
   I, MAX: Cardinal;
   R: Extended;
@@ -2213,7 +2214,7 @@ asm
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
-// TR        MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
+        MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3557,5 +3558,4 @@ begin
    Crc32Start := Start;
 end;
 {$ENDIF}
-
 end.
