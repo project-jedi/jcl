@@ -5,8 +5,12 @@ interface
 {.$DEFINE USING_EDI_NEW_PROTOTYPE}
 
 uses
-  SysUtils, Classes, Dialogs,
+  Windows, SysUtils, Classes, Dialogs,
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	_EDI_, _EDI_ANSIX12_,
+  {$ELSE}
 	JclEDI, JclEDI_ANSIX12,
+  {$ENDIF}
   TestFrameWork, TestExtensions;
 
 type
@@ -21,7 +25,7 @@ type
     procedure CreateFunctionalGroupData(F: TEDIFunctionalGroup);
     procedure CheckInterchange(I: TEDIInterchangeControl);
   protected
-    procedure Setup; override;
+    procedure SetUp; override;
     procedure TearDown; override;
 	published
     procedure TEDISegment_Disassemble;
@@ -344,7 +348,11 @@ var
 begin
   F := TEDIFile.Create(nil);
   try
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    F.Data := _EDI_.StringReplace(TestData_File_001, '~', #13#10, [rfReplaceAll]);
+    {$ELSE}
     F.Data := JclEDI.StringReplace(TestData_File_001, '~', #13#10, [rfReplaceAll]);
+    {$ENDIF}
     F.Options := F.Options - [foRemoveCrLf, foRemoveCr, foRemoveLf];
     F.Disassemble;
     CheckInterchange(F[0]);
@@ -379,12 +387,21 @@ var
 begin
   F := TEDIFile.Create(nil);
   try
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    Data2 := _EDI_.StringReplace(TestData_File_001, '*', '+', [rfReplaceAll]);
+    Data2 := _EDI_.StringReplace(TestData_File_001, '~', '^', [rfReplaceAll]);
+    Data2 := _EDI_.StringReplace(TestData_File_001, '>', ':', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '*', '.', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '~', '|', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '>', '-', [rfReplaceAll]);
+    {$ELSE}
     Data2 := JclEDI.StringReplace(TestData_File_001, '*', '+', [rfReplaceAll]);
     Data2 := JclEDI.StringReplace(TestData_File_001, '~', '^', [rfReplaceAll]);
     Data2 := JclEDI.StringReplace(TestData_File_001, '>', ':', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '*', '.', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '~', '|', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '>', '-', [rfReplaceAll]);
+    {$ENDIF}
     F.Data := TestData_File_001 + Data2 + Data3;
     F.Disassemble;
     CheckInterchange(F[0]);
@@ -398,7 +415,6 @@ end;
 procedure TJclEDI_ANSIX12_Tests.TEDIFunctionalGroup_Assemble;
 var
   G: TEDIFunctionalGroup;
-  Result: string;
 begin
   G := TEDIFunctionalGroup.Create(nil, 3);
   try
@@ -429,11 +445,11 @@ begin
       Elements[1].Data := 'DataJ';
     end;
     {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
-    Result := G.AssembleResult;
+    G.Assemble;
+    Check(G.Data = TestData_FunctionialGroup_001, 'Functional Group assemble failure');
     {$ELSE}
-    Result := G.Assemble;
+    Check(G.Assemble = TestData_FunctionialGroup_001, 'Functional Group assemble failure');
     {$ENDIF}
-    Check(Result = TestData_FunctionialGroup_001, 'Functional Group assemble failure');
   finally
     G.Free;
   end;
@@ -484,7 +500,6 @@ end;
 procedure TJclEDI_ANSIX12_Tests.TEDIInterchangeControl_Assemble;
 var
   I: TEDIInterchangeControl;
-  Result: string;
 begin
   I := TEDIInterchangeControl.Create(nil);
   try
@@ -642,7 +657,6 @@ end;
 procedure TJclEDI_ANSIX12_Tests.TEDITransactionSet_Assemble;
 var
   T: TEDITransactionSet;
-  Result: string;
 begin
   T := TEDITransactionSet.Create(nil);
   try
@@ -668,11 +682,11 @@ begin
       Elements[1].Data := 'DataD';
     end;
     {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
-    Result := T.AssembleResult;
+    T.Assemble;
+    Check(T.Data = TestData_Transaction_001, 'Transaction Set assemble failure');
     {$ELSE}
-    Result := T.Assemble;
+    Check(T.Assemble = TestData_Transaction_001, 'Transaction Set assemble failure');
     {$ENDIF}
-    Check(Result = TestData_Transaction_001, 'Transaction Set assemble failure');
   finally
     T.Free;
   end;
@@ -721,12 +735,21 @@ begin
   F2 := TEDIFile.Create(nil);
   try
     //Prepare data
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    Data2 := _EDI_.StringReplace(TestData_File_001, '*', '+', [rfReplaceAll]);
+    Data2 := _EDI_.StringReplace(TestData_File_001, '~', '^', [rfReplaceAll]);
+    Data2 := _EDI_.StringReplace(TestData_File_001, '>', ':', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '*', '.', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '~', '|', [rfReplaceAll]);
+    Data3 := _EDI_.StringReplace(TestData_File_001, '>', '-', [rfReplaceAll]);
+    {$ELSE}
     Data2 := JclEDI.StringReplace(TestData_File_001, '*', '+', [rfReplaceAll]);
     Data2 := JclEDI.StringReplace(TestData_File_001, '~', '^', [rfReplaceAll]);
     Data2 := JclEDI.StringReplace(TestData_File_001, '>', ':', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '*', '.', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '~', '|', [rfReplaceAll]);
     Data3 := JclEDI.StringReplace(TestData_File_001, '>', '-', [rfReplaceAll]);
+    {$ENDIF}
     F1.Data := TestData_File_001 + Data2 + Data3;
     F1.SaveAsToFile(FileName1);
     //Continue

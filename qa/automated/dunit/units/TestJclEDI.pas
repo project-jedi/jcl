@@ -6,17 +6,42 @@ interface
 
 uses
   SysUtils,
-  TestFrameWork, TestExtensions;
+  TestFrameWork, TestExtensions,
+{$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+  	_EDI_;
+{$ELSE}
+  	JclEDI;
+{$ENDIF}
 
 type
 
-  TEDIObjectList_Tests = class(TTestCase)
+{$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+  TEDIAnsiStringData_Tests = class(TTestCase)
   private
+    FData: TEDIAnsiStringData;
+  protected
+    procedure Setup; override;
+    procedure TearDown; override;
+	published
+    procedure Comprehensive_001;
+  end;
 
+  TEDIStringStreamData_Tests = class(TTestCase)
+  private
+    FData: TEDIStringStreamData;
+  protected
+    procedure Setup; override;
+    procedure TearDown; override;
+	published
+    procedure Comprehensive_001;
+  end;
+{$ENDIF}
+
+  TEDIObjectList_Tests = class(TTestCase)
 	published
     procedure Comprehensive_001;
     procedure Comprehensive_002;
-    procedure Comprehensive_003;    
+    procedure Comprehensive_003;
   end;
 
 	TEDIStringReplace_Tests = class(TTestCase)
@@ -63,9 +88,6 @@ type
 	end;
 
 implementation
-
-uses
-	JclEDI;
 
 const
 	ErrorMsg_001 = 'JclEDI.StringReplace failure!';
@@ -168,7 +190,11 @@ procedure TEDIStringReplace_Tests.DoTest(S1, OldPattern, NewPattern: string;
 var
   S2, S3: string;
 begin
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, Flags);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, Flags);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, Flags);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -183,7 +209,11 @@ begin
 	OldPattern := '5';
 	NewPattern := '7';
 	S1 := 'Delphi 5 is great!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -198,7 +228,11 @@ begin
 	OldPattern := '5';
 	NewPattern := '2005';
 	S1 := 'Delphi 5 is great!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -213,7 +247,11 @@ begin
 	OldPattern := '2005';
 	NewPattern := '5';
 	S1 := 'Delphi 2005 is great!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -228,7 +266,11 @@ begin
 	OldPattern := '7';
 	NewPattern := '5';
 	S1 := 'Delphi 7 was great! Delphi 7 is better!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -243,7 +285,11 @@ begin
 	OldPattern := '5';
 	NewPattern := 'three';
 	S1 := 'Delphi 5 was great! Delphi 5 is better!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -258,7 +304,11 @@ begin
 	OldPattern := 'five';
 	NewPattern := '3';
 	S1 := 'Delphi five was great! Delphi 5 is better!';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -273,7 +323,11 @@ begin
 	OldPattern := 'a';
 	NewPattern := 'z';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -288,7 +342,11 @@ begin
 	OldPattern := 'c';
 	NewPattern := 'z';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -303,7 +361,11 @@ begin
 	OldPattern := 'e';
 	NewPattern := 'z';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -319,7 +381,11 @@ begin
 	OldPattern := 'a';
 	NewPattern := 'zzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -335,7 +401,11 @@ begin
 	OldPattern := 'c';
 	NewPattern := 'zzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -351,7 +421,11 @@ begin
 	OldPattern := 'e';
 	NewPattern := 'zzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, [rfReplaceAll]);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -367,7 +441,11 @@ begin
 	OldPattern := 'zzz';
 	NewPattern := 'a';
 	S1 := 'zzzbbbcccdddeee';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -383,7 +461,11 @@ begin
 	OldPattern := 'zzz';
 	NewPattern := 'c';
 	S1 := 'aaabbbzzzdddeee';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -399,7 +481,11 @@ begin
 	OldPattern := 'zzz';
 	NewPattern := 'e';
 	S1 := 'aaabbbcccdddzzz';
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -414,7 +500,11 @@ begin
 	OldPattern := 'aaa';
 	NewPattern := 'zz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -429,7 +519,11 @@ begin
 	OldPattern := 'ccc';
 	NewPattern := 'zz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -444,7 +538,11 @@ begin
 	OldPattern := 'eee';
 	NewPattern := 'zz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -459,7 +557,11 @@ begin
 	OldPattern := 'aaa';
 	NewPattern := 'zzzzzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -474,7 +576,11 @@ begin
 	OldPattern := 'ccc';
 	NewPattern := 'zzzzzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -489,7 +595,11 @@ begin
 	OldPattern := 'eee';
 	NewPattern := 'zzzzzz';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -504,7 +614,11 @@ begin
 	OldPattern := 'a';
 	NewPattern := '';
 	S1 := TestData02;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -519,7 +633,11 @@ begin
 	OldPattern := 'h';
 	NewPattern := '';
 	S1 := TestData02;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -534,7 +652,11 @@ begin
 	OldPattern := 'o';
 	NewPattern := '';
 	S1 := TestData02;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -549,7 +671,11 @@ begin
 	OldPattern := 'aaa';
 	NewPattern := '';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -564,7 +690,11 @@ begin
 	OldPattern := 'ccc';
 	NewPattern := '';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -579,7 +709,11 @@ begin
 	OldPattern := 'eee';
 	NewPattern := '';
 	S1 := TestData01;
+  {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+	S2 := _EDI_.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ELSE}
 	S2 := JclEDI.StringReplace(S1, OldPattern, NewPattern, []);
+  {$ENDIF}
 	S3 := SysUtils.StringReplace(S1, OldPattern, NewPattern, []);
 	Check(S2 = S3, ErrorMsg_001);
 end;
@@ -631,9 +765,121 @@ begin
   DoTest(TestData01, 'eee', 'zzzzzz', [rfReplaceAll]);
 end;
 
+{$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
 
+{ TEDIAnsiStringData_Tests }
+
+procedure TEDIAnsiStringData_Tests.Comprehensive_001;
+const
+  FileName = 'c:\temp\TEDIAnsiStringData_Test_001.edi';
+  FileData1 = 'This is a test string of data.';
+  FileData2 = ' Some more data.';
+var
+  I, J: Integer;
+  Data: string;
+begin
+  FData.Append(FileData1);
+  //Test SaveToFile-LoadFromFile
+  FData.SaveToFile(FileName);
+  FData.LoadFromFile(FileName);
+	Check(FData.Data = FileData1, 'TEDIAnsiStringData.SaveToFile-LoadFromFile failure.');
+  //Test IndexOf
+  I := FData.IndexOf('test', 1);
+  J := AnsiPos('test', FData.Data);
+	Check(I = J, 'TEDIAnsiStringData.IndexOf failure.');
+  //Test IsEqual
+	Check(FData.IsEqual(I, 'test'), 'TEDIAnsiStringData.IsEqual failure.');
+  //Test Copy
+  Data := FData.Copy(I, 4);
+	Check(Data = 'test', 'TEDIAnsiStringData.Copy failure.');
+  //Test Append
+  FData.Length := FData.Length + Length(FileData2);
+  FData.Append(FileData2);
+  Data := FData.Copy(Length(FileData1) + 1, Length(FileData2));
+	Check(Data = FileData2, 'TEDIAnsiStringData.Append failure.');
+  //Test Replace
+  Data := SysUtils.StringReplace(FData.Data, 'a', 'z', [rfReplaceAll, rfIgnoreCase]);
+  FData.Replace('a', 'z');
+	Check(Data = FData.Data, 'TEDIAnsiStringData.Append failure.');
+  //Test Clear
+  FData.Clear;
+  Check(FData.Data = '', 'TEDIAnsiStringData.Clear failure.');
+end;
+
+procedure TEDIAnsiStringData_Tests.Setup;
+begin
+  inherited;
+  ForceDirectories('c:\Temp');
+  FData := TEDIAnsiStringData.Create('');
+end;
+
+procedure TEDIAnsiStringData_Tests.TearDown;
+begin
+  FData.Free;
+  inherited;
+end;
+
+{ TEDIStringStreamData_Tests }
+
+procedure TEDIStringStreamData_Tests.Comprehensive_001;
+const
+  FileName = 'c:\temp\TEDIStringStreamData_Test_001.edi';
+  FileData1 = 'This is a test string of data.';
+  FileData2 = ' Some more data.';
+var
+  I, J: Integer;
+  Data: string;
+begin
+  FData.Append(FileData1);
+  //Test SaveToFile-LoadFromFile
+  FData.SaveToFile(FileName);
+  FData.LoadFromFile(FileName);
+	Check(FData.Data = FileData1, 'TEDIStringStreamData.SaveToFile-LoadFromFile failure.');
+  //Test IndexOf
+  I := FData.IndexOf('test', 1);
+  J := AnsiPos('test', FData.Data);
+	Check(I = J, 'TEDIStringStreamData.IndexOf failure.');
+  //Test IsEqual
+	Check(FData.IsEqual(I, 'test'), 'TEDIStringStreamData.IsEqual failure.');
+  //Test Copy
+  Data := FData.Copy(I, 4);
+	Check(Data = 'test', 'TEDIStringStreamData.Copy failure.');
+  //Test Append
+  FData.Append(FileData2);
+  Data := FData.Copy(Length(FileData1) + 1, Length(FileData2));
+	Check(Data = FileData2, 'TEDIStringStreamData.Append failure.');
+  //Test Replace
+  Data := SysUtils.StringReplace(FData.Data, 'a', 'z', [rfReplaceAll, rfIgnoreCase]);
+  FData.Replace('a', 'z');
+	Check(Data = FData.Data, 'TEDIStringStreamData.Append failure.');
+  //Test Clear
+  FData.Clear;
+  Check(FData.Data = '', 'TEDIStringStreamData.Clear failure.');
+end;
+
+procedure TEDIStringStreamData_Tests.Setup;
+begin
+  inherited;
+  ForceDirectories('c:\Temp');
+  FData := TEDIStringStreamData.Create('');
+end;
+
+procedure TEDIStringStreamData_Tests.TearDown;
+begin
+  FData.Free;
+  inherited;
+end;
+
+{$ENDIF}
 
 initialization
+
+{$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+ TestFramework.RegisterTests('JclEDI',
+   [TEDIAnsiStringData_Tests.Suite,
+    TEDIStringStreamData_Tests.Suite]);
+{$ENDIF}
+
  TestFramework.RegisterTests('JclEDI',
    [TEDIObjectList_Tests.Suite,
     TEDIStringReplace_Tests.Suite]);
