@@ -10,23 +10,33 @@ ROOT = $(MAKEDIR)\..
 #---------------------------------------------------------------------------------------------------
 SRC = ..\source
 UNIT = $(ROOT)\Lib;$(SRC)\common;$(SRC)\windows
-RES = 
+RES =
 BIN = ..\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $**
+DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-default:	JediInstaller.exe
+default:	install
 #---------------------------------------------------------------------------------------------------
 
-JediInstaller.exe: \
-		JediInstaller.dpr
+.dpr.exe:
   $(DCC)
-  del *.dcu
-  del $(SRC)\common\*.dcu
-  del $(SRC)\windows\*.dcu
+  if exist *.dcu del *.dcu
 
+$(BIN)\JediInstaller.exe: \
+           JediInstaller.dpr
+
+$(BIN)\QJediInstaller.exe: \
+           QJediInstaller.dpr
+
+install:   $(BIN)\JediInstaller.exe
+           cd ..
+           bin\JediInstaller.exe
+
+qinstall:  $(BIN)\QJediInstaller.exe
+           cd ..
+           bin\QJediInstaller.exe
 

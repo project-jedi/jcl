@@ -12,7 +12,7 @@ uses
   QJediInstallerMain in 'QJediInstallerMain.pas' {MainForm},
   QProductFrames in 'QProductFrames.pas' {ProductFrame: TFrame},
   
-  BorRADToolInstall in 'BorRADToolInstall.pas';
+  JclBorRADToolInst in '..\source\common\JclBorRADToolInst.pas';
 
 {$R *.res}
 

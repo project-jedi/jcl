@@ -27,7 +27,7 @@ interface
 
 uses
   {$IFDEF VisualCLX}QComCtrls, QDialogs,{$ELSE}ComCtrls, Dialogs,{$ENDIF}
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 const
   // Feature masks

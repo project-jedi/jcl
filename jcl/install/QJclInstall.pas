@@ -40,7 +40,7 @@ uses
   Types,
   QComCtrls, QDialogs, QJediInstallIntf,
   
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 const
   Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
@@ -374,7 +374,7 @@ begin
         Execute(StringsToStr(Units, ' ', False));
         Options.Delete(J);        // remove PIC option
         Tool.WriteInstallLog('');
-        Tool.WriteInstallLog('Compiling dpu...');
+        Tool.WriteInstallLog('Compiling dpu files...');
         Tool.WriteInstallLog(Installation.DCC.Output);
         {$ENDIF KYLIX}
       finally
@@ -530,30 +530,6 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
   Bcb2MakTemplate = '/bcb.gmk';
-
-  procedure WorkAroundLinkerBug;
-  var
-    ObjFiles: TStringList;
-    ObjPath: string;
-    Name, NewName: string;
-    I: Integer;
-  begin
-    ObjFiles := TStringList.Create;
-    ObjPath := LibObjDir + PathSeparator;
-    try
-      BuildFileList(ObjPath + 'Jcl*.o', faAnyFile, ObjFiles);
-      for I := 0 to ObjFiles.Count - 1 do
-      begin
-        Name := ObjFiles[I];
-        NewName := LowerCase(Name);
-        NewName[1] := UpCase(NewName[1]);
-        CreateSymbolicLink(ObjPath + NewName, ObjPath + Name);
-        ObjFiles.ValueFromIndex[I] := NewName;
-      end;
-    finally
-      ObjFiles.Free;
-    end;
-  end;
   {$ENDIF KYLIX}
 var
   PackageFileName: string;
@@ -578,7 +554,6 @@ begin
       SetEnvironmentVar('OBJDIR', LibObjDir);
       SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
       SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
-      WorkAroundLinkerBug;
       {$ELSE}
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));

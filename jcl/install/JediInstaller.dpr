@@ -12,7 +12,7 @@ uses
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
   
-  BorRADToolInstall in 'BorRADToolInstall.pas';
+  JclBorRADToolInst in '..\source\common\JclBorRADToolInst.pas';
 
 {$R *.res}
 

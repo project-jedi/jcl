@@ -40,7 +40,7 @@ uses
   Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls, ImgList,
   ProductFrames, JediInstallIntf,
   {$ENDIF}
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 const
   {$IFDEF VisualCLX}
@@ -368,7 +368,6 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
-  //FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJediInstall := CreateJediInstall;
@@ -397,7 +396,6 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBorRADToolInstallations);
-  //FreeAndNil(FInstallLog);
   FreeAndNil(FSystemPaths);
 end;
 {$IFDEF VisualCLX}

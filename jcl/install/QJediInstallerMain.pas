@@ -41,7 +41,7 @@ uses
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QImgList,
   QProductFrames, QJediInstallIntf,
   
-  BorRADToolInstall;
+  JclBorRADToolInst;
 
 const
   
@@ -363,7 +363,6 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
-  //FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
   FJediInstall := CreateJediInstall;
@@ -390,7 +389,6 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBorRADToolInstallations);
-  //FreeAndNil(FInstallLog);
   FreeAndNil(FSystemPaths);
 end;
 
