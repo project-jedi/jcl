@@ -88,7 +88,32 @@ function SetWaitableTimer(hTimer: THandle; var lpDueTime: TLargeInteger;
   lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
   {$EXTERNALSYM SetWaitableTimer}
 
-// line 6880
+// WinBase.h line 8839
+
+function SetFileSecurityA(lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityA}
+function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityW}
+function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityA}
+
+function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityA}
+function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityW}
+function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityA}
+
+// WinBase.h line 10251
 
 function SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName: LPCSTR): BOOL; stdcall;
 {$EXTERNALSYM SetVolumeMountPoint}

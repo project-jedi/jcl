@@ -3,88 +3,91 @@ echo CommandInterpreter: %COMSPEC%
 
 IF NOT %JCL%!==! SET JCL=
 
+SET MAKE=make
+IF NOT %1!==! SET MAKE=%1\Bin\make.exe
+
 REM check for compiler version 13.0 (Delphi/BCB 5)
 REM eventually skip examples which require at least D6/BCB6 
 dcc32 | grep -q+ "Version 13"
 if not errorlevel 1 goto compiler5
 
 REM cd vcl\clr
-REM make
+REM %MAKE%
 REM cd ..\..
 
 cd visclx\filesearch
-make
+%MAKE%
 cd ..\..
 cd visclx\numformat
-make
+%MAKE%
 cd ..\..
 
 :compiler5
 
 cd vcl\appinst
-make
+%MAKE%
 cd ..\..
 cd vcl\asuser
-make
+%MAKE%
 cd ..\..
 cd vcl\delphitools
-make
+%MAKE%
 cd ..\..
 cd vcl\debugextension\tools
-make
+%MAKE%
 cd ..\..\..
 cd vcl\debug\framestrack
-make
+%MAKE%
 cd ..\..\..
 cd vcl\debug\sourceloc
-make
+%MAKE%
 cd ..\..\..
 cd vcl\debug\stacktrack
-make
+%MAKE%
 cd ..\..\..
 cd vcl\debug\threadexcept
-make
+%MAKE%
 cd ..\..\..
 cd vcl\fileversion
-make
+%MAKE%
 cd ..\..
 cd vcl\graphics
-make
+%MAKE%
 cd ..\..
 cd vcl\lanman
-make
+%MAKE%
 cd ..\..
 cd vcl\locales
-make
+%MAKE%
 cd ..\..
 cd vcl\mapi
-make
+%MAKE%
 cd ..\..
 cd vcl\multimedia
-make
+%MAKE%
 cd ..\..
 cd vcl\ntservice
-make
+%MAKE%
 cd ..\..
 cd vcl\peimage
-make
+%MAKE%
 cd ..\..
 cd vcl\registry
-make
+%MAKE%
 cd ..\..
 cd vcl\rtti
-make
+%MAKE%
 cd ..\..
 cd vcl\sysinfo
-make
+%MAKE%
 cd ..\..
 
 REM cd vcl\tasks
-REM make
+REM %MAKE%
 REM cd ..\..
 
 cd vcl\textreader
-make
+%MAKE%
 cd ..\..
 
 :exit

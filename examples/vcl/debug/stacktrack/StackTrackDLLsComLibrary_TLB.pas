@@ -11,39 +11,26 @@ unit StackTrackDLLsComLibrary_TLB;
 // manual modifications will be lost.                                         
 // ************************************************************************ //
 
-// PASTLWTR : $Revision$
-// File generated on 5.7.2002 16:24:34 from Type Library described below.
+// PASTLWTR : 1.2
+// File generated on 21.12.2004 17:45:42 from Type Library described below.
 
 // ************************************************************************  //
-// Type Lib: C:\Projects\Jedi\code library\examples\StackTrackDLLsComLibrary.tlb (1)
+// Type Lib: I:\Quellen\jedi\jcl\examples\vcl\debug\stacktrack\StackTrackDLLsComLibrary.tlb (1)
 // LIBID: {D4935E5D-790E-48CA-B360-0165C1305153}
 // LCID: 0
 // Helpfile: 
+// HelpString: StackTrackDLLsComLibrary Library
 // DepndLst: 
-//   (1) v2.0 stdole, (D:\WINNT\System32\stdole2.tlb)
-//   (2) v4.0 StdVCL, (D:\WINNT\System32\STDVCL40.DLL)
+//   (1) v2.0 stdole, (F:\WINNT\system32\stdole2.tlb)
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
+{$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
-
+{$VARPROPSETTER ON}
 interface
 
-{$I jcl.inc}
-
-{$IFDEF DELPHI6_UP}
-  {$WARN SYMBOL_PLATFORM OFF}
-  {$VARPROPSETTER ON}
-{$ENDIF}
-
-uses
-  Windows, ActiveX, Classes, Graphics, OleCtrls,
-  {$IFDEF DELPHI5_UP}
-  OleServer,
-  {$ENDIF}
-  {$IFDEF DELPHI6_UP}
-  Variants,
-  {$ENDIF}
-  StdVCL;
+uses Windows, ActiveX, Classes, Graphics, StdVCL, Variants;
+  
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        

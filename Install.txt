@@ -1,4 +1,4 @@
-JEDI Code Library v 1.91 Installation
+JEDI Code Library v 1.94 Installation
 
 Supported development tools versions:
 
@@ -17,17 +17,17 @@ from Borland Support web page:
 Delphi: http://info.borland.com/devsupport/delphi/
 C++Builder: http://info.borland.com/devsupport/bcppbuilder/
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! If you have installed any previous version of the JCL/JVCL you have to       !
-! delete them.                                                                 !
-! It is also necessary to remove all installed JCL/JVCL packages from the IDE. !
-! Do not mix files or compiled packages from older versions of the JCL with    !
-! current version.                                                             !
-!                                                                              !
-! JCL 1.90 is not compatible with JVCL versions < 3 and most probably will     !
-! break them!  JVCL v. 3 is still under development; daily snapshots are       !
-! available from http://jvcl.sourceforge.net/daily/                            !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+******************************* IMPORTANT **************************************
+* If you have installed any previous version of the JCL/JVCL you have to       *
+* delete them.                                                                 *
+* It is also necessary to remove all installed JCL/JVCL packages from the IDE. *
+* Do not mix files or compiled packages from older versions of the JCL with    *
+* current version.                                                             *
+*                                                                              *
+* JCL 1.94 is not compatible with JVCL versions < 3 and _will_ break them!     *
+* JVCL v. 3 is still under development; daily snapshots are available from     *
+* http://jvcl.sourceforge.net/daily/                                           *
+********************************************************************************
 
 JEDI INSTALLER
 ==============
@@ -47,10 +47,10 @@ To execute for
 - click on "Install.bat" file in the JCL root directory.
 
   Note:	If you have Delphi 8 for Microsoft .NET installed, you probably will have 
-	to specify the make.exe to use for JCL installation; on the commandline, 
-	type (for example):
+	to specify the root directory of the make.exe to use for JCL installation; 
+        on the commandline, type (for example):
 
-	>install "C:\Program Files\Borland\Delphi5\Bin\make.exe"
+	>install "C:\Program Files\Borland\Delphi5"
 
 2) Kylix 3
 - open a shell window
@@ -60,4 +60,4 @@ To execute for
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
 --------------------------------
-Document last updated 2004-05-20
+Document last updated 2004-11-30

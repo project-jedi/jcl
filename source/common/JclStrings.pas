@@ -1449,7 +1449,13 @@ end;
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 begin
   if Search = '' then
-    raise EJclStringError.CreateResRec(@RsBlankSearchString);
+    if S = '' then
+    begin
+      S := Replace;
+      Exit;
+    end
+    else
+      raise EJclStringError.CreateResRec(@RsBlankSearchString);
     
   if S <> '' then
   begin
@@ -4063,6 +4069,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.32  2004/12/23 04:31:43  rrossmair
+// - check-in for JCL 1.94 RC 1
+//
 // Revision 1.31  2004/10/18 04:54:42  marquardt
 // remove PH contributor
 //

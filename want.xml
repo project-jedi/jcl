@@ -38,7 +38,7 @@ $Id$
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="93"/>
+  <property name="version.minor"    value="94"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->
@@ -151,21 +151,22 @@ $Id$
           <exclude name="${install.dir}/prototypes/**" />
           <exclude name="${install.dir}/prototypes.mak" />
           <exclude name="${install.dir}/BCB5-dcc32.cfg.mak" />
-          <exclude name="${help.dir}/dtx/**" />
-          <exclude name="${help.dir}/HIT/**" />
-          <exclude name="${help.dir}/*.txt" />
+          <exclude name="${help.dir}/**" />
           <exclude name="${lib.dir}/**/*.res" />
+          <exclude name="${lib.dir}/d4/**" />
           <exclude name="${lib.dir}/k1/**" />
           <exclude name="${lib.dir}/k2/**" />
           <exclude name="${pack.dir}/*.dev/**" />
-          <exclude name="${pack.dir}/JclDevPackages*.bpg" />
+          <exclude name="${pack.dir}/JclDev*.*" />
           <exclude name="${pack.dir}/**/*.mak" />
+          <exclude name="${pack.dir}/d4/**" />
           <exclude name="${pack.dir}/k1/**" />
           <exclude name="${pack.dir}/k2/**" />
           <exclude name="${pack.dir}/JclPackagesDK1.bpg" />
           <exclude name="${pack.dir}/JclPackagesDK2.bpg" />
           <exclude name="${pack.dir}/**/template.*" />
           <exclude name="${src.dir}/prototypes/**" />
+          <exclude name="${src.dir}/common/JclD4Compatibility.pas" />
           <exclude name="${samp.dir}/makefile.mak" />
           <exclude name="${samp.dir}/vcl/installhelper/**" />
           <exclude name="${basedir}/want.*" />
@@ -177,6 +178,9 @@ $Id$
           <include name="${install.dir}/**/*.conf" />
           <include name="${install.dir}/QJediInstaller.conf" />
           <include name="${doc.dir}/**" />
+          <include name="${help.dir}/JclHelp.als" />
+          <include name="${help.dir}/JclHelp.cnt" />
+          <include name="${help.dir}/JclHelp.hlp" />
           <include name="${lib.dir}/**/*.exc" />
           <include name="${pack.dir}/**/*.bmk" />
           <include name="${pack.dir}/**/*.gmk" />
@@ -200,6 +204,9 @@ $Id$
           <include name="${basedir}/**/*.bpf" />
           <include name="${basedir}/**/*.bpk" />
           <include name="${basedir}/**/*.mak" />
+
+          <include name="${basedir}/**/*.bdsgroup" />
+          <include name="${basedir}/**/*.bdsproj" />
 
           <include name="${basedir}/**/*.rc" />
           <include name="${basedir}/**/*.res" />

@@ -25,14 +25,13 @@ package IdeOpenDlgFavorite90;
 {$DESCRIPTION 'JCL Open and Save IDE dialogs with favorite folders for Delphi 2005'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
+{%RC 'FavDlg.rc'}
 
 requires
   vcl,
   vclx,
   designide,
   DJcl;
-
-{%RC 'FavDlg.rc'}
 
 contains
   IdeOpenDlgFavoriteUnit in 'IdeOpenDlgFavoriteUnit.pas',

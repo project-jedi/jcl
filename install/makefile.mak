@@ -33,13 +33,11 @@ default:	clean install
 	@if exist *.dcu del *.dcu
 
 $(BIN)\JediInstaller.exe: \
-		JediInstallerMain.pas \
-		ProductFrames.pas \
+                prototypes \
 		JediInstaller.dpr
 
 $(BIN)\QJediInstaller.exe: \
-		QJediInstallerMain.pas \
-		QProductFrames.pas \
+                prototypes \
 		QJediInstaller.dpr
 
 install:        $(BIN)\JediInstaller.exe
@@ -58,19 +56,12 @@ clean:
 	cd ..
 	@echo cleaning up first...
 	-@for %f in (bin\*.exe) do @if not %f==bin\JediInstaller.exe if not %f==bin\QJediInstaller.exe (del %f)
-	-@del /f /s *.~* bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
+	-del /f /s *.~* bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
 	cd lib
-	-@del /f /s *.obj *.res
+	-del /f /s *.obj *.res
 	cd ..\install
 
-prototypes:	JediInstallerMain.pas \
-		ProductFrames.pas \
-		QJediInstallerMain.pas \
-		QProductFrames.pas
-
-JediInstallerMain.pas ProductFrames.pas:
+prototypes:
 	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak VclUnits
-
-QJediInstallerMain.pas QProductFrames.pas:
 	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak ClxUnits
 
