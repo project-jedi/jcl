@@ -15,7 +15,5 @@
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphics.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclGraphUtils.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclGraphics.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
   </Contains>
 </Package>
