@@ -3980,7 +3980,7 @@ begin
     end;
   end
   else
-    raise EJclEDIError.CreateResRec(@RsEDIError001);
+    raise EJclEDIError.CreateRes(@RsEDIError001);
 end;
 
 procedure TEDISEFFile.ParseTextSets;
@@ -4261,7 +4261,7 @@ begin
     end;
   end
   else
-    raise EJclEDIError.CreateResRec(@RsEDIError002);
+    raise EJclEDIError.CreateRes(@RsEDIError002);
 end;
 
 procedure TEDISEFTable.Disassemble;

@@ -373,7 +373,7 @@ uses
 {$IFDEF UNIX}
 procedure ErrorNotImplemented;
 begin
-  raise EJclInternalError.CreateResRec(@RsMidiNotImplemented);
+  raise EJclInternalError.CreateRes(@RsMidiNotImplemented);
 end;
   {$ENDIF UNIX}
 
@@ -416,7 +416,7 @@ end;
 procedure CheckMIDIChannelNum(Channel: TMIDIChannel);
 begin
   if (Channel < Low(TMIDIChannel)) or (Channel > High(TMIDIChannel)) then
-    raise EJclMIDIError.CreateResRecFmt(@RsMidiInvalidChannelNum, [Channel]);
+    raise EJclMIDIError.CreateResFmt(@RsMidiInvalidChannelNum, [Channel]);
 end;
 
 function MIDINoteToStr(Note: TMIDINote): string;
@@ -796,6 +796,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.11  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

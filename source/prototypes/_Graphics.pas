@@ -620,9 +620,9 @@ end;
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
 begin
   if (Dst = nil) or Dst.Empty then
-    raise EJclGraphicsError.CreateResRec(@RsDestinationBitmapEmpty);
+    raise EJclGraphicsError.CreateRes(@RsDestinationBitmapEmpty);
   if (Src = nil) or Src.Empty then
-    raise EJclGraphicsError.CreateResRec(@RsSourceBitmapEmpty);
+    raise EJclGraphicsError.CreateRes(@RsSourceBitmapEmpty);
 end;
 
 function CheckSrcRect(Src: TJclBitmap32; const SrcRect: TRect): Boolean;
@@ -632,7 +632,7 @@ begin
     Exit;
   if (SrcRect.Left < 0) or (SrcRect.Right > Src.Width) or
     (SrcRect.Top < 0) or (SrcRect.Bottom > Src.Height) then
-    raise EJclGraphicsError.CreateResRec(@RsSourceBitmapInvalid);
+    raise EJclGraphicsError.CreateRes(@RsSourceBitmapInvalid);
   Result := True;
 end;
 
@@ -1657,7 +1657,7 @@ begin
     JPeg.LoadFromFile(FileName);
     Bitmap := TBitmap.Create;
     Bitmap.Assign(JPeg);
-    Bitmap.SaveToFile(ChangeFileExt(FileName, RsBitmapExtension));
+    Bitmap.SaveToFile(ChangeFileExt(FileName, LoadResString(@RsBitmapExtension)));
   finally
     FreeAndNil(Bitmap);
     FreeAndNil(JPeg);
@@ -1676,7 +1676,7 @@ begin
     Bitmap.LoadFromFile(FileName);
     JPeg := TJPegImage.Create;
     JPeg.Assign(Bitmap);
-    JPeg.SaveToFile(ChangeFileExt(FileName, RsJpegExtension));
+    JPeg.SaveToFile(ChangeFileExt(FileName, LoadResString(@RsJpegExtension)));
   finally
     FreeAndNil(Bitmap);
     FreeAndNil(JPeg);
@@ -1986,7 +1986,7 @@ begin
   Result := 0;
 
   if Bitmap = nil then
-    EJclGraphicsError.CreateResRec(@RsNoBitmapForRegion);
+    EJclGraphicsError.CreateRes(@RsNoBitmapForRegion);
 
   if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
     Exit;
@@ -2072,7 +2072,7 @@ begin
   // Get the HDC of the window...
   WinDC := GetDC(Window);
   if WinDC = 0 then
-    raise EJclGraphicsError.CreateResRec(@RsNoDeviceContextForWindow);
+    raise EJclGraphicsError.CreateRes(@RsNoDeviceContextForWindow);
 
   // Palette-device?
   if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
@@ -2184,7 +2184,7 @@ constructor TJclRegionInfo.Create(Region: TJclRegion);
 begin
   inherited Create;
   if Region = nil then
-    raise EJclGraphicsError.CreateResRec(@RsInvalidRegion);
+    raise EJclGraphicsError.CreateRes(@RsInvalidRegion);
   FData := nil;
   FDataSize := GetRegionData(Region.Handle, 0, nil);
   GetMem(FData, FDataSize);
@@ -2213,7 +2213,7 @@ function TJclRegionInfo.GetRect(Index: Integer): TRect;
 var RectP: PRect;
 begin
   if (Index < 0) or (DWORD(Index) >= TRgnData(FData^).rdh.nCount) then
-    raise EJclGraphicsError.CreateResRec(@RsRegionDataOutOfBound);
+    raise EJclGraphicsError.CreateRes(@RsRegionDataOutOfBound);
   RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect)*Index));
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
@@ -2298,7 +2298,7 @@ end;
 constructor TJclRegion.CreateRegionInfo(RegionInfo: TJclRegionInfo);
 begin
   if RegionInfo = nil then
-    raise EJclGraphicsError.CreateResRec(@RsInvalidRegionInfo);
+    raise EJclGraphicsError.CreateRes(@RsInvalidRegionInfo);
   Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
@@ -2314,9 +2314,9 @@ begin
   if FHandle = 0 then
   begin
     if FOwnsHandle then
-      raise EJclWin32Error.CreateResRec(@RsRegionCouldNotCreated)
+      raise EJclWin32Error.CreateRes(@RsRegionCouldNotCreated)
     else
-      raise EJclGraphicsError.CreateResRec(@RsInvalidHandleForRegion);
+      raise EJclGraphicsError.CreateRes(@RsInvalidHandleForRegion);
   end;
 end;
 
@@ -2506,7 +2506,7 @@ end;
 
 procedure TJclThreadPersistent.EndUpdate;
 begin
-  Assert(FUpdateCount > 0, RsAssertUnpairedEndUpdate);
+  Assert(FUpdateCount > 0, LoadResString(@RsAssertUnpairedEndUpdate));
   Dec(FUpdateCount);
 end;
 
@@ -2572,7 +2572,7 @@ begin
     if Assigned(WidthInfo) and Assigned(HeightInfo) then
       SetSize(GetOrdProp(Source, WidthInfo), GetOrdProp(Source, HeightInfo))
     else
-      raise EJclGraphicsError.CreateResRecFmt(@RsMapSizeFmt,[Source.ClassName]);
+      raise EJclGraphicsError.CreateResFmt(@RsMapSizeFmt,[Source.ClassName]);
   end;
 end;
 
@@ -2645,7 +2645,7 @@ begin
       end;
       FHandle := CreateDIBSection(0, FBitmapInfo, DIB_RGB_COLORS, Pointer(FBits), 0, 0);
       if FBits = nil then
-        raise EJclGraphicsError.CreateResRec(@RsDibHandleAllocation);
+        raise EJclGraphicsError.CreateRes(@RsDibHandleAllocation);
 
       FHDC := CreateCompatibleDC(0);
       if FHDC = 0 then
@@ -2653,7 +2653,7 @@ begin
         DeleteObject(FHandle);
         FHandle := 0;
         FBits := nil;
-        raise EJclGraphicsError.CreateResRec(@RsCreateCompatibleDc);
+        raise EJclGraphicsError.CreateRes(@RsCreateCompatibleDc);
       end;
 
       if SelectObject(FHDC, FHandle) = 0 then
@@ -2663,7 +2663,7 @@ begin
         FHDC := 0;
         FHandle := 0;
         FBits := nil;
-        raise EJclGraphicsError.CreateResRec(@RsSelectObjectInDc);
+        raise EJclGraphicsError.CreateRes(@RsSelectObjectInDc);
       end;
 
       FWidth := NewWidth;
@@ -5476,9 +5476,9 @@ end;
 procedure CheckParams(Dst, Src: TJclBitmap32);
 begin
   if Src = nil then
-    raise EJclGraphicsError.CreateResRec(@RsSourceBitmapEmpty);
+    raise EJclGraphicsError.CreateRes(@RsSourceBitmapEmpty);
   if Dst = nil then
-    raise EJclGraphicsError.CreateResRec(@RsDestinationBitmapEmpty);
+    raise EJclGraphicsError.CreateRes(@RsDestinationBitmapEmpty);
   Dst.SetSize(Src.Width, Src.Height); // Should this go? See #0001513. It is currently of no use.
 end;
 
@@ -5643,6 +5643,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.21  2005/03/08 08:33:19  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.20  2005/02/24 16:34:44  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -1515,7 +1515,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1581,7 +1581,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1768,7 +1768,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1824,7 +1824,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1871,7 +1871,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 

@@ -130,7 +130,7 @@ type
     FHost: TJclClrHost;
     FDefaultInterface: IJclClrAppDomain;
   protected
-    constructor Create(const AHost: TJclClrHost; const spAppDomain: IJclClrAppDomain);
+    constructor Create(const AHost: TJclClrHost; const AAppDomain: IJclClrAppDomain);
   public
     function Load(const AssemblyString: WideString;
       const AssemblySecurity: IJclClrEvidence = nil): TJclClrAssembly; overload;
@@ -336,7 +336,7 @@ end;
 procedure TJclClrHost.EnumAppDomains;
 var
   hEnum: Pointer;
-  spUnk: IUnknown;
+  Unk: IUnknown;
 begin
   if Assigned(FAppDomains) then
     FAppDomains.Clear
@@ -345,8 +345,8 @@ begin
 
   OleCheck(FDefaultInterface.EnumDomains(hEnum));
   try
-    while FDefaultInterface.NextDomain(hEnum, spUnk) <> S_FALSE do
-      TJclClrAppDomain.Create(Self, spUnk as IJclClrAppDomain);
+    while FDefaultInterface.NextDomain(hEnum, Unk) <> S_FALSE do
+      TJclClrAppDomain.Create(Self, Unk as IJclClrAppDomain);
   finally
     OleCheck(FDefaultInterface.CloseEnum(hEnum));
   end;
@@ -400,18 +400,18 @@ end;
 
 function TJclClrHost.GetDefaultAppDomain: IJclClrAppDomain;
 var
-  spUnk: IUnknown;
+  Unk: IUnknown;
 begin
-  OleCheck(FDefaultInterface.GetDefaultDomain(spUnk));
-  Result := spUnk as IJclClrAppDomain;
+  OleCheck(FDefaultInterface.GetDefaultDomain(Unk));
+  Result := Unk as IJclClrAppDomain;
 end;
 
 function TJclClrHost.GetCurrentAppDomain: IJclClrAppDomain;
 var
-  spUnk: IUnknown;
+  Unk: IUnknown;
 begin
-  OleCheck(FDefaultInterface.CurrentDomain(spUnk));
-  Result := spUnk as IJclClrAppDomain;
+  OleCheck(FDefaultInterface.CurrentDomain(Unk));
+  Result := Unk as IJclClrAppDomain;
 end;
 
 function TJclClrHost.AddAppDomain(const AppDomain: TJclClrAppDomain): Integer;
@@ -488,13 +488,13 @@ end;
 //=== { TJclClrAppDomain } ===================================================
 
 constructor TJclClrAppDomain.Create(const AHost: TJclClrHost;
-  const spAppDomain: IJclClrAppDomain);
+  const AAppDomain: IJclClrAppDomain);
 begin
   Assert(Assigned(AHost));
-  Assert(Assigned(spAppDomain));
+  Assert(Assigned(AAppDomain));
   inherited Create;
   FHost := AHost;
-  FDefaultInterface := spAppDomain;
+  FDefaultInterface := AAppDomain;
   FHost.AddAppDomain(Self);
 end;
 
@@ -755,6 +755,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/25 07:20:15  marquardt
 // add section lines
 //

@@ -245,10 +245,15 @@ end;
 
 //=== Temperature conversion =================================================
 
+procedure TemperatureBelowAbsoluteError;
+begin
+  raise ETemperatureConversionError.CreateRes(@RsConvTempBelowAbsoluteZero);
+end;
+
 function CelsiusToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   Result := (((FahrenheitBoilingPoint-FahrenheitFreezingPoint) /
     CelsiusBoilingPoint) * Temperature) + FahrenheitFreezingPoint;
@@ -260,7 +265,7 @@ end;
 function CelsiusToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // K = °C + 273.15
   Result := Temperature + KelvinFreezingPoint;
@@ -269,7 +274,7 @@ end;
 function CelsiusToRankine(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °R = (°C × 1.8) + 32 + 459.67
   if Temperature = CelsiusAbsoluteZero then
@@ -285,7 +290,7 @@ end;
 function CelsiusToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < CelsiusAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °R = °C × 0.8
   Result := Temperature * 0.8;
@@ -294,7 +299,7 @@ end;
 function FahrenheitToCelsius(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °C = (°F - 32) / 1.8
   Result := (CelsiusBoilingPoint /
@@ -305,7 +310,7 @@ end;
 function FahrenheitToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // K = (°F + 459.67) / 1.8
   Result := FahrenheitToCelsius(Temperature) + KelvinFreezingPoint;
@@ -314,7 +319,7 @@ end;
 function FahrenheitToRankine(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °Ra = °F + 459.67
   Result := Temperature + RankineAtFahrenheitZero;
@@ -323,7 +328,7 @@ end;
 function FahrenheitToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < FahrenheitAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °R = (°F - 32) / 2.25
   Result := (Temperature - FahrenheitFreezingPoint) / 2.25;
@@ -332,7 +337,7 @@ end;
 function KelvinToCelsius(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °C = K - 273.15
   Result := Temperature - KelvinFreezingPoint;
@@ -341,7 +346,7 @@ end;
 function KelvinToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °F = K × 1.8 - 459.67
   Result := FahrenheitToCelsius(Temperature - KelvinFreezingPoint);
@@ -350,7 +355,7 @@ end;
 function KelvinToRankine(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °Ra = K × 1.8
   Result := Temperature * 1.8;
@@ -359,7 +364,7 @@ end;
 function KelvinToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < KelvinAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °R = (K - 273.15) × 0.8
   Result := (Temperature - KelvinFreezingPoint) * 0.8;
@@ -368,7 +373,7 @@ end;
 function RankineToCelsius(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °C = (°R - 32 - 459.67) / 1.8
   Result := (Temperature - RankineFreezingPoint) / 1.8;
@@ -377,7 +382,7 @@ end;
 function RankineToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °F = °R - 459.67
   Result := Temperature - RankineAtFahrenheitZero;
@@ -386,7 +391,7 @@ end;
 function RankineToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // K = °R / 1.8
   Result := Temperature / 1.8;
@@ -395,7 +400,7 @@ end;
 function RankineToReaumur(const Temperature: Float): Float;
 begin
   if Temperature < RankineAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °R = (°Ra - 32 - 459.67) / 2.25
   Result := (Temperature - RankineFreezingPoint) / 2.25;
@@ -404,7 +409,7 @@ end;
 function ReaumurToCelsius(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °C = °R × 1.25
   Result := Temperature * 1.25;
@@ -413,7 +418,7 @@ end;
 function ReaumurToFahrenheit(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °F = °R × 2.25 + 32
   Result := (Temperature * 2.25) + FahrenheitFreezingPoint;
@@ -422,7 +427,7 @@ end;
 function ReaumurToKelvin(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // K = °R × 1.25 + 273.15
   Result := (Temperature * 1.25) + KelvinFreezingPoint;
@@ -431,7 +436,7 @@ end;
 function ReaumurToRankine(const Temperature: Float): Float;
 begin
   if Temperature < ReaumurAbsoluteZero then
-    raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+    TemperatureBelowAbsoluteError;
 
   // °Ra = °R × 2.25 + 32 + 459.67
   Result := (Temperature * 2.25) + RankineFreezingPoint;
@@ -439,8 +444,6 @@ end;
 
 function ConvertTemperature(const FromType, ToType: TTemperatureType; const Temperature: Float): Float;
 begin
-  Result := 0.0;
-
   case FromType of
     { All conversions from Celcius to other formats are listed here }
     ttCelsius:
@@ -455,7 +458,7 @@ begin
           ttReaumur:
             Result := CelsiusToReaumur(Temperature);
         else
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -471,7 +474,7 @@ begin
           ttReaumur:
             Result := FahrenheitToReaumur(Temperature);
         else
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -487,7 +490,7 @@ begin
           ttReaumur:
             Result := KelvinToReaumur(Temperature);
         else
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -503,7 +506,7 @@ begin
           ttReaumur:
             Result := RankineToReaumur(Temperature);
         else
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -519,11 +522,11 @@ begin
           ttRankine:
             Result := ReaumurToRankine(Temperature);
         else
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
         end;
       end;
   else
-    raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['FromType']);
+    raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['FromType']);
   end;
 end;
 
@@ -971,6 +974,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/03/08 08:33:18  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.9  2005/03/07 17:28:59  marquardt
 // raise was missing from several exceptions
 //

@@ -1184,7 +1184,7 @@ begin
     begin
       ClearDebugData;
       if not NoExceptions then
-        raise EJclError.CreateResRecFmt(@RsHasNotTD32Info, [FileName]);
+        raise EJclError.CreateResFmt(@RsHasNotTD32Info, [FileName]);
     end;
   end;
 end;
@@ -1251,6 +1251,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:23  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/25 07:20:16  marquardt
 // add section lines
 //

@@ -202,11 +202,11 @@ begin
     begin
       ModuleHandle := LoadLibrary(PChar(ModuleName));
       if ModuleHandle = 0 then
-        raise EJclError.CreateResRecFmt(@RsELibraryNotFound, [ModuleName]);
+        raise EJclError.CreateResFmt(@RsELibraryNotFound, [ModuleName]);
     end;
     P := GetProcAddress(ModuleHandle, PChar(ProcName));
     if not Assigned(P) then
-      raise EJclError.CreateResRecFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
+      raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
 
@@ -223,6 +223,9 @@ end;
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.4  2005/03/08 08:33:19  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.3  2005/03/07 07:49:12  marquardt
 // made the generator not remove IFDEF MSWINDOWS and UNIX
 //

@@ -866,7 +866,7 @@ var
       end;
 
       if val > 255 then
-        raise EJclStringError.CreateResRec(@RsNumericConstantTooLarge);
+        raise EJclStringError.CreateRes(@RsNumericConstantTooLarge);
 
       Result := Result + Chr(Val);
     end;
@@ -898,7 +898,7 @@ var
     end;
 
     if val > 255 then
-      raise EJclStringError.CreateResRec(@RsNumericConstantTooLarge);
+      raise EJclStringError.CreateRes(@RsNumericConstantTooLarge);
 
     Result := Result + Chr(Val);
   end;
@@ -1169,7 +1169,7 @@ begin
       Exit;
     end
     else
-      raise EJclStringError.CreateResRec(@RsBlankSearchString);
+      raise EJclStringError.CreateRes(@RsBlankSearchString);
 
   if S <> '' then
   begin
@@ -2382,7 +2382,7 @@ var
 
 begin
   if SubStr = '' then
-    raise EJclStringError.CreateResRec(@RsBlankSearchString);
+    raise EJclStringError.CreateRes(@RsBlankSearchString);
 
   Result := SubStr = '*';
 
@@ -3071,7 +3071,7 @@ begin
   TotalLength := 1;
   for I := 0 to Source.Count - 1 do
     if Source[I] = '' then
-      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem)
+      raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem)
     else
       Inc(TotalLength, StrLen(PChar(Source[I])) + 1);
   AllocateMultiSz(Dest, TotalLength);
@@ -3163,7 +3163,7 @@ begin
   TotalLength := 1;
   for I := 0 to Source.Count - 1 do
     if Source[I] = '' then
-      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem)
+      raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem)
     else
       Inc(TotalLength, StrLenW(PWideChar(Source[I])) + 1);
   AllocateWideMultiSz(Dest, TotalLength);
@@ -3651,6 +3651,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.36  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.35  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

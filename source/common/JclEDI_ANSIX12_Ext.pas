@@ -199,7 +199,7 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError058,
+      raise EJclEDIError.CreateResFmt(@RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
          IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];

@@ -574,7 +574,7 @@ var
   Overlay: array [1..2] of Longint absolute D;
 begin
   if Length(Hex) <> 16 then
-    raise EJclMathError.CreateResRec(@RsUnexpectedValue);
+    raise EJclMathError.CreateRes(@RsUnexpectedValue);
   Overlay[1] := StrToInt('$' + Copy(Hex, 9, 8));
   Overlay[2] := StrToInt('$' + Copy(Hex, 1, 8));
   Result := D;
@@ -665,7 +665,7 @@ end;
 procedure DomainCheck(Err: Boolean);
 begin
   if Err then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+    raise EJclMathError.CreateRes(@RsMathDomainError);
 end;
 
 //=== Logarithmic ============================================================
@@ -1182,7 +1182,7 @@ begin
       {$IFDEF MATH_EXT_EXTREMEVALUES}
       Result := Infinity;
       {$ELSE}
-      raise EJclMathError.CreateResRec(@RsPowerInfinite);
+      raise EJclMathError.CreateRes(@RsPowerInfinite);
       {$ENDIF MATH_EXT_EXTREMEVALUES}
   end
   else
@@ -1199,7 +1199,7 @@ begin
         Result := -Result;
     end
     else
-      raise EJclMathError.CreateResRec(@RsPowerComplex);
+      raise EJclMathError.CreateRes(@RsPowerComplex);
   end;
 end;
 
@@ -1929,7 +1929,7 @@ end;
 function EnsureRange(const AValue, AMin, AMax: Integer): Integer;
 begin
   Result := AValue;
-  assert(AMin <= AMax);
+  Assert(AMin <= AMax);
   if Result < AMin then
     Result := AMin;
   if Result > AMax then
@@ -1939,7 +1939,7 @@ end;
 function EnsureRange(const AValue, AMin, AMax: Int64): Int64;
 begin
   Result := AValue;
-  assert(AMin <= AMax);
+  Assert(AMin <= AMax);
   if Result < AMin then
     Result := AMin;
   if Result > AMax then
@@ -1949,7 +1949,7 @@ end;
 function EnsureRange(const AValue, AMin, AMax: Double): Double;
 begin
   Result := AValue;
-  assert(AMin <= AMax);
+  Assert(AMin <= AMax);
   if Result < AMin then
     Result := AMin;
   if Result > AMax then
@@ -2013,7 +2013,7 @@ begin
     Max := Round(Sqrt (R));
     if Max > PrimeCacheLimit then
     begin
-      raise EJclMathError.CreateResRec(@RsUnexpectedValue);
+      raise EJclMathError.CreateRes(@RsUnexpectedValue);
       Exit;
     end;
     I := 1;
@@ -2337,7 +2337,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FloatingPointClass(Value) <> fpNaN then
-      raise EJclMathError.CreateResRec(@RsNoNaN);
+      raise EJclMathError.CreateRes(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2350,7 +2350,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FloatingPointClass(Value) <> fpNaN then
-      raise EJclMathError.CreateResRec(@RsNoNaN);
+      raise EJclMathError.CreateRes(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2363,7 +2363,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FloatingPointClass(Value) <> fpNaN then
-      raise EJclMathError.CreateResRec(@RsNoNaN);
+      raise EJclMathError.CreateRes(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2532,7 +2532,7 @@ end;
 procedure CheckTag(Tag: TNaNTag);
 begin
   if (Tag < Low(TNaNTag)) or (Tag > High(TNaNTag)) then
-    raise EJclMathError.CreateResRecFmt(@RsNaNTagError, [Tag]);
+    raise EJclMathError.CreateResFmt(@RsNaNTagError, [Tag]);
 end;
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
@@ -2704,7 +2704,7 @@ end;
 constructor EJclNaNSignal.Create(ATag: TNaNTag);
 begin
   FTag := ATag;
-  CreateResRecFmt(@RsNaNSignal, [ATag]);
+  CreateResFmt(@RsNaNSignal, [ATag]);
 end;
 
 //=== { TJclRational } =======================================================
@@ -2748,7 +2748,7 @@ end;
 procedure TJclRational.Assign(const Numerator: Integer; const Denominator: Integer);
 begin
   if Denominator = 0 then
-    raise EJclMathError.CreateResRec(@RsInvalidRational);
+    raise EJclMathError.CreateRes(@RsInvalidRational);
   FT := Numerator;
   FN := Denominator;
   if FN <> 1 then
@@ -2936,7 +2936,7 @@ end;
 procedure TJclRational.Divide(const V: Integer);
 begin
   if V = 0 then
-    raise EJclMathError.CreateResRec(@RsDivByZero);
+    raise EJclMathError.CreateRes(@RsDivByZero);
 
   FN := FN * V;
   Simplify;
@@ -2945,7 +2945,7 @@ end;
 procedure TJclRational.Divide(const R: TJclRational);
 begin
   if R.FT = 0 then
-    raise EJclMathError.CreateResRec(@RsRationalDivByZero);
+    raise EJclMathError.CreateRes(@RsRationalDivByZero);
 
   FT := FT * R.FN;
   FN := FN * R.FT;
@@ -2960,7 +2960,7 @@ end;
 procedure TJclRational.Reciprocal;
 begin
   if FT = 0 then
-    raise EJclMathError.CreateResRec(@RsRationalDivByZero);
+    raise EJclMathError.CreateRes(@RsRationalDivByZero);
   SwapOrd(FT, FN);
 end;
 
@@ -3783,6 +3783,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.24  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.23  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -267,7 +267,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.Next: IInterface;
@@ -287,19 +287,19 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -429,7 +429,7 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TStrItr.Next: string;
@@ -449,19 +449,19 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -591,7 +591,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TItr.Next: TObject;
@@ -611,19 +611,19 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No Index
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
   // Unidirectional
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
   // No Index
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -702,7 +702,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if AInterface = nil then
     Exit;
   if FStart = nil then
@@ -790,7 +790,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -1228,7 +1228,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1753,7 +1753,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1841,7 +1841,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -2322,6 +2322,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/08 08:33:16  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.6  2005/03/03 08:02:57  marquardt
 // various style cleanings, bugfixes and improvements
 //

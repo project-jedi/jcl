@@ -1541,7 +1541,7 @@ begin
       dupIgnore:
         Exit;
       dupError:
-        raise EListError.Create(SDuplicateString);
+        raise EListError.CreateRes(@SDuplicateString);
     end;
   InsertObject(Result, S, AObject);
 end;
@@ -1803,6 +1803,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/03/08 08:33:18  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.10  2005/03/01 15:37:40  marquardt
 // addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
 //

@@ -2767,8 +2767,7 @@ type
   {$EXTERNALSYM PRTL_OSVERSIONINFOEXW}
   TOSVersionInfoExW = _OSVERSIONINFOEXW;
 
-{$IFDEF UNICODE}
-
+  {$IFDEF UNICODE}
   OSVERSIONINFOEX = OSVERSIONINFOEXW;
   {$EXTERNALSYM OSVERSIONINFOEX}
   POSVERSIONINFOEX = POSVERSIONINFOEXW;
@@ -2776,18 +2775,15 @@ type
   LPOSVERSIONINFOEX = LPOSVERSIONINFOEXW;
   {$EXTERNALSYM LPOSVERSIONINFOEX}
   TOSVersionInfoEx = TOSVersionInfoExW;
-
-{$ELSE}
-
+  {$ELSE}
   OSVERSIONINFOEX = OSVERSIONINFOEXA;
   {$EXTERNALSYM OSVERSIONINFOEX}
   POSVERSIONINFOEX = POSVERSIONINFOEXA;
   {$EXTERNALSYM POSVERSIONINFOEX}
   LPOSVERSIONINFOEX = LPOSVERSIONINFOEXA;
   {$EXTERNALSYM LPOSVERSIONINFOEX}
-  TOSVersionInfoEx = TOSVersionInfoExA;  
-
-{$ENDIF}
+  TOSVersionInfoEx = TOSVersionInfoExA;
+  {$ENDIF UNICODE}
 
 //
 // RtlVerifyVersionInfo() conditions
@@ -4236,7 +4232,7 @@ const
 
 {$IFDEF _WIN32_WINNT}
 {$DEFINE LM_USE_UNICODE}
-{$ENDIF}
+{$ENDIF _WIN32_WINNT}
 
 
 {$IFDEF FORCE_UNICODE}
@@ -6651,11 +6647,11 @@ begin
     begin
       ModuleHandle := LoadLibrary(PChar(ModuleName));
       if ModuleHandle = 0 then
-        raise EJclError.CreateResRecFmt(@RsELibraryNotFound, [ModuleName]);
+        raise EJclError.CreateResFmt(@RsELibraryNotFound, [ModuleName]);
     end;
     P := GetProcAddress(ModuleHandle, PChar(ProcName));
     if not Assigned(P) then
-      raise EJclError.CreateResRecFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
+      raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
 

@@ -536,7 +536,7 @@ begin
     SpinCount := SpinCount or Cardinal($80000000);
 
   if not InitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
-    raise EJclCriticalSectionError.CreateResRec(@RsSynchInitCriticalSection);
+    raise EJclCriticalSectionError.CreateRes(@RsSynchInitCriticalSection);
 end;
 
 function TJclCriticalSectionEx.GetSpinCount: Cardinal;
@@ -583,7 +583,7 @@ begin
   FName := Name;
   FHandle := Windows.CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
   if FHandle = 0 then
-    raise EJclEventError.CreateResRec(@RsSynchCreateEvent);
+    raise EJclEventError.CreateRes(@RsSynchCreateEvent);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
@@ -594,7 +594,7 @@ begin
   FExisted := True;
   FHandle := Windows.OpenEvent(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
-    raise EJclEventError.CreateResRec(@RsSynchOpenEvent);
+    raise EJclEventError.CreateRes(@RsSynchOpenEvent);
 end;
 
 function TJclEvent.Pulse: Boolean;
@@ -622,7 +622,7 @@ begin
   FResume := False;
   FHandle := CreateWaitableTimer(SecAttr, Manual, PChar(Name));
   if FHandle = 0 then
-    raise EJclWaitableTimerError.CreateResRec(@RsSynchCreateWaitableTimer);
+    raise EJclWaitableTimerError.CreateRes(@RsSynchCreateWaitableTimer);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
@@ -642,7 +642,7 @@ begin
   FResume := False;
   FHandle := OpenWaitableTimer(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
-    raise EJclWaitableTimerError.CreateResRec(@RsSynchOpenWaitableTimer);
+    raise EJclWaitableTimerError.CreateRes(@RsSynchOpenWaitableTimer);
 end;
 
 { TODO: Use RTLD version of SetWaitableTimer }
@@ -677,7 +677,7 @@ begin
   FName := Name;
   FHandle := Windows.CreateSemaphore(SecAttr, Initial, Maximum, PChar(Name));
   if FHandle = 0 then
-    raise EJclSemaphoreError.CreateResRec(@RsSynchCreateSemaphore);
+    raise EJclSemaphoreError.CreateRes(@RsSynchCreateSemaphore);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
@@ -688,7 +688,7 @@ begin
   FExisted := True;
   FHandle := Windows.OpenSemaphore(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
-    raise EJclSemaphoreError.CreateResRec(@RsSynchOpenSemaphore);
+    raise EJclSemaphoreError.CreateRes(@RsSynchOpenSemaphore);
 end;
 
 function TJclSemaphore.ReleasePrev(ReleaseCount: Longint;
@@ -709,7 +709,7 @@ begin
   FName := Name;
   FHandle := JclWin32.CreateMutex(SecAttr, Ord(InitialOwner), PChar(Name));
   if FHandle = 0 then
-    raise EJclMutexError.CreateResRec(@RsSynchCreateMutex);
+    raise EJclMutexError.CreateRes(@RsSynchCreateMutex);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
@@ -719,7 +719,7 @@ begin
   FExisted := True;
   FHandle := Windows.OpenMutex(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
-    raise EJclMutexError.CreateResRec(@RsSynchOpenMutex);
+    raise EJclMutexError.CreateRes(@RsSynchOpenMutex);
 end;
 
 function TJclMutex.Release: Boolean;
@@ -1134,7 +1134,7 @@ constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Nam
 begin
   if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
     (Length(Name) > MAX_METSECT_NAMELEN) then
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInvalidParameter);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectInvalidParameter);
   FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
   if FMetSect <> nil then
   begin
@@ -1142,7 +1142,7 @@ begin
     begin
       CloseMeteredSection;
       FMetSect := nil;
-      raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
+      raise EJclMeteredSectionError.CreateRes(@RsMetSectInitialize);
     end;
   end;
 end;
@@ -1151,14 +1151,14 @@ constructor TJclMeteredSection.Open(const Name: string);
 begin
   FMetSect := nil;
   if Name = '' then
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectNameEmpty);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectNameEmpty);
   FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
   Assert(FMetSect <> nil);
   if not InitMeteredSection(0, 0, Name, True) then
   begin
     CloseMeteredSection;
     FMetSect := nil;
-    raise EJclMeteredSectionError.CreateResRec(@RsMetSectInitialize);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectInitialize);
   end;
 end;
 
@@ -1382,6 +1382,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/03/08 08:33:23  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.16  2005/03/04 06:40:26  marquardt
 // changed overloaded constructors to constructor with default parameter (BCB friendly)
 //

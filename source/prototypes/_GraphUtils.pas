@@ -368,15 +368,16 @@ var
   MMX_ACTIVE: Boolean;
 
 {$IFDEF VCL}
+
 procedure OutOfResources;
 begin
-  raise EOutOfResources.Create(SOutOfResources);
+  raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
 procedure GDIError;
 var
   ErrorCode: Integer;
-  Buf: array [Byte] of Char;
+  Buf: array [0..255] of Char;
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
@@ -391,6 +392,7 @@ begin
   if Value = 0 then GDIError;
   Result := Value;
 end;
+
 {$ENDIF VCL}
 
 //=== Internal LowLevel ======================================================
@@ -1566,7 +1568,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1632,7 +1634,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1819,7 +1821,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1875,7 +1877,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1922,7 +1924,7 @@ begin
         end;
       end;
     else
-      raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -2630,6 +2632,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.20  2005/03/08 08:33:19  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.19  2005/03/05 06:28:24  rrossmair
 // - fixed DROP_OBSOLETE_CODE usage
 //

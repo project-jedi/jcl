@@ -303,7 +303,7 @@ begin
     Result := Res
   else
   begin
-    Error := EJclMapiError.CreateResRecFmt(@RsMapiError, [Res, MapiErrorMessage(Res)]);
+    Error := EJclMapiError.CreateResFmt(@RsMapiError, [Res, MapiErrorMessage(Res)]);
     Error.FErrorCode := Res;
     raise Error;
   end;
@@ -459,7 +459,7 @@ end;
 procedure TJclSimpleMapi.CheckListIndex(I, ArrayLength: Integer);
 begin
   if (I < 0) or (I >= ArrayLength) then
-    raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
+    raise EJclMapiError.CreateResFmt(@RsMapiInvalidIndex, [I]);
 end;
 
 function TJclSimpleMapi.ClientLibLoaded: Boolean;
@@ -524,7 +524,7 @@ begin
     if P = nil then
     begin
       UnloadClientLib;
-      raise EJclMapiError.CreateResRecFmt(@RsMapiMissingExport, [MapiExportNames[I]]);
+      raise EJclMapiError.CreateResFmt(@RsMapiMissingExport, [MapiExportNames[I]]);
     end
     else
       FFunctions[I]^ := P;
@@ -927,7 +927,7 @@ var
   HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
-    raise EJclMapiError.CreateResRec(@RsMapiMailNoClient);
+    raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
   HtmlBodyFileName := '';
   try
@@ -1282,6 +1282,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.13  2005/02/25 07:20:15  marquardt
 // add section lines
 //

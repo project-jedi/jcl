@@ -738,12 +738,12 @@ begin
     if WideOpCode then
     begin
       if Code <> STP1 then
-        raise EJclCliInstructionStreamInvalid.CreateResRec(@RsInstructionStreamInvalid);
+        raise EJclCliInstructionStreamInvalid.CreateRes(@RsInstructionStreamInvalid);
       Stream.Read(Code, SizeOf(Code));
     end;
 
     if Code <> RealOpCode then
-      raise EJclCliInstructionStreamInvalid.CreateResRec(@RsInstructionStreamInvalid);
+      raise EJclCliInstructionStreamInvalid.CreateRes(@RsInstructionStreamInvalid);
 
     with TVarData(FParam) do
     case ParamType of
@@ -1006,6 +1006,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/03/07 17:27:58  marquardt
 // reworked for resorucestrings
 //

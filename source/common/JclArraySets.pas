@@ -184,7 +184,7 @@ end;
 
 procedure TJclIntfArraySet.Insert(Index: Integer; AInterface: IInterface);
 begin
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TJclIntfArraySet.Intersect(ACollection: IJclIntfCollection);
@@ -274,7 +274,7 @@ end;
 
 procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
 begin
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TJclStrArraySet.Intersect(ACollection: IJclStrCollection);
@@ -364,7 +364,7 @@ end;
 
 procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
 begin
-  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
 end;
 
 procedure TJclArraySet.Intersect(ACollection: IJclCollection);
@@ -385,6 +385,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.5  2005/03/03 08:02:56  marquardt
 // various style cleanings, bugfixes and improvements
 //

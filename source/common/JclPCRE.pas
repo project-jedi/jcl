@@ -45,7 +45,7 @@ type
   private
     FErrorCode: Integer;
   public
-    constructor Create(const Msg: AnsiString; ErrorCode: Integer);
+    constructor CreateRes(ResStringRec: PResStringRec; ErrorCode: Integer);
     property ErrorCode: Integer read FErrorCode;
   end;
 
@@ -97,29 +97,30 @@ uses
 
 function PCRECheck(Value: Integer): Boolean;
 var
-  S: AnsiString;
+  PErr: PResStringRec;
 begin
   Result := False;
+  PErr := nil;
   case Value of
     PCRE_ERROR_NOMATCH:
-      S := SErrNoMatch;
+      PErr := @RsErrNoMatch;
     PCRE_ERROR_NULL:
-      S := SErrNull;
+      PErr := @RsErrNull;
     PCRE_ERROR_BADOPTION:
-      S := SErrBadOption;
+      PErr := @RsErrBadOption;
     PCRE_ERROR_BADMAGIC:
-      S := SErrBadMagic;
+      PErr := @RsErrBadMagic;
     PCRE_ERROR_UNKNOWN_NODE:
-      S := SErrUnknownNode;
+      PErr := @RsErrUnknownNode;
     PCRE_ERROR_NOMEMORY:
-      S := SErrNoMemory;
+      PErr := @RsErrNoMemory;
     PCRE_ERROR_NOSUBSTRING:
-      S := SErrNoSubString;
+      PErr := @RsErrNoSubString;
   else
     Result := True;
   end;
   if not Result then
-    raise EPCREError.Create(S, Value);
+    raise EPCREError.CreateRes(PErr, Value);
 end;
 
 //=== { TJclAnsiRegEx } ======================================================
@@ -151,7 +152,7 @@ begin
   else
     FTables := nil;
   if Pattern = '' then
-    raise EPCREError.Create(SErrNull, PCRE_ERROR_NULL);
+    raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
   FCode := pcre_compile(PChar(Pattern), GetAPIOptions(False), @ErrPtr, @ErrOffset, FTables);
   FErrorMessage := ErrPtr;
   FErrorOffset := ErrOffset;
@@ -228,15 +229,15 @@ end;
 
 //=== { EPCREError } =========================================================
 
-constructor EPCREError.Create(const Msg: AnsiString; ErrorCode: Integer);
+constructor EPCREError.CreateRes(ResStringRec: PResStringRec; ErrorCode: Integer);
 begin
   FErrorCode := ErrorCode;
-  inherited Create(Msg);
+  inherited CreateRes(ResStringRec);
 end;
 
 procedure LibNotLoadedHandler; cdecl;
 begin
-  raise EPCREError.Create(SErrLibNotLoaded, 0);
+  raise EPCREError.CreateRes(@RsErrLibNotLoaded, 0);
 end;
 
 initialization
@@ -249,6 +250,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.8  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

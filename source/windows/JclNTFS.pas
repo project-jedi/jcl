@@ -206,7 +206,7 @@ procedure ValidateArgument(Condition: Boolean; const Routine: string;
   const Argument: string);
 begin
   if not Condition then
-    raise EJclInvalidArgument.CreateResRecFmt(@RsInvalidArgument, [Routine, Argument])
+    raise EJclInvalidArgument.CreateResFmt(@RsInvalidArgument, [Routine, Argument])
       at CallersCallerAddress;
 end;
 
@@ -299,6 +299,7 @@ begin
     COMPRESSION_FORMAT_LZNT1:
       Result := fcLZNT1Compression;
   else
+    // (rom) very dubious.
     Assert(False, 'TFileCompressionState requires expansion');
     Result := TFileCompressionState(State);
   end;
@@ -630,7 +631,7 @@ begin
     // set the mountpoint either but raise an exception instead, there's something
     // seriously wrong so let's try to control the damage done already :)
     if not DefineDosDevice(DDD_FLAGS, PChar(DriveStr), PChar(Device)) then
-      raise EJclNtfsError.CreateResRec(@RsNtfsUnableToDeleteSymbolicLink);
+      raise EJclNtfsError.CreateRes(@RsNtfsUnableToDeleteSymbolicLink);
     if Result then
       Result := RtdlSetVolumeMountPoint(PChar(DriveStr + '\'), PChar(VolumeName));
   end;
@@ -1155,6 +1156,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.22  2005/02/25 07:20:16  marquardt
 // add section lines
 //

@@ -95,12 +95,12 @@ function GetDynLengthNotNull(const X: TDynFloatArray): Integer;
 begin
   Result := Length(X);
   if Result = 0 then
-    raise EJclMathError.CreateResRec(@RsEmptyArray);
+    raise EJclMathError.CreateRes(@RsEmptyArray);
 end;
 
 procedure InvalidSampleSize(SampleSize: Integer);
 begin
-  raise EJclStatisticsError.CreateResRecFmt(@RsInvalidSampleSize, [SampleSize]);
+  raise EJclStatisticsError.CreateResFmt(@RsInvalidSampleSize, [SampleSize]);
 end;
 
 function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
@@ -126,7 +126,7 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
-      raise EJclMathError.CreateResRec(@RsNonPositiveArray);
+      raise EJclMathError.CreateRes(@RsNonPositiveArray);
     Result := Result * X[I];
   end;
   Result := Power(Result, 1 / N);
@@ -141,7 +141,7 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
-      raise EJclMathError.CreateResRec(@RsNonPositiveArray);
+      raise EJclMathError.CreateRes(@RsNonPositiveArray);
     Result := Result + 1 / X[I];
   end;
   Result := N / Result;
@@ -479,6 +479,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.14  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -236,22 +236,22 @@ end;
 
 function TJclCompressionStream.Read(var Buffer; Count: Longint): Longint;
 begin
-  raise EJclCompressionError.CreateResRec(@RsCompressionReadNotSupported);
+  raise EJclCompressionError.CreateRes(@RsCompressionReadNotSupported);
 end;
 
 function TJclCompressionStream.Write(const Buffer; Count: Longint): Longint;
 begin
-  raise EJclCompressionError.CreateResRec(@RsCompressionWriteNotSupported);
+  raise EJclCompressionError.CreateRes(@RsCompressionWriteNotSupported);
 end;
 
 function TJclCompressionStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
-  raise EJclCompressionError.CreateResRec(@RsCompressionSeekNotSupported);
+  raise EJclCompressionError.CreateRes(@RsCompressionSeekNotSupported);
 end;
 
 procedure TJclCompressionStream.Reset;
 begin
-  raise EJclCompressionError.CreateResRec(@RsCompressionResetNotSupported);
+  raise EJclCompressionError.CreateRes(@RsCompressionResetNotSupported);
 end;
 
 function TJclCompressionStream.SetBufferSize(Size: Cardinal): Cardinal;
@@ -302,19 +302,19 @@ begin
   if ErrCode < 0 then
     case ErrCode of
       Z_ERRNO:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZErrNo);
       Z_STREAM_ERROR:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZStreamError);
       Z_DATA_ERROR:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZDataError);
       Z_MEM_ERROR:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZMemError);
       Z_BUF_ERROR:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
       Z_VERSION_ERROR:
-        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+        raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
     else
-      raise EJclCompressionError.CreateResRec(@RsCompressionZLibError);
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibError);
     end;
 end;
 
@@ -560,14 +560,14 @@ begin
   if ErrCode < 0 then
   begin
     case ErrCode of
-      Z_ERRNO:         raise EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:  raise EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:    raise EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR: raise EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+      Z_ERRNO:         raise EJclCompressionError.CreateRes(@RsCompressionZLibZErrNo);
+      Z_STREAM_ERROR:  raise EJclCompressionError.CreateRes(@RsCompressionZLibZStreamError);
+      Z_DATA_ERROR:    raise EJclCompressionError.CreateRes(@RsCompressionZLibZDataError);
+      Z_MEM_ERROR:     raise EJclCompressionError.CreateRes(@RsCompressionZLibZMemError);
+      Z_BUF_ERROR:     raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
+      Z_VERSION_ERROR: raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
     else
-      raise EJclCompressionError.CreateResRec(@RsCompressionZLibError);
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibError);
     end;
   end;
 end;
@@ -755,6 +755,9 @@ end;
 
 // History:
 // $Log$
+// Revision 1.8  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.7  2005/02/27 14:55:25  marquardt
 // changed overloaded constructors to constructor with default parameter (BCB friendly)
 //

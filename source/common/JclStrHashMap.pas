@@ -374,7 +374,7 @@ begin
     begin
       { we are clearing the table - need hash to be empty }
       if FCount > 0 then
-        raise EJclStringHashMapError.CreateResRec(@RsStringHashMapMustBeEmpty);
+        raise EJclStringHashMapError.CreateRes(@RsStringHashMapMustBeEmpty);
       FreeMem(FList);
       FList := nil;
       FHashSize := 0;
@@ -617,7 +617,7 @@ begin
     PPN^^.Ptr := Pointer(P);
   end
   else
-    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapDuplicate, [S]);
+    raise EJclStringHashMapError.CreateResFmt(@RsStringHashMapDuplicate, [S]);
 end;
 
 type
@@ -682,7 +682,7 @@ begin
     DeleteNode(PPN^);
   end
   else
-    raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapInvalidNode, [S]);
+    raise EJclStringHashMapError.CreateResFmt(@RsStringHashMapInvalidNode, [S]);
 end;
 
 procedure TStringHashMap.IterateMethod(AUserData: Pointer;
@@ -782,6 +782,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:17  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -218,9 +218,9 @@ end;
 procedure CheckOSVersion;
 begin
   if Win32Platform <> VER_PLATFORM_WIN32_NT then
-    raise EJclError.CreateResRec(@RsCreateProcNTRequiredError);
+    raise EJclError.CreateRes(@RsCreateProcNTRequiredError);
   if Win32BuildNumber < 1057 then
-    raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);
+    raise EJclError.CreateRes(@RsCreateProcBuild1057Error);
 end;
 
 procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
@@ -257,14 +257,14 @@ begin
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
-        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcPrivilegeMissing,
+        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegeMissing,
           [GetPrivilegeDisplayName(SE_TCB_NAME), SE_TCB_NAME]);
       ERROR_LOGON_FAILURE:
-        raise EJclCreateProcessError.CreateResRec(@RsCreateProcLogonUserError);
+        raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonUserError);
       ERROR_ACCESS_DENIED:
-        raise EJclCreateProcessError.CreateResRec(@RsCreateProcAccessDenied);
+        raise EJclCreateProcessError.CreateRes(@RsCreateProcAccessDenied);
     else
-      raise EJclCreateProcessError.CreateResRec(@RsCreateProcLogonFailed);
+      raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
     end;
   end;
 
@@ -277,7 +277,7 @@ begin
   if not SetUserObjectFullAccess(hWindowStation) then
   begin
     CloseHandle(hUserToken);
-    raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcSetStationSecurityError, [WinStaName]);
+    raise EJclCreateProcessError.CreateResFmt(@RsCreateProcSetStationSecurityError, [WinStaName]);
   end;
 
   hDesktop := GetThreadDesktop(GetCurrentThreadId);
@@ -288,7 +288,7 @@ begin
   if not SetUserObjectFullAccess(hDesktop) then
   begin
     CloseHandle(hUserToken);
-    raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcSetDesktopSecurityError, [DesktopName]);
+    raise EJclCreateProcessError.CreateResFmt(@RsCreateProcSetDesktopSecurityError, [DesktopName]);
   end;
 
   // Step 4: set the startup info for the new process
@@ -313,13 +313,13 @@ begin
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
-        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcPrivilegesMissing,
+        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegesMissing,
           [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
            GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
-        raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcCommandNotFound, [CommandLine]);
+        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound, [CommandLine]);
       else
-        raise EJclCreateProcessError.CreateResRec(@RsCreateProcFailed);
+        raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
     end;
   end;
 
@@ -339,6 +339,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/08 08:33:22  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.12  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

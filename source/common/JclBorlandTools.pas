@@ -866,7 +866,7 @@ end;
 procedure TJclBorRADToolIdeTool.CheckIndex(Index: Integer);
 begin
   if (Index < 0) or (Index >= Count) then
-    raise EJclError.CreateResRec(@RsIndexOufOfRange);
+    raise EJclError.CreateRes(@RsIndexOufOfRange);
 end;
 
 function TJclBorRADToolIdeTool.GetCount: Integer;
@@ -1929,7 +1929,7 @@ begin
   Result := Pos('bds.exe', Globals.Values['App']) > 0;
   {$ELSE}
   Result := False;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclBorRADToolInstallation.LibFolderName: string;
@@ -2405,6 +2405,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.37  2005/03/08 08:33:15  marquardt
+// overhaul of exceptions and resourcestrings, minor style cleaning
+//
 // Revision 1.36  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
