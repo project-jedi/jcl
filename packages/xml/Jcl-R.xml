@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="Jcl" Design="0">
   <Description>JEDI Code Library RTL package</Description>
-  <C5PFlags/>
+  <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
