@@ -44,15 +44,16 @@ ALERT_jedi_inc_missing
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
     {$MESSAGE FATAL 'This unit is only supported on Windows!'}
   {$ELSE}
-    {$IFDEF XPLATFORM_RTL}
-      'This unit is only supported on Windows!'
-    {$ENDIF XPLATFORM_RTL}
+    'This unit is only supported on Windows!'
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF ~MSWINDOWS}
 
 // History:
 
 // $Log$
+// Revision 1.6  2004/08/12 17:22:30  marquardt
+// removed XPLATFORM_RTL
+//
 // Revision 1.5  2004/08/10 00:52:06  rrossmair
 // don't allow missing jedi.inc/wrong inclusion order to happen unnoticed.
 //
