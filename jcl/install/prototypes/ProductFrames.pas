@@ -48,6 +48,7 @@ uses
 
 const
   // Feature masks
+  FID_RadioButton          = $10000000;
   FID_Expandable           = $20000000;
   FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
   FID_Checked              = $80000000;
@@ -98,6 +99,7 @@ type
     { Private declarations }
     FInstallation: TJclBorRADToolInstallation;
     function GetNodeChecked(Node: TTreeNode): Boolean;
+    function IsRadioButton(Node: TTreeNode): Boolean;
     function IsStandAloneParent(Node: TTreeNode): Boolean;
     procedure SetInstallation(Value: TJclBorRADToolInstallation);
     procedure SetNodeChecked(Node: TTreeNode; const Value: Boolean);
@@ -113,6 +115,8 @@ type
     property NodeChecked[Node: TTreeNode]: Boolean read GetNodeChecked write SetNodeChecked;
     property Installation: TJclBorRADToolInstallation read FInstallation write SetInstallation;
   end;
+
+function Collapsable(Node: TTreeNode): Boolean;
 
 implementation
 
@@ -137,6 +141,11 @@ uses
 resourcestring
   RsSelectPath      = 'Select path';
   RsEnterValidPath  = '(Enter valid path)';
+
+function Collapsable(Node: TTreeNode): Boolean;
+begin
+  Result := (Cardinal(Node.Data) and FID_Expandable) <> 0;
+end;
 
 procedure TProductFrame.PathEditChange(Sender: TObject);
 begin
@@ -174,6 +183,11 @@ end;
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
+end;
+
+function TProductFrame.IsRadioButton(Node: TTreeNode): Boolean;
+begin
+  Result := Cardinal(Node.Data) and FID_RadioButton <> 0;
 end;
 
 function TProductFrame.IsStandAloneParent(Node: TTreeNode): Boolean;
@@ -262,7 +276,8 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     TempNode := N.getFirstChild;
     while Assigned(TempNode) do
     begin
-      UpdateNode(TempNode, C);
+      if not IsRadioButton(TempNode) then
+        UpdateNode(TempNode, C);
       UpdateTreeDown(TempNode, C);
       TempNode := TempNode.getNextSibling;
     end;
@@ -306,10 +321,33 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     end;
   end;
 
+  procedure UpdateRadioButton(N: TTreeNode; C: Boolean);
+  begin
+    if Value and not NodeChecked[Node] then
+    begin
+      Node := N.Parent;
+      if Node <> nil then
+      begin
+        Node := Node.getFirstChild;
+        while Node <> nil do
+        begin
+          if IsRadioButton(Node) then
+            UpdateNode(Node, Node = N);
+          Node := Node.getNextSibling;
+        end;
+      end;
+    end;
+  end;
+
 begin
-  UpdateNode(Node, Value);
-  UpdateTreeDown(Node, Value);
-  UpdateTreeUp(Node, Value);
+  if IsRadioButton(Node) then
+    UpdateRadioButton(Node, Value)
+  else
+  begin
+    UpdateNode(Node, Value);
+    UpdateTreeDown(Node, Value);
+    UpdateTreeUp(Node, Value);
+  end;
 end;
 
 procedure TProductFrame.ToggleNodeChecked(Node: TTreeNode);
@@ -355,7 +393,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TProductFrame.TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem; 
+procedure TProductFrame.TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem;
   Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage; 
   var DefaultDraw: Boolean);
 {$ELSE}
@@ -376,10 +414,16 @@ end;
 procedure TProductFrame.TreeViewKeyPress(Sender: TObject; var Key: Char);
 begin
   with TTreeView(Sender) do
-    if (Key = #32) then
-    begin
-      ToggleNodeChecked(Selected);
-      Key := #0;
+    case Key of
+      #32:
+        begin
+          ToggleNodeChecked(Selected);
+          Key := #0;
+        end;
+      '+':
+        Selected.Expanded := True;
+      '-':
+        Selected.Expanded := False;
     end;
 end;
 
@@ -421,8 +465,16 @@ begin
 end;
 
 procedure TProductFrame.UpdateTree;
+var
+  Node: TTreeNode;
 begin
-  TreeView.FullExpand;
+  Node := TreeView.Items.GetFirstNode;
+  while Node <> nil do
+  begin
+    if not Collapsable(Node) then
+      Node.Expand(False);
+    Node := Node.GetNext;
+  end;
 end;
 
 procedure TProductFrame.StartCompilation(Installation: TJclBorRADToolInstallation);

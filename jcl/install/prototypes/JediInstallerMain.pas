@@ -119,7 +119,7 @@ type
     function InfoFile(Node: TTreeNode): string;
     function OptionGUI(Installation: TJclBorRADToolInstallation): TObject;
     function GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption; const Text: string;
-      StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+      GUIOptions: TJediInstallGUIOptions): TObject;
     procedure HandleException(Sender: TObject; E: Exception);
     property JclDistribution: IJediInstall read FJclInstall;
     // IJediInstallTool
@@ -186,11 +186,6 @@ const
   VersionSignature  = 'D%d';
   BCBTag            = $10000;
   VersionMask       = $FFFF;
-
-function Collapsable(Node: TTreeNode): Boolean;
-begin
-  Result := (Cardinal(Node.Data) and FID_Expandable) <> 0;
-end;
 
 function FeatureID(Node: TTreeNode): Cardinal;
 begin
@@ -271,7 +266,7 @@ begin
 end;
 
 function TMainForm.GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption;
-  const Text: string; StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+  const Text: string; GUIOptions: TJediInstallGUIOptions): TObject;
 const
   Icon: array[Boolean] of Integer = (IcoUnchecked, IcoChecked);
   Flag: array[Boolean] of Cardinal = (0, FID_Checked);
@@ -279,17 +274,27 @@ var
   FeatureID: Cardinal;
   Nodes: TTreeNodes;
   Node, ParentNode: TTreeNode;
+  Checked: Boolean;
 begin
   ParentNode := TTreeNode(Parent);
+  Checked := goChecked in GUIOptions;
   if Assigned(Parent) then
   begin
     Assert(Parent is TTreeNode);
     if Checked and Assigned(Parent) then
-      Checked := ParentNode.ImageIndex = IcoChecked;
+      if ParentNode.ImageIndex <> IcoChecked then
+      begin
+        Checked := False;
+        Exclude(GUIOptions, goChecked);
+      end;
   end;
-  FeatureID := Cardinal(Ord(Option)) + Flag[Checked];
-  if StandAlone then
+  FeatureID := Cardinal(Ord(Option)) + Flag[goChecked in GUIOptions];
+  if goStandAloneParent in GUIOptions then
     FeatureID := FeatureID + FID_StandAloneParent;
+  if goRadioButton in GUIOptions  then
+    FeatureID := FeatureID + FID_RadioButton;
+  if goExpandable in GUIOptions then
+    FeatureID := FeatureID + FID_Expandable;
   Nodes := TTreeNodes(GUI);
   if Parent = nil then
     Node := Nodes.AddObject(nil, Text, Pointer(FeatureID))
@@ -641,6 +646,9 @@ end;
 procedure TMainForm.SetReadme(const FileName: string);
 begin
   ReadmePane.{$IFDEF VCL}Lines.{$ENDIF}LoadFromFile(FileName);
+  {$IFDEF MSWINDOWS}
+  ShellExecEx('..\docs\Readme.html');
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TMainForm.TreeViewChange(Sender: TObject; Node: TTreeNode);

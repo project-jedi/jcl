@@ -42,6 +42,7 @@ type
     FDebugDcuDir: string;
     FLibDir: string;
     FLibObjDir: string;
+    FDefines: TStringList;
     FUnits: TStringList;
     FOnWriteLog: TTextHandler;
     procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
@@ -92,6 +93,7 @@ type
     function Undo: Boolean;
     function StoredBplPath: string;
     function StoredDcpPath: string;
+    property Defines: TStringList read FDefines;
     property Distribution: TJclDistribution read FDistribution;
     property Tool: IJediInstallTool read GetTool;
     property DebugDcuDir: string read FDebugDcuDir;
@@ -179,40 +181,50 @@ resourcestring
 // Captions
 
   // Products
-  RsJCL             = 'JEDI Code Library';
+  RsJCL                  = 'JEDI Code Library';
 
   // Common features
-  RsEnvironment     = 'Environment';
-  RsEnvLibPath      = 'Add JCL to IDE Library Path';
-  RsEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
-  RsEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
-  RsMake            = 'Make library units';
-  RsMakeRelease     = 'Release';
-  RsMakeDebug       = 'Debug';
-  RsMakeVClx        = 'Visual CLX';
+  RsDefThreadSafe        = 'Thread safe container classes';
+  RsDefDropObsoleteCode  = 'Drop obsolete code';
+  RsDefMathPrecSingle    = 'Single float precision';
+  RsDefMathPrecDouble    = 'Double float precision';
+  RsDefMathPrecExtended  = 'Extended float precision';
+  RsEnvironment          = 'Environment';
+  RsEnvLibPath           = 'Add JCL to IDE Library Path';
+  RsEnvBrowsingPath      = 'Add JCL to IDE Browsing Path';
+  RsEnvDebugDCUPath      = 'Add JCL to Debug DCU Path';
+  RsMake                 = 'Make library units';
+  RsMakeRelease          = 'Release';
+  RsMakeDebug            = 'Debug';
+  RsMakeVClx             = 'Visual CLX';
 
-  RsHelpFiles       = 'Help files';
-  RsIdeExperts      = 'IDE experts';
-  RsJCLPackages     = 'Packages';
-  RsIdeHelpHlp      = 'Add help file to IDE help system';
-  RsIdeHelpChm      = 'Add HTML help to the Tools menu';
-  RsCopyHppFiles    = 'Copy HPP files to %s';
+  RsHelpFiles            = 'Help files';
+  RsIdeExperts           = 'IDE experts';
+  RsJCLPackages          = 'Packages';
+  RsIdeHelpHlp           = 'Add help file to IDE help system';
+  RsIdeHelpChm           = 'Add HTML help to the Tools menu';
+  RsCopyHppFiles         = 'Copy HPP files to %s';
   RsCopyPackagesHppFiles = 'Output HPP files to %s';
 
   // Product specific features
-  RsJCLExceptDlg    = 'Sample Exception Dialogs in the Object Reporitory';
-  RsJCLDialogVCL    = 'VCL Exception Dialog';
-  RsJCLDialogVCLSnd = 'VCL Exception Dialog with Send button';
-  RsJCLDialogCLX    = 'CLX Exception Dialog';
-  RsJCLIdeDebug     = 'Debug Extension';
-  RsJCLIdeAnalyzer  = 'Project Analyzer';
-  RsJCLIdeFavorite  = 'Favorite combobox in Open/Save dialogs';
-  RsJCLIdeThrNames  = 'Displaying thread names in Thread Status window';
-  RsJCLIdeUses      = 'Uses Wizard';
+  RsJCLExceptDlg         = 'Sample Exception Dialogs in the Object Reporitory';
+  RsJCLDialogVCL         = 'VCL Exception Dialog';
+  RsJCLDialogVCLSnd      = 'VCL Exception Dialog with Send button';
+  RsJCLDialogCLX         = 'CLX Exception Dialog';
+  RsJCLIdeDebug          = 'Debug Extension';
+  RsJCLIdeAnalyzer       = 'Project Analyzer';
+  RsJCLIdeFavorite       = 'Favorite combobox in Open/Save dialogs';
+  RsJCLIdeThrNames       = 'Displaying thread names in Thread Status window';
+  RsJCLIdeUses           = 'Uses Wizard';
 
 // Hints
   RsHintTarget = 'Installation target';
   RsHintJCL = 'Select to install JCL for this target.';
+  RsHintJclDefThreadSafe        = 'Thread safe container classes';
+  RsHintJclDefDropObsoleteCode  = 'Drop obsolete code';
+  RsHintJclDefMathPrecSingle    = 'Single float precision';
+  RsHintJclDefMathPrecDouble    = 'Double float precision';
+  RsHintJclDefMathPrecExtended  = 'Extended float precision';
   RsHintJclEnv = 'Set selected environment items';
   RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
@@ -261,6 +273,21 @@ const
       (Parent: ioTarget;                 // ioJCL
        Caption: RsJCL;
        Hint: RsHintJcl),
+      (Parent: ioJCL;                   // ioJclDefThreadSafe
+       Caption: RsDefThreadSafe;
+       Hint: RsHintJclDefThreadSafe),
+      (Parent: ioJCL;                   // ioJclDefDropObsoleteCode
+       Caption: RsDefDropObsoleteCode;
+       Hint: RsHintJclDefDropObsoleteCode),
+      (Parent: ioJCL;                   // ioJclDefMathPrecSingle
+       Caption: RsDefMathPrecSingle;
+       Hint: RsHintJclDefMathPrecSingle),
+      (Parent: ioJCL;                   // ioJclDefMathPrecDouble
+       Caption: RsDefMathPrecDouble;
+       Hint: RsHintJclDefMathPrecDouble),
+      (Parent: ioJCL;                   // ioJclDefMathPrecExtended
+       Caption: RsDefMathPrecExtended;
+       Hint: RsHintJclDefMathPrecExtended),
       (Parent: ioJCL;                    // ioJclEnv
        Caption: RsEnvironment;
        Hint: RsHintJclEnv),
@@ -504,6 +531,7 @@ begin
   FDebugDcuDir := MakePath(Distribution.FLibDebugDirMask);
   FLibDir := MakePath(Distribution.FLibDirMask);
   FLibObjDir := MakePath(Distribution.FLibObjDirMask);
+  FDefines := TStringList.Create;
   FUnits := TStringList.Create;
 end;
 
@@ -513,6 +541,7 @@ var
 begin
   for I := 0 to FUnits.Count - 1 do
     FUnits.Objects[I].Free;
+  FDefines.Free;
   inherited Destroy;
 end;
 
@@ -557,7 +586,7 @@ end;
 procedure TJclInstallation.AddHelpToOpenHelp;
 begin
   if Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
-    WriteLog(Format(LineBreak + 'Added %s to Delphi Online Help', [Distribution.FJclHlpHelpFileName]));
+    WriteLog(Format(LineBreak + 'Added %s to %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -654,6 +683,7 @@ begin
   with Target.DCC do
   begin
     SetDefaultOptions;
+    Options.Add('-D' + StringsToStr(Defines, ';'));
     Options.Add('-M');
     if Target.RADToolKind = brCppBuilder then
     begin
@@ -843,13 +873,17 @@ end;
 function TJclInstallation.InitOptions: Boolean;
 var
   GUI: TObject;
+  ExpertOptions: TJediInstallGUIOptions;
   InstallationNode, ProductNode, TempNode, MakeNode: TObject;
 
   function AddNode(Parent: TObject; Option: TJediInstallOption;
-      StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+    GUIOptions: TJediInstallGUIOptions = [goChecked]): TObject;
   begin
-    Checked := StoredOption(Option, Checked);
-    Result := Tool.GUIAddOption(GUI, Parent, Option, Description(Option), StandAlone, Checked);
+    if StoredOption(Option, goChecked in GUIOptions) then
+      Include(GUIOptions, goChecked)
+    else
+      Exclude(GUIOptions, goChecked);
+    Result := Tool.GUIAddOption(GUI, Parent, Option, Description(Option), GUIOptions);
   end;
 
   procedure AddMakeNodes(Parent: TObject; DebugSettings: Boolean);
@@ -860,7 +894,7 @@ var
   var
     Node: TObject;
   begin
-    Node := AddNode(Parent, Option[DebugSettings, False], True);
+    Node := AddNode(Parent, Option[DebugSettings, False], [goStandAloneParent, goChecked]);
     if Target.SupportsVisualCLX then
       AddNode(Node, Option[DebugSettings, True]);
   end;
@@ -874,16 +908,23 @@ begin
   InstallationNode := AddNode(nil, ioTarget);
   //InstallationNode.StateIndex := 0;
   ProductNode := AddNode(InstallationNode, ioJCL);
+
+  AddNode(ProductNode, ioJclDefThreadSafe);
+  AddNode(ProductNode, ioJclDefDropObsoleteCode);
+  AddNode(ProductNode, ioJclDefMathPrecSingle, [goRadioButton]);
+  AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
+  AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
+
   TempNode := AddNode(ProductNode, ioJclEnv);
   AddNode(TempNode, ioJclEnvLibPath);
   AddNode(TempNode, ioJclEnvBrowsingPath);
   AddNode(TempNode, ioJclEnvDebugDCUPath);
 
-  MakeNode := AddNode(ProductNode, ioJclMake);
+  MakeNode := AddNode(ProductNode, ioJclMake, [goExpandable, goChecked]);
   AddMakeNodes(MakeNode, False);
   AddMakeNodes(MakeNode, True);
   if (Target is TJclBCBInstallation) then
-    AddNode(MakeNode, ioJclCopyHppFiles, False, False);
+    AddNode(MakeNode, ioJclCopyHppFiles, []);
   {$IFDEF MSWINDOWS}
   { TODO : Help integration for Delphi 2005 }
   if Target.VersionNumber <= 7 then
@@ -908,24 +949,28 @@ begin
     {$ENDIF MSWINDOWS}
       AddNode(TempNode, ioJclExcDialogCLX);
   end;
-  TempNode := AddNode(ProductNode, ioJclPackages, True);
+  TempNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
   if (Target is TJclBCBInstallation) then
-    AddNode(TempNode, ioJclCopyPackagesHppFiles, False, False);
+    AddNode(TempNode, ioJclCopyPackagesHppFiles, []);
   {$IFDEF MSWINDOWS}
   if not (Target is TJclBCBInstallation) then
   begin
     { TODO :
 It has been reported that IDE experts don't work under Win98.
 Leave these options unchecked for Win9x/WinME until that has been examined. }
-    TempNode := AddNode(TempNode, ioJclExperts, False, IsWinNT);
-    AddNode(TempNode, ioJclExpertDebug, False, IsWinNT);
-    AddNode(TempNode, ioJclExpertAnalyzer, False, IsWinNT);
-    AddNode(TempNode, ioJclExpertFavorite, False, IsWinNT);
+    if IsWinNT then
+      ExpertOptions := [goChecked]
+    else
+      ExpertOptions := [];
+    TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
+    AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
+    AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
+    AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
     if Target.VersionNumber <= 6 then
-      AddNode(TempNode, ioJclExpertsThrNames, False, IsWinNT);
+      AddNode(TempNode, ioJclExpertsThrNames, ExpertOptions);
     //(usc) no packages and tests for D7 & D9 so far
-    if Target.VersionNumber <= 6 then  
-      AddNode(TempNode, ioJclExpertUses, False, IsWinNT);
+    if Target.VersionNumber <= 6 then
+      AddNode(TempNode, ioJclExpertUses, ExpertOptions);
   end;
   {$ENDIF MSWINDOWS}
   Tool.BPLPath[Target] := StoredBplPath;
@@ -948,6 +993,7 @@ begin
   if Result then
   begin
     CleanupRepository;
+    Defines.Clear;
     for Option := ioJCL to ioJclLast do
       if OptionSelected(Option) then
         Result := Result and InstallOption(Option);
@@ -959,6 +1005,16 @@ function TJclInstallation.InstallOption(Option: TJediInstallOption): Boolean;
 begin
   Result := True;
   case Option of
+    ioJclDefThreadSafe:
+      Defines.Add('THREAD_SAFE');
+    ioJclDefDropObsoleteCode:
+      Defines.Add('DROP_OBSOLETE_CODE');
+    ioJclDefMathPrecSingle:
+      Defines.Add('MATH_SINGLE_PRECISION');
+    ioJclDefMathPrecDouble:
+      Defines.Add('MATH_DOUBLE_PRECISION');
+    ioJclDefMathPrecExtended:
+      Defines.Add('MATH_EXTENDED_PRECISION');
     ioJclEnvLibPath:
       if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
         WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
@@ -1235,7 +1291,7 @@ end;
 procedure TJclInstallation.RemoveHelpFromOpenHelp;
 begin
   if Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
-    WriteLog(Format(LineBreak + 'Removed %s from Delphi Online Help', [Distribution.FJclHlpHelpFileName]));
+    WriteLog(Format(LineBreak + 'Removed %s from %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1600,6 +1656,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.53  2005/03/05 06:33:17  rrossmair
+// - support for some conditional defines added.
+//
 // Revision 1.52  2005/02/28 20:19:05  uschuster
 // changes for Uses wizard
 //
