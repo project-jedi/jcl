@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 19, 2000                                             }
+{ Last modified: November 20, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -348,6 +348,8 @@ type
   TJclPeImportKind = (ikImport, ikDelayImport, ikBoundImport);
   TJclPeResolveCheck = (icNotChecked, icResolved, icUnresolved);
   TJclPeLinkerProducer = (lrBorland, lrMicrosoft);
+  // lrBorland   -> Delphi images
+  // lrMicrosoft -> MSVC and BCB images
 
   TJclPeImportLibItem = class;
 
@@ -791,7 +793,8 @@ type
     function GetImageSectionNames(Index: Integer): string;
     procedure SetFileName(const Value: TFileName);
   protected
-    procedure Clear;
+    procedure AfterOpen; dynamic;
+    procedure Clear; dynamic;
     function ExpandModuleName(const ModuleName: string): TFileName;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
   public
@@ -802,6 +805,7 @@ type
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
     function GetSectionName(const Header: PImageSectionHeader): string;
     function IsSystemImage: Boolean;
+    function RawToVa(Raw: DWORD): Pointer;
     function RvaToSection(Rva: DWORD): PImageSectionHeader;
     function RvaToVa(Rva: DWORD): Pointer;
     function StatusOK: Boolean;
@@ -837,6 +841,62 @@ type
     property Status: TJclPeImageStatus read FStatus;
     property UnusedHeaderBytes: TImageDataDirectory read GetUnusedHeaderBytes;
     property VersionInfo: TJclFileVersionInfo read GetVersionInfo;
+  end;
+
+//------------------------------------------------------------------------------
+// Borland PE Image specific information
+//------------------------------------------------------------------------------
+
+  TJclPePackageInfo = class (TObject)
+  private
+    FContains: TStrings;
+    FRequires: TStrings;
+    FFlags: Integer;
+    function GetContainsCount: Integer;
+    function GetContainsFlags(Index: Integer): Byte;
+    function GetContainsNames(Index: Integer): string;
+    function GetRequiresCount: Integer;
+    function GetRequiresNames(Index: Integer): string;
+  protected
+    procedure ReadPackageInfo(ALibHandle: THandle);
+  public
+    constructor Create(ALibHandle: THandle);
+    destructor Destroy; override;
+    class function PackageModuleTypeToString(Flags: Integer): string;
+    class function PackageOptionsToString(Flags: Integer): string;
+    class function ProducerToString(Flags: Integer): string;
+    class function UnitInfoFlagsToString(UnitFlags: Byte): string;
+    property Contains: TStrings read FContains;
+    property ContainsCount: Integer read GetContainsCount;
+    property ContainsNames[Index: Integer]: string read GetContainsNames;
+    property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
+    property Flags: Integer read FFlags;
+    property Requires: TStrings read FRequires;
+    property RequiresCount: Integer read GetRequiresCount;
+    property RequiresNames[Index: Integer]: string read GetRequiresNames;
+  end;
+
+  TJclPeBorImage = class (TJclPeImage)
+  private
+    FIsPackage: Boolean;
+    FIsBorlandImage: Boolean;
+    FLibHandle: THandle;
+    FPackageDescription: string;
+    FPackageInfo: TJclPePackageInfo;
+    function GetIsTD32DebugPresent: Boolean;
+    function GetLibHandle: THandle;
+    function GetPackageInfo: TJclPePackageInfo;
+  protected
+    procedure AfterOpen; override;
+    procedure Clear; override;
+  public
+    function FreeLibHandle: Boolean;
+    property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
+    property IsBorlandImage: Boolean read FIsBorlandImage;
+    property IsPackage: Boolean read FIsPackage;
+    property LibHandle: THandle read GetLibHandle;
+    property PackageDescription: string read FPackageDescription;
+    property PackageInfo: TJclPePackageInfo read GetPackageInfo;
   end;
 
 //------------------------------------------------------------------------------
@@ -1022,17 +1082,12 @@ type
   TJclBorUmResult = (urOk, urNotMangled, urMicrosoft, urError);
   TJclPeUmResult = (umNotMangled, umBorland, umMicrosoft);
 
-{$IFDEF SUPPORTS_OVERLOAD}
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult; overload;
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription): TJclBorUmResult; overload;
 function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult; overload;
 function PeBorUnmangleName(const Name: string): string; overload;
-{$ELSE}
-function PeBorUnmangleName(const Name: string; var Unmangled: string;
-  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
-{$ENDIF}
 
 function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
@@ -2735,6 +2790,12 @@ end;
 // TJclPeImage
 //==============================================================================
 
+procedure TJclPeImage.AfterOpen;
+begin
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.CalculateCheckSum: DWORD;
 var
   C: DWORD;
@@ -3325,6 +3386,13 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeImage.RawToVa(Raw: DWORD): Pointer;
+begin
+  Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Raw);
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.RvaToSection(Rva: DWORD): PImageSectionHeader;
 var
   I: Integer;
@@ -3388,6 +3456,7 @@ begin
           RaiseLastWin32Error;
       end;
     ReadImageSections;
+    AfterOpen;
   end;
 end;
 
@@ -3467,6 +3536,265 @@ function TJclPeImage.VerifyCheckSum: Boolean;
 begin
   with OptionalHeader do
     Result := StatusOK and ((CheckSum = 0) or (CalculateCheckSum = CheckSum));
+end;
+
+//==============================================================================
+// TJclPePackageInfo
+//==============================================================================
+
+constructor TJclPePackageInfo.Create(ALibHandle: THandle);
+begin
+  FContains := TStringList.Create;
+  FRequires := TStringList.Create;
+  ReadPackageInfo(ALibHandle);
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclPePackageInfo.Destroy;
+begin
+  FreeAndNil(FContains);
+  FreeAndNil(FRequires);
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetContainsCount: Integer;
+begin
+  Result := FContains.Count;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetContainsFlags(Index: Integer): Byte;
+begin
+  Result := Byte(FContains.Objects[Index]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetContainsNames(Index: Integer): string;
+begin
+  Result := FContains[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetRequiresCount: Integer;
+begin
+  Result := FRequires.Count;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetRequiresNames(Index: Integer): string;
+begin
+  Result := FRequires[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Integer): string;
+begin
+  case Flags and pfModuleTypeMask of
+    pfExeModule, pfModuleTypeMask:
+      Result := 'Executable';
+    pfPackageModule:
+      Result := 'Package';
+    pfLibraryModule:
+      Result := 'Library';
+  else
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPePackageInfo.PackageOptionsToString(Flags: Integer): string;
+const
+  FlagNames: packed array [0..3] of record
+    Mask: DWORD;
+    Text: PChar;
+  end = (
+  (Mask: $00000001; Text: 'NeverBuild'),
+  (Mask: $00000002; Text: 'DesignOnly'),
+  (Mask: $00000004; Text: 'RunOnly'),
+  (Mask: $00000008; Text: 'IgnoreDupUnits')
+  );
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := Low(FlagNames) to High(FlagNames) do
+    with FlagNames[I] do
+      if Flags and Mask <> 0 then
+      begin
+        if Length(Result) > 0 then
+          Result := Result + ', ';
+        Result := Result + Text;
+      end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPePackageInfo.ProducerToString(Flags: Integer): string;
+begin
+  case Flags and pfProducerMask of
+    pfV3Produced:
+      Result := 'V3';
+    pfProducerUndefined:
+      Result := 'Undefined';
+    pfBCB4Produced:
+      Result := 'BCB4';
+    pfDelphi4Produced:
+      Result := 'Delphi4';
+  else
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure PackageInfoProc(const Name: string; NameType: TNameType; Flags: Byte; Param: Pointer);
+begin
+  with TJclPePackageInfo(Param) do
+    case NameType of
+      ntContainsUnit:
+        FContains.AddObject(Name, Pointer(Flags));
+      ntRequiresPackage:
+        FRequires.AddObject(Name, Pointer(Flags));
+    end;
+end;
+
+procedure TJclPePackageInfo.ReadPackageInfo(ALibHandle: THandle);
+begin
+  GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
+  TStringList(FContains).Sort;
+  TStringList(FRequires).Sort;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPePackageInfo.UnitInfoFlagsToString(UnitFlags: Byte): string;
+const
+  FlagNames: packed array [0..4] of record
+    Mask: Byte;
+    Text: PChar;
+  end = (
+  (Mask: $01; Text: 'Main'),
+  (Mask: $02; Text: 'Package'),
+  (Mask: $04; Text: 'Weak'),
+  (Mask: $08; Text: 'OrgWeak'),
+  (Mask: $10; Text: 'Implicit')
+  );
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := Low(FlagNames) to High(FlagNames) do
+    with FlagNames[I] do
+      if UnitFlags and Mask <> 0 then
+      begin
+        if Length(Result) > 0 then
+          Result := Result + ', ';
+        Result := Result + Text;
+      end;
+end;
+
+//==============================================================================
+// TJclPeBorImage
+//==============================================================================
+
+procedure TJclPeBorImage.AfterOpen;
+var
+  HasDVCLAL, HasPACKAGEINFO, HasPACKAGEOPTIONS: Boolean;
+  Description: TJclPeResourceItem;
+begin
+  inherited;
+  if StatusOK then
+    with ResourceList do
+    begin
+      HasDVCLAL := (FindResource(rtRCData, 'DVCLAL') <> nil);
+      HasPACKAGEINFO := (FindResource(rtRCData, 'PACKAGEINFO') <> nil);
+      HasPACKAGEOPTIONS := (FindResource(rtRCData, 'PACKAGEOPTIONS') <> nil);
+      FIsPackage := HasPACKAGEINFO or HasPACKAGEOPTIONS;
+      FIsBorlandImage := HasDVCLAL or FIsPackage;
+      if FIsPackage then
+      begin
+        Description := FindResource(rtRCData, 'DESCRIPTION');
+        if Description <> nil then
+          FPackageDescription := PWideChar(Description.List[0].RawEntryData);
+      end;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeBorImage.Clear;
+begin
+  FreeAndNil(FPackageInfo);
+  FreeLibHandle;
+  inherited;
+  FIsBorlandImage := False;
+  FIsPackage := False;
+  FPackageDescription := '';
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.FreeLibHandle: Boolean;
+begin
+  if FLibHandle <> 0 then
+  begin
+    Result := FreeLibrary(FLibHandle);
+    FLibHandle := 0;
+  end else
+    Result := True;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetIsTD32DebugPresent: Boolean;
+const
+  TD32Signature = $39304246; // FB09
+var
+  DebugDir: TImageDebugDirectory;
+  Signature: PDWORD;
+begin
+  if IsBorlandImage and (DebugList.Count = 1) then
+  begin
+    DebugDir := DebugList[0];
+    Signature := RvaToVa(DebugDir.AddressOfRawData);
+    Result := (DebugDir._Type = IMAGE_DEBUG_TYPE_UNKNOWN) and (Signature^ = TD32Signature);
+  end else
+    Result := False;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetLibHandle: THandle;
+begin
+  if StatusOK and (FLibHandle = 0) then
+  begin
+    FLibHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE);
+    if FLibHandle = 0 then
+      RaiseLastWin32Error;
+  end;
+  Result := FLibHandle;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetPackageInfo: TJclPePackageInfo;
+begin
+  if StatusOK and (FPackageInfo = nil) then
+  begin
+    GetLibHandle;
+    FPackageInfo := TJclPePackageInfo.Create(FLibHandle);
+    FreeLibHandle;
+  end;
+  Result := FPackageInfo;
 end;
 
 //==============================================================================
@@ -4037,17 +4365,20 @@ begin
   if FileHandle = INVALID_HANDLE_VALUE then
     Exit;
   try
-    Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
-    try
-      View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
-      HeadersPtr := PeMapImgNtHeaders(View.Memory);
-      if HeadersPtr <> nil then
-      begin
-        Result := True;
-        NtHeaders := HeadersPtr^;
-      end;  
-    finally
-      Mapping.Free;
+    if GetSizeOfFile(FileHandle) >= SizeOf(TImageDosHeader) then 
+    begin
+      Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
+      try
+        View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
+        HeadersPtr := PeMapImgNtHeaders(View.Memory);
+        if HeadersPtr <> nil then
+        begin
+          Result := True;
+          NtHeaders := HeadersPtr^;
+        end;
+      finally
+        Mapping.Free;
+      end;
     end;
   finally
     FileClose(FileHandle);
@@ -4508,7 +4839,7 @@ begin
   SetLength(UnMangled, 1024);
   NameU := Pointer(UnMangled);
   NameUFirst := NameU;
-  Description.Modifiers := [];
+  Description.Modifiers := [];                 
   BasePos := 1;
   case NameP^ of
     '$':
@@ -4524,7 +4855,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_OVERLOAD}
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription): TJclBorUmResult;
 var
@@ -4532,11 +4862,9 @@ var
 begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_OVERLOAD}
 function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult;
 var
   Description: TJclBorUmDescription;
@@ -4544,11 +4872,9 @@ var
 begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_OVERLOAD}
 function PeBorUnmangleName(const Name: string): string;
 var
   Unmangled: string;
@@ -4560,7 +4886,6 @@ begin
   else
     Result := '';
 end;
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -4581,11 +4906,9 @@ end;
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 var
   Res: DWORD;
-  Description: TJclBorUmDescription;
-  BasePos: Integer;
 begin
   Result := umNotMangled;
-  case PeBorUnmangleName(Name, Unmangled, Description, BasePos) of
+  case PeBorUnmangleName(Name, Unmangled) of
     urOk:
       Result := umBorland;
     urMicrosoft:
