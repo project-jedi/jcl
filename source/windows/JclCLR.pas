@@ -208,10 +208,11 @@ type
     property GuidCount: Integer read GetGuidCount;
   end;
 
-  TJclClrBlobRecord = class(TJClreferenceMemoryStream)
+  TJclClrBlobRecord = class(TJclReferenceMemoryStream)
   private
     FPtr: PByteArray;
     FOffset: DWORD;
+    function GetData: PByteArray;
   protected
     constructor Create(const AStream: TJclClrStream; const APtr: PByteArray);
   public
@@ -219,6 +220,7 @@ type
 
     property Ptr: PByteArray read FPtr;
     property Offset: DWORD read FOffset;
+    property Data: PByteArray read GetData;
   end;
 
   TJclClrBlobStream = class(TJclClrStream)
@@ -806,6 +808,11 @@ begin
   finally
     Free;
   end;
+end;
+
+function TJclClrBlobRecord.GetData: PByteArray;
+begin
+  Result := PByteArray(DWORD(Memory) + Position);
 end;
 
 { TJclClrBlobStream }
