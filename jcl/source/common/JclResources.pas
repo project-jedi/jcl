@@ -1104,21 +1104,14 @@ resourcestring
   RsTarChecksumError               = 'TAR Checksum Error';
   RsTarSetOctalOutOfRange          = 'SetOctal: out of range';
 
-//--------------------------------------------------------------------------------------------------
-// JclDITs
-//--------------------------------------------------------------------------------------------------
-
-resourcestring
-  RsDITInvalidISODate     = '''%s'' is not a valid ISO date';
-  RsDITInvalidISOTime     = '''%s'' is not a valid ISO time';
-  RsDITInvalidISODateTime = '''%s'' is not a valid ISO date and time';
-  RsDITInvalidISOFloat    = '''%s'' is not a valid ISO float value';
-
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.14  2004/09/30 08:09:07  marquardt
+// remove JclDITs remains
+//
 // Revision 1.13  2004/08/23 10:13:58  scottprice
 // Modified temperature routines, and added support for Rankine and Reaumur.  Added some string constants to this unit related to that change.
 //
