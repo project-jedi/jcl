@@ -263,7 +263,7 @@ function NtfsDeleteHardLinks(const FileName: string): Boolean;
 implementation
 
 uses
-  SysConst, SysUtils,
+  SysUtils,
   JclFileUtils, JclResources, JclSecurity;
 
 //==================================================================================================

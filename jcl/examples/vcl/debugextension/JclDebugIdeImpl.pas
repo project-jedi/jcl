@@ -34,7 +34,7 @@ unit JclDebugIdeImpl;
 interface
 
 uses
-  Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
+  Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
   JclOtaUtils;
 
 type
@@ -130,8 +130,8 @@ implementation
 {$R JclDebugIdeIcon.res}
 
 uses
-  IniFiles, ImageHlp,
-  JclBase, JclDebug, JclSysUtils, JclDebugIdeResult;
+  IniFiles, 
+  JclDebug, JclDebugIdeResult;
 
 procedure Register;
 begin

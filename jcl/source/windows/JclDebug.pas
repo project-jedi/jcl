@@ -37,7 +37,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
-  JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
+  JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 //--------------------------------------------------------------------------------------------------
 // Diagnostics

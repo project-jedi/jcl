@@ -363,7 +363,7 @@ implementation
 
 uses
   SysUtils,
-  JclLogic, JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
+  JclLogic, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 const
   RegSessionManager = {HKLM\}'System\CurrentControlSet\Control\Session Manager';

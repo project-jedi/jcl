@@ -37,7 +37,7 @@ unit JclMultimedia;
 interface
 
 uses
-  Windows, Messages, Classes, MMSystem, Contnrs,
+  Windows, Classes, MMSystem, Contnrs,
   JclBase, JclSynch, JclStrings;
 
 type

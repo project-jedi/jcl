@@ -82,7 +82,7 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSysUtils;
+  JclResources;
 
 //--------------------------------------------------------------------------------------------------
 

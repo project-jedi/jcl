@@ -80,7 +80,7 @@ implementation
 
 uses
 {$IFNDEF FPC}
-  AccCtrl, AclApi,
+  AccCtrl, 
 {$ENDIF}
   JclStrings, JclSysInfo, JclWin32;
 

@@ -43,7 +43,6 @@ unit JclEDITranslators;
 interface
 
 uses
-  SysUtils, Classes,
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type

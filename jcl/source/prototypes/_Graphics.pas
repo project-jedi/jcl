@@ -38,13 +38,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
+  Classes,
   {$IFDEF VisualCLX}
-  Types, SyncObjs,
-  QGraphics,
-  JclQGraphUtils,
+  Types, QGraphics,
+  JclQGraphUtils, 
   {$ELSE}
-  Graphics,
+  SysUtils, Graphics,
   JclGraphUtils,
   {$ENDIF VisualCLX}
   JclBase;
@@ -532,12 +531,13 @@ procedure SetGamma(Gamma: Single = 0.7);
 implementation
 
 uses
-  TypInfo, Math,
+  Math,
   {$IFDEF MSWINDOWS}
   CommCtrl, ShellApi,
-  {$IFDEF VCL}ClipBrd, JPeg,{$ENDIF}
+  {$IFDEF VCL}ClipBrd, JPeg, TypInfo,
+  JclResources, {$ENDIF}
   {$ENDIF MSWINDOWS}
-  JclLogic, JclResources, JclSysUtils;
+  JclLogic;
 
 type
   TRGBInt = record

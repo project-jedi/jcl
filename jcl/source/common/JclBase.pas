@@ -40,7 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils;
+  SysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Version

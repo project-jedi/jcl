@@ -29,7 +29,7 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Messages, Classes, SysUtils, ToolsAPI, OpenDlgFavAdapter, JclOtaUtils;
+  ToolsAPI, OpenDlgFavAdapter, JclOtaUtils;
 
 type
   TOpenDialogsFavoriteExpert = class(TJclOTAExpert)

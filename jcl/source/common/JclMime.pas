@@ -35,7 +35,7 @@ unit JclMime;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes;
 
 function MimeEncodeString(const S: AnsiString): AnsiString;
 function MimeDecodeString(const S: AnsiString): AnsiString;

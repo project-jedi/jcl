@@ -32,7 +32,7 @@ unit JclSchedule;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils,
   JclBase;
 
 type
@@ -174,7 +174,7 @@ function IsNullTimeStamp(const Stamp: TTimeStamp): Boolean;
 implementation
 
 uses
-  JclDateTime, JclResources, JclSysUtils;
+  JclDateTime, JclResources;
 
 {$IFNDEF COMPILER6_UP}
 const
