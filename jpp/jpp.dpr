@@ -58,7 +58,7 @@ uses
   JppState in 'JppState.pas',
   JppParser in 'JppParser.pas',
   FindFileIter in 'FindFileIter.pas',
-  PppLexer in 'PppLexer.pas',
+  JppLexer in 'JppLexer.pas',
   PCharUtils in 'PCharUtils.pas';
 
 const
@@ -71,7 +71,7 @@ const
 procedure Syntax;
 begin
   Writeln(
-    'JEDI PreProcessor'#10,
+    'JEDI PreProcessor v. 2004-06-20'#10,
     'Copyright (C) 2001 Barry Kelly'#10,
     #10,
     'Syntax:'#10,
@@ -172,7 +172,6 @@ var
           cp := ReadStringDoubleQuotedMaybe(cp, tmp);
           pppState.SearchPath.Add(ExpandUNCFileName(tmp));
         end;
-
 
         'd':
         begin
@@ -277,6 +276,9 @@ begin
 
 // Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
 // $Log$
+// Revision 1.7  2004/06/20 03:24:48  rrossmair
+// - orphaned line breaks problem fixed.
+//
 // Revision 1.6  2004/06/04 02:49:24  rrossmair
 // - bug fix: StripLength was eventually not initialized
 // - better error message formatting

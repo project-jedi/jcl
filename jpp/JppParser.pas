@@ -40,10 +40,12 @@
 
 unit JppParser;
 
+{$I jedi.inc}
+
 interface
 
 uses
-  SysUtils, Classes, JppState, PppLexer;
+  SysUtils, Classes, JppState, JppLexer;
 
 type
   EPppParserError = class(Exception);
@@ -52,19 +54,29 @@ type
   private
     FLexer: TPppLexer;
     FState: TPppState;
-    FResult: string;
     FTriState: TTriState;
+    FResult: string;
+    FResultLen: Integer;
+    FLineBreakPos: Integer;
+    FSkipLevel: Integer;
+    FAllWhiteSpaceIn: Boolean;
+    FAllWhiteSpaceOut: Boolean;
+    procedure RemoveOrphanedLineBreaks;
   protected
+    procedure AddResult(const S: string);
     procedure Emit(const AText: string);
 
     procedure NextToken;
 
-    function ParseText: string;
-    function ParseCondition(Token: TPppToken): string;
+    procedure ParseText;
+    procedure ParseCondition(Token: TPppToken);
     function ParseInclude: string;
 
-    function ParseDefine: string;
-    function ParseUndef: string;
+    procedure ParseDefine;
+    procedure ParseUndef;
+
+    // same as ParseText, but throws result away
+    procedure Skip;
 
     property Lexer: TPppLexer read FLexer;
     property State: TPppState read FState;
@@ -75,6 +87,38 @@ type
   end;
 
 implementation
+
+{$IFDEF MSWINDOWS}
+const
+  AnsiLineBreak = #13#10;
+
+type
+  T2Char = array[0..1] of Char;
+  PLineBreak = ^T2Char;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+const
+  AnsiLineBreak = #10;
+
+type
+  PLineBreak = PChar;
+{$ENDIF UNIX}
+
+function AllWhiteSpace(P: PChar): Boolean;
+var
+  I: Integer;
+begin
+  Result := True;
+  for I := 1 to Length(P) do
+    if P^ in [#10, #13, ' '] then
+      Inc(P)
+    else
+    begin
+      Result := False;
+      Break;
+    end;
+end;
 
 { TJppParser }
 
@@ -95,6 +139,18 @@ begin
   inherited;
 end;
 
+procedure TJppParser.AddResult(const S: string);
+begin
+  if FSkipLevel > 0 then
+    Exit;
+  while FResultLen + Length(S) > Length(FResult) do
+    SetLength(FResult, Length(FResult) * 2);
+  Move(S[1], FResult[FResultLen + 1], Length(S));
+  if FAllWhiteSpaceOut then
+    FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
+  Inc(FResultLen, Length(S));
+end;
+
 procedure TJppParser.Emit(const AText: string);
 begin
   FResult := FResult + AText;
@@ -103,19 +159,64 @@ end;
 procedure TJppParser.NextToken;
 begin
   Lexer.NextTok;
+  if FSkipLevel = 0 then
+    RemoveOrphanedLineBreaks;
+end;
+
+procedure TJppParser.RemoveOrphanedLineBreaks;
+
+  procedure DeleteCurrentLineIfOrphaned;
+  begin
+    if not FAllWhiteSpaceIn and FAllWhiteSpaceOut then
+      if FLineBreakPos <= FResultLen then
+      begin
+        FResultLen := FLineBreakPos - 1;
+        FResult[FResultLen + 1] := #0;
+      end;
+  end;
+
+begin
+  case Lexer.CurrTok of
+    ptEof:
+      DeleteCurrentLineIfOrphaned;
+    ptComment:
+      FAllWhiteSpaceIn := False;
+    ptText:
+      if FAllWhiteSpaceIn then
+        FAllWhiteSpaceIn := AllWhiteSpace(PChar(Lexer.TokenAsString));
+    ptEol:
+      begin
+        DeleteCurrentLineIfOrphaned;
+        FLineBreakPos := FResultLen + 1;
+        FAllWhiteSpaceIn := True;
+        FAllWhiteSpaceOut := True;
+      end;
+    ptDefine,
+    ptUndef,
+    ptIfdef,
+    ptIfndef,
+    ptElse,
+    ptEndif,
+    ptInclude:
+      FAllWhiteSpaceIn := False;
+  else
+    // Error
+  end;
 end;
 
 function TJppParser.Parse: string;
 begin
   FLexer.Reset;
   FResult := '';
+  FResultLen := 0;
+  SetLength(FResult, 64 * 1024);
 
-  Result := ParseText;
-
-//  Result := FResult;
+  ParseText;
+  SetLength(FResult, FResultLen);
+  Result := FResult;
 end;
 
-function TJppParser.ParseCondition(Token: TPppToken): string;
+procedure TJppParser.ParseCondition(Token: TPppToken);
 var
   SavedTriState: TTriState;
 begin
@@ -124,40 +225,40 @@ begin
   try
     if FTriState = ttUnknown then
     begin
-      Result := Lexer.RawComment;
+      AddResult(Lexer.RawComment);
       NextToken;
-      Result := Result + ParseText;
+      ParseText;
       if Lexer.CurrTok = ptElse then
       begin
-        Result := Result + Lexer.RawComment;
+        AddResult(Lexer.RawComment);
         NextToken;
-        Result := Result + ParseText;
+        ParseText;
       end;
-      Result := Result + Lexer.RawComment;
+      AddResult(Lexer.RawComment);
     end
     else
       if ((Token = ptIfdef) and (FTriState = ttDefined))
       or ((Token = ptIfndef) and (FTriState = ttUndef)) then
       begin
         NextToken;
-        Result := ParseText;
+        ParseText;
         if Lexer.CurrTok = ptElse then
         begin
           NextToken;
-          ParseText;
+          Skip;
         end;
       end
       else
       begin
         NextToken;
-        ParseText;
+        Skip;
         if Lexer.CurrTok = ptElse then
         begin
           NextToken;
-          Result := ParseText;
+          ParseText;
         end
         else
-          Result := '';
+          ;
       end;
     if Lexer.CurrTok <> ptEndif then
       Lexer.Error('$ENDIF expected');
@@ -167,28 +268,26 @@ begin
   end;
 end;
 
-function TJppParser.ParseDefine: string;
+procedure TJppParser.ParseDefine;
 begin
-  Result := '';
   case FTriState of
     ttUnknown:
       begin
         State.TriState[Lexer.TokenAsString] := ttUnknown;
-        Result := Lexer.RawComment;
+        AddResult(Lexer.RawComment);
       end;
     ttDefined: State.Define(Lexer.TokenAsString);
   end;
   NextToken;
 end;
 
-function TJppParser.ParseUndef: string;
+procedure TJppParser.ParseUndef;
 begin
-  Result := '';
   case FTriState of
     ttUnknown:
       begin
         State.TriState[Lexer.TokenAsString] := ttUnknown;
-        Result := Lexer.RawComment;
+        AddResult(Lexer.RawComment);
       end;
     ttUndef: State.Undef(Lexer.TokenAsString);
   end;
@@ -229,90 +328,77 @@ begin
   NextToken;
 end;
 
-function TJppParser.ParseText: string;
-var
-  strBuilder: TStrings;
-
-  function BuildResult: string;
-  var
-    i, total: Integer;
-    cp: PChar;
-  begin
-    total := 0;
-    for i := 0 to strBuilder.Count - 1 do
-      total := total + Length(strBuilder[i]);
-    SetLength(Result, total);
-    cp := Pointer(Result);
-    for i := 0 to strBuilder.Count - 1 do
-    begin
-      Move(strBuilder[i][1], cp^, Length(strBuilder[i]));
-      cp := cp + Length(strBuilder[i]);
-    end;
-  end;
+procedure TJppParser.ParseText;
 
   procedure AddRawComment;
   begin
-    strBuilder.Add(Lexer.RawComment);
+    AddResult(Lexer.RawComment);
     NextToken;
   end;
 
 begin
-  strBuilder := TStringList.Create;
-  try
-    while True do
-      case Lexer.CurrTok of
-        ptComment:
-        begin
-          if not (poStripComments in State.Options) then
-            strBuilder.Add(Lexer.TokenAsString);
-          NextToken;
-        end;
-
-        ptText:
-        begin
-          strBuilder.Add(Lexer.TokenAsString);
-          NextToken;
-        end;
-
-        ptDefine, ptUndef, ptIfdef, ptIfndef:
-          if poProcessDefines in State.Options then
-            case Lexer.CurrTok of
-              ptDefine:
-                strBuilder.Add(ParseDefine);
-              ptUndef:
-                strBuilder.Add(ParseUndef);
-              ptIfdef:
-                strBuilder.Add(ParseCondition(ptIfdef));
-              ptIfndef:
-                strBuilder.Add(ParseCondition(ptIfndef));
-            end
-          else
-            AddRawComment;
-
-        ptElse, ptEndif:
-          if poProcessDefines in State.Options then
-            Break
-          else
-            AddRawComment;
-
-        ptInclude:
-          if poProcessIncludes in State.Options then
-            strBuilder.Add(ParseInclude)
-          else
-            AddRawComment;
-      else
-        Break;
+  while True do
+    case Lexer.CurrTok of
+      ptComment:
+      begin
+        if not (poStripComments in State.Options) then
+          AddResult(Lexer.TokenAsString);
+        NextToken;
       end;
 
-    Result := BuildResult;
-  finally
-    strBuilder.Free;
+      ptText, ptEol:
+      begin
+        AddResult(Lexer.TokenAsString);
+        NextToken;
+      end;
+
+      ptDefine, ptUndef, ptIfdef, ptIfndef:
+        if poProcessDefines in State.Options then
+          case Lexer.CurrTok of
+            ptDefine:
+              ParseDefine;
+            ptUndef:
+              ParseUndef;
+            ptIfdef:
+              ParseCondition(ptIfdef);
+            ptIfndef:
+              ParseCondition(ptIfndef);
+          end
+        else
+          AddRawComment;
+
+      ptElse, ptEndif:
+        if poProcessDefines in State.Options then
+          Break
+        else
+          AddRawComment;
+
+      ptInclude:
+        if poProcessIncludes in State.Options then
+          AddResult(ParseInclude)
+        else
+          AddRawComment;
+    else
+      Break;
+    end;
+end;
+
+procedure TJppParser.Skip;
+begin
+  Inc(FSkipLevel);
+  try
+    ParseText;
+  finally;
+    Dec(FSkipLevel);
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/20 03:24:48  rrossmair
+// - orphaned line breaks problem fixed.
+//
 // Revision 1.5  2004/06/05 19:42:08  rrossmair
 // - fixed problems with nested compiler conditions
 //
