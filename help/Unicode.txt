@@ -1590,7 +1590,7 @@ BCB=4,5
 [Declaration]
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
 [ShortDescr]
-Returns the index of the first occurrence of Ch in S. 
+Returns the index of the first occurrence of Ch in S.
 [Description]
 WideCharPos returns the index of the first occurrence of the specified character
 in the supplied string. Note that this is a search for the binary pattern, no attempt is made to
@@ -1796,66 +1796,6 @@ Count=1
 1=Str:PWideChar=Null-terminated wide string
 [Result]
 Size of the buffer allocated for the null-terminated wide string.
-[Quick Info]
-Unit=JclUnicode
-Category=Unicode
-SubCat=Null terminated strings
-Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function StrUpperW(Str: PWideChar): PWideChar;
-[ShortDescr]
-StrUpperW converts the specified string to all uppercase.
-[Description]
-StrUpperW converts the specified string to all uppercase and returns a pointer
-to it.
-[Parameters]
-Count=1
-1=Str:PWideChar=The string to convert to uppercase.
-[Result]
-Pointer to the converted string.
-[Quick Info]
-Unit=JclUnicode
-Category=Unicode
-SubCat=Null terminated strings
-Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function StrLowerW(Str: PWideChar): PWideChar;
-[ShortDescr]
-StrLowerW converts the specified string to all lowercase.
-[Description]
-StrLowerW converts the specified string to all lowercase and returns a pointer
-to it.
-[Parameters]
-Count=1
-1=Str:PWideChar=The string to convert to lowercase.
-[Result]
-Pointer to the converted string.
-[Quick Info]
-Unit=JclUnicode
-Category=Unicode
-SubCat=Null terminated strings
-Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-function StrTitleW(Str: PWideChar): PWideChar;
-[ShortDescr]
-Converts a string to title case.
-[Description]
-StrTitleW converts the specified string to title case and returns a pointer to
-the converted string. See UnicodeToTitle for more information.
-[Parameters]
-Count=1
-1=Str:PWideChar=The string to convert to title case.
-[Result]
-Pointer to the converted string.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -2372,94 +2312,20 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CodeBlockFromChar(const C: WideChar): Cardinal;
+function CodeBlockFromChar(const C: UCS4): <REF Target"..\Types\TUnicodeBlock">TUnicodeBlock</REF>;
 [ShortDescr]
 Returns the character block (code block) for a character.
 [Description]
 The CodeBlockFromChar returns the code block (or character block) in which the
-specified character exists.
+specified character exists. If the character does not belong to any defined block,
+ubUndefined is returned.
 [Parameters]
 Count=1
 1=C:WideChar=The unicode character for which you want to know the character block
 in which it resides.
 [Result]
-The character block for the specified character. The following table describes
-the possible values:
- <TABLE>
- <TR VALIGN="top">
- <TH align=left width =10%>Value</TH>
- <TH align=left width =30%>Range</TH>
- <TH align=left width =60%>Description</TH>
- </TR>
- <TR VALIGN="top"><TD width=10%>00</TD><TD width=30%>#$0000..#$007F</TD><TD width=60%>Basic Latin</TD></TR>
- <TR VALIGN="top"><TD width=10%>01</TD><TD width=30%>#$0080..#$00FF</TD><TD width=60%>Latin-1 Supplement</TD></TR>
- <TR VALIGN="top"><TD width=10%>02</TD><TD width=30%>#$0100..#$017F</TD><TD width=60%>Latin Extended-A</TD></TR>
- <TR VALIGN="top"><TD width=10%>03</TD><TD width=30%>#$0180..#$024F</TD><TD width=60%>Latin Extended-B</TD></TR>
- <TR VALIGN="top"><TD width=10%>04</TD><TD width=30%>#$0250..#$02AF</TD><TD width=60%>IPA Extensions</TD></TR>
- <TR VALIGN="top"><TD width=10%>05</TD><TD width=30%>#$02B0..#$02FF</TD><TD width=60%>Spacing Modifier Letters</TD></TR>
- <TR VALIGN="top"><TD width=10%>06</TD><TD width=30%>#$0300..#$036F</TD><TD width=60%>Combining Diacritical Marks</TD></TR>
- <TR VALIGN="top"><TD width=10%>07</TD><TD width=30%>#$0370..#$03FF</TD><TD width=60%>Greek</TD></TR>
- <TR VALIGN="top"><TD width=10%>08</TD><TD width=30%>#$0400..#$04FF</TD><TD width=60%>Cyrillic</TD></TR>
- <TR VALIGN="top"><TD width=10%>09</TD><TD width=30%>#$0530..#$058F</TD><TD width=60%>Armenian</TD></TR>
- <TR VALIGN="top"><TD width=10%>10</TD><TD width=30%>#$0590..#$05FF</TD><TD width=60%>Hebrew</TD></TR>
- <TR VALIGN="top"><TD width=10%>11</TD><TD width=30%>#$0600..#$06FF</TD><TD width=60%>Arabic</TD></TR>
- <TR VALIGN="top"><TD width=10%>12</TD><TD width=30%>#$0900..#$097F</TD><TD width=60%>Devanagari</TD></TR>
- <TR VALIGN="top"><TD width=10%>13</TD><TD width=30%>#$0980..#$09FF</TD><TD width=60%>Bengali</TD></TR>
- <TR VALIGN="top"><TD width=10%>14</TD><TD width=30%>#$0A00..#$0A7F</TD><TD width=60%>Gurmukhi</TD></TR>
- <TR VALIGN="top"><TD width=10%>15</TD><TD width=30%>#$0A80..#$0AFF</TD><TD width=60%>Gujarati</TD></TR>
- <TR VALIGN="top"><TD width=10%>16</TD><TD width=30%>#$0B00..#$0B7F</TD><TD width=60%>Oriya</TD></TR>
- <TR VALIGN="top"><TD width=10%>17</TD><TD width=30%>#$0B80..#$0BFF</TD><TD width=60%>Tamil</TD></TR>
- <TR VALIGN="top"><TD width=10%>18</TD><TD width=30%>#$0C00..#$0C7F</TD><TD width=60%>Telugu</TD></TR>
- <TR VALIGN="top"><TD width=10%>19</TD><TD width=30%>#$0C80..#$0CFF</TD><TD width=60%>Kannada</TD></TR>
- <TR VALIGN="top"><TD width=10%>20</TD><TD width=30%>#$0D00..#$0D7F</TD><TD width=60%>Malayalam</TD></TR>
- <TR VALIGN="top"><TD width=10%>21</TD><TD width=30%>#$0E00..#$0E7F</TD><TD width=60%>Thai</TD></TR>
- <TR VALIGN="top"><TD width=10%>22</TD><TD width=30%>#$0E80..#$0EFF</TD><TD width=60%>Lao</TD></TR>
- <TR VALIGN="top"><TD width=10%>23</TD><TD width=30%>#$0F00..#$0FBF</TD><TD width=60%>Tibetan</TD></TR>
- <TR VALIGN="top"><TD width=10%>24</TD><TD width=30%>#$10A0..#$10FF</TD><TD width=60%>Georgian</TD></TR>
- <TR VALIGN="top"><TD width=10%>25</TD><TD width=30%>#$1100..#$11FF</TD><TD width=60%>Hangul Jamo</TD></TR>
- <TR VALIGN="top"><TD width=10%>26</TD><TD width=30%>#$1E00..#$1EFF</TD><TD width=60%>Latin Extended Additional</TD></TR>
- <TR VALIGN="top"><TD width=10%>27</TD><TD width=30%>#$1F00..#$1FFF</TD><TD width=60%>Greek Extended</TD></TR>
- <TR VALIGN="top"><TD width=10%>28</TD><TD width=30%>#$2000..#$206F</TD><TD width=60%>General Punctuation</TD></TR>
- <TR VALIGN="top"><TD width=10%>29</TD><TD width=30%>#$2070..#$209F</TD><TD width=60%>Superscripts and Subscripts</TD></TR>
- <TR VALIGN="top"><TD width=10%>30</TD><TD width=30%>#$20A0..#$20CF</TD><TD width=60%>Currency Symbols</TD></TR>
- <TR VALIGN="top"><TD width=10%>31</TD><TD width=30%>#$20D0..#$20FF</TD><TD width=60%>Combining Marks for Symbols</TD></TR>
- <TR VALIGN="top"><TD width=10%>32</TD><TD width=30%>#$2100..#$214F</TD><TD width=60%>Letterlike Symbols</TD></TR>
- <TR VALIGN="top"><TD width=10%>33</TD><TD width=30%>#$2150..#$218F</TD><TD width=60%>Number Forms</TD></TR>
- <TR VALIGN="top"><TD width=10%>34</TD><TD width=30%>#$2190..#$21FF</TD><TD width=60%>Arrows</TD></TR>
- <TR VALIGN="top"><TD width=10%>35</TD><TD width=30%>#$2200..#$22FF</TD><TD width=60%>Mathematical Operators</TD></TR>
- <TR VALIGN="top"><TD width=10%>36</TD><TD width=30%>#$2300..#$23FF</TD><TD width=60%>Miscellaneous Technical</TD></TR>
- <TR VALIGN="top"><TD width=10%>37</TD><TD width=30%>#$2400..#$243F</TD><TD width=60%>Control Pictures</TD></TR>
- <TR VALIGN="top"><TD width=10%>38</TD><TD width=30%>#$2440..#$245F</TD><TD width=60%>Optical Character Recognition</TD></TR>
- <TR VALIGN="top"><TD width=10%>39</TD><TD width=30%>#$2460..#$24FF</TD><TD width=60%>Enclosed Alphanumerics</TD></TR>
- <TR VALIGN="top"><TD width=10%>40</TD><TD width=30%>#$2500..#$257F</TD><TD width=60%>Box Drawing</TD></TR>
- <TR VALIGN="top"><TD width=10%>41</TD><TD width=30%>#$2580..#$259F</TD><TD width=60%>Block Elements</TD></TR>
- <TR VALIGN="top"><TD width=10%>42</TD><TD width=30%>#$25A0..#$25FF</TD><TD width=60%>Geometric Shapes</TD></TR>
- <TR VALIGN="top"><TD width=10%>43</TD><TD width=30%>#$2600..#$26FF</TD><TD width=60%>Miscellaneous Symbols</TD></TR>
- <TR VALIGN="top"><TD width=10%>44</TD><TD width=30%>#$2700..#$27BF</TD><TD width=60%>Dingbats</TD></TR>
- <TR VALIGN="top"><TD width=10%>45</TD><TD width=30%>#$3000..#$303F</TD><TD width=60%>CJK Symbols and Punctuation</TD></TR>
- <TR VALIGN="top"><TD width=10%>46</TD><TD width=30%>#$3040..#$309F</TD><TD width=60%>Hiragana</TD></TR>
- <TR VALIGN="top"><TD width=10%>47</TD><TD width=30%>#$30A0..#$30FF</TD><TD width=60%>Katakana</TD></TR>
- <TR VALIGN="top"><TD width=10%>48</TD><TD width=30%>#$3100..#$312F</TD><TD width=60%>Bopomofo</TD></TR>
- <TR VALIGN="top"><TD width=10%>49</TD><TD width=30%>#$3130..#$318F</TD><TD width=60%>Hangul Compatibility Jamo</TD></TR>
- <TR VALIGN="top"><TD width=10%>50</TD><TD width=30%>#$3190..#$319F</TD><TD width=60%>Kanbun</TD></TR>
- <TR VALIGN="top"><TD width=10%>51</TD><TD width=30%>#$3200..#$32FF</TD><TD width=60%>Enclosed CJK Letters and Months</TD></TR>
- <TR VALIGN="top"><TD width=10%>52</TD><TD width=30%>#$3300..#$33FF</TD><TD width=60%>CJK Compatibility</TD></TR>
- <TR VALIGN="top"><TD width=10%>53</TD><TD width=30%>#$4E00..#$9FFF</TD><TD width=60%>CJK Unified Ideographs</TD></TR>
- <TR VALIGN="top"><TD width=10%>54</TD><TD width=30%>#$AC00..#$D7A3</TD><TD width=60%>Hangul Syllables</TD></TR>
- <TR VALIGN="top"><TD width=10%>55</TD><TD width=30%>#$D800..#$DB7F</TD><TD width=60%>High Surrogates</TD></TR>
- <TR VALIGN="top"><TD width=10%>56</TD><TD width=30%>#$DB80..#$DBFF</TD><TD width=60%>High Private Use Surrogates</TD></TR>
- <TR VALIGN="top"><TD width=10%>57</TD><TD width=30%>#$DC00..#$DFFF</TD><TD width=60%>Low Surrogates</TD></TR>
- <TR VALIGN="top"><TD width=10%>58</TD><TD width=30%>#$E000..#$F8FF</TD><TD width=60%>Private Use</TD></TR>
- <TR VALIGN="top"><TD width=10%>59</TD><TD width=30%>#$F900..#$FAFF</TD><TD width=60%>CJK Compatibility Ideographs</TD></TR>
- <TR VALIGN="top"><TD width=10%>60</TD><TD width=30%>#$FB00..#$FB4F</TD><TD width=60%>Alphabetic Presentation Forms</TD></TR>
- <TR VALIGN="top"><TD width=10%>61</TD><TD width=30%>#$FB50..#$FDFF</TD><TD width=60%>Arabic Presentation Forms-A</TD></TR>
- <TR VALIGN="top"><TD width=10%>62</TD><TD width=30%>#$FE20..#$FE2F</TD><TD width=60%>Combining Half Marks</TD></TR>
- <TR VALIGN="top"><TD width=10%>63</TD><TD width=30%>#$FE30..#$FE4F</TD><TD width=60%>CJK Compatibility Forms</TD></TR>
- <TR VALIGN="top"><TD width=10%>64</TD><TD width=30%>#$FE50..#$FE6F</TD><TD width=60%>Small Form Variants</TD></TR>
- <TR VALIGN="top"><TD width=10%>65</TD><TD width=30%>#$FE70..#$FEFF</TD><TD width=60%>Arabic Presentation Forms-B</TD></TR>
- <TR VALIGN="top"><TD width=10%>66</TD><TD width=30%>#$FF00..#$FFEF</TD><TD width=60%>Halfwidth and Fullwidth Forms</TD></TR>
- <TR VALIGN="top"><TD width=10%>67</TD><TD width=30%>#$FFF0..#$FFFF</TD><TD width=60%>Specials</TD></TR>
- </TABLE>
+The character block for the specified character. If the character does not belong to any defined block,
+ubUndefined is returned.
 [Quick Info]
 Unit=JclUnicode
 Category=Unicode
@@ -2698,15 +2564,14 @@ TCharacterCategory = (ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase,
   ccRightToLeftOverride, ccPopDirectionalFormat, ccEuropeanNumber, ccEuropeanNumberSeparator,
   ccEuropeanNumberTerminator, ccArabicNumber, ccCommonNumberSeparator, ccBoundaryNeutral,
   ccSegmentSeparator, ccWhiteSpace, ccOtherNeutrals, ccComposed, ccNonBreaking,
-  ccSymmetric, ccHexDigit, ccQuotationMark, ccMirroring, ccSpaceOther, ccAssigned,
-  ccLetterUniqueUpper);
+  ccSymmetric, ccHexDigit, ccQuotationMark, ccMirroring, ccSpaceOther, ccAssigned);
 TCharacterCategories = set of TCharacterCategory;
 [ShortDescr]
 Various predefined or otherwise useful character property categories
 [Description]
 Various predefined or otherwise useful character property categories
 [Enumeration]
-Count=56
+Count=55
 1=ccLetterUppercase=Uppercased letter
 2=ccLetterLowercase=Lowercased letter
 3=ccLetterTitlecase=Titlecased letter
@@ -2762,10 +2627,9 @@ Count=56
 53=ccMirroring=
 54=ccSpaceOther=Undefined spacing character
 55=ccAssigned=Defined character in Unicode-standard
-56=ccLetterUniqueUpper=Special form of uppercase character
 [Notes]
 Count=1
-1=Categories ccComposed upto ccLetterUniqueUpper are self-defined categories and
+1=Categories ccComposed upto ccAssigned are self-defined categories and
 do not appear in the Unicode data file. They are useful in the <REF TARGET"..\TURESearch\TURESearch">TURESearch-class</REF>.
 [Quick Info]
 Kind=Type
@@ -2925,7 +2789,7 @@ procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options
 Prepares the engine for a pattern search.
 [Description]
 FindPrepare prepares the engine for pattern search. There are 2 versions of
-FindPrepare a WideString and a PWideChar version. 
+FindPrepare a WideString and a PWideChar version.
 [Parameters]
 Count=3
 1=Pattern:Type=Search pattern
@@ -2983,7 +2847,7 @@ function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; v
 Finds all occurences of a search pattern.
 [Description]
 FindAll finds all occurences of the pattern passed to <REF>FindPrepare</REF>
-in Text and returns True if any could be found otherwise False. 
+in Text and returns True if any could be found otherwise False.
 [Parameters]
 Count=2
 1=Text:Type=Text to be searched
@@ -3010,7 +2874,7 @@ procedure GetResult(Index: Cardinal; var Start, Stop: Integer); virtual;
 [ShortDescr]
 Returns a match result.
 [Description]
-GetResult returns the specified match result in the Start and Stop parameters. 
+GetResult returns the specified match result in the Start and Stop parameters.
 [Parameters]
 Count=3
 1=Index:Cardinal=Index (0-based) of match result to return.
@@ -3122,7 +2986,7 @@ Count=4
 4=MatchEnd:Cardinal=End of the match or undefined if no match.
 [Result]
 If the pattern can be found in Text the function returns True (in that case
-MatchStart and MatchEnd point to the match) otherwise it returns False. 
+MatchStart and MatchEnd point to the match) otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Protected
@@ -3226,7 +3090,7 @@ procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options
 Prepares the engine for a pattern search.
 [Description]
 FindPrepare prepares the engine for pattern search. There are 2 versions of
-FindPrepare a WideString and a PWideChar version. 
+FindPrepare a WideString and a PWideChar version.
 [Parameters]
 Count=3
 1=Pattern:Type=Search pattern
@@ -3284,7 +3148,7 @@ function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; v
 Finds all occurences of a search pattern.
 [Description]
 FindAll finds all occurences of the pattern passed to <REF>FindPrepare</REF>
-in Text and returns True if any could be found otherwise False. 
+in Text and returns True if any could be found otherwise False.
 [Parameters]
 Count=2
 1=Text:Type=Text to be searched
@@ -3384,7 +3248,7 @@ procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options
 Prepares the engine for a pattern search.
 [Description]
 FindPrepare prepares the engine for pattern search. There are 2 versions of
-FindPrepare a WideString and a PWideChar version. 
+FindPrepare a WideString and a PWideChar version.
 [Parameters]
 Count=3
 1=Pattern:Type=Search pattern
@@ -3442,7 +3306,7 @@ function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; v
 Finds all occurences of a search pattern.
 [Description]
 FindAll finds all occurences of the pattern passed to <REF>FindPrepare</REF>
-in Text and returns True if any could be found otherwise False. 
+in Text and returns True if any could be found otherwise False.
 [Parameters]
 Count=2
 1=Text:Type=Text to be searched
@@ -3582,17 +3446,18 @@ Count=1
 1=UnicodeNumberLookup;..\Low level character routines\UnicodeNumberLookup
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-  TNormalizationForm = (nfC, nfD, nfKC, nfKD);
+  TNormalizationForm = (nfNone, nfC, nfD, nfKC, nfKD);
 [ShortDescr]
 Normalization form to use.
 [Description]
 Normalization form used in WideNormalize.
 [Enumeration]
-Count=4
-1=nfC=canonical decomposition followed by canonical composition
-2=nfD=canonical decomposition
-3=nfKC=compatibility decomposition followed by a canonical composition
-4=nfKD=compatibility decomposition
+Count=5
+1=nfNone=Do not normalize
+2=nfC=canonical decomposition followed by canonical composition
+3=nfD=canonical decomposition
+4=nfKC=compatibility decomposition followed by a canonical composition
+5=nfKD=compatibility decomposition
 [Quick Info]
 Kind=Type
 Unit=JclUnicode
@@ -3642,6 +3507,50 @@ is the composed version of First and Second) otherwise it returns False.
 Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TUnicodeBlock = (ubUndefined, ubBasicLatin, ubLatin1Supplement,
+  ubLatinExtendedA, ubLatinExtendedB, ubIPAExtensions, ubSpacingModifierLetters,
+  ubCombiningDiacriticalMarks, ubGreek, ubCyrillic, ubArmenian, ubHebrew,
+  ubArabic, ubSyriac, ubThaana, ubDevanagari, ubBengali, ubGurmukhi, ubGujarati,
+  ubOriya, ubTamil, ubTelugu, ubKannada, ubMalayalam, ubSinhala, ubThai, ubLao,
+  ubTibetan, ubMyanmar, ubGeorgian, ubHangulJamo, ubEthiopic, ubCherokee,
+  ubUnifiedCanadianAboriginalSyllabics, ubOgham, ubRunic, ubKhmer, ubMongolian,
+  ubLatinExtendedAdditional, ubGreekExtended, ubGeneralPunctuation,
+  ubSuperscriptsAndSubscripts, ubCurrencySymbols, ubCombiningMarksForSymbols,
+  ubLetterlikeSymbols, ubNumberForms, ubArrows, ubMathematicalOperators,
+  ubMiscellaneousTechnical, ubControlPictures, ubOpticalCharacterRecognition,
+  ubEnclosedAlphanumerics, ubBoxDrawing, ubBlockElements, ubGeometricShapes,
+  ubMiscellaneousSymbols, ubDingbats, ubBraillePatterns,
+  ubCJKRadicalsSupplement, ubKangxiRadicals, ubIdeographicDescriptionCharacters,
+  ubCJKSymbolsAndPunctuation, ubHiragana, ubKatakana, ubBopomofo,
+  ubHangulCompatibilityJamo, ubKanbun, ubBopomofoExtended,
+  ubEnclosedCJKLettersAndMonths, ubCJKCompatibility,
+  ubCJKUnifiedIdeographsExtensionA, ubCJKUnifiedIdeographs, ubYiSyllables,
+  ubYiRadicals, ubHangulSyllables, ubHighSurrogates, ubHighPrivateUseSurrogates,
+  ubLowSurrogates, ubPrivateUse, ubCJKCompatibilityIdeographs,
+  ubAlphabeticPresentationForms, ubArabicPresentationFormsA,
+  ubCombiningHalfMarks, ubCJKCompatibilityForms, ubSmallFormVariants,
+  ubArabicPresentationFormsB, ubSpecials, ubHalfwidthAndFullwidthForms,
+  ubOldItalic, ubGothic, ubDeseret, ubByzantineMusicalSymbols,
+  ubMusicalSymbols, ubMathematicalAlphanumericSymbols,
+  ubCJKUnifiedIdeographsExtensionB, ubCJKCompatibilityIdeographsSupplement,
+  ubTags);
+[ShortDescr]
+Unicode block enumeration.
+[Description]
+An Unicode block usually corresponds to a particular language script but can
+also represent special characters, musical symbols and the like.
+[Enumeration]
+Count=1
+1=ubUndefined=Undefined block
+[Quick Info]
+Kind=Type
+Unit=JclUnicode
+Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
