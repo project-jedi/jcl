@@ -1689,6 +1689,185 @@ Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
-Count=2
+Count=5
 1=TFloatingPointClass;Types\TFloatingPointClass
 2=FloatingPointClass
+3=MakeQuietNaN
+4=MakeSignalingNaN
+5=TNaNTag;Types\TNaNTag
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TNaNTag = -$3FFFFF..$3FFFFE;
+[ShortDescr]
+The data type used by JCL routines for tagging numeric information to NaN values.
+[Description]
+The data type used by JCL routines for tagging numeric information to NaN values.
+[Quick Info]
+Kind=Type
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=3
+1=GetNaNTag;..\GetNaNTag
+2=MakeQuietNaN;..\MakeQuietNaN
+3=MakeSignalingNaN;..\MakeSignalingNaN
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetNaNTag(const NaN: Single): TNaNTag; overload;
+function GetNaNTag(const NaN: Double): TNaNTag; overload;
+function GetNaNTag(const NaN: Extended): TNaNTag; overload;
+[ShortDescr]
+Retrieves some numeric information tagged to the NaN value.
+[Description]
+Retrieves some numeric information tagged to the NaN value.
+[Parameters]
+Count=1
+1=NaN:=The NaN value to evaluate.
+[Result]
+The value encoded in the NaN.
+[Quick Info]
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=3
+1=TNaNTag;Types\TNaNTag
+2=MakeQuietNaN
+3=MakeSignalingNaN
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure MakeQuietNaN(var X: Single; Tag: TNaNTag = 0); overload;
+procedure MakeQuietNaN(var X: Double; Tag: TNaNTag = 0); overload;
+procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag = 0); overload;
+[ShortDescr]
+Makes X a quiet NaN.
+[Description]
+Makes a floating point variable X a quiet NaN (QNaN).
+A QNaN is a NaN with the most significant fraction bit set.
+QNaNs, in contrast to signaling NaNs (SNaNs), are allowed to propagate
+through most arithmetic operations without signaling an exception.
+[Parameters]
+Count=2
+1=X:=The floating point variable to change into a QNaN.
+2=Tag:TNaNTag=An integer value to be encoded in the resulting NaN value. It may
+be used to propagate some information through a sequence of arithmetic operations.
+[Quick Info]
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=4
+1=TFloatingPointClass;Types\TFloatingPointClass
+2=TNaNTag;Types\TNaNTag
+3=MakeSignalingNaN
+4=GetNaNTag
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag = 0); overload;
+procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag = 0); overload;
+procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag = 0); overload;
+[ShortDescr]
+Makes X a signaling NaN.
+[Description]
+Makes a floating point variable X a signaling NaN (SNaN). An SNaN is a NaN with
+the most significant fraction bit clear.
+SNaNs generally signal an floating-point invalidoperation exception whenever
+they appear as operands in arithmetic operations.
+SNaNs are typically used to trap or invoke an exception handler. They must be
+inserted by software; that is, the processor never generates an SNaN as a result
+of a floating-point operation.
+[Parameters]
+Count=2
+1=X:=The floating point variable to change into a SNaN.
+2=Tag:TNaNTag=An integer value to be encoded in the resulting NaN value.
+[Quick Info]
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=4
+1=TFloatingPointClass;Types\TFloatingPointClass
+2=TNaNTag;Types\TNaNTag
+3=MakeQuietNaN
+4=GetNaNTag
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag = 0);
+[ShortDescr]
+MineSingleBuffer fills the buffer with consecutive tagged signaling NaNs.
+[Description]
+MineSingleBuffer fills the buffer with consecutive tagged signaling NaNs. This
+allows for real number arrays which enforce initialization: any attempt to load
+an uninitialized array element into the FPU will raise an exception either of
+class EJclNaNSignal (Windows NT) or EInvalidOp (else).
+Under Windows NT thus the violating array index can be derived from the
+EJclNaNSignal object's Tag property.
+[Parameters]
+Count=3
+1=Buffer:=The buffer to initialize with SNaN values.
+2=Count:Integer=The number of array elements.
+3=StartTag:TNaNTag=The integer value assigned to the first array element. The
+tag is increased with each subsequent array element.
+[Quick Info]
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=4
+1=TNaNTag;Types\TNaNTag
+2=GetNaNTag
+3=MineDoubleBuffer
+4=MakeSignalingNaN
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag = 0);
+[ShortDescr]
+MineDoubleBuffer fills the buffer with consecutive tagged signaling NaNs.
+[Description]
+MineDoubleBuffer fills the buffer with consecutive tagged signaling NaNs. This
+allows for real number arrays which enforce initialization: any attempt to load
+an uninitialized array element into the FPU will raise an exception either of
+class EJclNaNSignal (Windows NT) or EInvalidOp (else).
+Under Windows NT thus the violating array index can be derived from the
+EJclNaNSignal object's Tag property.
+[Parameters]
+Count=3
+1=Buffer:=The buffer to initialize with SNaN values.
+2=Count:Integer=The number of array elements.
+3=StartTag:TNaNTag=The integer value assigned to the first array element. The
+tag is increased with each subsequent array element.
+[Quick Info]
+Unit=JclMath
+Category=Math Routines
+SubCat=Float support
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=4
+1=TNaNTag;Types\TNaNTag
+2=GetNaNTag
+3=MineSingleBuffer
+4=MakeSignalingNaN
