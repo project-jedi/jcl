@@ -74,9 +74,11 @@ const
   FID_JCL_EnvLibPath       = FID_JCL + $00010100;
   FID_JCL_EnvBrowsingPath  = FID_JCL + $00010200;
   FID_JCL_Make             = FID_JCL + $00020000;
-  FID_JCL_MakeDebug        = FID_JCL + $00020100;
-  FID_JCL_MakeVcl          = FID_JCL + $00020200;
-  FID_JCL_MakeVClx         = FID_JCL + $00020300;
+  FID_JCL_MakeRelease      = FID_JCL + $00020100;
+  FID_JCL_MakeDebug        = FID_JCL + $00020200;
+  FID_JCL_Windows          = $00000001;
+  FID_JCL_Vcl              = $00000002;
+  FID_JCL_VClx             = $00000003;
   FID_JCL_Help             = FID_JCL + $00030000;
   FID_JCL_HelpHlp          = FID_JCL + $00030100;
   FID_JCL_HelpChm          = FID_JCL + $00030200;
@@ -98,7 +100,9 @@ const
   RsEnvLibPath      = 'Add JCL to IDE Library Path';
   RsEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
   RsMake            = 'Make library units';
-  RsMakeDebug       = 'Make debug units';
+  RsMakeRelease     = 'Release';
+  RsMakeDebug       = 'Debug';
+  RsMakeWindows     = 'Windows';
   RsMakeVcl         = 'VCL';
   RsMakeVClx        = 'Visual CLX';
 
@@ -289,17 +293,17 @@ var
   procedure MakeUnits(Debug: Boolean);
   begin
     CompileLibraryUnits('common', Debug);
-    CompileLibraryUnits('windows', Debug);
     if (Installation.VersionNumber < 6)
-    or Tool.FeatureChecked(FID_JCL_MakeVcl, Installation.VersionNumber) then
+    or Tool.FeatureChecked(FID_JCL_Windows, Installation.VersionNumber) then
+      CompileLibraryUnits('windows', Debug);
+    if (Installation.VersionNumber < 6)
+    or Tool.FeatureChecked(FID_JCL_Vcl, Installation.VersionNumber) then
       CompileLibraryUnits('vcl', Debug);
-    if Tool.FeatureChecked(FID_JCL_MakeVClx, Installation.VersionNumber) then
+    if Tool.FeatureChecked(FID_JCL_VClx, Installation.VersionNumber) then
       CompileLibraryUnits('visclx', Debug);
   end;
 
   procedure DxInstall;
-  var
-    CompileVCL: Boolean;
   begin
     Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
     WriteDelphiVersionToLog;
@@ -407,7 +411,7 @@ end;
 
 function TJclInstall.PopulateTreeView(Nodes: TTreeNodes; VersionNumber: Integer; Page: TTabSheet): Boolean;
 var
-  InstallationNode, ProductNode, TempNode: TTreeNode;
+  InstallationNode, ProductNode, MakeNode, TempNode: TTreeNode;
   Installation: TJclDelphiInstallation;
 
   function AddNode(Parent: TTreeNode; const Caption: string; FeatureID: Cardinal): TTreeNode;
@@ -432,12 +436,20 @@ begin
       TempNode := AddNode(ProductNode, RsEnvironment, FID_JCL_Env);
       AddNode(TempNode, RsEnvLibPath, FID_JCL_EnvLibPath);
       AddNode(TempNode, RsEnvBrowsingPath, FID_JCL_EnvBrowsingPath);
-      TempNode := AddNode(ProductNode, RsMake, FID_JCL_Make);
-      AddNode(TempNode, RsMakeDebug, FID_JCL_MakeDebug);
+      MakeNode := AddNode(ProductNode, RsMake, FID_JCL_Make);
+      TempNode := AddNode(MakeNode, RsMakeRelease, FID_JCL_MakeRelease);
       if Installation.VersionNumber >= 6 then
       begin
-        AddNode(TempNode, RsMakeVcl, FID_JCL_MakeVcl);
-        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeVClx);
+        AddNode(TempNode, RsMakeWindows, FID_JCL_MakeRelease or FID_JCL_Windows);
+        AddNode(TempNode, RsMakeVcl, FID_JCL_MakeRelease or FID_JCL_Vcl);
+        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeRelease or FID_JCL_VClx);
+      end;
+      TempNode := AddNode(MakeNode, RsMakeDebug, FID_JCL_MakeDebug);
+      if Installation.VersionNumber >= 6 then
+      begin
+        AddNode(TempNode, RsMakeWindows, FID_JCL_MakeDebug or FID_JCL_Windows);
+        AddNode(TempNode, RsMakeVcl, FID_JCL_MakeDebug or FID_JCL_Vcl);
+        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeDebug or FID_JCL_VClx);
       end;
       if (FJclHlpHelpFileName <> '') or (FJclChmHelpFileName <> '') then
       begin
@@ -471,7 +483,12 @@ end;
 
 function TJclInstall.SelectedNodeCollapsing(Node: TTreeNode): Boolean;
 begin
-  Result := False;
+  case Integer(Node.Data) and not FID_Checked of
+    FID_JCL_MakeRelease,
+    FID_JCL_MakeDebug: Result := True;
+  else
+    Result := False;
+  end;
 end;
 
 procedure TJclInstall.SetTool(const Value: IJediInstallTool);
