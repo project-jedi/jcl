@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: May 23, 2002                                                                      }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -37,9 +37,9 @@ interface
 
 uses
   Windows, Classes, ImageHlp, SysUtils, TypInfo,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
@@ -700,6 +700,7 @@ type
   private
     FAvailable: Boolean;
     FContains: TStrings;
+    FDcpName: string;
     FRequires: TStrings;
     FFlags: Integer;
     FDescription: string;
@@ -724,6 +725,7 @@ type
     property ContainsNames[Index: Integer]: string read GetContainsNames;
     property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
     property Description: string read FDescription;
+    property DcpName: string read FDcpName;
     property EnsureExtension: Boolean read FEnsureExtension write FEnsureExtension;
     property Flags: Integer read FFlags;
     property Requires: TStrings read FRequires;
@@ -1027,6 +1029,7 @@ uses
 
 const
   BPLExtension      = '.bpl';
+  DCPExtension      = '.dcp';
   MANIFESTExtension = '.manifest';
 
   PackageInfoResName    = 'PACKAGEINFO';
@@ -4066,6 +4069,10 @@ begin
         FContains.AddObject(Name, Pointer(AFlags));
       ntRequiresPackage:
         FRequires.Add(Name);
+      {$IFDEF COMPILER6_UP}
+      ntDcpBpiName:
+        FDcpName := Name;
+      {$ENDIF COMPILER6_UP}
     end;
 end;
 
@@ -4078,6 +4085,8 @@ begin
   if FAvailable then
   begin
     GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
+    if FDcpName = '' then
+      FDcpName := PathExtractFileNameNoExt(GetModulePath(ALibHandle)) + DCPExtension;
     TStringList(FContains).Sort;
     TStringList(FRequires).Sort;
   end;
