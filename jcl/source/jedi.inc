@@ -745,7 +745,7 @@
 
     {$DEFINE SUPPORTS_CUSTOMVARIANTS}
     {$DEFINE SUPPORTS_VARARGS}
-    {$SUPPORTS_ENUMVALUE}
+    {$DEFINE SUPPORTS_ENUMVALUE}
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
@@ -907,6 +907,9 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.12  2004/05/06 05:03:59  rrossmair
+// SUPPORTS_ENUMVALUE definition fixed for Free Pascal Compiler
+//
 // Revision 1.11  2004/05/05 03:20:13  rrossmair
 // jedi.inc: moved FPC-incompatible Kylix-related code to separate include file "kylix.inc", disposed of FPC-related TODOs
 //
