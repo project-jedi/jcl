@@ -33,15 +33,15 @@ unit JclSysInfo;
 interface
 
 uses
-{$IFDEF LINUX}
-  Libc, Types,
-{$ENDIF}
-{$IFDEF MSWINDOWS}
-  Windows, ActiveX,
-  {$IFNDEF FPC}
-  ShlObj,
-  {$ENDIF FPC}
-{$ENDIF}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  Windows, ActiveX, {$IFNDEF FPC} ShlObj, {$ENDIF}
+  {$ENDIF}
   Classes, JclResources;
 
 //--------------------------------------------------------------------------------------------------
