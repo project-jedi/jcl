@@ -5,14 +5,16 @@
 #
 
 jpp		= jpp.exe
-VClxOptions	= -c -uPrototype -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uBitmap32 -uVCL -x1:..\visclx\JclQ
-VclOptions      = -c -uPrototype -dVCL -dBitmap32 -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -x1:..\vcl\Jcl
-WinOptions      = -c -uPrototype -dJCL -dMSWINDOWS -uDevelop -uUnix -x..\windows\\
-UnixOptions     = -c -uPrototype -dJCL -dUNIX -uDevelop -uMSWINDOWS -x..\unix\\
+
+Options         = -c -dJCL
+CommonOptions   = $(Options) -x..\common\\
+VclOptions      = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
+VClxOptions	= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
+WinOptions      = $(Options) -dMSWINDOWS -uUNIX -x..\windows\\
+UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -x..\unix\\
 
 
-
-release:	VCL VisualCLX
+release:	Common Windows Unix VCL VisualCLX
 
 VCL:    	_Graphics.pas \
 		_GraphUtils.pas
@@ -22,9 +24,15 @@ VisualCLX:    	_Graphics.pas \
 		_GraphUtils.pas
 	$(jpp) $(VClxOptions) $**
 
+Common:         ..\common\JclZLib.pas \
+                ..\common\JclDITs.pas
+
 Windows:	..\windows\zlibh.pas
 
 Unix:		..\unix\zlibh.pas
+
+{.}.pas{..\common}.pas:
+	$(jpp) $(CommonOptions) $<
 
 {.}.pas{..\windows}.pas:
 	$(jpp) $(WinOptions) $<
