@@ -29,7 +29,7 @@ unit JclHookExcept;
 
 interface
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 uses
   SysUtils;
