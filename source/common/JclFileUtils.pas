@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: December 01, 2003                                                                    }
+{ Last modified: December 14, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -38,15 +38,15 @@ unit JclFileUtils;
 interface
 
 uses
-  JclBase,
   {$IFDEF UNIX}
   Types, Libc,
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils;
-  
+  Classes, SysUtils,
+  JclBase;
+
 //--------------------------------------------------------------------------------------------------
 // replacements for defective Libc.pas declarations
 //--------------------------------------------------------------------------------------------------
@@ -115,7 +115,9 @@ function PathExtractFileNameNoExt(const Path: string): string;
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 function PathGetDepth(const Path: string): Integer;
 {$IFDEF MSWINDOWS}
+{$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
+{$ENDIF}
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
@@ -876,8 +878,12 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  ActiveX, ShellApi, ShlObj,
-  JclSecurity, JclWin32, JclShell, JclDateTime, JclSysInfo, 
+  ActiveX, ShellApi,
+  {$IFNDEF FPC}
+  ShlObj,
+  JclSecurity, JclShell, JclWin32,
+  {$ENDIF}
+  JclDateTime, JclSysInfo, 
   {$ENDIF MSWINDOWS}
   JclResources, JclStrings, JclSysUtils;
 
@@ -904,6 +910,13 @@ const
 const
   ERROR_NO_MORE_FILES = -1;
 {$ENDIF UNIX}
+
+{$IFDEF FPC}
+{$IFDEF MSWINDOWS}
+type
+  TSHFileInfo = SHFILEINFOA;
+{$ENDIF MSWINDOWS}
+{$ENDIF FPC}
 
 //==================================================================================================
 // replacements for defective Libc.pas declarations
@@ -1109,7 +1122,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Pointer(Longint(Memory) + Position)^, Count);
+    System.Move(Buffer, Pointer(Longint(Memory) + Longint(Position))^, Count);
     Position := Position + Count;
     Result := Count;
   end;
@@ -1374,7 +1387,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Pointer(Longint(Memory) + Position)^, Count);
+    System.Move(Buffer, Pointer(Longint(Memory) + Longint(Position))^, Count);
     Position := Position + Count;
     Result := Count;
   end;
@@ -2073,7 +2086,7 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
+{$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
 var
   PIDL: PItemIDList;
@@ -2099,7 +2112,7 @@ begin
     end;
   end;
 end;
-
+{$ENDIF}
 //--------------------------------------------------------------------------------------------------
 
 function PathGetShortName(const Path: string): string;
@@ -2475,7 +2488,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // todoc author Jeff
-
+{$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
   if MoveToRecycleBin then
@@ -2483,6 +2496,7 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2668,8 +2682,13 @@ var
   FileInfo: TSHFileInfo;
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
+  {$IFDEF FPC}
+  if SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> nil then
+    Result := PChar(FileInfo.szDisplayName)
+  {$ELSE}
   if SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> 0 then
     Result := FileInfo.szDisplayName
+  {$ENDIF FPC}
   else
     Result := FileName;
 end;
@@ -2740,8 +2759,13 @@ var
   RetVal: DWORD;
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
+  {$IFDEF FPC}
+  RetVal := DWORD(SHGetFileInfo(PChar(FileNAme), 0, @FileInfo, SizeOf(FileInfo),
+    SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES));
+  {$ELSE}
   RetVal := SHGetFileInfo(PChar(FileNAme), 0, FileInfo, SizeOf(FileInfo),
     SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
+  {$ENDIF FPC}
   if RetVal <> 0 then
     Result := FileInfo.szTypeName;
   if (RetVal = 0) or (Trim(Result) = '') then
@@ -2888,7 +2912,11 @@ begin
   if Handle <> INVALID_HANDLE_VALUE then
   begin
     Windows.FindClose(Handle);
+    {$IFDEF FPC}
+    Result := CompareFileTime(@FindData.ftCreationTime, @FindData.ftLastWriteTime) <= 0;
+    {$ELSE}
     Result := CompareFileTime(FindData.ftCreationTime, FindData.ftLastWriteTime) <= 0;
+    {$ENDIF FPC}
   end;
 end;
 
