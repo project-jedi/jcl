@@ -1,11 +1,6 @@
-{******************************************************************************}
-{                                                                              }
-{  WARNING: This file is generated automatically by preprocessor.              }
-{                                                                              }
-{  Manual modifications will be lost on next release. Please modify the        }
-{  original source file.                                                       }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
 
 {******************************************************************************}
 {                                                                              }
@@ -32,9 +27,11 @@
 {  Portions created by Peter J. Haas are Copyright (C) 2002-2004               }
 {  Peter J. Haas. All Rights Reserved.                                         }
 {                                                                              }
+
 {  Obtained through:                                                           }
 {    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
 {                                                                              }
+
 {  You may retrieve the latest version of the original file at the homepage    }
 {  of the Project ZLib, located at http://www.gzip.org/zlib/                   }
 {                                                                              }
@@ -61,6 +58,7 @@
 
 // $Id$
 
+
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
 {$OVERFLOWCHECKS OFF}{$RANGECHECKS OFF}{$TYPEDADDRESS ON}{$MINENUMSIZE 1}
 
@@ -74,13 +72,54 @@
 
 unit zlibh;
 
+{$IFDEF PLATFORM_SPECIFIC_COMMENT}
+// On Windows platform, you can choose between static linking and
+// load time dynamic linking
+
+// static linking: deactivate the symbol ZLIB_WIN32DLL
+
+// dynamic linking: activate the symbol ZLIB_WIN32DLL
+// You may retrieve a current Win32-DLL from the zlib homepage
+// located at http://www.gzip.org/zlib/
+{.$DEFINE ZLIB_WIN32DLL}
+
+
+// ZLIB_STDCALL is currently unused, because the new dll use cdecl
+
+
+// There is no simple possibility to support gzip over gzio with static
+// linking. If you wish to include gzio, you must find a way to include
+// any stdio functions used in gzio.
+
+// However, gzio don't use any Delphi-like file access methods.
+// See gzips.pas for a Delphi-like gzip support with TStream descendants.
+{$ENDIF PLATFORM_SPECIFIC_COMMENT}
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+
 
 interface
 uses
+                          
+  {$IFDEF HAS_UNIT_LIBC}
   Libc;
+  {$ENDIF HAS_UNIT_LIBC}
+
+
 
 {$HPPEMIT '#define ZEXPORT __cdecl'}
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
+
 {$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
@@ -1084,6 +1123,7 @@ function uncompress(out dest; var destLen: ULong;
                     const source; sourceLen: ULong): Integer; cdecl;
 
 
+
 type
   {$EXTERNALSYM gzFile}
   gzFile = Pointer;
@@ -1293,6 +1333,8 @@ function gzerror(_file: TGZFile; var errnum: Integer): PChar; cdecl;
 procedure gzclearerr(_file: TGZFile); cdecl;
 
 
+
+
 //                         checksum functions
 
 { These functions are not related to compression but are exported
@@ -1392,14 +1434,19 @@ function get_crc_table: PCRCTable; cdecl;
 implementation
 
 
+
+
 const
   ZLibModuleName = 'libz.so';
+
 
 
 // **************************  zutil.c  *****************************
 function zlibVersion;      external ZLibModuleName name 'zlibVersion';
 function zError;           external ZLibModuleName name 'zError';
 function zlibCompileFlags; external ZLibModuleName name 'zlibCompileFlags';
+
+
 
 
 // **************************  deflate.c  ***************************
@@ -1443,6 +1490,7 @@ function compressBound; external ZLibModuleName name 'compressBound';
 function uncompress; external ZLibModuleName name 'uncompress';
 
 
+
 // **************************  gzio.c  ******************************
 function gzopen;      external ZLibModuleName name 'gzopen';
 function gzdopen;     external ZLibModuleName name 'gzdopen';
@@ -1465,6 +1513,7 @@ function gzclose;     external ZLibModuleName name 'gzclose';
 function gzerror;     external ZLibModuleName name 'gzerror';
 function gzungetc;    external ZLibModuleName name 'gzungetc';
 procedure gzclearerr; external ZLibModuleName name 'gzclearerr';
+
 
 
 // **************************  adler32.c  ***************************
@@ -1505,5 +1554,6 @@ function inflateBackInit(var strm: TZStreamRec; windowBits: Integer;
 begin
   Result := inflateBackInit_(strm, windowBits, window, ZLIB_VERSION, SizeOf(strm));
 end;
+
 
 end.

@@ -438,9 +438,9 @@ uses
   JclRegistry,
   JclMiscel,
   {$ENDIF}
-  {$IFDEF UNIX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclLogic, JclStrings, JclSysInfo, JclSysUtils;
 
 //==================================================================================================
@@ -2299,6 +2299,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.8  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

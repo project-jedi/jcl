@@ -407,9 +407,12 @@ function IsCompiledWithPackages: Boolean;
 implementation
 
 uses
-  {$IFDEF LINUX}
-  Types, Libc,
-  {$ENDIF LINUX}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils,
   JclResources, JclStrings, JclMath;
 
@@ -2252,6 +2255,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.12  2004/05/05 07:06:48  rrossmair
 // corrected typo ('\\' instead of '}'); removed COMPILER6_UP symbol.
 //

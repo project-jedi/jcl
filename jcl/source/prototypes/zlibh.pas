@@ -135,9 +135,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows;
   {$ENDIF MSWINDOWS}                        
-  {$IFDEF UNIX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc;
-  {$ENDIF UNIX}
+  {$ENDIF HAS_UNIT_LIBC}
 
 {$IFDEF MSWINDOWS}
 {$IFDEF ZLIB_WIN32DLL}
@@ -1660,6 +1660,9 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
+//   Revision 1.6  2004/05/08 08:44:18  rrossmair
+//   introduced & applied symbol HAS_UNIT_LIBC
+//
 //   Revision 1.5  2004/05/01 03:04:37  peterjhaas
 //   - move jedi.in after setting compiler options
 //   - add symbols for calling conventions

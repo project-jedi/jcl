@@ -699,8 +699,8 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
-//   Revision 1.3  2004/05/06 05:13:04  rrossmair
-//   update generated units
+//   Revision 1.4  2004/05/08 08:44:17  rrossmair
+//   introduced & applied symbol HAS_UNIT_LIBC
 //
 //   Revision 1.4  2004/05/05 05:50:40  rrossmair
 //   fixed typo: '}' instead of ')'

@@ -47,9 +47,9 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   Windows, {$IFNDEF FPC} ShlObj, {$ENDIF}
   {$ENDIF}
@@ -3938,6 +3938,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.19  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.18  2004/05/05 07:12:03  rrossmair
 // changes for FPC compatibility
 //

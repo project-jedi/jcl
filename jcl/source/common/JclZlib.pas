@@ -74,9 +74,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Types, Libc,
-  {$ENDIF UNIX}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   
   JclBase, JclDateTime,
@@ -1506,7 +1509,9 @@ end;
 
 procedure TJclTarReader.ScanHeader;
 var
+  {$IFNDEF UNIX}
   I: Integer;
+  {$ENDIF ~UNIX}
   Prefix: String;
 begin
   if FFileType = tftEof then
@@ -1783,7 +1788,9 @@ end;
 
 procedure TJclTarWriter.AddDirectory(FileRoot, DirName: String);
 var
+  {$IFNDEF UNIX}
   I: Integer;
+  {$ENDIF UNIX}
   Header: TTarHeader;
 begin
   DirName := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(DirName);

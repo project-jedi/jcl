@@ -267,6 +267,7 @@
   SUPPORTS_ENUMVALUE       Compiler supports values for enums (D6/BCB6)
   SUPPORTS_UNSAFE_WARNINGS Compiler supports unsafe warnings (D7)
   SUPPORTS_WEAKPACKAGEUNIT Compiler supports the WEAKPACKAGEUNIT directive (don't valid for trial)
+  HAS_UNIT_LIBC            The unit Libc exists (Kylix, FPC on Linux)
   HAS_UNIT_RTLCONSTS       The unit RTLConsts exists (D6/BCB6)
   HAS_UNIT_TYPES           The unit Types exists (D6/BCB6)
   HAS_UNIT_VARIANTS        The unit Variants exists (D6/BCB6)
@@ -666,6 +667,14 @@
 {------------------------------------------------------------------------------}
 
 {$IFDEF RTL150_UP}
+  {$DEFINE RTL145_UP}
+{$ENDIF}
+
+{$IFDEF RTL145_UP}
+  {$DEFINE RTL142_UP}
+{$ENDIF}
+
+{$IFDEF RTL142_UP}
   {$DEFINE RTL140_UP}
 {$ENDIF}
 
@@ -746,6 +755,9 @@
     {$DEFINE SUPPORTS_CUSTOMVARIANTS}
     {$DEFINE SUPPORTS_VARARGS}
     {$DEFINE SUPPORTS_ENUMVALUE}
+    {$IFDEF LINUX}
+      {$DEFINE HAS_UNIT_LIBC}
+    {$ENDIF LINUX}
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
@@ -812,6 +824,9 @@
 {$ENDIF COMPILER7_UP}
 
 {$IFDEF RTL140_UP}
+  {$IFDEF LINUX}
+    {$DEFINE HAS_UNIT_LIBC}
+  {$ENDIF LINUX}
   {$DEFINE HAS_UNIT_RTLCONSTS}
   {$DEFINE HAS_UNIT_TYPES}
   {$DEFINE HAS_UNIT_VARIANTS}
@@ -907,6 +922,9 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.13  2004/05/08 08:44:20  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.12  2004/05/06 05:03:59  rrossmair
 // SUPPORTS_ENUMVALUE definition fixed for Free Pascal Compiler
 //
