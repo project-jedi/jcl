@@ -71,34 +71,34 @@ var
   NaNSignaling: Double absolute NANSignalingBits;
 
 const
-{$IFDEF MATH_ANGLES_DEGREES}
+  {$IFDEF MATH_ANGLES_DEGREES}
   MaxAngle: Float = 528460290590760220769.3238897268; // 2^63 * DegPerRad
-{$ENDIF}
-{$IFDEF MATH_ANGLES_GRADS}
+  {$ENDIF MATH_ANGLES_DEGREES}
+  {$IFDEF MATH_ANGLES_GRADS}
   MaxAngle: Float = 587178100656400245299.24876636311; // 2^63 * GradPerRad
-{$ENDIF}
-{$IFDEF MATH_ANGLES_RADIANS}
+  {$ENDIF MATH_ANGLES_GRADS}
+  {$IFDEF MATH_ANGLES_RADIANS}
   MaxAngle: Float = 9223372036854775808.0; // 2^63 Rad
-{$ENDIF}
+  {$ENDIF MATH_ANGLES_RADIANS}
 
-{$IFDEF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
   MaxTanH: Float = 5678.2617031470719747459655389854; // Ln(2^16384)/2
   MaxFactorial   = 1754;
   MaxFloatingPoint: Float = 1.189731495357231765085759326628E+4932; // 2^16384
   MinFloatingPoint: Float = 3.3621031431120935062626778173218E-4932; // 2^(-16382)
-{$ENDIF}
-{$IFDEF MATH_DOUBLE_PRECISION}
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
   MaxTanH: Float = 354.89135644669199842162284618659; // Ln(2^1024)/2
   MaxFactorial   = 170;
   MaxFloatingPoint: Float = 1.797693134862315907729305190789E+308; // 2^1024
   MinFloatingPoint: Float = 2.2250738585072013830902327173324E-308; // 2^(-1022)
-{$ENDIF}
-{$IFDEF MATH_SINGLE_PRECISION}
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
   MaxTanH: Float = 44.361419555836499802702855773323; // Ln(2^128)/2
   MaxFactorial   = 33;
   MaxFloatingPoint: Float = 3.4028236692093846346337460743177E+38; // 2^128
   MinFloatingPoint: Float = 1.1754943508222875079687365372222E-38; // 2^(-126)
-{$ENDIF}
+  {$ENDIF MATH_SINGLE_PRECISION}
 
 var
   PrecisionTolerance: Float = 0.0000001;
@@ -200,13 +200,15 @@ function PrimeFactors(const N: Integer): TDynIntegerArray;
 { Floating point value classification }
 
 type
-  TFPClass = (
-    fpZero,	// zero
-    fpNormal,	// normal finite <> 0
-    fpDenormal,	// denormalized finite
-    fpInfinite,	// infinite
-    fpNaN,	// not a number
-    fpInvalid);	// unsupported floating point format
+  TFPClass =
+   (
+    fpZero,     // zero
+    fpNormal,   // normal finite <> 0
+    fpDenormal, // denormalized finite
+    fpInfinite, // infinite
+    fpNaN,      // not a number
+    fpInvalid   // unsupported floating point format
+   );
 
 function FPClass(const Value: Single): TFPClass; overload;
 function FPClass(const Value: Double): TFPClass; overload;
@@ -218,9 +220,9 @@ type
   TNaNTag = -$3FFFFF..$3FFFFE;
 
 const
-  Infinity     = 1/0;       // tricky
-  NaN          = 0/0;       // tricky
-  NegInfinity  = -Infinity; // tricky
+  Infinity    = 1/0;       // tricky
+  NaN         = 0/0;       // tricky
+  NegInfinity = -Infinity; // tricky
 
 function IsInfinite(const Value: Single): Boolean; overload;
 function IsInfinite(const Value: Double): Boolean; overload;
@@ -230,19 +232,19 @@ function IsNaN(const Value: Single): Boolean; overload;
 function IsNaN(const Value: Double): Boolean; overload;
 function IsNaN(const Value: Extended): Boolean; overload;
 
-procedure MakeQuietNaN(var X: Single; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
-procedure MakeQuietNaN(var X: Double; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
-procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeQuietNaN(var X: Single;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeQuietNaN(var X: Double;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeQuietNaN(var X: Extended;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
 
-procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
-procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
-procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeSignalingNaN(var X: Single;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeSignalingNaN(var X: Double;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeSignalingNaN(var X: Extended;
+  Tag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
 
 { Mine*Buffer fills "Buffer" with consecutive tagged signaling NaNs.
 
@@ -253,10 +255,10 @@ procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag
   Under Windows NT it is thus possible to derive the violating array index from
   the EJclNaNSignal object's Tag property.
 }
-procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
-procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
-	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MineSingleBuffer(var Buffer; Count: Integer;
+  StartTag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MineDoubleBuffer(var Buffer; Count: Integer;
+  StartTag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
 
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
 function MinedSingleArray(Length: Integer): TDynSingleArray;
@@ -418,7 +420,6 @@ type
     procedure Power(const V: Float); overload;
   end;
 
-
 { CRC }
 
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
@@ -429,7 +430,6 @@ function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
 function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
 function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
-
 
 type
   EJclMathError = class (EJclError);
@@ -445,10 +445,10 @@ type
 implementation
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows,
-{$ENDIF}
-  JclResources, Jcl8087;
+  {$ENDIF}
+  Jcl8087, JclResources;
 
 //==============================================================================
 // Internal helper routines
@@ -565,6 +565,14 @@ asm
         FWAIT
 end;
 
+//------------------------------------------------------------------------------
+
+procedure DomainCheck(Err: Boolean);
+begin
+  if Err then
+    raise EJclMathError.CreateResRec(@RsMathDomainError);
+end;
+
 //==============================================================================
 // Logarithmic
 //==============================================================================
@@ -580,8 +588,7 @@ function LogBase10(X: Float): Float;
   end;
 
 begin
-  if X <= 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(X <= 0.0);
   Result := FLogBase10(X);
 end;
 
@@ -598,8 +605,7 @@ function LogBase2(X: Float): Float;
   end;
 
 begin
-  if X <= 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(X <= 0.0);
   Result := FLogBase2(X);
 end;
 
@@ -620,8 +626,7 @@ function LogBaseN(Base, X: Float): Float;
   end;
 
 begin
-  if (X <= 0.0) or (Base <= 0.0) or (Base = 1.0) then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
   Result := FLogBaseN(Base, X);
 end;
 
@@ -644,15 +649,14 @@ function ArcCos(X: Float): Float;
           FWAIT
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FRadToDeg
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FRadToGrad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
-  if Abs(X) > 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > 1.0);
   Result := FArcCos(X);
 end;
 
@@ -663,26 +667,25 @@ begin
   Result := -Arctan(X) + PiOn2;
   {$IFDEF MATH_ANGLES_DEGREES}
   Result := RadToDeg(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_DEGREES}
   {$IFDEF MATH_ANGLES_GRADS}
   Result := RadToGrad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
 
 function ArcCsc(X: Float): Float;
 begin
-  if Abs(X) >= 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) >= 1.0);
 
   Result := Arctan(1.0 / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
   {$IFDEF MATH_ANGLES_DEGREES}
   Result := RadToDeg(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_DEGREES}
   {$IFDEF MATH_ANGLES_GRADS}
   Result := RadToGrad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -698,15 +701,14 @@ function ArcSec(X: Float): Float;
   end;
 
 begin
-  if Abs(X) >= 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) >= 1.0);
   Result := FArcTan(X / Sqrt(1.0 - Sqr(X))) + (Sgn(X) - 1.0) * PiOn2;
   {$IFDEF MATH_ANGLES_DEGREES}
   Result := RadToDeg(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_DEGREES}
   {$IFDEF MATH_ANGLES_GRADS}
   Result := RadToGrad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -725,15 +727,14 @@ function ArcSin(X: Float): Float;
           FWAIT
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FRadToDeg
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FRadToGrad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
-  if Abs(X) > 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > 1.0);
   Result := FArcSin(X);
 end;
 
@@ -749,15 +750,14 @@ function ArcTan(X: Float): Float;
           FWAIT
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FRadToDeg
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FRadToGrad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
-  if X < 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(X < 0.0);
   Result := FArcTan(X);
 end;
 
@@ -773,15 +773,14 @@ function ArcTan2(Y, X: Float): Float;
           FWAIT
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FRadToDeg
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FRadToGrad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
   end;
 
 begin
-  if not ((Y >= 0.0) and (X >= Y)) then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(not ((Y >= 0.0) and (X >= Y)));
   Result := FArcTan2(Y, X);
 end;
 
@@ -794,17 +793,16 @@ function Cos(X: Float): Float;
           FLD     X
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FCOS
           FWAIT
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   Result := FCos(X);
 end;
 
@@ -817,18 +815,17 @@ function Cot(X: Float): Float;
           FLD     X
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FPTAN
           FDIVRP
           FWAIT
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   // TODO Cot = 1 / Tan -> Tan(X) <> 0.0
   Result := FCot(X);
 end;
@@ -839,19 +836,17 @@ function Csc(X: Float): Float;
 var
   Y: Float;
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
 
   {$IFDEF MATH_ANGLES_DEGREES}
   X := X * RadPerDeg;
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_DEGREES}
   {$IFDEF MATH_ANGLES_GRADS}
   X := X * RadPerGrad;
-  {$ENDIF}
+  {$ENDIF MATH_ANGLES_GRADS}
 
   Y := Sin(X);
-  if Y = 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Y = 0.0);
   Result := 1 / Y;
 end;
 
@@ -864,10 +859,10 @@ function Sec(X: Float): Float;
           FLD     X
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FCOS
           FLD1
           FDIVRP
@@ -875,8 +870,7 @@ function Sec(X: Float): Float;
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   // TODO Sec = 1 / Cos -> Cos(X) <> 0!
   Result := FSec(X);
 end;
@@ -890,17 +884,16 @@ function Sin(X: Float): Float;
           FLD     X
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FSIN
           FWAIT
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   Result := FSin(X);
 end;
 
@@ -913,10 +906,10 @@ procedure SinCos(X: Float; var Sin, Cos: Float);
           FLD     X
           {$IFDEF MATH_ANGLE_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLE_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FSINCOS
           FSTP    TByte PTR [EDX]
           FSTP    TByte PTR [EAX]
@@ -924,8 +917,7 @@ procedure SinCos(X: Float; var Sin, Cos: Float);
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   FSinCos(X, Sin, Cos);
 end;
 
@@ -938,18 +930,17 @@ function Tan(X: Float): Float;
           FLD     X
           {$IFDEF MATH_ANGLES_DEGREES}
           CALL    FDegToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_DEGREES}
           {$IFDEF MATH_ANGLES_GRADS}
           CALL    FGradToRad
-          {$ENDIF}
+          {$ENDIF MATH_ANGLES_GRADS}
           FPTAN
           FSTP    ST(0)
           FWAIT
   end;
 
 begin
-  if Abs(X) > MaxAngle then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > MaxAngle);
   Result := FTan(X);
 end;
 
@@ -973,8 +964,7 @@ function ArcCosH(X: Float): Float;
   end;
 
 begin
-  if X < 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(X < 1.0);
   Result := FArcCosH(X);
 end;
 
@@ -982,8 +972,7 @@ end;
 
 function ArcCotH(X: Float): Float;
 begin
-  if Abs(X) = 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) = 1.0);
   Result := 0.5 * Ln((X + 1.0) / (X - 1.0));
 end;
 
@@ -991,8 +980,7 @@ end;
 
 function ArcCscH(X: Float): Float;
 begin
-  if X = 0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(X = 0);
   Result := Ln((Sgn(X) * Sqrt(Sqr(X) + 1.0) + 1.0) / X);
 end;
 
@@ -1000,8 +988,7 @@ end;
 
 function ArcSecH(X: Float): Float;
 begin
-  if Abs(X) > 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) > 1.0);
   Result := Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
 end;
 
@@ -1041,8 +1028,7 @@ function ArcTanH(X: Float): Float;
   end;
 
 begin
-  if Abs(X) >= 1.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Abs(X) >= 1.0);
   Result := FArcTanH(X);
 end;
 
@@ -1090,8 +1076,7 @@ end;
 function CscH(X: Float): Float;
 begin
   Result := Exp(X) - Exp(-X);
-  if Result = 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
 
@@ -1100,8 +1085,7 @@ end;
 function SecH(X: Float): Float;
 begin
   Result := Exp(X) + Exp(-X);
-  if Result = 0.0 then
-    raise EJclMathError.CreateResRec(@RsMathDomainError);
+  DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
 
@@ -1290,11 +1274,11 @@ function FloatsEqual(const X1, X2: Float): Boolean;
 begin
   try
     if X1 = 0 then
-      result := (X1 = X2) or     // catch exact equality
-                (Abs(1 - X1/X2 ) <= PrecisionTolerance)
+      // catch exact equality
+      Result := (X1 = X2) or (Abs(1 - X1/X2 ) <= PrecisionTolerance)
     else
-      result := (X1 = X2) or     // catch exact equality
-                (Abs(1 - X1/X2 ) <= PrecisionTolerance);
+      // catch exact equality
+      Result := (X1 = X2) or (Abs(1 - X1/X2 ) <= PrecisionTolerance);
   except
     Result := False;  // catch real rare overflow e.g.  1.0e3000/1.0e-3000
   end
@@ -1358,7 +1342,6 @@ procedure CalcMachineEpsSingle;
 var
   One: Single;
   T: Single;
-
 begin
   One := 1.0;
   EpsSingle := One;
@@ -1381,6 +1364,7 @@ var
 begin
   One := 1.0;
   EpsDouble := One;
+
   repeat
     EpsDouble := 0.5 * EpsDouble;
     T := One + EpsDouble;
@@ -1399,6 +1383,7 @@ var
 begin
   One := 1.0;
   EpsExtended := One;
+
   repeat
     EpsExtended := 0.5 * EpsExtended;
     T := One + EpsExtended;
@@ -1412,21 +1397,21 @@ end;
 
 procedure CalcMachineEps;
 begin
-{$IFDEF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
   CalcMachineEpsExtended;
   Epsilon := EpsExtended;
   ThreeEpsilon := ThreeEpsExtended;
-{$ENDIF}
-{$IFDEF MATH_DOUBLE_PRECISION}
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
   CalcMachineEpsDouble;
   Epsilon := EpsDouble;
   ThreeEpsilon := ThreeEpsDouble;
-{$ENDIF}
-{$IFDEF MATH_SINGLE_PRECISION}
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
   CalcMachineEpsSingle;
   Epsilon := EpsSingle;
   ThreeEpsilon := ThreeEpsSingle;
-{$ENDIF}
+  {$ENDIF MATH_SINGLE_PRECISION}
 end;
 
 //------------------------------------------------------------------------------
@@ -1499,7 +1484,7 @@ const
     2.63130869936881E35,
     8.68331850984666E36
    );
-  {$ENDIF}
+  {$ENDIF MATH_SINGLE_PRECISION}
   {$IFDEF MATH_DOUBLE_PRECISION}
   PreCompFacts: array [0..PreCompFactsCount] of Float =
    (
@@ -1538,7 +1523,7 @@ const
     2.63130836933694E35,
     8.68331761881189E36
    );
-  {$ENDIF}
+  {$ENDIF MATH_DOUBLE_PRECISION}
   {$IFDEF MATH_EXTENDED_PRECISION}
   PreCompFacts: array [0..PreCompFactsCount] of Float =
    (
@@ -1577,7 +1562,7 @@ const
     2.63130836933694E35,
     8.68331761881189E36
    );
-  {$ENDIF}
+  {$ENDIF MATH_EXTENDED_PRECISION}
 
 //------------------------------------------------------------------------------
 
@@ -1613,7 +1598,7 @@ end;
 
 function GCD(const X, Y: Cardinal): Cardinal; assembler;
 asm
-        JMP   @01        // We start with EAX <- X, EDX <- Y, and check to see if Y=0
+        JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
 @00:
         MOV     ECX, EDX // ECX <- EDX prepare for division
         XOR     EDX, EDX // clear EDX for Division
@@ -1659,26 +1644,26 @@ begin
   Result := Angle;
   {$IFDEF MATH_ANGLE_DEGREES}
   Result := DegToRad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLE_DEGREES}
   {$IFDEF MATH_ANGLE_GRADS}
   Result := GradToRad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLE_GRADS}
 
   Result := Frac(Result * Inv2Pi);
   if Result < -0.5 then
-    Result := Result + 1 else
-
+    Result := Result + 1.0
+  else
   if Result >= 0.5 then
-     Result := Result - 1;
+    Result := Result - 1.0;
 
   Result := Result * TwoPi;
 
   {$IFDEF MATH_ANGLE_DEGREES}
   Result := RadToDeg(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLE_DEGREES}
   {$IFDEF MATH_ANGLE_GRADS}
   Result := RadToGrad(Result);
-  {$ENDIF}
+  {$ENDIF MATH_ANGLE_GRADS}
 end;
 
 //------------------------------------------------------------------------------
@@ -2325,7 +2310,7 @@ function Crc32Corr(Crc: Cardinal; N: Integer): Integer;
 var
   I: Integer;
 begin
-  //calculate Syndrome
+  // calculate Syndrome
   for I := 1 to CrcBytes do
       Crc := Crc32Table[Crc shr 24] xor (Crc shl 8);
   I := -1;
@@ -2349,7 +2334,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
+function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 var
   I: Integer;
 begin
@@ -2426,7 +2411,6 @@ begin
   Result := CheckCrc32_P(@X, Length(X), Crc);
 end;
 
-
 //==============================================================================
 // Floating point value classification
 //==============================================================================
@@ -2434,54 +2418,56 @@ end;
 const
   fpEmpty = TFPClass(Ord(High(TFPClass))+1);
 
-  FPClasses: array[0..6] of TFPClass = (
+  FPClasses: array [0..6] of TFPClass =
+   (
     fpInvalid,
     fpNaN,
     fpNormal,
     fpInfinite,
     fpZero,
-    fpEmpty,	// should not happen
-    fpDenormal);
+    fpEmpty,    // should not happen
+    fpDenormal
+   );
 
 function _FPClass: TFPClass;
-// In:	ST(0)	Value to examine
+// In: ST(0) Value to examine
 asm
-   	FXAM
-        XOR	EDX, EDX
-        FNSTSW	AX
-        FFREE	ST(0)
+        FXAM
+        XOR     EDX, EDX
+        FNSTSW  AX
+        FFREE   ST(0)
         FINCSTP
-	BT	EAX, 14	// C3
-        RCL	EDX, 1
-	BT	EAX, 10	// C2
-        RCL	EDX, 1
-        BT	EAX, 8	// C0
-        RCL	EDX, 1
-	MOVZX	EAX, TFPClass(FPClasses[EDX])
+        BT      EAX, 14  // C3
+        RCL     EDX, 1
+        BT      EAX, 10 // C2
+        RCL     EDX, 1
+        BT      EAX, 8  // C0
+        RCL     EDX, 1
+        MOVZX   EAX, TFPClass(FPClasses[EDX])
 end;
 
 //------------------------------------------------------------------------------
 
 function FPClass(const Value: Single): TFPClass; overload;
 asm
-	FLD	Value
-        CALL	_FPClass
+        FLD     Value
+        CALL    _FPClass
 end;
 
 //------------------------------------------------------------------------------
 
 function FPClass(const Value: Double): TFPClass; overload;
 asm
-	FLD	Value
-        CALL	_FPClass
+        FLD     Value
+        CALL    _FPClass
 end;
 
 //------------------------------------------------------------------------------
 
 function FPClass(const Value: Extended): TFPClass; overload;
 asm
-	FLD	Value
-        CALL	_FPClass
+        FLD     Value
+        CALL    _FPClass
 end;
 
 //==============================================================================
@@ -2675,6 +2661,7 @@ end;
 //------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
+
 type
   TRealType = (rtUndef, rtSingle, rtDouble, rtExtended);
 
@@ -2682,22 +2669,22 @@ type
     where documented? }
   PFPUExceptionInfo = ^TFPUExceptionInfo;
   TFPUExceptionInfo = packed record
-    	Unknown: array[0..7] of Longint;
+    Unknown: array [0..7] of Longint;
     ControlWord: Word;
-    	Dummy1: Word;
+    Dummy1: Word;
     StatusWord: Word;
-    	Dummy2: Word;
+    Dummy2: Word;
     TagWord: Word;
-        Dummy3: Word;
+    Dummy3: Word;
     InstructionPtr: Pointer;
-    	UnknownW: Word;
-    OpCode: Word;  { Note: 5 most significant bits of first opcode byte
-    			   (always 11011b) not stored in FPU opcode register }
+    UnknownW: Word;
+    OpCode: Word;  // Note: 5 most significant bits of first opcode byte
+                   // (always 11011b) not stored in FPU opcode register
     OperandPtr: Pointer;
-    	UnknownL: Longint;
+    UnknownL: Longint;
   end;
 
-  TExceptObjProc = function(P: PExceptionRecord): Exception;
+  TExceptObjProc = function (P: PExceptionRecord): Exception;
 
 var
   PrevExceptObjProc: TExceptObjProc;
@@ -2715,15 +2702,23 @@ var
     nnn: 0..7;
   begin
     Result := rtUndef;
-    nnn := (Lo(OpCode) shr 3) and 7; // nnn field of ModR/M byte
+    nnn := (Lo(OpCode) shr 3) and 7;   // nnn field of ModR/M byte
     if Lo(OpCode) <= $BF then
-    case Hi(OpCode) of // 3 least significant bits of first opcode byte
-      0: Result := rtSingle;
-      1: if nnn < 4 then Result := rtSingle;
+    case Hi(OpCode) of   // 3 least significant bits of first opcode byte
+      0:
+        Result := rtSingle;
+      1:
+        if nnn < 4 then
+          Result := rtSingle;
       // Extended signaling NaNs don't cause exceptions on FLD/FST(P) ?!
-      3: if nnn = 5 then Result := rtExtended;
-      4: Result := rtDouble;
-      5: if nnn = 0 then Result := rtDouble;
+      3:
+        if nnn = 5 then
+          Result := rtExtended;
+      4:
+        Result := rtDouble;
+      5:
+        if nnn = 0 then
+          Result := rtDouble;
     end;
   end;
 
@@ -2736,9 +2731,12 @@ begin
     OPtr := FPUExceptInfo^.OperandPtr;
     OType := GetOperandType(FPUExceptInfo^.OpCode);
     case OType of
-      rtSingle:   Tag := GetNaNTag(PSingle(OPtr)^);
-      rtDouble:   Tag := GetNaNTag(PDouble(OPtr)^);
-      rtExtended: Tag := GetNaNTag(PExtended(OPtr)^);
+      rtSingle:
+        Tag := GetNaNTag(PSingle(OPtr)^);
+      rtDouble:
+        Tag := GetNaNTag(PDouble(OPtr)^);
+      rtExtended:
+        Tag := GetNaNTag(PExtended(OPtr)^);
     end;
   end;
 
@@ -2747,22 +2745,24 @@ begin
   else
     Result := EJclNaNSignal.Create(Tag);
 end;
+
 {$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
+
 procedure InitExceptObjProc;
 
   // threadsafe (given ExceptObjProc is DWORD-aligned)
   procedure HookExceptObjProc;
   asm
-    	MOV	EAX, OFFSET GetExceptionObject
-        MOV	EDX, EAX
-        XCHG	EAX, ExceptObjProc
-        CMP	EAX, EDX
-        JE	@Exit
-        MOV	PrevExceptObjProc, EAX
+          MOV     EAX, OFFSET GetExceptionObject
+          MOV     EDX, EAX
+          XCHG    EAX, ExceptObjProc
+          CMP     EAX, EDX
+          JE      @Exit
+          MOV     PrevExceptObjProc, EAX
   @Exit:
   end;
 
@@ -2774,6 +2774,7 @@ begin
     ExceptObjProcInitialized := True;
   end;
 end;
+
 {$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
@@ -2788,15 +2789,13 @@ end;
 
 procedure CheckTag(Tag: TNaNTag);
 begin
-  if (Tag < Low(TNaNTag))
-  or (Tag > High(TNaNTag)) then
+  if (Tag < Low(TNaNTag)) or (Tag > High(TNaNTag)) then
     raise EJclMathError.CreateResRecFmt(@RsNaNTagError, [Tag]);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeQuietNaN(var X: Single; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
 var
   Bits: DWord;
 begin
@@ -2805,14 +2804,14 @@ begin
     Bits := ZeroTag or sQuietNaNBits
   else
     Bits := Abs(Tag) or sQuietNaNBits;
-  if Tag < 0 then Include(TSingleBits(Bits), sSignBit);
+  if Tag < 0 then
+    Include(TSingleBits(Bits), sSignBit);
   PDWord(@X)^ := Bits;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeQuietNaN(var X: Double; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeQuietNaN(var X: Double; Tag: TNaNTag);
 const
   SignBit = $8000000000000000;
 var
@@ -2824,13 +2823,13 @@ begin
   else
     Bits := Abs(Tag);
   PInt64(@X)^ := (Bits shl dNaNTagShift) or dQuietNaNBits;
-  if Tag < 0 then Include(TDoubleBits(X), dSignBit);
+  if Tag < 0 then
+    Include(TDoubleBits(X), dSignBit);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag);
 const
   QuietNaNSignificand = $C000000000000000;
   QuietNaNExponent = $7FFF;
@@ -2844,56 +2843,53 @@ begin
     Bits := Abs(Tag);
   TExtendedRec(X).Significand := (Bits shl xNaNTagShift) or QuietNaNSignificand;
   TExtendedRec(X).Exponent := QuietNaNExponent;
-  if Tag < 0 then Include(TExtendedBits(X), xSignBit);
+  if Tag < 0 then
+    Include(TExtendedBits(X), xSignBit);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   InitExceptObjProc;
-{$ENDIF}
+  {$ENDIF WIN32}
   MakeQuietNaN(X, Tag);
   Exclude(TSingleBits(X), sNaNQuietFlag);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   InitExceptObjProc;
-{$ENDIF}
+  {$ENDIF WIN32}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   //InitExceptObjProc;
-{$ENDIF}
+  {$ENDIF WIN32}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag);
 var
   Tag, StopTag: TNaNTag;
   P: PLongint;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   InitExceptObjProc;
-{$ENDIF}
+  {$ENDIF WIN32}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -2902,7 +2898,8 @@ begin
   begin
     if Tag > 0 then
       P^ := sNaNBits or Tag
-    else if Tag < 0 then
+    else
+    if Tag < 0 then
       P^ := sNaNBits or Longint($80000000) or -Tag
     else
       P^ := sNaNBits or ZeroTag;
@@ -2912,15 +2909,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
-  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag);
 var
   Tag, StopTag: TNaNTag;
   P: PInt64;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   InitExceptObjProc;
-{$ENDIF}
+  {$ENDIF WIN32}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -2929,7 +2925,8 @@ begin
   begin
     if Tag > 0 then
       P^ := dNaNBits or (Int64(Tag) shl dNaNTagShift)
-    else if Tag < 0 then
+    else
+    if Tag < 0 then
       P^ := dNaNBits or $8000000000000000 or (Int64(-Tag) shl dNaNTagShift)
     else
       P^ := dNaNBits or (Int64(ZeroTag) shl dNaNTagShift);
@@ -2940,23 +2937,22 @@ end;
 //------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
+
 function MinedSingleArray(Length: Integer): TDynSingleArray;
 begin
   SetLength(Result, Length);
   MineSingleBuffer(Result[0], Length, 0);
 end;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function MinedDoubleArray(Length: Integer): TDynDoubleArray;
 begin
   SetLength(Result, Length);
   MineDoubleBuffer(Result[0], Length, 0);
 end;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //==============================================================================
 // Rational Numbers
