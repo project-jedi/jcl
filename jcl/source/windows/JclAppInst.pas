@@ -24,7 +24,7 @@
 { these instance including a notifaction mechanisme.                           }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 12, 2001                                             }
+{ Last modified: March 01, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -318,7 +318,7 @@ procedure TJclAppInstances.InitData;
 var
   UniqueAppID: string;
 begin
-  UniqueAppID := JclAIPrefix + ParamStr(0);
+  UniqueAppID := AnsiUpperCase(JclAIPrefix + ParamStr(0));
   CharReplace(UniqueAppID, '\', '_');
   FOptex := TJclOptex.Create(UniqueAppID + JclAIOptex, 4000);
   FOptex.Enter;
