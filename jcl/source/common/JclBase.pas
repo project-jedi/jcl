@@ -121,6 +121,8 @@ type
   {$ENDIF ~RTL140_UP}
   {$ENDIF FPC}
 
+  PCardinal = ^Cardinal;
+
   {$IFNDEF COMPILER7}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7}
@@ -313,6 +315,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.29  2005/02/13 22:24:25  rrossmair
+// moved PCardinal declaration from JclMime to JclBase
+//
 // Revision 1.28  2005/02/05 14:21:59  rrossmair
 // - version information updated
 //
