@@ -26,6 +26,7 @@
 {                                                                                                  }
 {  Contributor(s):                                                                                 }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{    Robert Rossmair (rrossmair}                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
 { Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
@@ -82,6 +83,8 @@
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
 {                                                                              }
 {  Contributor(s):                                                             }
+{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
+{    Robert Rossmair (rrossmair}                                               }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
 {  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
@@ -550,21 +553,17 @@ uses
 {$ENDIF JCL}
 
 function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
-const
-  ErrorTexts: array[-6..2] of PResStringRec =
-    (@RsZlibVersionError,
-     @RsZlibBufError,
-     @RsZlibMemError,
-     @RsZlibDataError,
-     @RsZlibStreamError,
-     @RsZlibErrNo,
-     @RsZlibOK,
-     @RsZlibStreamEnd,
-     @RsZlibNeedDict);
 begin
   case ErrorCode of
-    Low(ErrorTexts)..High(ErrorTexts):
-      Result := ErrorTexts[ErrorCode];
+    -6: Result := @RsZlibVersionError;
+    -5: Result := @RsZlibBufError;
+    -4: Result := @RsZlibMemError;
+    -3: Result := @RsZlibDataError;
+    -2: Result := @RsZlibStreamError;
+    -1: Result := @RsZlibErrNo;
+    +0: Result := @RsZlibOK;
+    +1: Result := @RsZlibStreamEnd;
+    +2: Result := @RsZlibNeedDict;
   else
     Result := @RsZlibUnknownError;
   end;
@@ -1000,12 +999,24 @@ end;
 {$ENDIF JCL}
 
 constructor TJclGZipStream.Create(const Stream: TStream);
+{$IFDEF FPC}
+var
+  P: PByte;
+begin
+  inherited Create;
+  FStream := Stream;
+  P := nil;
+  FCRC32 := crc32(0, P^, 0);  // get crc32 initial value
+  FUncompressedSize := 0;
+end;
+{$ELSE ~FPC}
 begin
   inherited Create;
   FStream := Stream;
   FCRC32 := crc32(0, Pointer(Nil)^, 0);  // get crc32 initial value
   FUncompressedSize := 0;
 end;
+{$ENDIF ~FPC}
 
 destructor TJclGZipStream.Destroy;
 begin
@@ -1570,7 +1581,11 @@ begin
   I := Low(Value);
   while (I <= High(Value)) and (Value[I] <> #0) do
     Inc(I);
+  {$IFDEF FPC}
+  SetString(V, @Value, I);
+  {$ELSE}
   SetString(V, Value, I);
+  {$ENDIF}
   V := Trim(V);
   // convert
   Result := 0;
@@ -2186,6 +2201,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.4  2004/05/05 04:06:06  rrossmair
+//  changes for FPC-compatibility (tested under Win32 only)
+//
 //  Revision 1.3  2004/05/05 00:36:16  mthoma
 //  Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
