@@ -2316,7 +2316,7 @@ begin
       {$ELSE}
       FData := SysUtils.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
       {$ENDIF}
-
+    end;
     StartPos := 1;
     // Search for Interchange Control Header
     if ICHSegmentId = Copy(FData, StartPos, Length(ICHSegmentId)) then
