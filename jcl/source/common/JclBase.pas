@@ -50,9 +50,9 @@ uses
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 92;   // First minor release since JCL 1.90
+  JclVersionMinor   = 93;   // First minor release since JCL 1.90
   JclVersionRelease = 1;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1661; // build number, days since march 1, 2000
+  JclVersionBuild   = 1722; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -299,6 +299,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2004/11/18 00:57:14  rrossmair
+// - check-in for release 1.93
+//
 // Revision 1.22  2004/11/06 02:13:24  mthoma
 // history cleaning.
 //

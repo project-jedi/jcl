@@ -1723,7 +1723,7 @@ begin
     if RADToolKind = brCppBuilder then
       FEnvironmentVariables.Values['BCB'] := RootDir
     else
-      FEnvironmentVariables.Values['DELPHI'] := RootDir;
+      FEnvironmentVariables.Values['DELPHI'] := PathRemoveSeparator(RootDir);
   end;
   Result := FEnvironmentVariables;
 end;
@@ -2336,6 +2336,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/11/18 00:57:14  rrossmair
+// - check-in for release 1.93
+//
 // Revision 1.23  2004/11/16 06:17:27  marquardt
 // style cleaning
 //

@@ -7,7 +7,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, Menus, ExtCtrls, OleCtrls, SHDocVw,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF RTL140_UP}
   HTTPProd,
   {$ENDIF}
   HTTPApp;
@@ -92,7 +92,7 @@ procedure TfrmMain.Refresh;
 var
   I: Integer;
 begin
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF RTL140_UP}
   lstTasks.Clear;
   {$ELSE}
   lstTasks.Items.Clear;

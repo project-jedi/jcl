@@ -54,8 +54,12 @@ uses Windows, Dialogs, TaskDemoMain;
 
 procedure TDM.DataModuleCreate(Sender: TObject);
 begin
-  if not TJclTaskSchedule.IsRunning then
-    TJclTaskSchedule.Start;
+  try
+    if not TJclTaskSchedule.IsRunning then
+      TJclTaskSchedule.Start;
+  except
+    Application.HandleException(Self);
+  end;
 
   FTask := TJclTaskSchedule.Create;
   FTask.Refresh;
