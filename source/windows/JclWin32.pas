@@ -1265,7 +1265,8 @@ begin
   if not Assigned(_GetVolumeNameForVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
+    if Kernel32 <> 0 then
+      @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
   end;
   if Assigned(_GetVolumeNameForVolumeMountPoint) then
     Result := _GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength)
@@ -1280,7 +1281,8 @@ begin
   if not Assigned(_SetVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
+    if Kernel32 <> 0 then
+      @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
   end;
   if Assigned(_SetVolumeMountPoint) then
     Result := _SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName)
@@ -1295,7 +1297,8 @@ begin
   if not Assigned(_DeleteVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
+    if Kernel32 <> 0 then
+      @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
   end;
   if Assigned(_DeleteVolumeMountPoint) then
     Result := _DeleteVolumeMountPoint(lpszVolumeMountPoint)
@@ -1353,7 +1356,7 @@ begin
   if InitNetbios then
     Result := _NetBios(P)
   else
-    Result := 1; // anything other then NRC_GOODRET will do
+    Result := 1; // anything other than NRC_GOODRET will do
 end;
 
 //==============================================================================
