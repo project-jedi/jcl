@@ -23,6 +23,83 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function GetProcessNameFromWnd(Wnd: HWND): string;
+[ShortDescr]
+Returns the name of the process which owns a specific window.
+[Description]
+GetProcessNameFrmWnd returns the name of the process which owns the window as
+specified by the window's handle. Note that in order to find the process identifier
+of the process that owns the specified window, you can use the GetWindowThreadProcessId
+API function.
+[Parameters]
+Count=1
+1=Wnd:HWND=Handle of the window for which to return the process name. This can
+be any type of window, including child windows such as buttons or edit boxes.
+[Result]
+If the function succeeds it returns the name of the process that owns the windows,
+if it fails the result is an empty string.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=GetPidFromProcessName
+2=GetProcessNameFromPid
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetProcessNameFromPid(PID: DWORD): string;
+[ShortDescr]
+Returns the name of the process which is identified by PID.
+[Description]
+GetProcessNameFromPid returns the name of the process specified by it's process
+identifier (PID).
+[Parameters]
+Count=1
+1=PID:DWORD=Process identifier of the process whose name to retrieve.
+[Result]
+If the function succeeds it returns the name of the process, if it fails it
+returns an empty string.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=GetProcessNameFromWnd
+2=GetPidFromProcessName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetPidFromProcessName(const ProcessName: string): DWORD;
+[ShortDescr]
+Returns the process identifier (PID) for the process identified by processname.
+[Description]
+GetPidFromProcessName returns the process identifier (PID) of the process
+identifier by ProcessName. The specified ProcessName must be the full name of
+the process, that is including the extension, as it appears in task manager for
+example.
+[Parameters]
+Count=1
+1=ProcessName:string=Name of the process, including extension, of the process
+for which to retrieve the process identifier.
+[Result]
+If the function succeeds it returns the process identifier of the specified
+process. If the function fails it returns INVALID_HANDLE_VALUE. Most common
+reason of failure is that the specified process doesn't exist (isn't running) or
+you didn't specify the full name of the process.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=GetProcessNameFromWnd
+2=GetProcessNameFromPid
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 [ShortDescr]
