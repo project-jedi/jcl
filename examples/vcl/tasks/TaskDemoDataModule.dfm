@@ -417,13 +417,6 @@ object DM: TDM
     Images = lstImage
     Left = 80
     Top = 24
-    object actFileExit: TFileExit
-      Category = 'File'
-      Caption = 'E&xit'
-      Hint = 'Exit|Quits the application'
-      ImageIndex = 0
-      ShortCut = 32883
-    end
     object actTaskProp: TAction
       Category = 'Task'
       Caption = '&Properties'

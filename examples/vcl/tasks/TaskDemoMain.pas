@@ -1,11 +1,16 @@
 unit TaskDemoMain;
 
+{$INCLUDE jedi.inc}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, Menus, ExtCtrls, OleCtrls, SHDocVw, HTTPApp,
-  HTTPProd;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, Menus, ExtCtrls, OleCtrls, SHDocVw,
+  {$IFDEF COMPILER6_UP}
+  HTTPProd,
+  {$ENDIF}
+  HTTPApp;
 
 type
   TfrmMain = class(TForm)
@@ -63,7 +68,7 @@ var
 
 implementation
 
-uses ActiveX, ComObj, TypInfo, DateUtils, MsHtml, TaskDemoDataModule, JclTask;
+uses ActiveX, ComObj, TypInfo, MsHtml, TaskDemoDataModule, JclTask;
 
 {$R *.dfm}
 
@@ -87,7 +92,11 @@ procedure TfrmMain.Refresh;
 var
   I: Integer;
 begin
+  {$IFDEF COMPILER6_UP}
   lstTasks.Clear;
+  {$ELSE}
+  lstTasks.Items.Clear;
+  {$ENDIF}
   for I:=0 to DM.Task.TaskCount-1 do
   with lstTasks.Items.Add, DM.Task[I] do
   begin
@@ -111,7 +120,7 @@ function TfrmMain.MsToStr(const MsTime: DWORD): string;
 var
   RealTime: TDateTime;
 begin
-  RealTime := IncMilliSecond(0.0, MsTime);
+  RealTime := MsTime / MSecsPerDay;
   Result := IntToStr(Trunc(RealTime)) + ' days ' + TimeToStr(RealTime);
 end;
 

@@ -30,6 +30,7 @@ object frmMain: TfrmMain
     Width = 688
     Height = 19
     Panels = <>
+    SimplePanel = False
   end
   object lstTasks: TListView
     Left = 0
@@ -37,8 +38,6 @@ object frmMain: TfrmMain
     Width = 688
     Height = 209
     Align = alTop
-    BevelInner = bvNone
-    BevelOuter = bvNone
     BorderStyle = bsNone
     Columns = <
       item
@@ -90,37 +89,30 @@ object frmMain: TfrmMain
     object mnuFile: TMenuItem
       Caption = '&File'
       object mnuFileExit: TMenuItem
-        Action = DM.actFileExit
       end
     end
     object mnuTask: TMenuItem
       Caption = '&Task'
       object mnuTaskAdd: TMenuItem
-        Action = DM.actTaskAdd
       end
       object mnuTaskDelete: TMenuItem
-        Action = DM.actTaskDelete
       end
       object mnuTaskLine0: TMenuItem
         Caption = '-'
       end
       object mnuTaskRun: TMenuItem
-        Action = DM.actTaskRun
       end
       object mnuTaskStop: TMenuItem
-        Action = DM.actTaskStop
       end
       object mnuTaskLine1: TMenuItem
         Caption = '-'
       end
       object mnuTaskRefresh: TMenuItem
-        Action = DM.actTaskRefresh
       end
       object mnuTaskLine2: TMenuItem
         Caption = '-'
       end
       object mnuTaskProp: TMenuItem
-        Action = DM.actTaskProp
       end
     end
   end
@@ -129,31 +121,25 @@ object frmMain: TfrmMain
     Left = 80
     Top = 40
     object popTaskAdd: TMenuItem
-      Action = DM.actTaskAdd
     end
     object popTaskDelete: TMenuItem
-      Action = DM.actTaskDelete
     end
     object popLine0: TMenuItem
       Caption = '-'
     end
     object popTaskRun: TMenuItem
-      Action = DM.actTaskRun
     end
     object popTaskStop: TMenuItem
-      Action = DM.actTaskStop
     end
     object popLine1: TMenuItem
       Caption = '-'
     end
     object popTaskRefresh: TMenuItem
-      Action = DM.actTaskRefresh
     end
     object popLine2: TMenuItem
       Caption = '-'
     end
     object popTaskProp: TMenuItem
-      Action = DM.actTaskProp
     end
   end
   object ppTaskInfo: TPageProducer
