@@ -17,30 +17,18 @@ jpp = ..\source\prototypes\jpp.exe
 default:	VclUnits ClxUnits
 #---------------------------------------------------------------------------------------------------
 
-VclUnits:       .\JclInstall.pas \
-                JediInstallIntf.pas \
-                ProductFrames.pas \
+VclUnits:       ProductFrames.pas \
                 JediInstallerMain.pas
 
-ClxUnits:       QJclInstall.pas \
-                QJediInstallIntf.pas \
-                QProductFrames.pas \
+ClxUnits:       QProductFrames.pas \
                 QJediInstallerMain.pas
 
 {prototypes}.pas{.}.pas:
 	$(jpp) $(VclOptions) $<
 
 
-QJclInstall.pas: \
-        prototypes\JclInstall.pas
-        $(jpp) $(VClxOptions) $?
-
 QJediInstallerMain.pas: \
         prototypes\JediInstallerMain.pas
-        $(jpp) $(VClxOptions) $?
-
-QJediInstallIntf.pas: \
-        prototypes\JediInstallIntf.pas
         $(jpp) $(VClxOptions) $?
 
 QProductFrames.pas: \

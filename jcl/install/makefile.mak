@@ -55,15 +55,22 @@ qinstall:       $(BIN)\QJediInstaller.exe
 clean:
 	cd ..
 	@echo cleaning up first...
-	-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
+	-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
 	cd lib
 	-@del /f /s *.obj *.res
 	cd ..\install
 
 prototypes: VclUnits ClxUnits
 
-VclUnits:
+VclUnits: JediInstall.pas JclInstall.pas
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
 
-ClxUnits:
+ClxUnits: JediInstall.pas JclInstall.pas
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
+
+JediInstall.pas: prototypes\JediInstallIntf.pas
+        copy prototypes\JediInstallIntf.pas JediInstall.pas
+
+JclInstall.pas: prototypes\JclInstall.pas
+        copy prototypes\JclInstall.pas JclInstall.pas
+

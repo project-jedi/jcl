@@ -1,11 +1,11 @@
 object ProductFrame: TProductFrame
   Left = 0
   Top = 0
-  Width = 807
-  Height = 410
-  HorzScrollBar.Range = 398
+  Width = 791
+  Height = 424
+  HorzScrollBar.Range = 385
   Color = clBackground
-  Font.Color = clBlack
+  Font.Color = clText
   Font.Height = 12
   Font.Name = 'helvetica'
   Font.Pitch = fpVariable
@@ -15,10 +15,11 @@ object ProductFrame: TProductFrame
   ParentFont = False
   TabOrder = 0
   object Splitter: TSplitter
-    Left = 393
+    Left = 406
     Top = 0
     Width = 5
-    Height = 410
+    Height = 424
+    Align = alRight
     MinSize = 150
     ResizeStyle = rsUpdate
     OnCanResize = SplitterCanResize
@@ -26,11 +27,11 @@ object ProductFrame: TProductFrame
   object ComponentsTreePanel: TPanel
     Left = 0
     Top = 0
-    Width = 393
-    Height = 410
-    Align = alLeft
+    Width = 406
+    Height = 424
+    Align = alClient
     BevelOuter = bvNone
-    TabOrder = 0
+    TabOrder = 1
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -41,8 +42,8 @@ object ProductFrame: TProductFrame
     object TreeView: TTreeView
       Left = 8
       Top = 24
-      Width = 381
-      Height = 378
+      Width = 394
+      Height = 393
       Anchors = [akLeft, akTop, akRight, akBottom]
       Columns = <>
       Indent = 19
@@ -54,54 +55,55 @@ object ProductFrame: TProductFrame
     end
   end
   object InfoPanel: TPanel
-    Left = 398
+    Left = 411
     Top = 0
-    Width = 409
-    Height = 410
-    Align = alClient
+    Width = 380
+    Height = 424
+    Align = alRight
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
     object Label2: TLabel
-      Left = 5
+      Left = 9
       Top = 8
-      Width = 62
+      Width = 84
       Height = 15
-      Caption = '&Information'
+      Caption = 'Installation &Log'
     end
-    object InfoDisplay: TTextViewer
-      Left = 4
+    object InfoDisplay: TMemo
+      Left = 8
       Top = 24
-      Width = 395
-      Height = 291
+      Width = 366
+      Height = 301
       Anchors = [akLeft, akTop, akRight, akBottom]
+      ScrollBars = ssVertical
       TabOrder = 0
     end
     object OptionsGroupBox: TGroupBox
-      Left = 4
-      Top = 322
-      Width = 397
+      Left = 8
+      Top = 336
+      Width = 366
       Height = 81
       Anchors = [akLeft, akRight, akBottom]
       Caption = '&Advanced Options'
       TabOrder = 1
-      object BplPathLabel: TLabel
+      object BPLPathLabel: TLabel
         Left = 8
         Top = 19
-        Width = 47
+        Width = 48
         Height = 15
-        Caption = '.bpl path'
+        Caption = '.bpl Path'
       end
-      object DcpPathLabel: TLabel
+      object DCPPathLabel: TLabel
         Left = 8
         Top = 51
-        Width = 50
+        Width = 51
         Height = 15
-        Caption = '.dcp path'
+        Caption = '.dcp Path'
       end
       object BplPathEdit: TEdit
         Left = 68
         Top = 16
-        Width = 300
+        Width = 269
         Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
@@ -110,14 +112,14 @@ object ProductFrame: TProductFrame
       object DcpPathEdit: TEdit
         Left = 68
         Top = 48
-        Width = 300
+        Width = 269
         Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
         OnChange = PathEditChange
       end
       object Button1: TButton
-        Left = 373
+        Left = 342
         Top = 16
         Width = 17
         Height = 22
@@ -128,7 +130,7 @@ object ProductFrame: TProductFrame
         OnClick = PathSelectBtnClick
       end
       object Button2: TButton
-        Left = 373
+        Left = 342
         Top = 48
         Width = 17
         Height = 22

@@ -33,12 +33,23 @@ uses
   {$IFDEF VisualCLX}
   Types,
   QGraphics, QForms, QControls, QStdCtrls, QComCtrls, QExtCtrls,
-  QJediInstallIntf,
   {$ELSE}
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
-  JediInstallIntf,
   {$ENDIF}
-  JclBorlandTools;
+  JclBorlandTools, JediInstall;
+
+const
+  // Feature masks
+  FID_Expandable           = $20000000;
+  FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
+  FID_Checked              = $80000000;
+  FID_NumberMask           = $0FFFFFFF;
+
+  // Icon indexes
+  IcoProduct               = 0;
+  IcoLevel1                = 1;
+  IcoChecked               = 2;
+  IcoUnchecked             = 3;
 
 type
   TProductFrame = class(TFrame)
@@ -49,7 +60,7 @@ type
     InfoPanel: TPanel;
     Label2: TLabel;
     {$IFDEF VisualCLX}
-    InfoDisplay: TTextViewer;
+    InfoDisplay: TMemo;
     {$ELSE VCL}
     InfoDisplay: TRichEdit;
     {$ENDIF VCL}
@@ -85,7 +96,10 @@ type
     procedure ToggleNodeChecked(Node: TTreeNode);
   public
     { Public declarations }
+    class function GetName(Installation: TJclBorRADToolInstallation): string;
     function FeatureChecked(FeatureID: Cardinal): Boolean;
+    procedure LogOutputLine(const Line: string);
+    procedure UpdateTree;
     property NodeChecked[Node: TTreeNode]: Boolean read GetNodeChecked write SetNodeChecked;
     property Installation: TJclBorRADToolInstallation read FInstallation write SetInstallation;
   end;
@@ -94,13 +108,21 @@ implementation
 
 {$IFDEF VisualCLX}
 {$R *.xfm}
-
-uses Qt, QDialogs;
 {$ELSE}
 {$R *.dfm}
-
-uses FileCtrl;
 {$ENDIF}
+
+uses
+  {$IFDEF MSWINDOWS}
+  Messages,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VisualCLX}
+  Qt, QDialogs,
+  {$ELSE}
+  FileCtrl,
+  {$ENDIF}
+  JclStrings,
+  JclInstall;
 
 resourcestring
   RsSelectPath      = 'Select path';
@@ -132,6 +154,11 @@ begin
   end;
 end;
 
+class function TProductFrame.GetName(Installation: TJclBorRADToolInstallation): string;
+begin
+  Result := Format('%s%dProduct', [Prefixes[Installation.RADToolKind], Installation.VersionNumber]);
+end;
+
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
@@ -141,6 +168,28 @@ function TProductFrame.IsStandAloneParent(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_StandAloneParent <> 0;
 end;
+
+procedure TProductFrame.LogOutputLine(const Line: string);
+{$IFDEF VCL}
+begin
+  InfoDisplay.Lines.Append(Line);
+  InfoDisplay.Perform(EM_SCROLLCARET, 0, 0);
+end;
+{$ELSE VisualCLX}
+var
+  NewCaretPos: TCaretPos;
+begin
+  with InfoDisplay do
+  begin
+    Lines.BeginUpdate;
+    Lines.Append(Line);
+    Lines.EndUpdate;
+    NewCaretPos.Line := Lines.Count;
+    NewCaretPos.Col := 0;
+    CaretPos := NewCaretPos;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
 const
@@ -156,7 +205,7 @@ const
 
 begin
   FInstallation := Value;
-  Name := Format('%s%dProduct', [Prefixes[Value.RADToolKind], Value.VersionNumber]);
+  Name := GetName(Value);
   if Value.RadToolKind = brCppBuilder then
     DcpPathLabel.Caption := '.bpi Path';
   BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
@@ -337,7 +386,7 @@ end;
 procedure TProductFrame.TreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Node: TTreeNode;  
+  Node: TTreeNode;
 begin
   with TTreeView(Sender) do
   begin
@@ -345,6 +394,11 @@ begin
     if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
       ToggleNodeChecked(Node);
   end;
+end;
+
+procedure TProductFrame.UpdateTree;
+begin
+  TreeView.FullExpand;
 end;
 
 end.
