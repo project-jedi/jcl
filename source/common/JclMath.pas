@@ -34,14 +34,6 @@
 // - Added new define: MATH_EXT_SPECIALVALUES;
 // - Added new function: Ackermann
 // - Added new function: Fibonacci
-// - Added new function:
-// - Added new function:
-// - Added new function:
-// - Added new function:
-// - Added new function:
-// - Added new function:
-// - Added new function:
-// - Added new function:
 // - Fixed a bug: LCD throws a divby zero when result should be 0.
 // - Fixed a bug: Rational.Add(TRational) was buggy and delivered wrong results.
 // - Fixed a bug: Rational.Subtract(TRational) was buggy and delivered wrong results.
