@@ -16,8 +16,8 @@
 { Portions created by these individuals are Copyright (C) of these individuals.                    }
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Jack N.A. Bakker
+{ Contributors:                                                                                    }
+{   Jack N.A. Bakker                                                                               }
 {   Mike Lischke                                                                                   }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Alexander Radchenko                                                                            }
@@ -88,7 +88,7 @@ type
 
   TColorVector = record
     case Integer of
-      0: (Coord: array[0..2] of Single);
+      0: (Coord: array [0..2] of Single);
       1: (R, G, B: Single);
       2: (H, L, S: Single);
   end;
@@ -257,11 +257,11 @@ function Intensity(const Color32: TColor32): Integer; overload;
 function SetAlpha(const Color32: TColor32; NewAlpha: Integer): TColor32;
 
 procedure HLSToRGB(const H, L, S: Single; out R, G, B: Single); overload;
-function HLStoRGB(const HLS: TColorVector): TColorVector; overload;
-function HLStoRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef; overload;
+function HLSToRGB(const HLS: TColorVector): TColorVector; overload;
+function HLSToRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef; overload;
 procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single); overload;
 function RGBToHLS(const RGB: TColorVector): TColorVector; overload;
-function RGBtoHLS(const RGBColor: TColorRef): THLSVector; overload;
+function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 
 // obsolete; use corresponding HLS aliases instead
 {$IFNDEF DROP_OBSOLETE_CODE}
@@ -283,7 +283,7 @@ function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex
 // Misc
 //--------------------------------------------------------------------------------------------------
 
-function ColorToHTML(const Color: TColor): String;
+function ColorToHTML(const Color: TColor): string;
 
 // Petr Vones
 {$IFDEF VCL}
@@ -394,7 +394,7 @@ var
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    ErrorCode, LOCALE_USER_DEFAULT, Buf, sizeof(Buf), nil) <> 0) then
+    ErrorCode, LOCALE_USER_DEFAULT, Buf, SizeOf(Buf), nil) <> 0) then
     raise EOutOfResources.Create(Buf)
   else
     OutOfResources;
@@ -461,10 +461,10 @@ function _CombineReg(X, Y, W: TColor32): TColor32;
         IMUL    EAX, ECX        // EAX  <-  Pr ** Pb **
         SHR     EBX, 8          // EBX  <-  00 Xa 00 Xg
         IMUL    EBX, ECX        // EBX  <-  Pa ** Pg **
-        ADD     EAX, bias
+        ADD     EAX, Bias
         AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
         SHR     EAX, 8          // EAX  <-  00 Pr 00 Pb
-        ADD     EBX, bias
+        ADD     EBX, Bias
         AND     EBX, $FF00FF00  // EBX  <-  Pa 00 Pg 00
         OR      EAX, EBX        // EAX  <-  Pa Pr Pg Pb
 
@@ -476,10 +476,10 @@ function _CombineReg(X, Y, W: TColor32): TColor32;
         IMUL    EDX, ECX        // EDX  <-  Qr ** Qb **
         SHR     EBX, 8          // EBX  <-  00 Ya 00 Yg
         IMUL    EBX, ECX        // EBX  <-  Qa ** Qg **
-        ADD     EDX, bias
+        ADD     EDX, Bias
         AND     EDX, $FF00FF00  // EDX  <-  Qr 00 Qb 00
         SHR     EDX, 8          // EDX  <-  00 Qr ** Qb
-        ADD     EBX, bias
+        ADD     EBX, Bias
         AND     EBX, $FF00FF00  // EBX  <-  Qa 00 Qg 00
         OR      EBX, EDX        // EBX  <-  Qa Qr Qg Qb
 
@@ -504,8 +504,8 @@ begin
   begin
     Result :=
       (((((X shr 8 {00Xa00Xg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
-        bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
-      (((((X {00Xr00Xb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + bias) and
+        Bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
+      (((((X {00Xr00Xb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + Bias) and
         $FF00FF00 {P100P200}) shr 8 {00Pr00Pb}) {PaPrPgPb};
 
     W := W xor $FF; // W := 1 - W;
@@ -513,8 +513,8 @@ begin
 
     Result := Result {PaPrPgPb} + (
       (((((Y shr 8 {00Ya00Yg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
-        bias) and $FF00FF00 {P100P200}) {Qa00Qg00} or
-      (((((Y {00Yr00Yb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + bias) and
+        Bias) and $FF00FF00 {P100P200}) {Qa00Qg00} or
+      (((((Y {00Yr00Yb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + Bias) and
         $FF00FF00 {P100P200}) shr 8 {00Qr00Qb}) {QaQrQgQb}
       ) {ZaZrZgZb};
   end;
@@ -658,10 +658,10 @@ asm
         IMUL    EAX, ECX         // EAX  <-  Pr ** Pb **
         SHR     EBX, 8           // EBX  <-  00 Fa 00 Fg
         IMUL    EBX, ECX         // EBX  <-  Pa ** Pg **
-        ADD     EAX, bias
+        ADD     EAX, Bias
         AND     EAX, $FF00FF00   // EAX  <-  Pr 00 Pb 00
         SHR     EAX, 8           // EAX  <-  00 Pr ** Pb
-        ADD     EBX, bias
+        ADD     EBX, Bias
         AND     EBX, $FF00FF00   // EBX  <-  Pa 00 Pg 00
         OR      EAX, EBX         // EAX  <-  Pa Pr Pg Pb
 
@@ -674,10 +674,10 @@ asm
         IMUL    EDX, ECX         // ESI  <-  Qr ** Qb **
         SHR     EBX, 8           // EBX  <-  00 Ba 00 Bg
         IMUL    EBX, ECX         // EBX  <-  Qa ** Qg **
-        ADD     EDX, bias
+        ADD     EDX, Bias
         AND     EDX, $FF00FF00   // ESI  <-  Qr 00 Qb 00
         SHR     EDX, 8           // ESI  <-  00 Qr ** Qb
-        ADD     EBX, bias
+        ADD     EBX, Bias
         AND     EBX, $FF00FF00   // EBX  <-  Qa 00 Qg 00
         OR      EBX, EDX         // EBX  <-  Qa Qr Qg Qb
 
@@ -2285,9 +2285,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function HLStoRGB(const HLS: TColorVector): TColorVector;
+function HLSToRGB(const HLS: TColorVector): TColorVector;
 begin
-  HLStoRGB(HLS.H, HLS.L, HLS.S, Result.R, Result.G, Result.B);
+  HLSToRGB(HLS.H, HLS.L, HLS.S, Result.R, Result.G, Result.B);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2341,9 +2341,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RGBtoHLS(const RGB: TColorVector): TColorVector;
+function RGBToHLS(const RGB: TColorVector): TColorVector;
 begin
-  RGBtoHLS(RGB.R, RGB.G, RGB.B, Result.H, Result.L, Result.S);
+  RGBToHLS(RGB.R, RGB.G, RGB.B, Result.H, Result.L, Result.S);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2372,7 +2372,7 @@ MORE INFORMATION
 
 /* Color Conversion Routines --
 
-RGBtoHLS() takes a DWORD RGB value, translates it to HLS, and stores the results in the global vars H, L, and S. HLStoRGB takes the current values of H, L, and S and returns the equivalent value in an RGB DWORD.
+RGBToHLS() takes a DWORD RGB value, translates it to HLS, and stores the results in the global vars H, L, and S. HLSToRGB takes the current values of H, L, and S and returns the equivalent value in an RGB DWORD.
 
 A point of reference for the algorithms is Foley and Van Dam, "Fundamentals of Interactive Computer Graphics," Pages 618-19. Their algorithm is in floating point. CHART implements a less general (hardwired ranges) integral algorithm.
 There are potential round-off errors throughout this sample. ((0.5 + x)/y) without floating point is phrased ((x + (y/2))/y), yielding a very small round-off error. This makes many of the following divisions look strange. */ }
@@ -2407,11 +2407,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RGBtoHLS(const RGBColor: TColorRef): THLSVector;
+function RGBToHLS(const RGBColor: TColorRef): THLSVector;
 var
   R, G, B: Integer;              // input RGB values
   H, L, S: Integer;
-  cMax, cMin: Byte;              // max and min RGB values
+  Cmax, Cmin: Byte;              // max and min RGB values
   Rdelta,Gdelta,Bdelta: Integer; // intermediate value: % of spread from max
 begin
   // get R, G, and B out of DWORD
@@ -2420,21 +2420,21 @@ begin
   B := TInternalRGB(RGBColor).B;
 
   // calculate lightness
-  cMax := R;
-  if G > cMax then
-    cMax := G;
-  if B > cMax then
-    cMax := B;
+  Cmax := R;
+  if G > Cmax then
+    Cmax := G;
+  if B > Cmax then
+    Cmax := B;
 
-  cMin := R;
-  if G < cMin then
-    cMin := G;
-  if B < cMin then
-    cMin := B;
+  Cmin := R;
+  if G < Cmin then
+    Cmin := G;
+  if B < Cmin then
+    Cmin := B;
 
-  L := ( ((cMax+cMin)*HLSMAX) + RGBMAX ) div (2*RGBMAX);
+  L := (((Cmax + Cmin) * HLSMAX) + RGBMAX) div (2 * RGBMAX);
 
-  if (cMax = cMin) then           // r=g=b --> achromatic case
+  if (Cmax = Cmin) then           // r=g=b --> achromatic case
   begin
     S := 0;                       // saturation
     H := UNDEFINED;               // hue
@@ -2443,22 +2443,22 @@ begin
   begin                           // chromatic case
     // saturation
     if L <= (HLSMAX div 2) then
-      S := (((cMax-cMin)*HLSMAX) + ((cMax+cMin) div 2))  div  (cMax+cMin)
+      S := (((Cmax - Cmin) * HLSMAX) + ((Cmax + Cmin) div 2))  div  (Cmax + Cmin)
     else
-      S := (((cMax-cMin)*HLSMAX) + ((2*RGBMAX-cMax-cMin) div 2)) div  (2*RGBMAX-cMax-cMin);
+      S := (((Cmax - Cmin) * HLSMAX) + ((2 * RGBMAX - Cmax - Cmin) div 2)) div (2 * RGBMAX - Cmax - Cmin);
 
     // hue
-    Rdelta := (((cMax-R)*(HLSMAX div 6)) + ((cMax-cMin) div 2)) div (cMax-cMin);
-    Gdelta := (((cMax-G)*(HLSMAX div 6)) + ((cMax-cMin) div 2)) div (cMax-cMin);
-    Bdelta := (((cMax-B)*(HLSMAX div 6)) + ((cMax-cMin) div 2)) div (cMax-cMin);
+    Rdelta := (((Cmax - R) * (HLSMAX div 6)) + ((Cmax - Cmin) div 2)) div (Cmax - Cmin);
+    Gdelta := (((Cmax - G) * (HLSMAX div 6)) + ((Cmax - Cmin) div 2)) div (Cmax - Cmin);
+    Bdelta := (((Cmax - B) * (HLSMAX div 6)) + ((Cmax - Cmin) div 2)) div (Cmax - Cmin);
 
-    if R = cMax then
+    if R = Cmax then
       H := Bdelta - Gdelta
     else
-    if G = cMax then
+    if G = Cmax then
       H := (HLSMAX div 3) + Rdelta - Bdelta
-    else // B = cMax
-      H := ((2*HLSMAX) div 3) + Gdelta - Rdelta;
+    else // B = Cmax
+      H := ((2 * HLSMAX) div 3) + Gdelta - Rdelta;
 
     H := H mod HLSMAX;
     if H < 0 then
@@ -2472,7 +2472,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function HueToRGB(M1, M2, Hue: Integer): Integer;
-// utility routine for HLStoRGB
+// utility routine for HLSToRGB
 begin
   Hue := Hue mod HLSMAX;
   // range check: note values passed add div subtract thirds of range
@@ -2481,27 +2481,27 @@ begin
 
   // return r,g, or b value from this tridrant
   if Hue < (HLSMAX div 6) then
-    Result := (M1 + (((M2 - M1) * Hue + (HLSMAX div 12)) div (HLSMAX div 6)))
+    Result := (M1 + (((M2 - M1)  *  Hue + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
   if Hue < (HLSMAX div 2) then
     Result := M2
   else
-  if Hue < ((HLSMAX*2) div 3) then
-    Result := (M1 + (((M2 - M1)*(((HLSMAX * 2) div 3) - Hue) + (HLSMAX div 12)) div (HLSMAX div 6)))
+  if Hue < ((HLSMAX * 2) div 3) then
+    Result := (M1 + (((M2 - M1) * (((HLSMAX * 2) div 3) - Hue) + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
     Result := M1;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function HLStoRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef;
+function HLSToRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef;
 var
   R, G, B: Integer;              // RGB component values
   Magic1, Magic2: Integer;       // calculated magic numbers (really!)
 begin
   if Saturation = 0 then         // achromatic case
   begin
-    R :=(Luminance*RGBMAX) div HLSMAX;
+    R :=(Luminance * RGBMAX) div HLSMAX;
     G := R;
     B := R;
     if Hue <> UNDEFINED then
@@ -2514,12 +2514,12 @@ begin
     if (Luminance <= (HLSMAX div 2)) then
       Magic2 := (Luminance * (HLSMAX + Saturation) + (HLSMAX div 2)) div HLSMAX
     else
-      Magic2 := Luminance + Saturation - ((Luminance*Saturation) + (HLSMAX div 2)) div HLSMAX;
+      Magic2 := Luminance + Saturation - ((Luminance * Saturation) + (HLSMAX div 2)) div HLSMAX;
     Magic1 := 2 * Luminance - Magic2;
     // get RGB, change units from HLSMAX to RGBMAX
     R := (HueToRGB(Magic1, Magic2, Hue + (HLSMAX div 3)) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
     G := (HueToRGB(Magic1, Magic2, Hue) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
-    B := (HueToRGB(Magic1, Magic2, Hue - (HLSMAX div 3))* RGBMAX + (HLSMAX div 2)) div HLSMAX;
+    B := (HueToRGB(Magic1, Magic2, Hue - (HLSMAX div 3)) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
   end;
   Result :=  RGB(R, G, B);
 end;
@@ -2532,17 +2532,17 @@ type
   TRGBQuadArray = array [Byte] of TRGBQuad;
   PRGBQuadArray = ^TRGBQuadArray;
 var
-  i, RGB: Integer;
+  I, RGB: Integer;
   ColorTable: PRGBQuadArray;
   Count: Integer;
 begin
   Count := High(Colors)-Low(Colors)+1;
   GetMem(ColorTable, Count * SizeOf(TRGBQuad));
   try
-    for i := 0 to Count-1 do
-      with ColorTable^[i] do
+    for I := 0 to Count-1 do
+      with ColorTable^[I] do
       begin
-        RGB := ColorToRGB(Colors[i]);
+        RGB := ColorToRGB(Colors[I]);
         rgbBlue := GetBValue(RGB);
         rgbGreen := GetGValue(RGB);
         rgbRed := GetRValue(RGB);
@@ -2560,7 +2560,7 @@ end;
 // Misc
 //==================================================================================================
 
-function ColorToHTML(const Color: TColor): String;
+function ColorToHTML(const Color: TColor): string;
 var
   Temp: TColorRec;
 begin
@@ -2609,7 +2609,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
-
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
 // the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
 // For higher speed (and multiple entries to be shorted) specify this value explicitely.
@@ -2666,7 +2665,6 @@ begin
     end;
   end;
 end;
-
 {$ENDIF MSWINDOWS}
 
 //==================================================================================================
@@ -2811,7 +2809,7 @@ end;
 
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 var
-  i: Integer;
+  I: Integer;
   X, Y: Integer;
   X1, Y1, X2, Y2: Float;
   ClipX1, ClipY1, ClipX2, ClipY2: Float;
@@ -2833,9 +2831,9 @@ begin
   ClipY2 := ClipRect.Bottom;
 
   Codes2 := ClipCodes(X1, Y1, ClipX1, ClipY1, ClipX2, ClipY2);
-  for i := 1 to High(Points) do
+  for I := 1 to High(Points) do
   begin
-    with Points[i] do
+    with Points[I] do
     begin
       X2 := X;
       Y2 := Y;
@@ -2854,7 +2852,7 @@ begin
         Canvas.LineTo(X + 1, Y);
       {$ENDIF VCL}
     end;
-    with Points[i] do
+    with Points[I] do
     begin
       X1 := X;
       Y1 := Y;
@@ -2879,6 +2877,9 @@ finalization
 //  - ShortenString included
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.11  2004/06/27 23:28:51  rrossmair
+// some style cleaning (case, spaces)
+//
 // Revision 1.10  2004/06/16 07:30:28  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
@@ -2895,7 +2896,7 @@ finalization
 // fixed for Kylix
 //
 // Revision 1.6  2004/04/28 04:16:19  rrossmair
-// new functions added: RGBtoHLS, HLStoRGB, RGB2HLS, HLS2RGB, SetBitmapColors (VCL only)
+// new functions added: RGBToHLS, HLSToRGB, RGB2HLS, HLS2RGB, SetBitmapColors (VCL only)
 //
 // Revision 1.5  2004/04/18 06:32:07  rrossmair
 // replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
