@@ -1174,7 +1174,7 @@ begin
     It.Next;
     Inc(I);
   end;
-  I := 0;
+  //I := 0;
   while (I <= Last) and It.HasNext do
   begin
     Result.Add(It.Next);
@@ -1699,7 +1699,7 @@ begin
     It.Next;
     Inc(I);
   end;
-  I := 0;
+  //I := 0;
   while (I <= Last) and It.HasNext do
   begin
     Result.Add(It.Next);
