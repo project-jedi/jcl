@@ -12,8 +12,11 @@
 {                                                                                                  }
 { The Original Code is JclEDI.pas.                                                                 }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Raymond Alexander.                                 }
+{ Portions created by Raymond Alexander are Copyright Raymond Alexander. All rights reserved.      }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Raymond Alexander (rayspostbox3), Robert Marquardt, Robert Rossmair, Petr Vones                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }

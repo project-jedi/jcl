@@ -12,12 +12,12 @@
 {                                                                                                  }
 { The Original Code is JclBase.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Marcel van Brakel, Peter Friese, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Robert Marquardt,}
+{   Robert Rossmair, Petr Vones                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -394,6 +394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.10  2004/04/19 06:02:18  rrossmair
 // fixed QueryPerformanceCounter (FPC compatibility routine)
 //
