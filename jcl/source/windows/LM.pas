@@ -4057,7 +4057,7 @@ const
 
 // Function Prototypes - SERVER
 
-function NetServerEnum(servername: LPCWSTR; level: DWORD; bufptr: Pointer;
+function NetServerEnum(servername: LPCWSTR; level: DWORD; var bufptr: Pointer;
   prefmaxlen: DWORD; var entriesread: DWORD; var totalentries: DWORD;
   servertype: DWORD; domain: LPCWSTR; resume_handle: PDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetServerEnum}
@@ -4068,7 +4068,7 @@ function NetServerEnumEx(ServerName: LPCWSTR; Level: DWORD; Bufptr: Pointer;
 {$EXTERNALSYM NetServerEnumEx}
 
 function NetServerGetInfo(servername: LPWSTR; level: DWORD;
-  bufptr: Pointer): NET_API_STATUS; stdcall;
+  var bufptr: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetServerGetInfo}
 
 function NetServerSetInfo(servername: LPWSTR; level: DWORD; buf: Pointer;
