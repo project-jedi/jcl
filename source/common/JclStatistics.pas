@@ -212,11 +212,11 @@ end;
 
 function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := False;
-  L := GetDynLengthNotNull(X);
-  for I := 0 to L - 1 do
+  N := GetDynLengthNotNull(X);
+  for I := 0 to N - 1 do
     if X[I] <= PrecisionTolerance then
       Exit;
   Result := True;
@@ -226,11 +226,11 @@ end;
 
 function MaxFloatArray(const B: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
-  L := GetDynLengthNotNull(B);
+  N := GetDynLengthNotNull(B);
   Result := B[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
     if B[I] > Result then
       Result := B[I];
 end;
@@ -239,13 +239,13 @@ end;
 
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
-  I, L: Integer;
+  I, N: Integer;
   Max: Float;
 begin
   Result := 0;
-  L := GetDynLengthNotNull(B);
+  N := GetDynLengthNotNull(B);
   Max := B[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
     if B[I] > Max then
     begin
       Max := B[I];
@@ -293,11 +293,11 @@ end;
 
 function MinFloatArray(const B: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
-  L := GetDynLengthNotNull(B);
+  N := GetDynLengthNotNull(B);
   Result := B[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
     if B[I] < Result then
       Result := B[I];
 end;
@@ -306,13 +306,13 @@ end;
 
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
-  I, L: Integer;
+  I, N: Integer;
   Min: Float;
 begin
   Result := 0;
-  L := GetDynLengthNotNull(B);
+  N := GetDynLengthNotNull(B);
   Min := B[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
     if B[I] < Min then
     begin
       Min := B[I];
@@ -449,26 +449,24 @@ end;
 
 { TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
 function StdError(const Variance: Float; const SampleSize: Integer): Float;
-//overloaded in interface
 begin
-  if SampleSize > 0 then
-    Result := Sqrt(Variance / SampleSize)
-  else
+  if SampleSize = 0 then
     InvalidSampleSize(SampleSize);
+  Result := Sqrt(Variance / SampleSize);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function SumFloatArray(const B: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := 0.0;
-  L := GetDynLength(B);
-  if L <> 0 then
+  N := GetDynLength(B);
+  if N <> 0 then
   begin
     Result := B[0];
-    for I := 1 to L - 1 do
+    for I := 1 to N - 1 do
       Result := Result + B[I];
   end;
 end;
@@ -477,14 +475,14 @@ end;
 
 function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := 0.0;
-  L := GetDynLength(B);
-  if L <> 0 then
+  N := GetDynLength(B);
+  if N <> 0 then
   begin
     Result := Sqr(B[0] - Diff);
-    for I := 1 to L - 1 do
+    for I := 1 to N - 1 do
       Result := Result + Sqr(B[I] - Diff);
   end;
 end;
@@ -493,14 +491,14 @@ end;
 
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := 0.0;
-  L := GetDynLength(B);
-  if L <> 0 then
+  N := GetDynLength(B);
+  if N <> 0 then
   begin
     Result := Sqr(B[0]);
-    for I := 1 to L - 1 do
+    for I := 1 to N - 1 do
       Result := Result + Sqr(B[I]);
   end;
 end;
@@ -509,29 +507,29 @@ end;
 
 function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 var
-  I, L: Integer;
+  I, N: Integer;
 begin
   Result := 0.0;
-  L := Min(Length(X), Length(Y));
-  if L <> 0 then
+  N := Min(Length(X), Length(Y));
+  if N <> 0 then
   begin
     Result := X[0] * Y[0];
-    for I := 1 to L - 1 do
+    for I := 1 to N - 1 do
       Result := Result + X[I] * Y[I];
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ChiSquare(const X: TDynFloatArray): Float;  { TODO : ChiSquare }
+function ChiSquare(const X: TDynFloatArray): Float;  { TODO -cDoc : ChiSquare }
 var
-  I, L: Integer;
+  I, N: Integer;
   Sum: Float;
 begin
-  L := GetDynLengthNotNull(X);
+  N := GetDynLengthNotNull(X);
   Result := Sqr(X[0]);
   Sum := X[0];
-  for I := 1 to L - 1 do
+  for I := 1 to N - 1 do
   begin
     Result := Result + Sqr(X[I]);
     Sum := Sum + X[I];
@@ -541,8 +539,12 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/08/18 19:06:15  rrossmair
+// - got rid of warning
+// - renamed local variables "L" to "N" (as commonly used to denote sample size)
+//
 // Revision 1.9  2004/08/18 17:08:59  rrossmair
-// - mantis #2019 & #2021 handled, improved error reports
+// - mantis #2019 fixed, improved error reports
 //
 // Revision 1.8  2004/07/29 15:16:51  marquardt
 // simple style cleaning
