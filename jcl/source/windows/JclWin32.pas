@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 17, 2000                                              }
+{ Last modified: October 27, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -160,9 +160,6 @@ type
     SE_PROVIDER_DEFINED_OBJECT,
     SE_WMIGUID_OBJECT
   );
-
-type
-  PPSID = ^PSID;
 
 {$ENDIF} // COMPILER5_UP
 
