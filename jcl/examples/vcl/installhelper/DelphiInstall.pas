@@ -235,7 +235,7 @@ type
     function GetBPLOutputPath: string;
     function GetCompiler: TJclDelphiCompiler;
     function GetDCPOutputPath: string;
-    function GetDebugDCUsPath: string;
+    function GetDebugDCUPath: string;
     function GetEditionAsText: string;
     function GetEnvironmentVariables: TStrings;
     function GetIdeExeBuildNumber: string;
@@ -249,7 +249,7 @@ type
     procedure SetLibrarySearchPath(const Value: TJclDelphiPath);
     function GetLibraryBrowsingPath: TJclDelphiPath;
     procedure SetLibraryBrowsingPath(const Value: TJclDelphiPath);
-    procedure SetDebugDCUsPath(const Value: string);
+    procedure SetDebugDCUPath(const Value: string);
   protected
     constructor Create(const ARegKey: string);
     procedure ReadInformation;
@@ -258,7 +258,7 @@ type
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclDelphiPath; List: TStrings);
     function AnyInstanceRunning: Boolean;
-    function AddToDebugDCUsPath(const Path: string): Boolean;
+    function AddToDebugDCUPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
     function FindFolderInDelphiPath(Folder: string; List: TStrings): Integer;
@@ -266,7 +266,7 @@ type
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
     property Compiler: TJclDelphiCompiler read GetCompiler;
-    property DebugDCUsPath: string read GetDebugDCUsPath write SetDebugDCUsPath;
+    property DebugDCUPath: string read GetDebugDCUPath write SetDebugDCUPath;
     property DCPOutputPath: string read GetDCPOutputPath;
     property Edition: TJclDelphiEdition read FEdition;
     property EditionAsText: string read GetEditionAsText;
@@ -334,7 +334,7 @@ const
   VersionValueName           = 'Version';
 
   DebuggingKeyName           = 'Debugging';
-  DebugDCUsPathValueName     = 'Debug DCUs Path'; 
+  DebugDCUPathValueName      = 'Debug DCUs Path'; 
 
   LibraryKeyName             = 'Library';
   LibrarySearchPathValueName = 'Search Path';
@@ -1115,13 +1115,13 @@ end;
 // TJclDelphiInstallation
 //==================================================================================================
 
-function TJclDelphiInstallation.AddToDebugDCUsPath(const Path: string): Boolean;
+function TJclDelphiInstallation.AddToDebugDCUPath(const Path: string): Boolean;
 var
-  TempDebugDCUsPath: TJclDelphiPath;
+  TempDebugDCUPath: TJclDelphiPath;
 begin
-  TempDebugDCUsPath := DebugDCUsPath;
-  Result := AddMissingPathElements(TempDebugDCUsPath, Path);
-  DebugDCUsPath := TempDebugDCUsPath;
+  TempDebugDCUPath := DebugDCUPath;
+  Result := AddMissingPathElements(TempDebugDCUPath, Path);
+  DebugDCUPath := TempDebugDCUPath;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1278,9 +1278,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDelphiInstallation.GetDebugDCUsPath: string;
+function TJclDelphiInstallation.GetDebugDCUPath: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUsPathValueName, '');
+  Result := RegReadStringDef(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUPathValueName, '');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1443,9 +1443,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclDelphiInstallation.SetDebugDCUsPath(const Value: string);
+procedure TJclDelphiInstallation.SetDebugDCUPath(const Value: string);
 begin
-  RegWriteString(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUsPathValueName, Value);
+  RegWriteString(HKEY_CURRENT_USER, RegKey + '\' + DebuggingKeyName, DebugDCUPathValueName, Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
