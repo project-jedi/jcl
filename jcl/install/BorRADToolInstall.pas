@@ -27,6 +27,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.11  2004/03/18 20:26:26  rrossmair
+// fixed again
+//
 // Revision 1.10  2004/03/17 17:39:03  rrossmair
 // Win32 installation fixed
 //
@@ -213,6 +216,8 @@ type
     function Execute(const CommandLine: string): Boolean;
     property ExeName: string read GetExeName;
     property Output: string read GetOutput;
+  public
+    destructor Destroy; override;
   end;
 
   TJcBorlandCommandLineTool = class (TJclBorRADToolInstallationObject)
@@ -1871,11 +1876,20 @@ begin
   end;
 
   for I := 1 to 3 do
+  {$IFDEF KYLIX}
+    if LatestUpdatePacks[I].Version = VersionNumber then
+    begin
+      FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
+      Break;
+    end;
+  {$ENDIF KYLIX}
+  {$IFDEF MSWINDOWS}
     if LatestUpdatePacks[RADToolKind, I].Version = VersionNumber then
     begin
       FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
       Break;
     end;
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2203,7 +2217,16 @@ end;
 constructor TJclCommandLineTool.Create(const AExeName: string);
 begin
   inherited Create;
+  FOptions := TStringList.Create;
   FExeName := AExeName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclCommandLineTool.Destroy;
+begin
+  FreeAndNil(FOptions);
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
