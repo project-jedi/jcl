@@ -106,12 +106,16 @@ const
 
 // Misc. character sets
 
-  AnsiSigns          = ['-', '+'];
-  AnsiWhiteSpace     = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed,
-    AnsiCarriageReturn, AnsiSpace];
-  AnsiDecDigits      = ['0'..'9'];
-  AnsiOctDigits      = ['0'..'7'];
-  AnsiHexDigits      = ['0'..'9', 'A'..'F', 'a'..'f'];
+  AnsiWhiteSpace             = [AnsiTab, AnsiLineFeed, AnsiVerticalTab,
+    AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
+  AnsiSigns                  = ['-', '+'];
+  AnsiUppercaseLetters       = JclBase.AnsiUppercaseLetters;
+  AnsiLowercaseLetters       = JclBase.AnsiLowercaseLetters;
+  AnsiLetters                = JclBase.AnsiLetters;
+  AnsiDecDigits              = JclBase.AnsiDecDigits;
+  AnsiOctDigits              = JclBase.AnsiOctDigits;
+  AnsiHexDigits              = JclBase.AnsiHexDigits;
+  AnsiValidIdentifierLetters = JclBase.AnsiValidIdentifierLetters;
 
 const
   // CharType return values
@@ -3582,7 +3586,7 @@ begin
           Temp[I] := DecimalSeparator;
   end;
 
-  Temp := StrKeepChars(Temp, ['0'..'9', DecimalSeparator]);
+  Temp := StrKeepChars(Temp, AnsiDecDigits + [DecimalSeparator]);
 
   if Length(Temp) > 0 then
   begin
@@ -3651,6 +3655,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.37  2005/03/08 16:10:08  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.36  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -1440,12 +1440,12 @@ end;
 function TJclNumericFormat.GetDigitValue(Digit: Char): Integer;
 begin
   Result := -1;
-  if Digit in ['0'..'9'] then
+  if Digit in AnsiDecDigits then
     Result := Ord(Digit) - Ord('0')
   else
   begin
     Digit := UpCase(Digit);
-    if Digit in ['A'..'Z'] then
+    if Digit in AnsiUppercaseLetters then
       Result := Ord(Digit) - Ord('A') + 10;
   end;
   if Result >= Base then
@@ -1734,17 +1734,17 @@ begin
   Result := 0;
   N := 0;
   I := 1;
-  if Value[I] in ['+', '-'] then
+  if Value[I] in AnsiSigns then
     Inc(I);
   for I := I to Length(Value) do
   begin
     C := Value[I];
-    if C in ['0'..'9'] then
+    if C in AnsiDecDigits then
       N := Ord(C) - Ord('0')
     else
     begin
       C := UpCase(C);
-      if C in ['A'..'Z'] then
+      if C in AnsiUppercaseLetters then
       begin
         N := Ord(C) - Ord('A') + 10;
         if N >= Base then
@@ -2236,6 +2236,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.35  2005/03/08 16:10:08  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.34  2005/03/08 08:33:18  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

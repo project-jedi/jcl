@@ -1487,8 +1487,6 @@ begin
 end;
 
 function EncodeNameString(const S: string): string;
-const
-  ValidChars = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 var
   I, StartIndex: Integer;
   C: Byte;
@@ -1499,7 +1497,7 @@ begin
   else
     StartIndex := 0;
   for I := StartIndex + 1 to Length(S) do
-    if not (S[I] in ValidChars) then
+    if not (S[I] in AnsiValidIdentifierLetters) then
     begin
       Result := #1 + SimpleCryptString(S) + #0;
       Exit;
@@ -3916,6 +3914,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2005/03/08 16:10:09  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.14  2005/02/25 07:20:15  marquardt
 // add section lines
 //

@@ -1081,6 +1081,7 @@ var
 begin
   Result := FunctionName;
   L := Length(Result);
+  // (rom) possible bug. 'A'..'Z' missing from set (better use AnsiValidIdentifierLetters).
   if (L > 1) and (Result[L] in ['A', 'W']) and
     (Result[L - 1] in ['a'..'z', '_', '0'..'9']) then
     Delete(Result, L, 1);
@@ -4211,7 +4212,7 @@ function PeRebaseImage(const ImageName: TFileName; NewBase, TimeStamp, MaxNewSiz
   begin
     ModuleName := ExtractFileName(ImageName);
     FirstChar := UpCase(ModuleName[1]);
-    if not (FirstChar in ['A'..'Z']) then
+    if not (FirstChar in AnsiUppercaseLetters) then
       FirstChar := 'A';
     Result := $60000000 + (((Ord(FirstChar) - Ord('A')) div 3) * $1000000);
   end;
@@ -5162,8 +5163,6 @@ end;
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
-const
-  ValidSymbolName = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
 var
   NameP, NameU, NameUFirst: PChar;
   QualifierFound, LinkProcFound: Boolean;
@@ -5182,7 +5181,7 @@ var
     SymbolLength: Integer;
   begin
     SymbolLength := 0;
-    while NameP^ in ['0'..'9'] do
+    while NameP^ in AnsiDecDigits do
     begin
       SymbolLength := SymbolLength * 10 + Ord(NameP^) - 48;
       Inc(NameP);
@@ -5224,7 +5223,7 @@ var
       LinkProcFound := True;
       Inc(NameP);
     end;
-    while NameP^ in ValidSymbolName do
+    while NameP^ in AnsiValidIdentifierLetters do
     begin
       NameU^ := NameP^;
       Inc(NameP);
@@ -5385,6 +5384,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2005/03/08 16:10:10  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.22  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
