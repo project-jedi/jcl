@@ -4922,7 +4922,7 @@ begin
       Stream.Free;
     end;
   except
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   end;
 end;
 
