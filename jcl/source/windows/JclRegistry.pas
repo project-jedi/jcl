@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 6, 2000                                                  }
+{ Last modified: August 9, 2000                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -31,7 +31,7 @@ unit JclRegistry;
 interface
 
 uses
-  Windows,
+  Windows, Classes,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -51,6 +51,8 @@ function RegReadStringDef(RootKey: HKEY; const Key, Name, Def: string): string;
 procedure RegWriteBool(RootKey: HKEY; const Key, Name: string; Value: Boolean);
 procedure RegWriteInteger(RootKey: HKEY; const Key, Name: string; Value: Integer);
 procedure RegWriteString(RootKey: HKEY; const Key, Name, Value: string);
+function RegGetValueNames(RootKey: HKEY; const Key: string): TStringList;
+function RegGetKeyNames(RootKey: HKEY; const Key: string): TStringList;
 
 type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -322,6 +324,38 @@ begin
     Result := True;
   except
     on Exception do { swallow }
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegGetValueNames(RootKey: HKEY; const Key: string): TStringList;
+var
+  WinReg: TRegistry;
+begin
+  WinReg := TRegistry.Create;
+  try
+    OpenKey(WinReg, RootKey, Key, True);
+    Result := TStringList.Create;
+    WinReg.GetValueNames(Result);
+  finally
+    WinReg.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegGetKeyNames(RootKey: HKEY; const Key: string): TStringList;
+var
+  WinReg: TRegistry;
+begin
+  WinReg := TRegistry.Create;
+  try
+    OpenKey(WinReg, RootKey, Key, True);
+    Result := TStringList.Create;
+    WinReg.GetKeyNames(Result);
+  finally
+    WinReg.Free;
   end;
 end;
 
