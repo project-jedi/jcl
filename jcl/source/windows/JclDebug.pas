@@ -354,7 +354,7 @@ function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
 
 type
   PDWORDArray = ^TDWORDArray;
-  TDWORDArray = array[0..(MaxInt - $F) div SizeOf(DWORD)] of DWORD;
+  TDWORDArray = array [0..(MaxInt - $F) div SizeOf(DWORD)] of DWORD;
 
   PStackFrame = ^TStackFrame;
   TStackFrame = record
@@ -1149,37 +1149,41 @@ begin
   Result := '';
   P := PByte(S);
   case P^ of
-    1: begin
-         Inc(P);
-         Result := SimpleCryptString(PChar(P));
-         Exit;
-       end;
-    2: begin
-         Result := '@';
-         Inc(P);
-       end;
+    1:
+      begin
+        Inc(P);
+        Result := SimpleCryptString(PChar(P));
+        Exit;
+      end;
+    2:
+      begin
+        Result := '@';
+        Inc(P);
+      end;
   end;
   I := 0;
   C := 0;
   repeat
     case I and $03 of
-      0: begin
-           C := P^ and $3F;
-         end;
-      1: begin
-           C := (P^ shr 6) and $03;
-           Inc(P);
-           Inc(C, (P^ and $0F) shl 2);
-         end;
-      2: begin
-           C := (P^ shr 4) and $0F;
-           Inc(P);
-           Inc(C, (P^ and $03) shl 4);
-         end;
-      3: begin
-           C := (P^ shr 2) and $3F;
-           Inc(P);
-         end;
+      0:
+        C := P^ and $3F;
+      1:
+        begin
+          C := (P^ shr 6) and $03;
+          Inc(P);
+          Inc(C, (P^ and $0F) shl 2);
+        end;
+      2:
+        begin
+          C := (P^ shr 4) and $0F;
+          Inc(P);
+          Inc(C, (P^ and $03) shl 4);
+        end;
+      3:
+        begin
+          C := (P^ shr 2) and $3F;
+          Inc(P);
+        end;
     end;
     case C of
       $00:
@@ -1242,23 +1246,25 @@ begin
       C := $3F;
     end;
     case I and $03 of
-      0: begin
-           Inc(P);
-           P^ := C;
-         end;
-      1: begin
-           P^ := P^ or (C and $03) shl 6;
-           Inc(P);
-           P^ := (C shr 2) and $0F;
-         end;
-      2: begin
-           P^ := P^ or (C shl 4);
-           Inc(P);
-           P^ := (C shr 4) and $03;
-         end;
-      3: begin
-           P^ := P^ or (C shl 2);
-         end;
+      0: 
+        begin
+          Inc(P);
+          P^ := C;
+        end;
+      1: 
+        begin
+          P^ := P^ or (C and $03) shl 6;
+          Inc(P);
+          P^ := (C shr 2) and $0F;
+        end;
+      2:
+        begin
+          P^ := P^ or (C shl 4);
+          Inc(P);
+          P^ := (C shr 4) and $03;
+        end;
+      3:
+        P^ := P^ or (C shl 2);
     end;
   end;
   SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
@@ -1360,7 +1366,7 @@ var
   var
     L: Integer;
     D: DWORD;
-    P: array[1..5] of Byte;
+    P: array [1..5] of Byte;
   begin
     D := Value;
     L := 0;
