@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: March 17, 2002                                                }
+{ Last modified: $Date$                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -25,7 +25,7 @@ unit JclDebugIdeResult;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls;
+  Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ImgList;
 
 type
   TJclDebugResultForm = class(TForm)
@@ -146,5 +146,10 @@ begin
   end;
 end;
 
+// History:
 
+// $Log$
+// Revision 1.3  2004/07/25 06:29:51  rrossmair
+// ImgList added to uses clause
+//
 end.
