@@ -187,12 +187,7 @@ Description:
 See also:
   PeSmartFunctionNameSame
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclSmartCompOption.scSimpleCompare
   Many Win32 dynamic link libraries export functions in two forms, one for ansi and one for unicode, and distinquish between these functions using a single letter suffix, A and W respectively. The name without this suffix is refered to as the base name. Ommiting the scSimpleCompare flag specifies that name comparison should perform the comparison based on the base name only. As such it ignores the suffix and considers, for example, CharUpper, CharUpperA and CharUpperW as the same function. If the flag is included each of these functions are considered different.
 @@TJclSmartCompOption.scIgnoreCase
@@ -218,12 +213,7 @@ Result:
 See also:
   PeSmartFunctionNameSame
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeSmartFunctionNameSame
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SmartNameComparison>
@@ -243,12 +233,7 @@ Result:
 See also:
   PeStripFunctionAW
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclPeImageError
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
@@ -259,12 +244,7 @@ Description:
   module. EJclPeImageError does not introduce any new methods or properties and
   merely serves to identify exceptions raised explicitly by the JclPeImage module.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImageBaseList>
@@ -277,12 +257,7 @@ Description:
   baseclass, you'll likely never need to instantiate a TJclPeImageBaseList class
   explicitly.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList.Create
 Summary:
@@ -300,13 +275,7 @@ Parameters:
 See also:
   TJclPeImage
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList.Image
 Summary:
@@ -316,13 +285,7 @@ Description:
   is a direct copy of the AImage parameter as specified when the constructor was
   called.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImagesCache>
@@ -334,13 +297,7 @@ Description:
   frequent loading and unloading of image files, thereby increasing performance.
   Note that the TJclPeImagesCache class is not inherently thread safe.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Clear
 Summary:
@@ -350,13 +307,7 @@ Description:
   freed first. Therefore you should make sure not to use any cached references to
   any of image objects retrieved from the cache earlier.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Images
 Summary:
@@ -373,13 +324,7 @@ Description:
   through the cache become invalid when the TJclPeImagesCache object is destroyed
   or when it's Clear method is called.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Count
 Summary:
@@ -387,13 +332,7 @@ Summary:
 Description:
   Returns the number of TJclPeImage instances currently in the cache.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportSort
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
@@ -402,12 +341,7 @@ Summary:
 Description:
   Enumeration used by the various import section related classes to determine how a list of imported functions should be sorted. Usually the method called to perform the sort operation allows for further options such as whether the sort should be ascending or descending.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeImportSort.isName
   The list is sorted on the name of the imported function.
 @@TJclPeImportSort.isOrdinal
@@ -424,12 +358,7 @@ Summary:
 Description:
   Enumeration used by the TJclPeImportList which determines how the list of import library items is sorted.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeImportLibSort.ilName
   The list is sorted by name (TJclPeImportLibItem.Name property).
 @@TJclPeImportLibSort.ilIndex
@@ -442,12 +371,7 @@ Summary:
 Description:
   Specifies how a function was imported. This does not include whether or not the function was imported by name or ordinal.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeImportKind.ikImport
   Standard implicit import.
 @@TJclPeImportKind.ikDelayImport
@@ -462,12 +386,7 @@ Summary:
 Description:
   Both the classes that wrap the import section as well as the class that wraps the export section have methods to perform a resolve check. This means slightly different things for an import section than it does for an export section. For example, for the import section it means that the method tries to resolve all imported function by looking them up in the exports section of the image from which the function is imported. If the function is found there the import is considered resolved, otherwise it is unresolved. This latter case would indicate that the OS loader would probably also be unable to resolve the import and loading of the image would fail. The TJclPeResolveCheck type is used by the imports and exports classes to specify whether a function could be resolved. Note that all items start off begin unchecked, you have to request function resolving explicitly through the appropriate method call.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeResolveCheck.icNotChecked
   The function was not checked yet. Initial state of all items.
 @@TJclPeResolveCheck.icResolved
@@ -482,12 +401,7 @@ Summary:
 Description:
   Specifies the manufacturer of the linker that produced an image file. The function uses a heauristic which is not perfect and is only capable of recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeLinkerProducer.lrBorland
   The image was produced by the Borland Delphi linker.
 @@TJclPeLinkerProducer.lrMicrosoft
@@ -504,12 +418,7 @@ Description:
   class directly but instead retrieve a reference to it through the Items property
   of the TJclPeImportLibItem class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Ordinal
 Summary:
@@ -519,13 +428,7 @@ Description:
   which it was imported, otherwise it reads 0. You can determine whether the function
   was imported by ordinal or name through the IsByOrdinal property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Hint
 Summary:
@@ -537,13 +440,7 @@ Description:
   incorrect. In those situations the OS loader itself uses a binary search on the
   exports table to find the correct export.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.ImportLib
 Summary:
@@ -552,13 +449,7 @@ Description:
   Reference to the TJclPeImportLibItem which owns this TJclPeImportFuncItem. See
   the description of TJclPeImportFunctItem for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.IndirectImportName
 Summary:
@@ -572,13 +463,7 @@ Description:
   TryGetNamesForOrdinalImports method of the TJclPeImportList or TJclPeImage class
   that owns the TJclPeImportFuncItem.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.IsByOrdinal
 Summary:
@@ -588,13 +473,7 @@ Description:
   by Ordinal the property reads True, otherwise it reads False (and as such the
   function was imported by name).
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Name
 Summary:
@@ -605,13 +484,7 @@ Description:
   imported by ordinal the property returns the value of the IndirectImportName
   property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.ResolveCheck
 Summary:
@@ -621,13 +494,7 @@ Description:
   will be icNotChecked. You have to request function resolving explicitly through
   the CheckImports method of the TJclPeImportList class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportLibItem>
@@ -644,12 +511,7 @@ Description:
   Note that there can, and often will, exist multiple TJclPeImportLibItem entries
   for one image.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.SortList
 Summary:
@@ -662,13 +524,7 @@ Parameters:
   SortType - Specifies on which field the list should be sorted. See TJclPeImportSort for a description of the allowed values and their meaning.
   Descending - If True the list is sorted in descending order, if False the list is sorted in ascending order.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Count
 Summary:
@@ -677,13 +533,7 @@ Description:
   Returns the number of items in the Items property. As such it returns the number
   of imports described by, or contained in, this import descriptor.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.FileName
 Summary:
@@ -692,13 +542,7 @@ Description:
   Returns the fully qualified name of the image file from which the functions
   described by this import descriptor are imported.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportDescriptor
 Summary:
@@ -706,13 +550,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportDirectoryIndex
 Summary:
@@ -721,13 +559,7 @@ Description:
   Zero based index into the Items property of the TJclImportList class at which
   this TJclPeImportLibItem is positioned.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportKind
 Summary:
@@ -738,13 +570,7 @@ Description:
   Note that this has nothing to do with the method by which a function is imported,
   such as by name or by ordinal. To find out about that use the IsByOrdinal property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Items
 Summary:
@@ -756,13 +582,7 @@ Description:
   import descriptor. The number of items in the list can be found by reading the
   Count property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Name
 Summary:
@@ -774,13 +594,7 @@ Description:
   Like the OriginalName property, the returned name is often without path or drive
   indication.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.OriginalName
 Summary:
@@ -790,13 +604,7 @@ Description:
   import descriptor are imported. The returned filename is returned as it appears
   in the image file, often uppercase and without path or drive indication.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ThunkData
 Summary:
@@ -804,13 +612,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.TotalResolveCheck
 Summary:
@@ -822,13 +624,7 @@ Description:
   wasn't checked yet. You have the explicitly request function resolving through the
   CheckImports method of the TJclPeImportList class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportList>
@@ -843,12 +639,7 @@ Description:
   access to the complete list of imported functions, thus bypassing the import
   directories level.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.CheckImports
 Summary:
@@ -862,13 +653,7 @@ Description:
 Parameters:
   PeImageCache - Allows you to specify a TJclPeImagesCache to be used by the method. This can significantly increase performance because it may prevent a lot of loading and unloading of image files (especially when the image is imports functions from a lot of different images). If you are using an image cache in your application it is recommended you use it here. That way the method can reuse your already loaded images. Note though that if the method needs to load additional images, it will do so using the cache. Those images will not be removed upon method exit.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SmartFindName
 Summary:
@@ -890,13 +675,7 @@ Result:
   as long as the TJclPeImportList isn't destroyed. If the function couldn't be
   found the return value is nil.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SortAllItemsList
 Summary:
@@ -907,13 +686,7 @@ Parameters:
   SortType - Specifies by which property the list is sorted. You can sort on Name, Ordinal, Hint or Image name. See the description of TJclPeImportSort for more information.
   Descending - Specifies whether the sort should be in ascending (False) or descending (True) order.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SortList
 Summary:
@@ -924,13 +697,7 @@ Description:
 Parameters:
   SortType - Specifies on which property the list should be sorted. You can sort either on Index or Name. See the description of TJclPeImportLibSort for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.TryGetNamesForOrdinalImports
 Summary:
@@ -941,13 +708,7 @@ Description:
   were imported by ordinal instead of by name. See also the description of the
   IndirectImportName property of the TJclPeImportFuncItem class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.AllItems
 Summary:
@@ -960,13 +721,7 @@ Description:
   addition, the items in the AllItems list can be filtered by that same FilterModuleName
   property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.AllItemCount
 Summary:
@@ -976,13 +731,7 @@ Description:
   the property read method will first trigger the initialisation of the list before
   returning the count.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.FilterModuleName
 Summary:
@@ -992,13 +741,7 @@ Description:
   this property to a non-empty string will cause only those functions to be added
   that are imported from the specified image.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.Items
 Summary:
@@ -1009,13 +752,7 @@ Description:
   list represents a single import directory but multiple items may exist for one
   single image file.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.LinkerProducer
 Summary:
@@ -1024,13 +761,7 @@ Description:
   Returns the manufacturer of the linker that produced the image. See the
   description of TJclPeLinkerProducer for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItemCount
 Summary:
@@ -1038,13 +769,7 @@ Summary:
 Description:
   Returns the number of items in the UniqueLibItems list.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItemFromName
 Summary:
@@ -1052,13 +777,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItems
 Summary:
@@ -1073,13 +792,7 @@ Description:
   the Items property to determine which functions are imported from that image
   because there may exist other import directories which import additional functions.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibNames
 Summary:
@@ -1092,13 +805,7 @@ Description:
   You can use this list to find out the names of the images from which functions
   are imported.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportSort
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
@@ -1107,13 +814,7 @@ Summary:
 Description:
   Enumeration used to determine on which field a list of exported functions is sorted.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeExportSort.esName
   Sorted on the name by which the function is exported.
 @@TJclPeExportSort.esOrdinal
@@ -1136,12 +837,7 @@ Description:
   section of an image. The class provides all the details about the function such
   as the name or ordinal by which it is exported.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Address
 Summary:
@@ -1149,13 +845,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.AddressOrForwardStr
 Summary:
@@ -1163,13 +853,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.IsForwarded
 Summary:
@@ -1178,13 +862,7 @@ Description:
   If the export is a function forwarder the IsForwarded property returns True, if
   it is not forwarded the property returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedName
 Summary:
@@ -1195,13 +873,7 @@ Description:
   to which the function is forwarded and the name of that function, separated with
   a single dot.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedLibName
 Summary:
@@ -1211,13 +883,7 @@ Description:
   If the export isn't forwarded the property returns an empty string. You can
   determine whether the export is forwarded by reading the IsForwarded property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedFuncOrdinal
 Summary:
@@ -1228,13 +894,7 @@ Description:
   the property returns 0. You can determine whether the export is
   forwarded by reading the IsForwarded property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedFuncName
 Summary:
@@ -1245,13 +905,7 @@ Description:
   the property returns an empty string. You can determine whether the export is
   forwarded by reading the IsForwarded property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Hint
 Summary:
@@ -1261,13 +915,7 @@ Description:
   TJclPeExportFuncList at which this function is located. This is also the position
   in the export table at which the function is located.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Name
 Summary:
@@ -1277,13 +925,7 @@ Description:
   the function is exported. If the function is not exported by name the property
   returns an empty string.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Ordinal
 Summary:
@@ -1293,13 +935,7 @@ Description:
   value by which  the function is exported. If the function is not exported by
   ordinal the property returns 0.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ResolveCheck
 Summary:
@@ -1307,13 +943,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection.TJclPeExportFuncList>
@@ -1324,12 +954,7 @@ Description:
   As such it allowsaccess to the list of exported functions in various ways and
   provides some information about the exports section itself.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.CheckForwards
 Summary:
@@ -1343,13 +968,7 @@ Description:
 Parameters:
   PeImageCache - Allows you to specify a TJclPeImagesCache to be used by the method. This can significantly increase performance because it may prevent a lot of loading and unloading of image files. If you are using an image cache in your application it is recommended you use it here. That way the method can reuse your already loaded images. Note though that if the method needs to load additional images, it will do so using the cache. Those images will not be removed upon method exit.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemName
 Summary:
@@ -1364,13 +983,7 @@ Result:
   If Item is non-nil the method returns the Name property of the Item, otherwise
   it returns an empty string.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.OrdinalValid
 Summary:
@@ -1380,13 +993,7 @@ Description:
 Parameters:
   Ordinal - TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.PrepareForFastNameSearch
 Summary:
@@ -1395,13 +1002,7 @@ Description:
   Prepares the list for fast name searching. It does so basically by sorting the
   list in ascending order on the Name property of the individual function exports.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.SmartFindName
 Summary:
@@ -1416,13 +1017,7 @@ Result:
   instance which represents the found export. You can use this instance to find out more
   details about it. The instance remains owned by the class so never free it.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.SortList
 Summary:
@@ -1433,13 +1028,7 @@ Parameters:
   SortType - Determines the key on which the list is sorted. An example is sorting based on the name by which the functions are exported. See the description of TJclPeExportSort for more information.
   Descending - Determines whether the sort is in ascending or descending order.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.AnyForwards
 Summary:
@@ -1448,13 +1037,7 @@ Description:
   AnyFowards determines whether the image contains any function forwarderes. It
   reads True if there is at least one function forwarder, otherwise it reads False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Base
 Summary:
@@ -1462,13 +1045,7 @@ Summary:
 Description:
   The starting ordinal number for exports in this image. Will usually be 1.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ExportDir
 Summary:
@@ -1478,13 +1055,7 @@ Description:
   The Export Directory Table contains address information that is used to resolve
   fix-up references to the entry points within this image.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ForwardedLibsList
 Summary:
@@ -1493,13 +1064,7 @@ Description:
   Returns a list containing the names of forwarded functions, if any. The list
   remains owned by the class so never free it.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.FunctionCount
 Summary:
@@ -1508,13 +1073,7 @@ Description:
   Returns the number of items in the Items property. In other words, it returns the
   number of function exports in this image.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Items
 Summary:
@@ -1525,13 +1084,7 @@ Description:
   in the same order as the functions appear in the export table but they may be
   sorted afterwards.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromAddress
 Summary:
@@ -1539,13 +1092,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromName
 Summary:
@@ -1558,13 +1105,7 @@ Description:
   the class so never free it. If no function is exported by the specified name the
   property returns nil.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromOrdinal
 Summary:
@@ -1577,13 +1118,7 @@ Description:
   the class so never free it. If no function is exported by the specified ordinal
   value the property returns nil.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Name
 Summary:
@@ -1591,13 +1126,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.TotalResolveCheck
 Summary:
@@ -1605,13 +1134,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceKind
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
@@ -1620,12 +1143,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeResourceKind.rtUnknown0
   TODO
 @@TJclPeResourceKind.rtCursorEntry
@@ -1684,12 +1202,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream.Create
 Summary:
@@ -1699,13 +1212,7 @@ Description:
 Parameters:
   AResourceItem - TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream.Write
 Summary:
@@ -1718,13 +1225,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceItem>
@@ -1733,12 +1234,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceItem>
@@ -1751,12 +1247,7 @@ Parameters:
   AParentItem - TODO
   AEntry - TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.DataEntry
 Summary:
@@ -1764,13 +1255,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Entry
 Summary:
@@ -1778,13 +1263,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Image
 Summary:
@@ -1792,13 +1271,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.IsDirectory
 Summary:
@@ -1806,13 +1279,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.IsName
 Summary:
@@ -1820,13 +1287,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.List
 Summary:
@@ -1834,13 +1295,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Level
 Summary:
@@ -1848,13 +1303,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Name
 Summary:
@@ -1862,13 +1311,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ParameterName
 Summary:
@@ -1876,13 +1319,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ParentItem
 Summary:
@@ -1890,13 +1327,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.RawEntryDataSize
 Summary:
@@ -1904,13 +1335,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.RawEntryData
 Summary:
@@ -1918,13 +1343,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ResourceType
 Summary:
@@ -1932,13 +1351,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ResourceTypeStr
 Summary:
@@ -1946,13 +1359,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceList>
@@ -1961,12 +1368,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Create
 Summary:
@@ -1978,13 +1380,7 @@ Parameters:
   AImage - TODO
   AParentItem - TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Directory
 Summary:
@@ -1992,13 +1388,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Items
 Summary:
@@ -2006,13 +1396,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.ParentItem
 Summary:
@@ -2020,13 +1404,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRootResourceList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeRootResourceList>
@@ -2035,12 +1413,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRootResourceList.FindResource
 Summary:
@@ -2053,13 +1426,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocation
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
@@ -2069,12 +1436,7 @@ Description:
   The TJclPeRelocation record represents a single address fix up in the relocation
   table of the imagefile.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeRelocation.Address
   The relocation offset which, when added to the VirtualAddress property of the relocation block, specifies the address which needs to be fixed up.
 @@TJclPeRelocation.RelocType
@@ -2090,12 +1452,7 @@ Description:
   The TJclPeRelocEntry class represents a block of relocation entries. Each such
   block specifies the address fix-ups for a single 4KB block within the image file.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Count
 Summary:
@@ -2104,13 +1461,7 @@ Description:
   Returns the number of elements in the Relocations property. That is, it returns
   the number of address fix-ups defined in this block.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Relocations
 Summary:
@@ -2121,13 +1472,7 @@ Description:
   the Count property. Each entry defines a single address fix-up as it appears in
   the relocations table.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Size
 Summary:
@@ -2138,13 +1483,7 @@ Description:
   image file, each block may need a different ammount of memory to hold all necessary
   fixups.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.VirtualAddress
 Summary:
@@ -2155,13 +1494,7 @@ Description:
   of the TJclPeRelocation record) is added to this value to form the actual RVA
   where the relocation needs to be applied.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection.TJclPeRelocList>
@@ -2173,12 +1506,7 @@ Description:
   blocks of fixups. Each block represents the fixups for a 4K page. Each block is
   represented as an instance of TJclPeRelocEntry in the Items property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.AllItems
 Summary:
@@ -2188,13 +1516,7 @@ Description:
   of individual address fix ups. See the description of TJclPeRelocation for more
   information on how to interpret the returned record.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.AllItemCount
 Summary:
@@ -2202,13 +1524,7 @@ Summary:
 Description:
   Contains the number of entries in the Items property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.Items
 Summary:
@@ -2219,13 +1535,7 @@ Description:
   fix-ups. To directly access these individual fix-up use the AllItems property. To
   learn the number of items in the list readthe Count property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeDebugList
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection.TJclPeDebugList>
@@ -2234,12 +1544,7 @@ Summary:
 Description:
   The TJclPeDebugList represent the debug section of an image file.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeDebugList.Items
 Summary:
@@ -2252,13 +1557,7 @@ Description:
   record look up IMAGE_DEBUG_DIRECTORY in the Platform SDK. To learn the number of
   items in the list read the Count property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeHeader
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImage>
@@ -2267,12 +1566,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeHeader.JclPeHeader_Signature
   TODO
 @@TJclPeHeader.JclPeHeader_Machine
@@ -2349,12 +1643,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclLoadConfig.JclLoadConfig_Characteristics
   TODO
 @@TJclLoadConfig.JclLoadConfig_TimeDateStamp
@@ -2397,12 +1686,7 @@ Summary:
 Description:
   Record which contains some common attributes of an image file.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeFileProperties.Size
   Size, in bytes, of the image file.
 @@TJclPeFileProperties.CreationTime
@@ -2421,12 +1705,7 @@ Summary:
 Description:
   TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeImageStatus.stNotLoaded
   No image file is loaded. This is the status after creation and after clearing the instance.
 @@TJclPeImageStatus.stOk
@@ -2449,12 +1728,7 @@ Description:
   files such as .exe, .dll and so forth. TJclPeImage allow you to easily read all
   information contained in a PE file such as the functions it imports and/or exports.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Create
 Summary:
@@ -2465,13 +1739,7 @@ Description:
 Parameters:
   ANoExceptions - Determines whether certain methods raise exceptions when they encounter a failure. Currently this applies only to setting the FileName property to an invalid filename or calling the AttachLoadedModule method with an invalid parameter.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.AttachLoadedModule
 Summary:
@@ -2483,13 +1751,7 @@ Description:
 Parameters:
   Handle - Handle to the image you want to attach to.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.CalculateCheckSum
 Summary:
@@ -2499,13 +1761,7 @@ Description:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryEntryToData
 Summary:
@@ -2517,13 +1773,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.GetSectionHeader
 Summary:
@@ -2536,13 +1786,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.GetSectionName
 Summary:
@@ -2555,13 +1799,7 @@ Result:
   If the function succeeds it returns the name of the specified section, otherwise
   it returns an empty string.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.IsSystemImage
 Summary:
@@ -2569,13 +1807,7 @@ Summary:
 Description:
   Returns True if the image is a kernel mode executable.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RawToVa
 Summary:
@@ -2587,13 +1819,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RvaToSection
 Summary:
@@ -2605,13 +1831,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RvaToVa
 Summary:
@@ -2623,13 +1843,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.StatusOK
 Summary:
@@ -2640,13 +1854,7 @@ Description:
   should not use any of it's properties or methods until reinitialized using the
   FileName property or the AttachLoadedModule method.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.TryGetNamesForOrdinalImports
 Summary:
@@ -2658,13 +1866,7 @@ Description:
   IndirectImportName property of the TJclPeImportFuncItem class and the same named
   method in the TJclPeImportList class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VerifyCheckSum
 Summary:
@@ -2675,13 +1877,7 @@ Result:
   If the checksum is valid the method returns True, otherwise it returns False. Note
   that 0 is considered a valid checksum.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DebugTypeNames
 Summary:
@@ -2693,13 +1889,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryNames
 Summary:
@@ -2711,13 +1901,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ExpandBySearchPath
 Summary:
@@ -2730,13 +1914,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.HeaderNames
 Summary:
@@ -2748,13 +1926,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadConfigNames
 Summary:
@@ -2766,13 +1938,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ShortSectionInfo
 Summary:
@@ -2784,13 +1950,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.StampToDateTime
 Summary:
@@ -2802,13 +1962,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.AttachedImage
 Summary:
@@ -2816,13 +1970,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DebugList
 Summary:
@@ -2832,13 +1980,7 @@ Description:
   to the debug section (.debug) of the loaded PE image file.
   See TJclPeDebugList for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Description
 Summary:
@@ -2846,13 +1988,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Directories
 Summary:
@@ -2860,13 +1996,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryExists
 Summary:
@@ -2874,13 +2004,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ExportList
 Summary:
@@ -2892,13 +2016,7 @@ Description:
 See also:
   TJclPeExportFuncList
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.FileName
 Summary:
@@ -2912,13 +2030,7 @@ Description:
 See also:
   Status
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.FileProperties
 Summary:
@@ -2928,13 +2040,7 @@ Description:
   standard (non PE specific) information about the loaded image file. This includes
   it's size, creation time and attributes.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.HeaderValues
 Summary:
@@ -2942,13 +2048,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionCount
 Summary:
@@ -2961,13 +2061,7 @@ See also:
   ImageSectionNames
   ImageSectionHeaders
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionHeaders
 Summary:
@@ -2983,13 +2077,7 @@ See also:
   ImageSectionCount
   ImageSectionNames
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionNames
 Summary:
@@ -3002,13 +2090,7 @@ See also:
   ImageSectionCount
   ImageSectionHeaders
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionNameFromRva
 Summary:
@@ -3016,13 +2098,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImportList
 Summary:
@@ -3032,13 +2108,7 @@ Description:
   to the import section (.idata) of the loaded PE image file.
   See TJclPeImportList for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadConfigValues
 Summary:
@@ -3046,13 +2116,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadedImage
 Summary:
@@ -3062,13 +2126,7 @@ Description:
   file. See the LOADED_IMAGE topic in the Platform SDK for a description of this
   record.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.MappedAddress
 Summary:
@@ -3080,13 +2138,7 @@ Description:
 See also:
   LoadedImage
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.OptionalHeader
 Summary:
@@ -3102,13 +2154,7 @@ Description:
   Object File Format Specification" Revision 6.0 February 1999 in the MSDN library
   for a description of the fields in the returned record.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RelocationList
 Summary:
@@ -3119,13 +2165,7 @@ Description:
   known as the fix up table.
   See REF Target"..\Relocations section\TJclPeRelocList">TJclPeRelocList for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ResourceList
 Summary:
@@ -3135,13 +2175,7 @@ Description:
   section (.rsrc) of the loaded PE file.
   See TJclPeRootResourceList for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Status
 Summary:
@@ -3153,13 +2187,7 @@ Description:
   exceptions. Therefor unless you check this property it is unknown whether or not
   the TJclPeImage contains valid data.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.UnusedHeaderBytes
 Summary:
@@ -3167,13 +2195,7 @@ Summary:
 Description:
   Returns the offset and size of the part of the PE header which is currently unused.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VersionInfo
 Summary:
@@ -3184,13 +2206,7 @@ Description:
   version resource reading this property returns nil.
   See TJclFileVersionInfo for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VersionInfoAvailable
 Summary:
@@ -3198,13 +2214,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPePackageInfo>
@@ -3214,12 +2224,7 @@ Description:
   The TJclPackageInfo class allows you to obtain information about Delphi packages
   such as which units it contains and which packages it requires.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Create
 Summary:
@@ -3229,13 +2234,7 @@ Description:
 Parameters:
   ALibHandle - Handle to a loaded package. For example, the handle returned by the LoadPackage RTL function.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.PackageModuleTypeToString
 Summary:
@@ -3243,13 +2242,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.PackageOptionsToString
 Summary:
@@ -3257,13 +2250,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ProducerToString
 Summary:
@@ -3271,13 +2258,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.UnitInfoFlagsToString
 Summary:
@@ -3285,13 +2266,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Contains
 Summary:
@@ -3301,13 +2276,7 @@ Description:
   Note that the returned TStrings instance remains owned by the class so you should
   never free it.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsCount
 Summary:
@@ -3315,13 +2284,7 @@ Summary:
 Description:
   Returns the number of items in the ContainsNames property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsNames
 Summary:
@@ -3332,13 +2295,7 @@ Description:
   read the ContainsCount property. To read the flags associated with the contained
   unit read ContainsFlags property using the same index.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsFlags
 Summary:
@@ -3359,13 +2316,7 @@ ufImplicitUnit  TODO
 </TABLE>
 
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Description
 Summary:
@@ -3373,13 +2324,7 @@ Summary:
 Description:
   Returns the description string for the package as it appears in the package resource.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Flags
 Summary:
@@ -3406,13 +2351,7 @@ pfLibraryModule      TODO
 </TABLE>
 
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Requires
 Summary:
@@ -3421,13 +2360,7 @@ Description:
   Returns a list of package names that the package requires. Note that the returned
   TStrings object remains owned by the class so you should never free it.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.RequiresCount
 Summary:
@@ -3435,13 +2368,7 @@ Summary:
 Description:
   Returns the number of items in the RequiresNames property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.RequiresNames
 Summary:
@@ -3451,13 +2378,7 @@ Description:
   package names that are required by the package. To learn the number of items in
   the list read the RequiresCount property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage>
@@ -3468,12 +2389,7 @@ Description:
   to information contained in the image file which is specific, and therefore unique,
   to images produced by a Borland linker.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.FreeLibHandle
 Summary:
@@ -3481,13 +2397,7 @@ Summary:
 Description:
   Closes the library handle as returned by the LibHandle property.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsBorlandImage
 Summary:
@@ -3495,13 +2405,7 @@ Summary:
 Description:
   Returns whether or not the image is an image produced by a Borland linker.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsPackage
 Summary:
@@ -3509,13 +2413,7 @@ Summary:
 Description:
   Returns whether the image is Borland package file.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.LibHandle
 Summary:
@@ -3525,13 +2423,7 @@ Description:
   returns a handle to the loaded image. Use the FreeLibHandle method when you no
   longer need the handle.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.PackageInfo
 Summary:
@@ -3541,13 +2433,7 @@ Description:
   about the image such as the units contained in it. This property is only valid
   if the image is a package.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearchOption
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
@@ -3558,12 +2444,7 @@ Description:
   determine the scope of the search. In other word, these flags determine which
   parts of an image is searched.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeNameSearchOption.seImports
   Searches the import section of the image.
 @@TJclPeNameSearchOption.seDelayImports
@@ -3590,12 +2471,7 @@ Parameters:
   PeImage - Reference to a TJclPeImage instance which is used to perform the search.
   Process - Determines whether or not to process the image file. If you set Process to False the image is skipped, if you set it to True the image is searched.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearchFoundEvent
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
@@ -3610,12 +2486,7 @@ Parameters:
   FunctionName - The name of the function as it was found in the image file. Depending on which options you specified this name may be slightly different than the one being searched for (for example, in case).
   Option - Indicates in which section of the image file the function was found(for example, import or export section). This is quarenteed to be one of the options you specified when you started the search.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch.TJclPeNameSearch>
@@ -3628,12 +2499,7 @@ Description:
   exactly which image files are to be searched. Occurences are reported back through
   an event.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.Create
 Summary:
@@ -3647,13 +2513,7 @@ Parameters:
   Path - The Path parameter is the directory and file name mask, including wildcard characters that define the image files to be searched. For example, 'c:\winnt\system32\*.dll' specifies all dynamic link libraries in the c:\winnt\system32 directory. Using the OnProcessFile event you can perform additional filtering of image files.
   Options - Set of options specifying which sections of the image files are to be searched (for example, import and/or export sections). See the description of TJclPeNameSearchOptions for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.Start
 Summary:
@@ -3662,13 +2522,7 @@ Description:
   Starts the search operation. To temporarily pause the search set the Suspended
   property to True. To cancel the search set the Terminated property to True.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.OnFound
 Summary:
@@ -3679,13 +2533,7 @@ Description:
   it through the standard TThread method Synchronize.
   See the description of TJclPeNameSearchFoundEvent for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.OnProcessFile
 Summary:
@@ -3696,13 +2544,7 @@ Description:
   it through the standard TThread method Synchronize.
   See the description of TJclPeNameSearchNotifyEvent for more information.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclRebaseImageInfo
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
@@ -3714,12 +2556,7 @@ Description:
 See also:
   PeRebaseImage
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclRebaseImageInfo.OldImageSize
   Size of the image before the rebase.
 @@TJclRebaseImageInfo.OldImageBase
@@ -3743,12 +2580,7 @@ Result:
   If the specified file is a valid portable executable file the function returns
   True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeCreateNameHintTable
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Miscellaneous>
@@ -3761,12 +2593,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeRebaseImage
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Miscellaneous>
@@ -3791,12 +2618,7 @@ Result:
 See also:
   TJclRebaseImageInfo
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeUpdateCheckSum
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Miscellaneous>
@@ -3809,12 +2631,7 @@ Description:
 Parameters:
   AFileName - The name of the image file for which to update the checksum.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeDoesExportFunction
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3833,12 +2650,7 @@ Result:
 See also:
   TJclSmartCompOptions
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeIsExportFunctionForwardedEx
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3858,12 +2670,7 @@ Result:
   otherwise it returns False. In the latter case the contents of the ForwardedName
   parameter is undefined.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeIsExportFunctionForwarded
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3880,12 +2687,7 @@ Result:
   If the specified function is forwarded to another module the function returns True,
   otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeDoesImportFunction
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3904,12 +2706,7 @@ Result:
   If the function is imported (optionally from the specified library) the function
   returns True, otherwise ut returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeDoesImportLibrary
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3927,12 +2724,7 @@ Result:
   If the image directly imports the library the function returns True, otherwise it
   returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeImportedLibraries
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3952,12 +2744,7 @@ Result:
 Notes:
   This function preserves the contents of the libraries list.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeImportedLibrariesArray
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -3977,12 +2764,7 @@ Result:
   If the function succeeds it returns True, otherwise it returns False. In the
   latter case the contents of the list is undefined.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeImportedFunctions
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4001,12 +2783,7 @@ Result:
   latter case the contents of the list are undefined. Note that even in the case
   of success, the list may not contain any entries (the image may not import anything).
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeImportedFunctionsArray
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4025,12 +2802,7 @@ Result:
   the case of success, the list may not contain any entries (the image may not import
   anything).
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeExportedFunctions
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4044,12 +2816,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeExportedFunctionsArray
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4063,12 +2830,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeGetNtHeaders
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4086,12 +2848,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeVerifyCheckSum
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers>
@@ -4107,12 +2864,7 @@ Result:
   If the image's checksum is correct the function returns True, otherwise it
   returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeMapImgNtHeaders
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
@@ -4129,12 +2881,7 @@ Result:
   record. If the function fails it returns nil. Note that the returned pointer is
   only valid as long as the image file remains mapped in memory.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeMapImgLibraryName
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
@@ -4148,12 +2895,7 @@ Result:
   If the function succeeds it returns the name of the image mapped at the specified
   address. If the function fails it returns an empty string.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeMapImgSections
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
@@ -4173,12 +2915,7 @@ Result:
   first section in the image. If the function fails it returns nil. Note that the
   returned pointer is valid only as long as the image remains mapped in memory.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeMapImgFindSection
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
@@ -4193,12 +2930,7 @@ Result:
   If the function finds the specified named section it returns a pointer to the
   section header. If the function doesn't find the named section it returns nil.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines.TJclPeSectionStream>
@@ -4207,12 +2939,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Create
 Summary:
@@ -4223,13 +2950,7 @@ Parameters:
   TODO - TODO
   TODO - TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Write
 Summary:
@@ -4242,13 +2963,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Instance
 Summary:
@@ -4256,13 +2971,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.SectionHeader
 Summary:
@@ -4270,13 +2979,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHookItem>
@@ -4288,12 +2991,7 @@ Description:
   the image it resides in, as well as methods to unhook the function. You perform
   the initial hooking itself using the TJclPeMapImgHooks class.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.Unhook
 Summary:
@@ -4304,13 +3002,7 @@ Description:
   place and will destroy the TJclPeMapImgHookItem instance on which the method was
   invoked.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.BaseAddress
 Summary:
@@ -4318,13 +3010,7 @@ Summary:
 Description:
   Base address at which the image in which the hooked function resides, is mapped.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.FunctionName
 Summary:
@@ -4332,13 +3018,7 @@ Summary:
 Description:
   Name of the hooked function.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.ModuleName
 Summary:
@@ -4346,13 +3026,7 @@ Summary:
 Description:
   Name of the image in which the hooked function resides.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.NewAddress
 Summary:
@@ -4360,13 +3034,7 @@ Summary:
 Description:
   Address of the function that replaced the original, hooked function.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.OriginalAddress
 Summary:
@@ -4374,13 +3042,7 @@ Summary:
 Description:
   Address of the original, hooked funcion.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHooks>
@@ -4392,12 +3054,7 @@ Description:
   it manages when it is destroyed. The class does not allow you to hook a single
   function more than once.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.HookImport
 Summary:
@@ -4418,13 +3075,7 @@ Result:
   If the function succeeds it returns True and adds an item representing the hooked
   function to the list.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.IsWin9xDebugThunk
 Summary:
@@ -4436,13 +3087,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ReplaceImport
 Summary:
@@ -4459,13 +3104,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.UnhookByNewAddress
 Summary:
@@ -4477,13 +3116,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.Items
 Summary:
@@ -4491,13 +3124,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ItemFromOriginalAddress
 Summary:
@@ -4505,13 +3132,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ItemFromNewAddress
 Summary:
@@ -4519,13 +3140,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeDbgImgNtHeaders
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Imageaccessunderdebugger>
@@ -4538,12 +3153,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeDbgImgLibraryName
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Imageaccessunderdebugger>
@@ -4556,12 +3166,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBorUmDescription
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Nameunmangling>
@@ -4570,12 +3175,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclBorUmDescription.Kind
   TODO
 @@TJclBorUmDescription.Modifiers
@@ -4588,12 +3188,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclBorUmSymbolKind.skData
   TODO
 @@TJclBorUmSymbolKind.skFunction
@@ -4614,12 +3209,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclBorUmSymbolModifier.smQualified
   TODO
 @@TJclBorUmSymbolModifier.smLinkProc
@@ -4632,12 +3222,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclBorUmResult.urOk
   TODO
 @@TJclBorUmResult.urNotMangled
@@ -4654,12 +3239,7 @@ Summary:
 Description:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclPeUmResult.umNotMangled
   TODO
 @@TJclPeUmResult.umBorland
@@ -4678,12 +3258,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeIsNameMangled
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Nameunmangling>
@@ -4696,12 +3271,7 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@PeUnmangleName
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.Nameunmangling>
@@ -4714,10 +3284,4 @@ Parameters:
 Result:
   TODO
 Quick info:
-  Unit: JclPeImage
-  Category: Libraries, Processes and Threads
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
