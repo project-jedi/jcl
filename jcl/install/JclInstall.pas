@@ -359,6 +359,14 @@ const
   JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
   JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
 
+  ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
+    (
+      JclIdeDebugDpk,
+      JclIdeAnalyzerDpk,
+      JclIdeFavoriteDpk,
+      JclIdeThrNamesDpk
+    );
+
   JclSrcDirOS       = 'windows';
   JclSrcDirVcl      = 'vcl';
   JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVcl, JclSrcDirVisClx);
@@ -638,7 +646,7 @@ begin
   UnitList := Units[SubDir];
   with Target.DCC do
   begin
-    Options.Clear;
+    SetDefaultOptions;
     Options.Add('-M');
     if Target.RADToolKind = brCppBuilder then
     begin
@@ -938,16 +946,6 @@ begin
 end;
 
 function TJclInstallation.InstallOption(Option: TJediInstallOption): Boolean;
-{$IFDEF MSWINDOWS}
-const
-  ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
-    (
-      JclIdeDebugDpk,
-      JclIdeAnalyzerDpk,
-      JclIdeFavoriteDpk,
-      JclIdeThrNamesDpk
-    );
-{$ENDIF MSWINDOWS}
 begin
   Result := True;
   case Option of
@@ -1008,16 +1006,6 @@ begin
 end;
 
 function TJclInstallation.UninstallOption(Option: TJediInstallOption): Boolean;
-{$IFDEF MSWINDOWS}
-const
-  ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
-    (
-      JclIdeDebugDpk,
-      JclIdeAnalyzerDpk,
-      JclIdeFavoriteDpk,
-      JclIdeThrNamesDpk
-    );
-{$ENDIF MSWINDOWS}
 begin
   Result := True;
   case Option of
@@ -1601,6 +1589,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.51  2005/02/23 08:32:30  rrossmair
+// - TJclInstallation: replaced Target.DCC.Options.Clear by Target.DCC.SetDefaultOptions.
+//   Some cleanup.
+//
 // Revision 1.50  2005/02/05 05:16:18  rrossmair
 // - check-in for release 1.94.1.1802
 //
