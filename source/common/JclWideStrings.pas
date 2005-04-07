@@ -256,11 +256,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ELSE}
-  {$IFDEF FPC}
-  rtlconst,
-  {$ELSE ~FPC}
   Consts,
-  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -1809,6 +1805,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/04/07 00:41:35  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.13  2005/03/19 21:22:25  rrossmair
 // - fixed typo in changed StrScanW
 //
