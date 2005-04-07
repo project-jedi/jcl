@@ -276,6 +276,7 @@ const
   SECURITY_MAX_SID_SIZE = SizeOf(SID) - SizeOf(DWORD) + (SID_MAX_SUB_AUTHORITIES * SizeOf(DWORD));
   {$EXTERNALSYM SECURITY_MAX_SID_SIZE}
 
+{$IFNDEF FPC}
   SidTypeUser           = 1;
   {$EXTERNALSYM SidTypeUser}
   SidTypeGroup          = 2;
@@ -294,6 +295,7 @@ const
   {$EXTERNALSYM SidTypeUnknown}
   SidTypeComputer       = 9;
   {$EXTERNALSYM SidTypeComputer}
+{$ENDIF ~FPC}
 
 type
   _SID_NAME_USE = DWORD;

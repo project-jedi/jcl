@@ -831,7 +831,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please use FPC 1.1 or later to compile this.
+     Please use FPC 1.98 or later to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
@@ -876,7 +876,7 @@
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
-    {$DEFINE HAS_UNIT_RTLCONST}
+    {$DEFINE HAS_UNIT_RTLCONSTS}
 
     {$DEFINE XPLATFORM_RTL}
 
@@ -1024,8 +1024,11 @@
 // History:
 
 // $Log$
+// Revision 1.22  2005/04/07 00:41:35  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.21  2005/02/22 07:36:46  marquardt
-// introduced SUPPORTS_INLINE
+// introduced SUPPORTS_INLINE, minor cleanups in JclRegistry
 //
 // Revision 1.20  2004/11/18 00:57:13  rrossmair
 // - check-in for release 1.93

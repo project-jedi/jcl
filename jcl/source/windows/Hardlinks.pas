@@ -1,4 +1,9 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -33,6 +38,7 @@
 {  2000.                                                                                           }
 {                                                                                                  }
 {**************************************************************************************************}
+
 // Last modified: $Date$
 // For history see end of file
 
@@ -43,9 +49,9 @@ unit Hardlinks;
 
 interface
 // ALL enabled by default for Project JEDI
-{$DEFINE STDCALL}   // Make functions STDCALL always
-{$DEFINE RTDL}      // Use runtime dynamic linking
-{$DEFINE PREFERAPI} // Prefer the "real" Windows API on systems on which it exists
+   // Make functions STDCALL always
+      // Use runtime dynamic linking
+ // Prefer the "real" Windows API on systems on which it exists
                     // If this is defined STDCALL is automatically needed and defined!
 
 (*
@@ -63,44 +69,30 @@ interface
 uses
   Windows;
 
-{$IFDEF PREFERAPI}
-  {$DEFINE STDCALL} // For the windows API we _require_ STDCALL calling convention
-{$ENDIF PREFERAPI}
+   // For the windows API we _require_ STDCALL calling convention
 
 {$EXTERNALSYM CreateHardLinkW}
 {$EXTERNALSYM CreateHardLinkA}
 
-{$IFNDEF PREFERAPI}
-// We prefer the homegrown version - use the static version
-function CreateHardLinkW(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-  {$IFDEF STDCALL} stdcall; {$ENDIF} // Makes the actual call STDCALL
-function CreateHardLinkA(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-  {$IFDEF STDCALL} stdcall; {$ENDIF} // Makes the actual call STDCALL
-{$ELSE PREFERAPI}
 // Well, we did not decide yet ;) - bind to either address, depending on whether
 // the API could be found.
 type
-  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL; {$IFDEF STDCALL} stdcall; {$ENDIF}
-  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL; {$IFDEF STDCALL} stdcall; {$ENDIF}
+  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;  stdcall; 
+  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;  stdcall; 
 var
   CreateHardLinkW: TFNCreateHardLinkW = nil;
   CreateHardLinkA: TFNCreateHardLinkA = nil;
-{$ENDIF PREFERAPI}
 
-{$IFDEF RTDL}
 var
   hNtDll: THandle = 0; // For runtime dynamic linking
   bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
-{$ENDIF RTDL}
 
 implementation
 
 const
   szNtDll           = 'NTDLL.DLL'; // Import native APIs from this DLL
-{$IFDEF PREFERAPI}
   szCreateHardLinkA = 'CreateHardLinkA';
   szCreateHardLinkW = 'CreateHardLinkW';
-{$ENDIF PREFERAPI}
 
 (******************************************************************************
 
@@ -224,48 +216,6 @@ const
 // Function prototypes
 // =================================================================
 
-{$IFNDEF RTDL}
-function RtlCreateUnicodeStringFromAsciiz(var destination: UNICODE_STRING;
-  source: PChar): Boolean; stdcall; external szNtDll;
-
-function ZwClose(Handle: THandle): NTSTATUS; stdcall; external szNtDll;
-
-function ZwSetInformationFile(FileHandle: THandle; var IoStatusBlock: IO_STATUS_BLOCK;
-  FileInformation: Pointer; FileInformationLength: ULONG;
-  FileInformationClass: DWORD): NTSTATUS; stdcall; external szNtDll;
-
-function RtlPrefixUnicodeString(const usPrefix: UNICODE_STRING;
-  const usContainingString: UNICODE_STRING;
-  ignore_case: Boolean): Boolean; stdcall; external szNtDll;
-
-function ZwOpenSymbolicLinkObject(var LinkHandle: THandle; DesiredAccess: DWORD;
-  const ObjectAttributes: OBJECT_ATTRIBUTES): NTSTATUS; stdcall; external szNtDll;
-
-function ZwQuerySymbolicLinkObject(LinkHandle: THandle;
-  var LinkTarget: UNICODE_STRING; ReturnedLength: PULONG): NTSTATUS; stdcall; external szNtDll;
-
-function ZwOpenFile(var FileHandle: THandle; DesiredAccess: DWORD;
-  const ObjectAttributes: OBJECT_ATTRIBUTES; var IoStatusBlock: IO_STATUS_BLOCK;
-  ShareAccess: ULONG; OpenOptions: ULONG): NTSTATUS; stdcall; external szNtDll;
-
-function RtlAllocateHeap(HeapHandle: Pointer;
-  Flags, Size: ULONG): Pointer; stdcall; external szNtDll;
-
-function RtlFreeHeap(HeapHandle: Pointer; Flags: ULONG;
-  MemoryPointer: Pointer): Boolean; stdcall; external szNtDll;
-
-function RtlDosPathNameToNtPathName_U(DosName: PWideChar;
-  var NtName: UNICODE_STRING; DosFilePath: PPWideChar;
-  NtFilePath: PUNICODE_STRING): Boolean; stdcall; external szNtDll;
-
-function RtlInitUnicodeString(var DestinationString: UNICODE_STRING;
-  const SourceString: PWideChar): NTSTATUS; stdcall; external szNtDll;
-
-function RtlDetermineDosPathNameType_U(wcsPathNameType: PWideChar): DWORD; stdcall; external szNtDll;
-
-function RtlNtStatusToDosError(status: NTSTATUS): ULONG; stdcall; external szNtDll;
-
-{$ELSE RTDL}
 
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
@@ -321,7 +271,6 @@ var
   RtlInitUnicodeString: TRtlInitUnicodeString = nil;
   RtlDetermineDosPathNameType_U: TRtlDetermineDosPathNameType_U = nil;
   RtlNtStatusToDosError: TRtlNtStatusToDosError = nil;
-{$ENDIF RTDL}
 
 
 function NtpGetProcessHeap: Pointer; assembler;
@@ -329,7 +278,7 @@ asm
   // The structure offsets are now hardcoded to be able to remove otherwise
   // obsolete structure definitions.
 //MOV    EAX, FS:[0]._TEB.Peb
-  MOV    EAX, FS:$30    // FS points to TEB/TIB which has a pointer to the PEB
+  MOV    EAX, FS:[$30]    // FS points to TEB/TIB which has a pointer to the PEB
 //MOV    EAX, [EAX]._PEB.ProcessHeap
   MOV    EAX, [EAX+$18] // Get the process heap's handle
 (*
@@ -416,11 +365,7 @@ end;
 
  ******************************************************************************)
 function
-{$IFNDEF PREFERAPI}
-  CreateHardLinkW // This name is directly published if PREFERAPI is not defined
-{$ELSE PREFERAPI}
   MyCreateHardLinkW // ... otherwise this one
-{$ENDIF PREFERAPI}
   (szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 const
 // Mask for any DOS style drive path in object manager notation
@@ -450,10 +395,8 @@ var
   lpFileLinkInfo: PFILE_LINK_INFORMATION;
 begin
   Result := False;
-{$IFDEF RTDL}
   if not bRtdlFunctionsLoaded then
     Exit;
-{$ENDIF RTDL}
   // Get process' heap
   hHeap := NtpGetProcessHeap;
   {-------------------------------------------------------------
@@ -637,11 +580,7 @@ end;
  ******************************************************************************)
 
 function
-{$IFNDEF PREFERAPI}
-  CreateHardLinkA // This name is directly published if PREFERAPI is not defined
-{$ELSE PREFERAPI}
   MyCreateHardLinkA // ... otherwise this one
-{$ENDIF PREFERAPI}
   (szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 var
   usLinkName: UNICODE_STRING;
@@ -649,10 +588,8 @@ var
   hHeap: Pointer;
 begin
   Result := False;
-{$IFDEF RTDL}
   if not bRtdlFunctionsLoaded then
     Exit;
-{$ENDIF RTDL}
   // Get the process' heap
   hHeap := NtpGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
@@ -672,7 +609,6 @@ begin
   end;
 end;
 
-{$IFDEF RTDL}
 const
 // Names of the functions to import
   szRtlCreateUnicodeStringFromAsciiz = 'RtlCreateUnicodeStringFromAsciiz';
@@ -688,15 +624,11 @@ const
   szRtlInitUnicodeString             = 'RtlInitUnicodeString';
   szRtlDetermineDosPathNameType_U    = 'RtlDetermineDosPathNameType_U';
   szRtlNtStatusToDosError            = 'RtlNtStatusToDosError';
-{$ENDIF RTDL}
 
-{$IFDEF PREFERAPI}
 var
   hKernel32: THandle = 0;
-{$ENDIF PREFERAPI}
 
 initialization
-  {$IFDEF PREFERAPI}
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -707,9 +639,7 @@ initialization
   // If they could not be retrieved resort to our home-grown version
   if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then
   begin
-  {$ENDIF PREFERAPI}
 
-  {$IFDEF RTDL}
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -746,15 +676,14 @@ initialization
       Assigned(@RtlDetermineDosPathNameType_U) and
       Assigned(@RtlNtStatusToDosError);
   end;
-  {$ENDIF RTDL}
 
-  {$IFDEF PREFERAPI}
     @CreateHardLinkA := @MyCreateHardLinkA;
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
-  {$ENDIF PREFERAPI}
+
 
 // History:
+
 
 {
    Version 1.13a - 2005-03-06

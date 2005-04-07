@@ -71,7 +71,7 @@ uses
 
 {$IFDEF FPC}
 type
-  PBoolean = System.PBoolean;
+  PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
 {$ENDIF FPC}
 
 // replacements for defective Libc.pas declarations
@@ -887,7 +887,7 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  ShellApi,
+  ShellApi, 
   {$IFDEF FPC}
   WinSysUt,
   {$ELSE ~FPC}
@@ -2640,17 +2640,6 @@ end;
 {$IFDEF MSWINDOWS}
 
 function FileGetDisplayName(const FileName: string): string;
-{$IFDEF FPC}
-var
-  FileInfo: TSHFileInfoA;
-begin
-  FillChar(FileInfo, SizeOf(FileInfo), #0);
-  if SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> nil then
-    Result := FileInfo.szDisplayName
-  else
-    Result := FileName;
-end;
-{$ELSE ~FPC}
 var
   FileInfo: TSHFileInfo;
 begin
@@ -2660,7 +2649,6 @@ begin
   else
     Result := FileName;
 end;
-{$ENDIF ~FPC}
 
 {$ELSE ~MSWINDOWS}
 
@@ -2819,25 +2807,6 @@ end;
 {$IFDEF MSWINDOWS}
 
 function FileGetTypeName(const FileName: string): string;
-{$IFDEF FPC}
-var
-  FileInfo: TSHFileInfoA;
-  RetVal: Pointer;
-begin
-  FillChar(FileInfo, SizeOf(FileInfo), #0);
-  RetVal := SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo),
-    SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
-  if RetVal <> nil then
-    Result := FileInfo.szTypeName;
-  if (RetVal = nil) or (Trim(Result) = '') then
-  begin
-    // Lookup failed so mimic explorer behaviour by returning "XYZ File"
-    Result := ExtractFileExt(FileName);
-    Delete(Result, 1, 1);
-    Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
-  end;
-end;
-{$ELSE ~FPC}
 var
   FileInfo: TSHFileInfo;
   RetVal: DWORD;
@@ -2855,7 +2824,6 @@ begin
     Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
   end;
 end;
-{$ENDIF ~FPC}
 
 {$ENDIF MSWINDOWS}
 
@@ -5437,6 +5405,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.45  2005/04/07 00:41:35  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.44  2005/03/22 03:40:24  rrossmair
 // - tweaked PathGetRelativePath
 //

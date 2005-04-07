@@ -324,9 +324,12 @@ function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
+  {$IFDEF FPC}
+  PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
+  {$ENDIF FPC}
 
 const
-  ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF}; 
+  ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
 
 function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
@@ -2236,6 +2239,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.36  2005/04/07 00:41:35  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.35  2005/03/08 16:10:08  marquardt
 // standard char sets extended and used, some optimizations for string literals
 //

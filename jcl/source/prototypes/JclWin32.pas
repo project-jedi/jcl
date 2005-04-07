@@ -223,6 +223,10 @@ end;
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.5  2005/04/07 00:41:37  rrossmair
+// - changed for FPC 1.9.8
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.4  2005/03/08 08:33:19  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
@@ -232,10 +236,9 @@ end;
 // Revision 1.2  2004/12/23 04:31:43  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.1  2004/12/03 04:05:19  rrossmair
 // JclWin32 a unit generated from prototype now
-
+//
 // History of source\windows\JclWin32.pas:
 //
 // Revision 1.32  2004/11/04 12:55:21  obones

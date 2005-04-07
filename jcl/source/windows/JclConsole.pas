@@ -391,6 +391,19 @@ uses
   Math, TypInfo,
   JclFileUtils, JclResources;
 
+{$IFDEF FPC}
+{$EXTERNALSYM CreateConsoleScreenBuffer}
+const
+  kernel32 = 'kernel32.dll';
+  
+function CreateConsoleScreenBuffer(dwDesiredAccess, dwShareMode: DWORD;
+  lpSecurityAttributes: PSecurityAttributes; dwFlags: DWORD; lpScreenBufferData: Pointer): THandle; stdcall;
+  external kernel32 name 'CreateConsoleScreenBuffer';
+function SetConsoleWindowInfo(hConsoleOutput: THandle; bAbsolute: BOOL;
+  const lpConsoleWindow: TSmallRect): BOOL; stdcall;
+  external kernel32 name 'SetConsoleWindowInfo';
+{$ENDIF FPC}
+
 const
   COMMON_LVB_LEADING_BYTE    = $0100; // Leading Byte of DBCS
   COMMON_LVB_TRAILING_BYTE   = $0200; // Trailing Byte of DBCS
@@ -1454,6 +1467,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/04/07 00:41:38  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.16  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

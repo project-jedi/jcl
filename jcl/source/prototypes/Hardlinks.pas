@@ -457,7 +457,7 @@ asm
   // The structure offsets are now hardcoded to be able to remove otherwise
   // obsolete structure definitions.
 //MOV    EAX, FS:[0]._TEB.Peb
-  MOV    EAX, FS:$30    // FS points to TEB/TIB which has a pointer to the PEB
+  MOV    EAX, FS:[$30]    // FS points to TEB/TIB which has a pointer to the PEB
 //MOV    EAX, [EAX]._PEB.ProcessHeap
   MOV    EAX, [EAX+$18] // Get the process heap's handle
 (*
@@ -890,6 +890,9 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.13  2005/04/07 00:41:37  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.12  2005/03/08 08:33:18  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

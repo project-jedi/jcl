@@ -1063,14 +1063,13 @@ uses
   SysUtils,
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
-  JclRegistry, JclWin32,
   {$IFDEF FPC}
-  ActiveX,
-  JwaTlHelp32, JwaPsApi,
+  ActiveX, JwaTlHelp32, JwaPsApi,
   {$ELSE}
   TLHelp32, PsApi,
   JclShell,
   {$ENDIF FPC}
+  JclRegistry, JclWin32,
   {$ENDIF MSWINDOWS}
   Jcl8087, JclBase, JclFileUtils, JclIniFiles, JclStrings;
 
@@ -2961,6 +2960,12 @@ type
 var
   NetBiosLib: HINST = 0;
   _NetBios: TNetBios;
+  {$IFDEF FPC}
+  NullAdapterAddress: array [0..5] of Byte = ($00, $00, $00, $00, $00, $00);
+  OID_ipMACEntAddr: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 6);
+  OID_ifEntryType: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 3);
+  OID_ifEntryNum: array [0..7] of UINT = (1, 3, 6, 1, 2, 1, 2, 1);
+  {$ENDIF FPC}
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 
@@ -3058,10 +3063,12 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
   const
     InetMib1 = 'inetmib1.dll';
     DunAdapterAddress: array [0..4] of Byte = ($44, $45, $53, $54, $00);
+    {$IFNDEF FPC // can't resolve address of const }
     NullAdapterAddress: array [0..5] of Byte = ($00, $00, $00, $00, $00, $00);
     OID_ipMACEntAddr: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 6);
     OID_ifEntryType: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 3);
     OID_ifEntryNum: array [0..7] of UINT = (1, 3, 6, 1, 2, 1, 2, 1);
+    {$ENDIF ~FPC}
   var
     PollForTrapEvent: THandle;
     SupportedView: PAsnObjectIdentifier;
@@ -4883,6 +4890,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.42  2005/04/07 00:41:35  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.41  2005/03/12 01:32:50  outchy
 // Update of the CPUID function. New processors detection, constants reworked and specifications upgraded.
 //

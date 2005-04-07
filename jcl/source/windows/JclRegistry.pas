@@ -58,8 +58,16 @@ type
 
   EJclRegistryError = class(EJclError);
 
-{$IFNDEF FPC}
-// (rom) from JclMiscel.pas, now put to good use for BCB
+{$IFDEF FPC}
+const
+  HKCR = DelphiHKEY($80000000);
+  HKCU = DelphiHKEY($80000001);
+  HKLM = DelphiHKEY($80000002);
+  HKUS = DelphiHKEY($80000003);
+  HKPD = DelphiHKEY($80000004);
+  HKCC = DelphiHKEY($80000005);
+  HKDD = DelphiHKEY($80000006);
+{$ELSE ~FPC}
 const
   HKCR = DelphiHKEY(HKEY_CLASSES_ROOT);
   HKCU = DelphiHKEY(HKEY_CURRENT_USER);
@@ -1394,6 +1402,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.38  2005/04/07 00:41:38  rrossmair
+// - changed for FPC 1.9.8
+//
 // Revision 1.37  2005/04/04 19:15:42  outchy
 // IT2805: Range Check Error in RegReadInteger and RegWriteInteger
 //
