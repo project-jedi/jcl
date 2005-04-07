@@ -170,11 +170,12 @@ unit Hardlinks;
 {$MINENUMSIZE 4}
 
 interface
-// ALL enabled by default for Project JEDI
-{$DEFINE STDCALL}   // Make functions STDCALL always
-{$DEFINE RTDL}      // Use runtime dynamic linking
-{$DEFINE PREFERAPI} // Prefer the "real" Windows API on systems on which it exists
-                    // If this is defined STDCALL is automatically needed and defined!
+{$IFDEF JCL        // ALL enabled by default for Project JEDI }
+{$DEFINE STDCALL   // Make functions STDCALL always }
+{$DEFINE RTDL      // Use runtime dynamic linking }
+{$DEFINE PREFERAPI // Prefer the "real" Windows API on systems on which it exists
+                   // If this is defined STDCALL is automatically needed and defined! }
+{$ENDIF JCL}
 
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
@@ -192,7 +193,7 @@ uses
   Windows;
 
 {$IFDEF PREFERAPI}
-  {$DEFINE STDCALL} // For the windows API we _require_ STDCALL calling convention
+  {$DEFINE STDCALL // For the windows API we _require_ STDCALL calling convention }
 {$ENDIF PREFERAPI}
 
 {$EXTERNALSYM CreateHardLinkW}
@@ -890,6 +891,10 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.14  2005/04/07 01:12:01  rrossmair
+// - moved conditional compilation comments into directive brackets,
+//   so that they are removed together with the directive when it gets resolved by JPP
+//
 // Revision 1.13  2005/04/07 00:41:37  rrossmair
 // - changed for FPC 1.9.8
 //
