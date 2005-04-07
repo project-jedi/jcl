@@ -48,11 +48,6 @@ unit Hardlinks;
 {$MINENUMSIZE 4}
 
 interface
-// ALL enabled by default for Project JEDI
-   // Make functions STDCALL always
-      // Use runtime dynamic linking
- // Prefer the "real" Windows API on systems on which it exists
-                    // If this is defined STDCALL is automatically needed and defined!
 
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
@@ -69,7 +64,6 @@ interface
 uses
   Windows;
 
-   // For the windows API we _require_ STDCALL calling convention
 
 {$EXTERNALSYM CreateHardLinkW}
 {$EXTERNALSYM CreateHardLinkA}
