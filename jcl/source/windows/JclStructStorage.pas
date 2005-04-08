@@ -20,6 +20,8 @@
 { MS Structured storage class wrapper                                                              }
 {                                                                                                  }
 { Unit owner: Peter Thornqvist                                                                     }
+{ Contributor(s):                                                                                  }
+{   A. Schmidt (shmia (at) bizerba.de)                                                             }
 {                                                                                                  }
 {**************************************************************************************************}
 // Last modified: $Date$
@@ -325,8 +327,10 @@ begin
   else
   begin
     Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
+    MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
+    // (outchy) length(S) is the number of characters, not the size in bytes
     // (rom) fixed output buffer size (see Win32 help)
-    MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
+    //MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
   end;
 end;
 
@@ -762,6 +766,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/04/08 11:56:27  outchy
+// IT 2845: wrong widestring size
+//
 // Revision 1.8  2005/03/08 08:33:23  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
