@@ -16,6 +16,10 @@
 { Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
 { All rights reserved.                                                                             }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { The Delphi Container Library                                                                     }
@@ -373,12 +377,12 @@ type
   end;
 
   IJclStrStrSortedMap = interface(IJclStrStrMap)
-    ['{F5B2B835-1A8F-4153-A8A4-12726668BB14}']
-    function FirstKey: IInterface;
-    function HeadMap(ToKey: IInterface): IJclStrStrSortedMap;
-    function LastKey: IInterface;
-    function SubMap(FromKey, ToKey: IInterface): IJclStrStrSortedMap;
-    function TailMap(FromKey: IInterface): IJclStrStrSortedMap;
+    ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
+    function FirstKey: string;
+    function HeadMap(ToKey: string): IJclStrStrSortedMap;
+    function LastKey: string;
+    function SubMap(FromKey, ToKey: string): IJclStrStrSortedMap;
+    function TailMap(FromKey: string): IJclStrStrSortedMap;
   end;
 
   IJclSortedMap = interface(IJclMap)
@@ -391,19 +395,15 @@ type
   end;
 
   IJclIntfSortedSet = interface(IJclIntfSet)
-    ['{76E56482-DAEB-49C3-8CB3-2BBFC8782B8E}']
-    function First: IInterface;
+    ['{159BE5A7-7349-42FF-BE55-9CA1B9DBA991}']
     function HeadSet(AEndObject: IInterface): IJclIntfSortedSet;
-    function Last: TInterfacedObject;
     function SubSet(Start, Finish: IInterface): IJclIntfSortedSet;
     function TailSet(AStartObject: IInterface): IJclIntfSortedSet;
   end;
 
   IJclSortedSet = interface(IJclSet)
-    ['{E12AEED1-5FA3-4611-B2CB-188FBED2FC14}']
-    function First: TObject;
+    ['{A3D23E76-ADE9-446C-9B97-F49FCE895D9F}']
     function HeadSet(AEndObject: TObject): IJclSortedSet;
-    function Last: TObject;
     function SubSet(Start, Finish: TObject): IJclSortedSet;
     function TailSet(AStartObject: TObject): IJclSortedSet;
   end;
@@ -448,6 +448,10 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.5  2005/04/09 23:01:46  rrossmair
+// - fixed IJclStrStrSortedMap, IJclSortedMap, IJclIntfSortedSet declarations;
+//   First and Last methods of the latter 2 conflicted with inherited method names
+//
 // Revision 1.4  2005/03/02 17:51:24  rrossmair
 // - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
 //
