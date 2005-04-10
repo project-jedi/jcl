@@ -24,7 +24,7 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: February 12, 2005                                                                 }
+{ Last modified: April 10, 2005                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -39,7 +39,7 @@ Todo:
 *almost done*- get settings from .cfg or .dof
 
 *done*- move ExecAndCapture to a unit where it fit's more
-   (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)  
+   (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)
 }
 
 unit JclBorlandToolsExtensions;
@@ -64,13 +64,211 @@ type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);
   TJclDCCMapFileLevel = (mfloff, mflsegments, mflpublics, mfldetailed);
 
+  TJclDCCSwitch = class(TObject)
+  protected
+    FSwitchChar: Char;
+    function DefaultSetAsString(const AValue: string): Boolean;
+    function GetAsBoolean: Boolean; virtual;
+    function GetAsInteger: Integer; virtual;
+    function GetAsString: string; virtual;
+    procedure SetAsBoolean(AValue: Boolean); virtual;
+    procedure SetAsInteger(AValue: Integer); virtual;
+    procedure SetAsString(AValue: string); virtual;
+    constructor Create(ASwitchChar: Char);
+  public
+    procedure SetDefaultValue; virtual;
+    property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
+    property AsInteger: Integer read GetAsInteger write SetAsInteger;
+    property AsString: string read GetAsString write SetAsString;
+    property SwitchChar: Char read FSwitchChar;
+  end;
+
+  TJclDCCSwitchAValues = (aOn, aOff, a1, a2, a4, a8);
+
+  //(usc) check integer values
+  TJclDCCASwitch = class(TJclDCCSwitch)
+  private
+    FDefaultValue: TJclDCCSwitchAValues;
+    FValue: TJclDCCSwitchAValues;
+  protected
+    function GetAsBoolean: Boolean; override;
+    function GetAsInteger: Integer; override;
+    function GetAsString: string; override;
+    procedure SetAsBoolean(AValue: Boolean); override;
+    procedure SetAsInteger(AValue: Integer); override;
+    procedure SetAsString(AValue: string); override;
+    constructor Create;
+  public
+    procedure SetDefaultValue; override;
+    property Value: TJclDCCSwitchAValues read FValue write FValue;
+  end;
+
+  TJclDCCBooleanSwitch = class(TJclDCCSwitch)
+  private
+    FDefaultValue: Boolean;
+    FValue: Boolean;
+  protected
+    function GetAsBoolean: Boolean; override;
+    function GetAsInteger: Integer; override;
+    function GetAsString: string; override;
+    procedure SetAsBoolean(AValue: Boolean); override;
+    procedure SetAsInteger(AValue: Integer); override;
+    procedure SetAsString(AValue: string); override;
+    constructor Create(ASwitchChar: Char; ADefaultValue: Boolean);
+  public
+    procedure SetDefaultValue; override;  
+    property Value: Boolean read FValue write FValue;
+  end;
+
+  TJclDCCSwitchYValues = (yOn, yOff, yD);
+
+  //(usc) check because this have two checkboxes
+  TJclDCCYSwitch = class(TJclDCCSwitch)
+  private
+    FDefaultValue: TJclDCCSwitchYValues;
+    FValue: TJclDCCSwitchYValues;
+  protected
+    function GetAsBoolean: Boolean; override;
+    function GetAsInteger: Integer; override;
+    function GetAsString: string; override;
+    procedure SetAsBoolean(AValue: Boolean); override;
+    procedure SetAsInteger(AValue: Integer); override;
+    procedure SetAsString(AValue: string); override;
+    constructor Create;
+  public
+    procedure SetDefaultValue; override;  
+    property Value: TJclDCCSwitchYValues read FValue write FValue;
+  end;
+
+  TJclDCCSwitchZValue = (zOn, zOff, z1, z2, z4);
+
+  //(usc) check integer values
+  TJclDCCZSwitch = class(TJclDCCSwitch)
+  private
+    FDefaultValue: TJclDCCSwitchZValue;
+    FValue: TJclDCCSwitchZValue;
+  protected
+    function GetAsBoolean: Boolean; override;
+    function GetAsInteger: Integer; override;
+    function GetAsString: string; override;
+    procedure SetAsBoolean(AValue: Boolean); override;
+    procedure SetAsInteger(AValue: Integer); override;
+    procedure SetAsString(AValue: string); override;
+    constructor Create;
+  public
+    procedure SetDefaultValue; override;
+    property Value: TJclDCCSwitchZValue read FValue write FValue;
+  end;
+
+  //(usc) what about E, F, K, N, S (can be found in .cfg and .dof but now in dcc32 help output)
+  TJclDCCSwitches = class(TObject)
+  private
+    FItems: TObjectList;
+    FAlignedRecordFields: TJclDCCASwitch;
+    FFullBooleanEvaluation: TJclDCCBooleanSwitch;
+    FEvaluateAssertionsAtRuntime: TJclDCCBooleanSwitch;
+    FDebugInformation: TJclDCCBooleanSwitch;
+    FUseImportedDataReferences: TJclDCCBooleanSwitch;
+    FUseLongStringsByDefault: TJclDCCBooleanSwitch;
+    FIOChecking: TJclDCCBooleanSwitch;
+    FWriteableStructuredConsts: TJclDCCBooleanSwitch;
+    FLocalDebugSymbols: TJclDCCBooleanSwitch;
+    FRuntimeTypeInfo: TJclDCCBooleanSwitch;
+    FOptimization: TJclDCCBooleanSwitch;
+    FOpenStringParams: TJclDCCBooleanSwitch;
+    FIntegerOverflowChecking: TJclDCCBooleanSwitch;
+    FRangeChecking: TJclDCCBooleanSwitch;
+    FTypedAtOperator: TJclDCCBooleanSwitch;
+    FPentiumTMSafeDivide: TJclDCCBooleanSwitch;
+    FStrictVarStrings: TJclDCCBooleanSwitch;
+    FGenerateStackFrames: TJclDCCBooleanSwitch;
+    FExtendedSyntax: TJclDCCBooleanSwitch;
+    FSymbolReferenceInfo: TJclDCCYSwitch;
+    FMinimumSizeOfEnumTypes: TJclDCCZSwitch;
+    procedure CreateSwitches;
+    function GetAsString: string;
+    function GetCount: Integer;
+    function GetItems(AIndex: Integer): TJclDCCSwitch;
+    procedure SetAsString(AValue: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Assign(ADCCSwitches: TJclDCCSwitches);
+    procedure SetDefaultValues;
+
+    property A: TJclDCCASwitch read FAlignedRecordFields;
+    property AlignedRecordFields: TJclDCCASwitch read FAlignedRecordFields;
+    property AsString: string read GetAsString write SetAsString;
+    property B: TJclDCCBooleanSwitch read FFullBooleanEvaluation;
+    property C: TJclDCCBooleanSwitch read FEvaluateAssertionsAtRuntime;
+    property Count: Integer read GetCount;
+    property D: TJclDCCBooleanSwitch read FDebugInformation;
+    property DebugInformation: TJclDCCBooleanSwitch read FDebugInformation;
+    property EvaluateAssertionsAtRuntime: TJclDCCBooleanSwitch read FEvaluateAssertionsAtRuntime;    
+    property ExtendedSyntax: TJclDCCBooleanSwitch read FExtendedSyntax;
+    property FullBooleanEvaluation: TJclDCCBooleanSwitch read FFullBooleanEvaluation;
+    property G: TJclDCCBooleanSwitch read FUseImportedDataReferences;
+    property GenerateStackFrames: TJclDCCBooleanSwitch read FGenerateStackFrames;
+    property H: TJclDCCBooleanSwitch read FUseLongStringsByDefault;
+    property I: TJclDCCBooleanSwitch read FIOChecking;
+    property IntegerOverflowChecking: TJclDCCBooleanSwitch read FIntegerOverflowChecking;
+    property Items[AIndex: Integer]: TJclDCCSwitch read GetItems; default;
+    property J: TJclDCCBooleanSwitch read FWriteableStructuredConsts;
+    property IOChecking: TJclDCCBooleanSwitch read FIOChecking;
+    property L: TJclDCCBooleanSwitch read FLocalDebugSymbols;
+    property LocalDebugSymbols: TJclDCCBooleanSwitch read FLocalDebugSymbols;
+    property M: TJclDCCBooleanSwitch read FRuntimeTypeInfo;
+    property MinimumSizeOfEnumTypes: TJclDCCZSwitch read FMinimumSizeOfEnumTypes;
+    property O: TJclDCCBooleanSwitch read FOptimization;
+    property OpenStringParams: TJclDCCBooleanSwitch read FOpenStringParams;    
+    property Optimization: TJclDCCBooleanSwitch read FOptimization;
+    property P: TJclDCCBooleanSwitch read FOpenStringParams;
+    property PentiumTMSafeDivide: TJclDCCBooleanSwitch read FPentiumTMSafeDivide;
+    property Q: TJclDCCBooleanSwitch read FIntegerOverflowChecking;
+    property R: TJclDCCBooleanSwitch read FRangeChecking;
+    property RangeChecking: TJclDCCBooleanSwitch read FRangeChecking;        
+    property RuntimeTypeInfo: TJclDCCBooleanSwitch read FRuntimeTypeInfo;
+    property StrictVarStrings: TJclDCCBooleanSwitch read FStrictVarStrings;
+    property SymbolReferenceInfo: TJclDCCYSwitch read FSymbolReferenceInfo;
+    property T: TJclDCCBooleanSwitch read FTypedAtOperator;
+    property TypedAtOperator: TJclDCCBooleanSwitch read FTypedAtOperator;
+    property U: TJclDCCBooleanSwitch read FPentiumTMSafeDivide;
+    property UseImportedDataReferences: TJclDCCBooleanSwitch read FUseImportedDataReferences;
+    property UseLongStringsByDefault: TJclDCCBooleanSwitch read FUseLongStringsByDefault;
+    property V: TJclDCCBooleanSwitch read FStrictVarStrings;
+    property W: TJclDCCBooleanSwitch read FGenerateStackFrames;
+    property WriteableStructuredConsts: TJclDCCBooleanSwitch read FWriteableStructuredConsts;
+    property X: TJclDCCBooleanSwitch read FExtendedSyntax;
+    property Y: TJclDCCYSwitch read FSymbolReferenceInfo;
+    property Z: TJclDCCZSwitch read FMinimumSizeOfEnumTypes;
+  end;
+
+  TJclConfigStringMode = (csmWindows, csmKylix);
+
+  TJclConfigStringList = class(TStringList)
+  private
+    FDefaultStringMode: TJclConfigStringMode;
+    function GetAsDefaultString: string;
+    function GetAsString(AMode: TJclConfigStringMode): string;
+    function GetAsStringWithSeparator(Separator: Char): string;
+    function GetSeparator(AMode: TJclConfigStringMode): Char;
+    procedure SetAsString(AString: string);
+  public
+    constructor Create;
+    property AsString[AMode: TJclConfigStringMode]: string read GetAsString;
+    property AsDefaultString: string read GetAsDefaultString write SetAsString;
+    property DefaultStringMode: TJclConfigStringMode read FDefaultStringMode write
+      FDefaultStringMode;
+  end;
+
   //(usc) need option "MakeModifiedUnits" (-M) ?
   //   I guess -M is opposite of -B
   TJclCustomDCCConfig = class(TObject)
   private
     FBPLOutputDirectory: string;
     FBuildAllUnits: Boolean;
-    FCompilerSwitches: string;
+    FCompilerSwitches: TJclDCCSwitches;
     FCompileWithPackages: Boolean;
     FConditionalDefines: string;
     FConsoleApplication: Boolean;
@@ -101,8 +299,7 @@ type
 
     property BPLOutputDirectory: string read FBPLOutputDirectory write FBPLOutputDirectory;
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
-    //(usc) better as TJclDCCSwitches
-    property CompilerSwitches: string read FCompilerSwitches write FCompilerSwitches;
+    property CompilerSwitches: TJclDCCSwitches read FCompilerSwitches;
     property CompileWithPackages: Boolean read FCompileWithPackages write FCompileWithPackages;
     //(usc) TJclDCCEx name was Defines only
     property ConditionalDefines: string read FConditionalDefines write FConditionalDefines;
@@ -149,6 +346,11 @@ type
     procedure SaveToFile(AFileName: string);
     procedure SaveToFileQuery(AFileName: string; AQueryProc: TJclDOFSaveQueryEvent);
     procedure SaveToFileStripped(AFileName: string);
+  end;
+
+  TJclKOFFile = class(TJclDOFFile)
+  public
+    constructor Create;
   end;
 
   TJclDCCMessage = class(TObject)
@@ -257,12 +459,498 @@ uses
   {$ENDIF DELPHI5}
   JclStrings;
 
+constructor TJclDCCSwitch.Create(ASwitchChar: Char);
+begin
+  inherited Create;
+  FSwitchChar := ASwitchChar;
+end;
+
+function TJclDCCSwitch.DefaultSetAsString(const AValue: string): Boolean;
+begin
+  Result := (Length(AValue) > 2) and (AValue[1] = '$') and (AValue[2] = SwitchChar);
+  if Result then
+    SetDefaultValue;
+end;
+
+function TJclDCCSwitch.GetAsBoolean: Boolean;
+begin
+  Result := False;
+end;
+
+function TJclDCCSwitch.GetAsInteger: Integer;
+begin
+  Result := 0;
+end;
+
+function TJclDCCSwitch.GetAsString: string;
+begin
+  Result := '';
+end;
+
+procedure TJclDCCSwitch.SetAsBoolean(AValue: Boolean);
+begin
+//
+end;
+
+procedure TJclDCCSwitch.SetAsInteger(AValue: Integer);
+begin
+//
+end;
+
+procedure TJclDCCSwitch.SetAsString(AValue: string);
+begin
+//
+end;
+
+procedure TJclDCCSwitch.SetDefaultValue;
+begin
+//
+end;
+
+constructor TJclDCCASwitch.Create;
+begin
+  inherited Create('A');
+  FDefaultValue := a8;
+  FValue := FDefaultValue;
+end;
+
+function TJclDCCASwitch.GetAsBoolean: Boolean;
+begin
+  Result := not (FValue in [aOff, a1]);
+end;
+
+function TJclDCCASwitch.GetAsInteger: Integer;
+begin
+  case FValue of
+    a2: Result := 2;
+    a4: Result := 4;
+    a8: Result := 8;
+    else
+      Result := 1;
+  end;
+end;
+
+function TJclDCCASwitch.GetAsString: string;
+begin
+  Result := '$' + FSwitchChar;
+  case FValue of
+    aOn: Result := Result + '+';
+    aOff: Result := Result + '-';
+    a1: Result := Result + '1';
+    a2: Result := Result + '2';
+    a4: Result := Result + '4';
+    a8: Result := Result + '8';
+  end;
+end;
+
+procedure TJclDCCASwitch.SetAsBoolean(AValue: Boolean);
+begin
+  if AValue then
+    FValue := aOn
+  else
+    FValue := aOff;
+end;
+
+procedure TJclDCCASwitch.SetAsInteger(AValue: Integer);
+begin
+  case AValue of
+    0: FValue := aOff;
+    1: FValue := a1;
+    2: FValue := a2;
+    4: FValue := a4;
+    else
+      FValue := a8;
+  end;
+end;
+
+procedure TJclDCCASwitch.SetAsString(AValue: string);
+begin
+  if DefaultSetAsString(AValue) then
+    case AValue[3] of
+      '+': FValue := aOn;
+      '-': FValue := aOff;
+      '1': FValue := a1;
+      '2': FValue := a2;
+      '4': FValue := a4;
+      '8': FValue := a8;
+    end;
+end;
+
+procedure TJclDCCASwitch.SetDefaultValue;
+begin
+  FValue := FDefaultValue;
+end;
+
+constructor TJclDCCBooleanSwitch.Create(ASwitchChar: Char; ADefaultValue: Boolean);
+begin
+  inherited Create(ASwitchChar);
+  FDefaultValue := ADefaultValue;
+  FValue := ADefaultValue;
+end;
+
+function TJclDCCBooleanSwitch.GetAsBoolean: Boolean;
+begin
+  Result := FValue;
+end;
+
+function TJclDCCBooleanSwitch.GetAsInteger: Integer;
+begin
+  Result := 0;
+  if FValue then
+    Result := 1;
+end;
+
+function TJclDCCBooleanSwitch.GetAsString: string;
+begin
+  Result := '$' + FSwitchChar;
+  if FValue then
+    Result := Result + '+'
+  else
+    Result := Result + '-';
+end;
+
+procedure TJclDCCBooleanSwitch.SetAsBoolean(AValue: Boolean);
+begin
+  FValue := AValue;
+end;
+
+procedure TJclDCCBooleanSwitch.SetAsInteger(AValue: Integer);
+begin
+  FValue := AValue = 1;
+end;
+
+procedure TJclDCCBooleanSwitch.SetAsString(AValue: string);
+begin
+  if DefaultSetAsString(AValue) then
+    case AValue[3] of
+      '+': FValue := True;
+      '-': FValue := False;
+    end;
+end;
+
+procedure TJclDCCBooleanSwitch.SetDefaultValue;
+begin
+  FValue := FDefaultValue;
+end;
+
+constructor TJclDCCYSwitch.Create;
+begin
+  inherited Create('Y');
+  FDefaultValue := yD;
+  FValue := FDefaultValue;
+end;
+
+function TJclDCCYSwitch.GetAsBoolean: Boolean;
+begin
+  Result := FValue <> yOff;
+end;
+
+function TJclDCCYSwitch.GetAsInteger: Integer;
+begin
+  Result := 0;//(usc) avoid hint
+  case FValue of
+    yOff: Result := 0;
+    yOn: Result := 1;
+    yD: Result := 2;
+  end;
+end;
+
+function TJclDCCYSwitch.GetAsString: string;
+begin
+  Result := '$' + FSwitchChar;
+  case FValue of
+    yOn: Result := Result + '+';
+    yOff: Result := Result + '-';
+    yD: Result := Result + 'D';
+  end;
+end;
+
+procedure TJclDCCYSwitch.SetAsBoolean(AValue: Boolean);
+begin
+  if AValue then
+    FValue := yD
+  else
+    FValue := yOff;
+end;
+
+procedure TJclDCCYSwitch.SetAsInteger(AValue: Integer);
+begin
+  case AValue of
+    0: FValue := yOff;
+    1: FValue := yOn;
+    else
+      FValue := yD;
+  end;
+end;
+
+procedure TJclDCCYSwitch.SetAsString(AValue: string);
+begin
+  if DefaultSetAsString(AValue) then
+    case AValue[3] of
+      '+': FValue := yOn;
+      '-': FValue := yOff;
+      'D': FValue := yD;
+    end;
+end;
+
+procedure TJclDCCYSwitch.SetDefaultValue;
+begin
+  FValue := FDefaultValue;
+end;
+
+constructor TJclDCCZSwitch.Create;
+begin
+  inherited Create('Z');
+  FDefaultValue := z1;
+  FValue := FDefaultValue;
+end;
+
+function TJclDCCZSwitch.GetAsBoolean: Boolean;
+begin
+  Result := not (FValue in [zOff, z1]);
+end;
+
+function TJclDCCZSwitch.GetAsInteger: Integer;
+begin
+  case FValue of
+    zOff, z1: Result := 1;
+    z2: Result := 2;
+    else
+      Result := 4;
+  end;
+end;
+
+function TJclDCCZSwitch.GetAsString: string;
+begin
+  Result := '$' + FSwitchChar;
+  case FValue of
+    zOn: Result := Result + '+';
+    zOff: Result := Result + '-';
+    z1: Result := Result + '1';
+    z2: Result := Result + '2';
+    z4: Result := Result + '4';
+  end;
+end;
+
+procedure TJclDCCZSwitch.SetAsBoolean(AValue: Boolean);
+begin
+  if AValue then
+    FValue := zOn
+  else
+    FValue := zOff;
+end;
+
+procedure TJclDCCZSwitch.SetAsInteger(AValue: Integer);
+begin
+  case AValue of
+    0: FValue := zOff;
+    2: FValue := z2;
+    4: FValue := z4;
+    else
+      FValue := z1;
+  end;
+end;
+
+procedure TJclDCCZSwitch.SetAsString(AValue: string);
+begin
+  if DefaultSetAsString(AValue) then
+    case AValue[3] of
+      '+': FValue := zOn;
+      '-': FValue := zOff;
+      '1': FValue := z1;
+      '2': FValue := z2;
+      '4': FValue := z4;
+    end;
+end;
+
+procedure TJclDCCZSwitch.SetDefaultValue;
+begin
+  FValue := FDefaultValue;
+end;
+
+constructor TJclDCCSwitches.Create;
+begin
+  inherited Create;
+  FItems := TObjectList.Create;
+  CreateSwitches;
+end;
+
+destructor TJclDCCSwitches.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TJclDCCSwitches.Assign(ADCCSwitches: TJclDCCSwitches);
+var
+  I: Integer;
+begin
+  if Count = ADCCSwitches.Count then
+    for I := 0 to Pred(Count) do
+      Items[I].AsString := ADCCSwitches[I].AsString;
+end;
+
+procedure TJclDCCSwitches.CreateSwitches;
+  function CreateJclDCCBooleanSwitchAndAdd(ASwitchChar: Char; ADefaultValue: Boolean): TJclDCCBooleanSwitch;
+  begin
+    FItems.Add(TJclDCCBooleanSwitch.Create(ASwitchChar, ADefaultValue));
+    Result := TJclDCCBooleanSwitch(FItems.Last);
+  end;
+begin
+  FItems.Add(TJclDCCASwitch.Create);
+  FAlignedRecordFields := TJclDCCASwitch(FItems.Last);
+  FFullBooleanEvaluation := CreateJclDCCBooleanSwitchAndAdd('B', False);
+  FEvaluateAssertionsAtRuntime := CreateJclDCCBooleanSwitchAndAdd('C', True);
+  FDebugInformation := CreateJclDCCBooleanSwitchAndAdd('D', True);
+  FUseImportedDataReferences := CreateJclDCCBooleanSwitchAndAdd('G', True);
+  FUseLongStringsByDefault := CreateJclDCCBooleanSwitchAndAdd('H', True);
+  FIOChecking := CreateJclDCCBooleanSwitchAndAdd('I', True);
+  FWriteableStructuredConsts := CreateJclDCCBooleanSwitchAndAdd('J', False);
+  FLocalDebugSymbols := CreateJclDCCBooleanSwitchAndAdd('L', True);
+  FRuntimeTypeInfo := CreateJclDCCBooleanSwitchAndAdd('M', False);
+  FOptimization := CreateJclDCCBooleanSwitchAndAdd('O', True);
+  FOpenStringParams := CreateJclDCCBooleanSwitchAndAdd('P', True);
+  FIntegerOverflowChecking := CreateJclDCCBooleanSwitchAndAdd('Q', False);
+  FRangeChecking := CreateJclDCCBooleanSwitchAndAdd('R', False);
+  FTypedAtOperator := CreateJclDCCBooleanSwitchAndAdd('T', False);
+  FPentiumTMSafeDivide := CreateJclDCCBooleanSwitchAndAdd('U', False);
+  FStrictVarStrings := CreateJclDCCBooleanSwitchAndAdd('V', True);
+  FGenerateStackFrames := CreateJclDCCBooleanSwitchAndAdd('W', False);
+  FExtendedSyntax := CreateJclDCCBooleanSwitchAndAdd('X', True);
+  FItems.Add(TJclDCCYSwitch.Create);
+  FSymbolReferenceInfo := TJclDCCYSwitch(FItems.Last);
+  FItems.Add(TJclDCCZSwitch.Create);
+  FMinimumSizeOfEnumTypes := TJclDCCZSwitch(FItems.Last);
+end;
+
+function TJclDCCSwitches.GetAsString: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 1 do
+  begin
+    if Result <> '' then
+      Result := Result + ' ';
+    Result := Result + '-' + Items[I].AsString;
+  end;
+end;
+
+function TJclDCCSwitches.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclDCCSwitches.GetItems(AIndex: Integer): TJclDCCSwitch;
+begin
+  Result := TJclDCCSwitch(FItems[AIndex]);
+end;
+
+procedure TJclDCCSwitches.SetAsString(AValue: string);
+var
+  ValueTokens: TStringList;
+  S: string;
+  I, J: Integer;
+begin
+  ValueTokens := TStringList.Create;
+  try
+    StrTokenToStrings(AValue, ' ', ValueTokens);
+    for I := 0 to Pred(ValueTokens.Count) do
+    begin
+      S := ValueTokens[I];
+      if (Length(S) > 2) and (Pos('-$', S) = 1) then
+      begin
+        for J := 0 to Pred(Count) do
+          if Items[J].SwitchChar = S[3] then
+          begin
+            Delete(S, 1, 1);
+            Items[J].AsString := S;
+            Break;
+          end;
+      end;
+    end;
+  finally
+    ValueTokens.Free;
+  end;
+end;
+
+procedure TJclDCCSwitches.SetDefaultValues;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    Items[I].SetDefaultValue;
+end;
+
+constructor TJclConfigStringList.Create;
+begin
+  inherited Create;
+  FDefaultStringMode := {$IFDEF KYLIX} csmKylix {$ELSE} csmWindows {$ENDIF};
+end;
+
+function TJclConfigStringList.GetAsDefaultString: string;
+begin
+  Result := GetAsStringWithSeparator(GetSeparator(FDefaultStringMode));
+end;
+
+function TJclConfigStringList.GetAsString(AMode: TJclConfigStringMode): string;
+begin
+  Result := GetAsStringWithSeparator(GetSeparator(AMode));
+end;
+
+function TJclConfigStringList.GetAsStringWithSeparator(Separator: Char): string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 1 do
+  begin
+    if I > 0 then
+      Result := Result + Separator;
+    Result := Result + Strings[I];
+  end;
+end;
+
+function TJclConfigStringList.GetSeparator(AMode: TJclConfigStringMode): Char;
+begin
+  if AMode = csmKylix then
+    Result := ':'
+  else
+    Result := ';';
+end;
+
+procedure TJclConfigStringList.SetAsString(AString: string);
+var
+  NextDelimiterPos: Integer;
+  S, tempStr: string;
+begin
+  Clear;
+  tempStr := AString;
+  while tempStr <> '' do
+  begin
+    NextDelimiterPos := Pos(';', tempStr);
+    if NextDelimiterPos = 0 then
+      NextDelimiterPos := Pos(',', tempStr);
+    if NextDelimiterPos = 0 then
+      NextDelimiterPos := Pos(':', tempStr);
+    if NextDelimiterPos = 0 then
+      S := tempStr
+    else
+    begin
+      S := Copy(tempStr, 1, NextDelimiterPos);
+      System.Delete(tempStr, 1, NextDelimiterPos);
+    end;
+    S := Trim(S);
+    Add(S);
+  end;
+end;
+
 constructor TJclCustomDCCConfig.Create;
 begin
   inherited Create;
   FBPLOutputDirectory := '';
   FBuildAllUnits := True;
-  FCompilerSwitches := '';
+  FCompilerSwitches := TJclDCCSwitches.Create;
   FCompileWithPackages := False;
   FConditionalDefines := '';
   FConsoleApplication := False;
@@ -288,6 +976,7 @@ end;
 
 destructor TJclCustomDCCConfig.Destroy;
 begin
+  FCompilerSwitches.Free;
   inherited Destroy;
 end;
 
@@ -347,22 +1036,23 @@ var
   ConfigStrings: TStringList;
   I: Integer;
   S, S2: string;
+  CompilerSwitchesStr: string;
 begin
   ConfigStrings := TStringList.Create;
   try
     //(usc) do FileExists check ?
     ConfigStrings.LoadFromFile(AFileName);
     MapFileLevel := mfloff; //(usc) set to off ?
-    CompilerSwitches := '';
+    CompilerSwitchesStr := '';
     for I := 0 to Pred(ConfigStrings.Count) do
     begin
       S := ConfigStrings[I];
       //(usc) read compiler switches
-      if (Pos('-$', S) = 1) and (Length(S) = 4) and (Pos(S, CompilerSwitches) = 0) then
+      if (Pos('-$', S) = 1) and (Length(S) = 4) and (Pos(S, CompilerSwitchesStr) = 0) then
       begin
-        if CompilerSwitches <> '' then
-          CompilerSwitches := CompilerSwitches + ' ';
-        CompilerSwitches := CompilerSwitches + S;
+        if CompilerSwitchesStr <> '' then
+          CompilerSwitchesStr := CompilerSwitchesStr + ' ';
+        CompilerSwitchesStr := CompilerSwitchesStr + S;
       end
       else
       if Pos('-GS', S) = 1 then
@@ -464,6 +1154,7 @@ begin
   finally
     ConfigStrings.Free;
   end;
+  CompilerSwitches.AsString := CompilerSwitchesStr;
 end;
 
 const
@@ -677,6 +1368,12 @@ begin
       Result := (Packages <> '') and CompileWithPackages;
   end;
 end;
+
+constructor TJclKOFFile.Create;
+begin
+  inherited Create;
+end;
+
 
 type
   TJclMessageConversionRec = record
@@ -929,7 +1626,7 @@ begin
       Arguments := Arguments + ' -B'
     else
       Arguments := Arguments + ' -M';  //(usc) is this necessary ?
-    Arguments := Arguments + ' ' + FConfig.CompilerSwitches;
+    Arguments := Arguments + ' ' + FConfig.CompilerSwitches.AsString;
     if FConfig.UnitAliases <> '' then
       Arguments := Arguments + ' -A' + FConfig.UnitAliases;
     if FConfig.OutputWarnings then
