@@ -2289,7 +2289,12 @@ begin
     Result := TExprVirtMachOp(FCodeList[FCodeList.Count - 1]).FOutput;
   end
   else
-    Result := 0;
+    begin
+      if (FConstList.Count = 1) then
+        Result := TExprVirtMachOp(FConstList[0]).FOutput;
+      else
+        Result := 0;
+    end;
 end;
 
 procedure TExprVirtMach.Add(AOp: TExprVirtMachOp);
@@ -3989,6 +3994,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/04/11 21:46:20  mthoma
+// Fixed  0002743.
+//
 // Revision 1.15  2005/03/08 08:33:16  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
