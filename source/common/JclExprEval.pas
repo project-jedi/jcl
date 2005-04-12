@@ -2291,7 +2291,7 @@ begin
   else
     begin
       if (FConstList.Count = 1) then
-        Result := TExprVirtMachOp(FConstList[0]).FOutput;
+        Result := TExprVirtMachOp(FConstList[0]).FOutput
       else
         Result := 0;
     end;
@@ -3994,6 +3994,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/04/12 17:04:30  outchy
+// a semicolon at the wrong place (just before an else)
+//
 // Revision 1.16  2005/04/11 21:46:20  mthoma
 // Fixed  0002743.
 //
