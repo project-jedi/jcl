@@ -96,7 +96,7 @@ function JclValidateModuleAddress(Addr: Pointer): Boolean;
 
 // MAP file abstract parser
 type
-  PJclMapAddress = ^TJclMapAddress;
+  PJclMapAddress = ^TJclMapAddress;      
   TJclMapAddress = packed record
     Segment: Word;
     Offset: Integer;
@@ -961,7 +961,10 @@ const
   ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
   CurrPos, EndPos: PChar;
-  A, PreviousA: TJclMapAddress;
+{$IFDEF COMPILER9_UP}
+  PreviousA,
+{$ENDIF COMPILER9_UP}
+  A: TJclMapAddress;
   L: Integer;
   P1, P2: PJclMapString;
 
@@ -1139,8 +1142,10 @@ begin
   if FStream <> nil then
   begin
     FLinkerBug := False;
+{$IFDEF COMPILER9_UP}
     PreviousA.Segment := 0;
     PreviousA.Offset := 0;
+{$ENDIF COMPILER9_UP}
     CurrPos := FStream.Memory;
     EndPos := CurrPos + FStream.Size;
     if SyncToHeader(TableHeader) then
@@ -1198,12 +1203,14 @@ begin
         A := ReadAddress;
         SkipWhiteSpace;
         LineNumbersItem(L, A);
+{$IFDEF COMPILER9_UP}
         if (not FLinkerBug) and (A.Offset < PreviousA.Offset) then
         begin
           FLinkerBugUnitName := FLastUnitName;
           FLinkerBug := True;
         end;
         PreviousA := A;
+{$ENDIF COMPILER9_UP}
       until not IsDecDigit;
     end;
   end;
@@ -3965,6 +3972,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.17  2005/04/13 17:50:21  outchy
+// IT2858: Linker bug in D2005 now disabled.
+//
 // Revision 1.16  2005/03/23 04:10:22  rrossmair
 // - TJclMapParser fixed for BCB6 (by outchy)
 //
