@@ -961,7 +961,7 @@ const
   ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
   CurrPos, EndPos: PChar;
-{$IFDEF COMPILER9_UP}
+{$IFNDEF COMPILER9_UP}
   PreviousA,
 {$ENDIF COMPILER9_UP}
   A: TJclMapAddress;
@@ -1142,7 +1142,7 @@ begin
   if FStream <> nil then
   begin
     FLinkerBug := False;
-{$IFDEF COMPILER9_UP}
+{$IFNDEF COMPILER9_UP}
     PreviousA.Segment := 0;
     PreviousA.Offset := 0;
 {$ENDIF COMPILER9_UP}
@@ -1203,7 +1203,7 @@ begin
         A := ReadAddress;
         SkipWhiteSpace;
         LineNumbersItem(L, A);
-{$IFDEF COMPILER9_UP}
+{$IFNDEF COMPILER9_UP}
         if (not FLinkerBug) and (A.Offset < PreviousA.Offset) then
         begin
           FLinkerBugUnitName := FLastUnitName;
@@ -3972,6 +3972,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.18  2005/04/14 04:00:44  outchy
+// IT2858: Linker bug is disabled in D2005 (conditionnal directives were wrong).
+//
 // Revision 1.17  2005/04/13 17:50:21  outchy
 // IT2858: Linker bug in D2005 now disabled.
 //
