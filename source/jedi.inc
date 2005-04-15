@@ -263,7 +263,8 @@
   SUPPORTS_WIDECHAR             Compiler supports the WideChar type (D2+)
   SUPPORTS_WIDESTRING           Compiler supports the WideString type (D3+/BCB3+)
   SUPPORTS_INTERFACE            Compiler supports interfaces (D3+/BCB3+)
-  SUPPORTS_DISPINTERFACE        Compiler supports dispinterfaces (D3+/BCB3+)
+  SUPPORTS_DISPINTERFACE        Compiler supports dispatch interfaces (D3+/BCB3+)
+  SUPPORTS_DISPID               Compiler supports dispatch ids (D3+/BCB3+/FPC)
   SUPPORTS_EXTSYM               Compiler supports the $EXTERNALSYM directive (D4+/BCB3+)
   SUPPORTS_NODEFINE             Compiler supports the $NODEFINE directive (D4+/BCB3+)
   SUPPORTS_LONGWORD             Compiler supports the LongWord type (unsigned 32 bit) (D4+/BCB4+)
@@ -905,6 +906,7 @@
   {$DEFINE SUPPORTS_WIDESTRING}
   {$DEFINE SUPPORTS_INTERFACE}
   {$DEFINE SUPPORTS_DISPINTERFACE}
+  {$DEFINE SUPPORTS_DISPID}
   {$DEFINE SUPPORTS_WEAKPACKAGEUNIT}
 {$ENDIF COMPILER3_UP}
 
@@ -1024,6 +1026,9 @@
 // History:
 
 // $Log$
+// Revision 1.23  2005/04/15 08:27:38  marquardt
+// introduced SUPPORTS_DISPID for FPC
+//
 // Revision 1.22  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
 //
