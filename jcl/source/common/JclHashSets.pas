@@ -128,9 +128,9 @@ type
 
 implementation
 
-const
+var
   // (rom) this needs an explanation
-  RefUnique: TObject = @RefUnique;
+  RefUnique: TObject {$IFNDEF FPC} = @RefUnique {$ENDIF};
 
 var
   IRefUnique: IInterface = nil;
@@ -582,9 +582,17 @@ begin
   AddAll(ACollection);
 end;
 
+{$IFDEF FPC}
+initialization
+  RefUnique := @RefUnique;
+{$ENDIF FPC}
+
 // History:
 
 // $Log$
+// Revision 1.8  2005/04/17 23:00:10  rrossmair
+// - changed to compile with FPC
+//
 // Revision 1.7  2005/03/03 08:02:57  marquardt
 // various style cleanings, bugfixes and improvements
 //
