@@ -1616,6 +1616,7 @@ begin
         Result := Bucket.Entries[I].Value
       else
         Bucket.Entries[I].Value.Free;
+      Bucket.Entries[I].Key := '';
       if I < Length(Bucket.Entries) - 1 then
         System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
           (Bucket.Count - I) * SizeOf(TJclStrEntry));
@@ -1984,6 +1985,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/04/29 15:31:56  outchy
+// IT2890, a string reference was not decremented as expected.
+//
 // Revision 1.4  2005/03/08 08:33:16  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
