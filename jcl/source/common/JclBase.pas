@@ -39,9 +39,13 @@ unit JclBase;
 interface
 
 uses
+  {$IFDEF CLR}
+  System.Reflection,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   SysUtils;
 
 // Version
@@ -56,6 +60,10 @@ const
 // EJclError
 type
   EJclError = class(Exception);
+  {$IFDEF CLR}
+  DWORD = LongWord;
+  TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
+  {$ENDIF CLR}
 
 // EJclWin32Error
 {$IFDEF MSWINDOWS}
@@ -67,8 +75,10 @@ type
   public
     constructor Create(const Msg: string);
     constructor CreateFmt(const Msg: string; const Args: array of const);
+    {$IFNDEF CLR}
     constructor CreateRes(Ident: Integer); overload;
     constructor CreateRes(ResStringRec: PResStringRec); overload;
+    {$ENDIF ~CLR}
     property LastError: DWORD read FLastError;
     property LastErrorMsg: string read FLastErrorMsg;
   end;
@@ -98,7 +108,17 @@ type
   {$ELSE}
   PPointer = ^Pointer;
   {$IFDEF RTL140_UP}
+  {$IFDEF CLR}
+  PByteArray = array of Byte;
+  {$ELSE}
   PByte = System.PByte;
+  Int8 = ShortInt;
+  Int16 = Smallint;
+  Int32 = Integer;
+  UInt8 = Byte;
+  UInt16 = Word;
+  UInt32 = LongWord;
+  {$ENDIF CLR}
   {$ELSE ~RTL140_UP}
   PBoolean = ^Boolean;
   PByte = Windows.PByte;
@@ -131,6 +151,7 @@ type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = Int64;
 
+{$IFNDEF CLR}
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
 
 type
@@ -143,6 +164,7 @@ type
     1:
      (QuadPart: Int64);
   end;
+{$ENDIF ~CLR}
 
 // Dynamic Array support
 type
@@ -158,7 +180,9 @@ type
   TDynDoubleArray     = array of Double;
   TDynSingleArray     = array of Single;
   TDynFloatArray      = array of Float;
+  {$IFNDEF CLR}
   TDynPointerArray    = array of Pointer;
+  {$ENDIF ~CLR}
   TDynStringArray     = array of string;
   TDynIInterfaceArray = array of IInterface;
   TDynObjectArray     = array of TObject;
@@ -189,10 +213,153 @@ const
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
 
+procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+function GetBytesEx(const Value): TDynByteArray;
+procedure SetBytesEx(var Value; Bytes: TDynByteArray);
+procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32); inline;
+
+function ByteArrayStringLen(Data: TDynByteArray): Integer;
+function StringToByteArray(const S: string): TDynByteArray;
+function ByteArrayToString(const Data: TDynByteArray; Count: Integer): string;
+{$ENDIF CLR}
+
 implementation
 
 uses
   JclResources;
+
+procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+{$ENDIF CLR}
+end;
+
+{$IFDEF CLR}
+function GetBytesEx(const Value): TDynByteArray;
+begin
+  if TObject(Value) is TDynByteArray then
+    Result := Copy(TDynByteArray(Value))
+  else
+  if TObject(Value) is System.Enum then // e.g. TIntegerSet
+    BitConverter.GetBytes(UInt32(Value))
+  { TODO : Add futher types }
+  else
+    raise EJclError.CreateFmt('GetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
+end;
+
+procedure SetBytesEx(var Value; Bytes: TDynByteArray);
+begin
+  if TObject(Value) is TDynByteArray then
+    Value := Copy(Bytes)
+  else
+  if TObject(Value) is System.Enum then // e.g. TIntegerSet
+    Value := BitConverter.ToUInt32(Bytes, 0)
+  { TODO : Add futher types }
+  else
+    raise EJclError.CreateFmt('SetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
+end;
+
+procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32);
+begin
+  DestSet := TIntegerSet(Value);
+end;
+
+function ByteArrayStringLen(Data: TDynByteArray): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(Data) do
+    if Data[I] = 0 then
+    begin
+      Result := I + 1;
+      Exit;
+    end;
+  Result := Length(Data);
+end;
+
+function StringToByteArray(const S: string): TDynByteArray;
+var
+  I: Integer;
+  AnsiS: AnsiString;
+begin
+  AnsiS := S; // convert to AnsiString
+  SetLength(Result, Length(AnsiS));
+  for I := 0 to High(Result) do
+    Result[I] := Byte(AnsiS[I + 1]);
+end;
+
+function ByteArrayToString(const Data: TDynByteArray; Count: Integer): string;
+var
+  I: Integer;
+  AnsiS: AnsiString;
+begin
+  if Length(Data) < Count then
+    Count := Length(Data);
+  SetLength(AnsiS, Count);
+  for I := 0 to Length(AnsiS) - 1 do
+    AnsiS[I + 1] := AnsiChar(Data[I]);
+  Result := AnsiS; // convert to System.String
+end;
+
+{$ENDIF CLR}
 
 //== { EJclWin32Error } ======================================================
 
@@ -200,6 +367,9 @@ uses
 
 constructor EJclWin32Error.Create(const Msg: string);
 begin
+  {$IFDEF CLR}
+  inherited Create(''); // this works because the GC cleans the memory
+  {$ENDIF CLR}
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
   inherited CreateFmt(Msg + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
@@ -207,11 +377,15 @@ end;
 
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
 begin
+  {$IFDEF CLR}
+  inherited Create(''); // this works because the GC cleans the memory
+  {$ENDIF CLR}
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
   inherited CreateFmt(Msg + AnsiLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
 end;
 
+{$IFNDEF CLR}
 constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
   FLastError := GetLastError;
@@ -229,6 +403,7 @@ begin
   inherited CreateFmt(LoadResString(ResStringRec) + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
+{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}
 
@@ -236,14 +411,23 @@ end;
 
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 begin
+  {$IFDEF CLR}
+  LowPart := Cardinal(I and $00000000FFFFFFFF);
+  HighPart := Cardinal(I shr 32);
+  {$ELSE}
   LowPart := TULargeInteger(I).LowPart;
   HighPart := TULargeInteger(I).HighPart;
+  {$ENDIF CLR}
 end;
 
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 begin
+  {$IFDEF CLR}
+  I := Int64(HighPart) shl 16 or LowPart;
+  {$ELSE}
   TULargeInteger(I).LowPart := LowPart;
   TULargeInteger(I).HighPart := HighPart;
+  {$ENDIF CLR}
 end;
 
 // Cross Platform Compatibility
@@ -258,6 +442,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.38  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.37  2005/03/23 13:19:06  rrossmair
 // - check-in in preparation of release 1.95.3 (Build 1848)
 //

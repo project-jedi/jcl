@@ -247,7 +247,11 @@ end;
 
 procedure TemperatureBelowAbsoluteError;
 begin
+  {$IFDEF CLR}
+  raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
+  {$ELSE}
   raise ETemperatureConversionError.CreateRes(@RsConvTempBelowAbsoluteZero);
+  {$ENDIF CLR}
 end;
 
 function CelsiusToFahrenheit(const Temperature: Float): Float;
@@ -458,7 +462,11 @@ begin
           ttReaumur:
             Result := CelsiusToReaumur(Temperature);
         else
+          {$IFDEF CLR}
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          {$ENDIF CLR}
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -474,7 +482,11 @@ begin
           ttReaumur:
             Result := FahrenheitToReaumur(Temperature);
         else
+          {$IFDEF CLR}
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          {$ENDIF CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -490,7 +502,11 @@ begin
           ttReaumur:
             Result := KelvinToReaumur(Temperature);
         else
+          {$IFDEF CLR}
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          {$ENDIF CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -506,7 +522,11 @@ begin
           ttReaumur:
             Result := RankineToReaumur(Temperature);
         else
+          {$IFDEF CLR}
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          {$ENDIF CLR}
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -522,11 +542,19 @@ begin
           ttRankine:
             Result := ReaumurToRankine(Temperature);
         else
+          {$IFDEF CLR}
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          {$ENDIF CLR}
         end;
       end;
   else
+    {$IFDEF CLR}
+    raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['FromType']);
+    {$ELSE}
     raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['FromType']);
+    {$ENDIF CLR}
   end;
 end;
 
@@ -974,6 +1002,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/05/05 20:08:46  ahuser
+// JCL.NET support
+//
 // Revision 1.10  2005/03/08 08:33:18  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

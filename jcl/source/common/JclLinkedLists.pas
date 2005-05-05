@@ -36,20 +36,38 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
+  {$IFDEF CLR}
+  TJclIntfLinkedListItem = class;
+  PJclIntfLinkedListItem = TJclIntfLinkedListItem;
+  TJclIntfLinkedListItem = class
+  {$ELSE}
   PJclIntfLinkedListItem = ^TJclIntfLinkedListItem;
   TJclIntfLinkedListItem = record
+  {$ENDIF CLR}
     Obj: IInterface;
     Next: PJclIntfLinkedListItem;
   end;
 
+  {$IFDEF CLR}
+  TJclStrLinkedListItem = class;
+  PJclStrLinkedListItem = TJclStrLinkedListItem;
+  TJclStrLinkedListItem = class
+  {$ELSE}
   PJclStrLinkedListItem = ^TJclStrLinkedListItem;
   TJclStrLinkedListItem = record
+  {$ENDIF CLR}
     Str: string;
     Next: PJclStrLinkedListItem;
   end;
 
+  {$IFDEF CLR}
+  TJclLinkedListItem = class;
+  PJclLinkedListItem = TJclLinkedListItem;
+  TJclLinkedListItem = class
+  {$ELSE}
   PJclLinkedListItem = ^TJclLinkedListItem;
   TJclLinkedListItem = record
+  {$ENDIF CLR}
     Obj: TObject;
     Next: PJclLinkedListItem;
   end;
@@ -200,7 +218,9 @@ type
     procedure SetObject(AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TIntfItr.Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
@@ -208,16 +228,20 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := nil;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TIntfItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TIntfItr.Add(AInterface: IInterface);
 var
@@ -231,7 +255,11 @@ begin
 {$ENDIF THREADSAFE}
   if AInterface = nil then
     Exit;
+  {$IFDEF CLR}
+  NewItem := TJclIntfLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AInterface;
   if FCursor = nil then
   begin
@@ -267,7 +295,11 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TIntfItr.Next: IInterface;
@@ -287,19 +319,31 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TIntfItr.Remove;
@@ -322,7 +366,11 @@ begin
     FLastRet.Next := FCursor;
   Current.Next := nil;
   Current.Obj := nil;
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FOwnList.FSize);
   Dec(FSize);
 end;
@@ -362,7 +410,9 @@ type
     procedure SetString(const AString: string);
   public
     constructor Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TStrItr.Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
@@ -370,16 +420,20 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := nil;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TStrItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TStrItr.Add(const AString: string);
 var
@@ -393,7 +447,11 @@ begin
 {$ENDIF THREADSAFE}
   if AString = '' then
     Exit;
+  {$IFDEF CLR}
+  NewItem := TJclStrLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Str := AString;
   if FCursor = nil then
   begin
@@ -429,7 +487,11 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TStrItr.Next: string;
@@ -449,19 +511,31 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TStrItr.Remove;
@@ -484,7 +558,11 @@ begin
     FLastRet.Next := FCursor;
   Current.Next := nil;
   Current.Str := '';
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FOwnList.FSize);
   Dec(FSize);
 end;
@@ -524,7 +602,9 @@ type
     procedure SetObject(AObject: TObject);
   public
     constructor Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TItr.Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
@@ -532,16 +612,20 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := nil;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TItr.Add(AObject: TObject);
 var
@@ -555,7 +639,11 @@ begin
 {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
+  {$IFDEF CLR}
+  NewItem := TJclLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AObject;
   if FCursor = nil then
   begin
@@ -591,7 +679,11 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TItr.Next: TObject;
@@ -611,19 +703,31 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No Index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TItr.Previous: TObject;
 begin
   // Unidirectional
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
   // No Index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TItr.Remove;
@@ -648,7 +752,11 @@ begin
   if FOwnList.FOwnsObjects then
     Current.Obj.Free;
   Current.Obj := nil;
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FOwnList.FSize);
   Dec(FSize);
 end;
@@ -702,7 +810,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if AInterface = nil then
     Exit;
   if FStart = nil then
@@ -710,7 +822,11 @@ begin
     AddFirst(AInterface);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclIntfLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AInterface;
   if Index = 0 then
   begin
@@ -749,7 +865,11 @@ begin
     AddFirst(AInterface);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclIntfLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AInterface;
   NewItem.Next := nil;
   FEnd.Next := NewItem;
@@ -790,7 +910,11 @@ begin
 {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -806,7 +930,11 @@ begin
     Current := Current.Next;
   while It.HasNext do
   begin
+    {$IFDEF CLR}
+    NewItem := TJclIntfLinkedListItem.Create;
+    {$ELSE}
     New(NewItem);
+    {$ENDIF CLR}
     NewItem.Obj := It.Next;
     if Index = 0 then
     begin
@@ -827,7 +955,11 @@ end;
 
 procedure TJclIntfLinkedList.AddFirst(AInterface: IInterface);
 begin
+  {$IFDEF CLR}
+  FStart := TJclIntfLinkedListItem.Create;
+  {$ELSE}
   New(FStart);
+  {$ENDIF CLR}
   FStart.Obj := AInterface;
   FStart.Next := nil;
   FEnd := FStart;
@@ -851,7 +983,11 @@ begin
     Current.Obj := nil;
     Old := Current;
     Current := Current.Next;
+    {$IFDEF CLR}
+    Old.Free;
+    {$ELSE}
     Dispose(Old);
+    {$ENDIF CLR}
   end;
   FSize := 0;
 
@@ -1055,7 +1191,11 @@ begin
       end
       else
         FStart := Current.Next;
+      {$IFDEF CLR}
+      Current.Free;
+      {$ELSE}
       Dispose(Current);
+      {$ENDIF CLR}
       Dec(FSize);
       Result := True;
       Exit;
@@ -1095,7 +1235,11 @@ begin
   end
   else
     FStart := Current.Next;
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FSize);
 end;
 
@@ -1228,7 +1372,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1236,7 +1384,11 @@ begin
     AddFirst(AString);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclStrLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Str := AString;
   if Index = 0 then
   begin
@@ -1275,7 +1427,11 @@ begin
     AddFirst(AString);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclStrLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Str := AString;
   NewItem.Next := nil;
   FEnd.Next := NewItem;
@@ -1319,7 +1475,11 @@ begin
     Exit;
 
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
 
   It := ACollection.First;
   // (rom) is this a bug? Only one element added.
@@ -1337,7 +1497,11 @@ begin
   end;
   while It.HasNext do
   begin
+    {$IFDEF CLR}
+    NewItem := TJclStrLinkedListItem.Create;
+    {$ELSE}
     New(NewItem);
+    {$ENDIF CLR}
     NewItem.Str := It.Next;
     if Index = 0 then
     begin
@@ -1358,7 +1522,11 @@ end;
 
 procedure TJclStrLinkedList.AddFirst(const AString: string);
 begin
+  {$IFDEF CLR}
+  FStart := TJclStrLinkedListItem.Create;
+  {$ELSE}
   New(FStart);
+  {$ENDIF CLR}
   FStart.Str := AString;
   FStart.Next := nil;
   FEnd := FStart;
@@ -1382,7 +1550,11 @@ begin
     Current.Str := '';
     Old := Current;
     Current := Current.Next;
+    {$IFDEF CLR}
+    Old.Free;
+    {$ELSE}
     Dispose(Old);
+    {$ENDIF CLR}
   end;
   FSize := 0;
 
@@ -1585,7 +1757,11 @@ begin
   end
   else
     FStart := Current.Next;
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FSize);
 end;
 
@@ -1620,7 +1796,11 @@ begin
       end
       else
         FStart := Current.Next;
+      {$IFDEF CLR}
+      Current.Free;
+      {$ELSE}
       Dispose(Current);
+      {$ENDIF CLR}
       Dec(FSize);
       Result := True;
       Exit;
@@ -1760,7 +1940,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1768,7 +1952,11 @@ begin
     AddFirst(AObject);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AObject;
   if Index = 0 then
   begin
@@ -1806,7 +1994,11 @@ begin
     AddFirst(AObject);
     Exit;
   end;
+  {$IFDEF CLR}
+  NewItem := TJclLinkedListItem.Create;
+  {$ELSE}
   New(NewItem);
+  {$ENDIF CLR}
   NewItem.Obj := AObject;
   NewItem.Next := nil;
   FEnd.Next := NewItem;
@@ -1848,7 +2040,11 @@ begin
 {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   It := ACollection.First;
@@ -1864,7 +2060,11 @@ begin
     Current := Current.Next;
   while It.HasNext do
   begin
+    {$IFDEF CLR}
+    NewItem := TJclLinkedListItem.Create;
+    {$ELSE}
     New(NewItem);
+    {$ENDIF CLR}
     NewItem.Obj := It.Next;
     if Index = 0 then
     begin
@@ -1885,7 +2085,11 @@ end;
 
 procedure TJclLinkedList.AddFirst(AObject: TObject);
 begin
+  {$IFDEF CLR}
+  FStart := TJclLinkedListItem.Create;
+  {$ELSE}
   New(FStart);
+  {$ENDIF CLR}
   FStart.Obj := AObject;
   FStart.Next := nil;
   FEnd := FStart;
@@ -1909,7 +2113,11 @@ begin
     Current.Obj := nil;
     Old := Current;
     Current := Current.Next;
+    {$IFDEF CLR}
+    Old.Free;
+    {$ELSE}
     Dispose(Old);
+    {$ENDIF CLR}
   end;
   FSize := 0;
 
@@ -2122,7 +2330,11 @@ begin
       end
       else
         FStart := Current.Next;
-      Dispose(Current);
+        {$IFDEF CLR}
+        Current.Free;
+        {$ELSE}
+        Dispose(Current);
+        {$ENDIF CLR}
       Dec(FSize);
       Result := True;
       Exit;
@@ -2162,7 +2374,11 @@ begin
   end
   else
     FStart := Current.Next;
+  {$IFDEF CLR}
+  Current.Free;
+  {$ELSE}
   Dispose(Current);
+  {$ENDIF CLR}
   Dec(FSize);
 end;
 
@@ -2329,6 +2545,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/05/05 20:08:43  ahuser
+// JCL.NET support
+//
 // Revision 1.8  2005/03/08 15:14:00  dade2004
 // Fixed some bug on
 // IJclStrList.InsertAll implementation

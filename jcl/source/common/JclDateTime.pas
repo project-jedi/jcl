@@ -46,14 +46,20 @@
 unit JclDateTime;
 
 {$I jcl.inc}
+{$IFNDEF CLR}
 {$I crossplatform.inc}
+{$ENDIF ~CLR}
 
 interface
 
 uses
+  {$IFDEF CLR}
+  System.Globalization, System.Runtime.InteropServices,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
@@ -66,6 +72,11 @@ uses
 const
   // 1970-01-01T00:00:00 in TDateTime
   UnixTimeStart = 25569;
+
+{$IFDEF CLR}
+type
+  TFileTime = System.Runtime.InteropServices.FILETIME;
+{$ENDIF CLR}
 
 { Encode / Decode functions }
 
@@ -88,7 +99,7 @@ function SecondOfTime(const DateTime: TDateTime): Integer;
 
 { ISO 8601 support }
 
-function GetISOYearNumberOfDays(const Year: Word): Word;  
+function GetISOYearNumberOfDays(const Year: Word): Word;
 function IsISOLongYear(const Year: Word): Boolean; overload;
 function IsISOLongYear(const DateTime: TDateTime): Boolean; overload;
 function ISODayOfWeek(const DateTime: TDateTime): Word;
@@ -123,6 +134,7 @@ function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
@@ -131,16 +143,20 @@ procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); 
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 function DosDateTimeToStr(DateTime: Integer): string;
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
@@ -148,8 +164,10 @@ procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word)
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload;
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 function FileTimeToStr(const FileTime: TFileTime): string;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
@@ -161,6 +179,7 @@ function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 type
   TJclUnixTime32 = Longword;
@@ -282,7 +301,11 @@ end;
 procedure ResultCheck(Val: LongBool);
 begin
   if not Val then
+    {$IFDEF CLR}
+    raise EJclDateTimeError.Create(RsDateConversion);
+    {$ELSE}
     raise EJclDateTimeError.CreateRes(@RsDateConversion);
+    {$ENDIF CLR}
 end;
 
 function CenturyBaseYear(const DateTime: TDateTime): Integer;
@@ -607,6 +630,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
+{$IFDEF CLR}
+begin
+  Result := System.TimeZone.CurrentTimeZone.ToLocalTime(DateTime);
+end;
+{$ELSE}
 var
   TimeZoneInfo: TTimeZoneInformation;
 begin
@@ -620,6 +648,7 @@ begin
     raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
+{$ENDIF CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -639,6 +668,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+{$IFDEF CLR}
+begin
+  Result := System.TimeZone.CurrentTimeZone.ToUniversalTime(DateTime);
+end;
+{$ELSE}
 var
   TimeZoneInfo: TTimeZoneInformation;
 begin
@@ -652,6 +686,7 @@ begin
     raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -696,10 +731,15 @@ end;
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
 begin
+  {$IFDEF CLR}
+  Result := System.DateTime.FromFileTime(Int64(FileTime.dwHighDateTime) shl 32 or FileTime.dwLowDateTime);
+  {$ELSE}
   Result := Int64(FileTime) / FileTimeStep;
   Result := Result + FileTimeBase;
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
@@ -721,6 +761,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 var
@@ -729,9 +770,15 @@ var
 begin
   E := (DateTime - FileTimeBase) * FileTimeStep;
   F64 := Round(E);
+  {$IFDEF CLR}
+  Result.dwLowDateTime := F64 and $00000000FFFFFFFF;
+  Result.dwHighDateTime := F64 shr 32;
+  {$ELSE}
   Result := TFileTime(F64);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
@@ -751,6 +798,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 // DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime
 // not using SysUtils.FileDateToDateTime this can be done like that:
@@ -784,6 +832,7 @@ begin
   Result := SysUtils.DateTimeToFileDate(DateTime);
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
@@ -840,6 +889,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 function FileTimeToStr(const FileTime: TFileTime): string;
 var
@@ -854,6 +904,7 @@ begin
   Result := DateTimeToStr(DosDateTimeToDateTime(DateTime));
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 // we can't do this better without copying Borland-owned code from the Delphi VCL,
@@ -883,6 +934,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 // Additional format tokens (also available in upper case):
 // w: Week no according to ISO
@@ -903,7 +955,7 @@ var
     if N > 1 then
     begin
       Result := Result + Copy(Form, 1, N - 1);
-      System.Delete(Form, 1, N - 1);
+      Delete(Form, 1, N - 1);
       N := 1;
     end;
   end;
@@ -1065,8 +1117,18 @@ begin
 end;
 
 function FATDatesEqual(const FileTime1, FileTime2: TFileTime): Boolean;
+{$IFDEF CLR}
+var
+  FT1, FT2: Int64;
+{$ENDIF CLR}
 begin
+  {$IFDEF CLR}
+  FT1 := Int64(FileTime1.dwHighDateTime) shl 32 or FileTime1.dwLowDateTime;
+  FT2 := Int64(FileTime2.dwHighDateTime) shl 32 or FileTime2.dwLowDateTime;
+  Result := FATDatesEqual(FT1, FT2);
+  {$ELSE}
   Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
+  {$ENDIF CLR}
 end;
 
 // Conversion Unix time <--> TDateTime / FileTime, constants
@@ -1115,6 +1177,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.20  2005/03/09 23:09:01  rrossmair
 // - published UnixTimeStart constant
 //

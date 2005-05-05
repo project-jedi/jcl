@@ -69,12 +69,17 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF CLR}
+  System.IO, System.Configuration, System.Diagnostics, System.Collections,
+  System.Net,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF ~FPC}
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   Classes,
   JclResources;
 
@@ -84,6 +89,10 @@ type
   TEnvironmentOption = (eoLocalMachine, eoCurrentUser, eoAdditional);
   TEnvironmentOptions = set of TEnvironmentOption;
 {$ENDIF MSWINDOWS}
+{$IFDEF CLR}
+type
+  DWORD = LongWord;
+{$ENDIF CLR}
 
 function DelEnvironmentVar(const Name: string): Boolean;
 function ExpandEnvironmentVar(var Value: string): Boolean;
@@ -92,20 +101,26 @@ function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolea
 function GetEnvironmentVars(const Vars: TStrings): Boolean; overload;
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean; overload;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 procedure DestroyEnvironmentBlock(var Env: PChar);
 procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 // Common Folder Locations
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function GetCommonFilesFolder: string;
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 function GetCurrentFolder: string;
 {$IFDEF MSWINDOWS}
 function GetProgramFilesFolder: string;
+{$IFNDEF CLR}
 function GetWindowsFolder: string;
+{$ENDIF ~CLR}
 function GetWindowsSystemFolder: string;
 function GetWindowsTempFolder: string;
 
@@ -120,22 +135,25 @@ function GetRecentFolder: string;
 function GetSendToFolder: string;
 function GetStartmenuFolder: string;
 function GetDesktopDirectoryFolder: string;
+{$IFNDEF CLR}
 function GetNethoodFolder: string;
 function GetFontsFolder: string;
 function GetCommonStartmenuFolder: string;
-function GetCommonProgramsFolder: string;
 function GetCommonStartupFolder: string;
+function GetPrinthoodFolder: string;
+function GetProfileFolder: string;
+{$ENDIF ~CLR}
+function GetCommonProgramsFolder: string;
 function GetCommonDesktopdirectoryFolder: string;
 function GetCommonAppdataFolder: string;
 function GetAppdataFolder: string;
-function GetPrinthoodFolder: string;
 function GetCommonFavoritesFolder: string;
 function GetTemplatesFolder: string;
 function GetInternetCacheFolder: string;
 function GetCookiesFolder: string;
 function GetHistoryFolder: string;
-function GetProfileFolder: string;
 
+{$IFNDEF CLR}
 // Advanced Power Management (APM)
 type
   TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
@@ -176,12 +194,14 @@ function GetVolumeName(const Drive: string): string;
 function GetVolumeSerialNumber(const Drive: string): string;
 function GetVolumeFileSystem(const Drive: string): string;
 function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 function GetIPAddress(const HostName: string): string;
 {$IFDEF UNIX}
 procedure GetIpAddresses(Results: TStrings);
 {$ENDIF UNIX}
 function GetLocalComputerName: string;
+{$IFNDEF CLR}
 function GetLocalUserName: string;
 {$IFDEF MSWINDOWS}
 function GetUserDomainName(const CurUser: string): string;
@@ -199,9 +219,11 @@ function GetBIOSDate: TDateTime;
 // Processes, Tasks and Modules
 type
   TJclTerminateAppResult = (taError, taClean, taKill);
+{$ENDIF ~CLR}
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
@@ -217,8 +239,10 @@ function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
 function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+{$ENDIF ~CLR}
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 
+{$IFNDEF CLR}
 {.$IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
@@ -1056,11 +1080,13 @@ var
   ProcessorCount: Cardinal = 0;
   AllocGranularity: Cardinal = 0;
   PageSize: Cardinal = 0;
+{$ENDIF ~CLR}
 
 implementation
 
 uses
   SysUtils,
+  {$IFNDEF CLR}
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
   {$IFDEF FPC}
@@ -1071,7 +1097,9 @@ uses
   {$ENDIF FPC}
   JclRegistry, JclWin32,
   {$ENDIF MSWINDOWS}
-  Jcl8087, JclBase, JclFileUtils, JclIniFiles, JclStrings;
+  Jcl8087, JclIniFiles,
+  {$ENDIF ~CLR}
+  JclBase, JclFileUtils, JclStrings;
 
 {$IFDEF FPC}
 {$I JclSysInfo.fpc}
@@ -1081,6 +1109,10 @@ uses
 
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
+  {$IFDEF CLR}
+  System.Environment.GetEnvironmentVariables.Remove(Name);
+  Result := True;
+  {$ELSE}
   {$IFDEF UNIX}
   UnSetEnv(PChar(Name));
   Result := True;
@@ -1088,9 +1120,16 @@ begin
   {$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), nil);
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
 end;
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
+{$IFDEF CLR}
+begin
+  Value := System.Environment.ExpandEnvironmentVariables(Value);
+  Result := True;
+end;
+{$ELSE}
 {$IFDEF UNIX}
 begin
   Result := True;
@@ -1112,6 +1151,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF CLR}
 
 {$IFDEF UNIX}
 
@@ -1132,10 +1172,22 @@ end;
 
 function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
 begin
+  {$IFDEF CLR}
+  Value := System.Environment.GetEnvironmentVariable(Name);
+  Result := TObject(Value) <> nil;
+  {$ELSE}
   Result := GetEnvironmentVar(Name, Value, True);
+  {$ENDIF CLR}
 end;
 
 function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
+{$IFDEF CLR}
+begin
+  Result := GetEnvironmentVar(Name, Value);
+  if Expand then
+    ExpandEnvironmentVar(Value);
+end;
+{$ELSE}
 var
   R: DWORD;
 begin
@@ -1152,6 +1204,7 @@ begin
       ExpandEnvironmentVar(Value);
   end;
 end;
+{$ENDIF CLR}
 
 {$ENDIF MSWINDOWS}
 
@@ -1190,6 +1243,21 @@ begin
 end;
 
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
+{$IFDEF CLR}
+var
+  Dic: IDictionaryEnumerator;
+begin
+  Vars.BeginUpdate;
+  try
+    Vars.Clear;
+    for Dic in System.Environment.GetEnvironmentVariables do
+      Vars.Add(string(Dic.Key) + '=' + string(Dic.Value));
+  finally
+    Vars.EndUpdate;
+  end;
+  Result := True;
+end;
+{$ELSE}
 var
   Raw: PChar;
   Expanded: string;
@@ -1218,11 +1286,19 @@ begin
     Vars.EndUpdate;
   end;
 end;
+{$ENDIF CLR}
 
 {$ENDIF MSWINDOWS}
 
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
+  {$IFDEF CLR}
+  if System.Environment.GetEnvironmentVariables.Contains(Name) then
+    System.Environment.GetEnvironmentVariables.Item[Name] := Value
+  else
+    System.Environment.GetEnvironmentVariables.Add(Name, Value);
+  Result := True;
+  {$ELSE}
   {$IFDEF UNIX}
   SetEnv(PChar(Name), PChar(Value), 1);
   Result := True;
@@ -1230,8 +1306,10 @@ begin
   {$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
@@ -1350,8 +1428,14 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 function GetCurrentFolder: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.CurrentDirectory;
+end;
+{$ELSE}
 {$IFDEF UNIX}
 const
   InitialSize = 64;
@@ -1387,14 +1471,20 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF CLR}
 
 {$IFDEF MSWINDOWS}
 { TODO : Check for documented solution }
 function GetProgramFilesFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+  {$ELSE}
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS, 'ProgramFilesDir', '');
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 { TODO : Check for documented solution }
 function GetWindowsFolder: string;
 var
@@ -1409,9 +1499,15 @@ begin
     StrResetLength(Result);
   end;
 end;
+{$ENDIF ~CLR}
 
 { TODO : Check for documented solution }
 function GetWindowsSystemFolder: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.SystemDirectory;
+end;
+{$ELSE}
 var
   Required: Cardinal;
 begin
@@ -1424,8 +1520,14 @@ begin
     StrResetLength(Result);
   end;
 end;
+{$ENDIF CLR}
 
 function GetWindowsTempFolder: string;
+{$IFDEF CLR}
+begin
+  Result := Path.GetTempPath;
+end;
+{$ELSE}
 var
   Required: Cardinal;
 begin
@@ -1439,65 +1541,105 @@ begin
     Result := PathRemoveSeparator(Result);
   end;
 end;
+{$ENDIF CLR}
 
 function GetDesktopFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
+  {$ENDIF CLR}
 end;
 
 { TODO : Check GetProgramsFolder = GetProgramFilesFolder }
 function GetProgramsFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
+  {$ENDIF CLR}
 end;
 
 {$ENDIF MSWINDOWS}
 function GetPersonalFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+  {$ELSE}
   {$IFDEF UNIX}
   Result := GetEnvironmentVariable('HOME');
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
 end;
 
 {$IFDEF MSWINDOWS}
 function GetFavoritesFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
+  {$ENDIF CLR}
 end;
 
 function GetStartupFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_STARTUP);
+  {$ENDIF CLR}
 end;
 
 function GetRecentFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_RECENT);
+  {$ENDIF CLR}
 end;
 
 function GetSendToFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.SendTo);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_SENDTO);
+  {$ENDIF CLR}
 end;
 
 function GetStartmenuFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.StartMenu);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
+  {$ENDIF CLR}
 end;
 
 function GetDesktopDirectoryFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 function GetNethoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
 end;
+{$ENDIF ~CLR}
 
+{$IFNDEF CLR}
 function GetFontsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FONTS);
@@ -1507,66 +1649,109 @@ function GetCommonStartmenuFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
 end;
+{$ENDIF ~CLR}
 
 function GetCommonProgramsFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 function GetCommonStartupFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
 end;
+{$ENDIF ~CLR}
 
 function GetCommonDesktopdirectoryFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
+  {$ENDIF CLR}
 end;
 
 function GetCommonAppdataFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_COMMON_APPDATA);
+  {$ENDIF CLR}
 end;
 
 function GetAppdataFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_APPDATA);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 function GetPrinthoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
 end;
+{$ENDIF ~CLR}
 
 function GetCommonFavoritesFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
+  {$ENDIF CLR}
 end;
 
 function GetTemplatesFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Templates);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
+  {$ENDIF CLR}
 end;
 
 function GetInternetCacheFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
+  {$ENDIF CLR}
 end;
 
 function GetCookiesFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Cookies);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_COOKIES);
+  {$ENDIF CLR}
 end;
 
 function GetHistoryFolder: string;
 begin
+  {$IFDEF CLR}
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.History);
+  {$ELSE}
   Result := GetSpecialFolderLocation(CSIDL_HISTORY);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 function GetProfileFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PROFILE);
-end;  
+end;
+{$ENDIF ~CLR}
 
 // the following special folders are pure virtual and cannot be
 // mapped to a directory path:
@@ -1579,6 +1764,7 @@ end;
 // CSIDL_ALTSTARTUP
 // CSIDL_COMMON_ALTSTARTUP
 
+{$IFNDEF CLR}
 // Identification
 type
   TVolumeInfoKind = (vikName, vikSerial, vikFileSystem);
@@ -1653,11 +1839,23 @@ begin
       Include(Result, Flag);
 end;
 
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 { TODO -cDoc: Contributor: twm }
 
 function GetIPAddress(const HostName: string): string;
+{$IFDEF CLR}
+var
+  Host: IPHostEntry;
+begin
+  Host := System.Net.Dns.Resolve(HostName);
+  if (Host <> nil) and (Length(Host.AddressList) > 0) then
+    Result := Host.AddressList[0].ToString()
+  else
+    Result := '';
+end;
+{$ELSE}
 var
   {$IFDEF MSWINDOWS}
   R: Integer;
@@ -1691,7 +1889,7 @@ begin
     end;
     {$ENDIF MSWINDOWS}
 end;
-
+{$ENDIF CLR}
 
 {$IFDEF UNIX}
 
@@ -1753,6 +1951,11 @@ end;
 {$ENDIF UNIX}
 
 function GetLocalComputerName: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.MachineName;
+end;
+{$ELSE}
 // (rom) UNIX or LINUX?
 {$IFDEF LINUX}
 var
@@ -1776,6 +1979,9 @@ begin
     Result := '';
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF CLR}
+
+{$IFNDEF CLR}
 
 function GetLocalUserName: string;
 {$IFDEF UNIX}
@@ -2018,10 +2224,25 @@ begin
 end;
 
 {$ENDIF UNIX}
+{$ENDIF ~CLR}
 
 {$IFDEF MSWINDOWS}
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
+{$IFDEF CLR}
+var
+  Processes: array of Process;
+  I: Integer;
+begin
+  Result := True;
+  Processes := Process.GetProcesses;
+  for I := 0 to High(Processes) do
+    if FullPath then
+      List.Add(Processes[I].MainModule.FileName)
+    else
+      List.Add(Processes[I].MainModule.ModuleName);
+end;
+{$ELSE}
 
   // This function always returns an empty string on Win9x
   function ProcessFileName(PID: DWORD): string;
@@ -2149,6 +2370,9 @@ begin
     List.EndUpdate;
   end;
 end;
+{$ENDIF CLR}
+
+{$IFNDEF CLR}
 
 { TODO Windows 9x ? }
 
@@ -2922,7 +3146,10 @@ begin
     Set8087CW(Save8087CW);
   end;
 end;
+
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
+{$IFNDEF CLR}
 
 function GetOSVersionString: string;
 {$IFDEF UNIX}
@@ -4886,10 +5113,14 @@ finalization
   FinalizeSysInfo;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 // History:
 
 // $Log$
+// Revision 1.43  2005/05/05 20:08:45  ahuser
+// JCL.NET support
+//
 // Revision 1.42  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
 //

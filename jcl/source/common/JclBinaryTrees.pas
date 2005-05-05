@@ -40,8 +40,14 @@ uses
 type
   TJclTreeColor = (tcBlack, tcRed);
 
+  {$IFDEF CLR}
+  TJclIntfBinaryNode = class;
+  PJclIntfBinaryNode = TJclIntfBinaryNode;
+  TJclIntfBinaryNode = class
+  {$ELSE}
   PJclIntfBinaryNode = ^TJclIntfBinaryNode;
   TJclIntfBinaryNode = record
+  {$ENDIF CLR}
     Obj: IInterface;
     Left: PJclIntfBinaryNode;
     Right: PJclIntfBinaryNode;
@@ -49,8 +55,14 @@ type
     Color: TJclTreeColor;
   end;
 
+  {$IFDEF CLR}
+  TJclStrBinaryNode = class;
+  PJclStrBinaryNode = TJclStrBinaryNode;
+  TJclStrBinaryNode = class
+  {$ELSE}
   PJclStrBinaryNode = ^TJclStrBinaryNode;
   TJclStrBinaryNode = record
+  {$ENDIF CLR}
     Str: string;
     Left: PJclStrBinaryNode;
     Right: PJclStrBinaryNode;
@@ -58,8 +70,14 @@ type
     Color: TJclTreeColor;
   end;
 
+  {$IFDEF CLR}
+  TJclBinaryNode = class;
+  PJclBinaryNode = TJclBinaryNode;
+  TJclBinaryNode = class
+  {$ELSE}
   PJclBinaryNode = ^TJclBinaryNode;
   TJclBinaryNode = record
+  {$ENDIF CLR}
     Obj: TObject;
     Left: PJclBinaryNode;
     Right: PJclBinaryNode;
@@ -200,7 +218,9 @@ type
     procedure SetObject(AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfBinaryTree; Start: PJclIntfBinaryNode);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TIntfItr.Create(OwnList: TJclIntfBinaryTree; Start: PJclIntfBinaryNode);
@@ -208,15 +228,18 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
+  {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 destructor TIntfItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TIntfItr.Add(AInterface: IInterface);
 {$IFDEF THREADSAFE}
@@ -259,7 +282,11 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TIntfItr.Previous: IInterface;
@@ -269,7 +296,11 @@ end;
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TIntfItr.Remove;
@@ -515,7 +546,9 @@ type
     procedure SetString(const AString: string);
   public
     constructor Create(OwnList: TJclStrBinaryTree; Start: PJclStrBinaryNode);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TStrItr.Create(OwnList: TJclStrBinaryTree; Start: PJclStrBinaryNode);
@@ -523,15 +556,18 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
+  {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 destructor TStrItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TStrItr.Add(const AString: string);
 {$IFDEF THREADSAFE}
@@ -574,7 +610,11 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TStrItr.Previous: string;
@@ -584,7 +624,11 @@ end;
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TStrItr.Remove;
@@ -830,7 +874,9 @@ type
     procedure SetObject(AObject: TObject);
   public
     constructor Create(OwnList: TJclBinaryTree; Start: PJclBinaryNode);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TItr.Create(OwnList: TJclBinaryTree; Start: PJclBinaryNode);
@@ -838,15 +884,18 @@ begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  FLastRet := nil;
+  {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 destructor TItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TItr.Add(AObject: TObject);
 {$IFDEF THREADSAFE}
@@ -890,7 +939,11 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 function TItr.Previous: TObject;
@@ -901,7 +954,11 @@ end;
 function TItr.PreviousIndex: Integer;
 begin
   // No index
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TItr.Remove;
@@ -1158,77 +1215,81 @@ begin
   Result := False;
   if AInterface = nil then
     Exit;
+  {$IFDEF CLR}
+  NewNode := TJclIntfBinaryNode.Create;
+  {$ELSE}
   NewNode := AllocMem(SizeOf(TJclIntfBinaryNode));
-  NewNode^.Obj := AInterface;
+  {$ENDIF CLR}
+  NewNode.Obj := AInterface;
   // Insert into right place
   Save := nil;
   Current := FRoot;
   while Current <> nil do
   begin
     Save := Current;
-    if FComparator(NewNode^.Obj, Current.Obj) < 0 then
+    if FComparator(NewNode.Obj, Current.Obj) < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
   end;
-  NewNode^.Parent := Save;
+  NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
   else
-  if FComparator(NewNode^.Obj, Save.Obj) < 0 then
+  if FComparator(NewNode.Obj, Save.Obj) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
   // RB balanced
-  NewNode^.Color := tcRed;
-  while (NewNode <> FRoot) and (NewNode^.Parent^.Color = tcRed) do
+  NewNode.Color := tcRed;
+  while (NewNode <> FRoot) and (NewNode.Parent.Color = tcRed) do
   begin
-    if (NewNode^.Parent^.Parent <> nil) and (NewNode^.Parent = NewNode^.Parent^.Parent^.Left) then
+    if (NewNode.Parent.Parent <> nil) and (NewNode.Parent = NewNode.Parent.Parent.Left) then
     begin
-      Current := NewNode^.Parent^.Parent^.Right;
+      Current := NewNode.Parent.Parent.Right;
       if Current.Color = tcRed then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Right then
+        if NewNode = NewNode.Parent.Right then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateLeft(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateRight(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        NewNode.Parent.Parent.Color := tcRed;
+        RotateRight(NewNode.Parent.Parent);
       end;
     end
     else
     begin
-      if NewNode^.Parent^.Parent = nil then
+      if NewNode.Parent.Parent = nil then
         Current := nil
       else
-        Current := NewNode^.Parent^.Parent^.Left;
+        Current := NewNode.Parent.Parent.Left;
       if (Current <> nil) and (Current.Color = tcRed) then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Left then
+        if NewNode = NewNode.Parent.Left then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateRight(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        if NewNode^.Parent^.Parent <> nil then
-          NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateLeft(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        if NewNode.Parent.Parent <> nil then
+          NewNode.Parent.Parent.Color := tcRed;
+        RotateLeft(NewNode.Parent.Parent);
       end;
     end;
   end;
@@ -1264,11 +1325,11 @@ var
 {$IFDEF RECURSIVE}
   procedure FreeChild(Node: PJclIntfBinaryNode);
   begin
-    if Node^.Left <> nil then
-      FreeChild(Node^.Left);
-    if Node^.Right <> nil then
-      FreeChild(Node^.Right);
-    Node^.Obj := nil; // Force Release
+    if Node.Left <> nil then
+      FreeChild(Node.Left);
+    if Node.Right <> nil then
+      FreeChild(Node.Right);
+    Node.Obj := nil; // Force Release
     FreeMem(Node);
   end;
 {$ELSE}
@@ -1303,7 +1364,11 @@ begin
       Current.Obj := nil; // Force Release
       if Current.Parent = nil then // Root
       begin
+        {$IFDEF CLR}
+        Current.Free;
+        {$ELSE}
         FreeMem(Current);
+        {$ENDIF CLR}
         Current := nil;
         FRoot := nil;
       end
@@ -1313,12 +1378,20 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Right := nil;
         end
         else
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Left := nil;
         end
       end;
@@ -1336,12 +1409,16 @@ var
   begin
     if Node <> nil then
     begin
+      {$IFDEF CLR}
+      Result := TJclIntfBinaryNode.Create;
+      {$ELSE}
       GetMem(Result, SizeOf(TJclIntfBinaryNode));
-      Result.Obj := Node^.Obj;
-      Result.Color := Node^.Color;
+      {$ENDIF CLR}
+      Result.Obj := Node.Obj;
+      Result.Color := Node.Color;
       Result.Parent := Parent;
-      Result.Left := CloneNode(Node^.Left, Result); // recursive call
-      Result.Right := CloneNode(Node^.Right, Result); // recursive call
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
     end
     else
       Result := nil;
@@ -1367,14 +1444,14 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    Comp := FComparator(Node^.Obj, AInterface);
+    Comp := FComparator(Node.Obj, AInterface);
     if Comp = 0 then
       Result := True
     else
     if Comp > 0 then
-      Result := ContainsChild(Node^.Left)
+      Result := ContainsChild(Node.Left)
     else
-      Result := ContainsChild(Node^.Right);
+      Result := ContainsChild(Node.Right);
   end;
 {$ELSE}
 var
@@ -1505,21 +1582,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Right;
+  TempNode := Node.Right;
   //  if TempNode = nil then	Exit;
-  Node^.Right := TempNode^.Left;
-  if TempNode^.Left <> nil then
-    TempNode^.Left^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Right := TempNode.Left;
+  if TempNode.Left <> nil then
+    TempNode.Left.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Left = Node then
-    Node^.Parent^.Left := TempNode
+  if Node.Parent.Left = Node then
+    Node.Parent.Left := TempNode
   else
-    Node^.Parent^.Right := TempNode;
-  TempNode^.Left := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Right := TempNode;
+  TempNode.Left := Node;
+  Node.Parent := TempNode;
 end;
 
 procedure TJclIntfBinaryTree.RotateRight(Node: PJclIntfBinaryNode);
@@ -1528,21 +1605,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Left;
+  TempNode := Node.Left;
   //  if TempNode = nil then 	Exit;
-  Node^.Left := TempNode^.Right;
-  if TempNode^.Right <> nil then
-    TempNode^.Right^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Left := TempNode.Right;
+  if TempNode.Right <> nil then
+    TempNode.Right.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Right = Node then
-    Node^.Parent^.Right := TempNode
+  if Node.Parent.Right = Node then
+    Node.Parent.Right := TempNode
   else
-    Node^.Parent^.Left := TempNode;
-  TempNode^.Right := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Left := TempNode;
+  TempNode.Right := Node;
+  Node.Parent := TempNode;
 end;
 
 function TJclIntfBinaryTree.Remove(AInterface: IInterface): Boolean;
@@ -1559,85 +1636,85 @@ var
   var
     TempNode: PJclIntfBinaryNode;
   begin
-    while (Node <> FRoot) and (Node^.Color = tcBlack) do
+    while (Node <> FRoot) and (Node.Color = tcBlack) do
     begin
-      if Node = Node^.Parent^.Left then
+      if Node = Node.Parent.Left then
       begin
-        TempNode := Node^.Parent^.Right;
+        TempNode := Node.Parent.Right;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateLeft(Node^.Parent);
-          TempNode := Node^.Parent^.Right;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateLeft(Node.Parent);
+          TempNode := Node.Parent.Right;
         end;
-        if (TempNode^.Left <> nil) and (TempNode^.Left^.Color = tcBlack) and
-          (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left <> nil) and (TempNode.Left.Color = tcBlack) and
+          (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+          if (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
           begin
-            TempNode^.Left^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Left.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateRight(TempNode);
-            TempNode := Node^.Parent^.Right;
+            TempNode := Node.Parent.Right;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Right <> nil then
-            TempNode^.Right^.Color := tcBlack;
-          RotateLeft(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Right <> nil then
+            TempNode.Right.Color := tcBlack;
+          RotateLeft(Node.Parent);
           Node := FRoot;
         end;
       end
       else
       begin
-        TempNode := Node^.Parent^.Left;
+        TempNode := Node.Parent.Left;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateRight(Node^.Parent);
-          TempNode := Node^.Parent^.Left;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateRight(Node.Parent);
+          TempNode := Node.Parent.Left;
         end;
-        if (TempNode^.Left^.Color = tcBlack) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left.Color = tcBlack) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if TempNode^.Left^.Color = tcBlack then
+          if TempNode.Left.Color = tcBlack then
           begin
-            TempNode^.Right^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Right.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateLeft(TempNode);
-            TempNode := Node^.Parent^.Left;
+            TempNode := Node.Parent.Left;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Left <> nil then
-            TempNode^.Left^.Color := tcBlack;
-          RotateRight(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Left <> nil then
+            TempNode.Left.Color := tcBlack;
+          RotateRight(Node.Parent);
           Node := FRoot;
         end;
       end;
     end;
-    Node^.Color := tcBlack;
+    Node.Color := tcBlack;
   end;
 
 begin
@@ -1689,14 +1766,14 @@ begin
     Node := Save.Right;
   if Node <> nil then
   begin
-    Node^.Parent := Save.Parent;
+    Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
     else
-    if Save = Save.Parent^.Left then
-      Save.Parent^.Left := Node
+    if Save = Save.Parent.Left then
+      Save.Parent.Left := Node
     else
-      Save.Parent^.Right := Node;
+      Save.Parent.Right := Node;
     if Save.Color = tcBlack then
       Correction(Node);
   end
@@ -1708,13 +1785,17 @@ begin
     if Save.Color = tcBlack then
       Correction(Save);
     if Save.Parent <> nil then
-      if Save = Save.Parent^.Left then
-        Save.Parent^.Left := nil
+      if Save = Save.Parent.Left then
+        Save.Parent.Left := nil
       else
-      if Save = Save.Parent^.Right then
-        Save.Parent^.Right := nil
+      if Save = Save.Parent.Right then
+        Save.Parent.Right := nil
   end;
+  {$IFDEF CLR}
+  Save.Free;
+  {$ELSE}
   FreeMem(Save);
+  {$ENDIF CLR}
   Dec(FCount);
 end;
 
@@ -1797,77 +1878,81 @@ begin
   Result := False;
   if AString = '' then
     Exit;
+  {$IFDEF CLR}
+  NewNode := TJclStrBinaryNode.Create;
+  {$ELSE}
   NewNode := AllocMem(SizeOf(TJclStrBinaryNode));
-  NewNode^.Str := AString;
+  {$ENDIF CLR}
+  NewNode.Str := AString;
   // Insert into right place
   Save := nil;
   Current := FRoot;
   while Current <> nil do
   begin
     Save := Current;
-    if FComparator(NewNode^.Str, Current.Str) < 0 then
+    if FComparator(NewNode.Str, Current.Str) < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
   end;
-  NewNode^.Parent := Save;
+  NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
   else
-  if FComparator(NewNode^.Str, Save.Str) < 0 then
+  if FComparator(NewNode.Str, Save.Str) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
   // RB balanced
-  NewNode^.Color := tcRed;
-  while (NewNode <> FRoot) and (NewNode^.Parent^.Color = tcRed) do
+  NewNode.Color := tcRed;
+  while (NewNode <> FRoot) and (NewNode.Parent.Color = tcRed) do
   begin
-    if (NewNode^.Parent^.Parent <> nil) and (NewNode^.Parent = NewNode^.Parent^.Parent^.Left) then
+    if (NewNode.Parent.Parent <> nil) and (NewNode.Parent = NewNode.Parent.Parent.Left) then
     begin
-      Current := NewNode^.Parent^.Parent^.Right;
+      Current := NewNode.Parent.Parent.Right;
       if (Current <> nil) and (Current.Color = tcRed) then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Right then
+        if NewNode = NewNode.Parent.Right then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateLeft(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateRight(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        NewNode.Parent.Parent.Color := tcRed;
+        RotateRight(NewNode.Parent.Parent);
       end;
     end
     else
     begin
-      if NewNode^.Parent^.Parent = nil then
+      if NewNode.Parent.Parent = nil then
         Current := nil
       else
-        Current := NewNode^.Parent^.Parent^.Left;
+        Current := NewNode.Parent.Parent.Left;
       if (Current <> nil) and (Current.Color = tcRed) then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Left then
+        if NewNode = NewNode.Parent.Left then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateRight(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        if NewNode^.Parent^.Parent <> nil then
-          NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateLeft(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        if NewNode.Parent.Parent <> nil then
+          NewNode.Parent.Parent.Color := tcRed;
+        RotateLeft(NewNode.Parent.Parent);
       end;
     end;
   end;
@@ -1973,11 +2058,11 @@ var
 {$IFDEF RECURSIVE}
   procedure FreeChild(Node: PJclStrBinaryNode);
   begin
-    if Node^.Left <> nil then
-      FreeChild(Node^.Left);
-    if Node^.Right <> nil then
-      FreeChild(Node^.Right);
-    Node^.Str := ''; // Force Release
+    if Node.Left <> nil then
+      FreeChild(Node.Left);
+    if Node.Right <> nil then
+      FreeChild(Node.Right);
+    Node.Str := ''; // Force Release
     FreeMem(Node);
   end;
 {$ELSE}
@@ -2012,7 +2097,11 @@ begin
       Current.Str := ''; // Force Release
       if Current.Parent = nil then // Root
       begin
+        {$IFDEF CLR}
+        Current.Free;
+        {$ELSE}
         FreeMem(Current);
+        {$ENDIF CLR}
         Current := nil;
         FRoot := nil;
       end
@@ -2022,12 +2111,20 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Right := nil;
         end
         else
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Left := nil;
         end
       end;
@@ -2045,12 +2142,16 @@ var
   begin
     if Node <> nil then
     begin
+      {$IFDEF CLR}
+      Result := TJclStrBinaryNode.Create;
+      {$ELSE}
       GetMem(Result, SizeOf(TJclStrBinaryNode));
-      Result.Str := Node^.Str;
-      Result.Color := Node^.Color;
+      {$ENDIF CLR}
+      Result.Str := Node.Str;
+      Result.Color := Node.Color;
       Result.Parent := Parent;
-      Result.Left := CloneNode(Node^.Left, Result); // recursive call
-      Result.Right := CloneNode(Node^.Right, Result); // recursive call
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
     end
     else
       Result := nil;
@@ -2076,14 +2177,14 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    Comp := FComparator(Node^.Str, AString);
+    Comp := FComparator(Node.Str, AString);
     if Comp = 0 then
       Result := True
     else
     if Comp > 0 then
-      Result := ContainsChild(Node^.Left)
+      Result := ContainsChild(Node.Left)
     else
-      Result := ContainsChild(Node^.Right)
+      Result := ContainsChild(Node.Right)
   end;
 {$ELSE}
 var
@@ -2222,85 +2323,85 @@ var
   var
     TempNode: PJclStrBinaryNode;
   begin
-    while (Node <> FRoot) and (Node^.Color = tcBlack) do
+    while (Node <> FRoot) and (Node.Color = tcBlack) do
     begin
-      if Node = Node^.Parent^.Left then
+      if Node = Node.Parent.Left then
       begin
-        TempNode := Node^.Parent^.Right;
+        TempNode := Node.Parent.Right;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateLeft(Node^.Parent);
-          TempNode := Node^.Parent^.Right;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateLeft(Node.Parent);
+          TempNode := Node.Parent.Right;
         end;
-        if (TempNode^.Left <> nil) and (TempNode^.Left^.Color = tcBlack) and
-          (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left <> nil) and (TempNode.Left.Color = tcBlack) and
+          (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+          if (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
           begin
-            TempNode^.Left^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Left.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateRight(TempNode);
-            TempNode := Node^.Parent^.Right;
+            TempNode := Node.Parent.Right;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Right <> nil then
-            TempNode^.Right^.Color := tcBlack;
-          RotateLeft(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Right <> nil then
+            TempNode.Right.Color := tcBlack;
+          RotateLeft(Node.Parent);
           Node := FRoot;
         end;
       end
       else
       begin
-        TempNode := Node^.Parent^.Left;
+        TempNode := Node.Parent.Left;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateRight(Node^.Parent);
-          TempNode := Node^.Parent^.Left;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateRight(Node.Parent);
+          TempNode := Node.Parent.Left;
         end;
-        if (TempNode^.Left^.Color = tcBlack) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left.Color = tcBlack) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if TempNode^.Left^.Color = tcBlack then
+          if TempNode.Left.Color = tcBlack then
           begin
-            TempNode^.Right^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Right.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateLeft(TempNode);
-            TempNode := Node^.Parent^.Left;
+            TempNode := Node.Parent.Left;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Left <> nil then
-            TempNode^.Left^.Color := tcBlack;
-          RotateRight(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Left <> nil then
+            TempNode.Left.Color := tcBlack;
+          RotateRight(Node.Parent);
           Node := FRoot;
         end;
       end
     end;
-    Node^.Color := tcBlack;
+    Node.Color := tcBlack;
   end;
 
 begin
@@ -2352,14 +2453,14 @@ begin
     Node := Save.Right;
   if Node <> nil then
   begin
-    Node^.Parent := Save.Parent;
+    Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
     else
-    if Save = Save.Parent^.Left then
-      Save.Parent^.Left := Node
+    if Save = Save.Parent.Left then
+      Save.Parent.Left := Node
     else
-      Save.Parent^.Right := Node;
+      Save.Parent.Right := Node;
     if Save.Color = tcBlack then // Correction
       Correction(Node);
   end
@@ -2371,13 +2472,17 @@ begin
     if Save.Color = tcBlack then // Correction
       Correction(Save);
     if Save.Parent <> nil then
-      if Save = Save.Parent^.Left then
-        Save.Parent^.Left := nil
+      if Save = Save.Parent.Left then
+        Save.Parent.Left := nil
       else
-      if Save = Save.Parent^.Right then
-        Save.Parent^.Right := nil
+      if Save = Save.Parent.Right then
+        Save.Parent.Right := nil
   end;
+  {$IFDEF CLR}
+  Save.Free;
+  {$ELSE}
   FreeMem(Save);
+  {$ENDIF CLR}
   Dec(FCount);
 end;
 
@@ -2424,21 +2529,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Right;
+  TempNode := Node.Right;
   //  if TempNode = nil then	Exit;
-  Node^.Right := TempNode^.Left;
-  if TempNode^.Left <> nil then
-    TempNode^.Left^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Right := TempNode.Left;
+  if TempNode.Left <> nil then
+    TempNode.Left.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Left = Node then
-    Node^.Parent^.Left := TempNode
+  if Node.Parent.Left = Node then
+    Node.Parent.Left := TempNode
   else
-    Node^.Parent^.Right := TempNode;
-  TempNode^.Left := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Right := TempNode;
+  TempNode.Left := Node;
+  Node.Parent := TempNode;
 end;
 
 procedure TJclStrBinaryTree.RotateRight(Node: PJclStrBinaryNode);
@@ -2447,21 +2552,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Left;
+  TempNode := Node.Left;
   //  if TempNode = nil then 	Exit;
-  Node^.Left := TempNode^.Right;
-  if TempNode^.Right <> nil then
-    TempNode^.Right^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Left := TempNode.Right;
+  if TempNode.Right <> nil then
+    TempNode.Right.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Right = Node then
-    Node^.Parent^.Right := TempNode
+  if Node.Parent.Right = Node then
+    Node.Parent.Right := TempNode
   else
-    Node^.Parent^.Left := TempNode;
-  TempNode^.Right := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Left := TempNode;
+  TempNode.Right := Node;
+  Node.Parent := TempNode;
 end;
 
 procedure TJclStrBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
@@ -2506,77 +2611,81 @@ begin
   Result := False;
   if AObject = nil then
     Exit;
+  {$IFDEF CLR}
+  NewNode := TJclBinaryNode.Create;
+  {$ELSE}
   NewNode := AllocMem(SizeOf(TJclBinaryNode));
-  NewNode^.Obj := AObject;
+  {$ENDIF CLR}
+  NewNode.Obj := AObject;
   // Insert into right place
   Save := nil;
   Current := FRoot;
   while Current <> nil do
   begin
     Save := Current;
-    if FComparator(NewNode^.Obj, Current.Obj) < 0 then
+    if FComparator(NewNode.Obj, Current.Obj) < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
   end;
-  NewNode^.Parent := Save;
+  NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
   else
-  if FComparator(NewNode^.Obj, Save.Obj) < 0 then
+  if FComparator(NewNode.Obj, Save.Obj) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
   // RB balanced
-  NewNode^.Color := tcRed;
-  while (NewNode <> FRoot) and (NewNode^.Parent^.Color = tcRed) do
+  NewNode.Color := tcRed;
+  while (NewNode <> FRoot) and (NewNode.Parent.Color = tcRed) do
   begin
-    if (NewNode^.Parent^.Parent <> nil) and (NewNode^.Parent = NewNode^.Parent^.Parent^.Left) then
+    if (NewNode.Parent.Parent <> nil) and (NewNode.Parent = NewNode.Parent.Parent.Left) then
     begin
-      Current := NewNode^.Parent^.Parent^.Right;
+      Current := NewNode.Parent.Parent.Right;
       if Current.Color = tcRed then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Right then
+        if NewNode = NewNode.Parent.Right then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateLeft(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateRight(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        NewNode.Parent.Parent.Color := tcRed;
+        RotateRight(NewNode.Parent.Parent);
       end;
     end
     else
     begin
-      if NewNode^.Parent^.Parent = nil then
+      if NewNode.Parent.Parent = nil then
         Current := nil
       else
-        Current := NewNode^.Parent^.Parent^.Left;
+        Current := NewNode.Parent.Parent.Left;
       if (Current <> nil) and (Current.Color = tcRed) then
       begin
-        NewNode^.Parent^.Color := tcBlack;
+        NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
-        NewNode^.Parent^.Parent^.Color := tcRed;
-        NewNode := NewNode^.Parent^.Parent;
+        NewNode.Parent.Parent.Color := tcRed;
+        NewNode := NewNode.Parent.Parent;
       end
       else
       begin
-        if NewNode = NewNode^.Parent^.Left then
+        if NewNode = NewNode.Parent.Left then
         begin
-          NewNode := NewNode^.Parent;
+          NewNode := NewNode.Parent;
           RotateRight(NewNode);
         end;
-        NewNode^.Parent^.Color := tcBlack;
-        if NewNode^.Parent^.Parent <> nil then
-          NewNode^.Parent^.Parent^.Color := tcRed;
-        RotateLeft(NewNode^.Parent^.Parent);
+        NewNode.Parent.Color := tcBlack;
+        if NewNode.Parent.Parent <> nil then
+          NewNode.Parent.Parent.Color := tcRed;
+        RotateLeft(NewNode.Parent.Parent);
       end;
     end;
   end;
@@ -2612,11 +2721,11 @@ var
 {$IFDEF RECURSIVE}
   procedure FreeChild(Node: PJclBinaryNode);
   begin
-    if Node^.Left <> nil then
-      FreeChild(Node^.Left);
-    if Node^.Right <> nil then
-      FreeChild(Node^.Right);
-    Node^.Obj := nil; // Force Release
+    if Node.Left <> nil then
+      FreeChild(Node.Left);
+    if Node.Right <> nil then
+      FreeChild(Node.Right);
+    Node.Obj := nil; // Force Release
     FreeMem(Node);
   end;
 {$ELSE}
@@ -2651,7 +2760,11 @@ begin
       Current.Obj := nil; // Force Release
       if Current.Parent = nil then // Root
       begin
+        {$IFDEF CLR}
+        Current.Free;
+        {$ELSE}
         FreeMem(Current);
+        {$ENDIF CLR}
         Current := nil;
         FRoot := nil;
       end
@@ -2661,12 +2774,20 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Right := nil;
         end
         else
         begin
+          {$IFDEF CLR}
+          Save.Free;
+          {$ELSE}
           FreeMem(Save);
+          {$ENDIF CLR}
           Current.Left := nil;
         end
       end;
@@ -2684,12 +2805,16 @@ var
   begin
     if Node <> nil then
     begin
+      {$IFDEF CLR}
+      Result := TJclBinaryNode.Create;
+      {$ELSE}
       GetMem(Result, SizeOf(TJclBinaryNode));
-      Result.Obj := Node^.Obj;
-      Result.Color := Node^.Color;
+      {$ENDIF CLR}
+      Result.Obj := Node.Obj;
+      Result.Color := Node.Color;
       Result.Parent := Parent;
-      Result.Left := CloneNode(Node^.Left, Result); // recursive call
-      Result.Right := CloneNode(Node^.Right, Result); // recursive call
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
     end
     else
       Result := nil;
@@ -2715,14 +2840,14 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    Comp := FComparator(Node^.Obj, AObject);
+    Comp := FComparator(Node.Obj, AObject);
     if Comp = 0 then
       Result := True
     else
     if Comp > 0 then
-      Result := ContainsChild(Node^.Left)
+      Result := ContainsChild(Node.Left)
     else
-      Result := ContainsChild(Node^.Right);
+      Result := ContainsChild(Node.Right);
   end;
 {$ELSE}
 var
@@ -2861,85 +2986,85 @@ var
   var
     TempNode: PJclBinaryNode;
   begin
-    while (Node <> FRoot) and (Node^.Color = tcBlack) do
+    while (Node <> FRoot) and (Node.Color = tcBlack) do
     begin
-      if Node = Node^.Parent^.Left then
+      if Node = Node.Parent.Left then
       begin
-        TempNode := Node^.Parent^.Right;
+        TempNode := Node.Parent.Right;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateLeft(Node^.Parent);
-          TempNode := Node^.Parent^.Right;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateLeft(Node.Parent);
+          TempNode := Node.Parent.Right;
         end;
-        if (TempNode^.Left <> nil) and (TempNode^.Left^.Color = tcBlack) and
-          (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left <> nil) and (TempNode.Left.Color = tcBlack) and
+          (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if (TempNode^.Right <> nil) and (TempNode^.Right^.Color = tcBlack) then
+          if (TempNode.Right <> nil) and (TempNode.Right.Color = tcBlack) then
           begin
-            TempNode^.Left^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Left.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateRight(TempNode);
-            TempNode := Node^.Parent^.Right;
+            TempNode := Node.Parent.Right;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Right <> nil then
-            TempNode^.Right^.Color := tcBlack;
-          RotateLeft(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Right <> nil then
+            TempNode.Right.Color := tcBlack;
+          RotateLeft(Node.Parent);
           Node := FRoot;
         end;
       end
       else
       begin
-        TempNode := Node^.Parent^.Left;
+        TempNode := Node.Parent.Left;
         if TempNode = nil then
         begin
-          Node := Node^.Parent;
+          Node := Node.Parent;
           Continue;
         end;
-        if TempNode^.Color = tcRed then
+        if TempNode.Color = tcRed then
         begin
-          TempNode^.Color := tcBlack;
-          Node^.Parent^.Color := tcRed;
-          RotateRight(Node^.Parent);
-          TempNode := Node^.Parent^.Left;
+          TempNode.Color := tcBlack;
+          Node.Parent.Color := tcRed;
+          RotateRight(Node.Parent);
+          TempNode := Node.Parent.Left;
         end;
-        if (TempNode^.Left^.Color = tcBlack) and (TempNode^.Right^.Color = tcBlack) then
+        if (TempNode.Left.Color = tcBlack) and (TempNode.Right.Color = tcBlack) then
         begin
-          TempNode^.Color := tcRed;
-          Node := Node^.Parent;
+          TempNode.Color := tcRed;
+          Node := Node.Parent;
         end
         else
         begin
-          if TempNode^.Left^.Color = tcBlack then
+          if TempNode.Left.Color = tcBlack then
           begin
-            TempNode^.Right^.Color := tcBlack;
-            TempNode^.Color := tcRed;
+            TempNode.Right.Color := tcBlack;
+            TempNode.Color := tcRed;
             RotateLeft(TempNode);
-            TempNode := Node^.Parent^.Left;
+            TempNode := Node.Parent.Left;
           end;
-          TempNode^.Color := Node^.Parent^.Color;
-          Node^.Parent^.Color := tcBlack;
-          if TempNode^.Left <> nil then
-            TempNode^.Left^.Color := tcBlack;
-          RotateRight(Node^.Parent);
+          TempNode.Color := Node.Parent.Color;
+          Node.Parent.Color := tcBlack;
+          if TempNode.Left <> nil then
+            TempNode.Left.Color := tcBlack;
+          RotateRight(Node.Parent);
           Node := FRoot;
         end;
       end
     end;
-    Node^.Color := tcBlack;
+    Node.Color := tcBlack;
   end;
 
 begin
@@ -2991,14 +3116,14 @@ begin
     Node := Save.Right;
   if Node <> nil then
   begin
-    Node^.Parent := Save.Parent;
+    Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
     else
-    if Save = Save.Parent^.Left then
-      Save.Parent^.Left := Node
+    if Save = Save.Parent.Left then
+      Save.Parent.Left := Node
     else
-      Save.Parent^.Right := Node;
+      Save.Parent.Right := Node;
     if Save.Color = tcBlack then // Correction
       Correction(Node);
   end
@@ -3010,13 +3135,17 @@ begin
     if Save.Color = tcBlack then // Correction
       Correction(Save);
     if Save.Parent <> nil then
-      if Save = Save.Parent^.Left then
-        Save.Parent^.Left := nil
+      if Save = Save.Parent.Left then
+        Save.Parent.Left := nil
       else
-      if Save = Save.Parent^.Right then
-        Save.Parent^.Right := nil
+      if Save = Save.Parent.Right then
+        Save.Parent.Right := nil
   end;
+  {$IFDEF CLR}
+  Save.Free;
+  {$ELSE}
   FreeMem(Save);
+  {$ENDIF CLR}
   Dec(FCount);
 end;
 
@@ -3063,21 +3192,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Right;
+  TempNode := Node.Right;
   //  if TempNode = nil then	Exit;
-  Node^.Right := TempNode^.Left;
-  if TempNode^.Left <> nil then
-    TempNode^.Left^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Right := TempNode.Left;
+  if TempNode.Left <> nil then
+    TempNode.Left.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Left = Node then
-    Node^.Parent^.Left := TempNode
+  if Node.Parent.Left = Node then
+    Node.Parent.Left := TempNode
   else
-    Node^.Parent^.Right := TempNode;
-  TempNode^.Left := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Right := TempNode;
+  TempNode.Left := Node;
+  Node.Parent := TempNode;
 end;
 
 procedure TJclBinaryTree.RotateRight(Node: PJclBinaryNode);
@@ -3086,21 +3215,21 @@ var
 begin
   if Node = nil then
     Exit;
-  TempNode := Node^.Left;
+  TempNode := Node.Left;
   //  if TempNode = nil then 	Exit;
-  Node^.Left := TempNode^.Right;
-  if TempNode^.Right <> nil then
-    TempNode^.Right^.Parent := Node;
-  TempNode^.Parent := Node^.Parent;
-  if Node^.Parent = nil then
+  Node.Left := TempNode.Right;
+  if TempNode.Right <> nil then
+    TempNode.Right.Parent := Node;
+  TempNode.Parent := Node.Parent;
+  if Node.Parent = nil then
     FRoot := TempNode
   else
-  if Node^.Parent^.Right = Node then
-    Node^.Parent^.Right := TempNode
+  if Node.Parent.Right = Node then
+    Node.Parent.Right := TempNode
   else
-    Node^.Parent^.Left := TempNode;
-  TempNode^.Right := Node;
-  Node^.Parent := TempNode;
+    Node.Parent.Left := TempNode;
+  TempNode.Right := Node;
+  Node.Parent := TempNode;
 end;
 
 procedure TJclBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
@@ -3116,6 +3245,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.8  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

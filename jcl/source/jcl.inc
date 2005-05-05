@@ -75,7 +75,23 @@ ALERT_jedi_inc_incompatible
 // To exclude obsolete code from compilation, remove the point from the line below
 {.$DEFINE DROP_OBSOLETE_CODE}
 
+
+
+{$IFDEF CLR}
+ {$WARN UNSAFE_TYPE ON}
+ {$WARN UNSAFE_CODE ON}
+ {$WARN UNSAFE_CAST ON}
+ {$WARN UNIT_PLATFORM OFF}
+
+ {$DEFINE MSWINDOWS}
+ {$DEFINE PIC}
+ {$DEFINE PUREPASCAL}
+{$ENDIF CLR}
+
 // $Log$
+// Revision 1.13  2005/05/05 20:08:47  ahuser
+// JCL.NET support
+//
 // Revision 1.12  2005/03/14 08:46:54  rrossmair
 // - check-in in preparation for release 1.95
 //
@@ -89,6 +105,9 @@ ALERT_jedi_inc_incompatible
 // Added THREADSAFE directive
 //
 // $Log$
+// Revision 1.13  2005/05/05 20:08:47  ahuser
+// JCL.NET support
+//
 // Revision 1.12  2005/03/14 08:46:54  rrossmair
 // - check-in in preparation for release 1.95
 //

@@ -66,32 +66,62 @@ type
   TJclStrEntryArray = array of TJclStrEntry;
   TJclEntryArray = array of TJclEntry;
 
+  {$IFDEF CLR}
+  TJclIntfIntfBucket = class;
+  PJclIntfIntfBucket = TJclIntfIntfBucket;
+  TJclIntfIntfBucket = class
+  {$ELSE}
   PJclIntfIntfBucket = ^TJclIntfIntfBucket;
   TJclIntfIntfBucket = record
+  {$ENDIF CLR}
     Count: Integer;
     Entries: TJclIntfIntfEntryArray;
   end;
 
+  {$IFDEF CLR}
+  TJclStrIntfBucket = class;
+  PJclStrIntfBucket = TJclStrIntfBucket;
+  TJclStrIntfBucket = class
+  {$ELSE}
   PJclStrIntfBucket = ^TJclStrIntfBucket;
   TJclStrIntfBucket = record
+  {$ENDIF CLR}
     Count: Integer;
     Entries: TJclStrIntfEntryArray;
   end;
 
+  {$IFDEF CLR}
+  TJclStrStrBucket = class;
+  PJclStrStrBucket = TJclStrStrBucket;
+  TJclStrStrBucket = class
+  {$ELSE}
   PJclStrStrBucket = ^TJclStrStrBucket;
   TJclStrStrBucket = record
+  {$ENDIF CLR}
     Count: Integer;
     Entries: TJclStrStrEntryArray;
   end;
 
+  {$IFDEF CLR}
+  TJclStrBucket = class;
+  PJclStrBucket = TJclStrBucket;
+  TJclStrBucket = class
+  {$ELSE}
   PJclStrBucket = ^TJclStrBucket;
   TJclStrBucket = record
+  {$ENDIF CLR}
     Count: Integer;
     Entries: TJclStrEntryArray;
   end;
 
+  {$IFDEF CLR}
+  TJclBucket = class;
+  PJclBucket = TJclBucket;
+  TJclBucket = class
+  {$ELSE}
   PJclBucket = ^TJclBucket;
   TJclBucket = record
+  {$ENDIF CLR}
     Count: Integer;
     Entries: TJclEntryArray;
   end;
@@ -279,6 +309,111 @@ uses
   SysUtils,
   JclArrayLists, JclArraySets, JclResources;
 
+procedure MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TJclStrIntfEntryArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TJclStrStrEntryArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TJclStrEntryArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+  { Keep reference counting working }
+  if FromIndex < ToIndex then
+    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+  else if FromIndex > ToIndex then
+    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+{$ENDIF CLR}
+end;
+
 //=== { TJclIntfIntfHashMap } ================================================
 
 constructor TJclIntfIntfHashMap.Create(ACapacity: Integer = DefaultContainerCapacity);
@@ -365,7 +500,7 @@ begin
   Result := False;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -390,7 +525,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @FBuckets[J];
+    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -448,7 +583,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -535,7 +670,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(Integer(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -564,14 +699,13 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
       if I < Length(Bucket.Entries) - 1 then
-        System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
-          (Bucket.Count - I) * SizeOf(TJclStrStrEntry));
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
       Break;
     end;
@@ -684,7 +818,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -709,7 +843,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @FBuckets[J];
+    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -769,7 +903,7 @@ begin
   if Key = '' then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -871,7 +1005,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -900,14 +1034,13 @@ begin
   Result := nil;
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
       if I < Length(Bucket.Entries) - 1 then
-        System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
-          (Bucket.Count - I) * SizeOf(TJclStrStrEntry));
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
       Break;
     end;
@@ -1020,7 +1153,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1045,7 +1178,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @FBuckets[J];
+    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1103,7 +1236,7 @@ begin
   Result := '';
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1151,7 +1284,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @(FBuckets[J]);
+    Bucket := {$IFNDEF CLR}@{$ENDIF}(FBuckets[J]);
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1159,7 +1292,11 @@ begin
         Exit;
       end;
   end;
+  {$IFDEF CLR}
+  raise EJclError.CreateFmt(RsEValueNotFound, [Value]);
+  {$ELSE}
   raise EJclError.CreateResFmt(@RsEValueNotFound, [Value]);
+  {$ENDIF CLR}
 end;
 
 function TJclStrStrHashMap.KeySet: IJclStrSet;
@@ -1216,7 +1353,7 @@ begin
   if Value = '' then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1245,14 +1382,13 @@ begin
   Result := '';
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
       if I < Length(Bucket.Entries) - 1 then
-        System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
-          (Bucket.Count - I) * SizeOf(TJclStrStrEntry));
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
       Break;
     end;
@@ -1383,7 +1519,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1408,7 +1544,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @FBuckets[J];
+    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1467,7 +1603,7 @@ begin
   if Key = '' then
     Exit;
   I := FHashFunction(HashString(Key));
-  Bucket := @FBuckets[I];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[I];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1579,7 +1715,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1608,7 +1744,7 @@ begin
   Result := nil;
   if Key = '' then
     Exit;
-  Bucket := @FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1618,8 +1754,7 @@ begin
         Bucket.Entries[I].Value.Free;
       Bucket.Entries[I].Key := '';
       if I < Length(Bucket.Entries) - 1 then
-        System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
-          (Bucket.Count - I) * SizeOf(TJclStrEntry));
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
       Break;
     end;
@@ -1734,7 +1869,7 @@ begin
   Result := False;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1759,7 +1894,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := @FBuckets[J];
+    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1826,7 +1961,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1914,7 +2049,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(Integer(Key));
-  Bucket := @FBuckets[Index];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1945,7 +2080,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := @FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1954,8 +2089,7 @@ begin
       else
         Bucket.Entries[I].Value.Free;
       if I < Length(Bucket.Entries) - 1 then
-        System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
-          (Bucket.Count - I) * SizeOf(TJclEntry));
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
       Break;
     end;
@@ -1985,6 +2119,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.5  2005/04/29 15:31:56  outchy
 // IT2890, a string reference was not decremented as expected.
 //

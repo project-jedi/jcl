@@ -36,9 +36,13 @@ unit JclAbstractContainers;
 interface
 
 uses
+  {$IFDEF CLR}
+  System.Threading,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -46,6 +50,7 @@ uses
 
 type
   TJclIntfCriticalSection = class(TObject, IInterface)
+  {$IFNDEF CLR}
   private
     FCriticalSection: TRTLCriticalSection;
   protected
@@ -55,6 +60,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+  {$ENDIF ~CLR}
   end;
 
   TJclAbstractContainer = class(TInterfacedObject)
@@ -90,15 +96,16 @@ type
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStrings;
-    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
+    function GetAsDelimited(const Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(const AString: string; const Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
   end;
 
 implementation
 
 //=== { TJclIntfCriticalSection } ============================================
 
+{$IFNDEF CLR}
 constructor TJclIntfCriticalSection.Create;
 begin
   inherited Create;
@@ -130,6 +137,7 @@ begin
   else
     Result := E_NOINTERFACE;
 end;
+{$ENDIF ~CLR}
 
 //=== { TJclAbstractContainer } ==============================================
 
@@ -155,7 +163,26 @@ end;
 
 //=== { TJclStrCollection } ==================================================
 
-procedure TJclStrCollection.AppendDelimited(AString, Separator: string);
+procedure TJclStrCollection.AppendDelimited(const AString, Separator: string);
+{$IFDEF CLR}
+var
+  I, StartIndex: Integer;
+begin
+  I := Pos(Separator, AString);
+  if I <> 0 then
+  begin
+    Dec(I); // to .NET string index base 
+    StartIndex := 0;
+    repeat
+      Add(AString.Substring(StartIndex, I - StartIndex + 1));
+      StartIndex := I + 1;
+      I := AString.IndexOf(Separator, StartIndex);
+    until I < 0;
+  end
+  else
+    Add(AString);
+end;
+{$ELSE}
 var
   Item: string;
   SepLen: Integer;
@@ -182,6 +209,7 @@ begin
   else //There isnt a Separator in AString
     Add(AString);
 end;
+{$ENDIF CLR}
 
 procedure TJclStrCollection.AppendFromStrings(Strings: TStrings);
 var
@@ -205,7 +233,7 @@ begin
   end;
 end;
 
-function TJclStrCollection.GetAsDelimited(Separator: string): string;
+function TJclStrCollection.GetAsDelimited(const Separator: string): string;
 var
   It: IJclStrIterator;
 begin
@@ -228,7 +256,7 @@ begin
   end;
 end;
 
-procedure TJclStrCollection.LoadDelimited(AString, Separator: string);
+procedure TJclStrCollection.LoadDelimited(const AString, Separator: string);
 begin
   Clear;
   AppendDelimited(AString, Separator);
@@ -249,6 +277,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/05/05 20:08:41  ahuser
+// JCL.NET support
+//
 // Revision 1.5  2005/03/14 08:46:53  rrossmair
 // - check-in in preparation for release 1.95
 //

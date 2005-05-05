@@ -133,9 +133,9 @@ type
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStrings;
-    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
+    function GetAsDelimited(const Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(const AString: string; const Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
   end;
 
   IJclCollection = interface
@@ -197,17 +197,28 @@ type
 
   IJclIntfArray = interface(IJclIntfList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
-    property Items[Index: Integer]: IInterface read GetObject write SetObject;
-    default;
+    {$IFDEF CLR}
+    function GetObject(Index: Integer): IInterface;
+    procedure SetObject(Index: Integer; AInterface: IInterface);
+    {$ENDIF CLR}
+    property Items[Index: Integer]: IInterface read GetObject write SetObject; default;
   end;
 
   IJclStrArray = interface(IJclStrList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
+    {$IFDEF CLR}
+    function GetString(Index: Integer): string;
+    procedure SetString(Index: Integer; const AString: string);
+    {$ENDIF CLR}
     property Items[Index: Integer]: string read GetString write SetString; default;
   end;
 
   IJclArray = interface(IJclList)
     ['{A69F6D35-54B2-4361-852E-097ED75E648A}']
+    {$IFDEF CLR}
+    function GetObject(Index: Integer): TObject;
+    procedure SetObject(Index: Integer; AObject: TObject);
+    {$ENDIF CLR}
     property Items[Index: Integer]: TObject read GetObject write SetObject; default;
   end;
 
@@ -448,6 +459,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.6  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.5  2005/04/09 23:01:46  rrossmair
 // - fixed IJclStrStrSortedMap, IJclSortedMap, IJclIntfSortedSet declarations;
 //   First and Last methods of the latter 2 conflicted with inherited method names

@@ -184,7 +184,11 @@ end;
 
 procedure TJclIntfArraySet.Insert(Index: Integer; AInterface: IInterface);
 begin
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TJclIntfArraySet.Intersect(ACollection: IJclIntfCollection);
@@ -274,7 +278,11 @@ end;
 
 procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
 begin
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TJclStrArraySet.Intersect(ACollection: IJclStrCollection);
@@ -364,7 +372,11 @@ end;
 
 procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
 begin
+  {$IFDEF CLR}
+  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  {$ELSE}
   raise EJclOperationNotSupportedError.CreateRes(@RsEOperationNotSupported);
+  {$ENDIF CLR}
 end;
 
 procedure TJclArraySet.Intersect(ACollection: IJclCollection);
@@ -385,6 +397,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.7  2005/03/09 22:44:10  rrossmair
 // - fixed comment
 //

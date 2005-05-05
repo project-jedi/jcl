@@ -191,7 +191,9 @@ type
     procedure SetObject(AInterface: IInterface);
   public
     constructor Create(AOwnList: TJclIntfArrayList);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TIntfItr.Create(AOwnList: TJclIntfArrayList);
@@ -199,16 +201,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := AOwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   //FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TIntfItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TIntfItr.Add(AInterface: IInterface);
 {$IFDEF THREADSAFE}
@@ -223,10 +229,7 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    System.Move(FOwnList.FElementData[FCursor], FOwnList.FElementData[FCursor + 1],
-      (FOwnList.FSize - FCursor) * SizeOf(IInterface));
-  // (rom) otherwise interface reference counting may crash
-  FillChar(FOwnList.FElementData[FCursor], SizeOf(IInterface), 0);
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AInterface;
   Inc(FOwnList.FSize);
 
@@ -308,8 +311,7 @@ begin
   begin
     FElementData[FCursor] := nil; // Force Release
     if FSize <> FCursor then
-      System.Move(FElementData[FCursor + 1], FElementData[FCursor],
-        (FSize - FCursor) * SizeOf(IInterface));
+      MoveArray(FElementData, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FSize);
   Dec(FSize);
@@ -354,7 +356,9 @@ type
     procedure SetString(const AString: string);
   public
     constructor Create(AOwnList: TJclStrArrayList);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TStrItr.Create(AOwnList: TJclStrArrayList);
@@ -362,16 +366,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := AOwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   //FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TStrItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TStrItr.Add(const AString: string);
 {$IFDEF THREADSAFE}
@@ -386,10 +394,7 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    System.Move(FOwnList.FElementData[FCursor], FOwnList.FElementData[FCursor + 1],
-      (FOwnList.FSize - FCursor) * SizeOf(string));
-  // (rom) otherwise string reference counting may crash
-  FillChar(FOwnList.FElementData[FCursor], SizeOf(string), 0);
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AString;
   Inc(FOwnList.FSize);
 
@@ -471,8 +476,7 @@ begin
   begin
     FElementData[FCursor] := ''; // Force Release
     if FSize <> FCursor then
-      System.Move(FElementData[FCursor + 1], FElementData[FCursor],
-        (FSize - FCursor) * SizeOf(string));
+      MoveArray(FElementData, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FSize);
   Dec(FSize);
@@ -517,7 +521,9 @@ type
     procedure SetObject(AObject: TObject);
   public
     constructor Create(AOwnList: TJclArrayList);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TItr.Create(AOwnList: TJclArrayList);
@@ -525,16 +531,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := AOwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   //FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TItr.Add(AObject: TObject);
 {$IFDEF THREADSAFE}
@@ -549,8 +559,7 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    System.Move(FOwnList.FElementData[FCursor], FOwnList.FElementData[FCursor + 1],
-      (FOwnList.FSize - FCursor) * SizeOf(TObject));
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AObject;
   Inc(FOwnList.FSize);
 
@@ -632,8 +641,7 @@ begin
   begin
     FreeObject(FElementData[FCursor]);
     if FSize <> FCursor then
-      System.Move(FElementData[FCursor + 1], FElementData[FCursor],
-        (FSize - FCursor) * SizeOf(TObject));
+      MoveArray(FElementData, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FSize);
   Dec(FSize);
@@ -669,7 +677,11 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsENoCollection);
+    {$ENDIF CLR}
   Create(ACollection.Size);
   AddAll(ACollection);
 end;
@@ -690,14 +702,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
-    System.Move(FElementData[Index], FElementData[Index + 1],
-      (FSize - Index) * SizeOf(IInterface));
-  // (rom) otherwise interface reference counting may crash
-  FillChar(FElementData[Index], SizeOf(IInterface), 0);
+    MoveArray(FElementData, Index, Index + 1, FSize - Index);
   FElementData[Index] := AInterface;
   Inc(FSize);
 end;
@@ -715,17 +728,18 @@ begin
 {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
   if FSize + Size >= Capacity then
     Capacity := FSize + Size;
   if Size <> 0 then
-    System.Move(FElementData[Index], FElementData[Index + Size],
-      Size * SizeOf(IInterface));
-  // (rom) otherwise interface reference counting may crash
-  FillChar(FElementData[Index], Size * SizeOf(IInterface), 0);
+    MoveArray(FElementData, Index, Index + Size, Size);
   It := ACollection.First;
   Result := It.HasNext;
   while It.HasNext do
@@ -746,7 +760,9 @@ begin
 {$ENDIF THREADSAFE}
   if FSize = Capacity then
     Grow;
+  {$IFNDEF CLR}
   FillChar(FElementData[FSize], SizeOf(IInterface), 0);
+  {$ENDIF ~CLR}
   FElementData[FSize] := AInterface;
   Inc(FSize);
   Result := True;
@@ -771,7 +787,9 @@ begin
     // (rom) inlining Add() gives about 5 percent performance increase
     if FSize = Capacity then
       Grow;
+    {$IFNDEF CLR}
     FillChar(FElementData[FSize], SizeOf(IInterface), 0);
+    {$ENDIF ~CLR}
     FElementData[FSize] := It.Next;
     Inc(FSize);
   end;
@@ -887,7 +905,11 @@ begin
     FCapacity := ACapacity;
   end
   else
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
 end;
 
 procedure TJclIntfArrayList.Grow;
@@ -980,8 +1002,7 @@ begin
     begin
       FElementData[I] := nil; // Force Release
       if FSize <> I then
-        System.Move(FElementData[I + 1], FElementData[I],
-          (FSize - I) * SizeOf(IInterface));
+        MoveArray(FElementData, I + 1, I, FSize - I);
       Dec(FSize);
       Result := True;
     end;
@@ -997,12 +1018,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := FElementData[Index];
   FElementData[Index] := nil;
   if FSize <> Index then
-    System.Move(FElementData[Index + 1], FElementData[Index],
-      (FSize - Index) * SizeOf(IInterface));
+    MoveArray(FElementData, Index + 1, Index, FSize - Index);
   Dec(FSize);
 end;
 
@@ -1052,7 +1076,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FElementData[Index] := AInterface;
 end;
 
@@ -1098,7 +1126,11 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsENoCollection);
+    {$ENDIF CLR}
   Create(ACollection.Size);
   AddAll(ACollection);
 end;
@@ -1119,14 +1151,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
-    System.Move(FElementData[Index], FElementData[Index + 1],
-      (FSize - Index) * SizeOf(string));
-  // (rom) otherwise string reference counting would crash
-  FillChar(FElementData[Index], SizeOf(string), 0);
+    MoveArray(FElementData, Index, Index + 1, FSize - Index);
   FElementData[Index] := AString;
   Inc(FSize);
 end;
@@ -1145,7 +1178,11 @@ begin
   Result := False;
 
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
 
   if ACollection = nil then
     Exit;
@@ -1156,10 +1193,7 @@ begin
     FSize := Capacity;
   end;
   if Size <> 0 then
-    System.Move(FElementData[Index], FElementData[Index + Size],
-      Size * SizeOf(string));
-  // (rom) otherwise string reference counting would crash
-  FillChar(FElementData[Index], Size * SizeOf(string), 0);
+    MoveArray(FElementData, Index, Index + Size, Size);
   It := ACollection.First;
   Result := It.HasNext;
   while It.HasNext do
@@ -1180,7 +1214,9 @@ begin
 {$ENDIF THREADSAFE}
   if FSize = Capacity then
     Grow;
+  {$IFNDEF CLR}
   FillChar(FElementData[FSize], SizeOf(string), 0);
+  {$ENDIF ~CLR}
   FElementData[FSize] := AString;
   Inc(FSize);
   Result := True;
@@ -1206,7 +1242,9 @@ begin
     // without THREADSAFE and about 30 percent with THREADSAFE
     if FSize = Capacity then
       Grow;
+    {$IFNDEF CLR}
     FillChar(FElementData[FSize], SizeOf(string), 0);
+    {$ENDIF ~CLR}
     FElementData[FSize] := It.Next;
     Inc(FSize);
   end;
@@ -1327,7 +1365,11 @@ begin
     FCapacity := ACapacity;
   end
   else
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
 end;
 
 procedure TJclStrArrayList.Grow;
@@ -1415,8 +1457,7 @@ begin
     begin
       FElementData[I] := ''; // Force Release
       if FSize <> I then
-        System.Move(FElementData[I + 1], FElementData[I],
-          (FSize - I) * SizeOf(IInterface));
+        MoveArray(FElementData, I + 1, I, FSize - I);
       Dec(FSize);
       Result := True;
     end;
@@ -1432,12 +1473,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := FElementData[Index];
   FElementData[Index] := '';
   if FSize <> Index then
-    System.Move(FElementData[Index + 1], FElementData[Index],
-      (FSize - Index) * SizeOf(IInterface));
+    MoveArray(FElementData, Index + 1, Index, FSize - Index);
   Dec(FSize);
 end;
 
@@ -1487,7 +1531,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FElementData[Index] := AString
 end;
 
@@ -1535,7 +1583,11 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsENoCollection);
+    {$ENDIF CLR}
   Create(ACollection.Size, AOwnsObjects);
   AddAll(ACollection);
 end;
@@ -1556,12 +1608,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
-    System.Move(FElementData[Index], FElementData[Index + 1],
-      (FSize - Index) * SizeOf(TObject));
+    MoveArray(FElementData, Index, Index + 1, FSize - Index);
   FElementData[Index] := AObject;
   Inc(FSize);
 end;
@@ -1579,15 +1634,18 @@ begin
 {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
   if FSize + Size >= Capacity then
     Capacity := FSize + Size;
   if Size <> 0 then
-    System.Move(FElementData[Index], FElementData[Index + Size],
-      Size * SizeOf(IInterface));
+    MoveArray(FElementData, Index, Index + Size, Size);
   It := ACollection.First;
   Result := It.HasNext;
   while It.HasNext do
@@ -1756,7 +1814,11 @@ begin
     FCapacity := ACapacity;
   end
   else
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
 end;
 
 procedure TJclArrayList.Grow;
@@ -1849,8 +1911,7 @@ begin
     begin
       FreeObject(FElementData[I]);
       if FSize <> I then
-        System.Move(FElementData[I + 1], FElementData[I],
-          (FSize - I) * SizeOf(TObject));
+        MoveArray(FElementData, I + 1, I, FSize - I);
       Dec(FSize);
       Result := True;
     end;
@@ -1866,12 +1927,15 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := nil;
   FreeObject(FElementData[Index]);
   if FSize <> Index then
-    System.Move(FElementData[Index + 1], FElementData[Index],
-      (FSize - Index) * SizeOf(TObject));
+    MoveArray(FElementData, Index + 1, Index, FSize - Index);
   Dec(FSize);
 end;
 
@@ -1921,7 +1985,11 @@ begin
   CS := EnterCriticalSection;
 {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FElementData[Index] := AObject;
 end;
 
@@ -1952,6 +2020,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/05/05 20:08:42  ahuser
+// JCL.NET support
+//
 // Revision 1.10  2005/03/08 15:14:00  dade2004
 // Fixed some bug on
 // IJclStrList.InsertAll implementation

@@ -32,9 +32,10 @@ unit JclIniFiles;
 {$I jcl.inc}
 
 interface
+
 uses
-  Classes, IniFiles, SysUtils;
-  
+  SysUtils, Classes, IniFiles;
+
 // Initialization (ini) Files
 function IniReadBool(const FileName, Section, Line: string): Boolean;              // John C Molyneux
 function IniReadInteger(const FileName, Section, Line: string): Integer;           // John C Molyneux
@@ -48,6 +49,11 @@ procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings
 procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 
 implementation
+
+{$IFDEF CLR}
+type
+  TIniFile = TMemIniFile;
+{$ENDIF CLR}
 
 // Initialization Files
 function IniReadBool(const FileName, Section, Line: string): Boolean;
@@ -93,6 +99,9 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteBool(Section, Line, Value);
+    {$IFDEF CLR}
+    Ini.UpdateFile;
+    {$ENDIF CLR}
   finally
     Ini.Free;
   end;
@@ -105,6 +114,9 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteInteger(Section, Line, Value);
+    {$IFDEF CLR}
+    Ini.UpdateFile;
+    {$ENDIF CLR}
   finally
     Ini.Free;
   end;
@@ -117,6 +129,9 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteString(Section, Line, Value);
+    {$IFDEF CLR}
+    Ini.UpdateFile;
+    {$ENDIF CLR}
   finally
     Ini.Free;
   end;
@@ -160,6 +175,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/05/05 20:08:43  ahuser
+// JCL.NET support
+//
 // Revision 1.9  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
