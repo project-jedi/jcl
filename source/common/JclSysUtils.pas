@@ -50,12 +50,17 @@ unit JclSysUtils;
 interface
 
 uses
+  {$IFDEF CLR}
+  Variants,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   Classes, TypInfo,
   JclBase;
 
+{$IFNDEF CLR}
 // Pointer manipulation
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
@@ -137,11 +142,13 @@ function DynArrayCompareAnsiString(Item1, Item2: Pointer): Integer;
 function DynArrayCompareAnsiText(Item1, Item2: Pointer): Integer;
 function DynArrayCompareString(Item1, Item2: Pointer): Integer;
 function DynArrayCompareText(Item1, Item2: Pointer): Integer;
+{$ENDIF ~CLR}
 
 // Object lists
 procedure ClearObjectList(List: TList);
 procedure FreeObjectList(var List: TList);
 
+{$IFNDEF CLR}
 // Reference memory stream
 type
   TJclReferenceMemoryStream = class(TCustomMemoryStream)
@@ -149,6 +156,7 @@ type
     constructor Create(const Ptr: Pointer; Size: Longint);
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
+{$ENDIF ~CLR}
 
 // Replacement for the C ternary conditional operator ? :
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
@@ -158,7 +166,9 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Inte
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
+{$IFNDEF CLR}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
+{$ENDIF ~CLR}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
 {$IFDEF SUPPORTS_VARIANT}
 {$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
@@ -167,6 +177,7 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Vari
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
+{$IFNDEF CLR}
 // Classes information and manipulation
 type
   EJclVMTError = class(EJclError);
@@ -254,6 +265,7 @@ function IsObject(Address: Pointer): Boolean;
 
 // Interface information
 function GetImplementorOfInterface(const I: IInterface): TObject;
+{$ENDIF ~CLR}
 
 // Numeric formatting routines
 type
@@ -328,6 +340,7 @@ type
   PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
   {$ENDIF FPC}
 
+{$IFNDEF CLR}
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
 
@@ -358,6 +371,7 @@ function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+{$ENDIF ~CLR}
 
 // Conversion Utilities
 type
@@ -368,10 +382,12 @@ function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
 // RTL package information
+{$IFNDEF CLR}
 {$IFNDEF FPC}
 function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
 {$ENDIF ~FPC}
+{$ENDIF ~CLR}
 
 // GUID
 function JclGUIDToString(const GUID: TGUID): string;
@@ -390,12 +406,17 @@ uses
   dl,
   {$ENDIF ~HAS_UNIT_LIBC}
   {$ENDIF UNIX}
+  {$IFDEF CLR}
+  System.Text,
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   JclConsole,
   {$ENDIF MSWINDOWS}
+  {$ENDIF CLR}
   SysUtils,
   JclResources, JclStrings, JclMath;
 
+{$IFNDEF CLR}
 // Pointer manipulation
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 begin
@@ -986,6 +1007,7 @@ function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
+{$ENDIF ~CLR}
 
 //=== Object lists ===========================================================
 
@@ -1021,6 +1043,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 //=== { TJclReferenceMemoryStream } ==========================================
 
 constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
@@ -1036,6 +1059,7 @@ function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
+{$ENDIF ~CLR}
 
 //=== replacement for the C distfix operator ? : =============================
 
@@ -1095,6 +1119,7 @@ begin
     Result := FalsePart;
 end;
 
+{$IFNDEF CLR}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer;
 begin
   if Condition then
@@ -1102,6 +1127,7 @@ begin
   else
     Result := FalsePart;
 end;
+{$ENDIF ~CLR}
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64;
 begin
@@ -1123,6 +1149,7 @@ end;
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
+{$IFNDEF CLR}
 //=== Classes information and manipulation ===================================
 // Virtual Methods
 // Helper method
@@ -1378,6 +1405,7 @@ begin
     Result := nil;
   end;
 end;
+{$ENDIF ~CLR}
 
 //=== Numeric formatting routines ============================================
 
@@ -1422,13 +1450,17 @@ begin
   FSignChars[True] := '+';
   FPaddingChar := ' ';
   FMultiplier := '×';
-  FFractionalPartSeparator := DecimalSeparator;
-  FDigitBlockSeparator := ThousandSeparator;
+  FFractionalPartSeparator := DecimalSeparator{$IFDEF CLR}[1]{$ENDIF};
+  FDigitBlockSeparator := ThousandSeparator{$IFDEF CLR}[1]{$ENDIF};
 end;
 
 procedure TJclNumericFormat.InvalidDigit(Digit: Char);
 begin
+  {$IFDEF CLR}
+  raise EConvertError.CreateFmt(RsInvalidDigit, [Base, Digit]);
+  {$ELSE}
   raise EConvertError.CreateResFmt(@RsInvalidDigit, [Base, Digit]);
+  {$ENDIF CLR}
 end;
 
 function TJclNumericFormat.Digit(DigitValue: TDigitValue): Char;
@@ -1492,6 +1524,9 @@ var
   K: Int64;
   X: Extended;
   HighDigit: Char;
+  {$IFDEF CLR}
+  sb: StringBuilder;
+  {$ENDIF CLR}
 
   function GetDigit(X: Extended): Char;
   var
@@ -1546,7 +1581,12 @@ has not been investigated if ExponentDivision <= 12 is safe. }
   K := Trunc(X);
   if Value < 0 then
     K := -K;
+
+  {$IFDEF CLR}
+  sb := StringBuilder.Create(IntToStr(K, FirstDigitPos));;
+  {$ELSE}
   Mantissa := IntToStr(K, FirstDigitPos);
+  {$ENDIF CLR}
 
   FracDigits := Prec - IntDigits;
   if FracDigits > NumberOfFractionalDigits then
@@ -1554,34 +1594,79 @@ has not been investigated if ExponentDivision <= 12 is safe. }
 
   if FracDigits > 0 then
   begin
+    {$IFDEF CLR}
+    J := sb.Length + 1;
+    // allocate sufficient space for point + digits + digit block separators
+    sb.Length := FracDigits * 2 + J;
+    sb[J - 1] := FractionalPartSeparator;
+    {$ELSE}
     J := Length(Mantissa) + 1;
     // allocate sufficient space for point + digits + digit block separators
     SetLength(Mantissa, FracDigits * 2 + J);
     Mantissa[J] := FractionalPartSeparator;
+    {$ENDIF CLR}
     I := J + 1;
     BlockDigits := 0;
     while FracDigits > 0 do
     begin
       if (BlockDigits > 0) and (BlockDigits = DigitBlockSize) then
       begin
+        {$IFDEF CLR}
+        sb[I - 1] := DigitBlockSeparator;
+        {$ELSE}
         Mantissa[I] := DigitBlockSeparator;
+        {$ENDIF CLR}
         Inc(I);
         BlockDigits := 0;
       end;
       X := Frac(X) * Base;
+      {$IFDEF CLR}
+      sb[I - 1] := GetDigit(X);
+      {$ELSE}
       Mantissa[I] := GetDigit(X);
+      {$ENDIF CLR}
       Inc(I);
       Inc(BlockDigits);
       Dec(FracDigits);
     end;
+    {$IFDEF CLR}
+    sb[I - 1] := #0;
+    StrResetLength(sb);
+    {$ELSE}
     Mantissa[I] := #0;
     StrResetLength(Mantissa);
+    {$ENDIF CLR}
   end;
 
   if Frac(X) >= 0.5 then
   // round up
   begin
     HighDigit := Digit(Base - 1);
+    {$IFDEF CLR}
+    for I := sb.Length downto 1 do
+    begin
+      if sb[I - 1] = HighDigit then
+        if (I = FirstDigitPos) then
+        begin
+          sb[I - 1] := '1';
+          Inc(Exponent);
+          Break;
+        end
+        else
+          sb[I - 1] := '0'
+      else
+      if AnsiChar(sb[I - 1]) in [AnsiChar(DigitBlockSeparator), AnsiChar(FractionalPartSeparator)] then
+        Continue
+      else
+      begin
+        if sb[I - 1] = '9' then
+          sb[I - 1] := 'A'
+        else
+          sb[I - 1] := Succ(sb[I - 1]);
+        Break;
+      end;
+    end;
+    {$ELSE}
     for I := Length(Mantissa) downto 1 do
     begin
       if Mantissa[I] = HighDigit then
@@ -1594,7 +1679,7 @@ has not been investigated if ExponentDivision <= 12 is safe. }
         else
           Mantissa[I] := '0'
       else
-      if Mantissa[I] in [DigitBlockSeparator, FractionalPartSeparator] then
+      if Mantissa[I] in [AnsiChar(DigitBlockSeparator), AnsiChar(FractionalPartSeparator)] then
         Continue
       else
       begin
@@ -1605,7 +1690,11 @@ has not been investigated if ExponentDivision <= 12 is safe. }
         Break;
       end;
     end;
+    {$ENDIF CLR}
   end;
+  {$IFDEF CLR}
+  Mantissa := sb.ToString();
+  {$ENDIF CLR}
 end;
 
 function TJclNumericFormat.FloatToStr(const Value: Float): string;
@@ -1638,8 +1727,12 @@ begin
   Chars := MaxResultLen;
   if Width > Chars then
     Chars := Width;
+  {$IFDEF CLR}
+  Result := StrFillChar(' ', Chars);
+  {$ELSE}
   SetLength(Result, Chars);
   FillChar(Result[1], Chars, ' ');
+  {$ENDIF CLR}
 
   Remainder := Abs(Value);
   Digits := 0;
@@ -1805,6 +1898,7 @@ begin
   FSignChars[True] := Value;
 end;
 
+{$IFNDEF CLR}
 //=== Child processes ========================================================
 
 // MuteCRTerminatedLines was "outsourced" from Win32ExecAndRedirectOutput
@@ -2040,7 +2134,9 @@ begin
   end;
 end;
 {$ENDIF UNIX}
+{$ENDIF ~CLR}
 
+{$IFNDEF CLR}
 //=== Loading of modules (DLLs) ==============================================
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
@@ -2054,8 +2150,7 @@ end;
 {$IFDEF UNIX}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := dlopen(PChar(FileName), RTLD_NOW);
-  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+    Module := dlopen(PChar(FileName), RTLD_NOW);   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2070,8 +2165,7 @@ end;
 {$IFDEF UNIX}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := dlopen(PChar(FileName), Flags);
-  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+    Module := dlopen(PChar(FileName), Flags);   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2086,8 +2180,7 @@ end;
 {$IFDEF UNIX}
 begin
   if Module <> INVALID_MODULEHANDLE_VALUE then
-    dlclose(Pointer(Module));
-  Module := INVALID_MODULEHANDLE_VALUE;
+    dlclose(Pointer(Module));   Module := INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2120,8 +2213,7 @@ end;
 begin
   Result := nil;
   if Module <> INVALID_MODULEHANDLE_VALUE then
-    Result := dlsym(Module, PChar(SymbolName));
-  Accu := Accu and (Result <> nil);
+    Result := dlsym(Module, PChar(SymbolName));   Accu := Accu and (Result <> nil);
 end;
 {$ENDIF UNIX}
 
@@ -2144,6 +2236,7 @@ begin
   if Result then
     Move(Buffer, Sym^, Size);
 end;
+{$ENDIF ~CLR}
 
 //=== Conversion Utilities ===================================================
 
@@ -2179,7 +2272,11 @@ begin
       (LowerCasedText = LowerCase(DefaultFalseBoolStr)) or (LowerCasedText = LowerCase(DefaultNoBoolStr)) or
       (LowerCasedText = LowerCase(DefaultFalseBoolStr[1])) or (LowerCasedText = LowerCase(DefaultNoBoolStr[1])));
     if Result then
+      {$IFDEF CLR}
+      raise EJclConversionError.CreateFmt(RsStringToBoolean, [S]);
+      {$ELSE}
       raise EJclConversionError.CreateResFmt(@RsStringToBoolean, [S]);
+      {$ENDIF CLR}
   end;
 end;
 
@@ -2195,6 +2292,7 @@ end;
 
 //=== RTL package information ================================================
 
+{$IFNDEF CLR}
 {$IFNDEF FPC}
 
 function SystemTObjectInstance: LongWord;
@@ -2208,21 +2306,45 @@ begin
 end;
 
 {$ENDIF ~FPC}
+{$ENDIF ~CLR}
 
 //=== GUID ===================================================================
 
 function JclGUIDToString(const GUID: TGUID): string;
 begin
+  {$IFDEf CLR}
+  Result := GUID.ToString();
+  {$ELSE}
   Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
     [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
      GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
+  {$ENDIF CLR}
 end;
 
 function JclStringToGUID(const S: string): TGUID;
 begin
   if (Length(S) <> 38) or (S[1] <> '{') or (S[10] <> '-') or (S[15] <> '-') or
       (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
+    {$IFDEF CLR}
+    raise EJclConversionError.CreateFmt(RsInvalidGUIDString, [S]);
+    {$ELSE}
     raise EJclConversionError.CreateResFmt(@RsInvalidGUIDString, [S]);
+    {$ENDIF CLR}
+
+  {$IFDEF CLR}
+  Result := System.GUID.Create(
+    Integer(StrToInt('$' + Copy(S, 2, 8))),
+    Smallint(StrToInt('$' + Copy(S, 11, 4))),
+    Smallint(StrToInt('$' + Copy(S, 16, 4))),
+    Byte(StrToInt('$' + Copy(S, 21, 2))),
+    Byte(StrToInt('$' + Copy(S, 23, 2))),
+    Byte(StrToInt('$' + Copy(S, 26, 2))),
+    Byte(StrToInt('$' + Copy(S, 28, 2))),
+    Byte(StrToInt('$' + Copy(S, 30, 2))),
+    Byte(StrToInt('$' + Copy(S, 32, 2))),
+    Byte(StrToInt('$' + Copy(S, 34, 2))),
+    Byte(StrToInt('$' + Copy(S, 36, 2))));
+  {$ELSE}
   Result.D1 := StrToInt('$' + Copy(S, 2, 8));
   Result.D2 := StrToInt('$' + Copy(S, 11, 4));
   Result.D3 := StrToInt('$' + Copy(S, 16, 4));
@@ -2234,11 +2356,15 @@ begin
   Result.D4[5] := StrToInt('$' + Copy(S, 32, 2));
   Result.D4[6] := StrToInt('$' + Copy(S, 34, 2));
   Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
+  {$ENDIF CLR}
 end;
 
 // History:
 
 // $Log$
+// Revision 1.37  2005/05/05 20:08:45  ahuser
+// JCL.NET support
+//
 // Revision 1.36  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
 //

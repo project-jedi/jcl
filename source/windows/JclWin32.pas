@@ -58,7 +58,12 @@ interface
 uses
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl, ActiveX,
+  {$IFDEF CLR}
+  System.Runtime.InteropServices, System.Security,
+  {$ELSE}
+  AccCtrl,
+  {$ENDIF CLR}
+  ActiveX,
   {$ENDIF ~FPC}
   JclBase;
 
@@ -79,6 +84,17 @@ uses
 
 {$HPPEMIT '#include <delayimp.h>'}
 {$HPPEMIT ''}
+
+{$IFDEF CLR}
+type
+  LPSTR = string;
+  LPWSTR = string;
+  LPCSTR = string;
+  LPCWSTR = string;
+  LPCTSTR = string;
+  PLongWord = ^LongWord;
+  PByte = IntPtr;
+{$ENDIF CLR}
 
 {$IFDEF FPC}
 // include file for FPC compatibility
@@ -170,6 +186,7 @@ type
 // presumable from any older WinNT.h or from WinIfs.h
 //==================================================================================================
 
+{$IFNDEF CLR}
 //--------------------------------------------------------------------------------------------------
 // NTFS Reparse Points
 //--------------------------------------------------------------------------------------------------
@@ -266,6 +283,7 @@ type
 const
   {$EXTERNALSYM IO_REPARSE_TAG_VALID_VALUES}
   IO_REPARSE_TAG_VALID_VALUES = DWORD($E000FFFF);
+{$ENDIF ~CLR}
 
 //==================================================================================================
 
@@ -441,8 +459,10 @@ const
   SID_RECOMMENDED_SUB_AUTHORITIES = (1); // Will change to around 6 in a future release.
   {$EXTERNALSYM SID_RECOMMENDED_SUB_AUTHORITIES}
 
+  {$IFNDEF CLR}
   SECURITY_MAX_SID_SIZE = SizeOf(SID) - SizeOf(DWORD) + (SID_MAX_SUB_AUTHORITIES * SizeOf(DWORD));
   {$EXTERNALSYM SECURITY_MAX_SID_SIZE}
+  {$ENDIF ~CLR}
 
 {$IFNDEF FPC}
   SidTypeUser           = 1;
@@ -1123,6 +1143,7 @@ const
 //
 // File header format.
 //
+{$IFNDEF CLR}
 
 type
   PIMAGE_FILE_HEADER = ^IMAGE_FILE_HEADER;
@@ -1461,7 +1482,7 @@ type
 
   PImageNtHeaders = PIMAGE_NT_HEADERS;
 
-{$ENDIF FPC}  
+{$ENDIF FPC}
 
 // Subsystem Values
 
@@ -1615,7 +1636,7 @@ type
 
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
 {$EXTERNALSYM IMAGE_FIRST_SECTION}
-  
+
 const
   IMAGE_SIZEOF_SECTION_HEADER = 40;
   {$EXTERNALSYM IMAGE_SIZEOF_SECTION_HEADER}
@@ -2664,6 +2685,8 @@ const
   MAX_PACKAGE_NAME                    = 1024;
   {$EXTERNALSYM MAX_PACKAGE_NAME}
 
+{$ENDIF ~CLR}
+
 // COM+ 2.0 header structure.
 
 type
@@ -2927,17 +2950,26 @@ const
   {$EXTERNALSYM FILE_FLAG_FIRST_PIPE_INSTANCE}
 
 // line 3189
-  
+
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
-  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
+  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: {$IFDEF CLR}IntPtr{$ELSE}Pointer{$ENDIF}): BOOL; stdcall;
+  {$IFDEF CLR}external kernel32 name 'BackupSeek';{$ENDIF}
 {$EXTERNALSYM BackupSeek}
 
 // line 5454
 
 function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   const NewState: TTokenPrivileges; BufferLength: DWORD;
-  PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall;
+  {$IFDEF CLR}
+  out PreviousState: TTokenPrivileges;
+  out ReturnLength: DWORD
+  {$ELSE}
+  PreviousState: PTokenPrivileges;
+  ReturnLength: PDWORD
+  {$ENDIF CLR}
+  ): BOOL; stdcall;
+  {$IFDEF CLR} external advapi32 name 'AdjustTokenPrivileges';{$ENDIF}
 {$EXTERNALSYM AdjustTokenPrivileges}
 
 {
@@ -2969,18 +3001,22 @@ I have not had this problem on Windows 98.
 Ray Lischner, author of Delphi in a Nutshell (coming later this year)
 http://www.bardware.com and http://www.tempest-sw.com
 }
+{$IFNDEF CLR}
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
 {$EXTERNALSYM CreateMutex}
+{$ENDIF ~CLR}
 
 // alternative conversion for WinNT 4.0 SP6 and later (OSVersionInfoEx instead of OSVersionInfo)
 {$EXTERNALSYM GetVersionEx}
 function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall; overload;
+  {$IFDEF CLR}external version name 'GetVersionEx';{$ENDIF}
+{$IFNDEF CLR}
 {$EXTERNALSYM GetVersionEx}
 function GetVersionEx(lpVersionInformation: POSVERSIONINFOEX): BOOL; stdcall; overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 // line 3585
-  
+
 function SetWaitableTimer(hTimer: THandle; var lpDueTime: TLargeInteger;
   lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
   lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
@@ -3023,6 +3059,7 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
   lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
 {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
 
+{$ENDIF ~CLR}
 
 type
   {$EXTERNALSYM ULONG_PTR}
@@ -3036,6 +3073,7 @@ type
 
 // line 185
 
+{$IFNDEF CLR}
 function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
@@ -3116,6 +3154,8 @@ function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
   LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 {$EXTERNALSYM ImageRvaToVa}
 
+{$ENDIF ~CLR}
+
 // line 461
 
 //
@@ -3159,8 +3199,9 @@ const
   UNDNAME_NO_SPECIAL_SYMS = ($4000); // Don't undecorate special names (v-table, vcall, vector xxx, metatype, etc)
   {$EXTERNALSYM UNDNAME_NO_SPECIAL_SYMS}
 
-function UnDecorateSymbolName(DecoratedName: PAnsiChar; UnDecoratedName: PAnsiChar;
-  UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
+function UnDecorateSymbolName(DecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF};
+  UnDecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF}; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
+  {$IFDEF CLR}external 'imagehlp.dll' name 'UnDecorateSymbolName';{$ENDIF}
 {$EXTERNALSYM UnDecorateSymbolName}
 
 
@@ -4344,6 +4385,7 @@ const
 // Function Prototypes - User
 //
 
+{$IFNDEF CLR}
 
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
@@ -4378,7 +4420,7 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
 
-
+{$ENDIF ~CLR}
 //
 //  Data Structures - User
 //
@@ -4440,7 +4482,7 @@ type
     usri2_acct_expires: DWORD;
     usri2_max_storage: DWORD;
     usri2_units_per_week: DWORD;
-    usri2_logon_hours: PBYTE;
+    usri2_logon_hours: {$IFDEF CLR}IntPtr{$ELSE}PBYTE{$ENDIF};
     usri2_bad_pw_count: DWORD;
     usri2_num_logons: DWORD;
     usri2_logon_server: LPWSTR;
@@ -4584,6 +4626,7 @@ const
 // Function Prototypes
 //
 
+{$IFNDEF CLR}
 
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
@@ -4613,6 +4656,7 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
 
+{$ENDIF ~CLR}
 
 //
 //  Data Structures - Group
@@ -4656,6 +4700,7 @@ type
 // Function Prototypes
 //
 
+{$IFNDEF CLR}
 
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
@@ -4691,6 +4736,7 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
 
+{$ENDIF ~CLR}
 
 //
 //  Data Structures - LocalGroup
@@ -4792,6 +4838,8 @@ type
   {$EXTERNALSYM LOCALGROUP_MEMBERS_INFO_3}
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
+
+{$IFNDEF CLR}
 
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
@@ -5058,6 +5106,8 @@ const
   MS_NBF         = 'MNBF';
   {$EXTERNALSYM MS_NBF}
 
+{$ENDIF ~CLR}
+
 (****************************************************************
  *                                                              *
  *              Special values and constants                    *
@@ -5216,8 +5266,10 @@ const
  * Usage: result = Netbios( pncb );                             *
  ****************************************************************)
 
+{$IFNDEF CLR}
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
+{$ENDIF ~CLR}
 
 type
   PRasDialDlg = ^TRasDialDlg;
@@ -6385,6 +6437,7 @@ type
 // line 1635
 
 
+{$IFNDEF CLR}
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 {$EXTERNALSYM GetCalendarInfoA}
@@ -6398,12 +6451,18 @@ function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 {$EXTERNALSYM EnumCalendarInfoExA}
 
+{$ENDIF ~CLR}
 
 type
+  {$IFDEF CLR}
+  MAKEINTRESOURCEA = Integer;
+  MAKEINTRESOURCEW = Integer;
+  {$ELSE}
   MAKEINTRESOURCEA = LPSTR;
   {$EXTERNALSYM MAKEINTRESOURCEA}
   MAKEINTRESOURCEW = LPWSTR;
   {$EXTERNALSYM MAKEINTRESOURCEW}
+  {$ENDIF CLR}
 {$IFDEF UNICODE}
   MAKEINTRESOURCE = MAKEINTRESOURCEW;
   {$EXTERNALSYM MAKEINTRESOURCE}
@@ -6484,6 +6543,7 @@ const
 
 
 
+{$IFNDEF CLR}
 
 type
   { TODO : Source unknown }
@@ -6524,7 +6584,7 @@ type
   TImgDelayDescr = ImgDelayDescr;
   PImgDelayDescr = ^ImgDelayDescr;
 
-  
+
   // Microsoft version (64 bit SDK)
   {$EXTERNALSYM RVA}
   RVA = DWORD;
@@ -6545,8 +6605,6 @@ type
   PImgDelayDescr = ImgDelayDescr;
   TImgDelayDescr = ImgDelayDescr;
 *)
-
-
 
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
@@ -6611,6 +6669,7 @@ const
 
   RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
 
+{$ENDIF ~CLR}
 
 implementation
 
@@ -6623,6 +6682,8 @@ const
   {$ELSE ~UNICODE}
   AWSuffix = 'A';
   {$ENDIF ~UNICODE}
+
+{$IFNDEF CLR}
 
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
@@ -7437,6 +7498,7 @@ begin
   end;
 end;
 
+{$ENDIF ~CLR}
 
 // line 9078
 
@@ -7497,6 +7559,8 @@ begin
   Result := (Tag and ULONG($20000000)) <> 0;
 end;
 
+{$IFNDEF CLR}
+
 // IMAGE_FIRST_SECTION by Nico Bendlin - supplied by Markus Fuchs
 
 function FieldOffset(const Struc; const Field): Cardinal;
@@ -7543,6 +7607,7 @@ begin
   Result := ((Ordinal and IMAGE_ORDINAL_FLAG32) <> 0);
 end;
 
+{$ENDIF ~CLR}
 
 
 // History of source\prototypes\JclWin32.pas:

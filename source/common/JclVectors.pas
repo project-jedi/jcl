@@ -78,9 +78,11 @@ type
 
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
+    {$IFNDEF CLR}
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    {$ENDIF ~CLR}
     property Items: TDynIInterfaceArray read FItems;
   end;
 
@@ -121,9 +123,11 @@ type
 
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
+    {$IFNDEF CLR}
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    {$ENDIF ~CLR}
     property Items: TDynStringArray read FItems;
   end;
 
@@ -166,9 +170,11 @@ type
 
     constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
+    {$IFNDEF CLR}
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    {$ENDIF ~CLR}
     property Items: TDynObjectArray read FItems;
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
@@ -201,7 +207,9 @@ type
     procedure SetObject(AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfVector);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TIntfItr.Create(OwnList: TJclIntfVector);
@@ -209,16 +217,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TIntfItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TIntfItr.Add(AInterface: IInterface);
 begin
@@ -272,8 +284,7 @@ begin
   with FOwnList do
   begin
     FItems[FCursor] := nil; // Force Release
-    System.Move(FItems[FCursor + 1], FItems[FCursor],
-      (FSize - FCursor) * SizeOf(IInterface));
+    MoveArray(FItems, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -307,7 +318,9 @@ type
     procedure SetString(const AString: string);
   public
     constructor Create(OwnList: TJclStrVector);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TStrItr.Create(OwnList: TJclStrVector);
@@ -315,16 +328,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TStrItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TStrItr.Add(const AString: string);
 begin
@@ -378,8 +395,7 @@ begin
   with FOwnList do
   begin
     FItems[FCursor] := ''; // Force Release
-    System.Move(FItems[FCursor + 1], FItems[FCursor],
-      (FSize - FCursor) * SizeOf(string));
+    MoveArray(FItems, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -417,7 +433,9 @@ type
     procedure SetObject(AObject: TObject);
   public
     constructor Create(OwnList: TJclVector);
+    {$IFNDEF CLR}
     destructor Destroy; override;
+    {$ENDIF ~CLR}
   end;
 
 constructor TItr.Create(OwnList: TJclVector);
@@ -425,16 +443,20 @@ begin
   inherited Create;
   FCursor := 0;
   FOwnList := OwnList;
+  {$IFNDEF CLR}
   FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
+  {$ENDIF ~CLR}
   FLastRet := -1;
   FSize := FOwnList.Size;
 end;
 
+{$IFNDEF CLR}
 destructor TItr.Destroy;
 begin
   FOwnList._Release;
   inherited Destroy;
 end;
+{$ENDIF ~CLR}
 
 procedure TItr.Add(AObject: TObject);
 begin
@@ -488,8 +510,7 @@ begin
   with FOwnList do
   begin
     FreeObject(FItems[FCursor]);
-    System.Move(FItems[FCursor + 1], FItems[FCursor],
-      (FSize - FCursor) * SizeOf(TObject));
+    MoveArray(FItems, FCursor + 1, FCursor, FSize - FCursor);
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -526,12 +547,14 @@ end;
 procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FCount = FCapacity then
     Grow;
-  System.Move(FItems[Index], FItems[Index + 1],
-    (FCount - Index) * SizeOf(IInterface));
-  FItems[Index]._AddRef; // keep ref counter happy 
+  MoveArray(FItems, Index, Index + 1, FCount - Index);
   FItems[Index] := AInterface;
   Inc(FCount);
 end;
@@ -552,7 +575,11 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -561,9 +588,7 @@ begin
     Inc(FCapacity, Size);
     SetLength(FItems, FCapacity);
     Inc(FCount, Size);
-    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
-    // required to keep reference counters in order
-    FillChar(FItems[Index], Size * SizeOf(FItems[0]), 0);
+    MoveArray(FItems, Index, Index + Size, Size);
     It := ACollection.First;
     while It.HasNext do
     begin
@@ -724,11 +749,14 @@ end;
 function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := FItems[Index];
   FItems[Index] := nil;
-  System.Move(FItems[Index + 1], FItems[Index],
-    (FCount - Index) * SizeOf(IInterface));
+  MoveArray(FItems, Index + 1, Index, FCount - Index);
   Dec(FCount);
 end;
 
@@ -743,7 +771,7 @@ begin
     if FItems[I] = AInterface then // Removes all AInterface
     begin
       FItems[I] := nil; // Force Release
-      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(IInterface));
+      MoveArray(FItems, I + 1, I, FCount - I);
       Dec(FCount);
       Result := True;
     end;
@@ -776,7 +804,11 @@ end;
 procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FItems[Index] := AInterface;
 end;
 
@@ -798,6 +830,7 @@ begin
     Result.Add(Items[I]);
 end;
 
+{$IFNDEF CLR}
 procedure TJclIntfVector.AfterConstruction;
 begin
 end;
@@ -805,6 +838,7 @@ end;
 procedure TJclIntfVector.BeforeDestruction;
 begin
 end;
+{$ENDIF ~CLR}
 
 //=== { TJclStrVector } ======================================================
 
@@ -828,11 +862,14 @@ end;
 procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FCount = FCapacity then
     Grow;
-  System.Move(FItems[Index], FItems[Index + 1], (FCount - Index) * SizeOf(string));
-  FillChar(FItems[Index], SizeOf(FItems[Index]), 0); // keep ref counter happy 
+  MoveArray(FItems, Index, Index + 1, FCount - Index);
   FItems[Index] := AString;
   Inc(FCount);
 end;
@@ -866,7 +903,11 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -875,9 +916,7 @@ begin
     Inc(FCapacity, Size);
     SetLength(FItems, FCapacity);
     Inc(FCount, Size);
-    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
-    // required to keep reference counters in order
-    FillChar(FItems[Index], Size * SizeOf(FItems[0]), 0);
+    MoveArray(FItems, Index, Index + Size, Size);
     It := ACollection.First;
     while It.HasNext do
     begin
@@ -888,6 +927,7 @@ begin
   Result := True;
 end;
 
+{$IFNDEF CLR}
 procedure TJclStrVector.AfterConstruction;
 begin
 end;
@@ -895,6 +935,7 @@ end;
 procedure TJclStrVector.BeforeDestruction;
 begin
 end;
+{$ENDIF ~CLR}
 
 procedure TJclStrVector.Clear;
 var
@@ -1041,7 +1082,7 @@ begin
     if FItems[I] = AString then // Removes all AString
     begin
       FItems[I] := ''; // Force Release
-      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(string));
+      MoveArray(FItems, I + 1, I, FCount - I);
       Dec(FCount);
       Result := True;
     end;
@@ -1050,10 +1091,14 @@ end;
 function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := FItems[Index];
   FItems[Index] := '';
-  System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(string));
+  MoveArray(FItems, Index + 1, Index, FCount - Index);
   Dec(FCount);
 end;
 
@@ -1084,7 +1129,11 @@ end;
 procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FItems[Index] := AString;
 end;
 
@@ -1130,11 +1179,14 @@ end;
 procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if FCount = FCapacity then
     Grow;
-  System.Move(FItems[Index], FItems[Index + 1],
-    (FCount - Index) * SizeOf(TObject));
+  MoveArray(FItems, Index, Index + 1, FCount - Index);
   FItems[Index] := AObject;
   Inc(FCount);
 end;
@@ -1155,7 +1207,11 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1164,7 +1220,7 @@ begin
     Inc(FCapacity, Size);
     SetLength(FItems, FCapacity);
     Inc(FCount, Size);
-    System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(FItems[0]));
+    MoveArray(FItems, Index, Index + Size, Size);
     It := ACollection.First;
     while It.HasNext do
     begin
@@ -1342,7 +1398,7 @@ begin
     if FItems[I] = AObject then // Removes all AObject
     begin
       FreeObject(FItems[I]);
-      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(TObject));
+      MoveArray(FItems, I + 1, I, FCount - I);
       Dec(FCount);
       Result := True;
     end;
@@ -1351,10 +1407,14 @@ end;
 function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   Result := FItems[Index];
   FreeObject(FItems[Index]);
-  System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(TObject));
+  MoveArray(FItems, Index + 1, Index, FCount - Index);
   Dec(FCount);
 end;
 
@@ -1385,7 +1445,11 @@ end;
 procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
+    {$IFDEF CLR}
+    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
+    {$ENDIF CLR}
   FItems[Index] := AObject;
 end;
 
@@ -1407,6 +1471,7 @@ begin
     Result.Add(Items[I]);
 end;
 
+{$IFNDEF CLR}
 procedure TJclVector.AfterConstruction;
 begin
 end;
@@ -1414,10 +1479,14 @@ end;
 procedure TJclVector.BeforeDestruction;
 begin
 end;
+{$ENDIF ~CLR}
 
 // History:
 
 // $Log$
+// Revision 1.12  2005/05/05 20:08:46  ahuser
+// JCL.NET support
+//
 // Revision 1.11  2005/03/14 08:46:53  rrossmair
 // - check-in in preparation for release 1.95
 //

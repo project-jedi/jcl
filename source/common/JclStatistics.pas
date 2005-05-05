@@ -62,7 +62,9 @@ function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 function MaxFloatArray(const B: TDynFloatArray): Float;
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Median(const X: TDynFloatArray): Float;
+{$IFNDEF CLR}
 function MedianUnsorted(const X: TDynFloatArray): Float;
+{$ENDIF ~CLR}
 function MinFloatArray(const B: TDynFloatArray): Float;
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Permutation(N, R: Cardinal): Float;
@@ -82,7 +84,11 @@ function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 implementation
 
 uses
-  JclLogic, JclResources, JclSysUtils;
+  JclLogic,
+  {$IFNDEF CLR}
+  JclSysUtils,
+  {$ENDIF ~CLR}
+  JclResources;
 
 //=== Local helpers ==========================================================
 
@@ -95,12 +101,20 @@ function GetDynLengthNotNull(const X: TDynFloatArray): Integer;
 begin
   Result := Length(X);
   if Result = 0 then
+    {$IFDEF CLR}
+    raise EJclMathError.Create(RsEmptyArray);
+    {$ELSE}
     raise EJclMathError.CreateRes(@RsEmptyArray);
+    {$ENDIF CLR}
 end;
 
 procedure InvalidSampleSize(SampleSize: Integer);
 begin
+  {$IFDEF CLR}
+  raise EJclStatisticsError.CreateFmt(RsInvalidSampleSize, [SampleSize]);
+  {$ELSE}
   raise EJclStatisticsError.CreateResFmt(@RsInvalidSampleSize, [SampleSize]);
+  {$ENDIF CLR}
 end;
 
 function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
@@ -126,7 +140,11 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
+      {$IFDEF CLR}
+      raise EJclMathError.Create(RsNonPositiveArray);
+      {$ELSE}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
+      {$ENDIF CLR}
     Result := Result * X[I];
   end;
   Result := Power(Result, 1 / N);
@@ -141,7 +159,11 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
+      {$IFDEF CLR}
+      raise EJclMathError.Create(RsNonPositiveArray);
+      {$ELSE}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
+      {$ENDIF CLR}
     Result := Result + 1 / X[I];
   end;
   Result := N / Result;
@@ -247,6 +269,7 @@ begin
     Result := (X[N div 2 - 1] + X[N div 2]) / 2;
 end;
 
+{$IFNDEF CLR}
 function MedianUnsorted(const X: TDynFloatArray): Float;
 var
   SortedList: TDynFloatArray;
@@ -260,6 +283,7 @@ begin
   // and call the median function afterwards
   Result := Median(SortedList);
 end;
+{$ENDIF ~CLR}
 
 function MinFloatArray(const B: TDynFloatArray): Float;
 var
@@ -479,6 +503,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/05/05 20:08:44  ahuser
+// JCL.NET support
+//
 // Revision 1.15  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

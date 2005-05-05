@@ -99,7 +99,11 @@ begin
   FHead := 0;
   FTail := 0;
   if ACapacity < 1 then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsEIllegalQueueCapacity);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
+    {$ENDIF CLR}
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -179,7 +183,11 @@ begin
   FHead := 0;
   FTail := 0;
   if ACapacity < 1 then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsEIllegalQueueCapacity);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
+    {$ENDIF CLR}
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -257,7 +265,11 @@ constructor TJclQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   if ACapacity < 1 then
+    {$IFDEF CLR}
+    raise EJclIllegalArgumentError.Create(RsEIllegalQueueCapacity);
+    {$ELSE}
     raise EJclIllegalArgumentError.CreateRes(@RsEIllegalQueueCapacity);
+    {$ENDIF CLR}
   FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
@@ -332,6 +344,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/05/05 20:08:44  ahuser
+// JCL.NET support
+//
 // Revision 1.4  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

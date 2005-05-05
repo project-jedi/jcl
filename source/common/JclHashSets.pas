@@ -128,9 +128,24 @@ type
 
 implementation
 
+{$IFDEF CLR}
 var
-  // (rom) this needs an explanation
+  GlobalRefUnique: TObject = nil;
+
+function RefUnique: TObject;
+begin
+  // We keep the reference till program end. A unique memory address is not
+  // possible under a garbage collector.
+  if GlobalRefUnique = nil then
+    GlobalRefUnique := TObject.Create;
+  Result := GlobalRefUnique;
+end;
+{$ELSE}
+var
+  // Here we have TObject reference that points to the data segment. A memory
+  // manager cannot return this address.
   RefUnique: TObject {$IFNDEF FPC} = @RefUnique {$ENDIF};
+{$ENDIF CLR}
 
 var
   IRefUnique: IInterface = nil;
@@ -590,6 +605,9 @@ initialization
 // History:
 
 // $Log$
+// Revision 1.9  2005/05/05 20:08:43  ahuser
+// JCL.NET support
+//
 // Revision 1.8  2005/04/17 23:00:10  rrossmair
 // - changed to compile with FPC
 //

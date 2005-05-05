@@ -50,7 +50,7 @@ const
   ISBNSeparators = [#32, '-'];
   ISBNCharacters = ISBNDigits + ISBNSpecialDigits + ISBNSeparators;
 var
-  CurPtr, EndPtr: PAnsiChar;
+  CurPtr, EndPtr: Integer;
   Accumulator, Counter: Integer;
   Part: TISBNPart;
   PartSizes: TISBNPartSizes;
@@ -68,18 +68,20 @@ begin
   if Length(ISBN) <> ISBNSize then
     Exit;
 
-  CurPtr := @ISBN[1];
-  EndPtr := CurPtr + Pred(ISBNSize);
+  CurPtr := 1;
+  EndPtr := ISBNSize - 1;
   Accumulator := 0;
   Counter := 10;
   Part := ipGroupID;
+  {$IFNDEF CLR}
   FillChar(PartSizes[Low(PartSizes)], SizeOf(PartSizes), 0);
+  {$ENDIF ~CLR}
 
-  while Cardinal(CurPtr) <= Cardinal(EndPtr) do
+  while CurPtr <= EndPtr do
   begin
-    if CurPtr^ in ISBNCharacters then
+    if ISBN[CurPtr] in ISBNCharacters then
     begin
-      if CurPtr^ in ISBNSeparators then
+      if ISBN[CurPtr] in ISBNSeparators then
       begin
         // Switch to the next ISBN part, but take care of two conditions:
         // 1. Do not let Part go beyond its upper bound (ipCheckDigit).
@@ -102,7 +104,7 @@ begin
         end
         else
           // Special check digit is allowed to occur only at the end of ISBN.
-          if CurPtr^ in ISBNSpecialDigits then
+          if ISBN[CurPtr] in ISBNSpecialDigits then
             Exit;
 
         // Increment the size of the current ISBN part.
@@ -110,10 +112,10 @@ begin
 
         // Increment the accumulator by current ISBN digit multiplied by a weight.
         // To get more detailed information, please refer to the web site [1].
-        if (CurPtr = EndPtr) and (CurPtr^ in ISBNSpecialDigits) then
+        if (CurPtr = EndPtr) and (ISBN[CurPtr] in ISBNSpecialDigits) then
           Inc(Accumulator, 10 * Counter)
         else
-          Inc(Accumulator, (Ord(CurPtr^) - Ord('0')) * Counter);
+          Inc(Accumulator, (Ord(ISBN[CurPtr]) - Ord('0')) * Counter);
         Dec(Counter);
       end;
       Inc(CurPtr);
@@ -128,6 +130,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/05/05 20:08:46  ahuser
+// JCL.NET support
+//
 // Revision 1.1  2004/08/19 00:42:02  rrossmair
 // initial check-in
 //
