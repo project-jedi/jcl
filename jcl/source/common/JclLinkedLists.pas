@@ -980,7 +980,8 @@ begin
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    Current.Obj := nil;
+     //Current.Obj := nil;
+    FreeObject(Current.Obj); //Daniele Teti 06 Maj 2005
     Old := Current;
     Current := Current.Next;
     {$IFDEF CLR}
@@ -2545,6 +2546,14 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/05/06 14:24:36  dade2004
+// Fixed a memory leak in TJclLinkedList.Create
+//
+// Changed
+//     Current.Obj := nil;
+// in
+//     FreeObject(Current.Obj);
+//
 // Revision 1.9  2005/05/05 20:08:43  ahuser
 // JCL.NET support
 //
