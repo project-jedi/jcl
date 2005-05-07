@@ -980,8 +980,8 @@ begin
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-     //Current.Obj := nil;
-    FreeObject(Current.Obj); //Daniele Teti 06 Maj 2005
+    Current.Obj := nil;
+    //FreeObject(Current.Obj); //Daniele Teti 06 Maj 2005 // (outchy) wrong line
     Old := Current;
     Current := Current.Next;
     {$IFDEF CLR}
@@ -2111,7 +2111,8 @@ begin
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    Current.Obj := nil;
+    FreeObject(Current.Obj);        // (outchy) Fixed Memory Leak
+    //Current.Obj := nil;
     Old := Current;
     Current := Current.Next;
     {$IFDEF CLR}
@@ -2206,10 +2207,7 @@ end;
 procedure TJclLinkedList.FreeObject(var AObject: TObject);
 begin
   if FOwnsObjects then
-  begin
-    AObject.Free;
-    AObject := nil;
-  end;
+    FreeAndNil(AObject);
 end;
 
 function TJclLinkedList.GetObject(Index: Integer): TObject;
@@ -2546,6 +2544,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/05/07 14:33:48  outchy
+// Now compile OK, corrected TJclLinkedList.Clear, TJclIntfLinkedList.Clear and TJclLinkedList.FreeObject
+//
 // Revision 1.10  2005/05/06 14:24:36  dade2004
 // Fixed a memory leak in TJclLinkedList.Create
 //
