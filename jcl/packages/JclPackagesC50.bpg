@@ -9,7 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = CJcl50.bpl
+PROJECTS = CJcl50.bpl IdeOpenDlgFavoriteC50.bpl JclDebugIdeC50.bpl \
+  ThreadNameExpertC50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -17,6 +18,18 @@ default: $(PROJECTS)
 
 
 CJcl50.bpl: c5\CJcl50.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IdeOpenDlgFavoriteC50.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteC50.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JclDebugIdeC50.bpl: ..\examples\vcl\debugextension\JclDebugIdeC50.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+ThreadNameExpertC50.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertC50.bpk
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
