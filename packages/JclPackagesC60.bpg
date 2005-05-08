@@ -9,7 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = CJcl60.bpl CJclVcl60.bpl CJclVClx60.bpl IdeOpenDlgFavoriteC60.bpl
+PROJECTS = CJcl60.bpl CJclVcl60.bpl CJclVClx60.bpl IdeOpenDlgFavoriteC60.bpl \
+  JclDebugIdeC60.bpl ThreadNameExpertC60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -29,6 +30,14 @@ CJclVClx60.bpl: c6\CJclVClx.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 IdeOpenDlgFavoriteC60.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteC60.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JclDebugIdeC60.bpl: ..\examples\vcl\debugextension\JclDebugIdeC60.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+ThreadNameExpertC60.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertC60.bpk
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
