@@ -296,17 +296,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclOTAUtils.ReadEnvVariables;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 const
   EnvironmentVarsKey = 'Environment Variables';
 var
   EnvNames: TStringList;
   I: Integer;
   EnvVarKeyName: string;
-{$ENDIF DELPHI6_UP}
+{$ENDIF COMPÏLER6_UP}
 begin
   FEnvVariables.Clear;
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
     EnvVarKeyName := BaseRegistryKey + EnvironmentVarsKey;
@@ -316,7 +316,7 @@ begin
   finally
     EnvNames.Free;
   end;
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   FEnvVariables.Values['DELPHI'] := RootDir;
 end;
 
@@ -416,6 +416,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/05/08 15:43:28  outchy
+// Compiler conditions modified for C++Builder
+//
 // Revision 1.6  2005/03/14 05:56:27  rrossmair
 // - fixed issue #2752 (TJclOTAUtils.SubstitutePath does not support nested environment variables) as proposed by the reporter.
 //
