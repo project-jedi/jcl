@@ -4,16 +4,27 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="IdeOpenDlgFavoriteC60.bpl"/>
-    <OBJFILES value="IdeOpenDlgFavoriteC60.obj OpenDlgFavAdapter.obj IdeOpenDlgFavoriteUnit.obj 
-      ..\debugextension\JclOtaUtils.obj"/>
+    <OBJFILES value="..\..\..\lib\c6\IdeOpenDlgFavoriteC60.obj 
+      ..\..\..\lib\c6\OpenDlgFavAdapter.obj 
+      ..\..\..\lib\c6\IdeOpenDlgFavoriteUnit.obj ..\..\..\lib\c6\JclOtaUtils.obj"/>
     <RESFILES value="IdeOpenDlgFavoriteC60.res FavDlg.res IdeOpenDlgFavoriteC60.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <LIBRARIES value="JclDebugIdeC60.lib ProjectAnalyzerC60.lib JvSIMDViewC6.lib 
+      AprilogComponents.lib bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib 
+      bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib inetdb.lib 
+      inetdbbde.lib inet.lib xmlrtl.lib visualdbclx.lib ibxpress.lib teeqr.lib 
+      tee.lib teedb.lib teeui.lib bdecds.lib cds.lib dsnap.lib vcldbx.lib 
+      bdertl.lib qrpt.lib adortl.lib dbrtl.lib vcldb.lib bcbsmp.lib"/>
+    <SPARELIBS value="rtl.lib bcbsmp.lib vcldb.lib dbrtl.lib adortl.lib qrpt.lib bdertl.lib 
+      vcldbx.lib dsnap.lib cds.lib bdecds.lib teeui.lib teedb.lib tee.lib 
+      teeqr.lib ibxpress.lib visualdbclx.lib xmlrtl.lib inet.lib inetdbbde.lib 
+      inetdb.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib 
+      dclocx.lib dbxcds.lib bcb2kaxserver.lib AprilogComponents.lib CJcl.lib 
+      JvSIMDViewC6.lib ProjectAnalyzerC60.lib JclDebugIdeC60.lib"/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\debugextension"/>
@@ -25,17 +36,19 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="IdeOpenDlgFavoriteC60.cpp"/>
-    <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\Toolsapi"/>
-    <LIBPATH value="..\debugextension;..\..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
+    <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="&quot;c:\program files\borland\cbuilder6\projects\lib&quot;;..\debugextension;..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\..\lib\c6 -N0..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-D&quot;&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
+    <LFLAGS value="-I..\..\..\lib\c6 
+      -D&quot;JCL Open and Save IDE dialogs with favorite folders for C++Builder 6&quot; 
+      -aa -Tpp -Gpd -GD -s -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -52,10 +65,10 @@
       <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="FavDlg.rc" FORMNAME="" UNITNAME="FavDlg.rc" CONTAINERID="RC" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="IdeOpenDlgFavoriteC60.rc" FORMNAME="" UNITNAME="IdeOpenDlgFavoriteC60.rc" CONTAINERID="RC" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -65,49 +78,40 @@
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
-MinorVer=0
-Release=0
-Build=0
+MinorVer=95
+Release=3
+Build=1848
 Debug=0
 PreRelease=0
 Special=0
 Private=0
-DLL=0
-Locale=1036
+DLL=1
+Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
+CompanyName=Project JEDI
+FileDescription=JCL IDE Favorite Dialogs expert
+FileVersion=1.95.3.1848
+InternalName=IdeOpenDlgFavoriteC60
+LegalCopyright=Copyright (C) 1999, 2004 Project JEDI
 LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[Excluded Packages]
+OriginalFilename=IdeOpenDlgFavoriteC60.bpl
+ProductName=Jedi Code Library Extension
+ProductVersion=1.95 Build 1848
 
 [HistoryLists\hlIncludePath]
 Count=1
-Item0=..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\Toolsapi
+Item0=..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=1
-Item0=..\debugextension;..\..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi
+Count=0
 
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
+[HistoryLists\hlIntOutputDir]
+Count=0
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=
 
 [Parameters]
 RunParams=

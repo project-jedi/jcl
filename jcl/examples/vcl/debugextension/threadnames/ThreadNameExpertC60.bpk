@@ -11,8 +11,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="ProjectAnalyzerC60.lib JclDebugIdeC60.lib JvSIMDViewC6.lib
-      bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib 
+    <LIBRARIES value="ProjectAnalyzerC60.lib JclDebugIdeC60.lib JvSIMDViewC6.lib Composant.lib 
+      AprilogComponents.lib bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib 
       bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib inetdb.lib 
       inetdbbde.lib inet.lib xmlrtl.lib visualdbclx.lib ibxpress.lib teeqr.lib 
       tee.lib teedb.lib teeui.lib bdecds.lib cds.lib dsnap.lib vcldbx.lib 
@@ -36,7 +36,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="ThreadNameExpertC60.cpp"/>
     <INCLUDEPATH value="..\;..;..\..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\;..;..\..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="&quot;c:\program files\borland\cbuilder6\projects\lib&quot;;..\;..\..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -45,8 +45,8 @@
     <PFLAGS value="-N2..\..\..\..\lib\c6 -N0..\..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-l..\..\..\..\lib\c6 -I..\..\..\..\lib\c6 -D&quot;&quot; -aa -Tpp -Gpd -GD -s -Gn 
-      -Gl -Gi"/>
+    <LFLAGS value="-I..\..\..\..\lib\c6 -D&quot;JCL Thread Name IDE expert for C++Builder 6&quot; -aa 
+      -Tpp -Gpd -GD -s -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -99,10 +99,12 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=0
+Count=1
+Item0=..\;..;..\..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=0
+
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=$(BCB)\source\vcl
@@ -120,7 +122,7 @@ Count=1
 Item0=..\..\..\..\lib\c6
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=
 
 [Parameters]
 RunParams=

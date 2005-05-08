@@ -34,7 +34,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclDebugIdeC60.cpp"/>
     <INCLUDEPATH value="..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="&quot;c:\program files\borland\cbuilder6\projects\lib&quot;;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -43,7 +43,8 @@
     <PFLAGS value="-N2..\..\..\lib\c6 -N0..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-l..\..\..\lib\c6 -I..\..\..\lib\c6 -D&quot;&quot; -aa -Tpp -GD -s -Gn -Gl -Gi"/>
+    <LFLAGS value="-I..\..\..\lib\c6 -D&quot;JCL Debug IDE extension for C++Builder 6&quot; -aa -Tpp 
+      -Gpd -GD -s -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -55,12 +56,12 @@
   <FILELIST>
       <FILE FILENAME="JclDebugIdeC60.res" FORMNAME="" UNITNAME="JclDebugIdeC60.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JclDebugIdeC60.cpp" FORMNAME="" UNITNAME="JclDebugIdeC60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JclDebugIdeResult.pas" FORMNAME="JclDebugResultForm" UNITNAME="JclDebugIdeResult" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JclDebugIdeImpl.pas" FORMNAME="" UNITNAME="JclDebugIdeImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
@@ -110,13 +111,15 @@ Count=1
 Item0=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
-Count=0
+Count=1
+Item0=..\..\..\lib\c6
 
 [HistoryLists\hIBPIOutputDir]
-Count=0
+Count=1
+Item0=..\..\..\lib\c6
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=
 
 [Parameters]
 RunParams=
