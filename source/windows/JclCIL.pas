@@ -730,7 +730,8 @@ end;
 procedure TJclInstruction.Load(Stream: TStream);
 var
   Code: Byte;
-  I, ArraySize, Value: DWORD;   { TODO : I, ArraySize = DWORD create a serious problem }
+  I, ArraySize: DWORD;   { TODO : I, ArraySize = DWORD create a serious problem }
+  Value: Integer;
 begin
   FOffset := Stream.Position;
   try
@@ -767,7 +768,7 @@ begin
           Stream.Read(VSingle, SizeOf(Single));
           VType := varSingle;
         end;
-      ptR8:
+      ptR8:                                       
         begin
           Stream.Read(VDouble, SizeOf(Double));
           VType := varDouble;
@@ -1006,6 +1007,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/05/08 08:05:53  outchy
+// Warning suppression, DWORD (Cardinal) changed to Integer
+//
 // Revision 1.14  2005/03/14 02:13:13  rrossmair
 // - fixed JclCLR identifier case
 //
