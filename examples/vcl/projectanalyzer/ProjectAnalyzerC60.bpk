@@ -4,24 +4,25 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="ProjectAnalyzerC60.bpl"/>
-    <OBJFILES value="ProjectAnalyzerC60.obj ..\debugextension\JclOtaUtils.obj 
-      ProjAnalyzerImpl.obj ProjAnalyzerFrm.obj"/>
+    <OBJFILES value="..\..\..\lib\c6\ProjectAnalyzerC60.obj ..\..\..\lib\c6\ProjAnalyzerFrm.obj 
+      ..\..\..\lib\c6\ProjAnalyzerImpl.obj ..\..\..\lib\c6\JclOtaUtils.obj"/>
     <RESFILES value="ProjectAnalyzerC60.res"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ProjAnalyzerFrm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JclDebugIdeC60.lib JvSIMDViewC6.lib Composant.lib AprilogComponents.lib 
-      bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib nmfast.lib 
-      dbexpress.lib inetdbxpress.lib inetdb.lib inetdbbde.lib inet.lib 
-      xmlrtl.lib visualdbclx.lib ibxpress.lib teeqr.lib tee.lib teedb.lib 
-      teeui.lib bdecds.lib cds.lib dsnap.lib vcldbx.lib bdertl.lib qrpt.lib 
-      adortl.lib dbrtl.lib vcldb.lib bcbsmp.lib"/>
+    <LIBRARIES value="ThreadNameExpertC60.lib ProjectAnalyzerC60.lib JvSIMDViewC6.lib 
+      AprilogComponents.lib bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib 
+      bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib inetdb.lib 
+      inetdbbde.lib inet.lib xmlrtl.lib visualdbclx.lib ibxpress.lib teeqr.lib 
+      tee.lib teedb.lib teeui.lib bdecds.lib cds.lib dsnap.lib vcldbx.lib 
+      bdertl.lib qrpt.lib adortl.lib dbrtl.lib vcldb.lib bcbsmp.lib"/>
     <SPARELIBS value="rtl.lib bcbsmp.lib vcldb.lib dbrtl.lib adortl.lib qrpt.lib bdertl.lib 
       vcldbx.lib dsnap.lib cds.lib bdecds.lib teeui.lib teedb.lib tee.lib 
       teeqr.lib ibxpress.lib visualdbclx.lib xmlrtl.lib inet.lib inetdbbde.lib 
       inetdb.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib 
-      dclocx.lib dbxcds.lib bcb2kaxserver.lib CJcl.lib"/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi"/>
+      dclocx.lib dbxcds.lib bcb2kaxserver.lib CJcl.lib AprilogComponents.lib 
+      JvSIMDViewC6.lib ProjectAnalyzerC60.lib ThreadNameExpertC60.lib"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi IdeOpenDlgFavoriteC60.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\debugextension"/>
     <PATHRC value=".;"/>
@@ -29,21 +30,21 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="ProjectAnalyzerC60.cpp"/>
     <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\debugextension;..\..\..\lib\c6\obj;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\debugextension;&quot;c:\program files\borland\cbuilder6\projects\lib&quot;;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\..\lib\c6 -N0..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-D&quot;&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\..\lib\c6 -D&quot;JCL Project Analyzer for C++Builder 6&quot; -aa -Tpp -Gpd 
+      -GD -s -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -55,13 +56,14 @@
   <FILELIST>
       <FILE FILENAME="ProjectAnalyzerC60.res" FORMNAME="" UNITNAME="ProjectAnalyzerC60.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="ProjectAnalyzerC60.cpp" FORMNAME="" UNITNAME="ProjectAnalyzerC60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ProjAnalyzerImpl.pas" FORMNAME="" UNITNAME="ProjAnalyzerImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="ProjAnalyzerFrm.pas" FORMNAME="ProjectAnalyzerForm" UNITNAME="ProjAnalyzerFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ProjAnalyzerImpl.pas" FORMNAME="" UNITNAME="ProjAnalyzerImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\IdeOpenDlgFavoriteC60.bpi" FORMNAME="" UNITNAME="IdeOpenDlgFavoriteC60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -95,19 +97,32 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=0
+Count=2
+Item0=..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=0
+Count=1
+Item0=..\debugextension;c:\program files\borland\cbuilder6\projects\lib;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
-Count=0
+Count=1
+Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
-Count=0
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\..\lib\c6
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=..\..\..\lib\c6
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=
 
 [Parameters]
 RunParams=
