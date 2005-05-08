@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="IdeOpenDlgFavoriteC50.bpl"/>
+    <OBJFILES value="..\..\..\lib\c5\OpenDlgFavAdapter.obj 
+      ..\..\..\lib\c5\IdeOpenDlgFavoriteUnit.obj ..\..\..\lib\c5\JclOtaUtils.obj 
+      ..\..\..\lib\c5\IdeOpenDlgFavoriteC50.obj"/>
+    <RESFILES value="IdeOpenDlgFavoriteC50.res ..\..\..\lib\c5\FavDlg.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="Vcl50.lib CJCL50.lib"/>
+    <PACKAGES value="vcl50.bpi dsnide50.bpi CJcl50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\debugextension"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="IdeOpenDlgFavoriteC50.cpp"/>
+    <INCLUDEPATH value="..\debugextension;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\projects\lib;..\debugextension;..\..\..\lib\c5\obj;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\vcl 
+      -I..\..\source\common -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix 
+      cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tWM"/>
+    <PFLAGS value="-N2..\..\..\lib\c5 -N0..\..\..\lib\c5 -$YD -$W -$O- -$A8 -v -JPHNE -M 
+      -LUvcl50 -U$(BCB)\Projects\Bpl"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\..\lib\c5 
+      -D&quot;JCL Open and Save IDE dialogs with favorite folders for C++Builder 5&quot; 
+      -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=95
+Release=3
+Build=1848
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=1
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Project JEDI
+FileDescription=JEDI Code Library RTL package for C++Builder 5
+FileVersion=1.95.3.1848
+InternalName=CJcl50
+LegalCopyright=Copyright (C) 1999, 2004 Project JEDI
+LegalTrademarks=
+OriginalFilename=CJcl50.bpl
+ProductName=Jedi Code Library
+ProductVersion=1.95 Build 1848
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\debugextension;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=$(BCB)\projects\lib;..\debugextension;..\..\..\lib\c5\obj;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\..\lib\c5
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+  </IDEOPTIONS>
+</PROJECT>
