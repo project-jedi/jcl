@@ -22,7 +22,7 @@ package ThreadNameExpertD70;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58020000}
-{$DESCRIPTION 'JCL Thread Name IDE expert for Delphi 6'}
+{$DESCRIPTION 'JCL Thread Name IDE expert for Delphi 7'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
