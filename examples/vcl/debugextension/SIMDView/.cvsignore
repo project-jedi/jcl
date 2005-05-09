@@ -1,0 +1,6 @@
+*.dcu
+*.~*
+*.exe
+*.ddp
+*.hpp
+*.dof
