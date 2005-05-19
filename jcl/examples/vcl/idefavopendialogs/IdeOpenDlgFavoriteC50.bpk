@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -14,7 +14,7 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib CJCL50.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="vcl50.bpi dsnide50.bpi CJcl50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\debugextension"/>
@@ -49,8 +49,7 @@
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
-  <IDEOPTIONS>
-[Version Info]
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -65,45 +64,5 @@ DLL=1
 Locale=1033
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=Project JEDI
-FileDescription=JEDI Code Library RTL package for C++Builder 5
-FileVersion=1.95.3.1848
-InternalName=CJcl50
-LegalCopyright=Copyright (C) 1999, 2004 Project JEDI
-LegalTrademarks=
-OriginalFilename=CJcl50.bpl
-ProductName=Jedi Code Library
-ProductVersion=1.95 Build 1848
-
-[HistoryLists\hlIncludePath]
-Count=1
-Item0=..\debugextension;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=1
-Item0=$(BCB)\projects\lib;..\debugextension;..\..\..\lib\c5\obj;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\lib\c5
-
-[Debugging]
-DebugSourceDirs=
-
-[Parameters]
-RunParams=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

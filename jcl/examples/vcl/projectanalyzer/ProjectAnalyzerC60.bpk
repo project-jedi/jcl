@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -10,18 +10,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ProjAnalyzerFrm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="ThreadNameExpertC60.lib ProjectAnalyzerC60.lib JvSIMDViewC6.lib 
-      AprilogComponents.lib bcb2kaxserver.lib dbxcds.lib dclocx.lib soaprtl.lib 
-      bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib inetdb.lib 
-      inetdbbde.lib inet.lib xmlrtl.lib visualdbclx.lib ibxpress.lib teeqr.lib 
-      tee.lib teedb.lib teeui.lib bdecds.lib cds.lib dsnap.lib vcldbx.lib 
-      bdertl.lib qrpt.lib adortl.lib dbrtl.lib vcldb.lib bcbsmp.lib"/>
-    <SPARELIBS value="rtl.lib bcbsmp.lib vcldb.lib dbrtl.lib adortl.lib qrpt.lib bdertl.lib 
-      vcldbx.lib dsnap.lib cds.lib bdecds.lib teeui.lib teedb.lib tee.lib 
-      teeqr.lib ibxpress.lib visualdbclx.lib xmlrtl.lib inet.lib inetdbbde.lib 
-      inetdb.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib 
-      dclocx.lib dbxcds.lib bcb2kaxserver.lib CJcl.lib AprilogComponents.lib 
-      JvSIMDViewC6.lib ProjectAnalyzerC60.lib ThreadNameExpertC60.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi IdeOpenDlgFavoriteC60.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\debugextension"/>
@@ -34,7 +24,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="ProjectAnalyzerC60.cpp"/>
     <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\debugextension;&quot;c:\program files\borland\cbuilder6\projects\lib&quot;;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\debugextension;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -54,22 +44,19 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="ProjectAnalyzerC60.res" FORMNAME="" UNITNAME="ProjectAnalyzerC60.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ProjectAnalyzerC60.cpp" FORMNAME="" UNITNAME="ProjectAnalyzerC60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ProjAnalyzerFrm.pas" FORMNAME="ProjectAnalyzerForm" UNITNAME="ProjAnalyzerFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ProjAnalyzerImpl.pas" FORMNAME="" UNITNAME="ProjAnalyzerImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\IdeOpenDlgFavoriteC60.bpi" FORMNAME="" UNITNAME="IdeOpenDlgFavoriteC60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="ProjectAnalyzerC60.res" FORMNAME="" UNITNAME="ProjectAnalyzerC60.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="ProjectAnalyzerC60.cpp" FORMNAME="" UNITNAME="ProjectAnalyzerC60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="ProjAnalyzerFrm.pas" FORMNAME="ProjectAnalyzerForm" UNITNAME="ProjAnalyzerFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="ProjAnalyzerImpl.pas" FORMNAME="" UNITNAME="ProjAnalyzerImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\IdeOpenDlgFavoriteC60.bpi" FORMNAME="" UNITNAME="IdeOpenDlgFavoriteC60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -84,71 +71,10 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[HistoryLists\hlIncludePath]
-Count=2
-Item0=..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
-Item1=..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=1
-Item0=..\debugextension;c:\program files\borland\cbuilder6\projects\lib;..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\lib\c6
-
-[HistoryLists\hIBPIOutputDir]
-Count=1
-Item0=..\..\..\lib\c6
-
-[Debugging]
-DebugSourceDirs=
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
-
 [Linker]
 LibPrefix=
 LibSuffix=
 LibVersion=
-  </IDEOPTIONS>
+
+</IDEOPTIONS>
 </PROJECT>
