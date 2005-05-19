@@ -1,28 +1,19 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JclSIMDViewC6.bpl"/>
-    <OBJFILES value="..\..\..\..\lib\c6\JclSIMDViewC6.obj 
-      ..\..\..\..\lib\c6\JclSIMDViewForm.obj ..\..\..\..\lib\c6\JclSIMDModifyForm.obj 
-      ..\..\..\..\lib\c6\JclSIMDUtils.obj ..\..\..\..\lib\c6\JclSIMDView.obj 
-      ..\..\..\..\lib\c6\JclSIMDCpuInfo.obj ..\..\..\..\lib\c6\JclOtaUtils.obj"/>
+    <OBJFILES value="..\..\..\..\lib\c6\obj\JclSIMDViewC6.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDViewForm.obj ..\..\..\..\lib\c6\obj\JclSIMDModifyForm.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDUtils.obj ..\..\..\..\lib\c6\obj\JclSIMDView.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDCpuInfo.obj ..\..\..\..\lib\c6\obj\JclOtaUtils.obj"/>
     <RESFILES value="JclSIMDViewC6.res JclSIMDIcon.dcr"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JclSIMDViewForm.dfm JclSIMDModifyForm.dfm JclSIMDCpuInfo.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="Composant.lib AprilogComponents.lib bcb2kaxserver.lib dbxcds.lib 
-      dclocx.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib 
-      inetdb.lib inetdbbde.lib inet.lib xmlrtl.lib visualdbclx.lib ibxpress.lib 
-      teeqr.lib tee.lib teedb.lib teeui.lib bdecds.lib cds.lib dsnap.lib 
-      vcldbx.lib bdertl.lib qrpt.lib adortl.lib dbrtl.lib vcldb.lib bcbsmp.lib"/>
-    <SPARELIBS value="rtl.lib bcbsmp.lib vcldb.lib dbrtl.lib adortl.lib qrpt.lib bdertl.lib 
-      vcldbx.lib dsnap.lib cds.lib bdecds.lib teeui.lib teedb.lib tee.lib 
-      teeqr.lib ibxpress.lib visualdbclx.lib xmlrtl.lib inet.lib inetdbbde.lib 
-      inetdb.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib 
-      dclocx.lib dbxcds.lib bcb2kaxserver.lib AprilogComponents.lib 
-      Composant.lib CJcl.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;.."/>
@@ -35,14 +26,14 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclSIMDViewC6.cpp"/>
     <INCLUDEPATH value="..\;..;..\..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\;..;..\..\..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
+    <LIBPATH value="..\;..;..\..\..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\..\..\lib\c6 -N0..\..\..\..\lib\c6 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\..\..\lib\c6\obj -N0..\..\..\..\lib\c6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\..\..\lib\c6 
@@ -57,25 +48,22 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="JclSIMDViewC6.res" FORMNAME="" UNITNAME="JclSIMDViewC6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDViewC6.cpp" FORMNAME="" UNITNAME="JclSIMDViewC6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="c:\program files\borland\cbuilder6\projects\lib\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDViewForm.pas" FORMNAME="JvSIMDViewFrm" UNITNAME="JclSIMDViewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDModifyForm.pas" FORMNAME="JvSIMDModifyFrm" UNITNAME="JclSIMDModifyForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDUtils.pas" FORMNAME="" UNITNAME="JclSIMDUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDView.pas" FORMNAME="" UNITNAME="JclSIMDView" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDCpuInfo.pas" FORMNAME="FormCpuInfo" UNITNAME="JclSIMDCpuInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JclSIMDIcon.dcr" FORMNAME="" UNITNAME="" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDViewC6.res" FORMNAME="" UNITNAME="JclSIMDViewC6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDViewC6.cpp" FORMNAME="" UNITNAME="JclSIMDViewC6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDViewForm.pas" FORMNAME="JvSIMDViewFrm" UNITNAME="JclSIMDViewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDModifyForm.pas" FORMNAME="JvSIMDModifyFrm" UNITNAME="JclSIMDModifyForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDUtils.pas" FORMNAME="" UNITNAME="JclSIMDUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDView.pas" FORMNAME="" UNITNAME="JclSIMDView" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDCpuInfo.pas" FORMNAME="FormCpuInfo" UNITNAME="JclSIMDCpuInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JclSIMDIcon.dcr" FORMNAME="" UNITNAME="" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="..\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -90,82 +78,5 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[HistoryLists\hlIncludePath]
-Count=11
-Item0=..\;..;..\..\..\..\source;$(BCB)\include;$(BCB)\include\vcl
-Item1=..\;..;..\..\..\..\source;..\..\..\..\lib\c6;$(BCB)\include;$(BCB)\include\vcl
-Item2=..\;..;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\source
-Item3=..\;..;$(BCB)\include;$(BCB)\include\vcl;..\..\..\source
-Item4=..\;..;$(BCB)\include;$(BCB)\include\vcl;..\..\JVCL3\common
-Item5=..\;$(BCB)\include;$(BCB)\include\vcl;..\..\JVCL3\common
-Item6=$(BCB)\include;$(BCB)\include\vcl;..\..\JVCL3\common
-Item7=$(BCB)\include;$(BCB)\include\vcl;..\..\..\source
-Item8=$(BCB)\include;$(BCB)\include\vcl
-Item9=..\..\JVCL3\common;$(BCB)\include;$(BCB)\include\vcl
-Item10=C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=7
-Item0=..\;..;..\..\..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi
-Item1=..\;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi
-Item2=..\;..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi;..\..\..\JCL\lib\c6\obj
-Item3=..\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi;..\..\..\JCL\lib\c6\obj
-Item4=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi;..\..\..\JCL\lib\c6\obj
-Item5=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi;..\..\..\JCL\lib\c6
-Item6=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\..\lib\c6
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
-
-[Linker]
-LibPrefix=
-LibSuffix=
-LibVersion=
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

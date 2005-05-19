@@ -31,8 +31,6 @@
 
 //---------------------------------------------------------------------------
 
-#pragma argsused
-
 #if __BORLANDC__ == 1380
 #define BCB6
 #endif
@@ -52,6 +50,7 @@
 #define COMPILER6
 #endif
 
+#pragma argsused
 int main (int argc, char **argv)
 {
   using namespace std;
@@ -59,24 +58,24 @@ int main (int argc, char **argv)
   int Index, ErrorCode;
   char Line[256];
 
-  cout << "Streaming SIMD Extensions of Intel Pentium and AMD Athlon processors\n";
-  cout << "By Ouchet Florent <outchy_at_users.sourceforge.net>\n";
-  cout << "Released 2004,14,3\n";
-  cout << "All rights free\n\n";
+  printf("Streaming SIMD Extensions of Intel Pentium and AMD Athlon processors\n");
+  printf("By Ouchet Florent <outchy_at_users.sourceforge.net>\n");
+  printf("Released 2004,14,3\n");
+  printf("All rights free\n\n");
 
   for (Index=0; Index<4; Index++) {
     do {
-      cout << "Enter the floating point value " << Index << " : ";
+      printf("Enter the floating point value %d : ",Index);
       gets(Line);
       ErrorCode = sscanf(Line,"%f",Values+Index);
     } while (ErrorCode!=1);
   }
 
-  cout << "\nCheck values :\n";
+  printf("\nCheck values :\n");
   for (Index=0; Index<4; Index++)
-    cout << "Value " << Index << " is : " << Values[Index] << "\n";
+    printf("Value %d is : %f\n",Index,Values[Index]);
 
-  cout << "\nStarting computations : Values*2 ...";
+  printf("\nStarting computations : Values*2 ...");
   __asm {
     // breakpoint here
     // hit ctrl+alt+D or go to View/Debug window and open the last item
@@ -93,10 +92,10 @@ int main (int argc, char **argv)
     DB       0Fh, 11h, 00h    // movups [eax], xmm0
 #endif
   };
-  cout << "Computations ended\nNow values are :\n";
+  printf("Computations ended\nNow values are :\n");
   for (Index=0; Index<4; Index++)
-    cout << "Value " << Index << " is : " << Values[Index] << "\n";
-  cout << "\nProgram terminated\n";
+    printf("Value %d is : %f\n",Index,Values[Index]);
+  printf("\nProgram terminated\n");
   gets(Line);
   return 0;
 }
