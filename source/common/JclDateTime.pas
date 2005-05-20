@@ -27,6 +27,7 @@
 {   Petr Vones                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -66,6 +67,11 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF FPC}
+  {$IFNDEF LINUX}
+  Unix,
+  {$ENDIF ~LINUX}
+  {$ENDIF FPC}
   SysUtils,
   JclBase, JclResources;
 
@@ -139,7 +145,7 @@ function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; overload;
-procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
+procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime: TSystemTime); overload;
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
 {$ENDIF MSWINDOWS}
@@ -171,7 +177,7 @@ function FileTimeToStr(const FileTime: TFileTime): string;
 {$IFDEF MSWINDOWS}
 function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
-procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime : TFileTime); overload;
+procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime: TFileTime); overload;
 function SystemTimeToStr(const SystemTime: TSystemTime): string;
 
 // Filedates
@@ -184,7 +190,7 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 type
   TJclUnixTime32 = Longword;
 
-function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
+function DateTimeToUnixTime(DateTime: TDateTime): TJclUnixTime32;
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 
 {$IFDEF MSWINDOWS}
@@ -654,14 +660,20 @@ end;
 {$IFDEF UNIX}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
+  {$IFDEF LINUX}
   TimeNow: time_t;
   Local, UTCTime: TUnixTime;
+  {$ENDIF LINUX}
   Offset: Double;
 begin
+  {$IFDEF LINUX}
   TimeNow := __time(nil);
   UTCTime := gmtime(@TimeNow)^;
   Local   := localtime(@TimeNow)^;
   Offset  := difftime(mktime(UTCTime), mktime(Local));
+  {$ELSE}
+  Offset := -TZSeconds;
+  {$ENDIF LINUX}
   Result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
 end;
 {$ENDIF UNIX}
@@ -686,20 +698,26 @@ begin
     raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
-{$ENDIF ~CLR}
+{$ENDIF CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
+  {$IFDEF LINUX}
   TimeNow: time_t;
   Local, UTCTime: TUnixTime;
+  {$ENDIF LINUX}
   Offset: Double;
 begin
+  {$IFDEF LINUX}
   TimeNow := __time(nil);
   UTCTime := gmtime(@TimeNow)^;
   Local   := localtime(@TimeNow)^;
   Offset  := difftime(mktime(UTCTime), mktime(Local));
+  {$ELSE}
+  Offset := -TZSeconds;
+  {$ENDIF LINUX}
   Result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
 end;
 {$ENDIF UNIX}
@@ -860,7 +878,7 @@ begin
   SysUtils.DateTimeToSystemTime(DateTime, Result);
 end;
 
-procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
+procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime: TSystemTime); overload;
 begin
   SysUtils.DateTimeToSystemTime(DateTime, SysTime);
 end;
@@ -1006,7 +1024,7 @@ begin
         begin
           Digest;
           if ISOWeek = 0 then
-            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
           if (Length(Form) > 1) and ((Form[2] = 'i') or (Form[2] = 'I')) then
           begin              // <ii>
             if (Length(Form) > 2) and ((Form[3] = 'i') or (Form[3] = 'I')) then
@@ -1044,7 +1062,7 @@ begin
         begin
           Digest;
           if ISOWeek = 0 then
-            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
           if (Length(Form) > 1) and ((Form[2] = 'w') or (Form[2] = 'W')) then
           begin               // <ww>
             Delete(Form, 1, 2);
@@ -1148,7 +1166,7 @@ const
 
 // Conversion Unix time <--> TDateTime
 
-function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
+function DateTimeToUnixTime(DateTime: TDateTime): TJclUnixTime32;
 begin
   Result := Trunc((DateTime-UnixTimeStart) * SecondsPerDay);
 end;
@@ -1177,6 +1195,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2005/05/20 19:55:49  uschuster
+// FPC FreeBSD support
+//
 // Revision 1.21  2005/05/05 20:08:42  ahuser
 // JCL.NET support
 //
