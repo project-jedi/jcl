@@ -1034,19 +1034,19 @@ function TestFDIVInstruction: Boolean;
 
 // Memory Information
 {$IFDEF MSWINDOWS}
-function GetMaxAppAddress: Integer;
-function GetMinAppAddress: Integer;
+function GetMaxAppAddress: Cardinal;
+function GetMinAppAddress: Cardinal;
 {$ENDIF MSWINDOWS}
 function GetMemoryLoad: Byte;
-function GetSwapFileSize: Integer;
-function GetSwapFileUsage: Integer;
-function GetTotalPhysicalMemory: Integer;
-function GetFreePhysicalMemory: Integer;
+function GetSwapFileSize: Cardinal;
+function GetSwapFileUsage: Byte;
+function GetTotalPhysicalMemory: Cardinal;
+function GetFreePhysicalMemory: Cardinal;
 {$IFDEF MSWINDOWS}
-function GetTotalPageFileMemory: Integer;
-function GetFreePageFileMemory: Integer;
-function GetTotalVirtualMemory: Integer;
-function GetFreeVirtualMemory: Integer;
+function GetTotalPageFileMemory: Cardinal;
+function GetFreePageFileMemory: Cardinal;
+function GetTotalVirtualMemory: Cardinal;
+function GetFreeVirtualMemory: Cardinal;
 {$ENDIF MSWINDOWS}
 
 // Alloc granularity
@@ -4778,7 +4778,7 @@ end;
 
 //=== Memory Information =====================================================
 
-function GetMaxAppAddress: Integer;
+function GetMaxAppAddress: Cardinal;
 var
   SystemInfo: TSystemInfo;
 begin
@@ -4787,7 +4787,7 @@ begin
   Result := Integer(SystemInfo.lpMaximumApplicationAddress);
 end;
 
-function GetMinAppAddress: Integer;
+function GetMinAppAddress: Cardinal;
 var
   SystemInfo: TSystemInfo;
 begin
@@ -4818,7 +4818,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function GetSwapFileSize: Integer;
+function GetSwapFileSize: Cardinal;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -4835,11 +4835,11 @@ begin
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   with MemoryStatus do
-    Result := Trunc(dwTotalPageFile - dwAvailPageFile);
+    Result := dwTotalPageFile - dwAvailPageFile;
 end;
 {$ENDIF MSWINDOWS}
 
-function GetSwapFileUsage: Integer;
+function GetSwapFileUsage: Byte;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -4864,7 +4864,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function GetTotalPhysicalMemory: Integer;
+function GetTotalPhysicalMemory: Cardinal;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -4884,7 +4884,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function GetFreePhysicalMemory: Integer;
+function GetFreePhysicalMemory: Cardinal;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -4903,7 +4903,7 @@ begin
   Result := MemoryStatus.dwAvailPhys;
 end;
 
-function GetTotalPageFileMemory: Integer;
+function GetTotalPageFileMemory: Cardinal;
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -4913,7 +4913,7 @@ begin
   Result := MemoryStatus.dwTotalPageFile;
 end;
 
-function GetFreePageFileMemory: Integer;
+function GetFreePageFileMemory: Cardinal;
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -4923,7 +4923,7 @@ begin
   Result := MemoryStatus.dwAvailPageFile;
 end;
 
-function GetTotalVirtualMemory: Integer;
+function GetTotalVirtualMemory: Cardinal;
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -4933,7 +4933,7 @@ begin
   Result := MemoryStatus.dwTotalVirtual;
 end;
 
-function GetFreeVirtualMemory: Integer;
+function GetFreeVirtualMemory: Cardinal;
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -5118,6 +5118,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.44  2005/05/23 19:19:17  outchy
+// IT2974: Memory sizes should be cardinal values (not Integer values).
+//
 // Revision 1.43  2005/05/05 20:08:45  ahuser
 // JCL.NET support
 //
