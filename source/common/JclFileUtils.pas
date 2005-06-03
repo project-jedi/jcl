@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   André Snepvangers (asnepvangers)                                                               }
+{   Andreas Hausladen (ahuser)                                                                     }
 {   Anthony Steele                                                                                 }
 {   Azret Botash                                                                                   }
 {   Charlie Calvert                                                                                }
@@ -272,7 +273,7 @@ function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean 
 {$IFNDEF CLR}
 function GetModulePath(const Module: HMODULE): string;
 {$ENDIF ~CLR}
-function GetSizeOfFile(const FileName: string): Integer; overload;
+function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
@@ -3020,30 +3021,38 @@ begin
   if &File.Exists(FileName) then
     Result := FileInfo.Create(FileName).Length;
 end;
-{$ELSE}
+{$ELSE ~CLR}
+{$IFDEF MSWINDOWS}
 var
   SearchRec: TSearchRec;
-{$IFDEF MSWINDOWS}
   OldMode: Cardinal;
-{$ENDIF MSWINDOWS}
+  Size: TULargeInteger;
 begin
   Result := -1;
-{$IFDEF MSWINDOWS}
   OldMode := SetErrorMode(SEM_FAILCRITICALERRORS);
   try
-{$ENDIF MSWINDOWS}
     if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
     begin
-      Result := SearchRec.Size;
+      Size.LowPart := SearchRec.FindData.nFileSizeLow;
+      Size.HighPart := SearchRec.FindData.nFileSizeHigh;
+      Result := Size.QuadPart;
       SysUtils.FindClose(SearchRec);
     end;
-{$IFDEF MSWINDOWS}
   finally
     SetErrorMode(OldMode);
   end;
-{$ENDIF MSWINDOWS}
 end;
-{$ENDIF CLR}
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  Buf: TStatBuf64;
+begin
+  Result := -1;
+  if GetFileStatus(FileName, Buf, False) = 0 then
+    Result := Buf.st_size;
+end;
+{$ENDIF UNIX}
+{$ENDIF ~CLR}
 
 {$IFDEF FPC}
 { TODO : Move this over to JclWin32 when JclWin32 gets overhauled. }
@@ -3124,12 +3133,12 @@ function FindUnusedFileName(const FileName, FileExt, Suffix: string): string;
 var
   I: Integer;
 begin
-  Result := FileName + '.' + FileExt;
+  Result := PathAddExtension(FileName, FileExt);
   I := 0;
   while FileExists(Result) do
   begin
     Inc(I);
-    Result := FileName + Suffix + IntToStr(I) + '.' + FileExt;
+    Result := PathAddExtension(FileName + Suffix + IntToStr(I), FileExt);
   end;
 end;
 
@@ -3577,12 +3586,12 @@ begin
 end;
 {$ENDIF ~CLR}
 
-function GetSizeOfFile(const FileName: string): Integer;
+function GetSizeOfFile(const FileName: string): Int64;
 {$IFDEF CLR}
 begin
   Result := System.IO.FileInfo.Create(FileName).Length;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 {$IFDEF MSWINDOWS}
 var
   Handle: THandle;
@@ -3608,10 +3617,10 @@ var
 begin
   if GetFileStatus(FileName, Buf, False) <> 0 then
     RaiseLastOSError;
-  Result := Buf.st_size
+  Result := Buf.st_size;
 end;
 {$ENDIF UNIX}
-{$ENDIF CKR}
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
@@ -5865,6 +5874,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.47  2005/06/03 16:17:53  rrossmair
+// - fixed issue #0003007 (FileGetSize, GetSizeOfFile: incorrect results with files > 2 GB in size)
+// - improved FindUnusedFileName
+//
 // Revision 1.46  2005/05/05 20:08:42  ahuser
 // JCL.NET support
 //
