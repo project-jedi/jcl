@@ -1984,7 +1984,7 @@ end;
 procedure TJclBinDebugScanner.CacheLineNumbers;
 var
   P: Pointer;
-  Value, LineNumber, C: Integer;
+  Value, LineNumber, C, Ln: Integer;
   CurrAddr: DWORD;
 begin
   if FLineNumbers = nil then
@@ -1992,24 +1992,33 @@ begin
     LineNumber := 0;
     CurrAddr := 0;
     C := 0;
+    Ln := 0;
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.LineNumbers);
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
       ReadValue(P, Value);
       Inc(LineNumber, Value);
-      SetLength(FLineNumbers, C + 1);
+      if C = Ln then
+      begin
+        if Ln < 64 then
+          Ln := 64
+        else
+          Ln := Ln + Ln div 4;
+        SetLength(FLineNumbers, Ln);
+      end;
       FLineNumbers[C].Addr := CurrAddr;
       FLineNumbers[C].LineNumber := LineNumber;
       Inc(C);
     end;
+    SetLength(FLineNumbers, C);
   end;
 end;
 
 procedure TJclBinDebugScanner.CacheProcNames;
 var
   P: Pointer;
-  Value, FirstWord, SecondWord, C: Integer;
+  Value, FirstWord, SecondWord, C, Ln: Integer;
   CurrAddr: DWORD;
 begin
   if FProcNames = nil then
@@ -2018,6 +2027,7 @@ begin
     SecondWord := 0;
     CurrAddr := 0;
     C := 0;
+    Ln := 0;    
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
     while ReadValue(P, Value) do
     begin
@@ -2026,12 +2036,20 @@ begin
       Inc(FirstWord, Value);
       ReadValue(P, Value);
       Inc(SecondWord, Value);
-      SetLength(FProcNames, C + 1);
+      if C = Ln then
+      begin
+        if Ln < 64 then
+          Ln := 64
+        else
+          Ln := Ln + Ln div 4;
+        SetLength(FProcNames, Ln);
+      end;
       FProcNames[C].Addr := CurrAddr;
       FProcNames[C].FirstWord := FirstWord;
       FProcNames[C].SecondWord := SecondWord;
       Inc(C);
     end;
+    SetLength(FProcNames, C);
   end;
 end;
 
@@ -3972,6 +3990,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.19  2005/06/05 09:53:34  uschuster
+// improved TJclBinDebugScanner.Cache... (mantis #2952)
+//
 // Revision 1.18  2005/04/14 04:00:44  outchy
 // IT2858: Linker bug is disabled in D2005 (conditionnal directives were wrong).
 //
