@@ -223,8 +223,8 @@ type
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
 
-{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
 
@@ -241,8 +241,10 @@ function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 {$ENDIF ~CLR}
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF CLR}
+{$IFDEF MSWINDOWS}
 {.$IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
@@ -5118,6 +5120,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.45  2005/07/02 18:40:19  ahuser
+// Fixed IFDEFs
+//
 // Revision 1.44  2005/05/23 19:19:17  outchy
 // IT2974: Memory sizes should be cardinal values (not Integer values).
 //
