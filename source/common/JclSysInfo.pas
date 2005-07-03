@@ -239,8 +239,8 @@ function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
 function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
-{$ENDIF ~CLR}
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFNDEF CLR}
@@ -5120,6 +5120,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.46  2005/07/03 19:29:27  ahuser
+// Fixed another CLR IFDEFs bug
+//
 // Revision 1.45  2005/07/02 18:40:19  ahuser
 // Fixed IFDEFs
 //
