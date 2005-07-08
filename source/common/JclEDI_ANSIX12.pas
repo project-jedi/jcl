@@ -278,12 +278,12 @@ type
   //  EDI Transaction Set
   TEDITransactionSet = class(TEDIDataObjectGroup)
   private
-    FSTSegment: TEDITransactionSetSegment;
-    FSESegment: TEDITransactionSetSegment;
+    FSTSegment: TEDISegment;
+    FSESegment: TEDISegment;
     function GetSegment(Index: Integer): TEDISegment;
     procedure SetSegment(Index: Integer; Segment: TEDISegment);
-    procedure SetSTSegment(const STSegment: TEDITransactionSetSegment);
-    procedure SetSESegment(const SESegment: TEDITransactionSetSegment);
+    procedure SetSTSegment(const STSegment: TEDISegment);
+    procedure SetSESegment(const SESegment: TEDISegment);
   protected
     procedure InternalCreateHeaderTrailerSegments; virtual;
     function InternalCreateSegment: TEDISegment; virtual;
@@ -314,8 +314,8 @@ type
     property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
     property Segments: TEDIDataObjectList read FEDIDataObjects;
   published
-    property SegmentST: TEDITransactionSetSegment read FSTSegment write SetSTSegment;
-    property SegmentSE: TEDITransactionSetSegment read FSESegment write SetSESegment;
+    property SegmentST: TEDISegment read FSTSegment write SetSTSegment;
+    property SegmentSE: TEDISegment read FSESegment write SetSESegment;
     property SegmentCount: Integer read GetCount;
   end;
 
@@ -409,12 +409,12 @@ type
   //  EDI Functional Group
   TEDIFunctionalGroup = class(TEDIDataObjectGroup)
   private
-    FGSSegment: TEDIFunctionalGroupSegment;
-    FGESegment: TEDIFunctionalGroupSegment;
+    FGSSegment: TEDISegment;
+    FGESegment: TEDISegment;
     function GetTransactionSet(Index: Integer): TEDITransactionSet;
     procedure SetTransactionSet(Index: Integer; TransactionSet: TEDITransactionSet);
-    procedure SetGSSegment(const GSSegment: TEDIFunctionalGroupSegment);
-    procedure SetGESegment(const GESegment: TEDIFunctionalGroupSegment);
+    procedure SetGSSegment(const GSSegment: TEDISegment);
+    procedure SetGESegment(const GESegment: TEDISegment);
   protected
     procedure InternalCreateHeaderTrailerSegments; virtual;
     function InternalCreateTransactionSet: TEDITransactionSet; virtual;
@@ -447,8 +447,8 @@ type
       write SetTransactionSet; default;
     property TransactionSets: TEDIDataObjectList read FEDIDataObjects;
   published
-    property SegmentGS: TEDIFunctionalGroupSegment read FGSSegment write SetGSSegment;
-    property SegmentGE: TEDIFunctionalGroupSegment read FGESegment write SetGESegment;
+    property SegmentGS: TEDISegment read FGSSegment write SetGSSegment;
+    property SegmentGE: TEDISegment read FGESegment write SetGESegment;
     property TransactionSetCount: Integer read GetCount;
   end;
 
@@ -476,13 +476,13 @@ type
   //  EDI Interchange Control
   TEDIInterchangeControl = class(TEDIDataObjectGroup)
   private
-    FISASegment: TEDIInterchangeControlSegment;
-    FIEASegment: TEDIInterchangeControlSegment;
+    FISASegment: TEDISegment;
+    FIEASegment: TEDISegment;
     FTA1Segments: TEDIObjectList;
     function GetFunctionalGroup(Index: Integer): TEDIFunctionalGroup;
     procedure SetFunctionalGroup(Index: Integer; FunctionalGroup: TEDIFunctionalGroup);
-    procedure SetISASegment(const ISASegment: TEDIInterchangeControlSegment);
-    procedure SetIEASegment(const IEASegment: TEDIInterchangeControlSegment);
+    procedure SetISASegment(const ISASegment: TEDISegment);
+    procedure SetIEASegment(const IEASegment: TEDISegment);
   protected
     procedure InternalCreateHeaderTrailerSegments; virtual;
     function InternalCreateFunctionalGroup: TEDIFunctionalGroup; virtual;
@@ -515,8 +515,8 @@ type
       write SetFunctionalGroup; default;
     property FunctionalGroups: TEDIDataObjectList read FEDIDataObjects;
   published
-    property SegmentISA: TEDIInterchangeControlSegment read FISASegment write SetISASegment;
-    property SegmentIEA: TEDIInterchangeControlSegment read FIEASegment write SetIEASegment;
+    property SegmentISA: TEDISegment read FISASegment write SetISASegment;
+    property SegmentIEA: TEDISegment read FIEASegment write SetIEASegment;
     property TA1Segments: TEDIObjectList read FTA1Segments;
     property FunctionalGroupCount: Integer read GetCount;
   end;
@@ -1141,7 +1141,7 @@ begin
   SetEDIDataObject(Index, Segment);
 end;
 
-procedure TEDITransactionSet.SetSESegment(const SESegment: TEDITransactionSetSegment);
+procedure TEDITransactionSet.SetSESegment(const SESegment: TEDISegment);
 begin
   FreeAndNil(FSESegment);
   FSESegment := SESegment;
@@ -1149,7 +1149,7 @@ begin
     FSESegment.Parent := Self;
 end;
 
-procedure TEDITransactionSet.SetSTSegment(const STSegment: TEDITransactionSetSegment);
+procedure TEDITransactionSet.SetSTSegment(const STSegment: TEDISegment);
 begin
   FreeAndNil(FSTSegment);
   FSTSegment := STSegment;
@@ -1398,7 +1398,7 @@ begin
   SetEDIDataObject(Index, TransactionSet);
 end;
 
-procedure TEDIFunctionalGroup.SetGESegment(const GESegment: TEDIFunctionalGroupSegment);
+procedure TEDIFunctionalGroup.SetGESegment(const GESegment: TEDISegment);
 begin
   FreeAndNil(FGESegment);
   FGESegment := GESegment;
@@ -1406,7 +1406,7 @@ begin
     FGESegment.Parent := Self;
 end;
 
-procedure TEDIFunctionalGroup.SetGSSegment(const GSSegment: TEDIFunctionalGroupSegment);
+procedure TEDIFunctionalGroup.SetGSSegment(const GSSegment: TEDISegment);
 begin
   FreeAndNil(FGSSegment);
   FGSSegment := GSSegment;
@@ -1677,7 +1677,7 @@ begin
   FIEASegment := TEDIInterchangeControlSegment.Create(Self);
 end;
 
-procedure TEDIInterchangeControl.SetIEASegment(const IEASegment: TEDIInterchangeControlSegment);
+procedure TEDIInterchangeControl.SetIEASegment(const IEASegment: TEDISegment);
 begin
   FreeAndNil(FIEASegment);
   FIEASegment := IEASegment;
@@ -1685,7 +1685,7 @@ begin
     FIEASegment.Parent := Self;
 end;
 
-procedure TEDIInterchangeControl.SetISASegment(const ISASegment: TEDIInterchangeControlSegment);
+procedure TEDIInterchangeControl.SetISASegment(const ISASegment: TEDISegment);
 begin
   FreeAndNil(FISASegment);
   FISASegment := ISASegment;
@@ -2479,8 +2479,8 @@ end;
 
 procedure TEDITransactionSetSpec.InternalCreateHeaderTrailerSegments;
 begin
-  FSTSegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSTSpec.Create(Self));
-  FSESegment := TEDITransactionSetSegment(TEDITransactionSetSegmentSpec.Create(Self));
+  FSTSegment := TEDITransactionSetSegmentSTSpec.Create(Self);
+  FSESegment := TEDITransactionSetSegmentSpec.Create(Self);
 end;
 
 function TEDITransactionSetSpec.InternalCreateSegment: TEDISegment;
@@ -2503,8 +2503,8 @@ end;
 
 procedure TEDIFunctionalGroupSpec.InternalCreateHeaderTrailerSegments;
 begin
-  FGSSegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentGSSpec.Create(Self));
-  FGESegment := TEDIFunctionalGroupSegment(TEDIFunctionalGroupSegmentSpec.Create(Self));
+  FGSSegment := TEDIFunctionalGroupSegmentGSSpec.Create(Self);
+  FGESegment := TEDIFunctionalGroupSegmentSpec.Create(Self);
 end;
 
 function TEDIFunctionalGroupSpec.InternalCreateTransactionSet: TEDITransactionSet;
@@ -2534,8 +2534,8 @@ end;
 
 procedure TEDIInterchangeControlSpec.InternalCreateHeaderTrailerSegments;
 begin
-  FISASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentISASpec.Create(Self));
-  FIEASegment := TEDIInterchangeControlSegment(TEDIInterchangeControlSegmentSpec.Create(Self));
+  FISASegment := TEDIInterchangeControlSegmentISASpec.Create(Self);
+  FIEASegment := TEDIInterchangeControlSegmentSpec.Create(Self);
 end;
 
 function TEDIInterchangeControlSpec.InternalCreateFunctionalGroup: TEDIFunctionalGroup;
