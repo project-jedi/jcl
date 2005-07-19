@@ -400,13 +400,16 @@ begin
   else
   if S2 = nil then
     S2 := @NullWide;
-  while (MaxLen > 0) and (S1^ = S2[0]) and (S1^ <> #0) and (S2^ <> #0) do
+  while (MaxLen > 0) and (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
   begin
     Inc(S1);
     Inc(S2);
     Dec(MaxLen);
   end;
-  Result := Sign(Integer(S1^) - Integer(S2^));
+  if MaxLen > 0 then
+    Result := Sign(Integer(S1^) - Integer(S2^))
+  else
+    Result := 0;
 end;
 
 function StrIComp(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
@@ -429,7 +432,10 @@ begin
     Inc(S2);
     Dec(MaxLen);
   end;
-  Result := Sign(Integer(S1^) - Integer(S2^));
+  if MaxLen > 0 then
+    Result := Sign(Integer(S1^) - Integer(S2^))
+  else
+    Result := 0;
 end;
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
@@ -1805,6 +1811,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/07/19 23:21:21  outchy
+// IT 2968: The result StrLCompW was false when MaxLen characters were compared.
+//
 // Revision 1.14  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
 //
