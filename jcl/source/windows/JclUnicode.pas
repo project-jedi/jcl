@@ -25,6 +25,7 @@
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Peter Schraut (http://www.console-dev.de)                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -42,6 +43,19 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public att lischke-online dott de)
 //
 
+// 10-JUL-2005: (changes by Peter Schraut)
+//   - added CodeBlockName, returns the blockname as string
+//   - added CodeBlockRange, returns the range of the specified codeblock
+//   - updated TUnicodeBlock to reflect changes in unicode 4.1
+//   - updated CodeBlockFromChar to reflect changes in unicode 4.1
+//   - Notes:
+//      Here are a few suggestions to reflect latest namechanges in unicode 4.1,
+//      but they were not done due to compatibility with old code:
+//      ubGreek should be renamed to ubGreekandCoptic
+//      ubCombiningMarksforSymbols should be renamed  to ubCombiningDiacriticalMarksforSymbols
+//      ubPrivateUse should be renamed to ubPrivateUseArea
+//
+//
 // 19-SEP-2003: (changes by Andreas Hausladen)
 //   - added OWN_WIDESTRING_MEMMGR for faster memory managment in TWideStringList
 //     under Windows
@@ -285,6 +299,13 @@ type
     nfKD    // compatibility decomposition
   );
 
+  // used to hold information about the start and end
+  // position of a unicodeblock.
+  TUnicodeBlockRange = record
+    RangeStart,
+    RangeEnd: Cardinal;
+  end;
+
   // An Unicode block usually corresponds to a particular language script but
   // can also represent special characters, musical symbols and the like.
   TUnicodeBlock = (
@@ -296,12 +317,15 @@ type
     ubIPAExtensions,
     ubSpacingModifierLetters,
     ubCombiningDiacriticalMarks,
+    //ubGreekandCoptic,
     ubGreek,
     ubCyrillic,
+    ubCyrillicSupplement,
     ubArmenian,
     ubHebrew,
     ubArabic,
     ubSyriac,
+    ubArabicSupplement,
     ubThaana,
     ubDevanagari,
     ubBengali,
@@ -320,18 +344,32 @@ type
     ubGeorgian,
     ubHangulJamo,
     ubEthiopic,
+    ubEthiopicSupplement,
     ubCherokee,
     ubUnifiedCanadianAboriginalSyllabics,
     ubOgham,
     ubRunic,
+    ubTagalog,
+    ubHanunoo,
+    ubBuhid,
+    ubTagbanwa,
     ubKhmer,
     ubMongolian,
+    ubLimbu,
+    ubTaiLe,
+    ubNewTaiLue,
+    ubKhmerSymbols,
+    ubBuginese,
+    ubPhoneticExtensions,
+    ubPhoneticExtensionsSupplement,
+    ubCombiningDiacriticalMarksSupplement,
     ubLatinExtendedAdditional,
     ubGreekExtended,
     ubGeneralPunctuation,
-    ubSuperscriptsAndSubscripts,
+    ubSuperscriptsandSubscripts,
     ubCurrencySymbols,
-    ubCombiningMarksForSymbols,
+    //ubCombiningDiacriticalMarksforSymbols,
+    ubCombiningMarksforSymbols,
     ubLetterlikeSymbols,
     ubNumberForms,
     ubArrows,
@@ -345,47 +383,83 @@ type
     ubGeometricShapes,
     ubMiscellaneousSymbols,
     ubDingbats,
+    ubMiscellaneousMathematicalSymbolsA,
+    ubSupplementalArrowsA,
     ubBraillePatterns,
+    ubSupplementalArrowsB,
+    ubMiscellaneousMathematicalSymbolsB,
+    ubSupplementalMathematicalOperators,
+    ubMiscellaneousSymbolsandArrows,
+    ubGlagolitic,
+    ubCoptic,
+    ubGeorgianSupplement,
+    ubTifinagh,
+    ubEthiopicExtended,
+    ubSupplementalPunctuation,
     ubCJKRadicalsSupplement,
     ubKangxiRadicals,
     ubIdeographicDescriptionCharacters,
-    ubCJKSymbolsAndPunctuation,
+    ubCJKSymbolsandPunctuation,
     ubHiragana,
     ubKatakana,
     ubBopomofo,
     ubHangulCompatibilityJamo,
     ubKanbun,
     ubBopomofoExtended,
-    ubEnclosedCJKLettersAndMonths,
+    ubCJKStrokes,
+    ubKatakanaPhoneticExtensions,
+    ubEnclosedCJKLettersandMonths,
     ubCJKCompatibility,
     ubCJKUnifiedIdeographsExtensionA,
+    ubYijingHexagramSymbols,
     ubCJKUnifiedIdeographs,
     ubYiSyllables,
     ubYiRadicals,
+    ubModifierToneLetters,
+    ubSylotiNagri,
     ubHangulSyllables,
     ubHighSurrogates,
     ubHighPrivateUseSurrogates,
     ubLowSurrogates,
+    //ubPrivateUseArea,
     ubPrivateUse,
     ubCJKCompatibilityIdeographs,
     ubAlphabeticPresentationForms,
     ubArabicPresentationFormsA,
+    ubVariationSelectors,
+    ubVerticalForms,
     ubCombiningHalfMarks,
     ubCJKCompatibilityForms,
     ubSmallFormVariants,
     ubArabicPresentationFormsB,
+    ubHalfwidthandFullwidthForms,
     ubSpecials,
-    ubHalfwidthAndFullwidthForms,
+    ubLinearBSyllabary,
+    ubLinearBIdeograms,
+    ubAegeanNumbers,
+    ubAncientGreekNumbers,
     ubOldItalic,
     ubGothic,
+    ubUgaritic,
+    ubOldPersian,
     ubDeseret,
+    ubShavian,
+    ubOsmanya,
+    ubCypriotSyllabary,
+    ubKharoshthi,
     ubByzantineMusicalSymbols,
     ubMusicalSymbols,
+    ubAncientGreekMusicalNotation,
+    ubTaiXuanJingSymbols,
     ubMathematicalAlphanumericSymbols,
     ubCJKUnifiedIdeographsExtensionB,
     ubCJKCompatibilityIdeographsSupplement,
-    ubTags
-  );
+    ubTags,
+    ubVariationSelectorsSupplement,
+    ubSupplementaryPrivateUseAreaA,
+    ubSupplementaryPrivateUseAreaB
+);
+
 
   TWideStrings = class;
 
@@ -991,6 +1065,8 @@ function UnicodeIsHangul(C: UCS4): Boolean;
 function CharSetFromLocale(Language: LCID): TFontCharSet;
 function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
+function CodeBlockName(const CB: TUnicodeBlock): string;
+function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
 function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
 function KeyboardCodePage: Word;
 function KeyUnicode(C: Char): WideChar;
@@ -6734,10 +6810,1052 @@ begin
   MultiByteToWideChar(KeyboardCodePage, MB_USEGLYPHCHARS, @C, 1, @Result, 1);
 end;
 
-function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
+function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
+// http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
+begin
+  case CB of
+    ubBasicLatin:
+      begin
+        Result.RangeStart := $0000;
+        Result.RangeEnd := $007F;
+      end;
+    ubLatin1Supplement:
+      begin
+        Result.RangeStart := $0080;
+        Result.RangeEnd := $00FF;
+      end;
+    ubLatinExtendedA:
+      begin
+        Result.RangeStart := $0100;
+        Result.RangeEnd := $017F;
+      end;
+    ubLatinExtendedB:
+      begin
+        Result.RangeStart := $0180;
+        Result.RangeEnd := $024F;
+      end;
+    ubIPAExtensions:
+      begin
+        Result.RangeStart := $0250;
+        Result.RangeEnd := $02AF;
+      end;
+    ubSpacingModifierLetters:
+      begin
+        Result.RangeStart := $02B0;
+        Result.RangeEnd := $02FF;
+      end;
+    ubCombiningDiacriticalMarks:
+      begin
+        Result.RangeStart := $0300;
+        Result.RangeEnd := $036F;
+      end;
+    ubGreek:
+      begin
+        Result.RangeStart := $0370;
+        Result.RangeEnd := $03FF;
+      end;
+    ubCyrillic:
+      begin
+        Result.RangeStart := $0400;
+        Result.RangeEnd := $04FF;
+      end;
+    ubCyrillicSupplement:
+      begin
+        Result.RangeStart := $0500;
+        Result.RangeEnd := $052F;
+      end;
+    ubArmenian:
+      begin
+        Result.RangeStart := $0530;
+        Result.RangeEnd := $058F;
+      end;
+    ubHebrew:
+      begin
+        Result.RangeStart := $0590;
+        Result.RangeEnd := $05FF;
+      end;
+    ubArabic:
+      begin
+        Result.RangeStart := $0600;
+        Result.RangeEnd := $06FF;
+      end;
+    ubSyriac:
+      begin
+        Result.RangeStart := $0700;
+        Result.RangeEnd := $074F;
+      end;
+    ubArabicSupplement:
+      begin
+        Result.RangeStart := $0750;
+        Result.RangeEnd := $077F;
+      end;
+    ubThaana:
+      begin
+        Result.RangeStart := $0780;
+        Result.RangeEnd := $07BF;
+      end;
+    ubDevanagari:
+      begin
+        Result.RangeStart := $0900;
+        Result.RangeEnd := $097F;
+      end;
+    ubBengali:
+      begin
+        Result.RangeStart := $0980;
+        Result.RangeEnd := $09FF;
+      end;
+    ubGurmukhi:
+      begin
+        Result.RangeStart := $0A00;
+        Result.RangeEnd := $0A7F;
+      end;
+    ubGujarati:
+      begin
+        Result.RangeStart := $0A80;
+        Result.RangeEnd := $0AFF;
+      end;
+    ubOriya:
+      begin
+        Result.RangeStart := $0B00;
+        Result.RangeEnd := $0B7F;
+      end;
+    ubTamil:
+      begin
+        Result.RangeStart := $0B80;
+        Result.RangeEnd := $0BFF;
+      end;
+    ubTelugu:
+      begin
+        Result.RangeStart := $0C00;
+        Result.RangeEnd := $0C7F;
+      end;
+    ubKannada:
+      begin
+        Result.RangeStart := $0C80;
+        Result.RangeEnd := $0CFF;
+      end;
+    ubMalayalam:
+      begin
+        Result.RangeStart := $0D00;
+        Result.RangeEnd := $0D7F;
+      end;
+    ubSinhala:
+      begin
+        Result.RangeStart := $0D80;
+        Result.RangeEnd := $0DFF;
+      end;
+    ubThai:
+      begin
+        Result.RangeStart := $0E00;
+        Result.RangeEnd := $0E7F;
+      end;
+    ubLao:
+      begin
+        Result.RangeStart := $0E80;
+        Result.RangeEnd := $0EFF;
+      end;
+    ubTibetan:
+      begin
+        Result.RangeStart := $0F00;
+        Result.RangeEnd := $0FFF;
+      end;
+    ubMyanmar:
+      begin
+        Result.RangeStart := $1000;
+        Result.RangeEnd := $109F;
+      end;
+    ubGeorgian:
+      begin
+        Result.RangeStart := $10A0;
+        Result.RangeEnd := $10FF;
+      end;
+    ubHangulJamo:
+      begin
+        Result.RangeStart := $1100;
+        Result.RangeEnd := $11FF;
+      end;
+    ubEthiopic:
+      begin
+        Result.RangeStart := $1200;
+        Result.RangeEnd := $137F;
+      end;
+    ubEthiopicSupplement:
+      begin
+        Result.RangeStart := $1380;
+        Result.RangeEnd := $139F;
+      end;
+    ubCherokee:
+      begin
+        Result.RangeStart := $13A0;
+        Result.RangeEnd := $13FF;
+      end;
+    ubUnifiedCanadianAboriginalSyllabics:
+      begin
+        Result.RangeStart := $1400;
+        Result.RangeEnd := $167F;
+      end;
+    ubOgham:
+      begin
+        Result.RangeStart := $1680;
+        Result.RangeEnd := $169F;
+      end;
+    ubRunic:
+      begin
+        Result.RangeStart := $16A0;
+        Result.RangeEnd := $16FF;
+      end;
+    ubTagalog:
+      begin
+        Result.RangeStart := $1700;
+        Result.RangeEnd := $171F;
+      end;
+    ubHanunoo:
+      begin
+        Result.RangeStart := $1720;
+        Result.RangeEnd := $173F;
+      end;
+    ubBuhid:
+      begin
+        Result.RangeStart := $1740;
+        Result.RangeEnd := $175F;
+      end;
+    ubTagbanwa:
+      begin
+        Result.RangeStart := $1760;
+        Result.RangeEnd := $177F;
+      end;
+    ubKhmer:
+      begin
+        Result.RangeStart := $1780;
+        Result.RangeEnd := $17FF;
+      end;
+    ubMongolian:
+      begin
+        Result.RangeStart := $1800;
+        Result.RangeEnd := $18AF;
+      end;
+    ubLimbu:
+      begin
+        Result.RangeStart := $1900;
+        Result.RangeEnd := $194F;
+      end;
+    ubTaiLe:
+      begin
+        Result.RangeStart := $1950;
+        Result.RangeEnd := $197F;
+      end;
+    ubNewTaiLue:
+      begin
+        Result.RangeStart := $1980;
+        Result.RangeEnd := $19DF;
+      end;
+    ubKhmerSymbols:
+      begin
+        Result.RangeStart := $19E0;
+        Result.RangeEnd := $19FF;
+      end;
+    ubBuginese:
+      begin
+        Result.RangeStart := $1A00;
+        Result.RangeEnd := $1A1F;
+      end;
+    ubPhoneticExtensions:
+      begin
+        Result.RangeStart := $1D00;
+        Result.RangeEnd := $1D7F;
+      end;
+    ubPhoneticExtensionsSupplement:
+      begin
+        Result.RangeStart := $1D80;
+        Result.RangeEnd := $1DBF;
+      end;
+    ubCombiningDiacriticalMarksSupplement:
+      begin
+        Result.RangeStart := $1DC0;
+        Result.RangeEnd := $1DFF;
+      end;
+    ubLatinExtendedAdditional:
+      begin
+        Result.RangeStart := $1E00;
+        Result.RangeEnd := $1EFF;
+      end;
+    ubGreekExtended:
+      begin
+        Result.RangeStart := $1F00;
+        Result.RangeEnd := $1FFF;
+      end;
+    ubGeneralPunctuation:
+      begin
+        Result.RangeStart := $2000;
+        Result.RangeEnd := $206F;
+      end;
+    ubSuperscriptsandSubscripts:
+      begin
+        Result.RangeStart := $2070;
+        Result.RangeEnd := $209F;
+      end;
+    ubCurrencySymbols:
+      begin
+        Result.RangeStart := $20A0;
+        Result.RangeEnd := $20CF;
+      end;
+    ubCombiningMarksforSymbols:
+      begin
+        Result.RangeStart := $20D0;
+        Result.RangeEnd := $20FF;
+      end;
+    ubLetterlikeSymbols:
+      begin
+        Result.RangeStart := $2100;
+        Result.RangeEnd := $214F;
+      end;
+    ubNumberForms:
+      begin
+        Result.RangeStart := $2150;
+        Result.RangeEnd := $218F;
+      end;
+    ubArrows:
+      begin
+        Result.RangeStart := $2190;
+        Result.RangeEnd := $21FF;
+      end;
+    ubMathematicalOperators:
+      begin
+        Result.RangeStart := $2200;
+        Result.RangeEnd := $22FF;
+      end;
+    ubMiscellaneousTechnical:
+      begin
+        Result.RangeStart := $2300;
+        Result.RangeEnd := $23FF;
+      end;
+    ubControlPictures:
+      begin
+        Result.RangeStart := $2400;
+        Result.RangeEnd := $243F;
+      end;
+    ubOpticalCharacterRecognition:
+      begin
+        Result.RangeStart := $2440;
+        Result.RangeEnd := $245F;
+      end;
+    ubEnclosedAlphanumerics:
+      begin
+        Result.RangeStart := $2460;
+        Result.RangeEnd := $24FF;
+      end;
+    ubBoxDrawing:
+      begin
+        Result.RangeStart := $2500;
+        Result.RangeEnd := $257F;
+      end;
+    ubBlockElements:
+      begin
+        Result.RangeStart := $2580;
+        Result.RangeEnd := $259F;
+      end;
+    ubGeometricShapes:
+      begin
+        Result.RangeStart := $25A0;
+        Result.RangeEnd := $25FF;
+      end;
+    ubMiscellaneousSymbols:
+      begin
+        Result.RangeStart := $2600;
+        Result.RangeEnd := $26FF;
+      end;
+    ubDingbats:
+      begin
+        Result.RangeStart := $2700;
+        Result.RangeEnd := $27BF;
+      end;
+    ubMiscellaneousMathematicalSymbolsA:
+      begin
+        Result.RangeStart := $27C0;
+        Result.RangeEnd := $27EF;
+      end;
+    ubSupplementalArrowsA:
+      begin
+        Result.RangeStart := $27F0;
+        Result.RangeEnd := $27FF;
+      end;
+    ubBraillePatterns:
+      begin
+        Result.RangeStart := $2800;
+        Result.RangeEnd := $28FF;
+      end;
+    ubSupplementalArrowsB:
+      begin
+        Result.RangeStart := $2900;
+        Result.RangeEnd := $297F;
+      end;
+    ubMiscellaneousMathematicalSymbolsB:
+      begin
+        Result.RangeStart := $2980;
+        Result.RangeEnd := $29FF;
+      end;
+    ubSupplementalMathematicalOperators:
+      begin
+        Result.RangeStart := $2A00;
+        Result.RangeEnd := $2AFF;
+      end;
+    ubMiscellaneousSymbolsandArrows:
+      begin
+        Result.RangeStart := $2B00;
+        Result.RangeEnd := $2BFF;
+      end;
+    ubGlagolitic:
+      begin
+        Result.RangeStart := $2C00;
+        Result.RangeEnd := $2C5F;
+      end;
+    ubCoptic:
+      begin
+        Result.RangeStart := $2C80;
+        Result.RangeEnd := $2CFF;
+      end;
+    ubGeorgianSupplement:
+      begin
+        Result.RangeStart := $2D00;
+        Result.RangeEnd := $2D2F;
+      end;
+    ubTifinagh:
+      begin
+        Result.RangeStart := $2D30;
+        Result.RangeEnd := $2D7F;
+      end;
+    ubEthiopicExtended:
+      begin
+        Result.RangeStart := $2D80;
+        Result.RangeEnd := $2DDF;
+      end;
+    ubSupplementalPunctuation:
+      begin
+        Result.RangeStart := $2E00;
+        Result.RangeEnd := $2E7F;
+      end;
+    ubCJKRadicalsSupplement:
+      begin
+        Result.RangeStart := $2E80;
+        Result.RangeEnd := $2EFF;
+      end;
+    ubKangxiRadicals:
+      begin
+        Result.RangeStart := $2F00;
+        Result.RangeEnd := $2FDF;
+      end;
+    ubIdeographicDescriptionCharacters:
+      begin
+        Result.RangeStart := $2FF0;
+        Result.RangeEnd := $2FFF;
+      end;
+    ubCJKSymbolsandPunctuation:
+      begin
+        Result.RangeStart := $3000;
+        Result.RangeEnd := $303F;
+      end;
+    ubHiragana:
+      begin
+        Result.RangeStart := $3040;
+        Result.RangeEnd := $309F;
+      end;
+    ubKatakana:
+      begin
+        Result.RangeStart := $30A0;
+        Result.RangeEnd := $30FF;
+      end;
+    ubBopomofo:
+      begin
+        Result.RangeStart := $3100;
+        Result.RangeEnd := $312F;
+      end;
+    ubHangulCompatibilityJamo:
+      begin
+        Result.RangeStart := $3130;
+        Result.RangeEnd := $318F;
+      end;
+    ubKanbun:
+      begin
+        Result.RangeStart := $3190;
+        Result.RangeEnd := $319F;
+      end;
+    ubBopomofoExtended:
+      begin
+        Result.RangeStart := $31A0;
+        Result.RangeEnd := $31BF;
+      end;
+    ubCJKStrokes:
+      begin
+        Result.RangeStart := $31C0;
+        Result.RangeEnd := $31EF;
+      end;
+    ubKatakanaPhoneticExtensions:
+      begin
+        Result.RangeStart := $31F0;
+        Result.RangeEnd := $31FF;
+      end;
+    ubEnclosedCJKLettersandMonths:
+      begin
+        Result.RangeStart := $3200;
+        Result.RangeEnd := $32FF;
+      end;
+    ubCJKCompatibility:
+      begin
+        Result.RangeStart := $3300;
+        Result.RangeEnd := $33FF;
+      end;
+    ubCJKUnifiedIdeographsExtensionA:
+      begin
+        Result.RangeStart := $3400;
+        Result.RangeEnd := $4DBF;
+      end;
+    ubYijingHexagramSymbols:
+      begin
+        Result.RangeStart := $4DC0;
+        Result.RangeEnd := $4DFF;
+      end;
+    ubCJKUnifiedIdeographs:
+      begin
+        Result.RangeStart := $4E00;
+        Result.RangeEnd := $9FFF;
+      end;
+    ubYiSyllables:
+      begin
+        Result.RangeStart := $A000;
+        Result.RangeEnd := $A48F;
+      end;
+    ubYiRadicals:
+      begin
+        Result.RangeStart := $A490;
+        Result.RangeEnd := $A4CF;
+      end;
+    ubModifierToneLetters:
+      begin
+        Result.RangeStart := $A700;
+        Result.RangeEnd := $A71F;
+      end;
+    ubSylotiNagri:
+      begin
+        Result.RangeStart := $A800;
+        Result.RangeEnd := $A82F;
+      end;
+    ubHangulSyllables:
+      begin
+        Result.RangeStart := $AC00;
+        Result.RangeEnd := $D7AF;
+      end;
+    ubHighSurrogates:
+      begin
+        Result.RangeStart := $D800;
+        Result.RangeEnd := $DB7F;
+      end;
+    ubHighPrivateUseSurrogates:
+      begin
+        Result.RangeStart := $DB80;
+        Result.RangeEnd := $DBFF;
+      end;
+    ubLowSurrogates:
+      begin
+        Result.RangeStart := $DC00;
+        Result.RangeEnd := $DFFF;
+      end;
+    ubPrivateUse:
+      begin
+        Result.RangeStart := $E000;
+        Result.RangeEnd := $F8FF;
+      end;
+    ubCJKCompatibilityIdeographs:
+      begin
+        Result.RangeStart := $F900;
+        Result.RangeEnd := $FAFF;
+      end;
+    ubAlphabeticPresentationForms:
+      begin
+        Result.RangeStart := $FB00;
+        Result.RangeEnd := $FB4F;
+      end;
+    ubArabicPresentationFormsA:
+      begin
+        Result.RangeStart := $FB50;
+        Result.RangeEnd := $FDFF;
+      end;
+    ubVariationSelectors:
+      begin
+        Result.RangeStart := $FE00;
+        Result.RangeEnd := $FE0F;
+      end;
+    ubVerticalForms:
+      begin
+        Result.RangeStart := $FE10;
+        Result.RangeEnd := $FE1F;
+      end;
+    ubCombiningHalfMarks:
+      begin
+        Result.RangeStart := $FE20;
+        Result.RangeEnd := $FE2F;
+      end;
+    ubCJKCompatibilityForms:
+      begin
+        Result.RangeStart := $FE30;
+        Result.RangeEnd := $FE4F;
+      end;
+    ubSmallFormVariants:
+      begin
+        Result.RangeStart := $FE50;
+        Result.RangeEnd := $FE6F;
+      end;
+    ubArabicPresentationFormsB:
+      begin
+        Result.RangeStart := $FE70;
+        Result.RangeEnd := $FEFF;
+      end;
+    ubHalfwidthandFullwidthForms:
+      begin
+        Result.RangeStart := $FF00;
+        Result.RangeEnd := $FFEF;
+      end;
+    ubSpecials:
+      begin
+        Result.RangeStart := $FFF0;
+        Result.RangeEnd := $FFFF;
+      end;
+    ubLinearBSyllabary:
+      begin
+        Result.RangeStart := $10000;
+        Result.RangeEnd := $1007F;
+      end;
+    ubLinearBIdeograms:
+      begin
+        Result.RangeStart := $10080;
+        Result.RangeEnd := $100FF;
+      end;
+    ubAegeanNumbers:
+      begin
+        Result.RangeStart := $10100;
+        Result.RangeEnd := $1013F;
+      end;
+    ubAncientGreekNumbers:
+      begin
+        Result.RangeStart := $10140;
+        Result.RangeEnd := $1018F;
+      end;
+    ubOldItalic:
+      begin
+        Result.RangeStart := $10300;
+        Result.RangeEnd := $1032F;
+      end;
+    ubGothic:
+      begin
+        Result.RangeStart := $10330;
+        Result.RangeEnd := $1034F;
+      end;
+    ubUgaritic:
+      begin
+        Result.RangeStart := $10380;
+        Result.RangeEnd := $1039F;
+      end;
+    ubOldPersian:
+      begin
+        Result.RangeStart := $103A0;
+        Result.RangeEnd := $103DF;
+      end;
+    ubDeseret:
+      begin
+        Result.RangeStart := $10400;
+        Result.RangeEnd := $1044F;
+      end;
+    ubShavian:
+      begin
+        Result.RangeStart := $10450;
+        Result.RangeEnd := $1047F;
+      end;
+    ubOsmanya:
+      begin
+        Result.RangeStart := $10480;
+        Result.RangeEnd := $104AF;
+      end;
+    ubCypriotSyllabary:
+      begin
+        Result.RangeStart := $10800;
+        Result.RangeEnd := $1083F;
+      end;
+    ubKharoshthi:
+      begin
+        Result.RangeStart := $10A00;
+        Result.RangeEnd := $10A5F;
+      end;
+    ubByzantineMusicalSymbols:
+      begin
+        Result.RangeStart := $1D000;
+        Result.RangeEnd := $1D0FF;
+      end;
+    ubMusicalSymbols:
+      begin
+        Result.RangeStart := $1D100;
+        Result.RangeEnd := $1D1FF;
+      end;
+    ubAncientGreekMusicalNotation:
+      begin
+        Result.RangeStart := $1D200;
+        Result.RangeEnd := $1D24F;
+      end;
+    ubTaiXuanJingSymbols:
+      begin
+        Result.RangeStart := $1D300;
+        Result.RangeEnd := $1D35F;
+      end;
+    ubMathematicalAlphanumericSymbols:
+      begin
+        Result.RangeStart := $1D400;
+        Result.RangeEnd := $1D7FF;
+      end;
+    ubCJKUnifiedIdeographsExtensionB:
+      begin
+        Result.RangeStart := $20000;
+        Result.RangeEnd := $2A6DF;
+      end;
+    ubCJKCompatibilityIdeographsSupplement:
+      begin
+        Result.RangeStart := $2F800;
+        Result.RangeEnd := $2FA1F;
+      end;
+    ubTags:
+      begin
+        Result.RangeStart := $E0000;
+        Result.RangeEnd := $E007F;
+      end;
+    ubVariationSelectorsSupplement:
+      begin
+        Result.RangeStart := $E0100;
+        Result.RangeEnd := $E01EF;
+      end;
+    ubSupplementaryPrivateUseAreaA:
+      begin
+        Result.RangeStart := $F0000;
+        Result.RangeEnd := $FFFFF;
+      end;
+    ubSupplementaryPrivateUseAreaB:
+      begin
+        Result.RangeStart := $100000;
+        Result.RangeEnd := $10FFFF;
+      end;
+  else
+    begin
+      Result.RangeStart := 0;
+      Result.RangeEnd := 0;
+    end;
+  end;
+end;
+
+
+// Returns the CodeBlockName of the Block specified by CB
+// Names taken from http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
+function CodeBlockName(const CB: TUnicodeBlock): string;
+begin
+  case CB of
+    ubBasicLatin:
+      Result := 'Basic Latin';
+    ubLatin1Supplement:
+      Result := 'Latin-1 Supplement';
+    ubLatinExtendedA:
+      Result := 'Latin Extended-A';
+    ubLatinExtendedB:
+      Result := 'Latin Extended-B';
+    ubIPAExtensions:
+      Result := 'IPA Extensions';
+    ubSpacingModifierLetters:
+      Result := 'Spacing Modifier Letters';
+    ubCombiningDiacriticalMarks:
+      Result := 'Combining Diacritical Marks';
+    //ubGreekandCoptic:
+    ubGreek:
+      Result := 'Greek and Coptic';
+    ubCyrillic:
+      Result := 'Cyrillic';
+    ubCyrillicSupplement:
+      Result := 'Cyrillic Supplement';
+    ubArmenian:
+      Result := 'Armenian';
+    ubHebrew:
+      Result := 'Hebrew';
+    ubArabic:
+      Result := 'Arabic';
+    ubSyriac:
+      Result := 'Syriac';
+    ubArabicSupplement:
+      Result := 'Arabic Supplement';
+    ubThaana:
+      Result := 'Thaana';
+    ubDevanagari:
+      Result := 'Devanagari';
+    ubBengali:
+      Result := 'Bengali';
+    ubGurmukhi:
+      Result := 'Gurmukhi';
+    ubGujarati:
+      Result := 'Gujarati';
+    ubOriya:
+      Result := 'Oriya';
+    ubTamil:
+      Result := 'Tamil';
+    ubTelugu:
+      Result := 'Telugu';
+    ubKannada:
+      Result := 'Kannada';
+    ubMalayalam:
+      Result := 'Malayalam';
+    ubSinhala:
+      Result := 'Sinhala';
+    ubThai:
+      Result := 'Thai';
+    ubLao:
+      Result := 'Lao';
+    ubTibetan:
+      Result := 'Tibetan';
+    ubMyanmar:
+      Result := 'Myanmar';
+    ubGeorgian:
+      Result := 'Georgian';
+    ubHangulJamo:
+      Result := 'Hangul Jamo';
+    ubEthiopic:
+      Result := 'Ethiopic';
+    ubEthiopicSupplement:
+      Result := 'Ethiopic Supplement';
+    ubCherokee:
+      Result := 'Cherokee';
+    ubUnifiedCanadianAboriginalSyllabics:
+      Result := 'Unified Canadian Aboriginal Syllabics';
+    ubOgham:
+      Result := 'Ogham';
+    ubRunic:
+      Result := 'Runic';
+    ubTagalog:
+      Result := 'Tagalog';
+    ubHanunoo:
+      Result := 'Hanunoo';
+    ubBuhid:
+      Result := 'Buhid';
+    ubTagbanwa:
+      Result := 'Tagbanwa';
+    ubKhmer:
+      Result := 'Khmer';
+    ubMongolian:
+      Result := 'Mongolian';
+    ubLimbu:
+      Result := 'Limbu';
+    ubTaiLe:
+      Result := 'Tai Le';
+    ubNewTaiLue:
+      Result := 'New Tai Lue';
+    ubKhmerSymbols:
+      Result := 'Khmer Symbols';
+    ubBuginese:
+      Result := 'Buginese';
+    ubPhoneticExtensions:
+      Result := 'Phonetic Extensions';
+    ubPhoneticExtensionsSupplement:
+      Result := 'Phonetic Extensions Supplement';
+    ubCombiningDiacriticalMarksSupplement:
+      Result := 'Combining Diacritical Marks Supplement';
+    ubLatinExtendedAdditional:
+      Result := 'Latin Extended Additional';
+    ubGreekExtended:
+      Result := 'Greek Extended';
+    ubGeneralPunctuation:
+      Result := 'General Punctuation';
+    ubSuperscriptsandSubscripts:
+      Result := 'Superscripts and Subscripts';
+    ubCurrencySymbols:
+      Result := 'Currency Symbols';
+    //ubCombiningDiacriticalMarksforSymbols:
+    ubCombiningMarksforSymbols:
+      Result := 'Combining Diacritical Marks for Symbols';
+    ubLetterlikeSymbols:
+      Result := 'Letterlike Symbols';
+    ubNumberForms:
+      Result := 'Number Forms';
+    ubArrows:
+      Result := 'Arrows';
+    ubMathematicalOperators:
+      Result := 'Mathematical Operators';
+    ubMiscellaneousTechnical:
+      Result := 'Miscellaneous Technical';
+    ubControlPictures:
+      Result := 'Control Pictures';
+    ubOpticalCharacterRecognition:
+      Result := 'Optical Character Recognition';
+    ubEnclosedAlphanumerics:
+      Result := 'Enclosed Alphanumerics';
+    ubBoxDrawing:
+      Result := 'Box Drawing';
+    ubBlockElements:
+      Result := 'Block Elements';
+    ubGeometricShapes:
+      Result := 'Geometric Shapes';
+    ubMiscellaneousSymbols:
+      Result := 'Miscellaneous Symbols';
+    ubDingbats:
+      Result := 'Dingbats';
+    ubMiscellaneousMathematicalSymbolsA:
+      Result := 'Miscellaneous Mathematical Symbols-A';
+    ubSupplementalArrowsA:
+      Result := 'Supplemental Arrows-A';
+    ubBraillePatterns:
+      Result := 'Braille Patterns';
+    ubSupplementalArrowsB:
+      Result := 'Supplemental Arrows-B';
+    ubMiscellaneousMathematicalSymbolsB:
+      Result := 'Miscellaneous Mathematical Symbols-B';
+    ubSupplementalMathematicalOperators:
+      Result := 'Supplemental Mathematical Operators';
+    ubMiscellaneousSymbolsandArrows:
+      Result := 'Miscellaneous Symbols and Arrows';
+    ubGlagolitic:
+      Result := 'Glagolitic';
+    ubCoptic:
+      Result := 'Coptic';
+    ubGeorgianSupplement:
+      Result := 'Georgian Supplement';
+    ubTifinagh:
+      Result := 'Tifinagh';
+    ubEthiopicExtended:
+      Result := 'Ethiopic Extended';
+    ubSupplementalPunctuation:
+      Result := 'Supplemental Punctuation';
+    ubCJKRadicalsSupplement:
+      Result := 'CJK Radicals Supplement';
+    ubKangxiRadicals:
+      Result := 'Kangxi Radicals';
+    ubIdeographicDescriptionCharacters:
+      Result := 'Ideographic Description Characters';
+    ubCJKSymbolsandPunctuation:
+      Result := 'CJK Symbols and Punctuation';
+    ubHiragana:
+      Result := 'Hiragana';
+    ubKatakana:
+      Result := 'Katakana';
+    ubBopomofo:
+      Result := 'Bopomofo';
+    ubHangulCompatibilityJamo:
+      Result := 'Hangul Compatibility Jamo';
+    ubKanbun:
+      Result := 'Kanbun';
+    ubBopomofoExtended:
+      Result := 'Bopomofo Extended';
+    ubCJKStrokes:
+      Result := 'CJK Strokes';
+    ubKatakanaPhoneticExtensions:
+      Result := 'Katakana Phonetic Extensions';
+    ubEnclosedCJKLettersandMonths:
+      Result := 'Enclosed CJK Letters and Months';
+    ubCJKCompatibility:
+      Result := 'CJK Compatibility';
+    ubCJKUnifiedIdeographsExtensionA:
+      Result := 'CJK Unified Ideographs Extension A';
+    ubYijingHexagramSymbols:
+      Result := 'Yijing Hexagram Symbols';
+    ubCJKUnifiedIdeographs:
+      Result := 'CJK Unified Ideographs';
+    ubYiSyllables:
+      Result := 'Yi Syllables';
+    ubYiRadicals:
+      Result := 'Yi Radicals';
+    ubModifierToneLetters:
+      Result := 'Modifier Tone Letters';
+    ubSylotiNagri:
+      Result := 'Syloti Nagri';
+    ubHangulSyllables:
+      Result := 'Hangul Syllables';
+    ubHighSurrogates:
+      Result := 'High Surrogates';
+    ubHighPrivateUseSurrogates:
+      Result := 'High Private Use Surrogates';
+    ubLowSurrogates:
+      Result := 'Low Surrogates';
+    //ubPrivateUseArea:
+    ubPrivateUse:
+      Result := 'Private Use Area';
+    ubCJKCompatibilityIdeographs:
+      Result := 'CJK Compatibility Ideographs';
+    ubAlphabeticPresentationForms:
+      Result := 'Alphabetic Presentation Forms';
+    ubArabicPresentationFormsA:
+      Result := 'Arabic Presentation Forms-A';
+    ubVariationSelectors:
+      Result := 'Variation Selectors';
+    ubVerticalForms:
+      Result := 'Vertical Forms';
+    ubCombiningHalfMarks:
+      Result := 'Combining Half Marks';
+    ubCJKCompatibilityForms:
+      Result := 'CJK Compatibility Forms';
+    ubSmallFormVariants:
+      Result := 'Small Form Variants';
+    ubArabicPresentationFormsB:
+      Result := 'Arabic Presentation Forms-B';
+    ubHalfwidthandFullwidthForms:
+      Result := 'Halfwidth and Fullwidth Forms';
+    ubSpecials:
+      Result := 'Specials';
+    ubLinearBSyllabary:
+      Result := 'Linear B Syllabary';
+    ubLinearBIdeograms:
+      Result := 'Linear B Ideograms';
+    ubAegeanNumbers:
+      Result := 'Aegean Numbers';
+    ubAncientGreekNumbers:
+      Result := 'Ancient Greek Numbers';
+    ubOldItalic:
+      Result := 'Old Italic';
+    ubGothic:
+      Result := 'Gothic';
+    ubUgaritic:
+      Result := 'Ugaritic';
+    ubOldPersian:
+      Result := 'Old Persian';
+    ubDeseret:
+      Result := 'Deseret';
+    ubShavian:
+      Result := 'Shavian';
+    ubOsmanya:
+      Result := 'Osmanya';
+    ubCypriotSyllabary:
+      Result := 'Cypriot Syllabary';
+    ubKharoshthi:
+      Result := 'Kharoshthi';
+    ubByzantineMusicalSymbols:
+      Result := 'Byzantine Musical Symbols';
+    ubMusicalSymbols:
+      Result := 'Musical Symbols';
+    ubAncientGreekMusicalNotation:
+      Result := 'Ancient Greek Musical Notation';
+    ubTaiXuanJingSymbols:
+      Result := 'Tai Xuan Jing Symbols';
+    ubMathematicalAlphanumericSymbols:
+      Result := 'Mathematical Alphanumeric Symbols';
+    ubCJKUnifiedIdeographsExtensionB:
+      Result := 'CJK Unified Ideographs Extension B';
+    ubCJKCompatibilityIdeographsSupplement:
+      Result := 'CJK Compatibility Ideographs Supplement';
+    ubTags:
+      Result := 'Tags';
+    ubVariationSelectorsSupplement:
+      Result := 'Variation Selectors Supplement';
+    ubSupplementaryPrivateUseAreaA:
+      Result := 'Supplementary Private Use Area-A';
+    ubSupplementaryPrivateUseAreaB:
+      Result := 'Supplementary Private Use Area-B';
+  else
+    Result := 'Undefined';
+  end;
+end;
+
 // Returns an ID for the Unicode code block to which C belongs.
 // If C does not belong to any of the defined blocks then ubUndefined is returned.
 // Note: the code blocks listed here are based on Unicode Version 3.1.
+function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
+// http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
 begin
   case C of
     $0000..$007F:
@@ -6755,9 +7873,11 @@ begin
     $0300..$036F:
       Result := ubCombiningDiacriticalMarks;
     $0370..$03FF:
-      Result := ubGreek;
+      Result := ubGreek; //ubGreekandCoptic;
     $0400..$04FF:
       Result := ubCyrillic;
+    $0500..$052F:
+      Result := ubCyrillicSupplement;
     $0530..$058F:
       Result := ubArmenian;
     $0590..$05FF:
@@ -6766,6 +7886,8 @@ begin
       Result := ubArabic;
     $0700..$074F:
       Result := ubSyriac;
+    $0750..$077F:
+      Result := ubArabicSupplement;
     $0780..$07BF:
       Result := ubThaana;
     $0900..$097F:
@@ -6802,6 +7924,8 @@ begin
       Result := ubHangulJamo;
     $1200..$137F:
       Result := ubEthiopic;
+    $1380..$139F:
+      Result := ubEthiopicSupplement;
     $13A0..$13FF:
       Result := ubCherokee;
     $1400..$167F:
@@ -6810,10 +7934,34 @@ begin
       Result := ubOgham;
     $16A0..$16FF:
       Result := ubRunic;
+    $1700..$171F:
+      Result := ubTagalog;
+    $1720..$173F:
+      Result := ubHanunoo;
+    $1740..$175F:
+      Result := ubBuhid;
+    $1760..$177F:
+      Result := ubTagbanwa;
     $1780..$17FF:
       Result := ubKhmer;
     $1800..$18AF:
       Result := ubMongolian;
+    $1900..$194F:
+      Result := ubLimbu;
+    $1950..$197F:
+      Result := ubTaiLe;
+    $1980..$19DF:
+      Result := ubNewTaiLue;
+    $19E0..$19FF:
+      Result := ubKhmerSymbols;
+    $1A00..$1A1F:
+      Result := ubBuginese;
+    $1D00..$1D7F:
+      Result := ubPhoneticExtensions;
+    $1D80..$1DBF:
+      Result := ubPhoneticExtensionsSupplement;
+    $1DC0..$1DFF:
+      Result := ubCombiningDiacriticalMarksSupplement;
     $1E00..$1EFF:
       Result := ubLatinExtendedAdditional;
     $1F00..$1FFF:
@@ -6821,11 +7969,11 @@ begin
     $2000..$206F:
       Result := ubGeneralPunctuation;
     $2070..$209F:
-      Result := ubSuperscriptsAndSubscripts;
+      Result := ubSuperscriptsandSubscripts;
     $20A0..$20CF:
       Result := ubCurrencySymbols;
     $20D0..$20FF:
-      Result := ubCombiningMarksForSymbols;
+      Result := ubCombiningMarksforSymbols; //ubCombiningDiacriticalMarksforSymbols;
     $2100..$214F:
       Result := ubLetterlikeSymbols;
     $2150..$218F:
@@ -6852,8 +8000,32 @@ begin
       Result := ubMiscellaneousSymbols;
     $2700..$27BF:
       Result := ubDingbats;
+    $27C0..$27EF:
+      Result := ubMiscellaneousMathematicalSymbolsA;
+    $27F0..$27FF:
+      Result := ubSupplementalArrowsA;
     $2800..$28FF:
       Result := ubBraillePatterns;
+    $2900..$297F:
+      Result := ubSupplementalArrowsB;
+    $2980..$29FF:
+      Result := ubMiscellaneousMathematicalSymbolsB;
+    $2A00..$2AFF:
+      Result := ubSupplementalMathematicalOperators;
+    $2B00..$2BFF:
+      Result := ubMiscellaneousSymbolsandArrows;
+    $2C00..$2C5F:
+      Result := ubGlagolitic;
+    $2C80..$2CFF:
+      Result := ubCoptic;
+    $2D00..$2D2F:
+      Result := ubGeorgianSupplement;
+    $2D30..$2D7F:
+      Result := ubTifinagh;
+    $2D80..$2DDF:
+      Result := ubEthiopicExtended;
+    $2E00..$2E7F:
+      Result := ubSupplementalPunctuation;
     $2E80..$2EFF:
       Result := ubCJKRadicalsSupplement;
     $2F00..$2FDF:
@@ -6861,7 +8033,7 @@ begin
     $2FF0..$2FFF:
       Result := ubIdeographicDescriptionCharacters;
     $3000..$303F:
-      Result := ubCJKSymbolsAndPunctuation;
+      Result := ubCJKSymbolsandPunctuation;
     $3040..$309F:
       Result := ubHiragana;
     $30A0..$30FF:
@@ -6874,19 +8046,29 @@ begin
       Result := ubKanbun;
     $31A0..$31BF:
       Result := ubBopomofoExtended;
+    $31C0..$31EF:
+      Result := ubCJKStrokes;
+    $31F0..$31FF:
+      Result := ubKatakanaPhoneticExtensions;
     $3200..$32FF:
-      Result := ubEnclosedCJKLettersAndMonths;
+      Result := ubEnclosedCJKLettersandMonths;
     $3300..$33FF:
       Result := ubCJKCompatibility;
-    $3400..$4DB5:
+    $3400..$4DBF:
       Result := ubCJKUnifiedIdeographsExtensionA;
+    $4DC0..$4DFF:
+      Result := ubYijingHexagramSymbols;
     $4E00..$9FFF:
       Result := ubCJKUnifiedIdeographs;
     $A000..$A48F:
       Result := ubYiSyllables;
     $A490..$A4CF:
       Result := ubYiRadicals;
-    $AC00..$D7A3:
+    $A700..$A71F:
+      Result := ubModifierToneLetters;
+    $A800..$A82F:
+      Result := ubSylotiNagri;
+    $AC00..$D7AF:
       Result := ubHangulSyllables;
     $D800..$DB7F:
       Result := ubHighSurrogates;
@@ -6894,51 +8076,83 @@ begin
       Result := ubHighPrivateUseSurrogates;
     $DC00..$DFFF:
       Result := ubLowSurrogates;
-    $E000..$F8FF,
-    $F0000..$FFFFD,
-    $100000..$10FFFD:
-      Result := ubPrivateUse;
+    $E000..$F8FF:
+      Result := ubPrivateUse; //ubPrivateUseArea;
     $F900..$FAFF:
       Result := ubCJKCompatibilityIdeographs;
     $FB00..$FB4F:
       Result := ubAlphabeticPresentationForms;
     $FB50..$FDFF:
       Result := ubArabicPresentationFormsA;
+    $FE00..$FE0F:
+      Result := ubVariationSelectors;
+    $FE10..$FE1F:
+      Result := ubVerticalForms;
     $FE20..$FE2F:
       Result := ubCombiningHalfMarks;
     $FE30..$FE4F:
       Result := ubCJKCompatibilityForms;
     $FE50..$FE6F:
       Result := ubSmallFormVariants;
-    $FE70..$FEFE:
+    $FE70..$FEFF:
       Result := ubArabicPresentationFormsB;
-    $FEFF..$FEFF,
-    $FFF0..$FFFD:
-      Result := ubSpecials;
     $FF00..$FFEF:
-      Result := ubHalfwidthAndFullwidthForms;
+      Result := ubHalfwidthandFullwidthForms;
+    $FFF0..$FFFF:
+      Result := ubSpecials;
+    $10000..$1007F:
+      Result := ubLinearBSyllabary;
+    $10080..$100FF:
+      Result := ubLinearBIdeograms;
+    $10100..$1013F:
+      Result := ubAegeanNumbers;
+    $10140..$1018F:
+      Result := ubAncientGreekNumbers;
     $10300..$1032F:
       Result := ubOldItalic;
     $10330..$1034F:
       Result := ubGothic;
+    $10380..$1039F:
+      Result := ubUgaritic;
+    $103A0..$103DF:
+      Result := ubOldPersian;
     $10400..$1044F:
       Result := ubDeseret;
+    $10450..$1047F:
+      Result := ubShavian;
+    $10480..$104AF:
+      Result := ubOsmanya;
+    $10800..$1083F:
+      Result := ubCypriotSyllabary;
+    $10A00..$10A5F:
+      Result := ubKharoshthi;
     $1D000..$1D0FF:
       Result := ubByzantineMusicalSymbols;
     $1D100..$1D1FF:
       Result := ubMusicalSymbols;
+    $1D200..$1D24F:
+      Result := ubAncientGreekMusicalNotation;
+    $1D300..$1D35F:
+      Result := ubTaiXuanJingSymbols;
     $1D400..$1D7FF:
       Result := ubMathematicalAlphanumericSymbols;
-    $20000..$2A6D6:
+    $20000..$2A6DF:
       Result := ubCJKUnifiedIdeographsExtensionB;
     $2F800..$2FA1F:
       Result := ubCJKCompatibilityIdeographsSupplement;
     $E0000..$E007F:
       Result := ubTags;
+    $E0100..$E01EF:
+      Result := ubVariationSelectorsSupplement;
+    $F0000..$FFFFF:
+      Result := ubSupplementaryPrivateUseAreaA;
+    $100000..$10FFFF:
+      Result := ubSupplementaryPrivateUseAreaB;
   else
     Result := ubUndefined;
   end;
 end;
+
 
 function CompareTextWin95(const W1, W2: WideString; Locale: LCID): Integer;
 // special comparation function for Win9x since there's no system defined
@@ -7178,6 +8392,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.23  2005/07/19 21:28:26  outchy
+// IT 3066: JclUnicode.pas updated to Unicode 4.1
+//
 // Revision 1.22  2005/03/08 08:33:23  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
