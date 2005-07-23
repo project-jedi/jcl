@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="JediUsesC60.bpl"/>
+    <OBJFILES value="..\..\..\lib\c6\obj\JediUsesC60.obj ..\..\..\lib\c6\obj\JclOtaUtils.obj 
+      ..\..\..\lib\c6\obj\JCLUsesWizard.obj ..\..\..\lib\c6\obj\JclParseUses.obj 
+      ..\..\..\lib\c6\obj\JclUsesDialog.obj 
+      ..\..\..\lib\c6\obj\JCLOptionsFrame.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) JclUsesDialog.dfm JCLOptionsFrame.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi vclx.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\debugextension"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JediUsesC60.cpp"/>
+    <INCLUDEPATH value="..\idefavopendialogs;..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\idefavopendialogs;..\..\..\lib\c6;..\debugextension;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\..\lib\c6\obj -N0..\..\..\lib\c6\obj -$Y- -$L- -$D- -$A8 -v 
+      -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\..\lib\c6\obj -D&quot;JCL Uses Wizard for C++Builder 6&quot; -aa -Tpp -Gpd 
+      -GD -s -Gn -Gl -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JediUsesC60.cpp" FORMNAME="" UNITNAME="JediUsesC60" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\debugextension\debugextension\threadnames\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\debugextension\debugextension\threadnames\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\debugextension\debugextension\threadnames\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\debugextension\debugextension\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JCLUsesWizard.pas" FORMNAME="" UNITNAME="JclUsesWizard" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclParseUses.pas" FORMNAME="" UNITNAME="JclParseUses" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclUsesDialog.pas" FORMNAME="FormUsesConfirm" UNITNAME="JclUsesDialog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JCLOptionsFrame.pas" FORMNAME="FrameJclOptions" UNITNAME="JclOptionsFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+  </IDEOPTIONS>
+</PROJECT>
