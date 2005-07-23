@@ -2,3 +2,5 @@
 *ProductFrames.pas
 *.drc
 *.bmp
+*.dcu
+*.~*
