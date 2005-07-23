@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8' ?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -13,7 +13,7 @@
     <RESDEPEN value="$(RESFILES) JclDebugIdeResult.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <SPARELIBS value="Vcl50.lib"/>
     <PACKAGES value="vcl50.bpi dsnide50.bpi CJcl50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
@@ -22,45 +22,30 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclDebugIdeC50.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\projects\lib;..\..\..\lib\c5\obj;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="..\..\..\lib\c5;$(BCB)\projects\lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\vcl 
       -I..\..\source\common -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix 
       cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2..\..\..\lib\c5 -N0..\..\..\lib\c5 -$YD -$W -$O- -$A8 -v -JPHNE -M 
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\..\lib\c5 -N0..\..\..\lib\c5 -$Y- -$L- -$D- -$A8 -v -JPHNE -M 
       -LUvcl50 -U$(BCB)\Projects\Bpl"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
+    <AFLAGS value="/mx /w2 /zn"/>
     <LFLAGS value="-I..\..\..\lib\c5 -D&quot;JCL Debug IDE extension for C++Builder 5&quot; -aa -Tpp 
-      -Gpd -x -Gn -Gl -Gi -v"/>
+      -Gpd -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
-  <IDEOPTIONS>[Version Info]
-IncludeVerInfo=1
-AutoIncBuild=0
-MajorVer=1
-MinorVer=95
-Release=3
-Build=1848
-Debug=0
-PreRelease=0
-Special=0
-Private=0
-DLL=1
-Locale=1033
-CodePage=1252
-
-</IDEOPTIONS>
+  <IDEOPTIONS>
+  </IDEOPTIONS>
 </PROJECT>
