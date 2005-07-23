@@ -31,7 +31,7 @@ type
 implementation
 
 uses
-  Registry, FileCtrl, ToolsAPI,
+  Registry, ToolsAPI,
   JclUsesWizard;
 
 {$R *.dfm}
