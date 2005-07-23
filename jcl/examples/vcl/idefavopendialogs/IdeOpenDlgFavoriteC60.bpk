@@ -8,7 +8,7 @@
       ..\..\..\lib\c6\obj\OpenDlgFavAdapter.obj 
       ..\..\..\lib\c6\obj\IdeOpenDlgFavoriteUnit.obj 
       ..\..\..\lib\c6\obj\JclOtaUtils.obj"/>
-    <RESFILES value="IdeOpenDlgFavoriteC60.res FavDlg.res IdeOpenDlgFavoriteC60.res"/>
+    <RESFILES value="FavDlg.res IdeOpenDlgFavoriteC60.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -28,7 +28,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="IdeOpenDlgFavoriteC60.cpp"/>
     <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\debugextension;..\..\..\lib\c6\obj;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
+    <LIBPATH value="..\..\..\lib\c6;..\debugextension;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
