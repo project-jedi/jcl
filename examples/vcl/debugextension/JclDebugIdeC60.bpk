@@ -25,7 +25,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclDebugIdeC60.cpp"/>
     <INCLUDEPATH value="..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\..\lib\c6\obj;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\..\lib\c6;$(BCB)\Source\Toolsapi;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
