@@ -12,7 +12,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi IdeOpenDlgFavoriteC60.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\debugextension"/>
     <PATHRC value=".;"/>
@@ -52,7 +52,6 @@
     <FILE FILENAME="..\debugextension\threadnames\CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
     <FILE FILENAME="ProjAnalyzerFrm.pas" FORMNAME="ProjectAnalyzerForm" UNITNAME="ProjAnalyzerFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
     <FILE FILENAME="ProjAnalyzerImpl.pas" FORMNAME="" UNITNAME="ProjAnalyzerImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="..\debugextension\IdeOpenDlgFavoriteC60.bpi" FORMNAME="" UNITNAME="IdeOpenDlgFavoriteC60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
     <FILE FILENAME="..\debugextension\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS/>
