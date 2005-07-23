@@ -2,4 +2,4 @@
 *.ddp
 *.bpl
 *.dcp
-.cvsignore
+*.res
