@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
 USEFORMNS("JclUsesDialog.pas", Jclusesdialog, FormUsesConfirm);
 USEFORMNS("JCLOptionsFrame.pas", Jcloptionsframe, FrameJclOptions); /* TFrame: File Type */
@@ -8,13 +8,12 @@ USEFORMNS("JCLOptionsFrame.pas", Jcloptionsframe, FrameJclOptions); /* TFrame: F
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 
-//  Source du paquet.
+//   Source du paquet.
 //---------------------------------------------------------------------------
 
 #pragma argsused
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
 {
-  return 1;
+        return 1;
 }
 //---------------------------------------------------------------------------
- 

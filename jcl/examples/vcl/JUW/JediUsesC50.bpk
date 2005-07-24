@@ -8,46 +8,40 @@
       ..\..\..\lib\c5\JclParseUses.obj ..\..\..\lib\c5\JclUsesDialog.obj 
       ..\..\..\lib\c5\JCLOptionsFrame.obj ..\..\..\lib\c5\JediUsesC50.obj"/>
     <RESFILES value=""/>
-    <IDLFILES value=""/>
-    <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JclUsesDialog.dfm JCLOptionsFrame.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="vcl50.bpi dsnide50.bpi CJcl50.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl50.bpi CJcl50.bpi dsnide50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\debugextension"/>
+    <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
-    <LINKER value="ilink32"/>
+    <LINKER value="tlink32"/>
     <USERDEFINES value=""/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JediUsesC50.cpp"/>
-    <INCLUDEPATH value="..\debugextension;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\debugextension;..\..\..\lib\c5\obj;$(BCB)\projects\lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <INCLUDEPATH value="..\..\..\source;..\..\..\lib\c5;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\..\..\lib\c5;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source -I..\..\source\windows -I..\..\source\vcl 
-      -I..\..\source\common -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix 
-      cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\..\..\lib\c5 -N0..\..\..\lib\c5 -$Y- -$L- -$D- -$A8 -v -JPHNE -M 
+    <PFLAGS value="-N2..\..\..\lib\c5 -N0..\..\..\lib\c5 -$Y- -$L- -$D- -v -JPHNE -M 
       -LUvcl50 -U$(BCB)\Projects\Bpl"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\..\..\lib\c5 -D&quot;JCL Uses Wizard for C++Builder 5&quot; -aa -Tpp -Gpd -x 
-      -Gn -Gl -Gi"/>
+    <LFLAGS value="-I..\..\..\lib\c5 -D&quot;JCL Uses Wizard for C++Builder 5&quot; -aa -Tpp -Gpd 
+      -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
   <IDEOPTIONS>
-
   </IDEOPTIONS>
 </PROJECT>
