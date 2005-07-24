@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8' ?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JclSIMDViewC6.bpl"/>
-    <OBJFILES value="..\..\..\..\lib\c6\obj\JclSIMDViewC6.obj 
-      ..\..\..\..\lib\c6\obj\JclSIMDViewForm.obj ..\..\..\..\lib\c6\obj\JclSIMDModifyForm.obj 
-      ..\..\..\..\lib\c6\obj\JclSIMDUtils.obj ..\..\..\..\lib\c6\obj\JclSIMDView.obj 
-      ..\..\..\..\lib\c6\obj\JclSIMDCpuInfo.obj ..\..\..\..\lib\c6\obj\JclOtaUtils.obj"/>
-    <RESFILES value="JclSIMDViewC6.res JclSIMDIcon.dcr"/>
+    <OBJFILES value="..\..\..\..\lib\c6\JclSIMDViewC6.obj ..\..\..\..\lib\c6\JclOtaUtils.obj 
+      ..\..\..\..\lib\c6\JclSIMDViewForm.obj 
+      ..\..\..\..\lib\c6\JclSIMDModifyForm.obj 
+      ..\..\..\..\lib\c6\JclSIMDUtils.obj ..\..\..\..\lib\c6\JclSIMDView.obj 
+      ..\..\..\..\lib\c6\JclSIMDCpuInfo.obj"/>
+    <RESFILES value="JclSIMDIcon.dcr"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JclSIMDViewForm.dfm JclSIMDModifyForm.dfm JclSIMDCpuInfo.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJcl.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi CJcl.bpi designide.bpi JclDebugIdeC60.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;.."/>
     <PATHRC value=".;"/>
@@ -22,61 +23,50 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclSIMDViewC6.cpp"/>
-    <INCLUDEPATH value="..\;..;..\..\..\..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\;..;..\..\..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Source\Toolsapi"/>
+    <INCLUDEPATH value="..\;..;..\threadnames;..\..\..\..\source;..\..\..\..\lib\c6;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\;..;..\threadnames;$(BCB)\Projects\Lib;..\..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2..\..\..\..\lib\c6\obj -N0..\..\..\..\lib\c6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\..\..\lib\c6 -N0..\..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE 
+      -M -LUvcl -U$(BCB)\Projects\Bpl"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
+    <AFLAGS value="/mx /w2 /zn"/>
     <LFLAGS value="-I..\..\..\..\lib\c6 
-      -D&quot;JCL Debug window of XMM registers for C++Builder 6&quot; -aa -Tpp -Gpd -GD 
-      -s -Gn -Gl -Gi -v"/>
+      -D&quot;JCL Debug window of XMM registers for C++Builder 6&quot; -aa -Tpp -Gpd -x 
+      -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-    <FILE FILENAME="JclSIMDViewC6.res" FORMNAME="" UNITNAME="JclSIMDViewC6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDViewC6.cpp" FORMNAME="" UNITNAME="JclSIMDViewC6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDViewForm.pas" FORMNAME="JvSIMDViewFrm" UNITNAME="JclSIMDViewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDModifyForm.pas" FORMNAME="JvSIMDModifyFrm" UNITNAME="JclSIMDModifyForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDUtils.pas" FORMNAME="" UNITNAME="JclSIMDUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDView.pas" FORMNAME="" UNITNAME="JclSIMDView" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDCpuInfo.pas" FORMNAME="FormCpuInfo" UNITNAME="JclSIMDCpuInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="JclSIMDIcon.dcr" FORMNAME="" UNITNAME="" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-    <FILE FILENAME="..\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDViewC6.cpp" FORMNAME="" UNITNAME="JclSIMDViewC6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclDebugIdeC60.bpi" FORMNAME="" UNITNAME="JclDebugIdeC60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDViewForm.pas" FORMNAME="JclSIMDViewFrm" UNITNAME="JclSIMDViewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDModifyForm.pas" FORMNAME="JclSIMDModifyFrm" UNITNAME="JclSIMDModifyForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDUtils.pas" FORMNAME="" UNITNAME="JclSIMDUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDView.pas" FORMNAME="" UNITNAME="JclSIMDView" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDCpuInfo.pas" FORMNAME="JclFormCpuInfo" UNITNAME="JclSIMDCpuInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclSIMDIcon.dcr" FORMNAME="" UNITNAME="" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS/>
-  <IDEOPTIONS>[Version Info]
-IncludeVerInfo=1
-AutoIncBuild=0
-MajorVer=1
-MinorVer=0
-Release=0
-Build=0
-Debug=0
-PreRelease=0
-Special=0
-Private=0
-DLL=0
-Locale=1036
-CodePage=1252
+  <BUILDTOOLS>
+  </BUILDTOOLS>
 
-</IDEOPTIONS>
+  <IDEOPTIONS>
+
+  </IDEOPTIONS>
 </PROJECT>
