@@ -25,7 +25,7 @@ Known Issues:
 
 unit JclSIMDView;
 
-{$I jedi.inc}
+{$I jcl.inc}
                      
 interface
 
@@ -55,7 +55,6 @@ type
     FNTAServices:INTAServices;
     FIndex:Integer;
     FDebuggerNotifier:TDebuggerNotifier;
-    FSSEAction:TAction;
     FIcon:TIcon;
     FSSEMenuItem:TMenuItem;
     FViewDebugMenu:TMenuItem;
@@ -63,6 +62,8 @@ type
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
     procedure CheckToolBarButton(AToolBar:TToolBar);
+  protected
+    FSSEAction:TAction;
   public
     constructor Create;
     destructor Destroy; override;
@@ -116,9 +117,31 @@ implementation
 uses
   JclSIMDUtils;
 
+const
+  sSSEActionName = 'DebugSSECommand';
+
+var
+  JclIDESSEWizard: TIDESSEWizard;
+{$IFNDEF COMPILER6_UP}
+  OldFindGlobalComponentProc: TFindGlobalComponent;
+{$ENDIF COMPILER6_UP}
+
 procedure Register;
 begin
-  RegisterPackageWizard(TIDESSEWizard.Create);
+  JclIDESSEWizard := TIDESSEWizard.Create;
+  RegisterPackageWizard(JclIDESSEWizard);
+end;
+
+function FindSSEAction(const Name: string): TComponent;
+begin
+  if (CompareText(Name,sSSEActionName) = 0) and Assigned(JclIDESSEWizard) then
+    Result := JclIDESSEWizard.FSSEAction
+{$IFNDEF COMPILER6_UP}
+  else if Assigned(OldFindGlobalComponentProc) then
+    Result := OldFindGlobalComponentProc(Name)
+{$ENDIF COMPILER6_UP}
+  else
+    Result := nil;
 end;
 
 { TIDESSEWizard }
@@ -207,6 +230,13 @@ var
 begin
   inherited Create;
 
+{$IFDEF COMPILER6_UP}
+  RegisterFindGlobalComponentProc(FindSSEAction);
+{$ELSE COMPILER6_UP}
+  OldFindGlobalComponentProc := FindGlobalComponent;
+  FindGlobalComponent := FindSSEAction;
+{$ENDIF COMPILER6_UP}
+
   FCpuInfoValid := False;
 
   FForm:=nil;
@@ -231,10 +261,10 @@ begin
   FSSEAction.Visible:=True;
   FSSEAction.OnExecute:=ActionExecute;
   FSSEAction.OnUpdate:=ActionUpdate;
-  FSSEAction.ActionList:=FNTAServices.ActionList;
   FSSEAction.Category:=Category;
-  FSSEAction.Name:='DebugSSECommand';
+  FSSEAction.Name:=sSSEActionName;
   FSSEAction.ImageIndex := FNTAServices.ImageList.AddIcon(FIcon);
+  FSSEAction.ActionList:=FNTAServices.ActionList;
 
   FSSEMenuItem := TMenuItem.Create(nil);
   FSSEMenuItem.Action := FSSEAction;
@@ -262,6 +292,12 @@ end;
 
 destructor TIDESSEWizard.Destroy;
 begin
+{$IFDEF COMPILER6_UP}
+  UnRegisterFindGlobalComponentProc(FindSSEAction);
+{$ELSE COMPILER6_UP}
+  FindGlobalComponent := OldFindGlobalComponentProc;
+{$ENDIF COMPILER6_UP}
+
   FDebuggerServices.RemoveNotifier(FIndex);
 
   CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar]);
