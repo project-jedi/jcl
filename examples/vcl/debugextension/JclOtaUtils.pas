@@ -32,7 +32,7 @@ interface
 {$WEAKPACKAGEUNIT ON}
 
 uses
-  Windows, Classes, IniFiles, ToolsAPI;
+  Windows, Classes, IniFiles, ToolsAPI, ComCtrls, ActnList;
 
 const
   MapFileOptionName      = 'MapFile';
@@ -59,11 +59,14 @@ type
     FJediIniFile: TIniFile;
     FRootDir: string;
     FServices: IOTAServices;
+    FNTAServices: INTAServices;
     function GetActiveProject: IOTAProject;
     function GetJediIniFile: TIniFile;
     function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
     procedure ReadEnvVariables;
+
+    procedure CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
   public
     constructor Create;
     destructor Destroy; override;
@@ -74,12 +77,19 @@ type
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
     function SubstitutePath(const Path: string): string;
+
+    procedure RegisterAction(Action: TCustomAction);
+    procedure UnregisterAction(Action: TCustomAction);
+    procedure RegisterCommands; virtual;
+    procedure UnregisterCommands; virtual;
+
     property ActiveProject: IOTAProject read GetActiveProject;
     property BaseRegistryKey: string read FBaseRegistryKey;
-    property JediIniFile: TIniFile read GetJediIniFile; 
+    property JediIniFile: TIniFile read GetJediIniFile;
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
     property RootDir: string read GetRootDir;
     property Services: IOTAServices read FServices;
+    property NTAServices: INTAServices read FNTAServices;
   end;
 
   TJclOTAExpert = class(TJclOTAUtils, IOTAWizard)
@@ -105,24 +115,62 @@ uses
   SysUtils, ImageHlp,
   JclFileUtils, JclRegistry, JclStrings;
 
+var
+  ActionList: TList = nil;
+{$IFNDEF COMPILER6_UP}
+  OldFindGlobalComponentProc: TFindGlobalComponent = nil;
+{$ENDIF COMPILER6_UP}
+
+function FindActions(const Name: string): TComponent;
+var
+  Index: Integer;
+  TestAction: TCustomAction;
+begin
+  Result := nil;
+  if Assigned(ActionList) then
+    for Index := 0 to ActionList.Count-1 do
+    begin
+      TestAction := TCustomAction(ActionList.Items[Index]);
+      if (CompareText(Name,TestAction.Name) = 0) then
+        Result := TestAction;
+    end;
+{$IFNDEF COMPILER6_UP}
+  if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
+    Result := OldFindGlobalComponentProc(Name)
+{$ENDIF COMPILER6_UP}
+end;
+
 //==================================================================================================
 // TJclOTAUtils
 //==================================================================================================
 
 constructor TJclOTAUtils.Create;
 begin
+  Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
+    'Unable to get Borland IDE Services');
+  Assert(Supports(FServices,INTAServices,FNTAServices),
+    'Unable to get Borland NTA Services');
+
   FEnvVariables := TStringList.Create;
-  FServices := BorlandIDEServices as IOTAServices;
+
   FBaseRegistryKey := StrEnsureSuffix('\', FServices.GetBaseRegistryKey);
+
+  RegisterCommands;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TJclOTAUtils.Destroy;
 begin
+  UnRegisterCommands;
+
   FreeAndNil(FEnvVariables);
   FreeAndNil(FJediIniFile);
-  inherited;
+
+  FServices:=nil;
+  FNTAServices:=nil;
+
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -338,6 +386,96 @@ begin
     end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclOTAUtils.RegisterAction(Action: TCustomAction);
+begin
+  if not Assigned(ActionList) then
+  begin
+    ActionList := TList.Create;
+    {$IFDEF COMPILER6_UP}
+    RegisterFindGlobalComponentProc(FindActions);
+    {$ELSE COMPILER6_UP}
+    if not Assigned(OldFindGlobalComponentProc) then
+    begin
+      OldFindGlobalComponentProc := FindGlobalComponent;
+      FindGlobalComponent := FindActions;
+    end;
+    {$ENDIF COMPILER6_UP}
+  end;
+
+  ActionList.Add(Action);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclOTAUtils.UnregisterAction(Action: TCustomAction);
+begin
+  if Assigned(ActionList) then
+  begin
+    ActionList.Remove(Action);
+    if (ActionList.Count = 0) then
+    begin
+      FreeAndNil(ActionList);
+      {$IFDEF COMPILER6_UP}
+      UnRegisterFindGlobalComponentProc(FindActions);
+      {$ELSE COMPILER6_UP}
+      FindGlobalComponent := OldFindGlobalComponentProc;
+      {$ENDIF COMPILER6_UP}
+    end;
+  end;
+
+
+// remove action from toolbar to avoid crash when recompile package inside the IDE.
+  CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar],Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sStandardToolBar],Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar],Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar],Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar],Action);
+{$IFDEF COMPILER7_UP}
+  CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar],Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar],Action);
+{$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+type
+  THackToolButton = class (TToolButton);
+  
+procedure TJclOTAUtils.CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
+var
+  Index: Integer;
+  AButton: THackToolButton;
+begin
+  if Assigned(AToolBar) then
+  begin
+    for Index:=AToolBar.ButtonCount-1 downto 0 do
+    begin
+      AButton:=THackToolButton(AToolBar.Buttons[Index]);
+      if (AButton.Action=AAction) then
+      begin
+        AButton.SetToolBar(nil);
+        AButton.Free;
+      end;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclOTAUtils.RegisterCommands;
+begin
+  // override to add actions and menu items
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclOTAUtils.UnregisterCommands;
+begin
+  // override to remove actions and menu items
+end;
+
 //==================================================================================================
 // TJclOTAExpert
 //==================================================================================================
@@ -416,6 +554,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/07/26 17:41:06  outchy
+// Icons can now be placed in the IDE's toolbars via the customize dialog. They are restored at the IDE's startup.
+//
 // Revision 1.7  2005/05/08 15:43:28  outchy
 // Compiler conditions modified for C++Builder
 //

@@ -50,9 +50,7 @@ type
 
   TIDESSEWizard = class (TJclOTAExpert)
   private
-    FServices:IOTAServices;
     FDebuggerServices:IOTADebuggerServices;
-    FNTAServices:INTAServices;
     FIndex:Integer;
     FDebuggerNotifier:TDebuggerNotifier;
     FIcon:TIcon;
@@ -61,7 +59,6 @@ type
     FForm:TJclSIMDViewFrm;
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
-    procedure CheckToolBarButton(AToolBar:TToolBar);
   protected
     FSSEAction:TAction;
   public
@@ -69,6 +66,8 @@ type
     destructor Destroy; override;
     function CpuInfo: TCpuInfo;
     function GetSSEString: string;
+    procedure RegisterCommands; override;
+    procedure UnregisterCommands; override;
     procedure ActionExecute(Sender:TObject);
     procedure ActionUpdate(Sender:TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -118,30 +117,11 @@ uses
   JclSIMDUtils;
 
 const
-  sSSEActionName = 'DebugSSECommand';
-
-var
-  JclIDESSEWizard: TIDESSEWizard;
-{$IFNDEF COMPILER6_UP}
-  OldFindGlobalComponentProc: TFindGlobalComponent;
-{$ENDIF COMPILER6_UP}
+  RsSSEActionName = 'DebugSSECommand';
 
 procedure Register;
 begin
-  JclIDESSEWizard := TIDESSEWizard.Create;
-  RegisterPackageWizard(JclIDESSEWizard);
-end;
-
-function FindSSEAction(const Name: string): TComponent;
-begin
-  if (CompareText(Name,sSSEActionName) = 0) and Assigned(JclIDESSEWizard) then
-    Result := JclIDESSEWizard.FSSEAction
-{$IFNDEF COMPILER6_UP}
-  else if Assigned(OldFindGlobalComponentProc) then
-    Result := OldFindGlobalComponentProc(Name)
-{$ENDIF COMPILER6_UP}
-  else
-    Result := nil;
+  RegisterPackageWizard(TIDESSEWizard.Create);
 end;
 
 { TIDESSEWizard }
@@ -183,28 +163,6 @@ begin
   end;
 end;
 
-type
-  THackToolButton = class (TToolButton);
-
-procedure TIDESSEWizard.CheckToolBarButton(AToolBar: TToolBar);
-var
-  Index:Integer;
-  AButton:THackToolButton;
-begin
-  if Assigned(AToolBar) then
-  begin
-    for Index:=AToolBar.ButtonCount-1 downto 0 do
-    begin
-      AButton:=THackToolButton(AToolBar.Buttons[Index]);
-      if (AButton.Action=FSSEAction) then
-      begin
-        AButton.SetToolBar(nil);
-        AButton.Free;
-      end;
-    end;
-  end;
-end;
-
 procedure TIDESSEWizard.Close;
 begin
   if Assigned(FForm)
@@ -222,33 +180,26 @@ begin
 end;
 
 constructor TIDESSEWizard.Create;
+begin
+  FCpuInfoValid := False;
+
+  FForm:=nil;
+
+  inherited Create;
+end;
+
+procedure TIDESSEWizard.RegisterCommands;
 var
   I:Integer;
   IDEMenu:TMenu;
   ViewMenu:TMenuItem;
   Category:string;
 begin
-  inherited Create;
-
-{$IFDEF COMPILER6_UP}
-  RegisterFindGlobalComponentProc(FindSSEAction);
-{$ELSE COMPILER6_UP}
-  OldFindGlobalComponentProc := FindGlobalComponent;
-  FindGlobalComponent := FindSSEAction;
-{$ENDIF COMPILER6_UP}
-
-  FCpuInfoValid := False;
-
-  FForm:=nil;
-  Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
-    'Unable to get Borland IDE Services');
-  Assert(Supports(FServices,INTAServices,FNTAServices),
-    'Unable to get Borland NTA Services');
-  Assert(Supports(FServices,IOTADebuggerServices,FDebuggerServices),
+  Assert(Supports(Services,IOTADebuggerServices,FDebuggerServices),
     'Unable to get Borland Debugger Services');
 
   Category:='';
-  with FNTAServices do
+  with NTAServices do
     for I:=0 to ActionList.ActionCount-1 do
       if (CompareText(ActionList.Actions[I].Name,'DebugCPUCommand')=0)
         then Category:=ActionList.Actions[I].Category;
@@ -262,15 +213,15 @@ begin
   FSSEAction.OnExecute:=ActionExecute;
   FSSEAction.OnUpdate:=ActionUpdate;
   FSSEAction.Category:=Category;
-  FSSEAction.Name:=sSSEActionName;
-  FSSEAction.ImageIndex := FNTAServices.ImageList.AddIcon(FIcon);
-  FSSEAction.ActionList:=FNTAServices.ActionList;
+  FSSEAction.Name:=RsSSEActionName;
+  FSSEAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
+  FSSEAction.ActionList := NTAServices.ActionList;
 
   FSSEMenuItem := TMenuItem.Create(nil);
   FSSEMenuItem.Action := FSSEAction;
   FSSEMenuItem.ShortCut := Shortcut(Ord('D'),[ssCtrl,ssAlt]);
 
-  IDEMenu:=FNTAServices.MainMenu;
+  IDEMenu := NTAServices.MainMenu;
 
   ViewMenu:=nil;
   for I:=0 to IDEMenu.Items.Count-1 do
@@ -286,42 +237,28 @@ begin
 
   FViewDebugMenu.Add(FSSEMenuItem);
 
+  RegisterAction(FSSEAction);
+
   FDebuggerNotifier:=TDebuggerNotifier.Create(Self);
   FIndex:=FDebuggerServices.AddNotifier(FDebuggerNotifier);
 end;
 
-destructor TIDESSEWizard.Destroy;
+procedure TIDESSEWizard.UnregisterCommands;
 begin
-{$IFDEF COMPILER6_UP}
-  UnRegisterFindGlobalComponentProc(FindSSEAction);
-{$ELSE COMPILER6_UP}
-  FindGlobalComponent := OldFindGlobalComponentProc;
-{$ENDIF COMPILER6_UP}
-
-  FDebuggerServices.RemoveNotifier(FIndex);
-
-  CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar]);
-  CheckToolBarButton(FNTAServices.ToolBar[sStandardToolBar]);
-  CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar]);
-  CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar]);
-  CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar]);
-{$IFDEF COMPILER7_UP}
-  CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar]);
-  CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar]);
-{$ENDIF}
-  FViewDebugMenu.Remove(FSSEMenuItem);
-  FSSEAction.ActionList:=nil;
-
+  UnregisterAction(FSSEAction);
   FreeAndNil(FIcon);
   FreeAndNil(FSSEMenuItem);
   FreeAndNil(FSSEAction);
+end;
+
+destructor TIDESSEWizard.Destroy;
+begin
+  FDebuggerServices.RemoveNotifier(FIndex);
+
   //FreeAndNil(FDebuggerNotifier);   // Buggy !!!!
   FreeAndNil(FForm);
 
-  FServices:=nil;
   FDebuggerServices:=nil;
-  FNTAServices:=nil;
-
   inherited Destroy;
 end;
 
