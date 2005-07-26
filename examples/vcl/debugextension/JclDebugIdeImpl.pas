@@ -25,7 +25,7 @@
 unit JclDebugIdeImpl;
 
 {$I JCL.INC}
-
+                              
 {$UNDEF OldStyleExpert}
 
 // Delphi 5 can use both kind of the expert
@@ -52,63 +52,52 @@ type
 
   TJclDebugExtension = class(TJclOTAExpert)
   private
-    FBuildAllMenuItem: TMenuItem;
-    FBuildAllAction: TAction;
-    FBuildMenuItem: TMenuItem;
-    FBuildAction: TAction;
+    FResultInfo: array of TJclDebugDataInfo;
+    FStoreResults: Boolean;
+    FImageIndex: Integer;
     FBuildError: Boolean;
     {$IFNDEF OldStyleExpert}
-    FCurrentProject: IOTAProject;
-    {$ENDIF OldStyleExpert}
     FInsertDataItem: TMenuItem;
     FInsertDataAction: TAction;
-    FResultInfo: array of TJclDebugDataInfo;
-    {$IFNDEF COMPILER5_UP}
-    FSaveAllAction: TAction;
-    {$ENDIF COMPILER5_UP}
-    {$IFNDEF OldStyleExpert}
+    FDisabledImageIndex: Integer;
+    FCurrentProject: IOTAProject;
     FSaveBuildProject: TAction;
     FSaveBuildProjectExecute: TNotifyEvent;
     FSaveBuildAllProjects: TAction;
     FSaveBuildAllProjectsExecute: TNotifyEvent;
-    {$ENDIF OldStyleExpert}
-    FStoreResults: Boolean;
-    {$IFNDEF OldStyleExpert}
     FNotifierIndex: Integer;
     FOptionsModifiedState: Boolean;
     FSaveMapFile: Integer;
-    {$ENDIF OldStyleExpert}
-    Services: IOTAServices;
-    procedure BeginStoreResults;
-    {$IFNDEF OldStyleExpert}
-    procedure BuildAllProjects(Sender: TObject);       // (New) Build All Projects command hook
-    procedure BuildProject(Sender: TObject);           // (New) Build Project command hook
-    {$ENDIF OldStyleExpert}
-    {$IFDEF OldStyleExpert}
-    procedure BuildActionExecute(Sender: TObject);     // (Old) Build JCL Debug command
-    procedure BuildActionUpdate(Sender: TObject);
-    procedure BuildAllActionExecute(Sender: TObject);  // (Old) Build JCL Debug All Projects command
-    procedure BuildAllActionUpdate(Sender: TObject);
-    {$ENDIF OldStyleExpert}
-    procedure DisplayResults;
-    procedure EndStoreResults;
-    {$IFNDEF OldStyleExpert}
     procedure ExpertActive(Active: Boolean);
     procedure HookBuildActions(Enable: Boolean);
     procedure InsertDataExecute(Sender: TObject);
     procedure LoadExpertValues;
     procedure SaveExpertValues;
-    {$ENDIF OldStyleExpert}
-    {$IFDEF OldStyleExpert}
+    procedure BuildAllProjects(Sender: TObject);       // (New) Build All Projects command hook
+    procedure BuildProject(Sender: TObject);           // (New) Build Project command hook
+    {$ELSE OldStyleExpert}
+    FBuildAllMenuItem: TMenuItem;
+    FBuildAllAction: TAction;
+    FBuildMenuItem: TMenuItem;
+    FBuildAction: TAction;
+    procedure BuildActionExecute(Sender: TObject);     // (Old) Build JCL Debug command
+    procedure BuildActionUpdate(Sender: TObject);
+    procedure BuildAllActionExecute(Sender: TObject);  // (Old) Build JCL Debug All Projects command
+    procedure BuildAllActionUpdate(Sender: TObject);
     function InsertDataToProject(const ActiveProject: IOTAProject): Boolean;
     {$ENDIF OldStyleExpert}
+    procedure BeginStoreResults;
+    procedure DisplayResults;
+    procedure EndStoreResults;
   public
     constructor Create;
     destructor Destroy; override;
+    {$IFNDEF OldStyleExpert}
     procedure AfterCompile(Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-    procedure RegisterCommand;
-    procedure UnregisterCommand;
+    {$ENDIF OldStyleExpert}
+    procedure RegisterCommands; override;
+    procedure UnregisterCommands; override;
   end;
 
   {$IFNDEF OldStyleExpert}
@@ -148,10 +137,13 @@ resourcestring
   RsActionCaption = 'Build JCL Debug %s';
   RsBuildAllCaption = 'Build JCL Debug All Projects';
   RsProjectNone = '[none]';
+  RsBuildActionName = 'ProjectJCLBuildCommand';
+  RsBuildAllActionName = 'ProjectJCLBuildAllCommand';
   {$ELSE OldStyleExpert}
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
     #13#10'%s'#13#10#10'Would you like to disable inserting JCL Debug data ?';
   RsInsertDataCaption = 'Insert JCL Debug data';
+  RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
   {$ENDIF OldStyleExpert}
   RsExecutableNotFound = 'Executable file (*.exe or *.dll) not found.' +
     'JCL debug data can''t be added to the project.';
@@ -163,11 +155,8 @@ const
 // TJclDebugExtension
 //==================================================================================================
 
+{$IFNDEF OldStyleExpert}
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
-{$IFDEF OldStyleExpert}
-begin
-end;
-{$ELSE OldStyleExpert}
 var
   ProjectFileName, MapFileName, ExecutableFileName: string;
   OutputDirectory, LinkerBugUnit: string;
@@ -245,15 +234,10 @@ begin
     Pointer(FCurrentProject) := nil;
   end;
 end;
-{$ENDIF OldStyleExpert}
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-{$IFDEF OldStyleExpert}
-begin
-end;
-{$ELSE OldStyleExpert}
 var
   ProjOptions: IOTAProjectOptions;
 begin
@@ -312,11 +296,7 @@ var
   ProjectName: string;
 begin
   TempActiveProject := ActiveProject;
-  {$IFDEF COMPILER5_UP}
   FBuildAction.Enabled := Assigned(TempActiveProject);
-  {$ELSE COMPILER5_UP}
-  FBuildAction.Enabled := Assigned(TempActiveProject) and not FSaveAllAction.Enabled;
-  {$ENDIF COMPILER5_UP}
   if Assigned(ActiveProject) then
     ProjectName := ExtractFileName(TempActiveProject.FileName)
   else
@@ -358,11 +338,7 @@ end;
 
 procedure TJclDebugExtension.BuildAllActionUpdate(Sender: TObject);
 begin
-  {$IFDEF COMPILER5_UP}
   FBuildAllAction.Enabled := ProjectGroup <> nil;
-  {$ELSE COMPILER5_UP}
-  FBuildAllAction.Enabled := (ProjectGroup <> nil) and not FSaveAllAction.Enabled;
-  {$ENDIF COMPILER5_UP}
 end;
 
 {$ENDIF OldStyleExpert}
@@ -402,13 +378,8 @@ end;
 constructor TJclDebugExtension.Create;
 begin
   inherited Create;
-  Services := BorlandIDEServices as IOTAServices;
-  Assert(Assigned(Services), 'IOTAServices not available');
   {$IFNDEF OldStyleExpert}
   FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
-  {$ENDIF OldStyleExpert}
-  RegisterCommand;
-  {$IFNDEF OldStyleExpert}
   LoadExpertValues;
   {$ENDIF OldStyleExpert}
 end;
@@ -422,8 +393,7 @@ begin
     Services.RemoveNotifier(FNotifierIndex);
   SaveExpertValues;
   {$ENDIF OldStyleExpert}
-  UnregisterCommand;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -484,6 +454,10 @@ end;
 
 procedure TJclDebugExtension.ExpertActive(Active: Boolean);
 begin
+  if (Active) then
+    FInsertDataAction.ImageIndex := FImageIndex
+  else
+    FInsertDataAction.ImageIndex := FDisabledImageIndex;
   FInsertDataAction.Checked := Active;
   HookBuildActions(Active);
 end;
@@ -513,6 +487,7 @@ end;
 procedure TJclDebugExtension.InsertDataExecute(Sender: TObject);
 begin
   ExpertActive(not FInsertDataAction.Checked);
+  
   SaveExpertValues;
 end;
 
@@ -545,9 +520,7 @@ var
   OutputDirectory, LinkerBugUnit: string;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
   ExecutableNotFound: Boolean;
-  {$IFDEF COMPILER5_UP}
   OptionsModifiedState: Boolean;
-  {$ENDIF COMPILER5_UP}
 begin
   Assert(Assigned(ActiveProject));
   ProjectFileName := ActiveProject.FileName;
@@ -555,16 +528,14 @@ begin
   // read output directory
   OutputDirectory := GetOutputDirectory(ActiveProject);
   MapFileName := GetMapFileName(ActiveProject);
-  {$IFDEF COMPILER5_UP}
+
   OptionsModifiedState := ProjOptions.ModifiedState;
-  {$ENDIF COMPILER5_UP}
   SaveMapFile := ProjOptions.Values[MapFileOptionName];
   ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
   BuildOk := ActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
   ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-  {$IFDEF COMPILER5_UP}
   ProjOptions.ModifiedState := OptionsModifiedState;
-  {$ENDIF COMPILER5_UP}
+
   ExecutableNotFound := False;
   LinkerBugUnit := '';
   LineNumberErrors := 0;
@@ -610,7 +581,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclDebugExtension.RegisterCommand;
+procedure TJclDebugExtension.RegisterCommands;
 var
   IDEMainMenu: TMainMenu;
   IDEProjectItem: TMenuItem;
@@ -618,36 +589,45 @@ var
   I: Integer;
   ImageBmp: TBitmap;
 begin
-  IDEActionList := TActionList((BorlandIDEServices as INTAServices).ActionList);
-  IDEMainMenu := (BorlandIDEServices as INTAServices).MainMenu;
+  IDEActionList := TActionList(NTAServices.ActionList);
+  IDEMainMenu := NTAServices.MainMenu;
   ImageBmp := TBitmap.Create;
   try
-    {$IFDEF OldStyleExpert}
     ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'JCLDEBUG');
+    FImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
+    {$IFDEF OldStyleExpert}
     FBuildAction := TAction.Create(nil);
     FBuildAction.Caption := Format(RsActionCaption, [RsProjectNone]);
-    FBuildAction.ImageIndex := (BorlandIDEServices as INTAServices).AddMasked(ImageBmp, clPurple);
+    FBuildAction.ImageIndex := FImageIndex;
     FBuildAction.Visible := True;
     FBuildAction.OnExecute := BuildActionExecute;
     FBuildAction.OnUpdate := BuildActionUpdate;
+    FBuildAction.Name := RsBuildActionName;
     FBuildAction.ActionList := IDEActionList;
+    RegisterAction(FBuildAction);
     FBuildMenuItem := TMenuItem.Create(nil);
     FBuildMenuItem.Action := FBuildAction;
     FBuildAllAction := TAction.Create(nil);
     FBuildAllAction.Caption := RsBuildAllCaption;
-    FBuildAllAction.ImageIndex := (BorlandIDEServices as INTAServices).AddMasked(ImageBmp, clPurple);
+    FBuildAllAction.ImageIndex := FImageIndex;
     FBuildAllAction.Visible := True;
-    FBuildAllAction.OnExecute := BuildAllActionExecute;
+    FBuildAllAction.OnExecute := BuildAllActionExecute;     
     FBuildAllAction.OnUpdate := BuildAllActionUpdate;
+    FBuildAllAction.Name := RsBuildAllActionName;
     FBuildAllAction.ActionList := IDEActionList;
+    RegisterAction(FBuildAllAction);
     FBuildAllMenuItem := TMenuItem.Create(nil);
     FBuildAllMenuItem.Action := FBuildAllAction;
     {$ELSE OldStyleExpert}
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'JCLNODEBUG');
+    FDisabledImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     FInsertDataAction := TAction.Create(nil);
     FInsertDataAction.Caption := RsInsertDataCaption;
     FInsertDataAction.Visible := True;
     FInsertDataAction.OnExecute := InsertDataExecute;
     FInsertDataAction.ActionList := IDEActionList;
+    FInsertDataAction.Name := RsInsertDataActionName;
+    RegisterAction(FInsertDataAction);
     FInsertDataItem := TMenuItem.Create(nil);
     FInsertDataItem.Action := FInsertDataAction;
     {$ENDIF OldStyleExpert}
@@ -670,6 +650,8 @@ begin
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectBuildItem' then
       begin
+        if Assigned(Items[I].Action) then
+          FBuildAction.Category := TContainedAction(Items[I].Action).Category;
         IDEProjectItem.Insert(I + 1, FBuildMenuItem);
         System.Break;
       end;
@@ -678,26 +660,19 @@ begin
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectBuildAllItem' then
       begin
+        if Assigned(Items[I].Action) then
+          FBuildAllAction.Category := TContainedAction(Items[I].Action).Category;
         IDEProjectItem.Insert(I + 1, FBuildAllMenuItem);
         System.Break;
       end;
   Assert(FBuildMenuItem.Parent <> nil);
-  {$IFNDEF COMPILER5_UP}
-  FSaveAllAction := nil;
-  with IDEActionList do
-    for I := 0 to ActionCount - 1 do
-      if Actions[I].Name = 'FileSaveAllCommand' then
-      begin
-        FSaveAllAction := TAction(Actions[I]);
-        Break;
-      end;
-  Assert(FSaveAllAction <> nil);
-  {$ENDIF COMPILER5_UP}
   {$ELSE OldStyleExpert}
   with IDEProjectItem do
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectOptionsItem' then
       begin
+        if Assigned(Items[I].Action) then
+          FInsertDataAction.Category := TContainedAction(Items[I].Action).Category;
         IDEProjectItem.Insert(I + 1, FInsertDataItem);
         System.Break;
       end;
@@ -727,17 +702,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclDebugExtension.UnregisterCommand;
+procedure TJclDebugExtension.UnregisterCommands;
 begin
   {$IFNDEF OldStyleExpert}
   HookBuildActions(False);
-  {$ENDIF OldStyleExpert}
+  UnregisterAction(FInsertDataAction);
+  FreeAndNil(FInsertDataItem);
+  FreeAndNil(FInsertDataAction);
+  {$ELSE OldStyleExpert}
+  UnregisterAction(FBuildAction);
+  UnregisterAction(FBuildAllAction);
   FreeAndNil(FBuildMenuItem);
   FreeAndNil(FBuildAction);
   FreeAndNil(FBuildAllMenuItem);
   FreeAndNil(FBuildAllAction);
-  FreeAndNil(FInsertDataItem);
-  FreeAndNil(FInsertDataAction);
+  {$ENDIF OldStyleExpert}
 end;
 
 //==================================================================================================
