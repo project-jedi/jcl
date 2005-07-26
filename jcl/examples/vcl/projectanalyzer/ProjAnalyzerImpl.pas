@@ -37,16 +37,12 @@ type
   private
     FBuildMenuItem: TMenuItem;
     FBuildAction: TAction;
-    {$IFNDEF DELPHI5_UP}
-    FSaveAllAction: TAction;
-    {$ENDIF DELPHI5_UP}
     procedure ActionExecute(Sender: TObject);
     procedure ActionUpdate(Sender: TObject);
   public
-    constructor Create;
     destructor Destroy; override;
-    procedure RegisterCommand;
-    procedure UnregisterCommand;
+    procedure RegisterCommands; override;
+    procedure UnregisterCommands; override;
   end;
 
 procedure Register;
@@ -61,6 +57,7 @@ uses
 
 resourcestring
   RsActionCaption = 'Analyze project %s';
+  RsActionName = 'ProjectAnalyseCommand';
   RsProjectNone = '[none]';
   RsCantFindFiles = 'Can''t find MAP or executable file';
   RsBuildingProject = 'Building project %s ...';
@@ -84,9 +81,7 @@ var
   SaveMapFile: Variant;
   OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
   ProjectName: string;
-{$IFDEF DELPHI5_UP}
   OptionsModifiedState: Boolean;
-{$ENDIF DELPHI5_UP}
 begin
   TempActiveProject := ActiveProject;
   Assert(Assigned(TempActiveProject));
@@ -106,16 +101,12 @@ begin
   ProjectAnalyzerForm.ClearContent;
   ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
 
-  {$IFDEF DELPHI5_UP}
   OptionsModifiedState := ProjOptions.ModifiedState;
-  {$ENDIF DELPHI5_UP}
   SaveMapFile := ProjOptions.Values[MapFileOptionName];
   ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
   BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
   ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-{$IFDEF DELPHI5_UP}
   ProjOptions.ModifiedState := OptionsModifiedState;
-{$ENDIF DELPHI5_UP}
 
   if BuildOK then
   begin // Build was successful, continue ...
@@ -151,11 +142,7 @@ begin
     ProjectName := ExtractFileName(TempActiveProject.FileName)
   else
     ProjectName := '';
-{$IFDEF DELPHI5_UP}
   FBuildAction.Enabled := Assigned(TempActiveProject);
-{$ELSE}
-  FBuildAction.Enabled := Assigned(TempActiveProject) and (not FSaveAllAction.Enabled);
-{$ENDIF DELPHI5_UP}
   if not FBuildAction.Enabled then
     ProjectName := RsProjectNone;
   FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
@@ -163,24 +150,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TProjectAnalyzerExpert.Create;
-begin
-  inherited Create;
-  RegisterCommand;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 destructor TProjectAnalyzerExpert.Destroy;
 begin
-  UnregisterCommand;
   FreeAndNil(ProjectAnalyzerForm);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TProjectAnalyzerExpert.RegisterCommand;
+procedure TProjectAnalyzerExpert.RegisterCommands;
 var
   IDEMainMenu: TMainMenu;
   IDEProjectItem: TMenuItem;
@@ -193,18 +171,16 @@ begin
   FBuildAction.Visible := True;
   FBuildAction.OnExecute := ActionExecute;
   FBuildAction.OnUpdate := ActionUpdate;
+  FBuildAction.Name := RsActionName;
   ImageBmp := TBitmap.Create;
   try
     ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'PROJANALYZER');
-    FBuildAction.ImageIndex := (BorlandIDEServices as INTAServices).AddMasked(ImageBmp, clOlive);
+    FBuildAction.ImageIndex := NTAServices.AddMasked(ImageBmp, clOlive);
   finally
     ImageBmp.Free;
   end;
-  IDEActionList := TActionList((BorlandIDEServices as INTAServices).ActionList);
-  FBuildAction.ActionList := IDEActionList;
-  FBuildMenuItem := TMenuItem.Create(nil);
-  FBuildMenuItem.Action := FBuildAction;
-  IDEMainMenu := (BorlandIDEServices as INTAServices).MainMenu;
+
+  IDEMainMenu := NTAServices.MainMenu;
   IDEProjectItem := nil;
   with IDEMainMenu do
     for I := 0 to Items.Count - 1 do
@@ -218,27 +194,26 @@ begin
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectInformationItem' then
       begin
+        IDEActionList := TActionList(NTAServices.ActionList);
+        if Assigned(Items[I].Action) then
+          FBuildAction.Category := TContainedAction(Items[I].Action).Category;
+        FBuildAction.ActionList := IDEActionList;
+        RegisterAction(FBuildAction);
+        FBuildMenuItem := TMenuItem.Create(nil);
+        FBuildMenuItem.Action := FBuildAction;
+
         IDEProjectItem.Insert(I + 1, FBuildMenuItem);
+
         System.Break;
       end;
   Assert(FBuildMenuItem.Parent <> nil);
-{$IFNDEF DELPHI5_UP}
-  FSaveAllAction := nil;
-  with IDEActionList do
-    for I := 0 to ActionCount - 1 do
-      if Actions[I].Name = 'FileSaveAllCommand' then
-      begin
-        FSaveAllAction := TAction(Actions[I]);
-        Break;
-      end;
-  Assert(FSaveAllAction <> nil);
-{$ENDIF DELPHI5_UP}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TProjectAnalyzerExpert.UnregisterCommand;
+procedure TProjectAnalyzerExpert.UnregisterCommands;
 begin
+  UnregisterAction(FBuildAction);
   FreeAndNil(FBuildMenuItem);
   FreeAndNil(FBuildAction);
 end;
