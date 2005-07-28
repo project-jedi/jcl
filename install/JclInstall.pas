@@ -220,8 +220,9 @@ resourcestring
   RsJCLIdeDebug          = 'Debug Extension';
   RsJCLIdeAnalyzer       = 'Project Analyzer';
   RsJCLIdeFavorite       = 'Favorite combobox in Open/Save dialogs';
-  RsJCLIdeThrNames       = 'Displaying thread names in Thread Status window';
+  RsJCLIdeThreadNames    = 'Displaying thread names in Thread Status window';
   RsJCLIdeUses           = 'Uses Wizard';
+  RsJCLSimdView          = 'Debug window for XMM registers';
 
 // Hints
   RsHintTarget = 'Installation target';
@@ -254,8 +255,9 @@ resourcestring
     'executable files.';
   RsHintJclExpertAnalyzer = 'Install IDE Project Analyzer.';
   RsHintJclExpertFavorite = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
-  RsHintJclExpertsThrNames = 'Display thread names in Thread Status window IDE extension.';
+  RsHintJclExpertsThreadNames = 'Display thread names in Thread Status window IDE extension.';
   RsHintJclExpertUses = 'Install IDE Uses Wizard.';
+  RsHintJclExpertSimdView = 'Install a debug window of XMM registers (used by SSE instructions)';
   RsHintJclCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
     'the source paths.';
   RsHintJclExcDialog = 'Add selected Exception dialogs to the Object Repository.';
@@ -339,12 +341,15 @@ const
       (Parent: ioJclExperts;             // ioJclExpertFavorite
        Caption: RsJCLIdeFavorite;
        Hint: RsHintJclExpertFavorite),
-      (Parent: ioJclExperts;             // ioJclExpertsThrNames
-       Caption: RsJCLIdeThrNames;
-       Hint: RsHintJclExpertsThrNames),
+      (Parent: ioJclExperts;             // ioJclExpertThreadNames
+       Caption: RsJCLIdeThreadNames;
+       Hint: RsHintJclExpertsThreadNames),
       (Parent: ioJclExperts;             // ioJclExpertUses
        Caption: RsJCLIdeUses;
        Hint: RsHintJclExpertUses),
+      (Parent: ioJclExperts;             // ioJclExpertSimdView
+       Caption: RsJCLSimdView;
+       Hint: RsHintJclExpertSimdView),
       (Parent: ioJclPackages;            // ioJclCopyPackagesHppFiles
        Caption: RsCopyPackagesHppFiles;
        Hint: RsHintJclCopyPackagesHppFiles),
@@ -397,14 +402,16 @@ const
   JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%s%%d0%s';
   JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%s%%d0%s';
   JclIdeUsesDpk     = 'examples\vcl\juw\JediUses%s%%d0%s';
+  JclIdeSimdViewDpk = 'examples\vcl\debugextension\SIMDView\JclSIMDView%s%%d%s';
 
-  ExpertPaths: array[ioJclExpertDebug..ioJclExpertUses] of string =
+  ExpertPaths: array[ioJclExpertDebug..ioJclExpertSimdView] of string =
     (
       JclIdeDebugDpk,
       JclIdeAnalyzerDpk,
       JclIdeFavoriteDpk,
       JclIdeThrNamesDpk,
-      JclIdeUsesDpk
+      JclIdeUsesDpk,
+      JclIdeSimdViewDpk
     );
 
   JclSrcDirOS       = 'windows';
@@ -967,25 +974,24 @@ begin
   if (Target is TJclBCBInstallation) then
     AddNode(TempNode, ioJclCopyPackagesHppFiles);
   {$IFDEF MSWINDOWS}
-  if not (Target is TJclBCBInstallation) then
-  begin
     { TODO :
 It has been reported that IDE experts don't work under Win98.
 Leave these options unchecked for Win9x/WinME until that has been examined. }
-    if IsWinNT then
-      ExpertOptions := [goChecked]
-    else
-      ExpertOptions := [];
-    TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
-    AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
-    AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
-    AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
-    if Target.VersionNumber <= 6 then
-      AddNode(TempNode, ioJclExpertsThrNames, ExpertOptions);
-    //(usc) no packages and tests for D7 & D9 so far
-    if Target.VersionNumber <= 6 then
-      AddNode(TempNode, ioJclExpertUses, ExpertOptions);
-  end;
+  if IsWinNT then
+    ExpertOptions := [goChecked]
+  else
+    ExpertOptions := [];
+  TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
+  AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
+  AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
+  AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
+  if Target.VersionNumber <= 6 then
+    AddNode(TempNode, ioJclExpertThreadNames, ExpertOptions);
+  //(usc) no packages and tests for D7 & D9 so far
+  if Target.VersionNumber <= 6 then
+    AddNode(TempNode, ioJclExpertUses, ExpertOptions);
+  AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
+
   {$ENDIF MSWINDOWS}
   Tool.BPLPath[Target] := StoredBplPath;
   Tool.DCPPath[Target] := StoredDcpPath;
@@ -1056,7 +1062,7 @@ begin
       end;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
-    ioJclExpertDebug..ioJclExpertUses:
+    ioJclExpertDebug..ioJclExpertSimdView:
       Result := InstallExpert(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
     // ioJclExcDialog:
@@ -1112,7 +1118,7 @@ begin
       end;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
-    ioJclExpertDebug..ioJclExpertUses:
+    ioJclExpertDebug..ioJclExpertSimdView:
       Result := UninstallExpert(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: 
     // ioJclExcDialog:
@@ -1168,13 +1174,17 @@ end;
 function TJclInstallation.InstallPackageSourceFile(const Name: string): Boolean;
 const
   {$IFDEF MSWINDOWS}
-  Bcb2MakTemplate = '\BCB.bmk';
+  Bcb2MakTemplate = 'packages\BCB.bmk';
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
-  Bcb2MakTemplate = '/bcb.gmk';
+  Bcb2MakTemplate = 'packages/bcb.gmk';
   {$ENDIF KYLIX}
 var
   PackageFileName: string;
+  PackageDirectory: string;
+{$IFNDEF KYLIX}
+  DpkPackageFileName: string;
+{$ENDIF}
 begin
   Result := True;
   PackageFileName := Distribution.Path + Format(Name, [Target.VersionNumber]);
@@ -1188,9 +1198,10 @@ begin
   if Target is TJclBCBInstallation then
     with TJclBCBInstallation(Target) do
     begin
+      PackageDirectory := PathAddSeparator(ExtractFileDir(PackageFileName));
       // now create .bpi & .lib
       Bpr2Mak.Options.Clear;
-      Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
+      Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.Path + Bcb2MakTemplate));
       {$IFDEF KYLIX}
       SetEnvironmentVar('OBJDIR', LibObjDir);
       SetEnvironmentVar('BPILIBDIR', DcpPath);
@@ -1198,15 +1209,16 @@ begin
       {$ELSE}
       // to satisfy JVCL (and eventually other libraries), create a .dcp file;
       // Note: it is put out to .bpl path to make life easier for JVCL
-      Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
+      DpkPackageFileName := ChangeFileExt(PackageFileName, '.dpk');
+      if FileExists(DpkPackageFileName) then
+        Result := Target.InstallPackage(DpkPackageFileName, BplPath, BplPath);
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', DcpPath);
       Make.AddPathOption('DBPLDIR=', BplPath);
       if OptionSelected(ioJclCopyPackagesHppFiles) then
         Make.AddPathOption('DHPPDIR=', (Target as TJclBCBInstallation).VclIncludeDir);
       {$ENDIF}
-      Result := Result and Target.InstallPackage(PackageFileName, BplPath,
-        DcpPath);
+      Result := Result and Target.InstallPackage(PackageFileName, BplPath, DcpPath);
     end;
   WriteLog('...done.');
   if not Result then
@@ -1283,8 +1295,9 @@ begin
     ioJclExpertDebug,
     ioJclExpertAnalyzer,
     ioJclExpertFavorite,
-    ioJclExpertsThrNames,
-    ioJclExpertUses:
+    ioJclExpertThreadNames,
+    ioJclExpertUses,
+    ioJclExpertSimdView:
       Result := 5;
     ioJclCopyPackagesHppFiles:
       Result := 2;
@@ -1702,6 +1715,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.64  2005/07/28 21:57:49  outchy
+// JEDI Installer can now install design-time packages for C++Builder 5 and 6
+//
 // Revision 1.63  2005/03/24 20:41:32  rrossmair
 // - fixed installation progress computation.
 //

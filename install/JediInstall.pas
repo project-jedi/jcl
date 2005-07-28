@@ -54,8 +54,9 @@ type
       ioJclExpertDebug,
       ioJclExpertAnalyzer,
       ioJclExpertFavorite,
-      ioJclExpertsThrNames,
+      ioJclExpertThreadNames,
       ioJclExpertUses,
+      ioJclExpertSimdView,
       ioJclCopyPackagesHppFiles,
       ioJclExcDialog,
       ioJclExcDialogVCL,
@@ -159,6 +160,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/07/28 21:57:49  outchy
+// JEDI Installer can now install design-time packages for C++Builder 5 and 6
+//
 // Revision 1.12  2005/03/05 06:33:17  rrossmair
 // - support for some conditional defines added.
 //
