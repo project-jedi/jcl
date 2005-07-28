@@ -372,6 +372,7 @@ type
     {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function IsBDSPersonality: Boolean;
     function LibFolderName: string;
     function RemoveFromDebugDCUPath(const Path: string): Boolean;
@@ -379,7 +380,6 @@ type
     function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
     function SubstitutePath(const Path: string): string;
     function SupportsVisualCLX: Boolean;
-    function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
     property DCC: TJclDCC read GetDCC;
@@ -430,6 +430,7 @@ type
     function ConfigFileName(const Extension: string): string; override;
     {$ENDIF KYLIX}
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
+    function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
     property Bpr2Mak: TJclBpr2Mak read FBpr2Mak;
     property VclIncludeDir: string read GetVclIncludeDir;
   end;
@@ -640,6 +641,68 @@ begin
     end;
   finally
     DPKFile.Free;
+  end;
+end;
+
+procedure GetBPKFileInfo(const BPKFileName: string; out RunOnly: Boolean;
+  const LibSuffix: PString = nil; const Description: PString = nil);
+const
+  LFlagsOption     = '<LFLAGS ';
+  DSwitchOption    = '-D';
+  LibSuffixOption  = 'LibSuffix=';
+  GprSwitchOption  = '-Gpr';
+var
+  I, J: Integer;
+  S, SubS1, SubS2, SubS3: string;
+  BPKFile: TStringList;
+  LFlagsPos, DSwitchPos, SemiColonPos, AmpPos, GprPos, LibSuffixPos: Integer;
+begin
+  BPKFile := TStringList.Create;
+  try
+    BPKFile.LoadFromFile(BPKFileName);
+    if Assigned(Description) then
+      Description^ := '';
+    if Assigned(LibSuffix) then
+      LibSuffix^ := '';
+    RunOnly := False;
+    for I := 0 to BPKFile.Count - 1 do
+    begin
+      S := BPKFile[I];
+
+      LFlagsPos := Pos(LFlagsOption,S);
+      if (LFlagsPos > 0) then
+      begin
+        SubS1 := Copy(S,LFlagsPos,Length(S));
+        J := 1;
+        while (Pos('>',SubS1) = 0) and ((I+J)<BPKFile.Count) do
+        begin
+          SubS1 := SubS1 + BPKFile[I+J];
+          Inc(J);
+        end;
+        DSwitchPos := Pos(DSwitchOption,SubS1);
+        GprPos := Pos(GprSwitchOption,SubS1);
+        if DSwitchPos > 0 then
+        begin
+          SubS2 := Copy(SubS1,DSwitchPos,Length(SubS1));
+          SemiColonPos := Pos(';',SubS2);
+          if SemiColonPos > 0 then
+          begin
+            SubS3 := Copy(SubS2,SemiColonPos+1,Length(SubS2));
+            AmpPos := Pos('&',SubS3);
+            if (Description <> nil) and (AmpPos > 0) then
+              Description^ := Copy(SubS3,1,AmpPos-1);
+          end;
+        end;
+        if GprPos > 0 then
+          RunOnly := True;
+      end;
+
+      LibSuffixPos := Pos(LibSuffixOption,S);
+      if (LibSuffix <> nil) and (LibSuffixPos > 0) then
+        LibSuffix^ := Copy(S,11,Length(S));
+    end;
+  finally
+    BPKFile.Free;
   end;
 end;
 
@@ -1006,7 +1069,7 @@ end;
 
 function TJclBorRADToolIdePackages.PackageEntryToFileName(const Entry: string): string;
 begin
-  Result := {$IFDEF MSWINDOWS} PathGetLongName {$ENDIF} (Installation.SubstitutePath(Entry));
+  Result := Installation.SubstitutePath(Entry);
 end;
 
 procedure TJclBorRADToolIdePackages.ReadPackages;
@@ -1051,6 +1114,7 @@ var
 begin
   Result := False;
   for I := 0 to FKnownPackages.Count - 1 do
+  begin
     if AnsiSameText(FileName, PackageEntryToFileName(FKnownPackages.Names[I])) then
     begin
       RemoveDisabled(FileName);
@@ -1059,6 +1123,7 @@ begin
       Result := True;
       Break;
     end;
+  end;
 end;
 
 //=== { TJclBorlandCommandLineTool } =========================================
@@ -2226,6 +2291,8 @@ end;
 function TJclBCBInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   SaveDir, PackagePath: string;
+  BPLFileName, Description, LibSuffix: string;
+  RunOnly: Boolean;
 begin
   if IsDelphiPackage(PackageName) then
     Result := inherited InstallPackage(PackageName, BPLPath, DCPPath)
@@ -2238,9 +2305,37 @@ begin
       // Kylix bpr2mak doesn't like full file names
       Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName));
       Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(StrTrimQuotes(ChangeFileExt(PackageName, '.mak')))]));
+      if Result then
+      begin
+        GetBPKFileInfo(PackageName,RunOnly,@LibSuffix,@Description);
+        if not RunOnly then
+        begin
+          BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
+          Result := IdePackages.AddPackage(BPLFileName, Description);
+        end;
+      end;
     finally
       SetCurrentDir(SaveDir);
     end;
+  end;
+end;
+
+function TJclBCBInstallation.UninstallPackage(const PackageName, BPLPath,
+  DCPPath: string): Boolean;
+var
+  BPLFileName, DCPFileName: string;
+  BaseName, LibSuffix: string;
+  RunOnly, Success: Boolean;
+begin
+  GetBPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  BaseName := PathExtractFileNameNoExt(PackageName);
+  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + '.bpl';
+  DCPFileName := PathAddSeparator(DCPPath) + BaseName + '.dcp';
+  Result := FileDelete(BPLFileName) and FileDelete(DCPFileName);
+  if not RunOnly then
+  begin
+    Success := IdePackages.RemovePackage(BPLFileName);
+    Result := Result and Success;
   end;
 end;
 
@@ -2518,6 +2613,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.42  2005/07/28 21:57:49  outchy
+// JEDI Installer can now install design-time packages for C++Builder 5 and 6
+//
 // Revision 1.41  2005/03/22 03:36:09  rrossmair
 // - fixed PathGetShortName usage for packages
 // - TJclDCC.SetDefaultOptions extended for BCB
