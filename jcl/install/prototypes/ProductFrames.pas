@@ -48,11 +48,12 @@ uses
 
 const
   // Feature masks
+  FID_Expandable           = $08000000;
   FID_RadioButton          = $10000000;
-  FID_Expandable           = $20000000;
+  FID_NoAutoCheck          = $20000000; // do not auto-check when the parent node gets checked
   FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
   FID_Checked              = $80000000;
-  FID_NumberMask           = $0FFFFFFF;
+  FID_NumberMask           = $03FFFFFF;
 
   // Icon indexes
   IcoProduct               = 0;
@@ -99,6 +100,7 @@ type
     { Private declarations }
     FInstallation: TJclBorRADToolInstallation;
     function GetNodeChecked(Node: TTreeNode): Boolean;
+    function IsAutoChecked(Node: TTreeNode): Boolean;
     function IsRadioButton(Node: TTreeNode): Boolean;
     function IsStandAloneParent(Node: TTreeNode): Boolean;
     procedure SetInstallation(Value: TJclBorRADToolInstallation);
@@ -183,6 +185,11 @@ end;
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
+end;
+
+function TProductFrame.IsAutoChecked(Node: TTreeNode): Boolean;
+begin
+  Result := Cardinal(Node.Data) and FID_NoAutoCheck = 0;
 end;
 
 function TProductFrame.IsRadioButton(Node: TTreeNode): Boolean;
@@ -274,9 +281,12 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     N := N.getFirstChild;
     while Assigned(N) do
     begin
-      if not IsRadioButton(N) then
-        UpdateNode(N, C);
-      UpdateTreeDown(N, C);
+      if not C or IsAutoChecked(N) then
+      begin
+        if not IsRadioButton(N) then
+          UpdateNode(N, C);
+        UpdateTreeDown(N, C);
+      end;
       N := N.getNextSibling;
     end;
   end;

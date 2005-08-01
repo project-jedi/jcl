@@ -64,14 +64,16 @@ type
       ioJclExcDialogCLX,
       ioJclHelp,
       ioJclHelpHlp,
-      ioJclHelpChm              // = ioJclLast, see below.
+      ioJclHelpChm,
+      ioJclMakeDemos              // = ioJclLast, see below.
     );
 
   TJediInstallGUIOption =
     (
-      goRadioButton,
       goExpandable,
-      goStandaloneParent, // do not auto-uncheck when all child nodes are unchecked
+      goRadioButton,
+      goNoAutoCheck,            // do not auto-check when the parent node gets checked
+      goStandaloneParent,       // do not auto-uncheck when all child nodes are unchecked
       goChecked
     );
   TJediInstallGUIOptions = set of TJediInstallGUIOption;
@@ -83,7 +85,7 @@ type
   end;
 
 const
-  ioJclLast = ioJclHelpChm;
+  ioJclLast = ioJclMakeDemos;
   Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
 
 type
@@ -160,6 +162,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/08/01 04:52:03  rrossmair
+// - (basic) support for compilation of examples
+//
 // Revision 1.13  2005/07/28 21:57:49  outchy
 // JEDI Installer can now install design-time packages for C++Builder 5 and 6
 //

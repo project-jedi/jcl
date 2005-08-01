@@ -67,6 +67,9 @@ type
     function UninstallRunTimePackage(const BaseName: string): Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
     function LogFileName: string;
+    procedure MakeDemo(const Directory: string; const FileInfo: TSearchRec);
+    procedure MakeDemos(const Directory: string); overload;
+    function MakeDemos: Boolean; overload;
     function MakeUnits(Debug: Boolean): Boolean;
     function MakePath(const FormatStr: string): string;
     function Description(Option: TJediInstallOption): string;
@@ -114,6 +117,7 @@ type
   TJclDistribution = class (TInterfacedObject, IJediInstall)
   private
     FJclPath: string;
+    FJclBinDir: string;
     FLibDirMask: string;
     FLibDebugDirMask: string;
     FLibObjDirMask: string;
@@ -144,6 +148,7 @@ type
     function GetTargetInstall(Installation: TJclBorRADToolInstallation): TJclInstallation;
     procedure InitInstallationTargets;
     procedure InitProgress;
+    function GetExamplesDir: string;
   protected
     constructor Create;
     function DocFileName(const BaseFileName: string): string;
@@ -164,6 +169,8 @@ type
     procedure SetOnProgress(Value: TInstallationProgressEvent);
     procedure SetOnStarting(Value: TInstallationEvent);
     function Supports(Target: TJclBorRADToolInstallation): Boolean;
+    property BinDir: string read FJclBinDir;
+    property ExamplesDir: string read GetExamplesDir;
     property ChmHelpFileName: string read FJclChmHelpFileName;
     property HlpHelpFileName: string read FJclHlpHelpFileName;
     property Installing: Boolean read FInstalling;
@@ -203,6 +210,7 @@ resourcestring
   RsMakeRelease          = 'Release';
   RsMakeDebug            = 'Debug';
   RsMakeVClx             = 'Visual CLX';
+  RsMakeDemos            = 'Make demos';
 
   RsHelpFiles            = 'Help files';
   RsIdeExperts           = 'IDE experts';
@@ -227,11 +235,11 @@ resourcestring
 // Hints
   RsHintTarget = 'Installation target';
   RsHintJCL = 'Select to install JCL for this target.';
-  RsHintJclDefThreadSafe        = 'Thread safe container classes';
-  RsHintJclDefDropObsoleteCode  = 'Drop obsolete code';
-  RsHintJclDefMathPrecSingle    = 'Single float precision';
-  RsHintJclDefMathPrecDouble    = 'Double float precision';
-  RsHintJclDefMathPrecExtended  = 'Extended float precision';
+  RsHintJclDefThreadSafe        = 'Conditionally compile container classes to be thread safe';
+  RsHintJclDefDropObsoleteCode  = 'Do not compile deprecated code';
+  RsHintJclDefMathPrecSingle    = 'type Float = Single';
+  RsHintJclDefMathPrecDouble    = 'type Float = Double';
+  RsHintJclDefMathPrecExtended  = 'type Float = Extended';
   RsHintJclEnv = 'Set selected environment items';
   RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
@@ -267,6 +275,7 @@ resourcestring
   RsHintJclHelp = 'Install JCL help files.';
   RsHintJclHelpHlp = 'Customize Borland Open Help to include JCL help files.';
   RsHintJclHelpChm = '';
+  RsHintJclMakeDemos = 'Make JCL demo applications';
 
 const
   Invalid = -1;
@@ -373,7 +382,10 @@ const
        Hint: RsHintJclHelpHlp),
       (Parent: ioJclHelp;                // ioJclHelpChm
        Caption: RsIdeHelpChm;
-       Hint: RsHintJclHelpChm)
+       Hint: RsHintJclHelpChm),
+      (Parent: ioJCL;                    // ioJclMakeDemos
+       Caption: RsMakeDemos;
+       Hint: RsHintJclMakeDemos)
     );
 
 const
@@ -600,7 +612,7 @@ begin
       Title[ToolsIndex] := HelpTitle;
       Path[ToolsIndex] := HHFileName;
       Parameters[ToolsIndex] := StrDoubleQuote(FDistribution.FJclChmHelpFileName);
-      WorkingDir[ToolsIndex] := FDistribution.FJclPath;
+      WorkingDir[ToolsIndex] := Distribution.Path;
     end;
 end;
 
@@ -810,6 +822,11 @@ begin
   end;
 end;
 
+function TJclDistribution.GetExamplesDir: string;
+begin
+  Result := Path + 'examples';
+end;
+
 function TJclDistribution.GetHint(Option: TJediInstallOption): string;
 begin
   Result := InitData[Option].Hint;
@@ -991,7 +1008,7 @@ Leave these options unchecked for Win9x/WinME until that has been examined. }
   if Target.VersionNumber <= 6 then
     AddNode(TempNode, ioJclExpertUses, ExpertOptions);
   AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
-
+  AddNode(ProductNode, ioJclMakeDemos, [goNoAutoCheck]);
   {$ENDIF MSWINDOWS}
   Tool.BPLPath[Target] := StoredBplPath;
   Tool.DCPPath[Target] := StoredDcpPath;
@@ -1085,6 +1102,8 @@ begin
       AddHelpToOpenHelp;
     ioJclHelpChm:
       AddHelpToIdeTools;
+    ioJclMakeDemos:
+      MakeDemos;
     {$ENDIF MSWINDOWS}
   end;
   if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
@@ -1138,6 +1157,8 @@ begin
       RemoveHelpFromOpenHelp;
     ioJclHelpChm:
       RemoveHelpFromIdeTools;
+    ioJclMakeDemos:
+      ;
     {$ENDIF MSWINDOWS}
   end;
   if not Distribution.Installing then
@@ -1244,6 +1265,36 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
+procedure TJclInstallation.MakeDemo(const Directory: string; const FileInfo: TSearchRec);
+var
+  CfgFileName: string;
+begin
+  SetCurrentDir(Directory);
+  CfgFileName := ChangeFileExt(FileInfo.Name, '.cfg');
+  StringToFile(CfgFileName, Format(
+    '-e%s' + AnsiLineBreak +    // Exe output dir
+    '-u%s' + AnsiLineBreak +    // Unit directories
+    '-i%s',                     // Include path
+    [Distribution.BinDir, LibDir, Distribution.SourceDir]));
+  Target.DCC.Execute(FileInfo.Name);
+  FileDelete(CfgFileName);
+end;
+
+procedure TJclInstallation.MakeDemos(const Directory: string);
+begin
+  EnumFiles(Directory + '*.dpr', MakeDemo);
+end;
+
+function TJclInstallation.MakeDemos: Boolean;
+var
+  SaveDir: string;
+begin
+  Result := True;
+  SaveDir := GetCurrentDir;
+  EnumDirectories(Distribution.ExamplesDir, MakeDemos);
+  SetCurrentDir(SaveDir);
+end;
+
 function TJclInstallation.MakeUnits(Debug: Boolean): Boolean;
 var
   I: Integer;
@@ -1308,6 +1359,8 @@ begin
     ioJclHelpHlp,
     ioJclHelpChm:
       Result := 1;
+    ioJclMakeDemos:
+      Result := 20;
   else
     Result := 0;
   end;
@@ -1423,8 +1476,8 @@ begin
   SaveOption(ioTarget);
   for Option := ioJCL to ioJclLast do
     SaveOption(Option);
-  Distribution.FIniFile.WriteString(Target.Name, 'BPL-Path', BplPath);
-  Distribution.FIniFile.WriteString(Target.Name, 'DCP-Path', DcpPath);
+  Distribution.FIniFile.WriteString(Target.Name, 'BPL-Path', Tool.BPLPath[Target]);
+  Distribution.FIniFile.WriteString(Target.Name, 'DCP-Path', Tool.DCPPath[Target]);
 end;
 
 function TJclInstallation.StoredBplPath: string;
@@ -1549,6 +1602,7 @@ begin
   FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
   FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
   FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
+  FJclBinDir := FJclPath + 'bin';
   FJclSourceDir := FJclPath + 'source';
 
   FJclSourcePath := '';
@@ -1715,6 +1769,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.65  2005/08/01 04:52:02  rrossmair
+// - (basic) support for compilation of examples
+//
 // Revision 1.64  2005/07/28 21:57:49  outchy
 // JEDI Installer can now install design-time packages for C++Builder 5 and 6
 //
