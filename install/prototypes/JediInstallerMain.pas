@@ -278,19 +278,9 @@ var
 begin
   ParentNode := TTreeNode(Parent);
   Checked := goChecked in GUIOptions;
-  {
-  if Assigned(Parent) and not (goRadioButton in GUIOptions) then
-  begin
-    Assert(Parent is TTreeNode);
-    if Checked and Assigned(Parent) then
-      if ParentNode.ImageIndex <> IcoChecked then
-      begin
-        Checked := False;
-        Exclude(GUIOptions, goChecked);
-      end;
-  end;
-  }
   FeatureID := Cardinal(Ord(Option)) + Flag[goChecked in GUIOptions];
+  if goNoAutoCheck in GUIOptions then
+    FeatureID := FeatureID + FID_NoAutoCheck;
   if goStandAloneParent in GUIOptions then
     FeatureID := FeatureID + FID_StandAloneParent;
   if goRadioButton in GUIOptions  then
