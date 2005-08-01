@@ -11,26 +11,21 @@ unit StackTrackDLLsComLibrary_TLB;
 // manual modifications will be lost.                                         
 // ************************************************************************ //
 
-// PASTLWTR : 1.2
-// File generated on 21.12.2004 17:45:42 from Type Library described below.
+// PASTLWTR : $Revision$
+// File generated on 1.8.2005 02:48:29 from Type Library described below.
 
-// ************************************************************************  //
-// Type Lib: I:\Quellen\jedi\jcl\examples\vcl\debug\stacktrack\StackTrackDLLsComLibrary.tlb (1)
-// LIBID: {D4935E5D-790E-48CA-B360-0165C1305153}
-// LCID: 0
+// ************************************************************************ //
+// Type Lib: D:\Quellen\jedi\jcl\examples\vcl\debug\stacktrack\StackTrackDLLsComLibrary.tlb (1)
+// IID\LCID: {D4935E5D-790E-48CA-B360-0165C1305153}\0
 // Helpfile: 
-// HelpString: StackTrackDLLsComLibrary Library
 // DepndLst: 
 //   (1) v2.0 stdole, (F:\WINNT\system32\stdole2.tlb)
+//   (2) v4.0 StdVCL, (F:\WINNT\system32\STDVCL40.DLL)
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$WARN SYMBOL_PLATFORM OFF}
-{$WRITEABLECONST ON}
-{$VARPROPSETTER ON}
 interface
 
-uses Windows, ActiveX, Classes, Graphics, StdVCL, Variants;
-  
+uses Windows, ActiveX, Classes, Graphics, OleServer, OleCtrls, StdVCL;
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -69,8 +64,8 @@ type
 // *********************************************************************//
   IStackTrackDllsTest = interface(IUnknown)
     ['{26473046-CCEB-4671-9AB1-2216EF4D2164}']
-    function Error1: HResult; stdcall;
-    function Error2: HResult; stdcall;
+    function  Error1: HResult; stdcall;
+    function  Error2: HResult; stdcall;
   end;
 
 // *********************************************************************//
