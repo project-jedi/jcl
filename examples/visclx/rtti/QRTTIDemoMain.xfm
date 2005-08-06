@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 104
-  Top = 211
-  Width = 975
-  Height = 466
+  Left = 154
+  Top = 154
+  Width = 1192
+  Height = 834
   HorzScrollBar.Range = 315
   ActiveControl = mmResult
   Caption = 'Form1'
@@ -12,16 +12,15 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Pitch = fpVariable
   Font.Style = []
+  Font.Weight = 40
   ParentFont = False
-  PixelsPerInch = 96
   Scaled = False
-  TextHeight = 18
-  TextWidth = 5
+  PixelsPerInch = 96
   object mmResult: TMemo
     Left = 0
     Top = 0
-    Width = 967
-    Height = 411
+    Width = 1184
+    Height = 779
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.CharSet = fcsLatin1
     Font.Color = clText
@@ -29,13 +28,14 @@ object Form1: TForm1
     Font.Name = 'Lucida Console'
     Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 0
   end
   object Button1: TButton
     Left = 0
-    Top = 414
+    Top = 782
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -45,7 +45,7 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 80
-    Top = 414
+    Top = 782
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -55,7 +55,7 @@ object Form1: TForm1
   end
   object Button3: TButton
     Left = 160
-    Top = 414
+    Top = 782
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -65,7 +65,7 @@ object Form1: TForm1
   end
   object Button4: TButton
     Left = 240
-    Top = 414
+    Top = 782
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
