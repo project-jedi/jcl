@@ -1,4 +1,4 @@
-unit RTTIDemoMain;
+unit QRTTIDemoMain;
 
 interface
 
@@ -33,7 +33,7 @@ implementation
 {$R *.xfm}
 
 uses
-  JclRTTI, TypInfo;
+  JclSysUtils, JclRTTI, TypInfo;
 
 type
   TDifficultEvent = procedure(const Sender: TObject; var I: Integer; out Stuff;

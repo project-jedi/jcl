@@ -1,8 +1,8 @@
-program RTTIExample;
+program QRTTIDemo;
 
 uses
   QForms,
-  RTTIDemoMain in 'RTTIDemoMain.pas' {Form1};
+  QRTTIDemoMain in 'QRTTIDemoMain.pas' {Form1};
 
 {$R *.res}
 
