@@ -2523,6 +2523,7 @@ var
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
       RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
+      if StrIsSubSet(VersionNumbers[I], ['.', '0'..'9']) then
       begin
         VersionKeyName := KeyName + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
@@ -2613,6 +2614,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.43  2005/08/06 11:33:50  rrossmair
+// - TJclBorRADToolInstallations.ReadInstallations: fixed processing of HK*\Software\Borland\BDS\* registry keys
+//
 // Revision 1.42  2005/07/28 21:57:49  outchy
 // JEDI Installer can now install design-time packages for C++Builder 5 and 6
 //
