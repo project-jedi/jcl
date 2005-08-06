@@ -30,7 +30,6 @@ object StretchDemoForm: TStretchDemoForm
     Height = 544
     ActivePage = OriginalPage
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     OnChanging = PageControlChanging
     object OriginalPage: TTabSheet
@@ -60,9 +59,6 @@ object StretchDemoForm: TStretchDemoForm
       ImageIndex = 1
       OnResize = StretchedPageResize
       OnShow = StretchedPageShow
-      DesignSize = (
-        772
-        516)
       object Bevel1: TBevel
         Left = 0
         Top = 0
@@ -97,6 +93,7 @@ object StretchDemoForm: TStretchDemoForm
           item
             Caption = 'Size'
           end>
+        HideSelection = False
         TabOrder = 0
         ViewStyle = vsReport
         OnClick = FileListViewClick

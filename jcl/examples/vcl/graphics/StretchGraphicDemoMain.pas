@@ -1,6 +1,6 @@
 //
 // Robert Rossmair, 2002-09-22
-//          revised 2003-01-12
+//          revised 2005-06-26
 //
 
 {$I jcl.inc}
@@ -95,13 +95,15 @@ type
     FLastImagePage: TTabSheet;
     FFileName: string;
     FDir: string;
-    FResamplingFilter: TResamplingFilter;
+    FWidth: Integer;
+    FHeight: Integer;
     FPreserveAspectRatio: Boolean;
+    FResamplingFilter: TResamplingFilter;
     procedure AddToFileList(const Directory: string; const FileInfo: TSearchRec);
     procedure FileSearchTerminated(const ID: TFileSearchTaskID; const Aborted: Boolean);
     function ChangeDirectory: Boolean;
     procedure DoStretch;
-    procedure LoadFile(const FileName: string);
+    procedure LoadFile(const AFileName: string);
     procedure InvalidateStretched;
     procedure UpdateCaption;
     procedure UpdateFileList;
@@ -109,11 +111,13 @@ type
     procedure UpdateStretched;
     function GetFileListIndex: Integer;
     procedure SetFileListIndex(const Value: Integer);
+    procedure SetFileName(const Value: string);
     {$IFDEF VCL}
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DropFiles;
     {$ENDIF VCL}
   protected
     property FileListIndex: Integer read GetFileListIndex write SetFileListIndex;
+    property FileName: string read FFileName write SetFileName;
   end;
 
 var
@@ -230,7 +234,7 @@ function TStretchDemoForm.ChangeDirectory: Boolean;
 var
   Dir, D: string;
 begin
-  D := ExtractFileDir(FFileName);
+  D := ExtractFileDir(FileName);
   Dir := PathAddSeparator(D);
   Result := (Dir <> FDir) and (Pos(FDir, Dir) <> 1);
   if Result then
@@ -257,10 +261,9 @@ end;
 procedure TStretchDemoForm.FileSearchTerminated(const ID: TFileSearchTaskID; const Aborted: Boolean);
 begin
   with FileListView do
-  begin
-    Selected := FindCaption(0, FFileName, False, True, False);
-    ItemFocused := Selected;
-  end;
+    Selected := FindCaption(0, FileName, False, True, False);
+  StatusBar.Panels[0].Text := IntToStr(FileListView.Items.Count);
+  StatusBar.Panels[1].Text := FileName;
   UpdateNavButtons;
 end;
 
@@ -276,15 +279,19 @@ begin
   end;
 end;
 
-procedure TStretchDemoForm.LoadFile;
+procedure TStretchDemoForm.LoadFile(const AFileName: string);
 begin
-  if not IsGraphicFile(FileName) then
+  if not IsGraphicFile(AFileName) then
     Exit;
-  FFileName := FileName;
+  FileName := AFileName;
   OriginalImage.Picture.LoadFromFile(FileName);
   if not ChangeDirectory then
     UpdateNavButtons;
+
   UpdateCaption;
+  with FileListView do
+    Selected := FindCaption(0, FileName, False, True, False);
+
   StretchedImage.Picture.Graphic := nil;
   InvalidateStretched;
   if PageControl.ActivePage = FilesPage then
@@ -332,13 +339,18 @@ begin
       else
         H := W * Height div Width;
     end;
-  StretchedImage.SetBounds(1, 1, W, H);
-  JclGraphics.Stretch(W, H, FResamplingFilter, 0, OriginalImage.Picture.Graphic,
-    StretchedImage.Picture.Bitmap);
-  with OriginalImage.Picture do
-    StatusBar.Panels[0].Text := Format('Original: %d x %d', [Width, Height]);
-  with StretchedImage.Picture do
-    StatusBar.Panels[1].Text := Format('Resized: %d x %d', [Width, Height]);
+  if (FWidth <> W) or (FHeight <> H) then
+  begin
+    StretchedImage.Picture.Graphic := nil;
+    JclGraphics.Stretch(W, H, FResamplingFilter, 0, OriginalImage.Picture.Graphic,
+      StretchedImage.Picture.Bitmap);
+    with OriginalImage.Picture do
+      StatusBar.Panels[0].Text := Format('Original: %d x %d', [Width, Height]);
+    with StretchedImage.Picture do
+      StatusBar.Panels[1].Text := Format('Resized: %d x %d', [Width, Height]);
+    FWidth := W;
+    FHeight := H;
+  end;
 end;
 
 procedure TStretchDemoForm.PreserveAspectRatio1Click(Sender: TObject);
@@ -374,8 +386,8 @@ end;
 
 procedure TStretchDemoForm.UpdateCaption;
 begin
-  if FFileName <> '' then
-    Caption := Format('JCL Picture Viewer - %s', [FFileName]);
+  if FileName <> '' then
+    Caption := Format('JCL Picture Viewer - %s', [FileName]);
 end;
 
 procedure TStretchDemoForm.UpdateNavButtons;
@@ -420,18 +432,19 @@ end;
 
 procedure TStretchDemoForm.UpdateStretched;
 begin
-  if (StretchedImage.Picture.Graphic = nil) and StretchedPage.Visible then
+  if StretchedPage.Visible then
     DoStretch;
 end;
 
 procedure TStretchDemoForm.StretchedPageResize(Sender: TObject);
 begin
-  InvalidateStretched;
+  UpdateStretched;
 end;
 
 procedure TStretchDemoForm.InvalidateStretched;
 begin
-  StretchedImage.Picture.Graphic := nil;
+  FWidth := 0;
+  FHeight := 0;
   UpdateStretched;
 end;
 
@@ -474,7 +487,6 @@ begin
   end
   else
     FileListView.Items[Value].Selected := True;
-  FileListView.ItemFocused := FileListView.Selected;
 end;
 
 procedure TStretchDemoForm.FileListViewKeyDown(Sender: TObject;
@@ -482,6 +494,11 @@ procedure TStretchDemoForm.FileListViewKeyDown(Sender: TObject;
 begin
   if Key = VK_RETURN then
     LoadSelected;
+end;
+
+procedure TStretchDemoForm.SetFileName(const Value: string);
+begin
+  FFileName := PathGetLongName(Value);
 end;
 
 end.
