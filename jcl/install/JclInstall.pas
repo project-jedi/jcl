@@ -44,6 +44,7 @@ type
     FLibObjDir: string;
     FDefines: TStringList;
     FUnits: TStringList;
+    FExcludedDemos: TStringList;
     FOnWriteLog: TTextHandler;
     procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
       const DialogIconFileName: string; const Designer: string; const Ancestor: string = '');
@@ -92,6 +93,8 @@ type
     function DcpPath: string;
     function CheckDirectories: Boolean;
     procedure CleanupRepository;
+    function ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
+    procedure InitDemoExclusionList;
     function InstallSelectedOptions: Boolean;
     function UninstallSelectedOptions: Boolean;
     function OptionSelected(Option: TJediInstallOption): Boolean;
@@ -149,6 +152,7 @@ type
     procedure InitInstallationTargets;
     procedure InitProgress;
     function GetExamplesDir: string;
+    function GetDemosPath: string;
   protected
     constructor Create;
     function DocFileName(const BaseFileName: string): string;
@@ -171,6 +175,7 @@ type
     function Supports(Target: TJclBorRADToolInstallation): Boolean;
     property BinDir: string read FJclBinDir;
     property ExamplesDir: string read GetExamplesDir;
+    property DemosPath: string read GetDemosPath;
     property ChmHelpFileName: string read FJclChmHelpFileName;
     property HlpHelpFileName: string read FJclHlpHelpFileName;
     property Installing: Boolean read FInstalling;
@@ -461,19 +466,23 @@ const
   HHFileName        = 'HH.EXE';
 
 resourcestring
-  RsStatusMessage   = 'Installing %s...';
-  RsStatusDetailMessage = 'Installing %s for %s...';
-  RsUninstallMessage = 'Removing %s...';
-  RsInstallFailed   = 'Installation of %s failed, see %s for details.';
-  RsInvalidBplPath  = LineBreak + 'Invalid BPL path "%s"';
-  RsInvalidDcpPath  = LineBreak + 'Invalid DCP path "%s"';
-  RsLibDescriptor   = '%s library %sunits for %s';
+  RsStatusMessage                   = 'Installing %s...';
+  RsStatusDetailMessage             = 'Installing %s for %s...';
+  RsUninstallMessage                = 'Removing %s...';
+  RsBuildingMessage                 = 'Building %s...';
+  RsBuildingDemosMessage            = 'Building demo projects...';
+  RsBuildingDemosByTargetMessage    = 'Building demo projects by %s...';
+  RsCompilingMessage                = 'Compiling %s...';
+  RsInstallFailed                   = 'Installation of %s failed, see %s for details.';
+  RsInvalidBplPath                  = LineBreak + 'Invalid BPL path "%s"';
+  RsInvalidDcpPath                  = LineBreak + 'Invalid DCP path "%s"';
+  RsLibDescriptor                   = '%s library %sunits for %s';
   {$IFDEF VisualCLX}
-  RsReadmeFileName  = 'Readme.html';
+  RsReadmeFileName                  = 'Readme.html';
   {$ELSE}
-  RsReadmeFileName  = 'Readme.txt';
+  RsReadmeFileName                  = 'Readme.txt';
   {$ENDIF}
-  RsIniFileName = 'JCL-install.ini';
+  RsIniFileName                     = 'JCL-install.ini';
 
 function CreateJclInstall: IJediInstall;
 begin
@@ -572,6 +581,7 @@ destructor TJclInstallation.Destroy;
 var
   I: Integer;
 begin
+  FExcludedDemos.Free;
   for I := 0 to FUnits.Count - 1 do
     FUnits.Objects[I].Free;
   FDefines.Free;
@@ -716,7 +726,7 @@ begin
     UnitType := 'debug ';
   LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Target.Name]);
   WriteLog(Format(LineBreak + 'Making %s', [LibDescriptor]));
-  Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
+  Tool.UpdateStatus(Format(RsCompilingMessage, [LibDescriptor]));
   Path := Format('%s' + PathSeparator + '%s', [Distribution.SourceDir, SubDir]);
   UnitList := Units[SubDir];
   with Target.DCC do
@@ -822,9 +832,25 @@ begin
   end;
 end;
 
+function TJclInstallation.ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
+var
+  Editions: string;
+begin
+  Name := ExcludeList[Index];
+  if Pos('=', Name) > 0 then
+    Name := ExcludeList.Names[Index];
+  Editions := ExcludeList.Values[Name];
+  Result := (Editions = '') or (StrIPos(BorRADToolEditionIDs[Target.Edition], Editions) > 0);
+end;
+
 function TJclDistribution.GetExamplesDir: string;
 begin
   Result := Path + 'examples';
+end;
+
+function TJclDistribution.GetDemosPath: string;
+begin
+  Result := PathAddSeparator(Path + 'examples');
 end;
 
 function TJclDistribution.GetHint(Option: TJediInstallOption): string;
@@ -904,6 +930,42 @@ begin
   end
   else
     Result := FUnits.Objects[I] as TStrings;
+end;
+
+procedure TJclInstallation.InitDemoExclusionList;
+var
+  I: Integer;
+  Strings: TStrings;
+  FileName: string;
+begin
+  if not Assigned(FExcludedDemos) then
+  begin
+    FExcludedDemos := TStringList.Create;
+    FExcludedDemos.LoadFromFile(MakePath(Distribution.DemosPath + '%s%d.exc'));
+    Strings := TStringList.Create;
+    try
+      I := 0;
+      while I < FExcludedDemos.Count do
+      begin
+        if ExcludeEdition(FExcludedDemos, I, FileName) then
+          if ExtractFileExt(FileName) = '.exc' then
+          begin
+            Strings.LoadFromFile(Distribution.DemosPath + FileName);
+            FExcludedDemos.AddStrings(Strings);
+            FExcludedDemos.Delete(I);
+          end
+          else
+          begin
+            FExcludedDemos[I] := Distribution.DemosPath + FileName;
+            Inc(I);
+          end
+        else
+          FExcludedDemos.Delete(I);
+      end;
+    finally
+      Strings.Free;
+    end;
+  end;
 end;
 
 function TJclInstallation.InitOptions: Boolean;
@@ -991,25 +1053,29 @@ begin
   if (Target is TJclBCBInstallation) then
     AddNode(TempNode, ioJclCopyPackagesHppFiles);
   {$IFDEF MSWINDOWS}
+  if (Target.VersionNumber < 9) or (Target.Edition <> deStd) then
+  // Delphi 2005 Personal doesn't allow experts
+  begin
     { TODO :
-It has been reported that IDE experts don't work under Win98.
-Leave these options unchecked for Win9x/WinME until that has been examined. }
-  if IsWinNT then
-    ExpertOptions := [goChecked]
-  else
-    ExpertOptions := [];
-  TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
-  AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
-  AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
-  AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
-  if Target.VersionNumber <= 6 then
-    AddNode(TempNode, ioJclExpertThreadNames, ExpertOptions);
-  //(usc) no packages and tests for D7 & D9 so far
-  if Target.VersionNumber <= 6 then
-    AddNode(TempNode, ioJclExpertUses, ExpertOptions);
-  AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
-  AddNode(ProductNode, ioJclMakeDemos, [goNoAutoCheck]);
+      It has been reported that IDE experts don't work under Win98.
+      Leave these options unchecked for Win9x/WinME until that has been examined. }
+    if IsWinNT then
+      ExpertOptions := [goChecked]
+    else
+      ExpertOptions := [];
+    TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
+    AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
+    AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
+    AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
+    if Target.VersionNumber <= 6 then
+      AddNode(TempNode, ioJclExpertThreadNames, ExpertOptions);
+    //(usc) no packages and tests for D7 & D9 so far
+    if Target.VersionNumber <= 6 then
+      AddNode(TempNode, ioJclExpertUses, ExpertOptions);
+    AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
+  end;
   {$ENDIF MSWINDOWS}
+  AddNode(ProductNode, ioJclMakeDemos, [goNoAutoCheck]);
   Tool.BPLPath[Target] := StoredBplPath;
   Tool.DCPPath[Target] := StoredDcpPath;
 end;
@@ -1269,6 +1335,9 @@ procedure TJclInstallation.MakeDemo(const Directory: string; const FileInfo: TSe
 var
   CfgFileName: string;
 begin
+  if FExcludedDemos.IndexOf(Directory + FileInfo.Name) >= 0 then
+    Exit;
+  WriteLog(Format(LineBreak + RsBuildingMessage, [Directory + FileInfo.Name]));
   SetCurrentDir(Directory);
   CfgFileName := ChangeFileExt(FileInfo.Name, '.cfg');
   StringToFile(CfgFileName, Format(
@@ -1289,8 +1358,11 @@ function TJclInstallation.MakeDemos: Boolean;
 var
   SaveDir: string;
 begin
+  Tool.UpdateStatus(Format(RsBuildingDemosByTargetMessage, [Target.Name]));
+  WriteLog(LineBreak + RsBuildingDemosMessage + LineBreak);
   Result := True;
   SaveDir := GetCurrentDir;
+  InitDemoExclusionList;
   EnumDirectories(Distribution.ExamplesDir, MakeDemos);
   SetCurrentDir(SaveDir);
 end;
@@ -1360,7 +1432,7 @@ begin
     ioJclHelpChm:
       Result := 1;
     ioJclMakeDemos:
-      Result := 20;
+      Result := 50;
   else
     Result := 0;
   end;
@@ -1769,6 +1841,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.66  2005/08/06 11:19:34  rrossmair
+// - demo building improved: handles exclusion files etc.
+//
 // Revision 1.65  2005/08/01 04:52:02  rrossmair
 // - (basic) support for compilation of examples
 //
