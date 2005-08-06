@@ -15,7 +15,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi vcl.bpi CJcl.bpi designide.bpi JclDebugIdeC60.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi CJcl.bpi designide.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;.."/>
     <PATHRC value=".;"/>
