@@ -707,6 +707,7 @@ begin
       if I < Length(Bucket.Entries) - 1 then
         MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
+      Dec(FCount);
       Break;
     end;
 end;
@@ -1042,6 +1043,7 @@ begin
       if I < Length(Bucket.Entries) - 1 then
         MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
+      Dec(FCount);
       Break;
     end;
 end;
@@ -1390,6 +1392,7 @@ begin
       if I < Length(Bucket.Entries) - 1 then
         MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
+      Dec(FCount);
       Break;
     end;
 end;
@@ -1756,6 +1759,7 @@ begin
       if I < Length(Bucket.Entries) - 1 then
         MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
+      Dec(FCount);
       Break;
     end;
 end;
@@ -2091,6 +2095,7 @@ begin
       if I < Length(Bucket.Entries) - 1 then
         MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
       Dec(Bucket.Count);
+      Dec(FCount);
       Break;
     end;
 end;
@@ -2119,6 +2124,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/08/07 14:14:34  outchy
+// IT3044: The Count was not decremented after the removal of an item.
+//
 // Revision 1.6  2005/05/05 20:08:42  ahuser
 // JCL.NET support
 //
