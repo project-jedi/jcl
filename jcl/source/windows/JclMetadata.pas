@@ -983,15 +983,15 @@ type
     function IsModifierType(const AElementType: TJclClrElementType): Boolean;
     function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
 
-    function Inc(var DataPtr: PByteArray; Step: Integer = 1): PByte;
+    function Inc(var DataPtr: PJclByteArray; Step: Integer = 1): PByte;
 
-    function UncompressedDataSize(DataPtr: PByteArray): Integer;
-    function UncompressData(DataPtr: PByteArray; var Value: DWord): Integer;
-    function UncompressToken(DataPtr: PByteArray; var Token: TJclClrToken): Integer;
-    function UncompressCallingConv(DataPtr: PByteArray): Byte;
-    function UncompressSignedInt(DataPtr: PByteArray; var Value: Integer): Integer;
-    function UncompressElementType(DataPtr: PByteArray): TJclClrElementType;
-    function UncompressTypeSignature(DataPtr: PByteArray): string;
+    function UncompressedDataSize(DataPtr: PJclByteArray): Integer;
+    function UncompressData(DataPtr: PJclByteArray; var Value: DWord): Integer;
+    function UncompressToken(DataPtr: PJclByteArray; var Token: TJclClrToken): Integer;
+    function UncompressCallingConv(DataPtr: PJclByteArray): Byte;
+    function UncompressSignedInt(DataPtr: PJclByteArray; var Value: Integer): Integer;
+    function UncompressElementType(DataPtr: PJclByteArray): TJclClrElementType;
+    function UncompressTypeSignature(DataPtr: PJclByteArray): string;
   public
     constructor Create(const ABlob: TJclClrBlobRecord);
 
@@ -1993,7 +1993,7 @@ begin
   Result := AElementType < etPtr;
 end;
 
-function TJclClrSignature.UncompressedDataSize(DataPtr: PByteArray): Integer;
+function TJclClrSignature.UncompressedDataSize(DataPtr: PJclByteArray): Integer;
 begin
   if (DataPtr[0] and $80) = 0 then
     Result := 1
@@ -2004,7 +2004,7 @@ begin
     Result := 4;
 end;
 
-function TJclClrSignature.UncompressData(DataPtr: PByteArray; var Value: DWord): Integer;
+function TJclClrSignature.UncompressData(DataPtr: PJclByteArray; var Value: DWord): Integer;
 begin
   if (DataPtr[0] and $80) = 0 then // 0??? ????
   begin
@@ -2028,7 +2028,7 @@ begin
       [DataPtr[0], DataPtr[1], DataPtr[2], DataPtr[3]]);
 end;
 
-function TJclClrSignature.UncompressToken(DataPtr: PByteArray; var Token: TJclClrToken): Integer;
+function TJclClrSignature.UncompressToken(DataPtr: PJclByteArray; var Token: TJclClrToken): Integer;
 const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
@@ -2036,12 +2036,12 @@ begin
   Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
 end;
 
-function TJclClrSignature.UncompressCallingConv(DataPtr: PByteArray): Byte;
+function TJclClrSignature.UncompressCallingConv(DataPtr: PJclByteArray): Byte;
 begin
   Result := DataPtr[0];
 end;
 
-function TJclClrSignature.UncompressSignedInt(DataPtr: PByteArray; var Value: Integer): Integer;
+function TJclClrSignature.UncompressSignedInt(DataPtr: PJclByteArray; var Value: Integer): Integer;
 var
   Data: DWord;
 begin
@@ -2060,7 +2060,7 @@ begin
   end;
 end;
 
-function TJclClrSignature.UncompressElementType(DataPtr: PByteArray): TJclClrElementType;
+function TJclClrSignature.UncompressElementType(DataPtr: PJclByteArray): TJclClrElementType;
 begin
   for Result := Low(TJclClrElementType) to High(TJclClrElementType) do
     if ClrElementTypeMapping[Result] = (DataPtr[0] and $7F) then
@@ -2069,7 +2069,7 @@ end;
 
 function TJclClrSignature.UncompressFieldSignature: string;
 var
-  DataPtr: PByteArray;
+  DataPtr: PJclByteArray;
 begin
   DataPtr := Blob.Memory;
 
@@ -2078,7 +2078,7 @@ begin
   Result := UncompressTypeSignature(DataPtr);
 end;
 
-function TJclClrSignature.UncompressTypeSignature(DataPtr: PByteArray): string;
+function TJclClrSignature.UncompressTypeSignature(DataPtr: PJclByteArray): string;
 const
   SimpleTypeName: array [etVoid..etString] of PChar =
    ('void', 'bool', 'char',
@@ -2123,10 +2123,10 @@ begin
   end;
 end;
 
-function TJclClrSignature.Inc(var DataPtr: PByteArray; Step: Integer): PByte;
+function TJclClrSignature.Inc(var DataPtr: PJclByteArray; Step: Integer): PByte;
 begin
   Result := PByte(Integer(DataPtr) + Step);
-  DataPtr := PByteArray(Result);
+  DataPtr := PJclByteArray(Result);
 end;
 
 function TJclClrSignature.ReadValue: DWORD;
@@ -4811,6 +4811,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/08/07 13:09:57  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.14  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

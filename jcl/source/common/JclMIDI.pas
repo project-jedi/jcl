@@ -624,7 +624,7 @@ procedure TJclMIDIOut.SendMessage(const Data: array of Byte);
 begin
   if IsRunningStatus(Data[0]) then
     {$IFDEF FPC}
-    DoSendMessage(PByteArray(@Data[1])^)
+    DoSendMessage(PJclByteArray(@Data[1])^)
     {$ELSE}
     DoSendMessage(Slice(Data, 1))
     {$ENDIF FPC}
@@ -796,6 +796,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/08/07 13:09:54  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.12  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
