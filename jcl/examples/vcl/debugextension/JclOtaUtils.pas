@@ -113,7 +113,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, ImageHlp,
-  JclFileUtils, JclRegistry, JclStrings;
+  JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
 
 var
   ActionList: TList = nil;
@@ -354,9 +354,15 @@ var
 {$ENDIF COMPÏLER6_UP}
 begin
   FEnvVariables.Clear;
+
+  // read user and system environment variables
+  GetEnvironmentVars(FEnvVariables,false);
+
+  // read delphi environment variables
   {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
+
     EnvVarKeyName := BaseRegistryKey + EnvironmentVarsKey;
     if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
@@ -365,6 +371,8 @@ begin
     EnvNames.Free;
   end;
   {$ENDIF COMPILER6_UP}
+
+  // add the delphi directory
   FEnvVariables.Values['DELPHI'] := RootDir;
 end;
 
@@ -554,6 +562,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/08/07 13:42:38  outchy
+// IT3115: Adding system and user environment variables.
+//
 // Revision 1.8  2005/07/26 17:41:06  outchy
 // Icons can now be placed in the IDE's toolbars via the customize dialog. They are restored at the IDE's startup.
 //
