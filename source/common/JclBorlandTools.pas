@@ -751,7 +751,8 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         Name := TempList[I];
-        if RegGetDataType(RootKey, Key, Name, DataType) and (DataType = REG_SZ) then
+        if RegGetDataType(RootKey, Key, Name, DataType) and
+          ((DataType = REG_SZ) or (DataType = REG_EXPAND_SZ) or (DataType = REG_BINARY)) then
           TempList[I] := Name + '=' + RegReadStringDef(RootKey, Key, Name, '');
       end;
       List.AddStrings(TempList);
@@ -2614,6 +2615,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.44  2005/08/07 13:22:09  outchy
+// IT3116: Added REG_EXPAND_SZ and REG_BINARY to the list of valid keys.
+//
 // Revision 1.43  2005/08/06 11:33:50  rrossmair
 // - TJclBorRADToolInstallations.ReadInstallations: fixed processing of HK*\Software\Borland\BDS\* registry keys
 //
