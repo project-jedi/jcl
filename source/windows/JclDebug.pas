@@ -47,7 +47,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
-  JclFileUtils, JclPeImage, JclSynch, JclTD32;
+  JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 // Diagnostics
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
@@ -466,7 +466,7 @@ type
       0:
         (StackFrame: PStackFrame);
       1:
-        (DumpPtr: PByteArray);
+        (DumpPtr: PJclByteArray);
   end;
 
   TJclStackInfoItem = class(TObject)
@@ -3990,6 +3990,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.20  2005/08/07 13:09:56  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.19  2005/06/05 09:53:34  uschuster
 // improved TJclBinDebugScanner.Cache... (mantis #2952)
 //

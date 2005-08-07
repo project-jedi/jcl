@@ -3173,7 +3173,7 @@ end;
 // Helper function for GetMacAddress()
 // Converts the adapter_address array to a string
 
-function AdapterToString(Adapter: PByteArray): string;
+function AdapterToString(Adapter: PJclByteArray): string;
 begin
   Result := Format('%2.2x-%2.2x-%2.2x-%2.2x-%2.2x-%2.2x',
    [Integer(Adapter[0]), Integer(Adapter[1]),
@@ -3309,7 +3309,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     ErrorStatus, ErrorIndex: TAsnInteger32;
     DTmp: Integer;
     Ret: Boolean;
-    MAC: PByteArray;
+    MAC: PJclByteArray;
   begin
     if LoadSnmp then
     try
@@ -3349,7 +3349,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
                     Ret := SnmpUtilOidNCmp(@VarBind[1].name, @MIB_ifMACEntAddr, MIB_ifMACEntAddr.idLength) = SNMP_ERRORSTATUS_NOERROR;
                     if Ret and (VarBind[1].value.address.stream <> nil) then
                     begin
-                      MAC := PByteArray(VarBind[1].value.address.stream);
+                      MAC := PJclByteArray(VarBind[1].value.address.stream);
                       if not CompareMem(MAC, @NullAdapterAddress, SizeOf(NullAdapterAddress)) then
                         Addresses.Add(AdapterToString(MAC));
                     end;
@@ -5120,6 +5120,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.47  2005/08/07 13:09:55  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.46  2005/07/03 19:29:27  ahuser
 // Fixed another CLR IFDEFs bug
 //

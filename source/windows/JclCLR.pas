@@ -212,16 +212,16 @@ type
 
   TJclClrBlobRecord = class(TJclReferenceMemoryStream)
   private
-    FPtr: PByteArray;
+    FPtr: PJclByteArray;
     FOffset: DWORD;
-    function GetData: PByteArray;
+    function GetData: PJclByteArray;
   protected
-    constructor Create(const AStream: TJclClrStream; APtr: PByteArray);
+    constructor Create(const AStream: TJclClrStream; APtr: PJclByteArray);
   public
     function Dump(Indent: string): string;
-    property Ptr: PByteArray read FPtr;
+    property Ptr: PJclByteArray read FPtr;
     property Offset: DWORD read FOffset;
-    property Data: PByteArray read GetData;
+    property Data: PJclByteArray read GetData;
   end;
 
   TJclClrBlobStream = class(TJclClrStream)
@@ -679,7 +679,7 @@ end;
 
 //=== { TJclClrBlobRecord } ==================================================
 
-constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream; APtr: PByteArray);
+constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream; APtr: PJclByteArray);
 var
   b: Byte;
   AData: Pointer;
@@ -760,9 +760,9 @@ begin
   end;
 end;
 
-function TJclClrBlobRecord.GetData: PByteArray;
+function TJclClrBlobRecord.GetData: PJclByteArray;
 begin
-  Result := PByteArray(LongInt(Memory) + Position);
+  Result := PJclByteArray(LongInt(Memory) + Position);
 end;
 
 //=== { TJclClrBlobStream } ==================================================
@@ -1740,6 +1740,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/08/07 13:09:56  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.14  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

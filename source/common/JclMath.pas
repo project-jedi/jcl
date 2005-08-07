@@ -454,19 +454,19 @@ function GetParity(Buffer: PByte; Len: Integer): Boolean;
 
 { CRC }
 
-function Crc16_P(X: PByteArray; N: Integer; Crc: Word = 0): Word;
+function Crc16_P(X: PJclByteArray; N: Integer; Crc: Word = 0): Word;
 function Crc16(const X: array of Byte; N: Integer; Crc: Word = 0): Word;
 function Crc16_A(const X: array of Byte; Crc: Word = 0): Word;
 
-function CheckCrc16_P(X: PByteArray; N: Integer; Crc: Word): Integer;
+function CheckCrc16_P(X: PJclByteArray; N: Integer; Crc: Word): Integer;
 function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer;
 function CheckCrc16_A(var X: array of Byte; Crc: Word): Integer;
 
-function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
+function Crc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
 
-function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
+function CheckCrc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
@@ -3502,7 +3502,7 @@ begin
     // Result >= 0 No. of faulty data bit
 end;
 
-function Crc16_P(X: PByteArray; N: Integer; Crc: Word = 0): Word;
+function Crc16_P(X: PJclByteArray; N: Integer; Crc: Word = 0): Word;
 var
   I: Integer;
 begin
@@ -3518,7 +3518,7 @@ begin
   end;
 end;
 
-function CheckCrc16_P(X: PByteArray; N: Integer; Crc: Word): Integer;
+function CheckCrc16_P(X: PJclByteArray; N: Integer; Crc: Word): Integer;
 // checks and corrects a single bit in up to 2^15-16 Bit -> 2^12-2 = 4094 Byte
 var
   I, J: Integer;
@@ -3588,7 +3588,7 @@ end;
 // The CRC Table can be generated like this:
 // const Crc16Start0 = 0;  !!
 
-function Crc16_Bitwise(X: PByteArray; N: Integer; Crc: Word; Polynom: Word): Word;
+function Crc16_Bitwise(X: PJclByteArray; N: Integer; Crc: Word; Polynom: Word): Word;
 const
   Crc16Start0 = 0;   //Generating the table
 var
@@ -3713,7 +3713,7 @@ begin
     // Result >= 0 No. of faulty data bit
 end;
 
-function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
+function Crc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 var
   I: Integer;
 begin
@@ -3731,7 +3731,7 @@ begin
   end;
 end;
 
-function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
+function CheckCrc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal): Integer;
 // checks and corrects a single bit in up to 2^31-32 Bit -> 2^28-4 = 268435452 Byte
 var
   I, J: Integer;
@@ -3801,7 +3801,7 @@ end;
 // The CRC Table can be generated like this:
 // const Crc32Start0 = 0;  !!
 
-function Crc32_Bitwise(X: PByteArray; N: Integer; Crc: Cardinal; Polynom: Cardinal) : Cardinal;
+function Crc32_Bitwise(X: PJclByteArray; N: Integer; Crc: Cardinal; Polynom: Cardinal) : Cardinal;
 const
   Crc32Start0 = 0;   //Generating the table
 var
@@ -4193,6 +4193,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.26  2005/08/07 13:09:54  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.25  2005/05/05 20:08:43  ahuser
 // JCL.NET support
 //

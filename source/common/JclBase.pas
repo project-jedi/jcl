@@ -109,7 +109,7 @@ type
   PPointer = ^Pointer;
   {$IFDEF RTL140_UP}
   {$IFDEF CLR}
-  PByteArray = array of Byte;
+  PJclByteArray = array of Byte;
   {$ELSE}
   PByte = System.PByte;
   Int8 = ShortInt;
@@ -152,8 +152,12 @@ type
   TLargeInteger = Int64;
 
 {$IFNDEF CLR}
-// Redefinition of TULargeInteger to relieve dependency on Windows.pas
+// Redefinition of PByteArray to avoid range check exceptions.
+type
+  TJclByteArray = array[0..MaxInt div SizeOf(Byte) - 1] of Byte;
+  PJclByteArray = ^TByteArray;
 
+// Redefinition of TULargeInteger to relieve dependency on Windows.pas
 type
   PULargeInteger = ^TULargeInteger;
   TULargeInteger = record
@@ -442,6 +446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.39  2005/08/07 13:09:54  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.38  2005/05/05 20:08:42  ahuser
 // JCL.NET support
 //

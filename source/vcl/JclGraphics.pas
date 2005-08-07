@@ -1570,13 +1570,10 @@ end;
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
-type
-  TByteArray = array [0..MaxLongint - 1] of Byte;
-  PByteArray = ^TByteArray;
 var
   Antialias: TBitmap;
   X, Y: Integer;
-  Line1, Line2, Line: PByteArray;
+  Line1, Line2, Line: PJclByteArray;
 begin
  Assert(Bitmap <> nil);
  if Bitmap.PixelFormat <> pf24bit then

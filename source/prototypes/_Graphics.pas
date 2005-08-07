@@ -1611,13 +1611,10 @@ end;
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
-type
-  TByteArray = array [0..MaxLongint - 1] of Byte;
-  PByteArray = ^TByteArray;
 var
   Antialias: TBitmap;
   X, Y: Integer;
-  Line1, Line2, Line: PByteArray;
+  Line1, Line2, Line: PJclByteArray;
 begin
  Assert(Bitmap <> nil);
  if Bitmap.PixelFormat <> pf24bit then
@@ -5685,6 +5682,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.24  2005/08/07 13:09:55  outchy
+// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
+//
 // Revision 1.23  2005/04/03 14:53:11  outchy
 // Donation of Dejoy, modifications of prototypes
 //
