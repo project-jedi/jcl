@@ -112,7 +112,7 @@ begin
     // This allows the Stop method to compensate for it and return a more
     // accurate result. Thanks to John O'Harrow (john att elmcrest dott demon dott co dott uk)
     TmpOverhead := 0;
-    for Count := 0 to Iterations do
+    for Count := 0 to Iterations-1 do
     begin
       Start;
       Stop;
@@ -209,6 +209,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/08/07 12:24:02  outchy
+// IT3137: Fixed the Iteration count in the loop.
+//
 // Revision 1.12  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
