@@ -430,19 +430,19 @@ type
     L3LinesPerSector: Byte;
     // todo: TLB
     case CpuType: Byte of
-      CPU_TYPE_INTEL     : (IntelSpecific: TIntelSpecific;);
-      CPU_TYPE_CYRIX     : (CyrixSpecific: TCyrixSpecific;);
-      CPU_TYPE_AMD       : (AMDSpecific: TAMDSpecific;);
-      CPU_TYPE_TRANSMETA : (TransmetaSpecific: TTransmetaSpecific;);
-      CPU_TYPE_VIA       : (ViaSpecific: TViaSpecific;);
+      CPU_TYPE_INTEL: (IntelSpecific: TIntelSpecific;);
+      CPU_TYPE_CYRIX: (CyrixSpecific: TCyrixSpecific;);
+      CPU_TYPE_AMD: (AMDSpecific: TAMDSpecific;);
+      CPU_TYPE_TRANSMETA: (TransmetaSpecific: TTransmetaSpecific;);
+      CPU_TYPE_VIA: (ViaSpecific: TViaSpecific;);
   end;
 
 const
-  VendorIDIntel     : array [0..11] of Char = 'GenuineIntel';
-  VendorIDCyrix     : array [0..11] of Char = 'CyrixInstead';
-  VendorIDAMD       : array [0..11] of Char = 'AuthenticAMD';
-  VendorIDTransmeta : array [0..11] of Char = 'GenuineTMx86';
-  VendorIDVIA       : array [0..11] of Char = 'CentaurHauls';
+  VendorIDIntel: array [0..11] of Char = 'GenuineIntel';
+  VendorIDCyrix: array [0..11] of Char = 'CyrixInstead';
+  VendorIDAMD: array [0..11] of Char = 'AuthenticAMD';
+  VendorIDTransmeta: array [0..11] of Char = 'GenuineTMx86';
+  VendorIDVIA: array [0..11] of Char = 'CentaurHauls';
 
 // Constants to be used with Feature Flag set of a CPU
 // eg. IF (Features and FPU_FLAG = FPU_FLAG) THEN CPU has Floating-Point unit on
@@ -5120,6 +5120,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.48  2005/08/08 07:02:56  marquardt
+// minor style fix
+//
 // Revision 1.47  2005/08/07 13:09:55  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //
