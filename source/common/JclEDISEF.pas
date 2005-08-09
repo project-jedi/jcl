@@ -1407,6 +1407,27 @@ end;
 
 procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
+
+  {$IFNDEF CLR}
+  function ToPChar(const S: string): PChar;
+  begin
+    Result := PChar(S);
+  end;
+  {$ELSE}
+  function ToPChar(const S: string): string;
+  var
+    I: Integer;
+  begin
+    for I := 1 to Length(S) do
+      if S[I] = #0 then
+      begin
+        Result := Copy(S, 1, I - 1);
+        Exit;
+      end;
+    Result := S;
+  end;
+  {$ENDIF ~CLR}
+
 var
   Temp: TStringList;
   ListItem: TEDISEFDataObjectListItem;
@@ -1437,27 +1458,27 @@ begin
       begin
         Segment.FMaskNumberSpecified := True;
         if K = 0 then
-          Segment.FMaskNumber := StrToInt(Copy(PChar(Temp[0]), J + 1, Length(PChar(Temp[0])) - J))
+          Segment.FMaskNumber := StrToInt(Copy(ToPChar(Temp[0]), J + 1, Length(ToPChar(Temp[0])) - J))
         else
-          Segment.FMaskNumber := StrToInt(Copy(PChar(Temp[0]), J + 1, (K - J) - 1));
+          Segment.FMaskNumber := StrToInt(Copy(ToPChar(Temp[0]), J + 1, (K - J) - 1));
       end;
       // Parse Explicitly Assigned Ordinal
       if K <> 0 then
-        Segment.Ordinal := StrToInt(Copy(PChar(Temp[0]), K + 1, Length(PChar(Temp[0])) - K));
+        Segment.Ordinal := StrToInt(Copy(ToPChar(Temp[0]), K + 1, Length(ToPChar(Temp[0])) - K));
       // Parse Segment Id
       if (J = 0) and (K = 0) then
       begin
         if I = 1 then
           Segment.Id := Temp[0]
         else // Had to cast Temp[0] as PChar here because of a bug during runtime
-          Segment.Id := Copy(PChar(Temp[0]), I, Length(PChar(Temp[0])) - 1);
+          Segment.Id := Copy(ToPChar(Temp[0]), I, Length(ToPChar(Temp[0])) - 1);
       end
-      else                                               
+      else
       begin
-        K := Length(PChar(Temp[0])) - 1;  
+        K := Length(ToPChar(Temp[0])) - 1;
         if (J < K) and (J <> 0) then
           K := J;
-        Segment.Id := Copy(PChar(Temp[0]), I, K - I);
+        Segment.Id := Copy(ToPChar(Temp[0]), I, K - I);
       end;
     end;
     ListItem := SEFFile.SEGS.FindItemByName(Segment.Id);

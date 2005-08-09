@@ -377,6 +377,8 @@ type
   end;
   {$ENDIF CLR}
 
+
+{$IFNDEF CLR}
 procedure NodeIterate_CollectNodes(AUserData: PUserData; ANode: PPHashNode);
 var
   PPCnn: PPCollectNodeNode;
@@ -390,6 +392,7 @@ begin
   PCnn^.Str := ANode^^.Str;
   PCnn^.Ptr := ANode^^.Ptr;
 end;
+{$ENDIF ~CLR}
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var
@@ -858,6 +861,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2005/08/09 10:30:21  ahuser
+// JCL.NET changes
+//
 // Revision 1.14  2005/05/05 20:08:44  ahuser
 // JCL.NET support
 //

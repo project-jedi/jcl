@@ -71,7 +71,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF CLR}
   System.IO, System.Configuration, System.Diagnostics, System.Collections,
-  System.Net,
+  System.Net, System.ComponentModel,
   {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -2218,14 +2218,26 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 var
   Processes: array of Process;
   I: Integer;
+  HasModules: Boolean;
 begin
   Result := True;
   Processes := Process.GetProcesses;
   for I := 0 to High(Processes) do
-    if FullPath then
+  begin
+    try
+      HasModules := Processes[I].Modules.Count > 0;
+    except
+      on Win32Exception do
+        HasModules := False;
+    end;
+    if not HasModules then
+      List.Add(Processes[I].ProcessName)
+    else
+     if FullPath then
       List.Add(Processes[I].MainModule.FileName)
     else
       List.Add(Processes[I].MainModule.ModuleName);
+  end;
 end;
 {$ELSE}
 
@@ -5103,6 +5115,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.51  2005/08/09 10:30:22  ahuser
+// JCL.NET changes
+//
 // Revision 1.50  2005/08/09 07:39:28  marquardt
 // forgot to compile last (bad) changes
 //

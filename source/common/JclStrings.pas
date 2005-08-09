@@ -54,6 +54,9 @@ unit JclStrings;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   {$IFDEF CLR}
   System.Text,
@@ -342,6 +345,10 @@ function StrToFloatSafe(const S: string): Float;
 function StrToIntSafe(const S: string): Integer;
 procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 
+{$IFDEF CLR}
+function ArrayOf(List: TStrings): TDynStringArray; overload;
+{$ENDIF CLR}
+
 // Exceptions
 type
   EJclStringError = EJclError;
@@ -351,10 +358,6 @@ implementation
 uses
   {$IFDEF CLR}
   System.Globalization,
-  {$ELSE}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
@@ -824,7 +827,7 @@ function StrCharPosLower(const S: string; CharPos: Integer): string;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
-    Result[CharPos] := JclStrings.CharLower(Result[CharPos]);
+    Result[CharPos] := CharLower(Result[CharPos]);
 end;
 
 function StrCharPosUpper(const S: string; CharPos: Integer): string;
@@ -2469,7 +2472,7 @@ end;
 
 function StrILastPos(const SubStr, S: string): Integer;
 begin
-  Result := JclStrings.StrLastPos(StrUpper(SubStr), StrUpper(S));
+  Result := StrLastPos(StrUpper(SubStr), StrUpper(S));
 end;
 
 function StrIPos(const SubStr, S: string): Integer;
@@ -4040,6 +4043,22 @@ begin
    Count := Max(0, Min(Count, StrLen+1 - Index));
 end;
 
+{$IFDEF CLR}
+function ArrayOf(List: TStrings): TDynStringArray;
+var
+  I: Integer;
+begin
+  if List <> nil then
+  begin
+    SetLength(Result, List.Count);
+    for I := 0 to List.Count - 1 do
+      Result[I] := List[I];
+  end
+  else
+    Result := nil;
+end;
+{$ENDIF CLR}
+
 {$IFNDEF CLR}
 initialization
   LoadCharTypes;  // this table first
@@ -4084,6 +4103,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.40  2005/08/09 10:30:21  ahuser
+// JCL.NET changes
+//
 // Revision 1.39  2005/05/05 20:08:44  ahuser
 // JCL.NET support
 //
