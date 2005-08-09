@@ -25,6 +25,7 @@
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Mark Vaughan                                                                                   }
+{   Andreas Hausladen                                                                              }
 {   unknown                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -565,6 +566,11 @@ begin
 end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
+
+// to keep name space usage low
+const
+  JclMathSgn: function(const X: Float): Integer = Sgn;
+  JclMathPower: function(const Base, Exponent: Float): Float = Power;
 
 // to be independent from JclLogic
 
@@ -3271,7 +3277,7 @@ begin
     Result := 0
   else
   begin
-    if JclMath.Sgn(FT) = JclMath.Sgn(FN) then
+    if JclMathSgn(FT) = JclMathSgn(FN) then
       Result := 1
     else
       Result := -1;
@@ -3342,7 +3348,7 @@ end;
 
 procedure TJclRational.Power(const R: TJclRational);
 begin
-  Assign(JclMath.Power(GetAsFloat, R.GetAsFloat));
+  Assign(JclMathPower(GetAsFloat, R.GetAsFloat));
 end;
 
 procedure TJclRational.Power(const V: Integer);
@@ -3351,13 +3357,13 @@ var
 begin
   T := FT;
   N := FN;
-  FT := Round(JclMath.Power(T, V));
-  FN := Round(JclMath.Power(N, V));
+  FT := Round(JclMathPower(T, V));
+  FN := Round(JclMathPower(N, V));
 end;
 
 procedure TJclRational.Power(const V: Float);
 begin
-  Assign(JclMath.Power(FT, V) / JclMath.Power(FN, V));
+  Assign(JclMathPower(FT, V) / JclMathPower(FN, V));
 end;
 
 procedure TJclRational.Sqrt;
@@ -4193,6 +4199,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.27  2005/08/09 10:30:21  ahuser
+// JCL.NET changes
+//
 // Revision 1.26  2005/08/07 13:09:54  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //

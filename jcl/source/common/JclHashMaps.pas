@@ -52,7 +52,7 @@ type
 
   TJclStrEntry = record
     Key: string;
-    Value: TObject
+    Value: TObject;
   end;
 
   TJclEntry = record
@@ -2124,6 +2124,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/08/09 10:30:21  ahuser
+// JCL.NET changes
+//
 // Revision 1.7  2005/08/07 14:14:34  outchy
 // IT3044: The Count was not decremented after the removal of an item.
 //

@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Alexander Radchenko                                                                            }
+{   Andreas Hausladen                                                                              }
 {   Anthony Steele                                                                                 }
 {   Azret Botash                                                                                   }
 {   Barry Kelly                                                                                    }
@@ -54,6 +55,9 @@ unit JclAnsiStrings; // former JclStrings
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   {$IFDEF CLR}
   System.Text,
@@ -342,6 +346,10 @@ function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
 
+{$IFDEF CLR}
+function ArrayOf(List: TStrings): TDynStringArray; overload;
+{$ENDIF CLR}
+
 // Exceptions
 type
   EJclStringError = EJclError;
@@ -351,10 +359,6 @@ implementation
 uses
   {$IFDEF CLR}
   System.Globalization,
-  {$ELSE}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
@@ -862,7 +866,7 @@ function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
-    Result[CharPos] := JclAnsiStrings.CharLower(Result[CharPos]);
+    Result[CharPos] := CharLower(Result[CharPos]);
 end;
 
 function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
@@ -2454,7 +2458,7 @@ end;
 
 function StrILastPos(const SubStr, S: AnsiString): Integer;
 begin
-  Result := JclAnsiStrings.StrLastPos(StrUpper(SubStr), StrUpper(S));
+  Result := StrLastPos(StrUpper(SubStr), StrUpper(S));
 end;
 
 function StrIPos(const SubStr, S: AnsiString): integer;
@@ -3928,6 +3932,22 @@ begin
    Count := Max(0, Min(Count, StrLen+1 - Index));
 end;
 
+{$IFDEF CLR}
+function ArrayOf(List: TStrings): TDynStringArray;
+var
+  I: Integer;
+begin
+  if List <> nil then
+  begin
+    SetLength(Result, List.Count);
+    for I := 0 to List.Count - 1 do
+      Result[I] := List[I];
+  end
+  else
+    Result := nil;
+end;
+{$ENDIF CLR}
+
 initialization
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
@@ -3970,6 +3990,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.2  2005/08/09 10:30:21  ahuser
+// JCL.NET changes
+//
 // Revision 1.1  2005/05/05 20:31:01  ahuser
 // JCL.NET support
 //

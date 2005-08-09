@@ -16,7 +16,8 @@
 { Portions created by Raymond Alexander are Copyright Raymond Alexander. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Raymond Alexander (rayspostbox3), Robert Marquardt, Robert Rossmair, Petr Vones                }
+{   Raymond Alexander (rayspostbox3), Robert Marquardt, Robert Rossmair, Petr Vones,               }
+{   Andreas Hausladen                                                                              }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -120,6 +121,12 @@ type
 
   TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDisassembled);
 
+  {$IFDEF CLR}
+  TCustomData = TObject;
+  {$ELSE}
+  TCustomData = Pointer; // backward compatibility
+  {$ENDIF CLR}
+
   TEDIDataObject = class(TEDIObject)
   private
     procedure SetDelimiters(const Delimiters: TEDIDelimiters);
@@ -132,8 +139,8 @@ type
     FDelimiters: TEDIDelimiters;
     FErrorLog: TStrings;
     FSpecPointer: TEDIObject;
-    FCustomData1: Pointer;
-    FCustomData2: Pointer;
+    FCustomData1: TCustomData;
+    FCustomData2: TCustomData;
     function GetData: string;
     procedure SetData(const Data: string);
   public
@@ -142,8 +149,8 @@ type
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
     property SpecPointer: TEDIObject read FSpecPointer write FSpecPointer;
-    property CustomData1: Pointer read FCustomData1 write FCustomData1;
-    property CustomData2: Pointer read FCustomData2 write FCustomData2;
+    property CustomData1: TCustomData read FCustomData1 write FCustomData1;
+    property CustomData2: TCustomData read FCustomData2 write FCustomData2;
   published
     property State: TEDIDataObjectDataState read FState;
     property Data: string read GetData write SetData;
@@ -647,7 +654,11 @@ begin
   if IndexIsValid(Index) then
     FEDIDataObjects.Delete(Index)
   else
+    {$IFNDEF CLR}
     raise EJclEDIError.CreateResFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
+    {$ELSE}
+    raise EJclEDIError.CreateFmt(RsEDIError010, [Self.ClassName, IntToStr(Index)]);
+    {$ENDIF ~CLR}
 end;
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
@@ -670,7 +681,11 @@ begin
     end;
   end
   else
+    {$IFNDEF CLR}
     raise EJclEDIError.CreateResFmt(@RsEDIError011, [IntToStr(Index)]);
+    {$ELSE}
+    raise EJclEDIError.CreateFmt(RsEDIError011, [IntToStr(Index)]);
+    {$ENDIF ~CLR}
 end;
 
 destructor TEDIDataObjectGroup.Destroy;
@@ -687,15 +702,15 @@ begin
       if Index <= FEDIDataObjects.Count - 1 then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateResFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+          raise EJclEDIError.CreateFmt(RsEDIError006, [Self.ClassName, IntToStr(Index)]);
         Result := FEDIDataObjects[Index];
       end
       else
-        raise EJclEDIError.CreateResFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateFmt(RsEDIError005, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateFmt(RsEDIError004, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateFmt(RsEDIError003, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
@@ -771,11 +786,11 @@ begin
           FEDIDataObjects[Index].Parent := Self;
       end
       else
-        raise EJclEDIError.CreateResFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateFmt(RsEDIError009, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateFmt(RsEDIError008, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateFmt(RsEDIError007, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
@@ -1452,7 +1467,11 @@ begin
       Result := Low(FStack);
   end
   else
+    {$IFNDEF CLR}
     raise EJclEDIError.CreateResFmt(@RsEDIError057, [IntToStr(Index)]);
+    {$ELSE}
+    raise EJclEDIError.CreateFmt(RsEDIError057, [IntToStr(Index)]);
+    {$ENDIF ~CLR}
 end;
 
 function TEDILoopStack.GetSize: Integer;
@@ -1472,11 +1491,11 @@ begin
       if Index <= High(FStack) then
         Result := FStack[Index]
       else
-        raise EJclEDIError.CreateResFmt(@RsEDIError054, [IntToStr(Index)])
+        raise EJclEDIError.CreateFmt(RsEDIError054, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateResFmt(@RsEDIError055, [IntToStr(Index)])
+      raise EJclEDIError.CreateFmt(RsEDIError055, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateResFmt(@RsEDIError056, [IntToStr(Index)]);
+    raise EJclEDIError.CreateFmt(RsEDIError056, [IntToStr(Index)]);
 end;
 
 procedure TEDILoopStack.Pop(Index: Integer);
