@@ -955,10 +955,10 @@ const
 const
   IntelCacheDescription: array [0..50] of TCacheInfo = (
     (D: $00; Family: cfOther;                                                                          I: RsIntelCacheDescr00),
-    (D: $01; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;               Entries:  32;     I: RsIntelCacheDescr01), // Instruction TLB: 4 KByte Pages, 4-way set associative, 32 entries
-    (D: $02; Family: cfInstructionTLB;     Size: 4096; WaysOfAssoc: 4;               Entries:  2;      I: RsIntelCacheDescr02), // Instruction TLB: 4 MByte Pages, 4-way set associative, 2 entries
-    (D: $03; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;               Entries:  64;     I: RsIntelCacheDescr03), // Data TLB: 4KByte Pages, 4-way set associative, 64 entries
-    (D: $04; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;               Entries:  8;      I: RsIntelCacheDescr04), // Data TLB: 4MByte Pages, 4-way set associative, 8 entries
+    (D: $01; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;               Entries: 32;      I: RsIntelCacheDescr01), // Instruction TLB: 4 KByte Pages, 4-way set associative, 32 entries
+    (D: $02; Family: cfInstructionTLB;     Size: 4096; WaysOfAssoc: 4;               Entries: 2;       I: RsIntelCacheDescr02), // Instruction TLB: 4 MByte Pages, 4-way set associative, 2 entries
+    (D: $03; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;               Entries: 64;      I: RsIntelCacheDescr03), // Data TLB: 4KByte Pages, 4-way set associative, 64 entries
+    (D: $04; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;               Entries: 8;       I: RsIntelCacheDescr04), // Data TLB: 4MByte Pages, 4-way set associative, 8 entries
     (D: $06; Family: cfL1InstructionCache; Size: 8;    WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr06), // 1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size
     (D: $08; Family: cfL1InstructionCache; Size: 16;   WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr08), // 1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size
     (D: $0A; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 2; LineSize: 32;                   I: RsIntelCacheDescr0A), // 1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size
@@ -975,12 +975,12 @@ const
     (D: $43; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr43), // 2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size
     (D: $44; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr44), // 2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size
     (D: $45; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr45), // 2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size
-    (D: $50; Family: cfInstructionTLB;     Size: 4096;                 Entries:6 4;                    I: RsIntelCacheDescr50), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries
-    (D: $51; Family: cfInstructionTLB;     Size: 4096;                 Entries:1 28;                   I: RsIntelCacheDescr51), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries
-    (D: $52; Family: cfInstructionTLB;     Size: 4096;                 Entries:2 56;                   I: RsIntelCacheDescr52), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries
-    (D: $5B; Family: cfDataTLB;            Size: 4096;                 Entries:6 4;                    I: RsIntelCacheDescr5B), // Data TLB: 4 KByte and 4 MByte pages, 64 entries
-    (D: $5C; Family: cfDataTLB;            Size: 4096;                 Entries:1 28;                   I: RsIntelCacheDescr5C), // Data TLB: 4 KByte and 4 MByte pages,128 entries
-    (D: $5D; Family: cfDataTLB;            Size: 4096;                 Entries:2 56;                   I: RsIntelCacheDescr5D), // Data TLB: 4 KByte and 4 MByte pages,256 entries
+    (D: $50; Family: cfInstructionTLB;     Size: 4096;                               Entries: 64;      I: RsIntelCacheDescr50), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries
+    (D: $51; Family: cfInstructionTLB;     Size: 4096;                               Entries: 128;     I: RsIntelCacheDescr51), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries
+    (D: $52; Family: cfInstructionTLB;     Size: 4096;                               Entries: 256;     I: RsIntelCacheDescr52), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries
+    (D: $5B; Family: cfDataTLB;            Size: 4096;                               Entries: 64;      I: RsIntelCacheDescr5B), // Data TLB: 4 KByte and 4 MByte pages, 64 entries
+    (D: $5C; Family: cfDataTLB;            Size: 4096;                               Entries: 128;     I: RsIntelCacheDescr5C), // Data TLB: 4 KByte and 4 MByte pages,128 entries
+    (D: $5D; Family: cfDataTLB;            Size: 4096;                               Entries: 256;     I: RsIntelCacheDescr5D), // Data TLB: 4 KByte and 4 MByte pages,256 entries
     (D: $60; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr60), // 1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size
     (D: $66; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr66), // 1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size
     (D: $67; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr67), // 1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size
@@ -1001,8 +1001,8 @@ const
     (D: $85; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 8; LineSize: 32;                   I: RsIntelCacheDescr85), // 2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size
     (D: $86; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr86), // 2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size
     (D: $87; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr87), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size
-    (D: $B0; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4; Entries:1 28;                   I: RsIntelCacheDescrB0), // Instruction TLB: 4 KByte Pages, 4-way set associative, 128 entries
-    (D: $B3; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4; Entries:1 28;                   I: RsIntelCacheDescrB3), // Data TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $B0; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;                Entries: 128;    I: RsIntelCacheDescrB0), // Instruction TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $B3; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;                Entries: 128;    I: RsIntelCacheDescrB3), // Data TLB: 4 KByte Pages, 4-way set associative, 128 entries
     (D: $F0; Family: cfOther;                                                                          I: RsIntelCacheDescrF0), // 64-Byte Prefetching
     (D: $F1; Family: cfOther;                                                                          I: RsIntelCacheDescrF1)  // 128-Byte Prefetching
   );
@@ -5103,6 +5103,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.50  2005/08/09 07:39:28  marquardt
+// forgot to compile last (bad) changes
+//
 // Revision 1.49  2005/08/09 07:35:42  marquardt
 // minor style fix
 //
