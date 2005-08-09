@@ -363,9 +363,10 @@ type
     CurrentPerformance: Cardinal;
   end;
 
-  TCacheFamily = ( cfInstructionTLB, cfDataTLB,
-                   cfL1InstructionCache, cfL1DataCache,
-                   cfL2Cache, cfL3Cache, cfTrace, cfOther );
+  TCacheFamily = (
+    cfInstructionTLB, cfDataTLB,
+    cfL1InstructionCache, cfL1DataCache,
+    cfL2Cache, cfL3Cache, cfTrace, cfOther);
 
   TCacheInfo = record
     D: Byte;
@@ -452,9 +453,7 @@ const
 // eg. IF (Features and FPU_FLAG = 0) then CPU has Floating-Point unit on chip.
 
 const
-
-{ 32 bits in a DWord Value }
-
+  { 32 bits in a DWord Value }
   BIT_0       = $00000001;
   BIT_1       = $00000002;
   BIT_2       = $00000004;
@@ -488,18 +487,17 @@ const
   BIT_30      = $40000000;
   BIT_31      = DWORD($80000000);
 
-{ Standard Feature Flags }
-
-  FPU_FLAG    = BIT_0 ; // Floating-Point unit on chip
-  VME_FLAG    = BIT_1 ; // Virtual Mode Extention
-  DE_FLAG     = BIT_2 ; // Debugging Extention
-  PSE_FLAG    = BIT_3 ; // Page Size Extention
-  TSC_FLAG    = BIT_4 ; // Time Stamp Counter
-  MSR_FLAG    = BIT_5 ; // Model Specific Registers
-  PAE_FLAG    = BIT_6 ; // Physical Address Extention
-  MCE_FLAG    = BIT_7 ; // Machine Check Exception
-  CX8_FLAG    = BIT_8 ; // CMPXCHG8 Instruction
-  APIC_FLAG   = BIT_9 ; // Software-accessible local APIC on Chip
+  { Standard Feature Flags }
+  FPU_FLAG    = BIT_0;  // Floating-Point unit on chip
+  VME_FLAG    = BIT_1;  // Virtual Mode Extention
+  DE_FLAG     = BIT_2;  // Debugging Extention
+  PSE_FLAG    = BIT_3;  // Page Size Extention
+  TSC_FLAG    = BIT_4;  // Time Stamp Counter
+  MSR_FLAG    = BIT_5;  // Model Specific Registers
+  PAE_FLAG    = BIT_6;  // Physical Address Extention
+  MCE_FLAG    = BIT_7;  // Machine Check Exception
+  CX8_FLAG    = BIT_8;  // CMPXCHG8 Instruction
+  APIC_FLAG   = BIT_9;  // Software-accessible local APIC on Chip
   BIT_10_FLAG = BIT_10; // Reserved, do not count on value
   SEP_FLAG    = BIT_11; // Fast System Call
   MTRR_FLAG   = BIT_12; // Memory Type Range Registers
@@ -523,18 +521,17 @@ const
   BIT_30_FLAG = BIT_30; // Reserved, do not count on value
   PBE_FLAG    = BIT_31; // Pending Break Enable
 
-{ Standard Intel Feature Flags }
-
-  INTEL_FPU    = BIT_0 ; // Floating-Point unit on chip
-  INTEL_VME    = BIT_1 ; // Virtual Mode Extention
-  INTEL_DE     = BIT_2 ; // Debugging Extention
-  INTEL_PSE    = BIT_3 ; // Page Size Extention
-  INTEL_TSC    = BIT_4 ; // Time Stamp Counter
-  INTEL_MSR    = BIT_5 ; // Model Specific Registers
-  INTEL_PAE    = BIT_6 ; // Physical Address Extention
-  INTEL_MCE    = BIT_7 ; // Machine Check Exception
-  INTEL_CX8    = BIT_8 ; // CMPXCHG8 Instruction
-  INTEL_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  { Standard Intel Feature Flags }
+  INTEL_FPU    = BIT_0;  // Floating-Point unit on chip
+  INTEL_VME    = BIT_1;  // Virtual Mode Extention
+  INTEL_DE     = BIT_2;  // Debugging Extention
+  INTEL_PSE    = BIT_3;  // Page Size Extention
+  INTEL_TSC    = BIT_4;  // Time Stamp Counter
+  INTEL_MSR    = BIT_5;  // Model Specific Registers
+  INTEL_PAE    = BIT_6;  // Physical Address Extention
+  INTEL_MCE    = BIT_7;  // Machine Check Exception
+  INTEL_CX8    = BIT_8;  // CMPXCHG8 Instruction
+  INTEL_APIC   = BIT_9;  // Software-accessible local APIC on Chip
   INTEL_BIT_10 = BIT_10; // Reserved, do not count on value
   INTEL_SEP    = BIT_11; // Fast System Call
   INTEL_MTRR   = BIT_12; // Memory Type Range Registers
@@ -558,18 +555,17 @@ const
   INTEL_BIT_30 = BIT_30; // Reserved, do not count on value
   INTEL_PBE    = BIT_31; // Pending Break Enable
 
-{ Extended Intel Feature Flags }
-
-  EINTEL_SSE3    = BIT_0 ; // Streaming SIMD Extensions 3
-  EINTEL_BIT_1   = BIT_1 ; // Reserved, do not count on value
-  EINTEL_BIT_2   = BIT_2 ; // Reserved, do not count on value
-  EINTEL_MONITOR = BIT_3 ; // Monitor/MWAIT
-  EINTEL_DSCPL   = BIT_4 ; // CPL Qualified debug Store
-  EINTEL_BIT_5   = BIT_5 ; // Reserved, do not count on value
-  EINTEL_BIT_6   = BIT_6 ; // Reserved, do not count on value
-  EINTEL_EST     = BIT_7 ; // Enhanced Intel Speedstep technology
-  EINTEL_TM2     = BIT_8 ; // Thermal monitor 2
-  EINTEL_BIT_9   = BIT_9 ; // Reserved, do not count on value
+  { Extended Intel Feature Flags }
+  EINTEL_SSE3    = BIT_0;  // Streaming SIMD Extensions 3
+  EINTEL_BIT_1   = BIT_1;  // Reserved, do not count on value
+  EINTEL_BIT_2   = BIT_2;  // Reserved, do not count on value
+  EINTEL_MONITOR = BIT_3;  // Monitor/MWAIT
+  EINTEL_DSCPL   = BIT_4;  // CPL Qualified debug Store
+  EINTEL_BIT_5   = BIT_5;  // Reserved, do not count on value
+  EINTEL_BIT_6   = BIT_6;  // Reserved, do not count on value
+  EINTEL_EST     = BIT_7;  // Enhanced Intel Speedstep technology
+  EINTEL_TM2     = BIT_8;  // Thermal monitor 2
+  EINTEL_BIT_9   = BIT_9;  // Reserved, do not count on value
   EINTEL_CNXTID  = BIT_10; // L1 Context ID
   EINTEL_BIT_11  = BIT_11; // Reserved, do not count on value
   EINTEL_BIT_12  = BIT_12; // Reserved, do not count on value
@@ -593,18 +589,17 @@ const
   EINTEL_BIT_30  = BIT_30; // Reserved, do not count on value
   EINTEL_BIT_31  = BIT_31; // Reserved, do not count on value
 
-{ Extended Intel 64 Bits Feature Flags }
-
-  EINTEL64_BIT_0  = BIT_0 ; // Reserved, do not count on value
-  EINTEL64_BIT_1  = BIT_1 ; // Reserved, do not count on value
-  EINTEL64_BIT_2  = BIT_2 ; // Reserved, do not count on value
-  EINTEL64_BIT_3  = BIT_3 ; // Reserved, do not count on value
-  EINTEL64_BIT_4  = BIT_4 ; // Reserved, do not count on value
-  EINTEL64_BIT_5  = BIT_5 ; // Reserved, do not count on value
-  EINTEL64_BIT_6  = BIT_6 ; // Reserved, do not count on value
-  EINTEL64_BIT_7  = BIT_7 ; // Reserved, do not count on value
-  EINTEL64_BIT_8  = BIT_8 ; // Reserved, do not count on value
-  EINTEL64_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  { Extended Intel 64 Bits Feature Flags }
+  EINTEL64_BIT_0  = BIT_0;  // Reserved, do not count on value
+  EINTEL64_BIT_1  = BIT_1;  // Reserved, do not count on value
+  EINTEL64_BIT_2  = BIT_2;  // Reserved, do not count on value
+  EINTEL64_BIT_3  = BIT_3;  // Reserved, do not count on value
+  EINTEL64_BIT_4  = BIT_4;  // Reserved, do not count on value
+  EINTEL64_BIT_5  = BIT_5;  // Reserved, do not count on value
+  EINTEL64_BIT_6  = BIT_6;  // Reserved, do not count on value
+  EINTEL64_BIT_7  = BIT_7;  // Reserved, do not count on value
+  EINTEL64_BIT_8  = BIT_8;  // Reserved, do not count on value
+  EINTEL64_BIT_9  = BIT_9;  // Reserved, do not count on value
   EINTEL64_BIT_10 = BIT_10; // Reserved, do not count on value
   EINTEL64_SYS    = BIT_11; // 64 Bit - SYSCALL SYSRET
   EINTEL64_BIT_12 = BIT_12; // Reserved, do not count on value
@@ -628,18 +623,17 @@ const
   EINTEL64_BIT_30 = BIT_30; // Reserved, do not count on value
   EINTEL64_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ AMD Standard Feature Flags }
-
-  AMD_FPU     = BIT_0 ; // Floating-Point unit on chip
-  AMD_VME     = BIT_1 ; // Virtual Mode Extention
-  AMD_DE      = BIT_2 ; // Debugging Extention
-  AMD_PSE     = BIT_3 ; // Page Size Extention
-  AMD_TSC     = BIT_4 ; // Time Stamp Counter
-  AMD_MSR     = BIT_5 ; // Model Specific Registers
-  AMD_PAE     = BIT_6 ; // Physical address Extensions
-  AMD_MCE     = BIT_7 ; // Machine Check Exception
-  AMD_CX8     = BIT_8 ; // CMPXCHG8 Instruction
-  AMD_APIC    = BIT_9 ; // Software-accessible local APIC on Chip
+  { AMD Standard Feature Flags }
+  AMD_FPU     = BIT_0;  // Floating-Point unit on chip
+  AMD_VME     = BIT_1;  // Virtual Mode Extention
+  AMD_DE      = BIT_2;  // Debugging Extention
+  AMD_PSE     = BIT_3;  // Page Size Extention
+  AMD_TSC     = BIT_4;  // Time Stamp Counter
+  AMD_MSR     = BIT_5;  // Model Specific Registers
+  AMD_PAE     = BIT_6;  // Physical address Extensions
+  AMD_MCE     = BIT_7;  // Machine Check Exception
+  AMD_CX8     = BIT_8;  // CMPXCHG8 Instruction
+  AMD_APIC    = BIT_9;  // Software-accessible local APIC on Chip
   AMD_BIT_10  = BIT_10; // Reserved, do not count on value
   AMD_SEP_BIT = BIT_11; // SYSENTER and SYSEXIT instructions
   AMD_MTRR    = BIT_12; // Memory Type Range Registers
@@ -663,18 +657,17 @@ const
   AMD_BIT_30  = BIT_30; // Reserved, do not count on value
   AMD_BIT_31  = BIT_31; // Reserved, do not count on value
 
-{ AMD Enhanced Feature Flags }
-
-  EAMD_FPU     = BIT_0 ; // Floating-Point unit on chip
-  EAMD_VME     = BIT_1 ; // Virtual Mode Extention
-  EAMD_DE      = BIT_2 ; // Debugging Extention
-  EAMD_PSE     = BIT_3 ; // Page Size Extention
-  EAMD_TSC     = BIT_4 ; // Time Stamp Counter
-  EAMD_MSR     = BIT_5 ; // Model Specific Registers
-  EAMD_PAE     = BIT_6 ; // Physical-address extensions
-  EAMD_MCE     = BIT_7 ; // Machine Check Exception
-  EAMD_CX8     = BIT_8 ; // CMPXCHG8 Instruction
-  EAMD_APIC    = BIT_9 ; // Advanced Programmable Interrupt Controler
+  { AMD Enhanced Feature Flags }
+  EAMD_FPU     = BIT_0;  // Floating-Point unit on chip
+  EAMD_VME     = BIT_1;  // Virtual Mode Extention
+  EAMD_DE      = BIT_2;  // Debugging Extention
+  EAMD_PSE     = BIT_3;  // Page Size Extention
+  EAMD_TSC     = BIT_4;  // Time Stamp Counter
+  EAMD_MSR     = BIT_5;  // Model Specific Registers
+  EAMD_PAE     = BIT_6;  // Physical-address extensions
+  EAMD_MCE     = BIT_7;  // Machine Check Exception
+  EAMD_CX8     = BIT_8;  // CMPXCHG8 Instruction
+  EAMD_APIC    = BIT_9;  // Advanced Programmable Interrupt Controler
   EAMD_BIT_10  = BIT_10; // Reserved, do not count on value
   EAMD_SEP     = BIT_11; // Fast System Call
   EAMD_MTRR    = BIT_12; // Memory-Type Range Registers
@@ -698,8 +691,7 @@ const
   EAMD_EX3DNOW = BIT_30; // AMD Extensions to 3DNow! intructions
   EAMD_3DNOW   = BIT_31; // AMD 3DNOW! Technology
 
-{ AMD Power Management Features Flags }
-
+  { AMD Power Management Features Flags }
   PAMD_TEMPSENSOR       = $00000001;  // Temperature Sensor
   PAMD_FREQUENCYID      = $00000002;  // Frequency ID Control
   PAMD_VOLTAGEID        = $00000004;  // Voltage ID Control
@@ -707,15 +699,13 @@ const
   PAMD_THERMALMONITOR   = $00000010;  // Thermal Monitoring
   PAMD_SOFTTHERMCONTROL = $00000020;  // Software Thermal Control
 
-{ AMD TLB and L1 Associativity constants }
-
+  { AMD TLB and L1 Associativity constants }
   AMD_ASSOC_RESERVED = 0;
   AMD_ASSOC_DIRECT   = 1;
   // 2 to 254 = direct value to the associativity
   AMD_ASSOC_FULLY    = 255;
 
-{ AMD L2 Cache Associativity constants }
-
+  { AMD L2 Cache Associativity constants }
   AMD_L2_ASSOC_DISABLED = 0;
   AMD_L2_ASSOC_DIRECT   = 1;
   AMD_L2_ASSOC_2WAY     = 2;
@@ -724,18 +714,17 @@ const
   AMD_L2_ASSOC_16WAY    = 8;
   AMD_L2_ASSOC_FULLY    = 15;
 
-{ VIA Standard Feature Flags }
-
-  VIA_FPU           = BIT_0 ; // FPU present
-  VIA_VME           = BIT_1 ; // Virtual Mode Extension
-  VIA_DE            = BIT_2 ; // Debugging extensions
-  VIA_PSE           = BIT_3 ; // Page Size Extensions (4MB)
-  VIA_TSC           = BIT_4 ; // Time Stamp Counter
-  VIA_MSR           = BIT_5 ; // Model Specific Registers
-  VIA_PAE           = BIT_6 ; // Physical Address Extension
-  VIA_MCE           = BIT_7 ; // Machine Check Exception
-  VIA_CX8           = BIT_8 ; // CMPXCHG8B instruction
-  VIA_APIC          = BIT_9 ; // APIC supported
+  { VIA Standard Feature Flags }
+  VIA_FPU           = BIT_0;  // FPU present
+  VIA_VME           = BIT_1;  // Virtual Mode Extension
+  VIA_DE            = BIT_2;  // Debugging extensions
+  VIA_PSE           = BIT_3;  // Page Size Extensions (4MB)
+  VIA_TSC           = BIT_4;  // Time Stamp Counter
+  VIA_MSR           = BIT_5;  // Model Specific Registers
+  VIA_PAE           = BIT_6;  // Physical Address Extension
+  VIA_MCE           = BIT_7;  // Machine Check Exception
+  VIA_CX8           = BIT_8;  // CMPXCHG8B instruction
+  VIA_APIC          = BIT_9;  // APIC supported
   VIA_BIT_10        = BIT_10; // Reserved, do not count on value
   VIA_SEP           = BIT_11; // Fast System Call
   VIA_MTRR          = BIT_12; // Memory Range Registers
@@ -759,8 +748,7 @@ const
   VIA_BIT_30        = BIT_30; // Reserved, do not count on value
   VIA_3DNOW         = BIT_31; // 3DNow! Technology
 
-{ VIA Extended Feature Flags }
-
+  { VIA Extended Feature Flags }
   EVIA_AIS    = BIT_0;  // Alternate Instruction Set
   EVIA_AISE   = BIT_1;  // Alternate Instruction Set Enabled
   EVIA_NO_RNG = BIT_2;  // NO Random Number Generator
@@ -794,18 +782,17 @@ const
   EVIA_BIT_30 = BIT_30; // Reserved, do not count on value
   EVIA_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ Cyrix Standard Feature Flags }
-
-  CYRIX_FPU    = BIT_0 ; // Floating-Point unit on chip
-  CYRIX_VME    = BIT_1 ; // Virtual Mode Extention
-  CYRIX_DE     = BIT_2 ; // Debugging Extention
-  CYRIX_PSE    = BIT_3 ; // Page Size Extention
-  CYRIX_TSC    = BIT_4 ; // Time Stamp Counter
-  CYRIX_MSR    = BIT_5 ; // Model Specific Registers
-  CYRIX_PAE    = BIT_6 ; // Physical Address Extention
-  CYRIX_MCE    = BIT_7 ; // Machine Check Exception
-  CYRIX_CX8    = BIT_8 ; // CMPXCHG8 Instruction
-  CYRIX_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  { Cyrix Standard Feature Flags }
+  CYRIX_FPU    = BIT_0;  // Floating-Point unit on chip
+  CYRIX_VME    = BIT_1;  // Virtual Mode Extention
+  CYRIX_DE     = BIT_2;  // Debugging Extention
+  CYRIX_PSE    = BIT_3;  // Page Size Extention
+  CYRIX_TSC    = BIT_4;  // Time Stamp Counter
+  CYRIX_MSR    = BIT_5;  // Model Specific Registers
+  CYRIX_PAE    = BIT_6;  // Physical Address Extention
+  CYRIX_MCE    = BIT_7;  // Machine Check Exception
+  CYRIX_CX8    = BIT_8;  // CMPXCHG8 Instruction
+  CYRIX_APIC   = BIT_9;  // Software-accessible local APIC on Chip
   CYRIX_BIT_10 = BIT_10; // Reserved, do not count on value
   CYRIX_BIT_11 = BIT_11; // Reserved, do not count on value
   CYRIX_MTRR   = BIT_12; // Memory Type Range Registers
@@ -829,18 +816,17 @@ const
   CYRIX_BIT_30 = BIT_30; // Reserved, do not count on value
   CYRIX_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ Cyrix Enhanced Feature Flags }
-
-  ECYRIX_FPU    = BIT_0 ; // Floating-Point unit on chip
-  ECYRIX_VME    = BIT_1 ; // Virtual Mode Extention
-  ECYRIX_DE     = BIT_2 ; // Debugging Extention
-  ECYRIX_PSE    = BIT_3 ; // Page Size Extention
-  ECYRIX_TSC    = BIT_4 ; // Time Stamp Counter
-  ECYRIX_MSR    = BIT_5 ; // Model Specific Registers
-  ECYRIX_PAE    = BIT_6 ; // Physical Address Extention
-  ECYRIX_MCE    = BIT_7 ; // Machine Check Exception
-  ECYRIX_CX8    = BIT_8 ; // CMPXCHG8 Instruction
-  ECYRIX_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  { Cyrix Enhanced Feature Flags }
+  ECYRIX_FPU    = BIT_0;  // Floating-Point unit on chip
+  ECYRIX_VME    = BIT_1;  // Virtual Mode Extention
+  ECYRIX_DE     = BIT_2;  // Debugging Extention
+  ECYRIX_PSE    = BIT_3;  // Page Size Extention
+  ECYRIX_TSC    = BIT_4;  // Time Stamp Counter
+  ECYRIX_MSR    = BIT_5;  // Model Specific Registers
+  ECYRIX_PAE    = BIT_6;  // Physical Address Extention
+  ECYRIX_MCE    = BIT_7;  // Machine Check Exception
+  ECYRIX_CX8    = BIT_8;  // CMPXCHG8 Instruction
+  ECYRIX_APIC   = BIT_9;  // Software-accessible local APIC on Chip
   ECYRIX_SEP    = BIT_10; // Fast System Call
   ECYRIX_BIT_11 = BIT_11; // Reserved, do not count on value
   ECYRIX_MTRR   = BIT_12; // Memory Type Range Registers
@@ -864,18 +850,17 @@ const
   ECYRIX_BIT_30 = BIT_30; // Reserved, do not count on value
   ECYRIX_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ Transmeta Features }
-
-  TRANSMETA_FPU    = BIT_0 ; // Floating-Point unit on chip
-  TRANSMETA_VME    = BIT_1 ; // Virtual Mode Extention
-  TRANSMETA_DE     = BIT_2 ; // Debugging Extention
-  TRANSMETA_PSE    = BIT_3 ; // Page Size Extention
-  TRANSMETA_TSC    = BIT_4 ; // Time Stamp Counter
-  TRANSMETA_MSR    = BIT_5 ; // Model Specific Registers
-  TRANSMETA_BIT_6  = BIT_6 ; // Reserved, do not count on value
-  TRANSMETA_BIT_7  = BIT_7 ; // Reserved, do not count on value
-  TRANSMETA_CX8    = BIT_8 ; // CMPXCHG8 Instruction
-  TRANSMETA_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  { Transmeta Features }
+  TRANSMETA_FPU    = BIT_0;  // Floating-Point unit on chip
+  TRANSMETA_VME    = BIT_1;  // Virtual Mode Extention
+  TRANSMETA_DE     = BIT_2;  // Debugging Extention
+  TRANSMETA_PSE    = BIT_3;  // Page Size Extention
+  TRANSMETA_TSC    = BIT_4;  // Time Stamp Counter
+  TRANSMETA_MSR    = BIT_5;  // Model Specific Registers
+  TRANSMETA_BIT_6  = BIT_6;  // Reserved, do not count on value
+  TRANSMETA_BIT_7  = BIT_7;  // Reserved, do not count on value
+  TRANSMETA_CX8    = BIT_8;  // CMPXCHG8 Instruction
+  TRANSMETA_BIT_9  = BIT_9;  // Reserved, do not count on value
   TRANSMETA_BIT_10 = BIT_10; // Reserved, do not count on value
   TRANSMETA_SEP    = BIT_11; // Fast system Call Extensions
   TRANSMETA_BIT_12 = BIT_12; // Reserved, do not count on value
@@ -899,18 +884,17 @@ const
   TRANSMETA_BIT_30 = BIT_30; // Reserved, do not count on value
   TRANSMETA_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ Extended Transmeta Features }
-
-  ETRANSMETA_FPU    = BIT_0 ; // Floating-Point unit on chip
-  ETRANSMETA_VME    = BIT_1 ; // Virtual Mode Extention
-  ETRANSMETA_DE     = BIT_2 ; // Debugging Extention
-  ETRANSMETA_PSE    = BIT_3 ; // Page Size Extention
-  ETRANSMETA_TSC    = BIT_4 ; // Time Stamp Counter
-  ETRANSMETA_MSR    = BIT_5 ; // Model Specific Registers
-  ETRANSMETA_BIT_6  = BIT_6 ; // Reserved, do not count on value
-  ETRANSMETA_BIT_7  = BIT_7 ; // Reserved, do not count on value
-  ETRANSMETA_CX8    = BIT_8 ; // CMPXCHG8 Instruction
-  ETRANSMETA_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  { Extended Transmeta Features }
+  ETRANSMETA_FPU    = BIT_0;  // Floating-Point unit on chip
+  ETRANSMETA_VME    = BIT_1;  // Virtual Mode Extention
+  ETRANSMETA_DE     = BIT_2;  // Debugging Extention
+  ETRANSMETA_PSE    = BIT_3;  // Page Size Extention
+  ETRANSMETA_TSC    = BIT_4;  // Time Stamp Counter
+  ETRANSMETA_MSR    = BIT_5;  // Model Specific Registers
+  ETRANSMETA_BIT_6  = BIT_6;  // Reserved, do not count on value
+  ETRANSMETA_BIT_7  = BIT_7;  // Reserved, do not count on value
+  ETRANSMETA_CX8    = BIT_8;  // CMPXCHG8 Instruction
+  ETRANSMETA_BIT_9  = BIT_9;  // Reserved, do not count on value
   ETRANSMETA_BIT_10 = BIT_10; // Reserved, do not count on value
   ETRANSMETA_BIT_11 = BIT_11; // Reserved, do not count on value
   ETRANSMETA_BIT_12 = BIT_12; // Reserved, do not count on value
@@ -934,18 +918,17 @@ const
   ETRANSMETA_BIT_30 = BIT_30; // Reserved, do not count on value
   ETRANSMETA_BIT_31 = BIT_31; // Reserved, do not count on value
 
-{ Transmeta Specific Features }
-
-  STRANSMETA_RECOVERY = BIT_0 ; // Recovery Mode
-  STRANSMETA_LONGRUN  = BIT_1 ; // Long Run
-  STRANSMETA_BIT_2    = BIT_2 ; // Debugging Extention
-  STRANSMETA_LRTI     = BIT_3 ; // Long Run Table Interface
-  STRANSMETA_BIT_4    = BIT_4 ; // Reserved, do not count on value
-  STRANSMETA_BIT_5    = BIT_5 ; // Reserved, do not count on value
-  STRANSMETA_BIT_6    = BIT_6 ; // Reserved, do not count on value
-  STRANSMETA_PTTI1    = BIT_7 ; // Persistent Translation Technology 1.x
-  STRANSMETA_PTTI2    = BIT_8 ; // Persistent Translation Technology 2.0
-  STRANSMETA_BIT_9    = BIT_9 ; // Reserved, do not count on value
+  { Transmeta Specific Features }
+  STRANSMETA_RECOVERY = BIT_0;  // Recovery Mode
+  STRANSMETA_LONGRUN  = BIT_1;  // Long Run
+  STRANSMETA_BIT_2    = BIT_2;  // Debugging Extention
+  STRANSMETA_LRTI     = BIT_3;  // Long Run Table Interface
+  STRANSMETA_BIT_4    = BIT_4;  // Reserved, do not count on value
+  STRANSMETA_BIT_5    = BIT_5;  // Reserved, do not count on value
+  STRANSMETA_BIT_6    = BIT_6;  // Reserved, do not count on value
+  STRANSMETA_PTTI1    = BIT_7;  // Persistent Translation Technology 1.x
+  STRANSMETA_PTTI2    = BIT_8;  // Persistent Translation Technology 2.0
+  STRANSMETA_BIT_9    = BIT_9;  // Reserved, do not count on value
   STRANSMETA_BIT_10   = BIT_10; // Reserved, do not count on value
   STRANSMETA_BIT_11   = BIT_11; // Reserved, do not count on value
   STRANSMETA_BIT_12   = BIT_12; // Reserved, do not count on value
@@ -971,57 +954,57 @@ const
 
 const
   IntelCacheDescription: array [0..50] of TCacheInfo = (
-    (D: $00; Family:cfOther;                                                                      I: RsIntelCacheDescr00),
-    (D: $01; Family:cfInstructionTLB;     Size:4;    WaysOfAssoc:4; Entries:32;                   I: RsIntelCacheDescr01), // Instruction TLB: 4 KByte Pages, 4-way set associative, 32 entries
-    (D: $02; Family:cfInstructionTLB;     Size:4096; WaysOfAssoc:4; Entries:2;                    I: RsIntelCacheDescr02), // Instruction TLB: 4 MByte Pages, 4-way set associative, 2 entries
-    (D: $03; Family:cfDataTLB;            Size:4;    WaysOfAssoc:4; Entries:64;                   I: RsIntelCacheDescr03), // Data TLB: 4KByte Pages, 4-way set associative, 64 entries
-    (D: $04; Family:cfDataTLB;            Size:4096; WaysOfAssoc:4; Entries:8;                    I: RsIntelCacheDescr04), // Data TLB: 4MByte Pages, 4-way set associative, 8 entries
-    (D: $06; Family:cfL1InstructionCache; Size:8;    WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr06), // 1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size
-    (D: $08; Family:cfL1InstructionCache; Size:16;   WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr08), // 1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size
-    (D: $0A; Family:cfL1DataCache;        Size:8;    WaysOfAssoc:2; LineSize:32;                  I: RsIntelCacheDescr0A), // 1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size
-    (D: $0C; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr0C), // 1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size
-    (D: $22; Family:cfL3Cache;            Size:512;  WaysOfAssoc:4; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr22), // 3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector
-    (D: $23; Family:cfL3Cache;            Size:1024; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr23), // 3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $25; Family:cfL3Cache;            Size:2048; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr25), // 3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $29; Family:cfL3Cache;            Size:4096; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr29), // 3rd-level cache: 4M Bytes, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $2C; Family:cfL1DataCache;        Size:32;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr2C), // 1st-level data cache: 32K Bytes, 8-way set associative, 64 byte line size
-    (D: $30; Family:cfL1InstructionCache; Size:32;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr30), // 1st-level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size
-    (D: $40; Family:cfOther;                                                                      I: RsIntelCacheDescr40), // No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache
-    (D: $41; Family:cfL2Cache;            Size:128;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr41), // 2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size
-    (D: $42; Family:cfL2Cache;            Size:256;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr42), // 2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size
-    (D: $43; Family:cfL2Cache;            Size:512;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr43), // 2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size
-    (D: $44; Family:cfL2Cache;            Size:1024; WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr44), // 2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size
-    (D: $45; Family:cfL2Cache;            Size:2048; WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr45), // 2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size
-    (D: $50; Family:cfInstructionTLB;     Size:4096;                Entries:64;                   I: RsIntelCacheDescr50), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries
-    (D: $51; Family:cfInstructionTLB;     Size:4096;                Entries:128;                  I: RsIntelCacheDescr51), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries
-    (D: $52; Family:cfInstructionTLB;     Size:4096;                Entries:256;                  I: RsIntelCacheDescr52), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries
-    (D: $5B; Family:cfDataTLB;            Size:4096;                Entries:64;                   I: RsIntelCacheDescr5B), // Data TLB: 4 KByte and 4 MByte pages, 64 entries
-    (D: $5C; Family:cfDataTLB;            Size:4096;                Entries:128;                  I: RsIntelCacheDescr5C), // Data TLB: 4 KByte and 4 MByte pages,128 entries
-    (D: $5D; Family:cfDataTLB;            Size:4096;                Entries:256;                  I: RsIntelCacheDescr5D), // Data TLB: 4 KByte and 4 MByte pages,256 entries
-    (D: $60; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr60), // 1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size
-    (D: $66; Family:cfL1DataCache;        Size:8;    WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr66), // 1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size
-    (D: $67; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr67), // 1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size
-    (D: $68; Family:cfL1DataCache;        Size:32;   WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr68), // 1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size
-    (D: $70; Family:cfTrace;              Size:12;   WaysOfAssoc:8;                               I: RsIntelCacheDescr70), // Trace cache: 12 K-發p, 8-way set associative
-    (D: $71; Family:cfTrace;              Size:16;   WaysOfAssoc:8;                               I: RsIntelCacheDescr71), // Trace cache: 16 K-發p, 8-way set associative
-    (D: $72; Family:cfTrace;              Size:32;   WaysOfAssoc:8;                               I: RsIntelCacheDescr72), // Trace cache: 32 K-發p, 8-way set associative
-    (D: $78; Family:cfL2Cache;            Size:1024; WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr78), // 2nd-level cache: 1 MByte, 4-way set associative, 64byte line size
-    (D: $79; Family:cfL2Cache;            Size:128;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr79), // 2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $7A; Family:cfL2Cache;            Size:256;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7A), // 2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $7B; Family:cfL2Cache;            Size:512;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7B), // 2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $7C; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7C), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector
-    (D: $7D; Family:cfL2Cache;            Size:2048; WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr7D), // 2nd-level cache: 2 MByte, 8-way set associative, 64byte line size
-    (D: $7F; Family:cfL2Cache;            Size:512;  WaysOfAssoc:2; LineSize:64;                  I: RsIntelCacheDescr7F), // 2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size
-    (D: $82; Family:cfL2Cache;            Size:256;  WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr82), // 2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size
-    (D: $83; Family:cfL2Cache;            Size:512;  WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr83), // 2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size
-    (D: $84; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr84), // 2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size
-    (D: $85; Family:cfL2Cache;            Size:2048; WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr85), // 2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size
-    (D: $86; Family:cfL2Cache;            Size:512;  WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr86), // 2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size
-    (D: $87; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr87), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size
-    (D: $B0; Family:cfInstructionTLB;     Size:4;    WaysOfAssoc:4; Entries:128;                  I: RsIntelCacheDescrB0), // Instruction TLB: 4 KByte Pages, 4-way set associative, 128 entries
-    (D: $B3; Family:cfDataTLB;            Size:4;    WaysOfAssoc:4; Entries:128;                  I: RsIntelCacheDescrB3), // Data TLB: 4 KByte Pages, 4-way set associative, 128 entries
-    (D: $F0; Family:cfOther;                                                                      I: RsIntelCacheDescrF0), // 64-Byte Prefetching
-    (D: $F1; Family:cfOther;                                                                      I: RsIntelCacheDescrF1)  // 128-Byte Prefetching
+    (D: $00; Family: cfOther;                                                                          I: RsIntelCacheDescr00),
+    (D: $01; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;               Entries:  32;     I: RsIntelCacheDescr01), // Instruction TLB: 4 KByte Pages, 4-way set associative, 32 entries
+    (D: $02; Family: cfInstructionTLB;     Size: 4096; WaysOfAssoc: 4;               Entries:  2;      I: RsIntelCacheDescr02), // Instruction TLB: 4 MByte Pages, 4-way set associative, 2 entries
+    (D: $03; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;               Entries:  64;     I: RsIntelCacheDescr03), // Data TLB: 4KByte Pages, 4-way set associative, 64 entries
+    (D: $04; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;               Entries:  8;      I: RsIntelCacheDescr04), // Data TLB: 4MByte Pages, 4-way set associative, 8 entries
+    (D: $06; Family: cfL1InstructionCache; Size: 8;    WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr06), // 1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size
+    (D: $08; Family: cfL1InstructionCache; Size: 16;   WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr08), // 1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size
+    (D: $0A; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 2; LineSize: 32;                   I: RsIntelCacheDescr0A), // 1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size
+    (D: $0C; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr0C), // 1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size
+    (D: $22; Family: cfL3Cache;            Size: 512;  WaysOfAssoc: 4; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr22), // 3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector
+    (D: $23; Family: cfL3Cache;            Size: 1024; WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr23), // 3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $25; Family: cfL3Cache;            Size: 2048; WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr25), // 3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $29; Family: cfL3Cache;            Size: 4096; WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr29), // 3rd-level cache: 4M Bytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $2C; Family: cfL1DataCache;        Size: 32;   WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr2C), // 1st-level data cache: 32K Bytes, 8-way set associative, 64 byte line size
+    (D: $30; Family: cfL1InstructionCache; Size: 32;   WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr30), // 1st-level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size
+    (D: $40; Family: cfOther;                                                                          I: RsIntelCacheDescr40), // No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache
+    (D: $41; Family: cfL2Cache;            Size: 128;  WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr41), // 2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size
+    (D: $42; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr42), // 2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size
+    (D: $43; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr43), // 2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size
+    (D: $44; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr44), // 2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size
+    (D: $45; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 4; LineSize: 32;                   I: RsIntelCacheDescr45), // 2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size
+    (D: $50; Family: cfInstructionTLB;     Size: 4096;                 Entries:6 4;                    I: RsIntelCacheDescr50), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries
+    (D: $51; Family: cfInstructionTLB;     Size: 4096;                 Entries:1 28;                   I: RsIntelCacheDescr51), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries
+    (D: $52; Family: cfInstructionTLB;     Size: 4096;                 Entries:2 56;                   I: RsIntelCacheDescr52), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries
+    (D: $5B; Family: cfDataTLB;            Size: 4096;                 Entries:6 4;                    I: RsIntelCacheDescr5B), // Data TLB: 4 KByte and 4 MByte pages, 64 entries
+    (D: $5C; Family: cfDataTLB;            Size: 4096;                 Entries:1 28;                   I: RsIntelCacheDescr5C), // Data TLB: 4 KByte and 4 MByte pages,128 entries
+    (D: $5D; Family: cfDataTLB;            Size: 4096;                 Entries:2 56;                   I: RsIntelCacheDescr5D), // Data TLB: 4 KByte and 4 MByte pages,256 entries
+    (D: $60; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr60), // 1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size
+    (D: $66; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr66), // 1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size
+    (D: $67; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr67), // 1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size
+    (D: $68; Family: cfL1DataCache;        Size: 32;   WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr68), // 1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size
+    (D: $70; Family: cfTrace;              Size: 12;   WaysOfAssoc: 8;                                 I: RsIntelCacheDescr70), // Trace cache: 12 K-發p, 8-way set associative
+    (D: $71; Family: cfTrace;              Size: 16;   WaysOfAssoc: 8;                                 I: RsIntelCacheDescr71), // Trace cache: 16 K-發p, 8-way set associative
+    (D: $72; Family: cfTrace;              Size: 32;   WaysOfAssoc: 8;                                 I: RsIntelCacheDescr72), // Trace cache: 32 K-發p, 8-way set associative
+    (D: $78; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr78), // 2nd-level cache: 1 MByte, 4-way set associative, 64byte line size
+    (D: $79; Family: cfL2Cache;            Size: 128;  WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr79), // 2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7A; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7A), // 2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7B; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7B), // 2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7C; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8; LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7C), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7D; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr7D), // 2nd-level cache: 2 MByte, 8-way set associative, 64byte line size
+    (D: $7F; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 2; LineSize: 64;                   I: RsIntelCacheDescr7F), // 2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size
+    (D: $82; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 8; LineSize: 32;                   I: RsIntelCacheDescr82), // 2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size
+    (D: $83; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 8; LineSize: 32;                   I: RsIntelCacheDescr83), // 2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size
+    (D: $84; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8; LineSize: 32;                   I: RsIntelCacheDescr84), // 2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size
+    (D: $85; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 8; LineSize: 32;                   I: RsIntelCacheDescr85), // 2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size
+    (D: $86; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4; LineSize: 64;                   I: RsIntelCacheDescr86), // 2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size
+    (D: $87; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8; LineSize: 64;                   I: RsIntelCacheDescr87), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size
+    (D: $B0; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4; Entries:1 28;                   I: RsIntelCacheDescrB0), // Instruction TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $B3; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4; Entries:1 28;                   I: RsIntelCacheDescrB3), // Data TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $F0; Family: cfOther;                                                                          I: RsIntelCacheDescrF0), // 64-Byte Prefetching
+    (D: $F1; Family: cfOther;                                                                          I: RsIntelCacheDescrF1)  // 128-Byte Prefetching
   );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
@@ -5120,6 +5103,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.49  2005/08/09 07:35:42  marquardt
+// minor style fix
+//
 // Revision 1.48  2005/08/08 07:02:56  marquardt
 // minor style fix
 //
