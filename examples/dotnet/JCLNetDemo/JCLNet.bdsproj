@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">CSharp.Personality</Option>
+			<Option Name="ProjectType">Application</Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{E9F18793-8EBC-4D0B-AE38-4970CE0A0826}</Option>
+		</Option>
+	</PersonalityInfo>
+	<CSharp.Personality>
+		<Options>
+			<SelectedOptionSet>
+				<SelectedOptionSet Name="OptionsSet">Debug</SelectedOptionSet>
+			</SelectedOptionSet>
+			<OptionsSet Name="Release">
+				<Options>
+					<Options Name="Warning">4</Options>
+					<Options Name="Incremental">False</Options>
+					<Options Name="DocumentationFile"></Options>
+					<Options Name="DefaultNamespace">JCLNet</Options>
+					<Options Name="DebugInformation">False</Options>
+					<Options Name="Optimization">True</Options>
+					<Options Name="Overflow">False</Options>
+					<Options Name="ivUnsafe">False</Options>
+					<Options Name="WarningAsError">False</Options>
+					<Options Name="Defines">TRACE</Options>
+					<Options Name="TargetName"></Options>
+					<Options Name="TargetType">Windows</Options>
+					<Options Name="Main"></Options>
+					<Options Name="BaseAddress">285212672</Options>
+					<Options Name="BuildInOutput">False</Options>
+					<Options Name="OutputDirectory">bin\Release</Options>
+					<Options Name="RunParams"></Options>
+					<Options Name="HostApplication"></Options>
+					<Options Name="Launcher"></Options>
+					<Options Name="UseLauncher">False</Options>
+					<Options Name="DebugCWD"></Options>
+					<Options Name="RemotePath"></Options>
+					<Options Name="RemoteHost"></Options>
+					<Options Name="RemoteLauncher"></Options>
+					<Options Name="RemoteDebug">False</Options>
+					<Options Name="RemoteCWD"></Options>
+					<Options Name="AspNetUseHostServer">False</Options>
+					<Options Name="AspNetLaunchBrowser">False</Options>
+					<Options Name="AspNetStartPage"></Options>
+					<Options Name="AspNetHostServer">IIS</Options>
+					<Options Name="AspNetCassiniVirtualDirectory"></Options>
+					<Options Name="AspNetIISVirtualDirectory"></Options>
+					<Options Name="AspNetHTTPAddress"></Options>
+				</Options>
+			</OptionsSet>
+			<OptionsSet Name="Debug">
+				<Options>
+					<Options Name="Warning">4</Options>
+					<Options Name="Incremental">True</Options>
+					<Options Name="DocumentationFile"></Options>
+					<Options Name="DefaultNamespace">JCLNet</Options>
+					<Options Name="DebugInformation">True</Options>
+					<Options Name="Optimization">False</Options>
+					<Options Name="Overflow">False</Options>
+					<Options Name="ivUnsafe">False</Options>
+					<Options Name="WarningAsError">False</Options>
+					<Options Name="Defines">TRACE;DEBUG</Options>
+					<Options Name="TargetName"></Options>
+					<Options Name="TargetType">Windows</Options>
+					<Options Name="Main"></Options>
+					<Options Name="BaseAddress">285212672</Options>
+					<Options Name="BuildInOutput">False</Options>
+					<Options Name="OutputDirectory">bin\Debug</Options>
+					<Options Name="RunParams"></Options>
+					<Options Name="HostApplication"></Options>
+					<Options Name="Launcher"></Options>
+					<Options Name="UseLauncher">False</Options>
+					<Options Name="DebugCWD"></Options>
+					<Options Name="RemotePath"></Options>
+					<Options Name="RemoteHost"></Options>
+					<Options Name="RemoteLauncher"></Options>
+					<Options Name="RemoteDebug">False</Options>
+					<Options Name="RemoteCWD"></Options>
+					<Options Name="AspNetUseHostServer">False</Options>
+					<Options Name="AspNetLaunchBrowser">False</Options>
+					<Options Name="AspNetStartPage"></Options>
+					<Options Name="AspNetHostServer">IIS</Options>
+					<Options Name="AspNetCassiniVirtualDirectory"></Options>
+					<Options Name="AspNetIISVirtualDirectory"></Options>
+					<Options Name="AspNetHTTPAddress"></Options>
+				</Options>
+			</OptionsSet>
+		</Options>  <FileList>
+      <File FileName="WinForm.resx" ContainerId="ResXCompiler" ModuleName="WinForm" Parent="WinForm.cs"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.dll" ContainerId="DotNetAssemblyCompiler" ModuleName="System" AssemblyName="System" Version="1.0.5000.0"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.Data.dll" ContainerId="DotNetAssemblyCompiler" ModuleName="System.Data" AssemblyName="System.Data" Version="1.0.5000.0"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.Drawing.dll" ContainerId="DotNetAssemblyCompiler" ModuleName="System.Drawing" AssemblyName="System.Drawing" Version="1.0.5000.0"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.Windows.Forms.dll" ContainerId="DotNetAssemblyCompiler" ModuleName="System.Windows.Forms" AssemblyName="System.Windows.Forms" Version="1.0.5000.0"/>
+      <File FileName="$(SystemRoot)\microsoft.net\framework\v1.1.4322\System.XML.dll" ContainerId="DotNetAssemblyCompiler" ModuleName="System.XML" AssemblyName="System.XML" Version="1.0.5000.0"/>
+      <File FileName="WinForm.cs" ContainerId="CSharpCompiler" ModuleName="WinForm" FileTypeString="System.Windows.Forms.Form" RootComponentClassName="JCLNet.FrmMain"/>
+      <File FileName="AssemblyInfo.cs" ContainerId="CSharpCompiler" ModuleName="AssemblyInfo"/>
+      <File FileName="..\..\..\bin\Jedi.Jcl.dll" ContainerId="DotNetAssemblyCompiler" AssemblyName="Jedi.Jcl" Version="1.0.2047.31834"/>
+    </FileList>
+  </CSharp.Personality>
+</BorlandProject>
