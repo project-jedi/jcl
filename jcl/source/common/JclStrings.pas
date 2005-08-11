@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Alexander Radchenko                                                                            }
+{   Andreas Hausladen                                                                              }
 {   Anthony Steele                                                                                 }
 {   Azret Botash                                                                                   }
 {   Barry Kelly                                                                                    }
@@ -4103,6 +4104,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.41  2005/08/11 18:11:25  ahuser
+// Added MoveChar function
+//
 // Revision 1.40  2005/08/09 10:30:21  ahuser
 // JCL.NET changes
 //

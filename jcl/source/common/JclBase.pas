@@ -220,6 +220,8 @@ procedure RaiseLastOSError;
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveChar(const Source: string; FromIndex: Integer;
+  var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
 {$IFDEF CLR}
 function GetBytesEx(const Value): TDynByteArray;
 procedure SetBytesEx(var Value; Bytes: TDynByteArray);
@@ -293,6 +295,26 @@ begin
 {$ELSE}
 begin
   Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+{$ENDIF CLR}
+end;
+
+procedure MoveChar(const Source: string; FromIndex: Integer;
+  var Dest: string; ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  i: Integer;
+  Buf: array of Char;
+begin
+  Buf := Dest.ToCharArray;
+  if FromIndex <= ToIndex then
+    for i := 0 to Count - 1 do
+      Buf[ToIndex + i] := Source[FromIndex + i]
+  else
+    for i := Count - 1 downto 0 do
+      Buf[ToIndex + i] := Source[FromIndex + i];
+  Dest := System.String.Create(Buf);
+{$ELSE}
+  Move(Source[FromIndex + 1], Dest[ToIndex + 1, Count * SizeOf(Char));
 {$ENDIF CLR}
 end;
 
@@ -446,6 +468,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.40  2005/08/11 18:11:24  ahuser
+// Added MoveChar function
+//
 // Revision 1.39  2005/08/07 13:09:54  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //
