@@ -314,7 +314,8 @@ begin
       Buf[ToIndex + i] := Source[FromIndex + i];
   Dest := System.String.Create(Buf);
 {$ELSE}
-  Move(Source[FromIndex + 1], Dest[ToIndex + 1, Count * SizeOf(Char));
+begin
+  Move(Source[FromIndex + 1], Dest[ToIndex + 1], Count * SizeOf(Char));
 {$ENDIF CLR}
 end;
 
@@ -468,6 +469,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.41  2005/08/12 14:08:53  ahuser
+// Fixed compile bug
+//
 // Revision 1.40  2005/08/11 18:11:24  ahuser
 // Added MoveChar function
 //
