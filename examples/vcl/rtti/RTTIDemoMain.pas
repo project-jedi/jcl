@@ -32,7 +32,7 @@ implementation
 {$R *.dfm}
 
 uses
-  JclRTTI, TypInfo;
+  JclSysUtils, JclRTTI, TypInfo;
 
 type
   TDifficultEvent = procedure(const Sender: TObject; var I: Integer; out Stuff;
