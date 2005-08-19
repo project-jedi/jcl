@@ -123,6 +123,62 @@ var
 type
   TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller);
 
+// swaps 2 bytes
+procedure SwapOrd(var X, Y: Integer);
+
+// converts double to hex
+function DoubleToHex(const D: Double): string;
+// converts hex to double
+function HexToDouble(const Hex: string): Double;
+
+// Converts degrees to radians.
+function DegToRad(const Value: Extended): Extended; overload;
+function DegToRad(const Value: Double): Double; overload;
+function DegToRad(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastDegToRad;
+{$ENDIF ~CLR}
+
+// Converts radians to degrees.
+function RadToDeg(const Value: Extended): Extended; overload;
+function RadToDeg(const Value: Double): Double; overload;
+function RadToDeg(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastRadToDeg;
+{$ENDIF ~CLR}
+
+// Converts grads to radians.
+function GradToRad(const Value: Extended): Extended; overload;
+function GradToRad(const Value: Double): Double; overload;
+function GradToRad(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastGradToRad;
+{$ENDIF ~CLR}
+
+// Converts radians to grads.
+function RadToGrad(const Value: Extended): Extended; overload;
+function RadToGrad(const Value: Double): Double; overload;
+function RadToGrad(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastRadToGrad;
+{$ENDIF ~CLR}
+
+// Converts degrees to grads.
+function DegToGrad(const Value: Extended): Extended; overload;
+function DegToGrad(const Value: Double): Double; overload;
+function DegToGrad(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastDegToGrad;
+{$ENDIF ~CLR}
+
+// Converts grads to degrees.
+function GradToDeg(const Value: Extended): Extended; overload;
+function GradToDeg(const Value: Double): Double; overload;
+function GradToDeg(const Value: Single): Single; overload;
+{$IFNDEF CLR}
+procedure FastGradToDeg;
+{$ENDIF ~CLR}
+
 { Logarithmic }
 
 function LogBase10(X: Float): Float;
@@ -628,85 +684,208 @@ end;
 {$ENDIF CLR}
 
 const
-  _180: Integer = 180;
-  _200: Integer = 200;
+  PiExt = 3.1415926535897932384626433832795;
+  RatioDegToRad : Extended = PiExt / 180.0;
+  RatioRadToDeg : Extended = 180.0 / PiExt;
+  RatioGradToRad : Extended = PiExt / 200.0;
+  RatioRadToGrad : Extended = 200.0 / PiExt;
+  RatioDegToGrad : Extended = 200.0 / 180.0;
+  RatioGradToDeg : Extended = 180.0 / 200.0;
 
-// Converts degrees to radians. Expects degrees in ST(0), leaves radians in ST(0)
-// ST(0) := ST(0) * PI / 180
+// Converts degrees to radians.
+
+function DegToRad(const Value: Extended): Extended;
+begin
+  Result := Value * RatioDegToRad;
+end;
+
+function DegToRad(const Value: Double): Double;
+begin
+  Result := Value * RatioDegToRad;
+end;
+
+function DegToRad(const Value: Single): Single;
+begin
+  Result := Value * RatioDegToRad;
+end;
 
 {$IFNDEF CLR}
-procedure FDegToRad; assembler;
+// Expects degrees in ST(0), leaves radians in ST(0)
+// ST(0) := ST(0) * PI / 180
+procedure FastDegToRad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
-        {$ENDIF PIC}
-        FLDPI
-        {$IFDEF PIC}
-        FIDIV   [EAX][_180]
+        FLD     [EAX][RatioDegToRad]
         {$ELSE}
-        FIDIV   [_180]
+        FLD     [RatioDegToRad]
         {$ENDIF PIC}
-        FMUL
+        FMULP
         FWAIT
 end;
+{$ENDIF ~CLR}
 
-// Converts radians to degrees. Expects radians in ST(0), leaves degrees in ST(0)
+// Converts radians to degrees.
+
+function RadToDeg(const Value: Extended): Extended;
+begin
+  Result := Value * RatioRadToDeg;
+end;
+
+function RadToDeg(const Value: Double): Double;
+begin
+  Result := Value * RatioRadToDeg;
+end;
+
+function RadToDeg(const Value: Single): Single;
+begin
+  Result := Value * RatioRadToDeg;
+end;
+
+{$IFNDEF CLR}
+// Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
-
-procedure FRadToDeg; assembler;
+procedure FastRadToDeg; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
-        {$ENDIF PIC}
-        FLD1
-        FLDPI
-        FDIV
-        {$IFDEF PIC}
-        FLD   [EAX][_180]
+        FLD     [EAX][RatioRadToDeg]
         {$ELSE}
-        FLD   [_180]
+        FLD     [RatioRadToDeg]
         {$ENDIF PIC}
-        FMUL
-        FMUL
+        FMULP
         FWAIT
 end;
+{$ENDIF ~CLR}
 
-// Converts grads to radians. Expects grads in ST(0), leaves radians in ST(0)
+// Converts grads to radians.
+
+function GradToRad(const Value: Extended): Extended;
+begin
+  Result := Value * RatioGradToRad;
+end;
+
+function GradToRad(const Value: Double): Double;
+begin
+  Result := Value * RatioGradToRad;
+end;
+
+function GradToRad(const Value: Single): Single;
+begin
+  Result := Value * RatioGradToRad;
+end;
+
+{$IFNDEF CLR}
+// Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
-
-procedure FGradToRad; assembler;
+procedure FastGradToRad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
-        {$ENDIF PIC}
-        FLDPI
-        {$IFDEF PIC}
-        FIDIV   [EAX][_200]
+        FLD     [EAX][RatioGradToRad]
         {$ELSE}
-        FIDIV   [_200]
+        FLD     [RatioGradToRad]
         {$ENDIF PIC}
-        FMUL
+        FMULP
         FWAIT
 end;
+{$ENDIF ~CLR}
 
-// Converts radians to grads. Expects radians in ST(0), leaves grads in ST(0)
+// Converts radians to grads.
+
+function RadToGrad(const Value: Extended): Extended;
+begin
+  Result := Value * RatioRadToGrad;
+end;
+
+function RadToGrad(const Value: Double): Double;
+begin
+  Result := Value * RatioRadToGrad;
+end;
+
+function RadToGrad(const Value: Single): Single;
+begin
+  Result := Value * RatioRadToGrad;
+end;
+
+{$IFNDEF CLR}
+// Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
-
-procedure FRadToGrad; assembler;
+procedure FastRadToGrad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
-        {$ENDIF PIC}
-        FLD1
-        FLDPI
-        FDIV
-        {$IFDEF PIC}
-        FLD   [EAX][_200]
+        FLD     [EAX][RatioRadToGrad]
         {$ELSE}
-        FLD   [_200]
+        FLD     [RatioRadToGrad]
         {$ENDIF PIC}
-        FMUL
-        FMUL
+        FMULP
+        FWAIT
+end;
+{$ENDIF ~CLR}
+
+// Converts degrees to grads.
+
+function DegToGrad(const Value: Extended): Extended;
+begin
+  Result := Value * RatioDegToGrad;
+end;
+
+function DegToGrad(const Value: Double): Double;
+begin
+  Result := Value * RatioDegToGrad;
+end;
+
+function DegToGrad(const Value: Single): Single;
+begin
+  Result := Value * RatioDegToGrad;
+end;
+
+{$IFNDEF CLR}
+// Expects Degrees in ST(0), leaves grads in ST(0)
+// ST(0) := ST(0) * (200 / 180);
+procedure FastDegToGrad; assembler;
+asm
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioDegToGrad]
+        {$ELSE}
+        FLD     [RatioDegToGrad]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
+end;
+{$ENDIF ~CLR}
+
+// Converts grads to degrees.
+
+function GradToDeg(const Value: Extended): Extended;
+begin
+  Result := Value * RatioGradToDeg;
+end;
+
+function GradToDeg(const Value: Double): Double;
+begin
+  Result := Value * RatioGradToDeg;
+end;
+
+function GradToDeg(const Value: Single): Single;
+begin
+  Result := Value * RatioGradToDeg;
+end;
+
+{$IFNDEF CLR}
+// Expects grads in ST(0), leaves radians in ST(0)
+// ST(0) := ST(0) * PI / 200
+procedure FastGradToDeg; assembler;
+asm
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioGradToDeg]
+        {$ELSE}
+        FLD     [RatioGradToDeg]
+        {$ENDIF PIC}
+        FMULP
         FWAIT
 end;
 {$ENDIF ~CLR}
@@ -3861,7 +4040,7 @@ end;
 const
   RectOne: TRectComplex = (Re: 1.0; Im: 0.0);
   RectZero: TRectComplex = (Re: 0.0; Im: 0.0);
-  RectInfinity: TRectComplex = (Re: Infinity; Im: Infinity);
+  //RectInfinity: TRectComplex = (Re: Infinity; Im: Infinity);
 
 function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex;
 begin
@@ -4199,6 +4378,10 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.28  2005/08/19 01:11:50  outchy
+// Conversion functions are public and reworked.
+// (Removing hints while compiling with C++Builder 5).
+//
 // Revision 1.27  2005/08/09 10:30:21  ahuser
 // JCL.NET changes
 //
