@@ -57,44 +57,56 @@
   library is being compiled with. Currently this can either be Delphi, Kylix,
   C++ Builder or FPC.
 
-  Directive        Description
+  Directive           Description
   ------------------------------------------------------------------------------
-  DELPHI           Defined if compiled with Delphi
-  KYLIX            Defined if compiled with Kylix
-  DELPHICOMPILER   Defined if compiled with Delphi or Kylix/Delphi
-  BCB              Defined if compiled with C++ Builder
-  CPPBUILDER       Defined if compiled with C++ Builder (alias for BCB)
-  BCBCOMPILER      Defined if compiled with C++ Builder or Kylix/C++
-  DELPHILANGUAGE   Defined if compiled with Delphi, Kylix or C++ Builder
-  BORLAND          Defined if compiled with Delphi, Kylix or C++ Builder
-  FPC              Defined if compiled with FPC
+  DELPHI              Defined if compiled with Delphi
+  KYLIX               Defined if compiled with Kylix
+  DELPHICOMPILER      Defined if compiled with Delphi or Kylix/Delphi
+  BCB                 Defined if compiled with C++ Builder
+  CPPBUILDER          Defined if compiled with C++ Builder (alias for BCB)
+  BCBCOMPILER         Defined if compiled with C++ Builder or Kylix/C++
+  DELPHILANGUAGE      Defined if compiled with Delphi, Kylix or C++ Builder
+  BORLAND             Defined if compiled with Delphi, Kylix or C++ Builder
+  FPC                 Defined if compiled with FPC
 
 - Platform Directives
 
   Platform directives are not all explicitly defined in this file, some are
   defined by the compiler itself. They are listed here only for completeness.
 
-  Directive    Description
+  Directive           Description
   ------------------------------------------------------------------------------
-  WIN32        Defined when target platform is 32 bit Windows
-  MSWINDOWS    Defined when target platform is 32 bit Windows
-  LINUX        Defined when target platform is Linux
-  UNIX         Defined when target platform is Linux or Unix
+  WIN32               Defined when target platform is 32 bit Windows
+  MSWINDOWS           Defined when target platform is 32 bit Windows
+  LINUX               Defined when target platform is Linux
+  UNIX                Defined when target platform is Linux or Unix
 
 
 - Visual library Directives
 
-  The following directives indicate for a visual library. In a Delphi
-  application you need to define VisualCLX in the project options, if you want
-  to use the VisualCLX. Alternative you can use the IDE expert, which is distributed
-  with the JCL to do this automatically.
+  The following directives indicate for a visual library. In a Delphi/BCB
+  (Win32) application you need to define the VisualCLX symbol in the project
+  options, if  you want to use the VisualCLX library. Alternatively you can use
+  the IDE expert, which is distributed with the JCL to do this automatically.
 
-  Directive    Description
+  Directive           Description
   ------------------------------------------------------------------------------
-  COMPLIB_VCL  Defined when application do not define VisualCLX, obsolete, use VCL
-  COMPLIB_CLX  Defined when application use the VisualCLX, obsolete, use VisualCLX
-  VCL          Defined when application do not define VisualCLX
-  VisualCLX    Defined when application use the VisualCLX
+  COMPLIB_VCL         Obsolete synonym to VCL
+  COMPLIB_CLX         Obsolete synonym to VisualCLX
+  VCL                 Defined for Delphi/BCB (Win32) exactly if VisualCLX is not defined
+  VisualCLX           Defined for Kylix; needs to be defined for Delphi/BCB to
+                      use JCL with VisualCLX applications.
+
+
+- Other cross-platform related defines
+
+  These symbols are intended to help in writing portable code.
+
+  Directive           Description
+  ------------------------------------------------------------------------------
+  PUREPASCAL          Code is machine-independent (as opposed to assembler code)
+  Win32API            Code is specific for the Win32 API;
+                      use instead of "{$IFNDEF CLR} {$IFDEF MSWINDOWS}" constructs
 
 
 - Delphi Versions
@@ -103,26 +115,28 @@
   friendly name of the associated compiler. These directives are only defined if
   the compiler is Delphi (ie DELPHI is defined).
 
-  Directive    Description
+  Directive           Description
   ------------------------------------------------------------------------------
-  DELPHI1      Defined when compiling with Delphi 1
-  DELPHI2      Defined when compiling with Delphi 2
-  DELPHI3      Defined when compiling with Delphi 3
-  DELPHI4      Defined when compiling with Delphi 4
-  DELPHI5      Defined when compiling with Delphi 5
-  DELPHI6      Defined when compiling with Delphi 6
-  DELPHI7      Defined when compiling with Delphi 7
-  DELPHI8      Defined when compiling with Delphi 8
-  DELPHI9      Defined when compiling with Delphi 9
-  DELPHI1_UP   Defined when compiling with Delphi 1 or higher
-  DELPHI2_UP   Defined when compiling with Delphi 2 or higher
-  DELPHI3_UP   Defined when compiling with Delphi 3 or higher
-  DELPHI4_UP   Defined when compiling with Delphi 4 or higher
-  DELPHI5_UP   Defined when compiling with Delphi 5 or higher
-  DELPHI6_UP   Defined when compiling with Delphi 6 or higher
-  DELPHI7_UP   Defined when compiling with Delphi 7 or higher
-  DELPHI8_UP   Defined when compiling with Delphi 8 or higher
-  DELPHI9_UP   Defined when compiling with Delphi 9 or higher
+  DELPHI1             Defined when compiling with Delphi 1
+  DELPHI2             Defined when compiling with Delphi 2
+  DELPHI3             Defined when compiling with Delphi 3
+  DELPHI4             Defined when compiling with Delphi 4
+  DELPHI5             Defined when compiling with Delphi 5
+  DELPHI6             Defined when compiling with Delphi 6
+  DELPHI7             Defined when compiling with Delphi 7
+  DELPHI8             Defined when compiling with Delphi 8
+  DELPHI2005          Defined when compiling with Delphi 2005
+  DELPHI9             Alias for DELPHI2005
+  DELPHI1_UP          Defined when compiling with Delphi 1 or higher
+  DELPHI2_UP          Defined when compiling with Delphi 2 or higher
+  DELPHI3_UP          Defined when compiling with Delphi 3 or higher
+  DELPHI4_UP          Defined when compiling with Delphi 4 or higher
+  DELPHI5_UP          Defined when compiling with Delphi 5 or higher
+  DELPHI6_UP          Defined when compiling with Delphi 6 or higher
+  DELPHI7_UP          Defined when compiling with Delphi 7 or higher
+  DELPHI8_UP          Defined when compiling with Delphi 8 or higher
+  DELPHI2005_UP       Defined when compiling with Delphi 2005 or higher
+  DELPHI9_UP          Alias for DELPHI2005_UP
 
 
 - Kylix Versions
@@ -131,14 +145,14 @@
   friendly name of the associated compiler. These directives are only defined if
   the compiler is Kylix (ie KYLIX is defined).
 
-  Directive    Description
+  Directive           Description
   ------------------------------------------------------------------------------
-  KYLIX1       Defined when compiling with Kylix 1
-  KYLIX2       Defined when compiling with Kylix 2
-  KYLIX3       Defined when compiling with Kylix 3
-  KYLIX1_UP    Defined when compiling with Kylix 1 or higher
-  KYLIX2_UP    Defined when compiling with Kylix 2 or higher
-  KYLIX3_UP    Defined when compiling with Kylix 3 or higher
+  KYLIX1              Defined when compiling with Kylix 1
+  KYLIX2              Defined when compiling with Kylix 2
+  KYLIX3              Defined when compiling with Kylix 3
+  KYLIX1_UP           Defined when compiling with Kylix 1 or higher
+  KYLIX2_UP           Defined when compiling with Kylix 2 or higher
+  KYLIX3_UP           Defined when compiling with Kylix 3 or higher
 
 
 - Delphi Compiler Versions (Delphi / Kylix, not in BCB mode)
@@ -153,7 +167,7 @@
   DELPHICOMPILER6     Defined when compiling with Delphi 6 or Kylix 1, 2 or 3
   DELPHICOMPILER7     Defined when compiling with Delphi 7
   DELPHICOMPILER8     Defined when compiling with Delphi 8
-  DELPHICOMPILER9     Defined when compiling with Delphi 9
+  DELPHICOMPILER9     Defined when compiling with Delphi 2005
   DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -162,7 +176,7 @@
   DELPHICOMPILER6_UP  Defined when compiling with Delphi 6 or Kylix 1, 2 or 3 or higher
   DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
   DELPHICOMPILER8_UP  Defined when compiling with Delphi 8 or higher
-  DELPHICOMPILER9_UP  Defined when compiling with Delphi 9 or higher
+  DELPHICOMPILER9_UP  Defined when compiling with Delphi 2005
 
 
 - C++ Builder Versions
@@ -214,7 +228,7 @@
   COMPILER6_UP  Defined when compiling with Delphi 6 or C++ Builder 6 or higher
   COMPILER7_UP  Defined when compiling with Delphi 7
   COMPILER8_UP  Defined when compiling with Delphi 8
-  COMPILER9_UP  Defined when compiling with Delphi 9
+  COMPILER9_UP  Defined when compiling with Delphi Personalities of BDS 3.0
 
 
 - RTL Versions
@@ -240,7 +254,7 @@
   RTL140_UP     Defined when compiling with Delphi 6, Kylix 1, 2 or 3 or C++ Builder 6 or later
   RTL150_UP     Defined when compiling with Delphi 7 or later
   RTL160_UP     Defined when compiling with Delphi 8 or later
-  RTL170_UP     Defined when compiling with Delphi 9 or later
+  RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
 
 
 - Feature Directives
@@ -278,24 +292,25 @@
   SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
   SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
   SUPPORTS_INLINE               Compiler supports the inline directive (D9+)
-  ACCEPT_DEPRECATED             Compiler supports or ignore the deprecated directive (D6/BCB6/FPC)
-  ACCEPT_PLATFORM               Compiler supports or ignore the platform directive (D6+/BCB6+)
-  ACCEPT_LIBRARY                Compiler supports or ignore the library directive (D6+/BCB6+)
+  ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
+  ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
+  ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
   SUPPORTS_CUSTOMVARIANTS       Compiler supports custom variants (D6+/BCB6+)
   SUPPORTS_VARARGS              Compiler supports varargs (D6+/BCB6+)
-  SUPPORTS_ENUMVALUE            Compiler supports values for enums (D6+/BCB6+)
+  SUPPORTS_ENUMVALUE            Compiler supports assigning ordinalities to values of enums (D6+/BCB6+)
   SUPPORTS_DEPRECATED_WARNINGS  Compiler supports deprecated warnings (D6+/BCB6+)
   SUPPORTS_LIBRARY_WARNINGS     Compiler supports library warnings (D6+/BCB6+)
   SUPPORTS_PLATFORM_WARNINGS    Compiler supports platform warnings (D6+/BCB6+)
   SUPPORTS_UNSAFE_WARNINGS      Compiler supports unsafe warnings (D7)
   SUPPORTS_WEAKPACKAGEUNIT      Compiler supports the WEAKPACKAGEUNIT directive
   SUPPORTS_COMPILETIME_MESSAGES Compiler supports the MESSAGE directive
-  HAS_UNIT_LIBC                 The unit Libc exists (Kylix, FPC on Linux)
-  HAS_UNIT_RTLCONSTS            The unit RTLConsts exists (D6+/BCB6+)
-  HAS_UNIT_TYPES                The unit Types exists (D6+/BCB6+)
-  HAS_UNIT_VARIANTS             The unit Variants exists (D6+/BCB6+)
-  HAS_UNIT_STRUTILS             The unit StrUtils exists (D6+/BCB6+)
+  HAS_UNIT_LIBC                 Unit Libc exists (Kylix, FPC on Linux)
+  HAS_UNIT_RTLCONSTS            Unit RTLConsts exists (D6+/BCB6+)
+  HAS_UNIT_TYPES                Unit Types exists (D6+/BCB6+)
+  HAS_UNIT_VARIANTS             Unit Variants exists (D6+/BCB6+)
+  HAS_UNIT_STRUTILS             Unit StrUtils exists (D6+/BCB6+)
   XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
+
 
 - Compiler Settings
 
@@ -347,17 +362,20 @@
 
 {$IFDEF BORLAND}
   {$IFDEF KYLIX}
-    {$I kylix.inc} // FPC incompatible stuff
+    {$I kylix.inc // FPC incompatible stuff }
   {$ELSE ~KYLIX}
 
     {$IFDEF VER170}
+      {$DEFINE BDS3}
       {$DEFINE COMPILER9}
       {$DEFINE DELPHI9}
+      {$DEFINE DELPHI2005 // synonym to DELPHI9 }
       {$DEFINE DELPHICOMPILER9}
       {$DEFINE RTL170_UP}
     {$ENDIF}
 
     {$IFDEF VER160}
+      {$DEFINE BDS2}
       {$DEFINE COMPILER8}
       {$DEFINE DELPHI8}
       {$DEFINE DELPHICOMPILER8}
@@ -366,12 +384,8 @@
 
     {$IFDEF VER150}
       {$DEFINE COMPILER7}
-      {$IFDEF BCB}
-        {$DEFINE BCB7}
-      {$ELSE}
-        {$DEFINE DELPHI7}
-        {$DEFINE DELPHICOMPILER7}
-      {$ENDIF}
+      {$DEFINE DELPHI7}
+      {$DEFINE DELPHICOMPILER7}
       {$DEFINE RTL150_UP}
     {$ENDIF}
 
@@ -462,6 +476,7 @@
 {------------------------------------------------------------------------------}
 
 {$IFDEF DELPHI9}
+  {$DEFINE DELPHI2005_UP // synonym to DELPHI9_UP }
   {$DEFINE DELPHI9_UP}
   {$DEFINE DELPHI8_UP}
   {$DEFINE DELPHI7_UP}
@@ -555,15 +570,6 @@
 {------------------------------------------------------------------------------}
 { BCBX_UP from BCBX mappings                                                   }
 {------------------------------------------------------------------------------}
-
-{$IFDEF BCB7}
-  {$DEFINE BCB7_UP}
-  {$DEFINE BCB6_UP}
-  {$DEFINE BCB5_UP}
-  {$DEFINE BCB4_UP}
-  {$DEFINE BCB3_UP}
-  {$DEFINE BCB1_UP}
-{$ENDIF}
 
 {$IFDEF BCB6}
   {$DEFINE BCB6_UP}
@@ -832,7 +838,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please use FPC 1.98 or later to compile this.
+     Please use FPC 2.0 or later to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
@@ -964,26 +970,35 @@
 { Cross-platform related defines                                               }
 {------------------------------------------------------------------------------}
 
+{$IFNDEF CPU386}
+  {$DEFINE PUREPASCAL}
+{$ENDIF}
+
 {$IFDEF WIN32}
-  {$DEFINE MSWINDOWS}
+  {$DEFINE MSWINDOWS // predefined for D6+/BCB6+ }
+  {$DEFINE Win32API}
 {$ENDIF}
 
 {$IFDEF DELPHILANGUAGE}
   {$IFDEF LINUX}
     {$DEFINE UNIX}
-    {$DEFINE VisualCLX}
   {$ENDIF}
 
-  {$IFNDEF VisualCLX}
-    {$DEFINE VCL}
-  {$ENDIF}
+  {$IFNDEF CONSOLE}
+    {$IFDEF LINUX}
+      {$DEFINE VisualCLX}
+    {$ENDIF}
+    {$IFNDEF VisualCLX}
+      {$DEFINE VCL}
+    {$ENDIF}
+  {$ENDIF ~CONSOLE}
 
   {$IFDEF VisualCLX}
-    {$DEFINE COMPLIB_CLX} { kept for backward compatibility, use VisualCLX instead }
+    {$DEFINE COMPLIB_CLX // kept for backward compatibility, use VisualCLX instead }
   {$ENDIF}
 
   {$IFDEF VCL}
-    {$DEFINE COMPLIB_VCL} { kept for backward compatibility, use VCL instead }
+    {$DEFINE COMPLIB_VCL // kept for backward compatibility, use VCL instead }
   {$ENDIF}
 {$ENDIF DELPHILANGUAGE}
 
@@ -1026,6 +1041,10 @@
 // History:
 
 // $Log$
+// Revision 1.24  2005/08/22 01:43:02  rrossmair
+// - added symbols Win32API, PUREPASCAL, DELPHI2005, DELPHI2005_UP
+// - reworked/reformated some comments
+//
 // Revision 1.23  2005/04/15 08:27:38  marquardt
 // introduced SUPPORTS_DISPID for FPC
 //
