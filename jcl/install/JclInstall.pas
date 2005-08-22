@@ -917,7 +917,7 @@ end;
 
 procedure TJclInstallation.BuildUnitList(const SubDir: string; Units: TStrings);
 var
-  I: Integer;
+  I, J: Integer;
   ExcludeList: TStringList;
   ExcludeListFileName: string;
   UnitName: string;
@@ -934,7 +934,11 @@ begin
       ExcludeList.LoadFromFile(ExcludeListFileName);
       for I := 0 to ExcludeList.Count - 1 do
         if ExcludeEdition(ExcludeList, I, UnitName) then
-          Units.Delete(Units.IndexOf(UnitName));
+        begin
+          J := Units.IndexOf(UnitName);
+          if J <> Invalid then
+            Units.Delete(J);
+        end;
     finally
       ExcludeList.Free;
     end;
@@ -1922,6 +1926,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.68  2005/08/22 19:30:58  rrossmair
+// - TJclInstallation.BuildUnitList fault tolerance improved
+//
 // Revision 1.67  2005/08/22 02:08:40  rrossmair
 // - implemented ability to specify which demos are to be built
 //
