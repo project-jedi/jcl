@@ -44,10 +44,16 @@ type
     FLibObjDir: string;
     FDefines: TStringList;
     FUnits: TStringList;
+    FDemos: TStringList;
     FExcludedDemos: TStringList;
     FOnWriteLog: TTextHandler;
+    FRelativeDemoPath: string;
+    FDemoSectionName: string;
+    procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
+    procedure AddDemos(const Directory: string);
     procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
       const DialogIconFileName: string; const Designer: string; const Ancestor: string = '');
+    procedure BuildDemoList;
     procedure BuildUnitList(const SubDir: string; Units: TStrings);
     function GetProgressTotal: Integer;
     function GetTool: IJediInstallTool;
@@ -68,12 +74,12 @@ type
     function UninstallRunTimePackage(const BaseName: string): Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
     function LogFileName: string;
-    procedure MakeDemo(const Directory: string; const FileInfo: TSearchRec);
-    procedure MakeDemos(const Directory: string); overload;
+    procedure MakeDemo(Index: Integer);
     function MakeDemos: Boolean; overload;
     function MakeUnits(Debug: Boolean): Boolean;
     function MakePath(const FormatStr: string): string;
     function Description(Option: TJediInstallOption): string;
+    procedure SaveDemoOption(Index: Integer);
     procedure SaveOption(Option: TJediInstallOption);
     procedure SaveOptions;
     procedure Progress(Steps: Integer);
@@ -93,6 +99,8 @@ type
     function DcpPath: string;
     function CheckDirectories: Boolean;
     procedure CleanupRepository;
+    function DemoOption(DemoIndex: Integer): TJediInstallOption;
+    function DemoOptionSelected(Index: Integer): Boolean;
     function ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
     procedure InitDemoExclusionList;
     function InstallSelectedOptions: Boolean;
@@ -104,12 +112,15 @@ type
     function StoredBplPath: string;
     function StoredDcpPath: string;
     property Defines: TStringList read FDefines;
+    property Demos: TStringList read FDemos;
+    property DemoSectionName: string read FDemoSectionName;
     property Distribution: TJclDistribution read FDistribution;
     property Tool: IJediInstallTool read GetTool;
     property DebugDcuDir: string read FDebugDcuDir;
     property LibDir: string read FLibDir;
     property LibObjDir: string read FLibObjDir;
     property ProgressTotal: Integer read GetProgressTotal;
+    property RelativeDemoPath: string read FRelativeDemoPath;
     property Target: TJclBorRADToolInstallation read FTarget;
     property Units[const SourceDir: string]: TStrings read GetUnits;
   public
@@ -575,6 +586,7 @@ begin
   end;
   FDefines := TStringList.Create;
   FUnits := TStringList.Create;
+  FDemoSectionName := Target.Name + ' demos';
 end;
 
 destructor TJclInstallation.Destroy;
@@ -582,10 +594,27 @@ var
   I: Integer;
 begin
   FExcludedDemos.Free;
+  FDemos.Free;
   for I := 0 to FUnits.Count - 1 do
     FUnits.Objects[I].Free;
+  FUnits.Free;
   FDefines.Free;
   inherited Destroy;
+end;
+
+procedure TJclInstallation.AddDemo(const Directory: string; const FileInfo: TSearchRec);
+var
+  FileName: string;
+begin
+  FileName := FRelativeDemoPath + FileInfo.Name;
+  if not FExcludedDemos.IndexOf(FileName) >= 0 then
+    Demos.Append(FileName);
+end;
+
+procedure TJclInstallation.AddDemos(const Directory: string);
+begin
+  FRelativeDemoPath := PathAddSeparator(PathGetRelativePath(Distribution.DemosPath, Directory));
+  EnumFiles(Directory + '*.dpr', AddDemo);
 end;
 
 procedure TJclInstallation.AddDialogToRepository(const DialogName: string;
@@ -855,7 +884,8 @@ end;
 
 function TJclDistribution.GetHint(Option: TJediInstallOption): string;
 begin
-  Result := InitData[Option].Hint;
+  if Ord(Option) < Ord(ioJclLast) then
+    Result := InitData[Option].Hint;
 end;
 
 function TJclInstallation.GetProgressTotal: Integer;
@@ -874,12 +904,23 @@ begin
   Result := Distribution.Tool;
 end;
 
+procedure TJclInstallation.BuildDemoList;
+begin
+  if not Assigned(FDemos) then
+  begin
+    FDemos := TStringList.Create;
+    InitDemoExclusionList;
+    EnumDirectories(Distribution.ExamplesDir, AddDemos);
+    //Demos.Sorted := True;
+  end;
+end;
+
 procedure TJclInstallation.BuildUnitList(const SubDir: string; Units: TStrings);
 var
-  I, J: Integer;
+  I: Integer;
   ExcludeList: TStringList;
   ExcludeListFileName: string;
-  Editions, UnitName: string;
+  UnitName: string;
   FileMask: string;
 begin
   FileMask := Format('%s' + PathSeparator + '%s' + PathSeparator + '*.pas', [Distribution.SourceDir, SubDir]);
@@ -892,25 +933,24 @@ begin
     try
       ExcludeList.LoadFromFile(ExcludeListFileName);
       for I := 0 to ExcludeList.Count - 1 do
-      begin
-        UnitName := ExcludeList[I];
-        J := Pos('=', UnitName);
-        if J > 0 then
-          SetLength(UnitName, J - 1);
-        J := Units.IndexOf(UnitName);
-        if J <> Invalid then
-        begin
-          Editions := ExcludeList.Values[UnitName];
-          if (Editions = '') or (StrIPos(BorRADToolEditionIDs[Target.Edition], Editions) > 0) then
-            Units.Delete(J);
-        end;
-      end;
+        if ExcludeEdition(ExcludeList, I, UnitName) then
+          Units.Delete(Units.IndexOf(UnitName));
     finally
       ExcludeList.Free;
     end;
   end;
   for I := 0 to Units.Count -1 do
     Units[I] := Copy(Units[I], 1, Length(Units[I]) - Length('.pas'));
+end;
+
+function TJclInstallation.DemoOption(DemoIndex: Integer): TJediInstallOption;
+begin
+  Result := TJediInstallOption(Ord(ioJclLast) + 1 + DemoIndex);
+end;
+
+function TJclInstallation.DemoOptionSelected(Index: Integer): Boolean;
+begin
+  Result := OptionSelected(DemoOption(Index));
 end;
 
 function TJclInstallation.GetUnits(const SourceDir: string): TStrings;
@@ -941,29 +981,33 @@ begin
   if not Assigned(FExcludedDemos) then
   begin
     FExcludedDemos := TStringList.Create;
-    FExcludedDemos.LoadFromFile(MakePath(Distribution.DemosPath + '%s%d.exc'));
-    Strings := TStringList.Create;
-    try
-      I := 0;
-      while I < FExcludedDemos.Count do
-      begin
-        if ExcludeEdition(FExcludedDemos, I, FileName) then
-          if ExtractFileExt(FileName) = '.exc' then
-          begin
-            Strings.LoadFromFile(Distribution.DemosPath + FileName);
-            FExcludedDemos.AddStrings(Strings);
-            FExcludedDemos.Delete(I);
-          end
+    FileName := MakePath(Distribution.DemosPath + '%s%d.exc');
+    if FileExists(FileName) then
+    begin
+      FExcludedDemos.LoadFromFile(FileName);
+      Strings := TStringList.Create;
+      try
+        I := 0;
+        while I < FExcludedDemos.Count do
+        begin
+          if ExcludeEdition(FExcludedDemos, I, FileName) then
+            if ExtractFileExt(FileName) = '.exc' then
+            begin
+              Strings.LoadFromFile(Distribution.DemosPath + FileName);
+              FExcludedDemos.AddStrings(Strings);
+              FExcludedDemos.Delete(I);
+            end
+            else
+            begin
+              FExcludedDemos[I] := FileName;
+              Inc(I);
+            end
           else
-          begin
-            FExcludedDemos[I] := Distribution.DemosPath + FileName;
-            Inc(I);
-          end
-        else
-          FExcludedDemos.Delete(I);
+            FExcludedDemos.Delete(I);
+        end;
+      finally
+        Strings.Free;
       end;
-    finally
-      Strings.Free;
     end;
   end;
 end;
@@ -984,6 +1028,30 @@ var
     else
       Exclude(GUIOptions, goChecked);
     Result := Tool.GUIAddOption(GUI, Parent, Option, Description(Option), GUIOptions);
+  end;
+
+  function AddDemoNode(Parent: TObject; Index: Integer;
+    GUIOptions: TJediInstallGUIOptions = []): TObject;
+  var
+    Checked: Boolean;
+  begin
+    Checked := Distribution.FIniFile.ReadInteger(DemoSectionName, Demos[Index], 0) > 0;
+    if Checked then
+      Include(GUIOptions, goChecked)
+    else
+      Exclude(GUIOptions, goChecked);
+    Result := Tool.GUIAddOption(GUI, Parent, DemoOption(Index),
+      ExtractFileName(Demos[Index]), GUIOptions);
+  end;
+
+  procedure AddDemoNodes;
+  var
+    I: Integer;
+  begin
+    TempNode := AddNode(ProductNode, ioJclMakeDemos, [goExpandable, goNoAutoCheck]);
+    BuildDemoList;
+    for I := 0 to Demos.Count - 1 do
+      AddDemoNode(TempNode, I);
   end;
 
   procedure AddMakeNodes(Parent: TObject; DebugSettings: Boolean);
@@ -1075,7 +1143,7 @@ begin
     AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
   end;
   {$ENDIF MSWINDOWS}
-  AddNode(ProductNode, ioJclMakeDemos, [goNoAutoCheck]);
+  AddDemoNodes;
   Tool.BPLPath[Target] := StoredBplPath;
   Tool.DCPPath[Target] := StoredDcpPath;
 end;
@@ -1331,39 +1399,39 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
-procedure TJclInstallation.MakeDemo(const Directory: string; const FileInfo: TSearchRec);
+procedure TJclInstallation.MakeDemo(Index: Integer);
 var
+  FileName: string;
   CfgFileName: string;
+  Directory: string;
 begin
-  if FExcludedDemos.IndexOf(Directory + FileInfo.Name) >= 0 then
-    Exit;
-  WriteLog(Format(LineBreak + RsBuildingMessage, [Directory + FileInfo.Name]));
+  FileName := Demos[Index];
+  Directory := Distribution.DemosPath + ExtractFileDir(FileName);
+  FileName := ExtractFileName(FileName);
+  WriteLog(Format(LineBreak + RsBuildingMessage, [FileName]));
   SetCurrentDir(Directory);
-  CfgFileName := ChangeFileExt(FileInfo.Name, '.cfg');
+  CfgFileName := ChangeFileExt(FileName, '.cfg');
   StringToFile(CfgFileName, Format(
     '-e%s' + AnsiLineBreak +    // Exe output dir
     '-u%s' + AnsiLineBreak +    // Unit directories
     '-i%s',                     // Include path
     [Distribution.BinDir, LibDir, Distribution.SourceDir]));
-  Target.DCC.Execute(FileInfo.Name);
+  Target.DCC.Execute(FileName);
   FileDelete(CfgFileName);
-end;
-
-procedure TJclInstallation.MakeDemos(const Directory: string);
-begin
-  EnumFiles(Directory + '*.dpr', MakeDemo);
 end;
 
 function TJclInstallation.MakeDemos: Boolean;
 var
+  I: Integer;
   SaveDir: string;
 begin
   Tool.UpdateStatus(Format(RsBuildingDemosByTargetMessage, [Target.Name]));
   WriteLog(LineBreak + RsBuildingDemosMessage + LineBreak);
   Result := True;
   SaveDir := GetCurrentDir;
-  InitDemoExclusionList;
-  EnumDirectories(Distribution.ExamplesDir, MakeDemos);
+  for I := 0 to Demos.Count - 1 do
+    if DemoOptionSelected(I) then
+      MakeDemo(I);
   SetCurrentDir(SaveDir);
 end;
 
@@ -1531,6 +1599,16 @@ begin
   WriteLog('');
 end;
 
+procedure TJclInstallation.SaveDemoOption(Index: Integer);
+var
+  Value: Integer;
+begin
+  Value := Invalid;
+  if OptionSelected(DemoOption(Index)) then
+    Value := JclBase.JclVersionBuild;
+  Distribution.FIniFile.WriteInteger(DemoSectionName, Demos[Index], Value);
+end;
+
 procedure TJclInstallation.SaveOption(Option: TJediInstallOption);
 var
   Value: Integer;
@@ -1543,11 +1621,14 @@ end;
 
 procedure TJclInstallation.SaveOptions;
 var
+  I: Integer;
   Option: TJediInstallOption;
 begin
   SaveOption(ioTarget);
   for Option := ioJCL to ioJclLast do
     SaveOption(Option);
+  for I := 0 to Demos.Count - 1 do
+    SaveDemoOption(I);
   Distribution.FIniFile.WriteString(Target.Name, 'BPL-Path', Tool.BPLPath[Target]);
   Distribution.FIniFile.WriteString(Target.Name, 'DCP-Path', Tool.DCPPath[Target]);
 end;
@@ -1841,6 +1922,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.67  2005/08/22 02:08:40  rrossmair
+// - implemented ability to specify which demos are to be built
+//
 // Revision 1.66  2005/08/06 11:19:34  rrossmair
 // - demo building improved: handles exclusion files etc.
 //
