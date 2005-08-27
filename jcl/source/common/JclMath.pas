@@ -135,49 +135,49 @@ function HexToDouble(const Hex: string): Double;
 function DegToRad(const Value: Extended): Extended; overload;
 function DegToRad(const Value: Double): Double; overload;
 function DegToRad(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastDegToRad;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts radians to degrees.
 function RadToDeg(const Value: Extended): Extended; overload;
 function RadToDeg(const Value: Double): Double; overload;
 function RadToDeg(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastRadToDeg;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts grads to radians.
 function GradToRad(const Value: Extended): Extended; overload;
 function GradToRad(const Value: Double): Double; overload;
 function GradToRad(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastGradToRad;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts radians to grads.
 function RadToGrad(const Value: Extended): Extended; overload;
 function RadToGrad(const Value: Double): Double; overload;
 function RadToGrad(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastRadToGrad;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts degrees to grads.
 function DegToGrad(const Value: Extended): Extended; overload;
 function DegToGrad(const Value: Double): Double; overload;
 function DegToGrad(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastDegToGrad;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts grads to degrees.
 function GradToDeg(const Value: Extended): Extended; overload;
 function GradToDeg(const Value: Double): Double; overload;
 function GradToDeg(const Value: Single): Single; overload;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure FastGradToDeg;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 { Logarithmic }
 
@@ -276,20 +276,20 @@ function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean;
 function IsPrimeTD(N: Cardinal): Boolean;
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 function IsPrimeRM(N: Cardinal): Boolean;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 function IsPrimeFactor(const F, N: Cardinal): Boolean;
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 
 var
   IsPrime: function(N: Cardinal): Boolean = IsPrimeTD;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 procedure SetPrimalityTest(const Method: TPrimalityTestMethod);
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 { Floating point value classification }
 
 type
@@ -306,8 +306,8 @@ type
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
+{$ENDIF CPU386}
 
-{$ENDIF ~CLR}
 { NaN and INF support }
 
 type
@@ -365,7 +365,7 @@ type
   public
   {$ELSE}
   protected
-  {$ENDIF CLR}
+  {$ENDIF}
     function GetBit(const Idx: Integer): Boolean; virtual; abstract;
     procedure SetBit(const Idx: Integer; const Value: Boolean); virtual; abstract;
     procedure Clear; virtual; abstract;
@@ -374,7 +374,7 @@ type
     procedure SetRange(const Low, High: Integer; const Value: Boolean); virtual; abstract;
   end;
 
-type        
+type
   TJclFlatSet = class(TJclASet)
   private
     FBits: TBits;
@@ -537,12 +537,12 @@ procedure InitCrc16(Polynom, Start: Word);
 type
   TRectComplex = record
     Re: Float;
-    Im: Float
+    Im: Float;
   end;
 
   TPolarComplex = record
     Radius: Float;
-    Angle: Float
+    Angle: Float;
   end;
 
 function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex; overload;
@@ -600,12 +600,12 @@ function CscH(const Z: TRectComplex): TRectComplex; overload;
 implementation
 
 uses
-  {$IFNDEF CLR}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF Win32API}
   Windows,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF Win32API}
+  {$IFDEF CPU386}
   Jcl8087,
-  {$ENDIF CLR}
+  {$ENDIF CPU386}
   JclResources;
 
 // Internal helper routines
@@ -709,7 +709,7 @@ begin
   Result := Value * RatioDegToRad;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects degrees in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 180
 procedure FastDegToRad; assembler;
@@ -723,7 +723,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts radians to degrees.
 
@@ -742,7 +742,7 @@ begin
   Result := Value * RatioRadToDeg;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
 procedure FastRadToDeg; assembler;
@@ -756,7 +756,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts grads to radians.
 
@@ -775,7 +775,7 @@ begin
   Result := Value * RatioGradToRad;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToRad; assembler;
@@ -789,7 +789,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts radians to grads.
 
@@ -808,7 +808,7 @@ begin
   Result := Value * RatioRadToGrad;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
 procedure FastRadToGrad; assembler;
@@ -822,7 +822,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts degrees to grads.
 
@@ -841,7 +841,7 @@ begin
   Result := Value * RatioDegToGrad;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects Degrees in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / 180);
 procedure FastDegToGrad; assembler;
@@ -855,7 +855,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 // Converts grads to degrees.
 
@@ -874,7 +874,7 @@ begin
   Result := Value * RatioGradToDeg;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToDeg; assembler;
@@ -888,7 +888,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 procedure DomainCheck(Err: Boolean);
 begin
@@ -904,7 +904,7 @@ end;
 
 function LogBase10(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FLogBase10(X: Float): Float; assembler;
   asm
           FLDLG2
@@ -912,7 +912,7 @@ function LogBase10(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(X <= 0.0);
@@ -925,7 +925,7 @@ end;
 
 function LogBase2(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FLogBase2(X: Float): Float; assembler;
   asm
           FLD1
@@ -933,7 +933,7 @@ function LogBase2(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(X <= 0.0);
@@ -946,7 +946,7 @@ end;
 
 function LogBaseN(Base, X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FLogBaseN(Base, X: Float): Float; assembler;
   asm
           FLD1
@@ -958,7 +958,7 @@ function LogBaseN(Base, X: Float): Float;
           FDIV
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
@@ -973,7 +973,7 @@ end;
 
 function ArcCos(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FArcCos(X: Float): Float; assembler;
   asm
           FLD     X
@@ -986,7 +986,7 @@ function ArcCos(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > 1.0);
@@ -1010,7 +1010,7 @@ end;
 
 function ArcSec(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FArcTan(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1018,7 +1018,7 @@ function ArcSec(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   {$IFDEF CLR}
@@ -1030,7 +1030,7 @@ end;
 
 function ArcSin(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FArcSin(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1042,15 +1042,15 @@ function ArcSin(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > 1.0);
-  {$IFDEF CLR}
-  Result := System.Math.Asin(X);
-  {$ELSE}
+  {$IFDEF CPU386}
   Result := FArcSin(X);
-  {$ENDIF CLR}
+  {$ELSE}
+  Result := System.Math.Asin(X);
+  {$ENDIF}
 end;
 
 function ArcTan(X: Float): Float;
@@ -1058,7 +1058,7 @@ function ArcTan(X: Float): Float;
 begin
   Result := ArcTan2(X, 1);
 end;
-{$ELSE}
+{$ELSE ~PUREPASCAL}
 assembler;
 asm
         FLD     X
@@ -1066,7 +1066,7 @@ asm
         FPATAN
         FWAIT
 end;
-{$ENDIF DEF PUREPASCAL}
+{$ENDIF ~PUREPASCAL}
 
 {$IFDEF CLR}
 function ArcTan2(Y, X: Float): Float;
@@ -1085,14 +1085,14 @@ end;
 
 function Cos(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FCos(X: Float): Float; assembler;
   asm
           FLD     X
           FCOS
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1105,7 +1105,7 @@ end;
 
 function Cot(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FCot(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1113,7 +1113,7 @@ function Cot(X: Float): Float;
           FDIVRP
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1153,7 +1153,7 @@ end;
 
 function Sec(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FSec(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1162,7 +1162,7 @@ function Sec(X: Float): Float;
           FDIVRP
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1176,14 +1176,14 @@ end;
 
 function Sin(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FSin(X: Float): Float; assembler;
   asm
           FLD     X
           FSIN
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   {$IFNDEF MATH_EXT_SPECIALVALUES}
@@ -1198,16 +1198,16 @@ end;
 
 procedure SinCos(X: Float; var Sin, Cos: Float);
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   procedure FSinCos(X: Float; var Sin, Cos: Float); assembler;
   asm
           FLD     X
           FSINCOS
-          FSTP    TByte PTR [EDX]
-          FSTP    TByte PTR [EAX]
+          FSTP    Float PTR [EDX]
+          FSTP    Float PTR [EAX]
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1221,7 +1221,7 @@ end;
 
 function Tan(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FTan(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1229,7 +1229,7 @@ function Tan(X: Float): Float;
           FSTP    ST(0)
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1249,7 +1249,7 @@ end;
 
 function ArcCosH(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FArcCosH(X: Float): Float; assembler;
   asm
           FLDLN2
@@ -1262,7 +1262,7 @@ function ArcCosH(X: Float): Float;
           FADDP   ST(1), ST
           FYL2X
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(X < 1.0);
@@ -1325,7 +1325,7 @@ end;
 
 function ArcTanH(X: Float): Float;
 
-  {$IFNDEF CLR}
+  {$IFDEF CPU386}
   function FArcTanH(X: Float): Float; assembler;
   asm
           FLDLN2
@@ -1341,7 +1341,7 @@ function ArcTanH(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF ~CLR}
+  {$ENDIF CPU386}
 
 begin
   DomainCheck(Abs(X) >= 1.0);
@@ -1357,7 +1357,7 @@ function CosH(X: Float): Float;
 begin
   Result := 0.5 * (Exp(X) + Exp(-X));
 end;
-{$ELSE}
+{$ELSE ~PUREPASCAL}
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
@@ -1397,7 +1397,7 @@ asm
         FMULP   ST(1), ST
         FWAIT
 end;
-{$ENDIF PUREPASCAL}
+{$ENDIF ~PUREPASCAL}
 
 function CotH(X: Float): Float;
 begin
@@ -1423,7 +1423,7 @@ function SinH(X: Float): Float;
 begin
   Result := System.Math.Sinh(X);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 assembler;
 const
   RoundDown: Word = $177F;
@@ -1464,7 +1464,7 @@ asm
         FMULP   ST(1), ST
         FWAIT
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TanH(X: Float): Float;
 begin
@@ -1935,7 +1935,7 @@ begin
 end;
 
 function GCD(X, Y: Cardinal): Cardinal;
-{$IFDEF CLR}
+{$IFDEF PUREPASCAL}
 begin
   Result := X;
   while Y <> 0 do
@@ -1945,7 +1945,7 @@ begin
     Y := X mod Y;
   end;
 end;
-{$ELSE}
+{$ELSE ~PUREPASCAL}
 assembler;
 { Euclid's algorithm }
 asm
@@ -1959,10 +1959,10 @@ asm
         AND     EDX, EDX // test to see if EDX is zero, without changing EDX
         JNZ     @00      // when EDX is zero EAX has the Result
 end;
-{$ENDIF CLR}
+{$ENDIF ~PUREPASCAL}
 
 function ISqrt(const I: Smallint): Smallint;
-{$IFDEF CLR}
+{$IFDEF PUREPASCAL}
 var
   b, d: Smallint;
 begin
@@ -1975,7 +1975,7 @@ begin
     b := b + d;
   until b > I;
 end;
-{$ELSE}
+{$ELSE ~PUREPASCAL}
 assembler;
 asm
         PUSH    EBX
@@ -1994,7 +1994,7 @@ asm
 
         POP     EBX
 end;
-{$ENDIF CLR}
+{$ENDIF ~PUREPASCAL}
 
 function LCM(const X, Y: Cardinal): Cardinal;
 var
@@ -2424,7 +2424,7 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 { Rabin-Miller Strong Primality Test }
 
 function IsPrimeRM(N: Cardinal): Boolean;
@@ -2512,7 +2512,7 @@ asm
         JNL   @@D
 @@E:    SETE  AL
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 var
@@ -2584,7 +2584,7 @@ begin
 end;
 {$ENDIF ~CLR}
 
-{$IFNDEF CLR}
+{$IFDEF CPU386}
 //=== Floating point value classification ====================================
 
 const
@@ -2652,7 +2652,7 @@ asm
         FLD     Value
         CALL    _FPClass
 end;
-{$ENDIF ~CLR}
+{$ENDIF CPU386}
 
 //=== NaN and Infinity support ===============================================
 
@@ -4378,6 +4378,10 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.29  2005/08/27 04:21:11  rrossmair
+// - fixed SinCos for Float <> Extended
+// - replaced [~]CLR by more more specific conditional compilation symbols
+//
 // Revision 1.28  2005/08/19 01:11:50  outchy
 // Conversion functions are public and reworked.
 // (Removing hints while compiling with C++Builder 5).
