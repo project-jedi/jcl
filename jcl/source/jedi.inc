@@ -292,6 +292,15 @@
   SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
   SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
   SUPPORTS_INLINE               Compiler supports the inline directive (D9+)
+  SUPPORTS_FOR_IN               Compiler supports for in loops (D9+)
+  SUPPORTS_NESTED_CONSTANTS     Compiler supports nested constants (D9+)
+  SUPPORTS_NESTED_TYPES         Compiler supports nested types (D9+)
+  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9+ .NET)
+  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9+ .NET)
+  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9+ .NET)
+  SUPPORTS_STRICT               Compiler supports strict keyword (D9+ .NET)
+  SUPPORTS_STATIC               Compiler supports static keyword (D9+ .NET)
+  SUPPORTS_FINAL                Compiler supports final keyword (D9+ .NET)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -1052,6 +1061,9 @@
 // History:
 
 // $Log$
+// Revision 1.26  2005/09/03 15:46:42  marquardt
+// new SUPPORTS_ added to description section
+//
 // Revision 1.25  2005/09/03 15:22:24  rrossmair
 // - support for Delphi.NET personality syntax
 //
