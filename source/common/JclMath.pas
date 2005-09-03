@@ -535,14 +535,29 @@ procedure InitCrc16(Polynom, Start: Word);
 { Complex numbers }
 
 type
-  TRectComplex = record
-    Re: Float;
-    Im: Float;
-  end;
-
   TPolarComplex = record
     Radius: Float;
     Angle: Float;
+  end;
+
+  TRectComplex = record
+    Re: Float;
+    Im: Float;
+    {$IFDEF SUPPORTS_CLASS_OPERATORS}
+    class operator Implicit(const Value: Float): TRectComplex;
+    class operator Implicit(const Value: Integer): TRectComplex;
+    class operator Implicit(const Value: Int64): TRectComplex;
+    class operator Implicit(const Z: TPolarComplex): TRectComplex;
+
+    class operator Equal(const Z1, Z2: TRectComplex): Boolean;
+    class operator NotEqual(const Z1, Z2: TRectComplex): Boolean;
+
+    class operator Add(const Z1, Z2: TRectComplex): TRectComplex; inline;
+    class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Negative(const Z: TRectComplex): TRectComplex;
+    {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
 function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex; overload;
@@ -1127,7 +1142,7 @@ end;
 
 function Coversine(X: Float): Float;
 begin
-  Result := 1 - Sin(X);
+  Result := 1 - JclMath.Sin(X);
 end;
 
 function Csc(X: Float): Float;
@@ -1136,7 +1151,7 @@ var
 begin
   DomainCheck(Abs(X) > MaxAngle);
 
-  Y := Sin(X);
+  Y := JclMath.Sin(X);
   DomainCheck(Y = 0.0);
   Result := 1.0 / Y;
 end;
@@ -1148,7 +1163,7 @@ end;
 
 function Haversine(X: Float): Float;
 begin
-  Result := 0.5 * (1 - Cos(X)) ;
+  Result := 0.5 * (1 - JclMath.Cos(X)) ;
 end;
 
 function Sec(X: Float): Float;
@@ -1242,7 +1257,7 @@ end;
 
 function Versine(X: Float): Float;
 begin
-  Result := 1 - Cos(X);
+  Result := 1 - JclMath.Cos(X);
 end;
 
 //=== Hyperbolic =============================================================
@@ -1355,7 +1370,7 @@ end;
 function CosH(X: Float): Float;
 {$IFDEF PUREPASCAL}
 begin
-  Result := 0.5 * (Exp(X) + Exp(-X));
+  Result := 0.5 * (JclMath.Exp(X) + JclMath.Exp(-X));
 end;
 {$ELSE ~PUREPASCAL}
 const
@@ -1406,14 +1421,14 @@ end;
 
 function CscH(X: Float): Float;
 begin
-  Result := Exp(X) - Exp(-X);
+  Result := JclMath.Exp(X) - JclMath.Exp(-X);
   DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
 
 function SecH(X: Float): Float;
 begin
-  Result := Exp(X) + Exp(-X);
+  Result := JclMath.Exp(X) + JclMath.Exp(-X);
   DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
@@ -1476,7 +1491,7 @@ begin
       Result := -1.0
     else
     begin
-      Result := Exp(X);
+      Result := JclMath.Exp(X);
       Result := Result * Result;
       Result := (Result - 1.0) / (Result + 1.0);
     end;
@@ -1542,13 +1557,13 @@ begin
   end
   else
   if Base > 0.0 then
-    Result := Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Base))
+    Result := JclMath.Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Base))
   else
   begin
     IsAnInteger := (Frac(Exponent) = 0.0);
     if IsAnInteger then
     begin
-      Result := Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Abs(Base)));
+      Result := JclMath.Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Abs(Base)));
       IsOdd := Abs(Round(ModFloat(Exponent, 2))) = 1;
       if IsOdd then
         Result := -Result;
@@ -1614,7 +1629,7 @@ begin
   if Y = 0.0 then
     Result := 1.0
   else
-    Result := Exp(Y * Ln10);
+    Result := JclMath.Exp(Y * Ln10);
 end;
 
 function TruncPower(const Base, Exponent: Float): Float;
@@ -1630,7 +1645,7 @@ begin
   if Y = 0.0 then
     Result := 1.0
   else
-    Result := Exp(Y * Ln2);
+    Result := JclMath.Exp(Y * Ln2);
 end;
 
 //=== Floating point support routines ========================================
@@ -4342,6 +4357,78 @@ begin
   Result := Quotient(RectOne, SinH(Z));
 end;
 
+{$IFDEF SUPPORTS_CLASS_OPERATORS}
+
+class operator TRectComplex.Implicit(const Value: Float): TRectComplex;
+begin
+  Result.Re := Value;
+  Result.Im := 0;
+end;
+
+class operator TRectComplex.Implicit(const Value: Integer): TRectComplex;
+begin
+  Result.Re := Value;
+end;
+
+class operator TRectComplex.Implicit(const Value: Int64): TRectComplex;
+begin
+  Result.Re := Value;
+end;
+
+class operator TRectComplex.Implicit(const Z: TPolarComplex): TRectComplex;
+var
+  ASin, ACos: Float;
+begin
+  SinCos(Z.Angle, ASin, ACos);
+  Result.Re := Z.Radius * ACos;
+  Result.Im := Z.Radius * ASin;
+end;
+
+class operator TRectComplex.Equal(const Z1, Z2: TRectComplex): Boolean;
+begin
+  Result := (Z1.Re = Z2.Re) and (Z1.Im = Z2.Im);
+end;
+
+class operator TRectComplex.NotEqual(const Z1, Z2: TRectComplex): Boolean;
+begin
+  Result := not Equal(Z1, Z2);
+end;
+
+class operator TRectComplex.Add(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re + Z2.Re;
+  Result.Im := Z1.Im + Z2.Im;
+end;
+
+class operator TRectComplex.Subtract(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re - Z2.Re;
+  Result.Im := Z1.Im - Z2.Im;
+end;
+
+class operator TRectComplex.Multiply(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re * Z2.Re - Z1.Im * Z2.Im;
+  Result.Im := Z1.Re * Z2.Im + Z1.Im * Z2.Re;
+end;
+
+class operator TRectComplex.Divide(const Z1, Z2: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+begin
+  Denom := Sqr(Z2.Re) + Sqr(Z2.Im);
+  Result.Re := (Z1.Re * Z2.Re + Z1.Im * Z2.Im) / Denom;
+  Result.Im := (Z1.Im * Z2.Re - Z1.Re * Z2.Im) / Denom;
+end;
+
+class operator TRectComplex.Negative(const Z: TRectComplex): TRectComplex;
+begin
+  Result.Re := -Z.Re;
+  Result.Im := -Z.Im;
+end;
+
+{$ENDIF SUPPORTS_CLASS_OPERATORS}
+
 // History:
 
 // ????-??-??:
@@ -4378,9 +4465,8 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
-// Revision 1.29  2005/08/27 04:21:11  rrossmair
-// - fixed SinCos for Float <> Extended
-// - replaced [~]CLR by more more specific conditional compilation symbols
+// Revision 1.30  2005/09/03 16:20:43  rrossmair
+// - support for operator overloading
 //
 // Revision 1.28  2005/08/19 01:11:50  outchy
 // Conversion functions are public and reworked.
