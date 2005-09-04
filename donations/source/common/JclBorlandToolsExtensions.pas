@@ -24,7 +24,7 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: April 10, 2005                                                                    }
+{ Last modified: September 04, 2005                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -227,7 +227,7 @@ type
     property PentiumTMSafeDivide: TJclDCCBooleanSwitch read FPentiumTMSafeDivide;
     property Q: TJclDCCBooleanSwitch read FIntegerOverflowChecking;
     property R: TJclDCCBooleanSwitch read FRangeChecking;
-    property RangeChecking: TJclDCCBooleanSwitch read FRangeChecking;        
+    property RangeChecking: TJclDCCBooleanSwitch read FRangeChecking;
     property RuntimeTypeInfo: TJclDCCBooleanSwitch read FRuntimeTypeInfo;
     property StrictVarStrings: TJclDCCBooleanSwitch read FStrictVarStrings;
     property SymbolReferenceInfo: TJclDCCYSwitch read FSymbolReferenceInfo;
@@ -276,21 +276,21 @@ type
     FDCUOutputDir: string;
     FEXEOutputDir: string;
     FImageBaseAddr: DWord;
-    FIncludeDirectories: string;
+    FIncludeDirectories: TJclConfigStringList;
     FMapFileLevel: TJclDCCMapFileLevel;
     FMaxStackSize: DWord;
     FMinStackSize: DWord;
-    FObjectDirectories: string;
+    FObjectDirectories: TJclConfigStringList;
     FOutputHints: Boolean;
     FOutputWarnings: Boolean;
-    FPackages: string;
+    FPackages: TJclConfigStringList;
     FRemoteDebugSymbols: Boolean;
-    FResourceDirectories: string;
-    FSearchPaths: string;
+    FResourceDirectories: TJclConfigStringList;
+    FSearchPaths: TJclConfigStringList;
     FTD32DebugInfo: Boolean;
     FUnitAliases: string;
-    FUnitDirectories: string;
-    procedure SetSearchPaths(ASearchPaths: string);
+    FUnitDirectories: TJclConfigStringList;
+    procedure HandleChangeSearchPaths(ASender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -310,22 +310,20 @@ type
     property EXEOutputDirectory: string read FEXEOutputDir write FEXEOutputDir;
     //(usc) was only ImageBase in TJclDCCEx
     property ImageBaseAddr: DWord read FImageBaseAddr write FImageBaseAddr;
-    property IncludeDirectories: string read FIncludeDirectories write FIncludeDirectories;
+    property IncludeDirectories: TJclConfigStringList read FIncludeDirectories;
     property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
     property MaxStackSize: DWord read FMaxStackSize write FMaxStackSize;
     property MinStackSize: DWord read FMinStackSize write FMinStackSize;
-    property ObjectDirectories: string read FObjectDirectories write FObjectDirectories;
+    property ObjectDirectories: TJclConfigStringList read FObjectDirectories;
     property OutputHints: Boolean read FOutputHints write FOutputHints;
     property OutputWarnings: Boolean read FOutputWarnings write FOutputWarnings;
-    //(usc) better as StringList
-    property Packages: string read FPackages write FPackages;
+    property Packages: TJclConfigStringList read FPackages write FPackages;
     property RemoteDebugSymbols: Boolean read FRemoteDebugSymbols write FRemoteDebugSymbols;
-    property ResourceDirectories: string read FResourceDirectories write FResourceDirectories;
-    //(usc) better as StringList
-    property SearchPaths: string read FSearchPaths write SetSearchPaths;
+    property ResourceDirectories: TJclConfigStringList read FResourceDirectories;
+    property SearchPaths: TJclConfigStringList read FSearchPaths;
     property TD32DebugInfo: Boolean read FTD32DebugInfo write FTD32DebugInfo;
     property UnitAliases: string read FUnitAliases write FUnitAliases;
-    property UnitDirectories: string read FUnitDirectories write FUnitDirectories;
+    property UnitDirectories: TJclConfigStringList read FUnitDirectories;
   end;
 
   TJclDCCConfigFile = class(TJclCustomDCCConfig)
@@ -355,13 +353,19 @@ type
 
   TJclDCCMessage = class(TObject)
   private
+    FFileName: string;
+    FFileNameAndLineNumberEmpty: Boolean;
     FKind: TJclDCCMessageKind;
+    FLineNumber: Integer;
     FMessageStr: string;
     function GetText: string;
   public
-    constructor Create(AKind: TJclDCCMessageKind; AMessageStr: string);
-    //(usc) add File and Line (currently part of MessageStr)
+    constructor Create(AKind: TJclDCCMessageKind; AMessageStr: string; AFileNameAndLineNumberEmpty: Boolean = True;
+      AFileName: string = ''; ALineNumber: Integer = -1);
+    property FileName: string read FFileName;
+    property FileNameAndLineNumberEmpty: Boolean read FFileNameAndLineNumberEmpty;
     property Kind: TJclDCCMessageKind read FKind;
+    property LineNumber: Integer read FLineNumber;
     property MessageStr: string read FMessageStr;
     property Text: string read GetText;
   end;
@@ -378,7 +382,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Add(AKind: TJclDCCMessageKind; AMessageStr: string);
+    procedure Add(AKind: TJclDCCMessageKind; AMessageStr: string; AFileNameAndLineNumberEmpty: Boolean = True;
+      AFileName: string = ''; ALineNumber: Integer = -1);
     procedure Clear;
     property Count: Integer read GetCount;
     property ErrorCount: Integer read FErrorCount;
@@ -924,24 +929,32 @@ var
   NextDelimiterPos: Integer;
   S, tempStr: string;
 begin
-  Clear;
-  tempStr := AString;
-  while tempStr <> '' do
-  begin
-    NextDelimiterPos := Pos(';', tempStr);
-    if NextDelimiterPos = 0 then
-      NextDelimiterPos := Pos(',', tempStr);
-    if NextDelimiterPos = 0 then
-      NextDelimiterPos := Pos(':', tempStr);
-    if NextDelimiterPos = 0 then
-      S := tempStr
-    else
+  BeginUpdate;
+  try
+    Clear;
+    tempStr := AString;
+    while tempStr <> '' do
     begin
-      S := Copy(tempStr, 1, NextDelimiterPos);
-      System.Delete(tempStr, 1, NextDelimiterPos);
+      NextDelimiterPos := Pos(';', tempStr);
+      if NextDelimiterPos = 0 then
+        NextDelimiterPos := Pos(',', tempStr);
+      if (NextDelimiterPos = 0) and (FDefaultStringMode = csmKylix) then
+        NextDelimiterPos := Pos(':', tempStr);
+      if NextDelimiterPos = 0 then
+      begin
+        S := tempStr;
+        tempStr := '';
+      end
+      else
+      begin
+        S := Copy(tempStr, 1, NextDelimiterPos - 1);
+        System.Delete(tempStr, 1, NextDelimiterPos);
+      end;
+      S := Trim(S);
+      Add(S);
     end;
-    S := Trim(S);
-    Add(S);
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -958,24 +971,31 @@ begin
   FDCUOutputDir:= '';
   FEXEOutputDir:= '';
   FImageBaseAddr := $400000;
-  FIncludeDirectories := '';
+  FIncludeDirectories := TJclConfigStringList.Create;
   FMapFileLevel := mfloff;
   FMaxStackSize := 1048576; //old TJclDCCExValue $100000 (same value as hex)
   FMinStackSize := 16384; //old TJclDCCExValue $4000 (same value as hex)
-  FObjectDirectories := '';
+  FObjectDirectories := TJclConfigStringList.Create;
   FOutputHints := True; //old TJclDCCExValue False
   FOutputWarnings := True; //old TJclDCCExValue False
-  FPackages := '';
+  FPackages := TJclConfigStringList.Create;
   FRemoteDebugSymbols := False;
-  FResourceDirectories := '';
-  FSearchPaths := '';
+  FResourceDirectories := TJclConfigStringList.Create;
+  FSearchPaths := TJclConfigStringList.Create;
   FTD32DebugInfo := False;
   FUnitAliases := '';
-  FUnitDirectories := '';
+  FUnitDirectories := TJclConfigStringList.Create;
+  FSearchPaths.OnChange := HandleChangeSearchPaths;
 end;
 
 destructor TJclCustomDCCConfig.Destroy;
 begin
+  FUnitDirectories.Free;
+  FResourceDirectories.Free;
+  FIncludeDirectories.Free;
+  FObjectDirectories.Free;
+  FSearchPaths.Free;
+  FPackages.Free;
   FCompilerSwitches.Free;
   inherited Destroy;
 end;
@@ -992,31 +1012,30 @@ begin
   FDCUOutputDir := ACustomConfig.DCUOutputDirectory;
   FEXEOutputDir := ACustomConfig.EXEOutputDirectory;
   FImageBaseAddr := ACustomConfig.ImageBaseAddr;
-  FIncludeDirectories := ACustomConfig.IncludeDirectories;
+  FIncludeDirectories.Assign(ACustomConfig.IncludeDirectories);
   FMapFileLevel := ACustomConfig.MapFileLevel;
   FMaxStackSize := ACustomConfig.MaxStackSize;
   FMinStackSize := ACustomConfig.MinStackSize;
-  FObjectDirectories := ACustomConfig.ObjectDirectories;
+  FObjectDirectories.Assign(ACustomConfig.ObjectDirectories);
   FOutputHints := ACustomConfig.OutputHints;
   FOutputWarnings := ACustomConfig.OutputWarnings;
-  FPackages := ACustomConfig.Packages;
+  FPackages.Assign(ACustomConfig.Packages);
   FRemoteDebugSymbols := ACustomConfig.RemoteDebugSymbols;
-  FResourceDirectories := ACustomConfig.ResourceDirectories;
-  FSearchPaths := ACustomConfig.SearchPaths;
+  FResourceDirectories.Assign(ACustomConfig.ResourceDirectories);
+  FSearchPaths.Assign(ACustomConfig.SearchPaths);
   FTD32DebugInfo := ACustomConfig.TD32DebugInfo;
   FUnitAliases := ACustomConfig.UnitAliases;
-  FUnitDirectories := ACustomConfig.UnitDirectories;
+  FUnitDirectories.Assign(ACustomConfig.UnitDirectories);
 end;
 
-procedure TJclCustomDCCConfig.SetSearchPaths(ASearchPaths: string);
+procedure TJclCustomDCCConfig.HandleChangeSearchPaths(ASender: TObject);
 begin
-  if FSearchPaths <> ASearchPaths then
+  if ASender is TStrings then
   begin
-    FSearchPaths := ASearchPaths;
-    FUnitDirectories := FSearchPaths;
-    FObjectDirectories := FSearchPaths;
-    FIncludeDirectories := FSearchPaths;
-    FResourceDirectories := FSearchPaths;
+    FUnitDirectories.Assign(TStrings(ASender));
+    FObjectDirectories.Assign(TStrings(ASender));
+    FIncludeDirectories.Assign(TStrings(ASender));
+    FResourceDirectories.Assign(TStrings(ASender));
   end;
 end;
 
@@ -1127,16 +1146,16 @@ begin
         DCPOutputDirectory := S2
       else
       if CheckPathOption('-U', S, S2) then
-        UnitDirectories := S2
+        UnitDirectories.AsDefaultString := S2
       else
       if CheckPathOption('-O', S, S2) then
-        ObjectDirectories := S2
+        ObjectDirectories.AsDefaultString := S2
       else
       if CheckPathOption('-I', S, S2) then
-        IncludeDirectories := S2
+        IncludeDirectories.AsDefaultString := S2
       else
       if CheckPathOption('-R', S, S2) then
-        ResourceDirectories := S2
+        ResourceDirectories.AsDefaultString := S2
       else
       if Pos('-D', S) = 1 then
       begin
@@ -1147,7 +1166,7 @@ begin
       if Pos('-LU', S) = 1 then
       begin
         Delete(S, 1, 3);
-        Packages := S;
+        Packages.AsDefaultString := S;
         CompileWithPackages := S <> '';
       end;
     end;
@@ -1247,10 +1266,10 @@ begin
     BPLOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackageDLLOutputDirEntry, '');
     DCPOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackageDCPOutputDirEntry, '');
 
-    SearchPaths := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, '');
+    SearchPaths.AsDefaultString := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, '');
 
     ConditionalDefines := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFConditionalsEntry, '');
-    Packages := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackagesEntry, '');
+    Packages.AsDefaultString := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackagesEntry, '');
     CompileWithPackages := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFUsePackagesEntry, 0) = 1;
   finally
     DOFFile.Free;
@@ -1301,9 +1320,9 @@ begin
     DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFUnitOutputDirEntry, DCUOutputDirectory);
     DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackageDLLOutputDirEntry, BPLOutputDirectory);
     DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackageDCPOutputDirEntry, DCPOutputDirectory);
-    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, SearchPaths);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, SearchPaths.AsDefaultString);
     DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFConditionalsEntry, ConditionalDefines);
-    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackagesEntry, Packages);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackagesEntry, Packages.AsDefaultString);
     DOFFile.WriteBool(JclDOFLinkerSection, JclDOFUsePackagesEntry, CompileWithPackages);
 
     Sections := TStringList.Create;
@@ -1359,13 +1378,13 @@ begin
       Result := DCPOutputDirectory <> ''
     else
     if AIdent = JclDOFSearchPathEntry then
-      Result := SearchPaths <> ''
+      Result := SearchPaths.Count > 0
     else
     if AIdent = JclDOFConditionalsEntry then
       Result := ConditionalDefines <> ''
     else
     if (AIdent = JclDOFPackagesEntry) and (AIdent = JclDOFUsePackagesEntry) then
-      Result := (Packages <> '') and CompileWithPackages;
+      Result := (Packages.Count > 0) and CompileWithPackages;
   end;
 end;
 
@@ -1448,16 +1467,26 @@ begin
     end;
 end;
 
-constructor TJclDCCMessage.Create(AKind: TJclDCCMessageKind; AMessageStr: string);
+constructor TJclDCCMessage.Create(AKind: TJclDCCMessageKind; AMessageStr: string;
+  AFileNameAndLineNumberEmpty: Boolean = True; AFileName: string = ''; ALineNumber: Integer = -1);
 begin
   inherited Create;
+  if not AFileNameAndLineNumberEmpty then
+    FFileName := AFileName
+  else
+    FFileName := '';
+  FFileNameAndLineNumberEmpty := AFileNameAndLineNumberEmpty;
   FKind := AKind;
+  if not AFileNameAndLineNumberEmpty then
+    FLineNumber := ALineNumber
+  else
+    FLineNumber := -1;
   FMessageStr := AMessageStr;
 end;
 
 function TJclDCCMessage.GetText: string;
 var
-  KindStr: string;
+  KindStr, FilePartStr: string;
 begin
   case FKind of
     mkHint: KindStr :='[Hint]';
@@ -1468,7 +1497,10 @@ begin
       KindStr := '';
   end;
 
-  Result := Format('%s %s', [KindStr, FMessageStr]);
+  FilePartStr := '';
+  if not FFileNameAndLineNumberEmpty then
+    FilePartStr := Format('%s(%d): ', [ExtractFileName(FFileName), FLineNumber]);
+  Result := Format('%s %s%s', [KindStr, FilePartStr, FMessageStr]);
 end;
 
 constructor TJclDCCMessages.Create;
@@ -1484,11 +1516,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclDCCMessages.Add(AKind: TJclDCCMessageKind; AMessageStr: string);
+procedure TJclDCCMessages.Add(AKind: TJclDCCMessageKind; AMessageStr: string; AFileNameAndLineNumberEmpty: Boolean = True;
+  AFileName: string = ''; ALineNumber: Integer = -1);
 var
   DCCMessage: TJclDCCMessage;
 begin
-  DCCMessage := TJclDCCMessage.Create(AKind, AMessageStr);
+  DCCMessage := TJclDCCMessage.Create(AKind, AMessageStr, AFileNameAndLineNumberEmpty, AFileName, ALineNumber);
   FItems.Add(DCCMessage);
 
   case AKind of
@@ -1545,7 +1578,6 @@ var
   LineErr: TJclDCCMessageKind;
   HasPos: Boolean;
   LineMsg: string;
-  FilePart: string;
 begin
   FPlainOutput.Add(Line);
   HasPos := False;
@@ -1564,12 +1596,9 @@ begin
     end;
   end;
   LineErr := CheckLineForMessages(Line, LineMsg);
-  FilePart := '';
-  if (LineErr <> mkUnknown) and HasPos then
-    FilePart := Format('%s(%d): ', [ExtractFileName(FCurrentFile), FCurrentLineNo]);
   if LineErr <> mkUnknown then
   begin
-    FMessages.Add(LineErr, Format('%s%s', [FilePart, LineMsg]));
+    FMessages.Add(LineErr, LineMsg, not HasPos, FCurrentFile, FCurrentLineNo);
     if Assigned(FOnMessage) then
       FOnMessage(nil);
   end;
@@ -1609,11 +1638,11 @@ begin
       Arguments := Arguments + Format(' -E%s', [FConfig.EXEOutputDirectory]);
     if DirectoryExists(FConfig.DCUOutputDirectory) then
       Arguments := Arguments + Format(' -N%s', [FConfig.DCUOutputDirectory]);
-    Arguments := Arguments + Format(' -O%s', [FConfig.ObjectDirectories]);
-    Arguments := Arguments + Format(' -I%s', [FConfig.IncludeDirectories]);
-    Arguments := Arguments + Format(' -R%s', [FConfig.ResourceDirectories]);
-    Arguments := Arguments + Format(' -U%s', [FConfig.UnitDirectories]);
-    if FConfig.CompileWithPackages and (FConfig.Packages <> '') then
+    Arguments := Arguments + Format(' -O%s', [FConfig.ObjectDirectories.AsDefaultString]);
+    Arguments := Arguments + Format(' -I%s', [FConfig.IncludeDirectories.AsDefaultString]);
+    Arguments := Arguments + Format(' -R%s', [FConfig.ResourceDirectories.AsDefaultString]);
+    Arguments := Arguments + Format(' -U%s', [FConfig.UnitDirectories.AsDefaultString]);
+    if FConfig.CompileWithPackages and (FConfig.Packages.Count > 0) then
       Arguments := Arguments + Format(' -LU%s', [FConfig.Packages]);
     if FConfig.ConditionalDefines <> '' then
       Arguments := Arguments + Format(' -D%s', [FConfig.ConditionalDefines]);
