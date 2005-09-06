@@ -2036,6 +2036,9 @@ begin
     Result := ShellGetLongPathName(Path)
   else
     Result := RtdlGetLongPathName(Path);
+
+  if Result = '' then
+    Result := Path;
 end;
 
 function PathGetShortName(const Path: string): string;
@@ -5812,6 +5815,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.49  2005/09/06 18:28:29  outchy
+// IT3011: PathGetLongName returned empty string when long name doesn't exist on WinXP SP2.
+//
 // Revision 1.48  2005/08/22 02:00:54  rrossmair
 // - fixed PathGetRelativePath
 // - simplified some conditional compilation constructs; style adjustments
