@@ -70,9 +70,9 @@ uses
   {$IFDEF CLR}
   System.Text, System.IO,
   {$ENDIF CLR}
-  {$IFDEF Win32API}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF Win32API}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   JclBase;
 
@@ -2481,7 +2481,8 @@ begin
     begin
       while R = 0 do
       begin
-        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
+          and ((SearchRec.Attr and Attr) = SearchRec.Attr) then
           List.Add(SearchRec.Name);
         R := FindNext(SearchRec);
       end;
@@ -4808,10 +4809,10 @@ var
          end;
 
          if Matches then
-          if flFullNames in Options then
-            Files.Add(CurrentFolder + FindInfo.Name)
-          else
-            Files.Add(FindInfo.Name);
+           if flFullNames in Options then
+             Files.Add(CurrentFolder + FindInfo.Name)
+           else
+             Files.Add(FindInfo.Name);
 
         Rslt := FindNext(FindInfo);
       end;
@@ -5815,6 +5816,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.50  2005/09/06 19:22:37  outchy
+// Minor style cleaning.
+// IT3164: BuildFileList(...,faDirectory,...) finds files AND folders, fixed.
+//
 // Revision 1.49  2005/09/06 18:28:29  outchy
 // IT3011: PathGetLongName returned empty string when long name doesn't exist on WinXP SP2.
 //
