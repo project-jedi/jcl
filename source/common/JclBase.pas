@@ -327,7 +327,7 @@ begin
   else
   if TObject(Value) is System.Enum then // e.g. TIntegerSet
     BitConverter.GetBytes(UInt32(Value))
-  { TODO : Add futher types }
+  { TODO : Add further types }
   else
     raise EJclError.CreateFmt('GetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
 end;
@@ -339,7 +339,7 @@ begin
   else
   if TObject(Value) is System.Enum then // e.g. TIntegerSet
     Value := BitConverter.ToUInt32(Bytes, 0)
-  { TODO : Add futher types }
+  { TODO : Add further types }
   else
     raise EJclError.CreateFmt('SetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
 end;
@@ -469,6 +469,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.42  2005/09/11 11:28:25  ahuser
+// typo
+//
 // Revision 1.41  2005/08/12 14:08:53  ahuser
 // Fixed compile bug
 //
