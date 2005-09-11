@@ -1142,7 +1142,7 @@ end;
 
 function Coversine(X: Float): Float;
 begin
-  Result := 1 - JclMath.Sin(X);
+  Result := 1 - Sin(X);
 end;
 
 function Csc(X: Float): Float;
@@ -1151,7 +1151,7 @@ var
 begin
   DomainCheck(Abs(X) > MaxAngle);
 
-  Y := JclMath.Sin(X);
+  Y := Sin(X);
   DomainCheck(Y = 0.0);
   Result := 1.0 / Y;
 end;
@@ -1163,7 +1163,7 @@ end;
 
 function Haversine(X: Float): Float;
 begin
-  Result := 0.5 * (1 - JclMath.Cos(X)) ;
+  Result := 0.5 * (1 - Cos(X)) ;
 end;
 
 function Sec(X: Float): Float;
@@ -1257,7 +1257,7 @@ end;
 
 function Versine(X: Float): Float;
 begin
-  Result := 1 - JclMath.Cos(X);
+  Result := 1 - Cos(X);
 end;
 
 //=== Hyperbolic =============================================================
@@ -1370,7 +1370,7 @@ end;
 function CosH(X: Float): Float;
 {$IFDEF PUREPASCAL}
 begin
-  Result := 0.5 * (JclMath.Exp(X) + JclMath.Exp(-X));
+  Result := 0.5 * (Exp(X) + Exp(-X));
 end;
 {$ELSE ~PUREPASCAL}
 const
@@ -1421,14 +1421,14 @@ end;
 
 function CscH(X: Float): Float;
 begin
-  Result := JclMath.Exp(X) - JclMath.Exp(-X);
+  Result := Exp(X) - Exp(-X);
   DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
 
 function SecH(X: Float): Float;
 begin
-  Result := JclMath.Exp(X) + JclMath.Exp(-X);
+  Result := Exp(X) + Exp(-X);
   DomainCheck(Result = 0.0);
   Result := 2.0 / Result;
 end;
@@ -1491,7 +1491,7 @@ begin
       Result := -1.0
     else
     begin
-      Result := JclMath.Exp(X);
+      Result := Exp(X);
       Result := Result * Result;
       Result := (Result - 1.0) / (Result + 1.0);
     end;
@@ -1557,13 +1557,13 @@ begin
   end
   else
   if Base > 0.0 then
-    Result := JclMath.Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Base))
+    Result := Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Base))
   else
   begin
     IsAnInteger := (Frac(Exponent) = 0.0);
     if IsAnInteger then
     begin
-      Result := JclMath.Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Abs(Base)));
+      Result := Exp(Exponent * {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(Abs(Base)));
       IsOdd := Abs(Round(ModFloat(Exponent, 2))) = 1;
       if IsOdd then
         Result := -Result;
@@ -1629,7 +1629,7 @@ begin
   if Y = 0.0 then
     Result := 1.0
   else
-    Result := JclMath.Exp(Y * Ln10);
+    Result := Exp(Y * Ln10);
 end;
 
 function TruncPower(const Base, Exponent: Float): Float;
@@ -1645,7 +1645,7 @@ begin
   if Y = 0.0 then
     Result := 1.0
   else
-    Result := JclMath.Exp(Y * Ln2);
+    Result := Exp(Y * Ln2);
 end;
 
 //=== Floating point support routines ========================================
@@ -4465,6 +4465,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.31  2005/09/11 00:05:30  rrossmair
+// - removed unneeded qualifiers
+//
 // Revision 1.30  2005/09/03 16:20:43  rrossmair
 // - support for operator overloading
 //
