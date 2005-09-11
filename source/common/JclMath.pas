@@ -109,6 +109,15 @@ const
   MinFloatingPoint: Float = 1.1754943508222875079687365372222E-38; // 2^(-126)
   {$ENDIF MATH_SINGLE_PRECISION}
 
+const
+  PiExt = 3.1415926535897932384626433832795;
+  RatioDegToRad : Extended = PiExt / 180.0;
+  RatioRadToDeg : Extended = 180.0 / PiExt;
+  RatioGradToRad : Extended = PiExt / 200.0;
+  RatioRadToGrad : Extended = 200.0 / PiExt;
+  RatioDegToGrad : Extended = 200.0 / 180.0;
+  RatioGradToDeg : Extended = 180.0 / 200.0;
+
 var
   PrecisionTolerance: Float = 0.0000001;
   EpsSingle: Single;
@@ -124,59 +133,59 @@ type
   TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller);
 
 // swaps 2 bytes
-procedure SwapOrd(var X, Y: Integer);
+procedure SwapOrd(var X, Y: Integer); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 // converts double to hex
-function DoubleToHex(const D: Double): string;
+function DoubleToHex(const D: Double): string; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 // converts hex to double
 function HexToDouble(const Hex: string): Double;
 
 // Converts degrees to radians.
-function DegToRad(const Value: Extended): Extended; overload;
-function DegToRad(const Value: Double): Double; overload;
-function DegToRad(const Value: Single): Single; overload;
+function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastDegToRad;
+procedure FastDegToRad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 // Converts radians to degrees.
-function RadToDeg(const Value: Extended): Extended; overload;
-function RadToDeg(const Value: Double): Double; overload;
-function RadToDeg(const Value: Single): Single; overload;
+function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastRadToDeg;
+procedure FastRadToDeg; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 // Converts grads to radians.
-function GradToRad(const Value: Extended): Extended; overload;
-function GradToRad(const Value: Double): Double; overload;
-function GradToRad(const Value: Single): Single; overload;
+function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastGradToRad;
+procedure FastGradToRad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 // Converts radians to grads.
-function RadToGrad(const Value: Extended): Extended; overload;
-function RadToGrad(const Value: Double): Double; overload;
-function RadToGrad(const Value: Single): Single; overload;
+function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastRadToGrad;
+procedure FastRadToGrad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 // Converts degrees to grads.
-function DegToGrad(const Value: Extended): Extended; overload;
-function DegToGrad(const Value: Double): Double; overload;
-function DegToGrad(const Value: Single): Single; overload;
+function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastDegToGrad;
+procedure FastDegToGrad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 // Converts grads to degrees.
-function GradToDeg(const Value: Extended): Extended; overload;
-function GradToDeg(const Value: Double): Double; overload;
-function GradToDeg(const Value: Single): Single; overload;
+function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastGradToDeg;
+procedure FastGradToDeg; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF CPU386}
 
 { Logarithmic }
@@ -188,23 +197,23 @@ function LogBaseN(Base, X: Float): Float;
 { Transcendental }
 
 function ArcCos(X: Float): Float;
-function ArcCot(X: Float): Float;
-function ArcCsc(X: Float): Float;
+function ArcCot(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ArcCsc(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function ArcSec(X: Float): Float;
 function ArcSin(X: Float): Float;
 function ArcTan(X: Float): Float;
 function ArcTan2(Y, X: Float): Float;
 function Cos(X: Float): Float; overload;
 function Cot(X: Float): Float; overload;
-function Coversine(X: Float): Float;
+function Coversine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Csc(X: Float): Float; overload;
-function Exsecans(X: Float): Float;
-function Haversine(X: Float): Float;
+function Exsecans(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function Haversine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Sec(X: Float): Float; overload;
 function Sin(X: Float): Float; overload;
 procedure SinCos(X: Float; var Sin, Cos: Float);
 function Tan(X: Float): Float; overload;
-function Versine(X: Float): Float;
+function Versine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 { Hyperbolic }
 
@@ -215,10 +224,10 @@ function ArcSecH(X: Float): Float;
 function ArcSinH(X: Float): Float;
 function ArcTanH(X: Float): Float;
 function CosH(X: Float): Float; overload;
-function CotH(X: Float): Float; overload;
+function CotH(X: Float): Float; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function CscH(X: Float): Float; overload;
 function SecH(X: Float): Float; overload;
-function SinH(X: Float): Float; overload;
+function SinH(X: Float): Float; overload; {$IFDEF CLR}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
 function TanH(X: Float): Float; overload;
 
 { Coordinate conversion }
@@ -231,25 +240,25 @@ procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obso
 function Exp(const X: Float): Float; overload;
 function Power(const Base, Exponent: Float): Float; overload;
 function PowerInt(const X: Float; N: Integer): Float; overload;
-function TenToY(const Y: Float): Float;
-function TruncPower(const Base, Exponent: Float): Float;
-function TwoToY(const Y: Float): Float;
+function TenToY(const Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function TruncPower(const Base, Exponent: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function TwoToY(const Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 { Floating point numbers support routines }
 
-function IsFloatZero(const X: Float): Boolean;
+function IsFloatZero(const X: Float): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function FloatsEqual(const X, Y: Float): Boolean;
-function MaxFloat(const X, Y: Float): Float;
-function MinFloat(const X, Y: Float): Float;
+function MaxFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function MinFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function ModFloat(const X, Y: Float): Float;
-function RemainderFloat(const X, Y: Float): Float;
-function SetPrecisionTolerance(NewTolerance: Float): Float;
-procedure SwapFloats(var X, Y: Float);
+function RemainderFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function SetPrecisionTolerance(NewTolerance: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure SwapFloats(var X, Y: Float); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 procedure CalcMachineEpsSingle;
 procedure CalcMachineEpsDouble;
 procedure CalcMachineEpsExtended;
 procedure CalcMachineEps;
-procedure SetPrecisionToleranceToEpsilon;
+procedure SetPrecisionToleranceToEpsilon; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 { Miscellaneous }
 
@@ -274,12 +283,12 @@ function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
 
 { Prime numbers }
 
-function IsRelativePrime(const X, Y: Cardinal): Boolean;
+function IsRelativePrime(const X, Y: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsPrimeTD(N: Cardinal): Boolean;
 {$IFDEF CPU386}
 function IsPrimeRM(N: Cardinal): Boolean;
 {$ENDIF CPU386}
-function IsPrimeFactor(const F, N: Cardinal): Boolean;
+function IsPrimeFactor(const F, N: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 
 var
@@ -318,15 +327,15 @@ const
   NaN         = 0/0;       // tricky
   NegInfinity = -Infinity;
 
-function IsInfinite(const Value: Single): Boolean; overload;
-function IsInfinite(const Value: Double): Boolean; overload;
-function IsInfinite(const Value: Extended): Boolean; overload;
+function IsInfinite(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsInfinite(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsInfinite(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-function IsNaN(const Value: Single): Boolean; overload;
-function IsNaN(const Value: Double): Boolean; overload;
-function IsNaN(const Value: Extended): Boolean; overload;
+function IsNaN(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsNaN(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsNaN(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-function IsSpecialValue(const X: Float): Boolean;
+function IsSpecialValue(const X: Float): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag = 0); overload;
 procedure MakeQuietNaN(var X: Double; Tag: TNaNTag = 0); overload;
@@ -441,45 +450,45 @@ type
     property AsString: string read GetAsString write SetAsString;
     property AsFloat: Float read GetAsFloat write SetAsFloat;
 
-    procedure Assign(const R: TJclRational); overload;
+    procedure Assign(const R: TJclRational); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Assign(const R: Float); overload;
     procedure Assign(const Numerator: Integer; const Denominator: Integer = 1); overload;
 
-    procedure AssignZero;
-    procedure AssignOne;
-    function Duplicate: TJclRational;
+    procedure AssignZero; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure AssignOne; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Duplicate: TJclRational; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-    function IsEqual(const R: TJclRational): Boolean; reintroduce; overload;
-    function IsEqual(const Numerator: Integer; const Denominator: Integer = 1) : Boolean; reintroduce; overload;
-    function IsEqual(const R: Float): Boolean; reintroduce; overload;
+    function IsEqual(const R: TJclRational): Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsEqual(const Numerator: Integer; const Denominator: Integer = 1) : Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsEqual(const R: Float): Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-    function IsZero: Boolean;
-    function IsOne: Boolean;
+    function IsZero: Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsOne: Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     procedure Add(const R: TJclRational); overload;
-    procedure Add(const V: Float); overload;
-    procedure Add(const V: Integer); overload;
+    procedure Add(const V: Float); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Add(const V: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     procedure Subtract(const R: TJclRational); overload;
-    procedure Subtract(const V: Float); overload;
-    procedure Subtract(const V: Integer); overload;
+    procedure Subtract(const V: Float); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Subtract(const V: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-    procedure Negate;
+    procedure Negate; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Abs;
     function Sgn: Integer;
 
     procedure Multiply(const R: TJclRational); overload;
-    procedure Multiply(const V: Float); overload;
-    procedure Multiply(const V: Integer); overload;
+    procedure Multiply(const V: Float); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Multiply(const V: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     procedure Reciprocal;
 
     procedure Divide(const R: TJclRational); overload;
-    procedure Divide(const V: Float); overload;
+    procedure Divide(const V: Float); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Divide(const V: Integer); overload;
 
-    procedure Sqrt;
-    procedure Sqr;
+    procedure Sqrt; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Sqr; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     procedure Power(const R: TJclRational); overload;
     procedure Power(const V: Integer); overload;
@@ -697,15 +706,6 @@ begin
   Result := D;
 end;
 {$ENDIF CLR}
-
-const
-  PiExt = 3.1415926535897932384626433832795;
-  RatioDegToRad : Extended = PiExt / 180.0;
-  RatioRadToDeg : Extended = 180.0 / PiExt;
-  RatioGradToRad : Extended = PiExt / 200.0;
-  RatioRadToGrad : Extended = 200.0 / PiExt;
-  RatioDegToGrad : Extended = 200.0 / 180.0;
-  RatioGradToDeg : Extended = 180.0 / 200.0;
 
 // Converts degrees to radians.
 
@@ -1163,7 +1163,7 @@ end;
 
 function Haversine(X: Float): Float;
 begin
-  Result := 0.5 * (1 - Cos(X)) ;
+  Result := 0.5 * (1 - Cos(X));
 end;
 
 function Sec(X: Float): Float;
@@ -4465,8 +4465,8 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
-// Revision 1.31  2005/09/11 00:05:30  rrossmair
-// - removed unneeded qualifiers
+// Revision 1.32  2005/09/11 11:30:43  ahuser
+// Added inline support
 //
 // Revision 1.30  2005/09/03 16:20:43  rrossmair
 // - support for operator overloading
