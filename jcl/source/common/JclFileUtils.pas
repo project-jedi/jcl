@@ -70,9 +70,9 @@ uses
   {$IFDEF CLR}
   System.Text, System.IO,
   {$ENDIF CLR}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF Win32API}
   Windows,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF Win32API}
   Classes, SysUtils,
   JclBase;
 
@@ -5816,6 +5816,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.51  2005/09/11 00:20:32  rrossmair
+// - don't use unit Windows with .NET
+//
 // Revision 1.50  2005/09/06 19:22:37  outchy
 // Minor style cleaning.
 // IT3164: BuildFileList(...,faDirectory,...) finds files AND folders, fixed.
