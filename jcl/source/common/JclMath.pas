@@ -145,7 +145,7 @@ function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastDegToRad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastDegToRad;
 {$ENDIF CPU386}
 
 // Converts radians to degrees.
@@ -153,7 +153,7 @@ function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastRadToDeg; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastRadToDeg;
 {$ENDIF CPU386}
 
 // Converts grads to radians.
@@ -161,7 +161,7 @@ function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastGradToRad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastGradToRad;
 {$ENDIF CPU386}
 
 // Converts radians to grads.
@@ -169,7 +169,7 @@ function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastRadToGrad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastRadToGrad;
 {$ENDIF CPU386}
 
 // Converts degrees to grads.
@@ -177,7 +177,7 @@ function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastDegToGrad; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastDegToGrad;
 {$ENDIF CPU386}
 
 // Converts grads to degrees.
@@ -185,7 +185,7 @@ function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
-procedure FastGradToDeg; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+procedure FastGradToDeg;
 {$ENDIF CPU386}
 
 { Logarithmic }
@@ -4465,6 +4465,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.33  2005/09/11 11:37:44  ahuser
+// Added inline support
+//
 // Revision 1.32  2005/09/11 11:30:43  ahuser
 // Added inline support
 //
