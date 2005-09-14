@@ -4,9 +4,9 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JediUsesC60.bpl"/>
-    <OBJFILES value="..\..\..\lib\c6\JediUsesC60.obj ..\..\..\lib\c6\JclOtaUtils.obj 
-      ..\..\..\lib\c6\JCLUsesWizard.obj ..\..\..\lib\c6\JclParseUses.obj 
-      ..\..\..\lib\c6\JclUsesDialog.obj ..\..\..\lib\c6\JCLOptionsFrame.obj"/>
+    <OBJFILES value="..\..\..\lib\c6\obj\JediUsesC60.obj ..\..\..\lib\c6\obj\JclOtaUtils.obj 
+      ..\..\..\lib\c6\obj\JCLUsesWizard.obj ..\..\..\lib\c6\obj\JclParseUses.obj 
+      ..\..\..\lib\c6\obj\JclUsesDialog.obj ..\..\..\lib\c6\obj\JCLOptionsFrame.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JclUsesDialog.dfm JCLOptionsFrame.dfm"/>
@@ -24,19 +24,19 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JediUsesC60.cpp"/>
-    <INCLUDEPATH value="..\..\..\source;..\..\..\lib\c6;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
-    <LIBPATH value="..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\..\..\source;..\..\..\lib\c6\obj;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\..\..\lib\c6\obj;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- 
       -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\..\..\lib\c6 -N0..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M 
+    <PFLAGS value="-N2..\..\..\lib\c6\obj -N0..\..\..\lib\c6\obj -LUdesignide -$Y- -$L- -$D- -$A8 -v -JPHNE -M 
       -LUvcl -U$(BCB)\Projects\Bpl"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\..\..\lib\c6 -D&quot;JCL Uses Wizard for C++Builder 6&quot; -aa -Tpp -Gpd -x 
+    <LFLAGS value="-I..\..\..\lib\c6\obj -D&quot;JCL Uses Wizard for C++Builder 6&quot; -aa -Tpp -Gpd -x 
       -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
