@@ -4,11 +4,11 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JclSIMDViewC6.bpl"/>
-    <OBJFILES value="..\..\..\..\lib\c6\JclSIMDViewC6.obj ..\..\..\..\lib\c6\JclOtaUtils.obj 
-      ..\..\..\..\lib\c6\JclSIMDViewForm.obj 
-      ..\..\..\..\lib\c6\JclSIMDModifyForm.obj 
-      ..\..\..\..\lib\c6\JclSIMDUtils.obj ..\..\..\..\lib\c6\JclSIMDView.obj 
-      ..\..\..\..\lib\c6\JclSIMDCpuInfo.obj"/>
+    <OBJFILES value="..\..\..\..\lib\c6\obj\JclSIMDViewC6.obj ..\..\..\..\lib\c6\obj\JclOtaUtils.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDViewForm.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDModifyForm.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDUtils.obj ..\..\..\..\lib\c6\obj\JclSIMDView.obj 
+      ..\..\..\..\lib\c6\obj\JclSIMDCpuInfo.obj"/>
     <RESFILES value="JclSIMDIcon.dcr"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JclSIMDViewForm.dfm JclSIMDModifyForm.dfm JclSIMDCpuInfo.dfm"/>
@@ -26,18 +26,18 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JclSIMDViewC6.cpp"/>
-    <INCLUDEPATH value="..\;..;..\threadnames;..\..\..\..\source;..\..\..\..\lib\c6;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
-    <LIBPATH value="..\;..;..\threadnames;$(BCB)\Projects\Lib;..\..\..\..\lib\c6;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\;..;..\threadnames;..\..\..\..\source;..\..\..\..\lib\c6\obj;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\;..;..\threadnames;$(BCB)\Projects\Lib;..\..\..\..\lib\c6\obj;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\..\..\..\lib\c6 -N0..\..\..\..\lib\c6 -$Y- -$L- -$D- -$A8 -v -JPHNE 
+    <PFLAGS value="-N2..\..\..\..\lib\c6\obj -N0..\..\..\..\lib\c6\obj -LUdesignide -$Y- -$L- -$D- -$A8 -v -JPHNE 
       -M -LUvcl -U$(BCB)\Projects\Bpl"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\..\..\..\lib\c6 
+    <LFLAGS value="-I..\..\..\..\lib\c6\obj 
       -D&quot;JCL Debug window of XMM registers for C++Builder 6&quot; -aa -Tpp -Gpd -x 
       -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
