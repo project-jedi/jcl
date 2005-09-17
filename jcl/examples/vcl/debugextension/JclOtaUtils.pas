@@ -15,6 +15,9 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Florent Ouchet (outchy)                                                                        }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
@@ -56,12 +59,12 @@ type
   private
     FBaseRegistryKey: string;
     FEnvVariables: TStringList;
-    FJediIniFile: TIniFile;
+    FJediIniFile: TCustomIniFile;
     FRootDir: string;
     FServices: IOTAServices;
     FNTAServices: INTAServices;
     function GetActiveProject: IOTAProject;
-    function GetJediIniFile: TIniFile;
+    function GetJediIniFile: TCustomIniFile;
     function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
     procedure ReadEnvVariables;
@@ -85,7 +88,7 @@ type
 
     property ActiveProject: IOTAProject read GetActiveProject;
     property BaseRegistryKey: string read FBaseRegistryKey;
-    property JediIniFile: TIniFile read GetJediIniFile;
+    property JediIniFile: TCustomIniFile read GetJediIniFile;
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
     property RootDir: string read GetRootDir;
     property Services: IOTAServices read FServices;
@@ -112,7 +115,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ImageHlp,
+  SysUtils, ImageHlp, Registry,
   JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
 
 var
@@ -228,12 +231,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclOTAUtils.GetJediIniFile: TIniFile;
+function TJclOTAUtils.GetJediIniFile: TCustomIniFile;
 const
-  JediIniFileName = 'Bin\JediOTA.ini';
+  JediSubKey = 'Jedi\';
 begin
   if not Assigned(FJediIniFile) then
-    FJediIniFile := TIniFile.Create(PathAddSeparator(RootDir) + JediIniFileName);
+  begin
+    FJediIniFile := TRegistryIniFile.Create(PathAddSeparator(Services.GetBaseRegistryKey) + JediSubKey);
+    TRegistryIniFile(FJediIniFile).RegIniFile.RootKey := HKEY_CURRENT_USER;
+  end;
   Result := FJediIniFile;  
 end;
 
@@ -562,6 +568,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/09/17 23:01:46  outchy
+// user's settings are now stored in the registry (HKEY_CURRENT_USER)
+//
 // Revision 1.9  2005/08/07 13:42:38  outchy
 // IT3115: Adding system and user environment variables.
 //
