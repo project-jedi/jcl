@@ -24,6 +24,7 @@
 {   David Hervieux                                                                                 }
 {   Jeff                                                                                           }
 {   Jens Fudickar (jfudickar)                                                                      }
+{   JohnML                                                                                         }
 {   John Molyneux                                                                                  }
 {   Marcel Bestebroer                                                                              }
 {   Marcel van Brakel                                                                              }
@@ -2467,34 +2468,58 @@ end;
 
 //=== Files and Directories ==================================================
 
-function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
+
+{* Extended version of JclFileUtils.BuildFileList:
+   function parameter Path can include multiple FileMasks as:
+   c:\aaa\*.pas; pro*.dpr; *.d??
+   FileMask Seperator = ';'
+ *}
+
+function BuildFileList(const Path: string; const Attr: Integer;
+  const List: TStrings): Boolean;
 var
   SearchRec: TSearchRec;
-  R: Integer;
+  R, x: Integer;
+  MaskList: TStringList;
+  Masks: string;
 begin
   Assert(List <> nil);
-  R := FindFirst(Path, Attr, SearchRec);
-  Result := R = 0;
-  List.BeginUpdate;
+  MaskList := TStringList.Create;
+  Result := false;
   try
-    if Result then
+
+    {* extract the FileMasks portion out of Path *}
+    Masks := StrAfter(PathAddSeparator(ExtractFileDir(Path)), Path);
+
+    {* put the Masks into TStringlist *}
+    StrTokenToStrings(Masks, ';', MaskList);
+
+    {* search with every single FileMask *}
+    for x := 0 to MaskList.Count - 1 do
     begin
-      while R = 0 do
-      begin
-        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
-          and ((SearchRec.Attr and Attr) = SearchRec.Attr) then
-          List.Add(SearchRec.Name);
-        R := FindNext(SearchRec);
+      R := FindFirst(PathAddSeparator(ExtractFileDir(Path)) +
+        Trim(MaskList[x]), Attr, SearchRec);
+      Result := R = 0;
+      List.BeginUpdate;
+      try
+        if Result then
+        begin
+          while R = 0 do
+          begin
+            if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
+              and ((SearchRec.Attr and Attr) = SearchRec.Attr) then
+              List.Add(SearchRec.Name);
+            R := FindNext(SearchRec);
+          end;
+          Result := R = ERROR_NO_MORE_FILES;
+        end;
+      finally
+        SysUtils.FindClose(SearchRec);
+        List.EndUpdate;
       end;
-      {$IFDEF CLR}
-      Result := True;
-      {$ELSE}
-      Result := R = ERROR_NO_MORE_FILES;
-      {$ENDIF}
     end;
   finally
-    SysUtils.FindClose(SearchRec);
-    List.EndUpdate;
+    MaskList.Free;
   end;
 end;
 
@@ -5816,6 +5841,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.52  2005/09/17 23:33:13  outchy
+// IT3164: multiple masks in BuildFileList
+//
 // Revision 1.51  2005/09/11 00:20:32  rrossmair
 // - don't use unit Windows with .NET
 //
