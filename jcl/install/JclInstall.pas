@@ -1141,9 +1141,7 @@ begin
     AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
     if Target.VersionNumber <= 6 then
       AddNode(TempNode, ioJclExpertThreadNames, ExpertOptions);
-    //(usc) no packages and tests for D7 & D9 so far
-    if Target.VersionNumber <= 6 then
-      AddNode(TempNode, ioJclExpertUses, ExpertOptions);
+    AddNode(TempNode, ioJclExpertUses, ExpertOptions);
     AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
   end;
   {$ENDIF MSWINDOWS}
@@ -1926,6 +1924,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.69  2005/09/18 20:13:10  rrossmair
+// - several additions/minor fixes
+//
 // Revision 1.68  2005/08/22 19:30:58  rrossmair
 // - TJclInstallation.BuildUnitList fault tolerance improved
 //
