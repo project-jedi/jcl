@@ -10,7 +10,7 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = DJcl60.bpl DJclVcl60.bpl DJclVClx60.bpl IdeOpenDlgFavoriteD60.bpl JclDebugIdeD60.bpl \
-  ProjectAnalyzerD60.bpl ThreadNameExpertD60.bpl
+  ProjectAnalyzerD60.bpl ThreadNameExpertD60.bpl JclSIMDViewD6.bpl JediUsesD60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -35,6 +35,12 @@ ProjectAnalyzerD60.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD60.dpk
   $(DCC)
 
 IdeOpenDlgFavoriteD60.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD60.dpk
+  $(DCC)
+
+JclSIMDViewD6.bpl: ..\examples\vcl\debugextension\SIMDView\JclSIMDViewD6.dpk
+  $(DCC)
+
+JediUsesD60.bpl: ..\examples\vcl\JUW\JediUsesD60.dpk
   $(DCC)
 
 

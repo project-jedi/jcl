@@ -1,0 +1,3 @@
+[Directories]
+OutputDir=..\..\bin
+SearchPath=$(DELPHI)\Lib\Debug;

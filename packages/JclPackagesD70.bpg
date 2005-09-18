@@ -9,8 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJcl70.bpl DJclVcl70.bpl DJclVClx70.bpl IdeOpenDlgFavoriteD70.bpl \
-  JclDebugIdeD70.bpl ProjectAnalyzerD70.bpl 
+PROJECTS = DJcl70.bpl DJclVcl70.bpl DJclVClx70.bpl IdeOpenDlgFavoriteD70.bpl JclDebugIdeD70.bpl \
+  ProjectAnalyzerD70.bpl JclSIMDViewD7.bpl JediUsesD70.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -32,4 +32,11 @@ ProjectAnalyzerD70.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD70.dpk
 
 IdeOpenDlgFavoriteD70.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD70.dpk
   $(DCC)
+
+JclSIMDViewD7.bpl: ..\examples\vcl\debugextension\SIMDView\JclSIMDViewD7.dpk
+  $(DCC)
+
+JediUsesD70.bpl: ..\examples\vcl\JUW\JediUsesD70.dpk
+  $(DCC)
+
 

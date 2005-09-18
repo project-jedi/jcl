@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{95B371EC-6860-44C0-9213-E81744596A15}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="StackTrackDLLsExample.exe">vcl\debug\stacktrack\StackTrackDLLsExample.bdsproj</Projects>
+      <Projects Name="StackTrackDLLsStaticLibrary.dll">vcl\debug\stacktrack\StackTrackDLLsStaticLibrary.bdsproj</Projects>
+      <Projects Name="StackTrackDLLsDynamicLibrary.dll">vcl\debug\stacktrack\StackTrackDLLsDynamicLibrary.bdsproj</Projects>
+      <Projects Name="StackTrackDLLsComLibrary.dll">vcl\debug\stacktrack\StackTrackDLLsComLibrary.bdsproj</Projects>
+      <Projects Name="StackTrackExample.exe">vcl\debug\stacktrack\StackTrackExample.bdsproj</Projects>
+      <Projects Name="Targets">StackTrackDLLsExample.exe StackTrackDLLsStaticLibrary.dll StackTrackDLLsDynamicLibrary.dll StackTrackDLLsComLibrary.dll StackTrackExample.exe</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

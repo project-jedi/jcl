@@ -22,7 +22,7 @@ package ProjectAnalyzerD70;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58030000}
-{$DESCRIPTION 'JCL Project Analyzer for Delphi 7'}
+{$DESCRIPTION 'JCL Project Analyzer'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

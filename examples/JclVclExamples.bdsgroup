@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{D11C4144-E9FA-4B22-8BB4-DD2D7CC29874}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="ApiHookExample.exe">vcl\peimage\ApiHookExample.bdsproj</Projects>
+      <Projects Name="AppInstExample.exe">vcl\appinst\AppInstExample.bdsproj</Projects>
+      <Projects Name="CreateProcAsUserExample.exe">vcl\asuser\CreateProcAsUserExample.bdsproj</Projects>
+      <Projects Name="FramesTrackExample.exe">vcl\debug\framestrack\FramesTrackExample.bdsproj</Projects>
+      <Projects Name="LanManExample.exe">vcl\lanman\LanManExample.bdsproj</Projects>
+      <Projects Name="LocalesExample.exe">vcl\locales\LocalesExample.bdsproj</Projects>
+      <Projects Name="MapiExample.exe">vcl\mapi\MapiExample.bdsproj</Projects>
+      <Projects Name="MidiOutExample.exe">vcl\multimedia\MidiOutExample.bdsproj</Projects>
+      <Projects Name="MultiMediaExample.exe">vcl\multimedia\MultiMediaExample.bdsproj</Projects>
+      <Projects Name="NtSvcExample.exe">vcl\ntservice\NtSvcExample.bdsproj</Projects>
+      <Projects Name="PeFuncExample.exe">vcl\peimage\PeFuncExample.bdsproj</Projects>
+      <Projects Name="ReadMailExample.exe">vcl\mapi\ReadMailExample.bdsproj</Projects>
+      <Projects Name="RegistryExample.exe">vcl\registry\RegistryExample.bdsproj</Projects>
+      <Projects Name="RTTIExample.exe">vcl\rtti\RTTIExample.bdsproj</Projects>
+      <Projects Name="SingleInstExample.exe">vcl\appinst\SingleInstExample.bdsproj</Projects>
+      <Projects Name="SourceLocExample.exe">vcl\debug\sourceloc\SourceLocExample.bdsproj</Projects>
+      <Projects Name="StackTrackExample.exe">vcl\debug\stacktrack\StackTrackExample.bdsproj</Projects>
+      <Projects Name="StructStorageExample.exe">vcl\structstorage\StructStorageExample.bdsproj</Projects>
+      <Projects Name="SysInfoExample.exe">vcl\sysinfo\SysInfoExample.bdsproj</Projects>
+      <Projects Name="TextReaderExample.exe">vcl\textreader\TextReaderExample.bdsproj</Projects>
+      <Projects Name="ThreadExceptExample.exe">vcl\debug\threadexcept\ThreadExceptExample.bdsproj</Projects>
+      <Projects Name="UnmangleNameExample.exe">vcl\peimage\UnmangleNameExample.bdsproj</Projects>
+      <Projects Name="VerInfoExample.exe">vcl\fileversion\VerInfoExample.bdsproj</Projects>
+      <Projects Name="Targets">ApiHookExample.exe AppInstExample.exe CreateProcAsUserExample.exe FramesTrackExample.exe LanManExample.exe LocalesExample.exe MapiExample.exe MidiOutExample.exe MultiMediaExample.exe NtSvcExample.exe PeFuncExample.exe ReadMailExample.exe RegistryExample.exe RTTIExample.exe SingleInstExample.exe SourceLocExample.exe StackTrackExample.exe StructStorageExample.exe SysInfoExample.exe TextReaderExample.exe ThreadExceptExample.exe UnmangleNameExample.exe VerInfoExample.exe</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
