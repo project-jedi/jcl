@@ -141,9 +141,9 @@
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 			<VersionInfo Name="MajorVer">1</VersionInfo>
-			<VersionInfo Name="MinorVer">94</VersionInfo>
-			<VersionInfo Name="Release">1</VersionInfo>
-			<VersionInfo Name="Build">1756</VersionInfo>
+			<VersionInfo Name="MinorVer">95</VersionInfo>
+			<VersionInfo Name="Release">3</VersionInfo>
+			<VersionInfo Name="Build">1848</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
 			<VersionInfo Name="PreRelease">False</VersionInfo>
 			<VersionInfo Name="Special">False</VersionInfo>
@@ -155,13 +155,13 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 			<VersionInfoKeys Name="FileDescription">JCL IDE Favorite Dialogs expert</VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">1.94.1.1756</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.95.3.1848</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName">IdeOpenDlgFavorite90</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2004 Project JEDI</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename">IdeOpenDlgFavorite90.bpl</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">Jedi Code Library Extension</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">1.94 Build 1756</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.95 Build 1848</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>  <Language>
       <Language Name="ActiveLang"></Language>
