@@ -20,6 +20,7 @@
 {   Olivier Sannier (obones)                                                                       }
 {   Petr Vones (pvones)                                                                            }
 {   Heinz Zastrau (heinzz)                                                                         }
+{   Andreas Hausladen (ahuser)                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -452,6 +453,62 @@ type
     NameIndex: DWORD;   // Name index of procedure
   end;
 
+  TSymbolObjNameInfo = packed record
+    Signature: DWORD;   // Signature for the CodeView information contained in
+                        // this module
+    NameIndex: DWORD;   // Name index of the object file
+  end;
+
+  TSymbolDataInfo = packed record
+    Offset: DWORD;      // Offset portion of  the segmented address of
+                        // the start of the data in the code segment
+    Segment: Word;      // Segment portion of the segmented address of
+                        // the start of the data in the code segment
+    Reserved: Word;
+    TypeIndex: DWORD;   // Type index of the symbol
+    NameIndex: DWORD;   // Name index of the symbol
+  end;
+
+  TSymbolWithInfo = packed record
+    pParent: DWORD;
+    pEnd: DWORD;
+    Size: DWORD;        // Length in bytes of this "with"
+    Offset: DWORD;      // Offset portion of the segmented address of
+                        // the start of the "with" in the code segment
+    Segment: Word;      // Segment portion of the segmented address of
+                        // the start of the "with" in the code segment
+    Reserved: Word;
+    NameIndex: DWORD;   // Name index of the "with"
+  end;
+
+  TSymbolLabelInfo = packed record
+    Offset: DWORD;      // Offset portion of  the segmented address of
+                        // the start of the label in the code segment
+    Segment: Word;      // Segment portion of the segmented address of
+                        // the start of the label in the code segment
+    NearFar: Byte;      // Address mode of the label:
+                        //   0       near
+                        //   4       far
+    Reserved: Byte;
+    NameIndex: DWORD;   // Name index of the label
+  end;
+
+  TSymbolConstantInfo = packed record
+    TypeIndex: DWORD;   // Type index of the constant (for enums)
+    NameIndex: DWORD;   // Name index of the constant
+    Reserved: DWORD;
+    Value: DWORD;       // value of the constant
+  end;
+
+  TSymbolUdtInfo = packed record
+    TypeIndex: DWORD;   // Type index of the type
+    Attributes: Word;   // istag = $02: True if this is a tag (not a typedef)
+                        // isnest = $01: True if the type is a nested type (its name
+                        // will be 'class_name::type_name' in that case)
+    NameIndex: DWORD;   // Name index of the type
+    Reserved: DWORD;
+  end;
+
 type
   { Symbol Information Records }
   PSymbolInfo = ^TSymbolInfo;
@@ -460,7 +517,19 @@ type
     SymbolType: Word;
     case Word of
       SYMBOL_TYPE_LPROC32, SYMBOL_TYPE_GPROC32:
-        (Proc: TSymbolProcInfo;);
+        (Proc: TSymbolProcInfo);
+      SYMBOL_TYPE_OBJNAME:
+        (ObjName: TSymbolObjNameInfo);
+      SYMBOL_TYPE_LDATA32, SYMBOL_TYPE_GDATA32, SYMBOL_TYPE_PUB32:
+        (Data: TSymbolDataInfo);
+      SYMBOL_TYPE_WITH32:
+        (With32: TSymbolWithInfo);
+      SYMBOL_TYPE_LABEL32:
+        (Label32: TSymbolLabelInfo);
+      SYMBOL_TYPE_CONST:
+        (Constant: TSymbolConstantInfo);
+      SYMBOL_TYPE_UDT:
+        (Udt: TSymbolUdtInfo);
   end;
 
   PSymbolInfos = ^TSymbolInfos;
@@ -592,6 +661,88 @@ type
 
   TJclLocalProcSymbolInfo = class(TJclProcSymbolInfo);
   TJclGlobalProcSymbolInfo = class(TJclProcSymbolInfo);
+
+  TJclObjNameSymbolInfo = class(TJclSymbolInfo)
+  private
+    FSignature: DWORD;
+    FNameIndex: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property Signature: DWORD read FSignature;
+  end;
+
+  TJclDataSymbolInfo = class(TJclSymbolInfo)
+  private
+    FOffset: DWORD;
+    FTypeIndex: DWORD;
+    FNameIndex: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property TypeIndex: DWORD read FTypeIndex;
+    property Offset: DWORD read FOffset;
+  end;
+
+  TJclLDataSymbolInfo = class(TJclDataSymbolInfo);
+  TJclGDataSymbolInfo = class(TJclDataSymbolInfo);
+  TJclPublicSymbolInfo = class(TJclDataSymbolInfo);
+
+  TJclWithSymbolInfo = class(TJclSymbolInfo)
+  private
+    FOffset: DWORD;
+    FSize: DWORD;
+    FNameIndex: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property Offset: DWORD read FOffset;
+    property Size: DWORD read FSize;
+  end;
+
+  { not used by Delphi }
+  TJclLabelSymbolInfo = class(TJclSymbolInfo)
+  private
+    FOffset: DWORD;
+    FNameIndex: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property Offset: DWORD read FOffset;
+  end;
+
+  { not used by Delphi }
+  TJclConstantSymbolInfo = class(TJclSymbolInfo)
+  private
+    FValue: DWORD;
+    FTypeIndex: DWORD;
+    FNameIndex: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property TypeIndex: DWORD read FTypeIndex; // for enums
+    property Value: DWORD read FValue;
+  end;
+
+  TJclUdtSymbolInfo = class(TJclSymbolInfo)
+  private
+    FTypeIndex: DWORD;
+    FNameIndex: DWORD;
+    FIsTag: Boolean;
+    FIsNested: Boolean;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property NameIndex: DWORD read FNameIndex;
+    property TypeIndex: DWORD read FTypeIndex;
+    property IsTag: Boolean read FIsTag;
+    property IsNested: Boolean read FIsNested;
+  end;
 
   // TD32 parser
   TJclTD32InfoParser = class(TObject)
@@ -804,6 +955,89 @@ begin
   end;
 end;
 
+//=== { TJclObjNameSymbolInfo } ==============================================
+
+constructor TJclObjNameSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FNameIndex := ObjName.NameIndex;
+    FSignature := ObjName.Signature;
+  end;
+end;
+
+//=== { TJclDataSymbolInfo } =================================================
+
+constructor TJclDataSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FTypeIndex := Data.TypeIndex;
+    FNameIndex := Data.NameIndex;
+    FOffset := Data.Offset;
+  end;
+end;
+
+//=== { TJclWithSymbolInfo } =================================================
+
+constructor TJclWithSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FNameIndex := With32.NameIndex;
+    FOffset := With32.Offset;
+    FSize := With32.Size;
+  end;
+end;
+
+//=== { TJclLabelSymbolInfo } ================================================
+
+constructor TJclLabelSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FNameIndex := Label32.NameIndex;
+    FOffset := Label32.Offset;
+  end;
+end;
+
+//=== { TJclConstantSymbolInfo } =============================================
+
+constructor TJclConstantSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FNameIndex := Constant.NameIndex;
+    FTypeIndex := Constant.TypeIndex;
+    FValue := Constant.Value;
+  end;
+end;
+
+//=== { TJclUdtSymbolInfo } ==================================================
+
+constructor TJclUdtSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FNameIndex := Udt.NameIndex;
+    FTypeIndex := Udt.TypeIndex;
+    FIsTag := Udt.Attributes and $02 <> 0;
+    FIsNested := Udt.Attributes and $01 <> 0;
+  end;
+end;
+
 //=== { TJclTD32InfoParser } =================================================
 
 constructor TJclTD32InfoParser.Create(const ATD32Data: TCustomMemoryStream);
@@ -855,6 +1089,8 @@ begin
             AnalyseSourceModules(pSubsection, Size);
           SUBSECTION_TYPE_NAMES:
             AnalyseNames(pSubsection, Size);
+          {SUBSECTION_TYPE_TYPES:
+            AnalyseTypes(pSubsection, Size);}
         else
           AnalyseUnknownSubSection(pSubsection, Size);
         end;
@@ -903,6 +1139,22 @@ begin
         Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_GPROC32:
         Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_OBJNAME:
+        Symbol := TJclObjNameSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_LDATA32:
+        Symbol := TJclLDataSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_GDATA32:
+        Symbol := TJclGDataSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_PUB32:
+        Symbol := TJclPublicSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_WITH32:
+        Symbol := TJclWithSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_LABEL32:
+        Symbol := TJclLabelSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_CONST:
+        Symbol := TJclConstantSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_UDT:
+        Symbol := TJclUdtSymbolInfo.Create(pInfo);
     else
       Symbol := nil;
     end;
@@ -1251,6 +1503,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/09/21 19:31:27  ahuser
+// Added further symbol types
+//
 // Revision 1.13  2005/03/08 08:33:23  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
