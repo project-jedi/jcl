@@ -45,7 +45,7 @@ type
     FDefines: TStringList;
     FUnits: TStringList;
     FDemos: TStringList;
-    FExcludedDemos: TStringList;
+    FDemoExclusionList: TStringList;
     FOnWriteLog: TTextHandler;
     FRelativeDemoPath: string;
     FDemoSectionName: string;
@@ -53,8 +53,9 @@ type
     procedure AddDemos(const Directory: string);
     procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
       const DialogIconFileName: string; const Designer: string; const Ancestor: string = '');
-    procedure BuildDemoList;
+    function GetDemoList: TStrings;
     procedure BuildUnitList(const SubDir: string; Units: TStrings);
+    function GetDemoExclusionList: TStrings;
     function GetProgressTotal: Integer;
     function GetTool: IJediInstallTool;
     function GetUnits(const SourceDir: string): TStrings;
@@ -102,7 +103,6 @@ type
     function DemoOption(DemoIndex: Integer): TJediInstallOption;
     function DemoOptionSelected(Index: Integer): Boolean;
     function ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
-    procedure InitDemoExclusionList;
     function InstallSelectedOptions: Boolean;
     function UninstallSelectedOptions: Boolean;
     function OptionSelected(Option: TJediInstallOption): Boolean;
@@ -112,9 +112,10 @@ type
     function StoredBplPath: string;
     function StoredDcpPath: string;
     property Defines: TStringList read FDefines;
-    property Demos: TStringList read FDemos;
+    property Demos: TStrings read GetDemoList;
     property DemoSectionName: string read FDemoSectionName;
     property Distribution: TJclDistribution read FDistribution;
+    property DemoExclusionList: TStrings read GetDemoExclusionList;
     property Tool: IJediInstallTool read GetTool;
     property DebugDcuDir: string read FDebugDcuDir;
     property LibDir: string read FLibDir;
@@ -593,7 +594,7 @@ destructor TJclInstallation.Destroy;
 var
   I: Integer;
 begin
-  FExcludedDemos.Free;
+  FDemoExclusionList.Free;
   FDemos.Free;
   for I := 0 to FUnits.Count - 1 do
     FUnits.Objects[I].Free;
@@ -607,7 +608,7 @@ var
   FileName: string;
 begin
   FileName := FRelativeDemoPath + FileInfo.Name;
-  if not FExcludedDemos.IndexOf(FileName) >= 0 then
+  if not DemoExclusionList.IndexOf(FileName) >= 0 then
     Demos.Append(FileName);
 end;
 
@@ -877,6 +878,17 @@ begin
   Result := Path + 'examples';
 end;
 
+function TJclInstallation.GetDemoList: TStrings;
+begin
+  if not Assigned(FDemos) then
+  begin
+    FDemos := TStringList.Create;
+    EnumDirectories(Distribution.ExamplesDir, AddDemos);
+    //Demos.Sorted := True;
+  end;
+  Result := FDemos;
+end;
+
 function TJclDistribution.GetDemosPath: string;
 begin
   Result := PathAddSeparator(Path + 'examples');
@@ -902,17 +914,6 @@ end;
 function TJclInstallation.GetTool: IJediInstallTool;
 begin
   Result := Distribution.Tool;
-end;
-
-procedure TJclInstallation.BuildDemoList;
-begin
-  if not Assigned(FDemos) then
-  begin
-    FDemos := TStringList.Create;
-    InitDemoExclusionList;
-    EnumDirectories(Distribution.ExamplesDir, AddDemos);
-    //Demos.Sorted := True;
-  end;
 end;
 
 procedure TJclInstallation.BuildUnitList(const SubDir: string; Units: TStrings);
@@ -957,6 +958,47 @@ begin
   Result := OptionSelected(DemoOption(Index));
 end;
 
+function TJclInstallation.GetDemoExclusionList: TStrings;
+var
+  I: Integer;
+  Strings: TStrings;
+  FileName: string;
+begin
+  if not Assigned(FDemoExclusionList) then
+  begin
+    FDemoExclusionList := TStringList.Create;
+    FileName := MakePath(Distribution.DemosPath + '%s%d.exc');
+    if FileExists(FileName) then
+    begin
+      FDemoExclusionList.LoadFromFile(FileName);
+      Strings := TStringList.Create;
+      try
+        I := 0;
+        while I < FDemoExclusionList.Count do
+        begin
+          if ExcludeEdition(FDemoExclusionList, I, FileName) then
+            if ExtractFileExt(FileName) = '.exc' then
+            begin
+              Strings.LoadFromFile(Distribution.DemosPath + FileName);
+              FDemoExclusionList.AddStrings(Strings);
+              FDemoExclusionList.Delete(I);
+            end
+            else
+            begin
+              FDemoExclusionList[I] := FileName;
+              Inc(I);
+            end
+          else
+            FDemoExclusionList.Delete(I);
+        end;
+      finally
+        Strings.Free;
+      end;
+    end;
+  end;
+  Result := FDemoExclusionList;
+end;
+
 function TJclInstallation.GetUnits(const SourceDir: string): TStrings;
 var
   I: Integer;
@@ -974,46 +1016,6 @@ begin
   end
   else
     Result := FUnits.Objects[I] as TStrings;
-end;
-
-procedure TJclInstallation.InitDemoExclusionList;
-var
-  I: Integer;
-  Strings: TStrings;
-  FileName: string;
-begin
-  if not Assigned(FExcludedDemos) then
-  begin
-    FExcludedDemos := TStringList.Create;
-    FileName := MakePath(Distribution.DemosPath + '%s%d.exc');
-    if FileExists(FileName) then
-    begin
-      FExcludedDemos.LoadFromFile(FileName);
-      Strings := TStringList.Create;
-      try
-        I := 0;
-        while I < FExcludedDemos.Count do
-        begin
-          if ExcludeEdition(FExcludedDemos, I, FileName) then
-            if ExtractFileExt(FileName) = '.exc' then
-            begin
-              Strings.LoadFromFile(Distribution.DemosPath + FileName);
-              FExcludedDemos.AddStrings(Strings);
-              FExcludedDemos.Delete(I);
-            end
-            else
-            begin
-              FExcludedDemos[I] := FileName;
-              Inc(I);
-            end
-          else
-            FExcludedDemos.Delete(I);
-        end;
-      finally
-        Strings.Free;
-      end;
-    end;
-  end;
 end;
 
 function TJclInstallation.InitOptions: Boolean;
@@ -1053,7 +1055,6 @@ var
     I: Integer;
   begin
     TempNode := AddNode(ProductNode, ioJclMakeDemos, [goExpandable, goNoAutoCheck]);
-    BuildDemoList;
     for I := 0 to Demos.Count - 1 do
       AddDemoNode(TempNode, I);
   end;
@@ -1924,6 +1925,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.70  2005/09/23 22:46:31  rrossmair
+// - changed to ensure that TInstallation.Demos is assigned when needed; likewise DemoExclusionList
+// - some refactoring
+//
 // Revision 1.69  2005/09/18 20:13:10  rrossmair
 // - several additions/minor fixes
 //
