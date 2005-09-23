@@ -522,13 +522,10 @@ function TMainForm.ExpandOptionTree(
 var
   P: TProductFrame;
 begin
-  Result := False;
+  Result := True;
   P := View(Installation);
   if Assigned(P) then
-  begin
     P.UpdateTree;
-    Result := True;
-  end;
 end;
 
 procedure TMainForm.InstallBtnClick(Sender: TObject);
