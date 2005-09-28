@@ -952,6 +952,25 @@ const
   STRANSMETA_BIT_30   = BIT_30; // Reserved, do not count on value
   STRANSMETA_BIT_31   = BIT_31; // Reserved, do not count on value
 
+  { Constants of bits of the MXCSR register - Intel and AMD processors that support SSE instructions}
+  MXCSR_IE  = BIT_0;                  // Invalid Operation flag
+  MXCSR_DE  = BIT_1;                  // Denormal flag
+  MXCSR_ZE  = BIT_2;                  // Divide by Zero flag
+  MXCSR_OE  = BIT_3;                  // Overflow flag
+  MXCSR_UE  = BIT_4;                  // Underflow flag
+  MXCSR_PE  = BIT_5;                  // Precision flag
+  MXCSR_DAZ = BIT_6;                  // Denormal are Zero flag
+  MXCSR_IM  = BIT_7;                  // Invalid Operation mask
+  MXCSR_DM  = BIT_8;                  // Denormal mask
+  MXCSR_ZM  = BIT_9;                  // Divide by Zero mask
+  MXCSR_OM  = BIT_10;                 // Overflow mask
+  MXCSR_UM  = BIT_11;                 // Underflow mask
+  MXCSR_PM  = BIT_12;                 // Precision mask
+  MXCSR_RC1 = BIT_13;                 // Rounding control, bit 1
+  MXCSR_RC2 = BIT_14;                 // Rounding control, bit 2
+  MXCSR_RC  = MXCSR_RC1 or MXCSR_RC2; // Rounding control
+  MXCSR_FZ  = BIT_15;                 // Flush to Zero
+
 const
   IntelCacheDescription: array [0..50] of TCacheInfo = (
     (D: $00; Family: cfOther;                                                                          I: RsIntelCacheDescr00),
@@ -5115,6 +5134,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.52  2005/09/28 23:27:50  outchy
+// Added constant of bits of the MXCSR register.
+//
 // Revision 1.51  2005/08/09 10:30:22  ahuser
 // JCL.NET changes
 //
