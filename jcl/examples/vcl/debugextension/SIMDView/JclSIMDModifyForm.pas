@@ -1,26 +1,27 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: JvSIMDModifyForm.pas, released on 2004-10-11.                              }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{ [ouchet dott florent att laposte dott net]                                                       }
+{ Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.                        }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ You may retrieve the latest version of this file at the Project JEDI's JCL home page,            }
+{ located at http://jcl.sourceforge.net                                                            }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSIMDUtils.pas, released on 2004-10-11.
-
-The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
-Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
-All Rights Reserved.
-
-Contributor(s): -
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------}
 // $Id$
 
 unit JclSIMDModifyForm;
@@ -31,12 +32,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, JclSysInfo, JclSIMDUtils, ToolsApi;
+  Dialogs, StdCtrls, ExtCtrls, ToolsApi, IniFiles, Contnrs,
+  JclSysInfo, JclSIMDUtils;
 
 const
   WM_MODIFYCONTINUE = WM_USER + 100;
 
 type
+  TJclRegisterType = ( rtXMM, rtMM );
+  
   TJclSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
     ComboBoxFormat: TComboBox;
@@ -51,13 +55,15 @@ type
     procedure ComboBoxFormatChange(Sender: TObject);
     procedure ButtonOKClick(Sender: TObject);
   private
+    FRegisterType: TJclRegisterType;
+    FXMMRegister: TJclXMMRegister;
+    FMMRegister: TJclMMRegister;
     FDisplay: TJclXMMContentType;
     FFormat: TJclSIMDFormat;
-    FXMMRegister: TJclXMMRegister;
-    FDebugServices: IOTADebuggerServices;
-    FServices: IOTAServices;
-    FComboBoxList: TList;
-    FLabelList: TList;
+    FDebuggerServices: IOTADebuggerServices;
+    FSettings: TCustomIniFile;
+    FComboBoxList: TComponentList;
+    FLabelList: TComponentList;
     FHistory: TStringList;
     FThread: IOTAThread;
     FTextIndex: Integer;
@@ -68,12 +74,22 @@ type
     procedure ContinueModify;
     procedure StartModify;
     procedure WMModifyContinue(var Message: TMessage); message WM_MODIFYCONTINUE;
+  protected
+    property RegisterType: TJclRegisterType read FRegisterType;
+    property XMMRegister: TJclXMMRegister read FXMMRegister;
+    property MMRegister: TJclMMRegister read FMMRegister;
+    property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
+    property Settings: TCustomIniFile read FSettings;
   public
-    constructor Create (AOwner: TComponent); override;
+    constructor Create (AOwner: TComponent;
+      ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile); reintroduce;
     destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
-      const ACpuInfo: TCpuInfo):Boolean;
+      const ACpuInfo: TCpuInfo): Boolean; overload;
+    function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
+      AFormat: TJclSIMDFormat; var ARegister: TJclMMRegister;
+      const ACpuInfo: TCpuInfo): Boolean; overload;
     procedure ThreadEvaluate(const ExprStr, ResultStr: string;
       ReturnCode: Integer);
     procedure UpdateDisplay;
@@ -81,12 +97,10 @@ type
     procedure LoadHistory;
     procedure SaveHistory;
     procedure MergeHistory;
-    property XMMRegister: TJclXMMRegister read FXMMRegister;
+
     property Display: TJclXMMContentType read FDisplay;
     property Format: TJclSIMDFormat read FFormat;
     property History: TStringList read FHistory;
-    property DebugServices: IOTADebuggerServices read FDebugServices;
-    property Services: IOTAServices read FServices;
     property Thread: IOTAThread read FThread;
   end;
 
@@ -94,29 +108,36 @@ implementation
 
 {$R *.dfm}
 
-uses
-  Registry;
-
 const
-  NbEdits: array [TJclXMMContentType] of Byte =
-    ( 16, 8, 4, 2, 4, 2 );
+  NbEdits: array [TJclRegisterType, TJclXMMContentType] of Byte =
+    ( (16, 8, 4, 2, 4, 2),
+      ( 8, 4, 2, 1, 2, 1) );
   Texts: array [TJclXMMContentType] of string =
     ( 'Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double' );
-  HistoryRegKey = '\History Lists\hlSIMDModify';
 
 { TJclSIMDModifyFrm }
 
-constructor TJclSIMDModifyFrm.Create(AOwner: TComponent);
+constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
+      ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile);
 begin
   inherited Create(AOwner);
-  FComboBoxList := TList.Create;
-  FLabelList := TList.Create;
+
+  FDebuggerServices := ADebuggerServices;
+  FSettings := ASettings;
+
+  FComboBoxList := TComponentList.Create(False);
+  FLabelList := TComponentList.Create(False);
+  FHistory := TStringList.Create;
+  FHistory.Duplicates := dupIgnore;
 end;
 
 destructor TJclSIMDModifyFrm.Destroy;
 begin
   FLabelList.Free;
   FComboBoxList.Free;
+  FHistory.Free;
+  FDebuggerServices := nil;
+
   inherited Destroy;
 end;
 
@@ -125,36 +146,55 @@ function TJclSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJclXMMContent
   const ACPUInfo: TCPUInfo): Boolean;
 begin
   FTextIndex := 0;
+  FRegisterType := rtXMM;
   FXMMRegister := ARegister;
   FFormat := AFormat;
   FDisplay := ADisplay;
   FThread := AThread;
   FCpuInfo := ACpuInfo;
-  FHistory := TStringList.Create;
-  FHistory.Duplicates := dupIgnore;
-  try
-    Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
-      'Unable to get Borland IDE Services');
-    Assert(Supports(BorlandIDEServices,IOTADebuggerServices,FDebugServices),
-      'Unable to get Borland Debug Services');
 
-    LoadHistory;
+  LoadHistory;
 
-    ComboBoxDisplay.ItemIndex := Integer(Display);
-    ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
-    ComboBoxFormat.ItemIndex := Integer(Format);
-    UpdateDisplay;
+  ComboBoxDisplay.ItemIndex := Integer(Display);
+  ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
+  ComboBoxFormat.ItemIndex := Integer(Format);
+  UpdateDisplay;
 
-    Result := ShowModal = mrOk;
+  Result := ShowModal = mrOk;
 
-    if Result then
-      ARegister := XMMRegister;
+  if Result then
+    ARegister := XMMRegister;
 
-    MergeHistory;
-    SaveHistory;
-  finally
-    FHistory.Free;
-  end;
+  MergeHistory;
+  SaveHistory;
+end;
+
+function TJclSIMDModifyFrm.Execute(AThread: IOTAThread;
+  ADisplay: TJclXMMContentType; AFormat: TJclSIMDFormat;
+  var ARegister: TJclMMRegister; const ACpuInfo: TCpuInfo): Boolean;
+begin
+  FTextIndex := 0;
+  FRegisterType := rtMM;
+  FMMRegister := ARegister;
+  FFormat := AFormat;
+  FDisplay := ADisplay;
+  FThread := AThread;
+  FCpuInfo := ACpuInfo;
+
+  LoadHistory;
+
+  ComboBoxDisplay.ItemIndex := Integer(Display);
+  ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
+  ComboBoxFormat.ItemIndex := Integer(Format);
+  UpdateDisplay;
+
+  Result := ShowModal = mrOk;
+
+  if Result then
+    ARegister := MMRegister;
+
+  MergeHistory;
+  SaveHistory;
 end;
 
 procedure TJclSIMDModifyFrm.UpdateDisplay;
@@ -176,7 +216,7 @@ begin
 
   X := 0;
   Y := 12;
-  for Index := 0 to NbEdits[Display]-1 do
+  for Index := 0 to NbEdits[RegisterType,Display]-1 do
   begin
     AComboBox := TComboBox.Create(Self);
     AComboBox.Parent := PanelModify;
@@ -189,7 +229,7 @@ begin
     ALabel.Parent := PanelModify;
     ALabel.SetBounds(X+5,Y+2,60,ALabel.Height);
     ALabel.Tag := Index;
-    FLabelList.Add(Pointer(ALabel));
+    FLabelList.Add(ALabel);
     if (Index=7) then
     begin
       Y := 12;
@@ -203,20 +243,36 @@ procedure TJclSIMDModifyFrm.UpdateFormat;
 var
   Index: Integer;
   Value: TJclSIMDValue;
+  ALabel: TLabel;
 begin
   Value.Display := Display;
   for Index := 0 to FLabelList.Count-1 do
   begin
-    with TLabel(FLabelList.Items[Index]) do
-      case Display of
-        xt16Bytes  : Value.ValueByte := XMMRegister.Bytes[Tag];
-        xt8Words   : Value.ValueWord := XMMRegister.Words[Tag];
-        xt4DWords  : Value.ValueDWord := XMMRegister.DWords[Tag];
-        xt2QWords  : Value.ValueQWord := XMMRegister.QWords[Tag];
-        xt4Singles : Value.ValueSingle := XMMRegister.Singles[Tag];
-        xt2Doubles : Value.ValueDouble := XMMRegister.Doubles[Tag];
-      end;
-    TLabel(FLabelList.Items[Index]).Caption := SysUtils.Format('%s%d = %s',[Texts[Display],Index,FormatValue(Value,Format)]);
+    ALabel := FLabelList.Items[Index] as TLabel;
+    case RegisterType of
+      rtXMM :
+        case Display of
+          xt16Bytes  : Value.ValueByte := XMMRegister.Bytes[ALabel.Tag];
+          xt8Words   : Value.ValueWord := XMMRegister.Words[ALabel.Tag];
+          xt4DWords  : Value.ValueDWord := XMMRegister.DWords[ALabel.Tag];
+          xt2QWords  : Value.ValueQWord := XMMRegister.QWords[ALabel.Tag];
+          xt4Singles : Value.ValueSingle := XMMRegister.Singles[ALabel.Tag];
+          xt2Doubles : Value.ValueDouble := XMMRegister.Doubles[ALabel.Tag];
+        end;
+      rtMM :
+        case Display of
+          xt16Bytes  : Value.ValueByte := MMRegister.Bytes[ALabel.Tag];
+          xt8Words   : Value.ValueWord := MMRegister.Words[ALabel.Tag];
+          xt4DWords  : Value.ValueDWord := MMRegister.DWords[ALabel.Tag];
+          xt2QWords  : Value.ValueQWord := MMRegister.QWords;
+          xt4Singles : Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
+          xt2Doubles : begin
+                         ALabel.Caption := '';
+                         Break;
+                       end;
+        end;
+    end;
+    ALabel.Caption := SysUtils.Format('%s%d = %s',[Texts[Display],Index,FormatValue(Value,Format)]);
   end;
 end;
 
@@ -234,43 +290,22 @@ end;
 
 procedure TJclSIMDModifyFrm.LoadHistory;
 var
-  Registry: TRegistry;
   Index, Count: Integer;
 begin
-  Registry := TRegistry.Create(KEY_READ);
-  try
-    Registry.RootKey := HKEY_CURRENT_USER;
-    if Registry.OpenKey(Services.GetBaseRegistryKey + HistoryRegKey, False) then
-    begin
-      Count := Registry.ReadInteger('Count');
-      History.Clear;
-      for Index := 0 to Count-1 do
-        History.Add(Registry.ReadString(SysUtils.Format('Item%d',[Index])));
-    end;
-    Registry.CloseKey;
-  finally
-    Registry.Free;
-  end;
+  Count := Settings.ReadInteger(ClassName,'Count',0);
+  History.Clear;
+
+  for Index := 0 to Count-1 do
+    History.Add(Settings.ReadString(ClassName,SysUtils.Format('Item%d',[Index]),''));
 end;
 
 procedure TJclSIMDModifyFrm.SaveHistory;
 var
-  Registry: TRegistry;
   Index: Integer;
 begin
-  Registry := TRegistry.Create(KEY_ALL_ACCESS);
-  try
-    Registry.RootKey := HKEY_CURRENT_USER;
-    if Registry.OpenKey(Services.GetBaseRegistryKey + HistoryRegKey, True) then
-    begin
-      Registry.WriteInteger('Count',History.Count);
-      for Index := 0 to History.Count-1 do
-        Registry.WriteString(SysUtils.Format('Item%d',[Index]),History.Strings[Index]);
-    end;
-    Registry.CloseKey;
-  finally
-    Registry.Free;
-  end;
+  Settings.WriteInteger(ClassName,'Count',History.Count);
+  for Index := 0 to History.Count-1 do
+    Settings.WriteString(ClassName,SysUtils.Format('Item%d',[Index]),History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;
@@ -327,13 +362,26 @@ begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
     begin
       if (ParseValue(FResultStr,AValue,Format)) then
-        case AValue.Display of
-          xt16Bytes  : FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
-          xt8Words   : FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
-          xt4DWords  : FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
-          xt2QWords  : FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
-          xt4Singles : FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
-          xt2Doubles : FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
+        case RegisterType of
+          rtXMM :
+            case AValue.Display of
+              xt16Bytes  : FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+              xt8Words   : FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
+              xt4DWords  : FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+              xt2QWords  : FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
+              xt4Singles : FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+              xt2Doubles : FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
+            end;
+          rtMM :
+            case AValue.Display of
+              xt16Bytes  : FMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+              xt8Words   : FMMRegister.Words[FTextIndex] := AValue.ValueWord;
+              xt4DWords  : FMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+              xt2QWords  : FMMRegister.QWords := AValue.ValueQWord;
+              xt4Singles : FMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+              xt2Doubles : EvaluateResult := erError;
+            end;
+          else EvaluateResult := erError;
         end
       else EvaluateResult := erError;
     end;
@@ -348,7 +396,7 @@ begin
         begin
           if (not ParseValue(FExprStr,AValue,Format)) then
           begin
-            if ReplaceXMMRegisters(FExprStr,FCPUInfo.Is64Bits,VectorFrame.XMMRegisters) then
+            if ReplaceSIMDRegisters(FExprStr,FCPUInfo.Is64Bits,VectorFrame) then
               EvaluateResult := Thread.Evaluate(FExprStr,ResultBuffer,
                 ResultBufferSize,CanModify,True,'',ResultAddr,ResultSize,FReturnCode)
             else EvaluateResult := erError;

@@ -1,26 +1,27 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: JvSIMDView.pas, released on 2004-10-11.                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{ [ouchet dott florent att laposte dott net]                                                       }
+{ Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.                        }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ You may retrieve the latest version of this file at the Project JEDI's JCL home page,            }
+{ located at http://jcl.sourceforge.net                                                            }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSIMDView.pas, released on 2004-10-11.
-
-The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
-Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
-All Rights Reserved.
-
-Contributor(s): -
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------}
 // $Id$
 
 unit JclSIMDView;
@@ -46,46 +47,46 @@ type
   end;
   PThreadReference = ^TThreadReference;
 
-  TDebuggerNotifier = class;
+  TJclDebuggerNotifier = class;
 
-  TIDESSEWizard = class (TJclOTAExpert)
+  TJclSIMDWizard = class (TJclOTAExpert)
   private
-    FDebuggerServices:IOTADebuggerServices;
-    FIndex:Integer;
-    FDebuggerNotifier:TDebuggerNotifier;
-    FIcon:TIcon;
-    FSSEMenuItem:TMenuItem;
-    FViewDebugMenu:TMenuItem;
-    FForm:TJclSIMDViewFrm;
+    FDebuggerServices: IOTADebuggerServices;
+    FIndex: Integer;
+    FDebuggerNotifier: TJclDebuggerNotifier;
+    FIcon: TIcon;
+    FSIMDMenuItem: TMenuItem;
+    FViewDebugMenu: TMenuItem;
+    FForm: TJclSIMDViewFrm;
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
   protected
-    FSSEAction:TAction;
+    FSIMDAction:TAction;
+    procedure SIMDActionExecute(Sender: TObject);
+    procedure SIMDActionUpdate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
     function CpuInfo: TCpuInfo;
-    function GetSSEString: string;
+    function GetSIMDString: string;
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
-    procedure ActionExecute(Sender:TObject);
-    procedure ActionUpdate(Sender:TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormDestroy(Sender: TObject);
-    procedure Refresh;
+    procedure RefreshThreadContext(WriteOldContext: Boolean);
+    procedure CloseForm;
     procedure ThreadEvaluate(const ExprStr, ResultStr: string;
       ReturnCode: Integer);
-    procedure Close;
+    property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TDebuggerNotifier = class (TNotifierObject,IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class (TNotifierObject,IOTADebuggerNotifier,
                              IOTAProcessNotifier, IOTAThreadNotifier)
   private
-    FOwner:TIDESSEWizard;
-    FProcessList:TList;
-    FThreadList:TList;
-    function FindProcessReference (AProcess:IOTAProcess):PProcessReference;
-    function FindThreadReference (AThread:IOTAThread):PThreadReference;
+    FOwner: TJclSIMDWizard;
+    FProcessList: TList;
+    FThreadList: TList;
+    function FindProcessReference (AProcess:IOTAProcess): PProcessReference;
+    function FindThreadReference (AThread:IOTAThread): PThreadReference;
   public
     // IOTADebuggerNotifier
     procedure ProcessCreated(Process: IOTAProcess);
@@ -104,9 +105,9 @@ type
       ReturnCode: Integer);
     procedure ModifyComplete(const ExprStr, ResultStr: string;
       ReturnCode: Integer);
-    constructor Create(AOwner:TIDESSEWizard); reintroduce;
+    constructor Create(AOwner:TJclSIMDWizard); reintroduce;
     destructor Destroy; override;
-    property Owner:TIDESSEWizard read FOwner;
+    property Owner:TJclSIMDWizard read FOwner;
   end;
 
 procedure Register;
@@ -114,304 +115,338 @@ procedure Register;
 implementation
 
 uses
+  IniFiles,
   JclSIMDUtils;
 
 const
-  RsSSEActionName = 'DebugSSECommand';
+  RsSIMDActionName = 'DebugSSECommand';
 
 procedure Register;
 begin
-  RegisterPackageWizard(TIDESSEWizard.Create);
+  RegisterPackageWizard(TJclSIMDWizard.Create);
 end;
 
-{ TIDESSEWizard }
+{ TJclSIMDWizard }
 
-procedure TIDESSEWizard.ActionExecute(Sender: TObject);
+procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   if CpuInfo.SSE = 0 then
   begin
     MessageDlg(RsNoSSE,mtError,[mbAbort],0);
     Exit;
   end;
+
   if not Assigned(FForm) then
   begin
-    FForm:=TJclSIMDViewFrm.Create(Application);
-    FForm.Icon:=FIcon;
-    FForm.OnDestroy:=FormDestroy;
-    FForm.SSECaption := GetSSEString;
-  end;
-  FForm.Show;
+    FForm := TJclSIMDViewFrm.Create(Application,DebuggerServices,JediIniFile);
+    try
+      FForm.Icon := FIcon;
+      FForm.OnDestroy := FormDestroy;
+      FForm.SIMDCaption := GetSIMDString;
+      FForm.LoadSettings;
+
+      FForm.Show;
+    except
+      on E: Exception do
+        MessageDlg(RsFormCreateError+E.Message,mtError,[mbAbort],0);
+    end;
+  end
+  else
+    FForm.Show;
 end;
 
-procedure TIDESSEWizard.ActionUpdate(Sender: TObject);
+procedure TJclSIMDWizard.SIMDActionUpdate(Sender: TObject);
 var
-  AProcess:IOTAProcess;
-  AThread:IOTAThread;
+  AProcess: IOTAProcess;
+  AThread: IOTAThread;
+  AAction: TAction;
 begin
-  if CpuInfo.SSE = 0 then
-      FSSEAction.Enabled:=False
-  else begin
+  AAction := Sender as TAction;
+
+  if (CpuInfo.SSE <> 0) or (CPUInfo.MMX) or (CPUInfo._3DNow) then
+  begin
     AThread := nil;
     AProcess := nil;
-    if (FDebuggerServices.ProcessCount > 0) then
-      AProcess:=FDebuggerServices.CurrentProcess;
+    if (DebuggerServices.ProcessCount > 0) then
+      AProcess := DebuggerServices.CurrentProcess;
     if (AProcess<>nil) and (AProcess.ThreadCount > 0) then
-      AThread:=AProcess.CurrentThread;
+      AThread := AProcess.CurrentThread;
     if (AThread<>nil) then
-      FSSEAction.Enabled:=AThread.State in [tsStopped, tsBlocked]
-    else FSSEAction.Enabled:=False;
-  end;
+      AAction.Enabled := AThread.State in [tsStopped, tsBlocked]
+    else
+      AAction.Enabled := False;
+  end
+  else
+    AAction.Enabled := False
 end;
 
-procedure TIDESSEWizard.Close;
+procedure TJclSIMDWizard.CloseForm;
 begin
   if Assigned(FForm)
     then FForm.Close;
 end;
 
-function TIDESSEWizard.CpuInfo: TCpuInfo;
+function TJclSIMDWizard.CpuInfo: TCpuInfo;
 begin
   if not FCpuInfoValid then
   begin
     GetCpuInfo(FCpuInfo);
     FCpuInfoValid := True;
   end;
+
   Result := FCpuInfo;
 end;
 
-constructor TIDESSEWizard.Create;
+constructor TJclSIMDWizard.Create;
 begin
   FCpuInfoValid := False;
-
   FForm:=nil;
 
   inherited Create;
 end;
 
-procedure TIDESSEWizard.RegisterCommands;
+procedure TJclSIMDWizard.RegisterCommands;
 var
-  I:Integer;
-  IDEMenu:TMenu;
-  ViewMenu:TMenuItem;
-  Category:string;
+  I: Integer;
+  IDEMenu: TMenu;
+  ViewMenu: TMenuItem;
+  Category: string;
 begin
   Assert(Supports(Services,IOTADebuggerServices,FDebuggerServices),
     'Unable to get Borland Debugger Services');
-
-  Category:='';
-  with NTAServices do
-    for I:=0 to ActionList.ActionCount-1 do
-      if (CompareText(ActionList.Actions[I].Name,'DebugCPUCommand')=0)
-        then Category:=ActionList.Actions[I].Category;
+    
+  Category := '';
+  for I := 0 to NTAServices.ActionList.ActionCount-1 do
+    if (CompareText(NTAServices.ActionList.Actions[I].Name,'DebugCPUCommand') = 0)
+      then Category := NTAServices.ActionList.Actions[I].Category;
 
   FIcon := TIcon.Create;
-  FIcon.Handle:=LoadIcon(FindResourceHInstance(HInstance),'SIMDICON');
+  FIcon.Handle := LoadIcon(FindResourceHInstance(HInstance),'SIMDICON');
 
-  FSSEAction:=TAction.Create(nil);
-  FSSEAction.Caption := RsSSE;
-  FSSEAction.Visible:=True;
-  FSSEAction.OnExecute:=ActionExecute;
-  FSSEAction.OnUpdate:=ActionUpdate;
-  FSSEAction.Category:=Category;
-  FSSEAction.Name:=RsSSEActionName;
-  FSSEAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
-  FSSEAction.ActionList := NTAServices.ActionList;
+  FSIMDAction := TAction.Create(nil);
+  FSIMDAction.Caption := RsSIMD;
+  FSIMDAction.Visible := True;
+  FSIMDAction.OnExecute := SIMDActionExecute;
+  FSIMDAction.OnUpdate := SIMDActionUpdate;
+  FSIMDAction.Category := Category;
+  FSIMDAction.Name := RsSIMDActionName;
+  FSIMDAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
+  FSIMDAction.ActionList := NTAServices.ActionList;
 
-  FSSEMenuItem := TMenuItem.Create(nil);
-  FSSEMenuItem.Action := FSSEAction;
-  FSSEMenuItem.ShortCut := Shortcut(Ord('D'),[ssCtrl,ssAlt]);
+  FSIMDMenuItem := TMenuItem.Create(nil);
+  FSIMDMenuItem.Action := FSIMDAction;
+  FSIMDMenuItem.ShortCut := Shortcut(Ord('D'),[ssCtrl,ssAlt]);
 
   IDEMenu := NTAServices.MainMenu;
 
-  ViewMenu:=nil;
+  ViewMenu := nil;
   for I:=0 to IDEMenu.Items.Count-1 do
     if (CompareText(IDEMenu.Items[I].Name,'ViewsMenu')=0)
-      then ViewMenu:=IDEMenu.Items[I];
-  Assert(ViewMenu<>nil,'Unable to localize View menu');
+      then ViewMenu := IDEMenu.Items[I];
+  Assert(ViewMenu<>nil,'Unable to find View menu');
 
-  FViewDebugMenu:=nil;
+  FViewDebugMenu := nil;
   for I:=0 to ViewMenu.Count-1 do
     if (CompareText(ViewMenu.Items[I].Name,'ViewDebugItem')=0)
-      then FViewDebugMenu:=ViewMenu.Items[I];
-  Assert(FViewDebugMenu<>nil,'Unable to localize View Debug menu');
+      then FViewDebugMenu := ViewMenu.Items[I];
+  Assert(FViewDebugMenu<>nil,'Unable to find View\Debug menu');
 
-  FViewDebugMenu.Add(FSSEMenuItem);
+  FViewDebugMenu.Add(FSIMDMenuItem);
 
-  RegisterAction(FSSEAction);
+  RegisterAction(FSIMDAction);
 
-  FDebuggerNotifier:=TDebuggerNotifier.Create(Self);
-  FIndex:=FDebuggerServices.AddNotifier(FDebuggerNotifier);
+  FDebuggerNotifier := TJclDebuggerNotifier.Create(Self);
+  FIndex := DebuggerServices.AddNotifier(FDebuggerNotifier);
 end;
 
-procedure TIDESSEWizard.UnregisterCommands;
+procedure TJclSIMDWizard.UnregisterCommands;
 begin
-  UnregisterAction(FSSEAction);
+  UnregisterAction(FSIMDAction);
   FreeAndNil(FIcon);
-  FreeAndNil(FSSEMenuItem);
-  FreeAndNil(FSSEAction);
+  FreeAndNil(FSIMDMenuItem);
+  FreeAndNil(FSIMDAction);
 end;
 
-destructor TIDESSEWizard.Destroy;
+destructor TJclSIMDWizard.Destroy;
 begin
-  FDebuggerServices.RemoveNotifier(FIndex);
-
+  DebuggerServices.RemoveNotifier(FIndex);
   //FreeAndNil(FDebuggerNotifier);   // Buggy !!!!
   FreeAndNil(FForm);
+  FDebuggerServices := nil;
 
-  FDebuggerServices:=nil;
   inherited Destroy;
 end;
 
-procedure TIDESSEWizard.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TJclSIMDWizard.FormDestroy(Sender: TObject);
 begin
-  Action:=caFree;
+  try
+    if Assigned(FForm) then
+      FForm.SaveSettings;
+  finally
+    FForm := nil;
+  end;
 end;
 
-procedure TIDESSEWizard.FormDestroy(Sender: TObject);
-begin
-  FForm:=nil;
-end;
-
-function TIDESSEWizard.GetSSEString: string;
+function TJclSIMDWizard.GetSIMDString: string;
+  function Concat(LeftValue, RightValue: string): string;
+  begin
+    if LeftValue = '' then
+      Result := RightValue
+    else
+      Result := LeftValue + ',' + RightValue;
+  end;
 begin
   Result := '';
   with CpuInfo do
   begin
-    Result := '';
-    case SSE of
-      0  : Result := RsNoSSE;
-      1  : Result := RsSSE1;
-      2  : Result := RsSSE1 + ',' + RsSSE2;
-      3  : Result := RsSSE1 + ',' + RsSSE2 + ',' + RsSSE3;
-      else Result := RsSSE+IntToStr(SSE);
-    end;
+    if MMX then
+      Result := RsMMX;
+    if ExMMX then
+      Result := Concat(Result,RsExMMX);
+    if _3DNow then
+      Result := Concat(Result,Rs3DNow);
+    if Ex3DNow then
+      Result := Concat(Result,RsEx3DNow);
+    if SSE >= 1 then
+      Result := Concat(Result,RsSSE1);
+    if SSE >= 2 then
+      Result := Concat(Result,RsSSE2);
+    if SSE >= 3 then
+      Result := Concat(Result,RsSSE3);
     if Is64Bits then
       Result := Result + ',' + RsLong;
   end;
 end;
 
-procedure TIDESSEWizard.Refresh;
+procedure TJclSIMDWizard.RefreshThreadContext(WriteOldContext: Boolean);
 begin
-  if Assigned(FForm)
-    then FForm.GetThreadValues;
+  if Assigned(FForm) then
+  begin
+    if WriteOldContext then
+      FForm.SetThreadValues
+    else
+      FForm.GetThreadValues;
+  end;
 end;
 
-procedure TIDESSEWizard.ThreadEvaluate(const ExprStr,
+procedure TJclSIMDWizard.ThreadEvaluate(const ExprStr,
   ResultStr: string; ReturnCode: Integer);
 begin
-  if Assigned(FForm)
-    then FForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+  if Assigned(FForm) then
+    FForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
 end;
 
-{ TDebuggerNotifier }
+{ TJclDebuggerNotifier }
 
-procedure TDebuggerNotifier.BreakpointAdded(Breakpoint: IOTABreakpoint);
+procedure TJclDebuggerNotifier.BreakpointAdded(Breakpoint: IOTABreakpoint);
 begin
 
 end;
 
-procedure TDebuggerNotifier.BreakpointDeleted(Breakpoint: IOTABreakpoint);
+procedure TJclDebuggerNotifier.BreakpointDeleted(Breakpoint: IOTABreakpoint);
 begin
 
 end;
 
-constructor TDebuggerNotifier.Create(AOwner: TIDESSEWizard);
+constructor TJclDebuggerNotifier.Create(AOwner: TJclSIMDWizard);
 begin
   inherited Create;
-  FOwner:=AOwner;
-  FProcessList:=TList.Create;
-  FThreadList:=TList.Create;
+
+  FOwner := AOwner;
+  FProcessList := TList.Create;
+  FThreadList := TList.Create;
 end;
 
-destructor TDebuggerNotifier.Destroy;
+destructor TJclDebuggerNotifier.Destroy;
 var
-  AThreadReference:PThreadReference;
-  AProcessReference:PProcessReference;
+  AThreadReference: PThreadReference;
+  AProcessReference: PProcessReference;
 begin
-  while (FThreadList.Count>0) do
+  while (FThreadList.Count > 0) do
   begin
-    AThreadReference:=PThreadReference(FThreadList.Items[0]);
+    AThreadReference := PThreadReference(FThreadList.Items[0]);
     AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
     FThreadList.Remove(AThreadReference);
     Dispose(AThreadReference);
   end;
-  while (FProcessList.Count>0) do
+  while (FProcessList.Count > 0) do
   begin
-    AProcessReference:=PProcessReference(FProcessList.Items[0]);
+    AProcessReference := PProcessReference(FProcessList.Items[0]);
     AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
     FProcessList.Remove(AProcessReference);
     Dispose(AProcessReference);
   end;
   FThreadList.Free;
   FProcessList.Free;
+
   inherited Destroy;
 end;
 
-procedure TDebuggerNotifier.EvaluteComplete(const ExprStr,
+procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr,
   ResultStr: string; CanModify: Boolean; ResultAddress,
   ResultSize: LongWord; ReturnCode: Integer);
 begin
   Owner.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
 end;
 
-function TDebuggerNotifier.FindProcessReference(
+function TJclDebuggerNotifier.FindProcessReference(
   AProcess: IOTAProcess): PProcessReference;
 var
-  Index:Integer;
+  Index: Integer;
 begin
-  for Index:=0 to FProcessList.Count-1 do
+  for Index := 0 to FProcessList.Count-1 do
   begin
-    Result:=PProcessReference(FProcessList.Items[Index]);
-    if (Result.Process=AProcess)
+    Result := PProcessReference(FProcessList.Items[Index]);
+    if (Result.Process = AProcess)
       then Exit;
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
-function TDebuggerNotifier.FindThreadReference(
+function TJclDebuggerNotifier.FindThreadReference(
   AThread: IOTAThread): PThreadReference;
 var
-  Index:Integer;
+  Index: Integer;
 begin
-  for Index:=0 to FThreadList.Count-1 do
+  for Index := 0 to FThreadList.Count-1 do
   begin
-    Result:=PThreadReference(FThreadList.Items[Index]);
-    if (Result.Thread=AThread)
+    Result := PThreadReference(FThreadList.Items[Index]);
+    if (Result.Thread = AThread)
       then Exit;
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
-procedure TDebuggerNotifier.ModifyComplete(const ExprStr,
+procedure TJclDebuggerNotifier.ModifyComplete(const ExprStr,
   ResultStr: string; ReturnCode: Integer);
 begin
 
 end;
 
-procedure TDebuggerNotifier.ProcessCreated(Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessCreated(Process: IOTAProcess);
 var
-  AProcessReference:PProcessReference;
+  AProcessReference: PProcessReference;
 begin
-  AProcessReference:=FindProcessReference(Process);
-  if (AProcessReference=nil) then
+  AProcessReference := FindProcessReference(Process);
+  if (AProcessReference = nil) then
   begin
     New(AProcessReference);
-    AProcessReference.Process:=Process;
-    AProcessReference.ID:=Process.AddNotifier(Self);
+    AProcessReference.Process := Process;
+    AProcessReference.ID := Process.AddNotifier(Self);
     FProcessList.Add(AProcessReference);
   end;
 end;
 
-procedure TDebuggerNotifier.ProcessDestroyed(Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessDestroyed(Process: IOTAProcess);
 var
-  AProcessReference:PProcessReference;
-  AThreadReference:PThreadReference;
-  Index:Integer;
+  AProcessReference: PProcessReference;
+  AThreadReference: PThreadReference;
+  Index: Integer;
 begin
-  for Index:=0 to Process.ThreadCount-1 do
+  for Index := 0 to Process.ThreadCount-1 do
   begin
-    AThreadReference:=FindThreadReference(Process.Threads[Index]);
-    if (AThreadReference<>nil) then
+    AThreadReference := FindThreadReference(Process.Threads[Index]);
+    if (AThreadReference <> nil) then
     begin
       AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
       FThreadList.Remove(AThreadReference);
@@ -419,50 +454,50 @@ begin
     end;
   end;
 
-  AProcessReference:=FindProcessReference(Process);
-  if (AProcessReference<>nil) then
+  AProcessReference := FindProcessReference(Process);
+  if (AProcessReference <> nil) then
   begin
     AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
     FProcessList.Remove(AProcessReference);
     Dispose(AProcessReference);
   end;
 
-  if (Owner.FDebuggerServices.ProcessCount=1)
-    then Owner.Close;
+  if (Owner.DebuggerServices.ProcessCount = 1)
+    then Owner.CloseForm;
 end;
 
-procedure TDebuggerNotifier.ProcessModuleCreated(
+procedure TJclDebuggerNotifier.ProcessModuleCreated(
   ProcessModule: IOTAProcessModule);
 begin
 
 end;
 
-procedure TDebuggerNotifier.ProcessModuleDestroyed(
+procedure TJclDebuggerNotifier.ProcessModuleDestroyed(
   ProcessModule: IOTAProcessModule);
 begin
 
 end;
 
-procedure TDebuggerNotifier.ThreadCreated(Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadCreated(Thread: IOTAThread);
 var
-  AThreadReference:PThreadReference;
+  AThreadReference: PThreadReference;
 begin
-  AThreadReference:=FindThreadReference(Thread);
-  if (AThreadReference=nil) then
+  AThreadReference := FindThreadReference(Thread);
+  if (AThreadReference = nil) then
   begin
     New(AThreadReference);
-    AThreadReference.Thread:=Thread;
-    AThreadReference.ID:=Thread.AddNotifier(Self);
+    AThreadReference.Thread := Thread;
+    AThreadReference.ID := Thread.AddNotifier(Self);
     FThreadList.Add(AThreadReference);
   end;
 end;
 
-procedure TDebuggerNotifier.ThreadDestroyed(Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadDestroyed(Thread: IOTAThread);
 var
-  AThreadReference:PThreadReference;
+  AThreadReference: PThreadReference;
 begin
-  AThreadReference:=FindThreadReference(Thread);
-  if (AThreadReference<>nil) then
+  AThreadReference := FindThreadReference(Thread);
+  if (AThreadReference <> nil) then
   begin
     AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
     FThreadList.Remove(AThreadReference);
@@ -470,10 +505,9 @@ begin
   end;
 end;
 
-procedure TDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
+procedure TJclDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
-  if (Reason <> nrRunning) then
-    Owner.Refresh;
+  Owner.RefreshThreadContext(False);//Reason = nrRunning);
 end;
 
 end.

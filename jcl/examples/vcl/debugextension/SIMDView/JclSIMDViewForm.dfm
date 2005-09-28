@@ -1,9 +1,8 @@
 object JclSIMDViewFrm: TJclSIMDViewFrm
-  Left = 231
-  Top = 644
-  Width = 850
+  Left = 67
+  Top = 78
+  Width = 437
   Height = 305
-  Caption = ')'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +14,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter: TSplitter
-    Left = 784
+    Left = 371
     Top = 0
     Height = 278
     Align = alRight
@@ -23,7 +22,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
   object ListBoxRegs: TListBox
     Left = 0
     Top = 0
-    Width = 784
+    Width = 371
     Height = 278
     Style = lbOwnerDrawFixed
     Align = alClient
@@ -38,10 +37,10 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     PopupMenu = PopupMenuRegs
     TabOrder = 0
     OnDrawItem = ListBoxRegsDrawItem
-    OnMouseDown = ListBoxRegsMouseDown
+    OnMouseDown = ListBoxesMouseDown
   end
   object ListBoxMXCSR: TListBox
-    Left = 787
+    Left = 374
     Top = 0
     Width = 55
     Height = 278
@@ -58,12 +57,10 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     PopupMenu = PopupMenuMXCSR
     TabOrder = 1
     OnDrawItem = ListBoxMXCSRDrawItem
-    OnMouseDown = ListBoxMXCSRMouseDown
+    OnMouseDown = ListBoxesMouseDown
     OnMouseMove = ListBoxMXCSRMouseMove
   end
   object PopupMenuRegs: TPopupMenu
-    AutoPopup = False
-    OnPopup = PopupMenuRegsPopup
     Left = 64
     Top = 48
     object MenuItemDisplay: TMenuItem
@@ -126,15 +123,19 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
       end
     end
     object MenuItemModify: TMenuItem
-      Caption = '&Modify'
-      OnClick = MenuItemModifyClick
+      Action = ActionModify
+    end
+    object MenuItemEmptyMM: TMenuItem
+      Action = ActionEmpty
+    end
+    object MenuItemEmptyAll: TMenuItem
+      Action = ActionEmptyAll
     end
     object MenuItemSeparator2: TMenuItem
       Caption = '-'
     end
     object MenuItemStayOnTop: TMenuItem
-      Caption = '&Stay on top'
-      OnClick = MenuItemStayOnTopClick
+      Action = ActionStayOnTop
     end
     object MenuItemCpuInfo: TMenuItem
       Caption = 'CPU Informations...'
@@ -142,13 +143,40 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     end
   end
   object PopupMenuMXCSR: TPopupMenu
-    AutoPopup = False
-    Left = 800
+    Left = 384
     Top = 48
     object MenuItemComplement: TMenuItem
+      Action = ActionComplement
+    end
+  end
+  object ActionListOptions: TActionList
+    Left = 120
+    Top = 48
+    object ActionStayOnTop: TAction
+      Caption = '&Stay on top'
+      OnExecute = ActionStayOnTopExecute
+      OnUpdate = ActionStayOnTopUpdate
+    end
+    object ActionModify: TAction
+      Caption = '&Modify'
+      OnExecute = ActionModifyExecute
+      OnUpdate = ActionModifyUpdate
+    end
+    object ActionComplement: TAction
       Caption = '&Complement bit'
       ShortCut = 16468
-      OnClick = MenuItemComplementClick
+      OnExecute = ActionComplementExecute
+      OnUpdate = ActionComplementUpdate
+    end
+    object ActionEmpty: TAction
+      Caption = '&Empty MM register'
+      OnExecute = ActionEmptyExecute
+      OnUpdate = ActionEmptyUpdate
+    end
+    object ActionEmptyAll: TAction
+      Caption = 'Empty &all MM registers'
+      OnExecute = ActionEmptyAllExecute
+      OnUpdate = ActionEmptyAllUpdate
     end
   end
 end

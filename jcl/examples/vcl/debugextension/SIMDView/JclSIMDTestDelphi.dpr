@@ -1,26 +1,26 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: JvSIMDTest.dpr, released on 2004-10-11.                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{ [ouchet dott florent att laposte dott net]                                                       }
+{ All Rights Free.                                                                                 }
+{                                                                                                  }
+{ You may retrieve the latest version of this file at the Project JEDI's JCL home page,            }
+{ located at http://jcl.sourceforge.net                                                            }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSIMDTest.dpr, released on 2004-10-11.
-
-The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
-Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
-All Rights Reserved.
-
-Contributor(s): -
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------}
 // $Id$
 
 program JclSIMDTestDelphi;
@@ -67,12 +67,12 @@ begin
   // so you should view these registers has single values
     LEA      EAX,  Values
 {$IFDEF COMPILER6_UP}
-    movups   xmm0, [eax]      // moving Values to xmm0
-    addps    xmm0, xmm0       // xmm0 <- xmm0 + xmm0
-    movups   [eax], xmm0      // moving xmm0 to Values
+    movups   xmm0, [eax]       // moving Values into xmm0
+    addps    xmm0, xmm0        // xmm0 :- xmm0 + xmm0
+    movups   [eax], xmm0       // moving xmm0 into Values
 {$ELSE}
     DB       0Fh, 10h, 00h     // movups xmm0, [eax]
-    DB       0Fh, 58h, 0C0h     // addps xmm0, xmm0
+    DB       0Fh, 58h, 0C0h    // addps xmm0, xmm0
     DB       0Fh, 11h, 00h     // movups [eax], xmm0
 {$ENDIF}
   end;

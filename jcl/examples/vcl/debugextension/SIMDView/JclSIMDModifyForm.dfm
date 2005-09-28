@@ -84,6 +84,7 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     Width = 139
     Height = 25
     Caption = '&OK'
+    Default = True
     TabOrder = 3
     OnClick = ButtonOKClick
   end
@@ -92,6 +93,7 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     Top = 352
     Width = 139
     Height = 25
+    Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 4
