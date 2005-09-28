@@ -1,26 +1,27 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: JvSIMDUtils.pas, released on 2004-10-11.                                   }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{ [ouchet dott florent att laposte dott net]                                                       }
+{ Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.                        }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ You may retrieve the latest version of this file at the Project JEDI's JCL home page,            }
+{ located at http://jcl.sourceforge.net                                                            }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSIMDUtils.pas, released on 2004-10-11.
-
-The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
-Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
-All Rights Reserved.
-
-Contributor(s): -
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------}
 // $Id$
 
 unit JclSIMDUtils;
@@ -30,17 +31,18 @@ unit JclSIMDUtils;
 interface
 
 uses
-  Windows;
+  Windows,
+  JclSysInfo;
 
 resourcestring
-  RsSSE     = 'SSE';
+  RsSIMD    = 'SIMD';
   RsMMX     = 'MMX';
+  RsExMMX   = 'Ex MMX';
+  Rs3DNow   = '3DNow!';
+  RsEx3DNow = 'Ex 3DNow!';
   RsSSE1    = 'SSE1';
   RsSSE2    = 'SSE2';
   RsSSE3    = 'SSE3';
-  Rs3DNow   = '3DNow!';
-  RsExMMX   = 'Extensions to MMX';
-  RsEx3DNow = 'Extensions to 3DNow!';
   RsLong    = '64-bit Core';
 
   RsTrademarks = 'MMX is a trademark of Intel Corporation.'+#13+#10+
@@ -50,6 +52,12 @@ resourcestring
   RsNoSSE     = 'SSE are not supported on this processor';
   RsNo128SIMD = 'No 128-bit-register SIMD';
   RsNo64SIMD  = 'No 64-bit-register SIMD';
+  RsNotSupportedFormat = '<Unsupported format>';
+  RsNoPackedData = '<No packed data>';
+  RsFormCreateError = 'An exception was triggered while creating the debug window : ';
+  RsModifyMM = 'Modification of MM%d';
+  RsModifyXMM1 = 'Modification of XMM%d';
+  RsModifyXMM2 = 'Modification of XMM%.2d';
 
   RsVectorIE  = 'IE  ';
   RsVectorDE  = 'DE  ';
@@ -89,22 +97,24 @@ resourcestring
   RsRoundTowardZero = 'Round toward zero';
 
 type
-  TJclMMContentType = (mt8Bytes, mt4Words, mt2DWords);
+  TJclMMContentType = (mt8Bytes, mt4Words, mt2DWords, mt1QWord, mt2Singles);
 
   TJclMMRegister = packed record
     case TJclMMContentType of
-      mt8Bytes  : ( Bytes  : array [0..7] of Byte; );
-      mt4Words  : ( Words  : array [0..3] of Word; );
-      mt2DWords : ( DWords : array [0..1] of Cardinal; );
+      mt8Bytes   : ( Bytes: array [0..7] of Byte; );
+      mt4Words   : ( Words: array [0..3] of Word; );
+      mt2DWords  : ( DWords: array [0..1] of Cardinal; );
+      mt1QWord   : ( QWords: Int64; );
+      mt2Singles : ( Singles: array [0..1] of Single; );
   end;
 
-  TJclFPUContentType = (ftFloat, ftSimd);
+  TJclFPUContentType = (ftExtended, ftMM);
 
   TJclFPUData = packed record
     case TJclFPUContentType of
-      ftFloat : ( FloatValue : Extended; );
-      ftSimd  : ( MMRegister : TJclMMRegister;
-                  Reserved   : Word );
+      ftExtended : ( FloatValue : Extended; );
+      ftMM       : ( MMRegister : TJclMMRegister;
+                     Reserved   : Word );
   end;
 
   TJclFPURegister = packed record
@@ -136,45 +146,10 @@ type
       ps64Bits : ( LongXMM        : array [0..15] of TJclXMMRegister; );
   end;
 
-  TJclMXCSRBits = ( mbInvalidOperationException,  // = 0
-                    mbDenormalException,          // = 1
-                    mbDivideByZeroException,      // = 2
-                    mbOverflowException,          // = 3
-                    mbUnderflowException,         // = 4
-                    mbPrecisionException,         // = 5
-                    mbDenormalsAreZeros,          // = 6 (Only in Intel P4, Intel Xeon and AMD)
-                    mbInvalidOperationMask,       // = 7
-                    mbDenormalMask,               // = 8
-                    mbDivideByZeroMask,           // = 9
-                    mbOverflowMask,               // = 10
-                    mbUnderflowMask,              // = 11
-                    mbPrecisionMask,              // = 12
-                    mbRoundingControl1,           // = 13
-                    mbRoundingControl2,           // = 14
-                    mbFlushToZero,                // = 15
-                    mbReserved1,                  // = 16
-                    mbReserved2,                  // = 17
-                    mbReserved3,                  // = 18
-                    mbReserved4,                  // = 19
-                    mbReserved5,                  // = 20
-                    mbReserved6,                  // = 21
-                    mbReserved7,                  // = 22
-                    mbReserved8,                  // = 23
-                    mbReserved9,                  // = 24
-                    mbReserved10,                 // = 25
-                    mbReserved11,                 // = 26
-                    mbReserved12,                 // = 27
-                    mbReserved13,                 // = 28
-                    mbReserved14,                 // = 29
-                    mbReserved15,                 // = 30
-                    mbReserved16);                // = 31
-
-  TJclRoundingControl = (rcRoundToNearest,   //=0
-                         rcRoundDown,        //=1
-                         rcRoundUp,          //=2
-                         rcRoundTowardZero); //=3
-
-  TJclMXCSR = set of TJclMXCSRBits;
+  //TJclRoundingControl = (rcRoundToNearest,   //=0
+  //                       rcRoundDown,        //=1
+  //                       rcRoundUp,          //=2
+  //                       rcRoundTowardZero); //=3
 
   TJclVectorFrame = packed record
     FCW          : Word;                     // bytes from 0   to 1
@@ -188,8 +163,8 @@ type
     FpuDp        : Cardinal;                 // bytes from 16  to 19
     DS           : Word;                     // bytes from 20  to 21
     Reserved3    : Word;                     // bytes from 22  to 23
-    MXCSR        : TJclMXCSR;                // bytes from 24  to 27
-    MXCSRMask    : TJclMXCSR;                // bytes from 28  to 31
+    MXCSR        : Cardinal;                 // bytes from 24  to 27
+    MXCSRMask    : Cardinal;                 // bytes from 28  to 31
     FPURegisters : TJclFPURegisters;         // bytes from 32  to 159
     XMMRegisters : TJclXMMRegisters;         // bytes from 160 to 415
     Reserved4    : array [416..511] of Byte; // bytes from 416 to 512
@@ -202,37 +177,32 @@ type
 
   PJclContext = ^TJclContext;
 
-type
   TBitDescription = record
-    BitCount: 0..2;
-    ShortName: string;            // only if BitCount>0
-    LongName: string;             // only if BitCount>0
-    Names: array [0..3] of string // only if BitCount=2
+    AndMask: Cardinal;
+    Shifting: Cardinal;
+    ShortName: string;
+    LongName: string;  
   end;
 
+  TMXCSRRange = 0..14;
+
 const
-  MXCSRBitsDescription : array [mbInvalidOperationException..mbFlushToZero] of TBitDescription =
-    (
-      (BitCount:1; ShortName:RsVectorIE;  LongName:RsVectorIEText),   //mbInvalidOperationException
-      (BitCount:1; ShortName:RsVectorDE;  LongName:RsVectorDEText),   //mbDenormalException
-      (BitCount:1; ShortName:RsVectorZE;  LongName:RsVectorZEText),   //mbDivideByZeroException
-      (BitCount:1; ShortName:RsVectorOE;  LongName:RsVectorOEText),   //mbOverflowException
-      (BitCount:1; ShortName:RsVectorUE;  LongName:RsVectorUEText),   //mbUnderflowException
-      (BitCount:1; ShortName:RsVectorPE;  LongName:RsVectorPEText),   //mbPrecisionException
-      (BitCount:1; ShortName:RsVectorDAZ; LongName:RsVectorDAZText),  //mbDenormalsAreZeros
-      (BitCount:1; ShortName:RsVectorIM;  LongName:RsVectorIMText),   //mbInvalidOperationMask
-      (BitCount:1; ShortName:RsVectorDM;  LongName:RsVectorDMText),   //mbDenormalMask
-      (BitCount:1; ShortName:RsVectorZM;  LongName:RsVectorZMText),   //mbDivideByZeroMask
-      (BitCount:1; ShortName:RsVectorOM;  LongName:RsVectorOMText),   //mbOverflowMask
-      (BitCount:1; ShortName:RsVectorUM;  LongName:RsVectorUMText),   //mbUnderflowMask
-      (BitCount:1; ShortName:RsVectorPM;  LongName:RsVectorPMText),   //mbPrecisionMask
-      (BitCount:2; ShortName:RsVectorRC;  LongName:RsVectorRCText; Names:(RsRoundToNearest,
-                                                                          RsRoundDown,
-                                                                          RsRoundUp,
-                                                                          RsRoundTowardZero)), //mbRoundingControl1
-      (BitCount:0),                                                   //mbRoundingControl2
-      (BitCount:1; ShortName:RsVectorFZ;  LongName:RsVectorFZText)    //mbFlushToZero
-    );
+  MXCSRBitsDescriptions : array [TMXCSRRange] of TBitDescription =
+    ( (AndMask:MXCSR_IE ; Shifting: 0; ShortName:RsVectorIE;  LongName:RsVectorIEText),
+      (AndMask:MXCSR_DE ; Shifting: 1; ShortName:RsVectorDE;  LongName:RsVectorDEText),
+      (AndMask:MXCSR_ZE ; Shifting: 2; ShortName:RsVectorZE;  LongName:RsVectorZEText),
+      (AndMask:MXCSR_OE ; Shifting: 3; ShortName:RsVectorOE;  LongName:RsVectorOEText),
+      (AndMask:MXCSR_UE ; Shifting: 4; ShortName:RsVectorUE;  LongName:RsVectorUEText),
+      (AndMask:MXCSR_PE ; Shifting: 5; ShortName:RsVectorPE;  LongName:RsVectorPEText),
+      (AndMask:MXCSR_DAZ; Shifting: 6; ShortName:RsVectorDAZ; LongName:RsVectorDAZText),
+      (AndMask:MXCSR_IM ; Shifting: 7; ShortName:RsVectorIM;  LongName:RsVectorIMText),
+      (AndMask:MXCSR_DM ; Shifting: 8; ShortName:RsVectorDM;  LongName:RsVectorDMText),
+      (AndMask:MXCSR_ZM ; Shifting: 9; ShortName:RsVectorZM;  LongName:RsVectorZMText),
+      (AndMask:MXCSR_OM ; Shifting:10; ShortName:RsVectorOM;  LongName:RsVectorOMText),
+      (AndMask:MXCSR_UM ; Shifting:11; ShortName:RsVectorUM;  LongName:RsVectorUMText),
+      (AndMask:MXCSR_PM ; Shifting:12; ShortName:RsVectorPM;  LongName:RsVectorPMText),
+      (AndMask:MXCSR_RC ; Shifting:13; ShortName:RsVectorRC;  LongName:RsVectorRCText),
+      (AndMask:MXCSR_FZ ; Shifting:15; ShortName:RsVectorFZ;  LongName:RsVectorFZText) );
 
 type
   TJclSIMDValue = packed record
@@ -248,9 +218,10 @@ type
   TJclSIMDFormat = ( sfBinary, sfSigned, sfUnsigned, sfHexa );
 
 function FormatValue(Value:TJclSIMDValue; Format: TJclSIMDFormat):string;
-function ParseValue(const StringValue: string; var Value:TJclSIMDValue; Format: TJclSIMDFormat):Boolean;
-function ReplaceXMMRegisters(var Expression: string; Is64Bits: Boolean;
-  var XMMRegisters: TJclXMMRegisters): Boolean;
+function ParseValue(const StringValue: string; var Value:TJclSIMDValue;
+  Format: TJclSIMDFormat):Boolean;
+function ReplaceSIMDRegisters(var Expression: string; Is64Bits: Boolean;
+  var VectorFrame: TJclVectorFrame): Boolean;
 
 const
   CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $00000020;
@@ -271,7 +242,7 @@ function SetVectorContext(hThread: THandle; const VectorContext:TJclVectorFrame)
 implementation
 
 uses
-  SysUtils, Math, Dialogs;
+  SysUtils, Math;
 
 function FormatBinary(Value: TJclSIMDValue): string;
 var
@@ -284,7 +255,7 @@ begin
   for I:=1 to Width[Value.Display] do
   begin
     if (Value.ValueQWord and 1)<>0
-      then Result[Width[Value.Display]-I+1]:='1';
+      then Result[Width[Value.Display]-I+1] := '1';
     Value.ValueQWord:=Value.ValueQWord shr 1;
   end;
 end;
@@ -529,38 +500,39 @@ begin
   end;
 end;
 
-function ReplaceXMMRegisters(var Expression: string; Is64Bits: Boolean;
-  var XMMRegisters: TJclXMMRegisters): Boolean;
+function ReplaceSIMDRegisters(var Expression: string; Is64Bits: Boolean;
+  var VectorFrame: TJclVectorFrame): Boolean;
 var
   LocalString: string;
-  XMMPosition: Integer;
+  RegisterPosition: Integer;
   DataPosition: Integer;
   DataType: string;
   Index: Integer;
   RegisterIndex: Integer;
   DataIndex: Integer;
   ErrorCode: Integer;
-  NumberOfRegister: Integer;
+  NumberOfXMMRegister: Integer;
   AValue: TJclSIMDValue;
   ValueStr: string;
   OldLength: Integer;
 begin
   if (Is64Bits) then
-    NumberOfRegister := 16
-  else NumberOfRegister := 8;
+    NumberOfXMMRegister := 16
+  else
+    NumberOfXMMRegister := 8;
   Result := False;
   LocalString := AnsiUpperCase(Expression);
-  XMMPosition := AnsiPos('XMM',LocalString);
-  while (XMMPosition > 0) do
+
+  RegisterPosition := AnsiPos('XMM',LocalString);
+  while (RegisterPosition > 0) do
   begin
-    for Index := XMMPosition to Length(LocalString) do
+    for Index := RegisterPosition to Length(LocalString) do
       if (LocalString[Index] = '.') then
         Break;
     if (Index >= Length(LocalString)) then
       Exit;
-    Val(Copy(LocalString,XMMPosition+3,Index-XMMPosition-3),RegisterIndex,ErrorCode);
-    if   (ErrorCode<>0) or (RegisterIndex<0)
-      or (RegisterIndex>=NumberOfRegister) then
+    Val(Copy(LocalString,RegisterPosition+3,Index-RegisterPosition-3),RegisterIndex,ErrorCode);
+    if   (ErrorCode<>0) or (RegisterIndex<0) or (RegisterIndex>=NumberOfXMMRegister) then
       Exit;
 
     DataPosition := Index + 1;
@@ -586,57 +558,139 @@ begin
       if (DataIndex >= 16) then
         Exit;
       AValue.Display := xt16Bytes;
-      AValue.ValueByte := XMMRegisters.LongXMM[RegisterIndex].Bytes[DataIndex];
+      AValue.ValueByte := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Bytes[DataIndex];
     end else if (CompareStr(DataType,'WORD') = 0) then
     begin
       if (DataIndex >= 8) then
         Exit;
       AValue.Display := xt8Words;
-      AValue.ValueWord := XMMRegisters.LongXMM[RegisterIndex].Words[DataIndex];
+      AValue.ValueWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Words[DataIndex];
     end else if (CompareStr(DataType,'DWORD') = 0) then
     begin
       if (DataIndex >= 4) then
         Exit;
       AValue.Display := xt4DWords;
-      AValue.ValueDWord := XMMRegisters.LongXMM[RegisterIndex].DWords[DataIndex];
+      AValue.ValueDWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].DWords[DataIndex];
     end else if (CompareStr(DataType,'QWORD') = 0) then
     begin
       if (DataIndex >= 2) then
         Exit;
       AValue.Display := xt2QWords;
-      AValue.ValueQWord := XMMRegisters.LongXMM[RegisterIndex].QWords[DataIndex];
+      AValue.ValueQWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].QWords[DataIndex];
     end else if (CompareStr(DataType,'SINGLE') = 0) then
     begin
       if (DataIndex >= 4) then
         Exit;
       AValue.Display := xt4Singles;
-      AValue.ValueSingle := XMMRegisters.LongXMM[RegisterIndex].Singles[DataIndex];
+      AValue.ValueSingle := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Singles[DataIndex];
     end else if (CompareStr(DataType,'DOUBLE') = 0) then
     begin
       if (DataIndex >= 2) then
         Exit;
       AValue.Display := xt2Doubles;
-      AValue.ValueDouble := XMMRegisters.LongXMM[RegisterIndex].Doubles[DataIndex];
+      AValue.ValueDouble := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Doubles[DataIndex];
     end else Exit;
     ValueStr := Trim(FormatValue(AValue,sfSigned));
     if (DecimalSeparator <> '.') then
       ValueStr := StringReplace(ValueStr,DecimalSeparator,'.',[rfReplaceAll, rfIgnoreCase]);
-    if (Length(ValueStr) >= (Index-XMMPosition)) then
+    if (Length(ValueStr) >= (Index-RegisterPosition)) then
     begin
       OldLength := Length(Expression);
-      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-XMMPosition));
-      if (Length(ValueStr)>(Index-XMMPosition)) then
-        Move(Expression[Index],Expression[XMMPosition+Length(ValueStr)],OldLength-Index+1);
-      Move(ValueStr[1],Expression[XMMPosition],Length(ValueStr));
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-RegisterPosition));
+      if (Length(ValueStr)>(Index-RegisterPosition)) then
+        Move(Expression[Index],Expression[RegisterPosition+Length(ValueStr)],OldLength-Index+1);
+      Move(ValueStr[1],Expression[RegisterPosition],Length(ValueStr));
     end else
     begin
-      Move(ValueStr[1],Expression[XMMPosition],Length(ValueStr));
-      Move(Expression[Index],Expression[XMMPosition+Length(ValueStr)],Length(Expression)-Index+1);
-      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-XMMPosition));
+      Move(ValueStr[1],Expression[RegisterPosition],Length(ValueStr));
+      Move(Expression[Index],Expression[RegisterPosition+Length(ValueStr)],Length(Expression)-Index+1);
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-RegisterPosition));
     end;
     LocalString := AnsiUpperCase(Expression);
-    XMMPosition := AnsiPos('XMM',LocalString);
+    RegisterPosition := AnsiPos('XMM',LocalString);
   end;
+
+  RegisterPosition := AnsiPos('MM',LocalString);
+  while (RegisterPosition > 0) do
+  begin
+    for Index := RegisterPosition to Length(LocalString) do
+      if (LocalString[Index] = '.') then
+        Break;
+    if (Index >= Length(LocalString)) then
+      Exit;
+    Val(Copy(LocalString,RegisterPosition+2,Index-RegisterPosition-2),RegisterIndex,ErrorCode);
+    if   (ErrorCode<>0) or (RegisterIndex<0) or (RegisterIndex>=8) then
+      Exit;
+
+    DataPosition := Index + 1;
+    if (DataPosition > Length(LocalString)) then
+      Exit;
+    for Index := DataPosition to Length(LocalString) do
+      if (LocalString[Index] in ['0'..'9']) then
+        Break;
+    if (Index > Length(LocalString)) then
+      Exit;
+    DataType := Copy(LocalString,DataPosition,Index-DataPosition);
+
+    DataPosition := Index;
+    for Index := DataPosition to Length(LocalString) do
+      if not (LocalString[Index] in ['0'..'9']) then
+        Break;
+    Val(Copy(LocalString,DataPosition,Index-DataPosition),DataIndex,ErrorCode);
+    if (ErrorCode<>0) or (DataIndex<0) then
+      Exit;
+
+    if (CompareStr(DataType,'BYTE') = 0) then
+    begin
+      if (DataIndex >= 8) then
+        Exit;
+      AValue.Display := xt16Bytes;
+      AValue.ValueByte := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Bytes[DataIndex];
+    end else if (CompareStr(DataType,'WORD') = 0) then
+    begin
+      if (DataIndex >= 4) then
+        Exit;
+      AValue.Display := xt8Words;
+      AValue.ValueWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Words[DataIndex];
+    end else if (CompareStr(DataType,'DWORD') = 0) then
+    begin
+      if (DataIndex >= 2) then
+        Exit;
+      AValue.Display := xt4DWords;
+      AValue.ValueDWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.DWords[DataIndex];
+    end else if (CompareStr(DataType,'QWORD') = 0) then
+    begin
+      if (DataIndex >= 1) then
+        Exit;
+      AValue.Display := xt2QWords;
+      AValue.ValueQWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.QWords;
+    end else if (CompareStr(DataType,'SINGLE') = 0) then
+    begin
+      if (DataIndex >= 2) then
+        Exit;
+      AValue.Display := xt4Singles;
+      AValue.ValueSingle := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Singles[DataIndex];
+    end else Exit;
+    ValueStr := Trim(FormatValue(AValue,sfSigned));
+    if (DecimalSeparator <> '.') then
+      ValueStr := StringReplace(ValueStr,DecimalSeparator,'.',[rfReplaceAll, rfIgnoreCase]);
+    if (Length(ValueStr) >= (Index-RegisterPosition)) then
+    begin
+      OldLength := Length(Expression);
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-RegisterPosition));
+      if (Length(ValueStr)>(Index-RegisterPosition)) then
+        Move(Expression[Index],Expression[RegisterPosition+Length(ValueStr)],OldLength-Index+1);
+      Move(ValueStr[1],Expression[RegisterPosition],Length(ValueStr));
+    end else
+    begin
+      Move(ValueStr[1],Expression[RegisterPosition],Length(ValueStr));
+      Move(Expression[Index],Expression[RegisterPosition+Length(ValueStr)],Length(Expression)-Index+1);
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-RegisterPosition));
+    end;
+    LocalString := AnsiUpperCase(Expression);
+    RegisterPosition := AnsiPos('MM',LocalString);
+  end;
+  
   Result := True;
 end;
 
@@ -654,37 +708,72 @@ var
   JvContext: PJclContext;
 begin
   GetMem(ContextMemory,sizeof(TJclContext)+15);
-  if ((Cardinal(ContextMemory) and 15)<>0) then
-    JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
-  else JvContext := ContextMemory;
-  JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-  Result :=    GetThreadContext(hThread,JvContext^)
-           and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
-  if (Result) then
-    VectorContext := JvContext^.VectorContext
-  else FillChar(VectorContext,sizeof(VectorContext),0);
-  FreeMem(ContextMemory);
+  try
+    if ((Cardinal(ContextMemory) and 15)<>0) then
+      JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+    else
+      JvContext := ContextMemory;
+    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+    Result :=    GetThreadContext(hThread,JvContext^)
+             and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+    if (Result) then
+      VectorContext := JvContext^.VectorContext
+    else
+      FillChar(VectorContext,sizeof(VectorContext),0);
+  finally
+    FreeMem(ContextMemory);
+  end;
 end;
 
 function SetVectorContext(hThread: THandle; const VectorContext:TJclVectorFrame): Boolean;
+{const
+  CONTEXT_FLAGS =    CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS
+                  or CONTEXT_FLOATING_POINT or CONTEXT_EXTENDED_REGISTERS;
 var
   ContextMemory: Pointer;
-  JvContext:PJclContext;
+  JvContext: PJclContext;
+  Index: Integer;
 begin
   GetMem(ContextMemory,sizeof(TJclContext)+15);
-  if ((Cardinal(ContextMemory) and 15)<>0) then
-    JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
-  else JvContext := ContextMemory;
-  JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-  Result :=    GetThreadContext(hThread,JvContext^)
-           and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
-  if (Result) then
-  begin
-    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    JvContext^.VectorContext := VectorContext;
-    Result := SetThreadContext(hThread,JvContext^);
+  try
+    if ((Cardinal(ContextMemory) and 15)<>0) then
+      JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+    else
+      JvContext := ContextMemory;
+    JvContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
+    Result :=    GetThreadContext(hThread,JvContext^)
+             and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_FLAGS) = CONTEXT_FLAGS);
+    if (Result) then
+    begin
+      JvContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
+      JvContext^.VectorContext := VectorContext;
+      for Index := 0 to 7 do
+        Move(VectorContext.FPURegisters[Index].Data.FloatValue,JvContext^.ScalarContext.FloatSave.RegisterArea[Index*SizeOf(Extended)],SizeOf(Extended));
+      Result := SetThreadContext(hThread,JvContext^);
+    end;
+  finally
+    FreeMem(ContextMemory);
   end;
-  FreeMem(ContextMemory);
+end;}
+var
+  ContextMemory: Pointer;
+  JvContext: PJclContext;
+  Index: Integer;
+begin
+  GetMem(ContextMemory,sizeof(TJclContext)+15);
+  try
+    if ((Cardinal(ContextMemory) and 15)<>0) then
+      JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+    else
+      JvContext := ContextMemory;
+    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+    Result :=    GetThreadContext(hThread,JvContext^)
+             and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
+    if (Result) then
+      Result := SetThreadContext(hThread,JvContext^);
+  finally
+    FreeMem(ContextMemory);
+  end;
 end;
 
 end.
