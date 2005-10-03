@@ -758,7 +758,6 @@ end;}
 var
   ContextMemory: Pointer;
   JvContext: PJclContext;
-  Index: Integer;
 begin
   GetMem(ContextMemory,sizeof(TJclContext)+15);
   try
