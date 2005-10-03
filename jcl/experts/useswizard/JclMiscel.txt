@@ -1,0 +1,12 @@
+CreateProcAsUser
+CreateProcAsUserEx
+EJclCreateProcessError
+ExitWindows
+LogOffOS
+PowerOffOS
+RebootOS
+SetDisplayResolution
+ShutDownOS
+WinExec32
+WinExec32AndRedirectOutput
+WinExec32AndWait

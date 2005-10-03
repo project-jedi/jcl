@@ -1,0 +1,16 @@
+GetServiceStatusByName
+GetServiceStatusWaitingIfPending
+StartServiceByName
+StopServiceByName
+TJclNtService
+TJclSCManager
+TJclServiceControlAccepted
+TJclServiceControlAccepteds
+TJclServiceErrorControlType
+TJclServiceGroup
+TJclServiceSortOrderType
+TJclServiceStartType
+TJclServiceState
+TJclServiceStates
+TJclServiceType
+TJclServiceTypes

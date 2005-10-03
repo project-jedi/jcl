@@ -1,0 +1,4 @@
+EJclCounterError
+StartCount
+StopCount
+TJclCounter

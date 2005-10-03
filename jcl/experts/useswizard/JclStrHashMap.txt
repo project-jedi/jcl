@@ -1,0 +1,14 @@
+CaseSensitiveTraits
+DataHash
+EJclStringHashMapError
+Iterate_Dispose
+Iterate_FreeMem
+Iterate_FreeObjects
+StrHash
+TCaseInsensitiveTraits
+TCaseSensitiveTraits
+TextHash
+THashNode
+TIterateMethod
+TStringHashMap
+TStringHashMapTraits
