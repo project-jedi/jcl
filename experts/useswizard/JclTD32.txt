@@ -1,0 +1,10 @@
+TJclGlobalProcSymbolInfo
+TJclLineInfo
+TJclLocalProcSymbolInfo
+TJclModuleInfo
+TJclPeBorTD32Image
+TJclProcSymbolInfo
+TJclSourceModuleInfo
+TJclSymbolInfo
+TJclTD32InfoParser
+TJclTD32InfoScanner
