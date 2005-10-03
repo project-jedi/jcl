@@ -49,7 +49,7 @@ type
 
   TJclDebuggerNotifier = class;
 
-  TJclSIMDWizard = class (TJclOTAExpert)
+  TJclSIMDWizard = class(TJclOTAExpert)
   private
     FDebuggerServices: IOTADebuggerServices;
     FIndex: Integer;
@@ -79,25 +79,25 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TJclDebuggerNotifier = class (TNotifierObject,IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
                              IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
     FThreadList: TList;
-    function FindProcessReference (AProcess:IOTAProcess): PProcessReference;
-    function FindThreadReference (AThread:IOTAThread): PThreadReference;
+    function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
+    function FindThreadReference(AThread:IOTAThread): PThreadReference;
   public
     // IOTADebuggerNotifier
-    procedure ProcessCreated(Process: IOTAProcess);
-    procedure ProcessDestroyed(Process: IOTAProcess);
-    procedure BreakpointAdded(Breakpoint: IOTABreakpoint);
-    procedure BreakpointDeleted(Breakpoint: IOTABreakpoint);
+    procedure ProcessCreated({$IFDEF COMPILER9_UP}const{$ENDIF} Process: IOTAProcess);
+    procedure ProcessDestroyed({$IFDEF COMPILER9_UP}const{$ENDIF} Process: IOTAProcess);
+    procedure BreakpointAdded({$IFDEF COMPILER9_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+    procedure BreakpointDeleted({$IFDEF COMPILER9_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
     // IOTAProcessNotifier
-    procedure ThreadCreated(Thread: IOTAThread);
-    procedure ThreadDestroyed(Thread: IOTAThread);
-    procedure ProcessModuleCreated(ProcessModule: IOTAProcessModule);
-    procedure ProcessModuleDestroyed(ProcessModule: IOTAProcessModule);
+    procedure ThreadCreated({$IFDEF COMPILER9_UP}const{$ENDIF} Thread: IOTAThread);
+    procedure ThreadDestroyed({$IFDEF COMPILER9_UP}const{$ENDIF} Thread: IOTAThread);
+    procedure ProcessModuleCreated({$IFDEF COMPILER9_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
+    procedure ProcessModuleDestroyed({$IFDEF COMPILER9_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
     // IOTAThreadNotifier
     procedure ThreadNotify(Reason: TOTANotifyReason);
     procedure EvaluteComplete(const ExprStr, ResultStr: string;
@@ -127,6 +127,24 @@ begin
 end;
 
 { TJclSIMDWizard }
+
+constructor TJclSIMDWizard.Create;
+begin
+  FCpuInfoValid := False;
+  FForm:=nil;
+
+  inherited Create;
+end;
+
+destructor TJclSIMDWizard.Destroy;
+begin
+  DebuggerServices.RemoveNotifier(FIndex);
+  //FreeAndNil(FDebuggerNotifier);   // Buggy !!!!
+  FreeAndNil(FForm);
+  FDebuggerServices := nil;
+
+  inherited Destroy;
+end;
 
 procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
@@ -197,14 +215,6 @@ begin
   Result := FCpuInfo;
 end;
 
-constructor TJclSIMDWizard.Create;
-begin
-  FCpuInfoValid := False;
-  FForm:=nil;
-
-  inherited Create;
-end;
-
 procedure TJclSIMDWizard.RegisterCommands;
 var
   I: Integer;
@@ -265,16 +275,6 @@ begin
   FreeAndNil(FIcon);
   FreeAndNil(FSIMDMenuItem);
   FreeAndNil(FSIMDAction);
-end;
-
-destructor TJclSIMDWizard.Destroy;
-begin
-  DebuggerServices.RemoveNotifier(FIndex);
-  //FreeAndNil(FDebuggerNotifier);   // Buggy !!!!
-  FreeAndNil(FForm);
-  FDebuggerServices := nil;
-
-  inherited Destroy;
 end;
 
 procedure TJclSIMDWizard.FormDestroy(Sender: TObject);
@@ -338,16 +338,6 @@ end;
 
 { TJclDebuggerNotifier }
 
-procedure TJclDebuggerNotifier.BreakpointAdded(Breakpoint: IOTABreakpoint);
-begin
-
-end;
-
-procedure TJclDebuggerNotifier.BreakpointDeleted(Breakpoint: IOTABreakpoint);
-begin
-
-end;
-
 constructor TJclDebuggerNotifier.Create(AOwner: TJclSIMDWizard);
 begin
   inherited Create;
@@ -380,6 +370,16 @@ begin
   FProcessList.Free;
 
   inherited Destroy;
+end;
+
+procedure TJclDebuggerNotifier.BreakpointAdded({$IFDEF COMPILER9_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+begin
+
+end;
+
+procedure TJclDebuggerNotifier.BreakpointDeleted({$IFDEF COMPILER9_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+begin
+
 end;
 
 procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr,
@@ -423,7 +423,7 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessCreated(Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessCreated({$IFDEF COMPILER9_UP}const{$ENDIF} Process: IOTAProcess);
 var
   AProcessReference: PProcessReference;
 begin
@@ -437,7 +437,7 @@ begin
   end;
 end;
 
-procedure TJclDebuggerNotifier.ProcessDestroyed(Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessDestroyed({$IFDEF COMPILER9_UP}const{$ENDIF} Process: IOTAProcess);
 var
   AProcessReference: PProcessReference;
   AThreadReference: PThreadReference;
@@ -467,18 +467,18 @@ begin
 end;
 
 procedure TJclDebuggerNotifier.ProcessModuleCreated(
-  ProcessModule: IOTAProcessModule);
+  {$IFDEF COMPILER9_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;
 
 procedure TJclDebuggerNotifier.ProcessModuleDestroyed(
-  ProcessModule: IOTAProcessModule);
+  {$IFDEF COMPILER9_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;
 
-procedure TJclDebuggerNotifier.ThreadCreated(Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadCreated({$IFDEF COMPILER9_UP}const{$ENDIF} Thread: IOTAThread);
 var
   AThreadReference: PThreadReference;
 begin
@@ -492,7 +492,7 @@ begin
   end;
 end;
 
-procedure TJclDebuggerNotifier.ThreadDestroyed(Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadDestroyed({$IFDEF COMPILER9_UP}const{$ENDIF} Thread: IOTAThread);
 var
   AThreadReference: PThreadReference;
 begin
