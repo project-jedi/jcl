@@ -1258,28 +1258,29 @@ procedure TJclDCC.SaveOptionsToFile(const ConfigFileName: string);
 
   function IsPathOption(const S: string; out Len: Integer): Boolean;
   begin
-    case UpCase(S[2]) of
-      'E', 'I', 'O', 'R', 'U':
-        begin
-          Result := True;
-          Len := 2;
-        end;
-      'L':
-        begin
-          Result := UpCase(S[3]) in ['E', 'N'];
-          Len := 3;
-        end;
-      'N':
-        begin
-          Result := True;
-          if S[3] in ['0'..'9'] then
-            Len := 3
-          else
+    Result := False;
+    if Length(S) >= 2 then
+      case UpCase(S[2]) of
+        'E', 'I', 'O', 'R', 'U':
+          begin
+            Result := True;
             Len := 2;
-        end;
-    else
-      Result := False;
-    end;
+          end;
+        'L':
+          if Length(S) >= 3 then
+          begin
+            Result := UpCase(S[3]) in ['E', 'N'];
+            Len := 3;
+          end;
+        'N':
+          begin
+            Result := True;
+            if (Length(S) >= 3) and (S[3] in ['0'..'9']) then
+              Len := 3
+            else
+              Len := 2;
+          end;
+      end;
   end;
 
 var
@@ -2615,6 +2616,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.45  2005/10/04 04:22:48  rrossmair
+// - saved local function TJclDCC.SaveOptionsToFile.IsPathOption
+//
 // Revision 1.44  2005/08/07 13:22:09  outchy
 // IT3116: Added REG_EXPAND_SZ and REG_BINARY to the list of valid keys.
 //
