@@ -371,14 +371,14 @@
 
 {$IFDEF BORLAND}
   {$IFDEF KYLIX}
-    {$I kylix.inc // FPC incompatible stuff }
+    {$I kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
 
     {$IFDEF VER170}
       {$DEFINE BDS3}
       {$DEFINE COMPILER9}
       {$DEFINE DELPHI9}
-      {$DEFINE DELPHI2005 // synonym to DELPHI9 }
+      {$DEFINE DELPHI2005} // synonym to DELPHI9
       {$DEFINE DELPHICOMPILER9}
       {$DEFINE RTL170_UP}
     {$ENDIF}
@@ -485,7 +485,7 @@
 {------------------------------------------------------------------------------}
 
 {$IFDEF DELPHI9}
-  {$DEFINE DELPHI2005_UP // synonym to DELPHI9_UP }
+  {$DEFINE DELPHI2005_UP} // synonym to DELPHI9_UP
   {$DEFINE DELPHI9_UP}
   {$DEFINE DELPHI8_UP}
   {$DEFINE DELPHI7_UP}
@@ -995,7 +995,7 @@
 {$ENDIF}
 
 {$IFDEF WIN32}
-  {$DEFINE MSWINDOWS // predefined for D6+/BCB6+ }
+  {$DEFINE MSWINDOWS} // predefined for D6+/BCB6+
   {$DEFINE Win32API}
 {$ENDIF}
 
@@ -1014,11 +1014,11 @@
   {$ENDIF ~CONSOLE}
 
   {$IFDEF VisualCLX}
-    {$DEFINE COMPLIB_CLX // kept for backward compatibility, use VisualCLX instead }
+    {$DEFINE COMPLIB_CLX} // kept for backward compatibility, use VisualCLX instead
   {$ENDIF}
 
   {$IFDEF VCL}
-    {$DEFINE COMPLIB_VCL // kept for backward compatibility, use VCL instead }
+    {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
   {$ENDIF}
 {$ENDIF DELPHILANGUAGE}
 
@@ -1061,6 +1061,9 @@
 // History:
 
 // $Log$
+// Revision 1.27  2005/10/12 21:18:43  ahuser
+// Moved comments out of the compiler directives.
+//
 // Revision 1.26  2005/09/03 15:46:42  marquardt
 // new SUPPORTS_ added to description section
 //
