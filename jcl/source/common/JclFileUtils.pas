@@ -22,6 +22,7 @@
 {   Azret Botash                                                                                   }
 {   Charlie Calvert                                                                                }
 {   David Hervieux                                                                                 }
+{   Florent Ouchet (outchy)                                                                        }
 {   Jeff                                                                                           }
 {   Jens Fudickar (jfudickar)                                                                      }
 {   JohnML                                                                                         }
@@ -2198,14 +2199,16 @@ begin
     Result := (Path[1] = PathSeparator);
     {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
-    I := 0;
-    if PathIsUnc(Path) then
-      I := Length(PathUncPrefix)
+    if not PathIsUnc(Path) then
+    begin
+      I := 0;
+      if PathIsDiskDevice(Path) then
+        I := Length(PathDevicePrefix);
+      Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
+        (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
+    end
     else
-    if PathIsDiskDevice(Path) then
-      I := Length(PathDevicePrefix);
-    Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
-      (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
+      Result := True;
     {$ENDIF MSWINDOWS}
   end;
 end;
@@ -5841,6 +5844,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.53  2005/10/12 12:39:45  outchy
+// Fixed PathIsAbsolute on UNC paths (reported by Robert Kindl)
+//
 // Revision 1.52  2005/09/17 23:33:13  outchy
 // IT3164: multiple masks in BuildFileList
 //
