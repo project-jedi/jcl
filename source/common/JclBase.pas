@@ -155,7 +155,7 @@ type
 // Redefinition of PByteArray to avoid range check exceptions.
 type
   TJclByteArray = array[0..MaxInt div SizeOf(Byte) - 1] of Byte;
-  PJclByteArray = ^TByteArray;
+  PJclByteArray = ^TJclByteArray;
 
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
 type
@@ -469,6 +469,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.43  2005/10/12 04:25:47  rrossmair
+// - fixed issue #3255 (error in PJclByteArray declaration)
+//
 // Revision 1.42  2005/09/11 11:28:25  ahuser
 // typo
 //
