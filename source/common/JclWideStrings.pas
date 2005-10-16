@@ -212,22 +212,24 @@ function WideCharToChar(Ch: WideChar): AnsiChar;
 procedure MoveWideChar(const Source; var Dest; Count: Integer);
 
 function StrAllocW(WideSize: Cardinal): PWideChar;
-function StrNewW(const S: WideString): PWideChar;
-procedure StrDisposeW(var P: PWideChar);
-function StrLICompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrLICompW2(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrCompW(S1, S2: PWideChar): Integer;
-function StrLCompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrIComp(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrPosW(S, SubStr: PWideChar): PWideChar;
-function StrLenW(P: PWideChar): Integer;
-function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
-function StrEndW(P: PWideChar): PWideChar;
-function StrCopyW(Dest, Source: PWideChar): PWideChar;
-function StrECopyW(Dest, Source: PWideChar): PWideChar;
-function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrCatW(Dest, Source: PWideChar): PWideChar;
-function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrNewW(const S: PWideChar): PWideChar; overload;
+function StrNewW(const S: WideString): PWideChar; overload;
+procedure StrDisposeW(P: PWideChar);
+procedure StrDisposeAndNilW(var P: PWideChar);
+function StrLICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW2(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrCompW(const S1, S2: PWideChar): Integer;
+function StrLCompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrPosW(const S, SubStr: PWideChar): PWideChar;
+function StrLenW(const P: PWideChar): Integer;
+function StrScanW(const P: PWideChar; Ch: WideChar): PWideChar;
+function StrEndW(const P: PWideChar): PWideChar;
+function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
 function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
 function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
@@ -270,11 +272,12 @@ uses
 {$ENDIF BORLAND}
 
 {$IFDEF RTL130_DOWN // Delphi 5 Math unit has no Sign function }
-function Sign(A: Integer): Integer;
+function Sign(const A: Integer): Integer;
 begin
   if A < 0 then
     Result := -1
-  else if A > 0 then
+  else
+  if A > 0 then
     Result := 1
   else
     Result := 0;
@@ -328,24 +331,32 @@ begin
     Result := nil;
 end;
 
-function StrNewW(const S: WideString): PWideChar;
+function StrNewW(const S: PWideChar): PWideChar;
 begin
-  Result := nil;
-  if S <> '' then
-  begin
-    Result := StrAllocW(Length(S) + 1);
-    MoveWideChar(S[1], Result^, Length(S));
-  end;
+  Result := StrAllocW(StrLenW(S) + 1);
+  if S <> nil then
+    MoveWideChar(S^, Result^, StrLenW(S));
 end;
 
-procedure StrDisposeW(var P: PWideChar);
+function StrNewW(const S: WideString): PWideChar;
+begin
+  Result := StrNewW(PWideChar(S));
+end;
+
+procedure StrDisposeW(P: PWideChar);
+begin
+  if P <> nil then
+    FreeMem(P);
+end;
+
+procedure StrDisposeAndNilW(var P: PWideChar);
 begin
   if P <> nil then
     FreeMem(P);
   P := nil;
 end;
 
-function StrLICompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
   P1, P2: WideString;
 begin
@@ -354,7 +365,7 @@ begin
   Result := WideCompareText(P1, P2);
 end;
 
-function StrLICompW2(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW2(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
   P1, P2: WideString;
 begin
@@ -364,9 +375,10 @@ begin
   Result := WideCompareText(P1, P2);
 end;
 
-function StrCompW(S1, S2: PWideChar): Integer;
+function StrCompW(const S1, S2: PWideChar): Integer;
 var
   NullWide: WideChar;
+  SA, SB: PWideChar;
 begin
   Result := 0;
   if S1 = S2 then // "equal" and "nil" case
@@ -374,21 +386,25 @@ begin
   NullWide := #0;
 
   if S1 = nil then
-    S1 := @NullWide
+    SA := @NullWide
   else
+    SA := S1;
   if S2 = nil then
-    S2 := @NullWide;
-  while (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
+    SB := @NullWide
+  else
+    SB := S2;
+  while (SA^ = SB^) and (SA^ <> #0) and (SB^ <> #0) do
   begin
-    Inc(S1);
-    Inc(S2);
+    Inc(SA);
+    Inc(SB);
   end;
-  Result := Sign(Integer(S1^) - Integer(S2^));
+  Result := Sign(Integer(SA^) - Integer(SB^));
 end;
 
-function StrLCompW(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLCompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 var
   NullWide: WideChar;
+  SA, SB: PWideChar;
 begin
   Result := 0;
   if S1 = S2 then // "equal" and "nil" case
@@ -396,49 +412,31 @@ begin
   NullWide := #0;
 
   if S1 = nil then
-    S1 := @NullWide
+    SA := @NullWide
   else
+    SA := S1;
   if S2 = nil then
-    S2 := @NullWide;
-  while (MaxLen > 0) and (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
+    SB := @NullWide
+  else
+    SB := S2;
+  while (MaxLen > 0) and (SA^ = SB^) and (SA^ <> #0) and (SB^ <> #0) do
   begin
-    Inc(S1);
-    Inc(S2);
+    Inc(SA);
+    Inc(SB);
     Dec(MaxLen);
   end;
   if MaxLen > 0 then
-    Result := Sign(Integer(S1^) - Integer(S2^))
+    Result := Sign(Integer(SA^) - Integer(SB^))
   else
     Result := 0;
 end;
 
-function StrIComp(S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-var
-  NullWide: WideChar;
+function StrICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
 begin
-  Result := 0;
-  if S1 = S2 then // "equal" and "nil" case
-    Exit;
-  NullWide := #0;
-
-  if S1 = nil then
-    S1 := @NullWide
-  else
-  if S2 = nil then
-    S2 := @NullWide;
-  while (MaxLen > 0) and (S1^ = S2^) and (S1^ <> #0) and (S2^ <> #0) do
-  begin
-    Inc(S1);
-    Inc(S2);
-    Dec(MaxLen);
-  end;
-  if MaxLen > 0 then
-    Result := Sign(Integer(S1^) - Integer(S2^))
-  else
-    Result := 0;
+  Result := StrLICompW(S1, S2, Max(StrLenW(S1), StrLenW(S2)));
 end;
 
-function StrPosW(S, SubStr: PWideChar): PWideChar;
+function StrPosW(const S, SubStr: PWideChar): PWideChar;
 var
   P: PWideChar;
   I: Integer;
@@ -469,7 +467,7 @@ begin
   Result := nil;
 end;
 
-function StrLenW(P: PWideChar): Integer;
+function StrLenW(const P: PWideChar): Integer;
 begin
   Result := 0;
   if P <> nil then
@@ -477,19 +475,19 @@ begin
       Inc(Result);
 end;
 
-function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
+function StrScanW(const P: PWideChar; Ch: WideChar): PWideChar;
 begin
   Result := P;
   if Result <> nil then
   begin
     while (Result^ <> #0) and (Result^ <> Ch) do
       Inc(Result);
-    if Result^ = #0 then
+    if (Result^ = #0) and (Ch <> #0) then
       Result := nil;
   end;
 end;
 
-function StrEndW(P: PWideChar): PWideChar;
+function StrEndW(const P: PWideChar): PWideChar;
 begin
   Result := P;
   if Result <> nil then
@@ -497,31 +495,37 @@ begin
       Inc(Result);
 end;
 
-function StrCopyW(Dest, Source: PWideChar): PWideChar;
+function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+var
+  Src: PWideChar;
 begin
   Result := Dest;
   if Dest <> nil then
   begin
-    if Source <> nil then
-      while Source^ <> #0 do
+    Src := Source;
+    if Src <> nil then
+      while Src^ <> #0 do
       begin
-        Dest^ := Source^;
-        Inc(Source);
+        Dest^ := Src^;
+        Inc(Src);
         Inc(Dest);
       end;
     Dest^ := #0;
   end;
 end;
 
-function StrECopyW(Dest, Source: PWideChar): PWideChar;
+function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+var
+  Src: PWideChar;
 begin
   if Dest <> nil then
   begin
-    if Source <> nil then
-      while Source^ <> #0 do
+    Src := Source;
+    if Src <> nil then
+      while Src^ <> #0 do
       begin
-        Dest^ := Source^;
-        Inc(Source);
+        Dest^ := Src^;
+        Inc(Src);
         Inc(Dest);
       end;
     Dest^ := #0;
@@ -529,16 +533,19 @@ begin
   Result := Dest;
 end;
 
-function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+var
+  Src: PWideChar;
 begin
   Result := Dest;
   if (Dest <> nil) and (MaxLen > 0) then
   begin
-    if Source <> nil then
-      while (MaxLen > 0) and (Source^ <> #0) do
+    Src := Source;
+    if Src <> nil then
+      while (MaxLen > 0) and (Src^ <> #0) do
       begin
-        Dest^ := Source^;
-        Inc(Source);
+        Dest^ := Src^;
+        Inc(Src);
         Inc(Dest);
         Dec(MaxLen);
       end;
@@ -546,31 +553,23 @@ begin
   end;
 end;
 
-function StrCatW(Dest, Source: PWideChar): PWideChar;
+function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 begin
   Result := Dest;
-  while Dest^ <> #0 do
-    Inc(Dest);
-  StrCopyW(Dest, Source);
+  StrCopyW(StrEndW(Dest), Source);
 end;
 
-function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 begin
   Result := Dest;
-  while Dest^ <> #0 do
-  begin
-    Inc(Dest);
-    if MaxLen = 0 then
-      Exit;
-    Dec(MaxLen);
-  end;
-  StrLCopyW(Dest, Source, MaxLen);
+  StrLCopyW(StrEndW(Dest), Source, MaxLen);
 end;
 
 function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
 begin
   Result := Dest;
-  Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
+  if Count > 0 then
+    Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
 end;
 
 function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
@@ -1811,8 +1810,15 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/10/16 05:15:38  marquardt
+// Str*W family now matches completely Delphi Str* family semantics
+//
 // Revision 1.15  2005/07/19 23:21:21  outchy
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
+//
+// $Log$
+// Revision 1.16  2005/10/16 05:15:38  marquardt
+// Str*W family now matches completely Delphi Str* family semantics
 //
 // Revision 1.14  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
