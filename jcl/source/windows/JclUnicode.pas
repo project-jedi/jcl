@@ -811,7 +811,7 @@ type
     function GetCapacity: Integer; virtual;
     function GetCount: Integer; virtual; abstract;
     function GetObject(Index: Integer): TObject; virtual;
-    function GetText: WideString; virtual;
+    function GetTextStr: WideString; virtual;
     procedure Put(Index: Integer; const S: WideString); virtual; abstract;
     procedure PutObject(Index: Integer; AObject: TObject); virtual; abstract;
     procedure SetCapacity(NewCapacity: Integer); virtual;
@@ -834,6 +834,7 @@ type
     function Equals(Strings: TWideStrings): Boolean;
     procedure Exchange(Index1, Index2: Integer); virtual;
     function GetSeparatedText(Separators: WideString): WideString; virtual;
+    function GetText: PWideChar; virtual;
     function IndexOf(const S: WideString): Integer; virtual;
     function IndexOfName(const Name: WideString): Integer;
     function IndexOfObject(AObject: TObject): Integer;
@@ -857,7 +858,7 @@ type
     property Saved: Boolean read FSaved;
     property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode default True;
     property Strings[Index: Integer]: WideString read Get write Put; default;
-    property Text: WideString read GetText write SetText;
+    property Text: WideString read GetTextStr write SetText;
 
     property OnConfirmConversion: TConfirmConversionEvent read FOnConfirmConversion write FOnConfirmConversion;
   end;
@@ -965,7 +966,8 @@ function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
 function StrAllocW(Size: Cardinal): PWideChar;
 function StrBufSizeW(Str: PWideChar): Cardinal;
-function StrNewW(Str: PWideChar): PWideChar;
+function StrNewW(Str: PWideChar): PWideChar; overload;
+function StrNewW(const S: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
 procedure StrSwapByteOrder(Str: PWideChar);
 
@@ -4617,9 +4619,14 @@ begin
   end;
 end;
 
-function TWideStrings.GetText: WideString;
+function TWideStrings.GetTextStr: WideString;
 begin
   Result := GetSeparatedText(WideCRLF);
+end;
+
+function TWideStrings.GetText: PWideChar;
+begin
+  Result := StrNewW(GetTextStr);
 end;
 
 function TWideStrings.GetValue(const Name: WideString): WideString;
@@ -4785,7 +4792,7 @@ begin
   // strings are then converted to ANSI based on the current system locale.
   // An extra event is supplied to ask the user about the potential loss of
   // information when converting Unicode to ANSI strings.
-  SW := GetText;
+  SW := GetTextStr;
   Allowed := True;
   FSaved := False; // be pessimistic
   // A check for potential information loss makes only sense if the application has
@@ -4937,7 +4944,7 @@ end;
 
 procedure TWideStrings.WriteData(Writer: TWriter);
 begin
-  Writer.WriteWideString(GetText);
+  Writer.WriteWideString(GetTextStr);
 end;
 
 //=== { TWideStringList } ====================================================
@@ -5858,6 +5865,11 @@ begin
     Size := StrLenW(Str) + 1;
     Result := StrMoveW(StrAllocW(Size), Str, Size);
   end;
+end;
+
+function StrNewW(const S: WideString): PWideChar;
+begin
+  Result := StrNewW(PWideChar(S));
 end;
 
 procedure StrDisposeW(Str: PWideChar);
@@ -8392,6 +8404,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.24  2005/10/16 05:16:51  marquardt
+// TWideStrings now has GetText and GetTextStr like TStrings
+//
 // Revision 1.23  2005/07/19 21:28:26  outchy
 // IT 3066: JclUnicode.pas updated to Unicode 4.1
 //
