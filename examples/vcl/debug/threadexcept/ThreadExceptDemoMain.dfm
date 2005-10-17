@@ -1,11 +1,11 @@
 object MainForm: TMainForm
   Left = 286
   Top = 169
-  Width = 723
-  Height = 584
   Caption = 
     'Exception tracking in threads and IDE Thread Status window exten' +
     'sion demo'
+  ClientHeight = 557
+  ClientWidth = 715
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,6 +14,9 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    715
+    557)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

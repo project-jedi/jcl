@@ -5,7 +5,7 @@ program StackTrackDLLsExample;
 uses
   Forms,
   StackTrackDLLsDemoMain in 'StackTrackDLLsDemoMain.pas' {MainForm},
-  ExceptDlg in '..\..\debugextension\dialog\ExceptDlg.pas' {ExceptionDialog};
+  ExceptDlg in '..\..\..\..\experts\debug\dialog\ExceptDlg.pas' {ExceptionDialog};
 
 {$R *.res}
 
