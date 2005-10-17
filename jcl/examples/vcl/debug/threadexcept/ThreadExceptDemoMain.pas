@@ -44,7 +44,7 @@ implementation
 
 { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! }
 {                                                                                                  }
-{ You have to install ThreadNameExpert package located in "\examples\debugextension\threadnames"   }
+{ You have to install ThreadNameExpert package located in "\experts\debug\threadnames"             }
 {                                                                                                  }
 { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! }
 

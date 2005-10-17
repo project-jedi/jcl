@@ -1,4 +1,4 @@
 [Directories]
 OutputDir=../../../../bin
-SearchPath=../../debugextension/threadnames
+SearchPath=../../../../experts/debug/threadnames
 
