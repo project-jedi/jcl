@@ -35,6 +35,7 @@
 {   Olivier Sannier                                                                                }
 {   Pelle F. S. Liljendal                                                                          }
 {   Petr Vones                                                                                     }
+{   Rik Barker (rikbarker)                                                                         }
 {   Robert Lee                                                                                     }
 {   Robert Marquardt                                                                               }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -1797,7 +1798,8 @@ end;
 function StrOemToAnsi(const S: string): string;
 begin
   SetLength(Result, Length(S));
-  OemToAnsiBuff(@S[1], @Result[1], Length(S));
+  if S <> '' then
+    OemToAnsiBuff(@S[1], @Result[1], Length(S));
 end;
 {$ENDIF WIN32}
 
@@ -1805,7 +1807,8 @@ end;
 function StrAnsiToOem(const S: string): string;
 begin
   SetLength(Result, Length(S));
-  AnsiToOemBuff(@S[1], @Result[1], Length(S));
+  if S <> '' then
+    AnsiToOemBuff(@S[1], @Result[1], Length(S));
 end;
 {$ENDIF WIN32}
 
@@ -4104,6 +4107,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.42  2005/10/17 09:16:59  rikbarker
+// Fixed range check crashes in StrOemToAnsi and StrAnsiToOem when passed an empty string.  Both could probably do with rewriting to use non-obsoleted functions CharToOemBuff and OemToCharBuff, long term.
+//
 // Revision 1.41  2005/08/11 18:11:25  ahuser
 // Added MoveChar function
 //
