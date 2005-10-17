@@ -127,9 +127,9 @@ namespace JCLNet
 			// 
 			// btnSpecialDirectories
 			// 
-			this.btnSpecialDirectories.Location = new System.Drawing.Point(560, 152);
+			this.btnSpecialDirectories.Location = new System.Drawing.Point(544, 152);
 			this.btnSpecialDirectories.Name = "btnSpecialDirectories";
-			this.btnSpecialDirectories.Size = new System.Drawing.Size(136, 23);
+			this.btnSpecialDirectories.Size = new System.Drawing.Size(152, 23);
 			this.btnSpecialDirectories.TabIndex = 5;
 			this.btnSpecialDirectories.Text = "Show Special Directories";
 			this.btnSpecialDirectories.Click += new System.EventHandler(this.btnSpecialDirectories_Click);
@@ -166,9 +166,9 @@ namespace JCLNet
 			// 
 			// btnListProcesses
 			// 
-			this.btnListProcesses.Location = new System.Drawing.Point(560, 352);
+			this.btnListProcesses.Location = new System.Drawing.Point(544, 352);
 			this.btnListProcesses.Name = "btnListProcesses";
-			this.btnListProcesses.Size = new System.Drawing.Size(136, 23);
+			this.btnListProcesses.Size = new System.Drawing.Size(152, 23);
 			this.btnListProcesses.TabIndex = 2;
 			this.btnListProcesses.Text = "List Processes";
 			this.btnListProcesses.Click += new System.EventHandler(this.btnListProcesses_Click);
