@@ -1,4 +1,0 @@
-EpsilonSqr
-MaxTerm
-TComplexKind
-TJclComplex
