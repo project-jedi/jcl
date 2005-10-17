@@ -1,9 +1,0 @@
-DirectPrint
-DPGetDefaultPrinter
-DPSetDefaultPrinter
-EJclPrinterError
-GetDefaultPrinterName
-GetPrinterResolution
-PrintMemo
-SetPrinterPixelsPerInch
-TJclPrintSet

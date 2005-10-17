@@ -1,5 +1,0 @@
-ReadMessageCheck
-ReadMessageData
-ReadMessageString
-ReadMessageStrings
-TJclAppInstances

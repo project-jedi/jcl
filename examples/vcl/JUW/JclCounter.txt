@@ -1,4 +1,0 @@
-EJclCounterError
-StartCount
-StopCount
-TJclCounter
