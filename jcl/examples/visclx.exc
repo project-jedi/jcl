@@ -1,7 +1,7 @@
 common\pcre\QPCREDemo.dpr
 common\expreval\QExprEvalExample.dpr
-visclx\filesearch\FileSearchDemo.dpr
-visclx\graphics\ClipLineDemo.dpr
-visclx\numformat\NumFormatExample.dpr
-visclx\rtti\QRTTIDemo.dpr
-visclx\sysinfo\EnvironmentExample.dpr
+common\filesearch\QFileSearchDemo.dpr
+common\graphics\QClipLineDemo.dpr
+common\numformat\QNumFormatExample.dpr
+common\rtti\QRTTIDemo.dpr
+common\sysinfo\QEnvironmentExample.dpr
