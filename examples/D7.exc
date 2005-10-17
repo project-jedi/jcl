@@ -1,3 +1,3 @@
-vcl\clr\ClrDemo.dpr
-visclx\filesearch\FileSearchDemo.dpr
+windows\clr\ClrDemo.dpr
+common\filesearch\QFileSearchDemo.dpr
 visclx.exc=STD
