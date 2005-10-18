@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclProjectAnalysisExpert" Design="-1">
+  <Description>JCL Project Analyzer</Description>
+  <GUID/>
+  <C5PFlags>-LUvcl50 -LUdsnide50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>$58030000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>96</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2057</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="JclDebugExpert" Targets="c6" Condition=""/>
+    <Package Name="JclDebugExpertC50" Targets="c5" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\debug\JclOTAUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas" Targets="Windows" Formname="ProjectAnalyzerForm" Condition=""/>
+  </Contains>
+</Package>
