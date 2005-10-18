@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="JediUsesC50.bpl"/>
+    <OBJFILES value="..\..\lib\c5\JclOtaUtils.obj ..\..\lib\c5\JCLUsesWizard.obj 
+      ..\..\lib\c5\JclParseUses.obj ..\..\lib\c5\JclUsesDialog.obj 
+      ..\..\lib\c5\JCLOptionsFrame.obj ..\..\lib\c5\JediUsesC50.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) JclUsesDialog.dfm JCLOptionsFrame.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl50.bpi CJcl50.bpi dsnide50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JediUsesC50.cpp"/>
+    <INCLUDEPATH value="..\..\source;..\..\lib\c5;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\..\lib\c5;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\lib\c5 -N0..\..\lib\c5 -$Y- -$L- -$D- -v -JPHNE -M 
+      -LUvcl50 -U$(BCB)\Projects\Bpl"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\lib\c5 -D&quot;JCL Uses Wizard&quot; -aa -Tpp -Gpd 
+      -x -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+  </IDEOPTIONS>
+</PROJECT>

@@ -6,16 +6,20 @@
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>$48300000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>96</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2057</BuildNumber>
   <Requires>
-    <Package Name="rtl" Targets="c6,d6,d7,d6.dev,d7.dev" Condition=""/>
-    <Package Name="visualclx" Targets="c6,d6,d7,d6.dev,d7.dev" Condition=""/>
-    <Package Name="DJcl" Targets="D6,D7" Condition=""/>
-    <Package Name="CJcl" Targets="C6" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="visualclx" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="c6,d6,d7" Formname="" Condition=""/>
-    <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="c6,d6,d7" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
+    <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="Clx" Formname="" Condition=""/>
+    <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="Clx" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="ClxDev" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="ClxDev" Formname="" Condition=""/>
   </Contains>
 </Package>

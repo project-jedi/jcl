@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.10"/>
+    <PROJECT value="bpl%NAME%69.so.%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%"/>
+    <OBJFILES value="
+<%%% START FILES %%%>
+      ..\..\lib\k3\obj\%UNITNAME%.obj
+<%%% END FILES %%%>
+    "/>
+    <RESFILES value="%NAME%.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value="
+<%%% START LIBS %%%>
+    %FILENAME%
+<%%% END LIBS %%%>
+    "/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="
+<%%% START REQUIRES %%%>
+       %NAME%.a
+<%%% END REQUIRES %%%>       
+    "/>
+    <PACKAGES value="
+<%%% START REQUIRES %%%>
+       %NAME%.bpi 
+<%%% END REQUIRES %%%>       
+    "/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;../../source/visclx"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)/lib/debug:../../lib/k3/debug"/>
+    <RELEASELIBPATH value="$(BCB)/lib/release:../../lib/k3"/>
+    <LINKER value="ilink"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
+    <MAINSOURCE value="%NAME%.bpf"/>
+    <INCLUDEPATH value="../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
+      -c"/>
+    <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot; -aa -Tpp -Gpr -x 
+      -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so"/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="%NAME%.res" FORMNAME="" UNITNAME="%NAME%.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="%NAME%.bpf" FORMNAME="" UNITNAME="%NAME%" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+<%%% START FILES %%%>
+      <FILE FILENAME="%FILENAME%" FORMNAME="%FORMNAME%" UNITNAME="%UNITNAME%" CONTAINERID="PascalCompiler" DESIGNCLASS="%FORMTYPE%" LOCALCOMMAND=""/>
+<%%% END FILES %%%>
+<%%% START REQUIRES %%%>
+      <FILE FILENAME="%NAME%.bpi" FORMNAME="" UNITNAME="%NAME%" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+<%%% END REQUIRES %%%>
+<%%% START LIBS %%%>
+      <FILE FILENAME="%FILENAME%" FORMNAME="" UNITNAME="%UNITNAME%" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+<%%% END LIBS %%%>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
+UseLauncher=0
+DebugCWD=
+HostApplication=
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+
+[Linker]
+LibPrefix=
+LibPrefixDefined=0
+LibSuffix=69
+LibVersion=%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%
+  </IDEOPTIONS>
+</PROJECT>

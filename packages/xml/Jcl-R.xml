@@ -6,8 +6,13 @@
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
+  <ImageBase>$48000000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>96</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2057</BuildNumber>
   <Requires>
-    <Package Name="rtl" Targets="C6,D6,D7,K3,D9" Condition=""/>
+    <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>
     <Package Name="vcljpg50" Targets="c5,d5" Condition=""/>
   </Requires>
