@@ -23,7 +23,7 @@ package JclFavoriteFoldersExpert;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $58050000}
 {$DESCRIPTION 'JCL Open and Save IDE dialogs with favorite folders'}
-{$LIBSUFFIX '90'}
+{$LIBSUFFIX 'D90'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 {%RC '..\..\experts\favfolders\FavDlg.rc'}

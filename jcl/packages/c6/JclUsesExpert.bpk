@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="JclUsesExpertC60.bpl"/>
+    <OBJFILES value="..\..\lib\c6\obj\JclUsesExpert.obj ..\..\lib\c6\obj\JclOtaUtils.obj 
+      ..\..\lib\c6\obj\JCLUsesWizard.obj ..\..\lib\c6\obj\JclParseUses.obj 
+      ..\..\lib\c6\obj\JclUsesDialog.obj ..\..\lib\c6\obj\JCLOptionsFrame.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\..\experts\useswizard\JclUsesDialog.dfm 
+      ..\..\experts\useswizard\JCLOptionsFrame.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="rtl.bpi vcl.bpi Jcl.bpi designide.bpi JclDebugExpert.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\..\experts\debug;..\..\experts\useswizard;..\..\experts\useswizard;..\..\experts\useswizard;..\..\experts\useswizard"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JclUsesExpert.cpp"/>
+    <INCLUDEPATH value="..\..\experts\debug;..\..\experts\useswizard;..\..\source;..\..\lib\c6\obj;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi"/>
+    <LIBPATH value="..\..\experts\debug;..\..\experts\useswizard;..\..\lib\c6\obj;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\experts\debug -I..\..\experts\useswizard -I..\..\source 
+      -I..\..\lib\c6\obj -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I$(BCB)\Source\ToolsApi -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\..\lib\c6\obj -N0..\..\lib\c6\obj -$Y- -$L- -$D- -$A8 -LUdesignide 
+      -v -JPHNE -M -LUvcl -LUJcl -U$(BCB)\Projects\Bpl"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\lib\c6\obj -GB&quot;JclUsesExpert&quot; -D&quot;JCL Uses Wizard&quot; -aa -Tpp -Gpd 
+      -x -Gn -Gl -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JclUsesExpert.cpp" FORMNAME="" UNITNAME="JclUsesExpert" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\debug\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Jcl.bpi" FORMNAME="" UNITNAME="Jcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclDebugExpert.bpi" FORMNAME="" UNITNAME="JclDebugExpert" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\useswizard\JCLUsesWizard.pas" FORMNAME="" UNITNAME="JclUsesWizard" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\useswizard\JclParseUses.pas" FORMNAME="" UNITNAME="JclParseUses" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\useswizard\JclUsesDialog.pas" FORMNAME="FormUsesConfirm" UNITNAME="JclUsesDialog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\useswizard\JCLOptionsFrame.pas" FORMNAME="FrameJclOptions" UNITNAME="JclOptionsFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1031
+CodePage=1252
+
+[Excluded Packages]
+f:\programme\borland\cbuilder6\Bin\dclwbm60.bpl=Borland InternetExpress Components
+f:\programme\borland\cbuilder6\Bin\dclwebsnap60.bpl=Borland WebSnap Components
+f:\programme\borland\cbuilder6\Bin\dclindy60.bpl=Internet Direct (Indy) for D6 Property and Component Editors
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\..\experts\debug;..\..\experts\useswizard;..\..\source;..\..\lib\c6\obj;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\ToolsApi
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=..\..\experts\debug;..\..\experts\useswizard;..\..\lib\c6\obj;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\lib\c6\obj
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=C60
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

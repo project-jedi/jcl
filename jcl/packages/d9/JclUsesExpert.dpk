@@ -23,7 +23,7 @@ package JclUsesExpert;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JCL Uses Wizard'}
-{$LIBSUFFIX '90'}
+{$LIBSUFFIX 'D90'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 {%File '..\..\experts\useswizard\JediUsesWizard.ini'}

@@ -1,0 +1,40 @@
+package JclFavoriteFoldersExpertC50;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $58050000}
+{$DESCRIPTION 'JCL Open and Save IDE dialogs with favorite folders'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+{%RC '..\..\experts\favfolders\FavDlg.rc'}
+
+requires
+  vcl50,
+  dsnide50,
+  JclC50;
+
+contains
+  IdeOpenDlgFavoriteUnit in '..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas',
+  OpenDlgFavAdapter in '..\..\experts\favfolders\OpenDlgFavAdapter.pas',
+  JclOtaUtils in '..\..\experts\debug\JclOtaUtils.pas';
+
+end.

@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------
 */
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
 <%%% START FORMS %%%>
 USEFORMNS("%FILENAME%", %Unitname%, %FORMNAME%); /* %FORMTYPE%: File Type */
