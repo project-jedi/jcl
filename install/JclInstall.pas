@@ -426,12 +426,12 @@ const
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
 
-  JclIdeDebugDpk    = 'examples\vcl\debugextension\JclDebugIde%s%%d0%s';
-  JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%s%%d0%s';
-  JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%s%%d0%s';
-  JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%s%%d0%s';
-  JclIdeUsesDpk     = 'examples\vcl\juw\JediUses%s%%d0%s';
-  JclIdeSimdViewDpk = 'examples\vcl\debugextension\SIMDView\JclSIMDView%s%%d%s';
+  JclIdeDebugDpk    = 'packages\%s%%d\JclDebugExpert%s';
+  JclIdeAnalyzerDpk = 'packages\%s%%d\JclProjectAnalysisExpert%s';
+  JclIdeFavoriteDpk = 'packages\%s%%d\JclFavoriteFoldersExpert%s';
+  JclIdeThrNamesDpk = 'packages\%s%%d\JclThreadNameExpert%s';
+  JclIdeUsesDpk     = 'packages\%s%%d\JclUsesExpert%s';
+  JclIdeSimdViewDpk = 'packages\%s%%d\JclSIMDViewExpert%s';
 
   ExpertPaths: array[ioJclExpertDebug..ioJclExpertSimdView] of string =
     (
@@ -463,8 +463,7 @@ const
   BCBObjectPath     = BCBIncludePath;
   {$ENDIF UNIX}
 
-  DialogsPath       = 'examples' + PathSeparator + 'vcl' + PathSeparator + 'debugextension'
-                      + PathSeparator + 'dialog' + PathSeparator;
+  DialogsPath       = 'experts' + PathSeparator + 'debug' + PathSeparator + 'dialog' + PathSeparator;
   ClxDialogFileName = 'ClxExceptDlg.pas';
   ClxDialogName     = 'CLX Exception Dialog';
   DialogDescription = 'JCL Application exception dialog';
@@ -1925,6 +1924,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.71  2005/10/18 07:05:56  marquardt
+// fixed pathes to make installer work again
+//
 // Revision 1.70  2005/09/23 22:46:31  rrossmair
 // - changed to ensure that TInstallation.Demos is assigned when needed; likewise DemoExclusionList
 // - some refactoring
