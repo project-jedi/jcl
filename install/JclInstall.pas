@@ -95,6 +95,7 @@ type
     procedure AddHelpToOpenHelp;
     procedure RemoveHelpFromIdeTools;
     procedure RemoveHelpFromOpenHelp;
+    procedure CopyFakeXmlRtlPackage;
     {$ENDIF MSWINDOWS}
     function BplPath: string;
     function DcpPath: string;
@@ -203,7 +204,7 @@ function LogFileName(Target: TJclBorRADToolInstallation): string;
 implementation
 
 uses
-  JclBase, JclSysInfo, JclFileUtils, JclStrings;
+  JclBase, JclResources, JclSysInfo, JclFileUtils, JclStrings;
 
 { Install option data }
 
@@ -426,12 +427,12 @@ const
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
 
-  JclIdeDebugDpk    = 'packages\%s%%d\JclDebugExpert%s';
-  JclIdeAnalyzerDpk = 'packages\%s%%d\JclProjectAnalysisExpert%s';
-  JclIdeFavoriteDpk = 'packages\%s%%d\JclFavoriteFoldersExpert%s';
-  JclIdeThrNamesDpk = 'packages\%s%%d\JclThreadNameExpert%s';
-  JclIdeUsesDpk     = 'packages\%s%%d\JclUsesExpert%s';
-  JclIdeSimdViewDpk = 'packages\%s%%d\JclSIMDViewExpert%s';
+  JclIdeDebugDpk    = 'JclDebugExpert';
+  JclIdeAnalyzerDpk = 'JclProjectAnalysisExpert';
+  JclIdeFavoriteDpk = 'JclFavoriteFoldersExpert';
+  JclIdeThrNamesDpk = 'JclThreadNameExpert';
+  JclIdeUsesDpk     = 'JclUsesExpert';
+  JclIdeSimdViewDpk = 'JclSIMDViewExpert';
 
   ExpertPaths: array[ioJclExpertDebug..ioJclExpertSimdView] of string =
     (
@@ -539,15 +540,9 @@ begin
   end;
 end;
 
-function ExpertFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
-begin
-  with Target do
-    Result := Format(BaseName, [Prefixes[RADToolKind], PackageSourceFileExtension]);
-end;
-
 function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
-  S = 'packages' + VersionDir + PathSeparator + '%s%s';
+  S = 'packages' + VersionDir + PathSeparator + '%s';
 var
   Prefix: string;
 begin
@@ -555,9 +550,9 @@ begin
   begin
     Prefix := Prefixes[RADToolKind];
     if DCC.SupportsLibSuffix then
-      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
+      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, BaseName, PackageSourceFileExtension])
     else
-      Result := Format(S + '%1:d0%4:s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension]);
+      Result := Format(S + '%s%1:d0%4:s', [AnsiLowerCase(Prefix), VersionNumber, BaseName, Prefix, PackageSourceFileExtension]);
   end;
 end;
 
@@ -829,9 +824,9 @@ begin
       WriteLog('Compiling .dcu files...');
       Result := Result and CompileUnits;
       CopyResFiles(UnitOutputDir);
-      if OptionSelected(ioJclCopyHppFiles) then
+      if (Target is TJclBCBInstallation) and OptionSelected(ioJclCopyHppFiles) then
       begin
-        Result := Result and CopyHppFiles(UnitList, (Target as TJclBCBInstallation).VclIncludeDir);
+        Result := Result and CopyHppFiles(UnitList, Target.RootDir + RsVclIncludeDir);
         WriteLog('Copying .hpp files...');
       end;
       {$IFDEF KYLIX}
@@ -849,16 +844,29 @@ begin
 end;
 
 function TJclInstallation.Description(Option: TJediInstallOption): string;
+var
+  BCBInstallation: TJclBCBInstallation;
 begin
   Result := InitData[Option].Caption;
+
+  BCBInstallation := nil;
+  if Target is TJclBCBInstallation then
+    BCBInstallation := Target as TJclBCBInstallation;
+
   case Option of
     ioTarget:
       Result := Target.Description;
     ioJclCopyHppFiles:
-      Result := Format(Result, [(Target as TJclBCBInstallation).VclIncludeDir]);
+      Result := Format(Result, [BCBInstallation.VclIncludeDir]);
     ioJclCopyPackagesHppFiles:
-      Result := Format(Result, [(Target as TJclBCBInstallation).VclIncludeDir]);
+      Result := Format(Result, [BCBInstallation.VclIncludeDir]);
   end;
+end;
+
+procedure TJclInstallation.CopyFakeXmlRtlPackage;
+// replace missing xmlrtl.dcp in Delphi 2005 Personal by dummy package to allow expert installation
+begin
+  { TODO : implement copying of fake xmlrtl.dcp to $(BDS)\Lib }
 end;
 
 function TJclInstallation.ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
@@ -1125,9 +1133,8 @@ begin
   if (Target is TJclBCBInstallation) then
     AddNode(TempNode, ioJclCopyPackagesHppFiles);
   {$IFDEF MSWINDOWS}
-  if (Target.VersionNumber < 9) or (Target.Edition <> deStd) then
-  // Delphi 2005 Personal doesn't allow experts
-  begin
+  if (Target.VersionNumber = 9) and (Target.Edition = deStd) then
+    CopyFakeXmlRtlPackage;
     { TODO :
       It has been reported that IDE experts don't work under Win98.
       Leave these options unchecked for Win9x/WinME until that has been examined. }
@@ -1143,7 +1150,6 @@ begin
       AddNode(TempNode, ioJclExpertThreadNames, ExpertOptions);
     AddNode(TempNode, ioJclExpertUses, ExpertOptions);
     AddNode(TempNode, ioJclExpertSimdView, ExpertOptions);
-  end;
   {$ENDIF MSWINDOWS}
   AddDemoNodes;
   Tool.BPLPath[Target] := StoredBplPath;
@@ -1319,7 +1325,7 @@ end;
 {$IFDEF MSWINDOWS}
 function TJclInstallation.InstallExpert(const BaseName: string): Boolean;
 begin
-  Result := InstallPackageSourceFile(ExpertFileName(Target, BaseName));
+  Result := InstallPackageSourceFile(FullPackageFileName(Target, BaseName));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1373,7 +1379,7 @@ begin
       Make.AddPathOption('DBPILIBDIR=', DcpPath);
       Make.AddPathOption('DBPLDIR=', BplPath);
       if OptionSelected(ioJclCopyPackagesHppFiles) then
-        Make.AddPathOption('DHPPDIR=', (Target as TJclBCBInstallation).VclIncludeDir);
+        Make.AddPathOption('DHPPDIR=', Target.RootDir + RsVclIncludeDir);
       {$ENDIF}
       Result := Result and Target.InstallPackage(PackageFileName, BplPath, DcpPath);
     end;
@@ -1568,7 +1574,7 @@ var
 begin
   BPLFileName := Format(ExtractFileName(FileName), ['', '.bpl']);
   Target.IdePackages.RemovePackage(PathAddSeparator(StoredBPLPath) + Format(BPLFileName, [Target.VersionNumber]));
-  Result := UninstallPackage(ExpertFileName(Target, FileName));
+  Result := UninstallPackage(FullPackageFileName(Target, FileName));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1924,8 +1930,8 @@ end;
 // History:
 
 // $Log$
-// Revision 1.71  2005/10/18 07:05:56  marquardt
-// fixed pathes to make installer work again
+// Revision 1.72  2005/10/18 23:09:56  rrossmair
+// - updated Installer for new package naming rules
 //
 // Revision 1.70  2005/09/23 22:46:31  rrossmair
 // - changed to ensure that TInstallation.Demos is assigned when needed; likewise DemoExclusionList
