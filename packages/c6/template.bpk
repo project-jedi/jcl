@@ -39,10 +39,10 @@
        %NAME%.bpi 
 <%%% END REQUIRES %%%>       
     "/>
-    <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\experts\debug;..\..\experts\debug\threadnames;..\..\experts\projectanalyzer;"/>
-    <PATHRC value=".;"/>
-    <PATHASM value=".;"/>
+    <PATHCPP value="%PATHCPP%"/>
+    <PATHPAS value="%PATHPAS%"/>
+    <PATHRC value="%PATHRC%"/>
+    <PATHASM value="%PATHASM%"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
@@ -50,7 +50,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\experts\debug;..\..\experts\projectanalyzer;..\..\source\windows;..\..\lib\c6;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="%PATHLIB%..\..\lib\c6;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>

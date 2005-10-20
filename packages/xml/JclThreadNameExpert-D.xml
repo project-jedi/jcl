@@ -2,7 +2,7 @@
 <Package Name="JclThreadNameExpert" Design="-1">
   <Description>JCL Thread Name IDE expert</Description>
   <GUID/>
-  <C5PFlags>-LUvcl50 -LUdsnide50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -19,10 +19,10 @@
     <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
     <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\debug\JclOTAUtils.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\debug\threadnames\ThreadExpertUnit.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\debug\threadnames\ThreadExpertSharedNames.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\threadnames\ThreadExpertUnit.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>
