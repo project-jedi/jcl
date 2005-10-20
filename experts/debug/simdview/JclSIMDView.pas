@@ -34,6 +34,8 @@ uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
   Forms, ComCtrls, JclOTAUtils, JclSysInfo, JclSIMDViewForm;
 
+{$R 'JclSIMDIcon.dcr'}
+
 type
   TProcessReference = record
     Process:IOTAProcess;
@@ -222,8 +224,8 @@ var
   ViewMenu: TMenuItem;
   Category: string;
 begin
-  Assert(Supports(Services,IOTADebuggerServices,FDebuggerServices),
-    'Unable to get Borland Debugger Services');
+  Supports(Services,IOTADebuggerServices,FDebuggerServices);
+  Assert(Assigned(FDebuggerServices),'Unable to get Borland Debugger Services');
     
   Category := '';
   for I := 0 to NTAServices.ActionList.ActionCount-1 do
