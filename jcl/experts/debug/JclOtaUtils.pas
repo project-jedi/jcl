@@ -20,8 +20,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: July 20, 2003                                                                     }
+{ Unit owner: Florent Ouchet                                                                       }
+{ Last modified: October 19, 2005                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -31,7 +31,6 @@ interface
 
 {$I jcl.inc}
 {$I windowsonly.inc}
-
 {$WEAKPACKAGEUNIT ON}
 
 uses
@@ -149,13 +148,13 @@ end;
 
 constructor TJclOTAUtils.Create;
 begin
-  Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
-    'Unable to get Borland IDE Services');
-  Assert(Supports(FServices,INTAServices,FNTAServices),
-    'Unable to get Borland NTA Services');
+  Supports(BorlandIDEServices,IOTAServices,FServices);
+  Assert(Assigned(FServices),'Unable to get Borland IDE Services');
+
+  Supports(FServices,INTAServices,FNTAServices);
+  Assert(Assigned(FNTAServices),'Unable to get Borland NTA Services');
 
   FEnvVariables := TStringList.Create;
-
   FBaseRegistryKey := StrEnsureSuffix('\', FServices.GetBaseRegistryKey);
 
   RegisterCommands;
@@ -568,6 +567,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/20 17:19:30  outchy
+// Moving function calls out of Asserts
+//
 // Revision 1.1  2005/10/03 16:15:58  rrossmair
 // - moved over from jcl\examples\vcl\debugextension
 //
