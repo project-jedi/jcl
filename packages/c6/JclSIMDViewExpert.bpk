@@ -18,7 +18,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi vcl.bpi designide.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi designide.bpi Jcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\experts\debug;..\..\experts\debug\simdview;..\..\experts\debug\simdview;..\..\experts\debug\simdview;..\..\experts\debug\simdview;..\..\experts\debug\simdview"/>
     <PATHRC value=".;"/>
@@ -59,6 +59,7 @@
       <FILE FILENAME="..\..\experts\debug\simdview\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\experts\debug\simdview\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\experts\debug\simdview\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\experts\debug\simdview\Jcl.bpi" FORMNAME="" UNITNAME="Jcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\experts\debug\JclOtaUtils.pas" FORMNAME="" UNITNAME="JclOtaUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\experts\debug\simdview\JclSIMDViewForm.pas" FORMNAME="JclSIMDViewFrm" UNITNAME="JclSIMDViewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\experts\debug\simdview\JclSIMDModifyForm.pas" FORMNAME="JclSIMDModifyFrm" UNITNAME="JclSIMDModifyForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -3,7 +3,7 @@ package JclSIMDViewExpertC50;
 {$R *.res}
 {$R '..\..\experts\debug\simdview\JclSIMDIcon.dcr'}
 {$ALIGN ON}
-{$ASSERTIONS OFF}
+{$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
