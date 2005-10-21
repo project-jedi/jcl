@@ -10,79 +10,67 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is IdeOpenDlgFavoriteUnit.pas.                                                 }
+{ The Original Code is JclOtaConsts.pas.                                                           }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Florent Ouchet (outchy)                                                                        }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: June 12, 2002                                                                     }
+{ Unit owner: Florent Ouchet                                                                       }
+{ Last modified: October 19, 2005                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit IdeOpenDlgFavoriteUnit;
+unit JclOtaConsts;
 
 interface
 
 {$I jcl.inc}
 
-uses
-  ToolsAPI, OpenDlgFavAdapter,
-  JclOtaUtils;
+const
+  DelphiRootDirKeyValue  = 'RootDir';
+  JediIDESubKey          = 'Jedi\JCL\IDE\';
+  DelphiEnvironmentVar   = 'DELPHI';
+  {$IFDEF COMPILER6_UP}
+  EnvironmentVarsKey     = 'Environment Variables';
+  {$ENDIF COMPÏLER6_UP}
 
-type
-  TOpenDialogsFavoriteExpert = class(TJclOTAExpert)
-  private
-    FFavOpenDialog: TFavOpenDialog;
-    procedure DialogClose(Sender: TObject);
-    procedure DialogShow(Sender: TObject);
-  public
-    constructor Create;
-    destructor Destroy; override;
-  end;
+  MapFileOptionName      = 'MapFile';
+  OutputDirOptionName    = 'OutputDir';
+  RuntimeOnlyOptionName  = 'RuntimeOnly';
+  PkgDllDirOptionName    = 'PkgDllDir';
+  BPLOutputDirOptionName = 'PackageDPLOutput';
+  LIBPREFIXOptionName    = 'SOPrefix';
+  LIBSUFFIXOptionName    = 'SOSuffix';
 
-procedure Register;
+  JclDebugExpertRegKey = 'JclDebugExpert';
+  JclDebugEnabledRegValue = 'JclDebugEnabled';
+
+  FavoritesSectionName     = 'JclFavoriteFoldersExpert';
+  PictDialogFolderItemName = 'PictureDialogPath';
+
+  BorlandImagesPath        = 'Borland Shared\Images';
+
+  FavDialogTemplateName      = 'FAVDLGTEMPLATE';
+  OpenPictDialogTemplateName = 'DLGTEMPLATE';
+
+  BPLExtension           = '.bpl';
+  DPKExtension           = '.dpk';
+  MAPExtension           = '.map';
+  DRCExtension           = '.drc';
+  DPRExtention           = '.dpr';
 
 implementation
 
-uses
-  JclIniFiles, JclFileUtils, JclSysInfo,
-  JclOtaConsts;
+// History:
 
-procedure Register;
-begin
-  RegisterPackageWizard(TOpenDialogsFavoriteExpert.Create);
-end;
-
-constructor TOpenDialogsFavoriteExpert.Create;
-begin
-  inherited Create;
-  FFavOpenDialog := InitializeFavOpenDialog;
-  FFavOpenDialog.DisableHelpButton := True;
-  FFavOpenDialog.HookDialogs;
-  FFavOpenDialog.OnClose := DialogClose;
-  FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := JediIniFile.ReadString(FavoritesSectionName,
-    PictDialogFolderItemName, PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
-end;
-
-destructor TOpenDialogsFavoriteExpert.Destroy;
-begin
-  FFavOpenDialog.UnhookDialogs;
-  inherited Destroy;
-end;
-
-procedure TOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
-begin
-  IniWriteStrings(JediIniFile, FavoritesSectionName, FFavOpenDialog.FavoriteFolders);
-  JediIniFile.WriteString(FavoritesSectionName, PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
-end;
-
-procedure TOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
-begin
-  IniReadStrings(JediIniFile, FavoritesSectionName, FFavOpenDialog.FavoriteFolders);
-end;
+// $Log$
+// Revision 1.1  2005/10/21 12:24:41  marquardt
+// experts reorganized with new directory common
+//
 
 end.

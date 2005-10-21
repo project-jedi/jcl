@@ -21,6 +21,8 @@
     <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\debug\JclOTAUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaResources.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

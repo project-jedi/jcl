@@ -98,20 +98,11 @@ uses
   {$IFNDEF RTL140_UP}
   Forms,
   {$ENDIF ~RTL140_UP}
-  CommDlg, Dlgs, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
+  CommDlg, Dlgs,
+  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
+  JclOtaConsts, JclOtaResources;
 
 {$R FavDlg.res}
-
-resourcestring
-  RsAdd          = '<- Add';
-  RsDelete       = '&Delete';
-  RsFavorites    = '&Favorites';
-  RsConfirmation = 'Confirmation';
-  RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders ?';
-
-const
-  FavDialogTemplateName      = 'FAVDLGTEMPLATE';
-  OpenPictDialogTemplateName = 'DLGTEMPLATE';
 
 type
   TGetOpenFileName = function (var OpenFile: TOpenFilename): Bool; stdcall;
@@ -121,8 +112,6 @@ var
   OldGetSaveFileName: TGetOpenFileName;
   OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
   FavOpenDialog: TFavOpenDialog;
-
-//--------------------------------------------------------------------------------------------------
 
 function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
 begin
@@ -134,8 +123,6 @@ begin
     CallWindowProc(FavOpenDialog.FWndInstance, Wnd, Msg, WParam, LParam);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure InitOpenFileStruct(var OpenFile: TOpenFilename);
 var
@@ -178,23 +165,17 @@ begin
    end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NewGetOpenFileName(var OpenFile: TOpenFilename): Bool; stdcall;
 begin
   InitOpenFileStruct(OpenFile);
   Result := OldGetOpenFileName(OpenFile);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NewGetSaveFileName(var OpenFile: TOpenFilename): Bool; stdcall;
 begin
   InitOpenFileStruct(OpenFile);
   Result := OldGetSaveFileName(OpenFile);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InitializeFavOpenDialog: TFavOpenDialog;
 begin
@@ -203,73 +184,7 @@ begin
   Result := FavOpenDialog;
 end;
 
-//==================================================================================================
-// TFavOpenDialog
-//==================================================================================================
-
-procedure TFavOpenDialog.AddButtonClick(Sender: TObject);
-var
-  I: Integer;
-  Path: string;
-begin
-  if DeleteMode then
-  begin
-    I := FFavoriteComboBox.ItemIndex;
-    Path := FFavoriteComboBox.Items[I];
-    if MessageBox(FHandle, PChar(Format(RsDelConfirm, [Path])), PChar(RsConfirmation),
-      MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
-    begin
-      FFavoriteComboBox.Items.Delete(I);
-      DeleteMode := False;
-    end;
-  end
-  else
-  begin
-    Path := CurrentFolder;
-    I := FFavoriteComboBox.Items.IndexOf(Path);
-    if I = -1 then
-    begin
-      FFavoriteComboBox.Items.Add(Path);
-      I := FFavoriteComboBox.Items.IndexOf(Path);
-      FFavoriteComboBox.ItemIndex := I;
-      DeleteMode := True;
-    end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TFavOpenDialog.AdjustControlPos;
-var
-  ParentRect, FileNameEditRect, OkButtonRect: TRect;
-
-  procedure GetDlgItemRect(ItemID: Integer; var R: TRect);
-  begin
-    GetWindowRect(GetDlgItem(FParentWnd, ItemID), R);
-    MapWindowPoints(0, FParentWnd, R, 2);
-  end;
-
-begin
-  GetWindowRect(FParentWnd, ParentRect);
-  if GetDlgItem(FParentWnd, edt1) <> 0 then
-    GetDlgItemRect(edt1, FileNameEditRect)
-  else
-    GetDlgItemRect(cmb1, FileNameEditRect);
-  GetDlgItemRect(1, OkButtonRect);
-
-// Salvatore Besso: Changes to avoid truncation of Add button. I don't know why, but debugging I
-//   have discovered that ParentRect.Right was equal to 1024, ie Screen.Width. I also can't figure
-//   out why I can't preserve original help button that disappears using this expert.
-//   As visible in the changes, favorite panel width is just left of the original button column.
-
-  if IsWin2k or IsWinXP then
-    FAddButton.Width := 65;
-  FFavoritePanel.Width := OkButtonRect.Left - 1;
-  FFavoriteComboBox.Width := FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
-  FAddButton.Left := FFavoriteComboBox.Width + 14;
-end;
-
-//--------------------------------------------------------------------------------------------------
+//=== { TFavOpenDialog } =====================================================
 
 constructor TFavOpenDialog.Create;
 begin
@@ -313,8 +228,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TFavOpenDialog.Destroy;
 begin
   UnhookDialogs;
@@ -326,7 +239,65 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
+procedure TFavOpenDialog.AddButtonClick(Sender: TObject);
+var
+  I: Integer;
+  Path: string;
+begin
+  if DeleteMode then
+  begin
+    I := FFavoriteComboBox.ItemIndex;
+    Path := FFavoriteComboBox.Items[I];
+    if MessageBox(FHandle, PChar(Format(RsDelConfirm, [Path])), PChar(RsConfirmation),
+      MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
+    begin
+      FFavoriteComboBox.Items.Delete(I);
+      DeleteMode := False;
+    end;
+  end
+  else
+  begin
+    Path := CurrentFolder;
+    I := FFavoriteComboBox.Items.IndexOf(Path);
+    if I = -1 then
+    begin
+      FFavoriteComboBox.Items.Add(Path);
+      I := FFavoriteComboBox.Items.IndexOf(Path);
+      FFavoriteComboBox.ItemIndex := I;
+      DeleteMode := True;
+    end;
+  end;
+end;
+
+procedure TFavOpenDialog.AdjustControlPos;
+var
+  ParentRect, FileNameEditRect, OkButtonRect: TRect;
+
+  procedure GetDlgItemRect(ItemID: Integer; var R: TRect);
+  begin
+    GetWindowRect(GetDlgItem(FParentWnd, ItemID), R);
+    MapWindowPoints(0, FParentWnd, R, 2);
+  end;
+
+begin
+  GetWindowRect(FParentWnd, ParentRect);
+  if GetDlgItem(FParentWnd, edt1) <> 0 then
+    GetDlgItemRect(edt1, FileNameEditRect)
+  else
+    GetDlgItemRect(cmb1, FileNameEditRect);
+  GetDlgItemRect(1, OkButtonRect);
+
+// Salvatore Besso: Changes to avoid truncation of Add button. I don't know why, but debugging I
+//   have discovered that ParentRect.Right was equal to 1024, ie Screen.Width. I also can't figure
+//   out why I can't preserve original help button that disappears using this expert.
+//   As visible in the changes, favorite panel width is just left of the original button column.
+
+  if IsWin2k or IsWinXP then
+    FAddButton.Width := 65;
+  FFavoritePanel.Width := OkButtonRect.Left - 1;
+  FFavoriteComboBox.Width := FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
+  FAddButton.Left := FFavoriteComboBox.Width + 14;
+end;
 
 procedure TFavOpenDialog.DialogFolderChange;
 var
@@ -339,8 +310,6 @@ begin
     DeleteMode := (ItemIndex <> -1);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.DialogShow;
 var
@@ -366,23 +335,17 @@ begin
   end;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TFavOpenDialog.DoClose;
 begin
   if Assigned(FOnClose) then
     FOnClose(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TFavOpenDialog.DoShow;
 begin
   if Assigned(FOnShow) then
     FOnShow(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.FavoriteComboBoxClick(Sender: TObject);
 begin
@@ -391,17 +354,13 @@ begin
       CurrentFolder := FFavoriteComboBox.Items[ItemIndex];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TFavOpenDialog.GetCurrentFolder: string;
 var
-  Path: array[0..MAX_PATH] of Char;
+  Path: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Path, SendMessage(FParentWnd, CDM_GETFOLDERPATH, SizeOf(Path), Integer(@Path)));
   StrResetLength(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TFavOpenDialog.GetFileNameEditWnd: HWND;
 begin
@@ -409,8 +368,6 @@ begin
   if Result = 0 then
     Result := GetDlgItem(FParentWnd, cmb13);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.HookDialogs;
 var
@@ -443,8 +400,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TFavOpenDialog.LoadFavorites(const FileName: string);
 begin
   if FileExists(FileName) then
@@ -452,8 +407,6 @@ begin
   else
     FavoriteFolders.Clear;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.ParentWndProc(var Message: TMessage);
 begin
@@ -464,8 +417,6 @@ begin
       AdjustControlPos;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.SetCurrentFolder(const Value: string);
 var
@@ -483,8 +434,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TFavOpenDialog.SetDeleteMode(const Value: Boolean);
 begin
   if FDeleteMode <> Value then
@@ -498,8 +447,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TFavOpenDialog.UnhookDialogs;
 var
   I: Integer;
@@ -509,8 +456,6 @@ begin
     if not FHooks[I].Unhook then
       Inc(I);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TFavOpenDialog.WndProc(var Message: TMessage);
 
@@ -562,8 +507,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 initialization
 
 finalization
@@ -572,6 +515,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/21 12:24:41  marquardt
+// experts reorganized with new directory common
+//
 // Revision 1.1  2005/10/03 16:27:37  rrossmair
 // - moved over from jcl\examples\vcl\idefavopendialogs
 //

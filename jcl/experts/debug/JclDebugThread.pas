@@ -67,8 +67,6 @@ var
     lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
   Kernel32_ExitThread: procedure (dwExitCode: DWORD); stdcall;
 
-//------------------------------------------------------------------------------
-
 function NewCreateThread(lpThreadAttributes: Pointer;
   dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
   lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
@@ -85,8 +83,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure NewExitThread(dwExitCode: DWORD); stdcall;
 var
   ThreadID: DWORD;
@@ -98,8 +94,6 @@ begin
   except
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 function CreateThreadName(const ThreadName, ThreadClassName: string): string;
 begin
@@ -114,15 +108,11 @@ begin
     Result := Format('"%s"', [ThreadName]);
 end;
 
-//------------------------------------------------------------------------------
-
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames.RegisterThread(ThreadID, CreateThreadName(ThreadName, ''));
 end;
-
-//------------------------------------------------------------------------------
 
 procedure RegisterThread(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
@@ -130,15 +120,11 @@ begin
     SharedThreadNames.RegisterThread(Thread.ThreadID, CreateThreadName(ThreadName, Thread.ClassName));
 end;
 
-//------------------------------------------------------------------------------
-
 procedure UnregisterThread(ThreadID: DWORD);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames.UnregisterThread(ThreadID);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure UnregisterThread(Thread: TThread);
 begin
@@ -146,15 +132,11 @@ begin
     SharedThreadNames.UnregisterThread(Thread.ThreadID);
 end;
 
-//------------------------------------------------------------------------------
-
 procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames[ThreadID] := CreateThreadName(ThreadName, '');
 end;
-
-//------------------------------------------------------------------------------
 
 procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
@@ -162,14 +144,10 @@ begin
     SharedThreadNames[Thread.ThreadID] := CreateThreadName(ThreadName, Thread.ClassName);
 end;
 
-//------------------------------------------------------------------------------
-
 function ThreadNamesAvailable: Boolean;
 begin
   Result := Assigned(SharedThreadNames);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure Init;
 begin
@@ -182,23 +160,20 @@ begin
       HookImport(SystemBase, kernel32, 'CreateThread', @NewCreateThread, @Kernel32_CreateThread);
       HookImport(SystemBase, kernel32, 'ExitThread', @NewExitThread, @Kernel32_ExitThread);
     end;
-    { TODO -oPV -cDesign : TJclDebugThread could hold its name. In case of that tha name could be read in hooked CreateThread }
+    { TODO -oPV -cDesign : TJclDebugThread could hold its name. In case of that the name could be read in hooked CreateThread }
     Notifier := TJclDebugThreadNotifier.Create;
     JclDebugThreadList.OnThreadRegistered := Notifier.ThreadRegistered;
   end;
 end;
 
-//==============================================================================
-// TJclDebugThreadNotifier
-//==============================================================================
+//=== { TJclDebugThreadNotifier } ============================================
 
 procedure TJclDebugThreadNotifier.ThreadRegistered(ThreadID: DWORD);
 begin
   with JclDebugThreadList do
-    SharedThreadNames.RegisterThread(ThreadID, CreateThreadName(ThreadNames[ThreadID], JclDebugThreadList.ThreadClassNames[ThreadID]));
+    SharedThreadNames.RegisterThread(ThreadID,
+      CreateThreadName(ThreadNames[ThreadID], JclDebugThreadList.ThreadClassNames[ThreadID]));
 end;
-
-//------------------------------------------------------------------------------
 
 initialization
   Init;

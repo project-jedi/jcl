@@ -20,7 +20,7 @@ type
   end;
 
 const
-  SJCLRegSubkey = 'JCL';
+  SJCLRegSubkey = 'Jedi\JCL\IDE\JclUsesExpert';
   SIniIdentifierLists = 'IdentifierLists';
   SRegDebugLibPath = 'Debug Library';
   SRegLibPath = 'Library';
@@ -94,12 +94,8 @@ type
     property IniFile: string read FIniFile;
   end;
 
-//----------------------------------------------------------------------------
-
 var
   Wizard: TJCLUsesWizard = nil;
-
-//----------------------------------------------------------------------------
 
 function FindClassForm(const AClassName: string): TForm;
 var
@@ -114,8 +110,6 @@ begin
         Break;
       end;
 end;
-
-//----------------------------------------------------------------------------
 
 function GetActiveProject: IOTAProject;
 var
@@ -140,8 +134,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 function GetLineNumber(S1, S2: PChar): Integer;
 var
   P: PChar;
@@ -161,7 +153,8 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
+//=== { TLine } ==============================================================
+
 // TLine 'guessed' from coreide60.bpl
 
 type
@@ -172,8 +165,6 @@ type
     function GetLineText: string; virtual;
   end;
 
-//----------------------------------------------------------------------------
-
 { TLine stubs }
 
 constructor TLine.Create;
@@ -182,7 +173,7 @@ end;
 
 destructor TLine.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 function TLine.GetLineText: string;
@@ -190,7 +181,6 @@ begin
   Result := '';
 end;
 
-//----------------------------------------------------------------------------
 // the message treeview is custom drawn; hence this hack
 
 procedure GetCompilerMessages(List: TStrings);
@@ -236,8 +226,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 function ReadEditorBuffer(Buffer: IOTAEditBuffer): string;
 const
   BufSize = 1024;
@@ -275,33 +263,29 @@ begin
   SetString(Result, S, Len);
 end;
 
-//----------------------------------------------------------------------------
-{ TJCLUsesWizardNotifier private: IOTAIDENotifier }
-//----------------------------------------------------------------------------
+//=== { TJCLUsesWizardNotifier } =============================================
+
+// TJCLUsesWizardNotifier private: IOTAIDENotifier
 
 procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded: Boolean);
 begin
   // do nothing
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
 begin
   // do nothing
 end;
 
-//----------------------------------------------------------------------------
-
-procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode: TOTAFileNotification; const FileName: string;
-  var Cancel: Boolean);
+procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode: TOTAFileNotification;
+  const FileName: string; var Cancel: Boolean);
 begin
   // do nothing
 end;
 
-//----------------------------------------------------------------------------
-{ TJCLUsesWizardNotifier private: IOTAIDENotifier50 }
-//----------------------------------------------------------------------------
+//=== { TJCLUsesWizardNotifier } =============================================
+
+// TJCLUsesWizardNotifier private: IOTAIDENotifier50
 
 procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
 var
@@ -320,16 +304,15 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
-procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean);
+procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject;
+  IsCodeInsight: Boolean; var Cancel: Boolean);
 begin
   // do nothing
 end;
 
-//----------------------------------------------------------------------------
-{ TJCLUsesWizard private }
-//----------------------------------------------------------------------------
+//=== { TJCLUsesWizard } =====================================================
+
+// private
 
 procedure TJCLUsesWizard.AppIdle(Sender: TObject; var Done: Boolean);
 begin
@@ -341,8 +324,6 @@ begin
 
   ProcessUses;
 end;
-
-//----------------------------------------------------------------------------
 
 function TJCLUsesWizard.AppWindowHook(var Msg: TMessage): Boolean;
 var
@@ -381,8 +362,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizard.ClearErrors;
 var
   I: Integer;
@@ -396,8 +375,6 @@ begin
   FErrors.Clear;
 end;
 
-//----------------------------------------------------------------------------
-
 function TJCLUsesWizard.DoConfirmChanges(ChangeList: TStrings): TModalResult;
 var
   Dialog: TFormUsesConfirm;
@@ -410,7 +387,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
 // load identifier lists
 // each line represents one JCL unit in the following format:
 // <unit_name>=<identifier0>,<identifier1>,...
@@ -447,7 +423,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
 // load localized strings for the undeclared identifier error
 
 procedure TJCLUsesWizard.ProcessCompilerMessages(Messages: TStrings);
@@ -666,8 +641,6 @@ begin
   Application.OnIdle := AppIdle;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizard.ProcessUses;
 var
   GoalSource: string;
@@ -865,8 +838,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizard.ResolveUsesName(Error: PErrorInfo);
 var
   I: Integer;
@@ -897,8 +868,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizard.SetActive(Value: Boolean);
 begin
   if Value <> FActive then
@@ -922,8 +891,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure TJCLUsesWizard.SetConfirmChanges(Value: Boolean);
 begin
   if Value <> FConfirmChanges then
@@ -932,39 +899,33 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-{ TJCLUsesWizard private: IOTAWizard }
-//----------------------------------------------------------------------------
+//=== { TJCLUsesWizard } =====================================================
+
+// TJCLUsesWizard private: IOTAWizard
 
 procedure TJCLUsesWizard.Execute;
 begin
   // do nothing
 end;
 
-//----------------------------------------------------------------------------
-
 function TJCLUsesWizard.GetIDString: string;
 begin
   Result := SJCLUsesWizardID;
 end;
-
-//----------------------------------------------------------------------------
 
 function TJCLUsesWizard.GetName: string;
 begin
   Result := SJCLUsesWizardName;
 end;
 
-//----------------------------------------------------------------------------
-
 function TJCLUsesWizard.GetState: TWizardState;
 begin
   Result := [wsEnabled];
 end;
 
-//----------------------------------------------------------------------------
-{ TJCLUsesWizard public }
-//----------------------------------------------------------------------------
+//=== { TJCLUsesWizard } =====================================================
+
+// public
 
 constructor TJCLUsesWizard.Create;
 begin
@@ -979,8 +940,6 @@ begin
   LoadFromRegistry;
 end;
 
-//----------------------------------------------------------------------------
-
 destructor TJCLUsesWizard.Destroy;
 begin
   Application.UnhookMainWindow(AppWindowHook);
@@ -991,8 +950,6 @@ begin
   FIdentifierLists.Free;
   inherited Destroy;
 end;
-
-//----------------------------------------------------------------------------
 
 function TJCLUsesWizard.LoadFromRegistry: Boolean;
 var
@@ -1022,7 +979,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
 // create and register wizard instance
 
 procedure Register;
@@ -1030,8 +986,6 @@ begin
   Wizard := TJCLUsesWizard.Create;
   RegisterPackageWizard(Wizard);
 end;
-
-//----------------------------------------------------------------------------
 
 procedure SettingsChanged;
 begin

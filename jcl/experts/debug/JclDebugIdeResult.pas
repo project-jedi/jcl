@@ -33,12 +33,9 @@ type
     ResultListView: TListView;
     ImageList1: TImageList;
     procedure FormResize(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure CopyReportToClipboard;
-  public
-    { Public declarations }
   end;
 
 var
@@ -49,7 +46,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ClipBrd, Math,
+  Clipbrd, Math,
   JclStrings;
 
 procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
@@ -116,7 +113,7 @@ begin
   end;
 end;
 
-{ TJclDebugResultForm }
+//=== { TJclDebugResultForm } ================================================
 
 procedure TJclDebugResultForm.CopyReportToClipboard;
 var
@@ -136,8 +133,7 @@ begin
   OkBtn.Left := ClientWidth div 2 - OkBtn.Width div 2;
 end;
 
-procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = Ord('C')) then
   begin
@@ -149,6 +145,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/21 12:24:41  marquardt
+// experts reorganized with new directory common
+//
 // Revision 1.1  2005/10/03 16:15:58  rrossmair
 // - moved over from jcl\examples\vcl\debugextension
 //
