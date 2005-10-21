@@ -49,7 +49,7 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
-    <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\debug;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="%PATHLIB%..\..\lib\c5\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
