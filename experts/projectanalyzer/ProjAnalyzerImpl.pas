@@ -52,7 +52,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils,
+  JclDebug, JclFileUtils, JclOtaConsts,
   ProjAnalyzerFrm;
 
 resourcestring

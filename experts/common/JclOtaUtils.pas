@@ -36,24 +36,10 @@ uses
   Windows, Classes, IniFiles, ToolsAPI, ComCtrls, ActnList;
 
 const
-  MapFileOptionName      = 'MapFile';
-  OutputDirOptionName    = 'OutputDir';
-  RuntimeOnlyOptionName  = 'RuntimeOnly';
-  PkgDllDirOptionName    = 'PkgDllDir';
-  BPLOutputDirOptionName = 'PackageDPLOutput';
-  LIBPREFIXOptionName    = 'SOPrefix';
-  LIBSUFFIXOptionName    = 'SOSuffix';
-
   MapFileOptionDetailed  = 3;
 
-  BPLExtension           = '.bpl';
-  DPKExtension           = '.dpk';
-  MAPExtension           = '.map';
-  DRCExtension           = '.drc';
-  DPRExtention           = '.dpr';
-
 type
-  TJclOTAUtils = class (TInterfacedObject)
+  TJclOTAUtils = class(TInterfacedObject)
   private
     FBaseRegistryKey: string;
     FEnvVariables: TStringList;
@@ -71,7 +57,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function FindExecutableName(const MapFileName, OutputDirectory: string; var ExecutableFileName: string): Boolean;
+    function FindExecutableName(const MapFileName, OutputDirectory: string;
+      var ExecutableFileName: string): Boolean;
     function GetDrcFileName(const Project: IOTAProject): string;
     function GetMapFileName(const Project: IOTAProject): string;
     function GetOutputDirectory(const Project: IOTAProject): string;
@@ -114,13 +101,14 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, ImageHlp, Registry,
-  JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
+  JclFileUtils, JclRegistry, JclStrings, JclSysInfo,
+  JclOtaConsts, JclOtaResources;
 
 var
   ActionList: TList = nil;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   OldFindGlobalComponentProc: TFindGlobalComponent = nil;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
 function FindActions(const Name: string): TComponent;
 var
@@ -135,31 +123,27 @@ begin
       if (CompareText(Name,TestAction.Name) = 0) then
         Result := TestAction;
     end;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
     Result := OldFindGlobalComponentProc(Name)
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
-//==================================================================================================
-// TJclOTAUtils
-//==================================================================================================
+//=== { TJclOTAUtils } =======================================================
 
 constructor TJclOTAUtils.Create;
 begin
   Supports(BorlandIDEServices,IOTAServices,FServices);
-  Assert(Assigned(FServices),'Unable to get Borland IDE Services');
+  Assert(Assigned(FServices), RsENoIDEServices);
 
   Supports(FServices,INTAServices,FNTAServices);
-  Assert(Assigned(FNTAServices),'Unable to get Borland NTA Services');
+  Assert(Assigned(FNTAServices), RsENoNTAServices);
 
   FEnvVariables := TStringList.Create;
   FBaseRegistryKey := StrEnsureSuffix('\', FServices.GetBaseRegistryKey);
 
   RegisterCommands;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TJclOTAUtils.Destroy;
 begin
@@ -168,13 +152,11 @@ begin
   FreeAndNil(FEnvVariables);
   FreeAndNil(FJediIniFile);
 
-  FServices:=nil;
-  FNTAServices:=nil;
+  FServices := nil;
+  FNTAServices := nil;
 
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.FindExecutableName(const MapFileName, OutputDirectory: string;
   var ExecutableFileName: string): Boolean;
@@ -207,8 +189,6 @@ begin
   Result := (ExecutableFileName <> '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.GetActiveProject: IOTAProject;
 var
   TempProjectGroup: IOTAProjectGroup;
@@ -220,28 +200,20 @@ begin
     Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.GetDrcFileName(const Project: IOTAProject): string;
 begin
   Result := ChangeFileExt(Project.FileName, DRCExtension);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.GetJediIniFile: TCustomIniFile;
-const
-  JediSubKey = 'Jedi\';
 begin
   if not Assigned(FJediIniFile) then
   begin
-    FJediIniFile := TRegistryIniFile.Create(PathAddSeparator(Services.GetBaseRegistryKey) + JediSubKey);
+    FJediIniFile := TRegistryIniFile.Create(PathAddSeparator(Services.GetBaseRegistryKey) + JediIDESubKey);
     TRegistryIniFile(FJediIniFile).RegIniFile.RootKey := HKEY_CURRENT_USER;
   end;
   Result := FJediIniFile;  
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.GetMapFileName(const Project: IOTAProject): string;
 var
@@ -256,11 +228,9 @@ begin
   LibPrefix := '';
   LibSuffix := '';
   {$ENDIF ~RTL140_UP}
-  Result := PathAddSeparator(OutputDirectory) + LibPrefix + PathExtractFileNameNoExt(ProjectFileName) +
-    LibSuffix + MAPExtension;
+  Result := PathAddSeparator(OutputDirectory) + LibPrefix +
+    PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + MAPExtension;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.GetOutputDirectory(const Project: IOTAProject): string;
 begin
@@ -277,8 +247,6 @@ begin
     Result := ExtractFilePath(Project.FileName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.GetProjectGroup: IOTAProjectGroup;
 var
   IModuleServices: IOTAModuleServices;
@@ -291,24 +259,18 @@ begin
   Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.GetRootDir: string;
-const
-  cRootDir = 'RootDir';
 begin
   if FRootDir = '' then
   begin
-    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, cRootDir, '');
+    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, DelphiRootDirKeyValue, '');
     // (rom) bugfix if using -r switch of D9 by Dan Miser
     if FRootDir = '' then
-      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, BaseRegistryKey, cRootDir, '');
+      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, BaseRegistryKey, DelphiRootDirKeyValue, '');
     Assert(FRootDir <> '');
   end;  
   Result := FRootDir;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
@@ -338,19 +300,13 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAUtils.IsPackage(const Project: IOTAProject): Boolean;
 begin
   Result := AnsiSameText(ExtractFileExt(Project.FileName), DPKExtension);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAUtils.ReadEnvVariables;
 {$IFDEF COMPILER6_UP}
-const
-  EnvironmentVarsKey = 'Environment Variables';
 var
   EnvNames: TStringList;
   I: Integer;
@@ -368,19 +324,19 @@ begin
   try
 
     EnvVarKeyName := BaseRegistryKey + EnvironmentVarsKey;
-    if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
+    if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and
+      RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
-        FEnvVariables.Values[EnvNames[I]] := RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
+        FEnvVariables.Values[EnvNames[I]] :=
+          RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
   finally
     EnvNames.Free;
   end;
   {$ENDIF COMPILER6_UP}
 
   // add the delphi directory
-  FEnvVariables.Values['DELPHI'] := RootDir;
+  FEnvVariables.Values[DelphiEnvironmentVar] := RootDir;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.SubstitutePath(const Path: string): string;
 var
@@ -394,11 +350,10 @@ begin
     for I := 0 to FEnvVariables.Count - 1 do
     begin
       Name := FEnvVariables.Names[I];
-      Result := StringReplace(Result, Format('$(%s)', [Name]), FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
+      Result := StringReplace(Result, Format('$(%s)', [Name]),
+        FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclOTAUtils.RegisterAction(Action: TCustomAction);
 begin
@@ -419,8 +374,6 @@ begin
   ActionList.Add(Action);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAUtils.UnregisterAction(Action: TCustomAction);
 begin
   if Assigned(ActionList) then
@@ -438,112 +391,86 @@ begin
   end;
 
 
-// remove action from toolbar to avoid crash when recompile package inside the IDE.
-  CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar],Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sStandardToolBar],Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar],Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar],Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar],Action);
-{$IFDEF COMPILER7_UP}
-  CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar],Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar],Action);
-{$ENDIF}
+  // remove action from toolbar to avoid crash when recompile package inside the IDE.
+  CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar], Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sStandardToolBar], Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar], Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar], Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar], Action);
+  {$IFDEF COMPILER7_UP}
+  CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar], Action);
+  CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar], Action);
+  {$ENDIF COMPILER7_UP}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 type
-  THackToolButton = class (TToolButton);
+  TAccessToolButton = class(TToolButton);
   
 procedure TJclOTAUtils.CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
 var
   Index: Integer;
-  AButton: THackToolButton;
+  AButton: TAccessToolButton;
 begin
   if Assigned(AToolBar) then
-  begin
-    for Index:=AToolBar.ButtonCount-1 downto 0 do
+    for Index := AToolBar.ButtonCount - 1 downto 0 do
     begin
-      AButton:=THackToolButton(AToolBar.Buttons[Index]);
-      if (AButton.Action=AAction) then
+      AButton := TAccessToolButton(AToolBar.Buttons[Index]);
+      if AButton.Action = AAction then
       begin
         AButton.SetToolBar(nil);
         AButton.Free;
       end;
     end;
-  end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclOTAUtils.RegisterCommands;
 begin
   // override to add actions and menu items
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAUtils.UnregisterCommands;
 begin
   // override to remove actions and menu items
 end;
 
-//==================================================================================================
-// TJclOTAExpert
-//==================================================================================================
+//=== { TJclOTAExpert } ======================================================
 
 procedure TJclOTAExpert.AfterSave;
 begin
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAExpert.BeforeSave;
 begin
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclOTAExpert.Destroyed;
 begin
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAExpert.Execute;
 begin
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAExpert.GetIDString: string;
 begin
   Result := 'Jedi.' + ClassName;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclOTAExpert.GetName: string;
 begin
   Result := ClassName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclOTAExpert.GetState: TWizardState;
 begin
   Result := [];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclOTAExpert.Modified;
 begin
 end;
 
-//==================================================================================================
-// Helper routines
-//==================================================================================================
+//=== Helper routines ========================================================
 
 procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 var
@@ -561,11 +488,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // History:
 
 // $Log$
+// Revision 1.1  2005/10/21 12:24:41  marquardt
+// experts reorganized with new directory common
+//
 // Revision 1.3  2005/10/20 22:55:17  outchy
 // Experts are now generated by the package generator.
 // No WEAKPACKAGEUNIT in design-time packages.

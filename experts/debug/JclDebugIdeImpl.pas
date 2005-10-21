@@ -24,7 +24,7 @@
 
 unit JclDebugIdeImpl;
 
-{$I JCL.INC}
+{$I jcl.inc}
                               
 {$UNDEF OldStyleExpert}
 
@@ -123,14 +123,12 @@ implementation
 
 uses
   IniFiles, 
-  JclDebug, JclDebugIdeResult;
+  JclDebug, JclDebugIdeResult, JclOtaConsts;
 
 procedure Register;
 begin
   RegisterPackageWizard(TJclDebugExtension.Create);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 resourcestring
   {$IFDEF OldStyleExpert}
@@ -148,12 +146,26 @@ resourcestring
   RsExecutableNotFound = 'Executable file (*.exe or *.dll) not found.' +
     'JCL debug data can''t be added to the project.';
 
-const
-  JclDebugEnabledName = 'JclDebugEnabled';
+//=== { TJclDebugExtension } =================================================
 
-//==================================================================================================
-// TJclDebugExtension
-//==================================================================================================
+constructor TJclDebugExtension.Create;
+begin
+  inherited Create;
+  {$IFNDEF OldStyleExpert}
+  FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
+  LoadExpertValues;
+  {$ENDIF OldStyleExpert}
+end;
+
+destructor TJclDebugExtension.Destroy;
+begin
+  {$IFNDEF OldStyleExpert}
+  if FNotifierIndex <> -1 then
+    Services.RemoveNotifier(FNotifierIndex);
+  SaveExpertValues;
+  {$ENDIF OldStyleExpert}
+  inherited Destroy;
+end;
 
 {$IFNDEF OldStyleExpert}
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
@@ -235,8 +247,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
 var
   ProjOptions: IOTAProjectOptions;
@@ -264,16 +274,12 @@ end;
 
 {$ENDIF OldStyleExpert}
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.BeginStoreResults;
 begin
   FBuildError := False;
   FStoreResults := True;
   FResultInfo := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF OldStyleExpert}
 
@@ -288,8 +294,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.BuildActionUpdate(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
@@ -303,8 +307,6 @@ begin
     ProjectName := RsProjectNone;
   FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.BuildAllActionExecute(Sender: TObject);
 var
@@ -334,16 +336,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.BuildAllActionUpdate(Sender: TObject);
 begin
   FBuildAllAction.Enabled := ProjectGroup <> nil;
 end;
 
 {$ENDIF OldStyleExpert}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF OldStyleExpert}
 
@@ -358,8 +356,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.BuildProject(Sender: TObject);
 begin
   BeginStoreResults;
@@ -372,31 +368,6 @@ begin
 end;
 
 {$ENDIF OldStyleExpert}
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclDebugExtension.Create;
-begin
-  inherited Create;
-  {$IFNDEF OldStyleExpert}
-  FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
-  LoadExpertValues;
-  {$ENDIF OldStyleExpert}
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclDebugExtension.Destroy;
-begin
-  {$IFNDEF OldStyleExpert}
-  if FNotifierIndex <> -1 then
-    Services.RemoveNotifier(FNotifierIndex);
-  SaveExpertValues;
-  {$ENDIF OldStyleExpert}
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.DisplayResults;
 var
@@ -440,15 +411,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.EndStoreResults;
 begin
   FStoreResults := False;
   FResultInfo := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF OldStyleExpert}
 
@@ -461,8 +428,6 @@ begin
   FInsertDataAction.Checked := Active;
   HookBuildActions(Active);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.HookBuildActions(Enable: Boolean);
 begin
@@ -482,8 +447,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.InsertDataExecute(Sender: TObject);
 begin
   ExpertActive(not FInsertDataAction.Checked);
@@ -491,23 +454,17 @@ begin
   SaveExpertValues;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.LoadExpertValues;
 begin
-  ExpertActive(JediIniFile.ReadBool(ClassName, JclDebugEnabledName, False));
+  ExpertActive(JediIniFile.ReadBool(JclDebugExpertRegKey, JclDebugEnabledRegValue, False));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.SaveExpertValues;
 begin
-  JediIniFile.WriteBool(ClassName, JclDebugEnabledName, FInsertDataAction.Checked);
+  JediIniFile.WriteBool(JclDebugExpertRegKey, JclDebugEnabledRegValue, FInsertDataAction.Checked);
 end;
 
 {$ENDIF OldStyleExpert}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF OldStyleExpert}
 
@@ -578,8 +535,6 @@ begin
 end;
 
 {$ENDIF OldStyleExpert}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDebugExtension.RegisterCommands;
 var
@@ -700,8 +655,6 @@ begin
   {$ENDIF OldStyleExpert}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugExtension.UnregisterCommands;
 begin
   {$IFNDEF OldStyleExpert}
@@ -719,39 +672,9 @@ begin
   {$ENDIF OldStyleExpert}
 end;
 
-//==================================================================================================
-// TIdeNotifier
-//==================================================================================================
+//=== { TIdeNotifier } =======================================================
 
 {$IFNDEF OldStyleExpert}
-
-procedure TIdeNotifier.AfterCompile(Succeeded: Boolean);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TIdeNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
-begin
-  if not IsCodeInsight then
-    FDebugExtension.AfterCompile(Succeeded);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean);
-begin
-  if not IsCodeInsight then
-    FDebugExtension.BeforeCompile(Project, Cancel);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TIdeNotifier.Create(ADebugExtension: TJclDebugExtension);
 begin
@@ -759,14 +682,31 @@ begin
   FDebugExtension := ADebugExtension;
 end;
 
-//--------------------------------------------------------------------------------------------------
+procedure TIdeNotifier.AfterCompile(Succeeded: Boolean);
+begin
+end;
 
-procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+procedure TIdeNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
+begin
+  if not IsCodeInsight then
+    FDebugExtension.AfterCompile(Succeeded);
+end;
+
+procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean);
+begin
+  if not IsCodeInsight then
+    FDebugExtension.BeforeCompile(Project, Cancel);
+end;
+
+procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
+begin
+end;
+
+procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
+  const FileName: string; var Cancel: Boolean);
 begin
 end;
 
 {$ENDIF OldStyleExpert}
-
-//--------------------------------------------------------------------------------------------------
 
 end.
