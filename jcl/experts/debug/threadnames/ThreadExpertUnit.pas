@@ -24,13 +24,14 @@
 
 unit ThreadExpertUnit;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
 uses
-  Windows, Classes, SysUtils, ToolsAPI, ComCtrls, Dialogs, JclOtaUtils, ThreadExpertSharedNames,
-  JclSynch;
+  Windows, Classes, SysUtils, ToolsAPI, ComCtrls, Dialogs,
+  ThreadExpertSharedNames,
+  JclOtaUtils, JclSynch;
 
 type
   TNameChangeThread = class;
@@ -60,10 +61,10 @@ type
   private
     FExpert: TThreadsExpert;
   protected
-    procedure BreakpointAdded({$IFDEF RTL170_UP}const{$ENDIF}Breakpoint: IOTABreakpoint);
-    procedure BreakpointDeleted({$IFDEF RTL170_UP}const{$ENDIF}Breakpoint: IOTABreakpoint);
-    procedure ProcessCreated({$IFDEF RTL170_UP}const{$ENDIF}Process: IOTAProcess);
-    procedure ProcessDestroyed({$IFDEF RTL170_UP}const{$ENDIF}Process: IOTAProcess);
+    procedure BreakpointAdded({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
+    procedure BreakpointDeleted({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
+    procedure ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
+    procedure ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
   public
     constructor Create(AExpert: TThreadsExpert);
   end;
@@ -95,27 +96,21 @@ const
   ThreadsStatusListViewFindPeriod = 2000;
   ReadNameTimeout                 = 500;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure Register;
 begin
   RegisterPackageWizard(TThreadsExpert.Create);
 end;
 
-//==================================================================================================
-// TThreadsExpert
-//==================================================================================================
+//== { TThreadsExpert } ======================================================
 
 constructor TThreadsExpert.Create;
 begin
-  inherited;
+  inherited Create;
   DebuggerServices := BorlandIDEServices as IOTADebuggerServices;
   FSharedThreadNames := TSharedThreadNames.Create(True);
   FNotifierIndex := DebuggerServices.AddNotifier(TDebuggerNotifier.Create(Self));
   FNameChangeThread := TNameChangeThread.Create(Self, FSharedThreadNames.NotifyEvent);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TThreadsExpert.Destroy;
 begin
@@ -126,10 +121,8 @@ begin
   FNameChangeThread.TerminateThread;
   FreeAndNil(FNameChangeThread);
   FreeAndNil(FSharedThreadNames);
-  inherited;
+  inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TThreadsExpert.GetThreadsStatusListView: TListView;
 var
@@ -160,14 +153,10 @@ begin
   Result := FThreadsStatusListView;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TThreadsExpert.GetThreadsStatusListViewFound: Boolean;
 begin
   Result := Assigned(FThreadsStatusListView);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TThreadsExpert.ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
 begin
@@ -177,8 +166,6 @@ begin
   except
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TThreadsExpert.UpdateContent;
 var
@@ -199,8 +186,6 @@ begin
   except
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 var
   CaptionChanging: Boolean;
@@ -231,46 +216,34 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TDebuggerNotifier
-//==================================================================================================
-
-procedure TDebuggerNotifier.BreakpointAdded({$IFDEF RTL170_UP}const{$ENDIF}Breakpoint: IOTABreakpoint);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TDebuggerNotifier.BreakpointDeleted({$IFDEF RTL170_UP}const{$ENDIF}Breakpoint: IOTABreakpoint);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
+//=== { TDebuggerNotifier } ==================================================
 
 constructor TDebuggerNotifier.Create(AExpert: TThreadsExpert);
 begin
   FExpert := AExpert;
 end;
 
-//--------------------------------------------------------------------------------------------------
+procedure TDebuggerNotifier.BreakpointAdded({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
+begin
+end;
 
-procedure TDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP}const{$ENDIF}Process: IOTAProcess);
+procedure TDebuggerNotifier.BreakpointDeleted({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
+begin
+end;
+
+procedure TDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 begin
   FExpert.GetThreadsStatusListView;
   Inc(FExpert.FProcessesCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-procedure TDebuggerNotifier.ProcessDestroyed({$IFDEF RTL170_UP}const{$ENDIF}Process: IOTAProcess);
+procedure TDebuggerNotifier.ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 begin
   Dec(FExpert.FProcessesCount);
   FExpert.FSharedThreadNames.Cleanup(Process.ProcessId);
 end;
 
-//==================================================================================================
-// TNameChangeThread
-//==================================================================================================
+//=== { TNameChangeThread } ==================================================
 
 constructor TNameChangeThread.Create(AExpert: TThreadsExpert; ANotifyEvent: TJclEvent);
 begin
@@ -282,19 +255,15 @@ begin
   Resume;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TNameChangeThread.Destroy;
 begin
   CloseHandle(FTerminateEvent);
-  inherited;
+  inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TNameChangeThread.Execute;
 var
-  WaitHandles: array[0..1] of THandle;
+  WaitHandles: array [0..1] of THandle;
   WaitTimeout: DWORD;
 begin
   WaitHandles[0] := FTerminateEvent;
@@ -321,8 +290,6 @@ begin
   until Terminated;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TNameChangeThread.TerminateThread;
 begin
   Terminate;
@@ -330,21 +297,15 @@ begin
   WaitFor;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TNameChangeThread.TryFindThreadsStatusListView;
 begin
   if FExpert.GetThreadsStatusListView <> nil then
     FExpert.UpdateContent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TNameChangeThread.UpdateRequest;
 begin
   FExpert.UpdateContent;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.

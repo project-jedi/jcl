@@ -24,7 +24,7 @@
 
 unit ThreadExpertSharedNames;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
@@ -87,10 +87,8 @@ type
   PThreadNames = ^TThreadNames;
   TThreadNames = record
     Count: Integer;
-    Threads: array[0..MaxThreadCount - 1] of TThreadName;
+    Threads: array [0..MaxThreadCount - 1] of TThreadName;
   end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SetIdeDebuggerThreadName(ThreadID: DWORD; const ThreadName: string);
 type
@@ -113,9 +111,29 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TSharedThreadNames 
-//==================================================================================================
+//=== { TSharedThreadNames } =================================================
+
+constructor TSharedThreadNames.Create(IdeMode: Boolean);
+begin
+  inherited Create;
+  FIdeMode := IdeMode;
+  FMutex := TJclMutex.Create(nil, False, MutexName);
+  FReadMutex := TJclMutex.Create(nil, False, MutexReadName);
+  FMapping := TJclSwapFileMapping.Create(MappingName, PAGE_READWRITE, SizeOf(TThreadNames), nil);
+  FView := TJclFileMappingView.Create(FMapping, FILE_MAP_ALL_ACCESS, 0, 0);
+  FNotifyEvent := TJclEvent.Create(nil, False, False, EventName);
+  FProcessID := GetCurrentProcessId;
+end;
+
+destructor TSharedThreadNames.Destroy;
+begin
+  Cleanup(FProcessID);
+  FreeAndNil(FMapping);
+  FreeAndNil(FMutex);
+  FreeAndNil(FReadMutex);
+  FreeAndNil(FNotifyEvent);
+  inherited Destroy;
+end;
 
 procedure TSharedThreadNames.Cleanup(ProcessID: DWORD);
 var
@@ -142,33 +160,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-constructor TSharedThreadNames.Create(IdeMode: Boolean);
-begin
-  FIdeMode := IdeMode;
-  FMutex := TJclMutex.Create(nil, False, MutexName);
-  FReadMutex := TJclMutex.Create(nil, False, MutexReadName);
-  FMapping := TJclSwapFileMapping.Create(MappingName, PAGE_READWRITE, SizeOf(TThreadNames), nil);
-  FView := TJclFileMappingView.Create(FMapping, FILE_MAP_ALL_ACCESS, 0, 0);
-  FNotifyEvent := TJclEvent.Create(nil, False, False, EventName);
-  FProcessID := GetCurrentProcessId;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TSharedThreadNames.Destroy;
-begin
-  Cleanup(FProcessID);
-  FreeAndNil(FMapping);
-  FreeAndNil(FMutex);
-  FreeAndNil(FReadMutex);
-  FreeAndNil(FNotifyEvent);
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function TSharedThreadNames.EnterMutex: Boolean;
 begin
   if FIdeMode then
@@ -189,8 +180,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TSharedThreadNames.Exists: Boolean;
 {$IFDEF DELPHI7_UP}
 begin
@@ -206,8 +195,6 @@ begin
     CloseHandle(H);
 end;
 {$ENDIF DELPHI7_UP}
-
-//--------------------------------------------------------------------------------------------------
 
 function TSharedThreadNames.GetThreadName(ThreadID: DWORD): string;
 var
@@ -227,8 +214,6 @@ begin
     FReadMutex.Release;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TSharedThreadNames.InternalRegisterThread(ThreadID: DWORD; const ThreadName: string; UpdateOnly: Boolean);
 var
@@ -273,21 +258,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TSharedThreadNames.RegisterThread(ThreadID: DWORD; const ThreadName: string);
 begin
   InternalRegisterThread(ThreadID, ThreadName, False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TSharedThreadNames.SetThreadName(ThreadID: DWORD; const Value: string);
 begin
   InternalRegisterThread(ThreadID, Value, True);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TSharedThreadNames.ThreadNameTimoeut(ThreadID, Timeout: DWORD; var ThreadName: string): Boolean;
 var
@@ -307,8 +286,6 @@ begin
       FReadMutex.Release;
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TSharedThreadNames.UnregisterThread(ThreadID: DWORD);
 var
@@ -335,8 +312,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TSharedThreadNames.UpdateResumeStatus;
 var
   I: Integer;
@@ -358,7 +333,5 @@ begin
     FMutex.Release;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.

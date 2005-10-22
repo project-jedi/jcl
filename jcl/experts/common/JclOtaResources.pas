@@ -32,13 +32,11 @@ interface
 {$I jcl.inc}
 
 //=== JclOtaUtils.pas ========================================================
-
 resourcestring
   RsENoIDEServices = 'Unable to get Borland IDE Services';
   RsENoNTAServices = 'Unable to get Borland NTA Services';
 
 //=== OpenDlgFavAdapter.pas ==================================================
-
 resourcestring
   RsAdd          = '<- Add';
   RsDelete       = '&Delete';
@@ -46,11 +44,32 @@ resourcestring
   RsConfirmation = 'Confirmation';
   RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders ?';
 
+//=== JclUsesDialog.pas ======================================================
+resourcestring
+  RsActionSkip = 'Skip';
+  RsActionAdd = 'Add';
+  RsActionMove = 'Move';
+  RsSectionImpl = 'to implementation uses';
+  RsSectionIntf = 'to interface uses';
+  RsUndeclIdent = '[Error] %s(%d) Undeclared identifier: ''%s''';
+  RsConfirmChanges = '%s: Confirm changes';
+
+//=== JclParseUses.pas =======================================================
+resourcestring
+  RsEDuplicateUnit = 'Duplicate unit ''%s''';
+  RsEInvalidLibrary = 'Invalid library';
+  RsEInvalidProgram = 'Invalid program';
+  RsEInvalidUnit = 'Invalid unit';
+  RsEInvalidUses = 'Invalid uses clause';
+
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/22 14:24:18  marquardt
+// more expert integration and cleanup
+//
 // Revision 1.1  2005/10/21 12:24:41  marquardt
 // experts reorganized with new directory common
 //

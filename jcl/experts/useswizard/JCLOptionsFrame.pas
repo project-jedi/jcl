@@ -1,3 +1,29 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOptionsFrame.pas.                                                        }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Unit owner: Robert Marquardt                                                                     }
+{ Last modified: October 19, 2005                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit JclOptionsFrame;
 
 {$I jcl.inc}
@@ -6,7 +32,8 @@ unit JclOptionsFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, ComCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls;
 
 type
   TFrameJclOptions = class(TFrame)
@@ -31,14 +58,19 @@ type
 implementation
 
 uses
-  Registry, ToolsAPI,
-  JclUsesWizard;
+  ToolsAPI,
+  JclOtaConsts, JclRegistry, JclUsesWizard;
 
 {$R *.dfm}
 
-//----------------------------------------------------------------------------
-{ TFrameJCLOptions private }
-//----------------------------------------------------------------------------
+constructor TFrameJclOptions.Create(ATab: TTabSheet);
+begin
+  inherited Create(ATab);
+  Parent := ATab;
+  Align := alClient;
+  LoadFromRegistry;
+  HookOKButton;
+end;
 
 function TFrameJclOptions.HookOKButton: Boolean;
 var
@@ -67,39 +99,23 @@ begin
   Result := True;
 end;
 
-//----------------------------------------------------------------------------
-
 function TFrameJclOptions.LoadFromRegistry: Boolean;
 var
-  Registry: TRegistry;
+  S: string;
+  Root: DelphiHKEY;
 begin
-  Registry := TRegistry.Create(KEY_READ);
-  try
-    Registry.RootKey := HKEY_CURRENT_USER;
-    with BorlandIDEServices as IOTAServices do
-    begin
-      Result := Registry.OpenKey(GetBaseRegistryKey + '\' + SJCLRegSubkey, False);
-      if not Result then
-      begin
-        Registry.RootKey := HKEY_LOCAL_MACHINE;
-        Result := Registry.OpenKey(GetBaseRegistryKey + '\' + SJCLRegSubkey, False);
-      end;
-    end;
-
-    if Result then
-    begin
-      CheckBoxWizardActive.Checked := Registry.ValueExists(SRegWizardActive) and
-        Registry.ReadBool(SRegWizardActive);
-      CheckBoxWizardConfirm.Checked := Registry.ValueExists(SRegWizardCofirm) and
-        Registry.ReadBool(SRegWizardCofirm);
-      EditIniFile.Text := Registry.ReadString(SRegWizardIniFile);
-    end;
-  finally
-    Registry.Free;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  Root := HKEY_CURRENT_USER;
+  Result := RegKeyExists(Root, S);
+  if not Result then
+  begin
+    Root := HKEY_LOCAL_MACHINE;
+    Result := RegKeyExists(Root, S);
   end;
+  CheckBoxWizardActive.Checked := RegReadBoolDef(Root, S, SRegWizardActive, False);
+  CheckBoxWizardConfirm.Checked := RegReadBoolDef(Root, S, SRegWizardConfirm, True);
+  EditIniFile.Text := RegReadStringDef(Root, S, SRegWizardIniFile, '');
 end;
-
-//----------------------------------------------------------------------------
 
 procedure TFrameJclOptions.OKButtonClick(Sender: TObject);
 begin
@@ -111,45 +127,16 @@ begin
     FOKButtonClick(Sender);
 end;
 
-//----------------------------------------------------------------------------
-
 function TFrameJclOptions.SaveToRegistry: Boolean;
 var
-  Registry: TRegistry;
+  S: string;
 begin
-  Registry := TRegistry.Create;
-  try
-    Registry.RootKey := HKEY_CURRENT_USER;
-    with BorlandIDEServices as IOTAServices do
-      Result := Registry.OpenKey(GetBaseRegistryKey + '\' + SJCLRegSubkey, True);
-
-    if Result then
-    begin
-      Registry.WriteBool(SRegWizardActive, CheckBoxWizardActive.Checked);
-      Registry.WriteBool(SRegWizardCofirm, CheckBoxWizardConfirm.Checked);
-      Registry.WriteString(SRegWizardIniFile, EditIniFile.Text);
-    end;
-  finally
-    Registry.Free;
-  end;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  RegCreateKey(HKEY_CURRENT_USER, S);
+  RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardActive, CheckBoxWizardActive.Checked);
+  RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardConfirm, CheckBoxWizardConfirm.Checked);
+  RegWriteString(HKEY_CURRENT_USER, S, SRegWizardIniFile, EditIniFile.Text);
 end;
-
-//----------------------------------------------------------------------------
-{ TFrameJCLOptions public }
-//----------------------------------------------------------------------------
-
-constructor TFrameJclOptions.Create(ATab: TTabSheet);
-begin
-  inherited Create(ATab);
-  Parent := ATab;
-  Align := alClient;
-  LoadFromRegistry;
-  HookOKButton;
-end;
-
-//----------------------------------------------------------------------------
-{ TFrameJCLOptions event handlers }
-//----------------------------------------------------------------------------
 
 procedure TFrameJclOptions.ButtonIniFileClick(Sender: TObject);
 begin

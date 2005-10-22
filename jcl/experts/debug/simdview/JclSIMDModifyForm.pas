@@ -28,7 +28,7 @@ unit JclSIMDModifyForm;
 
 interface
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
@@ -39,7 +39,7 @@ const
   WM_MODIFYCONTINUE = WM_USER + 100;
 
 type
-  TJclRegisterType = ( rtXMM, rtMM );
+  TJclRegisterType = (rtXMM, rtMM);
   
   TJclSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
@@ -73,7 +73,7 @@ type
     FCPUInfo: TCpuInfo;
     procedure ContinueModify;
     procedure StartModify;
-    procedure WMModifyContinue(var Message: TMessage); message WM_MODIFYCONTINUE;
+    procedure WMModifyContinue(var Msg: TMessage); message WM_MODIFYCONTINUE;
   protected
     property RegisterType: TJclRegisterType read FRegisterType;
     property XMMRegister: TJclXMMRegister read FXMMRegister;
@@ -90,8 +90,7 @@ type
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclMMRegister;
       const ACpuInfo: TCpuInfo): Boolean; overload;
-    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
-      ReturnCode: Integer);
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
     procedure UpdateDisplay;
     procedure UpdateFormat;
     procedure LoadHistory;
@@ -110,15 +109,23 @@ implementation
 
 const
   NbEdits: array [TJclRegisterType, TJclXMMContentType] of Byte =
-    ( (16, 8, 4, 2, 4, 2),
-      ( 8, 4, 2, 1, 2, 1) );
-  Texts: array [TJclXMMContentType] of string =
-    ( 'Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double' );
+   (
+    (16, 8, 4, 2, 4, 2),
+    ( 8, 4, 2, 1, 2, 1)
+   );
 
-{ TJclSIMDModifyFrm }
+  Texts: array [TJclXMMContentType] of string =
+    ('Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double');
+
+  ItemFormat = 'Item%d';
+  CountPropertyName = 'Count';
+
+  HistoryListSize = 30;
+
+//=== { TJclSIMDModifyFrm } ==================================================
 
 constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
-      ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile);
+  ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile);
 begin
   inherited Create(AOwner);
 
@@ -205,7 +212,7 @@ var
   X, Y: Integer;
 begin
   MergeHistory;
-  while PanelModify.ControlCount>0 do
+  while PanelModify.ControlCount > 0 do
     PanelModify.Controls[0].Free;
   FComboBoxList.Clear;
   FLabelList.Clear;
@@ -216,25 +223,27 @@ begin
 
   X := 0;
   Y := 12;
-  for Index := 0 to NbEdits[RegisterType,Display]-1 do
+  for Index := 0 to NbEdits[RegisterType, Display] - 1 do
   begin
     AComboBox := TComboBox.Create(Self);
     AComboBox.Parent := PanelModify;
-    AComboBox.SetBounds(X+130,Y,90,AComboBox.Height);
+    AComboBox.SetBounds(X + 130, Y, 90, AComboBox.Height);
     AComboBox.Tag := Index;
     AComboBox.Text := '';
     AComboBox.Items.Assign(History);
     FComboBoxList.Add(AComboBox);
     ALabel := TLabel.Create(Self);
     ALabel.Parent := PanelModify;
-    ALabel.SetBounds(X+5,Y+2,60,ALabel.Height);
+    ALabel.SetBounds(X + 5, Y + 2, 60, ALabel.Height);
     ALabel.Tag := Index;
     FLabelList.Add(ALabel);
-    if (Index=7) then
+    if Index = 7 then
     begin
       Y := 12;
       X := 230;
-    end else Inc(Y,32);
+    end
+    else
+      Inc(Y, 32);
   end;
   UpdateFormat;
 end;
@@ -246,33 +255,45 @@ var
   ALabel: TLabel;
 begin
   Value.Display := Display;
-  for Index := 0 to FLabelList.Count-1 do
+  for Index := 0 to FLabelList.Count - 1 do
   begin
     ALabel := FLabelList.Items[Index] as TLabel;
     case RegisterType of
-      rtXMM :
+      rtXMM:
         case Display of
-          xt16Bytes  : Value.ValueByte := XMMRegister.Bytes[ALabel.Tag];
-          xt8Words   : Value.ValueWord := XMMRegister.Words[ALabel.Tag];
-          xt4DWords  : Value.ValueDWord := XMMRegister.DWords[ALabel.Tag];
-          xt2QWords  : Value.ValueQWord := XMMRegister.QWords[ALabel.Tag];
-          xt4Singles : Value.ValueSingle := XMMRegister.Singles[ALabel.Tag];
-          xt2Doubles : Value.ValueDouble := XMMRegister.Doubles[ALabel.Tag];
+          xt16Bytes:
+            Value.ValueByte := XMMRegister.Bytes[ALabel.Tag];
+          xt8Words:
+            Value.ValueWord := XMMRegister.Words[ALabel.Tag];
+          xt4DWords:
+            Value.ValueDWord := XMMRegister.DWords[ALabel.Tag];
+          xt2QWords:
+            Value.ValueQWord := XMMRegister.QWords[ALabel.Tag];
+          xt4Singles:
+            Value.ValueSingle := XMMRegister.Singles[ALabel.Tag];
+          xt2Doubles:
+            Value.ValueDouble := XMMRegister.Doubles[ALabel.Tag];
         end;
-      rtMM :
+      rtMM:
         case Display of
-          xt16Bytes  : Value.ValueByte := MMRegister.Bytes[ALabel.Tag];
-          xt8Words   : Value.ValueWord := MMRegister.Words[ALabel.Tag];
-          xt4DWords  : Value.ValueDWord := MMRegister.DWords[ALabel.Tag];
-          xt2QWords  : Value.ValueQWord := MMRegister.QWords;
-          xt4Singles : Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
-          xt2Doubles : begin
-                         ALabel.Caption := '';
-                         Break;
-                       end;
+          xt16Bytes:
+            Value.ValueByte := MMRegister.Bytes[ALabel.Tag];
+          xt8Words:
+            Value.ValueWord := MMRegister.Words[ALabel.Tag];
+          xt4DWords:
+            Value.ValueDWord := MMRegister.DWords[ALabel.Tag];
+          xt2QWords:
+            Value.ValueQWord := MMRegister.QWords;
+          xt4Singles:
+            Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
+          xt2Doubles:
+            begin
+              ALabel.Caption := '';
+              Break;
+            end;
         end;
     end;
-    ALabel.Caption := SysUtils.Format('%s%d = %s',[Texts[Display],Index,FormatValue(Value,Format)]);
+    ALabel.Caption := SysUtils.Format('%s%d = %s', [Texts[Display], Index, FormatValue(Value, Format)]);
   end;
 end;
 
@@ -292,42 +313,42 @@ procedure TJclSIMDModifyFrm.LoadHistory;
 var
   Index, Count: Integer;
 begin
-  Count := Settings.ReadInteger(ClassName,'Count',0);
+  Count := Settings.ReadInteger(ClassName, CountPropertyName, 0);
   History.Clear;
 
-  for Index := 0 to Count-1 do
-    History.Add(Settings.ReadString(ClassName,SysUtils.Format('Item%d',[Index]),''));
+  for Index := 0 to Count - 1 do
+    History.Add(Settings.ReadString(ClassName, SysUtils.Format(ItemFormat, [Index]), ''));
 end;
 
 procedure TJclSIMDModifyFrm.SaveHistory;
 var
   Index: Integer;
 begin
-  Settings.WriteInteger(ClassName,'Count',History.Count);
+  Settings.WriteInteger(ClassName, CountPropertyName, History.Count);
   for Index := 0 to History.Count-1 do
-    Settings.WriteString(ClassName,SysUtils.Format('Item%d',[Index]),History.Strings[Index]);
+    Settings.WriteString(ClassName, SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
   History.Duplicates := dupIgnore;
-  for i := 0 to PanelModify.ControlCount-1 do
-    if PanelModify.Controls[i] is TComboBox then
-      with TComboBox(PanelModify.Controls[i]) do
+  for I := 0 to PanelModify.ControlCount - 1 do
+    if PanelModify.Controls[I] is TComboBox then
+      with TComboBox(PanelModify.Controls[I]) do
   begin
-    for j := 0 to Items.Count-1 do
-      if (Items.Strings[j]<>'') and (History.IndexOf(Items.Strings[j])=-1) then
-        History.Add(Items.Strings[j]);
-    if (Text<>'') and (History.IndexOf(Text)=-1) then
+    for J := 0 to Items.Count - 1 do
+      if (Items.Strings[J] <> '') and (History.IndexOf(Items.Strings[J]) = -1) then
+        History.Add(Items.Strings[J]);
+    if (Text <> '') and (History.IndexOf(Text) = -1) then
       History.Add(Text);
   end;
-  while (History.Count>30) do
+  while History.Count > HistoryListSize do
     History.Delete(0);
 end;
 
-procedure TJclSIMDModifyFrm.WMModifyContinue(var Message: TMessage);
+procedure TJclSIMDModifyFrm.WMModifyContinue(var Msg: TMessage);
 begin
   ContinueModify;
 end;
@@ -354,64 +375,83 @@ var
 begin
   if (FReturnCode <> 0) then
     EvaluateResult := erError
-  else EvaluateResult := erOK;
+  else
+    EvaluateResult := erOK;
   AValue.Display := Display;
-  GetVectorContext(Thread.Handle,VectorFrame);
+  GetVectorContext(Thread.Handle, VectorFrame);
   while (FTextIndex < FComboBoxList.Count) and (EvaluateResult = erOK) do
   begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
     begin
       if (ParseValue(FResultStr,AValue,Format)) then
         case RegisterType of
-          rtXMM :
+          rtXMM:
             case AValue.Display of
-              xt16Bytes  : FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
-              xt8Words   : FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
-              xt4DWords  : FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
-              xt2QWords  : FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
-              xt4Singles : FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
-              xt2Doubles : FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
+              xt16Bytes:
+                FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+              xt8Words:
+                FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
+              xt4DWords:
+                FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+              xt2QWords:
+                FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
+              xt4Singles:
+                FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+              xt2Doubles:
+                FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
             end;
-          rtMM :
+          rtMM:
             case AValue.Display of
-              xt16Bytes  : FMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
-              xt8Words   : FMMRegister.Words[FTextIndex] := AValue.ValueWord;
-              xt4DWords  : FMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
-              xt2QWords  : FMMRegister.QWords := AValue.ValueQWord;
-              xt4Singles : FMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
-              xt2Doubles : EvaluateResult := erError;
+              xt16Bytes:
+                FMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+              xt8Words:
+                FMMRegister.Words[FTextIndex] := AValue.ValueWord;
+              xt4DWords:
+                FMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+              xt2QWords:
+                FMMRegister.QWords := AValue.ValueQWord;
+              xt4Singles:
+                FMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+              xt2Doubles:
+                EvaluateResult := erError;
             end;
-          else EvaluateResult := erError;
+          else
+            EvaluateResult := erError;
         end
-      else EvaluateResult := erError;
+      else
+        EvaluateResult := erError;
     end;
-    if (EvaluateResult = erOK) then
+    if EvaluateResult = erOK then
     begin
       Inc(FTextIndex);
-      if (FTextIndex < FComboBoxList.Count) then
+      if FTextIndex < FComboBoxList.Count then
       begin
         AComboBox := TComboBox(FComboBoxList.Items[FTextIndex]);
         FExprStr := AComboBox.Text;
-        if (FExprStr <> '') then
+        if FExprStr <> '' then
         begin
-          if (not ParseValue(FExprStr,AValue,Format)) then
+          if not ParseValue(FExprStr, AValue, Format) then
           begin
-            if ReplaceSIMDRegisters(FExprStr,FCPUInfo.Is64Bits,VectorFrame) then
-              EvaluateResult := Thread.Evaluate(FExprStr,ResultBuffer,
-                ResultBufferSize,CanModify,True,'',ResultAddr,ResultSize,FReturnCode)
-            else EvaluateResult := erError;
+            if ReplaceSIMDRegisters(FExprStr, FCPUInfo.Is64Bits, VectorFrame) then
+              EvaluateResult := Thread.Evaluate(FExprStr, ResultBuffer,
+                ResultBufferSize, CanModify, True, '', ResultAddr, ResultSize, FReturnCode)
+            else
+              EvaluateResult := erError;
             if (EvaluateResult <> erDeferred) and (FReturnCode <> 0) then
               EvaluateResult := erError;
-            if (EvaluateResult = erOK) then
+            if EvaluateResult = erOK then
               FResultStr := ResultBuffer;
-            if (FResultStr = '') then
+            if FResultStr = '' then
               EvaluateResult := erError;
-          end else
+          end
+          else
           begin
             FResultStr := FExprStr;
             EvaluateResult := erOK;
           end;
-        end else FResultStr := '';
+        end
+        else
+          FResultStr := '';
       end;
     end;
   end;
@@ -420,7 +460,9 @@ begin
     AComboBox := TComboBox(FComboBoxList.Items[FTextIndex]);
     FocusControl(AComboBox);
     AComboBox.SelectAll;
-  end else if (EvaluateResult = erOK) and (FTextIndex >= FComboBoxList.Count) then
+  end
+  else
+  if (EvaluateResult = erOK) and (FTextIndex >= FComboBoxList.Count) then
     ModalResult := mrOk;
 end;
 
@@ -429,14 +471,13 @@ begin
   StartModify;
 end;
 
-procedure TJclSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string;
-  ReturnCode: Integer);
+procedure TJclSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
 begin
-  if (CompareText(FExprStr,ExprStr)=0) then
+  if CompareText(FExprStr, ExprStr) = 0 then
   begin
     FResultStr := ResultStr;
     FReturnCode := ReturnCode;
-    PostMessage(Handle,WM_MODIFYCONTINUE,0,0);
+    PostMessage(Handle, WM_MODIFYCONTINUE, 0, 0);
   end;
 end;
 
