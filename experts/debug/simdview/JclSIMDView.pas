@@ -32,20 +32,21 @@ interface
 
 uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
-  Forms, ComCtrls, JclOTAUtils, JclSysInfo, JclSIMDViewForm;
+  Forms, ComCtrls,
+  JclOTAUtils, JclSysInfo, JclSIMDViewForm;
 
 {$R 'JclSIMDIcon.dcr'}
 
 type
   TProcessReference = record
-    Process:IOTAProcess;
-    ID:Integer;
+    Process: IOTAProcess;
+    ID: Integer;
   end;
   PProcessReference = ^TProcessReference;
 
   TThreadReference = record
-    Thread:IOTAThread;
-    ID:Integer;
+    Thread: IOTAThread;
+    ID: Integer;
   end;
   PThreadReference = ^TThreadReference;
 
@@ -63,7 +64,7 @@ type
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
   protected
-    FSIMDAction:TAction;
+    FSIMDAction: TAction;
     procedure SIMDActionExecute(Sender: TObject);
     procedure SIMDActionUpdate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -76,13 +77,12 @@ type
     procedure UnregisterCommands; override;
     procedure RefreshThreadContext(WriteOldContext: Boolean);
     procedure CloseForm;
-    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
-      ReturnCode: Integer);
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
   TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
-                             IOTAProcessNotifier, IOTAThreadNotifier)
+    IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
@@ -90,26 +90,24 @@ type
     function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
     function FindThreadReference(AThread:IOTAThread): PThreadReference;
   public
+    constructor Create(AOwner: TJclSIMDWizard); reintroduce;
+    destructor Destroy; override;
     // IOTADebuggerNotifier
-    procedure ProcessCreated({$IFDEF RTL170_UP}const{$ENDIF} Process: IOTAProcess);
-    procedure ProcessDestroyed({$IFDEF RTL170_UP}const{$ENDIF} Process: IOTAProcess);
-    procedure BreakpointAdded({$IFDEF RTL170_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
-    procedure BreakpointDeleted({$IFDEF RTL170_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+    procedure ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
+    procedure ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
+    procedure BreakpointAdded({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
+    procedure BreakpointDeleted({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
     // IOTAProcessNotifier
-    procedure ThreadCreated({$IFDEF RTL170_UP}const{$ENDIF} Thread: IOTAThread);
-    procedure ThreadDestroyed({$IFDEF RTL170_UP}const{$ENDIF} Thread: IOTAThread);
-    procedure ProcessModuleCreated({$IFDEF RTL170_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
-    procedure ProcessModuleDestroyed({$IFDEF RTL170_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
+    procedure ThreadCreated({$IFDEF RTL170_UP} const {$ENDIF} Thread: IOTAThread);
+    procedure ThreadDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Thread: IOTAThread);
+    procedure ProcessModuleCreated({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
+    procedure ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
     // IOTAThreadNotifier
     procedure ThreadNotify(Reason: TOTANotifyReason);
     procedure EvaluteComplete(const ExprStr, ResultStr: string;
-      CanModify: Boolean; ResultAddress, ResultSize: LongWord;
-      ReturnCode: Integer);
-    procedure ModifyComplete(const ExprStr, ResultStr: string;
-      ReturnCode: Integer);
-    constructor Create(AOwner:TJclSIMDWizard); reintroduce;
-    destructor Destroy; override;
-    property Owner:TJclSIMDWizard read FOwner;
+      CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
+    procedure ModifyComplete(const ExprStr, ResultStr: string; ReturnCode: Integer);
+    property Owner: TJclSIMDWizard read FOwner;
   end;
 
 procedure Register;
@@ -128,12 +126,12 @@ begin
   RegisterPackageWizard(TJclSIMDWizard.Create);
 end;
 
-{ TJclSIMDWizard }
+//=== { TJclSIMDWizard } =====================================================
 
 constructor TJclSIMDWizard.Create;
 begin
   FCpuInfoValid := False;
-  FForm:=nil;
+  FForm := nil;
 
   inherited Create;
 end;
@@ -152,13 +150,13 @@ procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   if CpuInfo.SSE = 0 then
   begin
-    MessageDlg(RsNoSSE,mtError,[mbAbort],0);
+    MessageDlg(RsNoSSE, mtError, [mbAbort], 0);
     Exit;
   end;
 
   if not Assigned(FForm) then
   begin
-    FForm := TJclSIMDViewFrm.Create(Application,DebuggerServices,JediIniFile);
+    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, JediIniFile);
     try
       FForm.Icon := FIcon;
       FForm.OnDestroy := FormDestroy;
@@ -168,7 +166,7 @@ begin
       FForm.Show;
     except
       on E: Exception do
-        MessageDlg(RsFormCreateError+E.Message,mtError,[mbAbort],0);
+        MessageDlg(RsFormCreateError + E.Message, mtError, [mbAbort], 0);
     end;
   end
   else
@@ -183,15 +181,15 @@ var
 begin
   AAction := Sender as TAction;
 
-  if (CpuInfo.SSE <> 0) or (CPUInfo.MMX) or (CPUInfo._3DNow) then
+  if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
   begin
     AThread := nil;
     AProcess := nil;
-    if (DebuggerServices.ProcessCount > 0) then
+    if DebuggerServices.ProcessCount > 0 then
       AProcess := DebuggerServices.CurrentProcess;
-    if (AProcess<>nil) and (AProcess.ThreadCount > 0) then
+    if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
       AThread := AProcess.CurrentThread;
-    if (AThread<>nil) then
+    if AThread <> nil then
       AAction.Enabled := AThread.State in [tsStopped, tsBlocked]
     else
       AAction.Enabled := False;
@@ -202,8 +200,8 @@ end;
 
 procedure TJclSIMDWizard.CloseForm;
 begin
-  if Assigned(FForm)
-    then FForm.Close;
+  if Assigned(FForm) then
+    FForm.Close;
 end;
 
 function TJclSIMDWizard.CpuInfo: TCpuInfo;
@@ -224,16 +222,16 @@ var
   ViewMenu: TMenuItem;
   Category: string;
 begin
-  Supports(Services,IOTADebuggerServices,FDebuggerServices);
-  Assert(Assigned(FDebuggerServices),'Unable to get Borland Debugger Services');
-    
+  Supports(Services, IOTADebuggerServices, FDebuggerServices);
+  Assert(Assigned(FDebuggerServices), 'Unable to get Borland Debugger Services');
+
   Category := '';
-  for I := 0 to NTAServices.ActionList.ActionCount-1 do
-    if (CompareText(NTAServices.ActionList.Actions[I].Name,'DebugCPUCommand') = 0)
-      then Category := NTAServices.ActionList.Actions[I].Category;
+  for I := 0 to NTAServices.ActionList.ActionCount - 1 do
+    if CompareText(NTAServices.ActionList.Actions[I].Name, 'DebugCPUCommand') = 0 then
+      Category := NTAServices.ActionList.Actions[I].Category;
 
   FIcon := TIcon.Create;
-  FIcon.Handle := LoadIcon(FindResourceHInstance(HInstance),'SIMDICON');
+  FIcon.Handle := LoadIcon(FindResourceHInstance(HInstance), 'SIMDICON');
 
   FSIMDAction := TAction.Create(nil);
   FSIMDAction.Caption := RsSIMD;
@@ -247,21 +245,21 @@ begin
 
   FSIMDMenuItem := TMenuItem.Create(nil);
   FSIMDMenuItem.Action := FSIMDAction;
-  FSIMDMenuItem.ShortCut := Shortcut(Ord('D'),[ssCtrl,ssAlt]);
+  FSIMDMenuItem.ShortCut := Shortcut(Ord('D'), [ssCtrl, ssAlt]);
 
   IDEMenu := NTAServices.MainMenu;
 
   ViewMenu := nil;
-  for I:=0 to IDEMenu.Items.Count-1 do
-    if (CompareText(IDEMenu.Items[I].Name,'ViewsMenu')=0)
-      then ViewMenu := IDEMenu.Items[I];
-  Assert(ViewMenu<>nil,'Unable to find View menu');
+  for I := 0 to IDEMenu.Items.Count - 1 do
+    if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
+      ViewMenu := IDEMenu.Items[I];
+  Assert(ViewMenu <> nil, 'Unable to find View menu');
 
   FViewDebugMenu := nil;
-  for I:=0 to ViewMenu.Count-1 do
-    if (CompareText(ViewMenu.Items[I].Name,'ViewDebugItem')=0)
-      then FViewDebugMenu := ViewMenu.Items[I];
-  Assert(FViewDebugMenu<>nil,'Unable to find View\Debug menu');
+  for I := 0 to ViewMenu.Count - 1 do
+    if CompareText(ViewMenu.Items[I].Name, 'ViewDebugItem') = 0 then
+      FViewDebugMenu := ViewMenu.Items[I];
+  Assert(FViewDebugMenu <> nil, 'Unable to find View\Debug menu');
 
   FViewDebugMenu.Add(FSIMDMenuItem);
 
@@ -290,6 +288,7 @@ begin
 end;
 
 function TJclSIMDWizard.GetSIMDString: string;
+
   function Concat(LeftValue, RightValue: string): string;
   begin
     if LeftValue = '' then
@@ -297,6 +296,7 @@ function TJclSIMDWizard.GetSIMDString: string;
     else
       Result := LeftValue + ',' + RightValue;
   end;
+
 begin
   Result := '';
   with CpuInfo do
@@ -304,17 +304,17 @@ begin
     if MMX then
       Result := RsMMX;
     if ExMMX then
-      Result := Concat(Result,RsExMMX);
+      Result := Concat(Result, RsExMMX);
     if _3DNow then
-      Result := Concat(Result,Rs3DNow);
+      Result := Concat(Result, Rs3DNow);
     if Ex3DNow then
-      Result := Concat(Result,RsEx3DNow);
+      Result := Concat(Result, RsEx3DNow);
     if SSE >= 1 then
-      Result := Concat(Result,RsSSE1);
+      Result := Concat(Result, RsSSE1);
     if SSE >= 2 then
-      Result := Concat(Result,RsSSE2);
+      Result := Concat(Result, RsSSE2);
     if SSE >= 3 then
-      Result := Concat(Result,RsSSE3);
+      Result := Concat(Result, RsSSE3);
     if Is64Bits then
       Result := Result + ',' + RsLong;
   end;
@@ -323,22 +323,19 @@ end;
 procedure TJclSIMDWizard.RefreshThreadContext(WriteOldContext: Boolean);
 begin
   if Assigned(FForm) then
-  begin
     if WriteOldContext then
       FForm.SetThreadValues
     else
       FForm.GetThreadValues;
-  end;
 end;
 
-procedure TJclSIMDWizard.ThreadEvaluate(const ExprStr,
-  ResultStr: string; ReturnCode: Integer);
+procedure TJclSIMDWizard.ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
 begin
   if Assigned(FForm) then
-    FForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+    FForm.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
 end;
 
-{ TJclDebuggerNotifier }
+//=== { TJclDebuggerNotifier } ===============================================
 
 constructor TJclDebuggerNotifier.Create(AOwner: TJclSIMDWizard);
 begin
@@ -354,14 +351,14 @@ var
   AThreadReference: PThreadReference;
   AProcessReference: PProcessReference;
 begin
-  while (FThreadList.Count > 0) do
+  while FThreadList.Count > 0 do
   begin
     AThreadReference := PThreadReference(FThreadList.Items[0]);
     AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
     FThreadList.Remove(AThreadReference);
     Dispose(AThreadReference);
   end;
-  while (FProcessList.Count > 0) do
+  while FProcessList.Count > 0 do
   begin
     AProcessReference := PProcessReference(FProcessList.Items[0]);
     AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
@@ -374,63 +371,59 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclDebuggerNotifier.BreakpointAdded({$IFDEF RTL170_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+procedure TJclDebuggerNotifier.BreakpointAdded({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
 begin
 
 end;
 
-procedure TJclDebuggerNotifier.BreakpointDeleted({$IFDEF RTL170_UP}const{$ENDIF} Breakpoint: IOTABreakpoint);
+procedure TJclDebuggerNotifier.BreakpointDeleted({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
 begin
 
 end;
 
-procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr,
-  ResultStr: string; CanModify: Boolean; ResultAddress,
-  ResultSize: LongWord; ReturnCode: Integer);
+procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr, ResultStr: string;
+  CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
 begin
-  Owner.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+  Owner.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
 end;
 
-function TJclDebuggerNotifier.FindProcessReference(
-  AProcess: IOTAProcess): PProcessReference;
+function TJclDebuggerNotifier.FindProcessReference(AProcess: IOTAProcess): PProcessReference;
 var
   Index: Integer;
 begin
-  for Index := 0 to FProcessList.Count-1 do
+  for Index := 0 to FProcessList.Count - 1 do
   begin
     Result := PProcessReference(FProcessList.Items[Index]);
-    if (Result.Process = AProcess)
-      then Exit;
+    if Result.Process = AProcess then
+      Exit;
   end;
   Result := nil;
 end;
 
-function TJclDebuggerNotifier.FindThreadReference(
-  AThread: IOTAThread): PThreadReference;
+function TJclDebuggerNotifier.FindThreadReference(AThread: IOTAThread): PThreadReference;
 var
   Index: Integer;
 begin
-  for Index := 0 to FThreadList.Count-1 do
+  for Index := 0 to FThreadList.Count - 1 do
   begin
     Result := PThreadReference(FThreadList.Items[Index]);
-    if (Result.Thread = AThread)
-      then Exit;
+    if Result.Thread = AThread then
+      Exit;
   end;
   Result := nil;
 end;
 
-procedure TJclDebuggerNotifier.ModifyComplete(const ExprStr,
-  ResultStr: string; ReturnCode: Integer);
+procedure TJclDebuggerNotifier.ModifyComplete(const ExprStr, ResultStr: string; ReturnCode: Integer);
 begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP}const{$ENDIF} Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 var
   AProcessReference: PProcessReference;
 begin
   AProcessReference := FindProcessReference(Process);
-  if (AProcessReference = nil) then
+  if AProcessReference = nil then
   begin
     New(AProcessReference);
     AProcessReference.Process := Process;
@@ -439,16 +432,16 @@ begin
   end;
 end;
 
-procedure TJclDebuggerNotifier.ProcessDestroyed({$IFDEF RTL170_UP}const{$ENDIF} Process: IOTAProcess);
+procedure TJclDebuggerNotifier.ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 var
   AProcessReference: PProcessReference;
   AThreadReference: PThreadReference;
   Index: Integer;
 begin
-  for Index := 0 to Process.ThreadCount-1 do
+  for Index := 0 to Process.ThreadCount - 1 do
   begin
     AThreadReference := FindThreadReference(Process.Threads[Index]);
-    if (AThreadReference <> nil) then
+    if AThreadReference <> nil then
     begin
       AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
       FThreadList.Remove(AThreadReference);
@@ -457,15 +450,15 @@ begin
   end;
 
   AProcessReference := FindProcessReference(Process);
-  if (AProcessReference <> nil) then
+  if AProcessReference <> nil then
   begin
     AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
     FProcessList.Remove(AProcessReference);
     Dispose(AProcessReference);
   end;
 
-  if (Owner.DebuggerServices.ProcessCount = 1)
-    then Owner.CloseForm;
+  if Owner.DebuggerServices.ProcessCount = 1 then
+    Owner.CloseForm;
 end;
 
 procedure TJclDebuggerNotifier.ProcessModuleCreated(
@@ -474,18 +467,17 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessModuleDestroyed(
-  {$IFDEF RTL170_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
+procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;
 
-procedure TJclDebuggerNotifier.ThreadCreated({$IFDEF RTL170_UP}const{$ENDIF} Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadCreated({$IFDEF RTL170_UP} const {$ENDIF} Thread: IOTAThread);
 var
   AThreadReference: PThreadReference;
 begin
   AThreadReference := FindThreadReference(Thread);
-  if (AThreadReference = nil) then
+  if AThreadReference = nil then
   begin
     New(AThreadReference);
     AThreadReference.Thread := Thread;
@@ -494,12 +486,12 @@ begin
   end;
 end;
 
-procedure TJclDebuggerNotifier.ThreadDestroyed({$IFDEF RTL170_UP}const{$ENDIF} Thread: IOTAThread);
+procedure TJclDebuggerNotifier.ThreadDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Thread: IOTAThread);
 var
   AThreadReference: PThreadReference;
 begin
   AThreadReference := FindThreadReference(Thread);
-  if (AThreadReference <> nil) then
+  if AThreadReference <> nil then
   begin
     AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
     FThreadList.Remove(AThreadReference);
@@ -509,7 +501,7 @@ end;
 
 procedure TJclDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
-  Owner.RefreshThreadContext(False);//Reason = nrRunning);
+  Owner.RefreshThreadContext(False);  //Reason = nrRunning);
 end;
 
 end.

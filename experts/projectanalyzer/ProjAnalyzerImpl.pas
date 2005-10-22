@@ -24,13 +24,13 @@
 
 unit ProjAnalyzerImpl;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
 uses
-  Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
-  Forms, JclOtaUtils;
+  Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs, Forms,
+  JclOtaUtils;
 
 type
   TProjectAnalyzerExpert = class(TJclOTAExpert)
@@ -62,16 +62,18 @@ resourcestring
   RsCantFindFiles = 'Can''t find MAP or executable file';
   RsBuildingProject = 'Building project %s ...';
 
-//--------------------------------------------------------------------------------------------------
-
 procedure Register;
 begin
   RegisterPackageWizard(TProjectAnalyzerExpert.Create);
 end;
 
-//==================================================================================================
-// TProjectAnalyzerExpert
-//==================================================================================================
+//=== { TProjectAnalyzerExpert } =============================================
+
+destructor TProjectAnalyzerExpert.Destroy;
+begin
+  FreeAndNil(ProjectAnalyzerForm);
+  inherited Destroy;
+end;
 
 procedure TProjectAnalyzerExpert.ActionExecute(Sender: TObject);
 var
@@ -130,8 +132,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerExpert.ActionUpdate(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
@@ -147,16 +147,6 @@ begin
     ProjectName := RsProjectNone;
   FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TProjectAnalyzerExpert.Destroy;
-begin
-  FreeAndNil(ProjectAnalyzerForm);
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerExpert.RegisterCommands;
 var
@@ -209,15 +199,11 @@ begin
   Assert(FBuildMenuItem.Parent <> nil);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerExpert.UnregisterCommands;
 begin
   UnregisterAction(FBuildAction);
   FreeAndNil(FBuildMenuItem);
   FreeAndNil(FBuildAction);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.

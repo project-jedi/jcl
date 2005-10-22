@@ -22,7 +22,7 @@
 
 unit JclDebugThread;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 

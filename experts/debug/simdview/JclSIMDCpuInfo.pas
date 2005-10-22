@@ -28,11 +28,12 @@ unit JclSIMDCpuInfo;
 
 interface
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JclSysInfo;
+  Dialogs, StdCtrls,
+  JclSysInfo;
 
 type
   TJclFormCpuInfo = class(TForm)
@@ -51,7 +52,6 @@ type
     CheckBoxSSE2: TCheckBox;
     CheckBoxSSE3: TCheckBox;
     ButtonClose: TButton;
-  private
   public
     procedure Execute(const CpuInfo: TCPUInfo);
   end;
@@ -60,7 +60,7 @@ implementation
 
 {$R *.dfm}
 
-{ TFormCpuInfo }
+//=== { TFormCpuInfo } =======================================================
 
 procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo);
 begin

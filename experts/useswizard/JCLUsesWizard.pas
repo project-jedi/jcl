@@ -1,3 +1,29 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclUsesWizard.pas.                                                          }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Unit owner: Robert Marquardt                                                                     }
+{ Last modified: October 19, 2005                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit JclUsesWizard;
 
 {$I jcl.inc}
@@ -5,7 +31,7 @@ unit JclUsesWizard;
 interface
 
 uses
-  Classes, SysUtils, Windows, Registry;
+  Windows;
 
 type
   TWizardAction = (waSkip, waAddToImpl, waAddToIntf, waMoveToIntf);
@@ -19,33 +45,17 @@ type
     UsesName: array [0..MAX_PATH - 1] of Char; // unit name to be added to uses clause
   end;
 
-const
-  SJCLRegSubkey = 'Jedi\JCL\IDE\JclUsesExpert';
-  SIniIdentifierLists = 'IdentifierLists';
-  SRegDebugLibPath = 'Debug Library';
-  SRegLibPath = 'Library';
-  SRegWizardActive = 'Uses Wizard Active';
-  SRegWizardCofirm = 'Uses Wizard Confirm';
-  SRegWizardIniFile = 'Configuration File';
-
-resourcestring
-  SIntfUsesNotFound = 'JEDI Uses wizard: Uses clause not found in the interface section';
-  SImplUsesNotFound = 'JEDI Uses wizard: Uses clause not found in the implementation section';
-  SIntfUsesInvalid = 'JEDI Uses wizard: Uses clause invalid in the interface section';
-  SImplUsesInvalid = 'JEDI Uses wizard: Uses clause invalid in the implementation section';
-
 procedure Register;
 procedure SettingsChanged;
 
 implementation
 
 uses
-  ToolsAPI, Messages, Forms, Controls, Dialogs, ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
-  JclOptionsFrame, JclParseUses, JclUsesDialog, JclFileUtils;
+  Classes, SysUtils, ToolsAPI, Messages, Forms, Controls,
+  ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
+  JclFileUtils, JclOptionsFrame, JclOtaConsts, JclParseUses, JclRegistry, JclUsesDialog;
 
 const
-  SJCLUsesWizardID = 'JEDI.JCLUsesWizard'; // wizard ID
-  SJCLUsesWizardName = 'JCL Uses Wizard'; // wizard name
   SEnvOptionsDlgClassName = 'TPasEnvironmentDialog';
 
 type
@@ -444,10 +454,10 @@ var
     SUndeclaredIdentID = 2;
     {$ENDIF COMPILER6}
   var
-    Registry: TRegistry;
     Dcc32FileName: string;
     Dcc32: HMODULE;
     ResString: TResStringRec;
+    S: string;
   begin
     SError := '';
     SUndeclaredIdent := '';
@@ -455,22 +465,14 @@ var
     Dcc32FileName := 'dcc32.exe';
 
     // try to retrieve and prepend Delphi bin path
-    Registry := TRegistry.Create(KEY_READ);
-    try
-      {$IFDEF COMPILER6_UP}
-      Registry.RootKey := HKEY_CURRENT_USER;
-      if Registry.OpenKeyReadOnly((BorlandIDEServices as IOTAServices).GetBaseRegistryKey) then
-        Dcc32FileName := PathAddSeparator(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName
-      else
-      {$ENDIF COMPILER6_UP}
-      begin
-        Registry.RootKey := HKEY_LOCAL_MACHINE;
-        if Registry.OpenKeyReadOnly((BorlandIDEServices as IOTAServices).GetBaseRegistryKey) then
-          Dcc32FileName := PathAddSeparator(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName;
-      end;
-    finally
-      Registry.Free;
-    end;
+    S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey;
+    {$IFDEF COMPILER6_UP}
+    if RegKeyExists(HKEY_CURRENT_USER, S) then
+      Dcc32FileName := PathAddSeparator(RegReadString(HKEY_CURRENT_USER, S, 'RootDir')) + 'Bin\' + Dcc32FileName
+    else
+    {$ENDIF COMPILER6_UP}
+    if RegKeyExists(HKEY_LOCAL_MACHINE, S) then
+      Dcc32FileName := PathAddSeparator(RegReadString(HKEY_LOCAL_MACHINE, S, 'RootDir')) + 'Bin\' + Dcc32FileName;
 
     // try to load localized resources first
     Dcc32 := LoadResourceModule(PChar(Dcc32FileName));
@@ -953,30 +955,20 @@ end;
 
 function TJCLUsesWizard.LoadFromRegistry: Boolean;
 var
-  Registry: TRegistry;
+  S: string;
+  Root: DelphiHKEY;
 begin
-  Registry := TRegistry.Create(KEY_READ);
-  try
-    Registry.RootKey := HKEY_CURRENT_USER;
-    with BorlandIDEServices as IOTAServices do
-    begin
-      Result := Registry.OpenKey(GetBaseRegistryKey + '\' + SJCLRegSubkey, False);
-      if not Result then
-      begin
-        Registry.RootKey := HKEY_LOCAL_MACHINE;
-        Result := Registry.OpenKey(GetBaseRegistryKey + '\' + SJCLRegSubkey, False);
-      end;
-    end;
-
-    if Result then
-    begin
-      SetActive(Registry.ValueExists(SRegWizardActive) and Registry.ReadBool(SRegWizardActive));
-      FConfirmChanges := not Registry.ValueExists(SRegWizardCofirm) or Registry.ReadBool(SRegWizardCofirm);
-      FIniFile := Registry.ReadString(SRegWizardIniFile);
-    end;
-  finally
-    Registry.Free;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  Root := HKEY_CURRENT_USER;
+  Result := RegKeyExists(Root, S);
+  if not Result then
+  begin
+    Root := HKEY_LOCAL_MACHINE;
+    Result := RegKeyExists(Root, S);
   end;
+  SetActive(RegReadBoolDef(Root, S, SRegWizardActive, False));
+  FConfirmChanges := RegReadBoolDef(Root, S, SRegWizardConfirm, True);
+  FIniFile := RegReadStringDef(Root, S, SRegWizardIniFile, '');
 end;
 
 // create and register wizard instance

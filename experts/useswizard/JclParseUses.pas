@@ -1,3 +1,29 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclParseUses.pas.                                                           }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Unit owner: Robert Marquardt                                                                     }
+{ Last modified: October 19, 2005                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit JclParseUses;
 
 {$I jcl.inc}
@@ -10,7 +36,7 @@ uses
 type
   EUsesListError = class(Exception);
 
-  TUsesList = class
+  TUsesList = class(TObject)
   private
     FText: string;
     function GetCount: Integer;
@@ -26,7 +52,7 @@ type
     property Items[Index: Integer]: string read GetItems; default;
   end;
 
-  TCustomGoal = class
+  TCustomGoal = class(TObject)
   public
     constructor Create(Text: PChar); virtual; abstract;
   end;
@@ -80,10 +106,11 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
-  RtlConsts;
+  RtlConsts,
   {$ELSE}
-  Consts;
+  Consts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  JclOtaResources;
 
 const
   Blanks: TSysCharSet = [#9, #10, #13, ' '];
@@ -92,18 +119,9 @@ const
   SUnit = 'unit';
   SUses = 'uses';
 
-resourcestring
-  SDuplicateUnit = 'Duplicate unit ''%s''';
-  SInvalidLibrary = 'Invalid library';
-  SInvalidProgram = 'Invalid program';
-  SInvalidUnit = 'Invalid unit';
-  SInvalidUses = 'Invalid uses clause';
-
 function PeekKeyword(var P: PChar; Keyword: PChar): Boolean; forward;
 function ReadIdentifier(var P: PChar): string; forward;
 procedure SkipCommentsAndBlanks(var P: PChar); forward;
-
-//----------------------------------------------------------------------------
 
 function CheckIdentifier(var P: PChar): Boolean;
 begin
@@ -116,8 +134,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 function CheckKeyword(var P: PChar; Keyword: PChar): Boolean;
 var
   KeywordLen: Integer;
@@ -127,8 +143,6 @@ begin
   if Result then
     Inc(P, KeywordLen);
 end;
-
-//----------------------------------------------------------------------------
 
 function CreateGoal(Text: PChar): TCustomGoal;
 var
@@ -148,8 +162,6 @@ begin
     Result := TUnitGoal.Create(Text);
 end;
 
-//----------------------------------------------------------------------------
-
 function PeekKeyword(var P: PChar; Keyword: PChar): Boolean;
 var
   KeywordLen: Integer;
@@ -157,8 +169,6 @@ begin
   KeywordLen := StrLen(Keyword);
   Result := StrLComp(P, Keyword, KeywordLen) = 0;
 end;
-
-//----------------------------------------------------------------------------
 
 function ReadIdentifier(var P: PChar): string;
 var
@@ -178,15 +188,11 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure SkipChars(var P: PChar; Chars: TSysCharSet);
 begin
   while P^ in Chars do
     Inc(P);
 end;
-
-//----------------------------------------------------------------------------
 
 procedure SkipComments(var P: PChar);
 var
@@ -214,8 +220,6 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
-
 procedure SkipCommentsAndBlanks(var P: PChar);
 var
   Test: PChar;
@@ -227,129 +231,7 @@ begin
   until Test = P;
 end;
 
-//----------------------------------------------------------------------------
-{ TUsesList private }
-//----------------------------------------------------------------------------
-
-function TUsesList.GetCount: Integer;
-var
-  P: PChar;
-begin
-  Result := 0;
-
-  if FText = '' then
-    Exit;
-
-  P := PChar(FText);
-  // an empty uses clause consisting of only blanks and comments
-  // (resulting from removal of the last unit) is valid too
-  SkipCommentsAndBlanks(P);
-  if P^ = #0 then
-    Exit;
-
-  if not CheckKeyword(P, SUses) then
-    raise EUsesListError.Create(SInvalidUses);
-
-  while P^ <> #0 do
-  begin
-    SkipCommentsAndBlanks(P);
-    if not CheckIdentifier(P) then
-      raise EUsesListError.Create(SInvalidUses);
-    Inc(Result);
-    SkipCommentsAndBlanks(P);
-
-    if PeekKeyword(P, 'in') then
-    begin
-      Inc(P, 2);
-      SkipCommentsAndBlanks(P);
-      if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
-      Inc(P);
-        
-      while not (P^ in [#0, '''']) do
-        Inc(P);
-      if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
-      Inc(P);
-      SkipCommentsAndBlanks(P);
-    end;
-
-    case P^ of
-      ',':
-        Inc(P);
-      ';':
-        Break;
-      else
-        raise EUsesListError.Create(SInvalidUses);
-    end;
-  end;
-end;
-
-//----------------------------------------------------------------------------
-
-function TUsesList.GetItems(Index: Integer): string;
-var
-  P, PIdentifier: PChar;
-  I: Integer;
-begin
-  Result := '';
-
-  if (Index < 0) or (Index > Count - 1) then
-    raise EUsesListError.CreateFmt(SListIndexError, [Index]);
-
-  P := PChar(FText);
-  if not CheckKeyword(P, SUses) then
-    raise EUsesListError.Create(SInvalidUses);
-  I := -1;
-  while P^ <> #0 do
-  begin
-    SkipCommentsAndBlanks(P);
-    PIdentifier := P;
-    if not CheckIdentifier(P) then
-      raise EUsesListError.Create(SInvalidUses);
-
-    Inc(I);
-    if I = Index then
-    begin
-      while PIdentifier^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
-      begin
-        Result := Result + PIdentifier^;
-        Inc(PIdentifier);
-      end;
-      Exit;
-    end;
-    SkipCommentsAndBlanks(P);
-
-    if PeekKeyword(P, 'in') then
-    begin
-      Inc(P, 2);
-      SkipCommentsAndBlanks(P);
-      if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
-      Inc(P);
-
-      while not (P^ in [#0, '''']) do
-        Inc(P);
-      if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
-      Inc(P);
-      SkipCommentsAndBlanks(P);
-    end;
-
-    case P^ of
-      ',':
-        Inc(P);
-      ';':
-        Break;
-      else
-        raise EUsesListError.Create(SInvalidUses);
-    end;
-  end;
-end;
-
-//----------------------------------------------------------------------------
-{ TUsesList public }
-//----------------------------------------------------------------------------
+//=== { TUsesList } ==========================================================
 
 constructor TUsesList.Create(const AText: PChar);
 var
@@ -368,7 +250,7 @@ begin
     begin
       SkipCommentsAndBlanks(P);
       if not CheckIdentifier(P) then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       SkipCommentsAndBlanks(P);
 
       if PeekKeyword(P, 'in') then
@@ -376,13 +258,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
         
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -396,7 +278,7 @@ begin
             Break;
           end;
         else
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
       end;
     end;
 
@@ -404,7 +286,119 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
+function TUsesList.GetCount: Integer;
+var
+  P: PChar;
+begin
+  Result := 0;
+
+  if FText = '' then
+    Exit;
+
+  P := PChar(FText);
+  // an empty uses clause consisting of only blanks and comments
+  // (resulting from removal of the last unit) is valid too
+  SkipCommentsAndBlanks(P);
+  if P^ = #0 then
+    Exit;
+
+  if not CheckKeyword(P, SUses) then
+    raise EUsesListError.Create(RsEInvalidUses);
+
+  while P^ <> #0 do
+  begin
+    SkipCommentsAndBlanks(P);
+    if not CheckIdentifier(P) then
+      raise EUsesListError.Create(RsEInvalidUses);
+    Inc(Result);
+    SkipCommentsAndBlanks(P);
+
+    if PeekKeyword(P, 'in') then
+    begin
+      Inc(P, 2);
+      SkipCommentsAndBlanks(P);
+      if P^ <> '''' then
+        raise EUsesListError.Create(RsEInvalidUses);
+      Inc(P);
+        
+      while not (P^ in [#0, '''']) do
+        Inc(P);
+      if P^ <> '''' then
+        raise EUsesListError.Create(RsEInvalidUses);
+      Inc(P);
+      SkipCommentsAndBlanks(P);
+    end;
+
+    case P^ of
+      ',':
+        Inc(P);
+      ';':
+        Break;
+      else
+        raise EUsesListError.Create(RsEInvalidUses);
+    end;
+  end;
+end;
+
+function TUsesList.GetItems(Index: Integer): string;
+var
+  P, PIdentifier: PChar;
+  I: Integer;
+begin
+  Result := '';
+
+  if (Index < 0) or (Index > Count - 1) then
+    raise EUsesListError.CreateFmt(SListIndexError, [Index]);
+
+  P := PChar(FText);
+  if not CheckKeyword(P, SUses) then
+    raise EUsesListError.Create(RsEInvalidUses);
+  I := -1;
+  while P^ <> #0 do
+  begin
+    SkipCommentsAndBlanks(P);
+    PIdentifier := P;
+    if not CheckIdentifier(P) then
+      raise EUsesListError.Create(RsEInvalidUses);
+
+    Inc(I);
+    if I = Index then
+    begin
+      while PIdentifier^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+      begin
+        Result := Result + PIdentifier^;
+        Inc(PIdentifier);
+      end;
+      Exit;
+    end;
+    SkipCommentsAndBlanks(P);
+
+    if PeekKeyword(P, 'in') then
+    begin
+      Inc(P, 2);
+      SkipCommentsAndBlanks(P);
+      if P^ <> '''' then
+        raise EUsesListError.Create(RsEInvalidUses);
+      Inc(P);
+
+      while not (P^ in [#0, '''']) do
+        Inc(P);
+      if P^ <> '''' then
+        raise EUsesListError.Create(RsEInvalidUses);
+      Inc(P);
+      SkipCommentsAndBlanks(P);
+    end;
+
+    case P^ of
+      ',':
+        Inc(P);
+      ';':
+        Break;
+      else
+        raise EUsesListError.Create(RsEInvalidUses);
+    end;
+  end;
+end;
 
 function TUsesList.Add(const UnitName: string): Integer;
 var
@@ -415,7 +409,7 @@ begin
 
   I := IndexOf(UnitName);
   if I <> -1 then
-    raise EUsesListError.CreateFmt(SDuplicateUnit, [UnitName]);
+    raise EUsesListError.CreateFmt(RsEDuplicateUnit, [UnitName]);
 
   if FText = '' then
   begin
@@ -431,13 +425,13 @@ begin
   begin
     P := PChar(FText);
     if not CheckKeyword(P, SUses) then
-      raise EUsesListError.Create(SInvalidUses);
+      raise EUsesListError.Create(RsEInvalidUses);
 
     while P^ <> #0 do
     begin
       SkipCommentsAndBlanks(P);
       if not CheckIdentifier(P) then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
 
       SkipCommentsAndBlanks(P);
 
@@ -446,13 +440,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -467,13 +461,11 @@ begin
             Break;
           end;
         else
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
       end;
     end;
   end;
 end;
-
-//----------------------------------------------------------------------------
 
 function TUsesList.IndexOf(const UnitName: string): Integer;
 var
@@ -488,7 +480,7 @@ begin
 
   P := PChar(FText);
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.Create(SInvalidUses);
+    raise EUsesListError.Create(RsEInvalidUses);
 
   I := -1;
   while P^ <> #0 do
@@ -496,7 +488,7 @@ begin
     SkipCommentsAndBlanks(P);
     PIdentifier := P;
     if not CheckIdentifier(P) then
-      raise EUsesListError.Create(SInvalidUses);
+      raise EUsesListError.Create(RsEInvalidUses);
     SetString(Identifier, PIdentifier, P - PIdentifier);
 
     Inc(I);
@@ -512,13 +504,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       Inc(P);
 
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -529,12 +521,10 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
     end;
   end;
 end;
-
-//----------------------------------------------------------------------------
 
 procedure TUsesList.Insert(Index: Integer; const UnitName: string);
 var
@@ -545,7 +535,7 @@ begin
     raise EUsesListError.CreateFmt(SListIndexError, [Index]);
   I := IndexOf(UnitName);
   if I <> -1 then
-    raise EUsesListError.CreateFmt(SDuplicateUnit, [UnitName]);
+    raise EUsesListError.CreateFmt(RsEDuplicateUnit, [UnitName]);
 
   if FText = '' then
   begin
@@ -562,7 +552,7 @@ begin
   begin
     P := PChar(FText);
     if not CheckKeyword(P, SUses) then
-      raise EUsesListError.Create(SInvalidUses);
+      raise EUsesListError.Create(RsEInvalidUses);
 
     I := -1;
     while P^ <> #0 do
@@ -576,7 +566,7 @@ begin
       end;
 
       if not CheckIdentifier(P) then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       SkipCommentsAndBlanks(P);
 
       if PeekKeyword(P, 'in') then
@@ -584,13 +574,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -599,13 +589,11 @@ begin
         ',':
           Inc(P);
         else
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
       end;
     end;
   end;
 end;
-
-//----------------------------------------------------------------------------
 
 procedure TUsesList.Remove(Index: Integer);
 var
@@ -618,7 +606,7 @@ begin
 
   P := PChar(FText);
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.Create(SInvalidUses);
+    raise EUsesListError.Create(RsEInvalidUses);
 
   if (Count = 1) and (Index = 0) then
   begin
@@ -637,7 +625,7 @@ begin
       // remove unit
       PIdentifier := P;
       if not CheckIdentifier(P) then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       DelPos := PIdentifier - PChar(FText) + 1;
       Delete(FText, DelPos, P - PIdentifier);
       // skip comments and blanks
@@ -650,13 +638,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
         DelPos := PIdentifier - PChar(FText) + 1;
@@ -672,7 +660,7 @@ begin
             Delete(FText, DelPos, 1);
           end;
         else
-          raise EUsesListError.Create(SInvalidUses);
+          raise EUsesListError.Create(RsEInvalidUses);
       end;
       // remove trailing spaces, if any
       PIdentifier := PChar(FText) + DelPos - 1;
@@ -686,7 +674,7 @@ begin
       Exit;
     end;
     if not CheckIdentifier(P) then
-      raise EUsesListError.Create(SInvalidUses);
+      raise EUsesListError.Create(RsEInvalidUses);
 
     SkipCommentsAndBlanks(P);
     if PeekKeyword(P, 'in') then
@@ -694,13 +682,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       Inc(P);
 
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -714,14 +702,12 @@ begin
           Inc(P);
         end;
       else
-        raise EUsesListError.Create(SInvalidUses);
+        raise EUsesListError.Create(RsEInvalidUses);
     end;
   end;
 end;
 
-//----------------------------------------------------------------------------
-{ TProgramGoal public }
-//----------------------------------------------------------------------------
+//=== { TProgramGoal } =======================================================
 
 constructor TProgramGoal.Create(Text: PChar);
 var
@@ -736,13 +722,13 @@ begin
   // check 'program' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SProgram) then
-    raise EUsesListError.Create(SInvalidProgram);
+    raise EUsesListError.Create(RsEInvalidProgram);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.Create(SInvalidProgram);
+    raise EUsesListError.Create(RsEInvalidProgram);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.Create(SInvalidProgram);
+    raise EUsesListError.Create(RsEInvalidProgram);
   Inc(P);
   SkipCommentsAndBlanks(P);
 
@@ -764,17 +750,13 @@ begin
   SetString(FTextAfterUses, PStart, P - PStart);
 end;
 
-//----------------------------------------------------------------------------
-
 destructor TProgramGoal.Destroy;
 begin
   FUsesList.Free;
   inherited Destroy;
 end;
 
-//----------------------------------------------------------------------------
-{ TLibraryGoal public }
-//----------------------------------------------------------------------------
+//=== { TLibraryGoal } =======================================================
 
 constructor TLibraryGoal.Create(Text: PChar);
 var
@@ -789,13 +771,13 @@ begin
   // check 'library' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SLibrary) then
-    raise EUsesListError.Create(SInvalidLibrary);
+    raise EUsesListError.Create(RsEInvalidLibrary);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.Create(SInvalidLibrary);
+    raise EUsesListError.Create(RsEInvalidLibrary);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.Create(SInvalidLibrary);
+    raise EUsesListError.Create(RsEInvalidLibrary);
   Inc(P);
   SkipCommentsAndBlanks(P);
 
@@ -817,17 +799,13 @@ begin
   SetString(FTextAfterUses, PStart, P - PStart);
 end;
 
-//----------------------------------------------------------------------------
-
 destructor TLibraryGoal.Destroy;
 begin
   FUsesList.Free;
   inherited Destroy;
 end;
 
-//----------------------------------------------------------------------------
-{ TUnitGoal public }
-//----------------------------------------------------------------------------
+//=== { TUnitGoal } ==========================================================
 
 constructor TUnitGoal.Create(Text: PChar);
 var
@@ -843,18 +821,18 @@ begin
   // check 'unit' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SUnit) then
-    raise EUsesListError.Create(SInvalidUnit);
+    raise EUsesListError.Create(RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.Create(SInvalidUnit);
+    raise EUsesListError.Create(RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.Create(SInvalidUnit);
+    raise EUsesListError.Create(RsEInvalidUnit);
   Inc(P);
   // check 'interface' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, 'interface') then
-    raise EUsesListError.Create(SInvalidUnit);
+    raise EUsesListError.Create(RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
 
   // remember text before interface uses
@@ -876,7 +854,7 @@ begin
     SkipCommentsAndBlanks(P);
   end;
   if not CheckKeyword(P, 'implementation') then
-    raise EUsesListError.Create(SInvalidUnit);
+    raise EUsesListError.Create(RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
 
   // remember text after interface uses
@@ -895,8 +873,6 @@ begin
   P := StrEnd(PStart);
   SetString(FTextAfterImpl, PStart, P - PStart);
 end;
-
-//----------------------------------------------------------------------------
 
 destructor TUnitGoal.Destroy;
 begin

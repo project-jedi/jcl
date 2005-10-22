@@ -25,9 +25,12 @@ unit ProjAnalyzerFrm;
 
 interface
 
+{$I jcl.inc}
+
 uses
   Windows, SysUtils, Classes, Controls, Forms, Dialogs,
-  JclDebug, ComCtrls, ActnList, Menus, ClipBrd, ImgList, ToolWin;
+  ComCtrls, ActnList, Menus, ClipBrd, ImgList, ToolWin,
+  JclDebug;
 
 type
   TUnitItem = record
@@ -83,9 +86,12 @@ type
     procedure ShowDfms1Execute(Sender: TObject);
     procedure ShowDetails1Update(Sender: TObject);
   private
-    FCodeSize, FDataSize, FBssSize: Integer;
+    FCodeSize: Integer;
+    FDataSize: Integer;
+    FBssSize: Integer;
     FPackageUnits: array of TPackageUnitItem;
-    FUnits, FDfms: array of TUnitItem;
+    FUnits: array of TUnitItem;
+    FDfms: array of TUnitItem;
     FUnitsSum: TStringList;
     procedure OnMapSegmentEvent(Sender: TObject; const Address: TJclMapAddress;
       Length: Integer; const ClassName, UnitName: string);
@@ -106,7 +112,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   JclLogic, JclPeImage, JclStrings;
@@ -116,8 +122,6 @@ resourcestring
   RsStatusText = 'Units: %d, Forms: %d, Code: %d, Data: %d, Bss: %d, Resources: %d';
   RsCodeData = '(CODE+DATA)';
   
-//------------------------------------------------------------------------------
-
 procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var
@@ -143,10 +147,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem;
-  var Compare: Integer);
+procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem; var Compare: Integer);
 var
   ColIndex: Integer;
 
@@ -156,7 +157,10 @@ var
   begin
     I := 1;
     while I <= Length(S) do
-      if not (S[I] in ['0'..'9', '-']) then Delete(S, I, 1) else Inc(I);
+      if not (S[I] in ['0'..'9', '-']) then
+        Delete(S, I, 1)
+      else
+        Inc(I);
     Result := StrToInt(S);
   end;
 
@@ -178,11 +182,10 @@ begin
       else
         Compare := FmtStrToInt(Item1.SubItems[ColIndex]) - FmtStrToInt(Item2.SubItems[ColIndex]);
     end;
-    if Tag and $100 <> 0 then Compare := -Compare;
+    if (Tag and $100) <> 0 then
+      Compare := -Compare;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean; Headers: Boolean);
@@ -249,16 +252,12 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 function IntToExtended(I: Integer): Extended;
 begin
   Result := I;
 end;
 
-//==============================================================================
-// TProjectAnalyzerForm
-//==============================================================================
+//=== { TProjectAnalyzerForm } ===============================================
 
 procedure TProjectAnalyzerForm.FormCreate(Sender: TObject);
 begin
@@ -267,22 +266,16 @@ begin
   FUnitsSum.Duplicates := dupIgnore;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FUnitsSum);
   ProjectAnalyzerForm := nil;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
 var
@@ -349,8 +342,6 @@ begin
         end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.ShowDetails;
 var
   I: Integer;
@@ -367,8 +358,10 @@ begin
         SubItems.Add(Group);
         SubItems.Add(FindPackageForUnitName(Name));
         case Group[1] of
-          'D': ImageIndex := 3;
-          'B': ImageIndex := 4;
+          'D':
+            ImageIndex := 3;
+          'B':
+            ImageIndex := 4;
         else
           ImageIndex := 2;
         end;
@@ -377,8 +370,6 @@ begin
     Items.EndUpdate;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.ShowSummary;
 var
@@ -402,8 +393,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.ShowDfms;
 var
   I: Integer;
@@ -426,8 +415,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.OnMapSegmentEvent(Sender: TObject; const Address: TJclMapAddress;
   Length: Integer; const ClassName, UnitName: string);
 var
@@ -444,12 +431,15 @@ begin
   FUnits[C].Size := Length;
   FUnits[C].Group := ClassName;
   case ClassName1 of
-    'B': begin
-           Inc(FBssSize, Length);
-           Length := 0;
-         end;  
-    'C': Inc(FCodeSize, Length);
-    'D': Inc(FDataSize, Length);
+    'B':
+      begin
+        Inc(FBssSize, Length);
+        Length := 0;
+      end;
+    'C':
+      Inc(FCodeSize, Length);
+    'D':
+      Inc(FDataSize, Length);
   end;
   C := FUnitsSum.IndexOf(UnitName);
   if C = -1 then
@@ -458,23 +448,17 @@ begin
     FUnitsSum.Objects[C] := Pointer(Integer(FUnitsSum.Objects[C]) + Length);
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.UnitListViewColumnClick(Sender: TObject; Column: TListColumn);
 begin
   JvListViewSortClick(Column, 0, 1);
   TListView(Sender).AlphaSort;
 end;
 
-//------------------------------------------------------------------------------
-
-procedure TProjectAnalyzerForm.UnitListViewCompare(Sender: TObject; Item1,
-  Item2: TListItem; Data: Integer; var Compare: Integer);
+procedure TProjectAnalyzerForm.UnitListViewCompare(Sender: TObject;
+  Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
 begin
   JvListViewCompare(TListView(Sender), Item1, Item2, Compare);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.ShowDetails1Execute(Sender: TObject);
 begin
@@ -484,8 +468,6 @@ begin
   ShowDfms1.Checked := False;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.ShowSummary1Execute(Sender: TObject);
 begin
   ShowSummary;
@@ -493,8 +475,6 @@ begin
   ShowDetails1.Checked := False;
   ShowDfms1.Checked := False;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.ShowDfms1Execute(Sender: TObject);
 begin
@@ -504,8 +484,6 @@ begin
   ShowDfms1.Checked := True;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.TextLabelsItemClick(Sender: TObject);
 begin
   TextLabelsItem.Checked := not TextLabelsItem.Checked;
@@ -513,8 +491,6 @@ begin
   ToolBar1.ButtonHeight := 0;
   ToolBar1.ButtonWidth := 0;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.Copy1Execute(Sender: TObject);
 var
@@ -530,8 +506,6 @@ begin
     SL.Free;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.Save1Execute(Sender: TObject);
 var
@@ -553,8 +527,6 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 function TProjectAnalyzerForm.FindPackageForUnitName(const UnitName: string): string;
 var
   I: Integer;
@@ -569,8 +541,6 @@ begin
       end;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.SetStatusBarText(const Value: string);
 begin
   with StatusBar1 do
@@ -579,8 +549,6 @@ begin
     Repaint;
   end;
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.ClearContent;
 begin
@@ -593,14 +561,10 @@ begin
   Repaint;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TProjectAnalyzerForm.ShowDetails1Update(Sender: TObject);
 begin
   TAction(Sender).Enabled := (Length(FUnits) > 0);
 end;
-
-//------------------------------------------------------------------------------
 
 procedure TProjectAnalyzerForm.ClearData;
 begin

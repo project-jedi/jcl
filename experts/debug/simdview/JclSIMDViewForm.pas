@@ -26,7 +26,7 @@
 
 unit JclSIMDViewForm;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 

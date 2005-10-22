@@ -26,7 +26,7 @@
 
 unit JclIdeThreadStatus;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
@@ -60,15 +60,13 @@ type
 var
   SharedThreadNames: TSharedThreadNames;
   HookImports: TJclPeMapImgHooks;
-  Kernel32_CreateThread: function (lpThreadAttributes: Pointer;
+  Kernel32_CreateThread: function(lpThreadAttributes: Pointer;
     dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
     lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
-  Kernel32_ExitThread: procedure (dwExitCode: DWORD); stdcall;
+  Kernel32_ExitThread: procedure(dwExitCode: DWORD); stdcall;
   {$IFDEF DELPHI7_UP}
-  Kernel32_ResumeThread: function (hThread: THandle): DWORD; stdcall;
+  Kernel32_ResumeThread: function(hThread: THandle): DWORD; stdcall;
   {$ENDIF DELPHI7_UP}
-
-//--------------------------------------------------------------------------------------------------
 
 function NewCreateThread(lpThreadAttributes: Pointer;
   dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
@@ -76,7 +74,8 @@ function NewCreateThread(lpThreadAttributes: Pointer;
 var
   Instance: TObject;
 begin
-  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
+  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress,
+    lpParameter, dwCreationFlags, lpThreadId);
   if (Result <> 0) and (lpParameter <> nil) then
   try
     Instance := PThreadRec(lpParameter)^.Parameter;
@@ -88,8 +87,6 @@ begin
   except
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure NewExitThread(dwExitCode: DWORD); stdcall;
 var
@@ -103,8 +100,6 @@ begin
   Kernel32_ExitThread(dwExitCode);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF DELPHI7_UP}
 function NewResumeThread(hThread: THandle): DWORD; stdcall;
 begin
@@ -116,8 +111,6 @@ begin
   end;
 end;
 {$ENDIF DELPHI7_UP}
-
-//--------------------------------------------------------------------------------------------------
 
 function CreateThreadName(const ThreadName, ThreadClassName: string): string;
 begin
@@ -132,15 +125,11 @@ begin
     Result := Format('"%s"', [ThreadName]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames.RegisterThread(ThreadID, CreateThreadName(ThreadName, ''));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RegisterThread(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
@@ -148,15 +137,11 @@ begin
     SharedThreadNames.RegisterThread(Thread.ThreadID, CreateThreadName(ThreadName, Thread.ClassName));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure UnregisterThread(ThreadID: DWORD);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames.UnregisterThread(ThreadID);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure UnregisterThread(Thread: TThread);
 begin
@@ -164,15 +149,11 @@ begin
     SharedThreadNames.UnregisterThread(Thread.ThreadID);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string);
 begin
   if Assigned(SharedThreadNames) then
     SharedThreadNames[ThreadID] := CreateThreadName(ThreadName, '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
@@ -180,14 +161,10 @@ begin
     SharedThreadNames[Thread.ThreadID] := CreateThreadName(ThreadName, Thread.ClassName);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ThreadNamesAvailable: Boolean;
 begin
   Result := Assigned(SharedThreadNames);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure Init;
 begin
@@ -205,8 +182,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 initialization
   Init;

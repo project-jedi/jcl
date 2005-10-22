@@ -64,11 +64,26 @@ const
   DRCExtension           = '.drc';
   DPRExtention           = '.dpr';
 
+  // Jcl Uses Expert
+  SUsesExpertSubkey = 'JclUsesExpert';
+  SIniIdentifierLists = 'IdentifierLists';
+  SRegDebugLibPath = 'Debug Library';
+  SRegLibPath = 'Library';
+  SRegWizardActive = 'Uses Wizard Active';
+  SRegWizardConfirm = 'Uses Wizard Confirm';
+  SRegWizardIniFile = 'Configuration File';
+
+  SJCLUsesWizardID = 'JEDI.JCLUsesWizard'; // wizard ID
+  SJCLUsesWizardName = 'JCL Uses Wizard'; // wizard name
+
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/22 14:24:18  marquardt
+// more expert integration and cleanup
+//
 // Revision 1.1  2005/10/21 12:24:41  marquardt
 // experts reorganized with new directory common
 //
