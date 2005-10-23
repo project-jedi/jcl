@@ -73,8 +73,7 @@ type
     Forms1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure UnitListViewColumnClick(Sender: TObject;
-      Column: TListColumn);
+    procedure UnitListViewColumnClick(Sender: TObject; Column: TListColumn);
     procedure UnitListViewCompare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
     procedure ShowDetails1Execute(Sender: TObject);
@@ -115,13 +114,8 @@ implementation
 {$R *.dfm}
 
 uses
-  JclLogic, JclPeImage, JclStrings;
+  JclLogic, JclOtaResources, JclPeImage, JclStrings;
 
-resourcestring
-  RsFormCaption = 'Project Analyzer - %s';
-  RsStatusText = 'Units: %d, Forms: %d, Code: %d, Data: %d, Bss: %d, Resources: %d';
-  RsCodeData = '(CODE+DATA)';
-  
 procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var

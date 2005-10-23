@@ -33,13 +33,14 @@ uses
   JclOtaUtils;
 
 type
-  TProjectAnalyzerExpert = class(TJclOTAExpert)
+  TJclProjectAnalyzerExpert = class(TJclOTAExpert)
   private
     FBuildMenuItem: TMenuItem;
     FBuildAction: TAction;
     procedure ActionExecute(Sender: TObject);
     procedure ActionUpdate(Sender: TObject);
   public
+    constructor Create; reintroduce;
     destructor Destroy; override;
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
@@ -64,18 +65,23 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterPackageWizard(TProjectAnalyzerExpert.Create);
+  RegisterPackageWizard(TJclProjectAnalyzerExpert.Create);
 end;
 
-//=== { TProjectAnalyzerExpert } =============================================
+//=== { TJclProjectAnalyzerExpert } ==========================================
 
-destructor TProjectAnalyzerExpert.Destroy;
+constructor TJclProjectAnalyzerExpert.Create;
+begin
+  inherited Create('JclProjectAnalyzerExpert');
+end;
+
+destructor TJclProjectAnalyzerExpert.Destroy;
 begin
   FreeAndNil(ProjectAnalyzerForm);
   inherited Destroy;
 end;
 
-procedure TProjectAnalyzerExpert.ActionExecute(Sender: TObject);
+procedure TJclProjectAnalyzerExpert.ActionExecute(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
   BuildOK, Succ: Boolean;
@@ -132,7 +138,7 @@ begin
   end;
 end;
 
-procedure TProjectAnalyzerExpert.ActionUpdate(Sender: TObject);
+procedure TJclProjectAnalyzerExpert.ActionUpdate(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
   ProjectName: string;
@@ -148,7 +154,7 @@ begin
   FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
 end;
 
-procedure TProjectAnalyzerExpert.RegisterCommands;
+procedure TJclProjectAnalyzerExpert.RegisterCommands;
 var
   IDEMainMenu: TMainMenu;
   IDEProjectItem: TMenuItem;
@@ -199,7 +205,7 @@ begin
   Assert(FBuildMenuItem.Parent <> nil);
 end;
 
-procedure TProjectAnalyzerExpert.UnregisterCommands;
+procedure TJclProjectAnalyzerExpert.UnregisterCommands;
 begin
   UnregisterAction(FBuildAction);
   FreeAndNil(FBuildMenuItem);

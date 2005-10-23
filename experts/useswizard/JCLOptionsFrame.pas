@@ -104,7 +104,7 @@ var
   S: string;
   Root: DelphiHKEY;
 begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + JclUsesExpertName;
   Root := HKEY_CURRENT_USER;
   Result := RegKeyExists(Root, S);
   if not Result then
@@ -131,11 +131,12 @@ function TFrameJclOptions.SaveToRegistry: Boolean;
 var
   S: string;
 begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + JclUsesExpertName;
   RegCreateKey(HKEY_CURRENT_USER, S);
   RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardActive, CheckBoxWizardActive.Checked);
   RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardConfirm, CheckBoxWizardConfirm.Checked);
   RegWriteString(HKEY_CURRENT_USER, S, SRegWizardIniFile, EditIniFile.Text);
+  Result := True;
 end;
 
 procedure TFrameJclOptions.ButtonIniFileClick(Sender: TObject);

@@ -32,55 +32,67 @@ interface
 {$I jcl.inc}
 
 const
-  DelphiRootDirKeyValue  = 'RootDir';
-  JediIDESubKey          = 'Jedi\JCL\IDE\';
-  DelphiEnvironmentVar   = 'DELPHI';
+  DelphiRootDirKeyValue = 'RootDir';
+  JediIDESubKey         = 'Jedi\JCL\IDE\';
+  DelphiEnvironmentVar  = 'DELPHI';
   {$IFDEF COMPILER6_UP}
-  EnvironmentVarsKey     = 'Environment Variables';
+  EnvironmentVarsKey    = 'Environment Variables';
   {$ENDIF COMPÏLER6_UP}
+  BPLExtension          = '.bpl';
+  DPKExtension          = '.dpk';
+  MAPExtension          = '.map';
+  DRCExtension          = '.drc';
+  DPRExtention          = '.dpr';
 
-  MapFileOptionName      = 'MapFile';
-  OutputDirOptionName    = 'OutputDir';
-  RuntimeOnlyOptionName  = 'RuntimeOnly';
-  PkgDllDirOptionName    = 'PkgDllDir';
-  BPLOutputDirOptionName = 'PackageDPLOutput';
-  LIBPREFIXOptionName    = 'SOPrefix';
-  LIBSUFFIXOptionName    = 'SOSuffix';
-
-  JclDebugExpertRegKey = 'JclDebugExpert';
+  //=== Debug Expert =========================================================
+  JclDebugExpertRegKey    = 'JclDebugExpert';
   JclDebugEnabledRegValue = 'JclDebugEnabled';
+  MapFileOptionName       = 'MapFile';
+  OutputDirOptionName     = 'OutputDir';
+  RuntimeOnlyOptionName   = 'RuntimeOnly';
+  PkgDllDirOptionName     = 'PkgDllDir';
+  BPLOutputDirOptionName  = 'PackageDPLOutput';
+  LIBPREFIXOptionName     = 'SOPrefix';
+  LIBSUFFIXOptionName     = 'SOSuffix';
 
-  FavoritesSectionName     = 'JclFavoriteFoldersExpert';
-  PictDialogFolderItemName = 'PictureDialogPath';
-
-  BorlandImagesPath        = 'Borland Shared\Images';
-
+  //=== Favorite Folders Expert ==============================================
+  JclFavoritesExpertName     = 'JclFavoriteFoldersExpert';
+  JclFavoritesListSubKey     = 'Favorites';
+  PictDialogFolderItemName   = 'PictureDialogPath';
+  BorlandImagesPath          = 'Borland Shared\Images';
   FavDialogTemplateName      = 'FAVDLGTEMPLATE';
   OpenPictDialogTemplateName = 'DLGTEMPLATE';
 
-  BPLExtension           = '.bpl';
-  DPKExtension           = '.dpk';
-  MAPExtension           = '.map';
-  DRCExtension           = '.drc';
-  DPRExtention           = '.dpr';
+  //=== Threads Expert =======================================================
+  JclThreadsExpertName = 'JclThreadsExpert';
+  MutexName            = 'DebugThreadNamesMutex';
+  MutexReadName        = 'DebugThreadNamesReadMutex';
+  MappingName          = 'DebugThreadNamesMapping';
+  EventName            = 'DebugThreadNamesEvent';
 
-  // Jcl Uses Expert
-  SUsesExpertSubkey = 'JclUsesExpert';
+  //=== SIMD Expert ==========================================================
+  JclSIMDExpertName = 'JclSIMDExpert';
+
+  //=== Uses Expert ==========================================================
+  JclUsesExpertName   = 'JclUsesExpert';
   SIniIdentifierLists = 'IdentifierLists';
-  SRegDebugLibPath = 'Debug Library';
-  SRegLibPath = 'Library';
-  SRegWizardActive = 'Uses Wizard Active';
-  SRegWizardConfirm = 'Uses Wizard Confirm';
-  SRegWizardIniFile = 'Configuration File';
+  SRegDebugLibPath    = 'Debug Library';
+  SRegLibPath         = 'Library';
+  SRegWizardActive    = 'Uses Wizard Active';
+  SRegWizardConfirm   = 'Uses Wizard Confirm';
+  SRegWizardIniFile   = 'Configuration File';
 
-  SJCLUsesWizardID = 'JEDI.JCLUsesWizard'; // wizard ID
-  SJCLUsesWizardName = 'JCL Uses Wizard'; // wizard name
+  SJCLUsesWizardID    = 'JEDI.JCLUsesWizard'; // wizard ID
+  SJCLUsesWizardName  = 'JCL Uses Wizard'; // wizard name
 
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.3  2005/10/23 12:53:36  marquardt
+// further expert cleanup and integration, use of JclRegistry
+//
 // Revision 1.2  2005/10/22 14:24:18  marquardt
 // more expert integration and cleanup
 //

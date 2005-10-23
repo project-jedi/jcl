@@ -90,7 +90,7 @@ type
     procedure DisplayResults;
     procedure EndStoreResults;
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     {$IFNDEF OldStyleExpert}
     procedure AfterCompile(Succeeded: Boolean);
@@ -123,7 +123,7 @@ implementation
 
 uses
   IniFiles, 
-  JclDebug, JclDebugIdeResult, JclOtaConsts;
+  JclDebug, JclDebugIdeResult, JclOtaConsts, JclRegistry;
 
 procedure Register;
 begin
@@ -150,7 +150,7 @@ resourcestring
 
 constructor TJclDebugExtension.Create;
 begin
-  inherited Create;
+  inherited Create(JclDebugExpertRegKey);
   {$IFNDEF OldStyleExpert}
   FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
   LoadExpertValues;
@@ -456,12 +456,12 @@ end;
 
 procedure TJclDebugExtension.LoadExpertValues;
 begin
-  ExpertActive(JediIniFile.ReadBool(JclDebugExpertRegKey, JclDebugEnabledRegValue, False));
+  ExpertActive(RegReadBoolDef(HKCU, ExpertRegistryKey, JclDebugEnabledRegValue, False));
 end;
 
 procedure TJclDebugExtension.SaveExpertValues;
 begin
-  JediIniFile.WriteBool(JclDebugExpertRegKey, JclDebugEnabledRegValue, FInsertDataAction.Checked);
+  RegWriteBool(HKCU, ExpertRegistryKey, JclDebugEnabledRegValue, FInsertDataAction.Checked);
 end;
 
 {$ENDIF OldStyleExpert}

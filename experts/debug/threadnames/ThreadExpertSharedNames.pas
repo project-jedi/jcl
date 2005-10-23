@@ -63,19 +63,11 @@ type
 implementation
 
 uses
-  JclSysUtils;
-
-resourcestring
-  RsEnterMutexTimeout = 'JCL Thread Name IDE Expert Mutex Timeout';
+  JclOtaConsts, JclOtaResources, JclSysUtils;
 
 const
   MaxThreadCount       = 256;
   IdeEnterMutexTimeout = 5000;
-
-  MutexName     = 'DebugThreadNamesMutex';
-  MutexReadName = 'DebugThreadNamesReadMutex';
-  MappingName   = 'DebugThreadNamesMapping';
-  EventName     = 'DebugThreadNamesEvent';
 
 type
   TThreadName = record
@@ -93,10 +85,10 @@ type
 procedure SetIdeDebuggerThreadName(ThreadID: DWORD; const ThreadName: string);
 type
   TThreadNameInfo = record
-    FType: LongWord;     // must be 0x1000
+    FType: Longword;     // must be 0x1000
     FName: PChar;        // pointer to name (in user address space)
-    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
-    FFlags: LongWord;    // reserved for future use, must be zero
+    FThreadID: Longword; // thread ID (-1 indicates caller thread)
+    FFlags: Longword;    // reserved for future use, must be zero
   end;
 var
   ThreadNameInfo: TThreadNameInfo;
@@ -106,7 +98,7 @@ begin
   ThreadNameInfo.FThreadID := ThreadID;
   ThreadNameInfo.FFlags := 0;
   try
-    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord), @ThreadNameInfo);
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword), @ThreadNameInfo);
   except
   end;
 end;

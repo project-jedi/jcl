@@ -958,7 +958,7 @@ var
   S: string;
   Root: DelphiHKEY;
 begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + SUsesExpertSubkey;
+  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + JclUsesExpertName;
   Root := HKEY_CURRENT_USER;
   Result := RegKeyExists(Root, S);
   if not Result then

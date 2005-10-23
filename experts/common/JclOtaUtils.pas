@@ -33,7 +33,7 @@ interface
 {$I windowsonly.inc}
 
 uses
-  Windows, Classes, IniFiles, ToolsAPI, ComCtrls, ActnList;
+  Windows, Classes, ToolsAPI, ComCtrls, ActnList;
 
 const
   MapFileOptionDetailed  = 3;
@@ -42,20 +42,20 @@ type
   TJclOTAUtils = class(TInterfacedObject)
   private
     FBaseRegistryKey: string;
+    FExpertRegistryKey: string;
     FEnvVariables: TStringList;
-    FJediIniFile: TCustomIniFile;
     FRootDir: string;
     FServices: IOTAServices;
+    FName: string;
     FNTAServices: INTAServices;
     function GetActiveProject: IOTAProject;
-    function GetJediIniFile: TCustomIniFile;
     function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
     procedure ReadEnvVariables;
 
     procedure CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
   public
-    constructor Create;
+    constructor Create(AName: string); virtual;
     destructor Destroy; override;
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
@@ -73,11 +73,12 @@ type
 
     property ActiveProject: IOTAProject read GetActiveProject;
     property BaseRegistryKey: string read FBaseRegistryKey;
-    property JediIniFile: TCustomIniFile read GetJediIniFile;
+    property ExpertRegistryKey: string read FExpertRegistryKey;
+    property Name: string read FName;
+    property NTAServices: INTAServices read FNTAServices;
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
     property RootDir: string read GetRootDir;
     property Services: IOTAServices read FServices;
-    property NTAServices: INTAServices read FNTAServices;
   end;
 
   TJclOTAExpert = class(TJclOTAUtils, IOTAWizard)
@@ -100,7 +101,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ImageHlp, Registry,
+  SysUtils, ImageHlp,
   JclFileUtils, JclRegistry, JclStrings, JclSysInfo,
   JclOtaConsts, JclOtaResources;
 
@@ -131,7 +132,7 @@ end;
 
 //=== { TJclOTAUtils } =======================================================
 
-constructor TJclOTAUtils.Create;
+constructor TJclOTAUtils.Create(AName: string);
 begin
   Supports(BorlandIDEServices,IOTAServices,FServices);
   Assert(Assigned(FServices), RsENoIDEServices);
@@ -139,8 +140,10 @@ begin
   Supports(FServices,INTAServices,FNTAServices);
   Assert(Assigned(FNTAServices), RsENoNTAServices);
 
+  FName := AName;
   FEnvVariables := TStringList.Create;
   FBaseRegistryKey := StrEnsureSuffix('\', FServices.GetBaseRegistryKey);
+  FExpertRegistryKey := FBaseRegistryKey + JediIDESubKey + FName;
 
   RegisterCommands;
 end;
@@ -150,7 +153,6 @@ begin
   UnRegisterCommands;
 
   FreeAndNil(FEnvVariables);
-  FreeAndNil(FJediIniFile);
 
   FServices := nil;
   FNTAServices := nil;
@@ -203,16 +205,6 @@ end;
 function TJclOTAUtils.GetDrcFileName(const Project: IOTAProject): string;
 begin
   Result := ChangeFileExt(Project.FileName, DRCExtension);
-end;
-
-function TJclOTAUtils.GetJediIniFile: TCustomIniFile;
-begin
-  if not Assigned(FJediIniFile) then
-  begin
-    FJediIniFile := TRegistryIniFile.Create(PathAddSeparator(Services.GetBaseRegistryKey) + JediIDESubKey);
-    TRegistryIniFile(FJediIniFile).RegIniFile.RootKey := HKEY_CURRENT_USER;
-  end;
-  Result := FJediIniFile;  
 end;
 
 function TJclOTAUtils.GetMapFileName(const Project: IOTAProject): string;
@@ -491,6 +483,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/10/23 12:53:36  marquardt
+// further expert cleanup and integration, use of JclRegistry
+//
 // Revision 1.1  2005/10/21 12:24:41  marquardt
 // experts reorganized with new directory common
 //

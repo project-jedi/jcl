@@ -60,7 +60,7 @@ implementation
 
 {$R *.dfm}
 
-//=== { TFormCpuInfo } =======================================================
+//=== { TJclFormCpuInfo } ====================================================
 
 procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo);
 begin

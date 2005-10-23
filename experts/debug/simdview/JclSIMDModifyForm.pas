@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ToolsApi, IniFiles, Contnrs,
+  Dialogs, StdCtrls, ExtCtrls, ToolsApi, Contnrs,
   JclSysInfo, JclSIMDUtils;
 
 const
@@ -61,7 +61,6 @@ type
     FDisplay: TJclXMMContentType;
     FFormat: TJclSIMDFormat;
     FDebuggerServices: IOTADebuggerServices;
-    FSettings: TCustomIniFile;
     FComboBoxList: TComponentList;
     FLabelList: TComponentList;
     FHistory: TStringList;
@@ -71,6 +70,7 @@ type
     FResultStr: string;
     FReturnCode: Cardinal;
     FCPUInfo: TCpuInfo;
+    FRegKey: string;
     procedure ContinueModify;
     procedure StartModify;
     procedure WMModifyContinue(var Msg: TMessage); message WM_MODIFYCONTINUE;
@@ -79,10 +79,9 @@ type
     property XMMRegister: TJclXMMRegister read FXMMRegister;
     property MMRegister: TJclMMRegister read FMMRegister;
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
-    property Settings: TCustomIniFile read FSettings;
   public
     constructor Create (AOwner: TComponent;
-      ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile); reintroduce;
+      ADebuggerServices: IOTADebuggerServices; ARegKey: string); reintroduce;
     destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
@@ -105,6 +104,9 @@ type
 
 implementation
 
+uses
+  JclRegistry;
+
 {$R *.dfm}
 
 const
@@ -125,12 +127,12 @@ const
 //=== { TJclSIMDModifyFrm } ==================================================
 
 constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile);
+  ADebuggerServices: IOTADebuggerServices; ARegKey: string);
 begin
   inherited Create(AOwner);
 
   FDebuggerServices := ADebuggerServices;
-  FSettings := ASettings;
+  FRegKey := ARegKey;
 
   FComboBoxList := TComponentList.Create(False);
   FLabelList := TComponentList.Create(False);
@@ -313,20 +315,20 @@ procedure TJclSIMDModifyFrm.LoadHistory;
 var
   Index, Count: Integer;
 begin
-  Count := Settings.ReadInteger(ClassName, CountPropertyName, 0);
+  Count := RegReadIntegerDef(HKCU, FRegKey, CountPropertyName, 0);
   History.Clear;
 
   for Index := 0 to Count - 1 do
-    History.Add(Settings.ReadString(ClassName, SysUtils.Format(ItemFormat, [Index]), ''));
+    History.Add(RegReadStringDef(HKCU, FRegKey, SysUtils.Format(ItemFormat, [Index]), ''));
 end;
 
 procedure TJclSIMDModifyFrm.SaveHistory;
 var
   Index: Integer;
 begin
-  Settings.WriteInteger(ClassName, CountPropertyName, History.Count);
+  RegWriteInteger(HKCU, FRegKey, CountPropertyName, History.Count);
   for Index := 0 to History.Count-1 do
-    Settings.WriteString(ClassName, SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
+    RegWriteString(HKCU, FRegKey, SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;

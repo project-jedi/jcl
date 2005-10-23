@@ -42,7 +42,7 @@ resourcestring
   RsDelete       = '&Delete';
   RsFavorites    = '&Favorites';
   RsConfirmation = 'Confirmation';
-  RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders ?';
+  RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders?';
 
 //=== JclUsesDialog.pas ======================================================
 resourcestring
@@ -62,11 +62,24 @@ resourcestring
   RsEInvalidUnit = 'Invalid unit';
   RsEInvalidUses = 'Invalid uses clause';
 
+//=== ThreadExpertSharedNames.pas ============================================
+resourcestring
+  RsEnterMutexTimeout = 'JCL Thread Name IDE Expert Mutex Timeout';
+
+//=== ProjAnalyzerFrm.pas ====================================================
+resourcestring
+  RsFormCaption = 'Project Analyzer - %s';
+  RsStatusText = 'Units: %d, Forms: %d, Code: %d, Data: %d, Bss: %d, Resources: %d';
+  RsCodeData = '(CODE+DATA)';
+
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.3  2005/10/23 12:53:36  marquardt
+// further expert cleanup and integration, use of JclRegistry
+//
 // Revision 1.2  2005/10/22 14:24:18  marquardt
 // more expert integration and cleanup
 //
