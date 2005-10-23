@@ -33,7 +33,7 @@ interface
 uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
   Forms, ComCtrls,
-  JclOTAUtils, JclSysInfo, JclSIMDViewForm;
+  JclOtaUtils, JclSIMDViewForm, JclSysInfo;
 
 {$R 'JclSIMDIcon.dcr'}
 
@@ -69,7 +69,7 @@ type
     procedure SIMDActionUpdate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     function CpuInfo: TCpuInfo;
     function GetSIMDString: string;
@@ -116,7 +116,7 @@ implementation
 
 uses
   IniFiles,
-  JclSIMDUtils;
+  JclOtaConsts, JclSIMDUtils;
 
 const
   RsSIMDActionName = 'DebugSSECommand';
@@ -130,10 +130,9 @@ end;
 
 constructor TJclSIMDWizard.Create;
 begin
+  inherited Create(JclSIMDExpertName);
   FCpuInfoValid := False;
   FForm := nil;
-
-  inherited Create;
 end;
 
 destructor TJclSIMDWizard.Destroy;
@@ -156,7 +155,7 @@ begin
 
   if not Assigned(FForm) then
   begin
-    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, JediIniFile);
+    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, ExpertRegistryKey);
     try
       FForm.Icon := FIcon;
       FForm.OnDestroy := FormDestroy;

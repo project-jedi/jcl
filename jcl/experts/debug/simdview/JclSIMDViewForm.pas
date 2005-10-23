@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, ActnList, IniFiles,
+  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, ActnList,
   JclSysInfo, JclSIMDUtils, JclSIMDModifyForm;
 
 type
@@ -101,22 +101,21 @@ type
     FOldThreadID: LongWord;
     FOldThreadState: TOTAThreadState;
     FModifyForm: TJclSIMDModifyFrm;
-    FSettings: TCustomIniFile;
-    MXCSRChanged: array [TMXCSRRange] of Boolean;
-    RegisterChanged: array of Boolean;
+    FRegKey: string;
+    FMXCSRChanged: array [TMXCSRRange] of Boolean;
+    FRegisterChanged: array of Boolean;
     procedure SetDisplay(const Value: TJclXMMContentType);
     procedure SetFormat(const Value: TJclSIMDFormat);
   protected
     procedure DoClose(var Action: TCloseAction); override;
     procedure UpdateActions; override;
   public
-    constructor Create(AOwner:TComponent; ADebuggerServices: IOTADebuggerServices;
-      ASettings: TCustomIniFile); reintroduce;
+    constructor Create(AOwner: TComponent; ADebuggerServices: IOTADebuggerServices;
+      ARegKey: string); reintroduce;
     destructor Destroy; override;
     procedure LoadSettings;
     procedure SaveSettings;
-    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
-      ReturnCode: Integer);
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
     procedure SetThreadValues;
     procedure GetThreadValues;
     property CpuInfo: TCpuInfo read FCpuInfo;
@@ -124,7 +123,6 @@ type
     property Display: TJclXMMContentType read FDisplay write SetDisplay;
     property SIMDCaption: string read FSIMDCaption write FSIMDCaption;
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
-    property Settings: TCustomIniFile read FSettings;
     property NbMMRegister: Integer read FNbMMRegister;
     property NbXMMRegister: Integer read FNbXMMRegister;
   end;
@@ -133,12 +131,12 @@ implementation
 
 uses
   TypInfo,
-  JclSIMDCpuInfo;
+  JclRegistry, JclSIMDCpuInfo;
 
 {$R *.dfm}
 
 constructor TJclSIMDViewFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; ASettings: TCustomIniFile);
+  ADebuggerServices: IOTADebuggerServices; ARegKey: string);
 var
   I: TMXCSRRange;
   J: Integer;
@@ -146,14 +144,14 @@ begin
   inherited Create(AOwner);
 
   FDebuggerServices := ADebuggerServices;
-  FSettings := ASettings;
   FOldThreadID := 0;
   FOldThreadState := tsNone;
+  FRegKey := ARegKey;
 
   JclSysInfo.GetCpuInfo(FCpuInfo);
 
   // the behaviour of Delphi and C++Builder overrides all changes made on
-  // the floating point context of the debugged thread when it is runned
+  // the floating point context of the debugged thread when it is run
   // (even using step into and step over).
   // to be uncommented as soon as Borland changes this behaviour
   {if CpuInfo.MMX or CPUInfo._3DNow then
@@ -165,7 +163,8 @@ begin
 
   if CpuInfo.SSE = 0 then
     FNbXMMRegister := 0
-  else if CpuInfo.Is64Bits then
+  else
+  if CpuInfo.Is64Bits then
     FNbXMMRegister := 17
   else
     FNbXMMRegister := 9;
@@ -176,8 +175,8 @@ begin
       ListBoxMXCSR.Items.Add('0');
   ListBoxRegs.Items.Clear;
 
-  SetLength(RegisterChanged,NbMMRegister+NbXMMRegister);
-  for J := 0 to NbMMRegister+NbXMMRegister-1 do
+  SetLength(FRegisterChanged,NbMMRegister + NbXMMRegister);
+  for J := 0 to NbMMRegister + NbXMMRegister - 1 do
   // MM registers (MMX) + XMM registers (SSE) + 1 cardinal (MXCSR)
     ListBoxRegs.Items.Add('');
 
@@ -200,7 +199,7 @@ end;
 
 destructor TJclSIMDViewFrm.Destroy;
 begin
-  SetLength(RegisterChanged,0);
+  SetLength(FRegisterChanged,0);
   FDebuggerServices := nil;
 
   inherited Destroy;
@@ -208,10 +207,11 @@ end;
 
 procedure TJclSIMDViewFrm.LoadSettings;
 begin
-  SetBounds(Settings.ReadInteger(ClassName,'Left',Left),
-            Settings.ReadInteger(ClassName,'Top',Top),
-            Settings.ReadInteger(ClassName,'Width',Width),
-            Settings.ReadInteger(ClassName,'Height',Height));
+  SetBounds(
+    RegReadIntegerDef(HKCU, FRegKey, 'Left', Left),
+    RegReadIntegerDef(HKCU, FRegKey, 'Top', Top),
+    RegReadIntegerDef(HKCU, FRegKey, 'Width', Width),
+    RegReadIntegerDef(HKCU, FRegKey, 'Height', Height));
 
   if Left < 0 then
     Left := 0;
@@ -227,11 +227,11 @@ begin
     Top := Screen.DesktopHeight - Height;
 
   Format := TJclSIMDFormat(GetEnumValue(TypeInfo(TJclSIMDFormat),
-    Settings.ReadString(ClassName,'Format', GetEnumName(TypeInfo(TJclSIMDFormat),Integer(sfHexa)))));
+    RegReadStringDef(HKCU, FRegKey, 'Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
   Display := TJclXMMContentType(GetEnumValue(TypeInfo(TJclXMMContentType),
-    Settings.ReadString(ClassName,'Display', GetEnumName(TypeInfo(TJclXMMContentType),Integer(xt8Words)))));
+    RegReadStringDef(HKCU, FRegKey, 'Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
 
-  if Settings.ReadInteger(ClassName,'StayOnTop',0) = 1 then
+  if RegReadIntegerDef(HKCU, FRegKey, 'StayOnTop', 0) = 1 then
     FormStyle := fsStayOnTop
   else
     FormStyle := fsNormal;
@@ -239,16 +239,13 @@ end;
 
 procedure TJclSIMDViewFrm.SaveSettings;
 begin
-  Settings.WriteInteger(ClassName,'Left',Left);
-  Settings.WriteInteger(ClassName,'Top',Top);
-  Settings.WriteInteger(ClassName,'Width',Width);
-  Settings.WriteInteger(ClassName,'Height',Height);
-  Settings.WriteString(ClassName,'Display',GetEnumName(TypeInfo(TJclXMMContentType),Integer(Display)));
-  Settings.WriteString(ClassName,'Format',GetEnumName(TypeInfo(TJclSIMDFormat),Integer(Format)));
-  if FormStyle = fsStayOnTop then
-    Settings.WriteInteger(ClassName,'StayOnTop',1)
-  else
-    Settings.WriteInteger(ClassName,'StayOnTop',0);
+  RegWriteInteger(HKCU, FRegKey, 'Left', Left);
+  RegWriteInteger(HKCU, FRegKey, 'Top', Top);
+  RegWriteInteger(HKCU, FRegKey, 'Width', Width);
+  RegWriteInteger(HKCU, FRegKey, 'Height', Height);
+  RegWriteString(HKCU, FRegKey, 'Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
+  RegWriteString(HKCU, FRegKey, 'Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
+  RegWriteInteger(HKCU, FRegKey, 'StayOnTop', Ord(FormStyle = fsStayOnTop));
 end;
 
 procedure TJclSIMDViewFrm.ListBoxMXCSRDrawItem(Control: TWinControl;
@@ -258,15 +255,15 @@ begin
   begin
     if not (odFocused in State) then
     begin
-      Pen.Color:=Brush.Color;
-      if (odSelected in State)
-        then Font.Color:=clWindow;
+      Pen.Color := Brush.Color;
+      if odSelected in State then
+        Font.Color := clWindow;
     end;
     Rectangle(Rect);
-    TextOut(Rect.Left+2,Rect.Top,MXCSRBitsDescriptions[Index].ShortName);
-    if MXCSRChanged[Index] then
+    TextOut(Rect.Left + 2, Rect.Top, MXCSRBitsDescriptions[Index].ShortName);
+    if FMXCSRChanged[Index] then
       Font.Color := clRed;
-    TextOut(Rect.Left+2+TextExtent(MXCSRBitsDescriptions[Index].ShortName).cx,Rect.Top,Items[Index]);
+    TextOut(Rect.Left + 2 + TextExtent(MXCSRBitsDescriptions[Index].ShortName).cx, Rect.Top, Items[Index]);
   end;
 end;
 
@@ -276,37 +273,42 @@ var
   AIndex: Integer;
   AText: string;
 begin
-  if (Shift <> []) then
+  if Shift <> [] then
     Application.HideHint
-  else with (Sender as TListBox) do
-  begin
-    AIndex := ItemAtPos(Point(X,Y),True);
-    if (AIndex >= 0) and (AIndex < Items.Count) then
+  else
+    with Sender as TListBox do
     begin
-      with MXCSRBitsDescriptions[AIndex] do
+      AIndex := ItemAtPos(Point(X,Y),True);
+      if (AIndex >= 0) and (AIndex < Items.Count) then
       begin
-        AText := LongName;
-        if AndMask = MXCSR_RC then
-          case (FVectorFrame.MXCSR and AndMask) shr Shifting of
-            0 : AText := SysUtils.Format('%s (%s)',[AText,RsRoundToNearest]);
-            1 : AText := SysUtils.Format('%s (%s)',[AText,RsRoundDown]);
-            2 : AText := SysUtils.Format('%s (%s)',[AText,RsRoundUp]);
-            3 : AText := SysUtils.Format('%s (%s)',[AText,RsRoundTowardZero]);
-        end;
-        if (AText <> Hint) then
+        with MXCSRBitsDescriptions[AIndex] do
         begin
-          Hint := AText;
-          Application.HideHint;
-          Application.ActivateHint(Point(X,Y));
+          AText := LongName;
+          if AndMask = MXCSR_RC then
+            case (FVectorFrame.MXCSR and AndMask) shr Shifting of
+              0:
+                AText := SysUtils.Format('%s (%s)', [AText, RsRoundToNearest]);
+              1:
+                AText := SysUtils.Format('%s (%s)', [AText, RsRoundDown]);
+              2:
+                AText := SysUtils.Format('%s (%s)', [AText, RsRoundUp]);
+              3:
+                AText := SysUtils.Format('%s (%s)', [AText, RsRoundTowardZero]);
+          end;
+          if AText <> Hint then
+          begin
+            Hint := AText;
+            Application.HideHint;
+            Application.ActivateHint(Point(X, Y));
+          end;
         end;
+      end
+      else
+      begin
+        Hint := '';
+        Application.HideHint;
       end;
-    end
-    else
-    begin
-      Hint := '';
-      Application.HideHint;
     end;
-  end;
 end;
 
 procedure TJclSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integer;
@@ -314,130 +316,145 @@ procedure TJclSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integ
 var
   AText: string;
 begin
-  with (Control as TListBox),Canvas do
-  begin                                            
+  with (Control as TListBox), Canvas do
+  begin
     if not (odFocused in State) then
     begin
       Pen.Color := Brush.Color;
-      if (odSelected in State)
-        then Font.Color:=clWindow;
+      if odSelected in State then
+        Font.Color := clWindow;
     end;
     Rectangle(Rect);
     if Index < NbMMRegister then
-      AText := SysUtils.Format('MM%d ',[Index])
-    else if Index < (NbMMRegister+NbXMMRegister-1) then
+      AText := SysUtils.Format('MM%d ', [Index])
+    else
+    if Index < NbMMRegister + NbXMMRegister - 1 then
     begin
       if CpuInfo.Is64Bits then
-        AText := SysUtils.Format('XMM%.2d ',[Index-NbMMRegister])
+        AText := SysUtils.Format('XMM%.2d ', [Index - NbMMRegister])
       else
-        AText := SysUtils.Format('XMM%d ',[Index-NbMMRegister]);
+        AText := SysUtils.Format('XMM%d ', [Index - NbMMRegister]);
     end
     else
       AText := 'MXCSR ';
-    TextOut(Rect.Left+2,Rect.Top,AText);
-    if RegisterChanged[Index] then
+    TextOut(Rect.Left + 2, Rect.Top, AText);
+    if FRegisterChanged[Index] then
       Font.Color := clRed;
-    TextOut(Rect.Left+2+TextExtent(AText).cx,Rect.Top,Items[Index]);
+    TextOut(Rect.Left + 2 + TextExtent(AText).cx, Rect.Top, Items[Index]);
   end;
 end;
 
 procedure TJclSIMDViewFrm.GetThreadValues;
 var
   NewVectorFrame: TJclVectorFrame;
-  
-  function ChangedFlag(const Value1, Value2: TJclXMMRegister): Boolean; overload;
-  begin
-    Result :=    (Value1.QWords[0] <> Value2.QWords[0])
-              or (Value1.QWords[1] <> Value2.QWords[1]);
-  end;
-  function ChangedFlag(const Value1, Value2: TJclMMRegister): Boolean; overload;
-  begin
-    Result := Value1.QWords <> Value2.QWords;
-  end;
-  function FormatReg(const AReg: TJclXMMRegister): string; overload;
-  var
-    I:Integer;
-    Value: TJclSIMDValue;
-  begin
-    Result:='';
-    Value.Display := Display;
-    case Display of
-      xt16Bytes  : for I := High(AReg.Bytes) downto Low(AReg.Bytes) do
-                   begin
-                     Value.ValueByte := AReg.Bytes[I];
-                     Result := Result + ' ' + FormatValue(Value,Format);
-                   end;
-      xt8Words   : for I := High(AReg.Words) downto Low(AReg.Words) do
-                   begin
-                     Value.ValueWord := AReg.Words[I];
-                     Result := Result + ' ' + FormatValue(Value,Format);
-                   end;
-      xt4DWords  : for I := High(AReg.DWords) downto Low(AReg.DWords) do
-                   begin
-                     Value.ValueDWord := AReg.DWords[I];
-                     Result := Result + ' ' + FormatValue(Value,Format);
-                   end;
-      xt2QWords  : for I := High(AReg.QWords) downto Low(AReg.QWords) do
-                   begin
-                     Value.ValueQWord := AReg.QWords[I];
-                     Result := Result + ' ' + FormatValue(Value,Format);
-                   end;
-      xt4Singles : for I := High(AReg.Singles) downto Low(AReg.Singles) do
-                   begin
-                     Value.ValueSingle := AReg.Singles[I];
-                     Result := Result + ' ' + FormatValue(Value,sfBinary);
-                   end;
-      xt2Doubles : for I := High(AReg.Doubles) downto Low(AReg.Doubles) do
-                   begin
-                     Value.ValueDouble := AReg.Doubles[I];
-                     Result := Result + ' ' + FormatValue(Value,sfBinary);
-                   end;
-    end;
-  end;
-  function FormatReg(const AReg: TJclFPUData; Index: Cardinal): string; overload;
-  var
-    I:Integer;
-    Value: TJclSIMDValue;
-  begin
-    Result:='';
-    Value.Display := Display;
-
-    if (AReg.Reserved = $FFFF) and ((NewVectorFrame.FTW and (1 shl Index)) <> 0) then
-      case Display of
-        xt16Bytes  : for I := High(AReg.MMRegister.Bytes) downto Low(AReg.MMRegister.Bytes) do
-                     begin
-                       Value.ValueByte := AReg.MMRegister.Bytes[I];
-                       Result := Result + ' ' + FormatValue(Value,Format);
-                     end;
-        xt8Words   : for I := High(AReg.MMRegister.Words) downto Low(AReg.MMRegister.Words) do
-                     begin
-                       Value.ValueWord := AReg.MMRegister.Words[I];
-                       Result := Result + ' ' + FormatValue(Value,Format);
-                     end;
-        xt4DWords  : for I := High(AReg.MMRegister.DWords) downto Low(AReg.MMRegister.DWords) do
-                     begin
-                       Value.ValueDWord := AReg.MMRegister.DWords[I];
-                       Result := Result + ' ' + FormatValue(Value,Format);
-                     end;
-        xt2QWords  : begin
-                       Value.ValueQWord := AReg.MMRegister.QWords;
-                       Result := FormatValue(Value,Format);
-                     end;
-        xt4Singles : for I := High(AReg.MMRegister.Singles) downto Low(AReg.MMRegister.Singles) do
-                     begin
-                       Value.ValueSingle := AReg.MMRegister.Singles[I];
-                       Result := Result + ' ' + FormatValue(Value,sfBinary);
-                     end;
-        xt2Doubles : Result := RsNotSupportedFormat;
-      end
-    else
-      Result := RsNoPackedData;
-  end;
-var
   NewBitValue, OldBitValue: Cardinal;
   Index: Integer;
   AProcess: IOTAProcess;
   AThread: IOTAThread;
+
+  function ChangedFlag(const Value1, Value2: TJclXMMRegister): Boolean; overload;
+  begin
+    Result := (Value1.QWords[0] <> Value2.QWords[0]) or (Value1.QWords[1] <> Value2.QWords[1]);
+  end;
+
+  function ChangedFlag(const Value1, Value2: TJclMMRegister): Boolean; overload;
+  begin
+    Result := Value1.QWords <> Value2.QWords;
+  end;
+
+  function FormatReg(const AReg: TJclXMMRegister): string; overload;
+  var
+    I: Integer;
+    Value: TJclSIMDValue;
+  begin
+    Result := '';
+    Value.Display := Display;
+    case Display of
+      xt16Bytes:
+        for I := High(AReg.Bytes) downto Low(AReg.Bytes) do
+        begin
+          Value.ValueByte := AReg.Bytes[I];
+          Result := Result + ' ' + FormatValue(Value, Format);
+        end;
+      xt8Words:
+        for I := High(AReg.Words) downto Low(AReg.Words) do
+        begin
+          Value.ValueWord := AReg.Words[I];
+          Result := Result + ' ' + FormatValue(Value, Format);
+        end;
+      xt4DWords:
+        for I := High(AReg.DWords) downto Low(AReg.DWords) do
+        begin
+          Value.ValueDWord := AReg.DWords[I];
+          Result := Result + ' ' + FormatValue(Value, Format);
+        end;
+      xt2QWords:
+        for I := High(AReg.QWords) downto Low(AReg.QWords) do
+        begin
+          Value.ValueQWord := AReg.QWords[I];
+          Result := Result + ' ' + FormatValue(Value, Format);
+        end;
+      xt4Singles:
+        for I := High(AReg.Singles) downto Low(AReg.Singles) do
+        begin
+          Value.ValueSingle := AReg.Singles[I];
+          Result := Result + ' ' + FormatValue(Value, sfBinary);
+        end;
+      xt2Doubles:
+        for I := High(AReg.Doubles) downto Low(AReg.Doubles) do
+        begin
+          Value.ValueDouble := AReg.Doubles[I];
+          Result := Result + ' ' + FormatValue(Value, sfBinary);
+        end;
+    end;
+  end;
+
+  function FormatReg(const AReg: TJclFPUData; Index: Cardinal): string; overload;
+  var
+    I: Integer;
+    Value: TJclSIMDValue;
+  begin
+    Result := '';
+    Value.Display := Display;
+
+    if (AReg.Reserved = $FFFF) and ((NewVectorFrame.FTW and (1 shl Index)) <> 0) then
+      case Display of
+        xt16Bytes:
+          for I := High(AReg.MMRegister.Bytes) downto Low(AReg.MMRegister.Bytes) do
+          begin
+            Value.ValueByte := AReg.MMRegister.Bytes[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+        xt8Words:
+          for I := High(AReg.MMRegister.Words) downto Low(AReg.MMRegister.Words) do
+          begin
+            Value.ValueWord := AReg.MMRegister.Words[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+        xt4DWords:
+          for I := High(AReg.MMRegister.DWords) downto Low(AReg.MMRegister.DWords) do
+          begin
+            Value.ValueDWord := AReg.MMRegister.DWords[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+        xt2QWords:
+          begin
+            Value.ValueQWord := AReg.MMRegister.QWords;
+            Result := FormatValue(Value, Format);
+          end;
+        xt4Singles:
+          for I := High(AReg.MMRegister.Singles) downto Low(AReg.MMRegister.Singles) do
+          begin
+            Value.ValueSingle := AReg.MMRegister.Singles[I];
+            Result := Result + ' ' + FormatValue(Value, sfBinary);
+          end;
+        xt2Doubles:
+          Result := RsNotSupportedFormat;
+      end
+    else
+      Result := RsNoPackedData;
+  end;
+
 begin
   AProcess := nil;
   AThread := nil;
@@ -446,86 +463,86 @@ begin
   if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
     AThread := AProcess.CurrentThread;
 
-  if (AThread = nil) or (AThread.State = tsNone) or (AThread.GetOSThreadID = 0)
-    or (AThread.Handle = 0) then
+  if (AThread = nil) or (AThread.State = tsNone) or
+    (AThread.GetOSThreadID = 0) or (AThread.Handle = 0) then
   begin
     Close;
     Exit;
   end;
 
   case AThread.State of
-    tsStopped  :
+    tsStopped:
       begin
-        if (DebuggerServices.CurrentProcess.ThreadCount > 1) then
-          Caption := SysUtils.Format('%s Thread : %d',[SIMDCaption,AThread.GetOSThreadID])
+        if DebuggerServices.CurrentProcess.ThreadCount > 1 then
+          Caption := SysUtils.Format('%s Thread : %d', [SIMDCaption,AThread.GetOSThreadID])
         else
           Caption := SIMDCaption;
 
-        GetVectorContext(AThread.Handle,NewVectorFrame);
+        GetVectorContext(AThread.Handle, NewVectorFrame);
 
-        for Index := 0 to ListBoxMXCSR.Items.Count-1 do
+        for Index := 0 to ListBoxMXCSR.Items.Count - 1 do
           with ListBoxMXCSR, Items, MXCSRBitsDescriptions[Index] do
-        begin
-          NewBitValue := NewVectorFrame.MXCSR and AndMask;
-          OldBitValue := FVectorFrame.MXCSR and AndMask;
-          MXCSRChanged[Index] := NewBitValue <> OldBitValue;
-          Strings[Index] := IntToStr(NewBitValue shr Shifting);
-        end;
+          begin
+            NewBitValue := NewVectorFrame.MXCSR and AndMask;
+            OldBitValue := FVectorFrame.MXCSR and AndMask;
+            FMXCSRChanged[Index] := NewBitValue <> OldBitValue;
+            Strings[Index] := IntToStr(NewBitValue shr Shifting);
+          end;
         ListBoxMXCSR.Invalidate;
 
         for Index := 0 to NbMMRegister - 1 do
         begin
-          RegisterChanged[Index] := ChangedFlag(NewVectorFrame.FPURegisters[Index].Data.MMRegister,
-                                                FVectorFrame.FPURegisters[Index].Data.MMRegister);
-          ListBoxRegs.Items.Strings[Index] := FormatReg(NewVectorFrame.FPURegisters[Index].Data,Index);
+          FRegisterChanged[Index] := ChangedFlag(NewVectorFrame.FPURegisters[Index].Data.MMRegister,
+            FVectorFrame.FPURegisters[Index].Data.MMRegister);
+          ListBoxRegs.Items.Strings[Index] := FormatReg(NewVectorFrame.FPURegisters[Index].Data, Index);
         end;
 
         if FNbXMMRegister > 0 then
         begin
           for Index := 0 to FNbXMMRegister - 2 do
           begin
-            RegisterChanged[Index+NbMMRegister] := ChangedFlag(NewVectorFrame.XMMRegisters.LongXMM[Index],
-                                                                FVectorFrame.XMMRegisters.LongXMM[Index]);
-            ListBoxRegs.Items.Strings[Index+NbMMRegister] := FormatReg(NewVectorFrame.XMMRegisters.LongXMM[Index]);
+            FRegisterChanged[Index + NbMMRegister] := ChangedFlag(NewVectorFrame.XMMRegisters.LongXMM[Index],
+              FVectorFrame.XMMRegisters.LongXMM[Index]);
+            ListBoxRegs.Items.Strings[Index + NbMMRegister] := FormatReg(NewVectorFrame.XMMRegisters.LongXMM[Index]);
           end;
 
-          RegisterChanged[NbMMRegister+NbXMMRegister-1] := NewVectorFrame.MXCSR <> FVectorFrame.MXCSR;
-          ListBoxRegs.Items.Strings[NbMMRegister+NbXMMRegister-1] := IntToHex(NewVectorFrame.MXCSR,8);
+          FRegisterChanged[NbMMRegister + NbXMMRegister - 1] := NewVectorFrame.MXCSR <> FVectorFrame.MXCSR;
+          ListBoxRegs.Items.Strings[NbMMRegister + NbXMMRegister - 1] := IntToHex(NewVectorFrame.MXCSR, 8);
         end;
         ListBoxRegs.Invalidate;
 
         FVectorFrame := NewVectorFrame;
       end;
-    tsRunnable :
-      Caption := SysUtils.Format('%s <running>',[SIMDCaption]);
-    tsBlocked :
-      Caption := SysUtils.Format('%s <blocked>',[SIMDCaption]);
+    tsRunnable:
+      Caption := SysUtils.Format('%s <running>', [SIMDCaption]);
+    tsBlocked:
+      Caption := SysUtils.Format('%s <blocked>', [SIMDCaption]);
   end;
 end;
 
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
-  SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread.Handle,FVectorFrame);
+  SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread.Handle, FVectorFrame);
 end;
 
 procedure TJclSIMDViewFrm.MenuItemFormatClick(Sender: TObject);
 begin
-  Format:=TJclSIMDFormat((Sender as TMenuItem).Tag);
+  Format := TJclSIMDFormat((Sender as TMenuItem).Tag);
 end;
 
 procedure TJclSIMDViewFrm.SetDisplay(const Value: TJclXMMContentType);
 var
-  AEnabled:Boolean;
+  AEnabled: Boolean;
 begin
   FDisplay := Value;
-  MenuItemBytes.Checked := Value=xt16Bytes;
-  MenuItemWords.Checked := Value=xt8Words;
-  MenuItemDWords.Checked := Value=xt4DWords;
-  MenuItemQWords.Checked := Value=xt2QWords;
-  MenuItemSingles.Checked := Value=xt4Singles;
-  MenuItemDoubles.Checked := Value=xt2Doubles;
+  MenuItemBytes.Checked := Value = xt16Bytes;
+  MenuItemWords.Checked := Value = xt8Words;
+  MenuItemDWords.Checked := Value = xt4DWords;
+  MenuItemQWords.Checked := Value = xt2QWords;
+  MenuItemSingles.Checked := Value = xt4Singles;
+  MenuItemDoubles.Checked := Value = xt2Doubles;
 
-  AEnabled:=not (Value in [xt4Singles, xt2Doubles]);
+  AEnabled := not (Value in [xt4Singles, xt2Doubles]);
   MenuItemBinary.Enabled := AEnabled;
   MenuItemSigned.Enabled := AEnabled;
   MenuItemUnsigned.Enabled := AEnabled;
@@ -537,10 +554,10 @@ end;
 procedure TJclSIMDViewFrm.SetFormat(const Value: TJclSIMDFormat);
 begin
   FFormat := Value;
-  MenuItemBinary.Checked:=Value=sfBinary;
-  MenuItemSigned.Checked:=Value=sfSigned;
-  MenuItemUnsigned.Checked:=Value=sfUnsigned;
-  MenuItemHexa.Checked:=Value=sfHexa;
+  MenuItemBinary.Checked := Value = sfBinary;
+  MenuItemSigned.Checked := Value = sfSigned;
+  MenuItemUnsigned.Checked := Value = sfUnsigned;
+  MenuItemHexa.Checked := Value = sfHexa;
 
   GetThreadValues;
 end;
@@ -580,14 +597,14 @@ begin
   AProcess := nil;
   AThread := nil;
 
-  if (DebuggerServices.ProcessCount > 0) then
+  if DebuggerServices.ProcessCount > 0 then
     AProcess := DebuggerServices.CurrentProcess;
   if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
     AThread := AProcess.CurrentThread;
-  if (AThread <> nil) then
+  if AThread <> nil then
   begin
     ANewThreadState := AThread.State;
-    if (ANewThreadState in [tsStopped, tsBlocked]) then
+    if ANewThreadState in [tsStopped, tsBlocked] then
       CurrentThreadID := AThread.GetOSThreadID;
     if (CurrentThreadID <> 0) and ((CurrentThreadID <> FOldThreadID) or (ANewThreadState <> FOldThreadState)) then
     begin
@@ -602,7 +619,7 @@ procedure TJclSIMDViewFrm.ThreadEvaluate(const ExprStr, ResultStr: string;
   ReturnCode: Integer);
 begin
   if Assigned(FModifyForm) then
-    FModifyForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+    FModifyForm.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
 end;
 
 procedure TJclSIMDViewFrm.ActionStayOnTopUpdate(Sender: TObject);
@@ -637,8 +654,8 @@ begin
   if Assigned(AProcess) then
     AThread := AProcess.CurrentThread;
 
-  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped)
-    and (AItemIndex >= 0) and (AItemIndex < (NbMMRegister+NbXMMRegister));
+  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
+    (AItemIndex >= 0) and (AItemIndex < (NbMMRegister + NbXMMRegister));
 end;
 
 procedure TJclSIMDViewFrm.ActionModifyExecute(Sender: TObject);
@@ -648,34 +665,34 @@ begin
   AItemIndex := ListBoxRegs.ItemIndex;
   if AItemIndex >= 0 then
   try
-    FModifyForm := TJclSIMDModifyFrm.Create(Self,DebuggerServices,Settings);
+    FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FRegKey);
     FModifyForm.Icon.Assign(Self.Icon);
 
-    if (AItemIndex < NbMMRegister) then
+    if AItemIndex < NbMMRegister then
     begin
-      FModifyForm.Caption := SysUtils.Format(RsModifyMM,[AItemIndex]);
-      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread,Display,
-           Format,FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister,FCpuInfo) then
+      FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
+      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+        Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo) then
       begin
         FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
         FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
         SetThreadValues;
         GetThreadValues;
-        RegisterChanged[AItemIndex] := True;
+        FRegisterChanged[AItemIndex] := True;
         ListBoxRegs.Invalidate;
       end;
     end else
     begin
       if CpuInfo.Is64Bits then
-        FModifyForm.Caption := SysUtils.Format(RsModifyXMM2,[AItemIndex-NbMMRegister])
+        FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
       else
-        FModifyForm.Caption := SysUtils.Format(RsModifyXMM1,[AItemIndex-NbMMRegister]);
-      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread,Display,
-        Format,FVectorFrame.XMMRegisters.LongXMM[AItemIndex-NbMMRegister],FCpuInfo) then
+        FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
+      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+        Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
       begin
         SetThreadValues;
         GetThreadValues;
-        RegisterChanged[AItemIndex] := True;
+        FRegisterChanged[AItemIndex] := True;
         ListBoxRegs.Invalidate;
       end;
     end;
@@ -695,10 +712,10 @@ begin
   AItemIndex := ListBoxRegs.ItemIndex;
   if Assigned(AProcess) then
     AThread := AProcess.CurrentThread;
-  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped)
-    and (AItemIndex >= 0) and (AItemIndex < NbMMRegister)
-    and ((FVectorFrame.FTW and (1 shl AItemIndex)) <> 0)
-    and (FVectorFrame.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
+  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
+    (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
+    ((FVectorFrame.FTW and (1 shl AItemIndex)) <> 0) and
+    (FVectorFrame.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyExecute(Sender: TObject);
@@ -710,7 +727,7 @@ begin
   FVectorFrame.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
   SetThreadValues;
   GetThreadValues;
-  RegisterChanged[AItemIndex] := True;
+  FRegisterChanged[AItemIndex] := True;
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyAllUpdate(Sender: TObject);
@@ -724,8 +741,8 @@ begin
   AItemIndex := ListBoxRegs.ItemIndex;
   if Assigned(AProcess) then
     AThread := AProcess.CurrentThread;
-  (Sender as TAction).Enabled := (AItemIndex >= 0) and (AItemIndex < NbMMRegister)
-    and Assigned(AThread) and (AThread.State = tsStopped);
+  (Sender as TAction).Enabled := (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
+    Assigned(AThread) and (AThread.State = tsStopped);
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyAllExecute(Sender: TObject);
@@ -767,10 +784,10 @@ procedure TJclSIMDViewFrm.ListBoxesMouseDown(Sender: TObject;
 var
   AListBox: TListBox;
 begin
-  if (Button = mbRight) then
+  if Button = mbRight then
   begin
     AListBox := Sender as TListBox;
-    AListBox.ItemIndex := AListBox.ItemAtPos(Point(X,Y),True);
+    AListBox.ItemIndex := AListBox.ItemAtPos(Point(X, Y), True);
   end;
 end;
 

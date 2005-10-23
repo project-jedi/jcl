@@ -33,13 +33,13 @@ uses
   JclOtaUtils;
 
 type
-  TOpenDialogsFavoriteExpert = class(TJclOTAExpert)
+  TJclOpenDialogsFavoriteExpert = class(TJclOTAExpert)
   private
     FFavOpenDialog: TFavOpenDialog;
     procedure DialogClose(Sender: TObject);
     procedure DialogShow(Sender: TObject);
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
   end;
 
@@ -48,41 +48,40 @@ procedure Register;
 implementation
 
 uses
-  JclIniFiles, JclFileUtils, JclSysInfo,
-  JclOtaConsts;
+  JclFileUtils, JclOtaConsts, JclRegistry, JclSysInfo;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TOpenDialogsFavoriteExpert.Create);
+  RegisterPackageWizard(TJclOpenDialogsFavoriteExpert.Create);
 end;
 
-constructor TOpenDialogsFavoriteExpert.Create;
+constructor TJclOpenDialogsFavoriteExpert.Create;
 begin
-  inherited Create;
+  inherited Create(JclFavoritesExpertName);
   FFavOpenDialog := InitializeFavOpenDialog;
   FFavOpenDialog.DisableHelpButton := True;
   FFavOpenDialog.HookDialogs;
   FFavOpenDialog.OnClose := DialogClose;
   FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := JediIniFile.ReadString(FavoritesSectionName,
+  FFavOpenDialog.PictureDialogLastFolder := RegReadStringDef(HKCU, ExpertRegistryKey,
     PictDialogFolderItemName, PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
 end;
 
-destructor TOpenDialogsFavoriteExpert.Destroy;
+destructor TJclOpenDialogsFavoriteExpert.Destroy;
 begin
   FFavOpenDialog.UnhookDialogs;
   inherited Destroy;
 end;
 
-procedure TOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
+procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
 begin
-  IniWriteStrings(JediIniFile, FavoritesSectionName, FFavOpenDialog.FavoriteFolders);
-  JediIniFile.WriteString(FavoritesSectionName, PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
+  RegSaveList(HKCU, ExpertRegistryKey, JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  RegWriteString(HKCU, ExpertRegistryKey, PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
 end;
 
-procedure TOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
+procedure TJclOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
 begin
-  IniReadStrings(JediIniFile, FavoritesSectionName, FFavOpenDialog.FavoriteFolders);
+  RegLoadList(HKCU, ExpertRegistryKey, JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
 end;
 
 end.

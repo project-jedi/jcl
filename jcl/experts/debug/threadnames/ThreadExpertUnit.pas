@@ -36,7 +36,7 @@ uses
 type
   TNameChangeThread = class;
 
-  TThreadsExpert = class(TJclOTAExpert)
+  TJclThreadsExpert = class(TJclOTAExpert)
   private
     DebuggerServices: IOTADebuggerServices;
     FProcessesCount: Integer;
@@ -49,7 +49,7 @@ type
     procedure ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
     function UpdateItem(Item: TListItem): Boolean;
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     procedure UpdateContent;
     property ProcessesCount: Integer read FProcessesCount;
@@ -59,19 +59,19 @@ type
 
   TDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier)
   private
-    FExpert: TThreadsExpert;
+    FExpert: TJclThreadsExpert;
   protected
     procedure BreakpointAdded({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
     procedure BreakpointDeleted({$IFDEF RTL170_UP} const {$ENDIF} Breakpoint: IOTABreakpoint);
     procedure ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
     procedure ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
   public
-    constructor Create(AExpert: TThreadsExpert);
+    constructor Create(AExpert: TJclThreadsExpert);
   end;
 
   TNameChangeThread = class(TThread)
   private
-    FExpert: TThreadsExpert;
+    FExpert: TJclThreadsExpert;
     FNotifyEvent: TJclEvent;
     FTerminateEvent: THandle;
     procedure TryFindThreadsStatusListView;
@@ -79,7 +79,7 @@ type
   protected
     procedure Execute; override;
   public
-    constructor Create(AExpert: TThreadsExpert; ANotifyEvent: TJclEvent);
+    constructor Create(AExpert: TJclThreadsExpert; ANotifyEvent: TJclEvent);
     destructor Destroy; override;
     procedure TerminateThread;
   end;
@@ -90,7 +90,7 @@ implementation
 
 uses
   Forms, Controls,
-  JclSysUtils;
+  JclOtaConsts, JclSysUtils;
 
 const
   ThreadsStatusListViewFindPeriod = 2000;
@@ -98,21 +98,21 @@ const
 
 procedure Register;
 begin
-  RegisterPackageWizard(TThreadsExpert.Create);
+  RegisterPackageWizard(TJclThreadsExpert.Create);
 end;
 
-//== { TThreadsExpert } ======================================================
+//== { TJclThreadsExpert } ===================================================
 
-constructor TThreadsExpert.Create;
+constructor TJclThreadsExpert.Create;
 begin
-  inherited Create;
+  inherited Create(JclThreadsExpertName);
   DebuggerServices := BorlandIDEServices as IOTADebuggerServices;
   FSharedThreadNames := TSharedThreadNames.Create(True);
   FNotifierIndex := DebuggerServices.AddNotifier(TDebuggerNotifier.Create(Self));
   FNameChangeThread := TNameChangeThread.Create(Self, FSharedThreadNames.NotifyEvent);
 end;
 
-destructor TThreadsExpert.Destroy;
+destructor TJclThreadsExpert.Destroy;
 begin
   if FNotifierIndex <> -1 then
     DebuggerServices.RemoveNotifier(FNotifierIndex);
@@ -124,7 +124,7 @@ begin
   inherited Destroy;
 end;
 
-function TThreadsExpert.GetThreadsStatusListView: TListView;
+function TJclThreadsExpert.GetThreadsStatusListView: TListView;
 var
   I: Integer;
   F: TForm;
@@ -153,12 +153,12 @@ begin
   Result := FThreadsStatusListView;
 end;
 
-function TThreadsExpert.GetThreadsStatusListViewFound: Boolean;
+function TJclThreadsExpert.GetThreadsStatusListViewFound: Boolean;
 begin
   Result := Assigned(FThreadsStatusListView);
 end;
 
-procedure TThreadsExpert.ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
+procedure TJclThreadsExpert.ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
 begin
   try
     if Change = ctText then
@@ -167,7 +167,7 @@ begin
   end;
 end;
 
-procedure TThreadsExpert.UpdateContent;
+procedure TJclThreadsExpert.UpdateContent;
 var
   I: Integer;
 begin
@@ -190,7 +190,7 @@ end;
 var
   CaptionChanging: Boolean;
 
-function TThreadsExpert.UpdateItem(Item: TListItem): Boolean;
+function TJclThreadsExpert.UpdateItem(Item: TListItem): Boolean;
 var
   TID: DWORD;
   Caption, ThreadName: string;
@@ -218,7 +218,7 @@ end;
 
 //=== { TDebuggerNotifier } ==================================================
 
-constructor TDebuggerNotifier.Create(AExpert: TThreadsExpert);
+constructor TDebuggerNotifier.Create(AExpert: TJclThreadsExpert);
 begin
   FExpert := AExpert;
 end;
@@ -245,7 +245,7 @@ end;
 
 //=== { TNameChangeThread } ==================================================
 
-constructor TNameChangeThread.Create(AExpert: TThreadsExpert; ANotifyEvent: TJclEvent);
+constructor TNameChangeThread.Create(AExpert: TJclThreadsExpert; ANotifyEvent: TJclEvent);
 begin
   inherited Create(True);
   Priority := tpLowest;
