@@ -1346,7 +1346,7 @@ begin
   try
     SaveTo.Clear;
     SubKey := Key + '\' + ListName;
-    N := RegReadInteger(RootKey, SubKey, cItems);
+    N := RegReadIntegerDef(RootKey, SubKey, cItems, -1);
     for I := 1 to N do
       SaveTo.Add(RegReadString(RootKey, SubKey, IntToStr(I)));
     Result := N > 0;
@@ -1402,6 +1402,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.39  2005/10/24 12:06:28  marquardt
+// fix RegLoadList for nonexistent list
+//
 // Revision 1.38  2005/04/07 00:41:38  rrossmair
 // - changed for FPC 1.9.8
 //
