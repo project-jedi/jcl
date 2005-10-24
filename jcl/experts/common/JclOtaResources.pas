@@ -72,11 +72,19 @@ resourcestring
   RsStatusText = 'Units: %d, Forms: %d, Code: %d, Data: %d, Bss: %d, Resources: %d';
   RsCodeData = '(CODE+DATA)';
 
+//=== JclUsesWizard.pas ======================================================
+resourcestring
+  RsJediOptionsCaption = 'JEDI Options';
+  RsEErrorReadingBuffer = 'Error reading from edit buffer';
+
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.4  2005/10/24 12:05:51  marquardt
+// further cleanup
+//
 // Revision 1.3  2005/10/23 12:53:36  marquardt
 // further expert cleanup and integration, use of JclRegistry
 //

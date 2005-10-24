@@ -36,7 +36,7 @@ uses
   Windows, Classes, ToolsAPI, ComCtrls, ActnList;
 
 const
-  MapFileOptionDetailed  = 3;
+  MapFileOptionDetailed = 3;
 
 type
   TJclOTAUtils = class(TInterfacedObject)
@@ -483,6 +483,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/10/24 12:05:51  marquardt
+// further cleanup
+//
 // Revision 1.2  2005/10/23 12:53:36  marquardt
 // further expert cleanup and integration, use of JclRegistry
 //
