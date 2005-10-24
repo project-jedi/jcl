@@ -53,7 +53,8 @@ implementation
 uses
   Classes, SysUtils, ToolsAPI, Messages, Forms, Controls,
   ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
-  JclFileUtils, JclOptionsFrame, JclOtaConsts, JclParseUses, JclRegistry, JclUsesDialog;
+  JclFileUtils, JclOptionsFrame, JclOtaConsts, JclOtaResources,
+  JclParseUses, JclRegistry, JclUsesDialog;
 
 const
   SEnvOptionsDlgClassName = 'TPasEnvironmentDialog';
@@ -257,7 +258,7 @@ begin
       Read := Reader.GetText(ReaderPos, @Buf, BufSize);
       Inc(ReaderPos, Read);
       if (Read < 0) or (Read > BufSize) then
-        raise Exception.Create('Error reading from edit buffer');
+        raise Exception.Create(RsEErrorReadingBuffer);
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
@@ -362,7 +363,7 @@ begin
     JCLOptionsTab := TTabSheet.Create(Form);
     try
       JCLOptionsTab.PageControl := PropSheetControl1;
-      JCLOptionsTab.Caption := 'JEDI Options';
+      JCLOptionsTab.Caption := RsJediOptionsCaption;
 
       TFrameJclOptions.Create(JCLOptionsTab);
     except

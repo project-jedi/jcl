@@ -122,7 +122,6 @@ implementation
 {$R JclDebugIdeIcon.res}
 
 uses
-  IniFiles, 
   JclDebug, JclDebugIdeResult, JclOtaConsts, JclRegistry;
 
 procedure Register;

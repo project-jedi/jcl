@@ -115,7 +115,6 @@ procedure Register;
 implementation
 
 uses
-  IniFiles,
   JclOtaConsts, JclSIMDUtils;
 
 const
@@ -461,7 +460,7 @@ begin
 end;
 
 procedure TJclDebuggerNotifier.ProcessModuleCreated(
-  {$IFDEF RTL170_UP}const{$ENDIF} ProcessModule: IOTAProcessModule);
+  {$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;
