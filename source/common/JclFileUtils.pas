@@ -83,6 +83,9 @@ type
   PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
 {$ENDIF FPC}
 {$IFDEF CLR}
+const
+  ERROR_NO_MORE_FILES = 18;
+
 type
   PBoolean = System.Object;
   TFileTime = System.DateTime;
@@ -5844,6 +5847,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.54  2005/10/24 19:16:53  ahuser
+// more .NET support
+//
 // Revision 1.53  2005/10/12 12:39:45  outchy
 // Fixed PathIsAbsolute on UNC paths (reported by Robert Kindl)
 //
