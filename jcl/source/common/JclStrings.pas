@@ -338,11 +338,13 @@ function BooleanToStr(B: Boolean): string;
 function FileToString(const FileName: string): AnsiString;
 procedure StringToFile(const FileName: string; const Contents: AnsiString);
 function StrToken(var S: string; Separator: Char): string;
-{$IFNDEF CLR}
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
+{$IFDEF CLR}
+function StrWord(const S: string; var Index: Integer; out Word: string): Boolean;
+{$ELSE}
 function StrWord(var S: PChar; out Word: string): Boolean;
-{$ENDIF ~CLR}
+{$ENDIF CLR}
 function StrToFloatSafe(const S: string): Float;
 function StrToIntSafe(const S: string): Integer;
 procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
@@ -3858,7 +3860,74 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
+procedure StrTokens(const S: string; const List: TStrings);
+var
+  Start: Integer;
+  Token: string;
+  Done: Boolean;
+begin
+  Assert(List <> nil);
+  if List = nil then
+    Exit;
+
+  List.BeginUpdate;
+  try
+    List.Clear;
+    Start := 0;
+    repeat
+      Done := StrWord(S, Start, Token);
+      if Token <> '' then
+        List.Add(Token);
+    until Done;
+  finally
+    List.EndUpdate;
+  end;
+end;
+
+function StrWord(const S: string; var Index: Integer; out Word: string): Boolean;
+var
+  Start: Integer;
+begin
+  Word := '';
+  if (S = nil) or (S = '') then
+  begin
+    Result := True;
+    Exit;
+  end;
+  Start := Index;
+  Result := False;
+  while True do
+  begin
+    case S[Index] of
+      #0:
+        begin
+          if Start <> 0 then
+            Word := S.Substring(Start, Index - Start);
+          Result := True;
+          Exit;
+        end;
+      AnsiSpace, AnsiLineFeed, AnsiCarriageReturn:
+        begin
+          if Start <> 0 then
+          begin
+            Word := S.Substring(Start, Index - Start);
+            Exit;
+          end
+          else
+            while (S[Index] in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn]) do
+              Inc(Index);
+        end;
+    else
+      if Start = 0 then
+        Start := Index;
+      Inc(Index);
+    end;
+  end;
+end;
+
+{$ELSE}
+
 procedure StrTokens(const S: string; const List: TStrings);
 var
   Start: PChar;
@@ -3878,28 +3947,6 @@ begin
       if Token <> '' then
         List.Add(Token);
     until Done;
-  finally
-    List.EndUpdate;
-  end;
-end;
-
-procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
-var
-  Token: string;
-begin
-  Assert(List <> nil);
-
-  if List = nil then
-    Exit;
-
-  List.BeginUpdate;
-  try
-    List.Clear;
-    while S <> '' do
-    begin
-      Token := StrToken(S, Separator);
-      List.Add(Token);
-    end;
   finally
     List.EndUpdate;
   end;
@@ -3946,6 +3993,28 @@ begin
   end;
 end;
 {$ENDIF ~CLR}
+
+procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
+var
+  Token: string;
+begin
+  Assert(List <> nil);
+
+  if List = nil then
+    Exit;
+
+  List.BeginUpdate;
+  try
+    List.Clear;
+    while S <> '' do
+    begin
+      Token := StrToken(S, Separator);
+      List.Add(Token);
+    end;
+  finally
+    List.EndUpdate;
+  end;
+end;
 
 function StrToFloatSafe(const S: string): Float;
 var
@@ -4107,6 +4176,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.43  2005/10/24 19:16:53  ahuser
+// more .NET support
+//
 // Revision 1.42  2005/10/17 09:16:59  rikbarker
 // Fixed range check crashes in StrOemToAnsi and StrAnsiToOem when passed an empty string.  Both could probably do with rewriting to use non-obsoleted functions CharToOemBuff and OemToCharBuff, long term.
 //
@@ -4205,5 +4277,4 @@ initialization
 // Revision 1.10  2004/04/06 04:31:32
 // Add functions for String <--> MultiString conversion
 //
-
 end.
