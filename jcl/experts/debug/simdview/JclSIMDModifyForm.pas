@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ToolsApi, Contnrs,
-  JclSysInfo, JclSIMDUtils;
+  JclOtaUtils, JclSysInfo, JclSIMDUtils;
 
 const
   WM_MODIFYCONTINUE = WM_USER + 100;
@@ -70,7 +70,7 @@ type
     FResultStr: string;
     FReturnCode: Cardinal;
     FCPUInfo: TCpuInfo;
-    FRegKey: string;
+    FExpert: TJclOTAExpert;
     procedure ContinueModify;
     procedure StartModify;
     procedure WMModifyContinue(var Msg: TMessage); message WM_MODIFYCONTINUE;
@@ -80,8 +80,8 @@ type
     property MMRegister: TJclMMRegister read FMMRegister;
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   public
-    constructor Create (AOwner: TComponent;
-      ADebuggerServices: IOTADebuggerServices; ARegKey: string); reintroduce;
+    constructor Create(AOwner: TComponent;
+      ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert); reintroduce;
     destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
@@ -104,9 +104,6 @@ type
 
 implementation
 
-uses
-  JclRegistry;
-
 {$R *.dfm}
 
 const
@@ -127,12 +124,12 @@ const
 //=== { TJclSIMDModifyFrm } ==================================================
 
 constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; ARegKey: string);
+  ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert);
 begin
   inherited Create(AOwner);
 
   FDebuggerServices := ADebuggerServices;
-  FRegKey := ARegKey;
+  FExpert := AExpert;
 
   FComboBoxList := TComponentList.Create(False);
   FLabelList := TComponentList.Create(False);
@@ -315,20 +312,20 @@ procedure TJclSIMDModifyFrm.LoadHistory;
 var
   Index, Count: Integer;
 begin
-  Count := RegReadIntegerDef(HKCU, FRegKey, CountPropertyName, 0);
+  Count := FExpert.LoadInteger(CountPropertyName, 0);
   History.Clear;
 
   for Index := 0 to Count - 1 do
-    History.Add(RegReadStringDef(HKCU, FRegKey, SysUtils.Format(ItemFormat, [Index]), ''));
+    History.Add(FExpert.LoadString(SysUtils.Format(ItemFormat, [Index]), ''));
 end;
 
 procedure TJclSIMDModifyFrm.SaveHistory;
 var
   Index: Integer;
 begin
-  RegWriteInteger(HKCU, FRegKey, CountPropertyName, History.Count);
-  for Index := 0 to History.Count-1 do
-    RegWriteString(HKCU, FRegKey, SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
+  FExpert.SaveInteger(CountPropertyName, History.Count);
+  for Index := 0 to History.Count - 1 do
+    FExpert.SaveString(SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;

@@ -17,7 +17,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 371
     Top = 0
     Width = 3
-    Height = 274
+    Height = 271
     Cursor = crHSplit
     Align = alRight
   end
@@ -25,7 +25,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 0
     Top = 0
     Width = 371
-    Height = 274
+    Height = 271
     Style = lbOwnerDrawFixed
     Align = alClient
     Color = clBtnFace
@@ -45,7 +45,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 374
     Top = 0
     Width = 55
-    Height = 274
+    Height = 271
     Style = lbOwnerDrawFixed
     Align = alRight
     Color = clBtnFace
