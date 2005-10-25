@@ -39,7 +39,7 @@ const
   MapFileOptionDetailed = 3;
 
 type
-  TJclOTAUtils = class(TInterfacedObject)
+  TJclOTAExpertBase = class(TInterfacedObject)
   private
     FBaseRegistryKey: string;
     FExpertRegistryKey: string;
@@ -53,7 +53,7 @@ type
     function GetRootDir: string;
     procedure ReadEnvVariables;
 
-    procedure CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
+    procedure CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
   public
     constructor Create(AName: string); virtual;
     destructor Destroy; override;
@@ -81,7 +81,7 @@ type
     property Services: IOTAServices read FServices;
   end;
 
-  TJclOTAExpert = class(TJclOTAUtils, IOTAWizard)
+  TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard)
   protected
     procedure AfterSave;
     procedure BeforeSave;
@@ -93,7 +93,7 @@ type
     function GetState: TWizardState;
   end;
 
-procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
+// procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 
 implementation
 
@@ -130,9 +130,9 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== { TJclOTAUtils } =======================================================
+//=== { TJclOTAExpertBase } ==================================================
 
-constructor TJclOTAUtils.Create(AName: string);
+constructor TJclOTAExpertBase.Create(AName: string);
 begin
   Supports(BorlandIDEServices,IOTAServices,FServices);
   Assert(Assigned(FServices), RsENoIDEServices);
@@ -148,7 +148,7 @@ begin
   RegisterCommands;
 end;
 
-destructor TJclOTAUtils.Destroy;
+destructor TJclOTAExpertBase.Destroy;
 begin
   UnRegisterCommands;
 
@@ -160,7 +160,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclOTAUtils.FindExecutableName(const MapFileName, OutputDirectory: string;
+function TJclOTAExpertBase.FindExecutableName(const MapFileName, OutputDirectory: string;
   var ExecutableFileName: string): Boolean;
 var
   Se: TSearchRec;
@@ -191,7 +191,7 @@ begin
   Result := (ExecutableFileName <> '');
 end;
 
-function TJclOTAUtils.GetActiveProject: IOTAProject;
+function TJclOTAExpertBase.GetActiveProject: IOTAProject;
 var
   TempProjectGroup: IOTAProjectGroup;
 begin
@@ -202,12 +202,12 @@ begin
     Result := nil;
 end;
 
-function TJclOTAUtils.GetDrcFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
   Result := ChangeFileExt(Project.FileName, DRCExtension);
 end;
 
-function TJclOTAUtils.GetMapFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): string;
 var
   ProjectFileName, OutputDirectory, LibPrefix, LibSuffix: string;
 begin
@@ -224,7 +224,7 @@ begin
     PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + MAPExtension;
 end;
 
-function TJclOTAUtils.GetOutputDirectory(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
 begin
   if IsPackage(Project) then
   begin
@@ -239,7 +239,7 @@ begin
     Result := ExtractFilePath(Project.FileName);
 end;
 
-function TJclOTAUtils.GetProjectGroup: IOTAProjectGroup;
+function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
   IModuleServices: IOTAModuleServices;
   I: Integer;
@@ -251,7 +251,7 @@ begin
   Result := nil;
 end;
 
-function TJclOTAUtils.GetRootDir: string;
+function TJclOTAExpertBase.GetRootDir: string;
 begin
   if FRootDir = '' then
   begin
@@ -264,7 +264,7 @@ begin
   Result := FRootDir;
 end;
 
-function TJclOTAUtils.IsInstalledPackage(const Project: IOTAProject): Boolean;
+function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
   PackageFileName, ExecutableNameNoExt: string;
   PackageServices: IOTAPackageServices;
@@ -292,12 +292,12 @@ begin
   end;
 end;
 
-function TJclOTAUtils.IsPackage(const Project: IOTAProject): Boolean;
+function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
 begin
   Result := AnsiSameText(ExtractFileExt(Project.FileName), DPKExtension);
 end;
 
-procedure TJclOTAUtils.ReadEnvVariables;
+procedure TJclOTAExpertBase.ReadEnvVariables;
 {$IFDEF COMPILER6_UP}
 var
   EnvNames: TStringList;
@@ -326,11 +326,11 @@ begin
   end;
   {$ENDIF COMPILER6_UP}
 
-  // add the delphi directory
+  // add the Delphi directory
   FEnvVariables.Values[DelphiEnvironmentVar] := RootDir;
 end;
 
-function TJclOTAUtils.SubstitutePath(const Path: string): string;
+function TJclOTAExpertBase.SubstitutePath(const Path: string): string;
 var
   I: Integer;
   Name: string;
@@ -347,7 +347,7 @@ begin
     end;
 end;
 
-procedure TJclOTAUtils.RegisterAction(Action: TCustomAction);
+procedure TJclOTAExpertBase.RegisterAction(Action: TCustomAction);
 begin
   if not Assigned(ActionList) then
   begin
@@ -366,7 +366,7 @@ begin
   ActionList.Add(Action);
 end;
 
-procedure TJclOTAUtils.UnregisterAction(Action: TCustomAction);
+procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
 begin
   if Assigned(ActionList) then
   begin
@@ -381,7 +381,6 @@ begin
       {$ENDIF COMPILER6_UP}
     end;
   end;
-
 
   // remove action from toolbar to avoid crash when recompile package inside the IDE.
   CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar], Action);
@@ -398,7 +397,7 @@ end;
 type
   TAccessToolButton = class(TToolButton);
   
-procedure TJclOTAUtils.CheckToolBarButton(AToolbar: TToolBar; AAction: TCustomAction);
+procedure TJclOTAExpertBase.CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
 var
   Index: Integer;
   AButton: TAccessToolButton;
@@ -415,12 +414,12 @@ begin
     end;
 end;
 
-procedure TJclOTAUtils.RegisterCommands;
+procedure TJclOTAExpertBase.RegisterCommands;
 begin
   // override to add actions and menu items
 end;
 
-procedure TJclOTAUtils.UnregisterCommands;
+procedure TJclOTAExpertBase.UnregisterCommands;
 begin
   // override to remove actions and menu items
 end;
@@ -464,6 +463,7 @@ end;
 
 //=== Helper routines ========================================================
 
+{ (rom) disabled, unused
 procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 var
   OptArray: TOTAOptionNameArray;
@@ -479,10 +479,14 @@ begin
     Free;
   end;
 end;
+}
 
 // History:
 
 // $Log$
+// Revision 1.4  2005/10/25 08:27:22  marquardt
+// minor cleanups, deactivated unused function
+//
 // Revision 1.3  2005/10/24 12:05:51  marquardt
 // further cleanup
 //
