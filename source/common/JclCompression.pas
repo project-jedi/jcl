@@ -364,7 +364,7 @@ function TJclZLibCompressStream.Write(const Buffer; Count: Longint): Longint;
 begin
   if not FDeflateInitialized then
   begin
-    ZLibCheck(deflateInit(ZLibRecord, FCompressionLevel));
+    ZLibCheck(deflateInit2(ZLibRecord, FCompressionLevel, FMethod, FWindowBits, FMemLevel, FStrategy));
     FDeflateInitialized := True;
   end;
 
@@ -755,6 +755,9 @@ end;
 
 // History:
 // $Log$
+// Revision 1.9  2005/10/25 04:46:31  rrossmair
+// - fix for issue #0003276 (as provided by reporter)
+//
 // Revision 1.8  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
