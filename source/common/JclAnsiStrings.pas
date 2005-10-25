@@ -221,7 +221,7 @@ function StrAnsiToOem(const S: AnsiString): AnsiString;
 procedure StrAddRef(var S: AnsiString);
 function StrAllocSize(const S: AnsiString): Longint;
 procedure StrDecRef(var S: AnsiString);
-function StrLen(S: PChar): Integer;
+function StrLen(S: PAnsiChar): Integer;
 function StrLength(const S: AnsiString): Longint;
 function StrRefCount(const S: AnsiString): Longint;
 {$ENDIF ~CLR}
@@ -296,7 +296,7 @@ function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Intege
 {$IFNDEF CLR}
 // PCharVector
 type
-  PCharVector = ^PChar;
+  PCharVector = ^PAnsiChar;
 
 function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PCharVector;
 function PCharVectorCount(Source: PCharVector): Integer;
@@ -305,7 +305,7 @@ procedure FreePCharVector(var Dest: PCharVector);
 
 // MultiSz Routines
 type
-  PMultiSz = PChar;
+  PMultiSz = PAnsiChar;
   PWideMultiSz = PWideChar;
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
@@ -1151,14 +1151,13 @@ end;
 
 function StrProper(const S: AnsiString): AnsiString;
 begin
-  Result := S;
   {$IFDEF CLR}
-  Result := AnsiUpperCase(Result);
+  Result := AnsiUpperCase(S);
+  {$ELSE}
+  Result := StrLower(S);
+  {$ENDIF CLR}
   if Result <> '' then
     Result[1] := UpCase(Result[1]);
-  {$ELSE}
-  StrProperBuff(PChar(Result));
-  {$ENDIF CLR}
 end;
 
 {$IFNDEF CLR}
@@ -1207,22 +1206,24 @@ begin
 end;
 {$ELSE}
 var
-  Source, Dest: PChar;
+  Source, Dest: PAnsiChar;
+  Index, Len: Integer;
 begin
-  SetLength(Result, Length(S));
+  Len := Length(S);
+  SetLength(Result, Len);
   UniqueString(Result);
-  Source := PChar(S);
-  Dest := PChar(Result);
-  while (Source <> nil) and (Source^ <> #0) do
+  Source := PAnsiChar(S);
+  Dest := PAnsiChar(Result);
+  for Index := 0 to Len-1 do
   begin
     if not (Source^ in Chars) then
     begin
       Dest^ := Source^;
-      Inc(Dest);
+      Inc(Dest,SizeOf(AnsiChar));
     end;
-    Inc(Source);
+    Inc(Source,SizeOf(AnsiChar));
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(AnsiChar));
+  SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
 end;
 {$ENDIF CLR}
 
@@ -1243,22 +1244,24 @@ begin
 end;
 {$ELSE}
 var
-  Source, Dest: PChar;
+  Source, Dest: PAnsiChar;
+  Index, Len: Integer;
 begin
-  SetLength(Result, Length(S));
+  Len := Length(S);
+  SetLength(Result, Len);
   UniqueString(Result);
-  Source := PChar(S);
-  Dest := PChar(Result);
-  while (Source <> nil) and (Source^ <> #0) do
+  Source := PAnsiChar(S);
+  Dest := PAnsiChar(Result);
+  for Index := 0 to Len-1 do
   begin
     if Source^ in Chars then
     begin
       Dest^ := Source^;
-      Inc(Dest);
+      Inc(Dest,SizeOf(AnsiChar));
     end;
-    Inc(Source);
+    Inc(Source,SizeOf(AnsiChar));
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(AnsiChar));
+  SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
 end;
 {$ENDIF CLR}
 
@@ -1276,7 +1279,7 @@ end;
 {$ELSE}
 var
   L: Integer;
-  P: PChar;
+  P: PAnsiChar;
 begin
   L := Length(S);
   SetLength(Result, Count * L);
@@ -1323,7 +1326,7 @@ end;
 var
   Count: Integer;
   LenS: Integer;
-  P: PChar;
+  P: PAnsiChar;
 begin
   Result := '';
   LenS := Length(S);
@@ -1355,17 +1358,17 @@ end;
 {$ELSE}
 var
   SearchStr: AnsiString;
-  ResultStr: AnsiString; { result string }
-  SourcePtr: PChar;      { pointer into S of character under examination }
-  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
-  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
-  ResultPtr: PChar;      { pointer into Result of character being written }
+  ResultStr: AnsiString;     { result string }
+  SourcePtr: PAnsiChar;      { pointer into S of character under examination }
+  SourceMatchPtr: PAnsiChar; { pointers into S and Search when first character has }
+  SearchMatchPtr: PAnsiChar; { been matched and we're probing for a complete match }
+  ResultPtr: PAnsiChar;      { pointer into Result of character being written }
   ResultIndex,
-  SearchLength,          { length of search string }
-  ReplaceLength,         { length of replace string }
-  BufferLength,          { length of temporary result buffer }
-  ResultLength: Integer; { length of result string }
-  C: Char;               { first character of search string }
+  SearchLength,              { length of search string }
+  ReplaceLength,             { length of replace string }
+  BufferLength,              { length of temporary result buffer }
+  ResultLength: Integer;     { length of result string }
+  C: AnsiChar;               { first character of search string }
   IgnoreCase: Boolean;
 begin
   if Search = '' then
@@ -1391,8 +1394,8 @@ begin
     BufferLength := ResultLength;
     SetLength(ResultStr, BufferLength);
     { get pointers to begin of source and result }
-    ResultPtr := PChar(ResultStr);
-    SourcePtr := PChar(S);
+    ResultPtr := PAnsiChar(ResultStr);
+    SourcePtr := PAnsiChar(S);
     C := SearchStr[1];
     { while we haven't reached the end of the string }
     while True do
@@ -1419,7 +1422,7 @@ begin
       begin
         { continue comparing, +1 because first character was matched already }
         SourceMatchPtr := SourcePtr + 1;
-        SearchMatchPtr := PChar(SearchStr) + 1;
+        SearchMatchPtr := PAnsiChar(SearchStr) + 1;
         if IgnoreCase then
           while (CharUpper(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
           begin
@@ -1443,7 +1446,7 @@ begin
             if ResultLength > BufferLength then
             begin
               BufferLength := ResultLength * 2;
-              ResultIndex := ResultPtr - PChar(ResultStr) + 1;
+              ResultIndex := ResultPtr - PAnsiChar(ResultStr) + 1;
               SetLength(ResultStr, BufferLength);
               ResultPtr := @ResultStr[ResultIndex];
             end;
@@ -1537,11 +1540,11 @@ begin
 end;
 {$ELSE}
 var
-  P1, P2: PChar;
+  P1, P2: PAnsiChar;
   C: AnsiChar;
 begin
   UniqueString(S);
-  P1 := PChar(S);
+  P1 := PAnsiChar(S);
   P2 := P1 + SizeOf(AnsiChar) * (Length(S) - 1);
   while P1 < P2 do
   begin
@@ -1565,7 +1568,8 @@ var
   Index: Integer;
   LenS: Integer;
 {$ELSE}
-  Source, Dest: PChar;
+  Source, Dest: PAnsiChar;
+  Index, Len: Integer;
 {$ENDIF CLR}
 begin
   Result := '';
@@ -1587,14 +1591,14 @@ begin
     {$ELSE}
     UniqueString(Result);
 
-    Source  := PChar(S);
-    Dest := PChar(Result);
-
+    Len := Length(S);
+    Source  := PAnsiChar(S);
+    Dest := PAnsiChar(Result);
     Inc(Dest);
 
-    while Source^ <> #0 do
+    for Index := 2 to Len do
     begin
-      if (Source^ in Delimiters) and (Dest^ <> #0) then
+      if (Source^ in Delimiters) then
         Dest^ := CharUpper(Dest^);
 
       Inc(Dest);
@@ -1851,7 +1855,7 @@ begin
   end;
 end;
 
-function StrLen(S: PChar): Integer; assembler;
+function StrLen(S: PAnsiChar): Integer; assembler;
 asm
         TEST    EAX, EAX
         JZ      @@EXIT
@@ -1917,7 +1921,7 @@ begin
       Exit;
     end;
   {$ELSE}
-  SetLength(S, StrLen(PChar(S)));
+  SetLength(S, StrLen(PAnsiChar(S)));
   {$ENDIF CLR}
 end;
 
@@ -2630,7 +2634,7 @@ asm
         CMP     AL, '?'                     // wild card?
         JE      @@CompareNext
 
-        CMP     AL, [ESI + EDX]               // equal to PChar(Str)^ ?
+        CMP     AL, [ESI + EDX]               // equal to PAnsiChar(Str)^ ?
         JE      @@CompareNext
 
         MOV     AL, [EBX + EAX + AnsiReOffset]  // reverse case?
@@ -2681,11 +2685,10 @@ end;
 
 function StrMatches(const Substr, S: AnsiString; const Index: Integer): Boolean;
 var
-  StringPtr: PChar;
-  PatternPtr: PChar;
-  StringRes: PChar;
-  PatternRes: PChar;
-
+  StringPtr: PAnsiChar;
+  PatternPtr: PAnsiChar;
+  StringRes: PAnsiChar;
+  PatternRes: PAnsiChar;
 begin
   if SubStr = '' then
     raise EJclStringError.CreateRes(@RsBlankSearchString);
@@ -2695,8 +2698,8 @@ begin
   if Result or (S = '') then
     Exit;
 
-  StringPtr := PChar(@S[Index]);
-  PatternPtr := PChar(SubStr);
+  StringPtr := PAnsiChar(@S[Index]);
+  PatternPtr := PAnsiChar(SubStr);
   StringRes := nil;
   PatternRes := nil;
 
@@ -3183,10 +3186,10 @@ function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PC
 var
   I: Integer;
   S: AnsiString;
-  List: array of PChar;
+  List: array of PAnsiChar;
 begin
   Assert(Source <> nil);
-  Dest := AllocMem((Source.Count + SizeOf(AnsiChar)) * SizeOf(PChar));
+  Dest := AllocMem((Source.Count + SizeOf(AnsiChar)) * SizeOf(PAnsiChar));
   SetLength(List, Source.Count + SizeOf(AnsiChar));
   for I := 0 to Source.Count - 1 do
   begin
@@ -3195,13 +3198,13 @@ begin
     StrPCopy(List[I], S);
   end;
   List[Source.Count] := nil;
-  Move(List[0], Dest^, (Source.Count + 1) * SizeOf(PChar));
+  Move(List[0], Dest^, (Source.Count + 1) * SizeOf(PAnsiChar));
   Result := Dest;
 end;
 
 function PCharVectorCount(Source: PCharVector): Integer;
 var
-  P: PChar;
+  P: PAnsiChar;
 begin
   Result := 0;
   if Source <> nil then
@@ -3210,7 +3213,7 @@ begin
     while P <> nil do
     begin
       Inc(Result);
-      P := PCharVector(Longint(Source) + (SizeOf(PChar) * Result))^;
+      P := PCharVector(Longint(Source) + (SizeOf(PAnsiChar) * Result))^;
     end;
   end;
 end;
@@ -3218,14 +3221,14 @@ end;
 procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 var
   I, Count: Integer;
-  List: array of PChar;
+  List: array of PAnsiChar;
 begin
   Assert(Dest <> nil);
   if Source <> nil then
   begin
     Count := PCharVectorCount(Source);
     SetLength(List, Count);
-    Move(Source^, List[0], Count * SizeOf(PChar));
+    Move(Source^, List[0], Count * SizeOf(PAnsiChar));
     Dest.BeginUpdate;
     try
       Dest.Clear;
@@ -3240,16 +3243,16 @@ end;
 procedure FreePCharVector(var Dest: PCharVector);
 var
   I, Count: Integer;
-  List: array of PChar;
+  List: array of PAnsiChar;
 begin
   if Dest <> nil then
   begin
     Count := PCharVectorCount(Dest);
     SetLength(List, Count);
-    Move(Dest^, List[0], Count * SizeOf(PChar));
+    Move(Dest^, List[0], Count * SizeOf(PAnsiChar));
     for I := 0 to Count - 1 do
       StrDispose(List[I]);
-    FreeMem(Dest, (Count + 1) * SizeOf(PChar));
+    FreeMem(Dest, (Count + 1) * SizeOf(PAnsiChar));
     Dest := nil;
   end;
 end;
@@ -3336,13 +3339,15 @@ end;
 {$ELSE}
 var
   P: PAnsiChar;
+  Index, Len: Integer;
 begin
   Result := 0;
   if Search <> Replace then
   begin
     UniqueString(S);
+    Len := Length(S);
     P := PAnsiChar(S);
-    while P^ <> #0 do
+    for Index := 0 to Len-1 do
     begin
       if P^ = Search then
       begin
@@ -3369,12 +3374,12 @@ begin
     if Source[I] = '' then
       raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem)
     else
-      Inc(TotalLength, StrLen(PChar(Source[I])) + 1);
+      Inc(TotalLength, StrLen(PAnsiChar(Source[I])) + 1);
   AllocateMultiSz(Dest, TotalLength);
   P := Dest;
   for I := 0 to Source.Count - 1 do
   begin
-    P := StrECopy(P, PChar(Source[I]));
+    P := StrECopy(P, PAnsiChar(Source[I]));
     Inc(P);
   end;
   P^ := #0;
@@ -3760,7 +3765,7 @@ end;
 {$IFNDEF CLR}
 procedure StrTokens(const S: AnsiString; const List: TStrings);
 var
-  Start: PChar;
+  Start: PAnsiChar;
   Token: AnsiString;
   Done: Boolean;
 begin
@@ -3990,6 +3995,10 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.3  2005/10/25 12:52:23  outchy
+// First corrections of IT#3259.
+// StrReplace, StrLastPos, StrMatches are NOT fixed.
+//
 // Revision 1.2  2005/08/09 10:30:21  ahuser
 // JCL.NET changes
 //

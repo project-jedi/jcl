@@ -194,7 +194,7 @@ function StrReplaceChar(const S: string; const Source, Replace: Char): string;
 function StrReplaceChars(const S: string; const Chars: TSysCharSet; Replace: Char): string;
 function StrReplaceButChars(const S: string; const Chars: TSysCharSet; Replace: Char): string;
 function StrRepeat(const S: string; Count: Integer): string;
-function StrRepeatLength(const S: string; const L: Integer): string;
+function StrRepeatLength(const S: string; L: Integer): string;
 function StrReverse(const S: string): string;
 procedure StrReverseInPlace(var S: string);
 function StrSingleQuote(const S: string): string;
@@ -1115,14 +1115,13 @@ end;
 
 function StrProper(const S: string): string;
 begin
-  Result := S;
   {$IFDEF CLR}
-  Result := Result.ToLower;
+  Result := S.ToLower;
+  {$ELSE}
+  Result := StrLower(S);
+  {$ENDIF CLR}
   if Result <> '' then
     Result[1] := UpCase(Result[1]);
-  {$ELSE}
-  StrProperBuff(PChar(Result));
-  {$ENDIF CLR}
 end;
 
 {$IFNDEF CLR}
@@ -1169,19 +1168,21 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
+  Len, Index: Integer;
 begin
-  SetLength(Result, Length(S));
+  Len := Length(S);
+  SetLength(Result, Len);
   UniqueString(Result);
   Source := PChar(S);
   Dest := PChar(Result);
-  while (Source <> nil) and (Source^ <> #0) do
+  for Index := 0 to Len-1 do
   begin
     if not (Source^ in Chars) then
     begin
       Dest^ := Source^;
-      Inc(Dest);
+      Inc(Dest,SizeOf(Char));
     end;
-    Inc(Source);
+    Inc(Source,SizeOf(Char));
   end;
   SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(Char));
 end;
@@ -1202,19 +1203,21 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
+  Len, Index: Integer;
 begin
-  SetLength(Result, Length(S));
+  Len := Length(S);
+  SetLength(Result, Len);
   UniqueString(Result);
   Source := PChar(S);
   Dest := PChar(Result);
-  while (Source <> nil) and (Source^ <> #0) do
+  for Index := 0 to Len-1 do
   begin
     if Source^ in Chars then
     begin
       Dest^ := Source^;
-      Inc(Dest);
+      Inc(Dest,SizeOf(Char));
     end;
-    Inc(Source);
+    Inc(Source,SizeOf(Char));
   end;
   SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(Char));
 end;
@@ -1239,25 +1242,23 @@ begin
 end;
 {$ELSE}
 var
-  L: Integer;
-  P: PChar;
+  Len, Index: Integer;
+  Dest, Source: PChar;
 begin
-  L := Length(S);
-  SetLength(Result, Count * L);
-  P := Pointer(Result);
-  if P <> nil then
+  Len := Length(S);
+  SetLength(Result, Count * Len);
+  Dest := PChar(Result);
+  Source := PChar(S);
+  if Dest <> nil then
+    for Index := 0 to Count - 1 do
   begin
-    while Count > 0 do
-    begin
-      Move(Pointer(S)^, P^, L);
-      P := P + L;
-      Dec(Count);
-    end;
+    Move(Source^, Dest^, Len*SizeOf(Char));
+    Inc(Dest,Len*SizeOf(Char));
   end;
 end;
 {$ENDIF CLR}
 
-function StrRepeatLength(const S: string; const L: Integer): string;
+function StrRepeatLength(const S: string; L: Integer): string;
 {$IFDEF CLR}
 var
   Count: Integer;
@@ -1285,28 +1286,22 @@ begin
 end;
 {$ELSE}
 var
-  Count: Integer;
-  LenS: Integer;
-  P: PChar;
+  Len: Integer;
+  Dest: PChar;
 begin
   Result := '';
-  LenS := Length(S);
+  Len := Length(S);
 
-  if (LenS > 0) and (S <> '') then
+  if (Len > 0) and (S <> '') then
   begin
-    Count := L div LenS;
-    if Count * LenS < L then
-      Inc(Count);
-    SetLength(Result, Count * LenS);
-    P := Pointer(Result);
-    while Count > 0 do
+    SetLength(Result,L);
+    Dest := PChar(Result);
+    while (L > 0) do
     begin
-      Move(Pointer(S)^, P^, LenS);
-      P := P + LenS;
-      Dec(Count);
+      Move(S[1],Dest^,Min(L,Len)*SizeOf(Char));
+      Inc(Dest,Len);
+      Dec(L,Len);
     end;
-    if Length(S) > L then
-      SetLength(Result, L);
   end;
 end;
 {$ENDIF CLR}
@@ -1555,6 +1550,7 @@ var
   sb: StringBuilder;
 {$ELSE}
   Source, Dest: PChar;
+  Index, Len: Integer;
 {$ENDIF CLR}
 begin
   Result := '';
@@ -1579,16 +1575,15 @@ begin
     {$ELSE}
     UniqueString(Result);
 
-    Source  := PChar(S);
+    Len := Length(S);
+    Source := PChar(S);
     Dest := PChar(Result);
-
     Inc(Dest);
 
-    while Source^ <> #0 do
+    for Index := 2 to Len do
     begin
-      if (Source^ in Delimiters) and (Dest^ <> #0) then
+      if Source^ in Delimiters then
         Dest^ := CharUpper(Dest^);
-
       Inc(Dest);
       Inc(Source);
     end;
@@ -3439,13 +3434,15 @@ end;
 {$ELSE}
 var
   P: PChar;
+  Index, Len: Integer;
 begin
   Result := 0;
   if Search <> Replace then
   begin
     UniqueString(S);
     P := PChar(S);
-    while P^ <> #0 do
+    Len := Length(S);
+    for Index := 0 to Len-1 do
     begin
       if P^ = Search then
       begin
@@ -4176,6 +4173,10 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.44  2005/10/25 12:52:23  outchy
+// First corrections of IT#3259.
+// StrReplace, StrLastPos, StrMatches are NOT fixed.
+//
 // Revision 1.43  2005/10/24 19:16:53  ahuser
 // more .NET support
 //
