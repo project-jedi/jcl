@@ -958,8 +958,8 @@ function StrCompW(Str1, Str2: PWideChar): Integer;
 function StrICompW(Str1, Str2: PWideChar): Integer;
 function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrNScanW(S1, S2: PWideChar): Integer;
-function StrRNScanW(S1, S2: PWideChar): Integer;
+function StrNScanW(const S1, S2: PWideChar): Integer;
+function StrRNScanW(const S1, S2: PWideChar): Integer;
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar; overload;
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
@@ -969,6 +969,7 @@ function StrBufSizeW(Str: PWideChar): Cardinal;
 function StrNewW(Str: PWideChar): PWideChar; overload;
 function StrNewW(const S: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
+procedure StrDisposeAndNilW(var P: PWideChar);
 procedure StrSwapByteOrder(Str: PWideChar);
 
 // functions involving Delphi wide strings
@@ -5672,7 +5673,7 @@ begin
     Result := 0;
 end;
 
-function StrNScanW(S1, S2: PWideChar): Integer;
+function StrNScanW(const S1, S2: PWideChar): Integer;
 // Determines where (in S1) the first time one of the characters of S2 appear.
 // The result is the length of a string part of S1 where none of the characters of
 // S2 do appear (not counting the trailing #0 and starting with position 0 in S1).
@@ -5683,7 +5684,7 @@ begin
   if (S1 <> nil) and (S2 <> nil) then
   begin
     Run := S1;
-    while (Run^ <> #0) do
+    while Run^ <> #0 do
     begin
       if StrScanW(S2, Run^) <> nil then
         Break;
@@ -5693,7 +5694,7 @@ begin
   end;
 end;
 
-function StrRNScanW(S1, S2: PWideChar): Integer;
+function StrRNScanW(const S1, S2: PWideChar): Integer;
 // This function does the same as StrRNScanW but uses S1 in reverse order. This
 // means S1 points to the last character of a string, is traversed reversely
 // and terminates with a starting #0. This is useful for parsing strings stored
@@ -5705,7 +5706,7 @@ begin
   if (S1 <> nil) and (S2 <> nil) then
   begin
     Run := S1;
-    while (Run^ <> #0) do
+    while Run^ <> #0 do
     begin
       if StrScanW(S2, Run^) <> nil then
         Break;
@@ -5880,6 +5881,12 @@ begin
     Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
     FreeMem(Str, Cardinal(Pointer(Str)^));
   end;
+end;
+
+procedure StrDisposeAndNilW(var P: PWideChar);
+begin
+  StrDisposeW(P);
+  P := nil;
 end;
 
 // exchanges in each character of the given string the low order and high order
@@ -8404,6 +8411,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.25  2005/10/25 08:54:57  marquardt
+// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
+//
 // Revision 1.24  2005/10/16 05:16:51  marquardt
 // TWideStrings now has GetText and GetTextStr like TStrings
 //

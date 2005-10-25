@@ -211,29 +211,34 @@ function WideCharToChar(Ch: WideChar): AnsiChar;
 // PWideChar functions
 procedure MoveWideChar(const Source; var Dest; Count: Integer);
 
+function StrLenW(const P: PWideChar): Integer;
+function StrEndW(const P: PWideChar): PWideChar;
+function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
+function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
+function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrCompW(const S1, S2: PWideChar): Integer;
+function StrICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLCompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW2(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
+function StrNScanW(const S1, S2: PWideChar): Integer;
+function StrRNScanW(const S1, S2: PWideChar): Integer;
+function StrScanW(const P: PWideChar; Ch: WideChar): PWideChar; overload;
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
+function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
+function StrPosW(const S, SubStr: PWideChar): PWideChar;
 function StrAllocW(WideSize: Cardinal): PWideChar;
+function StrBufSizeW(Str: PWideChar): Cardinal;
 function StrNewW(const S: PWideChar): PWideChar; overload;
 function StrNewW(const S: WideString): PWideChar; overload;
 procedure StrDisposeW(P: PWideChar);
 procedure StrDisposeAndNilW(var P: PWideChar);
-function StrLICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrLICompW2(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrCompW(const S1, S2: PWideChar): Integer;
-function StrLCompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrICompW(const S1, S2: PWideChar; MaxLen: Cardinal): Integer;
-function StrPosW(const S, SubStr: PWideChar): PWideChar;
-function StrLenW(const P: PWideChar): Integer;
-function StrScanW(const P: PWideChar; Ch: WideChar): PWideChar;
-function StrEndW(const P: PWideChar): PWideChar;
-function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
-function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
-function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
-function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
-function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
+procedure StrSwapByteOrder(Str: PWideChar);
 
 // WideString functions
 function WidePos(const SubStr, S: WideString): Integer;
@@ -351,8 +356,7 @@ end;
 
 procedure StrDisposeAndNilW(var P: PWideChar);
 begin
-  if P <> nil then
-    FreeMem(P);
+  StrDisposeW(P);
   P := nil;
 end;
 
@@ -596,6 +600,106 @@ begin
       Inc(P);
     until P^ = #0;
   end;
+end;
+
+// (rom) following functions copied from JclUnicode.pas
+
+// exchanges in each character of the given string the low order and high order
+// byte to go from LSB to MSB and vice versa.
+// EAX contains address of string
+
+procedure StrSwapByteOrder(Str: PWideChar);
+asm
+       PUSH    ESI
+       PUSH    EDI
+       MOV     ESI, EAX
+       MOV     EDI, ESI
+       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
+@@1:
+       LODSW
+       OR      EAX, EAX
+       JZ      @@2
+       XCHG    AL, AH
+       STOSW
+       JMP     @@1
+@@2:
+       POP     EDI
+       POP     ESI
+end;
+
+function StrNScanW(const S1, S2: PWideChar): Integer;
+// Determines where (in S1) the first time one of the characters of S2 appear.
+// The result is the length of a string part of S1 where none of the characters of
+// S2 do appear (not counting the trailing #0 and starting with position 0 in S1).
+var
+  Run: PWideChar;
+begin
+  Result := -1;
+  if (S1 <> nil) and (S2 <> nil) then
+  begin
+    Run := S1;
+    while Run^ <> #0 do
+    begin
+      if StrScanW(S2, Run^) <> nil then
+        Break;
+      Inc(Run);
+    end;
+    Result := Run - S1;
+  end;
+end;
+
+function StrRNScanW(const S1, S2: PWideChar): Integer;
+// This function does the same as StrRNScanW but uses S1 in reverse order. This
+// means S1 points to the last character of a string, is traversed reversely
+// and terminates with a starting #0. This is useful for parsing strings stored
+// in reversed macro buffers etc.
+var
+  Run: PWideChar;
+begin
+  Result := -1;
+  if (S1 <> nil) and (S2 <> nil) then
+  begin
+    Run := S1;
+    while Run^ <> #0 do
+    begin
+      if StrScanW(S2, Run^) <> nil then
+        Break;
+      Dec(Run);
+    end;
+    Result := S1 - Run;
+  end;
+end;
+
+// Returns a pointer to first occurrence of a specified character in a string
+// or nil if not found.
+// Note: this is just a binary search for the specified character and there's no
+//       check for a terminating null. Instead at most StrLen characters are
+//       searched. This makes this function extremly fast.
+//
+// on enter EAX contains Str, EDX contains Chr and ECX StrLen
+// on exit EAX contains result pointer or nil
+
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
+asm
+       TEST    EAX, EAX
+       JZ      @@Exit        // get out if the string is nil or StrLen is 0
+       JCXZ    @@Exit
+@@Loop:
+       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
+       JE      @@Exit        // than REP SCASW
+       ADD     EAX, 2
+       DEC     ECX
+       JNZ     @@Loop
+       XOR     EAX, EAX
+@@Exit:
+end;
+
+function StrBufSizeW(Str: PWideChar): Cardinal;
+// Returns max number of wide characters that can be stored in a buffer
+// allocated by StrAllocW.
+begin
+  Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
+  Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
 end;
 
 //=== WideString functions ===================================================
@@ -1810,6 +1914,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/10/25 08:54:57  marquardt
+// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
+//
 // Revision 1.16  2005/10/16 05:15:38  marquardt
 // Str*W family now matches completely Delphi Str* family semantics
 //
@@ -1817,6 +1924,9 @@ end;
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
 //
 // $Log$
+// Revision 1.17  2005/10/25 08:54:57  marquardt
+// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
+//
 // Revision 1.16  2005/10/16 05:15:38  marquardt
 // Str*W family now matches completely Delphi Str* family semantics
 //
