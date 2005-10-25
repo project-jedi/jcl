@@ -950,10 +950,10 @@ function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; overload;
-function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; overload;
+//function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; //overload;
+//function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; //overload;
 function StrCatW(Dest, Source: PWideChar): PWideChar;
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(Str1, Str2: PWideChar): Integer;
@@ -5458,24 +5458,28 @@ asm
        POP     EDI
 end;
 
+{
 function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
 // copies a Pascal-style WideString to a null-terminated wide string
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
+}
 
 function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
 // copies a Pascal-style string to a null-terminated wide string
 begin
-  Result := StrPLCopyW(Dest, Source, Length(Source));
+  Result := StrPLCopyW(Dest, Source, Cardinal(Length(Source)));
   Result[Length(Source)] := WideNull;
 end;
 
+{
 function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style WideString into a null-terminated wide string
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
+}
 
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
@@ -8442,6 +8446,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.28  2005/10/25 16:27:36  marquardt
+// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
+//
 // Revision 1.27  2005/10/25 10:33:40  marquardt
 // made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
 //

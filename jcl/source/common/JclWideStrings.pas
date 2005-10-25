@@ -237,10 +237,10 @@ function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PW
 function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; overload;
-function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; overload;
+//function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; //overload;
+//function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; //overload;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
@@ -609,15 +609,19 @@ begin
     Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
 end;
 
+{
 function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
+}
 
+{
 function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
+}
 
 function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
 var
@@ -743,7 +747,7 @@ end;
 function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
 // copies a Pascal-style string to a null-terminated wide string
 begin
-  Result := StrPLCopyW(Dest, Source, Length(Source));
+  Result := StrPLCopyW(Dest, Source, Cardinal(Length(Source)));
   Result[Length(Source)] := WideNull;
 end;
 
@@ -1977,6 +1981,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2005/10/25 16:27:36  marquardt
+// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
+//
 // Revision 1.19  2005/10/25 10:33:40  marquardt
 // made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
 //
@@ -1993,6 +2000,9 @@ end;
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
 //
 // $Log$
+// Revision 1.20  2005/10/25 16:27:36  marquardt
+// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
+//
 // Revision 1.19  2005/10/25 10:33:40  marquardt
 // made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
 //
