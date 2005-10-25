@@ -37,6 +37,26 @@ uses
   Classes, SysUtils;
 
 const
+  // definitions of often used characters:
+  // Note: Use them only for tests of a certain character not to determine character
+  //       classes (like white spaces) as in Unicode are often many code points defined
+  //       being in a certain class. Hence your best option is to use the various
+  //       UnicodeIs* functions.
+  WideNull = WideChar(#0);
+  WideTabulator = WideChar(#9);
+  WideSpace = WideChar(#32);
+
+  // logical line breaks
+  WideLF = WideChar(#10);
+  WideLineFeed = WideChar(#10);
+  WideVerticalTab = WideChar(#11);
+  WideFormFeed = WideChar(#12);
+  WideCR = WideChar(#13);
+  WideCarriageReturn = WideChar(#13);
+  WideCRLF: WideString = #13#10;
+  WideLineSeparator = WideChar($2028);
+  WideParagraphSeparator = WideChar($2029);
+
   BOM_LSB_FIRST = WideChar($FEFF);
   BOM_MSB_FIRST = WideChar($FFFE);
 
@@ -217,8 +237,10 @@ function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PW
 function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; overload;
+function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; overload;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
@@ -716,6 +738,31 @@ begin
   end
   else
     Result := 0;
+end;
+
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+// copies a Pascal-style string to a null-terminated wide string
+begin
+  Result := StrPLCopyW(Dest, Source, Length(Source));
+  Result[Length(Source)] := WideNull;
+end;
+
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+// copies characters from a Pascal-style string into a null-terminated wide string
+asm
+       PUSH EDI
+       PUSH ESI
+       MOV EDI, EAX
+       MOV ESI, EDX
+       MOV EDX, EAX
+       XOR AX, AX
+@@1:   LODSB
+       STOSW
+       DEC ECX
+       JNZ @@1
+       MOV EAX, EDX
+       POP ESI
+       POP EDI
 end;
 
 //=== WideString functions ===================================================
@@ -1930,6 +1977,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2005/10/25 10:33:40  marquardt
+// made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
+//
 // Revision 1.18  2005/10/25 09:46:35  marquardt
 // fixes for StrAllocW family and cleaned up Str*W parameter names
 //
@@ -1943,6 +1993,9 @@ end;
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
 //
 // $Log$
+// Revision 1.19  2005/10/25 10:33:40  marquardt
+// made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
+//
 // Revision 1.18  2005/10/25 09:46:35  marquardt
 // fixes for StrAllocW family and cleaned up Str*W parameter names
 //
