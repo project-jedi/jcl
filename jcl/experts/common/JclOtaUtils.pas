@@ -30,7 +30,7 @@ unit JclOtaUtils;
 interface
 
 {$I jcl.inc}
-{$I windowsonly.inc}
+{$I crossplatform.inc}
 
 uses
   Windows, Classes, ToolsAPI, ComCtrls, ActnList;
@@ -110,8 +110,14 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ImageHlp,
-  JclFileUtils, JclRegistry, JclStrings, JclSysInfo,
+  SysUtils,
+  {$IFDEF MSWINDOWS}
+  ImageHlp, JclRegistry,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF KYLIX}
+  JclBorlandTools,
+  {$ENDIF KYLIX}
+  JclFileUtils, JclStrings, JclSysInfo,
   JclOtaConsts, JclOtaResources;
 
 var
@@ -176,7 +182,9 @@ var
   Res: Integer;
   LatestTime: Integer;
   FileName: TFileName;
+  {$IFDEF MSWINDOWS}
   LI: LoadedImage;
+  {$ENDIF MSWINDOWS}
 begin
   LatestTime := 0;
   ExecutableFileName := '';
@@ -185,6 +193,7 @@ begin
   while Res = 0 do
   begin
     FileName := PathAddSeparator(OutputDirectory) + Se.Name;
+    {$IFDEF MSWINDOWS}
     if MapAndLoad(PChar(FileName), nil, @LI, False, True) then
     begin
       if (not LI.fDOSImage) and (Se.Time > LatestTime) then
@@ -194,6 +203,13 @@ begin
       end;
       UnMapAndLoad(@LI);
     end;
+    {$ELSE}
+    if Se.Time > LatestTime then
+    begin
+      ExecutableFileName := FileName;
+      LatestTime := Se.Time;
+    end;
+    {$ENDIF MSWINDOWS}
     Res := FindNext(Se);
   end;
   FindClose(Se);
@@ -261,15 +277,41 @@ begin
 end;
 
 function TJclOTAExpertBase.GetRootDir: string;
+{$IFDEF KYLIX}
+var
+  RADToolsInstallations: TJclBorRADToolInstallations;
+  RADToolInstallation: TJclBorRADToolInstallation;
+{$ENDIF KYLIX}
 begin
   if FRootDir = '' then
   begin
+    //(usc) another possibility for D7 or higher is to use IOTAServices.GetRootDirectory
+    {$IFDEF MSWINDOWS}
     FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, DelphiRootDirKeyValue, '');
     // (rom) bugfix if using -r switch of D9 by Dan Miser
     if FRootDir = '' then
       FRootDir := RegReadStringDef(HKEY_CURRENT_USER, BaseRegistryKey, DelphiRootDirKeyValue, '');
+    {$ENDIF MSWINDOWS}
+    {$IFDEF KYLIX}
+    RADToolsInstallations := TJclBorRADToolInstallations.Create;
+    try
+      {$IFDEF KYLIX3}
+      {$IFDEF BCB}
+      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
+      {$ELSE}
+      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
+      {$ENDIF BCB}
+      {$ELSE}
+      RADToolInstallation := nil;
+      {$ENDIF KYLIX3}
+      if Assigned(RADToolInstallation) then
+        FRootDir := RADToolInstallation.RootDir;
+    finally
+      RADToolsInstallations.Free;
+    end;
+    {$ENDIF KYLIX}
     Assert(FRootDir <> '');
-  end;  
+  end;
   Result := FRootDir;
 end;
 
@@ -309,9 +351,15 @@ end;
 procedure TJclOTAExpertBase.ReadEnvVariables;
 {$IFDEF COMPILER6_UP}
 var
-  EnvNames: TStringList;
   I: Integer;
+  EnvNames: TStringList;
+  {$IFDEF MSWINDOWS}
   EnvVarKeyName: string;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF KYLIX}
+  RADToolsInstallations: TJclBorRADToolInstallations;
+  RADToolInstallation: TJclBorRADToolInstallation;
+  {$ENDIF KYLIX}
 {$ENDIF COMPÏLER6_UP}
 begin
   FEnvVariables.Clear;
@@ -323,13 +371,38 @@ begin
   {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
-
+    {$IFDEF MSWINDOWS}
     EnvVarKeyName := BaseRegistryKey + EnvironmentVarsKey;
     if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and
       RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
         FEnvVariables.Values[EnvNames[I]] :=
           RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
+    {$ENDIF MSWINDOWS}
+    {$IFDEF KYLIX}
+    RADToolsInstallations := TJclBorRADToolInstallations.Create;
+    try
+      {$IFDEF KYLIX3}
+      {$IFDEF BCB}
+      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
+      {$ELSE}
+      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
+      {$ENDIF BCB}
+      {$ELSE}
+      RADToolInstallation := nil;
+      {$ENDIF KYLIX3}
+      if Assigned(RADToolInstallation) then
+      begin
+        for I := 0 to RADToolInstallation.EnvironmentVariables.Count - 1 do
+          EnvNames.Add(RADToolInstallation.EnvironmentVariables.Names[I]);
+        for I := 0 to EnvNames.Count - 1 do
+          FEnvVariables.Values[EnvNames[I]] :=
+            RADToolInstallation.EnvironmentVariables.Values[EnvNames[I]];
+      end;
+    finally
+      RADToolsInstallations.Free;
+    end;
+    {$ENDIF KYLIX}
   finally
     EnvNames.Free;
   end;
@@ -435,42 +508,64 @@ end;
 
 function TJclOTAExpertBase.LoadBool(Name: string; Def: Boolean): Boolean;
 begin
+  {$IFDEF MSWINDOWS}
   Result := RegReadBoolDef(HKCU, ExpertRegistryKey, Name, Def);
+  {$ELSE}
+  Result := False;
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclOTAExpertBase.LoadString(Name: string; Def: string): string;
 begin
+  {$IFDEF MSWINDOWS}
   Result := RegReadStringDef(HKCU, ExpertRegistryKey, Name, Def);
+  {$ELSE}
+  Result := '';
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclOTAExpertBase.LoadInteger(Name: string; Def: Integer): Integer;
 begin
+  {$IFDEF MSWINDOWS}
   Result := RegReadIntegerDef(HKCU, ExpertRegistryKey, Name, Def);
+  {$ELSE}
+  Result := 0;
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclOTAExpertBase.LoadStrings(Name: string; List: TStrings);
 begin
+  {$IFDEF MSWINDOWS}
   RegLoadList(HKCU, ExpertRegistryKey, Name, List);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclOTAExpertBase.SaveBool(Name: string; Value: Boolean);
 begin
+  {$IFDEF MSWINDOWS}
   RegWriteBool(HKCU, ExpertRegistryKey, Name, Value);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclOTAExpertBase.SaveString(Name: string; Value: string);
 begin
+  {$IFDEF MSWINDOWS}
   RegWriteString(HKCU, ExpertRegistryKey, Name, Value);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclOTAExpertBase.SaveInteger(Name: string; Value: Integer);
 begin
+  {$IFDEF MSWINDOWS}
   RegWriteInteger(HKCU, ExpertRegistryKey, Name, Value);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclOTAExpertBase.SaveStrings(Name: string; List: TStrings);
 begin
+  {$IFDEF MSWINDOWS}
   RegSaveList(HKCU, ExpertRegistryKey, Name, List);
+  {$ENDIF MSWINDOWS}
 end;
 
 //=== { TJclOTAExpert } ======================================================
@@ -533,6 +628,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/10/25 14:45:22  uschuster
+// some changes for Kylix
+//
 // Revision 1.5  2005/10/25 13:00:12  marquardt
 // Load and Save methods for TJclOTAExpertBase
 //
