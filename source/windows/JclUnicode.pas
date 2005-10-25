@@ -203,8 +203,26 @@ const
   // Unicode text files (in UTF-16 format) should contain $FFFE as first character to
   // identify such a file clearly. Depending on the system where the file was created
   // on this appears either in big endian or little endian style.
-  BOM_LSB_FIRST = WideChar($FEFF); 
+  BOM_LSB_FIRST = WideChar($FEFF);
   BOM_MSB_FIRST = WideChar($FFFE);
+
+type
+  TSaveFormat = ( sfUTF16LSB, sfUTF16MSB, sfUTF8, sfAnsi );
+
+const
+  sfUnicodeLSB = sfUTF16LSB;
+  sfUnicodeMSB = sfUTF16MSB;
+
+  BOM_UTF16_LSB: array [0..1] of Byte = ($FF,$FE);
+  BOM_UTF16_MSB: array [0..1] of Byte = ($FE,$FF);
+  BOM_UTF8: array [0..2] of Byte = ($EF,$BB,$BF);
+  BOM_UTF32_LSB: array [0..3] of Byte = ($FF,$FE,$00,$00);
+  BOM_UTF32_MSB: array [0..3] of Byte = ($00,$00,$FE,$FF);
+//  BOM_UTF7_1: array [0..3] of Byte = ($2B,$2F,$76,$38);
+//  BOM_UTF7_2: array [0..3] of Byte = ($2B,$2F,$76,$39);
+//  BOM_UTF7_3: array [0..3] of Byte = ($2B,$2F,$76,$2B);
+//  BOM_UTF7_4: array [0..3] of Byte = ($2B,$2F,$76,$2F);
+//  BOM_UTF7_5: array [0..3] of Byte = ($2B,$2F,$76,$38,$2D);
 
 type
   // Unicode transformation formats (UTF) data types
@@ -790,11 +808,10 @@ type
     FUpdateCount: Integer;
     FLanguage: LCID;        // language can usually left alone, the system's default is used
     FSaved: Boolean;        // set in SaveToStream, True in case saving was successfull otherwise False
-    FSaveUnicode: Boolean;  // flag set on loading to keep track in which format to save
-                            // (can be set explicitely, but expect losses if there's true Unicode content
-                            // and this flag is set to False)
     FNormalizationForm: TNormalizationForm; // determines in which form Unicode strings should be stored
     FOnConfirmConversion: TConfirmConversionEvent;
+    FSaveFormat: TSaveFormat;  // overrides the FSaveUnicode flag, initialized when a file is loaded,
+                               // expect losses if it is set to sfAnsi before saving
     function GetCommaText: WideString;
     function GetName(Index: Integer): WideString;
     function GetValue(const Name: WideString): WideString;
@@ -803,6 +820,8 @@ type
     procedure SetNormalizationForm(const Value: TNormalizationForm);
     procedure SetValue(const Name, Value: WideString);
     procedure WriteData(Writer: TWriter);
+    function GetSaveUnicode: Boolean;
+    procedure SetSaveUnicode(const Value: Boolean);
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoConfirmConversion(var Allowed: Boolean); virtual;
@@ -856,7 +875,8 @@ type
     property Objects[Index: Integer]: TObject read GetObject write PutObject;
     property Values[const Name: WideString]: WideString read GetValue write SetValue;
     property Saved: Boolean read FSaved;
-    property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode default True;
+    property SaveUnicode: Boolean read GetSaveUnicode write SetSaveUnicode default True;
+    property SaveFormat: TSaveFormat read FSaveFormat write FSaveFormat default sfUnicodeLSB;
     property Strings[Index: Integer]: WideString read Get write Put; default;
     property Text: WideString read GetTextStr write SetText;
 
@@ -4285,12 +4305,25 @@ begin
   inherited Create;
   FLanguage := GetUserDefaultLCID;
   FNormalizationForm := nfC;
-  FSaveUnicode := True;
+  FSaveFormat := sfUnicodeLSB;
 end;
 
 procedure TWideStrings.SetLanguage(Value: LCID);
 begin
   FLanguage := Value;
+end;
+
+function TWideStrings.GetSaveUnicode: Boolean;
+begin
+  Result := SaveFormat = sfUnicodeLSB;
+end;
+
+procedure TWideStrings.SetSaveUnicode(const Value: Boolean);
+begin
+  if Value then
+    SaveFormat := sfUnicodeLSB
+  else
+    SaveFormat := sfAnsi;
 end;
 
 function TWideStrings.Add(const S: WideString): Integer;
@@ -4708,30 +4741,66 @@ procedure TWideStrings.LoadFromStream(Stream: TStream);
 var
   Size,
   BytesRead: Integer;
-  Order: WideChar;
+  ByteOrderMask: array [0..5] of Byte; // BOM size is max 5 bytes (cf: wikipedia)
+                                       // but it is easier to implement with a multiple of 2
+  Loaded: Boolean;
   SW: WideString;
   SA: string;
 begin
   BeginUpdate;
   try
+    Loaded := False;
+
     Size := Stream.Size - Stream.Position;
-    BytesRead := Stream.Read(Order, 2);
-    if (Order = BOM_LSB_FIRST) or (Order = BOM_MSB_FIRST) then
+    BytesRead := Stream.Read(ByteOrderMask[0],SizeOf(ByteOrderMask));
+
+    // UTF16 LSB = Unicode LSB
+    if (BytesRead >= 2) and (ByteOrderMask[0] = BOM_UTF16_LSB[0])
+      and (ByteOrderMask[1] = BOM_UTF16_LSB[1]) then
     begin
-      FSaveUnicode := True;
-      SetLength(SW, (Size - 2) div 2);
-      Stream.Read(PWideChar(SW)^, Size - 2);
-      if Order = BOM_MSB_FIRST then
-        StrSwapByteOrder(PWideChar(SW));
+      FSaveFormat := sfUTF16LSB;
+      SetLength(SW, (Size - 2) div SizeOf(WideChar));
+      Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
+      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
+      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
       SetText(SW);
-    end
-    else
+      Loaded := True;
+    end;
+
+    // UTF16 MSB = Unicode MSB
+    if (BytesRead >= 2) and (ByteOrderMask[0] = BOM_UTF16_MSB[0])
+      and (ByteOrderMask[1] = BOM_UTF16_MSB[1]) then
     begin
-      // without byte order mark it is assumed that we are loading ANSI text
-      FSaveUnicode := False;
-      Stream.Seek(-BytesRead, soFromCurrent);
-      SetLength(SA, Size);
-      Stream.Read(PChar(SA)^, Size);
+      FSaveFormat := sfUTF16MSB;
+      SetLength(SW, (Size - 2) div SizeOf(WideChar));
+      Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
+      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
+      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
+      StrSwapByteOrder(PWideChar(SW));
+      SetText(SW);
+      Loaded := True;
+    end;
+
+    // UTF8
+    if (BytesRead >= 3) and (ByteOrderMask[0] = BOM_UTF8[0])
+      and (ByteOrderMask[1] = BOM_UTF8[1]) and (ByteOrderMask[2] = BOM_UTF8[2]) then
+    begin
+      FSaveFormat := sfUTF8;
+      SetLength(SA, (Size-3) div SizeOf(Char));
+      System.Move(ByteOrderMask[3],SA[1],BytesRead-3); // max 3 bytes = 3 chars
+      Stream.Read(SA[4], Size-BytesRead); // first 3 chars were copied by System.Move
+      SW := UTF8ToWideString(SA);
+      SetText(SW);
+      Loaded := True;
+    end;
+
+    // default case (Ansi)
+    if not Loaded then
+    begin
+      FSaveFormat := sfAnsi;
+      SetLength(SA, Size div SizeOf(Char));
+      System.Move(ByteOrderMask[0],SA[1],BytesRead); // max 6 bytes = 6 chars
+      Stream.Read(SA[7], Size-BytesRead); // first 6 chars were copied by System.Move
       SetText(SA);
     end;
   finally
@@ -4784,7 +4853,7 @@ procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
 // Saves the currently loaded text into the given stream. WithBOM determines whether to write a
 // byte order mark or not. Note: when saved as ANSI text there will never be a BOM.
 var
-  SW, BOM: WideString;
+  SW: WideString;
   SA: string;
   Allowed: Boolean;
   Run: PWideChar;
@@ -4800,7 +4869,7 @@ begin
   FSaved := False; // be pessimistic
   // A check for potential information loss makes only sense if the application has
   // set an event to be used as call back to ask about the conversion.
-  if not FSaveUnicode and Assigned(FOnConfirmConversion) then
+  if (FSaveFormat = sfAnsi) and Assigned(FOnConfirmConversion) then
   begin
     // application requests to save only ANSI characters, so check the text and
     // call back in case information could be lost
@@ -4816,20 +4885,34 @@ begin
   if Allowed then
   begin
     // only save if allowed
-    if FSaveUnicode then
-    begin
-      BOM := BOM_LSB_FIRST;
-      Stream.WriteBuffer(PWideChar(BOM)^, 2);
-      // SW has already been filled
-      Stream.WriteBuffer(PWideChar(SW)^, 2 * Length(SW));
-    end
-    else
-    begin
-      SA := WideStringToStringEx(SW, CodePageFromLocale(FLanguage));
-      if Allowed then
-        Stream.WriteBuffer(PChar(SA)^, Length(SA));
+    case SaveFormat of
+      sfUTF16LSB :
+        begin
+          Stream.WriteBuffer(BOM_UTF16_LSB[0],SizeOf(BOM_UTF16_LSB));
+          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
+          FSaved := True;
+        end;
+      sfUTF16MSB :
+        begin
+          Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
+          StrSwapByteOrder(PWideChar(SW));
+          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
+          FSaved := True;
+        end;
+      sfUTF8 :
+        begin
+          Stream.WriteBuffer(BOM_UTF8[0],SizeOf(BOM_UTF8));
+          SA := WideStringToUTF8(SW);
+          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(UTF8));
+          FSaved := True;
+        end;
+      sfAnsi :
+        begin
+          SA := WideStringToStringEx(SW,CodePageFromLocale(FLanguage));
+          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(Char));
+          FSaved := True;
+        end;
     end;
-    FSaved := True;
   end;
 end;
 
@@ -8446,6 +8529,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.29  2005/10/25 18:20:10  outchy
+// IT3174: UTF8-file support in JclUnicode.pas
+//
 // Revision 1.28  2005/10/25 16:27:36  marquardt
 // StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
 //
