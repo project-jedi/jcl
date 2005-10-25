@@ -71,6 +71,15 @@ type
     procedure RegisterCommands; virtual;
     procedure UnregisterCommands; virtual;
 
+    function LoadBool(Name: string; Def: Boolean): Boolean;
+    function LoadString(Name: string; Def: string): string;
+    function LoadInteger(Name: string; Def: Integer): Integer;
+    procedure LoadStrings(Name: string; List: TStrings);
+    procedure SaveBool(Name: string; Value: Boolean);
+    procedure SaveString(Name: string; Value: string);
+    procedure SaveInteger(Name: string; Value: Integer);
+    procedure SaveStrings(Name: string; List: TStrings);
+
     property ActiveProject: IOTAProject read GetActiveProject;
     property BaseRegistryKey: string read FBaseRegistryKey;
     property ExpertRegistryKey: string read FExpertRegistryKey;
@@ -424,6 +433,46 @@ begin
   // override to remove actions and menu items
 end;
 
+function TJclOTAExpertBase.LoadBool(Name: string; Def: Boolean): Boolean;
+begin
+  Result := RegReadBoolDef(HKCU, ExpertRegistryKey, Name, Def);
+end;
+
+function TJclOTAExpertBase.LoadString(Name: string; Def: string): string;
+begin
+  Result := RegReadStringDef(HKCU, ExpertRegistryKey, Name, Def);
+end;
+
+function TJclOTAExpertBase.LoadInteger(Name: string; Def: Integer): Integer;
+begin
+  Result := RegReadIntegerDef(HKCU, ExpertRegistryKey, Name, Def);
+end;
+
+procedure TJclOTAExpertBase.LoadStrings(Name: string; List: TStrings);
+begin
+  RegLoadList(HKCU, ExpertRegistryKey, Name, List);
+end;
+
+procedure TJclOTAExpertBase.SaveBool(Name: string; Value: Boolean);
+begin
+  RegWriteBool(HKCU, ExpertRegistryKey, Name, Value);
+end;
+
+procedure TJclOTAExpertBase.SaveString(Name: string; Value: string);
+begin
+  RegWriteString(HKCU, ExpertRegistryKey, Name, Value);
+end;
+
+procedure TJclOTAExpertBase.SaveInteger(Name: string; Value: Integer);
+begin
+  RegWriteInteger(HKCU, ExpertRegistryKey, Name, Value);
+end;
+
+procedure TJclOTAExpertBase.SaveStrings(Name: string; List: TStrings);
+begin
+  RegSaveList(HKCU, ExpertRegistryKey, Name, List);
+end;
+
 //=== { TJclOTAExpert } ======================================================
 
 procedure TJclOTAExpert.AfterSave;
@@ -484,6 +533,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/10/25 13:00:12  marquardt
+// Load and Save methods for TJclOTAExpertBase
+//
 // Revision 1.4  2005/10/25 08:27:22  marquardt
 // minor cleanups, deactivated unused function
 //

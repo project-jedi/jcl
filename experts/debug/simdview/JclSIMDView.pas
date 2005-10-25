@@ -154,7 +154,7 @@ begin
 
   if not Assigned(FForm) then
   begin
-    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, ExpertRegistryKey);
+    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, Self);
     try
       FForm.Icon := FIcon;
       FForm.OnDestroy := FormDestroy;

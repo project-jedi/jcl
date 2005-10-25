@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, ActnList,
-  JclSysInfo, JclSIMDUtils, JclSIMDModifyForm;
+  JclOtaUtils, JclSysInfo, JclSIMDUtils, JclSIMDModifyForm;
 
 type
   TJclSIMDViewFrm = class(TForm)
@@ -101,7 +101,7 @@ type
     FOldThreadID: LongWord;
     FOldThreadState: TOTAThreadState;
     FModifyForm: TJclSIMDModifyFrm;
-    FRegKey: string;
+    FExpert: TJclOTAExpert;
     FMXCSRChanged: array [TMXCSRRange] of Boolean;
     FRegisterChanged: array of Boolean;
     procedure SetDisplay(const Value: TJclXMMContentType);
@@ -111,7 +111,7 @@ type
     procedure UpdateActions; override;
   public
     constructor Create(AOwner: TComponent; ADebuggerServices: IOTADebuggerServices;
-      ARegKey: string); reintroduce;
+      AExpert: TJclOTAExpert); reintroduce;
     destructor Destroy; override;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -131,12 +131,12 @@ implementation
 
 uses
   TypInfo,
-  JclRegistry, JclSIMDCpuInfo;
+  JclSIMDCpuInfo;
 
 {$R *.dfm}
 
 constructor TJclSIMDViewFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; ARegKey: string);
+  ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert);
 var
   I: TMXCSRRange;
   J: Integer;
@@ -146,7 +146,7 @@ begin
   FDebuggerServices := ADebuggerServices;
   FOldThreadID := 0;
   FOldThreadState := tsNone;
-  FRegKey := ARegKey;
+  FExpert := AExpert;
 
   JclSysInfo.GetCpuInfo(FCpuInfo);
 
@@ -208,10 +208,10 @@ end;
 procedure TJclSIMDViewFrm.LoadSettings;
 begin
   SetBounds(
-    RegReadIntegerDef(HKCU, FRegKey, 'Left', Left),
-    RegReadIntegerDef(HKCU, FRegKey, 'Top', Top),
-    RegReadIntegerDef(HKCU, FRegKey, 'Width', Width),
-    RegReadIntegerDef(HKCU, FRegKey, 'Height', Height));
+    FExpert.LoadInteger('Left', Left),
+    FExpert.LoadInteger('Top', Top),
+    FExpert.LoadInteger('Width', Width),
+    FExpert.LoadInteger('Height', Height));
 
   if Left < 0 then
     Left := 0;
@@ -227,11 +227,11 @@ begin
     Top := Screen.DesktopHeight - Height;
 
   Format := TJclSIMDFormat(GetEnumValue(TypeInfo(TJclSIMDFormat),
-    RegReadStringDef(HKCU, FRegKey, 'Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
+    FExpert.LoadString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
   Display := TJclXMMContentType(GetEnumValue(TypeInfo(TJclXMMContentType),
-    RegReadStringDef(HKCU, FRegKey, 'Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
+    FExpert.LoadString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
 
-  if RegReadIntegerDef(HKCU, FRegKey, 'StayOnTop', 0) = 1 then
+  if FExpert.LoadInteger('StayOnTop', 0) = 1 then
     FormStyle := fsStayOnTop
   else
     FormStyle := fsNormal;
@@ -239,13 +239,13 @@ end;
 
 procedure TJclSIMDViewFrm.SaveSettings;
 begin
-  RegWriteInteger(HKCU, FRegKey, 'Left', Left);
-  RegWriteInteger(HKCU, FRegKey, 'Top', Top);
-  RegWriteInteger(HKCU, FRegKey, 'Width', Width);
-  RegWriteInteger(HKCU, FRegKey, 'Height', Height);
-  RegWriteString(HKCU, FRegKey, 'Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
-  RegWriteString(HKCU, FRegKey, 'Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
-  RegWriteInteger(HKCU, FRegKey, 'StayOnTop', Ord(FormStyle = fsStayOnTop));
+  FExpert.SaveInteger('Left', Left);
+  FExpert.SaveInteger('Top', Top);
+  FExpert.SaveInteger('Width', Width);
+  FExpert.SaveInteger('Height', Height);
+  FExpert.SaveString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
+  FExpert.SaveString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
+  FExpert.SaveInteger('StayOnTop', Ord(FormStyle = fsStayOnTop));
 end;
 
 procedure TJclSIMDViewFrm.ListBoxMXCSRDrawItem(Control: TWinControl;
@@ -665,7 +665,7 @@ begin
   AItemIndex := ListBoxRegs.ItemIndex;
   if AItemIndex >= 0 then
   try
-    FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FRegKey);
+    FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FExpert);
     FModifyForm.Icon.Assign(Self.Icon);
 
     if AItemIndex < NbMMRegister then

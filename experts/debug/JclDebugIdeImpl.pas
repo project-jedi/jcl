@@ -122,7 +122,7 @@ implementation
 {$R JclDebugIdeIcon.res}
 
 uses
-  JclDebug, JclDebugIdeResult, JclOtaConsts, JclRegistry;
+  JclDebug, JclDebugIdeResult, JclOtaConsts;
 
 procedure Register;
 begin
@@ -455,12 +455,12 @@ end;
 
 procedure TJclDebugExtension.LoadExpertValues;
 begin
-  ExpertActive(RegReadBoolDef(HKCU, ExpertRegistryKey, JclDebugEnabledRegValue, False));
+  ExpertActive(LoadBool(JclDebugEnabledRegValue, False));
 end;
 
 procedure TJclDebugExtension.SaveExpertValues;
 begin
-  RegWriteBool(HKCU, ExpertRegistryKey, JclDebugEnabledRegValue, FInsertDataAction.Checked);
+  SaveBool(JclDebugEnabledRegValue, FInsertDataAction.Checked);
 end;
 
 {$ENDIF OldStyleExpert}

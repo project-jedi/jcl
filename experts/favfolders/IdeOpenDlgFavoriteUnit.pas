@@ -48,7 +48,7 @@ procedure Register;
 implementation
 
 uses
-  JclFileUtils, JclOtaConsts, JclRegistry, JclSysInfo;
+  JclFileUtils, JclOtaConsts, JclSysInfo;
 
 procedure Register;
 begin
@@ -63,8 +63,8 @@ begin
   FFavOpenDialog.HookDialogs;
   FFavOpenDialog.OnClose := DialogClose;
   FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := RegReadStringDef(HKCU, ExpertRegistryKey,
-    PictDialogFolderItemName, PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
+  FFavOpenDialog.PictureDialogLastFolder := LoadString(PictDialogFolderItemName,
+    PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
 end;
 
 destructor TJclOpenDialogsFavoriteExpert.Destroy;
@@ -75,13 +75,13 @@ end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
 begin
-  RegSaveList(HKCU, ExpertRegistryKey, JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
-  RegWriteString(HKCU, ExpertRegistryKey, PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
+  SaveStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  SaveString(PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
 begin
-  RegLoadList(HKCU, ExpertRegistryKey, JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  LoadStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
 end;
 
 end.
