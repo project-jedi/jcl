@@ -958,18 +958,18 @@ function StrCompW(Str1, Str2: PWideChar): Integer;
 function StrICompW(Str1, Str2: PWideChar): Integer;
 function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrNScanW(const S1, S2: PWideChar): Integer;
-function StrRNScanW(const S1, S2: PWideChar): Integer;
+function StrNScanW(const Str1, Str2: PWideChar): Integer;
+function StrRNScanW(const Str1, Str2: PWideChar): Integer;
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar; overload;
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
-function StrAllocW(Size: Cardinal): PWideChar;
+function StrAllocW(WideSize: Cardinal): PWideChar;
 function StrBufSizeW(Str: PWideChar): Cardinal;
 function StrNewW(Str: PWideChar): PWideChar; overload;
-function StrNewW(const S: WideString): PWideChar; overload;
+function StrNewW(const Str: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
-procedure StrDisposeAndNilW(var P: PWideChar);
+procedure StrDisposeAndNilW(var Str: PWideChar);
 procedure StrSwapByteOrder(Str: PWideChar);
 
 // functions involving Delphi wide strings
@@ -5673,46 +5673,46 @@ begin
     Result := 0;
 end;
 
-function StrNScanW(const S1, S2: PWideChar): Integer;
-// Determines where (in S1) the first time one of the characters of S2 appear.
-// The result is the length of a string part of S1 where none of the characters of
-// S2 do appear (not counting the trailing #0 and starting with position 0 in S1).
+function StrNScanW(const Str1, Str2: PWideChar): Integer;
+// Determines where (in Str1) the first time one of the characters of Str2 appear.
+// The result is the length of a string part of Str1 where none of the characters of
+// Str2 do appear (not counting the trailing #0 and starting with position 0 in Str1).
 var
   Run: PWideChar;
 begin
   Result := -1;
-  if (S1 <> nil) and (S2 <> nil) then
+  if (Str1 <> nil) and (Str2 <> nil) then
   begin
-    Run := S1;
+    Run := Str1;
     while Run^ <> #0 do
     begin
-      if StrScanW(S2, Run^) <> nil then
+      if StrScanW(Str2, Run^) <> nil then
         Break;
       Inc(Run);
     end;
-    Result := Run - S1;
+    Result := Run - Str1;
   end;
 end;
 
-function StrRNScanW(const S1, S2: PWideChar): Integer;
-// This function does the same as StrRNScanW but uses S1 in reverse order. This
-// means S1 points to the last character of a string, is traversed reversely
+function StrRNScanW(const Str1, Str2: PWideChar): Integer;
+// This function does the same as StrRNScanW but uses Str1 in reverse order. This
+// means Str1 points to the last character of a string, is traversed reversely
 // and terminates with a starting #0. This is useful for parsing strings stored
 // in reversed macro buffers etc.
 var
   Run: PWideChar;
 begin
   Result := -1;
-  if (S1 <> nil) and (S2 <> nil) then
+  if (Str1 <> nil) and (Str2 <> nil) then
   begin
-    Run := S1;
+    Run := Str1;
     while Run^ <> #0 do
     begin
-      if StrScanW(S2, Run^) <> nil then
+      if StrScanW(Str2, Run^) <> nil then
         Break;
       Dec(Run);
     end;
-    Result := S1 - Run;
+    Result := Str1 - Run;
   end;
 end;
 
@@ -5835,14 +5835,13 @@ asm
        POP     EDI
 end;
 
-function StrAllocW(Size: Cardinal): PWideChar;
+function StrAllocW(WideSize: Cardinal): PWideChar;
 // Allocates a buffer for a null-terminated wide string and returns a pointer
 // to the first character of the string.
 begin
-  Size := SizeOf(WideChar) * Size + SizeOf(Cardinal);
-  GetMem(Result, Size);
-  FillChar(Result^, Size, 0);
-  Cardinal(Pointer(Result)^) := Size;
+  WideSize := SizeOf(WideChar) * WideSize + SizeOf(Cardinal);
+  Result := AllocMem(WideSize);
+  Cardinal(Pointer(Result)^) := WideSize;
   Inc(Result, SizeOf(Cardinal) div SizeOf(WideChar));
 end;
 
@@ -5850,8 +5849,13 @@ function StrBufSizeW(Str: PWideChar): Cardinal;
 // Returns max number of wide characters that can be stored in a buffer
 // allocated by StrAllocW.
 begin
-  Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
-  Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
+  if Str <> nil then
+  begin
+    Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
+    Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
+  end
+  else
+    Result := 0;
 end;
 
 function StrNewW(Str: PWideChar): PWideChar;
@@ -5868,25 +5872,25 @@ begin
   end;
 end;
 
-function StrNewW(const S: WideString): PWideChar;
+function StrNewW(const Str: WideString): PWideChar;
 begin
-  Result := StrNewW(PWideChar(S));
+  Result := StrNewW(PWideChar(Str));
 end;
 
 procedure StrDisposeW(Str: PWideChar);
-// releases a string allocated with StrNew
+// releases a string allocated with StrNewW or StrAllocW
 begin
   if Str <> nil then
   begin
     Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
-    FreeMem(Str, Cardinal(Pointer(Str)^));
+    FreeMem(Str);
   end;
 end;
 
-procedure StrDisposeAndNilW(var P: PWideChar);
+procedure StrDisposeAndNilW(var Str: PWideChar);
 begin
-  StrDisposeW(P);
-  P := nil;
+  StrDisposeW(Str);
+  Str := nil;
 end;
 
 // exchanges in each character of the given string the low order and high order
@@ -8411,6 +8415,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.26  2005/10/25 09:47:04  marquardt
+// minor fixes and cleanups
+//
 // Revision 1.25  2005/10/25 08:54:57  marquardt
 // make a union of the Str*W family of functions in JclUnicode and JclWideStrings
 //
