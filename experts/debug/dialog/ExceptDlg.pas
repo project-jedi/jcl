@@ -12,14 +12,14 @@
 {                                                                                                  }
 { The Original Code is ExceptDlg.pas.                                                              }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Sample Application exception dialog replacement                                                  }
 {                                                                                                  }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -734,5 +734,12 @@ initialization
 
 finalization
   UnInitializeHandler;
+
+// History:
+
+// $Log$
+// Revision 1.2  2005/10/26 03:29:44  rrossmair
+// - improved header information, added Date and Log CVS tags.
+//
 
 end.

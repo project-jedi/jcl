@@ -12,13 +12,13 @@
 {                                                                                                  }
 { The Original Code is ThreadExpertUnit.pas.                                                       }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 17, 2002                                                                    }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -307,5 +307,12 @@ procedure TNameChangeThread.UpdateRequest;
 begin
   FExpert.UpdateContent;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2005/10/26 03:29:44  rrossmair
+// - improved header information, added Date and Log CVS tags.
+//
 
 end.

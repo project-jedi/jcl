@@ -12,14 +12,14 @@
 {                                                                                                  }
 { The Original Code is ClxExceptDlg.pas.                                                           }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Sample CLX Application exception dialog replacement (for Windows only)                           }
 {                                                                                                  }
-{ Last modified: June 5, 2002                                                                      }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -744,5 +744,12 @@ finalization
 
 {$IFEND Defined(MSWINDOWS)}
 {$ENDIF DELPHI6_UP}
+
+// History:
+
+// $Log$
+// Revision 1.2  2005/10/26 03:29:44  rrossmair
+// - improved header information, added Date and Log CVS tags.
+//
 
 end.
