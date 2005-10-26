@@ -365,9 +365,9 @@ begin
   FEnvVariables.Clear;
 
   // read user and system environment variables
-  GetEnvironmentVars(FEnvVariables,false);
+  GetEnvironmentVars(FEnvVariables, False);
 
-  // read delphi environment variables
+  // read Delphi environment variables
   {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
@@ -511,7 +511,7 @@ begin
   {$IFDEF MSWINDOWS}
   Result := RegReadBoolDef(HKCU, ExpertRegistryKey, Name, Def);
   {$ELSE}
-  Result := False;
+  Result := Def;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -520,7 +520,7 @@ begin
   {$IFDEF MSWINDOWS}
   Result := RegReadStringDef(HKCU, ExpertRegistryKey, Name, Def);
   {$ELSE}
-  Result := '';
+  Result := Def;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -529,7 +529,7 @@ begin
   {$IFDEF MSWINDOWS}
   Result := RegReadIntegerDef(HKCU, ExpertRegistryKey, Name, Def);
   {$ELSE}
-  Result := 0;
+  Result := Def;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -537,6 +537,8 @@ procedure TJclOTAExpertBase.LoadStrings(Name: string; List: TStrings);
 begin
   {$IFDEF MSWINDOWS}
   RegLoadList(HKCU, ExpertRegistryKey, Name, List);
+  {$ELSE}
+  List.Clear;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -628,8 +630,14 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/10/26 08:29:53  marquardt
+// Kylix dummy Load results fixed
+//
 // Revision 1.7  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.8  2005/10/26 08:29:53  marquardt
+// - improved header information, added $Date$ and Kylix dummy Load results fixed
+// - improved header information, added $Date$ and CVS tags.
 //
 // Revision 1.6  2005/10/25 14:45:22  uschuster
 // some changes for Kylix
