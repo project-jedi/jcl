@@ -156,6 +156,7 @@ type
 type
   TJclByteArray = array[0..MaxInt div SizeOf(Byte) - 1] of Byte;
   PJclByteArray = ^TJclByteArray;
+  TBytes = Pointer; // under .NET System.pas: TBytes = array of Byte;
 
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
 type
@@ -223,13 +224,13 @@ procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Intege
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
 {$IFDEF CLR}
-function GetBytesEx(const Value): TDynByteArray;
-procedure SetBytesEx(var Value; Bytes: TDynByteArray);
+function GetBytesEx(const Value): TBytes;
+procedure SetBytesEx(var Value; Bytes: TBytes);
 procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32); inline;
 
-function ByteArrayStringLen(Data: TDynByteArray): Integer;
-function StringToByteArray(const S: string): TDynByteArray;
-function ByteArrayToString(const Data: TDynByteArray; Count: Integer): string;
+function ByteArrayStringLen(Data: TBytes): Integer;
+function StringToByteArray(const S: string): TBytes;
+function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 {$ENDIF CLR}
 
 implementation
@@ -320,8 +321,11 @@ begin
 end;
 
 {$IFDEF CLR}
-function GetBytesEx(const Value): TDynByteArray;
+function GetBytesEx(const Value): TBytes;
 begin
+  if TObject(Value) is TBytes then
+    Result := Copy(TBytes(Value))
+  else
   if TObject(Value) is TDynByteArray then
     Result := Copy(TDynByteArray(Value))
   else
@@ -332,8 +336,11 @@ begin
     raise EJclError.CreateFmt('GetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
 end;
 
-procedure SetBytesEx(var Value; Bytes: TDynByteArray);
+procedure SetBytesEx(var Value; Bytes: TBytes);
 begin
+  if TObject(Value) is TBytes then
+    Value := Copy(Bytes)
+  else
   if TObject(Value) is TDynByteArray then
     Value := Copy(Bytes)
   else
@@ -349,7 +356,7 @@ begin
   DestSet := TIntegerSet(Value);
 end;
 
-function ByteArrayStringLen(Data: TDynByteArray): Integer;
+function ByteArrayStringLen(Data: TBytes): Integer;
 var
   I: Integer;
 begin
@@ -362,7 +369,7 @@ begin
   Result := Length(Data);
 end;
 
-function StringToByteArray(const S: string): TDynByteArray;
+function StringToByteArray(const S: string): TBytes;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -373,7 +380,7 @@ begin
     Result[I] := Byte(AnsiS[I + 1]);
 end;
 
-function ByteArrayToString(const Data: TDynByteArray; Count: Integer): string;
+function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -469,6 +476,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.44  2005/10/26 09:00:32  ahuser
+// Extended GetBytes() function to allow TBytes and TDynByteArray usage
+//
 // Revision 1.43  2005/10/12 04:25:47  rrossmair
 // - fixed issue #3255 (error in PJclByteArray declaration)
 //
