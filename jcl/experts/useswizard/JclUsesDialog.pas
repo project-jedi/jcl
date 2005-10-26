@@ -12,15 +12,15 @@
 {                                                                                                  }
 { The Original Code is JclUsesDialog.pas.                                                          }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is TOndrej (tondrej att t-online dott de).            }
+{ Portions created by TOndrej are Copyright (C) of TOndrej.                                        }
 {                                                                                                  }
 { Contributors:                                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Robert Marquardt                                                                     }
-{ Last modified: October 19, 2005                                                                  }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -165,5 +165,12 @@ begin
         ToggleNode(Node);
     end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.3  2005/10/26 03:29:44  rrossmair
+// - improved header information, added Date and Log CVS tags.
+//
 
 end.

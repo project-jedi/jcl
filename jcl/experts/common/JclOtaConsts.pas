@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclOtaConsts.pas.                                                           }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Florent Ouchet (outchy)                                                                        }
@@ -21,7 +21,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Florent Ouchet                                                                       }
-{ Last modified: October 19, 2005                                                                  }
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -90,6 +90,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.4  2005/10/26 03:29:44  rrossmair
+// - improved header information, added Date and Log CVS tags.
+//
 // Revision 1.3  2005/10/23 12:53:36  marquardt
 // further expert cleanup and integration, use of JclRegistry
 //
