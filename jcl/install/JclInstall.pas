@@ -1571,12 +1571,46 @@ end;
 
 {$IFDEF MSWINDOWS}
 function TJclInstallation.UninstallExpert(const FileName: string): Boolean;
+
+  function OldExpertBPLFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
+  const
+    OldExperts: array[ioJclExpertDebug..ioJclExpertSimdView] of string = (
+      'JclDebugIde%s%d0.bpl',
+      'ProjectAnalyzer%s%d0.bpl',
+      'IdeOpenDlgFavorite%s%d0.bpl',
+      'ThreadNameExpert%s%d0.bpl',
+      'JediUses%s%d0.bpl',
+      'JclSIMDView%s%d.bpl');
+
+  var
+    Prefix: string;
+    I: TJediInstallOption;
+  begin
+    with Target do
+    begin
+      Prefix := Prefixes[RADToolKind];
+      for I := Low(OldExperts) to High(OldExperts) do
+        if BaseName = ExpertPaths[I] then
+        begin
+          Result := PathAddSeparator(StoredBPLPath) + Format(OldExperts[I], [Prefix, VersionNumber]);
+          Break;
+        end;
+    end;
+  end;
+
 var
+  BaseName: string;
   BPLFileName: string;
 begin
-  BPLFileName := Format(ExtractFileName(FileName), ['', '.bpl']);
+  BaseName := ExtractFileName(FileName);
+  BPLFileName := Format(BaseName, ['', '.bpl']);
   Target.IdePackages.RemovePackage(PathAddSeparator(StoredBPLPath) + Format(BPLFileName, [Target.VersionNumber]));
   Result := UninstallPackage(FullPackageFileName(Target, FileName));
+  // eventually remove old expert packages to avoid annoying package conflicts during IDE startup;
+  // for simplicity, .dcp files are not handled
+  BPLFileName := OldExpertBPLFileName(Target, BaseName);
+  FileDelete(BPLFileName);
+  Target.IdePackages.RemovePackage(BPLFileName);
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1932,6 +1966,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.75  2005/10/26 06:30:38  rrossmair
+// - TJclInstallation.UninstallExpert now also handles old expert package names
+//
 // Revision 1.74  2005/10/22 00:39:34  outchy
 // JclBaseExpert is now correctly uninstalled.
 //
