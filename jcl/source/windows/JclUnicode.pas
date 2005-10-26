@@ -974,12 +974,12 @@ function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar; overl
 function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
 function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
-function StrCatW(Dest, Source: PWideChar): PWideChar;
+function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrCompW(Str1, Str2: PWideChar): Integer;
-function StrICompW(Str1, Str2: PWideChar): Integer;
-function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+function StrCompW(const Str1, Str2: PWideChar): Integer;
+function StrICompW(const Str1, Str2: PWideChar): Integer;
+function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrNScanW(const Str1, Str2: PWideChar): Integer;
 function StrRNScanW(const Str1, Str2: PWideChar): Integer;
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar; overload;
@@ -987,8 +987,8 @@ function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; o
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
 function StrAllocW(WideSize: Cardinal): PWideChar;
-function StrBufSizeW(Str: PWideChar): Cardinal;
-function StrNewW(Str: PWideChar): PWideChar; overload;
+function StrBufSizeW(const Str: PWideChar): Cardinal;
+function StrNewW(const Str: PWideChar): PWideChar; overload;
 function StrNewW(const Str: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
 procedure StrDisposeAndNilW(var Str: PWideChar);
@@ -5578,7 +5578,7 @@ asm
        POP EDI
 end;
 
-function StrCatW(Dest, Source: PWideChar): PWideChar;
+function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 // appends a copy of Source to the end of Dest and returns the concatenated string
 begin
   StrCopyW(StrEndW(Dest), Source);
@@ -5619,7 +5619,7 @@ const
     $2000, $F800, $F800, $F800, $F800
   );
 
-function StrCompW(Str1, Str2: PWideChar): Integer;
+function StrCompW(const Str1, Str2: PWideChar): Integer;
 // Binary comparation of Str1 and Str2 with surrogate fix-up.
 // Returns < 0 if Str1 is smaller in binary order than Str2, = 0 if both strings are
 // equal and > 0 if Str1 is larger than Str2.
@@ -5629,8 +5629,7 @@ function StrCompW(Str1, Str2: PWideChar): Integer;
 //       larger values than surrogates which are in UTF-32 actually larger.
 var
   C1, C2: Word;
-  Run1,
-  Run2: PWideChar;
+  Run1, Run2: PWideChar;
 begin
   Run1 := Str1;
   Run2 := Str2;
@@ -5654,32 +5653,32 @@ begin
     Result := (Run1 - Str1) - (Run2 - Str2);
 end;
 
-function StrICompW(Str1, Str2: PWideChar): Integer;
+function StrICompW(const Str1, Str2: PWideChar): Integer;
 // Compares Str1 to Str2 without case sensitivity.
 // See also comments in StrCompW, but keep in mind that case folding might result in
 // one-to-many mappings which must be considered here.
 var
   C1, C2: Word;
-  Run1,
-  Run2: PWideChar;
-
-  Folded1,
-  Folded2: WideString;
+  S1, S2: PWideChar;
+  Run1, Run2: PWideChar;
+  Folded1, Folded2: WideString;
 begin
   // Because of size changes of the string when doing case folding
   // it is unavoidable to convert both strings completely in advance.
+  S1 := Str1;
+  S2 := Str2;
   Folded1 := '';
-  while Str1^ <> #0 do
+  while S1^ <> #0 do
   begin
-    Folded1 := Folded1 + WideCaseFolding(Str1^);
-    Inc(Str1);
+    Folded1 := Folded1 + WideCaseFolding(S1^);
+    Inc(S1);
   end;
   
   Folded2 := '';
-  while Str2^ <> #0 do
+  while S2^ <> #0 do
   begin
-    Folded2 := Folded2 + WideCaseFolding(Str2^);
-    Inc(Str2);
+    Folded2 := Folded2 + WideCaseFolding(S2^);
+    Inc(S2);
   end;
 
   Run1 := PWideChar(Folded1);
@@ -5704,32 +5703,33 @@ begin
     Result := (Run1 - PWideChar(Folded1)) - (Run2 - PWideChar(Folded2));
 end;
 
-function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 // compares strings up to MaxLen code points
 // see also StrICompW
 var
+  S1, S2: PWideChar;
   C1, C2: Word;
-  Run1,
-  Run2: PWideChar;
-  Folded1,
-  Folded2: WideString;
+  Run1, Run2: PWideChar;
+  Folded1, Folded2: WideString;
 begin
   if MaxLen > 0 then
   begin
     // Because of size changes of the string when doing case folding
     // it is unavoidable to convert both strings completely in advance.
+    S1 := Str1;
+    S2 := Str2;
     Folded1 := '';
-    while Str1^ <> #0 do
+    while S1^ <> #0 do
     begin
-      Folded1 := Folded1 + WideCaseFolding(Str1^);
-      Inc(Str1);
+      Folded1 := Folded1 + WideCaseFolding(S1^);
+      Inc(S1);
     end;
 
     Folded2 := '';
-    while Str2^ <> #0 do
+    while S2^ <> #0 do
     begin
-      Folded2 := Folded2 + WideCaseFolding(Str2^);
-      Inc(Str2);
+      Folded2 := Folded2 + WideCaseFolding(S2^);
+      Inc(S2);
     end;
 
     Run1 := PWideChar(Folded1);
@@ -5755,18 +5755,21 @@ begin
     Result := 0;
 end;
 
-function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 // compares strings up to MaxLen code points
 // see also StrCompW
 var
+  S1, S2: PWideChar;
   C1, C2: Word;
 begin
   if MaxLen > 0 then
   begin
+    S1 := Str1;
+    S2 := Str2;
     repeat
-      C1 := Word(Str1^);
+      C1 := Word(S1^);
       C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
-      C2 := Word(Str2^);
+      C2 := Word(S2^);
       C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
 
       // now C1 and C2 are in UTF-32-compatible order
@@ -5775,8 +5778,8 @@ begin
       Dec(MaxLen);
       if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
         Break;
-      Inc(Str1);
-      Inc(Str2);
+      Inc(S1);
+      Inc(S2);
     until False;
   end
   else
@@ -5955,20 +5958,23 @@ begin
   Inc(Result, SizeOf(Cardinal) div SizeOf(WideChar));
 end;
 
-function StrBufSizeW(Str: PWideChar): Cardinal;
+function StrBufSizeW(const Str: PWideChar): Cardinal;
 // Returns max number of wide characters that can be stored in a buffer
 // allocated by StrAllocW.
+var
+  P: PWideChar;
 begin
   if Str <> nil then
   begin
-    Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
-    Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
+    P := Str;
+    Dec(P, SizeOf(Cardinal) div SizeOf(WideChar));
+    Result := (Cardinal(PInteger(P)^) - SizeOf(Cardinal)) div SizeOf(WideChar);
   end
   else
     Result := 0;
 end;
 
-function StrNewW(Str: PWideChar): PWideChar;
+function StrNewW(const Str: PWideChar): PWideChar;
 // Duplicates the given string (if not nil) and returns the address of the new string.
 var
   Size: Cardinal;
@@ -8525,6 +8531,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.31  2005/10/26 09:15:13  marquardt
+// most functions now have the same const parameters as their Ansi counterparts
+//
 // Revision 1.30  2005/10/26 08:36:29  marquardt
 // StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
 //
