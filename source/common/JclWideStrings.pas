@@ -255,7 +255,7 @@ function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; o
 function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(const Str, SubStr: PWideChar): PWideChar;
 function StrAllocW(WideSize: Cardinal): PWideChar;
-function StrBufSizeW(Str: PWideChar): Cardinal;
+function StrBufSizeW(const Str: PWideChar): Cardinal;
 function StrNewW(const Str: PWideChar): PWideChar; overload;
 function StrNewW(const Str: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
@@ -727,14 +727,17 @@ asm
 @@Exit:
 end;
 
-function StrBufSizeW(Str: PWideChar): Cardinal;
+function StrBufSizeW(const Str: PWideChar): Cardinal;
 // Returns max number of wide characters that can be stored in a buffer
 // allocated by StrAllocW.
+var
+  P: PWideChar;
 begin
   if Str <> nil then
   begin
-    Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
-    Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
+    P := Str;
+    Dec(P, SizeOf(Cardinal) div SizeOf(WideChar));
+    Result := (Cardinal(PInteger(P)^) - SizeOf(Cardinal)) div SizeOf(WideChar);
   end
   else
     Result := 0;
@@ -1977,6 +1980,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2005/10/26 09:15:13  marquardt
+// most functions now have the same const parameters as their Ansi counterparts
+//
 // Revision 1.21  2005/10/26 08:36:29  marquardt
 // StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
 //
@@ -1999,6 +2005,9 @@ end;
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
 //
 // $Log$
+// Revision 1.22  2005/10/26 09:15:13  marquardt
+// most functions now have the same const parameters as their Ansi counterparts
+//
 // Revision 1.21  2005/10/26 08:36:29  marquardt
 // StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
 //
