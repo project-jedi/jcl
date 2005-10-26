@@ -237,10 +237,10 @@ function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PW
 function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-//function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar; //overload;
-//function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar; overload;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar; //overload;
+function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
@@ -609,19 +609,15 @@ begin
     Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
 end;
 
-{
-function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
+function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
-}
 
-{
-function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
-}
 
 function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
 var
@@ -1981,6 +1977,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2005/10/26 08:36:29  marquardt
+// StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
+//
 // Revision 1.20  2005/10/25 16:27:36  marquardt
 // StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
 //
@@ -2000,6 +1999,9 @@ end;
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
 //
 // $Log$
+// Revision 1.21  2005/10/26 08:36:29  marquardt
+// StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
+//
 // Revision 1.20  2005/10/25 16:27:36  marquardt
 // StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
 //
