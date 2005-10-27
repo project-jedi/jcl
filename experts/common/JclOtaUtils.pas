@@ -607,6 +607,57 @@ procedure TJclOTAExpert.Modified;
 begin
 end;
 
+{$IFDEF RTL170_UP}
+
+{$R 'JclImages.res'}
+
+var
+  AboutBoxServices: IOTAAboutBoxServices = nil;
+  AboutBoxIndex: Integer = 0;
+
+procedure RegisterAboutBox;
+var
+  ProductImage: HBITMAP;
+begin
+  Supports(BorlandIDEServices,IOTAAboutBoxServices,AboutBoxServices);
+  Assert(Assigned(AboutBoxServices), RsENoAboutServices);
+  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
+  AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
+    RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
+    ProductImage, False, RsAboutLicenceStatus);
+end;
+
+procedure UnregisterAboutBox;
+begin
+  if (AboutBoxIndex <> 0) and Assigned(AboutBoxServices) then
+  begin
+    AboutBoxServices.RemoveProductInfo(AboutBoxIndex);
+    AboutBoxIndex := 0;
+    AboutBoxServices := nil;
+  end;
+end;
+
+procedure RegisterSplashScreen;
+var
+  ProductImage: HBITMAP;
+begin
+  Assert(Assigned(SplashScreenServices), RsENoSplashServices);
+  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
+  SplashScreenServices.AddProductBitmap(RsAboutDialogTitle,ProductImage,
+    False,RsAboutLicenceStatus);
+end;
+
+initialization
+
+RegisterSplashScreen;
+RegisterAboutBox;
+
+finalization
+
+UnRegisterAboutBox;
+
+{$ENDIF RTL170_UP}
+
 //=== Helper routines ========================================================
 
 { (rom) disabled, unused
@@ -630,11 +681,17 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/10/27 08:31:08  outchy
+// Items add in the splash screen and in the about box of Delphi (requires at least D2005)
+//
 // Revision 1.8  2005/10/26 08:29:53  marquardt
 // Kylix dummy Load results fixed
 //
 // Revision 1.7  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date: 2005/10/26 08:29:53 $ and Revision 1.9  2005/10/27 08:31:08  outchy
+// - improved header information, added $Date: 2005/10/26 08:29:53 $ and Items add in the splash screen and in the about box of Delphi (requires at least D2005)
+// - improved header information, added $Date: 2005/10/26 08:29:53 $ and
 // - improved header information, added $Date$ and Revision 1.8  2005/10/26 08:29:53  marquardt
 // - improved header information, added $Date$ and Kylix dummy Load results fixed
 // - improved header information, added $Date$ and CVS tags.
