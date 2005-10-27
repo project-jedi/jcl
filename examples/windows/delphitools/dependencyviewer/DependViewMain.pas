@@ -1,3 +1,28 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL) - Delphi Tools                                                   }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is DependView.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
+{ Copyright (C) of Petr Vones. All Rights Reserved.                                                }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date$                                                      }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit DependViewMain;
 
 {$I JCL.INC}
@@ -257,5 +282,12 @@ procedure TMainForm.CoolBar1Resize(Sender: TObject);
 begin
   D4FixCoolBarResizePaint(Sender);
 end;
+
+// History:
+
+// $Log$
+// Revision 1.2  2005/10/27 01:44:51  rrossmair
+// - added MPL headers and CVS Log tags
+//
 
 end.
