@@ -20,9 +20,6 @@ object JclDebugResultForm: TJclDebugResultForm
   ShowHint = True
   OnKeyDown = FormKeyDown
   OnResize = FormResize
-  DesignSize = (
-    772
-    296)
   PixelsPerInch = 96
   TextHeight = 13
   object OkBtn: TButton
