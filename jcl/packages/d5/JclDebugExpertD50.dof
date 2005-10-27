@@ -1,4 +1,4 @@
 [Directories]
 UnitOutputDir=..\..\lib\d5
-SearchPath=..\..\source;..\..\experts\debug
+SearchPath=..\..\source;..\..\experts\common
 
