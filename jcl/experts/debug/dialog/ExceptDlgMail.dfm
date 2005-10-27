@@ -23,9 +23,6 @@ object ExceptionDialogMail: TExceptionDialogMail
   OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow
-  DesignSize = (
-    432
-    255)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
