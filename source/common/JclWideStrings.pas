@@ -292,25 +292,6 @@ uses
   {$ENDIF MSWINDOWS}
   Math;
 
-{$IFDEF BORLAND}
-  {$IFNDEF RTL140_UP}
-    {$DEFINE RTL130_DOWN}
-  {$ENDIF ~RTL140_UP}
-{$ENDIF BORLAND}
-
-{$IFDEF RTL130_DOWN // Delphi 5 Math unit has no Sign function }
-function Sign(const A: Integer): Integer;
-begin
-  if A < 0 then
-    Result := -1
-  else
-  if A > 0 then
-    Result := 1
-  else
-    Result := 0;
-end;
-{$ENDIF RTL130_DOWN}
-
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
   B: Char;
@@ -435,7 +416,7 @@ begin
     Inc(SA);
     Inc(SB);
   end;
-  Result := Sign(Integer(SA^) - Integer(SB^));
+  Result := Integer(SA^) - Integer(SB^);
 end;
 
 function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
@@ -463,7 +444,7 @@ begin
     Dec(MaxLen);
   end;
   if MaxLen > 0 then
-    Result := Sign(Integer(SA^) - Integer(SB^))
+    Result := Integer(SA^) - Integer(SB^)
   else
     Result := 0;
 end;
@@ -1403,8 +1384,7 @@ begin
   InsertObject(Index, S, nil);
 end;
 
-procedure TWStrings.InsertObject(Index: Integer; const S: WideString;
-  AObject: TObject);
+procedure TWStrings.InsertObject(Index: Integer; const S: WideString; AObject: TObject);
 begin
 end;
 
@@ -1495,8 +1475,7 @@ begin
   end;
 end;
 
-procedure TWStrings.SaveToFile(const FileName: AnsiString;
-  WideFileOptions: TWideFileOptions = []);
+procedure TWStrings.SaveToFile(const FileName: AnsiString; WideFileOptions: TWideFileOptions = []);
 var
   Stream: TFileStream;
 begin
@@ -1508,8 +1487,7 @@ begin
   end;
 end;
 
-procedure TWStrings.SaveToStream(Stream: TStream;
-  WideFileOptions: TWideFileOptions = []);
+procedure TWStrings.SaveToStream(Stream: TStream; WideFileOptions: TWideFileOptions = []);
 var
   AnsiS: AnsiString;
   WideS: WideString;
@@ -1980,6 +1958,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2005/10/27 06:54:20  marquardt
+// removed unneeded Sign function and fixed multiple history entries
+//
 // Revision 1.22  2005/10/26 09:15:13  marquardt
 // most functions now have the same const parameters as their Ansi counterparts
 //
@@ -2003,28 +1984,6 @@ end;
 //
 // Revision 1.15  2005/07/19 23:21:21  outchy
 // IT 2968: The result StrLCompW was false when MaxLen characters were compared.
-//
-// $Log$
-// Revision 1.22  2005/10/26 09:15:13  marquardt
-// most functions now have the same const parameters as their Ansi counterparts
-//
-// Revision 1.21  2005/10/26 08:36:29  marquardt
-// StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
-//
-// Revision 1.20  2005/10/25 16:27:36  marquardt
-// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
-//
-// Revision 1.19  2005/10/25 10:33:40  marquardt
-// made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
-//
-// Revision 1.18  2005/10/25 09:46:35  marquardt
-// fixes for StrAllocW family and cleaned up Str*W parameter names
-//
-// Revision 1.17  2005/10/25 08:54:57  marquardt
-// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
-//
-// Revision 1.16  2005/10/16 05:15:38  marquardt
-// Str*W family now matches completely Delphi Str* family semantics
 //
 // Revision 1.14  2005/04/07 00:41:35  rrossmair
 // - changed for FPC 1.9.8
