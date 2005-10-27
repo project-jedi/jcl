@@ -5,12 +5,11 @@
 
 {$I jcl.inc}
 
-{$IFDEF COMPILER6_UP}
+{$IFDEF RTL140_UP}
   {$IFDEF VCL}
     {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
-    {$WARN SYMBOL_PLATFORM OFF} 
   {$ENDIF VCL}
-{$ENDIF COMPILER6_UP}
+{$ENDIF RTL140_UP}
 
 unit StretchGraphicDemoMain;
 
@@ -32,6 +31,7 @@ uses
   JclQGraphics,
   {$ENDIF VisualCLX}
   {$IFDEF HasShellCtrls}
+    {$WARN UNIT_PLATFORM OFF} 
   ShellCtrls,
   {$ENDIF HasShellCtrls}
   JclFileUtils;
@@ -98,6 +98,7 @@ type
     FDir: string;
     FWidth: Integer;
     FHeight: Integer;
+    FStretchTime: LongWord;
     FPreserveAspectRatio: Boolean;
     FResamplingFilter: TResamplingFilter;
     procedure AddToFileList(const Directory: string; const FileInfo: TSearchRec);
@@ -263,8 +264,7 @@ procedure TStretchDemoForm.FileSearchTerminated(const ID: TFileSearchTaskID; con
 begin
   with FileListView do
     Selected := FindCaption(0, FileName, False, True, False);
-  StatusBar.Panels[0].Text := IntToStr(FileListView.Items.Count);
-  StatusBar.Panels[1].Text := FileName;
+  StatusBar.Panels[0].Text := Format('%d files', [FileListView.Items.Count]);
   UpdateNavButtons;
 end;
 
@@ -326,6 +326,7 @@ end;
 procedure TStretchDemoForm.DoStretch;
 var
   W, H: Integer;
+  T: LongWord;
 begin
   with OriginalImage.Picture do
     if (Graphic = nil) {$IFDEF VCL} or (Graphic is TMetafile) {$ENDIF} then
@@ -342,6 +343,7 @@ begin
     end;
   if (FWidth <> W) or (FHeight <> H) then
   begin
+    T := GetTickCount;
     StretchedImage.Picture.Graphic := nil;
     JclGraphics.Stretch(W, H, FResamplingFilter, 0, OriginalImage.Picture.Graphic,
       StretchedImage.Picture.Bitmap);
@@ -351,6 +353,9 @@ begin
       StatusBar.Panels[1].Text := Format('Resized: %d x %d', [Width, Height]);
     FWidth := W;
     FHeight := H;
+    FStretchTime := GetTickCount - T;
+    with StretchedImage.Picture do
+      StatusBar.Panels[2].Text := Format('Resize time: %d msec', [FStretchTime]);
   end;
 end;
 
