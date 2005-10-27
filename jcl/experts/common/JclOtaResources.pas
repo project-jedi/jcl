@@ -31,10 +31,23 @@ interface
 
 {$I jcl.inc}
 
+uses JclBase;
+
 //=== JclOtaUtils.pas ========================================================
 resourcestring
   RsENoIDEServices = 'Unable to get Borland IDE Services';
   RsENoNTAServices = 'Unable to get Borland NTA Services';
+  RsENoSplashServices = 'Unable to get Borland Splash Services';
+  RsENoAboutServices = 'Unable to get Borland About Services';
+
+  RsAboutDialogTitle = 'JEDI Code Library';
+  RsAboutCopyright = 'Copyright the JCL development team';
+  RsAboutTitle = 'JEDI Code Library';
+  RsAboutDescription = 'JEDI Code Library http://jcl.sf.net' + AnsiLineBreak +
+                       'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + AnsiLineBreak +
+                       'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + AnsiLineBreak +
+                       'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
+  RsAboutLicenceStatus = 'MPL 1.1';
 
 //=== OpenDlgFavAdapter.pas ==================================================
 resourcestring
@@ -82,8 +95,14 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.6  2005/10/27 08:31:08  outchy
+// Items add in the splash screen and in the about box of Delphi (requires at least D2005)
+//
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.6  2005/10/27 08:31:08  outchy
+// - improved header information, added $Date$ and Items add in the splash screen and in the about box of Delphi (requires at least D2005)
+// - improved header information, added $Date$ and CVS tags.
 //
 // Revision 1.4  2005/10/24 12:05:51  marquardt
 // further cleanup
