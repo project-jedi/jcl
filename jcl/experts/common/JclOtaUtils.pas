@@ -681,6 +681,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/10/27 13:50:39  rrossmair
+// - cleaned up mistakenly expanded check-in comments
+//
 // Revision 1.10  2005/10/27 11:00:43  marquardt
 // cleaned up the sources and created a .rc file
 //
@@ -691,16 +694,7 @@ end;
 // Kylix dummy Load results fixed
 //
 // Revision 1.7  2005/10/26 03:29:44  rrossmair
-// - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/10/27 08:31:08 $ and Revision 1.10  2005/10/27 11:00:43  marquardt
-// - improved header information, added $Date: 2005/10/27 08:31:08 $ and cleaned up the sources and created a .rc file
-// - improved header information, added $Date: 2005/10/27 08:31:08 $ and
-// - improved header information, added $Date$ and Revision 1.9  2005/10/27 08:31:08  outchy
-// - improved header information, added $Date$ and Items add in the splash screen and in the about box of Delphi (requires at least D2005)
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.8  2005/10/26 08:29:53  marquardt
-// - improved header information, added $Date$ and Kylix dummy Load results fixed
-// - improved header information, added $Date$ and CVS tags.
+// - improved header information, added Date and Log CVS tags.
 //
 // Revision 1.6  2005/10/25 14:45:22  uschuster
 // some changes for Kylix
