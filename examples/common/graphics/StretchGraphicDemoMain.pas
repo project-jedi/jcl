@@ -8,6 +8,7 @@
 {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
     {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
+    {$WARN SYMBOL_PLATFORM OFF} 
   {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
