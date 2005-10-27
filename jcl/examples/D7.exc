@@ -1,3 +1,4 @@
-windows\clr\ClrDemo.dpr
+common\containers\performance\ContainerPerformance.dpr
 common\filesearch\QFileSearchDemo.dpr
+windows\clr\ClrDemo.dpr
 visclx.exc=STD
