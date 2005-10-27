@@ -54,7 +54,7 @@ type
     procedure AddDemos(const Directory: string);
     procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
       const DialogIconFileName: string; const Designer: string; const Ancestor: string = '');
-    function GetDemoList: TStrings;
+    function GetDemoList: TStringList;
     procedure BuildUnitList(const SubDir: string; Units: TStrings);
     function GetDemoExclusionList: TStrings;
     function GetProgressTotal: Integer;
@@ -114,7 +114,7 @@ type
     function StoredBplPath: string;
     function StoredDcpPath: string;
     property Defines: TStringList read FDefines;
-    property Demos: TStrings read GetDemoList;
+    property Demos: TStringList read GetDemoList;
     property DemoSectionName: string read FDemoSectionName;
     property Distribution: TJclDistribution read FDistribution;
     property DemoExclusionList: TStrings read GetDemoExclusionList;
@@ -888,13 +888,22 @@ begin
   Result := Path + 'examples';
 end;
 
-function TJclInstallation.GetDemoList: TStrings;
+function DemoNameCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  Name1, Name2: string;
+begin
+  Name1 := ExtractFileName(List[Index1]);
+  Name2 := ExtractFileName(List[Index2]);
+  Result := CompareText(Name1, Name2);
+end;
+
+function TJclInstallation.GetDemoList: TStringList;
 begin
   if not Assigned(FDemos) then
   begin
     FDemos := TStringList.Create;
     EnumDirectories(Distribution.ExamplesDir, AddDemos);
-    //Demos.Sorted := True;
+    Demos.CustomSort(DemoNameCompare);
   end;
   Result := FDemos;
 end;
@@ -1966,6 +1975,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.76  2005/10/27 01:50:28  rrossmair
+// - sort demo list alphabetically
+//
 // Revision 1.75  2005/10/26 06:30:38  rrossmair
 // - TJclInstallation.UninstallExpert now also handles old expert package names
 //
