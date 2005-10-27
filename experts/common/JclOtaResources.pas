@@ -95,14 +95,14 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.7  2005/10/27 13:50:39  rrossmair
+// - cleaned up mistakenly expanded check-in comments
+//
 // Revision 1.6  2005/10/27 08:31:08  outchy
 // Items add in the splash screen and in the about box of Delphi (requires at least D2005)
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
-// - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date$ and Revision 1.6  2005/10/27 08:31:08  outchy
-// - improved header information, added $Date$ and Items add in the splash screen and in the about box of Delphi (requires at least D2005)
-// - improved header information, added $Date$ and CVS tags.
+// - improved header information, added Date and Log CVS tags.
 //
 // Revision 1.4  2005/10/24 12:05:51  marquardt
 // further cleanup
