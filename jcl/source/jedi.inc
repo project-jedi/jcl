@@ -199,6 +199,25 @@
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
 
 
+- Borland Developer Studio Versions
+
+  The following directives are direct mappings from the VERXXX directives to a
+  friendly name of the associated IDE. These directives are only defined if
+  the IDE is Borland Developer Studio Version 2 or above.
+
+  Note: Borland Developer Studio 2006 is marketed as Delphi 2006 or C++Builder 2006,
+  but those provide only different labels for identical content.
+
+  Directive    Description
+  ------------------------------------------------------------------------------
+  BDS          Defined when compiling with a Borland Developer Studio version's dcc32.exe
+  BDS2         Defined when compiling with BDS 2.0 (Delphi 8)
+  BDS3         Defined when compiling with BDS 3.0 (Delphi 2005)
+  BDS4         Defined when compiling with BDS 4.0 (Borland Developer Studio 2006)
+  BDS2_UP      Defined when compiling with BDS 2.0 or higher
+  BDS3_UP      Defined when compiling with BDS 3.0 or higher
+  BDS4_UP      Defined when compiling with BDS 4.0 or higher
+
 - Compiler Versions
 
   The following directives are direct mappings from the VERXXX directives to a
@@ -376,6 +395,7 @@
 
     {$IFDEF VER170}
       {$DEFINE BDS3}
+      {$DEFINE BDS}
       {$DEFINE COMPILER9}
       {$DEFINE DELPHI9}
       {$DEFINE DELPHI2005} // synonym to DELPHI9
@@ -385,6 +405,7 @@
 
     {$IFDEF VER160}
       {$DEFINE BDS2}
+      {$DEFINE BDS}
       {$DEFINE COMPILER8}
       {$DEFINE DELPHI8}
       {$DEFINE DELPHICOMPILER8}
@@ -608,6 +629,25 @@
 
 {$IFDEF BCB1}
   {$DEFINE BCB1_UP}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ BDSX_UP from BDSX mappings                                                   }
+{------------------------------------------------------------------------------}
+
+{$IFDEF BDS4}
+  {$DEFINE BDS4_UP}
+  {$DEFINE BDS3_UP}
+  {$DEFINE BDS2_UP}
+{$ENDIF}
+
+{$IFDEF BDS3}
+  {$DEFINE BDS3_UP}
+  {$DEFINE BDS2_UP}
+{$ENDIF}
+
+{$IFDEF BDS2}
+  {$DEFINE BDS2_UP}
 {$ENDIF}
 
 {------------------------------------------------------------------------------}
@@ -1061,6 +1101,9 @@
 // History:
 
 // $Log$
+// Revision 1.28  2005/10/28 04:33:17  rrossmair
+// - added BDS and BDSX_UP symbols
+//
 // Revision 1.27  2005/10/12 21:18:43  ahuser
 // Moved comments out of the compiler directives.
 //
