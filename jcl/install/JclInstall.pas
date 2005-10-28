@@ -547,15 +547,15 @@ function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName:
 const
   S = 'packages' + VersionDir + PathSeparator + '%s';
 var
-  Prefix: string;
+  Infix: string;
 begin
   with Target do
   begin
-    Prefix := Prefixes[RADToolKind];
+    Infix := Significand[RADToolKind];
     if DCC.SupportsLibSuffix then
-      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, BaseName, PackageSourceFileExtension])
+      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Infix), {$ENDIF}VersionNumber, BaseName, PackageSourceFileExtension])
     else
-      Result := Format(S + '%s%1:d0%4:s', [AnsiLowerCase(Prefix), VersionNumber, BaseName, Prefix, PackageSourceFileExtension]);
+      Result := Format(S + '%s%1:d0%4:s', [AnsiLowerCase(Infix), VersionNumber, BaseName, Infix, PackageSourceFileExtension]);
   end;
 end;
 
@@ -1414,7 +1414,7 @@ begin
   {$IFDEF KYLIX}
   Result := Format(FormatStr, [Target.VersionNumber]);
   {$ELSE ~KYLIX}
-  Result := PathGetShortName(Format(FormatStr, [Prefixes[Target.RADToolKind], Target.VersionNumber]));
+  Result := PathGetShortName(Format(FormatStr, [Significand[Target.RADToolKind], Target.VersionNumber]));
   {$ENDIF ~KYLIX}
 end;
 
@@ -1575,13 +1575,13 @@ begin
   Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
   { TODO : evtl. remove .HPP Files }
   if Result then
-    WriteLog(Format(LineBreak + 'Removed package %s.', [PackageFileName]));
+    WriteLog(Format(LineBreak + 'Removed package %s.', [Name]));
 end;
 
 {$IFDEF MSWINDOWS}
 function TJclInstallation.UninstallExpert(const FileName: string): Boolean;
 
-  function OldExpertBPLFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
+  function OldExpertBPLFileName(const BaseName: string): string;
   const
     OldExperts: array[ioJclExpertDebug..ioJclExpertSimdView] of string = (
       'JclDebugIde%s%d0.bpl',
@@ -1592,16 +1592,16 @@ function TJclInstallation.UninstallExpert(const FileName: string): Boolean;
       'JclSIMDView%s%d.bpl');
 
   var
-    Prefix: string;
+    Infix: string;
     I: TJediInstallOption;
   begin
     with Target do
     begin
-      Prefix := Prefixes[RADToolKind];
+      Infix := Significand[RADToolKind];
       for I := Low(OldExperts) to High(OldExperts) do
         if BaseName = ExpertPaths[I] then
         begin
-          Result := PathAddSeparator(StoredBPLPath) + Format(OldExperts[I], [Prefix, VersionNumber]);
+          Result := PathAddSeparator(StoredBPLPath) + Format(OldExperts[I], [Infix, VersionNumber]);
           Break;
         end;
     end;
@@ -1612,12 +1612,10 @@ var
   BPLFileName: string;
 begin
   BaseName := ExtractFileName(FileName);
-  BPLFileName := Format(BaseName, ['', '.bpl']);
-  Target.IdePackages.RemovePackage(PathAddSeparator(StoredBPLPath) + Format(BPLFileName, [Target.VersionNumber]));
   Result := UninstallPackage(FullPackageFileName(Target, FileName));
   // eventually remove old expert packages to avoid annoying package conflicts during IDE startup;
   // for simplicity, .dcp files are not handled
-  BPLFileName := OldExpertBPLFileName(Target, BaseName);
+  BPLFileName := OldExpertBPLFileName(BaseName);
   FileDelete(BPLFileName);
   Target.IdePackages.RemovePackage(BPLFileName);
 end;
@@ -1975,8 +1973,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.77  2005/10/28 04:38:53  rrossmair
+// - fixes related to package uninstallation, and more
+//
 // Revision 1.76  2005/10/27 01:50:28  rrossmair
-// - sort demo list alphabetically
+// - sort demo list alphabethically
 //
 // Revision 1.75  2005/10/26 06:30:38  rrossmair
 // - TJclInstallation.UninstallExpert now also handles old expert package names

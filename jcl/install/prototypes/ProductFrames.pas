@@ -179,7 +179,7 @@ end;
 
 class function TProductFrame.GetName(Installation: TJclBorRADToolInstallation): string;
 begin
-  Result := Format('%s%dProduct', [Prefixes[Installation.RADToolKind], Installation.VersionNumber]);
+  Result := Format('%s%dProduct', [Significand[Installation.RADToolKind], Installation.VersionNumber]);
 end;
 
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
