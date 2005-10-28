@@ -24,6 +24,5 @@
     <File Name="..\..\experts\common\JclOtaUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaResources.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\common\JclImages.rc" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>
