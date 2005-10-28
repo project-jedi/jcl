@@ -763,6 +763,15 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+function SamePath(const Path1, Path2: string): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := AnsiSameText(PathGetLongName(Path1), PathGetLongName(Path2));
+  {$ELSE}
+  Result := Path1 = Path2;
+  {$ENDIF}
+end;
+
 //=== { TJclBorRADToolInstallationObject } ===================================
 
 constructor TJclBorRADToolInstallationObject.Create(AInstallation: TJclBorRADToolInstallation);
@@ -969,7 +978,7 @@ var
 begin
   Result := -1;
   for I := 0 to Count - 1 do
-    if AnsiSameText(Title[I], Value) then
+    if SamePath(Path[I], Value) then
     begin
       Result := I;
       Break;
@@ -1101,7 +1110,7 @@ var
   I: Integer;
 begin
   for I := 0 to FDisabledPackages.Count - 1 do
-    if AnsiSameText(FileName, PackageEntryToFileName(FDisabledPackages.Names[I])) then
+    if SamePath(FileName, PackageEntryToFileName(FDisabledPackages.Names[I])) then
     begin
       Installation.ConfigData.DeleteKey(DisabledPackagesKeyName, FDisabledPackages.Names[I]);
       ReadPackages;
@@ -1112,14 +1121,17 @@ end;
 function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
 var
   I: Integer;
+  KnownPackage, KnownPackageFileName: string;
 begin
   Result := False;
   for I := 0 to FKnownPackages.Count - 1 do
   begin
-    if AnsiSameText(FileName, PackageEntryToFileName(FKnownPackages.Names[I])) then
+    KnownPackage := FKnownPackages.Names[I];
+    KnownPackageFileName := PackageEntryToFileName(KnownPackage);
+    if SamePath(FileName, KnownPackageFileName) then
     begin
-      RemoveDisabled(FileName);
-      Installation.ConfigData.DeleteKey(KnownPackagesKeyName, FKnownPackages.Names[I]);
+      RemoveDisabled(KnownPackageFileName);
+      Installation.ConfigData.DeleteKey(KnownPackagesKeyName, KnownPackage);
       ReadPackages;
       Result := True;
       Break;
@@ -1810,7 +1822,7 @@ begin
   Result := -1;
   Folder := PathRemoveSeparator(Folder);
   for I := 0 to List.Count - 1 do
-    if AnsiSameText(Folder, PathRemoveSeparator(SubstitutePath(List[I]))) then
+    if SamePath(Folder, PathRemoveSeparator(SubstitutePath(List[I]))) then
     begin
       Result := I;
       Break;
@@ -2089,17 +2101,23 @@ function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath,
 var
   BPLFileName, DCPFileName: string;
   BaseName, LibSuffix: string;
-  RunOnly, Success: Boolean;
+  RunOnly: Boolean;
 begin
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
   BaseName := PathExtractFileNameNoExt(PackageName);
   BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + '.bpl';
   DCPFileName := PathAddSeparator(DCPPath) + BaseName + '.dcp';
-  Result := FileDelete(BPLFileName) and FileDelete(DCPFileName);
-  if not RunOnly then
+  if RunOnly then
+    Result := True
+  else
+    // important: remove from IDE packages /before/ deleting;
+    //            otherwise PathGetLongPathName won't work
+    Result := IdePackages.RemovePackage(BPLFileName);
+  // Don't delete binaries if removal of design time package failed
+  if Result then
   begin
-    Success := IdePackages.RemovePackage(BPLFileName);
-    Result := Result and Success;
+    FileDelete(BPLFileName);
+    FileDelete(DCPFileName);
   end;
 end;
 
@@ -2616,6 +2634,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.46  2005/10/28 04:38:53  rrossmair
+// - fixes related to package uninstallation, and more
+//
 // Revision 1.45  2005/10/04 04:22:48  rrossmair
 // - saved local function TJclDCC.SaveOptionsToFile.IsPathOption
 //

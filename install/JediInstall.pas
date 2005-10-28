@@ -86,7 +86,7 @@ type
 
 const
   ioJclLast = ioJclMakeDemos;
-  Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
+  Significand: array[TJclBorRadToolKind] of Char = ('D', 'C');
 
 type
   TDialogType = (dtWarning, dtError, dtInformation, dtConfirmation);
@@ -162,6 +162,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/10/28 04:38:53  rrossmair
+// - fixes related to package uninstallation, and more
+//
 // Revision 1.14  2005/08/01 04:52:03  rrossmair
 // - (basic) support for compilation of examples
 //

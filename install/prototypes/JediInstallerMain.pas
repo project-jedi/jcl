@@ -220,7 +220,7 @@ begin
   Page := TTabSheet.Create(Self);
   with Installation do
   begin
-    Page.Name := Format('%s%dPage', [Prefixes[RADToolKind], VersionNumber]);
+    Page.Name := Format('%s%dPage', [Significand[RADToolKind], VersionNumber]);
     Page.Caption := Name;
   end;
   Page.PageControl := ProductsPageControl;
