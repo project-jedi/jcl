@@ -611,7 +611,7 @@ procedure TJclOTAExpert.Modified;
 begin
 end;
 
-{$IFDEF RTL170_UP}
+{$IFDEF BDS}
 
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
@@ -656,7 +656,7 @@ initialization
 finalization
   UnregisterAboutBox;
 
-{$ENDIF RTL170_UP}
+{$ENDIF BDS}
 
 //=== Helper routines ========================================================
 
@@ -681,6 +681,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/10/28 04:34:27  rrossmair
+// - replaced {$IFDEF RTL170_UP} by more appropriate {$IFDEF BDS}
+//
 // Revision 1.11  2005/10/27 13:50:39  rrossmair
 // - cleaned up mistakenly expanded check-in comments
 //
