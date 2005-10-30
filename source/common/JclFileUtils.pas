@@ -900,7 +900,7 @@ type
   EJclFileMappingViewError = class(EJclWin32Error);
   {$ENDIF MSWINDOWS}
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 // Deprecated, do not use
 {$IFDEF Win32API}
 function PathGetLongName2(const Path: string): string;
@@ -917,7 +917,7 @@ function Win32RestoreFile(const FileName: string): Boolean;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF Win32API}
 
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 implementation
 
@@ -1966,14 +1966,14 @@ end;
 
 {$IFDEF Win32API}
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 
 function PathGetLongName2(const Path: string): string;
 begin
   Result := PathGetLongName(Path);
 end;
 
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 function ShellGetLongPathName(const Path: string): string;
 {$IFDEF FPC}
@@ -4021,7 +4021,7 @@ end;
 {$ENDIF ~CLR}
 
 {$IFNDEF CLR}
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -4043,7 +4043,7 @@ begin
   Result := FileRestore(FileName);
 end;
 
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
@@ -5847,6 +5847,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.55  2005/10/30 01:57:07  rrossmair
+// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
+//
 // Revision 1.54  2005/10/24 19:16:53  ahuser
 // more .NET support
 //

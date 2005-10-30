@@ -252,13 +252,13 @@ procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single); overload;
 function RGBToHLS(const RGB: TColorVector): TColorVector; overload;
 function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 
+{$IFDEF KEEP_DEPRECATED}
 // obsolete; use corresponding HLS aliases instead
-{$IFNDEF DROP_OBSOLETE_CODE}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 // keep HSL identifier to avoid ambiguity with HLS overload
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
@@ -2063,12 +2063,12 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
 begin
   HLSToRGB(H, L, S, R, G, B);
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 function HSLToRGB(const H, S, L: Single): TColor32;
 var
@@ -2116,12 +2116,12 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single);
 begin
   RGBToHLS(R, G, B, H, L, S);
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
 begin
@@ -2632,6 +2632,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.21  2005/10/30 01:52:22  rrossmair
+// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
+//
 // Revision 1.20  2005/03/08 08:33:19  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -75,6 +75,10 @@ ALERT_jedi_inc_incompatible
 // To exclude obsolete code from compilation, remove the point from the line below
 {.$DEFINE DROP_OBSOLETE_CODE}
 
+{$IFNDEF DROP_OBSOLETE_CODE}
+  {$DEFINE KEEP_DEPRECATED}
+{$ENDIF}
+
 
 
 {$IFDEF CLR}
@@ -89,6 +93,9 @@ ALERT_jedi_inc_incompatible
 {$ENDIF CLR}
 
 // $Log$
+// Revision 1.14  2005/10/30 01:49:27  rrossmair
+// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
+//
 // Revision 1.13  2005/05/05 20:08:47  ahuser
 // JCL.NET support
 //
@@ -105,6 +112,9 @@ ALERT_jedi_inc_incompatible
 // Added THREADSAFE directive
 //
 // $Log$
+// Revision 1.14  2005/10/30 01:49:27  rrossmair
+// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
+//
 // Revision 1.13  2005/05/05 20:08:47  ahuser
 // JCL.NET support
 //
