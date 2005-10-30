@@ -106,11 +106,11 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    {$IFDEF KEEP_DEPRECATED}
     { TODO : Find a solution for deprecated }
-    {$IFNDEF DROP_OBSOLETE_CODE}
     function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
     function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-    {$ENDIF ~DROP_OBSOLETE_CODE}
+    {$ENDIF KEEP_DEPRECATED}
     procedure GetBinSourceList(List: TStrings); overload;
     procedure GetPaperList(List: TStrings); overload;
     procedure SetDeviceMode(Creating: Boolean);
@@ -614,7 +614,7 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 function TJclPrintSet.GetBinSourceList: TStringList;
 begin
   Result := TStringList.Create;
@@ -625,7 +625,7 @@ begin
     raise;
   end;
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclPrintSet.GetBinSourceList(List: TStrings);
 type
@@ -662,7 +662,7 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 function TJclPrintSet.GetPaperList: TStringList;
 begin
   Result := TStringList.Create;
@@ -673,7 +673,7 @@ begin
     raise;
   end;
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclPrintSet.GetPaperList(List: TStrings);
 type
@@ -1174,6 +1174,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2005/10/30 01:55:34  rrossmair
+// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
+//
 // Revision 1.20  2005/03/08 08:33:20  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
