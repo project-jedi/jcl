@@ -15,19 +15,19 @@ PROJECTS = StackTrackDLLsExample.exe StackTrackDLLsStaticLibrary.dll \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-StackTrackDLLsExample.exe: vcl\debug\stacktrack\StackTrackDLLsExample.dpr
+StackTrackDLLsExample.exe: windows\debug\stacktrack\StackTrackDLLsExample.dpr
   $(DCC)
 
-StackTrackDLLsStaticLibrary.dll: vcl\debug\stacktrack\StackTrackDLLsStaticLibrary.dpr
+StackTrackDLLsStaticLibrary.dll: windows\debug\stacktrack\StackTrackDLLsStaticLibrary.dpr
   $(DCC)
 
-StackTrackDLLsDynamicLibrary.dll: vcl\debug\stacktrack\StackTrackDLLsDynamicLibrary.dpr
+StackTrackDLLsDynamicLibrary.dll: windows\debug\stacktrack\StackTrackDLLsDynamicLibrary.dpr
   $(DCC)
 
-StackTrackDLLsComLibrary.dll: vcl\debug\stacktrack\StackTrackDLLsComLibrary.dpr
+StackTrackDLLsComLibrary.dll: windows\debug\stacktrack\StackTrackDLLsComLibrary.dpr
   $(DCC)
 
-StackTrackExample.exe: vcl\debug\stacktrack\StackTrackExample.dpr
+StackTrackExample.exe: windows\debug\stacktrack\StackTrackExample.dpr
   $(DCC)
 
 
