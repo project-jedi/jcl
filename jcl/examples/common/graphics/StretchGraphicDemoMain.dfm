@@ -112,6 +112,9 @@ object StretchDemoForm: TStretchDemoForm
       end
       item
         Width = 120
+      end
+      item
+        Width = 120
       end>
     SimplePanel = False
   end
