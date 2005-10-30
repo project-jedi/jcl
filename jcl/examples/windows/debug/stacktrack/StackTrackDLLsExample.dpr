@@ -1,7 +1,5 @@
 program StackTrackDLLsExample;
 
-{%File 'makefile.mak'}
-
 uses
   Forms,
   StackTrackDLLsDemoMain in 'StackTrackDLLsDemoMain.pas' {MainForm},
