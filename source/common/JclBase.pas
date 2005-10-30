@@ -51,9 +51,9 @@ uses
 // Version
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 95;   // Fifth minor release since JCL 1.90
-  JclVersionRelease = 3;    // 0: pre-release|beta/>=1: release
-  JclVersionBuild   = 1848; // build number, days since march 1, 2000
+  JclVersionMinor   = 96;   // Fifth minor release since JCL 1.90
+  JclVersionRelease = 1;    // 0: pre-release|beta/>=1: release
+  JclVersionBuild   = 2070; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -476,6 +476,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.45  2005/10/30 05:24:20  rrossmair
+// - updated version information for release 1.96
+//
 // Revision 1.44  2005/10/26 09:00:32  ahuser
 // Extended GetBytes() function to allow TBytes and TDynByteArray usage
 //
