@@ -9,8 +9,8 @@
   <ImageBase>$48200000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>96</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>2057</BuildNumber>
+  <ReleaseNumber>1</ReleaseNumber>
+  <BuildNumber>2070</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
