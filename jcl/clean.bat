@@ -5,3 +5,9 @@
 @cd lib
 @del /f /s *.obj *.res
 @cd ..
+@cd examples
+@del /f /s *.cfg
+@cd ..
+@cd experts
+@del /f /s *.cfg
+@cd ..
