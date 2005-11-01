@@ -91,8 +91,6 @@
 
   Directive           Description
   ------------------------------------------------------------------------------
-  COMPLIB_VCL         Obsolete synonym to VCL
-  COMPLIB_CLX         Obsolete synonym to VisualCLX
   VCL                 Defined for Delphi/BCB (Win32) exactly if VisualCLX is not defined
   VisualCLX           Defined for Kylix; needs to be defined for Delphi/BCB to
                       use JCL with VisualCLX applications.
@@ -1052,14 +1050,6 @@
       {$DEFINE VCL}
     {$ENDIF}
   {$ENDIF ~CONSOLE}
-
-  {$IFDEF VisualCLX}
-    {$DEFINE COMPLIB_CLX} // kept for backward compatibility, use VisualCLX instead
-  {$ENDIF}
-
-  {$IFDEF VCL}
-    {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
-  {$ENDIF}
 {$ENDIF DELPHILANGUAGE}
 
 {------------------------------------------------------------------------------}
@@ -1101,6 +1091,9 @@
 // History:
 
 // $Log$
+// Revision 1.29  2005/11/01 20:46:20  obones
+// Removed COMPLIB_VCL and COMPLIB_VisualCLX, they are not used and obsolete
+//
 // Revision 1.28  2005/10/28 04:33:17  rrossmair
 // - added BDS and BDSX_UP symbols
 //
