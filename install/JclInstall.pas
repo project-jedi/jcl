@@ -593,8 +593,9 @@ var
 begin
   FDemoExclusionList.Free;
   FDemos.Free;
-  for I := 0 to FUnits.Count - 1 do
-    FUnits.Objects[I].Free;
+  if Assigned(FUnits) then
+    for I := 0 to FUnits.Count - 1 do
+      FUnits.Objects[I].Free;
   FUnits.Free;
   FDefines.Free;
   inherited Destroy;
@@ -1973,6 +1974,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.78  2005/11/08 00:18:32  outchy
+// Fixed AV when DCC32.exe is missing.
+//
 // Revision 1.77  2005/10/28 04:38:53  rrossmair
 // - fixes related to package uninstallation, and more
 //
