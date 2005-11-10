@@ -39,6 +39,9 @@ type
       ioJclDefMathPrecSingle,
       ioJclDefMathPrecDouble,
       ioJclDefMathPrecExtended,
+      ioJclMapCreate,
+      ioJclMapLink,
+      ioJclMapDelete,
       ioJclEnv,
       ioJclEnvLibPath,
       ioJclEnvBrowsingPath,
@@ -162,6 +165,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/11/10 22:16:31  outchy
+// Added creation/link/deletion of MAP files for packages.
+//
 // Revision 1.15  2005/10/28 04:38:53  rrossmair
 // - fixes related to package uninstallation, and more
 //
