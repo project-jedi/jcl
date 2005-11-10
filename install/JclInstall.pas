@@ -1125,9 +1125,11 @@ begin
   AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
   AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
 
+  {$IFDEF MSWINDOWS}
   TempNode := AddNode(ProductNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
   TempNode := AddNode(TempNode, ioJclMapLink, [goExpandable, goStandaloneParent, goNoAutoCheck]);
   AddNode(TempNode,ioJclMapDelete, [goNoAutoCheck]);
+  {$ENDIF MSWINDOWS}
 
   TempNode := AddNode(ProductNode, ioJclEnv);
   AddNode(TempNode, ioJclEnvLibPath);
@@ -1228,12 +1230,14 @@ begin
       Defines.Add('MATH_DOUBLE_PRECISION');
     ioJclDefMathPrecExtended:
       Defines.Add('MATH_EXTENDED_PRECISION');
+    {$IFDEF MSWINDOWS}
     ioJclMapCreate:
       Target.MapCreate := True;
     ioJclMapLink:
       Target.MapLink := True;
     ioJclMapDelete:
       Target.MapDelete := True;
+    {$ENDIF MSWINDOWS}
     ioJclEnvLibPath:
       if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
         WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
@@ -2001,6 +2005,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.80  2005/11/10 23:59:50  outchy
+// Map-file operations not added when not runned on Windows.
+//
 // Revision 1.79  2005/11/10 22:16:31  outchy
 // Added creation/link/deletion of MAP files for packages.
 //
