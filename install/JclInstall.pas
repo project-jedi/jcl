@@ -221,6 +221,11 @@ resourcestring
   RsDefMathPrecSingle    = 'Single float precision';
   RsDefMathPrecDouble    = 'Double float precision';
   RsDefMathPrecExtended  = 'Extended float precision';
+
+  RsMapCreate            = 'Create MAP files';
+  RsMapLink              = 'Link MAP files';
+  RsMapDelete            = 'Delete MAP files after the link';
+
   RsEnvironment          = 'Environment';
   RsEnvLibPath           = 'Add JCL to IDE Library Path';
   RsEnvBrowsingPath      = 'Add JCL to IDE Browsing Path';
@@ -259,6 +264,9 @@ resourcestring
   RsHintJclDefMathPrecSingle    = 'type Float = Single';
   RsHintJclDefMathPrecDouble    = 'type Float = Double';
   RsHintJclDefMathPrecExtended  = 'type Float = Extended';
+  RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
+  RsHintJclMapLink              = 'Link MAP files as a resource in the output library or executable, the stack can be traced on exceptions';
+  RsHintJclMapDelete            = 'Once linked in the binary, delete the original MAP file';
   RsHintJclEnv = 'Set selected environment items';
   RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
@@ -309,21 +317,30 @@ const
       (Parent: ioTarget;                 // ioJCL
        Caption: RsJCL;
        Hint: RsHintJcl),
-      (Parent: ioJCL;                   // ioJclDefThreadSafe
+      (Parent: ioJCL;                    // ioJclDefThreadSafe
        Caption: RsDefThreadSafe;
        Hint: RsHintJclDefThreadSafe),
-      (Parent: ioJCL;                   // ioJclDefDropObsoleteCode
+      (Parent: ioJCL;                    // ioJclDefDropObsoleteCode
        Caption: RsDefDropObsoleteCode;
        Hint: RsHintJclDefDropObsoleteCode),
-      (Parent: ioJCL;                   // ioJclDefMathPrecSingle
+      (Parent: ioJCL;                    // ioJclDefMathPrecSingle
        Caption: RsDefMathPrecSingle;
        Hint: RsHintJclDefMathPrecSingle),
-      (Parent: ioJCL;                   // ioJclDefMathPrecDouble
+      (Parent: ioJCL;                    // ioJclDefMathPrecDouble
        Caption: RsDefMathPrecDouble;
        Hint: RsHintJclDefMathPrecDouble),
-      (Parent: ioJCL;                   // ioJclDefMathPrecExtended
+      (Parent: ioJCL;                    // ioJclDefMathPrecExtended
        Caption: RsDefMathPrecExtended;
        Hint: RsHintJclDefMathPrecExtended),
+      (Parent: ioJCL;                    // ioJclMapCreate
+       Caption: RsMapCreate;
+       Hint: RsHintJclMapCreate),
+      (Parent: ioJclMapCreate;           // ioJclMapLink
+       Caption: RsMapLink;
+       Hint: RsHintJclMapLink),
+      (Parent: ioJclMapLink;             // ioJclMapDelete
+       Caption: RsMapDelete;
+       Hint: RsHintJclMapDelete),
       (Parent: ioJCL;                    // ioJclEnv
        Caption: RsEnvironment;
        Hint: RsHintJclEnv),
@@ -1108,6 +1125,10 @@ begin
   AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
   AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
 
+  TempNode := AddNode(ProductNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
+  TempNode := AddNode(TempNode, ioJclMapLink, [goExpandable, goStandaloneParent, goNoAutoCheck]);
+  AddNode(TempNode,ioJclMapDelete, [goNoAutoCheck]);
+
   TempNode := AddNode(ProductNode, ioJclEnv);
   AddNode(TempNode, ioJclEnvLibPath);
   AddNode(TempNode, ioJclEnvBrowsingPath);
@@ -1207,6 +1228,12 @@ begin
       Defines.Add('MATH_DOUBLE_PRECISION');
     ioJclDefMathPrecExtended:
       Defines.Add('MATH_EXTENDED_PRECISION');
+    ioJclMapCreate:
+      Target.MapCreate := True;
+    ioJclMapLink:
+      Target.MapLink := True;
+    ioJclMapDelete:
+      Target.MapDelete := True;
     ioJclEnvLibPath:
       if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
         WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
@@ -1974,6 +2001,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.79  2005/11/10 22:16:31  outchy
+// Added creation/link/deletion of MAP files for packages.
+//
 // Revision 1.78  2005/11/08 00:18:32  outchy
 // Fixed AV when DCC32.exe is missing.
 //

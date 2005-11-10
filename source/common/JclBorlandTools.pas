@@ -241,7 +241,7 @@ type
     procedure SaveOptionsToFile(const ConfigFileName: string);
   public
     function Execute(const CommandLine: string): Boolean; override;
-    function MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+    function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string=''): Boolean;
     procedure SetDefaultOptions;
     function SupportsLibSuffix: Boolean;
   end;
@@ -325,6 +325,11 @@ type
     FVersionNumber: Integer;
     FVersionNumberStr: string;
     FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7
+    {$IFDEF MSWINDOWS}
+    FMapCreate: Boolean;
+    FMapLink: Boolean;
+    FMapDelete: Boolean;
+    {$ENDIF ~MSWINDOWS}
     function GetBPLOutputPath: string;
     function GetDCC: TJclDCC;
     function GetDCPOutputPath: string;
@@ -413,6 +418,11 @@ type
     property IDEVersionNumber: Integer read FIDEVersionNumber;
     property VersionNumber: Integer read FVersionNumber;
     property VersionNumberStr: string read FVersionNumberStr;
+    {$IFDEF MSWINDOWS}
+    property MapCreate: Boolean read FMapCreate write FMapCreate;
+    property MapLink: Boolean read FMapLink write FMapLink;
+    property MapDelete: Boolean read FMapDelete write FMapDelete;
+    {$ENDIF ~MSWINDOWS}
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
@@ -482,6 +492,7 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   JclRegistry,
+  JclDebug,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
@@ -1342,7 +1353,7 @@ begin
   Result := DCCExeName;
 end;
 
-function TJclDCC.MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+function TJclDCC.MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions:string): Boolean;
 const
   DOFDirectoriesSection = 'Directories';
   UnitOutputDirName     = 'UnitOutputDir';
@@ -1364,6 +1375,7 @@ begin
       AddPathOption('LE', BPLPath);
       AddPathOption('LN', DCPPath);
       AddPathOption('U', StrEnsureSuffix(PathSep, DCPPath) + S);
+      Options.Add(ExtraOptions);
     finally
       OptionsFile.Free;
     end;
@@ -1669,9 +1681,12 @@ begin
   FGlobals := TStringList.Create;
   ReadInformation;
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
-  {$IFNDEF KYLIX}
+  {$IFDEF MSWINDOWS}
   FOpenHelp := TJclBorlandOpenHelp.Create(Self);
-  {$ENDIF ~KYLIX}
+  FMapCreate := False;
+  FMapLink := False;
+  FMapDelete := False;
+  {$ENDIF ~MSWINDOWS}
 end;
 
 destructor TJclBorRADToolInstallation.Destroy;
@@ -2081,19 +2096,47 @@ begin
 end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+{$IFDEF MSWINDOWS}
 var
-  BPLFileName, Description, LibSuffix: string;
+  ExtraOptions: string;
+  BPLFileName: string;
+  MAPFileName: string;
+  LibSuffix: string;
+  LinkerBugUnit: string;
+  Description: string;
+  MAPFileSize: Integer;
+  JclDebugDataSize: Integer;
   RunOnly: Boolean;
+{$ENDIF ~MSWINDOWS}
 begin
-  Result := DCC.MakePackage(PackageName, BPLPath, DCPPath);
+{$IFDEF MSWINDOWS}
+  if FMapCreate then
+    ExtraOptions := '-GD'
+  else
+    ExtraOptions := '';
+{$ENDIF ~MSWINDOWS}
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+
+
+  Result := DCC.MakePackage(PackageName, BPLPath, DCPPath, ExtraOptions);
+
   if Result then
   begin
-    GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
-    if not RunOnly then
+    BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
+
+{$IFDEF MSWINDOWS}
+    if Result and MapLink then
     begin
-      BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
-      Result := IdePackages.AddPackage(BPLFileName, Description);
+      MAPFileName := ChangeFileExt(BPLFileName,'.MAP');
+      Result := InsertDebugDataIntoExecutableFile(BPLFileName,MAPFileName,
+                LinkerBugUnit,MAPFileSize,JclDebugDataSize);
+      if Result and MapDelete then
+        Result := FileDelete(MAPFileName);
     end;
+{$ENDIF ~MSWINDOWS}
+
+    if Result and not RunOnly then
+      Result := IdePackages.AddPackage(BPLFileName, Description);
   end;
 end;
 
@@ -2634,6 +2677,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.47  2005/11/10 22:16:31  outchy
+// Added creation/link/deletion of MAP files for packages.
+//
 // Revision 1.46  2005/10/28 04:38:53  rrossmair
 // - fixes related to package uninstallation, and more
 //
