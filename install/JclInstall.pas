@@ -1061,7 +1061,7 @@ var
   {$IFDEF MSWINDOWS}
   ExpertOptions: TJediInstallGUIOptions;
   {$ENDIF MSWINDOWS}
-  InstallationNode, ProductNode, TempNode, MakeNode: TObject;
+  InstallationNode, ProductNode, PackagesNode, TempNode, MakeNode: TObject;
 
   function AddNode(Parent: TObject; Option: TJediInstallOption;
     GUIOptions: TJediInstallGUIOptions = [goChecked]): TObject;
@@ -1125,12 +1125,6 @@ begin
   AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
   AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
 
-  {$IFDEF MSWINDOWS}
-  TempNode := AddNode(ProductNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
-  TempNode := AddNode(TempNode, ioJclMapLink, [goExpandable, goStandaloneParent, goNoAutoCheck]);
-  AddNode(TempNode,ioJclMapDelete, [goNoAutoCheck]);
-  {$ENDIF MSWINDOWS}
-
   TempNode := AddNode(ProductNode, ioJclEnv);
   AddNode(TempNode, ioJclEnvLibPath);
   AddNode(TempNode, ioJclEnvBrowsingPath);
@@ -1165,10 +1159,15 @@ begin
     {$ENDIF MSWINDOWS}
       AddNode(TempNode, ioJclExcDialogCLX);
   end;
-  TempNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
+  PackagesNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
   if (Target is TJclBCBInstallation) then
-    AddNode(TempNode, ioJclCopyPackagesHppFiles);
+    AddNode(PackagesNode, ioJclCopyPackagesHppFiles);
+
   {$IFDEF MSWINDOWS}
+  TempNode := AddNode(PackagesNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
+  TempNode := AddNode(TempNode, ioJclMapLink, [goExpandable, goStandaloneParent, goNoAutoCheck]);
+  AddNode(TempNode,ioJclMapDelete, [goNoAutoCheck]);
+
   if (Target.VersionNumber = 9) and (Target.Edition = deStd) then
     CopyFakeXmlRtlPackage;
     { TODO :
@@ -1178,7 +1177,7 @@ begin
       ExpertOptions := [goChecked]
     else
       ExpertOptions := [];
-    TempNode := AddNode(TempNode, ioJclExperts, [goExpandable, goChecked]);
+    TempNode := AddNode(PackagesNode, ioJclExperts, [goExpandable, goChecked]);
     AddNode(TempNode, ioJclExpertDebug, ExpertOptions);
     AddNode(TempNode, ioJclExpertAnalyzer, ExpertOptions);
     AddNode(TempNode, ioJclExpertFavorite, ExpertOptions);
@@ -2005,6 +2004,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.81  2005/11/12 19:00:32  outchy
+// map-files node moved inside the packages node.
+//
 // Revision 1.80  2005/11/10 23:59:50  outchy
 // Map-file operations not added when not runned on Windows.
 //
