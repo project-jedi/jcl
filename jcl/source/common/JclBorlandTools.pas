@@ -2096,18 +2096,18 @@ begin
 end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
-{$IFDEF MSWINDOWS}
 var
-  ExtraOptions: string;
-  BPLFileName: string;
+  {$IFDEF MSWINDOWS}
   MAPFileName: string;
-  LibSuffix: string;
   LinkerBugUnit: string;
-  Description: string;
   MAPFileSize: Integer;
   JclDebugDataSize: Integer;
+  {$ENDIF ~MSWINDOWS}
+  ExtraOptions: string;
+  BPLFileName: string;
+  LibSuffix: string;
+  Description: string;
   RunOnly: Boolean;
-{$ENDIF ~MSWINDOWS}
 begin
 {$IFDEF MSWINDOWS}
   if FMapCreate then
@@ -2677,6 +2677,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.48  2005/11/13 17:04:20  uschuster
+// fix for Kylix
+//
 // Revision 1.47  2005/11/10 22:16:31  outchy
 // Added creation/link/deletion of MAP files for packages.
 //
