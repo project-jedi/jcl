@@ -884,11 +884,13 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJclInstallation.CopyFakeXmlRtlPackage;
 // replace missing xmlrtl.dcp in Delphi 2005 Personal by dummy package to allow expert installation
 begin
   { TODO : implement copying of fake xmlrtl.dcp to $(BDS)\Lib }
 end;
+{$ENDIF MSWINDOWS}
 
 function TJclInstallation.ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
 var
@@ -1004,7 +1006,11 @@ begin
   if not Assigned(FDemoExclusionList) then
   begin
     FDemoExclusionList := TStringList.Create;
+    {$IFDEF KYLIX}
+    FileName := MakePath(Distribution.DemosPath + 'k%d.exc');
+    {$ELSE}
     FileName := MakePath(Distribution.DemosPath + '%s%d.exc');
+    {$ENDIF KYLIX}
     if FileExists(FileName) then
     begin
       FDemoExclusionList.LoadFromFile(FileName);
@@ -1287,9 +1293,9 @@ begin
       AddHelpToOpenHelp;
     ioJclHelpChm:
       AddHelpToIdeTools;
+    {$ENDIF MSWINDOWS}
     ioJclMakeDemos:
       MakeDemos;
-    {$ENDIF MSWINDOWS}
   end;
   if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
     Progress(ProgressWeight(Option));
@@ -2004,6 +2010,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.82  2005/11/13 17:05:01  uschuster
+// some fixes for Kylix
+//
 // Revision 1.81  2005/11/12 19:00:32  outchy
 // map-files node moved inside the packages node.
 //
