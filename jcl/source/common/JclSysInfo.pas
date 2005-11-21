@@ -261,10 +261,16 @@ function GetShellProcessHandle: THandle;
 type
   TWindowsVersion =
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
-    wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
+    wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
+    wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinLonghorn);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
-    ptPersonal, ptProfessional, ptDatacenterServer);
+    ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
+  TProcessorArchitecture =
+   (paUnknown, // unknown processor
+    pax8632,   // x86 32 bit processors (some P4, Celeron, Athlon and older)
+    pax8664,   // x86 64 bit processors (latest P4, Celeron and Athlon64)
+    paIA64);   // Itanium processors
 
 var
   { in case of additions, don't forget to update initialization section! }
@@ -282,6 +288,16 @@ var
   IsWin2K: Boolean = False;
   IsWinXP: Boolean = False;
   IsWin2003: Boolean = False;
+  IsWinXP64: Boolean = False;
+  IsWin2003R2: Boolean = False;
+  IsWinVista: Boolean = False;
+  IsWinLonghorn: Boolean = False;
+
+const
+  PROCESSOR_ARCHITECTURE_INTEL = 0;
+  PROCESSOR_ARCHITECTURE_AMD64 = 9;
+  PROCESSOR_ARCHITECTURE_IA32_ON_WIN64 = 10;
+  PROCESSOR_ARCHITECTURE_IA64 = 6;
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
@@ -290,6 +306,9 @@ function NtProductTypeString: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
 function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boolean;
+function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
+function GetProcessorArchitecture: TProcessorArchitecture;
+function IsWindows64: Boolean;
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
@@ -2313,7 +2332,8 @@ end;
         end
         else
         begin
-          if IsWin2k or IsWinXP or IsWin2003 then
+          if   IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64
+            or IsWinVista or IsWinLonghorn then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -2832,6 +2852,10 @@ var
 function GetWindowsVersion: TWindowsVersion;
 var
   TrimmedWin32CSDVersion: string;
+  SystemInfo: TSystemInfo;
+  OSVersionInfoEx: TOSVersionInfoEx;
+const
+  SM_SERVERR2 = 89;
 begin
   Result := wvUnknown;
   TrimmedWin32CSDVersion := Trim(Win32CSDVersion);
@@ -2877,7 +2901,26 @@ begin
             1:
               Result := wvWinXP;
             2:
-              Result := wvWin2003;
+              begin
+                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                GetNativeSystemInfo(SystemInfo);
+                if GetSystemMetrics(SM_SERVERR2) <> 0 then
+                  Result := wvWin2003R2
+                else if (SystemInfo.wProcessorArchitecture <> PROCESSOR_ARCHITECTURE_INTEL)
+                  and GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                  Result := wvWinXP64
+                else
+                  Result := wvWin2003;
+              end;
+          end;
+        6:
+          if Win32MinorVersion = 0 then
+          begin
+            OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+            if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+              Result := wvWinVista
+            else
+              Result := wvWinLonghorn;
           end;
       end;
   end;
@@ -2888,51 +2931,76 @@ const
   ProductType = 'SYSTEM\CurrentControlSet\Control\ProductOptions';
 var
   Product: string;
-  VersionInfo: TOSVersionInfoEx;
+  OSVersionInfo: TOSVersionInfoEx;
+  SystemInfo: TSystemInfo;
 begin
   Result := ptUnknown;
-  FillChar(VersionInfo, SizeOf(VersionInfo), 0);
-  VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
+  FillChar(OSVersionInfo, SizeOf(OSVersionInfo), 0);
+  FillChar(SystemInfo, SizeOf(SystemInfo), 0);
+  OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
+  GetNativeSystemInfo(SystemInfo);
 
   // Favor documented API over registry
   if IsWinNT4 and (GetWindowsServicePackVersion >= 6) then
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(OSVersionInfo) then
     begin
-      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+      if (OSVersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptWorkstation
+      else if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+        Result := ptEnterprise
       else
         Result := ptServer;
     end;
   end
   else
-  if IsWin2K or IsWin2003 then
+  if IsWin2K then
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(OSVersionInfo) then
     begin
-      if (VersionInfo.wProductType = VER_NT_SERVER) then
+      if OSVersionInfo.wProductType  in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
       begin
-        if (VersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) <> 0 then
           Result := ptDatacenterServer
-        else
-        if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+        else if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) <> 0 then
           Result := ptAdvancedServer
         else
-          result := ptServer;
+          Result := ptServer;
       end
       else
-      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptProfessional;
     end;
   end
   else
-  if IsWinXP then
+  if IsWinXP64 or IsWin2003 or IsWin2003R2 then // all (5.2)
   begin
-    if GetVersionEx(VersionInfo) then
+    if GetVersionEx(OSVersionInfo) then
     begin
-      if VersionInfo.wProductType = VER_NT_WORKSTATION then
+      if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
       begin
-        if (VersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
+          Result := ptDatacenterServer
+        else
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+          Result := ptEnterprise
+        else if (OSVersionInfo.wSuiteMask = VER_SUITE_BLADE) then
+          Result := ptWebEdition
+        else
+          Result := ptServer;
+      end
+      else
+      if (OSVersionInfo.wProductType = VER_NT_WORKSTATION) then
+        Result := ptProfessional;
+    end;
+  end
+  else
+  if IsWinXP or IsWinVista or IsWinLonghorn then // workstation
+  begin
+    if GetVersionEx(OSVersionInfo) then
+    begin
+      if OSVersionInfo.wProductType = VER_NT_WORKSTATION then
+      begin
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
         else
           Result := ptProfessional;
@@ -2980,6 +3048,14 @@ begin
       Result := RsOSVersionWinXP;
     wvWin2003:
       Result := RsOSVersionWin2003;
+    wvWin2003R2:
+      Result := RsOSVersionWin2003R2;
+    wvWinXP64:
+      Result := RsOSVersionWinXP64;
+    wvWinLonghorn:
+      Result := RsOSVersionWinLonghorn;
+    wvWinVista:
+      Result := RsOSVersionWinVista;
   else
     Result := '';
   end;
@@ -3000,6 +3076,10 @@ begin
      Result := RsProductTypeProfessional;
    ptDatacenterServer:
      Result := RsProductTypeDatacenterServer;
+   ptEnterprise:
+     Result := RsProductTypeEnterprise;
+   ptWebEdition:
+     Result := RsProductTypeWebEdition;
   else
     Result := '';
   end;
@@ -3013,7 +3093,8 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
-  if IsWin2K or IsWinXP or IsWin2003 then
+  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista
+    or IsWinLonghorn then
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
@@ -3161,6 +3242,60 @@ begin
   finally
     Set8087CW(Save8087CW);
   end;
+end;
+
+function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
+type
+  TGetNativeSystemInfo = procedure (var SystemInfo: TSystemInfo) stdcall;
+var
+  LibraryHandle: HMODULE;
+  _GetNativeSystemInfo: TGetNativeSystemInfo;
+begin
+  Result := False;
+  LibraryHandle := LoadLibrary('kernel32.dll');
+
+  if LibraryHandle <> 0 then
+  begin
+    try
+      _GetNativeSystemInfo := GetProcAddress(LibraryHandle,'GetNativeSystemInfo');
+      if Assigned(_GetNativeSystemInfo) then
+      begin
+        _GetNativeSystemInfo(SystemInfo);
+        Result := True;
+      end
+      else
+        GetSystemInfo(SystemInfo);
+    finally
+      FreeLibrary(LibraryHandle);
+    end;
+  end
+  else
+    GetSystemInfo(SystemInfo);
+end;
+
+function GetProcessorArchitecture: TProcessorArchitecture;
+var
+  ASystemInfo: TSystemInfo;
+begin
+  GetNativeSystemInfo(ASystemInfo);
+  case ASystemInfo.wProcessorArchitecture of
+    PROCESSOR_ARCHITECTURE_INTEL:
+      Result := pax8632;
+    PROCESSOR_ARCHITECTURE_IA64:
+      Result := paIA64;
+    PROCESSOR_ARCHITECTURE_AMD64:
+      Result := pax8664;
+    else
+      Result := paUnknown;
+  end;
+end;
+
+function IsWindows64: Boolean;
+var
+  ASystemInfo: TSystemInfo;
+begin
+  GetNativeSystemInfo(ASystemInfo);
+  Result := ASystemInfo.wProcessorArchitecture in [PROCESSOR_ARCHITECTURE_IA64,PROCESSOR_ARCHITECTURE_AMD64];
 end;
 
 {$ENDIF ~CLR}
@@ -3737,7 +3872,7 @@ begin
       SSE := 0;
     Is64Bits := HasExtendedInfo and ((IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
   end;
- end;
+end;
 
 // Helper function for CPUID. Initializes Cyrix specific fields.
 
@@ -5114,6 +5249,14 @@ begin
       IsWinXP := True;
     wvWin2003:
       IsWin2003 := True;
+    wvWinXP64:
+      IsWinXP64 := True;
+    wvWin2003R2:
+      IsWin2003R2 := True;
+    wvWinVista:
+      IsWinVista := True;
+    wvWinLonghorn:
+      IsWinLonghorn := True;
   end;
 end;
 
@@ -5134,6 +5277,10 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.54  2005/11/21 11:50:22  outchy
+// Detection of Windows Vista/Longhorn/2003 R2/XP 64.
+// From: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/sysinfo/base/getting_the_system_version.asp
+//
 // Revision 1.53  2005/10/30 01:51:27  rrossmair
 // - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
 // - some style cleaning

@@ -1538,16 +1538,20 @@ resourcestring
   RsIntelCacheDescrF0  = '64-Byte Prefetching';
   RsIntelCacheDescrF1  = '128-Byte Prefetching';
 
-  RsOSVersionWin95     = 'Windows 95';
-  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
-  RsOSVersionWin98     = 'Windows 98';
-  RsOSVersionWin98SE   = 'Windows 98 SE';
-  RsOSVersionWinME     = 'Windows ME';
-  RsOSVersionWinNT3    = 'Windows NT 3.%u';
-  RsOSVersionWinNT4    = 'Windows NT 4.%u';
-  RsOSVersionWin2000   = 'Windows 2000';
-  RsOSVersionWinXP     = 'Windows XP';
-  RsOSVersionWin2003   = 'Windows Server 2003';
+  RsOSVersionWin95       = 'Windows 95';
+  RsOSVersionWin95OSR2   = 'Windows 95 OSR2';
+  RsOSVersionWin98       = 'Windows 98';
+  RsOSVersionWin98SE     = 'Windows 98 SE';
+  RsOSVersionWinME       = 'Windows ME';
+  RsOSVersionWinNT3      = 'Windows NT 3.%u';
+  RsOSVersionWinNT4      = 'Windows NT 4.%u';
+  RsOSVersionWin2000     = 'Windows 2000';
+  RsOSVersionWinXP       = 'Windows XP';
+  RsOSVersionWin2003     = 'Windows Server 2003';
+  RsOSVersionWin2003R2   = 'Windows Server 2003 "R2"';
+  RsOSVersionWinXP64     = 'Windows XP x64';
+  RsOSVersionWinVista    = 'Windows Vista';
+  RsOSVersionWinLonghorn = 'Windows Server "Longhorn"';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
@@ -1555,6 +1559,8 @@ resourcestring
   RsProductTypePersonal         = 'Home Edition';
   RsProductTypeProfessional     = 'Professional';
   RsProductTypeDatacenterServer = 'Datacenter Server';
+  RsProductTypeEnterprise       = 'Enterprise';
+  RsProductTypeWebEdition       = 'Web Edition';
 
   RsOpenGLInfoError = 'Err';
 
@@ -1643,6 +1649,10 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.35  2005/11/21 11:50:22  outchy
+// Detection of Windows Vista/Longhorn/2003 R2/XP 64.
+// From: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/sysinfo/base/getting_the_system_version.asp
+//
 // Revision 1.34  2005/03/14 08:46:53  rrossmair
 // - check-in in preparation for release 1.95
 //
