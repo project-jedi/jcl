@@ -377,7 +377,7 @@ begin
   else
     EvaluateResult := erOK;
   AValue.Display := Display;
-  GetVectorContext(Thread.Handle, VectorFrame);
+  GetVectorContext(Thread, VectorFrame);
   while (FTextIndex < FComboBoxList.Count) and (EvaluateResult = erOK) do
   begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
@@ -483,6 +483,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/11/21 21:25:40  outchy
+// Modified the get/set methods of thread context for Delphi 2005
+//
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added Date and Log CVS tags.
 //

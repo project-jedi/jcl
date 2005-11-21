@@ -478,7 +478,7 @@ begin
         else
           Caption := SIMDCaption;
 
-        GetVectorContext(AThread.Handle, NewVectorFrame);
+        GetVectorContext(AThread,NewVectorFrame);
 
         for Index := 0 to ListBoxMXCSR.Items.Count - 1 do
           with ListBoxMXCSR, Items, MXCSRBitsDescriptions[Index] do
@@ -522,7 +522,8 @@ end;
 
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
-  SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread.Handle, FVectorFrame);
+  if not SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread,FVectorFrame) then
+    raise Exception.Create('Unable to update the thread context');
 end;
 
 procedure TJclSIMDViewFrm.MenuItemFormatClick(Sender: TObject);
@@ -794,6 +795,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/11/21 21:25:40  outchy
+// Modified the get/set methods of thread context for Delphi 2005
+//
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added Date and Log CVS tags.
 //

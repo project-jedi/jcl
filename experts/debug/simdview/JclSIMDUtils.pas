@@ -32,6 +32,7 @@ interface
 
 uses
   Windows,
+  ToolsAPI,
   JclSysInfo;
 
 resourcestring
@@ -256,9 +257,9 @@ function GetThreadContext(hThread: THandle; var lpContext: TJclContext): BOOL; s
 function SetThreadContext(hThread: THandle; const lpContext: TJclContext): BOOL; stdcall;
 
 // return the XMM registers for the specified thread, this thread must be suspended
-function GetVectorContext(hThread: THandle; out VectorContext: TJclVectorFrame): Boolean;
+function GetVectorContext(AThread: IOTAThread; out VectorContext: TJclVectorFrame): Boolean;
 // return the XMM registers for the specified thread, this thread must be suspended
-function SetVectorContext(hThread: THandle; const VectorContext: TJclVectorFrame): Boolean;
+function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFrame): Boolean;
 
 implementation
 
@@ -817,7 +818,33 @@ function GetThreadContext(hThread: THandle;
 function SetThreadContext(hThread: THandle;
   const lpContext: TJclContext): BOOL; stdcall; external kernel32 name 'SetThreadContext';
 
-function GetVectorContext(hThread: THandle; out VectorContext: TJclVectorFrame): Boolean;
+function GetVectorContext(AThread: IOTAThread; out VectorContext: TJclVectorFrame): Boolean;
+{$IFDEF COMPILER9_UP}
+var
+  OTAXMMRegs: TOTAXMMRegs;
+  OTAThreadContext: TOTAThreadContext;
+begin
+  Result := AThread.GetOTAXMMRegisters(OTAXMMRegs);
+  if Result then
+  begin
+    VectorContext.MXCSR := OTAXMMRegs.MXCSR;
+    VectorContext.MXCSRMask := $FFFFFFFF;
+    Move(OTAXMMRegs,VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
+    OTAThreadContext := AThread.OTAThreadContext;
+    VectorContext.FCW := OTAThreadContext.FloatSave.ControlWord;
+    VectorContext.FSW := OTAThreadContext.FloatSave.StatusWord;
+    VectorContext.FTW := OTAThreadContext.FloatSave.TagWord;
+    Move(OTAThreadContext.FloatSave.RegisterArea[00],VectorContext.FPURegisters[0],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[10],VectorContext.FPURegisters[1],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[20],VectorContext.FPURegisters[2],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[30],VectorContext.FPURegisters[3],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[40],VectorContext.FPURegisters[4],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[50],VectorContext.FPURegisters[5],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[60],VectorContext.FPURegisters[6],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[70],VectorContext.FPURegisters[7],SizeOf(Extended));
+  end;
+end;
+{$ELSE COMPILER9_UP}
 var
   ContextMemory: Pointer;
   JvContext: PJclContext;
@@ -829,21 +856,37 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(hThread, JvContext^) and
-      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) <> 0);
+    Result := GetThreadContext(AThread.Handle,JvContext^) and
+      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
     if Result then
       VectorContext := JvContext^.VectorContext
-    else
+    else                                                  
       FillChar(VectorContext, SizeOf(VectorContext), 0);
   finally
     FreeMem(ContextMemory);
   end;
 end;
+{$ENDIF COMPILER9_UP}
 
-function SetVectorContext(hThread: THandle; const VectorContext: TJclVectorFrame): Boolean;
-{const
-  CONTEXT_FLAGS = CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS or
-                  CONTEXT_FLOATING_POINT or CONTEXT_EXTENDED_REGISTERS;
+function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFrame): Boolean;
+{$IFDEF COMPILER9_UP}
+var
+  OTAXMMRegs: TOTAXMMRegs;
+begin
+  Result := True;
+  try
+    OTAXMMRegs.MXCSR := VectorContext.MXCSR;
+    Move(VectorContext.XMMRegisters,OTAXMMRegs,SizeOf(TOTAXMMReg) * 8);
+    AThread.SetOTAXMMRegisters(OTAXMMRegs);
+  except
+    Result := False;
+  end;
+end;
+{$ELSE COMPILER9_UP}
+// MM registers can not saved (changes are overriden by the Borland's debugger)
+{const                                      
+  CONTEXT_FLAGS =    CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS
+                  or CONTEXT_FLOATING_POINT or CONTEXT_EXTENDED_REGISTERS;
 var
   ContextMemory: Pointer;
   JvContext: PJclContext;
@@ -881,18 +924,22 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(hThread, JvContext^) and
+    Result := GetThreadContext(AThread.Handle,JvContext^) and
       ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
     if Result then
-      Result := SetThreadContext(hThread, JvContext^);
+      Result := SetThreadContext(AThread.Handle,JvContext^);
   finally
     FreeMem(ContextMemory);
   end;
 end;
+{$ENDIF COMPILER9_UP}
 
 // History:
 
 // $Log$
+// Revision 1.4  2005/11/21 21:25:40  outchy
+// Modified the get/set methods of thread context for Delphi 2005
+//
 // Revision 1.3  2005/10/26 03:29:44  rrossmair
 // - improved header information, added Date and Log CVS tags.
 //
