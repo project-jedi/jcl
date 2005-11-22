@@ -295,9 +295,13 @@ var
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_INTEL}
   PROCESSOR_ARCHITECTURE_AMD64 = 9;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_AMD64}
   PROCESSOR_ARCHITECTURE_IA32_ON_WIN64 = 10;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA32_ON_WIN64}
   PROCESSOR_ARCHITECTURE_IA64 = 6;
+  {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA64}
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
@@ -5277,6 +5281,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.55  2005/11/22 08:37:59  obones
+// Added missing EXTERNALSYM declarations
+//
 // Revision 1.54  2005/11/21 11:50:22  outchy
 // Detection of Windows Vista/Longhorn/2003 R2/XP 64.
 // From: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/sysinfo/base/getting_the_system_version.asp
