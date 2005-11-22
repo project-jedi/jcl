@@ -1544,14 +1544,14 @@ end;
 
 function StrSmartCase(const S: string; Delimiters: TSysCharSet): string;
 var
-{$IFDEF CLR}
+  {$IFDEF CLR}
   Index: Integer;
   LenS: Integer;
   sb: StringBuilder;
-{$ELSE}
+  {$ELSE}
   Source, Dest: PChar;
   Index, Len: Integer;
-{$ENDIF CLR}
+  {$ENDIF CLR}
 begin
   Result := '';
   if Delimiters = [] then
@@ -1566,7 +1566,8 @@ begin
     Index := 0;
     while Index < LenS do
     begin
-      if (AnsiChar(sb[Index]) in Delimiters) and (Index + 1 < LenS) then
+      if (AnsiChar(sb[Index]) in Delimiters) and (Index + 1 < LenS) and
+        not (AnsiChar(sb[Index + 1]) in Delimiters) then
         sb[Index + 1] := CharUpper(sb[Index + 1]);
       Inc(Index);
     end;
@@ -1582,7 +1583,7 @@ begin
 
     for Index := 2 to Len do
     begin
-      if Source^ in Delimiters then
+      if (Source^ in Delimiters) and not (Dest^ in Delimiters) then
         Dest^ := CharUpper(Dest^);
       Inc(Dest);
       Inc(Source);
@@ -4173,6 +4174,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.45  2005/11/22 07:02:37  marquardt
+// Fixed StrSmartCase uppercasing delimiters if they happen to be letters
+//
 // Revision 1.44  2005/10/25 12:52:23  outchy
 // First corrections of IT#3259.
 // StrReplace, StrLastPos, StrMatches are NOT fixed.
