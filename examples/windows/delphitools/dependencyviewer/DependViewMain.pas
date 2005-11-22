@@ -31,8 +31,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, ToolWin, ComCtrls, ImgList, ActnList, StdActns, ClipBrd, Registry;
+  Menus, ToolWin, ComCtrls, ImgList, ActnList, StdActns, ClipBrd, Registry,
+  ShellAPI;
 
+const
+  UM_CHECKPARAMSTR = WM_USER + $100;
+  
 type
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
@@ -107,6 +111,7 @@ type
     procedure Find1Update(Sender: TObject);
     procedure Find1Execute(Sender: TObject);
     procedure CoolBar1Resize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FPeViewer: Variant;
     FPeViewerRegistred: Boolean;
@@ -115,8 +120,10 @@ type
     function IsFileViewerChildActive: Boolean;
     function IsWin32Help: Boolean;
     procedure OnActiveFormChange(Sender: TObject);
+    procedure UMCheckParamStr(var Message: TMessage); message UM_CHECKPARAMSTR;
+    procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
   public
-    procedure OpenFile(const FileName: TFileName);
+    procedure OpenFile(const FileName: TFileName; CheckIfOpen: Boolean);
   end;
 
 var
@@ -124,7 +131,7 @@ var
 
 implementation
 
-uses ToolsUtils, FileViewer, JclPeImage, JclRegistry, FindDlg;
+uses ToolsUtils, FileViewer, JclPeImage, JclRegistry, FindDlg, JclFileUtils;
 
 {$R *.DFM}
 
@@ -139,14 +146,30 @@ begin
   WinHelp(Application.Handle, PChar(FWin32Help), HELP_KEY, DWORD(S));
 end;
 
-procedure TMainForm.OpenFile(const FileName: TFileName);
+procedure TMainForm.OpenFile(const FileName: TFileName; CheckIfOpen: Boolean);
+var
+  I: Integer;
 begin
-{  if IsPeExe(FileName) then
-  begin}
-    TFileViewerChild.Create(Self).FileName := FileName;
-    OnActiveFormChange(nil);
-{  end else
-    MessBox(sNotValidFile, MB_ICONINFORMATION);}
+  if CheckIfOpen then
+  begin
+    for I := 0 to MDIChildCount - 1 do
+      if MDIChildren[I] is TFileViewerChild and (TFileViewerChild(MDIChildren[I]).FileName = FileName) then
+      begin
+        MDIChildren[I].BringToFront;
+        Exit;
+      end;
+  end;
+  Screen.Cursor := crHourGlass;
+  try
+{    if IsPeExe(FileName) then
+    begin}
+      TFileViewerChild.Create(Self).FileName := FileName;
+      OnActiveFormChange(nil);
+{    end else
+      MessBox(sNotValidFile, MB_ICONINFORMATION);}
+  finally
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 procedure TMainForm.Exit1Execute(Sender: TObject);
@@ -162,7 +185,7 @@ begin
   begin
     FileName := '';
     if Execute then
-      for I := 0 to Files.Count - 1 do OpenFile(Files[I]);
+      for I := 0 to Files.Count - 1 do OpenFile(Files[I], True);
   end;
 end;
 
@@ -171,10 +194,12 @@ begin
   FWin32Help := Win32HelpFileName;
   FPeViewerRegistred := IsPeViewerRegistred;
   Screen.OnActiveFormChange := OnActiveFormChange;
+  DragAcceptFiles(Handle, True);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  DragAcceptFiles(Handle, False);
   Screen.OnActiveFormChange := nil;
 end;
 
@@ -283,9 +308,47 @@ begin
   D4FixCoolBarResizePaint(Sender);
 end;
 
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  PostMessage(Handle, UM_CHECKPARAMSTR, 0, 0);
+end;
+
+procedure TMainForm.UMCheckParamStr(var Message: TMessage);
+var
+  I: Integer;
+  FileName: TFileName;
+begin
+  for I := 1 to ParamCount do
+  begin
+    FileName := PathGetLongName(ParamStr(I));
+    if (FileName <> '') and not (FileName[1] in ['-', '/']) then
+      OpenFile(FileName, False);
+  end;
+end;
+
+procedure TMainForm.WMDropFiles(var Message: TWMDropFiles);
+var
+  FilesCount, I: Integer;
+  FileName: array[0..MAX_PATH] of Char;
+begin
+  FilesCount := DragQueryFile(Message.Drop, MAXDWORD, nil, 0);
+  for I := 0 to FilesCount - 1 do
+  begin
+    if (DragQueryFile(Message.Drop, I, @FileName, SizeOf(FileName)) > 0) and
+      IsValidPeFile(FileName) then
+        OpenFile(FileName, True);
+  end;
+  DragFinish(Message.Drop);
+  Message.Result := 0;
+  Application.BringToFront;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.3  2005/11/22 10:23:35  ahuser
+// FileDrop support
+//
 // Revision 1.2  2005/10/27 01:44:51  rrossmair
 // - added MPL headers and CVS Log tags
 //

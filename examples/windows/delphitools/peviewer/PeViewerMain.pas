@@ -558,7 +558,7 @@ begin
   for I := 1 to ParamCount do
   begin
     FileName := PathGetLongName(ParamStr(I));
-    if (Length(FileName) > 0) and not (FileName[1] in ['-', '/']) then
+    if (FileName <> '') and not (FileName[1] in ['-', '/']) then
       OpenFile(FileName, False);
   end;    
 end;
@@ -631,6 +631,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.3  2005/11/22 10:24:00  ahuser
+// FileDrop support
+//
 // Revision 1.2  2005/10/27 01:44:51  rrossmair
 // - added MPL headers and CVS Log tags
 //

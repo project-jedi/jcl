@@ -21,6 +21,7 @@ object MainForm: TMainForm
   WindowMenu = Window1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object CoolBar1: TCoolBar
@@ -123,14 +124,13 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 310
+    Top = 302
     Width = 536
     Height = 19
     Panels = <
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object MainMenu: TMainMenu
     Images = ToolbarImagesList
