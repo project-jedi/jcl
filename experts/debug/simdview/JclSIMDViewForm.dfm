@@ -1,8 +1,8 @@
 object JclSIMDViewFrm: TJclSIMDViewFrm
   Left = 67
   Top = 78
-  Width = 437
-  Height = 305
+  ClientHeight = 278
+  ClientWidth = 429
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

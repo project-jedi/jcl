@@ -38,7 +38,7 @@ $Id$
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="95"/>
+  <property name="version.minor"    value="96"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->
@@ -144,6 +144,9 @@ $Id$
     <zip zipfile="${zipfile}" >
       <fileset dir="${basedir}\.." >
           <exclude name="${basedir}/dist/**" />
+          <exclude name="${basedir}/**/__history/**" />
+          <exclude name="${basedir}/**/ModelSupport/**" />
+          <exclude name="${basedir}/**/.svn/**" />
           <exclude name="${basedir}/docs/about jcl/**" />
           <exclude name="${basedir}/docs/contributors.txt" />
           <exclude name="${basedir}/devtools/**" />
@@ -152,7 +155,7 @@ $Id$
           <exclude name="${install.dir}/prototypes/**" />
           <exclude name="${install.dir}/prototypes.mak" />
           <exclude name="${install.dir}/BCB5-dcc32.cfg.mak" />
-          <exclude name="${help.dir}/**" />
+          <!-- exclude name="${help.dir}/**" / -->
           <exclude name="${lib.dir}/**/*.res" />
           <exclude name="${lib.dir}/d4/**" />
           <exclude name="${lib.dir}/k1/**" />
@@ -175,6 +178,7 @@ $Id$
           <include name="${basedir}/include/**" />
           <include name="${bin.dir}/JediInstaller.exe" />
           <include name="${basedir}/devtools/jpp*" />
+          <include name="${basedir}/**/*.exc" />
           <include name="${install.dir}/**/*.cfg" />
           <include name="${install.dir}/**/*.conf" />
           <include name="${install.dir}/QJediInstaller.conf" />
@@ -183,7 +187,7 @@ $Id$
           <include name="${help.dir}/JclHelp.als" />
           <include name="${help.dir}/JclHelp.cnt" />
           <include name="${help.dir}/JclHelp.hlp" />
-          <include name="${lib.dir}/**/*.exc" />
+          <include name="${pack.dir}/**/*.cfg" />
           <include name="${pack.dir}/**/*.bmk" />
           <include name="${pack.dir}/**/*.gmk" />
           <include name="${src.dir}/**/*.obj" />
@@ -202,6 +206,7 @@ $Id$
           <include name="${basedir}/**/*.bpf" />
           <include name="${basedir}/**/*.bpk" />
           <include name="${basedir}/**/*.mak" />
+          <include name="${basedir}/**/*.dcr" />
 
           <include name="${basedir}/**/*.bdsgroup" />
           <include name="${basedir}/**/*.bdsproj" />

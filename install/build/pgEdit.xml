@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit>
-  </pgEdit>
+  <pgEdit/>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -60,7 +59,7 @@
     be available.
   -->
   <models>
-    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
+    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl%t.inc" incdeffile="..\..\common\jvclbase.inc">
       <targets>
         <target name="c5" pname="c5s" pdir="c5std"/>
         <target name="c6" pname="c6p" pdir="c6per"/>
@@ -69,18 +68,19 @@
         <target name="d7" pname="d7p" pdir="d7per"/>
         <target name="d7clx" IsClx="1"/>
         <target name="k3" pname="k3p" pdir="k3per" pathsep="/" IsClx="1"/>
-        <target name="d9"/>
+        <target name="d9" pname="d9p" pdir="d9per"/>
+        <target name="d10" pname="d10p" pdir="d10per"/>
       </targets>
       <aliases>
-        <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9"/>
-        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p,d9"/>
-        <alias name="Bcb" value="c5,c5s,c6,c6p"/>
+        <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+        <alias name="Bcb" value="c5,c5s,c6,c6p,d10,d10p"/>
         <alias name="Kylix" value="k3,k3p"/>
-        <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9"/>
+        <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
         <alias name="Linux" value="k3,k3p"/>
         <alias name="allclx" value="d7clx,k3,k3p"/>
-        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9"/>
-        <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9"/>
+        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+        <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9,d10"/>
       </aliases>
       <ClxReplacements>
         <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
@@ -88,7 +88,7 @@
         <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
       </ClxReplacements>
     </model>
-    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
+    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="..\packages" incfile="">
       <targets>
         <target name="c5"/>
         <target name="c6"/>
@@ -99,15 +99,19 @@
         <target name="d7"/>
         <target name="d7.dev"/>
         <target name="d9"/>
+        <target name="d10"/>
         <target name="k3" PathSep="/"/>
         <target name="k3.dev" PathSep="/"/>
       </targets>
       <aliases>
-        <alias name="Delphi" value="d5,d6,d7,d9"/>
-        <alias name="Bcb" value="c5,c6"/>
+        <alias name="Delphi" value="d5,d6,d7,d9,d10"/>
+        <alias name="Bcb" value="c5,c6,d10"/>
         <alias name="Kylix" value="k2,k3,k3p"/>
-        <alias name="Windows" value="c5,c6,d5,d6,d7,d9"/>
+        <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10"/>
         <alias name="Linux" value="k2,k3,k3p"/>
+        <alias name="WinDev" value="c5,c6,d5,d6,d7,d9,d5.dev"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d9,k3,d5.dev"/>
+        <alias name="DelphiDev" value="d5,d6,d7,d9,d5.dev"/>
       </aliases>
     </Model>
   </models>

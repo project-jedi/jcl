@@ -125,6 +125,7 @@
   DELPHI8             Defined when compiling with Delphi 8
   DELPHI2005          Defined when compiling with Delphi 2005
   DELPHI9             Alias for DELPHI2005
+  DELPHI10            Defined when compiling with Delphi Personality of BDS 4.0
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
   DELPHI3_UP          Defined when compiling with Delphi 3 or higher
@@ -135,6 +136,7 @@
   DELPHI8_UP          Defined when compiling with Delphi 8 or higher
   DELPHI2005_UP       Defined when compiling with Delphi 2005 or higher
   DELPHI9_UP          Alias for DELPHI2005_UP
+  DELPHI10_UP         Defined when compiling with Delphi Personality of BDS 4.0
 
 
 - Kylix Versions
@@ -166,6 +168,7 @@
   DELPHICOMPILER7     Defined when compiling with Delphi 7
   DELPHICOMPILER8     Defined when compiling with Delphi 8
   DELPHICOMPILER9     Defined when compiling with Delphi 2005
+  DELPHICOMPILER10    Defined when compiling with Delphi Personality of BDS 4.0
   DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -175,6 +178,7 @@
   DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
   DELPHICOMPILER8_UP  Defined when compiling with Delphi 8 or higher
   DELPHICOMPILER9_UP  Defined when compiling with Delphi 2005
+  DELPHICOMPILER10_UP Defined when compiling with Delphi Personality of BDS 4.0 or higher
 
 
 - C++ Builder Versions
@@ -190,11 +194,13 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
+  BCB10        Defined when compiling with C++ Builder Personality of BDS 4.0
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
+  BCB10_UP     Defined when compiling with C++ Builder Personality of BDS 4.0 or higher
 
 
 - Borland Developer Studio Versions
@@ -236,6 +242,7 @@
   COMPILER7     Defined when compiling with Delphi 7
   COMPILER8     Defined when compiling with Delphi 8
   COMPILER9     Defined when compiling with Delphi 9
+  COMPILER10    Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0
   COMPILER1_UP  Defined when compiling with Delphi 1 or higher
   COMPILER2_UP  Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -246,6 +253,7 @@
   COMPILER7_UP  Defined when compiling with Delphi 7
   COMPILER8_UP  Defined when compiling with Delphi 8
   COMPILER9_UP  Defined when compiling with Delphi Personalities of BDS 3.0
+  COMPILER10_UP Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or higher
 
 
 - RTL Versions
@@ -272,6 +280,7 @@
   RTL150_UP     Defined when compiling with Delphi 7 or later
   RTL160_UP     Defined when compiling with Delphi 8 or later
   RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
+  RTL180_UP     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or later
 
 
 - Feature Directives
@@ -312,12 +321,13 @@
   SUPPORTS_FOR_IN               Compiler supports for in loops (D9+)
   SUPPORTS_NESTED_CONSTANTS     Compiler supports nested constants (D9+)
   SUPPORTS_NESTED_TYPES         Compiler supports nested types (D9+)
-  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9+ .NET)
-  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9+ .NET)
-  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9+ .NET)
-  SUPPORTS_STRICT               Compiler supports strict keyword (D9+ .NET)
-  SUPPORTS_STATIC               Compiler supports static keyword (D9+ .NET)
-  SUPPORTS_FINAL                Compiler supports final keyword (D9+ .NET)
+  SUPPORTS_ENHANCED_RECORDS     Compiler supports class [operator|function|procedure] for record types (D9.NET, D10+)
+  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9.NET, D10+)
+  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9.NET, D10+)
+  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9.NET, D10+)
+  SUPPORTS_STRICT               Compiler supports strict keyword (D9.NET, D10+)
+  SUPPORTS_STATIC               Compiler supports static keyword (D9.NET, D10+)
+  SUPPORTS_FINAL                Compiler supports final keyword (D9.NET, D10+)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -390,6 +400,19 @@
   {$IFDEF KYLIX}
     {$I kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
+
+    {$IFDEF VER180}
+      {$DEFINE BDS4}
+      {$DEFINE BDS}
+      {$DEFINE COMPILER10}
+      {$IFDEF BCB}
+        {$DEFINE BCB10}
+      {$ELSE}
+        {$DEFINE DELPHI10}
+        {$DEFINE DELPHICOMPILER10}
+      {$ENDIF}
+      {$DEFINE RTL180_UP}
+    {$ENDIF}
 
     {$IFDEF VER170}
       {$DEFINE BDS3}
@@ -503,6 +526,20 @@
 { DELPHIX_UP from DELPHIX mappings                                             }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHI10}
+  {$DEFINE DELPHI10_UP}
+  {$DEFINE DELPHI2005_UP // synonym to DELPHI9_UP }
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI8_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHI9}
   {$DEFINE DELPHI2005_UP} // synonym to DELPHI9_UP
   {$DEFINE DELPHI9_UP}
@@ -599,6 +636,15 @@
 { BCBX_UP from BCBX mappings                                                   }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BCB10}
+  {$DEFINE BCB10_UP}
+  {$DEFINE BCB6_UP}
+  {$DEFINE BCB5_UP}
+  {$DEFINE BCB4_UP}
+  {$DEFINE BCB3_UP}
+  {$DEFINE BCB1_UP}
+{$ENDIF}
+
 {$IFDEF BCB6}
   {$DEFINE BCB6_UP}
   {$DEFINE BCB5_UP}
@@ -651,6 +697,19 @@
 {------------------------------------------------------------------------------}
 { DELPHICOMPILERX_UP from DELPHICOMPILERX mappings                             }
 {------------------------------------------------------------------------------}
+
+{$IFDEF DELPHICOMPILER10}
+  {$DEFINE DELPHICOMPILER10_UP}
+  {$DEFINE DELPHICOMPILER9_UP}
+  {$DEFINE DELPHICOMPILER8_UP}
+  {$DEFINE DELPHICOMPILER7_UP}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF DELPHICOMPILER9}
   {$DEFINE DELPHICOMPILER9_UP}
@@ -727,6 +786,20 @@
 {------------------------------------------------------------------------------}
 { COMPILERX_UP from COMPILERX mappings                                         }
 {------------------------------------------------------------------------------}
+
+{$IFDEF COMPILER10}
+  {$DEFINE COMPILER10_UP}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER9}
   {$DEFINE COMPILER9_UP}
@@ -826,6 +899,10 @@
 {------------------------------------------------------------------------------}
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
+
+{$IFDEF RTL180_UP}
+  {$DEFINE RTL170_UP}
+{$ENDIF}
 
 {$IFDEF RTL170_UP}
   {$DEFINE RTL160_UP}
@@ -1004,6 +1081,7 @@
   {$DEFINE SUPPORTS_NESTED_CONSTANTS}
   {$DEFINE SUPPORTS_NESTED_TYPES}
   {$IFDEF CLR}
+    {$DEFINE SUPPORTS_ENHANCED_RECORDS}
     {$DEFINE SUPPORTS_CLASS_FIELDS}
     {$DEFINE SUPPORTS_CLASS_HELPERS}
     {$DEFINE SUPPORTS_CLASS_OPERATORS}
@@ -1012,6 +1090,16 @@
     {$DEFINE SUPPORTS_FINAL}
   {$ENDIF CLR}
 {$ENDIF COMPILER9_UP}
+
+{$IFDEF COMPILER10_UP}
+  {$DEFINE SUPPORTS_ENHANCED_RECORDS}
+  {$DEFINE SUPPORTS_CLASS_FIELDS}
+  {$DEFINE SUPPORTS_CLASS_HELPERS}
+  {$DEFINE SUPPORTS_CLASS_OPERATORS}
+  {$DEFINE SUPPORTS_STRICT}
+  {$DEFINE SUPPORTS_STATIC}
+  {$DEFINE SUPPORTS_FINAL}
+{$ENDIF COMPILER10_UP}
 
 {$IFDEF RTL140_UP}
   {$IFDEF LINUX}
@@ -1091,6 +1179,9 @@
 // History:
 
 // $Log$
+// Revision 1.30  2005/12/04 10:10:58  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.29  2005/11/01 20:46:20  obones
 // Removed COMPLIB_VCL and COMPLIB_VisualCLX, they are not used and obsolete
 //
