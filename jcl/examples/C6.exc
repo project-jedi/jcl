@@ -1,0 +1,3 @@
+windows\clr\ClrDemo.dpr
+common\filesearch\QFileSearchDemo.dpr
+visclx.exc=STD

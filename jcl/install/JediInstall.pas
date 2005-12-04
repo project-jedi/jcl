@@ -90,6 +90,9 @@ type
 const
   ioJclLast = ioJclMakeDemos;
   Significand: array[TJclBorRadToolKind] of Char = ('D', 'C');
+  {$IFDEF KEEP_DEPRECATED}
+  Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
+  {$ENDIF KEEP_DEPRECATED}
 
 type
   TDialogType = (dtWarning, dtError, dtInformation, dtConfirmation);
@@ -165,6 +168,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/12/04 10:10:57  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.16  2005/11/10 22:16:31  outchy
 // Added creation/link/deletion of MAP files for packages.
 //

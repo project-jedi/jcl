@@ -3,45 +3,36 @@
 
   Jedi Code Library
 
-Release 1.95.3
-Build 1848
-23-March-2005
+Release 1.96.1
+Build 2070
+31-October-2005
 
 ------------------------------------------------------------------------
 
-JCL release 1.95 includes major additions; thanks to the generous
-donation of the Delphi Container Library (DCL) v. 0.89 code base by its
-creator Jean-Philippe Bempel, the JCL now provides a set of carefully
-designed container classes and interfaces, supplied by the newly added
-units:
 
-source\common\JclAbstractContainers.pas
-source\common\JclAlgorithms.pas
-source\common\JclArrayLists.pas
-source\common\JclArraySets.pas
-source\common\JclBinaryTrees.pas
-source\common\JclContainerIntf.pas
-source\common\JclHashMaps.pas
-source\common\JclHashSets.pas
-source\common\JclLinkedLists.pas
-source\common\JclQueues.pas
-source\common\JclStacks.pas
-source\common\JclVectors.pas
+      News
 
-Note that documentation is still in early stage and might even be
-incorrect, so beware.
-The installer option "Thread safe container classes allows to trade off
-between speed (off) and safeness (on). If it's on, synchronization in
-multithreaded applications is handled internally, otherwise it is left
-to the developer.
+JCL release 1.96 main topic is to provide basic support for Borland
+Developer Studio 2006.  A later release should improve on that.
 
-Although this one stands out, there have been other valuable additions
-like unit JclWideFormat by Rob Kennedy, the JEDI Uses Wizard and more.
-CPU information code in JclSysInfo has been updated to report features
-of recent CPU types.
+Important: Note that the package naming has changed; the installer tries
+to remove old experts, but 3rd party design time packages requiring old
+DJcl* resp. CJcl* packages need to be changed to accomodate the new
+naming scheme or they will cause conflicts in the IDE at load time.
 
-For Delphi 2005, integrated Online Help and installer access to the
-Object Repository are still not available.
+The examples directory structure has been changed (improved, hopefully),
+IDE expert code got separated into the new experts subdirectory. Expert
+packages have been moved to the packages directory.
+
+There are two new experts: 
+
+    * SIMD View, an additional debugger window, allows to inspect XMM 
+      registers (used in SSE, SSE2 and SSE3 instructions);
+    * The JCL uses expert automatically adds missing JCL units to the
+      uses clause.
+
+A subset of JCL units was worked over to support Delphi.Net (2005 &
+2006).  The packages belong to the Jedi.Jcl namespace.
 
 As always, multiple bugs have been fixed; for detailed change logs, use
 the facilities of our CVS repository at SourceForge.net
@@ -50,25 +41,25 @@ the facilities of our CVS repository at SourceForge.net
 
       Supported Tools
 
-    * Delphi version 5, 6, 7, 2005/Win32
-    * C++Builder version 5 & 6
+    * Delphi version 5, 6, 7, 2005, 2006
+    * C++Builder version 5 & 6, 2006
     * Kylix 3
 
-Notes:
+Notes: 
 
     * Not every unit supports all tools. Look out for *.exc files in the
       tool-specific lib/ subdirectories for a list of units excluded
       from compilation.
     * Kylix 3/C++ installation is broken; the installer will fail when
       it attempts to build the packages. Since the dreaded file
-      open/save dialog Kylix bug is haunting me again (wasn't it
-      considered to be defeated as of Kernel 2.4.21?), I am at present
+      open/save dialog Kylix bug is haunting us again (wasn't it
+      considered to be defeated as of Kernel 2.4.21?), we are at present
       not investigating this further.
-    * *Free Pascal* <http://www.freepascal.org/> (FP) support is in the
-      pipeline; this relates to the FP code branch currently under
-      development (1.9.x - we will not support FP versions 1.0.x).
-      Expect a JCL release providing FP support soon after this branch
-      has got stable.
+    * *Free Pascal* <http://www.freepascal.org/> (FP) support has not
+      been updated for this release; most units from source/common
+      should work with FP 2.0, as tests with a 2.0 beta (1.9.8)
+      indicated, but this has not been verified. Note that there are no
+      plans to support FP versions from the 1.0 branch.
 
 
       JCL Distribution content
@@ -80,19 +71,22 @@ bin                           - Common place for sample application EXE files
 lib                           - Common place for compiled units.
 docs                          - Readme (this file) and other documents
 examples                      - JCL example applications
-examples\make.bat             - Builds selected examples and tools
-examples\vcl                  - JCL example applications
-examples\vcl\debugextension   - JCL Debug IDE expert for using JclDebug unit
-                 \dialog      - Application exception dialog replacement
-                 \threadnames - IDE expert showing class names for debugged threads
-                 \tools       - Tools for creating files with JCL debug information
-examples\vcl\delphitools      - Collection of system tools using JCL
-examples\vcl\projectanalyzer  - Project Analyzer IDE expert
-examples\visclx               - JCL example applications
+experts                       - JCL IDE experts source code
+experts\debug                 - JCL Debug IDE expert for using JclDebug unit
+experts\debug\dialog          - Application exception dialog replacement
+experts\debug\simdview        - Low-level debug window for XMM registers
+experts\debug\threadnames     - IDE expert showing class names for debugged threads
+experts\debug\tools           - Tools for creating files with JCL debug information
+experts\favfolders            - 
+experts\projectanalyzer       - Project Analyzer IDE expert
+experts\useswizard            - JCL uses wizard
+examples\common               -
+examples\dotnet               -
 examples\windows              - JCL example applications
+examples\windows\delphitools  - Collection of system tools using JCL
 help                          - Help file
 install                       - Installer source code
-packages                      - JCL runtime packages and project groups
+packages                      - JCL package sources
 source                        - JCL source code
 
 
@@ -132,12 +126,11 @@ code donations as well.
 
       Debug Extension for JclDebug unit
 
-The examples\vcl\debugExtension folder contains IDE expert which assists
-to insert JCL Debug information into executable files. This can be
-useful when use source location routines from JclDebug unit. These
-routines needs some kind of special information to be able provide
-source location for given address in the process. Currently there are
-four options to get it work:
+The experts\debug folder contains an IDE expert which assists to insert
+JCL Debug information into executable files. This can be useful when use
+source location routines from JclDebug unit. These routines needs some
+kind of special information to be able provide source location for given
+address in the process. Currently there are four options to get it work:
 
    1. Generate and deploy MAP file with your executable file. The file
       is generated by the linker. It needs to be set in Project|Options
@@ -145,7 +138,7 @@ four options to get it work:
    2. Generate and deploy JDBG file file with your executable file. This
       is binary file based on MAP file but its size is typically about
       12% of original MAP file. You can generate it by MapToJdbg tool in
-      jcl\examples\vcl\tools folder. The advantage over MAP file is
+      jcl\examples\windows\tools folder. The advantage over MAP file is
       smaller size and better security of the file content because it is
       not a plain text file and it also contains a checksum.
    3. Generate Borland TD32 debug symbols. These symbols are stored
@@ -191,13 +184,13 @@ accident the best one is chosen in following order:
 
 It is also possible to insert JCL debug data programmatically to the
 executable file by using MakeJclDbg command line tool in
-jcl\examples\vcl\delphitools folder. You can study included makefiles
-which uses this tool for building delphitools examples.
+jcl\examples\windows\delphitools folder. You can study included
+makefiles which uses this tool for building delphitools examples.
 
 To help using JclDebug exceptional stack tracking in application simple
-dialog is provided in jcl\examples\debugextension\dialog folder. The
-dialog replaces standard dialog displayed by VCL or CLX application when
-an unhandled exception occurs. It has additional Detailed button showing
+dialog is provided in jcl\experts\debug\dialog folder. The dialog
+replaces standard dialog displayed by VCL or CLX application when an
+unhandled exception occurs. It has additional Detailed button showing
 the stack, list of loaded modules and other system information. By
 adding the dialog to the application exceptional stack tracking code is
 automatically initialized so you don't have to care about it. You can
@@ -219,21 +212,6 @@ Repository.
       ExceptionDialog.pas name, for example)
    6. Check Project | Insert JCL Debug data menu item
    7. Do Project | Build
-
-
-      Makefiles
-
-In order to compile selected examples and tools by one command we
-provide makefiles.
-
-To use them, cd into the jcl/examples sub directory and at the command
-prompt, type
-
-> make
-
-It should start to compile the covered projects using most recent
-version of compiler from installed Delphi versions. All executable files
-will be created in jcl/bin directory.
 
 
       Version Control

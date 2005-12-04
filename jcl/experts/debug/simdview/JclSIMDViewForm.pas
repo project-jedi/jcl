@@ -795,11 +795,17 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/12/04 10:10:57  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.6  2005/11/21 21:25:40  outchy
 // Modified the get/set methods of thread context for Delphi 2005
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
+// - improved header information, added $Date$ and Borland Developer Studio 2006 support
+// - improved header information, added $Date$ and CVS tags.
 //
 
 end.

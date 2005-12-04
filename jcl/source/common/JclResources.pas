@@ -58,27 +58,30 @@ resourcestring
 
 //=== JclBorlandTools ========================================================
 resourcestring
-  RsIndexOufOfRange  = 'Index out of range';
-  RsNeedUpdate       = 'You should install latest Update Pack #%d for %s';
-  RsUpdatePackName   = 'Update Pack #%d';
-  RsDelphiName       = 'Delphi';
-  RsBCBName          = 'C++Builder';
+  RsNotFound            = '%s not found';
+  RsNotABcbPackage      = '%s not a C++Builder package source file';
+  RsNotADelphiPackage   = '%s not a Delphi package source file';
+  RsIndexOufOfRange     = 'Index out of range';
+  RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
+  RsUpdatePackName      = 'Update Pack #%d';
+  RsDelphiName          = 'Delphi';
+  RsBCBName             = 'C++Builder';
   {$IFDEF KYLIX}
-  RsKylixName        = 'Kylix for %s';
-  RsKylixVersionName = 'Kylix %d for %s';
-  RsOpenEdition      = 'Open Edition';
-  RsServerDeveloper  = 'Server Developer';
-  RsVclIncludeDir    = '/include/vcl/';
+  RsKylixName           = 'Kylix for %s';
+  RsKylixVersionName    = 'Kylix %d for %s';
+  RsOpenEdition         = 'Open Edition';
+  RsServerDeveloper     = 'Server Developer';
+  RsVclIncludeDir       = '/include/vcl/';
   {$ENDIF KYLIX}
   {$IFDEF MSWINDOWS}
-  RsClientServer     = 'Client/Server';
-  RsStandard         = 'Standard';
-  RsVclIncludeDir    = '\Include\Vcl\';
+  RsClientServer        = 'Client/Server';
+  RsStandard            = 'Standard';
+  RsVclIncludeDir       = '\Include\Vcl\';
   {$ENDIF MSWINDOWS}
-  RsArchitect        = 'Architect';
-  RsEnterprise       = 'Enterprise';
-  RsPersonal         = 'Personal';
-  RsProfessional     = 'Professional';
+  RsArchitect           = 'Architect';
+  RsEnterprise          = 'Enterprise';
+  RsPersonal            = 'Personal';
+  RsProfessional        = 'Professional';
 
   RsBorlandStudioProjects = 'Borland Studio Projects';
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
@@ -1649,6 +1652,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.36  2005/12/04 10:10:58  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.35  2005/11/21 11:50:22  outchy
 // Detection of Windows Vista/Longhorn/2003 R2/XP 64.
 // From: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/sysinfo/base/getting_the_system_version.asp

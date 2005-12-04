@@ -76,7 +76,7 @@ type
   end;
 
 const // keep in sync with JVCL Installer's DelphiData.pas
-  BDSVersions: array[1..3] of record
+  BDSVersions: array[1..4] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -86,7 +86,8 @@ const // keep in sync with JVCL Installer's DelphiData.pas
                               end = (
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True)
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True)
   );
 
 type
@@ -220,6 +221,14 @@ var
 begin
   attr := GetFileAttributes(PChar(Filename));
   Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY = 0);
+end;
+{******************************************************************************}
+function DirectoryExists(const Filename: string): Boolean;
+var
+  attr: Cardinal;
+begin
+  attr := GetFileAttributes(PChar(Filename));
+  Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 {******************************************************************************}
 function Execute(const Cmd: string): Integer;
@@ -499,8 +508,7 @@ begin
         begin
           if SameText(tg.Name, 'target') then
           begin
-            if FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bpg') or
-               FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bdsgroup') then
+            if DirectoryExists(LibraryRootDir + '\packages\' + tg.Attrs('name').Value) then
             begin
               SetLength(Targets, Length(Targets) + 1); // we do not have 10tnds iterations so this is acceptable
               with Targets[High(Targets)] do
@@ -642,12 +650,12 @@ begin
   else
     ProjectsDir := FRootDir + '\Projects';
 
-  FDcpDir := FRootDir + '\Projects\Bpl';
-  FBplDir := FRootDir + '\Projects\Bpl';
+  FDcpDir := ProjectsDir + '\Bpl';
+  FBplDir := ProjectsDir + '\Bpl';
   if Typ = BCB then
-    FLibDir := FRootDir + '\Projects\Lib'
+    FLibDir := ProjectsDir + '\Lib'
   else
-    FLibDir := FRootDir + '\Projects\Bpl';
+    FLibDir := ProjectsDir + '\Bpl';
 
   if RegOpenKeyEx(HKEY_CURRENT_USER, PChar(KeyName + '\Library'), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
   begin

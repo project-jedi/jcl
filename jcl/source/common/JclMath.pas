@@ -566,6 +566,8 @@ type
     class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Negative(const Z: TRectComplex): TRectComplex;
+
+    class function Exp(const Z: TRectComplex): TPolarComplex; static;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
@@ -4427,6 +4429,12 @@ begin
   Result.Im := -Z.Im;
 end;
 
+class function TRectComplex.Exp(const Z: TRectComplex): TPolarComplex;
+begin
+  Result.Radius := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Exp(Z.Re);
+  Result.Angle := Z.Im;
+end;
+
 {$ENDIF SUPPORTS_CLASS_OPERATORS}
 
 // History:
@@ -4465,6 +4473,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.34  2005/12/04 10:10:58  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.33  2005/09/11 11:37:44  ahuser
 // Added inline support
 //

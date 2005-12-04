@@ -663,6 +663,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/12/04 10:10:57  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.2  2005/10/27 01:44:51  rrossmair
 // - added MPL headers and CVS Log tags
 //

@@ -1,4 +1,4 @@
-JEDI Code Library v 1.94 Installation
+JEDI Code Library v 1.96 Installation
 
 Supported development tools versions:
 
@@ -8,6 +8,8 @@ Supported development tools versions:
 - Borland Delphi 6 Update Pack #2 (including Personal Edition)
 - Borland Delphi 7
 - Borland Kylix 3
+- Borland Delphi 2005
+- Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006)
 
 For more detailed information, see docs\Readme.html.
 
@@ -27,8 +29,8 @@ C++Builder: http://info.borland.com/devsupport/bcppbuilder/
 * Do not mix files or compiled packages from older versions of the JCL with    *
 * current version.                                                             *
 *                                                                              *
-* JCL 1.94 is not compatible with JVCL versions < 3 and _will_ break them!     *
-* JVCL v. 3 will get released shortly after JCL 1.94; it is available from     *
+* JCL 1.96 is not compatible with JVCL versions < 3 and _will_ break them!     *
+* JVCL v. 3.1 will get released together with JCL 1.96; it is available from   *
 * http://jvcl.sourceforge.net/daily/                                           *
 *                                                                              *
 ********************************************************************************
@@ -65,4 +67,4 @@ To execute for
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
 --------------------------------
-Document last updated 2005-02-05
+Document last updated 2005-10-30

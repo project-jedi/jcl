@@ -27,6 +27,7 @@ default:	install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
+  @if exist "$(ROOT)\Lib\vcl.dcp" $(DCC) -LUvcl -LUrtl
   @if exist "$(ROOT)\Lib\Obj\vcl.dcp" $(DCC) -LUvcl -LUrtl
   @if exist "$(ROOT)\Lib\Obj\vcl50.dcp" $(DCC) -LUvcl50
   @if not exist "$(ROOT)\Lib\Obj" $(DCC)

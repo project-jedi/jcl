@@ -556,7 +556,8 @@ begin
   for I := 0 to Units.Count - 1 do
   begin
     FileName := Units[I] + '.hpp';
-    Result := Result and FileCopy(FileName, TargetDir + FileName, True);
+    if FileExists(FileName) then
+      Result := Result and FileCopy(FileName, TargetDir + FileName, True);
   end;
 end;
 
@@ -569,7 +570,7 @@ begin
   with Target do
   begin
     Infix := Significand[RADToolKind];
-    if DCC.SupportsLibSuffix then
+    if DCC32.SupportsLibSuffix then
       Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Infix), {$ENDIF}VersionNumber, BaseName, PackageSourceFileExtension])
     else
       Result := Format(S + '%s%1:d0%4:s', [AnsiLowerCase(Infix), VersionNumber, BaseName, Infix, PackageSourceFileExtension]);
@@ -590,14 +591,15 @@ begin
   inherited Create;
   FDistribution := JclDistribution;
   FTarget := InstallTarget;
-  InstallTarget.DCC.OutputCallback := WriteLog;
+  InstallTarget.DCC32.OutputCallback := WriteLog;
   InstallTarget.Make.OutputCallback := WriteLog;
   FDebugDcuDir := MakePath(Distribution.FLibDebugDirMask);
   FLibDir := MakePath(Distribution.FLibDirMask);
   if InstallTarget is TJclBCBInstallation then
   begin
     FLibObjDir := MakePath(Distribution.FLibObjDirMask);
-    TJclBCBInstallation(InstallTarget).Bpr2Mak.OutputCallback := WriteLog;
+    if clProj2Mak in InstallTarget.CommandLineTools then
+      InstallTarget.Bpr2Mak.OutputCallback := WriteLog;
   end;
   FDefines := TStringList.Create;
   FUnits := TStringList.Create;
@@ -738,7 +740,7 @@ var
   begin
     if FTarget.RADToolKind = brCppBuilder then
     begin
-      Result := StringsToStr(Target.DCC.Options, ' ') + ' ';
+      Result := StringsToStr(Target.DCC32.Options, ' ') + ' ';
       Result := StringReplace(Result, '$(BCB)', Target.RootDir, [rfReplaceAll]);
     end
     else
@@ -753,7 +755,7 @@ var
     Result := True;
     for I := 0 to UnitList.Count - 1 do
     begin
-      Result := Target.DCC.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}UnitList[I]);
+      Result := Target.DCC32.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}UnitList[I]);
       Progress(1);
       if not Result then
         Break;
@@ -761,7 +763,7 @@ var
   end;
   {$ELSE}
   begin
-    Result := Target.DCC.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(UnitList, ' '));
+    Result := Target.DCC32.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(UnitList, ' '));
     Progress(UnitList.Count);
   end;
   {$ENDIF}
@@ -774,7 +776,7 @@ begin
   Tool.UpdateStatus(Format(RsCompilingMessage, [LibDescriptor]));
   Path := Format('%s' + PathSeparator + '%s', [Distribution.SourceDir, SubDir]);
   UnitList := Units[SubDir];
-  with Target.DCC do
+  with Target.DCC32 do
   begin
     SetDefaultOptions;
     Options.Add('-D' + StringsToStr(Defines, ';'));
@@ -845,9 +847,9 @@ begin
       WriteLog('Compiling .dcu files...');
       Result := Result and CompileUnits;
       CopyResFiles(UnitOutputDir);
-      if (Target is TJclBCBInstallation) and OptionSelected(ioJclCopyHppFiles) then
+      if OptionSelected(ioJclCopyHppFiles) then
       begin
-        Result := Result and CopyHppFiles(UnitList, Target.RootDir + RsVclIncludeDir);
+        Result := Result and CopyHppFiles(UnitList, Target.VclIncludeDir);
         WriteLog('Copying .hpp files...');
       end;
       {$IFDEF KYLIX}
@@ -865,22 +867,16 @@ begin
 end;
 
 function TJclInstallation.Description(Option: TJediInstallOption): string;
-var
-  BCBInstallation: TJclBCBInstallation;
 begin
   Result := InitData[Option].Caption;
-
-  BCBInstallation := nil;
-  if Target is TJclBCBInstallation then
-    BCBInstallation := Target as TJclBCBInstallation;
 
   case Option of
     ioTarget:
       Result := Target.Description;
     ioJclCopyHppFiles:
-      Result := Format(Result, [BCBInstallation.VclIncludeDir]);
+      Result := Format(Result, [Target.VclIncludeDir]);
     ioJclCopyPackagesHppFiles:
-      Result := Format(Result, [BCBInstallation.VclIncludeDir]);
+      Result := Format(Result, [Target.VclIncludeDir]);
   end;
 end;
 
@@ -1139,7 +1135,7 @@ begin
   MakeNode := AddNode(ProductNode, ioJclMake, [goExpandable, goChecked]);
   AddMakeNodes(MakeNode, False);
   AddMakeNodes(MakeNode, True);
-  if (Target is TJclBCBInstallation) then
+  if Target.SupportsBCB then
     AddNode(MakeNode, ioJclCopyHppFiles);
   {$IFDEF MSWINDOWS}
   { TODO : Help integration for Delphi 2005 }
@@ -1166,7 +1162,7 @@ begin
       AddNode(TempNode, ioJclExcDialogCLX);
   end;
   PackagesNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
-  if (Target is TJclBCBInstallation) then
+  if Target.SupportsBCB then
     AddNode(PackagesNode, ioJclCopyPackagesHppFiles);
 
   {$IFDEF MSWINDOWS}
@@ -1235,14 +1231,12 @@ begin
       Defines.Add('MATH_DOUBLE_PRECISION');
     ioJclDefMathPrecExtended:
       Defines.Add('MATH_EXTENDED_PRECISION');
-    {$IFDEF MSWINDOWS}
     ioJclMapCreate:
       Target.MapCreate := True;
     ioJclMapLink:
       Target.MapLink := True;
     ioJclMapDelete:
       Target.MapDelete := True;
-    {$ENDIF MSWINDOWS}
     ioJclEnvLibPath:
       if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
         WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
@@ -1403,7 +1397,10 @@ begin
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Target.Name]));
   if IsDelphiPackage(Name) then
   begin
-    Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath);
+    if Target is TJclDelphiInstallation then
+      Result := (Target as TJclDelphiInstallation).InstallPackage(PackageFileName, BplPath, DcpPath, True)
+    else
+      Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath);
   end
   else
   if Target is TJclBCBInstallation then
@@ -1411,8 +1408,11 @@ begin
     begin
       PackageDirectory := PathAddSeparator(ExtractFileDir(PackageFileName));
       // now create .bpi & .lib
-      Bpr2Mak.Options.Clear;
-      Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.Path + Bcb2MakTemplate));
+      if clProj2Mak in Target.CommandLineTools then
+      begin
+        Bpr2Mak.Options.Clear;
+        Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.Path + Bcb2MakTemplate));
+      end;
       {$IFDEF KYLIX}
       SetEnvironmentVar('OBJDIR', LibObjDir);
       SetEnvironmentVar('BPILIBDIR', DcpPath);
@@ -1427,12 +1427,13 @@ begin
       Make.AddPathOption('DBPILIBDIR=', DcpPath);
       Make.AddPathOption('DBPLDIR=', BplPath);
       if OptionSelected(ioJclCopyPackagesHppFiles) then
-        Make.AddPathOption('DHPPDIR=', Target.RootDir + RsVclIncludeDir);
+        Make.AddPathOption('DHPPDIR=', Target.VclIncludeDir);
       {$ENDIF}
       Result := Result and Target.InstallPackage(PackageFileName, BplPath, DcpPath);
     end;
-  WriteLog('...done.');
-  if not Result then
+  if Result then
+    WriteLog('...done.')
+  else
     InstallFailedOn(PackageFileName);
 end;
 
@@ -1472,7 +1473,7 @@ begin
     '-u%s' + AnsiLineBreak +    // Unit directories
     '-i%s',                     // Include path
     [Distribution.BinDir, LibDir, Distribution.SourceDir]));
-  Target.DCC.Execute(FileName);
+  Target.DCC32.Execute(FileName);
   FileDelete(CfgFileName);
 end;
 
@@ -2001,15 +2002,18 @@ begin
   Result := Target.VersionNumber = 3;
   {$ELSE ~KYLIX}
   if Target.RADToolKind = brCppBuilder then
-    Result := Target.VersionNumber in [5..6]
+    Result := Target.VersionNumber in [5..6, 10]
   else
-    Result := Target.VersionNumber in [5..7, 9];
+    Result := Target.VersionNumber in [5..7, 9, 10];
   {$ENDIF ~KYLIX}
 end;
 
 // History:
 
 // $Log$
+// Revision 1.83  2005/12/04 10:10:57  obones
+// Borland Developer Studio 2006 support
+//
 // Revision 1.82  2005/11/13 17:05:01  uschuster
 // some fixes for Kylix
 //
