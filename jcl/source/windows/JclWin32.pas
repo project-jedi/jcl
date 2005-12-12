@@ -5275,7 +5275,7 @@ type
   PRasDialDlg = ^TRasDialDlg;
   tagRASDIALDLG = packed record
     dwSize: DWORD;
-    hwndOwner: HWND;
+    hwndOwner: THandle;
     dwFlags: DWORD;
     xDlg: Longint;
     yDlg: Longint;

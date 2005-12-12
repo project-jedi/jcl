@@ -235,13 +235,13 @@ procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single); overload;
 function RGBToHLS(const RGB: TColorVector): TColorVector; overload;
 function RGBToHLS(const RGBColor: TColorRef): THLSVector; overload;
 
+{$IFDEF KEEP_DEPRECATED}
 // obsolete; use corresponding HLS aliases instead
-{$IFNDEF DROP_OBSOLETE_CODE}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 // keep HSL identifier to avoid ambiguity with HLS overload
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
@@ -342,6 +342,7 @@ const
 var
   MMX_ACTIVE: Boolean;
 
+
 procedure OutOfResources;
 begin
   raise EOutOfResources.CreateRes(@SOutOfResources);
@@ -365,6 +366,7 @@ begin
   if Value = 0 then GDIError;
   Result := Value;
 end;
+
 
 //=== Internal LowLevel ======================================================
 
@@ -2024,12 +2026,12 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
 begin
   HLSToRGB(H, L, S, R, G, B);
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 function HSLToRGB(const H, S, L: Single): TColor32;
 var
@@ -2077,12 +2079,12 @@ begin
   end;
 end;
 
-{$IFNDEF DROP_OBSOLETE_CODE}
+{$IFDEF KEEP_DEPRECATED}
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single);
 begin
   RGBToHLS(R, G, B, H, L, S);
 end;
-{$ENDIF ~DROP_OBSOLETE_CODE}
+{$ENDIF KEEP_DEPRECATED}
 
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
 begin
