@@ -166,13 +166,13 @@ type
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
     constructor CreateRect(const ARect: TRect; DummyForBCB: Boolean = False); overload;
-    constructor CreateRect(const Left, Top, Right, Bottom: Integer; DummyForBCB: Byte = 0); overload;
+    constructor CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
-    constructor CreateRoundRect(const Left, Top, Right, Bottom, CornerWidth, CornerHeight: Integer); overload;
+    constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
-    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle); overload;
     constructor CreateMapWindow(InitialRegion: TJclRegion; ControlFrom, ControlTo: TWinControl); overload;
     destructor Destroy; override;
     procedure Clip(Canvas: TCanvas);
@@ -190,7 +190,7 @@ type
     function PointIn(const Point: TPoint): Boolean; overload;
     function RectIn(const ARect: TRect): Boolean; overload;
     function RectIn(Top, Left, Bottom, Right: Integer): Boolean; overload;
-    procedure SetWindow(Window: HWND; Redraw: Boolean);
+    procedure SetWindow(Window: THandle; Redraw: Boolean);
     function GetRegionInfo: TJclRegionInfo;
     property Box: TRect read GetBox;
     property Handle: HRGN read GetHandle;
@@ -488,9 +488,9 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 
 // PolyLines and Polygons
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
@@ -2011,7 +2011,7 @@ begin
   end;
 end;
 
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle); overload;
 var
   WinDC: HDC;
   Pal: TMaxLogPalette;
@@ -2058,9 +2058,9 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;
 begin
-  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
+  MapWindowPoints(hWndFrom, hWndTo, ARect, 2);
   Result := ARect;
 end;
 
@@ -2223,22 +2223,22 @@ begin
   Create(CreateRectRgnIndirect(ARect), True);
 end;
 
-constructor TJclRegion.CreateRect(const Left, Top, Right, Bottom: Integer; DummyForBCB: Byte = 0);
+constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0);
 begin
-  Create(CreateRectRgn(Left, Top, Right, Bottom), True);
+  Create(CreateRectRgn(Top, Left, Bottom, Right), True);
 end;
 
 constructor TJclRegion.CreateRoundRect(const ARect: TRect; CornerWidth,
   CornerHeight: Integer);
 begin
-  Create(CreateRoundRectRgn(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
+  Create(CreateRoundRectRgn(ARect.Top, ARect.Left, ARect.Bottom, ARect.Right,
     CornerWidth, CornerHeight), True);
 end;
 
-constructor TJclRegion.CreateRoundRect(const Left, Top, Right, Bottom, CornerWidth,
+constructor TJclRegion.CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth,
   CornerHeight: Integer);
 begin
-  Create(CreateRoundRectRgn(Left, Top, Right, Bottom, CornerWidth, CornerHeight), True);
+  Create(CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth, CornerHeight), True);
 end;
 
 constructor TJclRegion.CreatePath(Canvas: TCanvas);
@@ -2253,7 +2253,7 @@ begin
   Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
-constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND);
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle);
 var
   RectRegion: HRGN;
   CurrentRegionInfo : TJclRegionInfo;
@@ -2430,7 +2430,7 @@ end;
                                   do not delete this region handle. The system deletes the region
                                   handle when it no longer needed. }
 
-procedure TJclRegion.SetWindow(Window: HWND; Redraw: Boolean);
+procedure TJclRegion.SetWindow(Window: THandle; Redraw: Boolean);
 begin
   if SetWindowRgn(Window, FHandle, Redraw) <> 0 then
     FOwnsHandle := False;  // Make sure that we do not release the Handle. If we didn't own it before

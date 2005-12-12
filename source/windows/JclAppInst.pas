@@ -66,7 +66,7 @@ type
     FMappingView: TJclFileMappingView;
     FMessageID: DWORD;
     FOptex: TJclOptex;
-    function GetAppWnds(Index: Integer): HWND;
+    function GetAppWnds(Index: Integer): THandle;
     function GetInstanceCount: Integer;
     function GetProcessIDs(Index: Integer): DWORD;
     function GetInstanceIndex(ProcessID: DWORD): Integer;
@@ -77,24 +77,24 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    class function BringAppWindowToFront(const Wnd: HWND): Boolean;
-    class function GetApplicationWnd(const ProcessID: DWORD): HWND;
+    class function BringAppWindowToFront(const Wnd: THandle): Boolean;
+    class function GetApplicationWnd(const ProcessID: DWORD): THandle;
     class procedure KillInstance;
-    class function SetForegroundWindow98(const Wnd: HWND): Boolean;
+    class function SetForegroundWindow98(const Wnd: THandle): Boolean;
     function CheckInstance(const MaxInstances: Word): Boolean;
     procedure CheckMultipleInstances(const MaxInstances: Word);
     procedure CheckSingleInstance;
-    function SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
+    function SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: THandle): Boolean;
     function SendData(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
       Data: Pointer; const Size: Integer;
-      OriginatorWnd: HWND): Boolean;
+      OriginatorWnd: THandle): Boolean;
     function SendString(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
-      const S: string; OriginatorWnd: HWND): Boolean;
+      const S: string; OriginatorWnd: THandle): Boolean;
     function SendStrings(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
-      const Strings: TStrings; OriginatorWnd: HWND): Boolean;
+      const Strings: TStrings; OriginatorWnd: THandle): Boolean;
     function SwitchTo(const Index: Integer): Boolean;
     procedure UserNotify(const Param: Longint);
-    property AppWnds[Index: Integer]: HWND read GetAppWnds;
+    property AppWnds[Index: Integer]: THandle read GetAppWnds;
     property InstanceIndex[ProcessID: DWORD]: Integer read GetInstanceIndex;
     property InstanceCount: Integer read GetInstanceCount;
     property MessageID: DWORD read FMessageID;
@@ -105,7 +105,7 @@ function JclAppInstances: TJclAppInstances; overload;
 function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; overload;
 
 // Interprocess communication routines
-function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
+function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: THandle): TJclAppInstDataKind;
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 procedure ReadMessageString(const Message: TMessage; var S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
@@ -120,7 +120,7 @@ uses
 type
   TWMCopyData = packed record
     Msg: Cardinal;
-    From: HWND;
+    From: THandle;
     CopyDataStruct: PCopyDataStruct;
     Result: Longint;
   end;
@@ -175,7 +175,7 @@ begin
   inherited Destroy;
 end;
 
-class function TJclAppInstances.BringAppWindowToFront(const Wnd: HWND): Boolean;
+class function TJclAppInstances.BringAppWindowToFront(const Wnd: THandle): Boolean;
 begin
   if IsIconic(Wnd) then
     SendMessage(Wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
@@ -215,17 +215,17 @@ begin
   CheckMultipleInstances(1);
 end;
 
-class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): HWND;
+class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): THandle;
 type
   PTopLevelWnd = ^TTopLevelWnd;
   TTopLevelWnd = record
     ProcessID: DWORD;
-    Wnd: HWND;
+    Wnd: THandle;
   end;
 var
   TopLevelWnd: TTopLevelWnd;
 
-  function EnumWinProc(Wnd: HWND; Param: PTopLevelWnd): BOOL; stdcall;
+  function EnumWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
   var
     PID: DWORD;
     C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
@@ -248,7 +248,7 @@ begin
   Result := TopLevelWnd.Wnd;
 end;
 
-function TJclAppInstances.GetAppWnds(Index: Integer): HWND;
+function TJclAppInstances.GetAppWnds(Index: Integer): THandle;
 begin
   Result := GetApplicationWnd(GetProcessIDs(Index));
 end;
@@ -329,11 +329,11 @@ end;
 procedure TJclAppInstances.NotifyInstances(const W, L: Integer);
 var
   I: Integer;
-  Wnd: HWND;
+  Wnd: THandle;
   TID: DWORD;
   Msg: TMessage;
 
-  function EnumWinProc(Wnd: HWND; Message: PMessage): BOOL; stdcall;
+  function EnumWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
   begin 
     with Message^ do
       SendNotifyMessage(Wnd, Msg, WParam, LParam);
@@ -386,7 +386,7 @@ begin
   NotifyInstances(AI_INSTANCEDESTROYED, Integer(FCPID));
 end;
 
-function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
+function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: THandle): Boolean;
 var
   TempList: TStringList;
   I: Integer;
@@ -404,12 +404,12 @@ end;
 function TJclAppInstances.SendData(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind;
   Data: Pointer; const Size: Integer;
-  OriginatorWnd: HWND): Boolean;
+  OriginatorWnd: THandle): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
   TEnumWinRec = record
     WindowClassName: PChar;
-    OriginatorWnd: HWND;
+    OriginatorWnd: THandle;
     CopyData: TCopyDataStruct;
     Self: TJclAppInstances;
   end;
@@ -417,7 +417,7 @@ type
 var
   EnumWinRec: TEnumWinRec;
 
-  function EnumWinProc(Wnd: HWND; Data: PEnumWinRec): BOOL; stdcall;
+  function EnumWinProc(Wnd: THandle; Data: PEnumWinRec): BOOL; stdcall;
   var
     ClassName: array [0..200] of Char;
     I: Integer;
@@ -460,7 +460,7 @@ end;
 
 function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string;
-  OriginatorWnd: HWND): Boolean;
+  OriginatorWnd: THandle): Boolean;
 begin
   Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
     OriginatorWnd);
@@ -468,7 +468,7 @@ end;
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings;
-  OriginatorWnd: HWND): Boolean;
+  OriginatorWnd: THandle): Boolean;
 var
   S: string;
 begin
@@ -476,7 +476,7 @@ begin
   Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
 end;
 
-class function TJclAppInstances.SetForegroundWindow98(const Wnd: HWND): Boolean;
+class function TJclAppInstances.SetForegroundWindow98(const Wnd: THandle): Boolean;
 var
   ForeThreadID, NewThreadID: DWORD;
 begin
@@ -524,7 +524,7 @@ begin
 end;
 
 // Interprocess communication routines
-function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
+function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: THandle): TJclAppInstDataKind;
 begin
   if (Message.Msg = WM_COPYDATA) and (TWMCopyData(Message).From <> IgnoredOriginatorWnd) then
   begin
@@ -576,6 +576,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.14  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.13  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

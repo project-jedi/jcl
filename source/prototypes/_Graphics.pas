@@ -183,7 +183,7 @@ type
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
-    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle); overload;
     constructor CreateMapWindow(InitialRegion: TJclRegion; ControlFrom, ControlTo: TWinControl); overload;
     destructor Destroy; override;
     procedure Clip(Canvas: TCanvas);
@@ -201,7 +201,7 @@ type
     function PointIn(const Point: TPoint): Boolean; overload;
     function RectIn(const ARect: TRect): Boolean; overload;
     function RectIn(Top, Left, Bottom, Right: Integer): Boolean; overload;
-    procedure SetWindow(Window: HWND; Redraw: Boolean);
+    procedure SetWindow(Window: THandle; Redraw: Boolean);
     function GetRegionInfo: TJclRegionInfo;
     property Box: TRect read GetBox;
     property Handle: HRGN read GetHandle;
@@ -515,9 +515,9 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 {$IFDEF VCL}
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 {$ENDIF VCL}
 
 {$IFDEF Bitmap32}
@@ -2060,7 +2060,7 @@ begin
   end;
 end;
 
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle); overload;
 var
   WinDC: HDC;
   Pal: TMaxLogPalette;
@@ -2107,9 +2107,9 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;
 begin
-  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
+  MapWindowPoints(hWndFrom, hWndTo, ARect, 2);
   Result := ARect;
 end;
 {$ENDIF VCL}
@@ -2306,7 +2306,7 @@ begin
   Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
-constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND);
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle);
 var
   RectRegion: HRGN;
   CurrentRegionInfo : TJclRegionInfo;
@@ -2483,7 +2483,7 @@ end;
                                   do not delete this region handle. The system deletes the region
                                   handle when it no longer needed. }
 
-procedure TJclRegion.SetWindow(Window: HWND; Redraw: Boolean);
+procedure TJclRegion.SetWindow(Window: THandle; Redraw: Boolean);
 begin
   if SetWindowRgn(Window, FHandle, Redraw) <> 0 then
     FOwnsHandle := False;  // Make sure that we do not release the Handle. If we didn't own it before
@@ -5682,6 +5682,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.25  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.24  2005/08/07 13:09:55  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //

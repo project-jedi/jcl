@@ -251,7 +251,7 @@ function CorBindToCurrentRuntime(pwszFileName: PWideChar;
 function ClrCreateManagedInstance(pTypeName: PWideChar;
   const riid: TIID; out pv): HRESULT; stdcall;
 procedure CorMarkThreadInThreadPool; stdcall;
-function RunDll32ShimW(const hwnd: HWND; const hinst: HMODULE;
+function RunDll32ShimW(const hwnd: THandle; const hinst: HMODULE;
   lpszCmdLine: PWideChar; const nCmdShow: Integer): HRESULT; stdcall;
 function LoadLibraryShim(szDllName, szVersion: PWideChar;
   const pvReserved: Pointer; out phModDll: HMODULE): HRESULT; stdcall;
@@ -755,6 +755,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.13  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -209,11 +209,11 @@ type
     function GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
     procedure SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
   protected
-    constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
+    constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
     procedure BuildDestinations;
     procedure BuildLines;
     procedure Close;
-    procedure Open(ACallBackWnd: HWND);
+    procedure Open(ACallBackWnd: THandle);
   public
     destructor Destroy; override;
     function FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
@@ -233,7 +233,7 @@ type
 
   TJclMixer = class(TObject)
   private
-    FCallbackWnd: HWND;
+    FCallbackWnd: THandle;
     FDeviceList: TObjectList;
     function GetDeviceCount: Integer;
     function GetDevices(Index: Integer): TJclMixerDevice;
@@ -247,9 +247,9 @@ type
   protected
     procedure BuildDevices;
   public
-    constructor Create(ACallBackWnd: HWND = 0);
+    constructor Create(ACallBackWnd: THandle = 0);
     destructor Destroy; override;
-    property CallbackWnd: HWND read FCallbackWnd;
+    property CallbackWnd: THandle read FCallbackWnd;
     property Devices[Index: Integer]: TJclMixerDevice read GetDevices; default;
     property DeviceCount: Integer read GetDeviceCount;
     property FirstDevice: TJclMixerDevice read GetFirstDevice;
@@ -862,7 +862,7 @@ end;
 
 //=== { TJclMixerDevice } ====================================================
 
-constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
+constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
 begin
   FDeviceIndex := ADeviceIndex;
   FHandle := -1;
@@ -1010,7 +1010,7 @@ begin
   Result := FCapabilities.szPname;
 end;
 
-procedure TJclMixerDevice.Open(ACallBackWnd: HWND);
+procedure TJclMixerDevice.Open(ACallBackWnd: THandle);
 var
   Flags: DWORD;
 begin
@@ -1037,7 +1037,7 @@ end;
 
 //=== { TJclMixer } ==========================================================
 
-constructor TJclMixer.Create(ACallBackWnd: HWND);
+constructor TJclMixer.Create(ACallBackWnd: THandle);
 begin
   FDeviceList := TObjectList.Create;
   FCallbackWnd := ACallBackWnd;
@@ -1345,6 +1345,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.17  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -61,8 +61,8 @@ type
   TUnicodePath     = array [0..MAX_PATH-1] of WideChar;
   TAnsiPath        = array [0..MAX_PATH-1] of char;
 
-function SHDeleteFiles(Parent: HWND; const Files: string; Options: TSHDeleteOptions): Boolean;
-function SHDeleteFolder(Parent: HWND; const Folder: string; Options: TSHDeleteOptions): Boolean;
+function SHDeleteFiles(Parent: THandle; const Files: string; Options: TSHDeleteOptions): Boolean;
+function SHDeleteFolder(Parent: THandle; const Folder: string; Options: TSHDeleteOptions): Boolean;
 function SHRenameFile(const Src, Dest: string; Options: TSHRenameOptions): Boolean;
 
 type
@@ -88,16 +88,16 @@ function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 
 function GetSpecialFolderLocation(const Folder: Integer): string;
 
-function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean; overload;
-function DisplayPropDialog(const Handle: HWND; Item: PItemIdList): Boolean; overload;
+function DisplayPropDialog(const Handle: THandle; const FileName: string): Boolean; overload;
+function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean; overload;
 
-function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
+function DisplayContextMenuPidl(const Handle: THandle; const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
-function DisplayContextMenu(const Handle: HWND; const FileName: string;
+function DisplayContextMenu(const Handle: THandle; const FileName: string;
   Pos: TPoint): Boolean;
 
-function OpenFolder(const Path: string; Parent: HWND = 0): Boolean;
-function OpenSpecialFolder(FolderID: Integer; Parent: HWND = 0): Boolean;
+function OpenFolder(const Path: string; Parent: THandle = 0): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle = 0): Boolean;
 
 // Memory Management
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
@@ -216,7 +216,7 @@ begin
     Result := Result or FOF_FILESONLY;
 end;
 
-function SHDeleteFiles(Parent: HWND; const Files: string;
+function SHDeleteFiles(Parent: THandle; const Files: string;
   Options: TSHDeleteOptions): Boolean;
 var
   FileOp: TSHFileOpStruct;
@@ -226,7 +226,7 @@ begin
   with FileOp do
   begin
     {$IFDEF FPC}
-    hwnd := Parent;
+    THandle := Parent;
     {$ELSE}
     Wnd := Parent;
     {$ENDIF FPC}
@@ -242,7 +242,7 @@ begin
   {$ENDIF FPC}
 end;
 
-function SHDeleteFolder(Parent: HWND; const Folder: string;
+function SHDeleteFolder(Parent: THandle; const Folder: string;
   Options: TSHDeleteOptions): Boolean;
 begin
   Exclude(Options, doFilesOnly);
@@ -271,7 +271,7 @@ begin
   with FileOp do
   begin
     {$IFDEF FPC}
-    hwnd := GetDesktopWindow;
+    THandle := GetDesktopWindow;
     {$ELSE}
     Wnd := GetDesktopWindow;
     {$ENDIF FPC}
@@ -423,7 +423,7 @@ begin
     Result := '';
 end;
 
-function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean;
+function DisplayPropDialog(const Handle: THandle; const FileName: string): Boolean;
 var
   Info: TShellExecuteInfo;
 begin
@@ -440,7 +440,7 @@ begin
   Result := ShellExecuteEx(@Info);
 end;
 
-function DisplayPropDialog(const Handle: HWND; Item: PItemIdList): Boolean;
+function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean;
 var
   Info: TShellExecuteInfo;
 begin
@@ -463,7 +463,7 @@ end;
 // note: storing the IContextMenu2 pointer in the window's user data was
 // 'inspired' by (read: copied from) code by Brad Stowers.
 
-function MenuCallback(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+function MenuCallback(Wnd: THandle; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
 var
   ContextMenu2: IContextMenu2;
 begin
@@ -493,7 +493,7 @@ end;
 
 // Helper function for DisplayContextMenu, creates the callback window.
 
-function CreateMenuCallbackWnd(const ContextMenu: IContextMenu2): HWND;
+function CreateMenuCallbackWnd(const ContextMenu: IContextMenu2): THandle;
 const
   IcmCallbackWnd = 'ICMCALLBACKWND';
 var
@@ -508,7 +508,7 @@ begin
     0, 0, 0, 0, 0, HInstance, Pointer(ContextMenu));
 end;
 
-function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
+function DisplayContextMenuPidl(const Handle: THandle; const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
 var
   Cmd: Cardinal;
@@ -516,7 +516,7 @@ var
   ContextMenu2: IContextMenu2;
   Menu: HMENU;
   CommandInfo: TCMInvokeCommandInfo;
-  CallbackWindow: HWND;
+  CallbackWindow: THandle;
 begin
   Result := False;
   if (Item = nil) or (Folder = nil) then
@@ -555,7 +555,7 @@ begin
   end;
 end;
 
-function DisplayContextMenu(const Handle: HWND; const FileName: string;
+function DisplayContextMenu(const Handle: THandle; const FileName: string;
   Pos: TPoint): Boolean;
 var
   ItemIdList: PItemIdList;
@@ -570,7 +570,7 @@ begin
   end;
 end;
 
-function OpenFolder(const Path: string; Parent: HWND): Boolean;
+function OpenFolder(const Path: string; Parent: THandle): Boolean;
 var
   Sei: TShellExecuteInfo;
 begin
@@ -590,7 +590,7 @@ begin
   end;
 end;
 
-function OpenSpecialFolder(FolderID: Integer; Parent: HWND): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle): Boolean;
 var
   Malloc: IMalloc;
   Pidl: PItemIDList;
@@ -1408,6 +1408,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.20  2005/02/25 07:20:16  marquardt
 // add section lines
 //

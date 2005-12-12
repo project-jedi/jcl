@@ -233,12 +233,12 @@ function ModuleFromAddr(const Addr: Pointer): HMODULE;
 function IsSystemModule(const Module: HMODULE): Boolean;
 {$ENDIF ~FPC}
 
-function IsMainAppWindow(Wnd: HWND): Boolean;
-function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+function IsMainAppWindow(Wnd: THandle): Boolean;
+function IsWindowResponding(Wnd: THandle; Timeout: Integer): Boolean;
 
-function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
-function GetWindowCaption(Wnd: HWND): string;
-function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+function GetWindowIcon(Wnd: THandle; LargeIcon: Boolean): HICON;
+function GetWindowCaption(Wnd: THandle): string;
+function TerminateTask(Wnd: THandle; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
@@ -247,9 +247,9 @@ function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResul
 {$IFDEF MSWINDOWS}
 {.$IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
-function GetProcessNameFromWnd(Wnd: HWND): string;
+function GetProcessNameFromWnd(Wnd: THandle): string;
 function GetProcessNameFromPid(PID: DWORD): string;
-function GetMainAppWndFromPid(PID: DWORD): HWND;
+function GetMainAppWndFromPid(PID: DWORD): THandle;
 {.$ENDIF ~FPC}
 
 function GetShellProcessName: string;
@@ -309,7 +309,7 @@ function GetWindowsVersionString: string;
 function NtProductTypeString: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
-function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boolean;
+function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 function GetNativeSystemInfo(var SystemInfo: TSystemInfo): Boolean;
 function GetProcessorArchitecture: TProcessorArchitecture;
 function IsWindows64: Boolean;
@@ -2535,7 +2535,7 @@ end;
 
 function GetTasksList(const List: TStrings): Boolean;
 
-  function EnumWindowsProc(Wnd: HWND; List: TStrings): Boolean; stdcall;
+  function EnumWindowsProc(Wnd: THandle; List: TStrings): Boolean; stdcall;
   var
     Caption: array [0..1024] of Char;
   begin
@@ -2589,9 +2589,9 @@ end;
 // Reference: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
 { TODO : wrong link }
 
-function IsMainAppWindow(Wnd: HWND): Boolean;
+function IsMainAppWindow(Wnd: THandle): Boolean;
 var
-  ParentWnd: HWND;
+  ParentWnd: THandle;
   ExStyle: DWORD;
 begin
   if IsWindowVisible(Wnd) then
@@ -2605,14 +2605,14 @@ begin
     Result := False;
 end;
 
-function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+function IsWindowResponding(Wnd: THandle; Timeout: Integer): Boolean;
 var
   Res: DWORD;
 begin
   Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, Res) <> 0;
 end;
 
-function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
+function GetWindowIcon(Wnd: THandle; LargeIcon: Boolean): HICON;
 var
   Width, Height: Integer;
   TempIcon: HICON;
@@ -2639,7 +2639,7 @@ begin
   Result := CopyImage(TempIcon, IMAGE_ICON, Width, Height, 0);
 end;
 
-function GetWindowCaption(Wnd: HWND): string;
+function GetWindowCaption(Wnd: THandle): string;
 const
   BufferAllocStep = 256;
 var
@@ -2670,7 +2670,7 @@ function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResul
 var
   ProcessHandle: THandle;
 
-  function EnumWindowsProc(Wnd: HWND; ProcessID: DWORD): Boolean; stdcall;
+  function EnumWindowsProc(Wnd: THandle; ProcessID: DWORD): Boolean; stdcall;
   var
     PID: DWORD;
   begin
@@ -2699,7 +2699,7 @@ begin
   end;
 end;
 
-function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+function TerminateTask(Wnd: THandle; Timeout: Integer): TJclTerminateAppResult;
 var
   PID: DWORD;
 begin
@@ -2709,7 +2709,7 @@ begin
     Result := taError;  
 end;
 
-function GetProcessNameFromWnd(Wnd: HWND): string;
+function GetProcessNameFromWnd(Wnd: THandle): string;
 var
   List: TStringList;
   PID: DWORD;
@@ -2777,17 +2777,17 @@ begin
   end;
 end;
 
-function GetMainAppWndFromPid(PID: DWORD): HWND;
+function GetMainAppWndFromPid(PID: DWORD): THandle;
 type
   PSearch = ^TSearch;
   TSearch = record
     PID: DWORD;
-    Wnd: HWND;
+    Wnd: THandle;
   end;
 var
   SearchRec: TSearch;
 
-  function EnumWindowsProc(Wnd: HWND; Res: PSearch): Boolean; stdcall;
+  function EnumWindowsProc(Wnd: THandle; Res: PSearch): Boolean; stdcall;
   var
     WindowPid: DWORD;
   begin
@@ -3129,7 +3129,7 @@ function glGetString(name: Cardinal): PChar; stdcall; external opengl32;
 function glGetError: Cardinal; stdcall; external opengl32;
 function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
 
-function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boolean;
+function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 const
   GL_NO_ERROR = 0;
   GL_VENDOR   = $1F00;
@@ -5281,6 +5281,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.56  2005/12/12 21:54:09  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.55  2005/11/22 08:37:59  obones
 // Added missing EXTERNALSYM declarations
 //

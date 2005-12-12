@@ -194,7 +194,7 @@ type
     Flags: FLAGS;
   end;
 
-  TJclTaskWindowsList = array of HWND;
+  TJclTaskWindowsList = array of THandle;
 
   TJclEmail = class(TJclSimpleMapi)
   private
@@ -203,7 +203,7 @@ type
     FFindOptions: TJclEmailFindOptions;
     FHtmlBody: Boolean;
     FLogonOptions: TJclEmailLogonOptions;
-    FParentWnd: HWND;
+    FParentWnd: THandle;
     FParentWndValid: Boolean;
     FReadMsg: TJclEmailReadMsg;
     FRecipients: TJclEmailRecips;
@@ -212,10 +212,10 @@ type
     FSubject: string;
     FTaskWindowList: TJclTaskWindowsList;
     function GetAttachments: TStrings;
-    function GetParentWnd: HWND;
+    function GetParentWnd: THandle;
     function GetUserLogged: Boolean;
     procedure SetBody(const Value: string);
-    procedure SetParentWnd(const Value: HWND);
+    procedure SetParentWnd(const Value: THandle);
   protected
     procedure BeforeUnloadClientLib; override;
     procedure DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
@@ -244,7 +244,7 @@ type
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
     property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
-    property ParentWnd: HWND read GetParentWnd write SetParentWnd;
+    property ParentWnd: THandle read GetParentWnd write SetParentWnd;
     property ReadMsg: TJclEmailReadMsg read FReadMsg;
     property Recipients: TJclEmailRecips read FRecipients;
     property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
@@ -255,15 +255,15 @@ type
 
 // Simple email send function
 function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
-  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: HWND = 0;
+  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: THandle = 0;
   const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
-  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: HWND = 0;
+  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: THandle = 0;
   const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
-  const Attachment: string = ''; ParentWND: HWND = 0;
+  const Attachment: string = ''; ParentWND: THandle = 0;
   const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 // MAPI Errors
@@ -371,7 +371,7 @@ procedure RestoreTaskWindowsList(const List: TJclTaskWindowsList);
 var
   I: Integer;
 
-  function RestoreTaskWnds(Wnd: HWND; List: TJclTaskWindowsList): BOOL; stdcall;
+  function RestoreTaskWnds(Wnd: THandle; List: TJclTaskWindowsList): BOOL; stdcall;
   var
     I: Integer;
     EnableIt: Boolean;
@@ -402,7 +402,7 @@ end;
 
 function SaveTaskWindowsList: TJclTaskWindowsList;
 
-  function SaveTaskWnds(Wnd: HWND; var Data: TJclTaskWindowsList): BOOL; stdcall;
+  function SaveTaskWnds(Wnd: THandle; var Data: TJclTaskWindowsList): BOOL; stdcall;
   var
     C: Integer;
   begin
@@ -899,7 +899,7 @@ begin
   Result := FAttachments;
 end;
 
-function TJclEmail.GetParentWnd: HWND;
+function TJclEmail.GetParentWnd: THandle;
 begin
   if FParentWndValid then
     Result := FParentWnd
@@ -1221,7 +1221,7 @@ begin
     FBody := StrEnsureSuffix(AnsiCrLf, Value);
 end;
 
-procedure TJclEmail.SetParentWnd(const Value: HWND);
+procedure TJclEmail.SetParentWnd(const Value: THandle);
 begin
   FParentWnd := Value;
   FParentWndValid := True;
@@ -1235,7 +1235,7 @@ end;
 //=== Simple email send function =============================================
 
 function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: string; const AAttachment: string;
-  AShowDialog: Boolean; AParentWND: HWND; const AProfileName, APassword, AAddressType: string): Boolean;
+  AShowDialog: Boolean; AParentWND: THandle; const AProfileName, APassword, AAddressType: string): Boolean;
 begin
   with TJclEmail.Create do
   try
@@ -1256,7 +1256,7 @@ begin
 end;
 
 function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
-  const Attachment: string; ShowDialog: Boolean; ParentWND: HWND;
+  const Attachment: string; ShowDialog: Boolean; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
   Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
@@ -1264,7 +1264,7 @@ begin
 end;
 
 function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
-  const Attachment: string; ShowDialog: Boolean; ParentWND: HWND;
+  const Attachment: string; ShowDialog: Boolean; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
   Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
@@ -1272,7 +1272,7 @@ begin
 end;
 
 function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
-  const Attachment: string; ParentWND: HWND;
+  const Attachment: string; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
   Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
@@ -1282,6 +1282,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/12/12 21:54:10  outchy
+// HWND changed to THandle (linking problems with BCB).
+//
 // Revision 1.14  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
