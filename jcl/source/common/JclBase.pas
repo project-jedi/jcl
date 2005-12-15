@@ -221,6 +221,7 @@ procedure RaiseLastOSError;
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
 {$IFDEF CLR}
@@ -283,6 +284,23 @@ begin
 end;
 
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+{$ELSE}
+begin
+  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+{$ENDIF CLR}
+end;
+
+procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
 var
   I: Integer;
@@ -476,6 +494,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.46  2005/12/15 11:35:13  ahuser
+// Additional MoveArray function for .NET (should have been committed months ago)
+//
 // Revision 1.45  2005/10/30 05:24:20  rrossmair
 // - updated version information for release 1.96
 //
