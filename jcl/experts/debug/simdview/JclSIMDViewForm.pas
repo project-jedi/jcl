@@ -109,6 +109,7 @@ type
   protected
     procedure DoClose(var Action: TCloseAction); override;
     procedure UpdateActions; override;
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent; ADebuggerServices: IOTADebuggerServices;
       AExpert: TJclOTAExpert); reintroduce;
@@ -131,6 +132,7 @@ implementation
 
 uses
   TypInfo,
+  JclOtaResources,
   JclSIMDCpuInfo;
 
 {$R *.dfm}
@@ -197,6 +199,20 @@ begin
   GetThreadValues;
 end;
 
+procedure TJclSIMDViewFrm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
+end;
+
 destructor TJclSIMDViewFrm.Destroy;
 begin
   SetLength(FRegisterChanged,0);
@@ -251,19 +267,27 @@ end;
 procedure TJclSIMDViewFrm.ListBoxMXCSRDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
-  with (Control as TListBox), Canvas do
-  begin
-    if not (odFocused in State) then
+  try
+    with (Control as TListBox), Canvas do
     begin
-      Pen.Color := Brush.Color;
-      if odSelected in State then
-        Font.Color := clWindow;
+      if not (odFocused in State) then
+      begin
+        Pen.Color := Brush.Color;
+        if odSelected in State then
+          Font.Color := clWindow;
+      end;
+      Rectangle(Rect);
+      TextOut(Rect.Left + 2, Rect.Top, MXCSRBitsDescriptions[Index].ShortName);
+      if FMXCSRChanged[Index] then
+        Font.Color := clRed;
+      TextOut(Rect.Left + 2 + TextExtent(MXCSRBitsDescriptions[Index].ShortName).cx, Rect.Top, Items[Index]);
     end;
-    Rectangle(Rect);
-    TextOut(Rect.Left + 2, Rect.Top, MXCSRBitsDescriptions[Index].ShortName);
-    if FMXCSRChanged[Index] then
-      Font.Color := clRed;
-    TextOut(Rect.Left + 2 + TextExtent(MXCSRBitsDescriptions[Index].ShortName).cx, Rect.Top, Items[Index]);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -273,42 +297,50 @@ var
   AIndex: Integer;
   AText: string;
 begin
-  if Shift <> [] then
-    Application.HideHint
-  else
-    with Sender as TListBox do
-    begin
-      AIndex := ItemAtPos(Point(X,Y),True);
-      if (AIndex >= 0) and (AIndex < Items.Count) then
+  try
+    if Shift <> [] then
+      Application.HideHint
+    else
+      with Sender as TListBox do
       begin
-        with MXCSRBitsDescriptions[AIndex] do
+        AIndex := ItemAtPos(Point(X,Y),True);
+        if (AIndex >= 0) and (AIndex < Items.Count) then
         begin
-          AText := LongName;
-          if AndMask = MXCSR_RC then
-            case (FVectorFrame.MXCSR and AndMask) shr Shifting of
-              0:
-                AText := SysUtils.Format('%s (%s)', [AText, RsRoundToNearest]);
-              1:
-                AText := SysUtils.Format('%s (%s)', [AText, RsRoundDown]);
-              2:
-                AText := SysUtils.Format('%s (%s)', [AText, RsRoundUp]);
-              3:
-                AText := SysUtils.Format('%s (%s)', [AText, RsRoundTowardZero]);
-          end;
-          if AText <> Hint then
+          with MXCSRBitsDescriptions[AIndex] do
           begin
-            Hint := AText;
-            Application.HideHint;
-            Application.ActivateHint(Point(X, Y));
+            AText := LongName;
+            if AndMask = MXCSR_RC then
+              case (FVectorFrame.MXCSR and AndMask) shr Shifting of
+                0:
+                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundToNearest]);
+                1:
+                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundDown]);
+                2:
+                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundUp]);
+                3:
+                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundTowardZero]);
+            end;
+            if AText <> Hint then
+            begin
+              Hint := AText;
+              Application.HideHint;
+              Application.ActivateHint(Point(X, Y));
+            end;
           end;
+        end
+        else
+        begin
+          Hint := '';
+          Application.HideHint;
         end;
-      end
-      else
-      begin
-        Hint := '';
-        Application.HideHint;
       end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
     end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integer;
@@ -316,31 +348,39 @@ procedure TJclSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integ
 var
   AText: string;
 begin
-  with (Control as TListBox), Canvas do
-  begin
-    if not (odFocused in State) then
+  try
+    with (Control as TListBox), Canvas do
     begin
-      Pen.Color := Brush.Color;
-      if odSelected in State then
-        Font.Color := clWindow;
-    end;
-    Rectangle(Rect);
-    if Index < NbMMRegister then
-      AText := SysUtils.Format('MM%d ', [Index])
-    else
-    if Index < NbMMRegister + NbXMMRegister - 1 then
-    begin
-      if CpuInfo.Is64Bits then
-        AText := SysUtils.Format('XMM%.2d ', [Index - NbMMRegister])
+      if not (odFocused in State) then
+      begin
+        Pen.Color := Brush.Color;
+        if odSelected in State then
+          Font.Color := clWindow;
+      end;
+      Rectangle(Rect);
+      if Index < NbMMRegister then
+        AText := SysUtils.Format('MM%d ', [Index])
       else
-        AText := SysUtils.Format('XMM%d ', [Index - NbMMRegister]);
-    end
-    else
-      AText := 'MXCSR ';
-    TextOut(Rect.Left + 2, Rect.Top, AText);
-    if FRegisterChanged[Index] then
-      Font.Color := clRed;
-    TextOut(Rect.Left + 2 + TextExtent(AText).cx, Rect.Top, Items[Index]);
+      if Index < NbMMRegister + NbXMMRegister - 1 then
+      begin
+        if CpuInfo.Is64Bits then
+          AText := SysUtils.Format('XMM%.2d ', [Index - NbMMRegister])
+        else
+          AText := SysUtils.Format('XMM%d ', [Index - NbMMRegister]);
+      end
+      else
+        AText := 'MXCSR ';
+      TextOut(Rect.Left + 2, Rect.Top, AText);
+      if FRegisterChanged[Index] then
+        Font.Color := clRed;
+      TextOut(Rect.Left + 2 + TextExtent(AText).cx, Rect.Top, Items[Index]);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -523,12 +563,20 @@ end;
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
   if not SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread,FVectorFrame) then
-    raise Exception.Create('Unable to update the thread context');
+    raise EJclExpertException.Create(RsECantUpdateThreadContext);
 end;
 
 procedure TJclSIMDViewFrm.MenuItemFormatClick(Sender: TObject);
 begin
-  Format := TJclSIMDFormat((Sender as TMenuItem).Tag);
+  try
+    Format := TJclSIMDFormat((Sender as TMenuItem).Tag);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.SetDisplay(const Value: TJclXMMContentType);
@@ -565,7 +613,15 @@ end;
 
 procedure TJclSIMDViewFrm.MenuItemDisplayClick(Sender: TObject);
 begin
-  Display := TJclXMMContentType((Sender as TMenuItem).Tag);
+  try
+    Display := TJclXMMContentType((Sender as TMenuItem).Tag);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.DoClose(var Action: TCloseAction);
@@ -577,11 +633,19 @@ procedure TJclSIMDViewFrm.MenuItemCpuInfoClick(Sender: TObject);
 var
   FormCPUInfo: TJclFormCpuInfo;
 begin
-  FormCPUInfo := TJclFormCpuInfo.Create(Self);
   try
-    FormCPUInfo.Execute(CpuInfo);
-  finally
-    FormCPUInfo.Free;
+    FormCPUInfo := TJclFormCpuInfo.Create(Self);
+    try
+      FormCPUInfo.Execute(CpuInfo);
+    finally
+      FormCPUInfo.Free;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -627,17 +691,33 @@ procedure TJclSIMDViewFrm.ActionStayOnTopUpdate(Sender: TObject);
 var
   AAction: TAction;
 begin
-  AAction := Sender as TAction;
-  AAction.Checked := FormStyle = fsStayOnTop;
-  AAction.Enabled := True;
+  try
+    AAction := Sender as TAction;
+    AAction.Checked := FormStyle = fsStayOnTop;
+    AAction.Enabled := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionStayOnTopExecute(Sender: TObject);
 begin
-  if FormStyle = fsStayOnTop then
-    FormStyle := fsNormal
-  else
-    FormStyle := fsStayOnTop;
+  try
+    if FormStyle = fsStayOnTop then
+      FormStyle := fsNormal
+    else
+      FormStyle := fsStayOnTop;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionModifyUpdate(Sender: TObject);
@@ -646,59 +726,75 @@ var
   AThread: IOTAThread;
   AItemIndex: Integer;
 begin
-  AProcess := DebuggerServices.CurrentProcess;
-  AThread := nil;
-  AItemIndex := ListBoxRegs.ItemIndex;
-  if NbXMMRegister > 0 then
-    Inc(AItemIndex);
+  try
+    AProcess := DebuggerServices.CurrentProcess;
+    AThread := nil;
+    AItemIndex := ListBoxRegs.ItemIndex;
+    if NbXMMRegister > 0 then
+      Inc(AItemIndex);
 
-  if Assigned(AProcess) then
-    AThread := AProcess.CurrentThread;
+    if Assigned(AProcess) then
+      AThread := AProcess.CurrentThread;
 
-  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
-    (AItemIndex >= 0) and (AItemIndex < (NbMMRegister + NbXMMRegister));
+    (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
+      (AItemIndex >= 0) and (AItemIndex < (NbMMRegister + NbXMMRegister));
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionModifyExecute(Sender: TObject);
 var
   AItemIndex: Integer;
 begin
-  AItemIndex := ListBoxRegs.ItemIndex;
-  if AItemIndex >= 0 then
   try
-    FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FExpert);
-    FModifyForm.Icon.Assign(Self.Icon);
+    AItemIndex := ListBoxRegs.ItemIndex;
+    if AItemIndex >= 0 then
+    try
+      FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FExpert);
+      FModifyForm.Icon.Assign(Self.Icon);
 
-    if AItemIndex < NbMMRegister then
-    begin
-      FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
-      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-        Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo) then
+      if AItemIndex < NbMMRegister then
       begin
-        FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
-        FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
-        SetThreadValues;
-        GetThreadValues;
-        FRegisterChanged[AItemIndex] := True;
-        ListBoxRegs.Invalidate;
-      end;
-    end else
-    begin
-      if CpuInfo.Is64Bits then
-        FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
-      else
-        FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
-      if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-        Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
+        FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
+        if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+          Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo) then
+        begin
+          FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
+          FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
+          SetThreadValues;
+          GetThreadValues;
+          FRegisterChanged[AItemIndex] := True;
+          ListBoxRegs.Invalidate;
+        end;
+      end else
       begin
-        SetThreadValues;
-        GetThreadValues;
-        FRegisterChanged[AItemIndex] := True;
-        ListBoxRegs.Invalidate;
+        if CpuInfo.Is64Bits then
+          FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
+        else
+          FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
+        if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+          Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
+        begin
+          SetThreadValues;
+          GetThreadValues;
+          FRegisterChanged[AItemIndex] := True;
+          ListBoxRegs.Invalidate;
+        end;
       end;
+    finally
+      FreeAndNil(FModifyForm);
     end;
-  finally
-    FreeAndNil(FModifyForm);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -708,27 +804,43 @@ var
   AThread: IOTAThread;
   AItemIndex: Integer;
 begin
-  AProcess := DebuggerServices.CurrentProcess;
-  AThread := nil;
-  AItemIndex := ListBoxRegs.ItemIndex;
-  if Assigned(AProcess) then
-    AThread := AProcess.CurrentThread;
-  (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
-    (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
-    ((FVectorFrame.FTW and (1 shl AItemIndex)) <> 0) and
-    (FVectorFrame.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
+  try
+    AProcess := DebuggerServices.CurrentProcess;
+    AThread := nil;
+    AItemIndex := ListBoxRegs.ItemIndex;
+    if Assigned(AProcess) then
+      AThread := AProcess.CurrentThread;
+    (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
+      (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
+      ((FVectorFrame.FTW and (1 shl AItemIndex)) <> 0) and
+      (FVectorFrame.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyExecute(Sender: TObject);
 var
   AItemIndex: Integer;
 begin
-  AItemIndex := ListBoxRegs.ItemIndex;
-  FVectorFrame.FTW := FVectorFrame.FTW and not (1 shl AItemIndex);
-  FVectorFrame.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
-  SetThreadValues;
-  GetThreadValues;
-  FRegisterChanged[AItemIndex] := True;
+  try
+    AItemIndex := ListBoxRegs.ItemIndex;
+    FVectorFrame.FTW := FVectorFrame.FTW and not (1 shl AItemIndex);
+    FVectorFrame.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
+    SetThreadValues;
+    GetThreadValues;
+    FRegisterChanged[AItemIndex] := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyAllUpdate(Sender: TObject);
@@ -737,29 +849,53 @@ var
   AThread: IOTAThread;
   AItemIndex: Integer;
 begin
-  AProcess := DebuggerServices.CurrentProcess;
-  AThread := nil;
-  AItemIndex := ListBoxRegs.ItemIndex;
-  if Assigned(AProcess) then
-    AThread := AProcess.CurrentThread;
-  (Sender as TAction).Enabled := (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
-    Assigned(AThread) and (AThread.State = tsStopped);
+  try
+    AProcess := DebuggerServices.CurrentProcess;
+    AThread := nil;
+    AItemIndex := ListBoxRegs.ItemIndex;
+    if Assigned(AProcess) then
+      AThread := AProcess.CurrentThread;
+    (Sender as TAction).Enabled := (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
+      Assigned(AThread) and (AThread.State = tsStopped);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionEmptyAllExecute(Sender: TObject);
 var
   Index: Integer;
 begin
-  FVectorFrame.FTW := 0;
-  for Index := Low(FVectorFrame.FPURegisters) to High(FVectorFrame.FPURegisters) do
-    FVectorFrame.FPURegisters[Index].Data.FloatValue := 0.0;
-  SetThreadValues;
-  GetThreadValues;
+  try
+    FVectorFrame.FTW := 0;
+    for Index := Low(FVectorFrame.FPURegisters) to High(FVectorFrame.FPURegisters) do
+      FVectorFrame.FPURegisters[Index].Data.FloatValue := 0.0;
+    SetThreadValues;
+    GetThreadValues;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionComplementUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := ListBoxMXCSR.ItemIndex >= 0;
+  try
+    (Sender as TAction).Enabled := ListBoxMXCSR.ItemIndex >= 0;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDViewFrm.ActionComplementExecute(Sender: TObject);
@@ -767,16 +903,24 @@ var
   BitValue: Cardinal;
   OldMXCSRValue: Cardinal;
 begin
-  if ListBoxMXCSR.ItemIndex >= 0 then
-    with MXCSRBitsDescriptions[ListBoxMXCSR.ItemIndex] do
-  begin
-    OldMXCSRValue := FVectorFrame.MXCSR;
-    BitValue := (Cardinal(FVectorFrame.MXCSR) and AndMask) shr Shifting;
-    Inc(BitValue);
-    FVectorFrame.MXCSR := (FVectorFrame.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
-    SetThreadValues;
-    FVectorFrame.MXCSR := OldMXCSRValue;
-    GetThreadValues;
+  try
+    if ListBoxMXCSR.ItemIndex >= 0 then
+      with MXCSRBitsDescriptions[ListBoxMXCSR.ItemIndex] do
+    begin
+      OldMXCSRValue := FVectorFrame.MXCSR;
+      BitValue := (Cardinal(FVectorFrame.MXCSR) and AndMask) shr Shifting;
+      Inc(BitValue);
+      FVectorFrame.MXCSR := (FVectorFrame.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
+      SetThreadValues;
+      FVectorFrame.MXCSR := OldMXCSRValue;
+      GetThreadValues;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -785,16 +929,29 @@ procedure TJclSIMDViewFrm.ListBoxesMouseDown(Sender: TObject;
 var
   AListBox: TListBox;
 begin
-  if Button = mbRight then
-  begin
-    AListBox := Sender as TListBox;
-    AListBox.ItemIndex := AListBox.ItemAtPos(Point(X, Y), True);
+  try
+    if Button = mbRight then
+    begin
+      AListBox := Sender as TListBox;
+      AListBox.ItemIndex := AListBox.ItemAtPos(Point(X, Y), True);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.8  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.7  2005/12/04 10:10:57  obones
 // Borland Developer Studio 2006 support
 //
@@ -803,6 +960,11 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.8  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.

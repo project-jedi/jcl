@@ -33,70 +33,8 @@ interface
 uses
   Windows,
   ToolsAPI,
-  JclSysInfo;
-
-resourcestring
-  RsSIMD = 'SIMD';
-  RsMMX = 'MMX';
-  RsExMMX = 'Ex MMX';
-  Rs3DNow = '3DNow!';
-  RsEx3DNow = 'Ex 3DNow!';
-  RsSSE1 = 'SSE1';
-  RsSSE2 = 'SSE2';
-  RsSSE3 = 'SSE3';
-  RsLong = '64-bit Core';
-
-  RsTrademarks =
-    'MMX is a trademark of Intel Corporation.' + #13#10 +
-    '3DNow! is a registered trademark of Advanced Micro Devices.';
-
-  RsNoSIMD = 'No SIMD registers found';
-  RsNoSSE = 'SSE are not supported on this processor';
-  RsNo128SIMD = 'No 128-bit-register SIMD';
-  RsNo64SIMD = 'No 64-bit-register SIMD';
-  RsNotSupportedFormat = '<Unsupported format>';
-  RsNoPackedData = '<No packed data>';
-  RsFormCreateError = 'An exception was triggered while creating the debug window : ';
-  RsModifyMM = 'Modification of MM%d';
-  RsModifyXMM1 = 'Modification of XMM%d';
-  RsModifyXMM2 = 'Modification of XMM%.2d';
-
-  RsVectorIE = 'IE  ';
-  RsVectorDE = 'DE  ';
-  RsVectorZE = 'ZE  ';
-  RsVectorOE = 'OE  ';
-  RsVectorUE = 'UE  ';
-  RsVectorPE = 'PE  ';
-  RsVectorDAZ = 'DAZ '; //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIM = 'IM  ';
-  RsVectorDM = 'DM  ';
-  RsVectorZM = 'ZM  ';
-  RsVectorOM = 'OM  ';
-  RsVectorUM = 'UM  ';
-  RsVectorPM = 'PM  ';
-  RsVectorRC = 'RC  ';
-  RsVectorFZ = 'FZ  ';
-
-  RsVectorIEText = 'Invalid-operation exception';
-  RsVectorDEText = 'Denormal-operand exception';
-  RsVectorZEText = 'Zero-divide exception';
-  RsVectorOEText = 'Overflow exception';
-  RsVectorUEText = 'Underflow exception';
-  RsVectorPEText = 'Precision exception';
-  RsVectorDAZText = 'Denormal are zeros'; //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIMText = 'Invalid-operation mask';
-  RsVectorDMText = 'Denormal-operand mask';
-  RsVectorZMText = 'Zero-divide mask';
-  RsVectorOMText = 'Overflow mask';
-  RsVectorUMText = 'Underflow mask';
-  RsVectorPMText = 'Precision mask';
-  RsVectorRCText = 'Rounding control';
-  RsVectorFZText = 'Flush to zero';
-
-  RsRoundToNearest = 'Round to nearest';
-  RsRoundDown = 'Round down';
-  RsRoundUp = 'Round up';
-  RsRoundTowardZero = 'Round toward zero';
+  JclSysInfo,
+  JclOtaResources;
 
 type
   TJclMMContentType = (mt8Bytes, mt4Words, mt2DWords, mt1QWord, mt2Singles);
@@ -264,7 +202,8 @@ function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFr
 implementation
 
 uses
-  SysUtils, Math;
+  SysUtils, Math,
+  JclOtaUtils;
 
 function FormatBinary(Value: TJclSIMDValue): string;
 var
@@ -272,6 +211,9 @@ var
 const
   Width: array [xt16Bytes..xt2QWords] of Byte = (8, 16, 32, 64);
 begin
+  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+
   Assert(Value.Display < xt4Singles);
   Result := StringOfChar('0', Width[Value.Display]);
   for I := 1 to Width[Value.Display] do
@@ -286,7 +228,9 @@ function FormatSigned(Value: TJclSIMDValue): string;
 const
   Width: array [xt16Bytes..xt2QWords] of Byte = (4, 6, 11, 20);
 begin
-  Assert(Value.Display < xt4Singles);
+  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Shortint(Value.ValueByte));
@@ -307,7 +251,9 @@ function FormatUnsigned(Value: TJclSIMDValue): string;
 const
   Width: array [xt16Bytes..xt2QWords] of Byte = (3, 5, 10, 20);
 begin
-  Assert(Value.Display < xt4Singles);
+  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Byte(Value.ValueByte));
@@ -328,7 +274,9 @@ function FormatHexa(Value: TJclSIMDValue): string;
 const
   Width: array [xt16Bytes..xt2QWords] of Byte = (2, 4, 8, 16);
 begin
-  Assert(Value.Display < xt4Singles);
+  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    
   case Value.Display of
     xt16Bytes:
       Result := IntToHex(Value.ValueByte, Width[xt16Bytes]);
@@ -345,7 +293,9 @@ end;
 
 function FormatFloat(Value: TJclSIMDValue): string;
 begin
-  Assert(Value.Display >= xt4Singles);
+  if not (Value.Display in [xt4Singles, xt2Doubles]) then
+    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    
   case Value.Display of
     xt4Singles:
       Result := FloatToStr(Value.ValueSingle);
@@ -937,6 +887,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.5  2005/12/04 10:10:57  obones
 // Borland Developer Studio 2006 support
 //
@@ -945,6 +900,11 @@ end;
 //
 // Revision 1.3  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.6  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
 // - improved header information, added $Date$ and Revision 1.5  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.

@@ -52,6 +52,8 @@ type
     CheckBoxSSE2: TCheckBox;
     CheckBoxSSE3: TCheckBox;
     ButtonClose: TButton;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     procedure Execute(const CpuInfo: TCPUInfo);
   end;
@@ -61,6 +63,20 @@ implementation
 {$R *.dfm}
 
 //=== { TJclFormCpuInfo } ====================================================
+
+procedure TJclFormCpuInfo.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
+end;
 
 procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo);
 begin
@@ -81,6 +97,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.4  2005/10/26 03:29:44  rrossmair
 // - improved header information, added Date and Log CVS tags.
 //

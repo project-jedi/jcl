@@ -4,6 +4,7 @@ object FrameJclOptions: TFrameJclOptions
   Width = 419
   Height = 265
   TabOrder = 0
+  TabStop = True
   object GroupBoxWizard: TGroupBox
     Left = 8
     Top = 8

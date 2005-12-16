@@ -115,14 +115,23 @@ procedure Register;
 implementation
 
 uses
-  JclOtaConsts, JclSIMDUtils;
+  JclOtaConsts, JclOtaResources, 
+  JclSIMDUtils;
 
 const
   RsSIMDActionName = 'DebugSSECommand';
 
 procedure Register;
 begin
-  RegisterPackageWizard(TJclSIMDWizard.Create);
+  try
+    RegisterPackageWizard(TJclSIMDWizard.Create);
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
+  end;
 end;
 
 //=== { TJclSIMDWizard } =====================================================
@@ -146,29 +155,30 @@ end;
 
 procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
-  if CpuInfo.SSE = 0 then
-  begin
-    MessageDlg(RsNoSSE, mtError, [mbAbort], 0);
-    Exit;
-  end;
+  try
+    if CpuInfo.SSE = 0 then
+      raise EJclExpertException.CreateTrace(RsNoSSE);
 
-  if not Assigned(FForm) then
-  begin
-    FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, Self);
-    try
+    if not Assigned(FForm) then
+    begin
+      FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, Self);
+
       FForm.Icon := FIcon;
       FForm.OnDestroy := FormDestroy;
       FForm.SIMDCaption := GetSIMDString;
       FForm.LoadSettings;
 
       FForm.Show;
-    except
-      on E: Exception do
-        MessageDlg(RsFormCreateError + E.Message, mtError, [mbAbort], 0);
+    end
+    else
+      FForm.Show;
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
     end;
-  end
-  else
-    FForm.Show;
+  end;
 end;
 
 procedure TJclSIMDWizard.SIMDActionUpdate(Sender: TObject);
@@ -177,23 +187,31 @@ var
   AThread: IOTAThread;
   AAction: TAction;
 begin
-  AAction := Sender as TAction;
+  try
+    AAction := Sender as TAction;
 
-  if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
-  begin
-    AThread := nil;
-    AProcess := nil;
-    if DebuggerServices.ProcessCount > 0 then
-      AProcess := DebuggerServices.CurrentProcess;
-    if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
-      AThread := AProcess.CurrentThread;
-    if AThread <> nil then
-      AAction.Enabled := AThread.State in [tsStopped, tsBlocked]
+    if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
+    begin
+      AThread := nil;
+      AProcess := nil;
+      if DebuggerServices.ProcessCount > 0 then
+        AProcess := DebuggerServices.CurrentProcess;
+      if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
+        AThread := AProcess.CurrentThread;
+      if AThread <> nil then
+        AAction.Enabled := AThread.State in [tsStopped, tsBlocked]
+      else
+        AAction.Enabled := False;
+    end
     else
-      AAction.Enabled := False;
-  end
-  else
-    AAction.Enabled := False
+      AAction.Enabled := False
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDWizard.CloseForm;
@@ -221,7 +239,8 @@ var
   Category: string;
 begin
   Supports(Services, IOTADebuggerServices, FDebuggerServices);
-  Assert(Assigned(FDebuggerServices), 'Unable to get Borland Debugger Services');
+  if not Assigned(FDebuggerServices) then
+    raise EJclExpertException.CreateTrace(RsENoDebuggerServices);
 
   Category := '';
   for I := 0 to NTAServices.ActionList.ActionCount - 1 do
@@ -251,13 +270,15 @@ begin
   for I := 0 to IDEMenu.Items.Count - 1 do
     if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
       ViewMenu := IDEMenu.Items[I];
-  Assert(ViewMenu <> nil, 'Unable to find View menu');
+  if not Assigned(ViewMenu) then
+    raise EJclExpertException.Create(RsENoViewMenuItem);
 
   FViewDebugMenu := nil;
   for I := 0 to ViewMenu.Count - 1 do
     if CompareText(ViewMenu.Items[I].Name, 'ViewDebugItem') = 0 then
       FViewDebugMenu := ViewMenu.Items[I];
-  Assert(FViewDebugMenu <> nil, 'Unable to find View\Debug menu');
+  if not Assigned(FViewDebugMenu) then
+    raise EJclExpertException.CreateTrace(RsENoDebugWindowsMenuItem);
 
   FViewDebugMenu.Add(FSIMDMenuItem);
 
@@ -382,7 +403,15 @@ end;
 procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr, ResultStr: string;
   CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
 begin
-  Owner.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
+  try
+    Owner.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
+  end;
 end;
 
 function TJclDebuggerNotifier.FindProcessReference(AProcess: IOTAProcess): PProcessReference;
@@ -420,13 +449,21 @@ procedure TJclDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} 
 var
   AProcessReference: PProcessReference;
 begin
-  AProcessReference := FindProcessReference(Process);
-  if AProcessReference = nil then
-  begin
-    New(AProcessReference);
-    AProcessReference.Process := Process;
-    AProcessReference.ID := Process.AddNotifier(Self);
-    FProcessList.Add(AProcessReference);
+  try
+    AProcessReference := FindProcessReference(Process);
+    if AProcessReference = nil then
+    begin
+      New(AProcessReference);
+      AProcessReference.Process := Process;
+      AProcessReference.ID := Process.AddNotifier(Self);
+      FProcessList.Add(AProcessReference);
+    end;
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
   end;
 end;
 
@@ -436,27 +473,35 @@ var
   AThreadReference: PThreadReference;
   Index: Integer;
 begin
-  for Index := 0 to Process.ThreadCount - 1 do
-  begin
-    AThreadReference := FindThreadReference(Process.Threads[Index]);
-    if AThreadReference <> nil then
+  try
+    for Index := 0 to Process.ThreadCount - 1 do
     begin
-      AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
-      FThreadList.Remove(AThreadReference);
-      Dispose(AThreadReference);
+      AThreadReference := FindThreadReference(Process.Threads[Index]);
+      if AThreadReference <> nil then
+      begin
+        AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
+        FThreadList.Remove(AThreadReference);
+        Dispose(AThreadReference);
+      end;
+    end;
+
+    AProcessReference := FindProcessReference(Process);
+    if AProcessReference <> nil then
+    begin
+      AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
+      FProcessList.Remove(AProcessReference);
+      Dispose(AProcessReference);
+    end;
+
+    if Owner.DebuggerServices.ProcessCount = 1 then
+      Owner.CloseForm;
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
     end;
   end;
-
-  AProcessReference := FindProcessReference(Process);
-  if AProcessReference <> nil then
-  begin
-    AProcessReference.Process.RemoveNotifier(AProcessReference.ID);
-    FProcessList.Remove(AProcessReference);
-    Dispose(AProcessReference);
-  end;
-
-  if Owner.DebuggerServices.ProcessCount = 1 then
-    Owner.CloseForm;
 end;
 
 procedure TJclDebuggerNotifier.ProcessModuleCreated(
@@ -474,13 +519,21 @@ procedure TJclDebuggerNotifier.ThreadCreated({$IFDEF RTL170_UP} const {$ENDIF} T
 var
   AThreadReference: PThreadReference;
 begin
-  AThreadReference := FindThreadReference(Thread);
-  if AThreadReference = nil then
-  begin
-    New(AThreadReference);
-    AThreadReference.Thread := Thread;
-    AThreadReference.ID := Thread.AddNotifier(Self);
-    FThreadList.Add(AThreadReference);
+  try
+    AThreadReference := FindThreadReference(Thread);
+    if AThreadReference = nil then
+    begin
+      New(AThreadReference);
+      AThreadReference.Thread := Thread;
+      AThreadReference.ID := Thread.AddNotifier(Self);
+      FThreadList.Add(AThreadReference);
+    end;
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
   end;
 end;
 
@@ -488,23 +541,44 @@ procedure TJclDebuggerNotifier.ThreadDestroyed({$IFDEF RTL170_UP} const {$ENDIF}
 var
   AThreadReference: PThreadReference;
 begin
-  AThreadReference := FindThreadReference(Thread);
-  if AThreadReference <> nil then
-  begin
-    AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
-    FThreadList.Remove(AThreadReference);
-    Dispose(AThreadReference);
+  try
+    AThreadReference := FindThreadReference(Thread);
+    if AThreadReference <> nil then
+    begin
+      AThreadReference.Thread.RemoveNotifier(AThreadReference.ID);
+      FThreadList.Remove(AThreadReference);
+      Dispose(AThreadReference);
+    end;
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
   end;
 end;
 
 procedure TJclDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
-  Owner.RefreshThreadContext(False);  //Reason = nrRunning);
+  try
+    Owner.RefreshThreadContext(False);  //Reason = nrRunning);
+  except
+    on ExceptObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptObj);
+      raise;
+    end;
+  end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.8  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.7  2005/10/26 03:29:44  rrossmair
 // - improved header information, added Date and Log CVS tags.
 //

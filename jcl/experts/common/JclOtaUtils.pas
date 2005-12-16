@@ -33,12 +33,53 @@ interface
 {$I crossplatform.inc}
 
 uses
-  Windows, Classes, ToolsAPI, ComCtrls, ActnList;
+  SysUtils, Classes, Windows, 
+  ComCtrls, ActnList,
+{$IFDEF MSWINDOWS}
+  JclDebug,
+{$ENDIF MSWINDOWS}
+  ToolsAPI;
 
 const
   MapFileOptionDetailed = 3;
 
 type
+// note to developers
+// to avoid JCL exceptions to be reported as Borland's exceptions in automatic
+// bug reports, all entry points should be protected with this code model:
+// uses
+//   JclOtaUtils;
+// try
+//   <code to execute here>
+// except
+//   on ExceptionObj: TObject do
+//   begin
+//     JclExpertShowExceptionDialog(ExceptionObj);
+//     raise;
+//   end;
+// end;
+// entry points for experts are usually:
+//  - initialization sections
+//  - finalization sections
+//  - Register procedures
+//  - Action update events
+//  - Action execute events
+//  - notifier callback functions
+//  - ... (non exhaustive list)
+
+  EJclExpertException = class (Exception)
+  {$IFDEF MSWINDOWS}
+  private
+    FStackInfo: TJclStackInfoList;
+  {$ENDIF MSWINDOWS}
+  public
+    constructor CreateTrace(const Msg: string);
+  {$IFDEF MSWINDOWS}
+    destructor Destroy; override;
+    property StackInfo: TJclStackInfoList read FStackInfo;
+  {$ENDIF MSWINDOWS}
+  end;
+
   TJclOTAExpertBase = class(TInterfacedObject)
   private
     FBaseRegistryKey: string;
@@ -103,6 +144,7 @@ type
   end;
 
 // procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
+function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
 
 implementation
 
@@ -110,7 +152,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils,
+  Forms,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
@@ -118,11 +160,11 @@ uses
   JclBorlandTools,
   {$ENDIF KYLIX}
   JclFileUtils, JclStrings, JclSysInfo,
-  JclOtaConsts, JclOtaResources;
+  JclOtaConsts, JclOtaResources, JclOtaExceptionForm;
 
-{$IFDEF RTL170_UP}
+{$IFDEF BDS}
 {$R 'JclImages.res'}
-{$ENDIF RTL170_UP}
+{$ENDIF BDS}
 
 var
   ActionList: TList = nil;
@@ -149,15 +191,48 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
+function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
+var
+  AJclExpertExceptionForm: TJclExpertExceptionForm;
+begin
+  AJclExpertExceptionForm := TJclExpertExceptionForm.Create(Application);
+  try
+    AJclExpertExceptionForm.ShowException(AExceptionObj);
+    Result := AJclExpertExceptionForm.Execute;
+  finally
+    AJclExpertExceptionForm.Free;
+  end;
+end;
+
+//=== { EJclExpertException } ================================================
+
+constructor EJclExpertException.CreateTrace(const Msg: string);
+begin
+  inherited Create(Msg);
+{$IFDEF MSWINDOWS}
+  FStackInfo := JclCreateStackList(False, 0, nil);
+{$ENDIF MSWINDOWS}
+end;
+
+{$IFDEF MSWINDOWS}
+destructor EJclExpertException.Destroy;
+begin
+  FreeAndNil(FStackInfo);
+  inherited Destroy;
+end;
+{$ENDIF MSWINDOWS}
+
 //=== { TJclOTAExpertBase } ==================================================
 
 constructor TJclOTAExpertBase.Create(AName: string);
 begin
   Supports(BorlandIDEServices,IOTAServices,FServices);
-  Assert(Assigned(FServices), RsENoIDEServices);
+  if not Assigned(FServices) then
+    raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
   Supports(FServices,INTAServices,FNTAServices);
-  Assert(Assigned(FNTAServices), RsENoNTAServices);
+  if not Assigned(FNTAServices) then
+    raise EJclExpertException.CreateTrace(RsENoNTAServices);
 
   FName := AName;
   FEnvVariables := TStringList.Create;
@@ -193,7 +268,7 @@ begin
   LatestTime := 0;
   ExecutableFileName := '';
   // the latest executable file is very likely our file
-  Res := FindFirst(ChangeFileExt(MapFileName, '.*'), faArchive, Se);
+  Res := SysUtils.FindFirst(ChangeFileExt(MapFileName, '.*'), faArchive, Se);
   while Res = 0 do
   begin
     FileName := PathAddSeparator(OutputDirectory) + Se.Name;
@@ -214,9 +289,9 @@ begin
       LatestTime := Se.Time;
     end;
     {$ENDIF MSWINDOWS}
-    Res := FindNext(Se);
+    Res := SysUtils.FindNext(Se);
   end;
-  FindClose(Se);
+  SysUtils.FindClose(Se);
   Result := (ExecutableFileName <> '');
 end;
 
@@ -233,6 +308,9 @@ end;
 
 function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    
   Result := ChangeFileExt(Project.FileName, DRCExtension);
 end;
 
@@ -240,9 +318,14 @@ function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): string;
 var
   ProjectFileName, OutputDirectory, LibPrefix, LibSuffix: string;
 begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+
   ProjectFileName := Project.FileName;
   OutputDirectory := GetOutputDirectory(Project);
   {$IFDEF RTL140_UP}
+  if not Assigned(Project.ProjectOptions) then
+    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
   {$ELSE ~RTL140_UP}
@@ -255,14 +338,25 @@ end;
 
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
 begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+  if not Assigned(Project.ProjectOptions) then
+      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+
   if IsPackage(Project) then
   begin
     Result := VarToStr(Project.ProjectOptions.Values[PkgDllDirOptionName]);
+
     if Result = '' then
+    begin
+      if not Assigned(FServices.GetEnvironmentOptions) then
+        raise EJclExpertException.CreateTrace(RsENoEnvironmentOptions);
       Result := FServices.GetEnvironmentOptions.Values[BPLOutputDirOptionName];
+    end;
   end
   else
     Result := VarToStr(Project.ProjectOptions.Values[OutputDirOptionName]);
+
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
     Result := ExtractFilePath(Project.FileName);
@@ -270,13 +364,23 @@ end;
 
 function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
-  IModuleServices: IOTAModuleServices;
+  AModuleServices: IOTAModuleServices;
+  AModule: IOTAModule;
   I: Integer;
 begin
-  IModuleServices := BorlandIDEServices as IOTAModuleServices;
-  for I := 0 to IModuleServices.ModuleCount - 1 do
-    if IModuleServices.Modules[I].QueryInterface(IOTAProjectGroup, Result) = S_OK then
+  Supports(BorlandIDEServices, IOTAModuleServices, AModuleServices);
+  if not Assigned(AModuleServices) then
+    raise EJclExpertException.CreateTrace(RsENoModuleServices);
+
+  for I := 0 to AModuleServices.ModuleCount - 1 do
+  begin
+    AModule := AModuleServices.Modules[I];
+    if not Assigned(AModule) then
+      raise EJclExpertException.CreateTrace(RsENoModule);
+    if AModule.QueryInterface(IOTAProjectGroup, Result) = S_OK then
       Exit;
+  end;
+
   Result := nil;
 end;
 
@@ -314,7 +418,8 @@ begin
       RADToolsInstallations.Free;
     end;
     {$ENDIF KYLIX}
-    Assert(FRootDir <> '');
+    if FRootDir = '' then
+      raise EJclExpertException.CreateTrace(RsENoRootDir);
   end;
   Result := FRootDir;
 end;
@@ -322,20 +427,32 @@ end;
 function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
   PackageFileName, ExecutableNameNoExt: string;
-  PackageServices: IOTAPackageServices;
+  APackageServices: IOTAPackageServices;
   I: Integer;
 begin
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+
   Result := IsPackage(Project);
   if Result then
   begin
     Result := False;
+
+    if not Assigned(Project.ProjectOptions) then
+      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+
     if not Project.ProjectOptions.Values[RuntimeOnlyOptionName] then
     begin
       ExecutableNameNoExt := ChangeFileExt(GetMapFileName(Project), '');
-      PackageServices := BorlandIDEServices as IOTAPackageServices;
-      for I := 0 to PackageServices.PackageCount - 1 do
+
+      Supports(BorlandIDEServices, IOTAPackageServices, APackageServices);
+
+      if not Assigned(APackageServices) then
+        raise EJclExpertException.CreateTrace(RsENoPackageServices);
+
+      for I := 0 to APackageServices.PackageCount - 1 do
       begin
-        PackageFileName := ChangeFileExt(PackageServices.PackageNames[I], BPLExtension);
+        PackageFileName := ChangeFileExt(APackageServices.PackageNames[I], BPLExtension);
         PackageFileName := GetModulePath(GetModuleHandle(PChar(PackageFileName)));
         if AnsiSameText(ChangeFileExt(PackageFileName, ''), ExecutableNameNoExt) then
         begin
@@ -348,8 +465,34 @@ begin
 end;
 
 function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
+var
+  FileExtension: string;
+  Index, SourceNodePosition: Integer;
+  ProjectFile: TStrings;
+  ProjectContent: string;
 begin
-  Result := AnsiSameText(ExtractFileExt(Project.FileName), DPKExtension);
+  if not Assigned(Project) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+
+  FileExtension := ExtractFileExt(Project.FileName);
+
+  if AnsiSameText(FileExtension, BDSPROJExtension) then
+  begin
+    ProjectFile := TStringList.Create;
+    try
+      ProjectFile.LoadFromFile(Project.FileName);
+      ProjectContent := ProjectFile.Text;
+      SourceNodePosition := AnsiPos('</Source', ProjectContent);
+      for Index := SourceNodePosition-1 downto 1 do
+        if ProjectContent[Index] = '.' then
+          Break;
+      Result := AnsiSameText(Copy(ProjectContent, Index, SourceNodePosition-Index), DPKExtension);
+    finally
+      ProjectFile.Free;
+    end;
+  end
+  else
+    Result := AnsiSameText(FileExtension, DPKExtension);
 end;
 
 procedure TJclOTAExpertBase.ReadEnvVariables;
@@ -514,7 +657,7 @@ function TJclOTAExpertBase.LoadBool(Name: string; Def: Boolean): Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := RegReadBoolDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE}
+  {$ELSE MSWINDOWS}
   Result := Def;
   {$ENDIF MSWINDOWS}
 end;
@@ -523,7 +666,7 @@ function TJclOTAExpertBase.LoadString(Name: string; Def: string): string;
 begin
   {$IFDEF MSWINDOWS}
   Result := RegReadStringDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE}
+  {$ELSE MSWINDOWS}
   Result := Def;
   {$ENDIF MSWINDOWS}
 end;
@@ -532,7 +675,7 @@ function TJclOTAExpertBase.LoadInteger(Name: string; Def: Integer): Integer;
 begin
   {$IFDEF MSWINDOWS}
   Result := RegReadIntegerDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE}
+  {$ELSE MSWINDOWS}
   Result := Def;
   {$ENDIF MSWINDOWS}
 end;
@@ -541,7 +684,7 @@ procedure TJclOTAExpertBase.LoadStrings(Name: string; List: TStrings);
 begin
   {$IFDEF MSWINDOWS}
   RegLoadList(HKCU, ExpertRegistryKey, Name, List);
-  {$ELSE}
+  {$ELSE MSWINDOWS}
   List.Clear;
   {$ENDIF MSWINDOWS}
 end;
@@ -615,15 +758,18 @@ end;
 
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
-  AboutBoxIndex: Integer = 0;
+  AboutBoxIndex: Integer = -1;
 
 procedure RegisterAboutBox;
 var
   ProductImage: HBITMAP;
 begin
   Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
-  Assert(Assigned(AboutBoxServices), RsENoAboutServices);
+  if not Assigned(AboutBoxServices) then
+    raise EJclExpertException.CreateTrace(RsENoAboutServices);
   ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
+  if ProductImage = 0 then
+    raise EJclExpertException.CreateTrace(RsENoBitmapResources);
   AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
     RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
     ProductImage, False, RsAboutLicenceStatus);
@@ -643,18 +789,40 @@ procedure RegisterSplashScreen;
 var
   ProductImage: HBITMAP;
 begin
-  Assert(Assigned(SplashScreenServices), RsENoSplashServices);
-  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
-  SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
-    False, RsAboutLicenceStatus);
+  if Assigned(SplashScreenServices) then
+  begin
+    ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
+    if ProductImage = 0 then
+      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
+    SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
+      False, RsAboutLicenceStatus);
+  end;
 end;
 
 initialization
+
+try
   RegisterSplashScreen;
   RegisterAboutBox;
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
+  end;
+end;
 
 finalization
+
+try
   UnregisterAboutBox;
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
+  end;
+end;
 
 {$ENDIF BDS}
 
@@ -681,6 +849,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.12  2005/10/28 04:34:27  rrossmair
 // - replaced {$IFDEF RTL170_UP} by more appropriate {$IFDEF BDS}
 //

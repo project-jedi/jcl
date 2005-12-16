@@ -1,10 +1,10 @@
 object FormUsesConfirm: TFormUsesConfirm
   Left = 494
   Top = 371
-  Width = 435
-  Height = 244
   ActiveControl = ButtonOK
   Caption = 'Confirm changes'
+  ClientHeight = 217
+  ClientWidth = 427
   Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300

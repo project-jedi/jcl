@@ -122,28 +122,21 @@ implementation
 {$R JclDebugIdeIcon.res}
 
 uses
-  JclDebug, JclDebugIdeResult, JclOtaConsts;
+  JclDebug, JclDebugIdeResult,
+  JclOtaConsts, JclOtaResources;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TJclDebugExtension.Create);
+  try
+    RegisterPackageWizard(TJclDebugExtension.Create);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
-
-resourcestring
-  {$IFDEF OldStyleExpert}
-  RsActionCaption = 'Build JCL Debug %s';
-  RsBuildAllCaption = 'Build JCL Debug All Projects';
-  RsProjectNone = '[none]';
-  RsBuildActionName = 'ProjectJCLBuildCommand';
-  RsBuildAllActionName = 'ProjectJCLBuildAllCommand';
-  {$ELSE OldStyleExpert}
-  RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
-    #13#10'%s'#13#10#10'Would you like to disable inserting JCL Debug data ?';
-  RsInsertDataCaption = 'Insert JCL Debug data';
-  RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
-  {$ENDIF OldStyleExpert}
-  RsExecutableNotFound = 'Executable file (*.exe or *.dll) not found.' +
-    'JCL debug data can''t be added to the project.';
 
 //=== { TJclDebugExtension } =================================================
 
@@ -187,13 +180,13 @@ var
 begin
   if FInsertDataAction.Checked and Assigned(FCurrentProject) then
   begin
-    ProjOptions := FCurrentProject.ProjectOptions;
+  ProjOptions := FCurrentProject.ProjectOptions;
 {    if FSaveMapFile <> MapFileOptionDetailed then
     begin
       ProjOptions.Values[MapFileOptionName] := FSaveMapFile;
       ProjOptions.ModifiedState := FOptionsModifiedState;
     end;}
-{ TODO -oPV : Temporarily removed due Delphi 6 IDE problems }      
+{ TODO -oPV : Temporarily removed due Delphi 6 IDE problems }
     ProjectFileName := FCurrentProject.FileName;
     OutputDirectory := GetOutputDirectory(FCurrentProject);
     MapFileName := GetMapFileName(FCurrentProject);
@@ -214,8 +207,10 @@ begin
           end
           else
             ExecutableNotFound := True;
-        finally
           Screen.Cursor := crDefault;
+        except
+          Screen.Cursor := crDefault;
+          raise;
         end;
       end;
 
@@ -233,9 +228,9 @@ begin
         FResultInfo[C].LineNumberErrors := LineNumberErrors;
         FResultInfo[C].Success := Succ;
       end;
-
+                                                       
       if ExecutableNotFound then
-        MessageDlg(Format(RsExecutableNotFound, [ProjectFileName]), mtError, [mbOk], 0);
+        raise EJclExpertException.CreateTrace(Format(RsEExecutableNotFound, [ProjectFileName]));
     end
     else
     begin
@@ -262,7 +257,9 @@ begin
     begin
       FCurrentProject := Project;
       ProjOptions := Project.ProjectOptions;
-      Assert(Assigned(ProjOptions), 'IOTAProjectOptions not available');
+      if not Assigned(ProjOptions) then
+        raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+
       FOptionsModifiedState := ProjOptions.ModifiedState;
       FSaveMapFile := ProjOptions.Values[MapFileOptionName];
       if FSaveMapFile <> MapFileOptionDetailed then
@@ -284,12 +281,20 @@ end;
 
 procedure TJclDebugExtension.BuildActionExecute(Sender: TObject);
 begin
-  BeginStoreResults;
   try
-    if InsertDataToProject(ActiveProject) then
-      DisplayResults;
-  finally
-    EndStoreResults;
+    BeginStoreResults;
+    try
+      if InsertDataToProject(ActiveProject) then
+        DisplayResults;
+    finally
+      EndStoreResults;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -298,13 +303,21 @@ var
   TempActiveProject: IOTAProject;
   ProjectName: string;
 begin
-  TempActiveProject := ActiveProject;
-  FBuildAction.Enabled := Assigned(TempActiveProject);
-  if Assigned(ActiveProject) then
-    ProjectName := ExtractFileName(TempActiveProject.FileName)
-  else
-    ProjectName := RsProjectNone;
-  FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
+  try
+    TempActiveProject := ActiveProject;
+    FBuildAction.Enabled := Assigned(TempActiveProject);
+    if Assigned(ActiveProject) then
+      ProjectName := ExtractFileName(TempActiveProject.FileName)
+    else
+      ProjectName := RsProjectNone;
+    FBuildAction.Caption := Format(RsBuildActionCaption, [ProjectName]);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclDebugExtension.BuildAllActionExecute(Sender: TObject);
@@ -314,30 +327,47 @@ var
   TempProjectGroup: IOTAProjectGroup;
   Error: Boolean;
 begin
-  TempProjectGroup := ProjectGroup;
-  if not Assigned(TempProjectGroup) then
-    Exit;
-  Error := False;
-  BeginStoreResults;
   try
-    for I := 0 to TempProjectGroup.ProjectCount - 1 do
-    begin
-      TempActiveProject := TempProjectGroup.Projects[I];
-      TempProjectGroup.ActiveProject := TempActiveProject;
-      Error := not InsertDataToProject(TempActiveProject);
-      if Error then
-        Break;
+    TempProjectGroup := ProjectGroup;
+    if not Assigned(TempProjectGroup) then
+      raise EJclExpertException.CreateTrace(RsENoProjectGroup);
+      
+    Error := False;
+    BeginStoreResults;
+    try
+      for I := 0 to TempProjectGroup.ProjectCount - 1 do
+      begin
+        TempActiveProject := TempProjectGroup.Projects[I];
+        TempProjectGroup.ActiveProject := TempActiveProject;
+        Error := not InsertDataToProject(TempActiveProject);
+        if Error then
+          Break;
+      end;
+      if not Error then
+        DisplayResults;
+    finally
+      EndStoreResults;
     end;
-    if not Error then
-      DisplayResults;
-  finally
-    EndStoreResults;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
 procedure TJclDebugExtension.BuildAllActionUpdate(Sender: TObject);
 begin
-  FBuildAllAction.Enabled := ProjectGroup <> nil;
+  try
+    FBuildAllAction.Enabled := ProjectGroup <> nil;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 {$ENDIF OldStyleExpert}
@@ -348,8 +378,14 @@ procedure TJclDebugExtension.BuildAllProjects(Sender: TObject);
 begin
   BeginStoreResults;
   try
-    FSaveBuildAllProjectsExecute(Sender);
-    DisplayResults;
+    try
+      FSaveBuildAllProjectsExecute(Sender);
+      DisplayResults;
+    except
+      on ExceptionObj: TObject do
+        JclExpertShowExceptionDialog(ExceptionObj);
+      // raise is useless because trapped by the finally section
+    end;
   finally
     EndStoreResults;
   end;
@@ -359,8 +395,14 @@ procedure TJclDebugExtension.BuildProject(Sender: TObject);
 begin
   BeginStoreResults;
   try
-    FSaveBuildProjectExecute(Sender);
-    DisplayResults;
+    try
+      FSaveBuildProjectExecute(Sender);
+      DisplayResults;
+    except
+      on ExceptionObj: TObject do
+        JclExpertShowExceptionDialog(ExceptionObj);
+      // raise is useless because trapped by the finally section
+    end;
   finally
     EndStoreResults;
   end;
@@ -448,9 +490,16 @@ end;
 
 procedure TJclDebugExtension.InsertDataExecute(Sender: TObject);
 begin
-  ExpertActive(not FInsertDataAction.Checked);
-  
-  SaveExpertValues;
+  try
+    ExpertActive(not FInsertDataAction.Checked);
+    SaveExpertValues;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclDebugExtension.LoadExpertValues;
@@ -478,7 +527,9 @@ var
   ExecutableNotFound: Boolean;
   OptionsModifiedState: Boolean;
 begin
-  Assert(Assigned(ActiveProject));
+  if not Assigned(ActiveProject) then
+    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+
   ProjectFileName := ActiveProject.FileName;
   ProjOptions := ActiveProject.ProjectOptions;
   // read output directory
@@ -530,7 +581,7 @@ begin
   FResultInfo[C].LineNumberErrors := LineNumberErrors;
   FResultInfo[C].Success := Succ;
   if ExecutableNotFound then
-    MessageDlg(Format(RsExecutableNotFound, [ProjectFileName]), mtError, [mbOk], 0);
+    raise EJclExpertException.CreateTrace(Format(RsEExecutableNotFound, [ProjectFileName]));
 end;
 
 {$ENDIF OldStyleExpert}
@@ -551,7 +602,7 @@ begin
     FImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     {$IFDEF OldStyleExpert}
     FBuildAction := TAction.Create(nil);
-    FBuildAction.Caption := Format(RsActionCaption, [RsProjectNone]);
+    FBuildAction.Caption := Format(RsBuildActionCaption, [RsProjectNone]);
     FBuildAction.ImageIndex := FImageIndex;
     FBuildAction.Visible := True;
     FBuildAction.OnExecute := BuildActionExecute;
@@ -597,7 +648,8 @@ begin
         IDEProjectItem := Items[I];
         Break;
       end;
-  Assert(IDEProjectItem <> nil);
+  if not Assigned(IDEProjectItem) then
+    raise EJclExpertException.CreateTrace(RsENoProjectMenuItem);
 
   {$IFDEF OldStyleExpert}
   with IDEProjectItem do
@@ -609,7 +661,9 @@ begin
         IDEProjectItem.Insert(I + 1, FBuildMenuItem);
         System.Break;
       end;
-  Assert(FBuildMenuItem.Parent <> nil);
+  if not Assigned(FBuildMenuItem) then
+    raise EJclExpertException.CreateTrace(RsENoBuildMenuItem);
+
   with IDEProjectItem do
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectBuildAllItem' then
@@ -619,7 +673,9 @@ begin
         IDEProjectItem.Insert(I + 1, FBuildAllMenuItem);
         System.Break;
       end;
-  Assert(FBuildMenuItem.Parent <> nil);
+   if not Assigned(FBuildMenuItem.Parent) then
+     raise EJclExpertException.CreateTrace(RsEBuildMenuItemNotInserted);
+
   {$ELSE OldStyleExpert}
   with IDEProjectItem do
     for I := 0 to Count - 1 do
@@ -630,7 +686,9 @@ begin
         IDEProjectItem.Insert(I + 1, FInsertDataItem);
         System.Break;
       end;
-  Assert(FInsertDataItem.Parent <> nil);
+  if not Assigned(FInsertDataItem.Parent) then
+     raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
+
   FSaveBuildProject := nil;
   with IDEActionList do
     for I := 0 to ActionCount - 1 do
@@ -640,7 +698,9 @@ begin
         FSaveBuildProjectExecute := Actions[I].OnExecute;
         Break;
       end;
-  Assert(Assigned(FSaveBuildProject), 'Build action not found');
+  if not Assigned(FSaveBuildProject) then
+     raise EJclExpertException.CreateTrace(RsENoBuildAction);
+
   FSaveBuildAllProjects := nil;
   with IDEActionList do
     for I := 0 to ActionCount - 1 do
@@ -650,7 +710,8 @@ begin
         FSaveBuildAllProjectsExecute := Actions[I].OnExecute;
         Break;
       end;
-  Assert(Assigned(FSaveBuildAllProjects), 'Build All action not found');
+  if not Assigned(FSaveBuildProject) then
+     raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
   {$ENDIF OldStyleExpert}
 end;
 
@@ -687,14 +748,30 @@ end;
 
 procedure TIdeNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
 begin
-  if not IsCodeInsight then
-    FDebugExtension.AfterCompile(Succeeded);
+  try
+    if not IsCodeInsight then
+      FDebugExtension.AfterCompile(Succeeded);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean);
 begin
-  if not IsCodeInsight then
-    FDebugExtension.BeforeCompile(Project, Cancel);
+  try
+    if not IsCodeInsight then
+      FDebugExtension.BeforeCompile(Project, Cancel);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
@@ -706,6 +783,6 @@ procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
 begin
 end;
 
-{$ENDIF OldStyleExpert}
+{$ENDIF ~OldStyleExpert}
 
 end.
