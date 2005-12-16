@@ -53,19 +53,21 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclOtaConsts,
-  ProjAnalyzerFrm;
-
-resourcestring
-  RsActionCaption = 'Analyze project %s';
-  RsActionName = 'ProjectAnalyseCommand';
-  RsProjectNone = '[none]';
-  RsCantFindFiles = 'Can''t find MAP or executable file';
-  RsBuildingProject = 'Building project %s ...';
+  JclDebug, JclFileUtils, JclOtaConsts, 
+  ProjAnalyzerFrm,
+  JclOtaResources;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TJclProjectAnalyzerExpert.Create);
+  try
+    RegisterPackageWizard(TJclProjectAnalyzerExpert.Create);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 //=== { TJclProjectAnalyzerExpert } ==========================================
@@ -91,50 +93,63 @@ var
   ProjectName: string;
   OptionsModifiedState: Boolean;
 begin
-  TempActiveProject := ActiveProject;
-  Assert(Assigned(TempActiveProject));
-  ProjectFileName := TempActiveProject.FileName;
-  ProjectName := ExtractFileName(ProjectFileName);
-  Succ := False;
+  try
+    TempActiveProject := ActiveProject;
+    if not Assigned(TempActiveProject) then
+      raise EJclExpertException.CreateTrace(RsENoActiveProject);
 
-  ProjOptions := TempActiveProject.ProjectOptions;
-  OutputDirectory := GetOutputDirectory(TempActiveProject);
-  MapFileName := GetMapFileName(TempActiveProject);
+    ProjectFileName := TempActiveProject.FileName;
+    ProjectName := ExtractFileName(ProjectFileName);
+    Succ := False;
 
-  if ProjectAnalyzerForm = nil then
-  begin
-    ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application);
-    ProjectAnalyzerForm.Show;
-  end;
-  ProjectAnalyzerForm.ClearContent;
-  ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
+    ProjOptions := TempActiveProject.ProjectOptions;
+    if not Assigned(ProjOptions) then
+      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      
+    OutputDirectory := GetOutputDirectory(TempActiveProject);
+    MapFileName := GetMapFileName(TempActiveProject);
 
-  OptionsModifiedState := ProjOptions.ModifiedState;
-  SaveMapFile := ProjOptions.Values[MapFileOptionName];
-  ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
-  BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
-  ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-  ProjOptions.ModifiedState := OptionsModifiedState;
-
-  if BuildOK then
-  begin // Build was successful, continue ...
-    Succ := FileExists(MapFileName) and FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
-    if Succ then
-    begin // MAP files was created
-      ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
+    if ProjectAnalyzerForm = nil then
+    begin
+      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application);
       ProjectAnalyzerForm.Show;
     end;
-    if SaveMapFile <> MapFileOptionDetailed then
-    begin // delete MAP and DRC file
-      DeleteFile(MapFileName);
-      DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));
-    end;
-  end;
-  if not Succ then
-  begin
-    ProjectAnalyzerForm.StatusBarText := '';
+    ProjectAnalyzerForm.ClearContent;
+    ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
+
+    OptionsModifiedState := ProjOptions.ModifiedState;
+    SaveMapFile := ProjOptions.Values[MapFileOptionName];
+    ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+    BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
+    ProjOptions.Values[MapFileOptionName] := SaveMapFile;
+    ProjOptions.ModifiedState := OptionsModifiedState;
+
     if BuildOK then
-      MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
+    begin // Build was successful, continue ...
+      Succ := FileExists(MapFileName) and FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+      if Succ then
+      begin // MAP files was created
+        ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
+        ProjectAnalyzerForm.Show;
+      end;
+      if SaveMapFile <> MapFileOptionDetailed then
+      begin // delete MAP and DRC file
+        DeleteFile(MapFileName);
+        DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));
+      end;
+    end;
+    if not Succ then
+    begin
+      ProjectAnalyzerForm.StatusBarText := '';
+      if BuildOK then
+        MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -143,15 +158,23 @@ var
   TempActiveProject: IOTAProject;
   ProjectName: string;
 begin
-  TempActiveProject := ActiveProject;
-  if Assigned(TempActiveProject) then
-    ProjectName := ExtractFileName(TempActiveProject.FileName)
-  else
-    ProjectName := '';
-  FBuildAction.Enabled := Assigned(TempActiveProject);
-  if not FBuildAction.Enabled then
-    ProjectName := RsProjectNone;
-  FBuildAction.Caption := Format(RsActionCaption, [ProjectName]);
+  try
+    TempActiveProject := ActiveProject;
+    if Assigned(TempActiveProject) then
+      ProjectName := ExtractFileName(TempActiveProject.FileName)
+    else
+      ProjectName := '';
+    FBuildAction.Enabled := Assigned(TempActiveProject);
+    if not FBuildAction.Enabled then
+      ProjectName := RsProjectNone;
+    FBuildAction.Caption := Format(RsAnalyzeActionCaption, [ProjectName]);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclProjectAnalyzerExpert.RegisterCommands;
@@ -163,11 +186,11 @@ var
   ImageBmp: TBitmap;
 begin
   FBuildAction := TAction.Create(nil);
-  FBuildAction.Caption := Format(RsActionCaption, [RsProjectNone]);
+  FBuildAction.Caption := Format(RsAnalyzeActionCaption, [RsProjectNone]);
   FBuildAction.Visible := True;
   FBuildAction.OnExecute := ActionExecute;
   FBuildAction.OnUpdate := ActionUpdate;
-  FBuildAction.Name := RsActionName;
+  FBuildAction.Name := RsAnalyzeActionName;
   ImageBmp := TBitmap.Create;
   try
     ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'PROJANALYZER');
@@ -185,7 +208,9 @@ begin
         IDEProjectItem := Items[I];
         Break;
       end;
-  Assert(IDEProjectItem <> nil);
+  if not Assigned(IDEProjectItem) then
+    raise EJclExpertException.CreateTrace(RsENoProjectMenuItem);
+
   with IDEProjectItem do
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectInformationItem' then
@@ -202,7 +227,8 @@ begin
 
         System.Break;
       end;
-  Assert(FBuildMenuItem.Parent <> nil);
+  if not Assigned(FBuildMenuItem.Parent) then
+    raise EJclExpertException.CreateTrace(RsAnalyseMenuItemNotInserted);
 end;
 
 procedure TJclProjectAnalyzerExpert.UnregisterCommands;

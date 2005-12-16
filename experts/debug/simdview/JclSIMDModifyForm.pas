@@ -75,6 +75,7 @@ type
     procedure StartModify;
     procedure WMModifyContinue(var Msg: TMessage); message WM_MODIFYCONTINUE;
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
     property RegisterType: TJclRegisterType read FRegisterType;
     property XMMRegister: TJclXMMRegister read FXMMRegister;
     property MMRegister: TJclMMRegister read FMMRegister;
@@ -135,6 +136,20 @@ begin
   FLabelList := TComponentList.Create(False);
   FHistory := TStringList.Create;
   FHistory.Duplicates := dupIgnore;
+end;
+
+procedure TJclSIMDModifyFrm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
 end;
 
 destructor TJclSIMDModifyFrm.Destroy;
@@ -298,14 +313,30 @@ end;
 
 procedure TJclSIMDModifyFrm.ComboBoxDisplayChange(Sender: TObject);
 begin
-  FDisplay := TJclXMMContentType((Sender as TComboBox).ItemIndex);
-  UpdateDisplay;
+  try
+    FDisplay := TJclXMMContentType((Sender as TComboBox).ItemIndex);
+    UpdateDisplay;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDModifyFrm.ComboBoxFormatChange(Sender: TObject);
 begin
-  FFormat := TJclSIMDFormat((Sender as TComboBox).ItemIndex);
-  UpdateFormat;
+  try
+    FFormat := TJclSIMDFormat((Sender as TComboBox).ItemIndex);
+    UpdateFormat;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDModifyFrm.LoadHistory;
@@ -349,7 +380,15 @@ end;
 
 procedure TJclSIMDModifyFrm.WMModifyContinue(var Msg: TMessage);
 begin
-  ContinueModify;
+  try
+    ContinueModify;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      //raise; no exception throw message handler
+    end;
+  end;
 end;
 
 procedure TJclSIMDModifyFrm.StartModify;
@@ -467,7 +506,15 @@ end;
 
 procedure TJclSIMDModifyFrm.ButtonOKClick(Sender: TObject);
 begin
-  StartModify;
+  try
+    StartModify;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TJclSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
@@ -483,6 +530,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.7  2005/12/04 10:10:57  obones
 // Borland Developer Studio 2006 support
 //
@@ -491,6 +543,11 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.8  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
+// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.

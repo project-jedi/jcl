@@ -96,6 +96,8 @@ type
       Length: Integer; const ClassName, UnitName: string);
     procedure SetStatusBarText(const Value: string);
     procedure ClearData;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     procedure ClearContent;
     function FindPackageForUnitName(const UnitName: string): string;
@@ -499,6 +501,20 @@ begin
   finally
     SL.Free;
   end;
+end;
+
+procedure TProjectAnalyzerForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
 end;
 
 procedure TProjectAnalyzerForm.Save1Execute(Sender: TObject);

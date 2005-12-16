@@ -16,16 +16,15 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
   object Splitter: TSplitter
     Left = 371
     Top = 0
-    Width = 3
-    Height = 271
-    Cursor = crHSplit
+    Height = 278
     Align = alRight
+    ExplicitHeight = 271
   end
   object ListBoxRegs: TListBox
     Left = 0
     Top = 0
     Width = 371
-    Height = 271
+    Height = 278
     Style = lbOwnerDrawFixed
     Align = alClient
     Color = clBtnFace
@@ -45,7 +44,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 374
     Top = 0
     Width = 55
-    Height = 271
+    Height = 278
     Style = lbOwnerDrawFixed
     Align = alRight
     Color = clBtnFace

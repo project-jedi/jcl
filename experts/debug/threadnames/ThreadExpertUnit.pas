@@ -98,7 +98,15 @@ const
 
 procedure Register;
 begin
-  RegisterPackageWizard(TJclThreadsExpert.Create);
+  try
+    RegisterPackageWizard(TJclThreadsExpert.Create);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 //== { TJclThreadsExpert } ===================================================
@@ -164,6 +172,11 @@ begin
     if Change = ctText then
       UpdateItem(Item);
   except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -184,6 +197,11 @@ begin
       end;}
     end;          
   except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -233,14 +251,30 @@ end;
 
 procedure TDebuggerNotifier.ProcessCreated({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 begin
-  FExpert.GetThreadsStatusListView;
-  Inc(FExpert.FProcessesCount);
+  try
+    FExpert.GetThreadsStatusListView;
+    Inc(FExpert.FProcessesCount);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure TDebuggerNotifier.ProcessDestroyed({$IFDEF RTL170_UP} const {$ENDIF} Process: IOTAProcess);
 begin
-  Dec(FExpert.FProcessesCount);
-  FExpert.FSharedThreadNames.Cleanup(Process.ProcessId);
+  try
+    Dec(FExpert.FProcessesCount);
+    FExpert.FSharedThreadNames.Cleanup(Process.ProcessId);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 //=== { TNameChangeThread } ==================================================
@@ -311,8 +345,18 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.4  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.5  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and CVS tags.
 //
 
 end.

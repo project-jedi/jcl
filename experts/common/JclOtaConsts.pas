@@ -43,6 +43,7 @@ const
   MAPExtension          = '.map';
   DRCExtension          = '.drc';
   DPRExtention          = '.dpr';
+  BDSPROJExtension      = '.bdsproj';
 
   //=== Debug Expert =========================================================
   JclDebugExpertRegKey    = 'JclDebugExpert';
@@ -90,8 +91,18 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.5  2005/12/16 23:46:24  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.4  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.5  2005/12/16 23:46:24  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and CVS tags.
 //
 // Revision 1.3  2005/10/23 12:53:36  marquardt
 // further expert cleanup and integration, use of JclRegistry

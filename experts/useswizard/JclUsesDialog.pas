@@ -54,7 +54,7 @@ implementation
 
 uses
   CommCtrl,
-  JclOtaResources, JclUsesWizard;
+  JclOtaResources, JclOtaUtils, JclUsesWizard;
 
 {$R *.dfm}
 
@@ -123,14 +123,22 @@ procedure TFormUsesConfirm.ButtonOKClick(Sender: TObject);
 var
   Node: TTreeNode;
 begin
-  with TreeViewChanges do
-  begin
-    Node := Items.GetFirstNode;
-    while Assigned(Node) do
+  try
+    with TreeViewChanges do
     begin
-      if Node.ImageIndex = 0 then
-        FChangeList.Objects[Integer(Node.Data)] := TObject(waSkip);
-      Node := Node.GetNextSibling;
+      Node := Items.GetFirstNode;
+      while Assigned(Node) do
+      begin
+        if Node.ImageIndex = 0 then
+          FChangeList.Objects[Integer(Node.Data)] := TObject(waSkip);
+        Node := Node.GetNextSibling;
+      end;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
     end;
   end;
 end;
@@ -139,15 +147,23 @@ procedure TFormUsesConfirm.TreeViewChangesKeyPress(Sender: TObject; var Key: Cha
 var
   Node: TTreeNode;
 begin
-  if Key = ' ' then
-  begin
-    Node := TreeViewChanges.Selected;
-    if Assigned(Node) then
+  try
+    if Key = ' ' then
     begin
-      if Node.Level > 0 then
-        Node := Node.Parent;
-      ToggleNode(Node);
-      Key := #0;
+      Node := TreeViewChanges.Selected;
+      if Assigned(Node) then
+      begin
+        if Node.Level > 0 then
+          Node := Node.Parent;
+        ToggleNode(Node);
+        Key := #0;
+      end;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
     end;
   end;
 end;
@@ -157,20 +173,38 @@ procedure TFormUsesConfirm.TreeViewChangesMouseDown(Sender: TObject;
 var
   Node: TTreeNode;
 begin
-  with TreeViewChanges do
-    if htOnIcon in GetHitTestInfoAt(X, Y) then
+  try
+    with TreeViewChanges do
+      if htOnIcon in GetHitTestInfoAt(X, Y) then
+      begin
+        Node := GetNodeAt(X, Y);
+        if Assigned(Node) then
+          ToggleNode(Node);
+      end;
+  except
+    on ExceptionObj: TObject do
     begin
-      Node := GetNodeAt(X, Y);
-      if Assigned(Node) then
-        ToggleNode(Node);
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
     end;
+  end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.4  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.3  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.4  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and CVS tags.
 //
 
 end.

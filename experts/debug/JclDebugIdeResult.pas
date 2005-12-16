@@ -36,6 +36,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure CopyReportToClipboard;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
 var
@@ -133,6 +135,20 @@ begin
   OkBtn.Left := ClientWidth div 2 - OkBtn.Width div 2;
 end;
 
+procedure TJclDebugResultForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // Fixing the Window Ghosting "bug"
+  Params.Style := params.Style or WS_POPUP;
+  if Assigned(Screen.ActiveForm) then
+    Params.WndParent := Screen.ActiveForm.Handle
+  else if Assigned (Application.MainForm) then
+    Params.WndParent := Application.MainForm.Handle
+  else
+    Params.WndParent := Application.Handle;
+end;
+
 procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = Ord('C')) then
@@ -145,6 +161,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.2  2005/10/21 12:24:41  marquardt
 // experts reorganized with new directory common
 //

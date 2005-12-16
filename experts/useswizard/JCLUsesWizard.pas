@@ -46,6 +46,7 @@ type
   end;
 
 procedure Register;
+
 procedure SettingsChanged;
 
 implementation
@@ -53,8 +54,8 @@ implementation
 uses
   Classes, SysUtils, ToolsAPI, Messages, Forms, Controls,
   ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
-  JclFileUtils, JclOptionsFrame, JclOtaConsts, JclOtaResources,
-  JclParseUses, JclRegistry, JclUsesDialog;
+  JclFileUtils, JclOptionsFrame, JclParseUses, JclRegistry, JclUsesDialog,
+  JclOtaConsts, JclOtaResources, JclOtaUtils;
 
 const
   SEnvOptionsDlgClassName = 'TPasEnvironmentDialog';
@@ -258,7 +259,7 @@ begin
       Read := Reader.GetText(ReaderPos, @Buf, BufSize);
       Inc(ReaderPos, Read);
       if (Read < 0) or (Read > BufSize) then
-        raise Exception.Create(RsEErrorReadingBuffer);
+        raise EJclExpertException.CreateTrace(RsEErrorReadingBuffer);
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
@@ -302,16 +303,24 @@ procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean)
 var
   Messages: TStrings;
 begin
-  if IsCodeInsight or Succeeded then
-    Exit;
-
-  Messages := TStringList.Create;
   try
-    GetCompilerMessages(Messages);
-    if Assigned(Wizard) then
-      Wizard.ProcessCompilerMessages(Messages);
-  finally
-    Messages.Free;
+    if IsCodeInsight or Succeeded then
+      Exit;
+
+    Messages := TStringList.Create;
+    try
+      GetCompilerMessages(Messages);
+      if Assigned(Wizard) then
+        Wizard.ProcessCompilerMessages(Messages);
+    finally
+      Messages.Free;
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
@@ -976,8 +985,16 @@ end;
 
 procedure Register;
 begin
-  Wizard := TJCLUsesWizard.Create;
-  RegisterPackageWizard(Wizard);
+  try
+    Wizard := TJCLUsesWizard.Create;
+    RegisterPackageWizard(Wizard);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
 end;
 
 procedure SettingsChanged;
@@ -989,8 +1006,18 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.6  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
+// - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date$ and Revision 1.7  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and CVS tags.
 //
 
 end.

@@ -1,11 +1,11 @@
 object ProjectAnalyzerForm: TProjectAnalyzerForm
   Left = 362
   Top = 263
-  Width = 410
-  Height = 480
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Project Analyzer'
+  ClientHeight = 456
+  ClientWidth = 402
   Color = clBtnFace
   Constraints.MinHeight = 250
   Constraints.MinWidth = 290
@@ -15,7 +15,6 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDefaultPosOnly
   ShowHint = True
   OnClose = FormClose
   OnCreate = FormCreate
@@ -26,7 +25,7 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     Left = 0
     Top = 40
     Width = 402
-    Height = 394
+    Height = 397
     Align = alClient
     Columns = <
       item
@@ -66,7 +65,6 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     ButtonWidth = 50
     Caption = 'ToolBar1'
     EdgeBorders = [ebTop, ebBottom]
-    Flat = True
     Images = ExplorerItemImages
     Indent = 4
     PopupMenu = PopupMenu2
@@ -114,14 +112,13 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 434
+    Top = 437
     Width = 402
     Height = 19
     Panels = <
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object ExplorerItemImages: TImageList
     Left = 8

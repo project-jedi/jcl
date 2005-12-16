@@ -100,7 +100,7 @@ uses
   {$ENDIF ~RTL140_UP}
   CommDlg, Dlgs,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
-  JclOtaConsts, JclOtaResources;
+  JclOtaConsts, JclOtaResources, JclOtaUtils;
 
 {$R FavDlg.res}
 
@@ -510,11 +510,26 @@ end;
 initialization
 
 finalization
+
+try
   FreeAndNil(FavOpenDialog);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
+  end;
+end;
+
 
 // History:
 
 // $Log$
+// Revision 1.3  2005/12/16 23:46:25  outchy
+// Added expert stack form.
+// Added code to display call stack on expert exception.
+// Fixed package extension for D2006.
+//
 // Revision 1.2  2005/10/21 12:24:41  marquardt
 // experts reorganized with new directory common
 //

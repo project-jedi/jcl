@@ -1,11 +1,11 @@
 object JclDebugResultForm: TJclDebugResultForm
   Left = 305
   Top = 243
-  Width = 780
-  Height = 330
   ActiveControl = OkBtn
   BorderIcons = [biSystemMenu]
   Caption = 'JCL Debug data information'
+  ClientHeight = 303
+  ClientWidth = 772
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 700
