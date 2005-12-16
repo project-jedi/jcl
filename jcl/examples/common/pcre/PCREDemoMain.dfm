@@ -15,9 +15,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    462
-    343)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
