@@ -33,7 +33,7 @@ uses
   JclVectors in '..\..\source\common\JclVectors.pas',
   JclHashMaps in '..\..\source\common\JclHashMaps.pas';
 
-{$LIBSUFFIX '9'}
+{$LIBSUFFIX '10'}
 
 [assembly: AssemblyTitle('JEDI Code Library')]
 [assembly: AssemblyDescription('Functions and classes')]
