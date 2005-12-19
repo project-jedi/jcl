@@ -1,0 +1,1 @@
+This directory is intended a common place for .dcuil files of Delphi 2006 .NET packages.
