@@ -12,8 +12,11 @@
 {                                                                                                  }
 { The Original Code is JclBorlandToolsExtensions.pas.                                              }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Uwe Schuster. Portions created by Uwe Schuster are }
+{ Copyright (C) of Uwe Schuster. All Rights Reserved.                                              }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,19 +27,21 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: September 04, 2005                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
 
 {
 Todo:
 - style:
   *done*- sort class members
-  - insert markers
+  *done*- insert markers
 *done*- support Aborted and set current dir in ...ExecAndCapture
         (JclSysUtils.Execute does support it)
-- IFDEF OS specific compiler switches and defines
-*almost done*- get settings from .cfg or .dof
+- IFDEF OS specific compiler switches and defines?
+*done*- get settings from .cfg or .dof
 
 *done*- move ExecAndCapture to a unit where it fit's more
    (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)
@@ -160,7 +165,7 @@ type
     property Value: TJclDCCSwitchZValue read FValue write FValue;
   end;
 
-  //(usc) what about E, F, K, N, S (can be found in .cfg and .dof but now in dcc32 help output)
+  //(usc) what about E, F, K, N, S (can be found in .cfg and .dof but not in dcc32 help output)
   TJclDCCSwitches = class(TObject)
   private
     FItems: TObjectList;
@@ -205,7 +210,7 @@ type
     property Count: Integer read GetCount;
     property D: TJclDCCBooleanSwitch read FDebugInformation;
     property DebugInformation: TJclDCCBooleanSwitch read FDebugInformation;
-    property EvaluateAssertionsAtRuntime: TJclDCCBooleanSwitch read FEvaluateAssertionsAtRuntime;    
+    property EvaluateAssertionsAtRuntime: TJclDCCBooleanSwitch read FEvaluateAssertionsAtRuntime;
     property ExtendedSyntax: TJclDCCBooleanSwitch read FExtendedSyntax;
     property FullBooleanEvaluation: TJclDCCBooleanSwitch read FFullBooleanEvaluation;
     property G: TJclDCCBooleanSwitch read FUseImportedDataReferences;
@@ -221,7 +226,7 @@ type
     property M: TJclDCCBooleanSwitch read FRuntimeTypeInfo;
     property MinimumSizeOfEnumTypes: TJclDCCZSwitch read FMinimumSizeOfEnumTypes;
     property O: TJclDCCBooleanSwitch read FOptimization;
-    property OpenStringParams: TJclDCCBooleanSwitch read FOpenStringParams;    
+    property OpenStringParams: TJclDCCBooleanSwitch read FOpenStringParams;
     property Optimization: TJclDCCBooleanSwitch read FOptimization;
     property P: TJclDCCBooleanSwitch read FOpenStringParams;
     property PentiumTMSafeDivide: TJclDCCBooleanSwitch read FPentiumTMSafeDivide;
@@ -262,8 +267,12 @@ type
       FDefaultStringMode;
   end;
 
-  //(usc) need option "MakeModifiedUnits" (-M) ?
-  //   I guess -M is opposite of -B
+  TJclDCCLinkerOutput = (loDCU, loCObj, loCPPObj);
+  TJclDCCLinkerOutputCPPOption = (locoIncludeNamespaces, locoExportAllSymbols);
+  TJclDCCLinkerOutputCPPOptions = set of TJclDCCLinkerOutputCPPOption;
+
+  //(usc) need option "MakeModifiedUnits" (-M)?
+  //   I guess -M is opposite of -B and it is handled this way in TJclDCCEx.Compile
   TJclCustomDCCConfig = class(TObject)
   private
     FBPLOutputDirectory: string;
@@ -277,6 +286,8 @@ type
     FEXEOutputDir: string;
     FImageBaseAddr: DWord;
     FIncludeDirectories: TJclConfigStringList;
+    FLinkerOutput: TJclDCCLinkerOutput;
+    FLinkerOutputCPPOptions: TJclDCCLinkerOutputCPPOptions;
     FMapFileLevel: TJclDCCMapFileLevel;
     FMaxStackSize: DWord;
     FMinStackSize: DWord;
@@ -301,16 +312,15 @@ type
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
     property CompilerSwitches: TJclDCCSwitches read FCompilerSwitches;
     property CompileWithPackages: Boolean read FCompileWithPackages write FCompileWithPackages;
-    //(usc) TJclDCCEx name was Defines only
     property ConditionalDefines: string read FConditionalDefines write FConditionalDefines;
     property ConsoleApplication: Boolean read FConsoleApplication write FConsoleApplication;
     property DCPOutputDirectory: string read FDCPOutputDirectory write FDCPOutputDirectory;
-    //(usc) DCU & EXE dir were named DCU/EXEOutputDir in TJclDCCEx!
     property DCUOutputDirectory: string read FDCUOutputDir write FDCUOutputDir;
     property EXEOutputDirectory: string read FEXEOutputDir write FEXEOutputDir;
-    //(usc) was only ImageBase in TJclDCCEx
     property ImageBaseAddr: DWord read FImageBaseAddr write FImageBaseAddr;
     property IncludeDirectories: TJclConfigStringList read FIncludeDirectories;
+    property LinkerOutput: TJclDCCLinkerOutput read FLinkerOutput write FLinkerOutput;
+    property LinkerOutputCPPOptions: TJclDCCLinkerOutputCPPOptions read FLinkerOutputCPPOptions write FLinkerOutputCPPOptions;
     property MapFileLevel: TJclDCCMapFileLevel read FMapFileLevel write FMapFileLevel;
     property MaxStackSize: DWord read FMaxStackSize write FMaxStackSize;
     property MinStackSize: DWord read FMinStackSize write FMinStackSize;
@@ -464,6 +474,8 @@ uses
   {$ENDIF DELPHI5}
   JclStrings;
 
+//=== { TJclDCCSwitch } ======================================================
+
 constructor TJclDCCSwitch.Create(ASwitchChar: Char);
 begin
   inherited Create;
@@ -511,6 +523,8 @@ procedure TJclDCCSwitch.SetDefaultValue;
 begin
 //
 end;
+
+//=== { TJclDCCASwitch } =====================================================
 
 constructor TJclDCCASwitch.Create;
 begin
@@ -586,6 +600,8 @@ begin
   FValue := FDefaultValue;
 end;
 
+//=== { TJclDCCBooleanSwitch } ===============================================
+
 constructor TJclDCCBooleanSwitch.Create(ASwitchChar: Char; ADefaultValue: Boolean);
 begin
   inherited Create(ASwitchChar);
@@ -637,6 +653,8 @@ procedure TJclDCCBooleanSwitch.SetDefaultValue;
 begin
   FValue := FDefaultValue;
 end;
+
+//=== { TJclDCCYSwitch } =====================================================
 
 constructor TJclDCCYSwitch.Create;
 begin
@@ -702,6 +720,8 @@ procedure TJclDCCYSwitch.SetDefaultValue;
 begin
   FValue := FDefaultValue;
 end;
+
+//=== { TJclDCCZSwitch } =====================================================
 
 constructor TJclDCCZSwitch.Create;
 begin
@@ -772,6 +792,8 @@ procedure TJclDCCZSwitch.SetDefaultValue;
 begin
   FValue := FDefaultValue;
 end;
+
+//=== { TJclDCCSwitches } ====================================================
 
 constructor TJclDCCSwitches.Create;
 begin
@@ -887,6 +909,8 @@ begin
     Items[I].SetDefaultValue;
 end;
 
+//=== { TJclConfigStringList } ===============================================
+
 constructor TJclConfigStringList.Create;
 begin
   inherited Create;
@@ -958,6 +982,8 @@ begin
   end;
 end;
 
+//=== { TJclCustomDCCConfig } ================================================
+
 constructor TJclCustomDCCConfig.Create;
 begin
   inherited Create;
@@ -972,6 +998,8 @@ begin
   FEXEOutputDir:= '';
   FImageBaseAddr := $400000;
   FIncludeDirectories := TJclConfigStringList.Create;
+  FLinkerOutput := loDCU;
+  FLinkerOutputCPPOptions := [];
   FMapFileLevel := mfloff;
   FMaxStackSize := 1048576; //old TJclDCCExValue $100000 (same value as hex)
   FMinStackSize := 16384; //old TJclDCCExValue $4000 (same value as hex)
@@ -1013,6 +1041,8 @@ begin
   FEXEOutputDir := ACustomConfig.EXEOutputDirectory;
   FImageBaseAddr := ACustomConfig.ImageBaseAddr;
   FIncludeDirectories.Assign(ACustomConfig.IncludeDirectories);
+  FLinkerOutput := ACustomConfig.LinkerOutput;
+  FLinkerOutputCPPOptions := ACustomConfig.LinkerOutputCPPOptions;
   FMapFileLevel := ACustomConfig.MapFileLevel;
   FMaxStackSize := ACustomConfig.MaxStackSize;
   FMinStackSize := ACustomConfig.MinStackSize;
@@ -1056,17 +1086,18 @@ var
   I: Integer;
   S, S2: string;
   CompilerSwitchesStr: string;
+  LOCPPOptions: TJclDCCLinkerOutputCPPOptions;
 begin
   ConfigStrings := TStringList.Create;
   try
-    //(usc) do FileExists check ?
     ConfigStrings.LoadFromFile(AFileName);
-    MapFileLevel := mfloff; //(usc) set to off ?
+    MapFileLevel := mfloff;
+    LinkerOutput := loDCU;
+    LinkerOutputCPPOptions := [];
     CompilerSwitchesStr := '';
     for I := 0 to Pred(ConfigStrings.Count) do
     begin
       S := ConfigStrings[I];
-      //(usc) read compiler switches
       if (Pos('-$', S) = 1) and (Length(S) = 4) and (Pos(S, CompilerSwitchesStr) = 0) then
       begin
         if CompilerSwitchesStr <> '' then
@@ -1083,9 +1114,20 @@ begin
       if Pos('-GD', S) = 1 then
         MapFileLevel := mfldetailed
       else
-
-      // JPNE (linker output)
-
+      if S = '-J' then
+        LinkerOutput := loCObj
+      else
+      if Pos('-JP', S) = 1 then
+      begin
+        LinkerOutput := loCPPObj;
+        LOCPPOptions := LinkerOutputCPPOptions;
+        if Pos('N', S) > 0 then
+          Include(LOCPPOptions, locoIncludeNamespaces);
+        if Pos('E', S) > 0 then
+          Include(LOCPPOptions, locoExportAllSymbols);
+        LinkerOutputCPPOptions := LOCPPOptions;
+      end
+      else
       if Pos('-cc', S) = 1 then
         ConsoleApplication := True
       else
@@ -1113,7 +1155,7 @@ begin
       if Pos('-M', S) = 1 then
         BuildAllUnits := False
       else
-      if Pos('-B', S) = 1 then //(usc) not found in .cfg file - but used as opposite of -M ?
+      if Pos('-B', S) = 1 then //(usc) not found in .cfg file - but used as opposite of -M?
         BuildAllUnits := True
       else
       if (Pos('-$M', S) = 1) and (Pos('-$M-', S) = 0) and (Pos('-$M+', S) = 0) and
@@ -1176,6 +1218,8 @@ begin
   CompilerSwitches.AsString := CompilerSwitchesStr;
 end;
 
+//=== { TJclDOFFile } ========================================================
+
 const
   JclDOFCompilerSection = 'Compiler';
   JclDOFLinkerSection = 'Linker';
@@ -1186,6 +1230,7 @@ const
   JclDOFShowWarningsEntry = 'ShowWarnings';
 
   JclDOFMapFileEntry = 'MapFile';
+  JclDOFOutputObjsEntry = 'OutputObjs';
   JclDOFConsoleAppEntry = 'ConsoleApp';
   JclDOFDebugInfoEntry = 'DebugInfo';
   JclDOFRemoteSymbolsEntry = 'RemoteSymbols';
@@ -1227,21 +1272,46 @@ procedure TJclDOFFile.LoadFromFile(AFileName: string);
   end;
 
 var
+  I: Integer;
   DOFFile: TMemIniFile;
+  OutputObjsValue: Integer;
+  LOCPPOptions: TJclDCCLinkerOutputCPPOptions;
 begin
-  //(usc) do FileExists check ?
   DOFFile := TMemIniFile.Create(AFileName);
   try
     FContent.Clear;
     DOFFile.GetStrings(FContent);
-    //(usc) read compiler switches
+    for I := 0 to Pred(CompilerSwitches.Count) do
+      CompilerSwitches[I].AsInteger := DOFFile.ReadInteger(JclDOFCompilerSection, CompilerSwitches[I].SwitchChar, CompilerSwitches[I].AsInteger);
     case DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMapFileEntry, 0) of
       0: MapFileLevel := mfloff;
       1: MapFileLevel := mflsegments;
       2: MapFileLevel := mflpublics;
       3: MapFileLevel := mfldetailed;
     end;
-    // JPNE (linker output)
+    OutputObjsValue := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFOutputObjsEntry, 0);
+    case OutputObjsValue of
+      9:
+         begin
+           LinkerOutput := loCObj;
+           LinkerOutputCPPOptions := [];
+         end;
+      10, 14, 26, 30:
+         begin
+           LinkerOutput := loCPPObj;
+           LOCPPOptions := [];
+           if OutputObjsValue and 4 <> 0 then
+             Include(LOCPPOptions, locoIncludeNamespaces);
+           if OutputObjsValue and 16 <> 0 then
+             Include(LOCPPOptions, locoExportAllSymbols);
+           LinkerOutputCPPOptions := LOCPPOptions;
+         end;
+      else
+      begin
+        LinkerOutput := loDCU;
+        LinkerOutputCPPOptions := [];
+      end;
+    end;
     ConsoleApplication := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFConsoleAppEntry, 0) = 1;
     TD32DebugInfo := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFDebugInfoEntry, 0) = 1;
     RemoteDebugSymbols := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFRemoteSymbolsEntry, 0) = 1;
@@ -1249,14 +1319,9 @@ begin
     UnitAliases := DOFFile.ReadString(JclDOFCompilerSection, JclDOFUnitAliasesEntry, '');
     OutputHints := DOFFile.ReadInteger(JclDOFCompilerSection, JclDOFShowHintsEntry, 0) = 1;
     OutputWarnings := DOFFile.ReadInteger(JclDOFCompilerSection, JclDOFShowWarningsEntry, 0) = 1;
-{
-      if Pos('-M', S) = 1 then
-        FBuildAllUnits := False
-      else
-      if Pos('-B', S) = 1 then //(usc) not found in .cfg file - but used as opposite of -M ?
-        FBuildAllUnits := True
-      else
-}
+
+    //.dof file seams to have no -M or -B equivalent
+
     MinStackSize := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMinStackSizeEntry, MinStackSize);
     MaxStackSize := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMaxStackSizeEntry, MaxStackSize);
     ImageBaseAddr := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFImageBaseEntry, ImageBaseAddr);
@@ -1388,11 +1453,14 @@ begin
   end;
 end;
 
+//=== { TJclKOFFile } ========================================================
+
 constructor TJclKOFFile.Create;
 begin
   inherited Create;
 end;
 
+//=== { TJclDCCMessage } =====================================================
 
 type
   TJclMessageConversionRec = record
@@ -1503,6 +1571,8 @@ begin
   Result := Format('%s %s%s', [KindStr, FilePartStr, FMessageStr]);
 end;
 
+//=== { TJclDCCMessages } ====================================================
+
 constructor TJclDCCMessages.Create;
 begin
   inherited Create;
@@ -1550,6 +1620,8 @@ function TJclDCCMessages.GetItems(AIndex: Integer): TJclDCCMessage;
 begin
   Result := TJclDCCMessage(FItems[AIndex]);
 end;
+
+//=== { TJclDCCEx } ==========================================================
 
 constructor TJclDCCEx.Create;
 begin
@@ -1616,16 +1688,12 @@ end;
 
 function TJclDCCEx.Compile(AbortPtr: PBoolean = nil): Boolean;
 var
-  Arguments: string;
+  Arguments, S: string;
   DCCExitCode: Integer;
 begin
-{
+{(usc)
  open arguments
  - F
- - J
- - JP
- - LE (not listed in dcc help)
- - LN (not listed in dcc help)
  - P
  - Z
 }
@@ -1634,9 +1702,9 @@ begin
   if FileExists(FFileToCompile) and (FExeName <> '') then
   begin
     Arguments := FFileToCompile;
-    if DirectoryExists(FConfig.EXEOutputDirectory) then
+    if (FConfig.EXEOutputDirectory <> '') and DirectoryExists(FConfig.EXEOutputDirectory) then
       Arguments := Arguments + Format(' -E%s', [FConfig.EXEOutputDirectory]);
-    if DirectoryExists(FConfig.DCUOutputDirectory) then
+    if (FConfig.DCUOutputDirectory <> '') and DirectoryExists(FConfig.DCUOutputDirectory) then
       Arguments := Arguments + Format(' -N%s', [FConfig.DCUOutputDirectory]);
     Arguments := Arguments + Format(' -O%s', [FConfig.ObjectDirectories.AsDefaultString]);
     Arguments := Arguments + Format(' -I%s', [FConfig.IncludeDirectories.AsDefaultString]);
@@ -1644,6 +1712,10 @@ begin
     Arguments := Arguments + Format(' -U%s', [FConfig.UnitDirectories.AsDefaultString]);
     if FConfig.CompileWithPackages and (FConfig.Packages.Count > 0) then
       Arguments := Arguments + Format(' -LU%s', [FConfig.Packages]);
+    if (FConfig.BPLOutputDirectory <> '') and DirectoryExists(FConfig.BPLOutputDirectory) then
+      Arguments := Arguments + Format(' -LE%s', [FConfig.BPLOutputDirectory]);
+    if (FConfig.DCPOutputDirectory <> '') and DirectoryExists(FConfig.DCPOutputDirectory) then
+      Arguments := Arguments + Format(' -LN%s', [FConfig.DCPOutputDirectory]);
     if FConfig.ConditionalDefines <> '' then
       Arguments := Arguments + Format(' -D%s', [FConfig.ConditionalDefines]);
     case FConfig.MapFileLevel of
@@ -1651,27 +1723,44 @@ begin
       mflpublics: Arguments := Arguments + ' -GP';
       mfldetailed: Arguments := Arguments + ' -GD';
     end;
+    if FConfig.LinkerOutput = loCObj then
+      Arguments := Arguments + ' -J'
+    else
+    if FConfig.LinkerOutput = loCPPObj then
+    begin
+      S := ' -JP';
+      if locoIncludeNamespaces in FConfig.LinkerOutputCPPOptions then
+        S := S + 'N';
+      if locoExportAllSymbols in FConfig.LinkerOutputCPPOptions then
+        S := S + 'E';
+      Arguments := Arguments + S;
+    end;
     if FConfig.BuildAllUnits then
       Arguments := Arguments + ' -B'
     else
-      Arguments := Arguments + ' -M';  //(usc) is this necessary ?
+      Arguments := Arguments + ' -M';
     Arguments := Arguments + ' ' + FConfig.CompilerSwitches.AsString;
     if FConfig.UnitAliases <> '' then
       Arguments := Arguments + ' -A' + FConfig.UnitAliases;
     if FConfig.OutputWarnings then
-      Arguments := Arguments + ' -W'; //(usc) test - is enabled by default ?
+      Arguments := Arguments + ' -W+'
+    else
+      Arguments := Arguments + ' -W-';    
     if FConfig.OutputHints then
-      Arguments := Arguments + ' -H'; //(usc) test - is enabled by default ?
+      Arguments := Arguments + ' -H+'
+    else
+      Arguments := Arguments + ' -H-';    
     if FConfig.ConsoleApplication then
       Arguments := Arguments + ' -CC'
     else
       Arguments := Arguments + ' -CG';
+    //-V does add TD32 debug informations as well but the executable size is a bit lower
+    // and the IDE always writes -vn into the .cfg file
     if FConfig.TD32DebugInfo then
-      Arguments := Arguments + ' -V'; //(usc) check
+      Arguments := Arguments + ' -VN';
     if FConfig.RemoteDebugSymbols then
       Arguments := Arguments + ' -VR';
 
-                                        //(usc) no violation with -$M+ / -$M- ?
     //values must be decimal
     Arguments := Arguments + Format(' -$M%d,%d', [FConfig.MinStackSize, FConfig.MaxStackSize]);
     //value must be hexadecimal
@@ -1685,14 +1774,12 @@ begin
   end;
 end;
 
+//=== { TJclBorRADToolExperts } ==============================================
+
 const
   ExpertsKeyName = 'Experts';
   VersionControlKeyName = 'Version Control';
   VersionControlVCSManager = 'VCSManager';
-
-//==================================================================================================
-// TJclBorRADToolExperts
-//==================================================================================================
 
 constructor TJclBorRADToolIdeExperts.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1701,15 +1788,11 @@ begin
   ReadExperts;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolIdeExperts.Destroy;
 begin
   FreeAndNil(FExperts);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeExperts.AddExpert(const AName, AFileName: string): Boolean;
 begin
@@ -1718,35 +1801,25 @@ begin
   ReadExperts;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeExperts.GetCount: Integer;
 begin
   Result := FExperts.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeExperts.GetFileNames(Index: Integer): string;
 begin
   Result := FExperts.Values[FExperts.Names[Index]];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolIdeExperts.GetNames(Index: Integer): string;
 begin
   Result := FExperts.Names[Index];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolIdeExperts.ReadExperts;
 begin
   Installation.ConfigData.ReadSectionValues(ExpertsKeyName, FExperts);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolIdeExperts.RemoveExpert(const AName: string): Boolean;
 begin
@@ -1758,9 +1831,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclBorRADToolInstallationEx
-//==================================================================================================
+//=== { TJclBorRADToolInstallationEx } =======================================
 
 constructor TJclBorRADToolInstallationEx.Create(const AConfigDataLocation: string);
 begin
@@ -1768,15 +1839,11 @@ begin
   FIdeExperts := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclBorRADToolInstallationEx.Destroy;
 begin
   FreeAndNil(FIdeExperts);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallationEx.GetIdeExperts: TJclBorRADToolIdeExperts;
 begin
@@ -1785,8 +1852,6 @@ begin
   Result := FIdeExperts;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclBorRADToolInstallationEx.GetVCSManager: string;
 begin
   Result := '';
@@ -1794,15 +1859,11 @@ begin
     Result := ConfigData.ReadString(VersionControlKeyName, VersionControlVCSManager, '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclBorRADToolInstallationEx.SetVCSManager(const Value: string);
 begin
   if SupportsVCSManager then
     ConfigData.WriteString(VersionControlKeyName, VersionControlVCSManager, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallationEx.SupportsVCSManager: Boolean;
 begin
@@ -1812,6 +1873,13 @@ begin
   Result := VersionNumber <= 7;
   {$ENDIF KYLIX}
 end;
+
+// History:
+
+// $Log$
+// Revision 1.9  2005/12/25 20:32:59  uschuster
+// Linker output options and compiler switches; some changes in TJclDCCEx.Compile; minor JCL style changes
+//
 
 end.
 
