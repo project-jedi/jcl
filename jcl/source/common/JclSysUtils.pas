@@ -413,7 +413,7 @@ uses
   JclConsole,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
-  SysUtils,
+  SysUtils, Contnrs,
   JclResources, JclStrings, JclMath;
 
 {$IFNDEF CLR}
@@ -1017,7 +1017,7 @@ var
 begin
   if List <> nil then
   begin
-    for I := 0 to List.Count - 1 do
+    for I := List.Count - 1 downto 0 do
     begin
       if List[I] <> nil then
       begin
@@ -1027,7 +1027,9 @@ begin
           ClearObjectList(TList(List[I]));
         end;
         TObject(List[I]).Free;
-        List[I] := nil;
+        if (not (List is TComponentList))
+          and ((not(List is TObjectList)) or not TObjectList(List).OwnsObjects) then
+          List[I] := nil;
       end;
     end;
     List.Clear;
@@ -2362,6 +2364,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.38  2005/12/26 20:30:07  outchy
+// IT2772: ClearObjectList behaviour with TComponentList and TObjectList
+//
 // Revision 1.37  2005/05/05 20:08:45  ahuser
 // JCL.NET support
 //
