@@ -23,7 +23,7 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
     Height = 16
     Cursor = crHandPoint
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clHotLight
+    Font.Color = clBlue
     Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = [fsBold, fsUnderline]
@@ -36,8 +36,6 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
     Width = 535
     Height = 121
     Anchors = [akLeft, akTop, akRight]
-    BevelInner = bvNone
-    BevelOuter = bvNone
     BorderStyle = bsNone
     ParentColor = True
     ReadOnly = True
