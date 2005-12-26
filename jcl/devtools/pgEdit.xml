@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit>
-    <FormVersion>0</FormVersion>
-    <ShowCmd>1</ShowCmd>
-    <Flags>0</Flags>
-    <PixelsPerInch>96</PixelsPerInch>
-    <MinMaxPos_1600x1200_>-1,-1,-1,-1</MinMaxPos_1600x1200_>
-    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
-    <NormPos_1600x1200_>370,315,1389,915</NormPos_1600x1200_>
-    <NormPos>370,315,1389,915</NormPos>
-    <pnlList_Width>137</pnlList_Width>
-    <jsgDependencies_Height>165</jsgDependencies_Height>
-    <pnlEdit_Width>872</pnlEdit_Width>
-    <jsgFiles_Height>196</jsgFiles_Height>
-    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
-    <cmbModel_ItemIndex>1</cmbModel_ItemIndex>
-  </pgEdit>
+  <pgEdit/>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -113,8 +98,10 @@
         <target name="d6.dev"/>
         <target name="d7"/>
         <target name="d7.dev"/>
-        <target name="d9"/>
-        <target name="d10"/>
+        <target name="d8" IsBds="1"/>
+        <target name="cs1" IsBds="1"/>
+        <target name="d9" IsBds="1"/>
+        <target name="d10" IsBds="1"/>
         <target name="k3" PathSep="/"/>
         <target name="k3.dev" PathSep="/"/>
       </targets>
@@ -124,15 +111,16 @@
         <alias name="Kylix" value="k2,k3,k3p"/>
         <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10"/>
         <alias name="Linux" value="k2,k3,k3p"/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d9,d5.dev"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d9,k3,d5.dev"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d9,d5.dev"/>
-        <alias name="WinLibSuffix" value="c6,d6,d7,d9,d10,d5.dev,d6.dev,d7.dev"/>
-        <alias name="allLibSuffix" value="c6,d6,d7,d9,d10,k3,d5.dev,d6.dev,d7.dev,k3.dev"/>
+        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,d5.dev,cs1"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,d5.dev,cs1"/>
+        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d5.dev"/>
+        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,d5.dev,d6.dev,d7.dev,cs1"/>
+        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,d5.dev,d6.dev,d7.dev,k3.dev,cs1"/>
         <alias name="Clx" value="c6,d6,d7,k3"/>
         <alias name="ClxDev" value="c6.dev,d7.dev,k3.dev"/>
         <alias name="Vcl" value="c6,d6,d7,d9,d10"/>
         <alias name="VclDev" value="c6.dev,d6.dev,d7.dev"/>
+        <alias name="Bds" value="cs1,d8,d9,d10"/>
       </aliases>
     </Model>
   </models>
