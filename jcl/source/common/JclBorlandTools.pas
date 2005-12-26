@@ -20,13 +20,14 @@
 {   Florent Ouchet (outchy)                                                                        }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair) - crossplatform & BCB support                                      }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Routines for getting information about installed versions of Delphi/C++Builder and performing    }
 { basic installation tasks.                                                                        }
 {                                                                                                  }
-{ Important notes for C#Buidler 1 and Delphi 8:                                                    }
+{ Important notes for C#Builder 1 and Delphi 8:                                                    }
 { These products were not shipped with their native compilers, but the toolkit to build design     }
 { packages is available in codecentral (http://codecentral.borland.com):                           }
 {  - "IDE Integration pack for C#Builder 1.0" http://codecentral.borland.com/Item.aspx?ID=21334    }
@@ -35,7 +36,7 @@
 {  - Binary files go to \bin (DCC32.EXE, RLINK32.DLL and lnkdfm7*.dll)                             }
 {  - Compiler files go to \lib (designide.dcp, rtl.dcp, SysInit.dcu, vcl.dcp, vclactnband.dcp,     }
 {    vcljpg.dcp and vclx.dcp)                                                                      }
-{  - ToolsAPI files go to \source\ToolsAPI (PaletteAPI.pas, PropInspAPI.pas and ToolsAPI.pas       }
+{  - ToolsAPI files go to \source\ToolsAPI (PaletteAPI.pas, PropInspAPI.pas and ToolsAPI.pas)      }
 { Don't mix C#Builder 1 files with Delphi 8 and vice-versa otherwise the compilation will fail     }
 { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                   }
 { !!!!!!!!      The DCPPath for these releases have to $(BDS)\lib      !!!!!!!!!                   }
@@ -3085,6 +3086,7 @@ const
   BinDir = 'bin\';
   {$ENDIF ~KYLIX}
   UpdateKeyName = 'Update #';
+  BDSUpdateKeyName = 'UpdatePackInstalled';
 var
   KeyLen, I: Integer;
   Key: string;
@@ -3123,10 +3125,14 @@ begin
   FEditionStr := Globals.Values[EditionValueName];
   if FEditionStr = '' then
     FEditionStr := Globals.Values[VersionValueName];
+  { TODO : Edition detection for BDS }
   for Ed := Low(Ed) to High(Ed) do
     if StrIPos(BorRADToolEditionIDs[Ed], FEditionStr) = 1 then
       FEdition := Ed;
 
+  if RadToolKind = brBorlandDevStudio then
+    FInstalledUpdatePack := StrToIntDef(Globals.Values[BDSUpdateKeyName], 0)
+  else
   for I := 0 to Globals.Count - 1 do
   begin
     Key := Globals.Names[I];
@@ -4236,6 +4242,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.52  2005/12/26 20:18:02  uschuster
+// fixed BDS Update Pack detection
+//
 // Revision 1.51  2005/12/26 20:02:09  outchy
 // IT3363: overriden environment variables
 //
