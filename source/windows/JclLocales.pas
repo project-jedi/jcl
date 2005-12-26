@@ -82,6 +82,7 @@ type
     function GetTimeFormats: TStrings;
     function GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
     function GetFontCharset: Byte;
+    function GetCalTwoDigitYearMax(Calendar: CALID): Integer;
     procedure SetUseSystemACP(const Value: Boolean);
     procedure SetCharInfo(InfoType: Integer; const Value: Char);
     procedure SetIntegerInfo(InfoType: Integer; const Value: Integer);
@@ -189,7 +190,7 @@ type
     property Calendars: TStrings read GetCalendars;
     property CalendarIntegerInfo[Calendar: CALID; InfoType: Integer]: Integer read GetCalendarIntegerInfo;
     property CalendarStringInfo[Calendar: CALID; InfoType: Integer]: string read GetCalendarStringInfo;
-    property CalTwoDigitYearMax[Calendar: CALID]: Integer index CAL_ITWODIGITYEARMAX read GetCalendarIntegerInfo;
+    property CalTwoDigitYearMax[Calendar: CALID]: Integer read GetCalTwoDigitYearMax;
   end;
 
   TJclLocalesKind = (lkInstalled, lkSupported);
@@ -395,6 +396,10 @@ begin
     Result := 0;
 end;
 
+function TJclLocaleInfo.GetCalTwoDigitYearMax(Calendar: CALID): Integer;
+begin
+  Result := GetCalendarIntegerInfo(Calendar, CAL_ITWODIGITYEARMAX);
+end;
 
 function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
 begin
@@ -1032,6 +1037,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/12/26 18:03:58  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.15  2005/02/25 07:20:15  marquardt
 // add section lines
 //

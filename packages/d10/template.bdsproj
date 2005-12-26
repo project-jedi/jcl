@@ -10,7 +10,7 @@
   </PersonalityInfo>
   <Delphi.Personality>
     <Source>
-      <Source Name="MainSource">%NAME%.dpk</Source>
+      <Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>
     </Source>
     <FileVersion>
       <FileVersion Name="Version">7.0</FileVersion>
@@ -103,6 +103,7 @@
       <Compiler Name="DuplicatesIgnored">True</Compiler>
       <Compiler Name="UnitInitSeq">True</Compiler>
       <Compiler Name="LocalPInvoke">True</Compiler>
+      <Compiler Name="CodePage"></Compiler>
     </Compiler>
     <Linker>
       <Linker Name="MapFile">0</Linker>
@@ -115,11 +116,18 @@
       <Linker Name="MaxStackSize">1048576</Linker>
       <Linker Name="ImageBase">%IMAGE_BASE%</Linker>
       <Linker Name="ExeDescription">%DESCRIPTION%</Linker>
-      <Linker Name="GenerateHpps">False</Linker>
+      <Linker Name="GenerateHpps">%ISPACKAGE%</Linker>
     </Linker>
     <Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d10</Directories>
       <Directories Name="SearchPath">..\..\source</Directories>
+      <Directories Name="OutputDir"></Directories>
+      <Directories Name="PackageDLLOutputDir"></Directories>
+      <Directories Name="PackageDCPOutputDir"></Directories>
+      <Directories Name="Packages">%NOLINKPACKAGELIST%</Directories>
+      <Directories Name="Conditionals"></Directories>
+      <Directories Name="DebugSourceDirs"></Directories>
+      <Directories Name="UsePackages">True</Directories>
     </Directories>
     <Parameters>
     </Parameters>
@@ -136,7 +144,7 @@
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
       <VersionInfo Name="Private">False</VersionInfo>
-      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="DLL">%ISDLL%</VersionInfo>
       <VersionInfo Name="Locale">1053</VersionInfo>
       <VersionInfo Name="CodePage">1252</VersionInfo>
     </VersionInfo>
@@ -147,7 +155,7 @@
       <VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">%NAME%100.bpl</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">%NAME%100%BINEXTENSION%</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
       <VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
     </VersionInfoKeys>

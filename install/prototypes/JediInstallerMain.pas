@@ -177,7 +177,8 @@ const
   {$IFDEF MSWINDOWS}
   SupportURLs: array[TJclBorRADToolKind] of string = (
                 'http://www.borland.com/devsupport/delphi/',
-                'http://www.borland.com/devsupport/bcppbuilder/');
+                'http://www.borland.com/devsupport/bcppbuilder/',
+                'http://www.borland.com/devsupport/delphi/');
   {$ENDIF MSWINDOWS}
   {$IFDEF KYLIX}
   KylixSupportURL     = 'http://www.borland.com/devsupport/kylix/';
@@ -220,7 +221,7 @@ begin
   Page := TTabSheet.Create(Self);
   with Installation do
   begin
-    Page.Name := Format('%s%dPage', [Significand[RADToolKind], VersionNumber]);
+    Page.Name := Format('%sPage', [VersionNumberStr]);
     Page.Caption := Name;
   end;
   Page.PageControl := ProductsPageControl;

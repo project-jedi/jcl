@@ -1,0 +1,5 @@
+USEUNIT("..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas");
+USEUNIT("..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas");
+USEDEF("JclProjectAnalysisExpertDLLC50.def");
+Project file
+DllEntryPoint

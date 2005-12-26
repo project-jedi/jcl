@@ -46,7 +46,13 @@ type
     procedure UnregisterCommands; override;
   end;
 
+// design package entry point
 procedure Register;
+
+// expert DLL entry point
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
 implementation
 
@@ -66,6 +72,55 @@ begin
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
       raise;
+    end;
+  end;
+end;
+
+var
+  JCLWizardIndex: Integer;
+
+procedure JclWizardTerminate;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    if JCLWizardIndex <> -1 then
+    begin
+      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+      if not Assigned(OTAWizardServices) then
+        raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+      OTAWizardServices.RemoveWizard(JCLWizardIndex);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+    end;
+  end;
+end;
+
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    TerminateProc := JclWizardTerminate;
+
+    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+    if not Assigned(OTAWizardServices) then
+      raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclProjectAnalyzerExpert.Create);
+
+    Result := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      Result := False;
     end;
   end;
 end;
@@ -193,7 +248,7 @@ begin
   FBuildAction.Name := RsAnalyzeActionName;
   ImageBmp := TBitmap.Create;
   try
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'PROJANALYZER');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'PROJANALYZER');
     FBuildAction.ImageIndex := NTAServices.AddMasked(ImageBmp, clOlive);
   finally
     ImageBmp.Free;

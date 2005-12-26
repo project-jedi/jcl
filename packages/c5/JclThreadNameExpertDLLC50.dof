@@ -1,0 +1,8 @@
+[Directories]
+UnitOutputDir=..\..\lib\c5
+SearchPath=..\..\source
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=vcl50;dsnide50;JclC50;JclBaseExpertC50
+

@@ -52,7 +52,10 @@ type
       ioJclMakeDebug,
       ioJclMakeDebugVClx,
       ioJclCopyHppFiles,
+      ioJclDualPackages,         // must be before ioJclPackages
       ioJclPackages,
+      ioJclExpertsDesignPackages,
+      ioJclExpertsDLL,
       ioJclExperts,
       ioJclExpertDebug,
       ioJclExpertAnalyzer,
@@ -89,9 +92,9 @@ type
 
 const
   ioJclLast = ioJclMakeDemos;
-  Significand: array[TJclBorRadToolKind] of Char = ('D', 'C');
+//  Significand: array[TJclBorRadToolKind] of Char = ('D', 'C', 'D');
   {$IFDEF KEEP_DEPRECATED}
-  Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
+  Prefixes: array[brDelphi..brCppBuilder] of Char = ('D', 'C');
   {$ENDIF KEEP_DEPRECATED}
 
 type
@@ -168,6 +171,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2005/12/26 18:03:41  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.17  2005/12/04 10:10:57  obones
 // Borland Developer Studio 2006 support
 //

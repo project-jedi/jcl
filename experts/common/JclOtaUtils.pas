@@ -62,6 +62,7 @@ type
 //  - initialization sections
 //  - finalization sections
 //  - Register procedures
+//  - expert entry point
 //  - Action update events
 //  - Action execute events
 //  - notifier callback functions
@@ -89,6 +90,7 @@ type
     FServices: IOTAServices;
     FName: string;
     FNTAServices: INTAServices;
+    function GetModuleHInstance: Cardinal;
     function GetActiveProject: IOTAProject;
     function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
@@ -129,6 +131,8 @@ type
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
     property RootDir: string read GetRootDir;
     property Services: IOTAServices read FServices;
+
+    property ModuleHInstance: Cardinal read GetModuleHInstance;
   end;
 
   TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard)
@@ -145,6 +149,11 @@ type
 
 // procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
+
+{$IFDEF BDS}
+procedure RegisterSplashScreen;
+procedure RegisterAboutBox;
+{$ENDIF BDS}
 
 implementation
 
@@ -226,6 +235,11 @@ end;
 
 constructor TJclOTAExpertBase.Create(AName: string);
 begin
+  {$IFDEF BDS}
+  RegisterSplashScreen;
+  RegisterAboutBox;
+  {$ENDIF BDS}
+  
   Supports(BorlandIDEServices,IOTAServices,FServices);
   if not Assigned(FServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
@@ -334,6 +348,13 @@ begin
   {$ENDIF ~RTL140_UP}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
     PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + MAPExtension;
+end;
+
+function TJclOTAExpertBase.GetModuleHInstance: Cardinal;
+begin
+  Result := FindClassHInstance(ClassType);
+  if Result = 0 then
+    raise EJclExpertException.CreateTrace(RsBadModuleHInstance);
 end;
 
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
@@ -759,28 +780,32 @@ end;
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
   AboutBoxIndex: Integer = -1;
+  SplashScreenInitialized: Boolean = False;
 
 procedure RegisterAboutBox;
 var
   ProductImage: HBITMAP;
 begin
-  Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
-  if not Assigned(AboutBoxServices) then
-    raise EJclExpertException.CreateTrace(RsENoAboutServices);
-  ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
-  if ProductImage = 0 then
-    raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-  AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
-    RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
-    ProductImage, False, RsAboutLicenceStatus);
+  if AboutBoxIndex = -1 then
+  begin
+    Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
+    if not Assigned(AboutBoxServices) then
+      raise EJclExpertException.CreateTrace(RsENoAboutServices);
+    ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
+    if ProductImage = 0 then
+      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
+    AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
+      RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
+      ProductImage, False, RsAboutLicenceStatus);
+  end;
 end;
 
 procedure UnregisterAboutBox;
 begin
-  if (AboutBoxIndex <> 0) and Assigned(AboutBoxServices) then
+  if (AboutBoxIndex <> -1) and Assigned(AboutBoxServices) then
   begin
     AboutBoxServices.RemoveProductInfo(AboutBoxIndex);
-    AboutBoxIndex := 0;
+    AboutBoxIndex := -1;
     AboutBoxServices := nil;
   end;
 end;
@@ -789,28 +814,21 @@ procedure RegisterSplashScreen;
 var
   ProductImage: HBITMAP;
 begin
-  if Assigned(SplashScreenServices) then
+  if Assigned(SplashScreenServices) and not SplashScreenInitialized then
   begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
+    // C#Builder 1 doesn't display AddProductBitmap
+    //SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
+    //  False, RsAboutLicenceStatus);
+    SplashScreenServices.AddPluginBitmap(RsAboutDialogTitle, ProductImage,
       False, RsAboutLicenceStatus);
+    SplashScreenInitialized := True;
   end;
 end;
 
 initialization
-
-try
-  RegisterSplashScreen;
-  RegisterAboutBox;
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
-  end;
-end;
 
 finalization
 
@@ -849,6 +867,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/12/26 18:03:40  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.13  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.

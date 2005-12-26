@@ -103,6 +103,7 @@
       <Compiler Name="DuplicatesIgnored">True</Compiler>
       <Compiler Name="UnitInitSeq">True</Compiler>
       <Compiler Name="LocalPInvoke">True</Compiler>
+      <Compiler Name="CodePage"></Compiler>
     </Compiler>
     <Linker>
       <Linker Name="MapFile">0</Linker>
@@ -115,11 +116,18 @@
       <Linker Name="MaxStackSize">1048576</Linker>
       <Linker Name="ImageBase">$48200000</Linker>
       <Linker Name="ExeDescription">JEDI Code Library VCL package</Linker>
-      <Linker Name="GenerateHpps">False</Linker>
+      <Linker Name="GenerateHpps">True</Linker>
     </Linker>
     <Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d10</Directories>
       <Directories Name="SearchPath">..\..\source</Directories>
+      <Directories Name="OutputDir"></Directories>
+      <Directories Name="PackageDLLOutputDir"></Directories>
+      <Directories Name="PackageDCPOutputDir"></Directories>
+      <Directories Name="Packages">rtl;vcl;vcljpg;Jcl</Directories>
+      <Directories Name="Conditionals"></Directories>
+      <Directories Name="DebugSourceDirs"></Directories>
+      <Directories Name="UsePackages">True</Directories>
     </Directories>
     <Parameters>
     </Parameters>

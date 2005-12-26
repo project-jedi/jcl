@@ -152,7 +152,7 @@ endif
 # ---------------------------------------------------------------------------
 $(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
 	$(LINKER) \
-	$(LFLAGS) -L\"$(LIBPATH)\" \
+	$(LFLAGS) $(MAPFLAGS) -L\"$(LIBPATH)\" \
 	$(ALLOBJ), \
 	$(BPLFILE),, \
 	$(ALLLIB), \

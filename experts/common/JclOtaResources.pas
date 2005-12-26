@@ -40,8 +40,10 @@ resourcestring
   RsENoSplashServices = 'Unable to get Borland Splash Services';
   RsENoAboutServices = 'Unable to get Borland About Services';
   RsENoModuleServices = 'Unable to get Borland Module Services';
+  RsENoWizardServices = 'Unable to get Borland Wizard Services';
   RsENoPackageServices = 'Unable to get Borland Package Services';
   RsENoModule = 'Unable to get Module';
+  RsBadModuleHInstance = 'Unable to get module HInstance';
   RsENoRootDir = 'RootDir is empty';
 
   RsAboutDialogTitle = 'JEDI Code Library';
@@ -228,6 +230,11 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.9  2005/12/26 18:03:39  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.8  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.
