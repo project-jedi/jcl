@@ -41,7 +41,7 @@
 { !!!!!!!!      The DCPPath for these releases have to $(BDS)\lib      !!!!!!!!!                   }
 { !!!!!!!!    or the directory where compiler files were extracted     !!!!!!!!!                   }
 { !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                   }
-{ The default BPL output directory for these products is set to $(BDSPROJECTDIR)\bpl, it may not   }
+{ The default BPL output directory for these products is set to $(BDSPROJECTSDIR)\bpl, it may not  }
 { exist since the product installers don't create it                                               }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -822,6 +822,8 @@ const
 
   DisabledPackagesKeyName    = 'Disabled Packages';
   EnvVariablesKeyName        = 'Environment Variables';
+  EnvVariableBDSValueName    = 'BDS';
+  EnvVariableBDSPROJDIRValueName = 'BDSPROJECTSDIR';
   KnownPackagesKeyName       = 'Known Packages';
   KnownIDEPackagesKeyName    = 'Known IDE Packages';
   ExpertsKeyName             = 'Experts';
@@ -3875,8 +3877,11 @@ begin
   Result := inherited GetEnvironmentVariables;
   if Assigned(Result) then
   begin
-    Result.Values['BDS'] := PathRemoveSeparator(RootDir);
-    Result.Values['BDSPROJECTSDIR'] := DefaultProjectsDir;
+    // adding default values
+    if Result.Values[EnvVariableBDSValueName] = '' then
+      Result.Values[EnvVariableBDSValueName] := PathRemoveSeparator(RootDir);
+    if Result.Values[EnvVariableBDSPROJDIRValueName] = '' then
+      Result.Values[EnvVariableBDSPROJDIRValueName] := DefaultProjectsDir;
   end;
 end;
 
@@ -4231,6 +4236,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.51  2005/12/26 20:02:09  outchy
+// IT3363: overriden environment variables
+//
 // Revision 1.50  2005/12/26 18:03:51  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
