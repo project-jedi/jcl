@@ -26,6 +26,26 @@
 { Routines for getting information about installed versions of Delphi/C++Builder and performing    }
 { basic installation tasks.                                                                        }
 {                                                                                                  }
+{ Important notes for C#Buidler 1 and Delphi 8:                                                    }
+{ These products were not shipped with their native compilers, but the toolkit to build design     }
+{ packages is available in codecentral (http://codecentral.borland.com):                           }
+{  - "IDE Integration pack for C#Builder 1.0" http://codecentral.borland.com/Item.aspx?ID=21334    }
+{  - "IDE Integration pack for Delphi 8" http://codecentral.borland.com/Item.aspx?ID=21333         }
+{ It's recommended to extract zip files using the standard pattern of Delphi directories:          }
+{  - Binary files go to \bin (DCC32.EXE, RLINK32.DLL and lnkdfm7*.dll)                             }
+{  - Compiler files go to \lib (designide.dcp, rtl.dcp, SysInit.dcu, vcl.dcp, vclactnband.dcp,     }
+{    vcljpg.dcp and vclx.dcp)                                                                      }
+{  - ToolsAPI files go to \source\ToolsAPI (PaletteAPI.pas, PropInspAPI.pas and ToolsAPI.pas       }
+{ Don't mix C#Builder 1 files with Delphi 8 and vice-versa otherwise the compilation will fail     }
+{ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                   }
+{ !!!!!!!!      The DCPPath for these releases have to $(BDS)\lib      !!!!!!!!!                   }
+{ !!!!!!!!    or the directory where compiler files were extracted     !!!!!!!!!                   }
+{ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                   }
+{ The default BPL output directory for these products is set to $(BDSPROJECTDIR)\bpl, it may not   }
+{ exist since the product installers don't create it                                               }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -48,7 +68,9 @@ uses
 
 // Various definitions
 type
-  TJclBorRADToolKind = (brDelphi, brCppBuilder); //, brBorlandDevStudio);
+  EJclBorRADException = class (Exception);
+
+  TJclBorRADToolKind = (brDelphi, brCppBuilder, brBorlandDevStudio);
   {$IFDEF KYLIX}
   TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
   {$ELSE}
@@ -57,8 +79,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions       = [5, 6, 7, 9, 10];
+  SupportedDelphiVersions       = [5, 6, 7, 8, 9, 10];
   SupportedBCBVersions          = [5, 6, 10];
+  SupportedBDSVersions          = [1, 2, 3, 4];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -83,6 +106,37 @@ const
   BorRADToolRepositoryObjectNewForm   = 'DefaultNewForm';
   BorRADToolRepositoryObjectMainForm  = 'DefaultMainForm';
 
+  SourceExtensionDelphiPackage = '.dpk';
+  SourceExtensionBCBPackage    = '.bpk';
+  SourceExtensionDelphiProject = '.dpr';
+  SourceExtensionBCBProject    = '.bpr';
+  BinaryExtensionPackage       = '.bpl';
+  BinaryExtensionLibrary       = '.dll';
+  BinaryExtensionExecutable    = '.exe';
+  CompilerExtensionDCP         = '.dcp';
+  CompilerExtensionBPI         = '.bpi';
+  CompilerExtensionLIB         = '.lib';
+  CompilerExtensionTDS         = '.tds';
+  CompilerExtensionMAP         = '.map';
+  CompilerExtensionDEF         = '.def';
+
+  ProjectTypePackage = 'package';
+  ProjectTypeLibrary = 'library';
+  ProjectTypeProgram = 'program'; 
+
+  PersonalityDelphi    = 'Delphi';
+  PersonalityBCB       = 'C++Builder';
+  PersonalityCSB       = 'C#Builder';
+  PersonalityBDS       = 'Borland Developer Studio';
+
+  DOFDirectoriesSection = 'Directories';
+  DOFUnitOutputDirKey   = 'UnitOutputDir';
+  DOFSearchPathName     = 'SearchPath';
+  DOFLinkerSection      = 'Linker';
+  DOFPackagesKey        = 'Packages';
+  DOFCompilerSection    = 'Compiler';
+  DOFPackageNoLinkKey   = 'PackageNoLink';
+
   {$IFDEF KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
     ('OPEN', 'PRO', 'SVR');
@@ -93,6 +147,12 @@ const
 
 // Installed versions information classes
 type
+  TJclBorPersonality = (bpDelphi32, bpBCBuilder32, bpDelphiNet32, bpDelphiNet64,
+    bpCSBuilder32, bpCSBuilder64);
+  //  bpDelphi64, bpBCBuilder64);
+  
+  TJclBorPersonalities = set of TJclBorPersonality;
+
   TJclBorRADToolInstallation = class;
 
   TJclBorRADToolInstallationObject = class(TInterfacedObject)
@@ -155,10 +215,18 @@ type
   private
     FDisabledPackages: TStringList;
     FKnownPackages: TStringList;
+    FKnownIDEPackages: TStringList;
+    FExperts: TStringList;
     function GetCount: Integer;
+    function GetIDECount: Integer;
+    function GetExpertCount: Integer;
     function GetPackageDescriptions(Index: Integer): string;
+    function GetIDEPackageDescriptions(Index: Integer): string;
+    function GetExpertDescriptions(Index: Integer): string;
     function GetPackageDisabled(Index: Integer): Boolean;
     function GetPackageFileNames(Index: Integer): string;
+    function GetIDEPackageFileNames(Index: Integer): string;
+    function GetExpertFileNames(Index: Integer): string;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation);
     function PackageEntryToFileName(const Entry: string): string;
@@ -167,10 +235,20 @@ type
   public
     destructor Destroy; override;
     function AddPackage(const FileName, Description: string): Boolean;
+    function AddIDEPackage(const FileName, Description: string): Boolean;
+    function AddExpert(const FileName, Description: string): Boolean;
     function RemovePackage(const FileName: string): Boolean;
+    function RemoveIDEPackage(const FileName: string): Boolean;
+    function RemoveExpert(const FileName: string): Boolean;
     property Count: Integer read GetCount;
+    property IDECount: Integer read GetIDECount;
+    property ExpertCount: Integer read GetExpertCount;
     property PackageDescriptions[Index: Integer]: string read GetPackageDescriptions;
+    property IDEPackageDescriptions[Index: Integer]: string read GetIDEPackageDescriptions;
+    property ExpertDescriptions[Index: Integer]: string read GetExpertDescriptions;
     property PackageFileNames[Index: Integer]: string read GetPackageFileNames;
+    property IDEPackageFileNames[Index: Integer]: string read GetIDEPackageFileNames;
+    property ExpertFileNames[Index: Integer]: string read GetExpertFileNames;
     property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
   end;
 
@@ -241,7 +319,9 @@ type
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
   public
+    {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
+    {$ENDIF KEEP_DEPRECATED}
   end;
 
   TJclDCC32 = class(TJclBorlandCommandLineTool)
@@ -249,11 +329,16 @@ type
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
     procedure SaveOptionsToFile(const ConfigFileName: string);
+    procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
+    function Compile(const ProjectFileName: string): Boolean;
   public
     function Execute(const CommandLine: string): Boolean; override;
-    function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string=''): Boolean;
+    function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
+    function MakeProject(const ProjectName, OutputDir: string; ExtraOptions: string = ''): Boolean;
     procedure SetDefaultOptions;
+    {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
+    {$ENDIF KEEP_DEPRECATED}
   end;
   {$IFDEF KEEP_DEPRECATED}
   TJclDCC = TJclDCC32;
@@ -344,55 +429,78 @@ type
     FVersionNumber: Integer;
     FVersionNumberStr: string;
     FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7
-    {$IFDEF MSWINDOWS}
     FMapCreate: Boolean;
+    {$IFDEF MSWINDOWS}
     FMapLink: Boolean;
     FMapDelete: Boolean;
     {$ENDIF MSWINDOWS}
     FCommandLineTools: TCommandLineTools;
-    function GetBPLOutputPath: string;
+    FPersonalities: TJclBorPersonalities;
+    FOutputCallback: TTextHandler;
+    function GetSupportsLibSuffix: Boolean;
     function GetBCC32: TJclBCC32;
     function GetDCC32: TJclDCC32;
     function GetBpr2Mak: TJclBpr2Mak;
     function GetMake: IJclCommandLineTool;
-    function GetDCPOutputPath: string;
     function GetDebugDCUPath: string;
-    function GetDefaultProjectsDir: string;
     function GetDescription: string;
     function GetEditionAsText: string;
-    function GetEnvironmentVariables: TStrings;
     function GetIdeExeFileName: string;
     function GetGlobals: TStrings;
     function GetIdeExeBuildNumber: string;
     function GetIdePackages: TJclBorRADToolIdePackages;
     function GetLatestUpdatePack: Integer;
     function GetLibrarySearchPath: TJclBorRADToolPath;
-    function GetName: string;
     function GetPalette: TJclBorRADToolPalette;
     function GetRepository: TJclBorRADToolRepository;
     function GetUpdateNeeded: Boolean;
     function GetValid: Boolean;
-    function GetVclIncludeDir: string;
     procedure SetLibrarySearchPath(const Value: TJclBorRADToolPath);
     function GetLibraryBrowsingPath: TJclBorRADToolPath;
     procedure SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetDebugDCUPath(const Value: string);
+    procedure SetOutputCallback(const Value: TTextHandler);
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
-    {$IFDEF MSWINDOWS}
-    function GetBorlandStudioProjectsDir: string;
-    {$ENDIF MSWINDOWS}
-    function InstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
-    function InstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+
+    function LinkMapFile(const BinaryFileName: string): Boolean;
+
+    // compilation functions
+    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function CompileDelphiProject(const ProjectName, OutputDir: string): Boolean; virtual;
+    function CompileBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function CompileBCBProject(const ProjectName, OutputDir: string): Boolean; virtual;
+
+    // installation (=compilation+registration) / uninstallation(=unregistration+deletion) functions
+    function InstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function InstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function InstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function InstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function InstallDelphiExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function UninstallDelphiExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function InstallBCBExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+
     procedure ReadInformation;
-    function RegisterDesignPackage(const PackageName, BPLPath: string): Boolean;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
     function RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
+    function GetDCPOutputPath: string; virtual;
+    function GetBPLOutputPath: string; virtual;
+    function GetEnvironmentVariables: TStrings; virtual;
+    function GetVclIncludeDir: string; virtual;
+    function GetName: string; virtual;
+    procedure OutputString(const AText: string);
+    function OutputFileDelete(const FileName: string): Boolean;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; virtual;
     class function PackageSourceFileExtension: string; virtual;
+    class function ProjectSourceFileExtension: string; virtual;
     class function RadToolKind: TJclBorRadToolKind; virtual;
     {class} function RadToolName: string; virtual;
     function AnyInstanceRunning: Boolean;
@@ -403,14 +511,42 @@ type
     function ConfigFileName(const Extension: string): string; virtual;
     {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
+    // package functions
+      // install = package compile + registration
+      // uninstall = unregistration + deletion
+    function CompilePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function InstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function UninstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+
+    // project functions
+    function CompileProject(const ProjectName, OutputDir: string): Boolean; virtual;
+    // expert functions
+      // install = project compile + registration
+      // uninstall = unregistration + deletion
+    function InstallExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function UninstallExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+
+    // registration/unregistration functions
+    function RegisterPackage(const BinaryFileName, Description: string): Boolean; virtual;
+    function UnregisterPackage(const BinaryFileName: string): Boolean; virtual;
+    function RegisterIDEPackage(const BinaryFileName, Description: string): Boolean; virtual;
+    function UnregisterIDEPackage(const BinaryFileName: string): Boolean; virtual;
+    function RegisterExpert(const BinaryFileName, Description: string): Boolean; virtual;
+    function UnregisterExpert(const BinaryFileName: string): Boolean; virtual;
+
+    {$IFDEF KEEP_DEPRECATED}
     function IsBDSPersonality: Boolean;
+    {$ENDIF KEEP_DEPRECATED}
+    function GetDefaultProjectsDir: string; virtual;
     function RemoveFromDebugDCUPath(const Path: string): Boolean;
     function RemoveFromLibrarySearchPath(const Path: string): Boolean;
     function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
     function SubstitutePath(const Path: string): string;
+    {$IFDEF KEEP_DEPRECATED}
     function SupportsBCB: Boolean;
+    {$ENDIF KEEP_DEPRECATED}
     function SupportsVisualCLX: Boolean;
     function LibFolderName: string;
     // Command line tools
@@ -440,7 +576,9 @@ type
     property LibraryBrowsingPath: TJclBorRADToolPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
     {$IFDEF MSWINDOWS}
     property OpenHelp: TJclBorlandOpenHelp read FOpenHelp;
+    {$ENDIF MSWINDOWS}
     property MapCreate: Boolean read FMapCreate write FMapCreate;
+    {$IFDEF MSWINDOWS}
     property MapLink: Boolean read FMapLink write FMapLink;
     property MapDelete: Boolean read FMapDelete write FMapDelete;
     {$ENDIF MSWINDOWS}
@@ -456,18 +594,23 @@ type
     property IDEVersionNumber: Integer read FIDEVersionNumber;
     property VersionNumber: Integer read FVersionNumber;
     property VersionNumberStr: string read FVersionNumberStr;
+    property Personalities: TJclBorPersonalities read FPersonalities;
     {$IFDEF KEEP_DEPRECATED}
     property DCC: TJclDCC32 read GetDCC32;
     {$ENDIF KEEP_DEPRECATED}
+    property SupportsLibSuffix: Boolean read GetSupportsLibSuffix;
+    property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
-  private
   protected
     constructor Create(const AConfigDataLocation: string); override;
+    function GetEnvironmentVariables: TStrings; override;
   public
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
+    class function ProjectSourceFileExtension: string; override;
+    class function RadToolKind: TJclBorRadToolKind; override;
     {class }function RadToolName: string; override;
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     {$IFDEF KYLIX}
@@ -476,35 +619,57 @@ type
   end;
 
   TJclDelphiInstallation = class(TJclBorRADToolInstallation)
-  private
-    FBCBInstallation: TJclBCBInstallation;
   protected
     constructor Create(const AConfigDataLocation: string); override;
+    function GetEnvironmentVariables: TStrings; override;
   public
     destructor Destroy; override;
-    class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     class function PackageSourceFileExtension: string; override;
-    function InstallPackage(const PackageName, BPLPath, DCPPath: string; DualPackage: Boolean = True): Boolean; reintroduce;
+    class function ProjectSourceFileExtension: string; override;
+    class function RadToolKind: TJclBorRadToolKind; override;
+    class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
+    function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; reintroduce;
     {class }function RadToolName: string; override;
     {$IFDEF KYLIX}
     function ConfigFileName(const Extension: string): string; override;
     {$ENDIF KYLIX}
-    property BCBInstallation : TJclBCBInstallation read FBCBInstallation;
   end;
 
+  {$IFDEF MSWINDOWS}
   TJclBDSInstallation = class(TJclBorRADToolInstallation)
+  private
+    FDualPackageInstallation: Boolean;
+    procedure SetDualPackageInstallation(const Value: Boolean);
   protected
     constructor Create(const AConfigDataLocation: string); override;
+    function GetDCPOutputPath: string; override;
+    function GetBPLOutputPath: string; override;
+    function GetEnvironmentVariables: TStrings; override;
+    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
+    function CompileDelphiProject(const ProjectName, OutputDir: string): Boolean; override;
+    function GetVclIncludeDir: string; override;
+    function GetName: string; override;
   public
+  //  destructor Destroy; override;
+    class function PackageSourceFileExtension: string; override;
+    class function ProjectSourceFileExtension: string; override;
+    class function RadToolKind: TJclBorRadToolKind; override;
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
+    function GetBorlandStudioProjectsDir: string;
+    function GetDefaultProjectsDir: string; override;
     {class }function RadToolName: string; override;
+    property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
   end;
+  {$ENDIF MSWINDOWS}
 
   TTraverseMethod = function (Installation: TJclBorRADToolInstallation): Boolean of object;
 
   TJclBorRADToolInstallations = class(TObject)
   private
     FList: TObjectList;
+    function GetBDSInstallationFromVersion(
+      VersionNumber: Integer): TJclBorRADToolInstallation;
+    function GetBDSVersionInstalled(VersionNumber: Integer): Boolean;
     function GetCount: Integer;
     function GetInstallations(Index: Integer): TJclBorRADToolInstallation;
     function GetBCBVersionInstalled(VersionNumber: Integer): Boolean;
@@ -523,12 +688,30 @@ type
     property Installations[Index: Integer]: TJclBorRADToolInstallation read GetInstallations; default;
     property BCBInstallationFromVersion[VersionNumber: Integer]: TJclBorRADToolInstallation read GetBCBInstallationFromVersion;
     property DelphiInstallationFromVersion[VersionNumber: Integer]: TJclBorRADToolInstallation read GetDelphiInstallationFromVersion;
+    property BDSInstallationFromVersion[VersionNumber: Integer]: TJclBorRADToolInstallation read GetBDSInstallationFromVersion;
     property BCBVersionInstalled[VersionNumber: Integer]: Boolean read GetBCBVersionInstalled;
     property DelphiVersionInstalled[VersionNumber: Integer]: Boolean read GetDelphiVersionInstalled;
+    property BDSVersionInstalled[VersionNumber: Integer]: Boolean read GetBDSVersionInstalled;
   end;
 
+{$IFDEF KEEP_DEPRECATED}
 function BPLFileName(const BPLPath, PackageFileName: string): string;
+{$ENDIF KEEP_DEPRECATE}
+function BinaryFileName(const OutputPath, ProjectFileName: string): string;
+
 function IsDelphiPackage(const FileName: string): Boolean;
+function IsDelphiProject(const FileName: string): Boolean;
+function IsBCBPackage(const FileName: string): Boolean;
+function IsBCBProject(const FileName: string): Boolean;
+
+procedure GetDPRFileInfo(const DPRFileName: string; out BinaryExtension: string;
+  const LibSuffix: PString = nil);
+procedure GetBPRFileInfo(const BPRFileName: string; out BinaryFileName: string;
+  const Description: PString = nil);
+procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
+  const LibSuffix: PString = nil; const Description: PString = nil);
+procedure GetBPKFileInfo(const BPKFileName: string; out RunOnly: Boolean;
+  const BinaryFileName: PString = nil; const Description: PString = nil);
 
 implementation
 
@@ -580,28 +763,28 @@ const
 
   BDSVersions: array [1..4] of TBDSVersionInfo = (
     (
-      Name: 'C#Builder';
+      Name: RsCSharpName;
       VersionStr: '1.0';
       Version: 1;
       CoreIdeVersion: '71';
       ProjectsDirResId: 64507;
-      Supported: False),
+      Supported: True),
     (
-      Name: 'Delphi';
+      Name: RsDelphiName;
       VersionStr: '8';
       Version: 8;
       CoreIdeVersion: '71';
       ProjectsDirResId: 64460;
-      Supported: False),
+      Supported: True),
     (
-      Name: 'Delphi';
+      Name: RsDelphiName;
       VersionStr: '2005';
       Version: 9;
       CoreIdeVersion: '90';
       ProjectsDirResId: 64431;
       Supported: True),
     (
-      Name: 'Borland Developer Studio';
+      Name: RsBDSName;
       VersionStr: '2006';
       Version: 10;
       CoreIdeVersion: '100';
@@ -640,9 +823,8 @@ const
   DisabledPackagesKeyName    = 'Disabled Packages';
   EnvVariablesKeyName        = 'Environment Variables';
   KnownPackagesKeyName       = 'Known Packages';
-
-  DelphiPackageSourceExtension = '.dpk';
-  BCBPackageSourceExtension = '.bpk';
+  KnownIDEPackagesKeyName    = 'Known IDE Packages';
+  ExpertsKeyName             = 'Experts';
 
   PaletteKeyName             = 'Palette';
   PaletteHiddenTag           = '.Hidden';
@@ -660,7 +842,7 @@ const
   HelpIndexFileName          = '%s\Help\%s%d.ohi';
   HelpLinkFileName           = '%s\Help\%s%d.ohl';
   HelpProjectFileName        = '%s\Help\%s%d.ohp';
-  HelpGidFileName            = '%s\Help\%s%d.gid';
+  HelpGidFileName            = '%s\Help\%s%d.gid';      
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
@@ -679,12 +861,126 @@ const
   KylixHelpNamePart          = 'k%d';
   {$ENDIF KYLIX}
 
+  DelphiLibSuffixOption   = '{$LIBSUFFIX ''';
+  DelphiDescriptionOption = '{$DESCRIPTION ''';
+  DelphiRunOnlyOption     = '{$RUNONLY}';
+  DelphiBinaryExtOption   = '{$E ';
+  BCBLFlagsOption     = '<LFLAGS ';
+  BCBDSwitchOption    = '-D';
+  BCBLibSuffixOption  = 'LibSuffix=';
+  BCBGprSwitchOption  = '-Gpr';
+  BCBProjectOption    = '<PROJECT ';
+
+procedure GetDPRFileInfo(const DPRFileName: string; out BinaryExtension: string;
+  const LibSuffix: PString = nil);
+var
+  Index: Integer;
+  S: string;
+  DPRFile: TStrings;
+const
+  ProgramText = 'program';
+  LibraryText = 'library';
+begin
+  DPRFile := TStringList.Create;
+  try
+    DPRFile.LoadFromFile(DPRFileName);
+
+    if Assigned(LibSuffix) then
+      LibSuffix^ := '';
+
+    BinaryExtension := '';
+
+    for Index := 0 to DPRFile.Count - 1 do
+    begin
+      S := TrimRight(DPRFile.Strings[Index]);
+      if (AnsiStrLIComp(PChar(S), ProgramText, Length(ProgramText)) = 0) and (BinaryExtension = '') then
+        BinaryExtension := BinaryExtensionExecutable;
+      if (AnsiStrLIComp(PChar(S), LibraryText, Length(LibraryText)) = 0) and (BinaryExtension = '') then
+        BinaryExtension := BinaryExtensionLibrary;
+      if AnsiStrLIComp(PChar(S), DelphiBinaryExtOption, Length(DelphiBinaryExtOption)) = 0 then
+        BinaryExtension := StrTrimQuotes(Copy(S, Length(DelphiBinaryExtOption), Length(S) - Length(DelphiBinaryExtOption)));
+      if Assigned(LibSuffix)
+        and (AnsiStrLIComp(PChar(S), DelphiLibSuffixOption, Length(DelphiLibSuffixOption)) = 0) then
+        LibSuffix^ := StrTrimQuotes(Copy(S, Length(DelphiLibSuffixOption), Length(S) - Length(DelphiLibSuffixOption)));
+    end;
+  finally
+    DPRFile.Free;
+  end;
+end;
+
+procedure GetBPRFileInfo(const BPRFileName: string; out BinaryFileName: string;
+  const Description: PString = nil);
+var
+  I, J: Integer;
+  S, SubS1, SubS2, SubS3: string;
+  BPKFile: TStringList;
+  LProjectPos, BinaryFileNamePos, EndFileNamePos, LFlagsPos, DSwitchPos,
+  SemiColonPos, AmpPos: Integer;
+begin
+  BPKFile := TStringList.Create;
+  try
+    BPKFile.LoadFromFile(BPRFileName);
+    BinaryFileName := '';
+    if Assigned(Description) then
+      Description^ := '';
+    for I := 0 to BPKFile.Count - 1 do
+    begin
+      S := BPKFile[I];
+
+      LProjectPos := Pos(BCBProjectOption,S);
+      if (LProjectPos > 0) then
+      begin
+        SubS1 := Copy(S,LProjectPos,Length(S));
+        J := 1;
+        while (Pos('>',SubS1) = 0) and ((I+J)<BPKFile.Count) do
+        begin
+          SubS1 := SubS1 + BPKFile[I+J];
+          Inc(J);
+        end;
+
+        BinaryFileNamePos := Pos('"', SubS1);
+        if BinaryFileNamePos > 0 then
+        begin
+          SubS2 := Copy(SubS1, BinaryFileNamePos + 1, Length(SubS1) - BinaryFileNamePos);
+          EndFileNamePos := Pos('"', SubS2);
+
+          if EndFileNamePos > 0 then
+            BinaryFileName := Copy(SubS2, 1, EndFileNamePos - 1);
+        end;
+      end;
+
+      LFlagsPos := Pos(BCBLFlagsOption,S);
+      if (LFlagsPos > 0) then
+      begin
+        SubS1 := Copy(S,LFlagsPos,Length(S));
+        J := 1;
+        while (Pos('>',SubS1) = 0) and ((I+J)<BPKFile.Count) do
+        begin
+          SubS1 := SubS1 + BPKFile[I+J];
+          Inc(J);
+        end;
+        DSwitchPos := Pos(BCBDSwitchOption,SubS1);
+        if DSwitchPos > 0 then
+        begin
+          SubS2 := Copy(SubS1,DSwitchPos,Length(SubS1));
+          SemiColonPos := Pos(';',SubS2);
+          if SemiColonPos > 0 then
+          begin
+            SubS3 := Copy(SubS2,SemiColonPos+1,Length(SubS2));
+            AmpPos := Pos('&',SubS3);
+            if (Description <> nil) and (AmpPos > 0) then
+              Description^ := Copy(SubS3,1,AmpPos-1);
+          end;
+        end;
+      end;
+    end;
+  finally
+    BPKFile.Free;
+  end;
+end;
+
 procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
   const LibSuffix: PString = nil; const Description: PString = nil);
-const
-  DescriptionOption     = '{$DESCRIPTION ''';
-  LibSuffixOption       = '{$LIBSUFFIX ''';
-  RunOnlyOption         = '{$RUNONLY}';
 var
   I: Integer;
   S: string;
@@ -700,14 +996,14 @@ begin
     RunOnly := False;
     for I := 0 to DPKFile.Count - 1 do
     begin
-      S := TrimRight(DPKFile[I]);
-      if Assigned(Description) and (Pos(DescriptionOption, S) = 1) then
-        Description^ := Copy(S, Length(DescriptionOption), Length(S) - Length(DescriptionOption))
+      S := TrimRight(DPKFile.Strings[I]);
+      if Assigned(Description) and (Pos(DelphiDescriptionOption, S) = 1) then
+        Description^ := Copy(S, Length(DelphiDescriptionOption), Length(S) - Length(DelphiDescriptionOption))
       else
-      if Assigned(LibSuffix) and (Pos(LibSuffixOption, S) = 1) then
-        LibSuffix^ := StrTrimQuotes(Copy(S, Length(LibSuffixOption), Length(S) - Length(LibSuffixOption)))
+      if Assigned(LibSuffix) and (Pos(DelphiLibSuffixOption, S) = 1) then
+        LibSuffix^ := StrTrimQuotes(Copy(S, Length(DelphiLibSuffixOption), Length(S) - Length(DelphiLibSuffixOption)))
       else
-      if Pos(RunOnlyOption, S) = 1 then
+      if Pos(DelphiRunOnlyOption, S) = 1 then
         RunOnly := True;
     end;
   finally
@@ -716,31 +1012,49 @@ begin
 end;
 
 procedure GetBPKFileInfo(const BPKFileName: string; out RunOnly: Boolean;
-  const LibSuffix: PString = nil; const Description: PString = nil);
-const
-  LFlagsOption     = '<LFLAGS ';
-  DSwitchOption    = '-D';
-  LibSuffixOption  = 'LibSuffix=';
-  GprSwitchOption  = '-Gpr';
+  const BinaryFileName: PString = nil; const Description: PString = nil);
 var
   I, J: Integer;
   S, SubS1, SubS2, SubS3: string;
   BPKFile: TStringList;
-  LFlagsPos, DSwitchPos, SemiColonPos, AmpPos, GprPos, LibSuffixPos: Integer;
+  LFlagsPos, DSwitchPos, SemiColonPos, AmpPos, GprPos: Integer;
+  LProjectPos, BinaryFileNamePos, EndFileNamePos: Integer;
 begin
   BPKFile := TStringList.Create;
   try
     BPKFile.LoadFromFile(BPKFileName);
     if Assigned(Description) then
       Description^ := '';
-    if Assigned(LibSuffix) then
-      LibSuffix^ := '';
+    if Assigned(BinaryFileName) then
+      BinaryFileName^ := '';
     RunOnly := False;
     for I := 0 to BPKFile.Count - 1 do
     begin
       S := BPKFile[I];
 
-      LFlagsPos := Pos(LFlagsOption,S);
+      LProjectPos := Pos(BCBProjectOption,S);
+      if Assigned(BinaryFileName) and (LProjectPos > 0) then
+      begin
+        SubS1 := Copy(S,LProjectPos,Length(S));
+        J := 1;
+        while (Pos('>',SubS1) = 0) and ((I+J)<BPKFile.Count) do
+        begin
+          SubS1 := SubS1 + BPKFile[I+J];
+          Inc(J);
+        end;
+
+        BinaryFileNamePos := Pos('"', SubS1);
+        if BinaryFileNamePos > 0 then
+        begin
+          SubS2 := Copy(SubS1, BinaryFileNamePos + 1, Length(SubS1) - BinaryFileNamePos);
+          EndFileNamePos := Pos('"', SubS2);
+
+          if EndFileNamePos > 0 then
+            BinaryFileName^ := Copy(SubS2, 1, EndFileNamePos - 1);
+        end;
+      end;
+
+      LFlagsPos := Pos(BCBLFlagsOption,S);
       if (LFlagsPos > 0) then
       begin
         SubS1 := Copy(S,LFlagsPos,Length(S));
@@ -750,8 +1064,8 @@ begin
           SubS1 := SubS1 + BPKFile[I+J];
           Inc(J);
         end;
-        DSwitchPos := Pos(DSwitchOption,SubS1);
-        GprPos := Pos(GprSwitchOption,SubS1);
+        DSwitchPos := Pos(BCBDSwitchOption,SubS1);
+        GprPos := Pos(BCBGprSwitchOption,SubS1);
         if DSwitchPos > 0 then
         begin
           SubS2 := Copy(SubS1,DSwitchPos,Length(SubS1));
@@ -767,45 +1081,57 @@ begin
         if GprPos > 0 then
           RunOnly := True;
       end;
-
-      LibSuffixPos := Pos(LibSuffixOption,S);
-      if (LibSuffix <> nil) and (LibSuffixPos > 0) then
-        LibSuffix^ := Copy(S,11,Length(S));
     end;
   finally
     BPKFile.Free;
   end;
 end;
 
-function GetPackageFileInfo(const ProjectFileName: string; out RunOnly: Boolean;
-  const LibSuffix: PString = nil; const Description: PString = nil): Boolean;
-var
-  Ext: string;
-begin
-  Result := True;
-  Ext := ExtractFileExt(ProjectFileName);
-  if Ext = '.dpk' then
-    GetDPKFileInfo(ProjectFileName, RunOnly, LibSuffix, Description)
-  else
-  if Ext = '.bpk' then
-    GetBPKFileInfo(ProjectFileName, RunOnly, LibSuffix, Description)
-  else
-    { TODO: Support *.bdsproj files. }
-    Result := False;
-end;
-
 function BPLFileName(const BPLPath, PackageFileName: string): string;
 var
-  LibSuffix: string;
+  PackageExtension, LibSuffix: string;
   RunOnly: Boolean;
 begin
-  GetPackageFileInfo(PackageFileName, RunOnly, @LibSuffix);
-  Result := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageFileName) + LibSuffix + '.bpl';
+  PackageExtension := ExtractFileExt(PackageFileName);
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  begin
+    GetDPKFileInfo(PackageFileName, RunOnly, @LibSuffix);
+    Result := PathExtractFileNameNoExt(PackageFileName) + LibSuffix + BinaryExtensionPackage;
+  end else if SameText(PackageExtension, SourceExtensionBCBPackage) then
+    GetBPKFileInfo(PackageFileName, RunOnly, @Result)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+
+  Result := PathAddSeparator(BPLPath) + Result;
+end;
+
+function BinaryFileName(const OutputPath, ProjectFileName: string): string;
+var
+  ProjectExtension, LibSuffix, BinaryExtension: string;
+  RunOnly: Boolean;
+begin
+  ProjectExtension := ExtractFileExt(ProjectFileName);
+  if SameText(ProjectExtension, SourceExtensionDelphiPackage) then
+  begin
+    GetDPKFileInfo(ProjectFileName, RunOnly, @LibSuffix);
+    Result := PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + BinaryExtensionPackage;
+  end else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+  begin
+    GetDPRFileInfo(ProjectFileName, BinaryExtension, @LibSuffix);
+    Result := PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + BinaryExtension;
+  end else if SameText(ProjectExtension, SourceExtensionBCBPackage) then
+    GetBPKFileInfo(ProjectFileName, RunOnly, @Result)
+  else if SameText(ProjectExtension, SourceExtensionBCBProject) then
+    GetBPRFileInfo(ProjectFileName, Result)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+
+  Result := PathAddSeparator(OutputPath) + Result;
 end;
 
 function IsDelphiPackage(const FileName: string): Boolean;
 begin
-  Result := SameText(ExtractFileExt(FileName), TJclDelphiInstallation.PackageSourceFileExtension);
+  Result := SameText(ExtractFileExt(FileName), SourceExtensionDelphiPackage);
   { TODO : Add some plausibility tests }
   { like
   var
@@ -821,6 +1147,21 @@ begin
     CloseFile(F);
   end;
   }
+end;
+
+function IsDelphiProject(const FileName: string): Boolean;
+begin
+  Result := SameText(ExtractFileExt(FileName), SourceExtensionDelphiProject);
+end;
+
+function IsBCBPackage(const FileName: string): Boolean;
+begin
+  Result := SameText(ExtractFileExt(FileName), SourceExtensionBCBPackage);
+end;
+
+function IsBCBProject(const FileName: string): Boolean;
+begin
+  Result := SameText(ExtractFileExt(FileName), SourceExtensionBCBProject);
 end;
 
 {$IFDEF MSWINDOWS}
@@ -914,7 +1255,7 @@ begin
       AddToList(LinkFileName, Format(':Link %s', [HelpName]));
       AddToList(IndexFileName, Format(':Index %s=%s', [IndexName, HelpName]));
       SetFileLastWrite(ProjectFileName, Now);
-      DeleteFile(GidFileName);
+      FileDelete(GidFileName);
     finally
       List.Free;
     end;
@@ -952,15 +1293,18 @@ var
 begin
   with Installation do
   begin
-    if RADToolKind = brDelphi then
-    begin
-      if VersionNumber <= 6 then
-        S := 'delphi'
+    case RadToolKind of
+      brDelphi :
+        if VersionNumber <= 6 then
+          S := 'delphi'
+        else
+          S := 'd';
+      brCppBuilder :
+        S := 'bcb';
       else
-        S := 'd';
-    end
-    else
-      S := 'bcb';
+      //brBorlandDevStudio :
+        raise EJclBorRadException.Create('open help not present in Borland Developer Studio');
+    end;
     Result := Format(FormatName, [RootDir, S, VersionNumber]);
   end;
 end;
@@ -1008,7 +1352,7 @@ begin
       RemoveFromList(LinkFileName, Format(':Link %s', [HelpName]));
       RemoveFromList(IndexFileName, Format(':Index %s=%s', [IndexName, HelpName]));
       SetFileLastWrite(ProjectFileName, Now);
-      DeleteFile(GidFileName);
+      FileDelete(GidFileName);
     finally
       List.Free;
     end;
@@ -1127,6 +1471,12 @@ begin
   FKnownPackages := TStringList.Create;
   FKnownPackages.Sorted := True;
   FKnownPackages.Duplicates := dupIgnore;
+  FKnownIDEPackages := TStringList.Create;
+  FKnownIDEPackages.Sorted := True;
+  FKnownIDEPackages.Duplicates := dupIgnore;
+  FExperts := TStringList.Create;
+  FExperts.Sorted := True;
+  FExperts.Duplicates := dupIgnore;
   ReadPackages;
 end;
 
@@ -1134,7 +1484,9 @@ destructor TJclBorRADToolIdePackages.Destroy;
 begin
   FreeAndNil(FDisabledPackages);
   FreeAndNil(FKnownPackages);
-  inherited Destroy;
+  FreeAndNil(FKnownIDEPackages);
+  FreeAndNil(FExperts);
+  inherited Destroy;                 
 end;
 
 function TJclBorRADToolIdePackages.AddPackage(const FileName, Description: string): Boolean;
@@ -1145,14 +1497,57 @@ begin
   ReadPackages;
 end;
 
+function TJclBorRADToolIdePackages.AddExpert(const FileName,
+  Description: string): Boolean;
+begin
+  Result := True;
+  RemoveDisabled(FileName);
+  Installation.ConfigData.WriteString(ExpertsKeyName, Description, FileName);
+  ReadPackages;
+end;
+
+function TJclBorRADToolIdePackages.AddIDEPackage(const FileName, Description: string): Boolean;
+begin
+  Result := True;
+  RemoveDisabled(FileName);
+  Installation.ConfigData.WriteString(KnownIDEPackagesKeyName, FileName, Description);
+  ReadPackages;
+end;
+
 function TJclBorRADToolIdePackages.GetCount: Integer;
 begin
   Result := FKnownPackages.Count;
 end;
 
+function TJclBorRADToolIdePackages.GetExpertCount: Integer;
+begin
+  Result := FExperts.Count;
+end;
+
+function TJclBorRADToolIdePackages.GetExpertDescriptions(
+  Index: Integer): string;
+begin
+  Result := FExperts.Names[Index];
+end;
+
+function TJclBorRADToolIdePackages.GetExpertFileNames(Index: Integer): string;
+begin
+   Result := PackageEntryToFileName(FExperts.Values[FExperts.Names[Index]]);
+end;
+
+function TJclBorRADToolIdePackages.GetIDECount: Integer;
+begin
+  Result := FKnownIDEPackages.Count;
+end;
+
 function TJclBorRADToolIdePackages.GetPackageDescriptions(Index: Integer): string;
 begin
   Result := FKnownPackages.Values[FKnownPackages.Names[Index]];
+end;
+
+function TJclBorRADToolIdePackages.GetIDEPackageDescriptions(Index: Integer): string;
+begin
+  Result := FKnownPackages.Values[FKnownIDEPackages.Names[Index]];
 end;
 
 function TJclBorRADToolIdePackages.GetPackageDisabled(Index: Integer): Boolean;
@@ -1163,6 +1558,11 @@ end;
 function TJclBorRADToolIdePackages.GetPackageFileNames(Index: Integer): string;
 begin
   Result := PackageEntryToFileName(FKnownPackages.Names[Index]);
+end;
+
+function TJclBorRADToolIdePackages.GetIDEPackageFileNames(Index: Integer): string;
+begin
+  Result := PackageEntryToFileName(FKnownIDEPackages.Names[Index]);
 end;
 
 function TJclBorRADToolIdePackages.PackageEntryToFileName(const Entry: string): string;
@@ -1186,8 +1586,11 @@ procedure TJclBorRADToolIdePackages.ReadPackages;
 var
   I: Integer;
 begin
+  if (Installation.RadToolKind = brBorlandDevStudio) then
+    ReadPackageList(KnownIDEPackagesKeyName, FKnownIDEPackages);
   ReadPackageList(KnownPackagesKeyName, FKnownPackages);
   ReadPackageList(DisabledPackagesKeyName, FDisabledPackages);
+  ReadPackageList(ExpertsKeyName, FExperts);
   for I := 0 to Count - 1 do
     if FDisabledPackages.IndexOfName(FKnownPackages.Names[I]) <> -1 then
       FKnownPackages.Objects[I] := Pointer(True);
@@ -1206,6 +1609,29 @@ begin
     end;
 end;
 
+function TJclBorRADToolIdePackages.RemoveExpert(
+  const FileName: string): Boolean;
+var
+  I: Integer;
+  KnownExpertDescription, KnownExpert, KnownExpertFileName: string;
+begin
+  Result := False;
+  for I := 0 to FExperts.Count - 1 do
+  begin
+    KnownExpertDescription := FExperts.Names[I];
+    KnownExpert := FExperts.Values[KnownExpertDescription];
+    KnownExpertFileName := PackageEntryToFileName(KnownExpert);
+    if SamePath(FileName, KnownExpertFileName) then
+    begin
+      RemoveDisabled(KnownExpertFileName);
+      Installation.ConfigData.DeleteKey(ExpertsKeyName, KnownExpertDescription);
+      ReadPackages;
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
 function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
 var
   I: Integer;
@@ -1220,6 +1646,27 @@ begin
     begin
       RemoveDisabled(KnownPackageFileName);
       Installation.ConfigData.DeleteKey(KnownPackagesKeyName, KnownPackage);
+      ReadPackages;
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+function TJclBorRADToolIdePackages.RemoveIDEPackage(const FileName: string): Boolean;
+var
+  I: Integer;
+  KnownIDEPackage, KnownIDEPackageFileName: string;
+begin
+  Result := False;
+  for I := 0 to FKnownIDEPackages.Count - 1 do
+  begin
+    KnownIDEPackage := FKnownIDEPackages.Names[I];
+    KnownIDEPackageFileName := PackageEntryToFileName(KnownIDEPackage);
+    if SamePath(FileName, KnownIDEPackageFileName) then
+    begin
+      RemoveDisabled(KnownIDEPackageFileName);
+      Installation.ConfigData.DeleteKey(KnownIDEPackagesKeyName, KnownIDEPackage);
       ReadPackages;
       Result := True;
       Break;
@@ -1342,16 +1789,50 @@ begin
   Result := BCC32ExeName;
 end;
 
+{$IFDEF KEEP_DEPRECATED}
 function TJclBCC32.SupportsLibSuffix: Boolean;
 begin
-  {$IFDEF KYLIX}
-  Result := True;
-  {$ELSE}
-  Result := Installation.VersionNumber >= 6;
-  {$ENDIF KYLIX}
+  Result := Installation.SupportsLibSuffix;
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 //=== { TJclDCC32 } ============================================================
+
+procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
+var
+  SearchPath, DynamicPackages: string;
+  OptionsFile: TIniFile;
+begin
+  OptionsFile := TIniFile.Create(ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension));
+  try
+    Options.Clear;
+    SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
+    AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, ''));
+    AddPathOption('I', SearchPath);
+    AddPathOption('R', SearchPath);
+
+    AddPathOption('U', StrEnsureSuffix(PathSep, DCPPath) + SearchPath);
+    if OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1' then
+    begin
+      DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
+      if DynamicPackages <> '' then
+        Options.Add(Format('-LU"%s"',[DynamicPackages]));
+    end;
+  finally
+    OptionsFile.Free;
+  end;
+end;
+
+function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  // quotes not required with short path names
+  Result := Execute(PathGetShortName(ExtractFileDir(ProjectFileName))
+    + PathSeparator + ExtractFileName(ProjectFileName));
+  {$ELSE}
+  Result := Execute(StrDoubleQuote(StrTrimQuotes(ProjectFileName)));
+  {$ENDIF}
+end;
 
 constructor TJclDCC32.Create(AInstallation: TJclBorRADToolInstallation);
 begin
@@ -1371,7 +1852,7 @@ begin
   FOutput := '';
   SaveOptionsToFile(ConfFileName);
   Result := inherited Execute(CommandLine);
-  DeleteFile(ConfFileName);
+  FileDelete(ConfFileName);
 end;
 
 procedure TJclDCC32.SaveOptionsToFile(const ConfigFileName: string);
@@ -1452,37 +1933,34 @@ begin
 end;
 
 function TJclDCC32.MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions:string): Boolean;
-const
-  DOFDirectoriesSection = 'Directories';
-  UnitOutputDirName     = 'UnitOutputDir';
-  SearchPathName        = 'SearchPath';
 var
-  SaveDir, S: string;
-  OptionsFile: TIniFile;
+  SaveDir: string;
 begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(PackageName) + '.');
   try
-    OptionsFile := TIniFile.Create(ChangeFileExt(PackageName, DelphiOptionsFileExtension));
-    try
-      Options.Clear;
-      S := OptionsFile.ReadString(DOFDirectoriesSection, SearchPathName, '');
-      AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, UnitOutputDirName, ''));
-      AddPathOption('I', S);
-      AddPathOption('R', S);
-      AddPathOption('LE', BPLPath);
-      AddPathOption('LN', DCPPath);
-      AddPathOption('U', StrEnsureSuffix(PathSep, DCPPath) + S);
-      Options.Add(ExtraOptions);
-    finally
-      OptionsFile.Free;
-    end;
-    {$IFDEF MSWINDOWS}
-    // quotes not required with short path names
-    Result := Execute(PathGetShortName(ExtractFileDir(PackageName)) + PathSeparator + ExtractFileName(PackageName));
-    {$ELSE}
-    Result := Execute(StrDoubleQuote(StrTrimQuotes(PackageName)));
-    {$ENDIF}
+    AddProjectOptions(PackageName, DCPPath);
+    AddPathOption('LE', BPLPath);
+    AddPathOption('LN', DCPPath);
+    Options.Add(ExtraOptions);
+    Result := Compile(PackageName);
+  finally
+    SetCurrentDir(SaveDir);
+  end;
+end;
+
+function TJclDCC32.MakeProject(const ProjectName, OutputDir: string;
+  ExtraOptions: string): Boolean;
+var
+  SaveDir: string;
+begin
+  SaveDir := GetCurrentDir;
+  SetCurrentDir(ExtractFilePath(ProjectName) + '.');
+  try
+    AddProjectOptions(ProjectName, OutputDir);
+    AddPathOption('E', OutputDir);
+    Options.Add(ExtraOptions);
+    Result := Compile(ProjectName);
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -1496,7 +1974,8 @@ begin
   begin
     AddPathOption('U', Installation.LibFolderName + PathAddSeparator('obj'));
     {$IFNDEF KYLIX}
-    if Installation.VersionNumber = 5 then
+    if (Installation.RadToolKind <> brBorlandDevStudio)
+      and (Installation.VersionNumber = 5) then
       Options.Add('-LUvcl50')
     else
       Options.Add('-LUrtl');
@@ -1504,14 +1983,12 @@ begin
   end;
 end;
 
+{$IFDEF KEEP_DEPRECATED}
 function TJclDCC32.SupportsLibSuffix: Boolean;
 begin
-  {$IFDEF KYLIX}
-  Result := True;
-  {$ELSE}
-  Result := Installation.VersionNumber >= 6;
-  {$ENDIF KYLIX}
+  Result := Installation.SupportsLibSuffix;
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 //=== { TJclBorlandMake } ====================================================
 
@@ -1694,7 +2171,8 @@ begin
   FIniFile.WriteString(SectionName, BorRADToolRepositoryObjectAuthor, Author);
   if Ancestor <> '' then
     FIniFile.WriteString(SectionName, BorRADToolRepositoryObjectAncestor, Ancestor);
-  if Installation.VersionNumber >= 6 then
+  if (Installation.RadToolKind = brBorlandDevStudio)
+    or (Installation.VersionNumber >= 6) then
     FIniFile.WriteString(SectionName, BorRADToolRepositoryObjectDesigner, Designer);
   FIniFile.WriteBool(SectionName, BorRADToolRepositoryObjectNewForm, False);
   FIniFile.WriteBool(SectionName, BorRADToolRepositoryObjectMainForm, False);
@@ -1776,7 +2254,9 @@ begin
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
   {$IFDEF MSWINDOWS}
   FOpenHelp := TJclBorlandOpenHelp.Create(Self);
+  {$ENDIF ~MSWINDOWS}
   FMapCreate := False;
+  {$IFDEF MSWINDOWS}
   FMapLink := False;
   FMapDelete := False;
   {$ENDIF ~MSWINDOWS}
@@ -1906,35 +2386,168 @@ begin
   end;
 end;
 
-function TJclBorRADToolInstallation.RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
+function TJclBorRADToolInstallation.CompileBCBPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
 var
-  PathItems, RemoveItems: TStringList;
-  Folder: string;
-  I, J: Integer;
+  SaveDir, PackagePath, MakeFileName, BinaryFileName: string;
+  RunOnly: Boolean;
 begin
-  Result := False;
-  PathItems := nil;
-  RemoveItems := nil;
+  OutputString(Format(RsCompilingPackage, [PackageName]));
+
+  if not IsBCBPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+
+  PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
+  SaveDir := GetCurrentDir;
+  SetCurrentDir(PackagePath);
   try
-    PathItems := TStringList.Create;
-    RemoveItems := TStringList.Create;
-    ExtractPaths(Path, PathItems);
-    ExtractPaths(ItemsToRemove, RemoveItems);
-    for I := 0 to RemoveItems.Count - 1 do
+    MakeFileName := StrTrimQuotes(ChangeFileExt(PackageName, '.mak'));
+    if clProj2Mak in CommandLineTools then       // let bpr2mak generate make file from .bpk
     begin
-      Folder := RemoveItems[I];
-      J := FindFolderInPath(Folder, PathItems);
-      if J <> -1 then
-      begin
-        PathItems.Delete(J);
-        Result := True;
-      end;
-    end;
-    Path := StringsToStr(PathItems, PathSep, False);
+      // Kylix bpr2mak doesn't like full file names
+      Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName))
+    end
+    else
+      // If make file exists (and doesn't need to be created by bpr2mak)
+      Result := FileExists(MakeFileName);
+
+    if MapCreate then
+      Make.Options.Add('-DMAPFLAGS=-s');
+
+    GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
+      
+    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)]))
+      and LinkMapFile(PathAddSeparator(BPLPath) + BinaryFileName);
   finally
-    PathItems.Free;
-    RemoveItems.Free;
+    SetCurrentDir(SaveDir);
   end;
+
+  if Result then
+    OutputString(RsCompilationOk)
+  else
+    OutputString(RsCompilationFailed);
+end;
+
+function TJclBorRADToolInstallation.CompileBCBProject(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  SaveDir, PackagePath, MakeFileName, BinaryFileName: string;
+begin
+  OutputString(Format(RsCompilingProject, [ProjectName]));
+
+  if not IsBCBProject(ProjectName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+
+  PackagePath := PathRemoveSeparator(ExtractFilePath(ProjectName));
+  SaveDir := GetCurrentDir;
+  SetCurrentDir(PackagePath);
+  try
+    MakeFileName := StrTrimQuotes(ChangeFileExt(ProjectName, '.mak'));
+    if clProj2Mak in CommandLineTools then       // let bpr2mak generate make file from .bpk
+      // Kylix bpr2mak doesn't like full file names
+      Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(ProjectName))
+    else
+      // If make file exists (and doesn't need to be created by bpr2mak)
+      Result := FileExists(MakeFileName);
+
+    if MapCreate then
+      Make.Options.Add('-DMAPFLAGS=-s');
+
+    GetBPRFileInfo(ProjectName, BinaryFileName);
+
+    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)]))
+      and LinkMapFile(PathAddSeparator(OutputDir) + BinaryFileName);
+  finally
+    SetCurrentDir(SaveDir);
+  end;
+
+  if Result then
+    OutputString(RsCompilationOk)
+  else
+    OutputString(RsCompilationFailed);
+end;
+
+function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  ExtraOptions, LibSuffix, BinaryFileName: string;
+  RunOnly: Boolean;
+begin
+  OutputString(Format(RsCompilingPackage, [PackageName]));
+
+  if not IsDelphiPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+
+  if MapCreate then
+    ExtraOptions := '-GD'
+  else
+    ExtraOptions := '';
+
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  BinaryFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
+
+  Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, ExtraOptions)
+    and LinkMapFile(BinaryFileName);
+
+  if Result then
+    OutputString(RsCompilationOk)
+  else
+    OutputString(RsCompilationFailed);
+end;
+
+function TJclBorRADToolInstallation.CompileDelphiProject(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
+begin
+  OutputString(Format(RsCompilingProject, [ProjectName]));
+
+  if not IsDelphiProject(ProjectName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+
+  if MapCreate then
+    ExtraOptions := '-GD'
+  else
+    ExtraOptions := '';
+
+  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
+  BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
+
+  Result := DCC32.MakeProject(ProjectName, OutputDir, ExtraOptions)
+    and LinkMapFile(BinaryFileName);
+
+  if Result then
+    OutputString(RsCompilationOk)
+  else
+    OutputString(RsCompilationFailed);
+end;
+
+function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
+  DCPPath: string): Boolean;
+var
+  PackageExtension: string;
+begin
+  PackageExtension := ExtractFileExt(PackageName);
+  if SameText(PackageExtension,SourceExtensionBCBPackage) then
+    Result := CompileBCBPackage(PackageName, BPLPath, DCPPath)
+  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+    Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+end;
+
+function TJclBorRADToolInstallation.CompileProject(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  ProjectExtension: string;
+begin
+  ProjectExtension := ExtractFileExt(ProjectName);
+  if SameText(ProjectExtension,SourceExtensionBCBProject) then
+    Result := CompileBCBProject(ProjectName, OutputDir)
+  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+    Result := CompileDelphiProject(ProjectName, OutputDir)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
 end;
 
 function TJclBorRADToolInstallation.FindFolderInPath(Folder: string; List: TStrings): Integer;
@@ -1951,54 +2564,6 @@ begin
     end;
 end;
 
-{ TODO -cHelp : Donator: Adreas Hausladen }
-{$IFDEF MSWINDOWS}
-function TJclBorRADToolInstallation.GetBorlandStudioProjectsDir: string;
-var
-  h: HMODULE;
-  LocaleName: array[0..4] of Char;
-  Filename: string;
-begin
-  if IsBDSPersonality then
-  begin
-    Result := 'Borland Studio Projects'; // do not localize
-
-    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
-    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
-    if LocaleName[0] <> #0 then
-    begin
-      Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.';
-      if FileExists(Filename + LocaleName) then
-        Filename := Filename + LocaleName
-      else
-      begin
-        LocaleName[2] := #0;
-        if FileExists(Filename + LocaleName) then
-          Filename := Filename + LocaleName
-        else
-          Filename := '';
-      end;
-
-      if Filename <> '' then
-      begin
-        h := LoadLibraryEx(PChar(Filename), 0,
-          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
-        if h <> 0 then
-        begin
-          SetLength(Result, 1024);
-          SetLength(Result, LoadString(h, BDSVersions[IDEVersionNumber].ProjectsDirResId, PChar(Result), Length(Result) - 1));
-          FreeLibrary(h);
-        end;
-      end;
-    end;
-
-    Result := PathAddSeparator(GetPersonalFolder) + Result;
-  end
-  else
-    Result := '';
-end;
-{$ENDIF MSWINDOWS}
-
 function TJclBorRADToolInstallation.GetBPLOutputPath: string;
 begin
   Result := SubstitutePath(ConfigData.ReadString(LibraryKeyName, LibraryBPLOutputValueName, ''));
@@ -2008,7 +2573,8 @@ function TJclBorRADToolInstallation.GetBpr2Mak: TJclBpr2Mak;
 begin
   if not Assigned(FBpr2Mak) then
   begin
-    Assert(clProj2Mak in CommandLineTools, Format(RsNotFound, [Bpr2MakExeName]));
+    if not (clProj2Mak in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Bpr2MakExeName]);
     FBpr2Mak := TJclBpr2Mak.Create(Self);
   end;
   Result := FBpr2Mak;
@@ -2018,7 +2584,8 @@ function TJclBorRADToolInstallation.GetBCC32: TJclBCC32;
 begin
   if not Assigned(FBCC32) then
   begin
-    Assert(clBcc32 in CommandLineTools, Format(RsNotFound, [Bcc32ExeName]));
+    if not (clBcc32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Bcc32ExeName]);
     FBCC32 := TJclBCC32.Create(Self);
   end;
   Result := FBCC32;
@@ -2028,7 +2595,8 @@ function TJclBorRADToolInstallation.GetDCC32: TJclDCC32;
 begin
   if not Assigned(FDCC32) then
   begin
-    Assert(clDcc32 in CommandLineTools, Format(RsNotFound, [Dcc32ExeName]));
+    if not (clDcc32 in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Dcc32ExeName]);
     FDCC32 := TJclDCC32.Create(Self);
   end;
   Result := FDCC32;
@@ -2051,10 +2619,7 @@ begin
   {$ELSE ~KYLIX}
   Result := Globals.Values['DefaultProjectsDirectory'];
   if Result = '' then
-    if IsBDSPersonality then
-      Result := GetBorlandStudioProjectsDir
-    else
-      Result := PathAddSeparator(RootDir) + 'Projects';
+    Result := PathAddSeparator(RootDir) + 'Projects';
   {$ENDIF ~KYLIX}
 end;
 
@@ -2084,24 +2649,24 @@ begin
   if Length(FEditionStr) = 3 then
     case Edition of
       deSTD:
-        if VersionNumber >= 6 then
+        if (VersionNumber >= 6) or (RadToolKind = brBorlandDevStudio) then
           Result := RsPersonal
         else
           Result := RsStandard;
       dePRO:
         Result := RsProfessional;
       deCSS:
-        if VersionNumber >= 5 then
+        if (VersionNumber >= 5) or (RadToolKind = brBorlandDevStudio) then
           Result := RsEnterprise
         else
           Result := RsClientServer;
+      deARC:
+        Result := RsArchitect;
     end;
   {$ENDIF KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
-const
-  ToolNames: array[TJclBorRadToolKind] of string = ('DELPHI', 'BCB');
 var
   EnvNames: TStringList;
   EnvVarKeyName: string;
@@ -2110,7 +2675,8 @@ begin
   if FEnvironmentVariables = nil then
   begin
     FEnvironmentVariables := TStringList.Create;
-    if (VersionNumber >= 6) and ConfigData.SectionExists(EnvVariablesKeyName) then
+    if ((VersionNumber >= 6) or (RadToolKind = brBorlandDevStudio))
+      and ConfigData.SectionExists(EnvVariablesKeyName) then
     begin
       EnvNames := TStringList.Create;
       try
@@ -2124,13 +2690,6 @@ begin
         EnvNames.Free;
       end;
     end;
-    if IsBDSPersonality then
-    begin
-      FEnvironmentVariables.Values['BDS'] := PathRemoveSeparator(RootDir);
-      FEnvironmentVariables.Values['BDSPROJECTSDIR'] := DefaultProjectsDir;
-    end
-    else
-      FEnvironmentVariables.Values[ToolNames[RADToolKind]] := PathRemoveSeparator(RootDir);
   end;
   Result := FEnvironmentVariables;
 end;
@@ -2143,7 +2702,7 @@ end;
 function TJclBorRADToolInstallation.GetIdeExeFileName: string;
 {$IFDEF KYLIX}
 const
-  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
+  IdeFileNames: array [brDelphi..brCppBuilder] of string = (DelphiIdeExeName, BCBIdeExeName);
 begin
   Result := FBinFolderName + IdeFileNames[RADToolKind];
 end;
@@ -2178,8 +2737,12 @@ end;
 
 class function TJclBorRADToolInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
 begin
+  {$IFDEF MSWINDOWS}
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
   // dummy; BCB doesn't like abstract class functions
+  {$ELSE MSWINDOWS}
   Result := 0;
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclBorRADToolInstallation.GetLibrarySearchPath: TJclBorRADToolPath;
@@ -2191,7 +2754,8 @@ function TJclBorRADToolInstallation.GetMake: IJclCommandLineTool;
 begin
   if not Assigned(FMake) then
   begin
-    Assert(clMake in CommandLineTools, Format(RsNotFound, [MakeExeName]));
+    if not (clMake in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsNotFound, [MakeExeName]);
     {$IFDEF KYLIX}
     FMake := TJclCommandLineTool.Create(MakeExeName);
     {$ELSE ~KYLIX}
@@ -2232,6 +2796,15 @@ begin
   Result := FRepository;
 end;
 
+function TJclBorRADToolInstallation.GetSupportsLibSuffix: Boolean;
+begin
+{$IFDEF KYLIX}
+  Result := True;
+{$ELSE}
+  Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6);
+{$ENDIF KYLIX}
+end;
+
 function TJclBorRADToolInstallation.GetUpdateNeeded: Boolean;
 begin
   Result := InstalledUpdatePack < LatestUpdatePack;
@@ -2249,114 +2822,373 @@ begin
     Result := '';
 end;
 
+function TJclBorRADToolInstallation.InstallBCBExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  BinaryFileName, Description: string;
+begin
+  OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
+
+  GetBPRFileInfo(ProjectName, BinaryFileName, @Description);
+  BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
+
+  Result :=    CompileBCBProject(ProjectName, OutputDir)
+           and RegisterExpert(BinaryFileName, Description);
+
+  OutputString(RsExpertInstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.InstallBCBIdePackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  RunOnly: Boolean;
+  BinaryFileName, Description: string;
+begin
+  OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
+
+  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
+  BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  if RunOnly then
+    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+
+  Result :=    CompileBCBPackage(PackageName, BPLPath, DCPPath)
+           and RegisterIdePackage(BinaryFileName, Description);
+
+  OutputString(RsIdePackageInstallationFinished);
+end;
+
 function TJclBorRADToolInstallation.InstallBCBPackage(const PackageName,
   BPLPath, DCPPath: string): Boolean;
 var
-  SaveDir, PackagePath: string;
-  MakeFileName: string;
+  RunOnly: Boolean;
+  BinaryFileName, Description: string;
 begin
-  Assert(ExtractFileExt(PackageName) = BCBPackageSourceExtension, Format(RsNotABcbPackage, [PackageName]));
-  PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
-  SaveDir := GetCurrentDir;
-  SetCurrentDir(PackagePath);
-  try
-    MakeFileName := StrTrimQuotes(ChangeFileExt(PackageName, '.mak'));
-    if clProj2Mak in CommandLineTools then       // let bpr2mak generate make file from .bpk
-      // Kylix bpr2mak doesn't like full file names
-      Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName))
-    else
-    begin
-      // If make file exists (and doesn't need to be created by bpr2mak)
-      Result := FileExists(MakeFileName);
-    end;
-    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)]));
-    if Result then
-      Result := RegisterDesignPackage(PackageName, BPLPath);
-  finally
-    SetCurrentDir(SaveDir);
-  end;
+  OutputString(Format(RsPackageInstallationStarted, [PackageName]));
+
+  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
+  BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  if RunOnly then
+    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+
+  Result :=    CompileBCBPackage(PackageName, BPLPath, DCPPath)
+           and RegisterPackage(BinaryFileName, Description);
+
+  OutputString(RsPackageInstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.InstallDelphiExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  LibSuffix, BinaryFileName, BinaryExtension, BaseName: string;
+begin
+  OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
+
+  BaseName := PathExtractFileNameNoExt(ProjectName);
+
+  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
+  if BinaryExtension = '' then
+    BinaryExtension := BinaryExtensionLibrary;
+    
+  BinaryFileName := PathAddSeparator(OutputDir) + BaseName + LibSuffix + BinaryExtension;
+
+  Result :=    CompileDelphiProject(ProjectName, OutputDir)
+           and RegisterExpert(BinaryFileName, BaseName);
+
+  OutputString(RsExpertInstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.InstallDelphiIdePackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  RunOnly: Boolean;
+  LibSuffix, BPLFileName, Description: string;
+begin
+  OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
+
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+  if RunOnly then
+    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+  BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
+  
+  Result :=    CompileDelphiPackage(PackageName, BPLPath, DCPPath)
+           and RegisterIdePackage(BPLFileName, Description);
+
+  OutputString(RsIdePackageInstallationFinished);
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiPackage(const PackageName,
   BPLPath, DCPPath: string): Boolean;
 var
-{$IFDEF MSWINDOWS}
-  MAPFileName: string;
-  LinkerBugUnit: string;
-  MAPFileSize: Integer;
-  JclDebugDataSize: Integer;
-  BPLFileName: string;
-  LibSuffix: string;
   RunOnly: Boolean;
-{$ENDIF ~MSWINDOWS}
-  ExtraOptions: string;
+  LibSuffix, BPLFileName, Description: string;
 begin
-  Assert(ExtractFileExt(PackageName) = DelphiPackageSourceExtension, Format(RsNotADelphiPackage, [PackageName]));
-  ExtraOptions := '';
-{$IFDEF MSWINDOWS}
-  if MapCreate then
-    ExtraOptions := '-GD';
-{$ENDIF ~MSWINDOWS}
-  Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, ExtraOptions);
-{$IFDEF MSWINDOWS}
-  if Result and MapLink and GetPackageFileInfo(PackageName,RunOnly,@LibSuffix) then
-  begin
-    BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
-    MAPFileName := ChangeFileExt(BPLFileName,'.MAP');
-    Result := InsertDebugDataIntoExecutableFile(BPLFileName,MAPFileName,
-                LinkerBugUnit,MAPFileSize,JclDebugDataSize);
-    if Result and MapDelete then
-      Result := FileDelete(MAPFileName);
-  end;
-{$ENDIF ~MSWINDOWS}
-  if Result then
-    Result := RegisterDesignPackage(PackageName, BPLPath);
+  OutputString(Format(RsPackageInstallationStarted, [PackageName]));
+
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+  if RunOnly then
+    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+  BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
+  
+  Result :=    CompileDelphiPackage(PackageName, BPLPath, DCPPath)
+           and RegisterPackage(BPLFileName, Description);
+
+  OutputString(RsPackageInstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.InstallExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  ProjectExtension: string;
+begin
+  ProjectExtension := ExtractFileExt(ProjectName);
+  if SameText(ProjectExtension, SourceExtensionBCBProject) then
+    Result := InstallBCBExpert(ProjectName, OutputDir)
+  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+    Result := InstallDelphiExpert(ProjectName, OutputDir)
+  else
+    raise EJclBorRADException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+end;
+
+function TJclBorRADToolInstallation.InstallIDEPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  PackageExtension: string;
+begin
+  PackageExtension := ExtractFileExt(PackageName);
+  if SameText(PackageExtension, SourceExtensionBCBPackage) then
+    Result := InstallBCBIdePackage(PackageName, BPLPath, DCPPath)
+  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+    Result := InstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
+  else
+    raise EJclBorRADException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
 end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
-begin
-  if ExtractFileExt(PackageName) = BCBPackageSourceExtension then
-    Result := InstallBCBPackage(PackageName, BPLPath, DCPPath)
-  else
-    Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath);
-end;
-
-function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
-  BPLFileName, DCPFileName: string;
-  BaseName, LibSuffix: string;
-  RunOnly: Boolean;
+  PackageExtension: string;
 begin
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
-  BaseName := PathExtractFileNameNoExt(PackageName);
-  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + '.bpl';
-  DCPFileName := PathAddSeparator(DCPPath) + BaseName + '.dcp';
-  if RunOnly then
-    Result := True
+  PackageExtension := ExtractFileExt(PackageName);
+  if SameText(PackageExtension, SourceExtensionBCBPackage) then
+    Result := InstallBCBPackage(PackageName, BPLPath, DCPPath)
+  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+    Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath)
   else
-    // important: remove from IDE packages /before/ deleting;
-    //            otherwise PathGetLongPathName won't work
-    Result := IdePackages.RemovePackage(BPLFileName);
-  // Don't delete binaries if removal of design time package failed
-  if Result then
-  begin
-    FileDelete(BPLFileName);
-    FileDelete(DCPFileName);
-  end;
+    raise EJclBorRADException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
 end;
 
+{$IFDEF KEEP_DEPRECATED}
 function TJclBorRADToolInstallation.IsBDSPersonality: Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := Pos('bds.exe', Globals.Values['App']) > 0;
+  Result := InheritsFrom(TJclBDSInstallation);
   {$ELSE}
   Result := False;
   {$ENDIF MSWINDOWS}
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 function TJclBorRADToolInstallation.LibFolderName: string;
 begin
   Result := PathAddSeparator(RootDir) + PathAddSeparator('lib');
+end;
+
+function TJclBorRADToolInstallation.LinkMapFile(
+  const BinaryFileName: string): Boolean;
+var
+  MAPFileName, LinkerBugUnit: string;
+  MAPFileSize, JclDebugDataSize: Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  if MapLink then
+  begin
+    OutputString(Format(RsLinkingMap, [BinaryFileName]));
+    MAPFileName := ChangeFileExt(BinaryFileName,'.MAP');
+    Result := InsertDebugDataIntoExecutableFile(BinaryFileName, MAPFileName,
+                LinkerBugUnit, MAPFileSize, JclDebugDataSize);
+    if Result then
+    begin
+      OutputString(RsLinkMapOk);
+      OutputString(Format(RsLinkMapInfo, [LinkerBugUnit, MAPFileSize, JclDebugDataSize]));
+      if MapDelete then
+        OutputFileDelete(MAPFileName);
+    end
+    else
+      OutputString(RsLinkMapFailed);
+  end
+  else
+    Result := True;
+  {$ELSE MSWINDOWS}
+  Result := True;
+  {$ENDIF MSWINDOWS}
+end;
+
+function TJclBorRADToolInstallation.OutputFileDelete(
+  const FileName: string): Boolean;
+begin
+  OutputString(Format(RsDeletingFile, [FileName]));
+  Result := FileDelete(FileName);
+  if Result then
+    OutputString(RsFileDeletionOk)
+  else
+    OutputString(RsFileDeletionFailed);
+end;
+
+procedure TJclBorRADToolInstallation.OutputString(const AText: string);
+begin
+  if Assigned(FOutputCallback) then
+    OutputCallback(AText);
+end;
+
+class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
+begin
+  {$IFDEF MSWINDOWS}
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ELSE MSWINDOWS}
+  Result := '';
+  {$ENDIF MSWINDOWS}
+end;
+
+class function TJclBorRADToolInstallation.ProjectSourceFileExtension: string;
+begin
+  {$IFDEF MSWINDOWS}
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ELSE MSWINDOWS}
+  Result := '';
+  {$ENDIF MSWINDOWS}
+end;
+
+class function TJclBorRADToolInstallation.RADToolKind: TJclBorRADToolKind;
+begin
+  {$IFDEF MSWINDOWS}
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ELSE MSWINDOWS}
+  Result := brDelphi;
+  {$ENDIF MSWINDOWS}
+end;
+
+{class }function TJclBorRADToolInstallation.RADToolName: string;
+begin
+  {$IFDEF MSWINDOWS}
+  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
+  {$ELSE MSWINDOWS}
+  Result := '';
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclBorRADToolInstallation.ReadInformation;
+const
+  {$IFDEF KYLIX}
+  BinDir = 'bin/';
+  {$ELSE ~KYLIX}
+  BinDir = 'bin\';
+  {$ENDIF ~KYLIX}
+  UpdateKeyName = 'Update #';
+var
+  KeyLen, I: Integer;
+  Key: string;
+  Ed: TJclBorRADToolEdition;
+begin
+  Key := ConfigData.FileName;
+  {$IFDEF KYLIX}
+  ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
+  {$ELSE ~KYLIX}
+  RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
+
+  KeyLen := Length(Key);
+  if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
+    FIDEVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
+  else
+    FIDEVersionNumber := 0;
+
+  FVersionNumber := FIDEVersionNumber;
+  {$ENDIF ~KYLIX}
+
+  case RadToolKind of
+    brDelphi :
+      FVersionNumberStr := Format('d%d', [VersionNumber]);
+    brCppBuilder :
+      FVersionNumberStr := Format('c%d', [VersionNumber]);
+    brBorlandDevStudio :
+      if VersionNumber = 1 then
+        FVersionNumberStr := 'cs1'
+      else
+        FVersionNumberStr := Format('d%d', [VersionNumber+6]);  // BDS 2 goes to D8
+  end;
+
+  FRootDir := PathRemoveSeparator(Globals.Values[RootDirValueName]);
+  FBinFolderName := PathAddSeparator(RootDir) + BinDir;
+
+  FEditionStr := Globals.Values[EditionValueName];
+  if FEditionStr = '' then
+    FEditionStr := Globals.Values[VersionValueName];
+  for Ed := Low(Ed) to High(Ed) do
+    if StrIPos(BorRADToolEditionIDs[Ed], FEditionStr) = 1 then
+      FEdition := Ed;
+
+  for I := 0 to Globals.Count - 1 do
+  begin
+    Key := Globals.Names[I];
+    KeyLen := Length(UpdateKeyName);
+    if (Pos(UpdateKeyName, Key) = 1) and (Length(Key) > KeyLen) and StrIsDigit(Key[KeyLen + 1]) then
+      FInstalledUpdatePack := Max(FInstalledUpdatePack, Integer(Ord(Key[KeyLen + 1]) - 48));
+  end;
+end;
+
+function TJclBorRADToolInstallation.RegisterExpert(const BinaryFileName,
+  Description: string): Boolean;
+var
+  InternalDescription: string;
+begin
+  OutputString(Format(RsRegisteringExpert, [BinaryFileName]));
+
+  if Description = '' then
+    InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
+  else
+    InternalDescription := Description;
+
+  Result := IdePackages.AddExpert(BinaryFileName, InternalDescription);
+  if Result then
+    OutputString(RsRegistrationOk)
+  else
+    OutputString(RsRegistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.RegisterIDEPackage(const BinaryFileName,
+  Description: string): Boolean;
+var
+  InternalDescription: string;
+begin
+  OutputString(Format(RsRegisteringIdePackage, [BinaryFileName]));
+
+  if Description = '' then
+    InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
+  else
+    InternalDescription := Description;
+
+  Result := IdePackages.AddIDEPackage(BinaryFileName, InternalDescription);
+  if Result then
+    OutputString(RsRegistrationOk)
+  else
+    OutputString(RsRegistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.RegisterPackage(const BinaryFileName,
+  Description: string): Boolean;
+var
+  InternalDescription: string;
+begin
+  OutputString(Format(RsRegisteringPackage, [BinaryFileName]));
+
+  if Description = '' then
+    InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
+  else
+    InternalDescription := Description;
+
+  Result := IdePackages.AddPackage(BinaryFileName, InternalDescription);
+  if Result then
+    OutputString(RsRegistrationOk)
+  else
+    OutputString(RsRegistrationFailed);
 end;
 
 function TJclBorRADToolInstallation.RemoveFromDebugDCUPath(const Path: string): Boolean;
@@ -2386,77 +3218,34 @@ begin
   LibraryBrowsingPath := TempLibraryPath;
 end;
 
-class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
-begin
-  Result := '';
-  {$IFDEF MSWINDOWS}
-  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
-  {$ENDIF MSWINDOWS}
-end;
-
-class function TJclBorRADToolInstallation.RADToolKind: TJclBorRADToolKind;
-begin
-  if InheritsFrom(TJclBCBInstallation) then
-    Result := brCppBuilder
-  else
-    Result := brDelphi;
-end;
-
-{class }function TJclBorRADToolInstallation.RADToolName: string;
-begin
-  {$IFDEF MSWINDOWS}
-  raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclBorRADToolInstallation.ReadInformation;
-const
-  {$IFDEF KYLIX}
-  BinDir = 'bin/';
-  {$ELSE ~KYLIX}
-  BinDir = 'bin\';
-  {$ENDIF ~KYLIX}
-  UpdateKeyName = 'Update #';
+function TJclBorRADToolInstallation.RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
 var
-  KeyLen, I: Integer;
-  Key: string;
-  Ed: TJclBorRADToolEdition;
+  PathItems, RemoveItems: TStringList;
+  Folder: string;
+  I, J: Integer;
 begin
-  Key := ConfigData.FileName;
-  {$IFDEF KYLIX}
-  ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
-  {$ELSE ~KYLIX}
-  RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
-
-  KeyLen := Length(Key);
-  if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
-    FIDEVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
-  else
-    FIDEVersionNumber := 0;
-
-  // BDS 3.0 goes as Delphi 9
-  if IsBDSPersonality then
-    FVersionNumber := FIDEVersionNumber + 6
-  else
-    FVersionNumber := FIDEVersionNumber;
-  {$ENDIF ~KYLIX}
-
-  FRootDir := PathRemoveSeparator(Globals.Values[RootDirValueName]);
-  FBinFolderName := PathAddSeparator(RootDir) + BinDir;
-
-  FEditionStr := Globals.Values[EditionValueName];
-  if FEditionStr = '' then
-    FEditionStr := Globals.Values[VersionValueName];
-  for Ed := Low(Ed) to High(Ed) do
-    if StrIPos(BorRADToolEditionIDs[Ed], FEditionStr) = 1 then
-      FEdition := Ed;
-
-  for I := 0 to Globals.Count - 1 do
-  begin
-    Key := Globals.Names[I];
-    KeyLen := Length(UpdateKeyName);
-    if (Pos(UpdateKeyName, Key) = 1) and (Length(Key) > KeyLen) and StrIsDigit(Key[KeyLen + 1]) then
-      FInstalledUpdatePack := Max(FInstalledUpdatePack, Integer(Ord(Key[KeyLen + 1]) - 48));
+  Result := False;
+  PathItems := nil;
+  RemoveItems := nil;
+  try
+    PathItems := TStringList.Create;
+    RemoveItems := TStringList.Create;
+    ExtractPaths(Path, PathItems);
+    ExtractPaths(ItemsToRemove, RemoveItems);
+    for I := 0 to RemoveItems.Count - 1 do
+    begin
+      Folder := RemoveItems[I];
+      J := FindFolderInPath(Folder, PathItems);
+      if J <> -1 then
+      begin
+        PathItems.Delete(J);
+        Result := True;
+      end;
+    end;
+    Path := StringsToStr(PathItems, PathSep, False);
+  finally
+    PathItems.Free;
+    RemoveItems.Free;
   end;
 end;
 
@@ -2470,18 +3259,22 @@ begin
   ConfigData.WriteString(LibraryKeyName, LibrarySearchPathValueName, Value);
 end;
 
-function TJclBorRADToolInstallation.RegisterDesignPackage(const PackageName, BPLPath: string): Boolean;
-var
-  LibSuffix, Description: string;
-  BPLFileName: string;
-  RunOnly: Boolean;
+procedure TJclBorRADToolInstallation.SetOutputCallback(
+  const Value: TTextHandler);
 begin
-  Result := True;
-  if GetPackageFileInfo(PackageName, RunOnly, @LibSuffix, @Description) and not RunOnly then
-  begin
-    BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + '.bpl';
-    Result := IdePackages.AddPackage(BPLFileName, Description);
-  end;
+  FOutputCallback := Value;
+  //if clAsm in CommandLineTools then
+  //  Asm.OutputCallback := Value;
+  if clBcc32 in CommandLineTools then
+    Bcc32.OutputCallback := Value;
+  if clDcc32 in CommandLineTools then
+    Dcc32.OutputCallback := Value;
+  //if clDccIL in CommandLineTools then
+  //  DccIL.OutputCallback := Value;
+  if clMake in CommandLineTools then
+    Make.OutputCallback := Value;
+  if clProj2Mak in CommandLineTools then
+    Bpr2Mak.OutputCallback := Value;
 end;
 
 procedure TJclBorRADToolInstallation.SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
@@ -2506,18 +3299,305 @@ begin
   Result := StringReplace(Result, PathSeparator + PathSeparator, PathSeparator, [rfReplaceAll]);
 end;
 
+{$IFDEF KEEP_DEPRECATED}
 function TJclBorRADToolInstallation.SupportsBCB: Boolean;
 begin
   Result := clBCC32 in CommandLineTools;
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
 begin
   {$IFDEF KYLIX}
   Result := True;
   {$ELSE}
-  Result := (Edition <> deSTD) and (VersionNumber in [6, 7]);
+  Result := (Edition <> deSTD) and (VersionNumber in [6, 7]) and (RadToolKind <> brBorlandDevStudio);
   {$ENDIF KYLIX}
+end;
+
+function TJclBorRADToolInstallation.UninstallBCBExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  BinaryFileName: string;
+begin
+  OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
+
+  if not IsBCBProject(ProjectName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotABCBProject, [ProjectName]);
+
+  GetBPRFileInfo(ProjectName, BinaryFileName);
+  BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
+
+  // important: remove from experts /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := UnregisterExpert(BinaryFileName);
+
+  if Result then
+    OutputFileDelete(BinaryFileName);
+
+  OutputString(RsExpertUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallBCBIdePackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  MAPFileName, TDSFileName,
+  BPIFileName, LIBFileName, BPLFileName: string;
+  BinaryFileName: string;
+  RunOnly: Boolean;
+begin
+  OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
+
+  if not IsBCBPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+
+  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
+
+  BPLFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+
+  // important: remove from IDE packages /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := (RunOnly or UnregisterIdePackage(BPLFileName));
+
+  // Don't delete binaries if removal of design time package failed
+  if Result then
+  begin
+    OutputFileDelete(BPLFileName);
+
+    BPIFileName := PathAddSeparator(DCPPath) + PathExtractFileNameNoExt(PackageName) + CompilerExtensionBPI;
+    OutputFileDelete(BPIFileName);
+
+    LIBFileName := ChangeFileExt(BPIFileName, CompilerExtensionLIB);
+    OutputFileDelete(LIBFileName);
+
+    MAPFileName := ChangeFileExt(BPLFileName, CompilerExtensionMAP);
+    OutputFileDelete(MAPFileName);
+
+    TDSFileName := ChangeFileExt(BPLFileName, CompilerExtensionTDS);
+    OutputFileDelete(TDSFileName);
+  end;
+
+  OutputString(RsIdePackageUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallBCBPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  MAPFileName, TDSFileName,
+  BPIFileName, LIBFileName, BPLFileName: string;
+  BinaryFileName: string;
+  RunOnly: Boolean;
+begin
+  OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
+  
+  if not IsBCBPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+    
+  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
+
+  BPLFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+
+  // important: remove from IDE packages /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := (RunOnly or UnregisterPackage(BPLFileName));
+
+  // Don't delete binaries if removal of design time package failed
+  if Result then
+  begin
+    OutputFileDelete(BPLFileName);
+    
+    BPIFileName := PathAddSeparator(DCPPath) + PathExtractFileNameNoExt(PackageName) + CompilerExtensionBPI;
+    OutputFileDelete(BPIFileName);
+
+    LIBFileName := ChangeFileExt(BPIFileName, CompilerExtensionLIB);
+    OutputFileDelete(LIBFileName);
+
+    MAPFileName := ChangeFileExt(BPLFileName, CompilerExtensionMAP);
+    OutputFileDelete(MAPFileName);
+
+    TDSFileName := ChangeFileExt(BPLFileName, CompilerExtensionTDS);
+    OutputFileDelete(TDSFileName);
+  end;
+
+  OutputString(RsPackageUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallDelphiExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  BinaryFileName: string;
+  BaseName, LibSuffix, BinaryExtension: string;
+begin
+  OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
+
+  if not IsDelphiProject(ProjectName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+
+  BaseName := PathExtractFileNameNoExt(ProjectName);
+  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
+  if BinaryExtension = '' then
+    BinaryExtension := BinaryExtensionLibrary;
+  BinaryFileName := PathAddSeparator(OutputDir) + BaseName + LibSuffix + BinaryExtension;
+
+  // important: remove from experts /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := UnregisterExpert(BinaryFileName);
+
+  if Result then
+    OutputFileDelete(BinaryFileName);
+
+  OutputString(RsExpertUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallDelphiIdePackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  MAPFileName,
+  BPLFileName, DCPFileName: string;
+  BaseName, LibSuffix: string;
+  RunOnly: Boolean;
+begin
+  OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
+  
+  if not IsDelphiPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  BaseName := PathExtractFileNameNoExt(PackageName);
+
+  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + BinaryExtensionPackage;
+
+  // important: remove from IDE packages /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := RunOnly or UnregisterIdePackage(BPLFileName);
+
+  // Don't delete binaries if removal of design time package failed
+  if Result then
+  begin
+    OutputFileDelete(BPLFileName);
+
+    DCPFileName := PathAddSeparator(DCPPath) + BaseName + CompilerExtensionDCP;
+    OutputFileDelete(DCPFileName);
+
+    MAPFileName := ChangeFileExt(BPLFileName, CompilerExtensionMAP);
+    OutputFileDelete(MAPFileName);
+  end;
+
+  OutputString(RsIdePackageUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallDelphiPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  MAPFileName,
+  BPLFileName, DCPFileName: string;
+  BaseName, LibSuffix: string;
+  RunOnly: Boolean;
+begin
+  OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
+  
+  if not IsDelphiPackage(PackageName) then
+    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  BaseName := PathExtractFileNameNoExt(PackageName);
+
+  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + BinaryExtensionPackage;
+
+  // important: remove from IDE packages /before/ deleting;
+  //            otherwise PathGetLongPathName won't work
+  Result := RunOnly or UnregisterPackage(BPLFileName);
+
+  // Don't delete binaries if removal of design time package failed
+  if Result then
+  begin
+    OutputFileDelete(BPLFileName);
+
+    DCPFileName := PathAddSeparator(DCPPath) + BaseName + CompilerExtensionDCP;
+    OutputFileDelete(DCPFileName);
+
+    MAPFileName := ChangeFileExt(BPLFileName, CompilerExtensionMAP);
+    OutputFileDelete(MAPFileName);
+  end;
+
+  OutputString(RsPackageUninstallationFinished);
+end;
+
+function TJclBorRADToolInstallation.UninstallExpert(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  ProjectExtension: string;
+begin
+  ProjectExtension := ExtractFileExt(ProjectName);
+  if SameText(ProjectExtension,SourceExtensionBCBProject) then
+    Result := UninstallBCBExpert(ProjectName, OutputDir)
+  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+    Result := UninstallDelphiExpert(ProjectName, OutputDir)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+end;
+
+function TJclBorRADToolInstallation.UninstallIDEPackage(const PackageName,
+  BPLPath, DCPPath: string): Boolean;
+var
+  PackageExtension: string;
+begin
+  PackageExtension := ExtractFileExt(PackageName);
+  if SameText(PackageExtension,SourceExtensionBCBPackage) then
+    Result := UninstallBCBIdePackage(PackageName, BPLPath, DCPPath)
+  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+    Result := UninstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
+end;
+
+function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+var
+  PackageExtension: string;
+begin
+  PackageExtension := ExtractFileExt(PackageName);
+  if SameText(PackageExtension,SourceExtensionBCBPackage) then
+    Result := UninstallBCBPackage(PackageName, BPLPath, DCPPath)
+  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+    Result := UninstallDelphiPackage(PackageName, BPLPath, DCPPath)
+  else
+    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+end;
+
+function TJclBorRADToolInstallation.UnregisterExpert(
+  const BinaryFileName: string): Boolean;
+begin
+  OutputString(Format(RsUnregisteringExpert, [BinaryFileName]));
+
+  Result := IdePackages.RemoveExpert(BinaryFileName);
+  if Result then
+    OutputString(RsUnregistrationOk)
+  else
+    OutputString(RsUnregistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.UnregisterIDEPackage(
+  const BinaryFileName: string): Boolean;
+begin
+  OutputString(Format(RsUnregisteringIDEPackage, [BinaryFileName]));
+
+  Result := IdePackages.RemoveIDEPackage(BinaryFileName);
+  if Result then
+    OutputString(RsUnregistrationOk)
+  else
+    OutputString(RsUnregistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.UnregisterPackage(
+  const BinaryFileName: string): Boolean;
+begin
+  OutputString(Format(RsUnregisteringPackage, [BinaryFileName]));
+
+  Result := IdePackages.RemovePackage(BinaryFileName);
+  if Result then
+    OutputString(RsUnregistrationOk)
+  else
+    OutputString(RsUnregistrationFailed);
 end;
 
 //=== { TJclBCBInstallation } ================================================
@@ -2525,6 +3605,9 @@ end;
 constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
 begin
   inherited Create(AConfigDataLocation);
+  FPersonalities := [bpBCBuilder32];
+  if clDcc32 in CommandLineTools then
+    Include(FPersonalities, bpDelphi32);
 end;
 
 destructor TJclBCBInstallation.Destroy;
@@ -2539,6 +3622,13 @@ begin
 end;
 {$ENDIF KYLIX}
 
+function TJclBCBInstallation.GetEnvironmentVariables: TStrings;
+begin
+  Result := inherited GetEnvironmentVariables;
+  if Assigned(Result) then
+    Result.Values['BCB'] := PathRemoveSeparator(RootDir);
+end;
+
 class function TJclBCBInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
 begin
   case Version of
@@ -2552,10 +3642,20 @@ end;
 
 class function TJclBCBInstallation.PackageSourceFileExtension: string;
 begin
-  Result := '.bpk';
+  Result := SourceExtensionBCBPackage;
 end;
 
-{class }function TJclBCBInstallation.RADToolName: string;
+class function TJclBCBInstallation.ProjectSourceFileExtension: string;
+begin
+  Result := SourceExtensionBCBProject;
+end;
+
+{class }class function TJclBCBInstallation.RadToolKind: TJclBorRadToolKind;
+begin
+  Result := brCppBuilder;
+end;
+
+function TJclBCBInstallation.RADToolName: string;
 begin
   Result := RsBCBName;
 end;
@@ -2573,16 +3673,19 @@ constructor TJclDelphiInstallation.Create(
   const AConfigDataLocation: string);
 begin
   inherited Create(AConfigDataLocation);
-  
-  FBCBInstallation := nil;
-  if VersionNumber >=10 then
-    FBCBInstallation := TJclBCBInstallation.Create(AConfigDataLocation);
+  FPersonalities := [bpDelphi32];
 end;
 
 destructor TJclDelphiInstallation.Destroy;
 begin
-  FBCBInstallation.Free;
-  inherited Destroy; 
+  inherited Destroy;
+end;
+
+function TJclDelphiInstallation.GetEnvironmentVariables: TStrings;
+begin
+  Result := inherited GetEnvironmentVariables;
+  if Assigned(Result) then
+    Result.Values['DELPHI'] := PathRemoveSeparator(RootDir);
 end;
 
 class function TJclDelphiInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
@@ -2591,71 +3694,249 @@ begin
     5: Result := 1;
     6: Result := 2;
     7: Result := 0;
-    9: Result := 0;
-    10: Result := 0;
   else
     Result := 0;
   end;
 end;
 
 function TJclDelphiInstallation.InstallPackage(const PackageName, BPLPath,
-  DCPPath: string; DualPackage: Boolean): Boolean;
-var
-  ExtraOptions : string;
+  DCPPath: string): Boolean;
 begin
-  if SupportsBCB then
-  begin
-    ExtraOptions := '';
-    if DualPackage then
-      ExtraOptions := '-JL -NB"' + DcpPath + '" -NO"' + DcpPath + '"';
-    ExtraOptions := ExtraOptions + ' -N1"' + BCBInstallation.VclIncludeDir + '"';
-
-    Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, ExtraOptions);
-    if Result then
-      Result := RegisterDesignPackage(PackageName, BPLPath);
-  end
-  else
-    Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath);
+  Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath);
 end;
 
 class function TJclDelphiInstallation.PackageSourceFileExtension: string;
 begin
-  Result := '.dpk';
+  Result := SourceExtensionDelphiPackage;
 end;
 
-{class }function TJclDelphiInstallation.RADToolName: string;
+class function TJclDelphiInstallation.ProjectSourceFileExtension: string;
 begin
-  if VersionNumber < 10 then
-    Result := RsDelphiName
-  else
-    Result := RsDelphiName + ' - ' + RsBCBName;
+  Result := SourceExtensionDelphiProject;
+end;
+
+{class }class function TJclDelphiInstallation.RadToolKind: TJclBorRadToolKind;
+begin
+  Result := brDelphi;
+end;
+
+function TJclDelphiInstallation.RADToolName: string;
+begin
+  Result := RsDelphiName;
 end;
 
 //=== { TJclBDSInstallation } ==================================================
 
-constructor TJclBDSInstallation.Create(const AConfigDataLocation: string);
+{$IFDEF MSWINDOWS}
+
+function TJclBDSInstallation.CompileDelphiPackage(const PackageName, BPLPath,
+  DCPPath: string): Boolean;
 begin
-  inherited;
+  if DualPackageInstallation then
+  begin
+    if not (bpBCBuilder32 in Personalities) then
+      raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+
+    DCC32.Options.Add('-JL -NB"' + DcpPath + '" -NO"' + DcpPath + '"');
+    DCC32.Options.Add(' -N1"' + VclIncludeDir + '"');
+
+    Result := inherited CompileDelphiPackage(PackageName, BPLPath, DCPPath);
+  end
+  else
+    Result := inherited CompileDelphiPackage(PackageName, BPLPath, DCPPath);
+end;
+
+function TJclBDSInstallation.CompileDelphiProject(const ProjectName,
+  OutputDir: string): Boolean;
+var
+  ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
+begin
+  if VersionNumber <= 2 then
+  begin
+    OutputString(Format(RsCompilingProject, [ProjectName]));
+
+    if not IsDelphiProject(ProjectName) then
+      raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+
+    if MapCreate then
+      ExtraOptions := '-GD'
+    else
+      ExtraOptions := '';
+
+    ExtraOptions := Format('%s -E"%s"', [ExtraOptions, OutputDir]);
+    GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
+    if BinaryExtension = '' then
+      BinaryExtension := BinaryExtensionLibrary;
+    BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
+
+    Result := DCC32.MakePackage(ProjectName, OutputDir, DCPOutputPath, ExtraOptions)
+      and LinkMapFile(BinaryFileName);
+
+    if Result then
+      OutputString(RsCompilationOk)
+    else
+      OutputString(RsCompilationFailed);
+  end
+  else
+    Result := inherited CompileDelphiProject(ProjectName, OutputDir);
+end;
+
+constructor TJclBDSInstallation.Create(const AConfigDataLocation: string);
+const
+  PersonalitiesSection = 'Personalities';
+begin
+  inherited Create(AConfigDataLocation);
+  //FBCBInstallation := TJclBCBInstallation.Create(AConfigDataLocation);
+
+  { TODO : .net 64 bit }
+  if ConfigData.ReadString(PersonalitiesSection, 'C#Builder', '') <> '' then
+    Include(FPersonalities, bpCSBuilder32);
+  if ConfigData.ReadString(PersonalitiesSection, 'BCB', '') <> '' then
+    Include(FPersonalities, bpBCBuilder32);
+  if ConfigData.ReadString(PersonalitiesSection, 'Delphi.Win32', '') <> '' then
+    Include(FPersonalities, bpDelphi32);
+  if   (ConfigData.ReadString(PersonalitiesSection, 'Delphi.NET', '') <> '')
+    or (ConfigData.ReadString(PersonalitiesSection, 'Delphi8', '') <> '') then
+    Include(FPersonalities, bpDelphiNet32);
+
+  if clDcc32 in CommandLineTools then
+    Include(FPersonalities, bpDelphi32);
+
+  if FPersonalities = [] then
+    raise EJclBorRadException.CreateRes(@RsNoSupportedPersonality);
+end;
+
+{ TODO -cHelp : Donator: Adreas Hausladen }
+function TJclBDSInstallation.GetBorlandStudioProjectsDir: string;
+var
+  h: HMODULE;
+  LocaleName: array[0..4] of Char;
+  Filename: string;
+begin
+  Result := 'Borland Studio Projects'; // do not localize
+
+  FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+  if LocaleName[0] <> #0 then
+  begin
+    Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.';
+    if FileExists(Filename + LocaleName) then
+      Filename := Filename + LocaleName
+    else
+    begin
+      LocaleName[2] := #0;
+      if FileExists(Filename + LocaleName) then
+        Filename := Filename + LocaleName
+      else
+        Filename := '';
+    end;
+
+    if Filename <> '' then
+    begin
+      h := LoadLibraryEx(PChar(Filename), 0,
+        LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+      if h <> 0 then
+      begin
+        SetLength(Result, 1024);
+        SetLength(Result, LoadString(h, BDSVersions[IDEVersionNumber].ProjectsDirResId, PChar(Result), Length(Result) - 1));
+        FreeLibrary(h);
+      end;
+    end;
+  end;
+
+  Result := PathAddSeparator(GetPersonalFolder) + Result;
+end;
+
+function TJclBDSInstallation.GetBPLOutputPath: string;
+begin
+// BDS 1 (C#Builder 1) and BDS 2 (Delphi 8) don't have a valid BPL output path
+// set in the registry
+  if VersionNumber <= 2 then
+    Result := PathAddSeparator(GetDefaultProjectsDir) + 'bpl'
+  else
+    Result := inherited GetBPLOutputPath;
+end;
+
+function TJclBDSInstallation.GetDCPOutputPath: string;
+begin
+  if VersionNumber <= 2 then
+    Result := PathAddSeparator(RootDir) + 'lib'
+  else
+    Result := inherited GetDCPOutputPath;
+end;
+
+function TJclBDSInstallation.GetDefaultProjectsDir: string;
+begin
+  Result := GetBorlandStudioProjectsDir;
+end;
+
+function TJclBDSInstallation.GetEnvironmentVariables: TStrings;
+begin
+  Result := inherited GetEnvironmentVariables;
+  if Assigned(Result) then
+  begin
+    Result.Values['BDS'] := PathRemoveSeparator(RootDir);
+    Result.Values['BDSPROJECTSDIR'] := DefaultProjectsDir;
+  end;
 end;
 
 class function TJclBDSInstallation.GetLatestUpdatePackForVersion(
   Version: Integer): Integer;
 begin
   case Version of
-    9: Result := 4;
-    10: Result := 0;
+    9: Result := 1;   // personal version is only update pack 1
+    10: Result := 1;  // update 1 is out
   else
     Result := 0;
   end;
 end;
 
+function TJclBDSInstallation.GetName: string;
+begin
+  if VersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    Result := Format('%s %s', [RadToolName, BDSVersions[VersionNumber].VersionStr])
+  else
+    Result := Format('%s ***%s***', [RadToolName, VersionNumber]);
+end;
+
+function TJclBDSInstallation.GetVclIncludeDir: string;
+begin
+  if not (bpBCBuilder32 in Personalities) then
+    raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+  Result := inherited GetVclIncludeDir;
+end;
+
+class function TJclBDSInstallation.PackageSourceFileExtension: string;
+begin
+  Result := SourceExtensionDelphiPackage;
+end;
+
+class function TJclBDSInstallation.ProjectSourceFileExtension: string;
+begin
+  Result := SourceExtensionDelphiProject;
+end;
+
+class function TJclBDSInstallation.RadToolKind: TJclBorRadToolKind;
+begin
+  Result := brBorlandDevStudio;
+end;
+
 function TJclBDSInstallation.RadToolName: string;
 begin
-  if VersionNumber < 10 then
-    Result := RsDelphiName
+  if VersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    Result := BDSVersions[VersionNumber].Name
   else
-    Result := RsDelphiName + '/' + RsBCBName;
+    Result := RsBDSName;
 end;
+
+procedure TJclBDSInstallation.SetDualPackageInstallation(const Value: Boolean);
+begin
+  if Value and not (bpBCBuilder32 in Personalities) then
+    raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+  FDualPackageInstallation := Value;
+end;
+
+{$ENDIF MSWINDOWS}
 
 //=== { TJclBorRADToolInstallations } ========================================
 
@@ -2709,11 +3990,20 @@ var
 begin
   Result := nil;
   for I := 0 to Count - 1 do
-    if Installations[I].VersionNumber = VersionNumber then
-    begin
-      Result := Installations[I];
-      Break;
-    end;
+  case Installations[I].RadToolKind of
+    brCppBuilder:
+      if Installations[I].VersionNumber = VersionNumber then
+      begin
+        Result := Installations[I];
+        Break;
+      end;
+    brBorlandDevStudio:
+      if (VersionNumber >= 10) and (Installations[I].VersionNumber = (VersionNumber-6)) then
+      begin
+        Result := Installations[I];
+        Break;
+      end;
+  end;
 end;
 
 function TJclBorRADToolInstallations.GetDelphiInstallationFromVersion(VersionNumber: Integer): TJclBorRADToolInstallation;
@@ -2722,10 +4012,19 @@ var
 begin
   Result := nil;
   for I := 0 to Count - 1 do
-    if Installations[I].VersionNumber = VersionNumber then
-    begin
-      Result := Installations[I];
-      Break;
+    case Installations[I].RadToolKind of
+      brDelphi:
+        if Installations[I].VersionNumber = VersionNumber then
+        begin
+          Result := Installations[I];
+          Break;
+        end;
+      brBorlandDevStudio:
+        if (VersionNumber >= 8) and (Installations[I].VersionNumber = (VersionNumber-6)) then
+        begin
+          Result := Installations[I];
+          Break;
+        end;
     end;
 end;
 
@@ -2737,6 +4036,27 @@ end;
 function TJclBorRADToolInstallations.GetBCBVersionInstalled(VersionNumber: Integer): Boolean;
 begin
   Result := BCBInstallationFromVersion[VersionNumber] <> nil;
+end;
+
+function TJclBorRADToolInstallations.GetBDSInstallationFromVersion(
+  VersionNumber: Integer): TJclBorRADToolInstallation;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if (Installations[I].VersionNumber = VersionNumber)
+      and (Installations[I].RadToolKind = brBorlandDevStudio) then
+    begin
+      Result := Installations[I];
+      Break;
+    end;
+end;
+
+function TJclBorRADToolInstallations.GetBDSVersionInstalled(
+  VersionNumber: Integer): Boolean;
+begin
+  Result := BDSInstallationFromVersion[VersionNumber] <> nil;
 end;
 
 function TJclBorRADToolInstallations.GetDelphiVersionInstalled(VersionNumber: Integer): Boolean;
@@ -2760,7 +4080,7 @@ var
 
   procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
   const
-    RcBaseFileNames: array [TJclBorRADToolKind] of string = ('delphi', 'bcb');
+    RcBaseFileNames: array [brDelphi..brCppBuilder] of string = ('delphi', 'bcb');
   var
     Item: TJclBorRADToolInstallation;
     RcFileName: string;
@@ -2787,25 +4107,48 @@ end;
 var
   VersionNumbers: TStringList;
 
-  function EnumVersions(const KeyName, Personality: string; CreateClass: TJclBorRADToolInstallationClass) : Boolean;
+  function EnumVersions(const KeyName: string; const Personalities: array of string; CreateClass: TJclBorRADToolInstallationClass) : Boolean;
   var
-    I: Integer;
+    I, J: Integer;
     VersionKeyName: string;
+    PersonalitiesList: TStrings;
   begin
     Result := False;
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
       RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
-      if StrIsSubSet(VersionNumbers[I], ['.', '0'..'9']) then
+        if StrIsSubSet(VersionNumbers[I], ['.', '0'..'9']) then
       begin
         VersionKeyName := KeyName + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
         begin
-          { TODO : Check if that works as assumed }
-          if (Personality <> '') and (RegReadStringDef(HKEY_LOCAL_MACHINE, VersionKeyName + '\Personalities', Personality, '') = '') then
-            Continue;
-          FList.Add(CreateClass.Create(VersionKeyName));
-          Result := True;
+          if Length(Personalities) = 0 then
+          begin
+            try
+              FList.Add(CreateClass.Create(VersionKeyName));
+            finally
+              Result := True;
+            end;
+          end
+          else
+          begin
+            PersonalitiesList := TStringList.Create;
+            try
+              RegGetValueNames(HKEY_LOCAL_MACHINE, VersionKeyName + '\Personalities', PersonalitiesList);
+              for J := Low(Personalities) to High(Personalities) do
+                if PersonalitiesList.IndexOf(Personalities[J]) >= 0 then
+              begin
+                try
+                  FList.Add(CreateClass.Create(VersionKeyName));
+                finally
+                  Result := True;
+                end;
+                Break;
+              end;
+            finally
+              PersonalitiesList.Free;
+            end;
+          end;
         end;
       end;
   end;
@@ -2814,10 +4157,9 @@ begin
   FList.Clear;
   VersionNumbers := TStringList.Create;
   try
-    EnumVersions(DelphiKeyName, '', TJclDelphiInstallation);
-    EnumVersions(BCBKeyName, '', TJclBCBInstallation);
-    if not EnumVersions(BDSKeyName, 'Delphi.Win32', TJclDelphiInstallation) then
-      EnumVersions(BDSKeyName, 'BCB', TJclDelphiInstallation);
+    EnumVersions(DelphiKeyName, [], TJclDelphiInstallation);
+    EnumVersions(BCBKeyName, [], TJclBCBInstallation);
+    EnumVersions(BDSKeyName, ['Delphi.Win32','BCB','Delphi8','C#Builder'], TJclBDSInstallation);
   finally
     VersionNumbers.Free;
   end;
@@ -2889,8 +4231,10 @@ end;
 // History:
 
 // $Log$
-// Revision 1.49  2005/12/04 10:10:57  obones
-// Borland Developer Studio 2006 support
+// Revision 1.50  2005/12/26 18:03:51  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
 //
 // Revision 1.48  2005/11/13 17:04:20  uschuster
 // fix for Kylix

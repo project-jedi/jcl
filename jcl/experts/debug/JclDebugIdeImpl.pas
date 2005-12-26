@@ -37,7 +37,7 @@ unit JclDebugIdeImpl;
 interface
 
 uses
-  Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
+  Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
   JclOtaUtils;
 
 type
@@ -115,7 +115,13 @@ type
   end;
   {$ENDIF OldStyleExpert}
 
+// design package entry point
 procedure Register;
+
+// expert DLL entry point
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
 implementation
 
@@ -134,6 +140,55 @@ begin
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
       raise;
+    end;
+  end;
+end;
+
+var
+  JCLWizardIndex: Integer = -1;
+
+procedure JclWizardTerminate;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    if JCLWizardIndex <> -1 then
+    begin
+      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+      if not Assigned(OTAWizardServices) then
+        raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+      OTAWizardServices.RemoveWizard(JCLWizardIndex);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+    end;
+  end;
+end;
+
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    TerminateProc := JclWizardTerminate;
+
+    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+    if not Assigned(OTAWizardServices) then
+      raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclDebugExtension.Create);
+
+    Result := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      Result := False;
     end;
   end;
 end;
@@ -593,12 +648,13 @@ var
   IDEActionList: TActionList;
   I: Integer;
   ImageBmp: TBitmap;
+  Temp: TResourceStream;
 begin
   IDEActionList := TActionList(NTAServices.ActionList);
   IDEMainMenu := NTAServices.MainMenu;
   ImageBmp := TBitmap.Create;
   try
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'JCLDEBUG');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');
     FImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     {$IFDEF OldStyleExpert}
     FBuildAction := TAction.Create(nil);
@@ -616,7 +672,7 @@ begin
     FBuildAllAction.Caption := RsBuildAllCaption;
     FBuildAllAction.ImageIndex := FImageIndex;
     FBuildAllAction.Visible := True;
-    FBuildAllAction.OnExecute := BuildAllActionExecute;     
+    FBuildAllAction.OnExecute := BuildAllActionExecute;
     FBuildAllAction.OnUpdate := BuildAllActionUpdate;
     FBuildAllAction.Name := RsBuildAllActionName;
     FBuildAllAction.ActionList := IDEActionList;
@@ -624,7 +680,7 @@ begin
     FBuildAllMenuItem := TMenuItem.Create(nil);
     FBuildAllMenuItem.Action := FBuildAllAction;
     {$ELSE OldStyleExpert}
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(HInstance), 'JCLNODEBUG');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODEBUG');
     FDisabledImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     FInsertDataAction := TAction.Create(nil);
     FInsertDataAction.Caption := RsInsertDataCaption;

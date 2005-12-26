@@ -291,6 +291,15 @@ function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overlo
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
   var LineNumberErrors: Integer): Boolean; overload;
 
+// do not change this function, it is used by the JVCL installer using dynamic
+// linking (to avoid dependencies in the installer), the signature and name are
+// sensible
+// AnsiString and String types cannot be used because they are managed in
+// memory, the memory manager of the JVCL installer is different of the memory
+// manager used by the JCL package; only pointers and direct values are acceptable
+function InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName: PChar;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
   MapFileName: TFileName; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
@@ -636,11 +645,14 @@ type
     FOnSyncException: TJclDebugThreadNotifyEvent;
     FOnThreadRegistered: TJclThreadIDNotifyEvent;
     FOnThreadUnregistered: TJclThreadIDNotifyEvent;
+    function GetThreadClassNames(ThreadID: DWORD): string;
+    function GetThreadInfos(ThreadID: DWORD): string;
+    function GetThreadNames(ThreadID: DWORD): string;
     procedure DoSyncThreadRegistered;
     procedure DoSyncThreadUnregistered;
     function GetThreadIDs(Index: Integer): DWORD;
     function GetThreadIDCount: Integer;
-    function GetThreadNames(ThreadID: DWORD; Index: Integer): string;
+    function GetThreadValues(ThreadID: DWORD; Index: Integer): string;
   protected
     procedure DoSyncException(Thread: TJclDebugThread);
     procedure DoThreadRegistered(Thread: TThread);
@@ -653,11 +665,14 @@ type
     procedure RegisterThread(Thread: TThread; const ThreadName: string);
     procedure UnregisterThread(Thread: TThread);
     property Lock: TJclCriticalSection read FLock;
-    property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadNames;
+    //property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadValues;
+    property ThreadClassNames[ThreadID: DWORD]: string read GetThreadClassNames;
     property ThreadIDs[Index: Integer]: DWORD read GetThreadIDs;
     property ThreadIDCount: Integer read GetThreadIDCount;
-    property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadNames;
-    property ThreadNames[ThreadID: DWORD]: string index 0 read GetThreadNames;
+    //property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadValues;
+    property ThreadInfos[ThreadID: DWORD]: string read GetThreadInfos;
+    //property ThreadNames[ThreadID: DWORD]: string index 0 read GetThreadValues;
+    property ThreadNames[ThreadID: DWORD]: string read GetThreadNames;
     property OnSyncException: TJclDebugThreadNotifyEvent read FOnSyncException write FOnSyncException;
     property OnThreadRegistered: TJclThreadIDNotifyEvent read FOnThreadRegistered write FOnThreadRegistered;
     property OnThreadUnregistered: TJclThreadIDNotifyEvent read FOnThreadUnregistered write FOnThreadUnregistered;
@@ -1643,6 +1658,19 @@ begin
   end;
 end;
 
+// do not change this function, it is used by the JVCL installer using dynamic
+// linking (to avoid dependencies in the installer), the signature and name are
+// sensible
+function InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName: PChar;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+var
+  LinkerBugUnit: string;
+begin
+  LinkerBugUnit := '';
+  Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
+    LinkerBugUnit, MapFileSize, JclDebugDataSize);
+end;
+
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
   var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize: Integer): Boolean;
 var
@@ -1866,7 +1894,7 @@ var
     D: DWORD;
     P: array [1..5] of Byte;
   begin
-    D := Value;
+    D := Value and $FFFFFFFF;
     L := 0;
     while D > $7F do
     begin
@@ -3800,6 +3828,11 @@ begin
   end;
 end;
 
+function TJclDebugThreadList.GetThreadClassNames(ThreadID: DWORD): string;
+begin
+  Result := GetThreadValues(ThreadID, 1);
+end;
+
 function TJclDebugThreadList.GetThreadIDCount: Integer;
 begin
   FReadLock.Enter;
@@ -3815,7 +3848,17 @@ begin
   Result := DWORD(FList.Objects[Index]);
 end;
 
-function TJclDebugThreadList.GetThreadNames(ThreadID: DWORD; Index: Integer): string;
+function TJclDebugThreadList.GetThreadInfos(ThreadID: DWORD): string;
+begin
+  Result := GetThreadValues(ThreadID, 2);
+end;
+
+function TJclDebugThreadList.GetThreadNames(ThreadID: DWORD): string;
+begin
+  Result := GetThreadValues(ThreadID, 0);
+end;
+
+function TJclDebugThreadList.GetThreadValues(ThreadID: DWORD; Index: Integer): string;
 var
   I: Integer;
 
@@ -3990,6 +4033,11 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2005/12/26 18:03:58  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.20  2005/08/07 13:09:56  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //

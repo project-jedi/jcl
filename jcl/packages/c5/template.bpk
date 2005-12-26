@@ -8,10 +8,16 @@
      Last generated: %DATETIME%
 *****************************************************************************
 -->
+<%%% BEGIN PROGRAMONLY %%%>
+<%%% DO NOT GENERATE %%%>
+<%%% END PROGRAMONLY %%%>
+<%%% BEGIN LIBRARYONLY %%%>
+<%%% DO NOT GENERATE %%%>
+<%%% END LIBRARYONLY %%%>
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.05.03"/>
-    <PROJECT value="%NAME%.bpl"/>
+    <PROJECT value="%NAME%%BINEXTENSION%"/>
     <OBJFILES value="
       ..\..\lib\c5\%NAME%.obj
 <%%% START FILES %%%>

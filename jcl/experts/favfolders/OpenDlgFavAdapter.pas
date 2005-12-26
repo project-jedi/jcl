@@ -370,10 +370,6 @@ begin
 end;
 
 procedure TFavOpenDialog.HookDialogs;
-var
-  Pe: TJclPeImage;
-  I: Integer;
-
   procedure HookImportsForModule(ModuleBase: Pointer);
   const
     comdlg32 = 'comdlg32.dll';
@@ -384,14 +380,19 @@ var
       FHooks.HookImport(ModuleBase, comdlg32, 'GetSaveFileNameA', @NewGetSaveFileName, @OldGetSaveFileName);
     end;
   end;
-
+var
+  Pe: TJclPeImage;
+  I: Integer;
+  HookedModule: LongWord;
 begin
+  { TODO : Hook all loaded modules }
   Pe := TJclPeImage.Create(True);
   try
-    Pe.AttachLoadedModule(HInstance);
+    HookedModule := FindClassHInstance(ClassType);
+    Pe.AttachLoadedModule(HookedModule);
     if Pe.StatusOK then
     begin
-      HookImportsForModule(Pointer(HInstance));
+      HookImportsForModule(Pointer(HookedModule));
       for I := 0 to Pe.ImportList.UniqueLibItemCount - 1 do
         HookImportsForModule(Pointer(GetModuleHandle(PChar(Pe.ImportList.UniqueLibItems[I].FileName))));
     end;
@@ -525,6 +526,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/12/26 18:03:41  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.3  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.

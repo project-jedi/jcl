@@ -110,7 +110,13 @@ type
     property Owner: TJclSIMDWizard read FOwner;
   end;
 
+// design package entry point
 procedure Register;
+
+// expert DLL entry point
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
 implementation
 
@@ -130,6 +136,55 @@ begin
     begin
       JclExpertShowExceptionDialog(ExceptObj);
       raise;
+    end;
+  end;
+end;
+
+var
+  JCLWizardIndex: Integer = -1;
+
+procedure JclWizardTerminate;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    if JCLWizardIndex <> -1 then
+    begin
+      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+      if not Assigned(OTAWizardServices) then
+        raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+      OTAWizardServices.RemoveWizard(JCLWizardIndex);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+    end;
+  end;
+end;
+
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    TerminateProc := JclWizardTerminate;
+
+    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+    if not Assigned(OTAWizardServices) then
+      raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclSIMDWizard.Create);
+
+    Result := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      Result := False;
     end;
   end;
 end;
@@ -248,7 +303,7 @@ begin
       Category := NTAServices.ActionList.Actions[I].Category;
 
   FIcon := TIcon.Create;
-  FIcon.Handle := LoadIcon(FindResourceHInstance(HInstance), 'SIMDICON');
+  FIcon.Handle := LoadIcon(FindResourceHInstance(ModuleHInstance), 'SIMDICON');
 
   FSIMDAction := TAction.Create(nil);
   FSIMDAction.Caption := RsSIMD;
@@ -574,6 +629,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/12/26 18:03:40  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.8  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.

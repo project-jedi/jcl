@@ -9,6 +9,7 @@
 */
 
 #include <vcl.h>
+#include <windows.h>
 #pragma hdrstop
 <%%% START FORMS %%%>
 USEFORMNS("%FILENAME%", %Unitname%, %FORMNAME%); /* %FORMTYPE%: File Type */
@@ -16,14 +17,50 @@ USEFORMNS("%FILENAME%", %Unitname%, %FORMNAME%); /* %FORMTYPE%: File Type */
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
-
+<%%% BEGIN PACKAGEONLY %%%>
 //   Package source.
 //---------------------------------------------------------------------------
-
 #pragma argsused
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
 {
         return 1;
 }
+<%%% END PACKAGEONLY %%%>
+<%%% BEGIN RUNONLY %%%>
+//   Package source.
+//---------------------------------------------------------------------------
+#pragma argsused
+int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+{
+        return 1;
+}
+<%%% END RUNONLY %%%>
+<%%% BEGIN DESIGNONLY %%%>
+//   Package source.
+//---------------------------------------------------------------------------
+#pragma argsused
+int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+{
+        return 1;
+}
+<%%% END DESIGNONLY %%%>
+<%%% BEGIN LIBRARYONLY %%%>
+//   Library source.
+//---------------------------------------------------------------------------
+#pragma argsused
+int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+{
+        return 1;
+}
+<%%% END LIBRARYONLY %%%>
+<%%% BEGIN PROGRAMONLY %%%>
+//   Program source.
+//---------------------------------------------------------------------------
+#pragma argsused
+WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+        return 0;
+}
+<%%% END PROGRAMONLY %%%>
 //---------------------------------------------------------------------------
 

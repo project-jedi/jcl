@@ -159,7 +159,6 @@ type
   TJclClrHeaderEx = class;
   TJclPeMetadata = class;
 
-  TJclClrStreamClass = class of TJclClrStream;
   TJclClrStream = class(TObject)
   private
     FMetadata: TJclPeMetadata;
@@ -179,6 +178,8 @@ type
     property Size: DWORD read GetSize;
     property Data: Pointer read GetData;
   end;
+
+  TJclClrStreamClass = class of TJclClrStream;
 
   TJclClrStringsStream = class(TJclClrStream)
   private
@@ -263,7 +264,6 @@ type
 
   TJclClrTable = class;
 
-  TJclClrTableRowClass = class of TJclClrTableRow;
   TJclClrTableRow = class(TObject)
   private
     FTable: TJclClrTable;
@@ -281,7 +281,8 @@ type
     property Token: TJclClrToken read GetToken;
   end;
 
-  TJclClrTableClass = class of TJclClrTable;
+  TJclClrTableRowClass = class of TJclClrTableRow;
+
   TJclClrTable = class(TInterfacedObject)
   private
     FStream: TJclClrTableStream;
@@ -325,6 +326,8 @@ type
     property Rows[const Idx: Integer]: TJclClrTableRow read GetRow; default;
     property RowCount: Integer read GetRowCount;
   end;
+
+  TJclClrTableClass = class of TJclClrTable;
 
   TJclClrTableStream = class(TJclClrStream)
   private
@@ -1740,6 +1743,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/12/26 18:03:58  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.15  2005/08/07 13:09:56  outchy
 // Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
 //

@@ -7,6 +7,12 @@ package %NAME%;
      Last generated: %DATETIME%
 -----------------------------------------------------------------------------
 }
+<%%% BEGIN PROGRAMONLY %%%>
+<%%% DO NOT GENERATE %%%>
+<%%% END PROGRAMONLY %%%>
+<%%% BEGIN LIBRARYONLY %%%>
+<%%% DO NOT GENERATE %%%>
+<%%% END LIBRARYONLY %%%>
 
 {$R *.res}
 {$ALIGN ON}

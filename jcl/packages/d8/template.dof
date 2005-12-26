@@ -1,0 +1,9 @@
+[Directories]
+UnitOutputDir=..\..\lib\d8
+SearchPath=..\..\source;..\..\experts\common
+<%%% BEGIN EXPERTONLY %%%>
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=%NOLINKPACKAGELIST%
+<%%% END EXPERTONLY %%%>

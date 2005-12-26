@@ -4,3 +4,6 @@
 *.bmp
 *.dcu
 *.~*
+__history
+*.identcache
+*.local

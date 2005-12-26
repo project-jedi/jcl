@@ -60,12 +60,17 @@ resourcestring
 resourcestring
   RsNotFound            = '%s not found';
   RsNotABcbPackage      = '%s not a C++Builder package source file';
+  RsNotABcbProject      = '%s not a C++Builder project source file';
   RsNotADelphiPackage   = '%s not a Delphi package source file';
+  RsNotADelphiProject   = '%s not a Delphi project source file';
   RsIndexOufOfRange     = 'Index out of range';
   RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
   RsUpdatePackName      = 'Update Pack #%d';
   RsDelphiName          = 'Delphi';
+  RsDelphiNetName       = 'Delphi.net';
   RsBCBName             = 'C++Builder';
+  RsCSharpName          = 'C#Builder';
+  RsBDSName             = 'Borland Developer Studio';
   {$IFDEF KYLIX}
   RsKylixName           = 'Kylix for %s';
   RsKylixVersionName    = 'Kylix %d for %s';
@@ -83,8 +88,54 @@ resourcestring
   RsPersonal            = 'Personal';
   RsProfessional        = 'Professional';
 
-  RsBorlandStudioProjects = 'Borland Studio Projects';
+  RsNoSupportedPersonality = 'No personalities supported';
+  RsDualPackageNotSupported = 'This installation of %s doesn''t support dual packages';
+  RsCommandLineToolMissing = 'No compiler available for %s';
+
+  RsUnknownProjectExtension = '%s not a known project extension';
+  RsUnknownPackageExtension = '%s not a known package extension';
+  RsUnknownIdePackageExtension = '%s not a known ide package extension';
+
+  RsCannotInstallRunOnly = 'A run-only package cannot be installed';
+  RsUnknownProjectType = '%s not a known project type';
+
+  RsBorlandStudioProjects = 'Borland Studio Projects';                 
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
+
+  RsPackageInstallationStarted    = 'Installing package %s';
+  RsPackageInstallationFinished   = 'Installation of package finished';
+  RsPackageUninstallationStarted  = 'Uninstalling package %s';
+  RsPackageUninstallationFinished = 'Uninstallation of package finished';
+  RsIdePackageInstallationStarted    = 'Installing ide package %s';
+  RsIdePackageInstallationFinished   = 'Installation of ide package finished';
+  RsIdePackageUninstallationStarted  = 'Uninstalling ide package %s';
+  RsIdePackageUninstallationFinished = 'Uninstallation of ide package finished';
+  RsExpertInstallationStarted     = 'Installing expert %s';
+  RsExpertInstallationFinished    = 'Installation of expert finished';
+  RsExpertUninstallationStarted   = 'Uninstalling expert %s';
+  RsExpertUninstallationFinished  = 'Uninstallation of expert finished';
+
+  RsCompilingPackage            = 'Compiling package %s';
+  RsCompilingProject            = 'Compiling project %s';
+  RsCompilationOk               = 'Compilation success';
+  RsCompilationFailed           = 'Compilation failure';
+  RsLinkingMap                  = 'Linking MAP file in %s';
+  RsLinkMapOk                   = 'Map link success';
+  RsLinkMapInfo                 = 'Bug unit: %s; MAP size: %d; Debug size: %d';
+  RsLinkMapFailed               = 'Map link failure';
+  RsDeletingFile                = 'Deleting file %s';
+  RsFileDeletionOk              = 'File deletion success';
+  RsFileDeletionFailed          = 'File deletion failure';
+  RsRegisteringPackage          = 'Registering package %s';
+  RsRegisteringIdePackage       = 'Registering ide package %s';
+  RsRegisteringExpert           = 'Registering expert %s';
+  RsRegistrationOk              = 'Registration ok';
+  RsRegistrationFailed          = 'Registration failed';
+  RsUnregisteringPackage        = 'Removing from registry package %s';
+  RsUnregisteringIdePackage     = 'Removing from registry ide package %s';
+  RsUnregisteringExpert         = 'Removing from registry expert %s';
+  RsUnregistrationOk            = 'Unregistration ok';
+  RsUnregistrationFailed        = 'Unregistration failed';
 
 //=== JclCIL =================================================================
 resourcestring
@@ -1652,6 +1703,11 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.37  2005/12/26 18:03:51  outchy
+// Enhanced bds support (including C#1 and D8)
+// Introduction of dll experts
+// Project types in templates
+//
 // Revision 1.36  2005/12/04 10:10:58  obones
 // Borland Developer Studio 2006 support
 //
