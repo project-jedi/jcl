@@ -31,7 +31,6 @@ type
     cbSymLink: TCheckBox;
     cbNormal: TCheckBox;
     cbArchive: TCheckBox;
-    cbVolumeID: TCheckBox;
     DetailsBtn: TButton;
     FileMaskInput: TEdit;
     cbLastChangeAfter: TCheckBox;
@@ -94,7 +93,6 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   FileList.Columns.Add.Caption := 'Link';
-  cbVolumeID.Visible := False;
   cbArchive.Visible := False;
   {$ENDIF UNIX}
 end;
@@ -229,7 +227,6 @@ begin
 {$ENDIF def UNIX}
 {$IFDEF MSWINDOWS}
     cbArchive.State := CBState[Archive];
-    cbVolumeID.State := CBState[VolumeID];
 {$ENDIF def MSWINDOWS}
   end;
 end;

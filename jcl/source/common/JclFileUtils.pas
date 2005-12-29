@@ -129,8 +129,12 @@ const
   faNotContentIndexed = $00002000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
   faEncrypted         = $00004000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
 
-  faRejectedByDefault = faHidden + faSysFile + {faVolumeID +} faDirectory;
-  faWindowsSpecific   = {faVolumeID +} faArchive + faTemporary + faSparseFile + faReparsePoint +
+  // outchy: why were faVolumeID commented for JCL.NET support?
+  faRejectedByDefault = faHidden + faSysFile +
+                        {$IFDEF KEEP_DEPRECATED} faVolumeID + {$ENDIF KEEP_DEPRECATED}
+                        faDirectory;
+  faWindowsSpecific   = {$IFDEF KEEP_DEPRECATED} faVolumeID + {$ENDIF KEEP_DEPRECATED}
+                        faArchive + faTemporary + faSparseFile + faReparsePoint +
                         faCompressed + faOffline + faNotContentIndexed + faEncrypted;
   faUnixSpecific      = faSymLink;
 
@@ -325,8 +329,11 @@ type
       read GetAttr write SetAttr stored False;
     property System: TAttributeInterest index faSysFile
       read GetAttr write SetAttr stored False;
-    {property VolumeID: TAttributeInterest index faVolumeID
-      read GetAttr write SetAttr stored False;}
+    // outchy: why were these lines commented for JCL.NET support?
+    {$IFDEF KEEP_DEPRECATED}
+    property VolumeID: TAttributeInterest index faVolumeID
+      read GetAttr write SetAttr stored False;
+    {$ENDIF KEEP_DEPRECATED}
     property Directory: TAttributeInterest index faDirectory
       read GetAttr write SetAttr stored False;
     property SymLink: TAttributeInterest index faSymLink
@@ -371,7 +378,9 @@ type
     property SymLink;
     {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
-    //property VolumeID;
+    {$IFDEF KEEP_DEPRECATED}
+    property VolumeID;
+    {$ENDIF KEEP_DEPRECATED}
     property Archive;
     property Temporary;
     property SparseFile;
@@ -3285,8 +3294,10 @@ begin
       Items.Add(RsAttrReadOnly);
     if Attr and faSysFile = faSysFile then
       Items.Add(RsAttrSystemFile);
-    {if Attr and faVolumeID = faVolumeID then
-      Items.Add(RsAttrVolumeID);}
+    {$IFDEF KEEP_DEPRECATED}
+    if Attr and faVolumeID = faVolumeID then
+      Items.Add(RsAttrVolumeID);
+    {$ENDIF KEEP_DEPRECATED}
     if Attr and faArchive = faArchive then
       Items.Add(RsAttrArchive);
     if Attr and faAnyFile = faAnyFile then
@@ -5847,6 +5858,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.56  2005/12/29 10:35:54  outchy
+// VolumeID is now deprecated.
+//
 // Revision 1.55  2005/10/30 01:57:07  rrossmair
 // - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
 //
