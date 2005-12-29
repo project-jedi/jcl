@@ -49,30 +49,36 @@ object FileSearchForm: TFileSearchForm
     Columns = <
       item
         Caption = 'File'
+        Tag = 0
         Width = 360
       end
       item
         Alignment = taRightJustify
         AutoSize = True
         Caption = 'Size'
+        Tag = 0
         Width = 50
       end
       item
         Alignment = taCenter
         AutoSize = True
         Caption = 'Time'
+        Tag = 0
         Width = 50
       end
       item
         Caption = 'Attr.'
+        Tag = 0
         Width = 60
       end
       item
         Caption = 'Owner'
+        Tag = 0
         Width = 100
       end
       item
         Caption = 'Group'
+        Tag = 0
         Width = 50
       end>
     ReadOnly = True
@@ -243,7 +249,7 @@ object FileSearchForm: TFileSearchForm
         Caption = 'Normal'
         Checked = True
         State = cbGrayed
-        TabOrder = 7
+        TabOrder = 6
         OnClick = cbFileAttributeClick
       end
       object cbArchive: TCheckBox
@@ -257,17 +263,6 @@ object FileSearchForm: TFileSearchForm
         Checked = True
         State = cbGrayed
         TabOrder = 5
-        OnClick = cbFileAttributeClick
-      end
-      object cbVolumeID: TCheckBox
-        Tag = 8
-        Left = 136
-        Top = 40
-        Width = 89
-        Height = 21
-        AllowGrayed = True
-        Caption = 'Volume ID'
-        TabOrder = 6
         OnClick = cbFileAttributeClick
       end
     end
@@ -373,10 +368,10 @@ object FileSearchForm: TFileSearchForm
     end
   end
   object SaveDialog: TSaveDialog
-    Height = 0
-    Width = 0
     FilterIndex = 0
+    Height = 0
     Title = 'Save'
+    Width = 0
     Left = 740
     Top = 36
   end
