@@ -1,0 +1,5 @@
+*.mak
+*.~*
+*.hpp
+*.dcu
+__history
