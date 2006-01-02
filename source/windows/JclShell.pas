@@ -96,8 +96,8 @@ function DisplayContextMenuPidl(const Handle: THandle; const Folder: IShellFolde
 function DisplayContextMenu(const Handle: THandle; const FileName: string;
   Pos: TPoint): Boolean;
 
-function OpenFolder(const Path: string; Parent: THandle = 0): Boolean;
-function OpenSpecialFolder(FolderID: Integer; Parent: THandle = 0): Boolean;
+function OpenFolder(const Path: string; Parent: THandle = 0; Explore: Boolean = False): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle = 0; Explore: Boolean = False): Boolean;
 
 // Memory Management
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
@@ -197,7 +197,8 @@ uses
 const
   cVerbProperties = 'properties';
   cVerbOpen = 'open';
-
+  cVerbExplore = 'explore';
+  
 //=== Files and Folders ======================================================
 
 // Helper function and constant to map a TSHDeleteOptions set to a Cardinal
@@ -570,7 +571,7 @@ begin
   end;
 end;
 
-function OpenFolder(const Path: string; Parent: THandle): Boolean;
+function OpenFolder(const Path: string; Parent: THandle; Explore: Boolean): Boolean;
 var
   Sei: TShellExecuteInfo;
 begin
@@ -582,7 +583,10 @@ begin
     begin
       cbSize := SizeOf(Sei);
       Wnd := Parent;
-      lpVerb := cVerbOpen;
+      if Explore then
+        lpVerb := cVerbExplore
+      else
+        lpVerb := cVerbOpen;
       lpFile := PChar(Path);
       nShow := SW_SHOWNORMAL;
     end;
@@ -590,7 +594,7 @@ begin
   end;
 end;
 
-function OpenSpecialFolder(FolderID: Integer; Parent: THandle): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle; Explore: Boolean): Boolean;
 var
   Malloc: IMalloc;
   Pidl: PItemIDList;
@@ -606,7 +610,10 @@ begin
       cbSize := SizeOf(Sei);
       Wnd := Parent;
       fMask := SEE_MASK_INVOKEIDLIST;
-      lpVerb := cVerbOpen;
+      if Explore then
+        lpVerb := cVerbExplore
+      else
+        lpVerb := cVerbOpen;
       lpIDList := Pidl;
       nShow := SW_SHOWNORMAL;
       if PidlToPath(Pidl) = '' then
@@ -1408,6 +1415,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2006/01/02 04:30:53  elahn
+// Added parameter "Explore" added to OpenFolder & OpenSpecialFolder (Mantis #3402)
+//
 // Revision 1.21  2005/12/12 21:54:10  outchy
 // HWND changed to THandle (linking problems with BCB).
 //
