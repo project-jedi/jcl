@@ -126,9 +126,6 @@ uses
   JclDebug, JclFileUtils, JclRegistry, JclOtaConsts, JclOtaResources,
   Windows, JclShell, Controls;
 
-type
-  PAction = ^TAction;  
-
 procedure Register;
 begin
   try
@@ -565,28 +562,28 @@ var
       ImageBmp.Free;
     end;
   end;
-  procedure CreateMenuItem(ActionPtr: PAction; MenuPtr: PMenuItem;
+  procedure CreateMenuItem(var ActionPtr: TAction; var MenuPtr: TMenuItem;
       ActionCaption, ActionName, MenuName: string; AMethod: TNotifyEvent);
   begin
-    ActionPtr^ := TAction.Create(nil);
-    ActionPtr^.Caption := ActionCaption;
-    ActionPtr^.Visible := True;
-    ActionPtr^.OnExecute := AMethod;
-    ActionPtr^.Name := ActionName;
-    ActionPtr^.ActionList := IDEActionList;
-    RegisterAction(ActionPtr^);
-    MenuPtr^ := TMenuItem.Create(FMenu);
-    MenuPtr^.Action := ActionPtr^;
-    MenuPtr^.Name := MenuName;
-    FMenu.Add(MenuPtr^);
-    if not Assigned(MenuPtr^.Parent) then
+    ActionPtr := TAction.Create(nil);
+    ActionPtr.Caption := ActionCaption;
+    ActionPtr.Visible := True;
+    ActionPtr.OnExecute := AMethod;
+    ActionPtr.Name := ActionName;
+    ActionPtr.ActionList := IDEActionList;
+    RegisterAction(ActionPtr);
+    MenuPtr := TMenuItem.Create(FMenu);
+    MenuPtr.Action := ActionPtr;
+    MenuPtr.Name := MenuName;
+    FMenu.Add(MenuPtr);
+    if not Assigned(MenuPtr.Parent) then
       raise EJclExpertException.CreateTrace(Format(RsSvnMenuItemNotInserted, [ActionCaption]));
   end;
-  procedure AddMenuSeparator(MenuPtr: PMenuItem);
+  procedure AddMenuSeparator(var MenuPtr: TMenuItem);
   begin
-    MenuPtr^ := TMenuItem.Create(FMenu);
-    MenuPtr^.Caption := cLineCaption;
-    FMenu.Add(MenuPtr^);
+    MenuPtr := TMenuItem.Create(FMenu);
+    MenuPtr.Caption := cLineCaption;
+    FMenu.Add(MenuPtr);
   end;
 begin
   try
@@ -613,90 +610,90 @@ begin
       raise EJclExpertException.CreateTrace(Format(RsSvnMenuItemNotInserted, [RsSvnMenuCaption]));
 
     // Diff File
-    CreateMenuItem(Addr(FactDiffFile), Addr(FmnuDiffFile), RsSvnActDiffFileCaption,
+    CreateMenuItem(FactDiffFile, FmnuDiffFile, RsSvnActDiffFileCaption,
       RsSvnActDiffFileName, RsSvnMnuDiffFileName, actDiffFileExecute);
     LoadImageFor(FactDiffFile, 'SVNDIFF');
     // Blame File
-    CreateMenuItem(Addr(FactBlameFile), Addr(FmnuBlameFile), RsSvnActBlameFileCaption,
+    CreateMenuItem(FactBlameFile, FmnuBlameFile, RsSvnActBlameFileCaption,
       RsSvnActBlameFileName, RsSvnMnuBlameFileName, actBlameFileExecute);
     LoadImageFor(FactBlameFile, 'SVNBLAME');
     // Revision Graph File
-    CreateMenuItem(Addr(FactGraphFile), Addr(FmnuGraphFile), RsSvnActGraphFileCaption,
+    CreateMenuItem(FactGraphFile, FmnuGraphFile, RsSvnActGraphFileCaption,
       RsSvnActGraphFileName, RsSvnMnuGraphFileName, actGraphFileExecute);
     LoadImageFor(FactGraphFile, 'SVNREVISIONGRAPH');
     // Properties
-    CreateMenuItem(Addr(FactProperties), Addr(FmnuProperties), RsSvnActPropertiesCaption,
+    CreateMenuItem(FactProperties, FmnuProperties, RsSvnActPropertiesCaption,
       RsSvnActPropertiesName, RsSvnMnuPropertiesName, actPropertiesExecute);
     // Explore Folder
-    CreateMenuItem(Addr(FactExplore), Addr(FmnuExplore), RsSvnActExploreCaption,
+    CreateMenuItem(FactExplore, FmnuExplore, RsSvnActExploreCaption,
       RsSvnActExploreName, RsSvnMnuExploreName, actExploreExecute);
     // Context Menu (right-click)
-    CreateMenuItem(Addr(FactContextMenu), Addr(FmnuContextMenu), RsSvnActContextMenuCaption,
+    CreateMenuItem(FactContextMenu, FmnuContextMenu, RsSvnActContextMenuCaption,
       RsSvnActContextMenuName, RsSvnMnuContextMenuName, actContextMenuExecute);
     // Seperator 1
-    AddMenuSeparator(Addr(FmnuSeperator1));
+    AddMenuSeparator(FmnuSeperator1);
     // Status File
-    CreateMenuItem(Addr(FactStatusFile), Addr(FmnuStatusFile), RsSvnActStatusFileCaption,
+    CreateMenuItem(FactStatusFile, FmnuStatusFile, RsSvnActStatusFileCaption,
       RsSvnActStatusFileName, RsSvnMnuStatusFileName, actStatusFileExecute);
     LoadImageFor(FactStatusFile, 'SVNSTATUS');
     // Status Sandbox
-    CreateMenuItem(Addr(FactStatusSandbox), Addr(FmnuStatusSandbox), RsSvnActStatusSandboxCaption,
+    CreateMenuItem(FactStatusSandbox, FmnuStatusSandbox, RsSvnActStatusSandboxCaption,
       RsSvnActStatusSandboxName, RsSvnMnuStatusSandboxName, actStatusSandboxExecute);
     FactStatusSandbox.ImageIndex := FactStatusFile.ImageIndex;
     // Seperator 2
-    AddMenuSeparator(Addr(FmnuSeperator2));
+    AddMenuSeparator(FmnuSeperator2);
     // Log File
-    CreateMenuItem(Addr(FactLogFile), Addr(FmnuLogFile), RsSvnActLogFileCaption,
+    CreateMenuItem(FactLogFile, FmnuLogFile, RsSvnActLogFileCaption,
       RsSvnActLogFileName, RsSvnMnuLogFileName, actLogFileExecute);
     LoadImageFor(FactLogFile, 'SVNLOG');
     // Log Sandbox
-    CreateMenuItem(Addr(FactLogSandbox), Addr(FmnuLogSandbox), RsSvnActLogSandboxCaption,
+    CreateMenuItem(FactLogSandbox, FmnuLogSandbox, RsSvnActLogSandboxCaption,
       RsSvnActLogSandboxName, RsSvnMnuLogSandboxName, actLogSandboxExecute);
     FactLogSandbox.ImageIndex := FactLogFile.ImageIndex;
     // Seperator 3
-    AddMenuSeparator(Addr(FmnuSeperator3));
+    AddMenuSeparator(FmnuSeperator3);
     // Lock File
-    CreateMenuItem(Addr(FactLockFile), Addr(FmnuLockFile), RsSvnActLockFileCaption,
+    CreateMenuItem(FactLockFile, FmnuLockFile, RsSvnActLockFileCaption,
       RsSvnActLockFileName, RsSvnMnuLockFileName, actLockFileExecute);
     LoadImageFor(FactLockFile, 'SVNLOCK');
     // Unlock File
-    CreateMenuItem(Addr(FactUnlockFile), Addr(FmnuUnlockFile), RsSvnActUnlockFileCaption,
+    CreateMenuItem(FactUnlockFile, FmnuUnlockFile, RsSvnActUnlockFileCaption,
       RsSvnActUnlockFileName, RsSvnMnuUnlockFileName, actUnlockFileExecute);
     LoadImageFor(FactUnlockFile, 'SVNUNLOCK');
     // Seperator 4
-    AddMenuSeparator(Addr(FmnuSeperator4));
+    AddMenuSeparator(FmnuSeperator4);
     // Revert File
-    CreateMenuItem(Addr(FactRevertFile), Addr(FmnuRevertFile), RsSvnActRevertFileCaption,
+    CreateMenuItem(FactRevertFile, FmnuRevertFile, RsSvnActRevertFileCaption,
       RsSvnActRevertFileName, RsSvnMnuRevertFileName, actRevertFileExecute);
     LoadImageFor(FactRevertFile, 'SVNREVERT');
     // Revert Sandbox
-    CreateMenuItem(Addr(FactRevertSandbox), Addr(FmnuRevertSandbox), RsSvnActRevertSandboxCaption,
+    CreateMenuItem(FactRevertSandbox, FmnuRevertSandbox, RsSvnActRevertSandboxCaption,
       RsSvnActRevertSandboxName, RsSvnMnuRevertSandboxName, actRevertSandboxExecute);
     FactRevertSandbox.ImageIndex := FactRevertFile.ImageIndex;
     // Seperator 5
-    AddMenuSeparator(Addr(FmnuSeperator5));
+    AddMenuSeparator(FmnuSeperator5);
     // Update File
-    CreateMenuItem(Addr(FactUpdateFile), Addr(FmnuUpdateFile), RsSvnActUpdateFileCaption,
+    CreateMenuItem(FactUpdateFile, FmnuUpdateFile, RsSvnActUpdateFileCaption,
       RsSvnActUpdateFileName, RsSvnMnuUpdateFileName, actUpdateFileExecute);
     LoadImageFor(FactUpdateFile, 'SVNUPDATE');
     // Update Sandbox
-    CreateMenuItem(Addr(FactUpdateSandbox), Addr(FmnuUpdateSandbox), RsSvnActUpdateSandboxCaption,
+    CreateMenuItem(FactUpdateSandbox, FmnuUpdateSandbox, RsSvnActUpdateSandboxCaption,
       RsSvnActUpdateSandboxName, RsSvnMnuUpdateSandboxName, actUpdateSandboxExecute);
     FactUpdateSandbox.ImageIndex := FactUpdateFile.ImageIndex;
     // Seperator 6
-    AddMenuSeparator(Addr(FmnuSeperator6));
+    AddMenuSeparator(FmnuSeperator6);
     // Commit File
-    CreateMenuItem(Addr(FactCommitFile), Addr(FmnuCommitFile), RsSvnActCommitFileCaption,
+    CreateMenuItem(FactCommitFile, FmnuCommitFile, RsSvnActCommitFileCaption,
       RsSvnActCommitFileName, RsSvnMnuCommitFileName, actCommitFileExecute);
     LoadImageFor(FactCommitFile, 'SVNCOMMIT');
     // Commit Sandbox
-    CreateMenuItem(Addr(FactCommitSandbox), Addr(FmnuCommitSandbox), RsSvnActCommitSandboxCaption,
+    CreateMenuItem(FactCommitSandbox, FmnuCommitSandbox, RsSvnActCommitSandboxCaption,
       RsSvnActCommitSandboxName, RsSvnMnuCommitSandboxName, actCommitSandboxExecute);
     FactCommitSandbox.ImageIndex := FactCommitFile.ImageIndex;
     // Seperator 7
-    AddMenuSeparator(Addr(FmnuSeperator7));
+    AddMenuSeparator(FmnuSeperator7);
     // Repository Browser
-    CreateMenuItem(Addr(FactRepoBrowser), Addr(FmnuRepoBrowser), RsSvnActRepoBrowserCaption,
+    CreateMenuItem(FactRepoBrowser, FmnuRepoBrowser, RsSvnActRepoBrowserCaption,
       RsSvnActRepoBrowserName, RsSvnMnuRepoBrowserName, actRepoBrowserExecute);
     LoadImageFor(FactRepoBrowser, 'SVNREPOBROWSER');
   except
