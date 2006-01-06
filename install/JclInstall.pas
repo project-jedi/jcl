@@ -1131,7 +1131,7 @@ var
   {$ENDIF MSWINDOWS}
   InstallationNode, ProductNode, PackagesNode, ExpertsNode, DemosNode,
   MakeNode, EnvNode, HelpNode, RepositoryNode, MapCreateNode,
-  MapLinkNode: TObject;
+  MapLinkNode, BCBNode: TObject;
   RunTimeInstallation: Boolean;
 
   function AddNode(Parent: TObject; Option: TJediInstallOption;
@@ -1245,9 +1245,13 @@ begin
 
   if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation then
   begin
-    AddNode(PackagesNode, ioJclCopyPackagesHppFiles);
     if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
-      AddNode(PackagesNode, ioJclDualPackages);
+    begin
+      BCBNode := AddNode(PackagesNode, ioJclDualPackages, [goStandAloneParent, goChecked]);
+      AddNode(BCBNode, ioJclCopyPackagesHppFiles);
+    end
+    else
+      AddNode(PackagesNode, ioJclCopyPackagesHppFiles);
   end;
 
   MapCreateNode := AddNode(PackagesNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
@@ -2269,6 +2273,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.85  2006/01/06 18:15:15  outchy
+// hpp node moved as a child of the dual package node when supported
+//
 // Revision 1.84  2005/12/26 18:03:41  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
