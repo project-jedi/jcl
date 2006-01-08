@@ -30,7 +30,8 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, Dialogs,
   ComCtrls, ActnList, Menus, ClipBrd, ImgList, ToolWin,
-  JclDebug;
+  JclDebug,
+  JclOtaUtils;
 
 type
   TUnitItem = record
@@ -42,48 +43,51 @@ type
   TPackageUnitItem = record
     UnitName: string;
     PackageName: string;
-  end;  
+  end;
+
+  TProjectAnalyserView = (pavDetails, pavSummary, pavDfms);
 
   TProjectAnalyzerForm = class(TForm)
     UnitListView: TListView;
     ExplorerItemImages: TImageList;
-    ToolBar1: TToolBar;
-    ActionList1: TActionList;
-    PopupMenu1: TPopupMenu;
-    ToolButton1: TToolButton;
-    ShowDetails1: TAction;
-    ShowSummary1: TAction;
-    Details1: TMenuItem;
-    Summary1: TMenuItem;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
-    Copy1: TAction;
-    Save1: TAction;
-    PopupMenu2: TPopupMenu;
+    ToolBarMain: TToolBar;
+    ActionListProjectAnalyser: TActionList;
+    PopupMenuUnitView: TPopupMenu;
+    ToolButtonDetails: TToolButton;
+    ActionShowDetails: TAction;
+    ActionShowSummary: TAction;
+    MenuItemDetails: TMenuItem;
+    MenuItemSummary: TMenuItem;
+    ToolButtonSummary: TToolButton;
+    ToolButtonSeparator: TToolButton;
+    ToolButtonCopy: TToolButton;
+    ToolButtonSave: TToolButton;
+    ActionCopy: TAction;
+    ActionSave: TAction;
+    PopupMenuToolbar: TPopupMenu;
     TextLabelsItem: TMenuItem;
-    N1: TMenuItem;
-    Copy2: TMenuItem;
-    Save2: TMenuItem;
-    SaveDialog1: TSaveDialog;
-    StatusBar1: TStatusBar;
-    ShowDfms1: TAction;
-    ToolButton6: TToolButton;
-    Forms1: TMenuItem;
+    MenuItemSeparator: TMenuItem;
+    MenuItemCopy: TMenuItem;
+    MenuItemSave: TMenuItem;
+    SaveDialogProjectAnalyser: TSaveDialog;
+    StatusBarMain: TStatusBar;
+    ActionShowDfms: TAction;
+    ToolButtonDfms: TToolButton;
+    MenuItemDfms: TMenuItem;
+    procedure ActionShowDfmsUpdate(Sender: TObject);
+    procedure ActionShowSummaryUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure UnitListViewColumnClick(Sender: TObject; Column: TListColumn);
     procedure UnitListViewCompare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
-    procedure ShowDetails1Execute(Sender: TObject);
-    procedure ShowSummary1Execute(Sender: TObject);
+    procedure ActionShowDetailsExecute(Sender: TObject);
+    procedure ActionShowSummaryExecute(Sender: TObject);
     procedure TextLabelsItemClick(Sender: TObject);
-    procedure Copy1Execute(Sender: TObject);
-    procedure Save1Execute(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure ShowDfms1Execute(Sender: TObject);
-    procedure ShowDetails1Update(Sender: TObject);
+    procedure ActionCopyExecute(Sender: TObject);
+    procedure ActionSaveExecute(Sender: TObject);
+    procedure ActionShowDfmsExecute(Sender: TObject);
+    procedure ActionShowDetailsUpdate(Sender: TObject);
   private
     FCodeSize: Integer;
     FDataSize: Integer;
@@ -92,6 +96,8 @@ type
     FUnits: array of TUnitItem;
     FDfms: array of TUnitItem;
     FUnitsSum: TStringList;
+    FSettings: TJclOtaSettings;
+    FView: TProjectAnalyserView;
     procedure OnMapSegmentEvent(Sender: TObject; const Address: TJclMapAddress;
       Length: Integer; const ClassName, UnitName: string);
     procedure SetStatusBarText(const Value: string);
@@ -99,6 +105,8 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
+    constructor Create(AOwner: TComponent; ASettings: TJclOtaSettings); reintroduce;
+    destructor Destroy; override;
     procedure ClearContent;
     function FindPackageForUnitName(const UnitName: string): string;
     procedure ShowDfms;
@@ -106,6 +114,8 @@ type
     procedure ShowSummary;
     procedure SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
     property StatusBarText: string write SetStatusBarText;
+    property Settings: TJclOtaSettings read FSettings;
+    property View: TProjectAnalyserView read FView;
   end;
 
 var
@@ -116,7 +126,8 @@ implementation
 {$R *.dfm}
 
 uses
-  JclLogic, JclOtaResources, JclPeImage, JclStrings;
+  JclLogic, JclOtaResources, JclPeImage, JclStrings,
+  JclOtaConsts;
 
 procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
@@ -256,21 +267,39 @@ end;
 //=== { TProjectAnalyzerForm } ===============================================
 
 procedure TProjectAnalyzerForm.FormCreate(Sender: TObject);
+var
+  Index: Integer;
 begin
   FUnitsSum := TStringList.Create;
   FUnitsSum.Sorted := True;
   FUnitsSum.Duplicates := dupIgnore;
+
+  SetBounds(Settings.LoadInteger(JclLeft, Left),
+            Settings.LoadInteger(JclTop, Top),
+            Settings.LoadInteger(JclWidth, Width),
+            Settings.LoadInteger(JclHeight, Height));
+
+  FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
+
+  with UnitListView.Columns do
+    for Index := 0 to Count - 1 do
+      Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 end;
 
 procedure TProjectAnalyzerForm.FormDestroy(Sender: TObject);
+var
+  Index: Integer;
 begin
-  FreeAndNil(FUnitsSum);
-  ProjectAnalyzerForm := nil;
-end;
+  Settings.SaveInteger(JclLeft, Left);
+  Settings.SaveInteger(JclTop, Top);
+  Settings.SaveInteger(JclWidth, Width);
+  Settings.SaveInteger(JclHeight, Height);
+  Settings.SaveInteger(AnalyzerViewName, Integer(FView));
+  with UnitListView.Columns do
+    for Index := 0 to Count - 1 do
+      Settings.SaveInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 
-procedure TProjectAnalyzerForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Action := caFree;
+  FreeAndNil(FUnitsSum);
 end;
 
 procedure TProjectAnalyzerForm.SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
@@ -326,22 +355,23 @@ begin
     BorImage.Free;
     PackagesList.Free;
   end;
-  StatusBar1.Panels[0].Text := Format(RsStatusText,
+  StatusBarMain.Panels[0].Text := Format(RsStatusText,
     [FUnitsSum.Count, Length(FDfms), FCodeSize, FDataSize, FBssSize, ResourcesSize]);
-  with ActionList1 do
-    for I := 0 to ActionCount - 1 do
-      with TAction(Actions[I]) do
-        if (Tag = 1) and Checked then
-        begin
-          Execute;
-          Break;
-        end;
+  case View of
+    pavDetails:
+      ShowDetails;
+    pavSummary:
+      ShowSummary;
+    else
+      ShowDfms;
+  end;
 end;
 
 procedure TProjectAnalyzerForm.ShowDetails;
 var
   I: Integer;
 begin
+  FView := pavDetails;
   with UnitListView do
   begin
     Items.BeginUpdate;
@@ -371,6 +401,7 @@ procedure TProjectAnalyzerForm.ShowSummary;
 var
   I: Integer;
 begin
+  FView := pavSummary;
   with UnitListView do
   begin
     Items.BeginUpdate;
@@ -393,6 +424,7 @@ procedure TProjectAnalyzerForm.ShowDfms;
 var
   I: Integer;
 begin
+  FView := pavDfms;
   with UnitListView do
   begin
     Items.BeginUpdate;
@@ -404,7 +436,7 @@ begin
         SubItems.Add(Format('%.0n', [IntToExtended(FDfms[I].Size)]));
         SubItems.Add('');
         SubItems.Add('');
-        ImageIndex := ShowDfms1.ImageIndex;
+        ImageIndex := ActionShowDfms.ImageIndex;
       end;
     AlphaSort;
     Items.EndUpdate;
@@ -456,39 +488,60 @@ begin
   JvListViewCompare(TListView(Sender), Item1, Item2, Compare);
 end;
 
-procedure TProjectAnalyzerForm.ShowDetails1Execute(Sender: TObject);
+procedure TProjectAnalyzerForm.ActionShowDetailsExecute(Sender: TObject);
 begin
   ShowDetails;
-  ShowDetails1.Checked := True;
-  ShowSummary1.Checked := False;
-  ShowDfms1.Checked := False;
 end;
 
-procedure TProjectAnalyzerForm.ShowSummary1Execute(Sender: TObject);
+procedure TProjectAnalyzerForm.ActionShowDetailsUpdate(Sender: TObject);
+var
+  AAction: TAction;
+begin
+  AAction := Sender as TAction;
+
+  AAction.Enabled := (Length(FUnits) > 0);
+  AAction.Checked := View = pavDetails;
+end;
+
+procedure TProjectAnalyzerForm.ActionShowSummaryExecute(Sender: TObject);
 begin
   ShowSummary;
-  ShowSummary1.Checked := True;
-  ShowDetails1.Checked := False;
-  ShowDfms1.Checked := False;
 end;
 
-procedure TProjectAnalyzerForm.ShowDfms1Execute(Sender: TObject);
+procedure TProjectAnalyzerForm.ActionShowSummaryUpdate(Sender: TObject);
+var
+  AAction: TAction;
+begin
+  AAction := Sender as TAction;
+
+  AAction.Enabled := (Length(FUnits) > 0);
+  AAction.Checked := View = pavSummary;
+end;
+
+procedure TProjectAnalyzerForm.ActionShowDfmsExecute(Sender: TObject);
 begin
   ShowDfms;
-  ShowDetails1.Checked := False;
-  ShowSummary1.Checked := False;
-  ShowDfms1.Checked := True;
+end;
+
+procedure TProjectAnalyzerForm.ActionShowDfmsUpdate(Sender: TObject);
+var
+  AAction: TAction;
+begin
+  AAction := Sender as TAction;
+
+  AAction.Enabled := (Length(FUnits) > 0);
+  AAction.Checked := View = pavDfms;
 end;
 
 procedure TProjectAnalyzerForm.TextLabelsItemClick(Sender: TObject);
 begin
   TextLabelsItem.Checked := not TextLabelsItem.Checked;
-  ToolBar1.ShowCaptions := TextLabelsItem.Checked;
-  ToolBar1.ButtonHeight := 0;
-  ToolBar1.ButtonWidth := 0;
+  ToolBarMain.ShowCaptions := TextLabelsItem.Checked;
+  ToolBarMain.ButtonHeight := 0;
+  ToolBarMain.ButtonWidth := 0;
 end;
 
-procedure TProjectAnalyzerForm.Copy1Execute(Sender: TObject);
+procedure TProjectAnalyzerForm.ActionCopyExecute(Sender: TObject);
 var
   SL: TStringList;
 begin
@@ -496,11 +549,18 @@ begin
   try
     JvListViewToStrings(UnitListView, SL, False, True);
     SL.Add('');
-    SL.Add(StatusBar1.Panels[0].Text);
+    SL.Add(StatusBarMain.Panels[0].Text);
     Clipboard.AsText := SL.Text;
   finally
     SL.Free;
   end;
+end;
+
+constructor TProjectAnalyzerForm.Create(AOwner: TComponent;
+  ASettings: TJclOtaSettings);
+begin
+  inherited Create(AOwner);
+  FSettings := ASettings;
 end;
 
 procedure TProjectAnalyzerForm.CreateParams(var Params: TCreateParams);
@@ -517,11 +577,17 @@ begin
     Params.WndParent := Application.Handle;
 end;
 
-procedure TProjectAnalyzerForm.Save1Execute(Sender: TObject);
+destructor TProjectAnalyzerForm.Destroy;
+begin
+  ProjectAnalyzerForm := nil;
+  inherited Destroy;
+end;
+
+procedure TProjectAnalyzerForm.ActionSaveExecute(Sender: TObject);
 var
   SL: TStringList;
 begin
-  with SaveDialog1 do
+  with SaveDialogProjectAnalyser do
   begin
     FileName := '';
     if Execute then
@@ -553,7 +619,7 @@ end;
 
 procedure TProjectAnalyzerForm.SetStatusBarText(const Value: string);
 begin
-  with StatusBar1 do
+  with StatusBarMain do
   begin
     Panels[0].Text := Value;
     Repaint;
@@ -569,11 +635,6 @@ begin
   UnitListView.Items.EndUpdate;
   Show;
   Repaint;
-end;
-
-procedure TProjectAnalyzerForm.ShowDetails1Update(Sender: TObject);
-begin
-  TAction(Sender).Enabled := (Length(FUnits) > 0);
 end;
 
 procedure TProjectAnalyzerForm.ClearData;

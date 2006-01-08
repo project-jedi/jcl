@@ -471,7 +471,7 @@ var
 begin
   if FBuildError or (Length(FResultInfo) = 0) then
     Exit;
-  with TJclDebugResultForm.Create(Application) do
+  with TJclDebugResultForm.Create(Application, Settings) do
   try
     for I := 0 to Length(FResultInfo) - 1 do
       with ResultListView.Items.Add, FResultInfo[I] do
@@ -559,12 +559,12 @@ end;
 
 procedure TJclDebugExtension.LoadExpertValues;
 begin
-  ExpertActive(LoadBool(JclDebugEnabledRegValue, False));
+  ExpertActive(Settings.LoadBool(JclDebugEnabledRegValue, False));
 end;
 
 procedure TJclDebugExtension.SaveExpertValues;
 begin
-  SaveBool(JclDebugEnabledRegValue, FInsertDataAction.Checked);
+  Settings.SaveBool(JclDebugEnabledRegValue, FInsertDataAction.Checked);
 end;
 
 {$ENDIF OldStyleExpert}
@@ -648,8 +648,8 @@ var
   IDEActionList: TActionList;
   I: Integer;
   ImageBmp: TBitmap;
-  Temp: TResourceStream;
 begin
+  inherited RegisterCommands;
   IDEActionList := TActionList(NTAServices.ActionList);
   IDEMainMenu := NTAServices.MainMenu;
   ImageBmp := TBitmap.Create;
@@ -773,6 +773,7 @@ end;
 
 procedure TJclDebugExtension.UnregisterCommands;
 begin
+  inherited UnregisterCommands;
   {$IFNDEF OldStyleExpert}
   HookBuildActions(False);
   UnregisterAction(FInsertDataAction);

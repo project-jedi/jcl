@@ -45,6 +45,8 @@ resourcestring
   RsENoModule = 'Unable to get Module';
   RsBadModuleHInstance = 'Unable to get module HInstance';
   RsENoRootDir = 'RootDir is empty';
+  RsENoIDEMenu = 'Unable to get IDE menu';
+  RsENoToolsMenu = 'Unable to get Tools menu';
 
   RsAboutDialogTitle = 'JEDI Code Library';
   RsAboutCopyright = 'Copyright the JCL development team';
@@ -54,6 +56,8 @@ resourcestring
                        'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + AnsiLineBreak +
                        'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
   RsAboutLicenceStatus = 'MPL 1.1';
+  RsJCLOptions = 'JCL Options...';
+  RsActionSheet = 'Common\Actions';
   RsENoBitmapResources = 'Unable to load bitmap resource';
   RsENoEnvironmentOptions = 'Environment options are not available';
 
@@ -76,6 +80,21 @@ resourcestring
   RsDetailsExceptionMessage = 'Exception message: ';
   RsErrorWhileFormatting = 'An exception was raised while formatting details for the report';
   RsReportClose = '&Close';
+
+//=== JclOtaActionConfigureSheet.pas =========================================
+resourcestring
+  RsActions = '&Actions :';
+  RsCaption = 'Caption';
+  RsShortcut = 'Shortcut';
+  RsRestore = '&Restore';
+
+//=== JclExpertConfigurationForm.pas =========================================
+resourcestring
+  RsConfigurationCaption = 'JCL Options';
+  RsOk = '&Ok';
+  RsCancel = '&Cancel';
+  RsSelectPage = 'Select a page';
+  RsHomePage = '&JCL Home page';
 
 //=== OpenDlgFavAdapter.pas ==================================================
 resourcestring
@@ -126,6 +145,15 @@ resourcestring
 resourcestring
   RsJediOptionsCaption = 'JEDI Options';
   RsEErrorReadingBuffer = 'Error reading from edit buffer';
+  RsUsesSheet = 'Uses wizard';
+
+//=== JclOptionsFrame.pas ====================================================
+resourcestring
+  RsUsesConfigurationFile = '&Configuration file:';
+  RsUsesActive = '&Active';
+  RsUsesConfirm = '&Prompt to confirm changes';
+  RsUsesOpenTitle = 'Select JEDI Uses wizard configuration file';
+  RsUsesOpenFilters = 'Configuration files (*.ini)|*.ini|All files (*.*)|*.*';
 
 //=== JclDebugIdeImpl.pas ====================================================
 resourcestring
@@ -230,6 +258,10 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.10  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.9  2005/12/26 18:03:39  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts

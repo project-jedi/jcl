@@ -128,7 +128,7 @@ begin
   FFavOpenDialog.HookDialogs;
   FFavOpenDialog.OnClose := DialogClose;
   FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := LoadString(PictDialogFolderItemName,
+  FFavOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
     PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
 end;
 
@@ -140,18 +140,22 @@ end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
 begin
-  SaveStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
-  SaveString(PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
+  Settings.SaveStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  Settings.SaveString(PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
 begin
-  LoadStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  Settings.LoadStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
 end;
 
 // History:
 
 // $Log$
+// Revision 1.8  2006/01/08 17:16:57  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.7  2005/12/26 18:03:41  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
@@ -164,11 +168,15 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.7  2005/12/26 18:03:41  outchy
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Enhanced bds support (including C#1 and D8)
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Introduction of dll experts
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Project types in templates
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Revision 1.8  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Settings reworked.
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Common window for expert configurations
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and
+// - improved header information, added $Date$ and Revision 1.7  2005/12/26 18:03:41  outchy
+// - improved header information, added $Date$ and Enhanced bds support (including C#1 and D8)
+// - improved header information, added $Date$ and Introduction of dll experts
+// - improved header information, added $Date$ and Project types in templates
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.6  2005/12/16 23:46:25  outchy
 // - improved header information, added $Date$ and Added expert stack form.
 // - improved header information, added $Date$ and Added code to display call stack on expert exception.

@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs, Forms,
-  JclOtaUtils;
+  JclOtaUtils, ProjAnalyzerFrm;
 
 type
   TJclProjectAnalyzerExpert = class(TJclOTAExpert)
@@ -60,7 +60,6 @@ implementation
 
 uses
   JclDebug, JclFileUtils, JclOtaConsts, 
-  ProjAnalyzerFrm,
   JclOtaResources;
 
 procedure Register;
@@ -166,7 +165,7 @@ begin
 
     if ProjectAnalyzerForm = nil then
     begin
-      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application);
+      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application, Settings);
       ProjectAnalyzerForm.Show;
     end;
     ProjectAnalyzerForm.ClearContent;
@@ -240,6 +239,8 @@ var
   I: Integer;
   ImageBmp: TBitmap;
 begin
+  inherited RegisterCommands;
+
   FBuildAction := TAction.Create(nil);
   FBuildAction.Caption := Format(RsAnalyzeActionCaption, [RsProjectNone]);
   FBuildAction.Visible := True;
@@ -288,6 +289,8 @@ end;
 
 procedure TJclProjectAnalyzerExpert.UnregisterCommands;
 begin
+  inherited UnregisterCommands;
+
   UnregisterAction(FBuildAction);
   FreeAndNil(FBuildMenuItem);
   FreeAndNil(FBuildAction);

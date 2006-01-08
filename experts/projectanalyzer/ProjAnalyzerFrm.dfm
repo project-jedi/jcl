@@ -16,7 +16,6 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
   Font.Style = []
   OldCreateOrder = False
   ShowHint = True
-  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -48,14 +47,14 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
       end>
     ReadOnly = True
     RowSelect = True
-    PopupMenu = PopupMenu1
+    PopupMenu = PopupMenuUnitView
     SmallImages = ExplorerItemImages
     TabOrder = 0
     ViewStyle = vsReport
     OnColumnClick = UnitListViewColumnClick
     OnCompare = UnitListViewCompare
   end
-  object ToolBar1: TToolBar
+  object ToolBarMain: TToolBar
     Left = 0
     Top = 0
     Width = 402
@@ -63,54 +62,53 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     AutoSize = True
     ButtonHeight = 36
     ButtonWidth = 50
-    Caption = 'ToolBar1'
+    Caption = 'ToolBarMain'
     EdgeBorders = [ebTop, ebBottom]
     Images = ExplorerItemImages
     Indent = 4
-    PopupMenu = PopupMenu2
+    PopupMenu = PopupMenuToolbar
     ShowCaptions = True
     TabOrder = 1
-    object ToolButton4: TToolButton
+    object ToolButtonCopy: TToolButton
       Left = 4
       Top = 0
-      Action = Copy1
+      Action = ActionCopy
     end
-    object ToolButton5: TToolButton
+    object ToolButtonSave: TToolButton
       Left = 54
       Top = 0
-      Action = Save1
+      Action = ActionSave
     end
-    object ToolButton3: TToolButton
+    object ToolButtonSeparator: TToolButton
       Left = 104
       Top = 0
       Width = 8
-      Caption = 'ToolButton3'
       ImageIndex = 3
       Style = tbsSeparator
     end
-    object ToolButton1: TToolButton
+    object ToolButtonDetails: TToolButton
       Left = 112
       Top = 0
-      Action = ShowDetails1
+      Action = ActionShowDetails
       Grouped = True
       Style = tbsCheck
     end
-    object ToolButton2: TToolButton
+    object ToolButtonSummary: TToolButton
       Left = 162
       Top = 0
-      Action = ShowSummary1
+      Action = ActionShowSummary
       Grouped = True
       Style = tbsCheck
     end
-    object ToolButton6: TToolButton
+    object ToolButtonDfms: TToolButton
       Left = 212
       Top = 0
-      Action = ShowDfms1
+      Action = ActionShowDfms
       Grouped = True
       Style = tbsCheck
     end
   end
-  object StatusBar1: TStatusBar
+  object StatusBarMain: TStatusBar
     Left = 0
     Top = 437
     Width = 402
@@ -791,71 +789,71 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
       FFFFFFFFF87FFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
   end
-  object ActionList1: TActionList
+  object ActionListProjectAnalyser: TActionList
     Images = ExplorerItemImages
     Left = 40
     Top = 392
-    object Copy1: TAction
+    object ActionCopy: TAction
       Caption = 'Copy'
       Hint = 'Copy to clipboard'
       ImageIndex = 15
-      OnExecute = Copy1Execute
+      OnExecute = ActionCopyExecute
     end
-    object Save1: TAction
+    object ActionSave: TAction
       Caption = 'Save'
       Hint = 'Save to text file'
       ImageIndex = 16
-      OnExecute = Save1Execute
+      OnExecute = ActionSaveExecute
     end
-    object ShowDetails1: TAction
+    object ActionShowDetails: TAction
       Tag = 1
       Caption = 'Details'
       Hint = 'Detailed view'
       ImageIndex = 3
-      OnExecute = ShowDetails1Execute
-      OnUpdate = ShowDetails1Update
+      OnExecute = ActionShowDetailsExecute
+      OnUpdate = ActionShowDetailsUpdate
     end
-    object ShowSummary1: TAction
+    object ActionShowSummary: TAction
       Tag = 1
       Caption = 'Summary'
       Checked = True
       Hint = 'Summary view'
       ImageIndex = 2
-      OnExecute = ShowSummary1Execute
-      OnUpdate = ShowDetails1Update
+      OnExecute = ActionShowSummaryExecute
+      OnUpdate = ActionShowSummaryUpdate
     end
-    object ShowDfms1: TAction
+    object ActionShowDfms: TAction
       Tag = 1
       Caption = 'Forms'
       Hint = 'Forms list'
       ImageIndex = 17
-      OnExecute = ShowDfms1Execute
-      OnUpdate = ShowDetails1Update
+      OnExecute = ActionShowDfmsExecute
+      OnUpdate = ActionShowDfmsUpdate
     end
   end
-  object PopupMenu1: TPopupMenu
+  object PopupMenuUnitView: TPopupMenu
     Left = 72
     Top = 392
-    object Details1: TMenuItem
-      Action = ShowDetails1
+    object MenuItemDetails: TMenuItem
+      Action = ActionShowDetails
     end
-    object Summary1: TMenuItem
-      Action = ShowSummary1
+    object MenuItemSummary: TMenuItem
+      Action = ActionShowSummary
     end
-    object Forms1: TMenuItem
-      Action = ShowDfms1
+    object MenuItemDfms: TMenuItem
+      Action = ActionShowDfms
     end
-    object N1: TMenuItem
+    object MenuItemSeparator: TMenuItem
       Caption = '-'
     end
-    object Copy2: TMenuItem
-      Action = Copy1
+    object MenuItemCopy: TMenuItem
+      Action = ActionCopy
     end
-    object Save2: TMenuItem
-      Action = Save1
+    object MenuItemSave: TMenuItem
+      Action = ActionSave
     end
   end
-  object PopupMenu2: TPopupMenu
+  object PopupMenuToolbar: TPopupMenu
     Left = 104
     Top = 392
     object TextLabelsItem: TMenuItem
@@ -864,7 +862,7 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
       OnClick = TextLabelsItemClick
     end
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialogProjectAnalyser: TSaveDialog
     DefaultExt = 'txt'
     Filter = 'Text files (*.txt)|*.txt|All Files (*.*)|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
