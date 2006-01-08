@@ -11,6 +11,8 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
   Font.Style = []
   OldCreateOrder = False
   ShowHint = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter: TSplitter
@@ -18,7 +20,6 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Top = 0
     Height = 278
     Align = alRight
-    ExplicitHeight = 271
   end
   object ListBoxRegs: TListBox
     Left = 0

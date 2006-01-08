@@ -216,12 +216,11 @@ begin
 
     if not Assigned(FForm) then
     begin
-      FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, Self);
+      FForm := TJclSIMDViewFrm.Create(Application, DebuggerServices, Settings);
 
       FForm.Icon := FIcon;
       FForm.OnDestroy := FormDestroy;
       FForm.SIMDCaption := GetSIMDString;
-      FForm.LoadSettings;
 
       FForm.Show;
     end
@@ -293,6 +292,8 @@ var
   ViewMenu: TMenuItem;
   Category: string;
 begin
+  inherited RegisterCommands;
+
   Supports(Services, IOTADebuggerServices, FDebuggerServices);
   if not Assigned(FDebuggerServices) then
     raise EJclExpertException.CreateTrace(RsENoDebuggerServices);
@@ -314,19 +315,21 @@ begin
   FSIMDAction.Name := RsSIMDActionName;
   FSIMDAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
   FSIMDAction.ActionList := NTAServices.ActionList;
+  FSIMDAction.ShortCut := Shortcut(Ord('D'), [ssCtrl, ssAlt]);
 
   FSIMDMenuItem := TMenuItem.Create(nil);
   FSIMDMenuItem.Action := FSIMDAction;
-  FSIMDMenuItem.ShortCut := Shortcut(Ord('D'), [ssCtrl, ssAlt]);
 
   IDEMenu := NTAServices.MainMenu;
+  if not Assigned(IDEMenu) then
+    raise EJclExpertException.CreateTrace(RsENoIDEMenu);
 
   ViewMenu := nil;
   for I := 0 to IDEMenu.Items.Count - 1 do
     if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
       ViewMenu := IDEMenu.Items[I];
   if not Assigned(ViewMenu) then
-    raise EJclExpertException.Create(RsENoViewMenuItem);
+    raise EJclExpertException.CreateTrace(RsENoViewMenuItem);
 
   FViewDebugMenu := nil;
   for I := 0 to ViewMenu.Count - 1 do
@@ -345,6 +348,8 @@ end;
 
 procedure TJclSIMDWizard.UnregisterCommands;
 begin
+  inherited UnregisterCommands;
+
   UnregisterAction(FSIMDAction);
   FreeAndNil(FIcon);
   FreeAndNil(FSIMDMenuItem);
@@ -353,12 +358,7 @@ end;
 
 procedure TJclSIMDWizard.FormDestroy(Sender: TObject);
 begin
-  try
-    if Assigned(FForm) then
-      FForm.SaveSettings;
-  finally
-    FForm := nil;
-  end;
+  FForm := nil;
 end;
 
 function TJclSIMDWizard.GetSIMDString: string;
@@ -629,6 +629,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.9  2005/12/26 18:03:40  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts

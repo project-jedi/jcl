@@ -31,8 +31,10 @@ unit JclUsesWizard;
 interface
 
 uses
-  Windows,
-  ToolsAPI;
+  SysUtils, Windows, Classes, Messages, Forms, Controls, StdCtrls, ComCtrls,
+  ExtCtrls,
+  ToolsAPI,
+  JclOtaUtils, JclOptionsFrame;
 
 type
   TWizardAction = (waSkip, waAddToImpl, waAddToIntf, waMoveToIntf);
@@ -46,40 +48,7 @@ type
     UsesName: array [0..MAX_PATH - 1] of Char; // unit name to be added to uses clause
   end;
 
-// design package entry point
-procedure Register;
-
-// expert DLL entry point
-function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
-
-procedure SettingsChanged;
-
-implementation
-
-uses
-  Classes, SysUtils, Messages, Forms, Controls,
-  ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
-  JclFileUtils, JclOptionsFrame, JclParseUses, JclRegistry, JclUsesDialog,
-  JclOtaConsts, JclOtaResources, JclOtaUtils;
-
-const
-  SEnvOptionsDlgClassName = 'TPasEnvironmentDialog';
-
-type
-  TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
-  private
-    { IOTAIDENotifier }
-    procedure AfterCompile(Succeeded: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
-    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
-    { IOTAIDENotifier50 }
-    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
-  end;
-
-  TJCLUsesWizard = class(TNotifierObject, IOTANotifier, IOTAWizard)
+  TJCLUsesWizard = class(TJclOTAExpert)
   private
     FActive: Boolean;
     FApplicationIdle: TIdleEvent;
@@ -88,8 +57,9 @@ type
     FIdentifierLists: TStrings;
     FIniFile: string;
     FNotifierIndex: Integer;
+    FFrameJclOptions: TFrameJclOptions;
+    procedure SetIniFile(const Value: string);
     procedure AppIdle(Sender: TObject; var Done: Boolean);
-    function AppWindowHook(var Msg: TMessage): Boolean;
     procedure ClearErrors;
     function DoConfirmChanges(ChangeList: TStrings): TModalResult;
     procedure InitializeIdentifierLists;
@@ -98,23 +68,48 @@ type
     procedure ResolveUsesName(Error: PErrorInfo);
     procedure SetActive(Value: Boolean);
     procedure SetConfirmChanges(Value: Boolean);
-    { IOTAWizard }
-    procedure Execute;
-    function GetIDString: string;
-    function GetName: string;
-    function GetState: TWizardState;
   public
     Value: Integer;
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     function LoadFromRegistry: Boolean;
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
     property Active: Boolean read FActive write SetActive;
     property ConfirmChanges: Boolean read FConfirmChanges write SetConfirmChanges;
-    property IniFile: string read FIniFile;
+    property IniFile: string read FIniFile write SetIniFile;
   end;
 
-var
-  Wizard: TJCLUsesWizard = nil;
+  TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
+  private
+    FWizard: TJclUsesWizard;
+  public
+    { IOTAIDENotifier }
+    procedure AfterCompile(Succeeded: Boolean); overload;
+    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
+    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+    { IOTAIDENotifier50 }
+    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
+    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
+  public
+    constructor Create(AWizard: TJclUsesWizard); reintroduce;
+    property Wizard: TJclUsesWizard read FWizard;
+  end;
+
+// design package entry point
+procedure Register;
+
+// expert DLL entry point
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
+implementation
+
+uses
+  IniFiles,
+  JclFileUtils, JclParseUses, JclRegistry, JclUsesDialog,
+  JclOtaConsts, JclOtaResources;
 
 function FindClassForm(const AClassName: string): TForm;
 var
@@ -337,9 +332,43 @@ begin
   // do nothing
 end;
 
+constructor TJCLUsesWizardNotifier.Create(AWizard: TJclUsesWizard);
+begin
+  inherited Create;
+  
+  FWizard := AWizard;
+end;
+
 //=== { TJCLUsesWizard } =====================================================
 
 // private
+
+procedure TJCLUsesWizard.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
+begin
+  inherited AddConfigurationPages(AddPageFunc);
+  FFrameJclOptions := TFrameJclOptions.Create(nil);
+  FFrameJclOptions.Active := Active;
+  FFrameJclOptions.ConfirmChanges := ConfirmChanges;
+  FFrameJclOptions.ConfigFileName := IniFile;
+  AddPageFunc(FFrameJclOptions, RsUsesSheet, Self);
+end;
+
+procedure TJCLUsesWizard.ConfigurationClosed(AControl: TControl;
+  SaveChanges: Boolean);
+begin
+  if Assigned(AControl) and (AControl = FFrameJclOptions) then
+  begin
+    if SaveChanges then
+    begin
+      Active := FFrameJclOptions.Active;
+      ConfirmChanges := FFrameJclOptions.ConfirmChanges;
+      IniFile := FFrameJclOptions.ConfigFileName;
+    end;
+    FreeAndNil(FFrameJclOptions);
+  end
+  else
+    inherited ConfigurationClosed(AControl, SaveChanges);
+end;
 
 procedure TJCLUsesWizard.AppIdle(Sender: TObject; var Done: Boolean);
 begin
@@ -350,43 +379,6 @@ begin
     Exit;
 
   ProcessUses;
-end;
-
-function TJCLUsesWizard.AppWindowHook(var Msg: TMessage): Boolean;
-var
-  Form: TForm;
-  Panel2: TPanel;
-  PropSheetControl1: TPageControl;
-  JCLOptionsTab: TTabSheet;
-begin
-  Result := False;
-
-  // ShowModal of any form always calls DisableTaskWindows
-  if (Msg.Msg = WM_ENABLE) and not TWMEnable(Msg).Enabled then
-  begin
-    Form := FindClassForm(SEnvOptionsDlgClassName);
-    if not Assigned(Form) then
-      Exit;
-
-    Panel2 := Form.FindChildControl('Panel2') as TPanel;
-    if not Assigned(Panel2) then
-      Exit;
-
-    PropSheetControl1 := Panel2.FindChildControl('PropertySheetControl1') as TPageControl;
-    if not Assigned(PropSheetControl1) then
-      Exit;
-
-    JCLOptionsTab := TTabSheet.Create(Form);
-    try
-      JCLOptionsTab.PageControl := PropSheetControl1;
-      JCLOptionsTab.Caption := RsJediOptionsCaption;
-
-      TFrameJclOptions.Create(JCLOptionsTab);
-    except
-      JCLOptionsTab.Free;
-      raise;
-    end;
-  end;
 end;
 
 procedure TJCLUsesWizard.ClearErrors;
@@ -894,7 +886,7 @@ begin
     if Value then
     begin
       with BorlandIDEServices as IOTAServices do
-        FNotifierIndex := AddNotifier(TJCLUsesWizardNotifier.Create);
+        FNotifierIndex := AddNotifier(TJCLUsesWizardNotifier.Create(Self));
 
       FActive := FNotifierIndex <> -1;
     end
@@ -918,28 +910,9 @@ begin
   end;
 end;
 
-//=== { TJCLUsesWizard } =====================================================
-
-// TJCLUsesWizard private: IOTAWizard
-
-procedure TJCLUsesWizard.Execute;
+procedure TJCLUsesWizard.SetIniFile(const Value: string);
 begin
-  // do nothing
-end;
-
-function TJCLUsesWizard.GetIDString: string;
-begin
-  Result := SJCLUsesWizardID;
-end;
-
-function TJCLUsesWizard.GetName: string;
-begin
-  Result := SJCLUsesWizardName;
-end;
-
-function TJCLUsesWizard.GetState: TWizardState;
-begin
-  Result := [wsEnabled];
+  FIniFile := Value;
 end;
 
 //=== { TJCLUsesWizard } =====================================================
@@ -948,22 +921,19 @@ end;
 
 constructor TJCLUsesWizard.Create;
 begin
-  inherited Create;
+  inherited Create(JclUsesExpertName);
   FIdentifierLists := TStringList.Create;
   FErrors := TList.Create;
   FActive := False;
   FConfirmChanges := False;
   FNotifierIndex := -1;
 
-  Application.HookMainWindow(AppWindowHook);
   LoadFromRegistry;
 end;
 
 destructor TJCLUsesWizard.Destroy;
 begin
-  Application.UnhookMainWindow(AppWindowHook);
   SetActive(False);
-  Wizard := nil;
   ClearErrors;
   FErrors.Free;
   FIdentifierLists.Free;
@@ -993,8 +963,7 @@ end;
 procedure Register;
 begin
   try
-    Wizard := TJCLUsesWizard.Create;
-    RegisterPackageWizard(Wizard);
+    RegisterPackageWizard(TJCLUsesWizard.Create);
   except
     on ExceptionObj: TObject do
     begin
@@ -1053,15 +1022,13 @@ begin
   end;
 end;
 
-procedure SettingsChanged;
-begin
-  if Assigned(Wizard) then
-    Wizard.LoadFromRegistry;
-end;
-
 // History:
 
 // $Log$
+// Revision 1.9  2006/01/08 17:16:57  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.8  2005/12/26 18:03:41  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
@@ -1074,11 +1041,15 @@ end;
 //
 // Revision 1.6  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.8  2005/12/26 18:03:41  outchy
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Enhanced bds support (including C#1 and D8)
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Introduction of dll experts
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Project types in templates
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Revision 1.9  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Settings reworked.
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Common window for expert configurations
+// - improved header information, added $Date: 2005/12/26 18:03:41 $ and
+// - improved header information, added $Date$ and Revision 1.8  2005/12/26 18:03:41  outchy
+// - improved header information, added $Date$ and Enhanced bds support (including C#1 and D8)
+// - improved header information, added $Date$ and Introduction of dll experts
+// - improved header information, added $Date$ and Project types in templates
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/16 23:46:25  outchy
 // - improved header information, added $Date$ and Added expert stack form.
 // - improved header information, added $Date$ and Added code to display call stack on expert exception.

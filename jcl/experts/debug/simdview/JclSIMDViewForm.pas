@@ -68,6 +68,8 @@ type
     ActionEmptyAll: TAction;
     MenuItemEmptyMM: TMenuItem;
     MenuItemEmptyAll: TMenuItem;
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure ListBoxMXCSRDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure ListBoxMXCSRMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -101,9 +103,9 @@ type
     FOldThreadID: LongWord;
     FOldThreadState: TOTAThreadState;
     FModifyForm: TJclSIMDModifyFrm;
-    FExpert: TJclOTAExpert;
     FMXCSRChanged: array [TMXCSRRange] of Boolean;
     FRegisterChanged: array of Boolean;
+    FSettings: TJclOtaSettings;
     procedure SetDisplay(const Value: TJclXMMContentType);
     procedure SetFormat(const Value: TJclSIMDFormat);
   protected
@@ -112,10 +114,8 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent; ADebuggerServices: IOTADebuggerServices;
-      AExpert: TJclOTAExpert); reintroduce;
+      ASettings: TJclOtaSettings); reintroduce;
     destructor Destroy; override;
-    procedure LoadSettings;
-    procedure SaveSettings;
     procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
     procedure SetThreadValues;
     procedure GetThreadValues;
@@ -126,19 +126,20 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
     property NbMMRegister: Integer read FNbMMRegister;
     property NbXMMRegister: Integer read FNbXMMRegister;
+    property Settings: TJclOtaSettings read FSettings;
   end;
 
 implementation
 
 uses
   TypInfo,
-  JclOtaResources,
+  JclOtaResources, JclOtaConsts,
   JclSIMDCpuInfo;
 
 {$R *.dfm}
 
 constructor TJclSIMDViewFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert);
+  ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings);
 var
   I: TMXCSRRange;
   J: Integer;
@@ -148,7 +149,7 @@ begin
   FDebuggerServices := ADebuggerServices;
   FOldThreadID := 0;
   FOldThreadState := tsNone;
-  FExpert := AExpert;
+  FSettings := ASettings;
 
   JclSysInfo.GetCpuInfo(FCpuInfo);
 
@@ -219,49 +220,6 @@ begin
   FDebuggerServices := nil;
 
   inherited Destroy;
-end;
-
-procedure TJclSIMDViewFrm.LoadSettings;
-begin
-  SetBounds(
-    FExpert.LoadInteger('Left', Left),
-    FExpert.LoadInteger('Top', Top),
-    FExpert.LoadInteger('Width', Width),
-    FExpert.LoadInteger('Height', Height));
-
-  if Left < 0 then
-    Left := 0;
-  if Top < 0 then
-    Top := 0;
-  if Width > Screen.Width then
-    Width := Screen.Width;
-  if (Left + Width) > Screen.DesktopWidth then
-    Left := Screen.DesktopWidth - Width;
-  if Height > Screen.Height then
-    Height := Screen.Height;
-  if (Top + Height) > Screen.DesktopHeight then
-    Top := Screen.DesktopHeight - Height;
-
-  Format := TJclSIMDFormat(GetEnumValue(TypeInfo(TJclSIMDFormat),
-    FExpert.LoadString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
-  Display := TJclXMMContentType(GetEnumValue(TypeInfo(TJclXMMContentType),
-    FExpert.LoadString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
-
-  if FExpert.LoadInteger('StayOnTop', 0) = 1 then
-    FormStyle := fsStayOnTop
-  else
-    FormStyle := fsNormal;
-end;
-
-procedure TJclSIMDViewFrm.SaveSettings;
-begin
-  FExpert.SaveInteger('Left', Left);
-  FExpert.SaveInteger('Top', Top);
-  FExpert.SaveInteger('Width', Width);
-  FExpert.SaveInteger('Height', Height);
-  FExpert.SaveString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
-  FExpert.SaveString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
-  FExpert.SaveInteger('StayOnTop', Ord(FormStyle = fsStayOnTop));
 end;
 
 procedure TJclSIMDViewFrm.ListBoxMXCSRDrawItem(Control: TWinControl;
@@ -629,6 +587,49 @@ begin
   Action := caFree;
 end;
 
+procedure TJclSIMDViewFrm.FormCreate(Sender: TObject);
+begin
+  SetBounds(
+    Settings.LoadInteger('Left', Left),
+    Settings.LoadInteger('Top', Top),
+    Settings.LoadInteger('Width', Width),
+    Settings.LoadInteger('Height', Height));
+
+  if Left < 0 then
+    Left := 0;
+  if Top < 0 then
+    Top := 0;
+  if Width > Screen.Width then
+    Width := Screen.Width;
+  if (Left + Width) > Screen.DesktopWidth then
+    Left := Screen.DesktopWidth - Width;
+  if Height > Screen.Height then
+    Height := Screen.Height;
+  if (Top + Height) > Screen.DesktopHeight then
+    Top := Screen.DesktopHeight - Height;
+
+  Format := TJclSIMDFormat(GetEnumValue(TypeInfo(TJclSIMDFormat),
+    Settings.LoadString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
+  Display := TJclXMMContentType(GetEnumValue(TypeInfo(TJclXMMContentType),
+    Settings.LoadString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
+
+  if Settings.LoadInteger('StayOnTop', 0) = 1 then
+    FormStyle := fsStayOnTop
+  else
+    FormStyle := fsNormal;
+end;
+
+procedure TJclSIMDViewFrm.FormDestroy(Sender: TObject);
+begin
+  Settings.SaveInteger('Left', Left);
+  Settings.SaveInteger('Top', Top);
+  Settings.SaveInteger('Width', Width);
+  Settings.SaveInteger('Height', Height);
+  Settings.SaveString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
+  Settings.SaveString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
+  Settings.SaveInteger('StayOnTop', Ord(FormStyle = fsStayOnTop));
+end;
+
 procedure TJclSIMDViewFrm.MenuItemCpuInfoClick(Sender: TObject);
 var
   FormCPUInfo: TJclFormCpuInfo;
@@ -755,7 +756,7 @@ begin
     AItemIndex := ListBoxRegs.ItemIndex;
     if AItemIndex >= 0 then
     try
-      FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, FExpert);
+      FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, Settings);
       FModifyForm.Icon.Assign(Self.Icon);
 
       if AItemIndex < NbMMRegister then
@@ -947,6 +948,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.8  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.
@@ -960,11 +965,15 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.8  2005/12/16 23:46:25  outchy
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.9  2006/01/08 17:16:56  outchy
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Settings reworked.
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Common window for expert configurations
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date$ and Revision 1.8  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.

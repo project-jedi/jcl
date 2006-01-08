@@ -18,8 +18,12 @@ object JclDebugResultForm: TJclDebugResultForm
   OldCreateOrder = False
   Position = poScreenCenter
   ShowHint = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnResize = FormResize
+  Width = 772
+  Height = 303
   PixelsPerInch = 96
   TextHeight = 13
   object OkBtn: TButton

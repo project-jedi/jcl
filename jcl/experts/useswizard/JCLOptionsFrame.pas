@@ -41,18 +41,21 @@ type
     CheckBoxWizardActive: TCheckBox;
     CheckBoxWizardConfirm: TCheckBox;
     EditIniFile: TEdit;
-    GroupBoxWizard: TGroupBox;
     LabelIniFile: TLabel;
     OpenDialog: TOpenDialog;
     procedure ButtonIniFileClick(Sender: TObject);
   private
-    FOKButtonClick: TNotifyEvent;
-    function HookOKButton: Boolean;
-    function LoadFromRegistry: Boolean;
-    procedure OKButtonClick(Sender: TObject);
-    function SaveToRegistry: Boolean;
+    function GetActive: Boolean;
+    function GetConfigFileName: TFileName;
+    function GetConfirmChanges: Boolean;
+    procedure SetActive(const Value: Boolean);
+    procedure SetConfigFileName(const Value: TFileName);
+    procedure SetConfirmChanges(const Value: Boolean);
   public
-    constructor Create(ATab: TTabSheet); reintroduce;
+    constructor Create(AOwner: TComponent); override;
+    property Active: Boolean read GetActive write SetActive;
+    property ConfirmChanges: Boolean read GetConfirmChanges write SetConfirmChanges;
+    property ConfigFileName: TFileName read GetConfigFileName write SetConfigFileName;
   end;
 
 implementation
@@ -60,92 +63,48 @@ implementation
 uses
   ToolsAPI,
   JclRegistry, JclUsesWizard,
-  JclOtaConsts, JclOtaUtils;
+  JclOtaConsts, JclOtaResources, JclOtaUtils;
 
 {$R *.dfm}
 
-constructor TFrameJclOptions.Create(ATab: TTabSheet);
+constructor TFrameJclOptions.Create(AOwner: TComponent);
 begin
-  inherited Create(ATab);
-  Parent := ATab;
-  Align := alClient;
-  LoadFromRegistry;
-  HookOKButton;
+  inherited Create(AOwner);
+  OpenDialog.Filter := RsUsesOpenFilters;
+  OpenDialog.Title := RsUsesOpenTitle;
+  LabelIniFile.Caption := RsUsesConfigurationFile;
+  CheckBoxWizardActive.Caption := RsUsesActive;
+  CheckBoxWizardConfirm.Caption := RsUsesConfirm;
 end;
 
-function TFrameJclOptions.HookOKButton: Boolean;
-var
-  ParentForm: TCustomForm;
-  Panel1: TPanel;
-  OKButton: TButton;
+function TFrameJclOptions.GetActive: Boolean;
 begin
-  Result := False;
-  FOKButtonClick := nil;
-
-  ParentForm := GetParentForm(Self);
-  if not Assigned(ParentForm) then
-    Exit;
-
-  Panel1 := ParentForm.FindChildControl('Panel1') as TPanel;
-  if not Assigned(Panel1) then
-    Exit;
-
-  OKButton := Panel1.FindChildControl('OKButton') as TButton;
-  if not Assigned(OKButton) then
-    Exit;
-
-  FOKButtonClick := OKButton.OnClick;
-  OKButton.OnClick := OKButtonClick;
-
-  Result := True;
+  Result := CheckBoxWizardActive.Checked;
 end;
 
-function TFrameJclOptions.LoadFromRegistry: Boolean;
-var
-  S: string;
-  Root: DelphiHKEY;
+function TFrameJclOptions.GetConfigFileName: TFileName;
 begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + JclUsesExpertName;
-  Root := HKEY_CURRENT_USER;
-  Result := RegKeyExists(Root, S);
-  if not Result then
-  begin
-    Root := HKEY_LOCAL_MACHINE;
-    Result := RegKeyExists(Root, S);
-  end;
-  CheckBoxWizardActive.Checked := RegReadBoolDef(Root, S, SRegWizardActive, False);
-  CheckBoxWizardConfirm.Checked := RegReadBoolDef(Root, S, SRegWizardConfirm, True);
-  EditIniFile.Text := RegReadStringDef(Root, S, SRegWizardIniFile, '');
+  Result := EditIniFile.Text;
 end;
 
-procedure TFrameJclOptions.OKButtonClick(Sender: TObject);
+function TFrameJclOptions.GetConfirmChanges: Boolean;
 begin
-  try
-    { TODO -oTOndrej -cJedi Uses Wizard : validate entered directories }
-    SaveToRegistry;
-    SettingsChanged;
-
-    if Assigned(FOKButtonClick) then
-      FOKButtonClick(Sender);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
+  Result := CheckBoxWizardConfirm.Checked;
 end;
 
-function TFrameJclOptions.SaveToRegistry: Boolean;
-var
-  S: string;
+procedure TFrameJclOptions.SetActive(const Value: Boolean);
 begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + JediIDESubKey + JclUsesExpertName;
-  RegCreateKey(HKEY_CURRENT_USER, S);
-  RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardActive, CheckBoxWizardActive.Checked);
-  RegWriteBool(HKEY_CURRENT_USER, S, SRegWizardConfirm, CheckBoxWizardConfirm.Checked);
-  RegWriteString(HKEY_CURRENT_USER, S, SRegWizardIniFile, EditIniFile.Text);
-  Result := True;
+  CheckBoxWizardActive.Checked := True;
+end;
+
+procedure TFrameJclOptions.SetConfigFileName(const Value: TFileName);
+begin
+  EditIniFile.Text := Value;
+end;
+
+procedure TFrameJclOptions.SetConfirmChanges(const Value: Boolean);
+begin
+  CheckBoxWizardConfirm.Checked := Value;
 end;
 
 procedure TFrameJclOptions.ButtonIniFileClick(Sender: TObject);
@@ -170,6 +129,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2006/01/08 17:16:57  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.5  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.
@@ -177,6 +140,10 @@ end;
 //
 // Revision 1.4  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.6  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Settings reworked.
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Common window for expert configurations
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
 // - improved header information, added $Date$ and Revision 1.5  2005/12/16 23:46:25  outchy
 // - improved header information, added $Date$ and Added expert stack form.
 // - improved header information, added $Date$ and Added code to display call stack on expert exception.

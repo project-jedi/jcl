@@ -25,23 +25,27 @@ unit JclDebugIdeResult;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ImgList;
+  Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ImgList,
+  JclOtaUtils;
 
 type
   TJclDebugResultForm = class(TForm)
     OkBtn: TButton;
     ResultListView: TListView;
     ImageList1: TImageList;
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FSettings: TJclOtaSettings;
     procedure CopyReportToClipboard;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    property Settings: TJclOtaSettings read FSettings;
+  public
+    constructor Create(AOwner: TComponent; ASettings: TJclOTASettings); reintroduce;
   end;
-
-var
-  JclDebugResultForm: TJclDebugResultForm;
 
 implementation
 
@@ -49,7 +53,8 @@ implementation
 
 uses
   Clipbrd, Math,
-  JclStrings;
+  JclStrings,
+  JclOtaConsts;
 
 procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean = False; Headers: Boolean = True);
@@ -135,6 +140,12 @@ begin
   OkBtn.Left := ClientWidth div 2 - OkBtn.Width div 2;
 end;
 
+constructor TJclDebugResultForm.Create(AOwner: TComponent; ASettings: TJclOTASettings);
+begin
+  inherited Create(AOwner);
+  FSettings := ASettings;
+end;
+
 procedure TJclDebugResultForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -149,6 +160,34 @@ begin
     Params.WndParent := Application.Handle;
 end;
 
+procedure TJclDebugResultForm.FormCreate(Sender: TObject);
+var
+  Index: Integer;
+begin
+  SetBounds(Settings.LoadInteger(JclLeft, Left),
+            Settings.LoadInteger(JclTop, Top),
+            Settings.LoadInteger(JclWidth, Width),
+            Settings.LoadInteger(JclHeight, Height));
+
+  with ResultListView.Columns do
+    for Index := 0 to Count - 1 do
+      Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
+end;
+
+procedure TJclDebugResultForm.FormDestroy(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Settings.SaveInteger(JclLeft, Left);
+  Settings.SaveInteger(JclTop, Top);
+  Settings.SaveInteger(JclWidth, Width);
+  Settings.SaveInteger(JclHeight, Height);
+
+  with ResultListView.Columns do
+    for Index := 0 to Count - 1 do
+      Settings.SaveInteger(Format(ColumnRegName, [Name]), Items[Index].Width);
+end;
+
 procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = Ord('C')) then
@@ -161,6 +200,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.3  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.

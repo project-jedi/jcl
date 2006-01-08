@@ -33,8 +33,8 @@ interface
 {$I crossplatform.inc}
 
 uses
-  SysUtils, Classes, Windows, 
-  ComCtrls, ActnList,
+  SysUtils, Classes, Windows,
+  Controls, ComCtrls, ActnList, Menus,
 {$IFDEF MSWINDOWS}
   JclDebug,
 {$ENDIF MSWINDOWS}
@@ -81,25 +81,68 @@ type
   {$ENDIF MSWINDOWS}
   end;
 
-  TJclOTAExpertBase = class(TInterfacedObject)
+  TJclOTASettings = class (TObject)
   private
-    FBaseRegistryKey: string;
-    FExpertRegistryKey: string;
+    FKeyName: string;
+    FBaseKeyName: string;
+  public
+    constructor Create(ExpertName: string);
+    function LoadBool(Name: string; Def: Boolean): Boolean;
+    function LoadString(Name: string; Def: string): string;
+    function LoadInteger(Name: string; Def: Integer): Integer;
+    procedure LoadStrings(Name: string; List: TStrings);
+    procedure SaveBool(Name: string; Value: Boolean);
+    procedure SaveString(Name: string; Value: string);
+    procedure SaveInteger(Name: string; Value: Integer);
+    procedure SaveStrings(Name: string; List: TStrings);
+    property KeyName: string read FKeyName;
+    property BaseKeyName: string read FBaseKeyName;
+  end;
+
+  // Note: we MUST use an interface as the type of the Expert parameter
+  // and not an object to avoid a bug in C++ Builder 5 compiler. If we 
+  // used an object, the compiler would crash or give internal error GH4148
+  // being obviously lost trying to resolve almost circular references 
+  // between this unit and the JclOtaConfigurationForm unit.
+  IJclOTAOptionsCallback = interface;
+
+  TJclOTAAddPageFunc = procedure (AControl: TControl; PageName: string;
+    Expert: IJclOTAOptionsCallback) of object;
+
+  IJclOTAOptionsCallback = interface
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
+  end;
+
+  TJclOTAExpertBase = class(TInterfacedObject, IJclOTAOptionsCallback)
+  private
     FEnvVariables: TStringList;
     FRootDir: string;
     FServices: IOTAServices;
     FName: string;
     FNTAServices: INTAServices;
+    FSettings: TJclOTASettings;
     function GetModuleHInstance: Cardinal;
     function GetActiveProject: IOTAProject;
     function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
     procedure ReadEnvVariables;
-
-    procedure CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
+    procedure ConfigurationActionUpdate(Sender: TObject);
+    procedure ConfigurationActionExecute(Sender: TObject);
+  public
+    class procedure AddExpert(AExpert: TJclOTAExpertBase);
+    class procedure RemoveExpert(AExpert: TJclOTAExpertBase);
+    class function GetExpertCount: Integer;
+    class function GetExpert(Index: Integer): TJclOTAExpertBase;
+    class function ConfigurationDialog(StartName: string = ''): Boolean;
+    class procedure CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
+    class function GetActionCount: Integer;
+    class function GetAction(Index: Integer): TAction;
+    class function ActionSettings: TJclOtaSettings;
   public
     constructor Create(AName: string); virtual;
     destructor Destroy; override;
+    
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
     function GetDrcFileName(const Project: IOTAProject): string;
@@ -109,23 +152,16 @@ type
     function IsPackage(const Project: IOTAProject): Boolean;
     function SubstitutePath(const Path: string): string;
 
-    procedure RegisterAction(Action: TCustomAction);
-    procedure UnregisterAction(Action: TCustomAction);
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); virtual;
+
     procedure RegisterCommands; virtual;
     procedure UnregisterCommands; virtual;
-
-    function LoadBool(Name: string; Def: Boolean): Boolean;
-    function LoadString(Name: string; Def: string): string;
-    function LoadInteger(Name: string; Def: Integer): Integer;
-    procedure LoadStrings(Name: string; List: TStrings);
-    procedure SaveBool(Name: string; Value: Boolean);
-    procedure SaveString(Name: string; Value: string);
-    procedure SaveInteger(Name: string; Value: Integer);
-    procedure SaveStrings(Name: string; List: TStrings);
+    procedure RegisterAction(Action: TCustomAction);
+    procedure UnregisterAction(Action: TCustomAction);
 
     property ActiveProject: IOTAProject read GetActiveProject;
-    property BaseRegistryKey: string read FBaseRegistryKey;
-    property ExpertRegistryKey: string read FExpertRegistryKey;
+    property Settings: TJclOTASettings read FSettings;
     property Name: string read FName;
     property NTAServices: INTAServices read FNTAServices;
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
@@ -161,7 +197,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Forms,
+  Forms, Graphics, Dialogs,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
@@ -169,14 +205,20 @@ uses
   JclBorlandTools,
   {$ENDIF KYLIX}
   JclFileUtils, JclStrings, JclSysInfo,
-  JclOtaConsts, JclOtaResources, JclOtaExceptionForm;
+  JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
+  JclOtaActionConfigureSheet;
 
 {$IFDEF BDS}
 {$R 'JclImages.res'}
 {$ENDIF BDS}
 
 var
-  ActionList: TList = nil;
+  GlobalActionList: TList = nil;
+  GlobalActionSettings: TJclOtaSettings = nil;
+  GlobalExpertList: TList = nil;
+  ConfigurationAction: TAction = nil;
+  ConfigurationMenuItem: TMenuItem = nil;
+  ActionConfigureSheet: TJclOtaActionConfigureFrame = nil;
   {$IFNDEF COMPILER6_UP}
   OldFindGlobalComponentProc: TFindGlobalComponent = nil;
   {$ENDIF COMPILER6_UP}
@@ -186,18 +228,26 @@ var
   Index: Integer;
   TestAction: TCustomAction;
 begin
-  Result := nil;
-  if Assigned(ActionList) then
-    for Index := 0 to ActionList.Count-1 do
+  try
+    Result := nil;
+    if Assigned(GlobalActionList) then
+      for Index := 0 to GlobalActionList.Count-1 do
+      begin
+        TestAction := TCustomAction(GlobalActionList.Items[Index]);
+        if (CompareText(Name,TestAction.Name) = 0) then
+          Result := TestAction;
+      end;
+    {$IFNDEF COMPILER6_UP}
+    if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
+      Result := OldFindGlobalComponentProc(Name)
+    {$ENDIF COMPILER6_UP}
+  except
+    on ExceptionObj: TObject do
     begin
-      TestAction := TCustomAction(ActionList.Items[Index]);
-      if (CompareText(Name,TestAction.Name) = 0) then
-        Result := TestAction;
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
     end;
-  {$IFNDEF COMPILER6_UP}
-  if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
-    Result := OldFindGlobalComponentProc(Name)
-  {$ENDIF COMPILER6_UP}
+  end;
 end;
 
 function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
@@ -231,10 +281,233 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+{ TJclOTASettings }
+
+constructor TJclOTASettings.Create(ExpertName: string);
+var
+  OTAServices: IOTAServices;
+begin
+  inherited Create;
+
+  Supports(BorlandIDEServices,IOTAServices,OTAServices);
+  if not Assigned(OTAServices) then
+    raise EJclExpertException.CreateTrace(RsENoIDEServices);
+
+  FBaseKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey);
+  
+  FKeyName := BaseKeyName + JediIDESubKey + ExpertName;
+end;
+
+function TJclOTASettings.LoadBool(Name: string; Def: Boolean): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := RegReadBoolDef(HKCU, KeyName, Name, Def);
+  {$ELSE MSWINDOWS}
+  Result := Def;
+  {$ENDIF MSWINDOWS}
+end;
+
+function TJclOTASettings.LoadInteger(Name: string; Def: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := RegReadIntegerDef(HKCU, KeyName, Name, Def);
+  {$ELSE MSWINDOWS}
+  Result := Def;
+  {$ENDIF MSWINDOWS}
+end;
+
+function TJclOTASettings.LoadString(Name, Def: string): string;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := RegReadStringDef(HKCU, KeyName, Name, Def);
+  {$ELSE MSWINDOWS}
+  Result := Def;
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclOTASettings.LoadStrings(Name: string; List: TStrings);
+begin
+  {$IFDEF MSWINDOWS}
+  RegLoadList(HKCU, KeyName, Name, List);
+  {$ELSE MSWINDOWS}
+  List.Clear;
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclOTASettings.SaveBool(Name: string; Value: Boolean);
+begin
+  {$IFDEF MSWINDOWS}
+  RegWriteBool(HKCU, KeyName, Name, Value);
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclOTASettings.SaveInteger(Name: string; Value: Integer);
+begin
+  {$IFDEF MSWINDOWS}
+  RegWriteInteger(HKCU, KeyName, Name, Value);
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclOTASettings.SaveString(Name, Value: string);
+begin
+  {$IFDEF MSWINDOWS}
+  RegWriteString(HKCU, KeyName, Name, Value);
+  {$ENDIF MSWINDOWS}
+end;
+
+procedure TJclOTASettings.SaveStrings(Name: string; List: TStrings);
+begin
+  {$IFDEF MSWINDOWS}
+  RegSaveList(HKCU, KeyName, Name, List);
+  {$ENDIF MSWINDOWS}
+end;
+
 //=== { TJclOTAExpertBase } ==================================================
+
+class function TJclOTAExpertBase.ConfigurationDialog(
+  StartName: string): Boolean;
+var
+  OptionsForm: TJclOtaOptionsForm;
+  Index: Integer;
+begin
+  OptionsForm := TJclOtaOptionsForm.Create(nil);
+  try
+    for Index := 0 to GetExpertCount - 1 do
+      GetExpert(Index).AddConfigurationPages(OptionsForm.AddPage);
+    Result := OptionsForm.Execute(StartName);
+  finally
+    OptionsForm.Free;
+  end;
+end;
+
+class function TJclOTAExpertBase.GetExpert(Index: Integer): TJclOTAExpertBase;
+begin
+  if Assigned(GlobalExpertList) then
+    Result := TJclOTAExpertBase(GlobalExpertList.Items[Index])
+  else
+    Result := nil;
+end;
+
+class function TJclOTAExpertBase.GetExpertCount: Integer;
+begin
+  if Assigned(GlobalExpertList) then
+    Result := GlobalExpertList.Count
+  else
+    Result := 0;
+end;
+
+class procedure TJclOTAExpertBase.AddExpert(AExpert: TJclOTAExpertBase);
+begin
+  if not Assigned(GlobalExpertList) then
+    GlobalExpertList := TList.Create;
+  GlobalExpertList.Add(AExpert);
+end;
+
+class procedure TJclOTAExpertBase.RemoveExpert(AExpert: TJclOTAExpertBase);
+begin
+  if Assigned(GlobalExpertList) then
+    GlobalExpertList.Remove(AExpert);
+end;
+
+class function TJclOTAExpertBase.GetAction(Index: Integer): TAction;
+begin
+  if Assigned(GlobalActionList) then
+    Result := TAction(GlobalActionList.Items[Index])
+  else
+    Result := nil;
+end;
+
+class function TJclOTAExpertBase.GetActionCount: Integer;
+begin
+  if Assigned(GlobalActionList) then
+    Result := GlobalActionList.Count
+  else
+    Result := 0;
+end;
+
+type
+  TAccessToolButton = class(TToolButton);
+
+class procedure TJclOTAExpertBase.CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
+var
+  Index: Integer;
+  AButton: TAccessToolButton;
+begin
+  if Assigned(AToolBar) then
+    for Index := AToolBar.ButtonCount - 1 downto 0 do
+    begin
+      AButton := TAccessToolButton(AToolBar.Buttons[Index]);
+      if AButton.Action = AAction then
+      begin
+        AButton.SetToolBar(nil);
+        AButton.Free;
+      end;
+    end;
+end;
+
+class function TJclOTAExpertBase.ActionSettings: TJclOtaSettings;
+begin
+  if not Assigned(GlobalActionSettings) then
+    GlobalActionSettings := TJclOTASettings.Create(JclActionSettings);
+  Result := GlobalActionSettings;
+end;
+
+procedure TJclOTAExpertBase.ConfigurationActionExecute(Sender: TObject);
+begin
+  try
+    ConfigurationDialog('');
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TJclOTAExpertBase.ConfigurationActionUpdate(Sender: TObject);
+begin
+  try
+    (Sender as TAction).Enabled := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TJclOTAExpertBase.AddConfigurationPages(  
+  AddPageFunc: TJclOTAAddPageFunc);
+begin
+  // AddPageFunc uses '\' as a separator in PageName to build a tree
+  if not Assigned(ActionConfigureSheet) then
+  begin
+    ActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
+    AddPageFunc(ActionConfigureSheet, RsActionSheet, Self);
+  end;
+  // override to customize
+end;
+
+procedure TJclOTAExpertBase.ConfigurationClosed(AControl: TControl;
+  SaveChanges: Boolean);
+begin
+  if Assigned(AControl) and (AControl = ActionConfigureSheet) then
+  begin
+    if SaveChanges then
+      ActionConfigureSheet.SaveChanges;
+    FreeAndNil(ActionConfigureSheet);
+  end
+  else
+    AControl.Free;
+  // override to customize
+end;
 
 constructor TJclOTAExpertBase.Create(AName: string);
 begin
+  inherited Create;
+
   {$IFDEF BDS}
   RegisterSplashScreen;
   RegisterAboutBox;
@@ -250,16 +523,20 @@ begin
 
   FName := AName;
   FEnvVariables := TStringList.Create;
-  FBaseRegistryKey := StrEnsureSuffix('\', FServices.GetBaseRegistryKey);
-  FExpertRegistryKey := FBaseRegistryKey + JediIDESubKey + FName;
+  FSettings := TJclOTASettings.Create(FName);
 
   RegisterCommands;
+
+  AddExpert(Self);
 end;
 
 destructor TJclOTAExpertBase.Destroy;
 begin
+  RemoveExpert(Self);
+
   UnRegisterCommands;
 
+  FreeAndNil(FSettings);
   FreeAndNil(FEnvVariables);
 
   FServices := nil;
@@ -416,10 +693,10 @@ begin
   begin
     //(usc) another possibility for D7 or higher is to use IOTAServices.GetRootDirectory
     {$IFDEF MSWINDOWS}
-    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, DelphiRootDirKeyValue, '');
+    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     // (rom) bugfix if using -r switch of D9 by Dan Miser
     if FRootDir = '' then
-      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, BaseRegistryKey, DelphiRootDirKeyValue, '');
+      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     {$ENDIF MSWINDOWS}
     {$IFDEF KYLIX}
     RADToolsInstallations := TJclBorRADToolInstallations.Create;
@@ -540,7 +817,7 @@ begin
   EnvNames := TStringList.Create;
   try
     {$IFDEF MSWINDOWS}
-    EnvVarKeyName := BaseRegistryKey + EnvironmentVarsKey;
+    EnvVarKeyName := Settings.BaseKeyName + EnvironmentVarsKey;
     if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and
       RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
@@ -599,9 +876,15 @@ end;
 
 procedure TJclOTAExpertBase.RegisterAction(Action: TCustomAction);
 begin
-  if not Assigned(ActionList) then
+  if Action.Name <> '' then
   begin
-    ActionList := TList.Create;
+    Action.Tag := Action.ShortCut;  // to restore settings
+    Action.ShortCut := ActionSettings.LoadInteger(Action.Name, Action.ShortCut);
+  end;
+
+  if not Assigned(GlobalActionList) then
+  begin
+    GlobalActionList := TList.Create;
     {$IFDEF COMPILER6_UP}
     RegisterFindGlobalComponentProc(FindActions);
     {$ELSE COMPILER6_UP}
@@ -613,17 +896,20 @@ begin
     {$ENDIF COMPILER6_UP}
   end;
 
-  ActionList.Add(Action);
+  GlobalActionList.Add(Action);
 end;
 
 procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
 begin
-  if Assigned(ActionList) then
+  if Action.Name <> '' then
+    ActionSettings.SaveInteger(Action.Name, Action.ShortCut);
+    
+  if Assigned(GlobalActionList) then
   begin
-    ActionList.Remove(Action);
-    if (ActionList.Count = 0) then
+    GlobalActionList.Remove(Action);
+    if (GlobalActionList.Count = 0) then
     begin
-      FreeAndNil(ActionList);
+      FreeAndNil(GlobalActionList);
       {$IFDEF COMPILER6_UP}
       UnRegisterFindGlobalComponentProc(FindActions);
       {$ELSE COMPILER6_UP}
@@ -644,98 +930,72 @@ begin
   {$ENDIF COMPILER7_UP}
 end;
 
-type
-  TAccessToolButton = class(TToolButton);
-  
-procedure TJclOTAExpertBase.CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
-var
-  Index: Integer;
-  AButton: TAccessToolButton;
-begin
-  if Assigned(AToolBar) then
-    for Index := AToolBar.ButtonCount - 1 downto 0 do
-    begin
-      AButton := TAccessToolButton(AToolBar.Buttons[Index]);
-      if AButton.Action = AAction then
-      begin
-        AButton.SetToolBar(nil);
-        AButton.Free;
-      end;
-    end;
-end;
-
 procedure TJclOTAExpertBase.RegisterCommands;
+var
+  JclIcon: TIcon;
+  Category: string;
+  Index: Integer;
+  IDEMenuItem, ToolsMenuItem: TMenuItem;
 begin
+  if not Assigned(ConfigurationAction) then
+  begin
+    Category := '';
+    for Index := 0 to NTAServices.ActionList.ActionCount - 1 do
+      if CompareText(NTAServices.ActionList.Actions[Index].Name, 'ToolsOptionsCommand') = 0 then
+        Category := NTAServices.ActionList.Actions[Index].Category;
+
+    ConfigurationAction := TAction.Create(nil);
+    JclIcon := TIcon.Create;
+    try
+      // not ModuleHInstance because the resource is in JclBaseExpert.bpl                                                                  
+      JclIcon.Handle := LoadIcon(HInstance, 'JCLCONFIGURE');
+      ConfigurationAction.ImageIndex := NTAServices.ImageList.AddIcon(JclIcon);
+    finally
+      JclIcon.Free;
+    end;
+    ConfigurationAction.Caption := RsJCLOptions;
+    ConfigurationAction.Name := JclConfigureActionName;
+    ConfigurationAction.Category := Category;
+    ConfigurationAction.Visible := True;
+    ConfigurationAction.OnUpdate := ConfigurationActionUpdate;
+    ConfigurationAction.OnExecute := ConfigurationActionExecute;
+
+    ConfigurationAction.ActionList := NTAServices.ActionList;
+    RegisterAction(ConfigurationAction);
+  end;
+  
+  if not Assigned(ConfigurationMenuItem) then
+  begin
+    IDEMenuItem := NTAServices.MainMenu.Items;
+    if not Assigned(IDEMenuItem) then
+      raise EJclExpertException.CreateTrace(RsENoIDEMenu);
+
+    ToolsMenuItem := nil;
+    for Index := 0 to IDEMenuItem.Count - 1 do
+      if CompareText(IDEMenuItem.Items[Index].Name, 'ToolsMenu') = 0 then
+        ToolsMenuItem := IDEMenuItem.Items[Index];
+    if not Assigned(ToolsMenuItem) then
+      raise EJclExpertException.CreateTrace(RsENoToolsMenu);
+
+    ConfigurationMenuItem := TMenuItem.Create(nil);
+    ConfigurationMenuItem.Action := ConfigurationAction;
+
+    ToolsMenuItem.Insert(0, ConfigurationMenuItem);
+  end;
+
   // override to add actions and menu items
 end;
 
 procedure TJclOTAExpertBase.UnregisterCommands;
 begin
+  if GetExpertCount = 0 then
+  begin
+    UnregisterAction(ConfigurationAction);
+    FreeAndNil(ConfigurationAction);
+    FreeAndNil(ConfigurationMenuItem);
+  end;
+
   // override to remove actions and menu items
-end;
-
-function TJclOTAExpertBase.LoadBool(Name: string; Def: Boolean): Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := RegReadBoolDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE MSWINDOWS}
-  Result := Def;
-  {$ENDIF MSWINDOWS}
-end;
-
-function TJclOTAExpertBase.LoadString(Name: string; Def: string): string;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := RegReadStringDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE MSWINDOWS}
-  Result := Def;
-  {$ENDIF MSWINDOWS}
-end;
-
-function TJclOTAExpertBase.LoadInteger(Name: string; Def: Integer): Integer;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := RegReadIntegerDef(HKCU, ExpertRegistryKey, Name, Def);
-  {$ELSE MSWINDOWS}
-  Result := Def;
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclOTAExpertBase.LoadStrings(Name: string; List: TStrings);
-begin
-  {$IFDEF MSWINDOWS}
-  RegLoadList(HKCU, ExpertRegistryKey, Name, List);
-  {$ELSE MSWINDOWS}
-  List.Clear;
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclOTAExpertBase.SaveBool(Name: string; Value: Boolean);
-begin
-  {$IFDEF MSWINDOWS}
-  RegWriteBool(HKCU, ExpertRegistryKey, Name, Value);
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclOTAExpertBase.SaveString(Name: string; Value: string);
-begin
-  {$IFDEF MSWINDOWS}
-  RegWriteString(HKCU, ExpertRegistryKey, Name, Value);
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclOTAExpertBase.SaveInteger(Name: string; Value: Integer);
-begin
-  {$IFDEF MSWINDOWS}
-  RegWriteInteger(HKCU, ExpertRegistryKey, Name, Value);
-  {$ENDIF MSWINDOWS}
-end;
-
-procedure TJclOTAExpertBase.SaveStrings(Name: string; List: TStrings);
-begin
-  {$IFDEF MSWINDOWS}
-  RegSaveList(HKCU, ExpertRegistryKey, Name, List);
-  {$ENDIF MSWINDOWS}
 end;
 
 //=== { TJclOTAExpert } ======================================================
@@ -828,12 +1088,19 @@ begin
   end;
 end;
 
+{$ENDIF BDS}
+
 initialization
 
 finalization
 
 try
+  {$IFDEF BDS}
   UnregisterAboutBox;
+  {$ENDIF BDS}
+  FreeAndNil(GlobalActionList);
+  FreeAndNil(GlobalActionSettings);
+  FreeAndNil(GlobalExpertList);
 except
   on ExceptionObj: TObject do
   begin
@@ -841,8 +1108,6 @@ except
     raise;
   end;
 end;
-
-{$ENDIF BDS}
 
 //=== Helper routines ========================================================
 
@@ -867,6 +1132,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.14  2005/12/26 18:03:40  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts

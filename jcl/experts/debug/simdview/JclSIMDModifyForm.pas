@@ -70,7 +70,7 @@ type
     FResultStr: string;
     FReturnCode: Cardinal;
     FCPUInfo: TCpuInfo;
-    FExpert: TJclOTAExpert;
+    FSettings: TJclOTASettings;
     procedure ContinueModify;
     procedure StartModify;
     procedure WMModifyContinue(var Msg: TMessage); message WM_MODIFYCONTINUE;
@@ -82,7 +82,7 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   public
     constructor Create(AOwner: TComponent;
-      ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert); reintroduce;
+      ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings); reintroduce;
     destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
@@ -101,6 +101,7 @@ type
     property Format: TJclSIMDFormat read FFormat;
     property History: TStringList read FHistory;
     property Thread: IOTAThread read FThread;
+    property Settings: TJclOTASettings read FSettings;
   end;
 
 implementation
@@ -125,12 +126,12 @@ const
 //=== { TJclSIMDModifyFrm } ==================================================
 
 constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
-  ADebuggerServices: IOTADebuggerServices; AExpert: TJclOTAExpert);
+  ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings);
 begin
   inherited Create(AOwner);
 
   FDebuggerServices := ADebuggerServices;
-  FExpert := AExpert;
+  FSettings := ASettings;
 
   FComboBoxList := TComponentList.Create(False);
   FLabelList := TComponentList.Create(False);
@@ -343,20 +344,20 @@ procedure TJclSIMDModifyFrm.LoadHistory;
 var
   Index, Count: Integer;
 begin
-  Count := FExpert.LoadInteger(CountPropertyName, 0);
+  Count := Settings.LoadInteger(CountPropertyName, 0);
   History.Clear;
 
   for Index := 0 to Count - 1 do
-    History.Add(FExpert.LoadString(SysUtils.Format(ItemFormat, [Index]), ''));
+    History.Add(Settings.LoadString(SysUtils.Format(ItemFormat, [Index]), ''));
 end;
 
 procedure TJclSIMDModifyFrm.SaveHistory;
 var
   Index: Integer;
 begin
-  FExpert.SaveInteger(CountPropertyName, History.Count);
+  Settings.SaveInteger(CountPropertyName, History.Count);
   for Index := 0 to History.Count - 1 do
-    FExpert.SaveString(SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
+    Settings.SaveString(SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;
@@ -530,6 +531,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2006/01/08 17:16:56  outchy
+// Settings reworked.
+// Common window for expert configurations
+//
 // Revision 1.8  2005/12/16 23:46:25  outchy
 // Added expert stack form.
 // Added code to display call stack on expert exception.
@@ -543,11 +548,15 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.8  2005/12/16 23:46:25  outchy
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.9  2006/01/08 17:16:56  outchy
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Settings reworked.
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Common window for expert configurations
+// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date$ and Revision 1.8  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.
