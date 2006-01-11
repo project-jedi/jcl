@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is VersionControlImpl.pas.                                                       }
+{ The Original Code is VersionControlImpl.pas.                                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -18,7 +18,8 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Elahn Ientile                                                                        }
-{ Last modified: January 2, 2006                                                                 }
+{ Last modified: $Date$                                                      }
+{ Revision: $Revision$                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -586,6 +587,7 @@ var
     FMenu.Add(MenuPtr);
   end;
 begin
+  inherited RegisterCommands;
   try
     IDEMainMenu := NTAServices.MainMenu;
     IDEToolsItem := nil;
@@ -745,7 +747,7 @@ end;
 
 procedure TJclVersionControlExpert.UnregisterCommands;
 begin
-  inherited;
+  inherited UnregisterCommands;
   try
     UnregisterAction(FactRepoBrowser);
     FreeAndNil(FmnuRepoBrowser);
