@@ -208,7 +208,11 @@ function LogFileName(Target: TJclBorRADToolInstallation): string;
 implementation
 
 uses
-  Dialogs,
+  {$IFDEF VCL}
+  Dialogs, Controls,
+  {$ELSE VCL}
+  QDialogs, QControls,
+  {$ENDIF VCL}
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
   JclPeImage,
@@ -318,6 +322,12 @@ resourcestring
   RsHintJclHelpChm = '';
   RsHintJclMakeDemos = 'Make JCL demo applications';
 
+// warning messages
+  RsPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
+    'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
+    'Do you want to continue without compiling JCL packages?';
+
+                                                                               
 const
   Invalid = -1;
   LineBreak = AnsiLineBreak;
@@ -2163,6 +2173,14 @@ function TJclDistribution.Install: Boolean;
 var
   I: Integer;
 begin
+  // installation validation
+  Result := False;
+  for I := 0 to FTargetInstalls.Count - 1 do
+    if TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJCL)
+      and not TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJclPackages)
+      and (MessageDlg(RsPackageNodeNotSelected, mtWarning, [mbYes, mbNo], 0) <> mrYes) then
+      Exit;
+
   FInstalling := True; // tell UninstallOption not to call Progress()
   Result := True;
   try
@@ -2273,6 +2291,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.86  2006/01/13 16:52:00  outchy
+// Warning of packages are not installed.
+//
 // Revision 1.85  2006/01/06 18:15:15  outchy
 // hpp node moved as a child of the dual package node when supported
 //
