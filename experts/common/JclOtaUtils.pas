@@ -310,6 +310,7 @@ end;
 function TJclOTASettings.LoadInteger(Name: string; Def: Integer): Integer;
 begin
   {$IFDEF MSWINDOWS}
+
   Result := RegReadIntegerDef(HKCU, KeyName, Name, Def);
   {$ELSE MSWINDOWS}
   Result := Def;
@@ -1132,6 +1133,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2006/01/15 19:14:41  ahuser
+// Delphi 7 JCL Option bugfix and layout
+//
 // Revision 1.15  2006/01/08 17:16:56  outchy
 // Settings reworked.
 // Common window for expert configurations

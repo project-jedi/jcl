@@ -1,9 +1,9 @@
 object JclOtaOptionsForm: TJclOtaOptionsForm
   Left = 337
   Top = 238
+  Width = 562
+  Height = 522
   Caption = 'RsOtaConfigurationCaption'
-  ClientHeight = 430
-  ClientWidth = 554
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,18 +19,16 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
   object SplitterSep: TSplitter
     Left = 185
     Top = 0
-    Height = 386
+    Height = 450
   end
   object PanelName: TPanel
     Left = 0
-    Top = 386
+    Top = 450
     Width = 554
-    Height = 44
+    Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    Width = 554
-    Height = 44
     object LabelHomePage: TLabel
       Left = 8
       Top = 8
@@ -47,7 +45,7 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
       OnClick = LabelHomePageClick
     end
     object ButtonOk: TButton
-      Left = 471
+      Left = 391
       Top = 8
       Width = 75
       Height = 25
@@ -58,7 +56,7 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
       TabOrder = 0
     end
     object ButtonCancel: TButton
-      Left = 385
+      Left = 472
       Top = 8
       Width = 75
       Height = 25
@@ -72,21 +70,20 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 386
+    Height = 450
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    Width = 185
-    Height = 386
     object TreeViewCategories: TTreeView
       Left = 8
       Top = 8
       Width = 171
-      Height = 372
+      Height = 436
       Anchors = [akLeft, akTop, akRight, akBottom]
       HideSelection = False
       Indent = 19
-      ShowRoot = False
+      ReadOnly = True
+      RightClickSelect = True
       TabOrder = 0
       OnChange = TreeViewCategoriesChange
     end
@@ -95,7 +92,7 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Left = 188
     Top = 0
     Width = 366
-    Height = 386
+    Height = 450
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2

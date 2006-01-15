@@ -1,7 +1,7 @@
 object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   Left = 0
   Top = 0
-  Width = 351
+  Width = 385
   Height = 375
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
@@ -16,7 +16,7 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   end
   object LabelShortcut: TLabel
     Left = 16
-    Top = 328
+    Top = 333
     Width = 53
     Height = 13
     Anchors = [akLeft, akBottom]
@@ -26,7 +26,7 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   object ListViewActions: TListView
     Left = 16
     Top = 35
-    Width = 297
+    Width = 314
     Height = 286
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
@@ -45,8 +45,8 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
     OnSelectItem = ListViewActionsSelectItem
   end
   object HotKeyShortcut: THotKey
-    Left = 75
-    Top = 327
+    Left = 80
+    Top = 330
     Width = 121
     Height = 19
     Anchors = [akLeft, akBottom]
