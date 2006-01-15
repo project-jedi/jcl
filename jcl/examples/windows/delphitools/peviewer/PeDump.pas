@@ -218,9 +218,9 @@ begin
   inherited Create(AOwner);
   FPeImage := APeImage;
   Caption := ExtractFileName(FileName);
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   ItemsListView.OnInfoTip := ItemsListViewInfoTip;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
 end;
 
 function TPeDumpChild.GetFileName: TFileName;
@@ -923,6 +923,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2006/01/15 11:21:32  outchy
+// Removed Log tag
+// Changed DELPHI5 to COMPILER5
+//
 // Revision 1.2  2005/10/27 01:44:51  rrossmair
 // - added MPL headers and CVS Log tags
 //

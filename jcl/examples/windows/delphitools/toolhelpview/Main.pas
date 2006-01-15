@@ -253,12 +253,12 @@ var
   FileInfo: TSHFileInfo;
   ImageListHandle: THandle;
 begin
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   ProcessListView.OnInfoTip := ProcessListViewInfoTip;
   ModulesListView.OnInfoTip := ModulesListViewInfoTip;
-  {$ELSE DELPHI5_UP}
+  {$ELSE COMPILER5_UP}
   InfoTip1.Visible := False;
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   FIniFile := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
   LoadSettings;
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
@@ -936,6 +936,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2006/01/15 11:21:32  outchy
+// Removed Log tag
+// Changed DELPHI5 to COMPILER5
+//
 // Revision 1.2  2005/10/27 01:44:51  rrossmair
 // - added MPL headers and CVS Log tags
 //
