@@ -76,11 +76,14 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    Width = 185
+    Height = 386
     object TreeViewCategories: TTreeView
       Left = 8
       Top = 8
       Width = 171
       Height = 372
+      Anchors = [akLeft, akTop, akRight, akBottom]
       HideSelection = False
       Indent = 19
       ShowRoot = False
