@@ -3,7 +3,7 @@ unit JclOtaActionConfigureSheet;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls;
 
 type
@@ -105,9 +105,14 @@ procedure TJclOtaActionConfigureFrame.SaveChanges;
 var
   Index: Integer;
 begin
-  for Index := 0 to TJclOTAExpertBase.GetActionCount - 1 do
-    TJclOTAExpertBase.GetAction(Index).ShortCut :=
-      TShortcut(ListViewActions.Items.Item[Index].Data);
+  { (ahuser) In Delphi 7 the ListViewActions.Items.Count is 0 if the page was
+    not shown. Something must delete the items that were filled in the constructor. }
+  if ListViewActions.Items.Count = TJclOTAExpertBase.GetActionCount then
+  begin
+    for Index := 0 to TJclOTAExpertBase.GetActionCount - 1 do
+      TJclOTAExpertBase.GetAction(Index).ShortCut :=
+        TShortcut(ListViewActions.Items.Item[Index].Data);
+  end;
 end;
 
 end.
