@@ -36,7 +36,7 @@ uses
 
 type
   TJclVersionCtrlOptionsFrame = class(TFrame)
-    CheckBoxHideDisabledActions: TCheckBox;
+    CheckBoxHideActions: TCheckBox;
     LabelIcons: TLabel;
     ComboBoxIcons: TComboBox;
     TreeViewMenu: TTreeView;
@@ -48,21 +48,17 @@ type
     ButtonMoveUp: TButton;
     ButtonMoveDown: TButton;
     ActionListVersionCtrl: TActionList;
-    ActionHideUnSupportedActions: TAction;
-    ActionDisableActions: TAction;
     ActionNewSeparator: TAction;
     ActionDeleteItem: TAction;
     ActionRenameItem: TAction;
     ActionMoveItemUp: TAction;
     ActionMoveItemDown: TAction;
     CheckBoxSaveConfirmation: TCheckBox;
-    ActionSaveConfirmation: TAction;
     PopupMenuActions: TPopupMenu;
     ActionNewAction: TAction;
     ButtonNewAction: TButton;
     ActionNewSubMenu: TAction;
     ButtonNewSubMenu: TButton;
-    ActionActOnTopSandbox: TAction;
     CheckBoxActOnTopSandbox: TCheckBox;
     procedure ActionActOnTopSandboxUpdate(Sender: TObject);
     procedure ActionNewActionExecute(Sender: TObject);
@@ -317,10 +313,10 @@ begin
   TreeViewMenu.Images := NTAServices.ImageList;
   PopupMenuActions.Images := NTAServices.ImageList;
 
-  ActionActOnTopSandbox.Caption := RsActOnTopSandBox;
-  ActionDisableActions.Caption := RsDisableActions;
-  ActionHideUnSupportedActions.Caption := RsHideUnsupportedActions;
-  ActionSaveConfirmation.Caption := RsSaveConfirmation;
+  CheckBoxActOnTopSandbox.Caption := RsActOnTopSandBox;
+  CheckBoxDisableActions.Caption := RsDisableActions;
+  CheckBoxHideActions.Caption := RsHideUnsupportedActions;
+  CheckBoxSaveConfirmation.Caption := RsSaveConfirmation;
   ActionNewSubMenu.Caption := RsNewSubMenu;
   ActionNewSeparator.Caption := RsNewSeparator;
   ActionNewAction.Caption := RsNewAction;
@@ -343,17 +339,17 @@ end;
 
 function TJclVersionCtrlOptionsFrame.GetActOnTopSandbox: Boolean;
 begin
-  Result := ActionActOnTopSandbox.Checked;
+  Result := CheckBoxActOnTopSandbox.Checked;
 end;
 
 function TJclVersionCtrlOptionsFrame.GetDisableActions: Boolean;
 begin
-  Result := ActionHideUnSupportedActions.Checked;
+  Result := CheckBoxDisableActions.Checked;
 end;
 
 function TJclVersionCtrlOptionsFrame.GetHideActions: Boolean;
 begin
-  Result := ActionDisableActions.Checked;
+  Result := CheckBoxHideActions.Checked;
 end;
 
 function TJclVersionCtrlOptionsFrame.GetIconType: Integer;
@@ -408,7 +404,7 @@ end;
 
 function TJclVersionCtrlOptionsFrame.GetSaveConfirmation: Boolean;
 begin
-  Result := ActionSaveConfirmation.Checked;
+  Result := CheckBoxSaveConfirmation.Checked;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.MenuItemNewActionClick(Sender: TObject);
@@ -456,17 +452,17 @@ end;
 
 procedure TJclVersionCtrlOptionsFrame.SetActOnTopSandbox(const Value: Boolean);
 begin
-  ActionActOnTopSandbox.Checked := Value;
+  CheckBoxActOnTopSandbox.Checked := Value;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.SetDisableActions(const Value: Boolean);
 begin
-  ActionDisableActions.Checked := Value;
+  CheckBoxDisableActions.Checked := Value;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.SetHideActions(const Value: Boolean);
 begin
-  ActionHideUnSupportedActions.Checked := Value;
+  CheckBoxHideActions.Checked := Value;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.SetIconType(const Value: Integer);
@@ -546,7 +542,7 @@ end;
 
 procedure TJclVersionCtrlOptionsFrame.SetSaveConfirmation(const Value: Boolean);
 begin
-  ActionSaveConfirmation.Checked := Value;
+  CheckBoxSaveConfirmation.Checked := Value;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEdited(Sender: TObject;
@@ -568,6 +564,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2006/01/15 20:58:03  outchy
+// Delphi 5 support: no TCustomAction.AutoCheck property
+// Removed unused resources
+//
 // Revision 1.1  2006/01/15 00:51:22  outchy
 // cvs support in version control expert
 // version control expert integration in the installer
