@@ -89,40 +89,56 @@ function RegGetDataType(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataType: Cardinal): Boolean;
 function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
+function RegReadIntegerEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Integer; RaiseException: Boolean = False): Boolean;
 function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
+function RegReadCardinalEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Cardinal; RaiseException: Boolean = False): Boolean;
 function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
 function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
+function RegReadDWORDEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: DWORD; RaiseException: Boolean = False): Boolean;
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): DWORD;
 function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: DWORD): DWORD;
+function RegReadInt64Ex(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Int64; RaiseException: Boolean = False): Boolean;
 function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
 function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
+function RegReadUInt64Ex(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: UInt64; RaiseException: Boolean = False): Boolean;
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
+function RegReadSingleEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Single; RaiseException: Boolean = False): Boolean;
 function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
 function RegReadSingleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Single): Single;
+function RegReadDoubleEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Double; RaiseException: Boolean = False): Boolean;
 function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
 function RegReadDoubleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Double): Double;
+function RegReadExtendedEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: Extended; RaiseException: Boolean = False): Boolean;
 function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
 function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
 
+function RegReadStringEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: AnsiString; RaiseException: Boolean = False): Boolean;
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: string): string;
+function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: AnsiString; out RetValue: AnsiString; RaiseException: Boolean = False): Boolean;
 function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
 function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; Def: AnsiString): AnsiString;
+function RegReadWideStringEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: WideString; RaiseException: Boolean = False): Boolean;
 function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: string): WideString;
 function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: WideString): WideString;
 
+function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings; RaiseException: Boolean = False): Boolean; overload;
+function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: PMultiSz; RaiseException: Boolean = False): Boolean; overload;
 procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings); overload;
 function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz; overload;
 procedure RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings); overload;
 function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PMultiSz): PMultiSz; overload;
 
+function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings; RaiseException: Boolean = False): Boolean; overload;
+function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: PWideMultiSz; RaiseException: Boolean = False): Boolean; overload;
 procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings); overload;
 function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz; overload;
 procedure RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TWideStrings); overload;
 function RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PWideMultiSz): PWideMultiSz; overload;
 
+function RegReadBinaryEx(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal; out DataSize: Cardinal; RaiseException: Boolean = False): Boolean;
 function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
 function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
@@ -353,12 +369,13 @@ begin
     Result := RegSetValueExA(Key, PChar(ValueName), Reserved, dwType, lpData, cbData);
 end;
 
-procedure InternalGetData(const RootKey: DelphiHKEY; const Key, Name: string;
+function InternalGetData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; ExpectedSize: DWORD;
-  out DataType: DWORD; Data: Pointer; out DataSize: DWORD);
+  out DataType: DWORD; Data: Pointer; out DataSize: DWORD; RaiseException: Boolean): Boolean;
 var
   RegKey: HKEY;
 begin
+  Result := True;
   DataType := REG_NONE;
   DataSize := 0;
   if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
@@ -366,28 +383,42 @@ begin
       if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
         if not (DataType in RegKinds) or (DataSize > ExpectedSize) then
-          DataError(Key, Name);
+          if RaiseException then
+            DataError(Key, Name)
+          else
+            Result := False;
         if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Data, @DataSize) <> ERROR_SUCCESS then
-          ValueError(Key, Name);
+          if RaiseException then
+            ValueError(Key, Name)
+          else
+            Result := False;
       end
       else
-        ValueError(Key, Name);
+        if RaiseException then
+          ValueError(Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-    ReadError(Key);
+    if RaiseException then
+      ReadError(Key)
+    else
+      Result := False;;
 end;
 
-function InternalGetString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean): string;
+function InternalGetString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
+  out RetValue: string; RaiseException: Boolean): Boolean;
 var
   RegKey: HKEY;
   DataType, DataSize: DWORD;
   RegKinds: TRegKinds;
 begin
+  Result := True;
   DataType := REG_NONE;
   DataSize := 0;
-  Result := '';
+  RetValue := '';
   if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     try
       if RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
@@ -397,32 +428,46 @@ begin
           RegKinds := RegKinds + [REG_MULTI_SZ];
         if not (DataType in RegKinds) then
           DataError(Key, Name);
-        SetLength(Result, DataSize div SizeOf(Char) + 1);
-        if RegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(Result), @DataSize) <> ERROR_SUCCESS then
+        SetLength(RetValue, DataSize div SizeOf(Char) + 1);
+        if RegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(RetValue), @DataSize) <> ERROR_SUCCESS then
         begin
-          Result := '';
-          ValueError(Key, Name);
+          RetValue := '';
+          if RaiseException then
+            ValueError(Key, Name)
+          else
+          begin
+            Result := False;
+            DataSize := 1; // => empty string
+          end;
         end;
-        SetLength(Result, (DataSize - 1) div SizeOf(Char));
+        SetLength(RetValue, (DataSize - 1) div SizeOf(Char));
       end
       else
-        ValueError(Key, Name);
+        if RaiseException then
+          ValueError(Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-    ReadError(Key);
+    if RaiseException then
+      ReadError(Key)
+    else
+      Result := False;
 end;
 
-function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean): WideString;
+function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
+  out RetValue: WideString; RaiseException: Boolean): Boolean;
 var
   RegKey: HKEY;
   DataType, DataSize: DWORD;
   RegKinds: TRegKinds;
 begin
+  Result := True;
   DataType := REG_NONE;
   DataSize := 0;
-  Result := '';
+  RetValue := '';
   if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     try
       if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
@@ -436,21 +481,33 @@ begin
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
         if not (DataType in RegKinds) then
           DataError(Key, Name);
-        SetLength(Result, DataSize div SizeOf(WideChar) + 1);
-        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(Result), @DataSize) <> ERROR_SUCCESS then
+        SetLength(RetValue, DataSize div SizeOf(WideChar) + 1);
+        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(RetValue), @DataSize) <> ERROR_SUCCESS then
         begin
-          Result := '';
-          ValueError(Key, Name);
+          RetValue := '';
+          if RaiseException then
+            ValueError(Key, Name)
+          else
+          begin
+            Result := False;
+            DataSize := 1; // => empty string
+          end;
         end;
-        SetLength(Result, (DataSize - 1) div SizeOf(WideChar));
+        SetLength(RetValue, (DataSize - 1) div SizeOf(WideChar));
       end
       else
-        ValueError(Key, Name);
+        if RaiseException then
+          ValueError(Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-    ReadError(Key);
+    if RaiseException then
+      ReadError(Key)
+    else
+      Result := False;
 end;
 
 procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: string;
@@ -591,7 +648,8 @@ begin
   Result := RegReadIntegerDef(RootKey, Key, Name, Ord(Def)) <> 0;
 end;
 
-function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
+function RegReadIntegerEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Integer; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   Ret: Int64;
@@ -599,23 +657,36 @@ begin
   Ret := 0;
   RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
-    Ret := StrToInt64(RegReadString(RootKey, Key, Name))
+    if RaiseException then
+    begin
+      Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+      Result := True;
+    end
+    else
+      Result := TryStrToInt64(RegReadString(RootKey, Key, Name), Ret)
   else
-    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
-      SizeOf(Ret), DataType, @Ret, DataSize);
-  Result := Integer(Ret and $FFFFFFFF);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(Ret), DataType, @Ret, DataSize, RaiseException);
+  RetValue := Integer(Ret and $FFFFFFFF);
+end;
+
+function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
+begin
+  RegReadIntegerEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 begin
   try
-    Result := RegReadInteger(RootKey, Key, Name);
+    if not RegReadIntegerEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
+function RegReadCardinalEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Cardinal; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   Ret: Int64;
@@ -623,20 +694,38 @@ begin
   Ret := 0;
   RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
-    Ret := StrToInt64(RegReadString(RootKey, Key, Name))
+    if RaiseException then
+    begin
+      Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+      Result := True;
+    end
+    else
+      Result := TryStrToInt64(RegReadString(RootKey, Key, Name), Ret)
   else
-    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
-      SizeOf(Ret), DataType, @Ret, DataSize);
-  Result := Ret and $FFFFFFFF;
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(Ret), DataType, @Ret, DataSize, RaiseException);
+  RetValue := Cardinal(Ret) and $FFFFFFFF;
+end;
+
+function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
+begin
+  RegReadCardinalEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadCardinalDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Cardinal): Cardinal;
 begin
   try
-    Result := RegReadCardinal(RootKey, Key, Name);
+    if not RegReadCardinalEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
+end;
+
+function RegReadDWORDEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: DWORD; RaiseException: Boolean): Boolean;
+begin
+  Result := RegReadCardinalEx(RootKey, Key, Name, RetValue, RaiseException);
 end;
 
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): DWORD;
@@ -649,7 +738,8 @@ begin
   Result := RegReadCardinalDef(RootKey, Key, Name, Def);
 end;
 
-function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
+function RegReadInt64Ex(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Int64; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   Data: array [0..1] of Integer;
@@ -659,33 +749,46 @@ begin
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
   begin
     // (rom) circumvents internal compiler error for D6
-    Ret := StrToInt64(RegReadString(RootKey, Key, Name));
-    Result := Ret;
+    if RaiseException then
+    begin
+      Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+      Result := True;
+    end
+    else
+      Result := TryStrToInt64(RegReadString(RootKey, Key, Name), Ret);
+    RetValue := Ret;
   end
   else
   begin
     FillChar(Data[0], SizeOf(Data), 0);
-    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
-       SizeOf(Data), DataType, @Data, DataSize);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+       SizeOf(Data), DataType, @Data, DataSize, RaiseException);
     // REG_BINARY is implicitly unsigned if DataSize < 8
     if DataType = REG_DWORD then
       // DWORDs get sign extended
-      Result := Data[0]
+      RetValue := Data[0]
     else
-      Move(Data[0], Result, SizeOf(Data));
+      Move(Data[0], RetValue, SizeOf(Data));
   end;
+end;
+
+function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
+begin
+  RegReadInt64Ex(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 begin
   try
-    Result := RegReadInt64(RootKey, Key, Name);
+    if not RegReadInt64Ex(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
+function RegReadUInt64Ex(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: UInt64; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   Ret: Int64;
@@ -694,28 +797,41 @@ begin
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
   begin
     // (rom) circumvents internal compiler error for D6
-    Ret := StrToInt64(RegReadString(RootKey, Key, Name));
-    Result := UInt64(Ret);
+    if RaiseException then
+    begin
+      Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+      Result := True;
+    end
+    else
+      Result := TryStrToInt64(RegReadString(RootKey, Key, Name), Ret);
+    RetValue := UInt64(Ret);
   end
   else
   begin
     // type cast required to circumvent internal error in D7
-    Result := UInt64(0);
-    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
-      SizeOf(Result), DataType, @Result, DataSize);
+    RetValue := UInt64(0);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
   end;
+end;
+
+function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
+begin
+  RegReadUInt64Ex(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
 begin
   try
-    Result := RegReadUInt64(RootKey, Key, Name);
+    if not RegReadUInt64Ex(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
+function RegReadSingleEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Single; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   OldSep: Char;
@@ -725,25 +841,38 @@ begin
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
       DecimalSeparator := '.';
-      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+      if RaiseException then
+      begin
+        RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
+        Result := True;
+      end
+      else
+        Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
       DecimalSeparator := OldSep;
     end
   else
-    InternalGetData(RootKey, Key, Name, [REG_BINARY],
-      SizeOf(Result), DataType, @Result, DataSize);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
+end;
+
+function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
+begin
+  RegReadSingleEx(RootKey, KEy, Name, Result, True);
 end;
 
 function RegReadSingleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Single): Single;
 begin
   try
-    Result := RegReadSingle(RootKey, Key, Name);
+    if not RegReadSingleEx(RootKey, KEy, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
+function RegReadDoubleEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Double; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   OldSep: Char;
@@ -753,25 +882,38 @@ begin
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
       DecimalSeparator := '.';
-      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+      if RaiseException then
+      begin
+        RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
+        Result := True;
+      end
+      else
+        Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
       DecimalSeparator := OldSep;
     end
   else
-    InternalGetData(RootKey, Key, Name, [REG_BINARY],
-      SizeOf(Result), DataType, @Result, DataSize);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
+end;
+
+function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
+begin
+  RegReadDoubleEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadDoubleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Double): Double;
 begin
   try
-    Result := RegReadDouble(RootKey, Key, Name);
+    if not RegReadDoubleEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
+function RegReadExtendedEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: Extended; RaiseException: Boolean): Boolean;
 var
   DataType, DataSize: DWORD;
   OldSep: Char;
@@ -781,22 +923,40 @@ begin
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
       DecimalSeparator := '.';
-      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+      if RaiseException then
+      begin
+        RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
+        Result := True;
+      end
+      else
+        Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
       DecimalSeparator := OldSep;
     end
   else
-    InternalGetData(RootKey, Key, Name, [REG_BINARY],
-      SizeOf(Result), DataType, @Result, DataSize);
+    Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(RetValue), DataType, @RetValue, DataSize, RaiseException);
+end;
+
+function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
+begin
+  RegReadExtendedEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
 begin
   try
-    Result := RegReadExtended(RootKey, Key, Name);
+    if not RegReadExtendedEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
+end;
+
+function RegReadStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: AnsiString; RaiseException: Boolean): Boolean;
+begin
+  Result := RegReadAnsiStringEx(RootKey, Key, Name, RetValue, RaiseException);
 end;
 
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
@@ -809,119 +969,179 @@ begin
   Result := RegReadAnsiStringDef(RootKey, Key, Name, Def);
 end;
 
+function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: AnsiString;
+  out RetValue: AnsiString; RaiseException: Boolean): Boolean;
+begin
+  Result := InternalGetString(RootKey, Key, Name, False, RetValue, RaiseException);
+end;
+
 function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
 begin
-  Result := InternalGetString(RootKey, Key, Name, False);
+  RegReadAnsiStringEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; Def: AnsiString): AnsiString;
 begin
   try
-    Result := RegReadAnsiString(RootKey, Key, Name);
+    if not RegReadAnsiStringEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
+function RegReadWideStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: WideString; RaiseException: Boolean): Boolean;
+begin
+  Result := InternalGetWideString(RootKey, Key, Name, False, RetValue, RaiseException);
+end;
+
 function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: string): WideString;
 begin
-  Result := InternalGetWideString(RootKey, Key, Name, False);
+  RegReadWideStringEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: WideString): WideString;
 begin
   try
-    Result := RegReadWideString(RootKey, Key, Name);
+    if not RegReadWideStringEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
   except
     Result := Def;
   end;
 end;
 
-procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
+function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings;
+  RaiseException: Boolean): Boolean;
 var
   S: string;
 begin
-  S := InternalGetString(RootKey, Key, Name, True);
-  MultiSzToStrings(Value, PMultiSz(PChar(S)));
+  Result := InternalGetString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    MultiSzToStrings(Value, PMultiSz(PChar(S)));
+end;
+
+procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
+begin
+  RegReadMultiSzEx(RootKey, Key, Name, Value, True);
 end;
 
 procedure RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings);
 begin
   try
-    RegReadMultiSz(RootKey, Key, Name, Value);
+    if not RegReadMultiSzEx(RootKey, Key, Name, Value, False) then
+      Value.Assign(Def);
   except
     Value.Assign(Def);
   end;
 end;
 
-function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz;
+function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: PMultiSz; RaiseException: Boolean): Boolean;
 var
   S: string;
 begin
-  S := InternalGetString(RootKey, Key, Name, True);
-  // always returns a newly allocated PMultiSz
-  Result := MultiSzDup(PMultiSz(PChar(S)));
+  RetValue := nil;
+  Result := InternalGetString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    // always returns a newly allocated PMultiSz
+    RetValue := MultiSzDup(PMultiSz(PChar(S)));
+end;
+
+function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz;
+begin
+  RegReadMultiSzEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PMultiSz): PMultiSz;
 begin
   try
-    Result := RegReadMultiSz(RootKey, Key, Name);
+    if not RegReadMultiSzEx(RootKey, Key, Name, Result, False) then
+      // always returns a newly allocated PMultiSz
+      Result := MultiSzDup(Def);
   except
     // always returns a newly allocated PMultiSz
     Result := MultiSzDup(Def);
   end;
 end;
 
-procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings);
+function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings;
+  RaiseException: Boolean): Boolean; 
 var
   S: WideString;
 begin
-  S := InternalGetWideString(RootKey, Key, Name, True);
-  WideMultiSzToWideStrings(Value, PWideMultiSz(PWideChar(S)));
+  Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    WideMultiSzToWideStrings(Value, PWideMultiSz(PWideChar(S)));
+end;
+
+procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings);
+begin
+  RegReadWideMultiSzEx(RootKey, Key, Name, Value, True);
 end;
 
 procedure RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TWideStrings);
 begin
   try
-    RegReadWideMultiSz(RootKey, Key, Name, Value);
+    if not RegReadWideMultiSzEx(RootKey, Key, Name, Value, False) then
+      Value.Assign(Def);
   except
     Value.Assign(Def);
   end;
 end;
 
-function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz;
+function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: PWideMultiSz; RaiseException: Boolean): Boolean; overload;
 var
   S: WideString;
 begin
-  S := InternalGetWideString(RootKey, Key, Name, True);
-  // always returns a newly allocated PMultiWideSz
-  Result := WideMultiSzDup(PWideMultiSz(PWideChar(S)));
+  RetValue := nil;
+  Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    // always returns a newly allocated PMultiWideSz
+    RetValue := WideMultiSzDup(PWideMultiSz(PWideChar(S)));
+end;
+
+function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz;
+begin
+  RegReadWideMultiSzEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadWideMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PWideMultiSz): PWideMultiSz;
 begin
   try
-    Result := RegReadWideMultiSz(RootKey, Key, Name);
+    if RegReadWideMultiSzEx(RootKey, Key, Name, Result, False) then
+      // always returns a newly allocated PWideMultiSz
+      Result := WideMultiSzDup(Def);
   except
     // always returns a newly allocated PWideMultiSz
     Result := WideMultiSzDup(Def);
   end;
 end;
 
-function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value;
-  const ValueSize: Cardinal): Cardinal;
+function RegReadBinaryEx(const RootKey: DelphiHKEY; const Key, Name: string; var Value;
+  const ValueSize: Cardinal; out DataSize: Cardinal; RaiseException: Boolean): Boolean;
 var
   DataType: DWORD;
 begin
-  InternalGetData(RootKey, Key, Name, cRegBinKinds, ValueSize, DataType, @Value, Result);
+  Result := InternalGetData(RootKey, Key, Name, cRegBinKinds, ValueSize, DataType, @Value, DataSize, RaiseException);
+end;
+
+function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value;
+  const ValueSize: Cardinal): Cardinal;
+begin
+  RegReadBinaryEx(RootKey, Key, Name, Value, ValueSize, Result, True);
 end;
 
 function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
 begin
   try
-    Result := RegReadBinary(RootKey, Key, Name, Value, ValueSize);
+    if not RegReadBinaryEx(RootKey, Key, Name, Value, ValueSize, Result, False) then
+    begin
+      FillChar(Value, ValueSize, Def);
+      Result := ValueSize;
+    end;
   except
     FillChar(Value, ValueSize, Def);
     Result := ValueSize;
@@ -1402,6 +1622,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.40  2006/01/15 19:10:45  ahuser
+// Added RegRead*Ex functions
+// RegRead*Def functions do not raise exceptions anymore (makes debugging easier)
+//
 // Revision 1.39  2005/10/24 12:06:28  marquardt
 // fix RegLoadList for nonexistent list
 //
