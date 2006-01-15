@@ -1,17 +1,15 @@
 object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   Left = 0
   Top = 0
-  Width = 340
-  Height = 432
+  Width = 357
+  Height = 409
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
   TabStop = True
-  Width = 340
-  Height = 432
   object LabelIcons: TLabel
     Left = 16
     Top = 106
-    Width = 38
+    Width = 39
     Height = 13
     Caption = 'RsIcons'
     FocusControl = ComboBoxIcons
@@ -49,7 +47,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Left = 16
     Top = 149
     Width = 228
-    Height = 268
+    Height = 245
     Anchors = [akLeft, akTop, akRight, akBottom]
     HideSelection = False
     Indent = 19
@@ -79,7 +77,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   end
   object ButtonDelete: TButton
     Left = 250
-    Top = 242
+    Top = 258
     Width = 87
     Height = 25
     Action = ActionDeleteItem
@@ -88,7 +86,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   end
   object ButtonRename: TButton
     Left = 250
-    Top = 273
+    Top = 289
     Width = 87
     Height = 25
     Action = ActionRenameItem
@@ -97,7 +95,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   end
   object ButtonMoveUp: TButton
     Left = 250
-    Top = 304
+    Top = 336
     Width = 87
     Height = 25
     Action = ActionMoveItemUp
@@ -106,7 +104,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   end
   object ButtonMoveDown: TButton
     Left = 250
-    Top = 335
+    Top = 367
     Width = 87
     Height = 25
     Action = ActionMoveItemDown
