@@ -1,7 +1,7 @@
 object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   Left = 0
   Top = 0
-  Width = 357
+  Width = 389
   Height = 409
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
@@ -22,12 +22,12 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Caption = 'RsMenuOrganization'
     FocusControl = TreeViewMenu
   end
-  object CheckBoxHideDisabledActions: TCheckBox
+  object CheckBoxHideActions: TCheckBox
     Left = 16
     Top = 31
     Width = 185
     Height = 17
-    Action = ActionHideUnSupportedActions
+    Caption = 'RsHideUnsupportedActions'
     TabOrder = 0
   end
   object ComboBoxIcons: TComboBox
@@ -46,7 +46,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
   object TreeViewMenu: TTreeView
     Left = 16
     Top = 149
-    Width = 228
+    Width = 260
     Height = 245
     Anchors = [akLeft, akTop, akRight, akBottom]
     HideSelection = False
@@ -63,11 +63,11 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Top = 8
     Width = 201
     Height = 17
-    Action = ActionDisableActions
+    Caption = 'RsDisableActions'
     TabOrder = 3
   end
   object ButtonNewSeparator: TButton
-    Left = 250
+    Left = 282
     Top = 180
     Width = 87
     Height = 25
@@ -76,7 +76,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 4
   end
   object ButtonDelete: TButton
-    Left = 250
+    Left = 282
     Top = 258
     Width = 87
     Height = 25
@@ -85,7 +85,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 5
   end
   object ButtonRename: TButton
-    Left = 250
+    Left = 282
     Top = 289
     Width = 87
     Height = 25
@@ -94,7 +94,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 6
   end
   object ButtonMoveUp: TButton
-    Left = 250
+    Left = 282
     Top = 336
     Width = 87
     Height = 25
@@ -103,7 +103,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 7
   end
   object ButtonMoveDown: TButton
-    Left = 250
+    Left = 282
     Top = 367
     Width = 87
     Height = 25
@@ -116,11 +116,11 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Top = 54
     Width = 201
     Height = 17
-    Action = ActionSaveConfirmation
+    Caption = 'RsSaveConfirmation'
     TabOrder = 9
   end
   object ButtonNewAction: TButton
-    Left = 250
+    Left = 282
     Top = 211
     Width = 87
     Height = 25
@@ -129,7 +129,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 10
   end
   object ButtonNewSubMenu: TButton
-    Left = 250
+    Left = 282
     Top = 149
     Width = 87
     Height = 25
@@ -142,27 +142,12 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Top = 77
     Width = 201
     Height = 17
-    Action = ActionActOnTopSandbox
+    Caption = 'RsActOnTopSandbox'
     TabOrder = 12
   end
   object ActionListVersionCtrl: TActionList
     Left = 256
     Top = 64
-    object ActionDisableActions: TAction
-      AutoCheck = True
-      Caption = 'RsDisableActions'
-      OnUpdate = ActionDisableActionsUpdate
-    end
-    object ActionHideUnSupportedActions: TAction
-      AutoCheck = True
-      Caption = 'RsHideUnsupportedActions'
-      OnUpdate = ActionHideUnSupportedActionsUpdate
-    end
-    object ActionSaveConfirmation: TAction
-      AutoCheck = True
-      Caption = 'RsSaveConfirmation'
-      OnUpdate = ActionSaveConfirmationUpdate
-    end
     object ActionNewSubMenu: TAction
       Caption = 'RsNewSubMenu'
       OnExecute = ActionNewSubMenuExecute
@@ -197,11 +182,6 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
       Caption = 'RsMoveItemDown'
       OnExecute = ActionMoveItemDownExecute
       OnUpdate = ActionMoveItemDownUpdate
-    end
-    object ActionActOnTopSandbox: TAction
-      AutoCheck = True
-      Caption = 'RsActOnTopSandbox'
-      OnUpdate = ActionActOnTopSandboxUpdate
     end
   end
   object PopupMenuActions: TPopupMenu

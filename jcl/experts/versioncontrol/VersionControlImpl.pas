@@ -36,7 +36,10 @@ uses
   SysUtils, Classes, Graphics, Controls, Menus, ActnList, Dialogs,
   ToolsAPI,
 {$IFNDEF COMPILER8_UP}
-  Idemenuaction, // dependency walker reports this class in unit Idemenuaction in designide.bpl
+  Idemenuaction, // dependency walker reports a class TPopupAction in
+  // unit Idemenuaction in designide.bpl used by the IDE to display tool buttons
+  // with a drop down menu, this class seems to have the same interface
+  // as TControlAction defined in Controls.pas for newer versions of Delphi
 {$ENDIF COMPILER8_UP}
   JclOtaUtils, JclVersionCtrlCommonOptions;
 
@@ -354,15 +357,6 @@ resourcestring
 
   RsSvnMenuItemNotInserted = 'Can''t insert the ''%s'' menu item';
   RsENoToolsMenuItem = 'Tools menu item not found';
-  RsTortoiseProcNotFound = 'TortoiseProc could not be found.'
-    + #13#10'This probably means that TortoiseSVN is not installed.';
-  RsENoActionServices = 'Unable to get Borland Action Services';
-  RsErrorClosingFile = 'Error closing file: %s.'
-    + #13#10#13#10'%s'#13#10#13#10'Reloading of modified files has been aborted!';
-  RsErrorClosingDeletedFile = 'the file has been Deleted and does not need to be reloaded';
-  RsErrorClosingModifiedFile = 'the file has been Modified and should be reloaded';
-  RsErrorReOpeningFile = 'Error re-opening file:'#13#10#13#10'%s';
-  RsNotUnderVersionControl = 'This folder is not under Subversion Version Control.';
   RsVersionControlSheet = 'Version control';
   RsActionCategory = 'Jedi Code Library';
 
@@ -1815,6 +1809,10 @@ end.
 // History:
 
 // $Log$
+// Revision 1.5  2006/01/15 20:58:03  outchy
+// Delphi 5 support: no TCustomAction.AutoCheck property
+// Removed unused resources
+//
 // Revision 1.4  2006/01/15 11:33:21  outchy
 // cvs support in version control expert
 // version control expert integration in the installer
