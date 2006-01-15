@@ -270,6 +270,7 @@ resourcestring
   RsJCLIdeThreadNames    = 'Displaying thread names in Thread Status window';
   RsJCLIdeUses           = 'Uses Wizard';
   RsJCLSimdView          = 'Debug window for XMM registers';
+  RsJCLVersionControl    = 'Version control';
 
 // Hints
   RsHintTarget = 'Installation target';
@@ -311,6 +312,7 @@ resourcestring
   RsHintJclExpertsThreadNames = 'Display thread names in Thread Status window IDE extension.';
   RsHintJclExpertUses = 'Install IDE Uses Wizard.';
   RsHintJclExpertSimdView = 'Install a debug window of XMM registers (used by SSE instructions)';
+  RsHintJclExpertVersionControl = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
   RsHintJclCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
     'the source paths.';
   RsHintJclExcDialog = 'Add selected Exception dialogs to the Object Repository.';
@@ -428,6 +430,9 @@ const
       (Parent: ioJclExperts;             // ioJclExpertSimdView
        Caption: RsJCLSimdView;
        Hint: RsHintJclExpertSimdView),
+      (Parent: ioJclExperts;             // ioJclExpertVersionControl
+       Caption: RsJclVersionControl;
+       Hint: RsHintJclExpertVersionControl),
       (Parent: ioJclPackages;            // ioJclCopyPackagesHppFiles
        Caption: RsCopyPackagesHppFiles;
        Hint: RsHintJclCopyPackagesHppFiles),
@@ -485,9 +490,10 @@ const
   JclIdeThrNamesDpk = 'JclThreadNameExpert';
   JclIdeUsesDpk     = 'JclUsesExpert';
   JclIdeSimdViewDpk = 'JclSIMDViewExpert';
+  JclIdeVersionControlDpk = 'JclVersionControlExpert';
   JclBdsExpertDpr   = 'JclBdsExpert';
 
-  ExpertPaths: array[ioJclExperts..ioJclExpertSimdView] of string =
+  ExpertPaths: array[ioJclExperts..ioJclExpertVersionControl] of string =
     (
       JclIdeBaseDpk,
       JclIdeDebugDpk,
@@ -495,7 +501,8 @@ const
       JclIdeFavoriteDpk,
       JclIdeThrNamesDpk,
       JclIdeUsesDpk,
-      JclIdeSimdViewDpk
+      JclIdeSimdViewDpk,
+      JclIdeVersionControlDpk
     );
 
   JclSrcDirOS       = 'windows';
@@ -1303,6 +1310,7 @@ begin
     AddNode(ExpertsNode, ioJclExpertSimdView, ExpertOptions);
   end;
   AddNode(ExpertsNode, ioJclExpertFavorite, ExpertOptions);
+  AddNode(ExpertsNode, ioJclExpertVersionControl, [goNoAutoCheck]);
   if (Target.RadToolKind <> brBorlandDevStudio) and (Target.VersionNumber <= 6) then
     AddNode(ExpertsNode, ioJclExpertThreadNames, ExpertOptions);
   {$ENDIF MSWINDOWS}
@@ -1395,7 +1403,7 @@ begin
       end;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
-    ioJclExperts..ioJclExpertSimdView:
+    ioJclExperts..ioJclExpertVersionControl:
       Result := InstallExpert(Option);
     // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
     // ioJclExcDialog:
@@ -1452,7 +1460,7 @@ begin
           Result := Result and UninstallRunTimePackage('JclVcl');
       end;
     {$IFDEF MSWINDOWS}
-    ioJclExperts..ioJclExpertSimdView:
+    ioJclExperts..ioJclExpertVersionControl:
       Result := UninstallExpert(Option);
     // ioJclCopyPackagesHppFiles:
     // ioJclExcDialog:
@@ -1795,7 +1803,8 @@ begin
     ioJclExpertFavorite,
     ioJclExpertThreadNames,
     ioJclExpertUses,
-    ioJclExpertSimdView:
+    ioJclExpertSimdView,
+    ioJclExpertVersionControl:
       Result := 5;
     ioJclCopyPackagesHppFiles:
       Result := 2;
@@ -1871,13 +1880,14 @@ function TJclInstallation.UninstallExpert(const Option: TJediInstallOption): Boo
 
   function OldExpertBPLFileName(const BaseName: string): string;
   const
-    OldExperts: array[ioJclExpertDebug..ioJclExpertSimdView] of string = (
+    OldExperts: array[ioJclExpertDebug..ioJclExpertVersionControl] of string = (
       'JclDebugIde%s0.bpl',
       'ProjectAnalyzer%s0.bpl',
       'IdeOpenDlgFavorite%s0.bpl',
       'ThreadNameExpert%s0.bpl',
       'JediUses%s0.bpl',
-      'JclSIMDView%s.bpl');
+      'JclSIMDView%s.bpl',
+      'JclVersionControl');
 
   var
     I: TJediInstallOption;
@@ -2291,6 +2301,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.87  2006/01/15 00:51:22  outchy
+// cvs support in version control expert
+// version control expert integration in the installer
+//
 // Revision 1.86  2006/01/13 16:52:00  outchy
 // Warning of packages are not installed.
 //

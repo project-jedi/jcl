@@ -63,6 +63,7 @@ type
       ioJclExpertThreadNames,
       ioJclExpertUses,
       ioJclExpertSimdView,
+      ioJclExpertVersionControl,
       ioJclCopyPackagesHppFiles,
       ioJclExcDialog,
       ioJclExcDialogVCL,
@@ -171,6 +172,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2006/01/15 00:51:22  outchy
+// cvs support in version control expert
+// version control expert integration in the installer
+//
 // Revision 1.18  2005/12/26 18:03:41  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
