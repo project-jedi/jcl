@@ -607,7 +607,7 @@ begin
   else {'n', 'N':}
     FloatFormat := ffNumber;
   end;
-  Result := @Buffer;
+  Result := PAnsiChar(Buffer);
   // Prec is interpeted differently depending on the format.
   if FloatFormat in [ffGeneral, ffExponent] then
   begin
@@ -878,6 +878,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2006/01/15 12:29:49  outchy
+// IT3393:  WideFormat not formating because of a dandling pointer
+//
 // Revision 1.9  2005/03/11 20:31:05  rrossmair
 // - refactored (and tested with D5 & D9) by Rob Kennedy
 //
