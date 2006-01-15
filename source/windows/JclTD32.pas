@@ -502,11 +502,21 @@ type
 
   TSymbolUdtInfo = packed record
     TypeIndex: DWORD;   // Type index of the type
-    Attributes: Word;   // istag = $02: True if this is a tag (not a typedef)
-                        // isnest = $01: True if the type is a nested type (its name
+    Properties: Word;   // isTag:1 True if this is a tag (not a typedef)
+                        // isNest:1 True if the type is a nested type (its name
                         // will be 'class_name::type_name' in that case)
     NameIndex: DWORD;   // Name index of the type
     Reserved: DWORD;
+  end;
+
+  TSymbolVftPathInfo = packed record
+    Offset: DWORD;      // Offset portion of start of the virtual function table
+    Segment: Word;      // Segment portion of the virtual function table
+    Reserved: Word;
+    RootIndex: DWORD;   // The type index of the class at the root of the path
+    PathIndex: DWORD;   // Type index of the record describing the base class
+                        // path from the root to the leaf class for the virtual
+                        // function table
   end;
 
 type
@@ -530,6 +540,8 @@ type
         (Constant: TSymbolConstantInfo);
       SYMBOL_TYPE_UDT:
         (Udt: TSymbolUdtInfo);
+      SYMBOL_TYPE_VFTPATH32:
+        (VftPath: TSymbolVftPathInfo);
   end;
 
   PSymbolInfos = ^TSymbolInfos;
@@ -662,6 +674,7 @@ type
   TJclLocalProcSymbolInfo = class(TJclProcSymbolInfo);
   TJclGlobalProcSymbolInfo = class(TJclProcSymbolInfo);
 
+  { not used by Delphi }
   TJclObjNameSymbolInfo = class(TJclSymbolInfo)
   private
     FSignature: DWORD;
@@ -733,15 +746,27 @@ type
   private
     FTypeIndex: DWORD;
     FNameIndex: DWORD;
-    FIsTag: Boolean;
-    FIsNested: Boolean;
+    FProperties: Word;
   protected
     constructor Create(pSymInfo: PSymbolInfo); override;
   public
     property NameIndex: DWORD read FNameIndex;
     property TypeIndex: DWORD read FTypeIndex;
-    property IsTag: Boolean read FIsTag;
-    property IsNested: Boolean read FIsNested;
+    property Properties: Word read FProperties;
+  end;
+
+  { not used by Delphi }
+  TJclVftPathSymbolInfo = class(TJclSymbolInfo)
+  private
+    FRootIndex: DWORD;
+    FPathIndex: DWORD;
+    FOffset: DWORD;
+  protected
+    constructor Create(pSymInfo: PSymbolInfo); override;
+  public
+    property RootIndex: DWORD read FRootIndex;
+    property PathIndex: DWORD read FPathIndex;
+    property Offset: DWORD read FOffset;
   end;
 
   // TD32 parser
@@ -765,6 +790,7 @@ type
   protected
     procedure Analyse;
     procedure AnalyseNames(const pSubsection: Pointer; const Size: DWORD); virtual;
+    procedure AnalyseGlobalTypes(const pTypes: Pointer; const Size: DWORD); virtual;
     procedure AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD); virtual;
     procedure AnalyseModules(pModInfo: PModuleInfo; const Size: DWORD); virtual;
     procedure AnalyseSourceModules(pSrcModInfo: PSourceModuleInfo; const Size: DWORD); virtual;
@@ -1033,8 +1059,21 @@ begin
   begin
     FNameIndex := Udt.NameIndex;
     FTypeIndex := Udt.TypeIndex;
-    FIsTag := Udt.Attributes and $02 <> 0;
-    FIsNested := Udt.Attributes and $01 <> 0;
+    FProperties := Udt.Properties;
+  end;
+end;
+
+//=== { TJclVftPathSymbolInfo } ==============================================
+
+constructor TJclVftPathSymbolInfo.Create(pSymInfo: PSymbolInfo);
+begin
+  Assert(Assigned(pSymInfo));
+  inherited Create(pSymInfo);
+  with pSymInfo^ do
+  begin
+    FRootIndex := VftPath.RootIndex;
+    FPathIndex := VftPath.PathIndex;
+    FOffset := VftPath.Offset;
   end;
 end;
 
@@ -1089,8 +1128,8 @@ begin
             AnalyseSourceModules(pSubsection, Size);
           SUBSECTION_TYPE_NAMES:
             AnalyseNames(pSubsection, Size);
-          {SUBSECTION_TYPE_TYPES:
-            AnalyseTypes(pSubsection, Size);}
+          SUBSECTION_TYPE_GLOBAL_TYPES:
+            AnalyseGlobalTypes(pSubsection, Size);
         else
           AnalyseUnknownSubSection(pSubsection, Size);
         end;
@@ -1124,6 +1163,117 @@ begin
   end;
 end;
 
+const
+  // Leaf indices for type records that can be referenced from symbols
+  LF_MODIFIER  = $0001;
+  LF_POINTER   = $0002;
+  LF_ARRAY     = $0003;
+  LF_CLASS     = $0004;
+  LF_STRUCTURE = $0005;
+  LF_UNION     = $0006;
+  LF_ENUM      = $0007;
+  LF_PROCEDURE = $0008;
+  LF_MFUNCTION = $0009;
+  LF_VTSHAPE   = $000a;
+  LF_COBOL0    = $000b;
+  LF_COBOL1    = $000c;
+  LF_BARRAY    = $000d;
+  LF_LABEL     = $000e;
+  LF_NULL      = $000f;
+  LF_NOTTRAN   = $0010;
+  LF_DIMARRAY  = $0011;
+  LF_VFTPATH   = $0012;
+
+  // Leaf indices for type records that can be referenced from other type records
+  LF_SKIP       = $0200;
+  LF_ARGLIST    = $0201;
+  LF_DEFARG     = $0202;
+  LF_LIST       = $0203;
+  LF_FIELDLIST  = $0204;
+  LF_DERIVED    = $0205;
+  LF_BITFIELD   = $0206;
+  LF_METHODLIST = $0207;
+  LF_DIMCONU    = $0208;
+  LF_DIMCONLU   = $0209;
+  LF_DIMVARU    = $020a;
+  LF_DIMVARLU   = $020b;
+  LF_REFSYM     = $020c;
+
+  // Leaf indices for fields of complex lists:
+  LF_BCLASS     = $0400;
+  LF_VBCLASS    = $0401;
+  LF_IVBCLASS   = $0402;
+  LF_ENUMERATE  = $0403;
+  LF_FRIENDFCN  = $0404;
+  LF_INDEX      = $0405;
+  LF_MEMBER     = $0406;
+  LF_STMEMBER   = $0407;
+  LF_METHOD     = $0408;
+  LF_NESTTYPE   = $0409;
+  LF_VFUNCTAB   = $040a;
+  LF_FRIENDCLS  = $040b;
+
+  // Leaf indices for numeric fields of symbols and type records:
+  LF_NUMERIC    = $8000;
+  LF_CHAR       = $8001;
+  LF_SHORT      = $8002;
+  LF_USHORT     = $8003;
+  LF_LONG       = $8004;
+  LF_ULONG      = $8005;
+  LF_REAL32     = $8006;
+  LF_REAL64     = $8007;
+  LF_REAL80     = $8008;
+  LF_REAL128    = $8009;
+  LF_QUADWORD   = $800a;
+  LF_UQUADWORD  = $800b;
+  LF_REAL48     = $800c;
+
+  LF_PAD0  = $f0;
+  LF_PAD1  = $f1;
+  LF_PAD2  = $f2;
+  LF_PAD3  = $f3;
+  LF_PAD4  = $f4;
+  LF_PAD5  = $f5;
+  LF_PAD6  = $f6;
+  LF_PAD7  = $f7;
+  LF_PAD8  = $f8;
+  LF_PAD9  = $f9;
+  LF_PAD10 = $fa;
+  LF_PAD11 = $fb;
+  LF_PAD12 = $fc;
+  LF_PAD13 = $fd;
+  LF_PAD14 = $fe;
+  LF_PAD15 = $ff;
+
+type
+  PSymbolTypeInfo = ^TSymbolTypeInfo;
+  TSymbolTypeInfo = packed record
+    TypeId: DWORD;
+    NameIndex: DWORD;  // 0 if unnamed
+    Size: Word;        //  size in bytes of the object
+    MaxSize: Byte;
+    ParentIndex: DWORD;
+  end;
+
+const
+  TID_VOID   = $00;       // Unknown or no type
+  TID_LSTR   = $01;       // Basic Literal string
+  TID_DSTR   = $02;       // Basic Dynamic string
+  TID_PSTR   = $03;       // Pascal style string
+
+procedure TJclTD32InfoParser.AnalyseGlobalTypes(const pTypes: Pointer; const Size: DWORD);
+var
+  pTyp: PSymbolTypeInfo;
+begin
+  pTyp := PSymbolTypeInfo(pTypes);
+  repeat
+    case pTyp.TypeId of
+      TID_VOID: ;
+    end;
+    pTyp := PSymbolTypeInfo(DWORD(pTyp) + pTyp.Size + SizeOf(pTyp^));
+  until DWORD(pTyp) >= DWORD(pTypes) + Size;
+end;
+
 procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
   Offset: DWORD;
@@ -1155,6 +1305,8 @@ begin
         Symbol := TJclConstantSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_UDT:
         Symbol := TJclUdtSymbolInfo.Create(pInfo);
+      SYMBOL_TYPE_VFTPATH32:
+        Symbol := TJclVftPathSymbolInfo.Create(pInfo);
     else
       Symbol := nil;
     end;
@@ -1503,6 +1655,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2006/01/15 19:11:42  ahuser
+// Some new data from td32 files
+//
 // Revision 1.14  2005/09/21 19:31:27  ahuser
 // Added further symbol types
 //
