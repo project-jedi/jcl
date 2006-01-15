@@ -353,6 +353,15 @@ procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Int
 function ArrayOf(List: TStrings): TDynStringArray; overload;
 {$ENDIF CLR}
 
+{$IFDEF COMPILER5} // missing Delphi 5 functions
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+function TryStrToInt64(const S: string; out Value: Int64): Boolean;
+function TryStrToFloat(const S: string; out Value: Extended): Boolean; overload;
+function TryStrToFloat(const S: string; out Value: Double): Boolean; overload;
+function TryStrToFloat(const S: string; out Value: Single): Boolean; overload;
+function TryStrToCurr(const S: string; out Value: Currency): Boolean;
+{$ENDIF COMPILER5}
+
 // Exceptions
 type
   EJclStringError = EJclError;
@@ -4130,6 +4139,53 @@ begin
 end;
 {$ENDIF CLR}
 
+{$IFDEF COMPILER5} // missing Delphi 5 functions
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+var
+  Err: Integer;
+begin
+  Val(S, Value, Err);
+  Result := Err = 0;
+end;
+
+function TryStrToInt64(const S: string; out Value: Int64): Boolean;
+var
+  Err: Integer;
+begin
+  Val(S, Value, Err);
+  Result := Err = 0;
+end;
+
+function TryStrToFloat(const S: string; out Value: Extended): Boolean;
+begin
+  Result := TextToFloat(PChar(S), Value, fvExtended);
+end;
+
+function TryStrToFloat(const S: string; out Value: Double): Boolean;
+var
+  F: Extended;
+begin
+  Result := TryStrToFloat(S, F);
+  if Result then
+    Value := F;
+end;
+
+function TryStrToFloat(const S: string; out Value: Single): Boolean;
+var
+  F: Extended;
+begin
+  Result := TryStrToFloat(S, F);
+  if Result then
+    Value := F;
+end;
+
+function TryStrToCurr(const S: string; out Value: Currency): Boolean;
+begin
+  Result := TextToFloat(PChar(S), Value, fvCurrency);
+end;
+{$ENDIF COMPILER5}
+
+
 {$IFNDEF CLR}
 initialization
   LoadCharTypes;  // this table first
@@ -4174,6 +4230,10 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.46  2006/01/15 19:10:44  ahuser
+// Added RegRead*Ex functions
+// RegRead*Def functions do not raise exceptions anymore (makes debugging easier)
+//
 // Revision 1.45  2005/11/22 07:02:37  marquardt
 // Fixed StrSmartCase uppercasing delimiters if they happen to be letters
 //
