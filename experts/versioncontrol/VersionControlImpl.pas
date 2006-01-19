@@ -1652,7 +1652,7 @@ function TJclVersionControlPlugin.ExecuteAction(const FileName: string;
 begin
   case Action of
     vcaContextMenu:
-      Result := DisplayContextMenu(Application.Handle, FileName, Mouse.CursorPos);
+      Result := DisplayContextMenu(0, FileName, Mouse.CursorPos);
     vcaExploreSandbox:
       Result := OpenFolder(FileName, Application.Handle, True);
     vcaProperties,
@@ -1809,6 +1809,9 @@ end.
 // History:
 
 // $Log$
+// Revision 1.6  2006/01/19 07:58:11  elahn
+// Bugfix - ContextMenu not appearing at Mouse.CursorPos
+//
 // Revision 1.5  2006/01/15 20:58:03  outchy
 // Delphi 5 support: no TCustomAction.AutoCheck property
 // Removed unused resources
