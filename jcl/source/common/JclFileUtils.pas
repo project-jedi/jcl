@@ -2845,12 +2845,24 @@ end;
 {$ENDIF ~CLR}
 
 function FileExists(const FileName: string): Boolean;
+{$IFNDEF CLR}
+{$IFDEF MSWINDOWS}
+var
+  Attr: Cardinal;
+{$ENDIF MSWINDOWS}
+{$ENDIF CLR}
 begin
   {$IFDEF CLR}
   Result := &File.Exists(FileName);
   {$ELSE ~CLR}
+  {$IFDEF MSWINDOWS}
+  // FileGetSize is very slow, GetFileAttributes is much faster
+  Attr := GetFileAttributes(Pointer(Filename));
+  Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY = 0);
+  {$ELSE}
   // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
   Result := FileGetSize(FileName) <> -1;
+  {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
 end;
 
@@ -5858,6 +5870,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.57  2006/01/25 20:58:24  ahuser
+// Faster FileExists for Win32
+//
 // Revision 1.56  2005/12/29 10:35:54  outchy
 // VolumeID is now deprecated.
 //
