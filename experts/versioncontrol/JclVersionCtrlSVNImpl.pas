@@ -82,8 +82,12 @@ const
   JclVersionCtrlSVNUpdateToParam = '/rev';
   JclVersionCtrlSVNUnlockVerb = 'unlock';
   JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
-  JclVersionCtrlSVNDirectory = '.svn\';
+  JclVersionCtrlSVNDirectory1 = '.svn\';
+  JclVersionCtrlSVNDirectory2 = '_svn\';  
   JclVersionCtrlSVNEntryFile = 'entries';
+
+  JclVersionCtrlSVNDirectories: array [0..1] of string =
+   ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 ); 
 
 resourcestring
   RsVersionCtrlSVNName = 'subversion';
@@ -201,40 +205,44 @@ end;
 function TJclVersionControlSVN.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 var
-  SvnDirectory: string;
+  EntryFile: string;
   Entries: TStrings;
-  Index: Integer;
+  IndexDir, IndexEntry: Integer;
   FileNameValue: string;
-  Added: Boolean;
 begin
   Result := inherited GetFileActions(FileName);
 
-  SvnDirectory := PathAddSeparator(ExtractFilePath(FileName)) + JclVersionCtrlSVNDirectory;
-  FileNameValue := Format('NAME="%s"', [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
-
-  if DirectoryExists(SvnDirectory) and Enabled then
+  if Enabled then
   begin
     Entries := TStringList.Create;
     try
-      Entries.LoadFromFile(SvnDirectory + JclVersionCtrlSVNEntryFile);
-      Added := False;
-      for Index := 0 to Entries.Count - 1 do
-        if Pos(FileNameValue, AnsiUpperCase(Entries.Strings[Index])) > 0 then
-      begin
-        Added := True;
-        Break;
-      end;
+      FileNameValue := Format('NAME="%s"', [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
 
-      if Added then
-      // TODO: check modifications
-        Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
-          vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaStatus, vcaTag,
-          vcaUpdate, vcaUpdateTo, vcaUnlock]
-      else
-        Result := Result + [vcaAdd];
+      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+      begin
+        EntryFile := PathAddSeparator(ExtractFilePath(FileName))
+          + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNEntryFile;
+
+        if FileExists(EntryFile) then
+        begin
+          Entries.LoadFromFile(EntryFile);
+
+          for IndexEntry := 0 to Entries.Count - 1 do
+            if Pos(FileNameValue, AnsiUpperCase(Entries.Strings[IndexEntry])) > 0 then
+          begin
+            // TODO: check modifications
+            Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+              vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaStatus, vcaTag,
+              vcaUpdate, vcaUpdateTo, vcaUnlock];
+            FreeAndNil(Entries);
+            Exit;
+          end;
+        end;
+      end;
     finally
       Entries.Free;
     end;
+    Result := Result + [vcaAdd];
   end;
 end;
 
@@ -320,20 +328,27 @@ function TJclVersionControlSVN.GetSandboxActions(
   const SdBxName: string): TJclVersionControlActions;
 var
   SvnDirectory: string;
+  IndexDir: Integer;
 begin
-  Result := inherited GetSandboxActions(SdBxName) + [vcaAddSandbox];
-
-  SvnDirectory := sdBxName + JclVersionCtrlSVNDirectory;
+  Result := inherited GetSandboxActions(SdBxName);
 
   if Enabled then
   begin
-    if DirectoryExists(SvnDirectory) then
-      Result := Result + [vcaAddSandbox, vcaBranchSandbox, vcaCommitSandbox,
-        vcaLogSandbox, vcaLockSandbox, vcaMergeSandbox, vcaRevertSandbox,
-        vcaStatusSandbox, vcaTagSandBox, vcaUpdateSandbox, vcaUpdateSandboxTo,
-        vcaUnlockSandbox]
-    else
-      Result := Result + [vcaCheckOutSandbox];
+    for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+    begin
+      SvnDirectory := sdBxName + JclVersionCtrlSVNDirectories[IndexDir];
+
+      if DirectoryExists(SvnDirectory) then
+      begin
+        Result := Result + [vcaAddSandbox, vcaBranchSandbox, vcaCommitSandbox,
+          vcaLogSandbox, vcaLockSandbox, vcaMergeSandbox, vcaRevertSandbox,
+          vcaStatusSandbox, vcaTagSandBox, vcaUpdateSandbox, vcaUpdateSandboxTo,
+          vcaUnlockSandbox];
+        Exit;
+      end;
+    end;
+    // not in a sandbox
+    Result := Result + [vcaCheckOutSandbox];
   end;
 end;
 
@@ -341,7 +356,7 @@ function TJclVersionControlSVN.GetSandboxNames(const FileName: string;
   SdBxNames: TStrings): Boolean;
 var
   DirectoryName: string;
-  Index: Integer;
+  IndexDir, IndexFileName: Integer;
 begin
   Result := True;
 
@@ -350,19 +365,22 @@ begin
     SdBxNames.Clear;
 
     if Enabled then
-      for Index := Length(FileName) downto 1 do
-        if FileName[Index] = PathSeparator then
+      for IndexFileName := Length(FileName) downto 1 do
+        if FileName[IndexFileName] = PathSeparator then
     begin
-      DirectoryName := Copy(FileName, 1, Index);
-      if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectory) then
-        SdBxNames.Add(DirectoryName);
+      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+      begin
+        DirectoryName := Copy(FileName, 1, IndexFileName) + JclVersionCtrlSVNDirectories[IndexDir];
+        if DirectoryExists(DirectoryName) then
+          SdBxNames.Add(DirectoryName);
+      end;
     end;
-
-    if SdBxNames.Count = 0 then
-      Result := inherited GetSandboxNames(FileName, SdBxNames);
   finally
     SdBxNames.EndUpdate;
   end;
+  
+  if SdBxNames.Count = 0 then
+    Result := inherited GetSandboxNames(FileName, SdBxNames);
 end;
 
 initialization
@@ -392,6 +410,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2006/01/25 20:33:27  outchy
+// Added _svn as a valid subdirectory
+//
 // Revision 1.1  2006/01/15 00:51:22  outchy
 // cvs support in version control expert
 // version control expert integration in the installer
