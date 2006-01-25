@@ -189,7 +189,7 @@ end;
 function TJclVersionControlCVS.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 var
-  CvsDirectory: string;
+  CvsDirectory, EntriesFileName: string;
   Entries: TStrings;
   Index: Integer;
   FileNameLine: string;
@@ -204,21 +204,26 @@ begin
   begin
     Entries := TStringList.Create;
     try
-      Entries.LoadFromFile(CvsDirectory + JclVersionCtrlCVSEntriesFile);
-      Added := False;
-      for Index := 0 to Entries.Count - 1 do
-        if Pos(FileNameLine, AnsiUpperCase(Entries.Strings[Index])) = 1 then
-      begin
-        Added := True;
-        Break;
-      end;
+      EntriesFileName := CvsDirectory + JclVersionCtrlCVSEntriesFile;
 
-      if Added then
-      // TODO: check modifications
-        Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
-          vcaLog, vcaLock, vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock]
-      else
-        Result := Result + [vcaAdd];
+      if FileExists(EntriesFileName) then
+      begin
+        Entries.LoadFromFile(EntriesFileName);
+        Added := False;
+        for Index := 0 to Entries.Count - 1 do
+          if Pos(FileNameLine, AnsiUpperCase(Entries.Strings[Index])) = 1 then
+        begin
+          Added := True;
+          Break;
+        end;
+
+        if Added then
+        // TODO: check modifications
+          Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+            vcaLog, vcaLock, vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock]
+        else
+          Result := Result + [vcaAdd];
+      end;
     finally
       Entries.Free;
     end;
@@ -292,7 +297,7 @@ function TJclVersionControlCVS.GetSandboxActions(
 var
   CvsDirectory: string;
 begin
-  Result := inherited GetSandboxActions(SdBxName) + [vcaAddSandbox];
+  Result := inherited GetSandboxActions(SdBxName);
 
   CvsDirectory := sdBxName + JclVersionCtrlCvsDirectory;
 
@@ -362,6 +367,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2006/01/25 20:32:29  outchy
+// Fixed issue with invalid cvs subdirectory
+//
 // Revision 1.1  2006/01/15 00:51:22  outchy
 // cvs support in version control expert
 // version control expert integration in the installer
