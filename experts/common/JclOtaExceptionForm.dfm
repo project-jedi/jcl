@@ -1,10 +1,10 @@
 object JclExpertExceptionForm: TJclExpertExceptionForm
   Left = 157
   Top = 183
+  Width = 559
+  Height = 463
   BorderIcons = [biSystemMenu]
   Caption = 'RsReportFormCaption'
-  ClientHeight = 436
-  ClientWidth = 551
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,7 +12,7 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
