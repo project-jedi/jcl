@@ -74,7 +74,7 @@ const
   JclVersionCtrlSVNLockVerb = 'lock';
   JclVersionCtrlSVNMergeVerb = 'merge';
   JclVersionCtrlSVNRenameVerb = 'rename';
-  JclVersionCtrlSVNRepoBrowserVerb = 'revisiongraph';
+  JclVersionCtrlSVNRepoBrowserVerb = 'repobrowser';
   JclVersionCtrlSVNRevertVerb = 'revert';
   JclVersionCtrlSVNStatusVerb = 'repostatus';
   JclVersionCtrlSVNTagVerb = 'copy';
@@ -232,8 +232,8 @@ begin
           begin
             // TODO: check modifications
             Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
-              vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaStatus, vcaTag,
-              vcaUpdate, vcaUpdateTo, vcaUnlock];
+              vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
+              vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
             FreeAndNil(Entries);
             Exit;
           end;
@@ -410,6 +410,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2006/01/26 06:15:17  outchy
+// Repository browser now works
+//
 // Revision 1.2  2006/01/25 20:33:27  outchy
 // Added _svn as a valid subdirectory
 //
