@@ -765,21 +765,21 @@ end;
 
 function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
 var
-  FileExtension: string;
+  FileName, FileExtension, ProjectContent: string;
   Index, SourceNodePosition: Integer;
   ProjectFile: TStrings;
-  ProjectContent: string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
 
-  FileExtension := ExtractFileExt(Project.FileName);
+  FileName := Project.FileName;
+  FileExtension := ExtractFileExt(FileName);
 
-  if AnsiSameText(FileExtension, BDSPROJExtension) then
+  if AnsiSameText(FileExtension, BDSPROJExtension) and FileExists(FileName) then
   begin
     ProjectFile := TStringList.Create;
     try
-      ProjectFile.LoadFromFile(Project.FileName);
+      ProjectFile.LoadFromFile(FileName);
       ProjectContent := ProjectFile.Text;
       SourceNodePosition := AnsiPos('</Source', ProjectContent);
       for Index := SourceNodePosition-1 downto 1 do
@@ -1133,6 +1133,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2006/02/02 19:57:08  outchy
+// IT3464: EFOpenError when the bdsproj is not on drive
+//
 // Revision 1.16  2006/01/15 19:14:41  ahuser
 // Delphi 7 JCL Option bugfix and layout
 //
