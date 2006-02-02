@@ -69,10 +69,11 @@ type
     function CompileExpert(const Name: string; InstallExpert: Boolean): Boolean;
     {$ENDIF MSWINDOWS}
     function CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
+    function CompilePackages: Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
     procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
     function UninstallPackage(const Name: string): Boolean;
-    function UninstallRunTimePackage(const BaseName: string): Boolean;
+    function UninstallPackages: Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
     function LogFileName: string;
     procedure MakeDemo(Index: Integer);
@@ -482,6 +483,10 @@ const
   VclDlgSndFileName = 'ExceptDlgMail.pas';
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
+
+  JclDpk     = 'Jcl';
+  JclVclDpk  = 'JclVcl';
+  JclVClxDpk = 'JclVClx';
 
   JclIdeBaseDpk     = 'JclBaseExpert';
   JclIdeDebugDpk    = 'JclDebugExpert';
@@ -1393,14 +1398,7 @@ begin
       (Target as TJclBDSInstallation).DualPackageInstallation := True;
     {$ENDIF MSWINDOWS}
     ioJclPackages:
-      begin
-        Result := CompilePackage(FullPackageFileName(Target, 'Jcl'), False);
-        if Target.SupportsVisualCLX then
-          Result := Result and CompilePackage(FullPackageFileName(Target, 'JclVClx'), False);
-        if (Target.VersionNumber >= 6)
-          or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
-          Result := Result and CompilePackage(FullPackageFileName(Target, 'JclVcl'), False);
-      end;
+      Result := CompilePackages;
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
     ioJclExperts..ioJclExpertVersionControl:
@@ -1452,13 +1450,7 @@ begin
     ioJclMakeDebug: { TODO : Delete generated files  };
     ioJclCopyHppFiles: { TODO : Delete copied files };
     ioJclPackages:
-      begin
-        Result := UninstallRunTimePackage('Jcl');
-        if Target.SupportsVisualCLX then
-          Result := Result and UninstallRunTimePackage('JclVClx');
-        if Target.VersionNumber >= 6 then
-          Result := Result and UninstallRunTimePackage('JclVcl');
-      end;
+      Result := UninstallPackages;
     {$IFDEF MSWINDOWS}
     ioJclExperts..ioJclExpertVersionControl:
       Result := UninstallExpert(Option);
@@ -1667,7 +1659,13 @@ begin
     if InstallPackage then
       Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath)
     else
+    begin
+      {$IFNDEF KYLIX}
+      if Target.RadToolKind = brBorlandDevStudio then
+        (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
+      {$ENDIF KYLIX}
       Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
+    end;
   end
   else if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
@@ -1678,6 +1676,10 @@ begin
     else
       Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
     {$ELSE}
+
+    if Target.RadToolKind = brBorlandDevStudio then
+      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
+
     // to satisfy JVCL (and eventually other libraries), create a .dcp file;
     // Note: it is put out to .bpl path to make life easier for JVCL
     DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
@@ -1692,12 +1694,25 @@ begin
     {$ENDIF}
   end
   else
+  begin
     Result := False;
+    WriteLog(Format(LineBreak + 'No personality supports the extension %s', [ExtractFileExt(PackageFileName)]));
+  end;
 
   if Result then
     WriteLog('...done.')
   else
     InstallFailedOn(PackageFileName);
+end;
+
+function TJclInstallation.CompilePackages: Boolean;
+begin
+  Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
+  if Target.SupportsVisualCLX then
+    Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
+  if (Target.VersionNumber >= 6)
+    or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
+    Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk), False);
 end;
 
 function TJclInstallation.LogFileName: string;
@@ -1869,10 +1884,25 @@ var
   PackageFileName: string;
 begin
   PackageFileName := Distribution.Path + Format(Name, [Target.VersionNumberStr]);
+
+  {$IFNDEF KYLIX}
+  if Target.RadToolKind = brBorlandDevStudio then
+    (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(StoredBPLPath, PackageFileName));
+  {$ENDIF KYLIX}
+
   Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
   { TODO : evtl. remove .HPP Files }
   if Result then
     WriteLog(Format(LineBreak + 'Removed package %s.', [Name]));
+end;
+
+function TJclInstallation.UninstallPackages: Boolean;
+begin
+  Result := UninstallPackage(FullPackageFileName(Target, JclDpk));
+  if Target.SupportsVisualCLX then
+    Result := Result and UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
+  if Target.VersionNumber >= 6 then
+    Result := Result and UninstallPackage(FullPackageFileName(Target, JclVclDpk));
 end;
 
 {$IFDEF MSWINDOWS}
@@ -1933,11 +1963,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
-function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
-begin
-  Result := UninstallPackage(FullPackageFileName(Target, BaseName));
-end;
 
 function TJclInstallation.UninstallSelectedOptions: Boolean;
 
@@ -2301,6 +2326,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.88  2006/02/02 20:33:39  outchy
+// Package cache cleaned
+//
 // Revision 1.87  2006/01/15 00:51:22  outchy
 // cvs support in version control expert
 // version control expert integration in the installer

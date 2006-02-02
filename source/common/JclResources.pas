@@ -136,6 +136,9 @@ resourcestring
   RsUnregisteringExpert         = 'Removing from registry expert %s';
   RsUnregistrationOk            = 'Unregistration ok';
   RsUnregistrationFailed        = 'Unregistration failed';
+  RsCleaningPackageCache        = 'Cleaning package cache for %s';
+  RsCleaningOk                  = 'Cleaning ok';
+  RsCleaningFailed              = 'Cleaning failed';
 
 //=== JclCIL =================================================================
 resourcestring
@@ -1703,6 +1706,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.38  2006/02/02 20:33:40  outchy
+// Package cache cleaned
+//
 // Revision 1.37  2005/12/26 18:03:51  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts

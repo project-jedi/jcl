@@ -409,6 +409,7 @@ type
   TJclBorRADToolInstallation = class(TObject)
   private
     FConfigData: TCustomIniFile;
+    FConfigDataLocation: string;
     FGlobals: TStringList;
     FRootDir: string;
     FBinFolderName: string;
@@ -584,6 +585,7 @@ type
     property MapDelete: Boolean read FMapDelete write FMapDelete;
     {$ENDIF MSWINDOWS}
     property ConfigData: TCustomIniFile read FConfigData;
+    property ConfigDataLocation: string read FConfigDataLocation;
     property Globals: TStrings read GetGlobals;
     property Name: string read GetName;
     property Palette: TJclBorRADToolPalette read GetPalette;
@@ -659,6 +661,11 @@ type
     function GetBorlandStudioProjectsDir: string;
     function GetDefaultProjectsDir: string; override;
     {class }function RadToolName: string; override;
+
+    function RegisterPackage(const BinaryFileName, Description: string): Boolean; override;
+    function UnregisterPackage(const BinaryFileName: string): Boolean; override;
+    function CleanPackageCache(const BinaryFileName: string): Boolean;
+
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
   end;
   {$ENDIF MSWINDOWS}
@@ -828,6 +835,7 @@ const
   KnownPackagesKeyName       = 'Known Packages';
   KnownIDEPackagesKeyName    = 'Known IDE Packages';
   ExpertsKeyName             = 'Experts';
+  PackageCacheKeyName        = 'Package Cache';
 
   PaletteKeyName             = 'Palette';
   PaletteHiddenTag           = '.Hidden';
@@ -2247,6 +2255,7 @@ end;
 constructor TJclBorRADToolInstallation.Create;
 begin
   inherited Create;
+  FConfigDataLocation := AConfigDataLocation;
   {$IFDEF KYLIX}
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
   {$ELSE ~KYLIX}
@@ -3737,6 +3746,33 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+function TJclBDSInstallation.CleanPackageCache(
+  const BinaryFileName: string): Boolean;
+var
+  FileName: string;
+begin
+  Result := True;
+
+  if VersionNumber >= 3 then
+  begin
+    FileName := ExtractFileName(BinaryFileName);
+
+    try
+      OutputString(Format(RsCleaningPackageCache, [FileName]));
+
+      Result :=  RegDeleteKeyTree(HKCU, PathAddSeparator(ConfigDataLocation)
+        + PackageCacheKeyName + '\' + FileName);
+
+      if Result then
+        OutputString(RsCleaningOk)
+      else
+        OutputString(RsCleaningFailed);
+    except
+      // trap possible exceptions
+    end;
+  end;
+end;
+
 function TJclBDSInstallation.CompileDelphiPackage(const PackageName, BPLPath,
   DCPPath: string): Boolean;
 begin
@@ -3940,11 +3976,29 @@ begin
     Result := RsBDSName;
 end;
 
+function TJclBDSInstallation.RegisterPackage(const BinaryFileName,
+  Description: string): Boolean;
+begin
+  if VersionNumber >= 3 then
+    CleanPackageCache(BinaryFileName);
+  
+  Result := inherited RegisterPackage(BinaryFileName, Description);
+end;
+
 procedure TJclBDSInstallation.SetDualPackageInstallation(const Value: Boolean);
 begin
   if Value and not (bpBCBuilder32 in Personalities) then
     raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
   FDualPackageInstallation := Value;
+end;
+
+function TJclBDSInstallation.UnregisterPackage(
+  const BinaryFileName: string): Boolean;
+begin
+  if VersionNumber >= 3 then
+    CleanPackageCache(BinaryFileName);
+
+  Result := inherited UnregisterPackage(BinaryFileName);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -4242,6 +4296,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.53  2006/02/02 20:33:40  outchy
+// Package cache cleaned
+//
 // Revision 1.52  2005/12/26 20:18:02  uschuster
 // fixed BDS Update Pack detection
 //
