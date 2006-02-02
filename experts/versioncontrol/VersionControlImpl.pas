@@ -55,6 +55,7 @@ type
     vcaCommitSandbox,     // commit files of the sandbox
     vcaContextMenu,       // explorer context menu of the file
     vcaDiff,              // diff current file
+    vcaExplore,           // explore folder containing current file
     vcaExploreSandbox,    // explore sandbox
     vcaGraph,             // modification graph of the current file
     vcaLog,               // log of the current file
@@ -275,6 +276,8 @@ const
   JclVersionCtrlContextMenuActionName = 'JclVersionCtrlContextMenuCommand';
   // vcaDiff
   JclVersionCtrlDiffActionName = 'JclVersionCtrlDiffCommand';
+  // vcaExplore
+  JclVersionCtrlExploreActionName = 'JclVersionCtrlExploreCommand';
   // vcaExploreSandbox
   JclVersionCtrlExploreSandboxActionName = 'JclVersionCtrlExploreSandboxCommand';
   // vcaGraph
@@ -336,40 +339,41 @@ const
 
 resourcestring
   RsVersionCtrlMenuCaption = 'Jcl &Version';
-  RsVersionCtrlAddCaption = '&Add';                         // vcaAdd
-  RsVersionCtrlAddSandboxCaption = 'Add ...';               // vcaAddSandbox
-  RsVersionCtrlBlameCaption = '&Blame';                     // vcaBlame
-  RsVersionCtrlBranchCaption = 'Branc&h';                   // vcaBranch
-  RsVersionCtrlBranchSandboxCaption = 'Branch ...';         // vcaBranchSandbox
-  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';   // vcaCreateSandbox
-  RsVersionCtrlCommitCaption = 'Co&mmit';                   // vcaCommit
-  RsVersionCtrlCommitSandboxCaption = 'Commit ...';         // vcaCommitSandbox
-  RsVersionCtrlContextMenuCaption = 'Ex&plorer Menu';       // vcaContextMenu
-  RsVersionCtrlDiffCaption = '&Diff';                       // vcaDiff
-  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';      // vcaExploreSandbox
-  RsVersionCtrlGraphCaption = 'Revision Gr&aph';            // vcaGraph
-  RsVersionCtrlLogCaption = '&Log';                         // vcaLog
-  RsVersionCtrlLogSandboxCaption = 'Log ...';               // vcaLogSandbox
-  RsVersionCtrlLockCaption = 'Loc&k';                       // vcaLock
-  RsVersionCtrlLockSandboxCaption = 'Lock ...';             // vcaLockSandbox
-  RsVersionCtrlMergeCaption = '&Merge';                     // vcaMerge
-  RsVersionCtrlMergeSandboxCaption = 'Merge ...';           // vcaMergeSandbox
-  RsVersionCtrlPropertiesCaption = 'Pr&operties';           // vcaProperties
-  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...'; // vcaPropertiesSandbox
-  RsVersionCtrlRenameCaption = '&Rename';                   // vcaRename
-  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';  // vcaRepoBrowser
-  RsVersionCtrlRevertCaption = '&Revert';                   // vcaRevert
-  RsVersionCtrlRevertSandboxCaption = 'Revert ...';         // vcaRevertSandbox
-  RsVersionCtrlStatusCaption = 'S&tatus';                   // vcaStatus
-  RsVersionCtrlStatusSandboxCaption = 'Status ...';         // vcaStatusSandbox
-  RsVersionCtrlTagCaption = 'Ta&g';                         // vcaTag
-  RsVersionCtrlTagSandboxCaption = 'Tag ...';               // vcaTagSandBox
-  RsVersionCtrlUpdateCaption = 'U&pdate';                   // vcaUpdate
-  RsVersionCtrlUpdateSandboxCaption = 'Update ...';         // vcaUpdateSandbox
-  RsVersionCtrlUpdateToCaption = 'Update &to ';             // vcaUpdateTo
-  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';    // vcaUpdateSandboxTo
-  RsVersionCtrlUnlockCaption = '&Unlock';                   // vcaUnlock
-  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';         // vcaUnlockSandbox
+  RsVersionCtrlAddCaption = '&Add';                                 // vcaAdd
+  RsVersionCtrlAddSandboxCaption = 'Add ...';                       // vcaAddSandbox
+  RsVersionCtrlBlameCaption = '&Blame';                             // vcaBlame
+  RsVersionCtrlBranchCaption = 'Branc&h';                           // vcaBranch
+  RsVersionCtrlBranchSandboxCaption = 'Branch ...';                 // vcaBranchSandbox
+  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';           // vcaCreateSandbox
+  RsVersionCtrlCommitCaption = 'Co&mmit';                           // vcaCommit
+  RsVersionCtrlCommitSandboxCaption = 'Commit ...';                 // vcaCommitSandbox
+  RsVersionCtrlContextMenuCaption = 'Co&ntext Menu (right-click)';  // vcaContextMenu
+  RsVersionCtrlDiffCaption = '&Diff';                               // vcaDiff
+  RsVersionCtrlExploreCaption = 'E&xplore Folder';                  // vcaExplore
+  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';              // vcaExploreSandbox
+  RsVersionCtrlGraphCaption = 'Revision Gr&aph';                    // vcaGraph
+  RsVersionCtrlLogCaption = '&Log';                                 // vcaLog
+  RsVersionCtrlLogSandboxCaption = 'Log ...';                       // vcaLogSandbox
+  RsVersionCtrlLockCaption = 'Loc&k';                               // vcaLock
+  RsVersionCtrlLockSandboxCaption = 'Lock ...';                     // vcaLockSandbox
+  RsVersionCtrlMergeCaption = '&Merge';                             // vcaMerge
+  RsVersionCtrlMergeSandboxCaption = 'Merge ...';                   // vcaMergeSandbox
+  RsVersionCtrlPropertiesCaption = 'Pr&operties';                   // vcaProperties
+  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...';         // vcaPropertiesSandbox
+  RsVersionCtrlRenameCaption = '&Rename';                           // vcaRename
+  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';          // vcaRepoBrowser
+  RsVersionCtrlRevertCaption = '&Revert';                           // vcaRevert
+  RsVersionCtrlRevertSandboxCaption = 'Revert ...';                 // vcaRevertSandbox
+  RsVersionCtrlStatusCaption = 'S&tatus';                           // vcaStatus
+  RsVersionCtrlStatusSandboxCaption = 'Status ...';                 // vcaStatusSandbox
+  RsVersionCtrlTagCaption = 'Ta&g';                                 // vcaTag
+  RsVersionCtrlTagSandboxCaption = 'Tag ...';                       // vcaTagSandBox
+  RsVersionCtrlUpdateCaption = 'U&pdate';                           // vcaUpdate
+  RsVersionCtrlUpdateSandboxCaption = 'Update ...';                 // vcaUpdateSandbox
+  RsVersionCtrlUpdateToCaption = 'Update &to ';                     // vcaUpdateTo
+  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';            // vcaUpdateSandboxTo
+  RsVersionCtrlUnlockCaption = '&Unlock';                           // vcaUnlock
+  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';                 // vcaUnlockSandbox
 
   RsSvnMenuItemNotInserted = 'Can''t insert the ''%s'' menu item';
   RsENoToolsMenuItem = 'Tools menu item not found';
@@ -571,6 +575,11 @@ const
       AllPlugins: False;
       Caption: RsVersionCtrlDiffCaption;
       ActionName: JclVersionCtrlDiffActionName),
+     (SandBox: False;                           // vcaExplore
+      SaveFile: False;
+      AllPlugins: True;
+      Caption: RsVersionCtrlExploreCaption;
+      ActionName: JclVersionCtrlExploreActionName),
      (SandBox: True;                           // vcaExploreSandbox
       SaveFile: False;
       AllPlugins: True;
@@ -1963,6 +1972,8 @@ begin
   case Action of
     vcaContextMenu:
       Result := DisplayContextMenu(0, FileName, Mouse.CursorPos);
+    vcaExplore:
+      Result := OpenFolder(PathExtractFileDirFixed(FileName), Application.Handle, True);
     vcaExploreSandbox:
       Result := OpenFolder(FileName, Application.Handle, True);
     vcaProperties,
@@ -1981,7 +1992,7 @@ end;
 function TJclVersionControlSystemPlugin.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 begin
-  Result := [vcaContextMenu, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
+  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
 end;
 
 function TJclVersionControlSystemPlugin.GetIcon(
@@ -1990,6 +2001,7 @@ begin
   case Action of
     vcaContextMenu:
       Result := -1;
+    vcaExplore,
     vcaExploreSandbox:
       Result := Expert.CacheResourceIcon('Explorer.exe', 101);
     vcaProperties,
@@ -2019,7 +2031,7 @@ end;
 
 function TJclVersionControlSystemPlugin.GetSupportedActions: TJclVersionControlActions;
 begin
-  Result := [vcaContextMenu, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
+  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
 end;
 
 //=== TJclVersionControlActionsCache =========================================
@@ -2132,6 +2144,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2006/02/02 08:06:36  elahn
+// Add "Explore Folder" to TJclVersionControlSystemPlugin. Change RsVersionCtrlContextMenuCaption to "Context Menu (right-click)".
+//
 // Revision 1.7  2006/01/25 20:34:38  outchy
 // Multiple plugins can be active at the same time.
 // New plugin for common (system) actions.
