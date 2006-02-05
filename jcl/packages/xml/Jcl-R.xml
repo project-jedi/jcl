@@ -8,9 +8,9 @@
   <C6Libs/>
   <ImageBase>$48000000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
-  <VersionMinorNumber>96</VersionMinorNumber>
+  <VersionMinorNumber>97</VersionMinorNumber>
   <ReleaseNumber>1</ReleaseNumber>
-  <BuildNumber>2070</BuildNumber>
+  <BuildNumber>2172</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>
