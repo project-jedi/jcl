@@ -335,7 +335,7 @@ type
   public
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
-    function MakeProject(const ProjectName, OutputDir: string; ExtraOptions: string = ''): Boolean;
+    function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
     procedure SetDefaultOptions;
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
@@ -468,10 +468,11 @@ type
     function LinkMapFile(const BinaryFileName: string): Boolean;
 
     // compilation functions
-    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
-    function CompileDelphiProject(const ProjectName, OutputDir: string): Boolean; virtual;
+    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; overload; virtual;
+    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath, ExtraOptions: string): Boolean; overload; virtual;
+    function CompileDelphiProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
     function CompileBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
-    function CompileBCBProject(const ProjectName, OutputDir: string): Boolean; virtual;
+    function CompileBCBProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
 
     // installation (=compilation+registration) / uninstallation(=unregistration+deletion) functions
     function InstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
@@ -482,9 +483,9 @@ type
     function UninstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function InstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function UninstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
-    function InstallDelphiExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function InstallDelphiExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
     function UninstallDelphiExpert(const ProjectName, OutputDir: string): Boolean; virtual;
-    function InstallBCBExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function InstallBCBExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
     function UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean; virtual;
 
     procedure ReadInformation;
@@ -523,11 +524,11 @@ type
     function UninstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
 
     // project functions
-    function CompileProject(const ProjectName, OutputDir: string): Boolean; virtual;
+    function CompileProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
     // expert functions
       // install = project compile + registration
       // uninstall = unregistration + deletion
-    function InstallExpert(const ProjectName, OutputDir: string): Boolean; virtual;
+    function InstallExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean; virtual;
     function UninstallExpert(const ProjectName, OutputDir: string): Boolean; virtual;
 
     // registration/unregistration functions
@@ -648,8 +649,9 @@ type
     function GetDCPOutputPath: string; override;
     function GetBPLOutputPath: string; override;
     function GetEnvironmentVariables: TStrings; override;
-    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
-    function CompileDelphiProject(const ProjectName, OutputDir: string): Boolean; override;
+    function CompileDelphiPackage(const PackageName, BPLPath, DCPPath, ExtraOptions: string): Boolean; override;
+    function CompileDelphiProject(const ProjectName, OutputDir: string;
+      const DcpSearchPath: string): Boolean; override;
     function GetVclIncludeDir: string; override;
     function GetName: string; override;
   public
@@ -848,6 +850,7 @@ const
   Bpr2MakExeName             = 'bpr2mak.exe';
   MakeExeName                = 'make.exe';
   DelphiOptionsFileExtension = '.dof';
+  ConfigurationExtension     = '.cfg';
   BorRADToolRepositoryFileName = 'delphi32.dro';
   HelpContentFileName        = '%s\Help\%s%d.ohc';
   HelpIndexFileName          = '%s\Help\%s%d.ohi';
@@ -1811,26 +1814,40 @@ end;
 
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
-  SearchPath, DynamicPackages: string;
+  SearchPath, DynamicPackages, SearchDcpPath, ConfigurationFileName,
+  OptionsFileName: string;
   OptionsFile: TIniFile;
 begin
-  OptionsFile := TIniFile.Create(ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension));
-  try
-    Options.Clear;
-    SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
-    AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, ''));
-    AddPathOption('I', SearchPath);
-    AddPathOption('R', SearchPath);
+  ConfigurationFileName := ChangeFileExt(ProjectFileName, ConfigurationExtension);
+  if FileExists(ConfigurationFileName) then
+    FileDelete(ConfigurationFileName);
 
-    AddPathOption('U', StrEnsureSuffix(PathSep, DCPPath) + SearchPath);
-    if OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1' then
-    begin
-      DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
-      if DynamicPackages <> '' then
-        Options.Add(Format('-LU"%s"',[DynamicPackages]));
+  OptionsFileName := ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension);
+
+  if FileExists(OptionsFileName) then
+  begin
+    OptionsFile := TIniFile.Create(OptionsFileName);
+    try
+      SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
+      AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, ''));
+      AddPathOption('I', SearchPath);
+      AddPathOption('R', SearchPath);
+
+      if SamePath(DCPPath, Installation.DCPOutputPath) then
+        SearchDcpPath := DCPPath
+      else
+        SearchDcpPath := StrEnsureSuffix(PathSep, DCPPath) + Installation.DCPOutputPath;
+      AddPathOption('U', StrEnsureSuffix(PathSep, SearchDcpPath) + SearchPath);
+      
+      if OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1' then
+      begin
+        DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
+        if DynamicPackages <> '' then
+          Options.Add(Format('-LU"%s"',[DynamicPackages]));
+      end;
+    finally
+      OptionsFile.Free;
     end;
-  finally
-    OptionsFile.Free;
   end;
 end;
 
@@ -1950,9 +1967,10 @@ begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(PackageName) + '.');
   try
+    Options.Clear;
     AddProjectOptions(PackageName, DCPPath);
-    AddPathOption('LE', BPLPath);
     AddPathOption('LN', DCPPath);
+    AddPathOption('LE', BPLPath);
     Options.Add(ExtraOptions);
     Result := Compile(PackageName);
   finally
@@ -1960,7 +1978,7 @@ begin
   end;
 end;
 
-function TJclDCC32.MakeProject(const ProjectName, OutputDir: string;
+function TJclDCC32.MakeProject(const ProjectName, OutputDir, DcpSearchPath: string;
   ExtraOptions: string): Boolean;
 var
   SaveDir: string;
@@ -1968,7 +1986,8 @@ begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(ProjectName) + '.');
   try
-    AddProjectOptions(ProjectName, OutputDir);
+    Options.Clear;
+    AddProjectOptions(ProjectName, DcpSearchPath);
     AddPathOption('E', OutputDir);
     Options.Add(ExtraOptions);
     Result := Compile(ProjectName);
@@ -2441,7 +2460,7 @@ begin
 end;
 
 function TJclBorRADToolInstallation.CompileBCBProject(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   SaveDir, PackagePath, MakeFileName, BinaryFileName: string;
 begin
@@ -2481,8 +2500,14 @@ end;
 
 function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
   BPLPath, DCPPath: string): Boolean;
+begin
+  Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath, '');
+end;
+
+function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
+  BPLPath, DCPPath, ExtraOptions: string): Boolean;
 var
-  ExtraOptions, LibSuffix, BinaryFileName: string;
+  NewOptions, LibSuffix, BinaryFileName: string;
   RunOnly: Boolean;
 begin
   OutputString(Format(RsCompilingPackage, [PackageName]));
@@ -2491,14 +2516,14 @@ begin
     raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
 
   if MapCreate then
-    ExtraOptions := '-GD'
+    NewOptions := ExtraOptions + ' -GD'
   else
-    ExtraOptions := '';
+    NewOptions := ExtraOptions;
 
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
   BinaryFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
 
-  Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, ExtraOptions)
+  Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, NewOptions)
     and LinkMapFile(BinaryFileName);
 
   if Result then
@@ -2508,7 +2533,7 @@ begin
 end;
 
 function TJclBorRADToolInstallation.CompileDelphiProject(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
 begin
@@ -2525,7 +2550,7 @@ begin
   GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
   BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
 
-  Result := DCC32.MakeProject(ProjectName, OutputDir, ExtraOptions)
+  Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions)
     and LinkMapFile(BinaryFileName);
 
   if Result then
@@ -2549,15 +2574,15 @@ begin
 end;
 
 function TJclBorRADToolInstallation.CompileProject(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   ProjectExtension: string;
 begin
   ProjectExtension := ExtractFileExt(ProjectName);
   if SameText(ProjectExtension,SourceExtensionBCBProject) then
-    Result := CompileBCBProject(ProjectName, OutputDir)
+    Result := CompileBCBProject(ProjectName, OutputDir, DcpSearchPath)
   else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
-    Result := CompileDelphiProject(ProjectName, OutputDir)
+    Result := CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
 end;
@@ -2835,7 +2860,7 @@ begin
 end;
 
 function TJclBorRADToolInstallation.InstallBCBExpert(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   BinaryFileName, Description: string;
 begin
@@ -2844,7 +2869,7 @@ begin
   GetBPRFileInfo(ProjectName, BinaryFileName, @Description);
   BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
 
-  Result :=    CompileBCBProject(ProjectName, OutputDir)
+  Result :=    CompileBCBProject(ProjectName, OutputDir, DcpSearchPath)
            and RegisterExpert(BinaryFileName, Description);
 
   OutputString(RsExpertInstallationFinished);
@@ -2889,7 +2914,7 @@ begin
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiExpert(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   LibSuffix, BinaryFileName, BinaryExtension, BaseName: string;
 begin
@@ -2900,10 +2925,10 @@ begin
   GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
   if BinaryExtension = '' then
     BinaryExtension := BinaryExtensionLibrary;
-    
+
   BinaryFileName := PathAddSeparator(OutputDir) + BaseName + LibSuffix + BinaryExtension;
 
-  Result :=    CompileDelphiProject(ProjectName, OutputDir)
+  Result :=    CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath)
            and RegisterExpert(BinaryFileName, BaseName);
 
   OutputString(RsExpertInstallationFinished);
@@ -2948,15 +2973,15 @@ begin
 end;
 
 function TJclBorRADToolInstallation.InstallExpert(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   ProjectExtension: string;
 begin
   ProjectExtension := ExtractFileExt(ProjectName);
   if SameText(ProjectExtension, SourceExtensionBCBProject) then
-    Result := InstallBCBExpert(ProjectName, OutputDir)
+    Result := InstallBCBExpert(ProjectName, OutputDir, DcpSearchPath)
   else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
-    Result := InstallDelphiExpert(ProjectName, OutputDir)
+    Result := InstallDelphiExpert(ProjectName, OutputDir, DcpSearchPath)
   else
     raise EJclBorRADException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
 end;
@@ -3774,24 +3799,26 @@ begin
 end;
 
 function TJclBDSInstallation.CompileDelphiPackage(const PackageName, BPLPath,
-  DCPPath: string): Boolean;
+  DCPPath, ExtraOptions: string): Boolean;
+var
+  NewOptions: string;
 begin
   if DualPackageInstallation then
   begin
     if not (bpBCBuilder32 in Personalities) then
       raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
 
-    DCC32.Options.Add('-JL -NB"' + DcpPath + '" -NO"' + DcpPath + '"');
-    DCC32.Options.Add(' -N1"' + VclIncludeDir + '"');
-
-    Result := inherited CompileDelphiPackage(PackageName, BPLPath, DCPPath);
+    NewOptions := Format('%s -JL -NB"%s" -NO"%s" -N1"%s"',
+      [ExtraOptions, DcpPath, DcpPath, VclIncludeDir]);
   end
   else
-    Result := inherited CompileDelphiPackage(PackageName, BPLPath, DCPPath);
+    NewOptions := ExtraOptions;
+
+  Result := inherited CompileDelphiPackage(PackageName, BPLPath, DCPPath, NewOptions);
 end;
 
 function TJclBDSInstallation.CompileDelphiProject(const ProjectName,
-  OutputDir: string): Boolean;
+  OutputDir, DcpSearchPath: string): Boolean;
 var
   ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
 begin
@@ -3807,13 +3834,12 @@ begin
     else
       ExtraOptions := '';
 
-    ExtraOptions := Format('%s -E"%s"', [ExtraOptions, OutputDir]);
     GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
     if BinaryExtension = '' then
       BinaryExtension := BinaryExtensionLibrary;
     BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
 
-    Result := DCC32.MakePackage(ProjectName, OutputDir, DCPOutputPath, ExtraOptions)
+    Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions)
       and LinkMapFile(BinaryFileName);
 
     if Result then
@@ -3822,7 +3848,7 @@ begin
       OutputString(RsCompilationFailed);
   end
   else
-    Result := inherited CompileDelphiProject(ProjectName, OutputDir);
+    Result := inherited CompileDelphiProject(ProjectName, DcpSearchPath, OutputDir);
 end;
 
 constructor TJclBDSInstallation.Create(const AConfigDataLocation: string);
@@ -4296,6 +4322,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.54  2006/02/05 13:26:15  outchy
+// dcp, bpi and lib files are created in \lib\ver
+//
 // Revision 1.53  2006/02/02 20:33:40  outchy
 // Package cache cleaned
 //

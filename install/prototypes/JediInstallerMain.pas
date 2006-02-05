@@ -427,7 +427,7 @@ var
 begin
   P := View(Installation);
   if Assigned(P) then
-    Path := P.BplPathEdit.Text;
+    Path := P.BplPath;
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
@@ -438,7 +438,7 @@ var
 begin
   P := View(Installation);
   if Assigned(P) then
-    Path := P.DcpPathEdit.Text;
+    Path := P.DcpPath;
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
@@ -621,7 +621,7 @@ var
 begin
   P := View(Installation);
   if Assigned(P) then
-    P.BplPathEdit.Text := Value;
+    P.BplPath := Value;
 end;
 
 procedure TMainForm.SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
@@ -630,7 +630,7 @@ var
 begin
   P := View(Installation);
   if Assigned(P) then
-    P.DcpPathEdit.Text := Value;
+    P.DcpPath := Value;
 end;
 
 procedure TMainForm.SetReadme(const FileName: string);

@@ -88,6 +88,7 @@ type
     function StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
     function TotalUnitCount: Integer;
     procedure WriteLog(const Msg: string);
+    function GetJclDcpPath: string;
     {$IFDEF MSWINDOWS}
     function InstallExpert(const Option: TJediInstallOption): Boolean;
     function UninstallExpert(const Option: TJediInstallOption): Boolean;
@@ -120,7 +121,6 @@ type
     property Defines: TStringList read FDefines;
     property Demos: TStringList read GetDemoList;
     property DemoSectionName: string read FDemoSectionName;
-    property Distribution: TJclDistribution read FDistribution;
     property DemoExclusionList: TStrings read GetDemoExclusionList;
     property Tool: IJediInstallTool read GetTool;
     property DebugDcuDir: string read FDebugDcuDir;
@@ -130,9 +130,11 @@ type
     property RelativeDemoPath: string read FRelativeDemoPath;
     property Target: TJclBorRADToolInstallation read FTarget;
     property Units[const SourceDir: string]: TStrings read GetUnits;
+    property JclDcpPath: string read GetJclDcpPath;
   public
     destructor Destroy; override;
     property OnWriteLog: TTextHandler read FOnWriteLog write FOnWriteLog;
+    property Distribution: TJclDistribution read FDistribution;
   end;
 
   TJclDistribution = class (TInterfacedObject, IJediInstall)
@@ -1126,6 +1128,11 @@ begin
   Result := FDemoExclusionList;
 end;
 
+function TJclInstallation.GetJclDcpPath: string;
+begin
+  Result := Format('%slib\%s', [Distribution.Path, Target.VersionNumberStr]);
+end;
+
 function TJclInstallation.GetUnits(const SourceDir: string): TStrings;
 var
   I: Integer;
@@ -1393,10 +1400,9 @@ begin
       Result := MakeUnits(True);
     // ioJclMakeDebugVClx: handled with ioJclMakeDebug
     // ioJclCopyHppFiles: handled by CompileLibraryUnits
-    {$IFDEF MSWINDOWS}
-    ioJclDualPackages:
-      (Target as TJclBDSInstallation).DualPackageInstallation := True;
-    {$ENDIF MSWINDOWS}
+    //{$IFDEF MSWINDOWS}
+    //ioJclDualPackages: handled by CompilePackages and InstallExpert
+    //{$ENDIF MSWINDOWS}
     ioJclPackages:
       Result := CompilePackages;
     {$IFDEF MSWINDOWS}
@@ -1494,7 +1500,14 @@ begin
   if Option in [Low(ExpertPaths)..High(ExpertPaths)] then
   begin
     if (Option = ioJclExperts) or OptionSelected(ioJclExpertsDesignPackages) then
-      Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]), True)
+    begin
+      // dual packages installation is useless for design time packages
+      {$IFDEF MSWINDOWS}
+      if Target.RadToolKind = brBorlandDevStudio then
+        TJclBDSInstallation(Target).DualPackageInstallation := False;
+      {$ENDIF MSWINDOWS}
+      Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]), True);
+    end
     else
       Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]), True);
   end
@@ -1542,9 +1555,9 @@ begin
   if IsDelphiProject(ProjectFileName) and (bpDelphi32 in Target.Personalities) then
   begin
     if InstallExpert then
-      Result := Target.InstallExpert(ProjectFileName, BplPath)
+      Result := Target.InstallExpert(ProjectFileName, BplPath, JclDcpPath)
     else
-      Result := Target.CompileProject(ProjectFileName, BplPath);
+      Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
   end
   else if IsBCBProject(ProjectFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
@@ -1566,7 +1579,7 @@ begin
       DEFFile.Free;
     end;
 
-    Result := Target.CompileProject(ProjectFileName, BplPath);
+    Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
 
     if Result then
     begin
@@ -1620,9 +1633,9 @@ begin
       begin
         // second compilation
         if InstallExpert then
-          Result := Target.InstallExpert(ProjectFileName, BplPath)
+          Result := Target.InstallExpert(ProjectFileName, BplPath, JclDcpPath)
         else
-          Result := Target.CompileProject(ProjectFileName, BplPath);
+          Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
       end
       else if not Result then
         WriteLog(LineBreak + 'Internal entry point not found');
@@ -1685,11 +1698,11 @@ begin
     DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
     if InstallPackage then
       Result := ((not FileExists(DpkPackageFileName))
-                 or Target.InstallPackage(DpkPackageFileName, BplPath, BplPath))
+                 or Target.InstallPackage(DpkPackageFileName, BplPath, DcpPath))
                 and Target.InstallPackage(PackageFileName, BplPath, DcpPath)
     else
       Result := ((not FileExists(DpkPackageFileName))
-                 or Target.CompilePackage(DpkPackageFileName, BplPath, BplPath))
+                 or Target.CompilePackage(DpkPackageFileName, BplPath, DcpPath))
                 and Target.CompilePackage(PackageFileName, BplPath, DcpPath);
     {$ENDIF}
   end
@@ -1707,6 +1720,10 @@ end;
 
 function TJclInstallation.CompilePackages: Boolean;
 begin
+  {$IFDEF MSWINDOWS}
+  if Target.RadToolKind = brBorlandDevStudio then
+    TJclBDSInstallation(Target).DualPackageInstallation := OptionSelected(ioJclDualPackages);
+  {$ENDIF MSWINDOWS}
   Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
   if Target.SupportsVisualCLX then
     Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
@@ -1891,6 +1908,8 @@ begin
   {$ENDIF KYLIX}
 
   Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
+  // delete DCP files that were created to bpl path (old behavior)
+  FileDelete(PathAddSeparator(StoredBPLPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
   { TODO : evtl. remove .HPP Files }
   if Result then
     WriteLog(Format(LineBreak + 'Removed package %s.', [Name]));
@@ -2029,7 +2048,7 @@ end;
 
 function TJclInstallation.StoredDcpPath: string;
 begin
-  Result := Distribution.FIniFile.ReadString(Target.Name, 'DCP-Path', Target.DCPOutputPath);
+  Result := Distribution.FIniFile.ReadString(Target.Name, 'DCP-Path', JclDcpPath);
 end;
 
 function TJclInstallation.StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
@@ -2326,6 +2345,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.89  2006/02/05 13:26:14  outchy
+// dcp, bpi and lib files are created in \lib\ver
+//
 // Revision 1.88  2006/02/02 20:33:39  outchy
 // Package cache cleaned
 //

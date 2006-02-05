@@ -99,10 +99,15 @@ type
   private
     { Private declarations }
     FInstallation: TJclBorRADToolInstallation;
+    function GetDCPPath: string;
+    function GetBPLPath: string;
     function GetNodeChecked(Node: TTreeNode): Boolean;
+    function GetPathForEdit(Path: string): string;
     function IsAutoChecked(Node: TTreeNode): Boolean;
     function IsRadioButton(Node: TTreeNode): Boolean;
     function IsStandAloneParent(Node: TTreeNode): Boolean;
+    procedure SetDCPPath(const Value: string);
+    procedure SetBPLPath(const Value: string);
     procedure SetInstallation(Value: TJclBorRADToolInstallation);
     procedure SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     procedure ToggleNodeChecked(Node: TTreeNode);
@@ -116,6 +121,8 @@ type
     procedure StopCompilation(Installation: TJclBorRADToolInstallation);
     property NodeChecked[Node: TTreeNode]: Boolean read GetNodeChecked write SetNodeChecked;
     property Installation: TJclBorRADToolInstallation read FInstallation write SetInstallation;
+    property DCPPath: string read GetDCPPath write SetDCPPath;
+    property BPLPath: string read GetBPLPath write SetBPLPath;
   end;
 
 function Collapsable(Node: TTreeNode): Boolean;
@@ -177,6 +184,16 @@ begin
   end;
 end;
 
+function TProductFrame.GetDCPPath: string;
+begin
+  Result := DcpPathEdit.Text;
+end;
+
+function TProductFrame.GetBPLPath: string;
+begin
+  Result := BplPathEdit.Text;
+end;
+
 class function TProductFrame.GetName(Installation: TJclBorRADToolInstallation): string;
 begin
   Result := Format('%sProduct', [Installation.VersionNumberStr]);
@@ -185,6 +202,14 @@ end;
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
+end;
+
+function TProductFrame.GetPathForEdit(Path: string): string;
+begin
+  if DirectoryExists(Path) then
+    Result := Path
+  else
+    Result := RsEnterValidPath;
 end;
 
 function TProductFrame.IsAutoChecked(Node: TTreeNode): Boolean;
@@ -238,23 +263,22 @@ begin
 end;
 {$ENDIF VisualCLX}
 
+procedure TProductFrame.SetDCPPath(const Value: string);
+begin
+  DcpPathEdit.Text := GetPathForEdit(Value);
+end;
+
+procedure TProductFrame.SetBPLPath(const Value: string);
+begin
+  BplPathEdit.Text := GetPathForEdit(Value);
+end;
+
 procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
-
-  function GetPathForEdit(Path: string): string;
-  begin
-    if DirectoryExists(Path) then
-      Result := Path
-    else
-      Result := RsEnterValidPath;
-  end;
-
 begin
   FInstallation := Value;
   Name := GetName(Value);
   if Value.RadToolKind = brCppBuilder then
     DcpPathLabel.Caption := '.bpi Path';
-  BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
-  DcpPathEdit.Text := GetPathForEdit(Installation.DCPOutputPath);
 end;
 
 procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
