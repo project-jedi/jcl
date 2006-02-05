@@ -15,6 +15,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclSIMDViewExpertDLLC50.res           \
            c5\JclUsesExpertC50.res                  \
            c5\JclUsesExpertDLLC50.res               \
+           c5\JclVersionControlExpertC50.res        \
+           c5\JclVersionControlExpertDLLC50.res     \
            c6\Jcl.res                               \
            c6\JclBaseExpert.res                     \
            c6\JclDebugExpert.res                    \
@@ -29,11 +31,14 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c6\JclUsesExpert.res                     \
            c6\JclThreadNameExpert.res               \
            c6\JclUsesExpertDLL.res                  \
+           c6\JclVersionControlExpert.res           \
            c6\JclVClx.res                           \
            c6\JclVcl.res                            \
+           c6\JclVersionControlExpertDLL.res        \
            cs1\Jcl.res                              \
            cs1\JclBaseExpert.res                    \
            cs1\JclFavoriteFoldersExpertDLL.res      \
+           cs1\JclVersionControlExpertDLL.res       \
            d10\JclUsesExpert.res                    \
            d10\Jcl.res                              \
            d10\JclBaseExpert.res                    \
@@ -49,6 +54,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d10\JclVcl.res                           \
            d10\JclThreadNameExpert.res              \
            d10\JclThreadNameExpertDLL.res           \
+           d10\JclVersionControlExpert.res          \
+           d10\JclVersionControlExpertDLL.res       \
            d5\JclUsesExpertDLLD50.res               \
            d5\JclBaseExpertD50.res                  \
            d5\JclD50.res                            \
@@ -63,6 +70,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclThreadNameExpertD50.res            \
            d5\JclThreadNameExpertDLLD50.res         \
            d5\JclUsesExpertD50.res                  \
+           d5\JclVersionControlExpertD50.res        \
+           d5\JclVersionControlExpertDLLD50.res     \
            d5.dev\JclD50.res                        \
            d6\Jcl.res                               \
            d6\JclBaseExpert.res                     \
@@ -80,6 +89,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d6\JclUsesExpert.res                     \
            d6\JclUsesExpertDLL.res                  \
            d6\JclVClx.res                           \
+           d6\JclVersionControlExpert.res           \
+           d6\JclVersionControlExpertDLL.res        \
            d6.dev\JclVcl.res                        \
            d7\Jcl.res                               \
            d7\JclBaseExpert.res                     \
@@ -97,11 +108,14 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d7\JclUsesExpert.res                     \
            d7\JclUsesExpertDLL.res                  \
            d7\JclVClx.res                           \
+           d7\JclVersionControlExpert.res           \
+           d7\JclVersionControlExpertDLL.res        \
            d7.dev\JclVClx.res                       \
            d7.dev\JclVcl.res                        \
            d8\Jcl.res                               \
            d8\JclBaseExpert.res                     \
            d8\JclFavoriteFoldersExpertDLL.res       \
+           d8\JclVersionControlExpertDLL.res        \
            d9\JclThreadNameExpertDLL.res            \
            d9\Jcl.res                               \
            d9\JclBaseExpert.res                     \
@@ -116,7 +130,9 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclSIMDViewExpertDLL.res              \
            d9\JclUsesExpertDLL.res                  \
            d9\JclThreadNameExpert.res               \
-           d9\JclVcl.res
+           d9\JclVcl.res                            \
+           d9\JclVersionControlExpert.res           \
+           d9\JclVersionControlExpertDLL.res
 # ---------------------------------------------------------------------------
 !if !$d(BRCC32)
 BRCC32 = brcc32
