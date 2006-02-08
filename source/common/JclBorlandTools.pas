@@ -1748,11 +1748,17 @@ begin
 end;
 
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
+var
+  LaunchCommand: string;
 begin
+  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
   if Assigned(FOutputCallback) then
-    Result := JclSysUtils.Execute(Format('%s %s', [FileName, CommandLine]), FOutputCallback) = 0
+  begin
+    FOutputCallback(LaunchCommand);
+    Result := JclSysUtils.Execute(LaunchCommand, FOutputCallback) = 0
+  end
   else
-    Result := JclSysUtils.Execute(Format('%s %s', [FileName, CommandLine]), FOutput) = 0;
+    Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
 end;
 
 function TJclBorlandCommandLineTool.GetExeName: string;
@@ -4322,6 +4328,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.55  2006/02/08 19:45:58  outchy
+// Command line is now added to output
+//
 // Revision 1.54  2006/02/05 13:26:15  outchy
 // dcp, bpi and lib files are created in \lib\ver
 //
