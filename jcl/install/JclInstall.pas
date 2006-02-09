@@ -1908,8 +1908,16 @@ begin
   {$ENDIF KYLIX}
 
   Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
+
   // delete DCP files that were created to bpl path (old behavior)
   FileDelete(PathAddSeparator(StoredBPLPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
+  // delete DCP files that were created to target dcp path (old behavior)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
+  // delete BPI files that were created to target dcp path (old behavior)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionBPI);
+  // delete LIB files that were created to target dcp path (old behaviour)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionLIB);
+
   { TODO : evtl. remove .HPP Files }
   if Result then
     WriteLog(Format(LineBreak + 'Removed package %s.', [Name]));
@@ -2345,6 +2353,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.90  2006/02/09 13:57:33  outchy
+// Delete old compiler files
+//
 // Revision 1.89  2006/02/05 13:26:14  outchy
 // dcp, bpi and lib files are created in \lib\ver
 //
