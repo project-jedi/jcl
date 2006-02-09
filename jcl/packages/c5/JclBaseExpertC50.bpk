@@ -61,7 +61,7 @@
       -tWM"/>
     <PFLAGS value="-N2..\..\lib\c5\obj -N0..\..\lib\c5\obj -$YD -$W -$O- -$A8 -v -JPHNE -M
                    -LUvcl50 -LUdsnide50 -LUJclC50
-                   -U$(BCB)\Projects\Bpl -U..\..\lib\c5
+                   -U$(BCB)\Projects\Lib -U..\..\lib\c5
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
