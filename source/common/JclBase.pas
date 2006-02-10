@@ -51,9 +51,9 @@ uses
 // Version
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 96;   // Fifth minor release since JCL 1.90
+  JclVersionMinor   = 97;   // Fifth minor release since JCL 1.90
   JclVersionRelease = 1;    // 0: pre-release|beta/>=1: release
-  JclVersionBuild   = 2070; // build number, days since march 1, 2000
+  JclVersionBuild   = 2172; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -494,6 +494,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.47  2006/02/10 18:07:55  outchy
+// JCL build number updated
+//
 // Revision 1.46  2005/12/15 11:35:13  ahuser
 // Additional MoveArray function for .NET (should have been committed months ago)
 //
