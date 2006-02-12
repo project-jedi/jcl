@@ -33,10 +33,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, ActnList,
+  DockForm,
   JclOtaUtils, JclSysInfo, JclSIMDUtils, JclSIMDModifyForm;
 
 type
-  TJclSIMDViewFrm = class(TForm)
+  TJclSIMDViewFrm = class(TDockableForm)
     Splitter: TSplitter;
     ListBoxRegs: TListBox;           
     ListBoxMXCSR: TListBox;
@@ -111,7 +112,8 @@ type
   protected
     procedure DoClose(var Action: TCloseAction); override;
     procedure UpdateActions; override;
-    procedure CreateParams(var Params: TCreateParams); override;
+    // not for dockable windows
+    //procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent; ADebuggerServices: IOTADebuggerServices;
       ASettings: TJclOtaSettings); reintroduce;
@@ -200,7 +202,8 @@ begin
   GetThreadValues;
 end;
 
-procedure TJclSIMDViewFrm.CreateParams(var Params: TCreateParams);
+// not for dockable windows
+{procedure TJclSIMDViewFrm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
 
@@ -212,7 +215,7 @@ begin
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
-end;
+end;}
 
 destructor TJclSIMDViewFrm.Destroy;
 begin
@@ -948,6 +951,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2006/02/12 11:31:39  outchy
+// The form can now be docked
+//
 // Revision 1.9  2006/01/08 17:16:56  outchy
 // Settings reworked.
 // Common window for expert configurations
@@ -965,10 +971,13 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.9  2006/01/08 17:16:56  outchy
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Settings reworked.
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Common window for expert configurations
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date: 2006/01/08 17:16:56 $ and Revision 1.10  2006/02/12 11:31:39  outchy
+// - improved header information, added $Date: 2006/01/08 17:16:56 $ and The form can now be docked
+// - improved header information, added $Date: 2006/01/08 17:16:56 $ and
+// - improved header information, added $Date$ and Revision 1.9  2006/01/08 17:16:56  outchy
+// - improved header information, added $Date$ and Settings reworked.
+// - improved header information, added $Date$ and Common window for expert configurations
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.8  2005/12/16 23:46:25  outchy
 // - improved header information, added $Date$ and Added expert stack form.
 // - improved header information, added $Date$ and Added code to display call stack on expert exception.
