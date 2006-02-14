@@ -2,7 +2,7 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
   Left = 157
   Top = 183
   Width = 559
-  Height = 463
+  Height = 459
   BorderIcons = [biSystemMenu]
   Caption = 'RsReportFormCaption'
   Color = clBtnFace
@@ -45,16 +45,17 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
     Left = 8
     Top = 168
     Width = 535
-    Height = 231
+    Height = 222
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
   end
   object ButtonClose: TButton
     Left = 470
-    Top = 405
+    Top = 396
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
+    Cancel = True
     Caption = 'RsReportClose'
     ModalResult = 1
     TabOrder = 2

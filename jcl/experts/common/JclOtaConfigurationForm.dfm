@@ -19,7 +19,9 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
   object SplitterSep: TSplitter
     Left = 185
     Top = 0
+    Width = 3
     Height = 450
+    Cursor = crHSplit
   end
   object PanelName: TPanel
     Left = 0
@@ -61,6 +63,7 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
       Width = 75
       Height = 25
       Anchors = [akRight, akBottom]
+      Cancel = True
       Caption = 'RsCaptionCancel'
       ModalResult = 2
       TabOrder = 1

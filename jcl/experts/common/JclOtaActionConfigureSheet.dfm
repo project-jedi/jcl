@@ -1,7 +1,7 @@
 object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   Left = 0
   Top = 0
-  Width = 385
+  Width = 369
   Height = 375
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
@@ -26,7 +26,7 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   object ListViewActions: TListView
     Left = 16
     Top = 35
-    Width = 314
+    Width = 337
     Height = 286
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
