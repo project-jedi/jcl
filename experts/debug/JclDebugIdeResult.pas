@@ -185,7 +185,7 @@ begin
 
   with ResultListView.Columns do
     for Index := 0 to Count - 1 do
-      Settings.SaveInteger(Format(ColumnRegName, [Name]), Items[Index].Width);
+      Settings.SaveInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 end;
 
 procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -200,6 +200,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2006/02/16 16:53:11  outchy
+// Fixed fomat bug
+//
 // Revision 1.4  2006/01/08 17:16:56  outchy
 // Settings reworked.
 // Common window for expert configurations
