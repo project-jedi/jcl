@@ -1262,7 +1262,7 @@ end;
 //=== { TJclFileMapping } ====================================================
 
 constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
-  const Name: string; Protect: Cardinal; const MaximumSize: Int64;
+  const Name: string; Protect: Cardinal; const MaximumSize: Int64; 
   SecAttr: PSecurityAttributes);
 begin
   FFileHandle := INVALID_HANDLE_VALUE;
@@ -2494,44 +2494,51 @@ function BuildFileList(const Path: string; const Attr: Integer;
   const List: TStrings): Boolean;
 var
   SearchRec: TSearchRec;
-  R, x: Integer;
+  IndexMask: Integer;
   MaskList: TStringList;
-  Masks: string;
+  Masks, Directory: string;
 begin
   Assert(List <> nil);
+  Result := False;
   MaskList := TStringList.Create;
-  Result := false;
   try
+    {* extract the Directory *}
+    Directory := PathAddSeparator(ExtractFileDir(Path));
 
     {* extract the FileMasks portion out of Path *}
-    Masks := StrAfter(PathAddSeparator(ExtractFileDir(Path)), Path);
+    Masks := StrAfter(Directory, Path);
 
     {* put the Masks into TStringlist *}
     StrTokenToStrings(Masks, ';', MaskList);
 
-    {* search with every single FileMask *}
-    for x := 0 to MaskList.Count - 1 do
-    begin
-      R := FindFirst(PathAddSeparator(ExtractFileDir(Path)) +
-        Trim(MaskList[x]), Attr, SearchRec);
-      Result := R = 0;
-      List.BeginUpdate;
-      try
-        if Result then
+    {* search all files in the directory *}
+    Result := FindFirst(Directory + '*', faAnyFile, SearchRec) = 0;
+
+    List.BeginUpdate;
+    try
+      while Result do
+      begin
+        {* if the filename matches any mask then it is added to the list *}
+        for IndexMask := 0 to MaskList.Count - 1 do
+          if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
+            and ((SearchRec.Attr and Attr) = SearchRec.Attr)
+            and IsFileNameMatch(SearchRec.Name, MaskList.Strings[IndexMask]) then
         begin
-          while R = 0 do
-          begin
-            if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
-              and ((SearchRec.Attr and Attr) = SearchRec.Attr) then
-              List.Add(SearchRec.Name);
-            R := FindNext(SearchRec);
-          end;
-          Result := R = ERROR_NO_MORE_FILES;
+          List.Add(SearchRec.Name);
+          Break;
         end;
-      finally
-        SysUtils.FindClose(SearchRec);
-        List.EndUpdate;
+        
+        case FindNext(SearchRec) of
+          0 : ;
+          ERROR_NO_MORE_FILES :
+            Break;
+          else
+            Result := False;
+        end;
       end;
+    finally
+      SysUtils.FindClose(SearchRec);
+      List.EndUpdate;
     end;
   finally
     MaskList.Free;
@@ -5870,6 +5877,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.58  2006/02/25 11:18:16  outchy
+// BuildFileList: all files are enumerated and only the ones matching attributes and at least one mask are added.
+//
 // Revision 1.57  2006/01/25 20:58:24  ahuser
 // Faster FileExists for Win32
 //
