@@ -205,6 +205,7 @@ type
     property Count: Integer read GetCount write SetCount;
     function IndexOfPath(const Value: string): Integer;
     function IndexOfTitle(const Value: string): Integer;
+    procedure RemoveIndex(const Index: Integer);
     property Key: string read FKey;
     property Title[Index: Integer]: string read GetTitle write SetTitle;
     property Path[Index: Integer]: string read GetPath write SetPath;
@@ -1442,6 +1443,20 @@ begin
       Result := I;
       Break;
     end;
+end;
+
+procedure TJclBorRADToolIdeTool.RemoveIndex(const Index: Integer);
+var
+  I: Integer;
+begin
+  for I := Index to Count - 2 do
+  begin
+    Parameters[I] := Parameters[I+1];
+    Path[I] := Path[I+1];
+    Title[I] := Title[I+1];
+    WorkingDir[Index] := WorkingDir[I+1];
+  end;
+  Count := Count - 1;
 end;
 
 procedure TJclBorRADToolIdeTool.SetCount(const Value: Integer);
@@ -4328,6 +4343,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.56  2006/02/26 18:31:43  outchy
+// Chm help can now be removed
+// Alpha version for the help 2.0
+//
 // Revision 1.55  2006/02/08 19:45:58  outchy
 // Command line is now added to output
 //

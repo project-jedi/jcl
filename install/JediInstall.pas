@@ -72,6 +72,8 @@ type
       ioJclHelp,
       ioJclHelpHlp,
       ioJclHelpChm,
+      ioJclHelpHxS,
+      ioJclHelpHxSPlugin,
       ioJclMakeDemos              // = ioJclLast, see below.
     );
 
@@ -172,6 +174,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2006/02/26 18:31:42  outchy
+// Chm help can now be removed
+// Alpha version for the help 2.0
+//
 // Revision 1.19  2006/01/15 00:51:22  outchy
 // cvs support in version control expert
 // version control expert integration in the installer
