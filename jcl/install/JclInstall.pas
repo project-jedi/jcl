@@ -101,6 +101,8 @@ type
     procedure AddHelpToOpenHelp;
     procedure RemoveHelpFromIdeTools;
     procedure RemoveHelpFromOpenHelp;
+    procedure RegisterHelp2Files;
+    procedure UnregisterHelp2Files;
     procedure CopyFakeXmlRtlPackage;
     {$ENDIF MSWINDOWS}
     function BplPath: string;
@@ -156,6 +158,7 @@ type
     {$ENDIF MSWINDOWS}
     FJclChmHelpFileName: string;
     FJclHlpHelpFileName: string;
+    FJclHxSHelpFileName: string;
     FJclReadmeFileName: string;
     FTool: IJediInstallTool;
     FTargetInstalls: TObjectList;
@@ -198,6 +201,7 @@ type
     property DemosPath: string read GetDemosPath;
     property ChmHelpFileName: string read FJclChmHelpFileName;
     property HlpHelpFileName: string read FJclHlpHelpFileName;
+    property HxSHelpFileName: string read FJclHxSHelpFileName;
     property Installing: Boolean read FInstalling;
     property Path: string read FJclPath;
     property SourceDir: string read FJclSourceDir;
@@ -218,7 +222,7 @@ uses
   {$ENDIF VCL}
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
-  JclPeImage,
+  JclPeImage, MSHelpServices_TLB,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings;
 
@@ -256,6 +260,8 @@ resourcestring
   RsJCLPackages          = 'Packages';
   RsIdeHelpHlp           = 'Add help file to IDE help system';
   RsIdeHelpChm           = 'Add HTML help to the Tools menu';
+  RsIdeHelpHxS           = 'Register help 2.0 files';
+  RsIdeHelpHxSPlugin     = 'Plug help 2.0 files in the Borland help system';
   RsCopyHppFiles         = 'Copy HPP files to %s';
   RsDualPackages         = 'Dual packages';
   RsCopyPackagesHppFiles = 'Output HPP files to %s';
@@ -324,7 +330,9 @@ resourcestring
   RsHintJclExcDialogCLX = 'Add CLX exception dialog (Windows only) to the Object Repository.';
   RsHintJclHelp = 'Install JCL help files.';
   RsHintJclHelpHlp = 'Customize Borland Open Help to include JCL help files.';
-  RsHintJclHelpChm = '';
+  RsHintJclHelpChm = 'Compiled help files won''t be merged with the IDE help';
+  RsHintJclHelpHxS = 'Register Help 2.0 files';
+  RsHintJclHelpHxSPlugin = 'Register Help 2.0 files as a plugin for the Borland.BDS* namespace';
   RsHintJclMakeDemos = 'Make JCL demo applications';
 
 // warning messages
@@ -460,6 +468,12 @@ const
       (Parent: ioJclHelp;                // ioJclHelpChm
        Caption: RsIdeHelpChm;
        Hint: RsHintJclHelpChm),
+      (Parent: ioJclHelp;                // ioJclHelpHxS
+       Caption: RsIdeHelpHxS;
+       Hint: RsHintJclHelpHxS),
+      (Parent: ioJclHelpHxS;             // ioJclHelpHxSPlugin
+       Caption: RsIdeHelpHxSPlugin;
+       Hint: RsHintJclHelpHxSPlugin),
       (Parent: ioJCL;                    // ioJclMakeDemos
        Caption: RsMakeDemos;
        Hint: RsHintJclMakeDemos)
@@ -539,8 +553,20 @@ const
   DialogAuthor      = 'Project JEDI';
   DialogPage        = 'Dialogs';
 
+  Help2NameSpace         = 'Jedi.Jcl';
+  Help2Collection        = 'JCLHelp_COL_MASTER.HxC';
+  Help2Description       = 'JEDI Code Library';
+  Help2Identifier        = 'JCLHelp';
+  Help2LangId            = 1033;         // en/english
+  Help2HxSFile           = 'JCLHelp.HxS';
+  Help2HxIFile           = 'JCLHelp.HxI';
+  Help2BorlandNameSpace  = 'Borland.BDS%d';
+  Help2Default           = '_DEFAULT';
+
+
   JclChmHelpFile    = 'help' + PathSeparator + 'JCLHelp.chm';
   JclHlpHelpFile    = 'help' + PathSeparator + 'JCLHelp.hlp';
+  JclHxSHelpFile     = 'help' + PathSeparator + 'JCLHelp.HxS';
   JclHelpTitle      = 'JCL %d.%d Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
@@ -1159,7 +1185,7 @@ var
   ExpertOptions: TJediInstallGUIOptions;
   {$ENDIF MSWINDOWS}
   InstallationNode, ProductNode, PackagesNode, ExpertsNode, DemosNode,
-  MakeNode, EnvNode, HelpNode, RepositoryNode, MapCreateNode,
+  MakeNode, EnvNode, HelpNode, HelpHxSNode, RepositoryNode, MapCreateNode,
   MapLinkNode, BCBNode: TObject;
   RunTimeInstallation: Boolean;
 
@@ -1245,17 +1271,28 @@ begin
     if bpBCBuilder32 in Target.Personalities then
       AddNode(MakeNode, ioJclCopyHppFiles);
     {$IFDEF MSWINDOWS}
-    { TODO : Help integration for BDS }
-    if Target.RadToolKind <> brBorlandDevStudio then
-    with Distribution do
-      if (HlpHelpFileName <> '') or (ChmHelpFileName <> '') then
+    if Target.RadToolKind = brBorlandDevStudio then
+    begin
+      {TODO: expert help}
+      if (Target.VersionNumber >= 3) and (Distribution.HxSHelpFileName <> '') then
+      begin
+        HelpNode := AddNode(ProductNode, ioJclHelp, [goChecked]);
+        HelpHxSNode := AddNode(HelpNode, ioJclhelpHxS, [goStandaloneParent, goChecked]);
+        AddNode(HelpHxSNode, ioJclHelpHxSPlugin, [goChecked]);
+      end;
+    end
+    else
+    begin
+      if (Distribution.HlpHelpFileName <> '') or (Distribution.ChmHelpFileName <> '') then
       begin
         HelpNode := AddNode(ProductNode, ioJclHelp);
-        if HlpHelpFileName <> '' then
+        if Distribution.HlpHelpFileName <> '' then
           AddNode(HelpNode, ioJclHelpHlp);
-        if ChmHelpFileName <> '' then
+        if Distribution.ChmHelpFileName <> '' then
           AddNode(HelpNode, ioJclHelpChm);
       end;
+    end;
+
     { TODO : Object Repository access for BDS }
     if Target.RadToolKind <> brBorlandDevStudio then
     {$ENDIF MSWINDOWS}
@@ -1430,6 +1467,8 @@ begin
       AddHelpToOpenHelp;
     ioJclHelpChm:
       AddHelpToIdeTools;
+    ioJclHelpHxS:
+      RegisterHelp2Files;
     {$ENDIF MSWINDOWS}
     ioJclMakeDemos:
       MakeDemos;
@@ -1478,6 +1517,8 @@ begin
       RemoveHelpFromOpenHelp;
     ioJclHelpChm:
       RemoveHelpFromIdeTools;
+    ioJclHelpHxS:
+      UnregisterHelp2Files;
     ioJclMakeDemos:
       ;
     {$ENDIF MSWINDOWS}
@@ -1845,14 +1886,87 @@ begin
     ioJclExcDialogVCLSnd,
     ioJclExcDialogCLX,
     ioJclHelpHlp,
-    ioJclHelpChm:
-      Result := 1;
+    ioJclHelpChm,
+    ioJclHelpHxS:
+      Result := 3;
     ioJclMakeDemos:
       Result := 50;
   else
     Result := 0;
   end;
 end;
+
+{$IFDEF MSWINDOWS}
+procedure TJclInstallation.RegisterHelp2Files;
+var
+  HxRegisterSession: IHxRegisterSession;
+  HxPlugin: IHxPlugIn;
+  HxRegister: IHxRegister;
+  CurrentDir: string;
+  NameSpace, Collection, Description, Identifier, HxSFile, HxIFile,
+  BorlandNameSpace, Default: WideString;
+  LangId: Integer;
+begin
+  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+    Exit;
+  
+  WriteLog('Registering help 2.0 files');
+
+  // to avoid Write AV, data has to be copied in data segment
+  NameSpace := Help2NameSpace;
+  Collection := Help2Collection;
+  Description := Help2Description;
+  Identifier := Help2Identifier;
+  LangId := Help2LangId;
+  HxSFile := Help2HxSFile;
+  HxIFile := Help2HxIFile;
+  BorlandNameSpace := Format(Help2BorlandNameSpace, [Target.VersionNumber]);
+  Default := Help2Default;
+
+  CurrentDir := GetCurrentDir;
+  if SetCurrentDir(Distribution.Path + 'help\') then
+  try
+    HxRegisterSession := CoHxRegisterSession.Create;
+
+    // WARNING all interface methods are safecall
+    // an OLE exception is raised on failure
+
+    HxRegisterSession.CreateTransaction('');
+
+    WriteLog('Getting registration interface...');
+    if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxRegister), IHxRegister, HxRegister) then
+    begin
+      WriteLog('...success');
+      WriteLog('Registering namespace...');
+      HxRegister.RegisterNamespace(NameSpace, Collection, Description);
+      WriteLog('...success');
+      WriteLog('Registering help file...');
+      HxRegister.RegisterHelpFileSet(NameSpace, Identifier, LangId, HxSFile, HxIFile, '', '', 0, 0, 0, 0);
+      WriteLog('...success');
+    end
+    else
+      WriteLog('...failed');
+
+    if OptionSelected(ioJclHelpHxSPlugin) then
+    begin
+      WriteLog('Getting plugin registration interface...');
+      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxPlugIn), IHxPlugin, HxPlugin) then
+      begin
+        WriteLog('...success');
+        WriteLog('Registering plugin...');
+        HxPlugin.RegisterHelpPlugIn(BorlandNameSpace, Default, NameSpace, Default, '', 0);
+        WriteLog('...success');
+      end
+      else
+        WriteLog('Error: could not get plugin registration interface');
+    end;
+
+    HxRegisterSession.CommitTransaction;
+  finally
+    SetCurrentDir(CurrentDir);
+  end;
+end;
+{$ENDIF MSWINDOWS}
 
 procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
 begin
@@ -1862,8 +1976,17 @@ end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.RemoveHelpFromIdeTools;
+var
+  HelpIndex: Integer;
+  HelpTitle: string;
 begin
-  { TODO : Implement }
+  HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
+  with Target.IdeTools do
+  begin
+    HelpIndex := IndexOfTitle(HelpTitle);
+    if HelpIndex <> Invalid then
+      RemoveIndex(HelpIndex);
+  end;
 end;
 
 procedure TJclInstallation.RemoveHelpFromOpenHelp;
@@ -2014,6 +2137,81 @@ begin
     end;
   WriteLog('');
 end;
+
+{$IFDEF MSWINDOWS}
+procedure TJclInstallation.UnregisterHelp2Files;
+var
+  HxRegisterSession: IHxRegisterSession;
+  HxPlugin: IHxPlugIn;
+  HxRegister: IHxRegister;
+  CurrentDir: string;
+  NameSpace, Identifier, HxSFile, HxIFile,
+  BorlandNameSpace, Default: WideString;
+  LangId: Integer;
+begin
+  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+    Exit;
+
+  WriteLog('Unregistering help 2.0 files');
+
+  // to avoid Write AV, data has to be copied in data segment
+  NameSpace := Help2NameSpace;
+  Identifier := Help2Identifier;
+  LangId := Help2LangId;
+  HxSFile := Help2HxSFile;
+  HxIFile := Help2HxIFile;
+  BorlandNameSpace := Format(Help2BorlandNameSpace, [Target.VersionNumber]);
+  Default := Help2Default;
+
+  CurrentDir := GetCurrentDir;
+  if SetCurrentDir(Distribution.Path + 'help\') then
+  try
+    try
+      HxRegisterSession := CoHxRegisterSession.Create;
+
+      // WARNING all interface methods are safecall
+      // an OLE exception is raised on failure
+
+      HxRegisterSession.CreateTransaction('');
+
+      WriteLog('Getting plugin registration interface...');
+      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxPlugIn), IHxPlugin, HxPlugin) then
+      begin
+        WriteLog('...success');
+
+        WriteLog('Unregistering plugin...');
+        HxPlugin.RemoveHelpPlugIn(BorlandNameSpace, Default, NameSpace, Default, '');
+        WriteLog('...success');
+      end
+      else
+        WriteLog('Error: could not get plugin registration interface');
+
+      WriteLog('Getting registration interface...');
+      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxRegister), IHxRegister, HxRegister) then
+      begin
+        WriteLog('...success');
+
+        WriteLog('Unregistering help file...');
+        HxRegister.RemoveHelpFile(NameSpace, Identifier, LangId);
+        WriteLog('...success');
+
+        WriteLog('Unregistering namespace...');
+        HxRegister.RemoveNamespace(NameSpace);
+        WriteLog('...success');
+      end
+      else
+        WriteLog('...failed');
+
+      HxRegisterSession.CommitTransaction;
+    finally
+      SetCurrentDir(CurrentDir);
+    end;
+  except
+
+  end;
+end;
+{$ENDIF MSWINDOWS}
+
 
 procedure TJclInstallation.SaveDemoOption(Index: Integer);
 var
@@ -2197,10 +2395,13 @@ begin
   {$ENDIF MSWINDOWS}
   FJclChmHelpFileName := FJclPath + JclChmHelpFile;
   FJclHlpHelpFileName := FJclPath + JclHlpHelpFile;
+  FJclHxSHelpFileName := FJclPath + JclHxSHelpFile;
   if not FileExists(FJclChmHelpFileName) then
     FJclChmHelpFileName := '';
   if not FileExists(FJclHlpHelpFileName) then
     FJclHlpHelpFileName := '';
+  if not FileExists(FJclHxSHelpFileName) then
+    FJclHxSHelpFileName := '';
   {$IFDEF MSWINDOWS}
   // Reset ReadOnly flag for dialog forms
   FileSetAttr(FClxDialogFileName, faArchive);
@@ -2353,6 +2554,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.92  2006/02/26 18:31:42  outchy
+// Chm help can now be removed
+// Alpha version for the help 2.0
+//
 // Revision 1.91  2006/02/26 12:41:20  outchy
 // Minor style cleaning
 //
