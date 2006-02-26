@@ -335,10 +335,10 @@ type
     FModule: HMODULE;
     function GetFileName: TFileName;
   protected
-    function InitializeSource: Boolean; virtual; abstract;
     function VAFromAddr(const Addr: Pointer): DWORD; virtual;
   public
     constructor Create(AModule: HMODULE); virtual;
+    function InitializeSource: Boolean; virtual; abstract;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; virtual; abstract;
     property Module: HMODULE read FModule;
     property FileName: TFileName read GetFileName;
@@ -362,10 +362,9 @@ type
   TJclDebugInfoMap = class(TJclDebugInfoSource)
   private
     FScanner: TJclMapScanner;
-  protected
-    function InitializeSource: Boolean; override;
   public
     destructor Destroy; override;
+    function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
@@ -373,30 +372,27 @@ type
   private
     FScanner: TJclBinDebugScanner;
     FStream: TCustomMemoryStream;
-  protected
-    function InitializeSource: Boolean; override;
   public
     destructor Destroy; override;
+    function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
   TJclDebugInfoExports = class(TJclDebugInfoSource)
   private
     FBorImage: TJclPeBorImage;
-  protected
-    function InitializeSource: Boolean; override;
   public
     destructor Destroy; override;
+    function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
   TJclDebugInfoTD32 = class(TJclDebugInfoSource)
   private
     FImage: TJclPeBorTD32Image;
-  protected
-    function InitializeSource: Boolean; override;
   public
     destructor Destroy; override;
+    function InitializeSource: Boolean; override;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
@@ -4033,6 +4029,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2006/02/26 19:05:48  outchy
+// Function InitializeSource promoted to public access.
+//
 // Revision 1.21  2005/12/26 18:03:58  outchy
 // Enhanced bds support (including C#1 and D8)
 // Introduction of dll experts
