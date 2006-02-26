@@ -1790,7 +1790,7 @@ begin
   for I := Low(JclSourceDirs) to High(JclSourceDirs) do
   begin
     {$IFDEF MSWINDOWS}
-    if (JclSourceDirs[I] = 'visclx') and
+    if (JclSourceDirs[I] = JclSrcDirVisClx) and
       not (OptionSelected(ioJclMakeReleaseVClx) or OptionSelected(ioJclMakeDebugVClx)) then
       Continue;
     {$ENDIF MSWINDOWS}
@@ -2353,6 +2353,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.91  2006/02/26 12:41:20  outchy
+// Minor style cleaning
+//
 // Revision 1.90  2006/02/09 13:57:33  outchy
 // Delete old compiler files
 //
