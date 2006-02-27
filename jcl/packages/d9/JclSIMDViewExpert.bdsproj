@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58040000</Linker>
+      <Linker Name="ImageBase">$58080000</Linker>
       <Linker Name="ExeDescription">JCL Debug Window of XMM registers</Linker>
     </Linker>
     <Directories>

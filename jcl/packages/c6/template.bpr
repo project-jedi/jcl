@@ -70,7 +70,8 @@
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c6 -GB&quot;%NAME%&quot; -D&quot;%DESCRIPTION% for C++ Builder 6&quot; -aa -Tpd -x -Gn -Gi -v"/>
+    <LFLAGS value="-I..\..\lib\c6 -GB&quot;%NAME%&quot; -D&quot;%DESCRIPTION% for C++ Builder 6&quot;
+      -b:0x%IMAGE_BASE% -aa -Tpd -x -Gn -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>

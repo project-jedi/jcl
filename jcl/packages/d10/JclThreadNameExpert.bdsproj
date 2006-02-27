@@ -114,7 +114,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58050000</Linker>
+      <Linker Name="ImageBase">$580A0000</Linker>
       <Linker Name="ExeDescription">JCL Thread Name IDE expert</Linker>
       <Linker Name="GenerateHpps">True</Linker>
     </Linker>
