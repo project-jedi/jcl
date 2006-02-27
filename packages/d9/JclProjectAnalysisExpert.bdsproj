@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58030000</Linker>
+      <Linker Name="ImageBase">$58060000</Linker>
       <Linker Name="ExeDescription">JCL Project Analyzer</Linker>
     </Linker>
     <Directories>

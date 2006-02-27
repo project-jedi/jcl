@@ -88,8 +88,8 @@
     <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot; -aa -Tpp -Gpr -x 
-      -Gn -Gl -Gi"/>
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;
+      -b:0x48000000 -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>

@@ -6,7 +6,7 @@
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
-  <ImageBase>$58060000</ImageBase>
+  <ImageBase>580C0000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>97</VersionMinorNumber>
   <ReleaseNumber>1</ReleaseNumber>

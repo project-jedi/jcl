@@ -6,7 +6,7 @@
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
-  <ImageBase>$48300000</ImageBase>
+  <ImageBase>48300000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>97</VersionMinorNumber>
   <ReleaseNumber>0</ReleaseNumber>

@@ -71,8 +71,8 @@
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;%DESCRIPTION% for C++Builder 5&quot; -aa -Tpp
-      -Gp%type% -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;%DESCRIPTION% for C++Builder 5&quot;
+      -b:0x%IMAGE_BASE% -aa -Tpp -Gp%type% -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>

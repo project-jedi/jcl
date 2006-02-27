@@ -113,7 +113,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">16384</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">$58000000</Linker>
+      <Linker Name="ImageBase">58000000</Linker>
       <Linker Name="ExeDescription">JCL Package containing common units for JCL Experts</Linker>
     </Linker>
     <Directories>
