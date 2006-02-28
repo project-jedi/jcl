@@ -197,6 +197,7 @@ begin
         Result := Result or (Cardinal(StrToInt(Copy(S, 1, ps - 1))) shl Shifts[Count]);
         S := Copy(S, ps + 1, MaxInt);
         ps := Pos('.', S);
+        Inc(Count);
       end;
       Result := Result or (Cardinal(StrToInt(Copy(S, 1, MaxInt))) shl Shifts[Count]);
     except
