@@ -1768,7 +1768,7 @@ begin
   if Target.RadToolKind = brBorlandDevStudio then
     TJclBDSInstallation(Target).DualPackageInstallation := OptionSelected(ioJclDualPackages);
   InstallJediRegInformation(Target.ConfigDataLocation, 'JCL', Distribution.Version,
-    BplPath, DcpPath, Distribution.FJclPath);
+    DcpPath, BplPath, Distribution.FJclPath);
   {$ENDIF MSWINDOWS}
   Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
   if Target.SupportsVisualCLX then
@@ -2568,6 +2568,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.94  2006/02/28 18:41:55  ahuser
+// Fixed BplDir <-> DcpDir swap
+//
 // Revision 1.93  2006/02/28 16:30:20  ahuser
 // Jedi Registry Information record
 //
