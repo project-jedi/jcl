@@ -43,9 +43,9 @@ type
     RootDir: string; // example: 'C:\Program Files\Borland\Delphi7', the JVCL Installer resolves macros
   end;
 
-{ InstallJediInformation() writes the "Version", "DcpDir" and "RootDir" values
-  into the registry key IdeRegKey\Jedi\ProjectName. Returns True if the values
-  could be written. }
+{ InstallJediInformation() writes the "Version", "DcpDir", "BplDir" and "RootDir"
+  values into the registry key IdeRegKey\Jedi\ProjectName. Returns True if the
+  values could be written. }
 function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
   BplDir, RootDir: string): Boolean;
 
@@ -62,9 +62,10 @@ function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Versio
 { ReadJediInformation() reads the Jedi Information from the registry. }
 function ReadJediRegInformation(const IdeRegKey, ProjectName: string): TJediInformation; overload;
 
-{ ParseVersionNumber() converts a version number 'x.aa.bbb.cccc' to a float. If the
-  VersionStr is invalid the function returns -1. }
-function ParseVersionNumber(const VersionStr: string): Double;
+{ ParseVersionNumber() converts a version number 'major.minor.release.build' to
+  cardinal like the JclBase JclVersion constant. If the VersionStr is invalid
+  the function returns 0. }
+function ParseVersionNumber(const VersionStr: string): Cardinal;
 
 implementation
 
@@ -159,7 +160,7 @@ begin
       if Reg.ValueExists('DcpDir') then // do not localize
         DcpDir := ExcludeTrailingPathDelimiter(Reg.ReadString('DcpDir')); // do not localize
       if Reg.ValueExists('BplDir') then // do not localize
-        DcpDir := ExcludeTrailingPathDelimiter(Reg.ReadString('BplDir')); // do not localize
+        BplDir := ExcludeTrailingPathDelimiter(Reg.ReadString('BplDir')); // do not localize
       if Reg.ValueExists('RootDir') then // do not localize
         RootDir := ExcludeTrailingPathDelimiter(Reg.ReadString('RootDir')); // do not localize
     end;
@@ -175,50 +176,31 @@ begin
     Result.BplDir, Result.RootDir);
 end;
 
-function ParseVersionNumber(const VersionStr: string): Double;
+function ParseVersionNumber(const VersionStr: string): Cardinal;
 const
-  MinWidths: array[0..2] of Integer = (2, 3, 4);
+  Shifts: array[0..3] of Integer = (24, 16, 15, 0);
 var
-  S, PropVersion, Temp: string;
+  S: string;
   ps: Integer;
   Count: Integer;
 begin
   S := VersionStr;
-  if S = '' then
-    Result := -1
-  else
+  Result := 0;
+  if S <> '' then
   begin
-    PropVersion := '';
+    Result := 0;
     try
+      Count := 0;
       ps := Pos('.', S);
-      if ps > 0 then
+      while (ps > 0) and (Count < High(Shifts)) do
       begin
-        PropVersion := Copy(S, 1, ps - 1) + '.';
+        Result := Result or (Cardinal(StrToInt(Copy(S, 1, ps - 1))) shl Shifts[Count]);
         S := Copy(S, ps + 1, MaxInt);
-
-        Count := 0;
         ps := Pos('.', S);
-        while ps > 0 do
-        begin
-          Temp := Copy(S, 1, ps - 1);
-          while Length(Temp) < MinWidths[Count] do
-            Temp := Temp + '0';
-          PropVersion := PropVersion + Temp;
-          S := Copy(S, ps + 1, MaxInt);
-          ps := Pos('.', S);
-          if Count < High(MinWidths) then
-            Inc(Count);
-        end;
-        PropVersion := PropVersion + S;
-      end
-      else
-        PropVersion := S;
-
-      if ThousandSeparator = '.' then
-        PropVersion := StringReplace(PropVersion, ThousandSeparator, DecimalSeparator, []);
-      Result := StrToFloat(PropVersion);
+      end;
+      Result := Result or (Cardinal(StrToInt(Copy(S, 1, MaxInt))) shl Shifts[Count]);
     except
-      Result := -1;
+      Result := 0;
     end;
   end;
 end;
