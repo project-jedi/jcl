@@ -176,6 +176,7 @@ type
     procedure InitProgress;
     function GetExamplesDir: string;
     function GetDemosPath: string;
+    function GetVersion: string;
   protected
     constructor Create;
     function DocFileName(const BaseFileName: string): string;
@@ -207,6 +208,7 @@ type
     property SourceDir: string read FJclSourceDir;
     property SourcePath: string read FJclSourcePath;
     property Tool: IJediInstallTool read FTool write SetTool;
+    property Version: string read GetVersion;
   end;
 
 function CreateJclInstall: IJediInstall;
@@ -224,7 +226,8 @@ uses
   {$IFDEF MSWINDOWS}
   JclPeImage, MSHelpServices_TLB,
   {$ENDIF MSWINDOWS}
-  JclFileUtils, JclStrings;
+  JclFileUtils, JclStrings,
+  JediRegInfo;
 
 { Install option data }
 
@@ -1764,6 +1767,8 @@ begin
   {$IFDEF MSWINDOWS}
   if Target.RadToolKind = brBorlandDevStudio then
     TJclBDSInstallation(Target).DualPackageInstallation := OptionSelected(ioJclDualPackages);
+  InstallJediRegInformation(Target.ConfigDataLocation, 'JCL', Distribution.Version,
+    BplPath, DcpPath, Distribution.FJclPath);
   {$ENDIF MSWINDOWS}
   Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
   if Target.SupportsVisualCLX then
@@ -2053,6 +2058,9 @@ begin
     Result := Result and UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
   if Target.VersionNumber >= 6 then
     Result := Result and UninstallPackage(FullPackageFileName(Target, JclVclDpk));
+  {$IFDEF MSWINDOWS}
+  RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
+  {$ENDIF MSWINDOWS}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -2352,6 +2360,11 @@ begin
   Result := nil;
 end;
 
+function TJclDistribution.GetVersion: string;
+begin
+  Result := Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
+end;
+
 procedure TJclDistribution.InitInstallationTargets;
 begin
   if not Tool.GetBorRADToolInstallations.Iterate(CreateInstall) then
@@ -2418,6 +2431,7 @@ begin
   FJclReadmeFileName := DocFileName(RsReadmeFileName);
   if FileExists(FJclReadmeFileName) then
     Tool.Readme := FJclReadmeFileName;
+
   if not Result then
     raise EJediInstallInitFailure.CreateRes(@RsCantFindFiles);
 end;
@@ -2554,6 +2568,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.93  2006/02/28 16:30:20  ahuser
+// Jedi Registry Information record
+//
 // Revision 1.92  2006/02/26 18:31:42  outchy
 // Chm help can now be removed
 // Alpha version for the help 2.0

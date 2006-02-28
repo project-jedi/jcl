@@ -8,7 +8,8 @@ uses
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
   JclBorlandTools in '..\source\common\JclBorlandTools.pas',
   JclResources in '..\source\common\JclResources.pas',
-  MSHelpServices_TLB in 'MSHelpServices_TLB.pas';
+  MSHelpServices_TLB in 'MSHelpServices_TLB.pas',
+  JediRegInfo in 'JediRegInfo.pas';
 
 {$R *.res}
 

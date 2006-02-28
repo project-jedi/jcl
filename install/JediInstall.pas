@@ -147,6 +147,7 @@ type
     procedure SetOnWriteLog(Installation: TJclBorRADToolInstallation; Value: TTextHandler);
     procedure SetOnStarting(Value: TInstallationEvent);
     procedure SetOnEnding(Value: TInstallationEvent); // OnEnding called on success only
+    function GetVersion: string;
   end;
 
 function OptionToStr(const Option: TJediInstallOption): string;
@@ -174,6 +175,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2006/02/28 16:30:20  ahuser
+// Jedi Registry Information record
+//
 // Revision 1.20  2006/02/26 18:31:42  outchy
 // Chm help can now be removed
 // Alpha version for the help 2.0
