@@ -2499,7 +2499,6 @@ var
   Masks, Directory: string;
 begin
   Assert(List <> nil);
-  Result := False;
   MaskList := TStringList.Create;
   try
     {* extract the Directory *}
@@ -5877,6 +5876,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.59  2006/03/01 06:56:46  marquardt
+// solved comiiler hint about unused Result assignment
+//
 // Revision 1.58  2006/02/25 11:18:16  outchy
 // BuildFileList: all files are enumerated and only the ones matching attributes and at least one mask are added.
 //
