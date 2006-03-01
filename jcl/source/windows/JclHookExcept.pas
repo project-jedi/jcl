@@ -202,18 +202,26 @@ begin
     try
       with Notifiers.LockList do
       try
-        for Priorities := High(Priorities) downto Low(Priorities) do
-          for I := 0 to Count - 1 do
-            with TNotifierItem(Items[I]) do
-              if Priority = Priorities then
-                DoNotify(ExceptObj, ExceptAddr, OSException);
+        if Count = 1 then
+        begin
+          with TNotifierItem(Items[0]) do
+            DoNotify(ExceptObj, ExceptAddr, OSException);
+        end
+        else
+        begin
+          for Priorities := High(Priorities) downto Low(Priorities) do
+            for I := 0 to Count - 1 do
+              with TNotifierItem(Items[I]) do
+                if Priority = Priorities then
+                  DoNotify(ExceptObj, ExceptAddr, OSException);
+        end;
       finally
         Notifiers.UnlockList;
       end;
     finally
       Recursive := False;
     end;
-  end;  
+  end;
 end;
 
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
@@ -547,6 +555,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2006/03/01 23:35:01  ahuser
+// RaiseException speed up. Stack tracing is now done when the StackTraceList is accessed. This moves the track tracing to the dialog and not to RaiseException.
+//
 // Revision 1.10  2005/02/25 07:20:15  marquardt
 // add section lines
 //

@@ -19,9 +19,10 @@
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Flier Lu (flier)                                                                               }
-{   Florent Ouchet (outchy)
+{   Florent Ouchet (outchy)                                                                        }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Andreas Hausladen (ahuser)                                                                     }
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -46,7 +47,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils, Contnrs,
+  Classes, SysUtils, Contnrs, 
   JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 // Diagnostics
@@ -490,22 +491,31 @@ type
     FIgnoreLevels: DWORD;
     TopOfStack: Cardinal;
     BaseOfStack: Cardinal;
+    FStackData: PPointer;
+    FStackDataSize: Cardinal;
     FModuleInfoList: TJclModuleInfoList;
+    FCorrectOnAccess: Boolean;
+    FSkipFirstItem: Boolean;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
+    procedure DelayedTraceStackRaw;
     function ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: DWORD): Boolean;
+    function GetCount: Integer;
+    procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
     destructor Destroy; override;
+    procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
       IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
       IncludeVAdress: Boolean = False);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
+    property Count: Integer read GetCount;
   end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
@@ -793,6 +803,11 @@ begin
     (CreateItemForAddress(Pointer(Module), SystemModule) <> nil);
 end;
 
+{function SortByStartAddress(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(TJclModuleInfo(Item2).StartAddr) - Integer(TJclModuleInfo(Item1).StartAddr);
+end;}
+
 procedure TJclModuleInfoList.BuildModulesList;
 var
   List: TStringList;
@@ -819,6 +834,7 @@ begin
       List.Free;
     end;
   end;
+  //Sort(SortByStartAddress);
 end;
 
 function TJclModuleInfoList.CreateItemForAddress(Addr: Pointer; SystemModule: Boolean): TJclModuleInfo;
@@ -903,8 +919,7 @@ begin
   Result := MapStringToStr(FLinkerBugUnitName);
 end;
 
-class function TJclAbstractMapParser.MapStringToFileName(
-  MapString: PJclMapString): string;
+class function TJclAbstractMapParser.MapStringToFileName(MapString: PJclMapString): string;
 var
   PStart, PEnd, PExtension: PChar;
 begin
@@ -3100,8 +3115,11 @@ function TJclGlobalModulesList.CreateModulesList: TJclModuleInfoList;
 var
   I: Integer;
   SystemModulesOnly: Boolean;
+  IsMultiThreaded: Boolean;
 begin
-  FLock.Enter;
+  IsMultiThreaded := IsMultiThread;
+  if IsMultiThreaded then
+    FLock.Enter;
   try
     if FModulesList = nil then
     begin
@@ -3117,18 +3135,24 @@ begin
     else
       Result := FModulesList;
   finally
-    FLock.Leave;
+    if IsMultiThreaded then
+      FLock.Leave;
   end;
 end;
 
 procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoList);
+var
+  IsMultiThreaded: Boolean;
 begin
-  FLock.Enter;
+  IsMultiThreaded := IsMultiThread;
+  if IsMultiThreaded then
+    FLock.Enter;
   try
     if FModulesList <> ModulesList then
       FreeAndNil(ModulesList);
   finally
-    FLock.Leave;
+    if IsMultiThreaded then
+      FLock.Leave;
   end;
 end;
 
@@ -3201,7 +3225,8 @@ begin
     FirstCaller := ExceptAddr
   else
     FirstCaller := nil;
-  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
+//  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
+  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller).CorrectOnAccess(OSException);
 end;
 
 function JclLastExceptStackList: TJclStackInfoList;
@@ -3255,15 +3280,39 @@ begin
     Add(Item);
   end;
   if Raw then
-    TraceStackRaw
+    DelayedTraceStackRaw
   else
     TraceStackFrames;
 end;
 
 destructor TJclStackInfoList.Destroy;
 begin
+  if Assigned(FStackData) then
+    FreeMem(FStackData);
   GlobalModulesList.FreeModulesList(FModuleInfoList);
   inherited Destroy;
+end;
+
+procedure TJclStackInfoList.ForceStackTracing;
+begin
+  if Assigned(FStackData) then
+  begin
+    TraceStackRaw;
+    if FCorrectOnAccess then
+      CorrectExceptStackListTop(Self, FSkipFirstItem);
+  end;
+end;
+
+function TJclStackInfoList.GetCount: Integer;
+begin
+  ForceStackTracing;
+  Result := inherited Count;
+end;
+
+procedure TJclStackInfoList.CorrectOnAccess(ASkipFirstItem: Boolean);
+begin
+  FCorrectOnAccess := True;
+  FSkipFirstItem := ASkipFirstItem;
 end;
 
 procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
@@ -3271,6 +3320,7 @@ procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, I
 var
   I: Integer;
 begin
+  ForceStackTracing;
   Strings.BeginUpdate;
   try
     for I := 0 to Count - 1 do
@@ -3283,6 +3333,7 @@ end;
 
 function TJclStackInfoList.GetItems(Index: Integer): TJclStackInfoItem;
 begin
+  ForceStackTracing;
   Result := TJclStackInfoItem(Get(Index));
 end;
 
@@ -3363,18 +3414,28 @@ var
   StackPtr: PDWORD;
   PrevCaller: DWORD;
   CallInstructionSize: Cardinal;
+  StackTop: DWORD;
 begin
-  // We define the bottom of the valid stack to be the current ESP pointer
-  BaseOfStack := DWORD(GetESP);
+  if Assigned(FStackData) then
+  begin
+    StackPtr := PDWORD(FStackData);
+    StackTop := DWORD(FStackData) + FStackDataSize;
+  end
+  else
+  begin
+    // We define the bottom of the valid stack to be the current ESP pointer
+    BaseOfStack := DWORD(GetESP);
+    // Get a pointer to the current bottom of the stack
+    StackPtr := PDWORD(BaseOfStack);
+    StackTop := TopOfStack;
+  end;
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
   FillChar(StackInfo, SizeOf(StackInfo), 0);
   // Clear the previous call address
   PrevCaller := 0;
-  // Get a pointer to the current bottom of the stack
-  StackPtr := PDWORD(BaseOfStack);
   // Loop through all of the valid stack space
-  while DWORD(StackPtr) < TopOfStack do
+  while DWORD(StackPtr) < StackTop do
   begin
     // If the current DWORD on the stack refers to a valid call site...
     if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
@@ -3390,6 +3451,34 @@ begin
     end;
     // Look at the next DWORD on the stack
     Inc(StackPtr);
+  end;
+  if Assigned(FStackData) then
+  begin
+    FreeMem(FStackData);
+    FStackDataSize := 0;
+    FStackData := nil;
+  end;
+end;
+
+procedure TJclStackInfoList.DelayedTraceStackRaw;
+var
+  StackPtr: PDWORD;
+begin
+  if Assigned(FStackData) then
+  begin
+    FreeMem(FStackData);
+    FStackDataSize := 0;
+    FStackData := nil;
+  end;
+  // We define the bottom of the valid stack to be the current ESP pointer
+  BaseOfStack := DWORD(GetESP);
+  // Get a pointer to the current bottom of the stack
+  StackPtr := PDWORD(BaseOfStack);
+  if Cardinal(StackPtr) < TopOfStack then
+  begin
+    FStackDataSize := TopOfStack - Cardinal(StackPtr);
+    GetMem(FStackData, FStackDataSize);
+    CopyMemory(FStackData, StackPtr, FStackDataSize);
   end;
 end;
 
@@ -3447,7 +3536,7 @@ begin
       // can also get false negatives.}
     except
       Result := False;
-    end;    
+    end;
   end;
 end;
 
@@ -4029,6 +4118,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.23  2006/03/01 23:35:01  ahuser
+// RaiseException speed up. Stack tracing is now done when the StackTraceList is accessed. This moves the track tracing to the dialog and not to RaiseException.
+//
 // Revision 1.22  2006/02/26 19:05:48  outchy
 // Function InitializeSource promoted to public access.
 //
