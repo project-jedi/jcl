@@ -2520,7 +2520,7 @@ begin
         {* if the filename matches any mask then it is added to the list *}
         for IndexMask := 0 to MaskList.Count - 1 do
           if (SearchRec.Name <> '.') and (SearchRec.Name <> '..')
-            and ((SearchRec.Attr and Attr) = SearchRec.Attr)
+            and ((SearchRec.Attr and Attr) = (SearchRec.Attr and faAnyFile))
             and IsFileNameMatch(SearchRec.Name, MaskList.Strings[IndexMask]) then
         begin
           List.Add(SearchRec.Name);
@@ -5876,6 +5876,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.60  2006/03/01 18:09:33  outchy
+// IT3491: BuildFileList fails with unsupported file attributes.
+//
 // Revision 1.59  2006/03/01 06:56:46  marquardt
 // solved comiiler hint about unused Result assignment
 //
