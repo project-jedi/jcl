@@ -183,7 +183,7 @@ begin
     if Assigned(FCompileMessages) then
       FCompileMessages.AddError(Line);
   end
-  else if HasText(Line, ['fatal: ']) then // do not localize
+  else if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
   begin
     Result := clFatal;
     IncError;
