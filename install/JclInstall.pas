@@ -224,7 +224,10 @@ uses
   {$ENDIF VCL}
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
-  JclPeImage, MSHelpServices_TLB,
+  JclPeImage,
+  {$IFDEF COMPILER6_UP}
+  MSHelpServices_TLB,
+  {$ENDIF COMPILER6_UP}
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
   JediRegInfo;
@@ -1903,6 +1906,10 @@ end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.RegisterHelp2Files;
+{$IFDEF COMPILER5}
+begin
+end;
+{$ELSE}
 var
   HxRegisterSession: IHxRegisterSession;
   HxPlugin: IHxPlugIn;
@@ -1971,6 +1978,7 @@ begin
     SetCurrentDir(CurrentDir);
   end;
 end;
+{$ENDIF COMPILER5}
 {$ENDIF MSWINDOWS}
 
 procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
@@ -2148,6 +2156,10 @@ end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.UnregisterHelp2Files;
+{$IFDEF COMPILER5}
+begin
+end;
+{$ELSE}
 var
   HxRegisterSession: IHxRegisterSession;
   HxPlugin: IHxPlugIn;
@@ -2218,6 +2230,7 @@ begin
 
   end;
 end;
+{$ENDIF COMPILER5}
 {$ENDIF MSWINDOWS}
 
 
@@ -2568,6 +2581,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.95  2006/03/02 13:28:48  obones
+// Now compiles fine with C5/D5, the help2 functions doing nothing at all in this case
+//
 // Revision 1.94  2006/02/28 18:41:55  ahuser
 // Fixed BplDir <-> DcpDir swap
 //
