@@ -492,33 +492,40 @@ type
     TopOfStack: Cardinal;
     BaseOfStack: Cardinal;
     FStackData: PPointer;
-    FStackDataSize: Cardinal;
+    FFrameEBP: Pointer;
     FModuleInfoList: TJclModuleInfoList;
     FCorrectOnAccess: Boolean;
     FSkipFirstItem: Boolean;
+    FDelayedTrace: Boolean;
+    FRaw: Boolean;
+    FStackOffset: Cardinal;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
-    procedure DelayedTraceStackRaw;
+    procedure DelayStoreStack;
     function ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: DWORD): Boolean;
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
-    constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
+    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD; AFirstCaller: Pointer;
+      ADelayedTrace: Boolean = False);
     destructor Destroy; override;
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
       IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
       IncludeVAdress: Boolean = False);
+    property DelayedTrace: Boolean read FDelayedTrace;
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
     property Count: Integer read GetCount;
+    property Raw: Boolean read FRaw;
   end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean = False): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -606,7 +613,8 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 // Global exceptional stack tracker enable routines and variables
 type
   TJclStackTrackingOption =
-    (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList);
+    (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
+     stDelayedTrace);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 var
@@ -2701,7 +2709,7 @@ begin
       end;
     end
     else
-    with TJclStackInfoList.Create(False, 1, nil) do
+    with TJclStackInfoList.Create(False, 1, nil, False) do
     try
       if Level < Count then
         Result := Items[Level].CallerAdr;
@@ -3215,8 +3223,10 @@ var
   IgnoreLevels: DWORD;
   FirstCaller: Pointer;
   RawMode: Boolean;
+  Delayed: Boolean;
 begin
   RawMode := stRawMode in JclStackTrackingOptions;
+  Delayed := stDelayedTrace in JclStackTrackingOptions;
   if RawMode then
     IgnoreLevels := 7
   else
@@ -3226,7 +3236,7 @@ begin
   else
     FirstCaller := nil;
 //  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
-  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller).CorrectOnAccess(OSException);
+  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller, Delayed).CorrectOnAccess(OSException);
 end;
 
 function JclLastExceptStackList: TJclStackInfoList;
@@ -3246,9 +3256,10 @@ begin
       IncludeVAdress);
 end;
 
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace);
   GlobalStackList.AddObject(Result);
 end;
 
@@ -3265,22 +3276,31 @@ end;
 
 //=== { TJclStackInfoList } ==================================================
 
-constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+  AFirstCaller: Pointer; ADelayedTrace: Boolean);
 var
   Item: TJclStackInfoItem;
 begin
   inherited Create;
   FIgnoreLevels := AIgnoreLevels;
+  FDelayedTrace := ADelayedTrace;
+  FRaw := ARaw;
+  FStackOffset := 0;
+  FFrameEBP := nil;
+
   TopOfStack := GetStackTop;
+  
   FModuleInfoList := GlobalModulesList.CreateModulesList;
-  if FirstCaller <> nil then
+  if AFirstCaller <> nil then
   begin
     Item := TJclStackInfoItem.Create;
-    Item.FStackInfo.CallerAdr := DWORD(FirstCaller);
+    Item.FStackInfo.CallerAdr := DWORD(AFirstCaller);
     Add(Item);
   end;
-  if Raw then
-    DelayedTraceStackRaw
+  if DelayedTrace then
+    DelayStoreStack
+  else if Raw then
+    TraceStackRaw
   else
     TraceStackFrames;
 end;
@@ -3295,9 +3315,13 @@ end;
 
 procedure TJclStackInfoList.ForceStackTracing;
 begin
-  if Assigned(FStackData) then
+  if DelayedTrace and Assigned(FStackData) then
   begin
-    TraceStackRaw;
+    if Raw then
+      TraceStackRaw
+    else
+      TraceStackFrames;
+    FDelayedTrace := False;
     if FCorrectOnAccess then
       CorrectExceptStackListTop(Self, FSkipFirstItem);
   end;
@@ -3350,7 +3374,7 @@ begin
   begin
     // CallerAdr within current process space, code segment etc.
     // CallersEBP within current thread stack. Added Mar 12 2002 per Hallvard's suggestion
-    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) and ValidStackAddr(StackFrame^.CallersEBP) then
+    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) and ValidStackAddr(StackFrame^.CallersEBP + FStackOffset) then
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
@@ -3364,12 +3388,12 @@ begin
       StackInfo.DumpSize := StackFrame^.CallersEBP - DWORD(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
       // Step to the next stack frame by following the EBP pointer
-      StackFrame := PStackFrame(StackFrame^.CallersEBP);
+      StackFrame := PStackFrame(StackFrame^.CallersEBP + FStackOffset);
       Result := True;
       Exit;
     end;
     // Step to the next stack frame by following the EBP pointer
-    StackFrame := PStackFrame(StackFrame^.CallersEBP);
+    StackFrame := PStackFrame(StackFrame^.CallersEBP + FStackOffset);
   end;
   Result := False;
 end;
@@ -3395,10 +3419,16 @@ var
   StackFrame: PStackFrame;
   StackInfo: TStackInfo;
 begin
+  Clear;
+
   // Start at level 0
   StackInfo.Level := 0;
-  // Get the current stack frame from the EBP register
-  StackFrame := GetEBP;
+  if DelayedTrace then
+    // Get the current stack frame from the EBP register
+    StackFrame := FFrameEBP
+  else
+    StackFrame := GetEBP;
+
   // We define the bottom of the valid stack to be the current EBP Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
   // stack than what would define valid stack frames.
@@ -3416,10 +3446,13 @@ var
   CallInstructionSize: Cardinal;
   StackTop: DWORD;
 begin
-  if Assigned(FStackData) then
+  Clear;
+
+  if DelayedTrace then
   begin
+    if not Assigned(FStackData) then
+      Exit;
     StackPtr := PDWORD(FStackData);
-    StackTop := DWORD(FStackData) + FStackDataSize;
   end
   else
   begin
@@ -3427,8 +3460,10 @@ begin
     BaseOfStack := DWORD(GetESP);
     // Get a pointer to the current bottom of the stack
     StackPtr := PDWORD(BaseOfStack);
-    StackTop := TopOfStack;
   end;
+
+  StackTop := TopOfStack;
+
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
   FillChar(StackInfo, SizeOf(StackInfo), 0);
@@ -3455,31 +3490,45 @@ begin
   if Assigned(FStackData) then
   begin
     FreeMem(FStackData);
-    FStackDataSize := 0;
     FStackData := nil;
   end;
 end;
 
-procedure TJclStackInfoList.DelayedTraceStackRaw;
+procedure TJclStackInfoList.DelayStoreStack;
 var
   StackPtr: PDWORD;
+  StackDataSize: Cardinal;
 begin
   if Assigned(FStackData) then
   begin
     FreeMem(FStackData);
-    FStackDataSize := 0;
     FStackData := nil;
   end;
   // We define the bottom of the valid stack to be the current ESP pointer
   BaseOfStack := DWORD(GetESP);
+
   // Get a pointer to the current bottom of the stack
   StackPtr := PDWORD(BaseOfStack);
   if Cardinal(StackPtr) < TopOfStack then
   begin
-    FStackDataSize := TopOfStack - Cardinal(StackPtr);
-    GetMem(FStackData, FStackDataSize);
-    CopyMemory(FStackData, StackPtr, FStackDataSize);
+    StackDataSize := TopOfStack - Cardinal(StackPtr);
+    GetMem(FStackData, StackDataSize);
+    System.Move(StackPtr^, FStackData^, StackDataSize);
+    //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
+
+  FFrameEBP := GetEBP;
+
+  {$OVERFLOWCHECKS OFF}
+
+  FStackOffset := DWORD(FStackData) - DWORD(StackPtr);
+
+  FFrameEBP := Pointer(Cardinal(FFrameEBP) + FStackOffset);
+  TopOfStack := TopOfStack + FStackOffset;
+
+  {$IFDEF OVERFLOWCHECKS_ON}
+  {$OVERFLOWCHECKS ON}
+  {$ENDIF OVERFLOWCHECKS_ON}
 end;
 
 // Validate that the code address is a valid code site
@@ -4118,6 +4167,10 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.24  2006/03/02 18:26:21  outchy
+// Delay is now an option
+// Stack frame analyze can now be delayed
+//
 // Revision 1.23  2006/03/01 23:35:01  ahuser
 // RaiseException speed up. Stack tracing is now done when the StackTraceList is accessed. This moves the track tracing to the dialog and not to RaiseException.
 //
