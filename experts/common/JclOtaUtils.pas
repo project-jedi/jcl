@@ -269,7 +269,7 @@ constructor EJclExpertException.CreateTrace(const Msg: string);
 begin
   inherited Create(Msg);
 {$IFDEF MSWINDOWS}
-  FStackInfo := JclCreateStackList(False, 0, nil);
+  FStackInfo := JclCreateStackList(False, 0, nil, False);
 {$ENDIF MSWINDOWS}
 end;
 
@@ -1133,6 +1133,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2006/03/02 18:48:08  outchy
+// Updated function prototype (fixing link error with C++Builder 6)
+//
 // Revision 1.17  2006/02/02 19:57:08  outchy
 // IT3464: EFOpenError when the bdsproj is not on drive
 //
