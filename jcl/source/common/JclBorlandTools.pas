@@ -445,7 +445,7 @@ type
     function GetDCC32: TJclDCC32;
     function GetBpr2Mak: TJclBpr2Mak;
     function GetMake: IJclCommandLineTool;
-    function GetDebugDCUPath: string;
+    function GetDebugDCUPath: TJclBorRADToolPath;
     function GetDescription: string;
     function GetEditionAsText: string;
     function GetIdeExeFileName: string;
@@ -461,7 +461,7 @@ type
     procedure SetLibrarySearchPath(const Value: TJclBorRADToolPath);
     function GetLibraryBrowsingPath: TJclBorRADToolPath;
     procedure SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
-    procedure SetDebugDCUPath(const Value: string);
+    procedure SetDebugDCUPath(const Value: TJclBorRADToolPath);
     procedure SetOutputCallback(const Value: TTextHandler);
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
@@ -546,7 +546,7 @@ type
     function GetDefaultProjectsDir: string; virtual;
     function RemoveFromDebugDCUPath(const Path: string): Boolean;
     function RemoveFromLibrarySearchPath(const Path: string): Boolean;
-    function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
+    function RemoveFromLibraryBrowsingPath(const Path: string): Boolean; 
     function SubstitutePath(const Path: string): string;
     {$IFDEF KEEP_DEPRECATED}
     function SupportsBCB: Boolean;
@@ -562,7 +562,7 @@ type
     // Paths
     property BinFolderName: string read FBinFolderName;
     property BPLOutputPath: string read GetBPLOutputPath;
-    property DebugDCUPath: string read GetDebugDCUPath write SetDebugDCUPath;
+    property DebugDCUPath: TJclBorRADToolPath read GetDebugDCUPath write SetDebugDCUPath;
     property DCPOutputPath: string read GetDCPOutputPath;
     property DefaultProjectsDir: string read GetDefaultProjectsDir;
     //
@@ -645,6 +645,10 @@ type
   private
     FDualPackageInstallation: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
+    function GetCppBrowsingPath: TJclBorRADToolPath;
+    function GetCppSearchPath: TJclBorRADToolPath;
+    procedure SetCppBrowsingPath(const Value: TJclBorRADToolPath);
+    procedure SetCppSearchPath(const Value: TJclBorRADToolPath);
   protected
     constructor Create(const AConfigDataLocation: string); override;
     function GetDCPOutputPath: string; override;
@@ -664,6 +668,14 @@ type
     function GetBorlandStudioProjectsDir: string;
     function GetDefaultProjectsDir: string; override;
     {class }function RadToolName: string; override;
+
+    function AddToCppSearchPath(const Path: string): Boolean; 
+    function AddToCppBrowsingPath(const Path: string): Boolean;
+    function RemoveFromCppSearchPath(const Path: string): Boolean;
+    function RemoveFromCppBrowsingPath(const Path: string): Boolean;
+
+    property CppSearchPath: TJclBorRADToolPath read GetCppSearchPath write SetCppSearchPath;
+    property CppBrowsingPath: TJclBorRADToolPath read GetCppBrowsingPath write SetCppBrowsingPath;
 
     function RegisterPackage(const BinaryFileName, Description: string): Boolean; override;
     function UnregisterPackage(const BinaryFileName: string): Boolean; override;
@@ -823,6 +835,10 @@ const
   LibraryBrowsingPathValueName = 'Browsing Path';
   LibraryBPLOutputValueName  = 'Package DPL Output';
   LibraryDCPOutputValueName  = 'Package DCP Output';
+
+  CppPathsKeyName            = 'CppPaths';
+  CppBrowsingPathValueName   = 'BrowsingPath';
+  CppSearchPathValueName     = 'SearchPath';
 
   TransferKeyName            = 'Transfer';
   TransferCountValueName     = 'Count';
@@ -2681,7 +2697,7 @@ begin
   {$ENDIF ~KYLIX}
 end;
 
-function TJclBorRADToolInstallation.GetDescription: string;
+function TJclBorRADToolInstallation.GetDescription: TJclBorRADToolPath;
 begin
   Result := Format('%s %s', [Name, EditionAsText]);
   if InstalledUpdatePack > 0 then
@@ -3312,7 +3328,7 @@ begin
   end;
 end;
 
-procedure TJclBorRADToolInstallation.SetDebugDCUPath(const Value: string);
+procedure TJclBorRADToolInstallation.SetDebugDCUPath(const Value: TJclBorRADToolPath);
 begin
   ConfigData.WriteString(DebuggingKeyName, DebugDCUPathValueName, Value);
 end;
@@ -3792,6 +3808,36 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+function TJclBDSInstallation.AddToCppBrowsingPath(
+  const Path: string): Boolean;
+var
+  TempCppPath: TJclBorRADToolPath;
+begin
+  if bpBCBuilder32 in Personalities then
+  begin
+    TempCppPath := CppBrowsingPath;
+    Result := AddMissingPathItems(TempCppPath, Path);
+    CppBrowsingPath := TempCppPath;
+  end
+  else
+    Result := False;
+end;
+
+function TJclBDSInstallation.AddToCppSearchPath(
+  const Path: string): Boolean;
+var
+  TempCppPath: TJclBorRADToolPath;
+begin
+  if bpBCBuilder32 in Personalities then
+  begin
+    TempCppPath := CppSearchPath;
+    Result := AddMissingPathItems(TempCppPath, Path);
+    CppSearchPath := TempCppPath;
+  end
+  else
+    Result := False;
+end;
+
 function TJclBDSInstallation.CleanPackageCache(
   const BinaryFileName: string): Boolean;
 var
@@ -3948,6 +3994,16 @@ begin
     Result := inherited GetBPLOutputPath;
 end;
 
+function TJclBDSInstallation.GetCppBrowsingPath: TJclBorRADToolPath;
+begin
+  Result := ConfigData.ReadString(CppPathsKeyName, CppBrowsingPathValueName, '');
+end;
+
+function TJclBDSInstallation.GetCppSearchPath: TJclBorRADToolPath;
+begin
+  Result := ConfigData.ReadString(CppPathsKeyName, CppSearchPathValueName, '');
+end;
+
 function TJclBDSInstallation.GetDCPOutputPath: string;
 begin
   if VersionNumber <= 2 then
@@ -4030,6 +4086,47 @@ begin
     CleanPackageCache(BinaryFileName);
   
   Result := inherited RegisterPackage(BinaryFileName, Description);
+end;
+
+function TJclBDSInstallation.RemoveFromCppBrowsingPath(
+  const Path: string): Boolean;
+var
+  TempCppPath: TJclBorRADToolPath;
+begin
+  if bpBCBuilder32 in Personalities then
+  begin
+    TempCppPath := CppBrowsingPath;
+    Result := RemoveFromPath(TempCppPath, Path);
+    CppBrowsingPath := TempCppPath;
+  end
+  else
+    Result := False;
+end;
+
+function TJclBDSInstallation.RemoveFromCppSearchPath(
+  const Path: string): Boolean;
+var
+  TempCppPath: TJclBorRADToolPath;
+begin
+  if bpBCBuilder32 in Personalities then
+  begin
+    TempCppPath := CppSearchPath;
+    Result := RemoveFromPath(TempCppPath, Path);
+    CppSearchPath := TempCppPath;
+  end
+  else
+    Result := False;
+end;
+
+procedure TJclBDSInstallation.SetCppBrowsingPath(
+  const Value: TJclBorRADToolPath);
+begin
+  ConfigData.WriteString(CppPathsKeyName, CppBrowsingPathValueName, Value);
+end;
+
+procedure TJclBDSInstallation.SetCppSearchPath(const Value: TJclBorRADToolPath);
+begin
+  ConfigData.WriteString(CppPathsKeyName, CppSearchPathValueName, Value);
 end;
 
 procedure TJclBDSInstallation.SetDualPackageInstallation(const Value: Boolean);
@@ -4343,6 +4440,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.57  2006/03/04 21:22:10  outchy
+// Jcl directories added to the C++ side of BDS 2006
+//
 // Revision 1.56  2006/02/26 18:31:43  outchy
 // Chm help can now be removed
 // Alpha version for the help 2.0
