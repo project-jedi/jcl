@@ -1427,11 +1427,47 @@ begin
     ioJclMapDelete:
       Target.MapDelete := True;
     ioJclEnvLibPath:
-      if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
-        WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
+      begin
+        Result := Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir);
+        if Result then
+        begin
+          WriteLog(Format(LineBreak + 'Added "%s;%s" to library search path.', [LibDir, Distribution.SourceDir]));
+          {$IFDEF MSWINDOWS}
+          if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+            with TJclBDSInstallation(Target) do
+          begin
+            Result := AddToCppSearchPath(LibDir) and AddToCppSearchPath(Distribution.SourceDir);
+            if Result then
+              WriteLog(Format(LineBreak + 'Added "%s;%s" to cpp search path.', [LibDir, Distribution.SourceDir]))
+            else
+              WriteLog(LineBreak + 'Failed to add cpp search paths.');
+          end;
+          {$ENDIF MSWINDOWS}
+        end
+        else
+          WriteLog(LineBreak + 'Failed to add library search paths.');
+      end;
     ioJclEnvBrowsingPath:
-      if Target.AddToLibraryBrowsingPath(Distribution.SourcePath) then
-        WriteLog(Format(LineBreak + 'Added "%s" to library browsing path.', [Distribution.SourcePath]));
+      begin
+        Result := Target.AddToLibraryBrowsingPath(Distribution.SourcePath);
+        if Result then
+        begin
+          WriteLog(Format(LineBreak + 'Added "%s" to library browsing path.', [Distribution.SourcePath]));
+          {$IFDEF MSWINDOWS}
+          if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+            with TJclBDSInstallation(Target) do
+          begin
+            Result := AddToCppBrowsingPath(Distribution.SourcePath);
+            if Result then
+              WriteLog(Format(LineBreak + 'Added "%s" to cpp browsing path.', [Distribution.SourcePath]))
+            else
+              WriteLog(LineBreak + 'Failed to add cpp browsing paths.');
+          end;
+          {$ENDIF MSWINDOWS}
+        end
+        else
+          WriteLog(LineBreak + 'Failed to add library browsing path.');
+      end;
     ioJclEnvDebugDCUPath:
       if Target.AddToDebugDCUPath(DebugDcuDir) then
         WriteLog(Format(LineBreak + 'Added "%s" to Debug DCU Path.', [DebugDcuDir]));
@@ -1488,11 +1524,39 @@ begin
   Result := True;
   case Option of
     ioJclEnvLibPath:
-      if Target.RemoveFromLibrarySearchPath(LibDir) and Target.RemoveFromLibrarySearchPath(Distribution.SourceDir) then
-        WriteLog(Format(LineBreak + 'Removed "%s;%s" from library path.', [LibDir, Distribution.SourceDir]));
+      begin
+        if Target.RemoveFromLibrarySearchPath(LibDir) and Target.RemoveFromLibrarySearchPath(Distribution.SourceDir) then
+          WriteLog(Format(LineBreak + 'Removed "%s;%s" from library search path.', [LibDir, Distribution.SourceDir]))
+        else
+          WriteLog(LineBreak + 'Failed to remove library search path.');
+        {$IFDEF MSWINDOWS}
+        if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+          with TJclBDSInstallation(Target) do
+        begin
+          if RemoveFromCppSearchPath(LibDir) and RemoveFromCppSearchPath(Distribution.SourceDir) then
+            WriteLog(Format(LineBreak + 'Removed "%s;%s" from cpp search path.', [LibDir, Distribution.SourceDir]))
+          else
+            WriteLog(LineBreak + 'Failed to remove cpp search path.');
+        end;
+        {$ENDIF MSWINDOWS}
+      end;
     ioJclEnvBrowsingPath:
-      if Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath) then
-        WriteLog(Format(LineBreak + 'Removed "%s" from library browsing path.', [Distribution.SourcePath]));
+      begin
+        if Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath) then
+          WriteLog(Format(LineBreak + 'Removed "%s" from library browsing path.', [Distribution.SourcePath]))
+        else
+          WriteLog(LineBreak + 'Failed to remove library browsing path.');
+        {$IFDEF MSWINDOWS}
+        if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+          with TJclBDSInstallation(Target) do
+        begin
+          if RemoveFromCppBrowsingPath(Distribution.SourcePath) then
+            WriteLog(Format(LineBreak + 'Removed "%s" from cpp browsing path.', [Distribution.SourcePath]))
+          else
+            WriteLog(LineBreak + 'Failed to remove cpp browsing path.');
+        end;
+        {$ENDIF MSWINDOWS}
+      end;
     ioJclEnvDebugDCUPath:
       if Target.RemoveFromDebugDCUPath(DebugDcuDir) then
         WriteLog(Format(LineBreak + 'Removed "%s" from Debug DCU Path.', [DebugDcuDir]));
@@ -2581,6 +2645,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.96  2006/03/04 21:22:10  outchy
+// Jcl directories added to the C++ side of BDS 2006
+//
 // Revision 1.95  2006/03/02 13:28:48  obones
 // Now compiles fine with C5/D5, the help2 functions doing nothing at all in this case
 //
