@@ -225,6 +225,7 @@ uses
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
   JclPeImage,
+  JClRegistry,
   {$IFDEF COMPILER6_UP}
   MSHelpServices_TLB,
   {$ENDIF COMPILER6_UP}
@@ -345,8 +346,14 @@ resourcestring
   RsPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
     'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
     'Do you want to continue without compiling JCL packages?';
+  RsCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
+    'Do you want the JCL installer to create it?';
+  RsCantCreatePath = 'The path %s cannot be created';
+  RsAddPathToEnvironment = 'The path where BPL are created must be present in the PATH' + sLineBreak +
+    'environment variable, otherwise JCL packages won''t be found by the IDE.' + sLineBreak +
+    'Do you want the JCL installer to add it?' + sLineBreak +
+    'You will have to reboot your computer and/or to close your session to validate this change';
 
-                                                                               
 const
   Invalid = -1;
   LineBreak = AnsiLineBreak;
@@ -552,7 +559,7 @@ const
   BCBObjectPath     = BCBIncludePath;
   {$ENDIF UNIX}
 
-  DialogsPath       = 'experts' + PathSeparator + 'debug' + PathSeparator + 'dialog' + PathSeparator;
+  DialogsPath       = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
   ClxDialogFileName = 'ClxExceptDlg.pas';
   ClxDialogName     = 'CLX Exception Dialog';
   DialogDescription = 'JCL Application exception dialog';
@@ -570,9 +577,9 @@ const
   Help2Default           = '_DEFAULT';
 
 
-  JclChmHelpFile    = 'help' + PathSeparator + 'JCLHelp.chm';
-  JclHlpHelpFile    = 'help' + PathSeparator + 'JCLHelp.hlp';
-  JclHxSHelpFile     = 'help' + PathSeparator + 'JCLHelp.HxS';
+  JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
+  JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
+  JclHxSHelpFile     = 'help' + DirDelimiter + 'JCLHelp.HxS';
   JclHelpTitle      = 'JCL %d.%d Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
@@ -583,6 +590,10 @@ const
   {$IFDEF KYLIX}
   Bcb2MakTemplate = 'packages/bcb.gmk';
   {$ENDIF KYLIX}
+
+  PathEnvironmentVar = 'PATH';
+  RegHKCUEnvironmentVar = 'Environment';
+  RegHKLMEnvironmentVar = 'SYSTEM\ControlSet001\Control\Session Manager\Environment';
 
 resourcestring
   RsStatusMessage                   = 'Installing %s...';
@@ -650,7 +661,7 @@ end;
 
 function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
-  S = 'packages' + VersionDir + PathSeparator + '%s';
+  S = 'packages' + VersionDir + DirDelimiter + '%s';
 begin
   with Target do
   begin
@@ -668,7 +679,7 @@ end;
 {$IFDEF MSWINDOWS}
 function FullLibraryFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
-  S = 'packages' + VersionDir + PathSeparator + '%s';
+  S = 'packages' + VersionDir + DirDelimiter + '%s';
 begin
   with Target do
     if SupportsLibSuffix then
@@ -870,7 +881,7 @@ begin
   LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Target.Name]);
   WriteLog(Format(LineBreak + 'Making %s', [LibDescriptor]));
   Tool.UpdateStatus(Format(RsCompilingMessage, [LibDescriptor]));
-  Path := Format('%s' + PathSeparator + '%s', [Distribution.SourceDir, SubDir]);
+  Path := Format('%s' + DirDelimiter + '%s', [Distribution.SourceDir, SubDir]);
   UnitList := Units[SubDir];
   with Target.DCC32 do
   begin
@@ -887,7 +898,7 @@ begin
         Options.Add('-$O-');
         Options.Add('-v');
         UnitOutputDir := MakePath(Distribution.FLibDebugDirMask);
-        AddPathOption('N2', MakePath(Distribution.FLibDirMask + PathSeparator + 'obj')); // .obj files
+        AddPathOption('N2', MakePath(Distribution.FLibDirMask + DirDelimiter + 'obj')); // .obj files
       end
       else
       begin
@@ -895,7 +906,7 @@ begin
         Options.Add('-$W+');
         Options.Add('-$O+');
         UnitOutputDir := MakePath(Distribution.FLibDirMask);
-        AddPathOption('N2', UnitOutputDir + PathSeparator + 'obj'); // .obj files
+        AddPathOption('N2', UnitOutputDir + DirDelimiter + 'obj'); // .obj files
       end;
       Options.Add('-v');
       Options.Add('-JPHNE');
@@ -1081,10 +1092,10 @@ var
   UnitName: string;
   FileMask: string;
 begin
-  FileMask := Format('%s' + PathSeparator + '%s' + PathSeparator + '*.pas', [Distribution.SourceDir, SubDir]);
+  FileMask := Format('%s' + DirDelimiter + '%s' + DirDelimiter + '*.pas', [Distribution.SourceDir, SubDir]);
   BuildFileList(FileMask, faAnyFile, Units);
   // check for units not to compile
-  ExcludeListFileName := MakePath(Format('%s' + PathSeparator + '%s.exc', [Distribution.FLibDirMask, SubDir]));
+  ExcludeListFileName := MakePath(Format('%s' + DirDelimiter + '%s.exc', [Distribution.FLibDirMask, SubDir]));
   if FileExists(ExcludeListFileName) then
   begin
     ExcludeList := TStringList.Create;
@@ -2074,10 +2085,44 @@ end;
 {$ENDIF MSWINDOWS}
 
 function TJclInstallation.Run: Boolean;
+  procedure EnsureDirectoryExists(const DirectoryName, DisplayName: string);
+  begin
+    if not DirectoryExists(DirectoryName) then
+    begin
+      if (MessageDlg(Format(RsCreatePath, [DisplayName]), mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
+        Abort;
+      if not ForceDirectories(DirectoryName) then
+      begin
+        MessageDlg(Format(RsCantCreatePath, [DirectoryName]), mtError, [mbAbort], 0);
+        Abort;
+      end;
+    end;
+  end;
+var
+  PathEnvVar: string;
 begin
   Result := True;
   if OptionSelected(ioJCL) then
   begin
+    if not OptionSelected(ioJclPackages)
+      and (MessageDlg(RsPackageNodeNotSelected, mtWarning, [mbYes, mbNo], 0) <> mrYes) then
+      Abort;
+
+    EnsureDirectoryExists(BplPath, 'BPL');
+    EnsureDirectoryExists(DcpPath, 'DCP');
+
+    {$IFDEF MSWINDOWS}
+    PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+    PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
+    if (PathListItemIndex(PathEnvVar, BplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(BplPath)) = -1)
+      and (MessageDlg(RsAddPathToEnvironment, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+    begin
+      PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+      PathListIncludeItems(PathEnvVar, BplPath);
+      RegWriteString(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, PathEnvVar);
+    end;
+    {$ENDIF MSWINDOWS}
+
     InstallationStarted;
     try
       Result := InstallSelectedOptions;
@@ -2414,7 +2459,7 @@ end;
 
 function TJclDistribution.DocFileName(const BaseFileName: string): string;
 const
-  SDocFileMask = '%sdocs' + PathSeparator + '%s';
+  SDocFileMask = '%sdocs' + DirDelimiter + '%s';
 begin
   Result := Format(SDocFileMask, [FJclPath, BaseFileName]);
 end;
@@ -2458,15 +2503,15 @@ begin
   FJclPath := PathGetShortName(FJclPath);
   {$ENDIF MSWINDOWS}
   FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
-  FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
-  FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
+  FLibDebugDirMask := FLibDirMask + DirDelimiter + 'debug';
+  FLibObjDirMask := FLibDirMask + DirDelimiter + 'obj';
   FJclBinDir := FJclPath + 'bin';
   FJclSourceDir := FJclPath + 'source';
 
   FJclSourcePath := '';
   for I := Low(JclSourceDirs) to High(JclSourceDirs) do
     FJclSourcePath := FJclSourcePath +
-      Format('%s' + PathSeparator + '%s' + PathSep, [FJclSourceDir, JclSourceDirs[I]]);
+      Format('%s' + DirDelimiter + '%s' + DirSeparator, [FJclSourceDir, JclSourceDirs[I]]);
 
   {$IFDEF MSWINDOWS}
   ExceptDialogsPath := PathGetShortName(FJclPath + DialogsPath);
@@ -2527,14 +2572,6 @@ function TJclDistribution.Install: Boolean;
 var
   I: Integer;
 begin
-  // installation validation
-  Result := False;
-  for I := 0 to FTargetInstalls.Count - 1 do
-    if TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJCL)
-      and not TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJclPackages)
-      and (MessageDlg(RsPackageNodeNotSelected, mtWarning, [mbYes, mbNo], 0) <> mrYes) then
-      Exit;
-
   FInstalling := True; // tell UninstallOption not to call Progress()
   Result := True;
   try
@@ -2645,6 +2682,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.97  2006/03/13 22:15:00  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.96  2006/03/04 21:22:10  outchy
 // Jcl directories added to the C++ side of BDS 2006
 //

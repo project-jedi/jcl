@@ -127,7 +127,7 @@ function TJclVersionControlSVN.ExecuteAction(const FileName: string;
     if not Enabled then
       raise EJClExpertException.CreateTrace(RsENoTortoiseSVN);
 
-    if FileName[Length(FileName)] = PathSeparator then
+    if FileName[Length(FileName)] = DirDelimiter then
       CurrentDir := FileName
     else
       CurrentDir := ExtractFilePath(FileName);
@@ -366,7 +366,7 @@ begin
 
     if Enabled then
       for IndexFileName := Length(FileName) downto 1 do
-        if FileName[IndexFileName] = PathSeparator then
+        if FileName[IndexFileName] = DirDelimiter then
     begin
       for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
       begin
@@ -410,6 +410,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2006/03/13 22:14:59  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.3  2006/01/26 06:15:17  outchy
 // Repository browser now works
 //

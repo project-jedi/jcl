@@ -110,12 +110,20 @@ function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
 // paths.
 const
   {$IFDEF UNIX}
+  {$IFDEF KEEP_DEPRECATED}
   PathSeparator    = '/';
+  {$ENDIF KEEP_DEPRECATED}
+  DirDelimiter = '/';
+  DirSeparator = ':';
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
+  {$IFDEF KEEP_DEPRECATED}
   PathSeparator    = '\';
+  {$ENDIF KEEP_DEPRECATED}
+  DirDelimiter = '\';
+  DirSeparator = ';';
   PathUncPrefix    = '\\';
   {$ENDIF MSWINDOWS}
 
@@ -928,6 +936,28 @@ function Win32RestoreFile(const FileName: string): Boolean;
 
 {$ENDIF KEEP_DEPRECATED}
 
+function SamePath(const Path1, Path2: string): Boolean;
+
+// functions to add/delete paths from a separated list of paths
+// on windows the separator is a semi-colon ';'
+// on linux the separator is a colon ':'
+// add items at the end
+procedure PathListAddItems(var List: string; const Items: string);
+// add items at the end if they are not present
+procedure PathListIncludeItems(var List: string; const Items: string);
+// delete multiple items
+procedure PathListDelItems(var List: string; const Items: string);
+// delete one item
+procedure PathListDelItem(var List: string; const Index: Integer);
+// return the number of item
+function PathListItemCount(const List: string): Integer;
+// return the Nth item
+function PathListGetItem(const List: string; const Index: Integer): string;
+// set the Nth item
+procedure PathListSetItem(var List: string; const Index: Integer; const Value: string);
+// return the index of an item
+function PathListItemIndex(const List, Item: string): Integer;
+
 implementation
 
 uses
@@ -1675,11 +1705,11 @@ function PathAddSeparator(const Path: string): string;
 begin
   Result := Path;
   {$IFDEF CLR}
-  if (Path = '') or (Path[Length(Path)] <> PathSeparator) then
+  if (Path = '') or (Path[Length(Path)] <> DirDelimiter) then
   {$ELSE}
-  if (Path = '') or (AnsiLastChar(Path) <> PathSeparator) then
+  if (Path = '') or (AnsiLastChar(Path) <> DirDelimiter) then
   {$ENDIF}
-    Result := Path + PathSeparator;
+    Result := Path + DirDelimiter;
 end;
 
 function PathAddExtension(const Path, Extension: string): string;
@@ -1712,14 +1742,14 @@ begin
     begin
       // The following code may look a bit complex but all it does is add Append to Path ensuring
       // that there is one and only one path separator character between them
-      B1 := Path[PathLength] = PathSeparator;
-      B2 := Append[1] = PathSeparator;
+      B1 := Path[PathLength] = DirDelimiter;
+      B2 := Append[1] = DirDelimiter;
       if B1 and B2 then
         Result := Copy(Path, 1, PathLength - 1) + Append
       else
       begin
         if not (B1 or B2) then
-          Result := Path + PathSeparator + Append
+          Result := Path + DirDelimiter + Append
         else
           Result := Path + Append;
       end;
@@ -1730,7 +1760,7 @@ end;
 function PathBuildRoot(const Drive: Byte): string;
 begin
   {$IFDEF UNIX}
-  Result := PathSeparator;
+  Result := DirDelimiter;
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
@@ -1753,7 +1783,7 @@ var
   IsAbsolute: Boolean;
 begin
   I := Pos(':', Path); // for Windows' sake
-  K := Pos(PathSeparator, Path);
+  K := Pos(DirDelimiter, Path);
   IsAbsolute := K - I = 1;
   if not IsAbsolute then
     K := I;
@@ -1763,7 +1793,7 @@ begin
     S := Copy(Path, K + 1, Length(Path));
   List := TStringList.Create;
   try
-    StrIToStrings(S, PathSeparator, List, False);
+    StrIToStrings(S, DirDelimiter, List, False);
     I := 0;
     while I < List.Count do
     begin
@@ -1781,7 +1811,7 @@ begin
       end
       else Inc(I);
     end;
-    Result := StringsToStr(List, PathSeparator, False);
+    Result := StringsToStr(List, DirDelimiter, False);
   finally
     List.Free;
   end;
@@ -1821,7 +1851,7 @@ begin
     while (S1[Index1] = S2[Index2]) and (Index1 <= LenS1) do
     begin
       Inc(Result);
-      if S1[Index1] in [PathSeparator, ':'] then
+      if S1[Index1] in [DirDelimiter, ':'] then
         LastSeparator := Result;
       Inc(Index1);
       Inc(Index2);
@@ -1854,7 +1884,7 @@ begin
     while (P1^ = P2^) and (P1^ <> #0) do
     begin
       Inc(Result);
-      if P1^ in [PathSeparator, ':'] then
+      if P1^ in [DirDelimiter, ':'] then
         LastSeparator := Result;
       Inc(P1);
       Inc(P2);
@@ -1902,7 +1932,7 @@ begin
   // add/remove separators
   Drive := PathAddSeparator(Drive);
   Path := PathRemoveSeparator(Path);
-  if (Path <> '') and (Path[1] = PathSeparator) then
+  if (Path <> '') and (Path[1] = DirDelimiter) then
     Delete(Path, 1, 1);
   // and extract the remaining elements
   FileName := PathExtractFileNameNoExt(Source);
@@ -2091,11 +2121,11 @@ var
     I: Integer;
   begin
     I := Length(ExtractFileDrive(Path));
-    Result := (Length(Path) > I) and (Path[I + 1] = PathSeparator);
+    Result := (Length(Path) > I) and (Path[I + 1] = DirDelimiter);
   end;
   {$ELSE ~MSWINDOWS}
   begin
-    Result := Pos(PathSeparator, Path) = 1;
+    Result := Pos(DirDelimiter, Path) = 1;
   end;
   {$ENDIF ~MSWINDOWS}
 
@@ -2130,8 +2160,8 @@ begin
   else
   {$ENDIF MSWINDOWS}
   if StartsFromRoot(Origin) and not StartsFromRoot(Destination) then
-    Result := StrEnsureSuffix(PathSeparator, Origin) +
-      StrEnsureNoPrefix(PathSeparator, Destination)
+    Result := StrEnsureSuffix(DirDelimiter, Origin) +
+      StrEnsureNoPrefix(DirDelimiter, Destination)
   else
   begin
     // create a list of paths as separate strings
@@ -2140,8 +2170,8 @@ begin
     try
       // NOTE: DO NOT USE DELIMITER AND DELIMITEDTEXT FROM
       // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
-      StrToStrings(Origin, PathSeparator, OrigList);
-      StrToStrings(Destination, PathSeparator, DestList);
+      StrToStrings(Origin, DirDelimiter, OrigList);
+      StrToStrings(Destination, DirDelimiter, DestList);
       begin
         // find the first directory that is not the same
         DiffIndex := OrigList.Count;
@@ -2153,12 +2183,12 @@ begin
             DiffIndex := I;
             Break;
           end;
-        Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
+        Result := StrRepeat('..' + DirDelimiter, OrigList.Count - DiffIndex);
         Result := PathRemoveSeparator(Result);
         for I := DiffIndex to DestList.Count - 1 do
         begin
           if Result <> '' then
-            Result := Result + PathSeparator;
+            Result := Result + DirDelimiter;
           Result := Result + DestList[i];
         end;
       end;
@@ -2208,7 +2238,7 @@ begin
   if Path <> '' then
   begin
     {$IFDEF UNIX}
-    Result := (Path[1] = PathSeparator);
+    Result := (Path[1] = DirDelimiter);
     {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     if not PathIsUnc(Path) then
@@ -2217,7 +2247,7 @@ begin
       if PathIsDiskDevice(Path) then
         I := Length(PathDevicePrefix);
       Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
-        (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
+        (Path[I + 2] = ':') and (Path[I + 3] = DirDelimiter);
     end
     else
       Result := True;
@@ -2240,15 +2270,15 @@ begin
     Exit;
   {$IFDEF CLR}
   if System.Environment.get_OSVersion.Platform <= PlatformID.WinCE then
-    Result := SameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator)
+    Result := SameText(StrLeft(P, L), B) and (P[L+1] = DirDelimiter)
   else
-    Result := (StrLeft(P, L) = B) and (P[L+1] = PathSeparator);
+    Result := (StrLeft(P, L) = B) and (P[L+1] = DirDelimiter);
   {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
-  Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
+  Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = DirDelimiter);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
+  Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = DirDelimiter);
   {$ENDIF UNIX}
   {$ENDIF ~CLR}
 end;
@@ -2328,11 +2358,11 @@ var
   function AbsorbSeparator: Boolean;
   begin
     {$IFDEF CLR}
-    Result := (Index <> 0) and (Path[Index] = PathSeparator);
+    Result := (Index <> 0) and (Path[Index] = DirDelimiter);
     if Result then
       Inc(Index);
     {$ELSE ~CLR}
-    Result := (P <> nil) and (P^ = PathSeparator);
+    Result := (P <> nil) and (P^ = DirDelimiter);
     if Result then
       Inc(P);
     {$ENDIF ~CLR}
@@ -2347,7 +2377,7 @@ var
     Result := True;
     NonDigitFound := False;
     {$IFDEF CLR}
-    while (Index <= LenPath) and (Path[Index] <> PathSeparator) do
+    while (Index <= LenPath) and (Path[Index] <> DirDelimiter) do
     begin
       if AnsiChar(Path[Index]) in ['a'..'z', 'A'..'Z', '-', '_', '.'] then
       begin
@@ -2364,7 +2394,7 @@ var
       end;
     end;
     {$ELSE ~CLR}
-    while (P^ <> #0) and (P^ <> PathSeparator) do
+    while (P^ <> #0) and (P^ <> DirDelimiter) do
     begin
       if P^ in ['a'..'z', 'A'..'Z', '-', '_', '.'] then
       begin
@@ -2463,7 +2493,7 @@ begin
   Result := ExcludeTrailingPathDelimiter(Path);
   {$ELSE ~CLR}
   L := Length(Path);
-  if (L <> 0) and (AnsiLastChar(Path) = PathSeparator) then
+  if (L <> 0) and (AnsiLastChar(Path) = DirDelimiter) then
     Result := Copy(Path, 1, L - 1)
   else
     Result := Path;
@@ -2474,7 +2504,7 @@ function PathRemoveExtension(const Path: string): string;
 var
   I: Integer;
 begin
-  I := LastDelimiter(':.' + PathSeparator, Path);
+  I := LastDelimiter(':.' + DirDelimiter, Path);
   if (I > 0) and (Path[I] = '.') then
     Result := Copy(Path, 1, I - 1)
   else
@@ -3758,7 +3788,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
-  Result := CanonicFileName = PathSeparator;
+  Result := CanonicFileName = DirDelimiter;
 end;
 {$ENDIF UNIX}
 
@@ -4826,7 +4856,7 @@ var
         begin
           if (FindInfo.Name <> '.') and (FindInfo.Name <> '..') and
             (FindInfo.Attr and faDirectory = faDirectory) then
-            Folders.Add(Folders[CurrentItem] + FindInfo.Name + PathSeparator);
+            Folders.Add(Folders[CurrentItem] + FindInfo.Name + DirDelimiter);
 
           Rslt := FindNext(FindInfo);
         end;
@@ -5014,7 +5044,7 @@ begin
   {$ENDIF MSWINDOWS}
     Result := PathAddSeparator(Result);
   // strip leading "./" resp. ".\"
-  if Pos('.' + PathSeparator, Result) = 1 then
+  if Pos('.' + DirDelimiter, Result) = 1 then
     Result := Copy(Result, 3, Length(Result) - 2);
 end;
 
@@ -5083,7 +5113,7 @@ var
           {$ENDIF UNIX}
           (DirInfo.Attr and faDirectory <> 0) then
         begin
-          SubDir := Directory + DirInfo.Name + PathSeparator;
+          SubDir := Directory + DirInfo.Name + DirDelimiter;
           if (SubDirectoriesMask = '') or StrMatches(SubDirectoriesMask, SubDir, Length(RootDir)) then
             Process(SubDir);
         end;
@@ -5873,9 +5903,149 @@ begin
   Result := TJclFileEnumerator.Create;
 end;
 
+function SamePath(const Path1, Path2: string): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := AnsiSameText(PathGetLongName(Path1), PathGetLongName(Path2));
+  {$ELSE}
+  Result := Path1 = Path2;
+  {$ENDIF}
+end;
+
+// add items at the end
+procedure PathListAddItems(var List: string; const Items: string);
+begin
+  ListAddItems(List, DirSeparator, Items);
+end;
+
+// add items at the end if they are not present
+procedure PathListIncludeItems(var List: string; const Items: string);
+var
+  StrList, NewItems: TStringList;
+  IndexNew, IndexList: Integer;
+  Item: string;
+  Duplicate: Boolean;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, DirSeparator, StrList);
+
+    NewItems := TStringList.Create;
+    try
+      StrToStrings(Items, DirSeparator, NewItems);
+
+      for IndexNew := 0 to NewItems.Count - 1 do
+      begin
+        Item := NewItems.Strings[IndexNew];
+        
+        Duplicate := False;
+        for IndexList := 0 to StrList.Count - 1 do
+          if SamePath(Item, StrList.Strings[IndexList]) then
+        begin
+          Duplicate := True;
+          Break;
+        end;
+
+        if not Duplicate then
+          StrList.Add(Item);
+      end;
+
+      List := StringsToStr(StrList, DirSeparator);
+    finally
+      NewItems.Free;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// delete multiple items
+procedure PathListDelItems(var List: string; const Items: string);
+var
+  StrList, RemItems: TStringList;
+  IndexRem, IndexList: Integer;
+  Item: string;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, DirSeparator, StrList);
+
+    RemItems := TStringList.Create;
+    try
+      StrToStrings(Items, DirSeparator, RemItems);
+
+      for IndexRem := 0 to RemItems.Count - 1 do
+      begin
+        Item := RemItems.Strings[IndexRem];
+
+        for IndexList := StrList.Count - 1 downto 0 do
+          if SamePath(Item, StrList.Strings[IndexList]) then
+            StrList.Delete(IndexList);
+      end;
+
+      List := StringsToStr(StrList, DirSeparator);
+    finally
+      RemItems.Free;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// delete one item
+procedure PathListDelItem(var List: string; const Index: Integer);
+begin
+  ListDelItem(List, DirSeparator, Index);
+end;
+
+// return the number of item
+function PathListItemCount(const List: string): Integer;
+begin
+  Result := ListItemCount(List, DirSeparator);
+end;
+
+// return the Nth item
+function PathListGetItem(const List: string; const Index: Integer): string;
+begin
+  Result := ListGetItem(List, DirSeparator, Index);
+end;
+
+// set the Nth item
+procedure PathListSetItem(var List: string; const Index: Integer; const Value: string);
+begin
+  ListSetItem(List, DirSeparator, Index, Value);
+end;
+
+// return the index of an item
+function PathListItemIndex(const List, Item: string): Integer;
+var
+  StrList: TStringList;
+  IndexList: Integer;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, DirSeparator, StrList);
+
+    Result := -1;
+
+    for IndexList := 0 to StrList.Count - 1 do
+      if SamePath(StrList.Strings[IndexList], Item) then
+    begin
+      Result := IndexList;
+      Break;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.61  2006/03/13 22:15:00  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.60  2006/03/01 18:09:33  outchy
 // IT3491: BuildFileList fails with unsupported file attributes.
 //
