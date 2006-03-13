@@ -166,7 +166,7 @@ resourcestring
     #13#10'%s'#13#10#10'Would you like to disable inserting JCL Debug data ?';
   RsInsertDataCaption = 'Insert JCL Debug data';
   RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
-  RsEExecutableNotFound = 'Executable file (*.exe or *.dll) not found.' +
+  RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
     'JCL debug data can''t be added to the project.';
   RsENoActiveProject = 'No active project';
   RsENoProjectMenuItem = 'Project menu item not found';
@@ -258,6 +258,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.11  2006/03/13 22:05:31  outchy
+// Fixed error message to display project name
+//
 // Revision 1.10  2006/01/08 17:16:56  outchy
 // Settings reworked.
 // Common window for expert configurations
