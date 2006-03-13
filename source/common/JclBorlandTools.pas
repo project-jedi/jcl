@@ -490,7 +490,7 @@ type
     function UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean; virtual;
 
     procedure ReadInformation;
-    function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
+    //function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
     function RemoveFromPath(var Path: string; const ItemsToRemove: string): Boolean;
     function GetDCPOutputPath: string; virtual;
     function GetBPLOutputPath: string; virtual;
@@ -1223,15 +1223,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function SamePath(const Path1, Path2: string): Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := AnsiSameText(PathGetLongName(Path1), PathGetLongName(Path2));
-  {$ELSE}
-  Result := Path1 = Path2;
-  {$ENDIF}
-end;
-
 //=== { TJclBorRADToolInstallationObject } ===================================
 
 constructor TJclBorRADToolInstallationObject.Create(AInstallation: TJclBorRADToolInstallation);
@@ -1893,7 +1884,7 @@ begin
   {$IFDEF MSWINDOWS}
   // quotes not required with short path names
   Result := Execute(PathGetShortName(ExtractFileDir(ProjectFileName))
-    + PathSeparator + ExtractFileName(ProjectFileName));
+    + DirDelimiter + ExtractFileName(ProjectFileName));
   {$ELSE}
   Result := Execute(StrDoubleQuote(StrTrimQuotes(ProjectFileName)));
   {$ENDIF}
@@ -2367,7 +2358,8 @@ var
   TempDebugDCUPath: TJclBorRADToolPath;
 begin
   TempDebugDCUPath := DebugDCUPath;
-  Result := AddMissingPathItems(TempDebugDCUPath, Path);
+  PathListIncludeItems(TempDebugDCUPath, Path);
+  Result := True;
   DebugDCUPath := TempDebugDCUPath;
 end;
 
@@ -2376,7 +2368,8 @@ var
   TempLibraryPath: TJclBorRADToolPath;
 begin
   TempLibraryPath := LibrarySearchPath;
-  Result := AddMissingPathItems(TempLibraryPath, Path);
+  PathListIncludeItems(TempLibraryPath, Path);
+  Result := True;
   LibrarySearchPath := TempLibraryPath;
 end;
 
@@ -2385,7 +2378,8 @@ var
   TempLibraryPath: TJclBorRADToolPath;
 begin
   TempLibraryPath := LibraryBrowsingPath;
-  Result := AddMissingPathItems(TempLibraryPath, Path);
+  PathListIncludeItems(TempLibraryPath, Path);
+  Result := True;
   LibraryBrowsingPath := TempLibraryPath;
 end;
 
@@ -2421,37 +2415,6 @@ end;
 class procedure TJclBorRADToolInstallation.ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
 begin
   StrToStrings(Path, PathSep, List);
-end;
-
-function TJclBorRADToolInstallation.AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
-var
-  PathItems, NewItems: TStringList;
-  Folder: string;
-  I: Integer;
-  Missing: Boolean;
-begin
-  Result := False;
-  PathItems := nil;
-  NewItems := nil;
-  try
-    PathItems := TStringList.Create;
-    NewItems := TStringList.Create;
-    ExtractPaths(Path, PathItems);
-    ExtractPaths(NewPath, NewItems);
-    for I := 0 to NewItems.Count - 1 do
-    begin
-      Folder := NewItems[I];
-      Missing := FindFolderInPath(Folder, PathItems) = -1;
-      if Missing then
-      begin
-        Path := StrEnsureSuffix(PathSep, Path) + Folder;
-        Result := True;
-      end;
-    end;
-  finally
-    PathItems.Free;
-    NewItems.Free;
-  end;
 end;
 
 function TJclBorRADToolInstallation.CompileBCBPackage(const PackageName,
@@ -3375,7 +3338,7 @@ begin
         Result := StringReplace(Result, Format('$(%s)', [Name]), Values[Name], [rfReplaceAll, rfIgnoreCase]);
       end;
   // remove duplicate path delimiters '\\'
-  Result := StringReplace(Result, PathSeparator + PathSeparator, PathSeparator, [rfReplaceAll]);
+  Result := StringReplace(Result, DirDelimiter + DirDelimiter, DirDelimiter, [rfReplaceAll]);
 end;
 
 {$IFDEF KEEP_DEPRECATED}
@@ -3816,7 +3779,8 @@ begin
   if bpBCBuilder32 in Personalities then
   begin
     TempCppPath := CppBrowsingPath;
-    Result := AddMissingPathItems(TempCppPath, Path);
+    PathListIncludeItems(TempCppPath, Path);
+    Result := True;
     CppBrowsingPath := TempCppPath;
   end
   else
@@ -3831,7 +3795,8 @@ begin
   if bpBCBuilder32 in Personalities then
   begin
     TempCppPath := CppSearchPath;
-    Result := AddMissingPathItems(TempCppPath, Path);
+    PathListIncludeItems(TempCppPath, Path);
+    Result := True;
     CppSearchPath := TempCppPath;
   end
   else
@@ -4328,7 +4293,7 @@ var
       for I := 0 to VersionNumbers.Count - 1 do
         if StrIsSubSet(VersionNumbers[I], ['.', '0'..'9']) then
       begin
-        VersionKeyName := KeyName + PathSeparator + VersionNumbers[I];
+        VersionKeyName := KeyName + DirDelimiter + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
         begin
           if Length(Personalities) = 0 then
@@ -4440,6 +4405,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.58  2006/03/13 22:15:00  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.57  2006/03/04 21:22:10  outchy
 // Jcl directories added to the C++ side of BDS 2006
 //

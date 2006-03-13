@@ -1955,7 +1955,7 @@ begin
   try
     SdBxNames.Clear;
     for Index := Length(FileName) downto 1 do
-      if FileName[Index] = PathSeparator then
+      if FileName[Index] = DirDelimiter then
     begin
       SdBxNames.Add(Copy(FileName, 1, Index));
     end;
@@ -2144,6 +2144,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2006/03/13 22:14:59  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.8  2006/02/02 08:06:36  elahn
 // Add "Explore Folder" to TJclVersionControlSystemPlugin. Change RsVersionCtrlContextMenuCaption to "Context Menu (right-click)".
 //

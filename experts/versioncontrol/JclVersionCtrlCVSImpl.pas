@@ -118,7 +118,7 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: string;
     if not Enabled then
       raise EJClExpertException.CreateTrace(RsENoTortoiseCVS);
 
-    if FileName[Length(FileName)] = PathSeparator then
+    if FileName[Length(FileName)] = DirDelimiter then
       CurrentDir := FileName
     else
       CurrentDir := ExtractFilePath(FileName);
@@ -326,7 +326,7 @@ begin
 
     if Enabled then
       for Index := Length(FileName) downto 1 do
-        if FileName[Index] = PathSeparator then
+        if FileName[Index] = DirDelimiter then
     begin
       DirectoryName := Copy(FileName, 1, Index);
       if DirectoryExists(DirectoryName + JclVersionCtrlCVSDirectory) then
@@ -367,6 +367,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2006/03/13 22:14:59  outchy
+// PathSeparator renamed to DirDelimiter
+// Installer checks paths
+//
 // Revision 1.2  2006/01/25 20:32:29  outchy
 // Fixed issue with invalid cvs subdirectory
 //
