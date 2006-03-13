@@ -1426,11 +1426,27 @@ resourcestring
 
 //=== JclRegistry ============================================================
 resourcestring
-  RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
-  RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
-  RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
-  RsWrongDataType        = '"%s\%s" is of wrong kind or size';
+  RsUnableToOpenKeyRead  = 'Unable to open key "%s\%s" for read';
+  RsUnableToOpenKeyWrite = 'Unable to open key "%s\%s" for write';
+  RsUnableToAccessValue  = 'Unable to open key "%s\%s" and access value "%s"';
+  RsWrongDataType        = '"%s\%s\%s" is of wrong kind or size';
   RsInconsistentPath     = '"%s" does not match RootKey';
+
+  RsHKCRLong = 'HKEY_CLASSES_ROOT';
+  RsHKCULong = 'HKEY_CURRENT_USER';
+  RsHKLMLong = 'HKEY_LOCAL_MACHINE';
+  RsHKUSLong = 'HKEY_USERS';
+  RsHKPDLong = 'HKEY_PERFORMANCE_DATA';
+  RsHKCCLong = 'HKEY_CURRENT_CONFIG';
+  RsHKDDLong = 'HKEY_DYN_DATA';
+  RsHKCRShort = 'HKCR';
+  RsHKCUShort = 'HKCU';
+  RsHKLMShort = 'HKLM';
+  RsHKUSShort = 'HKUS';
+  RsHKPDShort = 'HKPD';
+  RsHKCCShort = 'HKCC';
+  RsHKDDShort = 'HKDD';
+
 
 //=== JclRTTI ================================================================
 resourcestring
@@ -1706,6 +1722,10 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.39  2006/03/13 22:09:40  outchy
+// Style cleaning
+// More informations displayed in error messages
+//
 // Revision 1.38  2006/02/02 20:33:40  outchy
 // Package cache cleaned
 //
