@@ -381,6 +381,34 @@ function StrToBoolean(const S: string): Boolean;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
+const
+  {$IFDEF MSWINDOWS}
+  ListSeparator = ';';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  ListSeparator = ':';
+  {$ENDIF LINUX}
+// functions to handle items in a separated list of items
+// add items at the end
+procedure ListAddItems(var List: string; const Separator, Items: string);
+// add items at the end if they are not present
+procedure ListIncludeItems(var List: string; const Separator, Items: string);
+// delete multiple items
+procedure ListRemoveItems(var List: string; const Separator, Items: string);
+// delete one item
+procedure ListDelItem(var List: string; const Separator: string;
+  const Index: Integer);
+// return the number of item
+function ListItemCount(const List, Separator: string): Integer;
+// return the Nth item
+function ListGetItem(const List, Separator: string;
+  const Index: Integer): string;
+// set the Nth item
+procedure ListSetItem(var List: string; const Separator: string;
+  const Index: Integer; const Value: string);
+// return the index of an item
+function ListItemIndex(const List, Separator, Item: string): Integer;
+
 // RTL package information
 {$IFNDEF CLR}
 {$IFNDEF FPC}
@@ -2361,9 +2389,183 @@ begin
   {$ENDIF CLR}
 end;
 
+// add items at the end
+procedure ListAddItems(var List: string; const Separator, Items: string);
+var
+  StrList, NewItems: TStringList;
+  Index: Integer;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    NewItems := TStringList.Create;
+    try
+      StrToStrings(Items, Separator, NewItems);
+
+      for Index := 0 to NewItems.Count - 1 do
+        StrList.Add(NewItems.Strings[Index]);
+
+      List := StringsToStr(StrList, Separator);
+    finally
+      NewItems.Free;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// add items at the end if they are not present
+procedure ListIncludeItems(var List: string; const Separator, Items: string);
+var
+  StrList, NewItems: TStringList;
+  Index: Integer;
+  Item: string;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    NewItems := TStringList.Create;
+    try
+      StrToStrings(Items, Separator, NewItems);
+
+      for Index := 0 to NewItems.Count - 1 do
+      begin
+        Item := NewItems.Strings[Index];
+        if StrList.IndexOf(Item) = -1 then
+          StrList.Add(Item);
+      end;
+
+      List := StringsToStr(StrList, Separator);
+    finally
+      NewItems.Free;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// delete multiple items
+procedure ListRemoveItems(var List: string; const Separator, Items: string);
+var
+  StrList, RemItems: TStringList;
+  Index, Position: Integer;
+  Item: string;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    RemItems := TStringList.Create;
+    try
+      StrToStrings(Items, Separator, RemItems);
+
+      for Index := 0 to RemItems.Count - 1 do
+      begin
+        Item := RemItems.Strings[Index];
+        repeat
+          Position := StrList.IndexOf(Item);
+          if Position >= 0 then
+            StrList.Delete(Position);
+        until Position < 0;
+      end;
+
+      List := StringsToStr(StrList, Separator);
+    finally
+      RemItems.Free;
+    end;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// delete one item
+procedure ListDelItem(var List: string; const Separator: string; const Index: Integer);
+var
+  StrList: TStringList;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    StrList.Delete(Index);
+
+    List := StringsToStr(StrList, Separator);
+  finally
+    StrList.Free;
+  end;
+end;
+
+// return the number of item
+function ListItemCount(const List, Separator: string): Integer;
+var
+  StrList: TStringList;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    Result := StrList.Count;
+  finally
+    StrList.Free;
+  end;
+end;
+
+// return the Nth item
+function ListGetItem(const List, Separator: string; const Index: Integer): string;
+var
+  StrList: TStringList;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    Result := StrList.Strings[Index];
+  finally
+    StrList.Free;
+  end;
+end;
+
+// set the Nth item
+procedure ListSetItem(var List: string; const Separator: string;
+  const Index: Integer; const Value: string);
+var
+  StrList: TStringList;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    StrList.Strings[Index] := Value;
+
+    List := StringsToStr(StrList, Separator);
+  finally
+    StrList.Free;
+  end;
+end;
+
+// return the index of an item
+function ListItemIndex(const List, Separator, Item: string): Integer;
+var
+  StrList: TStringList;
+begin
+  StrList := TStringList.Create;
+  try
+    StrToStrings(List, Separator, StrList);
+
+    Result := StrList.IndexOf(Item);
+  finally
+    StrList.Free;
+  end;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.39  2006/03/13 22:07:26  outchy
+// New functions to handle list of separated values
+//
 // Revision 1.38  2005/12/26 20:30:07  outchy
 // IT2772: ClearObjectList behaviour with TComponentList and TObjectList
 //
