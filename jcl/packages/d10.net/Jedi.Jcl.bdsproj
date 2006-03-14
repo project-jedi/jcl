@@ -3,14 +3,14 @@
 	<PersonalityInfo>
 		<Option>
 			<Option Name="Personality">DelphiDotNet.Personality</Option>
-			<Option Name="ProjectType">Library</Option>
+			<Option Name="ProjectType"></Option>
 			<Option Name="Version">2.0</Option>
-			<Option Name="GUID">{44DB645B-C167-410D-9334-38AF9F0C7913}</Option>
+			<Option Name="GUID">{4D90523B-3A77-422F-BCEE-13C0FF7EF21E}</Option>
 		</Option>
 	</PersonalityInfo>
 	<DelphiDotNet.Personality>
 		<Source>
-			<Source Name="MainSource">Jedi.Jcl.dpr</Source>
+			<Source Name="MainSource">Jedi.Jcl.dpk</Source>
 		</Source>
 		<FileVersion>
 			<FileVersion Name="Version">7.0</FileVersion>
@@ -88,7 +88,6 @@
 			<Compiler Name="ForLoopVarUndef">True</Compiler>
 			<Compiler Name="UnitNameMismatch">True</Compiler>
 			<Compiler Name="NoCFGFileFound">True</Compiler>
-			<Compiler Name="MessageDirective">True</Compiler>
 			<Compiler Name="ImplicitVariants">True</Compiler>
 			<Compiler Name="UnicodeToLocale">True</Compiler>
 			<Compiler Name="LocaleToUnicode">True</Compiler>
@@ -103,11 +102,13 @@
 			<Compiler Name="DuplicatesIgnored">True</Compiler>
 			<Compiler Name="UnitInitSeq">True</Compiler>
 			<Compiler Name="LocalPInvoke">True</Compiler>
+			<Compiler Name="MessageDirective">True</Compiler>
 			<Compiler Name="CodePage"></Compiler>
 		</Compiler>
 		<Linker>
 			<Linker Name="MapFile">0</Linker>
 			<Linker Name="OutputObjs">0</Linker>
+			<Linker Name="GenerateHpps">False</Linker>
 			<Linker Name="ConsoleApp">1</Linker>
 			<Linker Name="DebugInfo">True</Linker>
 			<Linker Name="RemoteSymbols">False</Linker>
@@ -115,19 +116,18 @@
 			<Linker Name="MinStackSize">4096</Linker>
 			<Linker Name="MaxStackSize">1048576</Linker>
 			<Linker Name="ImageBase">4194304</Linker>
-			<Linker Name="ExeDescription"></Linker>
-			<Linker Name="GenerateHpps">False</Linker>
+			<Linker Name="ExeDescription">JEDI Code Library for .NET</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\bin</Directories>
+			<Directories Name="OutputDir"></Directories>
 			<Directories Name="UnitOutputDir">..\..\lib\d10.net</Directories>
-			<Directories Name="PackageDLLOutputDir"></Directories>
-			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
-			<Directories Name="Packages"></Directories>
+			<Directories Name="PackageDLLOutputDir">..\..\lib\d10.net</Directories>
+			<Directories Name="PackageDCPOutputDir">..\..\lib\d10.net</Directories>
+			<Directories Name="SearchPath">c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0</Directories>
+			<Directories Name="Packages">Borland.VclRtl;Borland.Vcl;Borland.Delphi</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
-			<Directories Name="UsePackages">True</Directories>
+			<Directories Name="UsePackages">False</Directories>
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
@@ -135,11 +135,6 @@
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
-			<Parameters Name="RemoteHost"></Parameters>
-			<Parameters Name="RemotePath"></Parameters>
-			<Parameters Name="RemoteLauncher"></Parameters>
-			<Parameters Name="RemoteCWD"></Parameters>
-			<Parameters Name="RemoteDebug">False</Parameters>
 			<Parameters Name="Debug Symbols Search Path"></Parameters>
 			<Parameters Name="LoadAllSymbols">True</Parameters>
 			<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
@@ -150,12 +145,12 @@
 			<Language Name="RootDir"></Language>
 		</Language>
 		<VersionInfo>
-			<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 			<VersionInfo Name="MajorVer">1</VersionInfo>
-			<VersionInfo Name="MinorVer">96</VersionInfo>
-			<VersionInfo Name="Release">1</VersionInfo>
-			<VersionInfo Name="Build">2070</VersionInfo>
+			<VersionInfo Name="MinorVer">0</VersionInfo>
+			<VersionInfo Name="Release">0</VersionInfo>
+			<VersionInfo Name="Build">0</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
 			<VersionInfo Name="PreRelease">False</VersionInfo>
 			<VersionInfo Name="Special">False</VersionInfo>
@@ -167,22 +162,21 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
 			<VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">1.96.1.2070</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">1.96.1.2070</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>  
     
     
-    
-    
     <FileList>
-      <File FileName="" ContainerId="" ModuleName="System.Reflection"/>
-      <File FileName="" ContainerId="" ModuleName="System.Runtime.InteropServices"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.Delphi.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Delphi" AssemblyName="borland.delphi" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.Vcl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Vcl" AssemblyName="Borland.Vcl" Version="10.0.4143.0" LinkUnits="False"/>
+      <File FileName="c:\programme\gemeinsame dateien\borland shared\bds\shared assemblies\4.0\Borland.VclRtl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclRtl" AssemblyName="Borland.VclRtl" Version="10.0.4143.0" LinkUnits="False"/>
       <File FileName="..\..\source\common\JclAbstractContainers.pas" ContainerId="" ModuleName="JclAbstractContainers"/>
       <File FileName="..\..\source\common\JclAlgorithms.pas" ContainerId="" ModuleName="JclAlgorithms"/>
       <File FileName="..\..\source\common\JclAnsiStrings.pas" ContainerId="" ModuleName="JclAnsiStrings"/>
