@@ -70,7 +70,8 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF CLR}
-  System.Text, System.IO,
+  Borland.Vcl.Windows, System.Text, System.IO, System.Runtime.InteropServices,
+  System.Security,
   {$ENDIF CLR}
   {$IFDEF Win32API}
   Windows,
@@ -168,6 +169,10 @@ function PathGetDepth(const Path: string): Integer;
 function PathGetLongName(const Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF Win32API}
+{$IFDEF CLR}
+function PathGetLongName(const Path: string): string;
+function PathGetShortName(const Path: string): string;
+{$ENDIF CLR}
 function PathGetRelativePath(Origin, Destination: string): string;
 function PathGetTempPath: string;
 function PathIsAbsolute(const Path: string): Boolean;
@@ -2103,6 +2108,38 @@ begin
 end;
 
 {$ENDIF Win32API}
+
+{$IFDEF CLR}
+
+[SuppressUnmanagedCodeSecurity, DllImport(kernel32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'GetLongPathName')]
+function GetLongPathName(lpszLongPath: string; lpszShortPath: StringBuilder;
+  cchBuffer: DWORD): DWORD; external;
+[SuppressUnmanagedCodeSecurity, DllImport(kernel32, CharSet = CharSet.Ansi, SetLastError = True, EntryPoint = 'GetLongPathNameA')]
+function GetLongPathNameA(lpszLongPath: string; lpszShortPath: StringBuilder;
+  cchBuffer: DWORD): DWORD; external;
+[SuppressUnmanagedCodeSecurity, DllImport(kernel32, CharSet = CharSet.Unicode, SetLastError = True, EntryPoint = 'GetLongPathNameW')]
+function GetLongPathNameW(lpszLongPath: string; lpszShortPath: StringBuilder;
+  cchBuffer: DWORD): DWORD; external;
+
+function PathGetLongName(const Path: string): string;
+var
+  SB: StringBuilder;
+begin
+  SB := System.Text.StringBuilder.Create(MAX_PATH);
+  GetLongPathName(Path, SB, SB.Capacity);
+  Result := SB.ToString;
+  if Result = '' then
+    Result := Path;
+end;
+
+function PathGetShortName(const Path: string): string;
+begin
+  Result := ExtractShortPathName(Path);
+  if Result = '' then
+    Result := Path;
+end;
+
+{$ENDIF CLR}
 
 function PathGetRelativePath(Origin, Destination: string): string;
 var
@@ -6042,6 +6079,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.62  2006/03/14 21:18:36  ahuser
+// .NET compatibility
+//
 // Revision 1.61  2006/03/13 22:15:00  outchy
 // PathSeparator renamed to DirDelimiter
 // Installer checks paths
