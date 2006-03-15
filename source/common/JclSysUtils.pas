@@ -57,7 +57,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
-  Classes, TypInfo,
+  SysUtils, Classes, TypInfo,
   JclBase;
 
 {$IFNDEF CLR}
@@ -102,6 +102,49 @@ function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
+
+{ Shared memory between processes functions }
+
+// Functions for the shared memory owner
+type
+  ESharedMemError = class(Exception);
+
+{$IFDEF MSWINDOWS}
+
+{ SharedGetMem return ERROR_ALREADY_EXISTS if the shared memory is already,
+  otherwise it return 0.
+  Throws ESharedMemError if the Name is invalid. }
+function SharedGetMem(var p{: Pointer}; const Name: string; Size: Cardinal;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Integer;
+
+{ SharedAllocMem calls SharedGetMem and then fills the memory with zero if
+  it was not already allocated.
+  Throws ESharedMemError if the Name is invalid. }
+function SharedAllocMem(const Name: string; Size: Cardinal;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
+
+{ SharedFreeMem releases the shared memory if it was the last reference. }
+function SharedFreeMem(var p{: Pointer}): Boolean;
+
+// Functions for the shared memory user 
+
+{ SharedOpenMem returns True if the shared memory was already allocated by
+  SharedGetMem or SharedAllocMem. Otherwise it return False.
+  Throws ESharedMemError if the Name is invalid. }
+
+function SharedOpenMem(var p{: Pointer}; const Name: string;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Boolean; overload;
+
+{ SharedOpenMem return nil if the shared memory was not already allocated
+  by SharedGetMem or SharedAllocMem.
+  Throws ESharedMemError if the Name is invalid. }
+function SharedOpenMem(const Name: string;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer; overload;
+
+{ SharedCloseMem releases the shared memory if it was the last reference. }
+function SharedCloseMem(var p{: Pointer}): Boolean;
+
+{$ENDIF MSWINDOWS}
 
 // Binary search
 function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer;
@@ -421,6 +464,23 @@ function IsCompiledWithPackages: Boolean;
 function JclGUIDToString(const GUID: TGUID): string;
 function JclStringToGUID(const S: string): TGUID;
 
+// thread safe support
+
+type
+  TJclIntfCriticalSection = class(TObject, IInterface)
+  {$IFNDEF CLR}
+  private
+    FCriticalSection: TRTLCriticalSection;
+  protected
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  {$ENDIF ~CLR}
+  end;
+
 implementation
 
 uses
@@ -441,8 +501,9 @@ uses
   JclConsole,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
-  SysUtils, Contnrs,
-  JclResources, JclStrings, JclMath;
+  Contnrs,
+  JclResources, JclStrings, JclMath,
+  JclSysInfo;
 
 {$IFNDEF CLR}
 // Pointer manipulation
@@ -749,6 +810,237 @@ begin
   Result := AllocMem(Size);
   Guard(Result, SafeGuard);
 end;
+
+//=== Shared memory functions ================================================
+
+type
+  PMMFHandleListItem = ^TMMFHandleListItem;
+  TMMFHandleListItem = record
+    Next: PMMFHandleListItem;
+    Memory: Pointer;
+    Handle: THandle;
+    Name: string;
+    References: Integer;
+  end;
+
+  PMMFHandleList = PMMFHandleListItem;
+
+var
+  MMFHandleList: PMMFHandleList = nil;
+  {$IFDEF THREADSAFE}
+  GlobalMMFHandleListCS: TJclIntfCriticalSection = nil;
+  {$ENDIF THREADSAGE}
+
+{$IFDEF THREADSAFE}
+function GetAccessToHandleList: IInterface;
+begin
+  if not Assigned(GlobalMMFHandleListCS) then
+    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
+  Result := GlobalMMFHandleListCS;
+end;
+{$ENDIF THREADSAFE}
+
+{$IFDEF MSWINDOWS}
+
+function SharedGetMem(var p{: Pointer}; const Name: string; Size: Cardinal;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Integer;
+var
+  FileMappingHandle: THandle;
+  Iterate, NewListItem: PMMFHandleListItem;
+  Protect: Cardinal;
+  {$IFDEF THREADSAFE}
+  HandleListAccess: IInterface;
+  {$ENDIF THREADSAFE}
+begin
+  Result := 0;
+  Pointer(p) := nil;
+
+  if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and
+    ((Name = '') or (Pos('\', Name) > 0)) then
+      raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
+
+  {$IFDEF THREADSAFE}
+  HandleListAccess := GetAccessToHandleList;
+  {$ENDIF THREADSAFE}
+  
+  // search for same name
+  Iterate := MMFHandleList;
+  while Iterate <> nil do
+  begin
+    if CompareText(Iterate^.Name, Name) = 0 then
+    begin
+      Inc(Iterate^.References);
+      Pointer(p) := Iterate^.Memory;
+      Result := ERROR_ALREADY_EXISTS;
+      Exit;
+    end;
+    Iterate := Iterate^.Next;
+  end;
+
+  // open file mapping
+  FileMappingHandle := OpenFileMapping(DesiredAccess, False, PChar(Name));
+  if FileMappingHandle = 0 then
+  begin
+    if Size = 0 then
+      raise ESharedMemError.CreateResFmt(@RsInvalidMMFEmpty, [Name]);
+      
+    Protect := PAGE_READWRITE;
+    if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
+       (DesiredAccess = FILE_MAP_COPY) then
+      Protect := PAGE_WRITECOPY;
+
+    FileMappingHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, Protect,
+      0, Size, PChar(Name));
+  end
+  else
+    Result := ERROR_ALREADY_EXISTS;
+
+  case GetLastError of
+    ERROR_ALREADY_EXISTS:
+      Result := ERROR_ALREADY_EXISTS;
+  else
+    if FileMappingHandle = 0 then
+      {$IFDEF COMPILER6_UP}
+      RaiseLastOSError;
+      {$ELSE}
+      RaiseLastWin32Error;
+      {$ENDIF COMPILER6_UP}
+  end;
+
+  // map view
+  Pointer(p) := MapViewOfFile(FileMappingHandle, DesiredAccess, 0, 0, Size);
+  if Pointer(p) = nil then
+  begin
+    try
+      {$IFDEF COMPILER6_UP}
+      RaiseLastOSError;
+      {$ELSE}
+      RaiseLastWin32Error;
+      {$ENDIF COMPILER6_UP}
+    except
+      CloseHandle(FileMappingHandle);
+      raise;
+    end;
+  end;
+
+  // add list item to MMFHandleList
+  New(NewListItem);
+  NewListItem^.Name := Name;
+  NewListItem^.Handle := FileMappingHandle;
+  NewListItem^.Memory := Pointer(p);
+  NewListItem^.Next := nil;
+  NewListItem^.References := 1;
+
+  if MMFHandleList = nil then
+    MMFHandleList := NewListItem
+  else
+  begin
+    Iterate := MMFHandleList;
+    while Iterate^.Next <> nil do
+      Iterate := Iterate^.Next;
+    Iterate^.Next := NewListItem;
+  end;
+end;
+
+function SharedAllocMem(const Name: string; Size: Cardinal;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
+begin
+  if (SharedGetMem(Result, Name, Size, DesiredAccess) <> ERROR_ALREADY_EXISTS) and
+    ((DesiredAccess and (FILE_MAP_WRITE or FILE_MAP_COPY)) <> 0) and
+    (Size > 0) and (Result <> nil) then
+      FillChar(Pointer(Result)^, Size, 0);
+end;
+
+function SharedFreeMem(var p{: Pointer}): Boolean;
+var
+  n, Iterate: PMMFHandleListItem;
+  {$IFDEF THREADSAFE}
+  HandleListAccess: IInterface;
+  {$ENDIF THREADSAFE}
+begin
+  if Pointer(p) <> nil then
+  begin
+    Result := False;
+    {$IFDEF THREADSAFE}
+    HandleListAccess := GetAccessToHandleList;
+    {$ENDIF THREADSAFE}
+    Iterate := MMFHandleList;
+    n := nil;
+    while Iterate <> nil do
+    begin
+      if Iterate^.Memory = Pointer(p) then
+      begin
+        if Iterate^.References > 1 then
+        begin
+          Dec(Iterate^.References);
+          Pointer(p) := nil;
+          Result := True;
+          Exit;
+        end;
+
+        UnmapViewOfFile(Iterate^.Memory);
+        CloseHandle(Iterate^.Handle);
+
+        if n = nil then
+          MMFHandleList := Iterate^.Next
+        else
+        begin
+          n^.Next := Iterate^.Next;
+          Dispose(Iterate);
+          Pointer(p) := nil;
+          Result := True;
+          Break;
+        end;
+      end;
+      n := Iterate;
+      Iterate := Iterate^.Next;
+    end;
+  end
+  else
+    Result := True;
+end;
+
+function SharedOpenMem(var p{: Pointer}; const Name: string;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Boolean;
+begin
+  Result := SharedGetMem(p, Name, 0, DesiredAccess) = ERROR_ALREADY_EXISTS;
+end;
+
+function SharedOpenMem(const Name: string;
+  DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
+begin
+  SharedGetMem(Result, Name, 0, DesiredAccess);
+end;
+
+function SharedCloseMem(var p{: Pointer}): Boolean;
+begin
+  Result := SharedFreeMem(p);
+end;
+
+
+procedure FinalizeMMFHandleList;
+var
+  NextItem, Iterate: PMMFHandleList;
+  {$IFDEF THREADSAFE}
+  HandleListAccess: IInterface;
+  {$ENDIF THREADSAFE}
+begin
+  {$IFDEF THREADSAFE}
+  HandleListAccess := GetAccessToHandleList;
+  {$ENDIF THREADSAFE}
+  Iterate := MMFHandleList;
+  while Iterate <> nil do
+  begin
+    UnmapViewOfFile(Iterate^.Memory);
+    CloseHandle(Iterate^.Handle);
+
+    NextItem := Iterate^.Next;
+    Dispose(Iterate);
+    Iterate := NextItem;
+  end;
+end;
+
+{$ENDIF MSWINDOWS}
 
 //=== Binary search ==========================================================
 
@@ -2560,9 +2852,65 @@ begin
   end;
 end;
 
+//=== { TJclIntfCriticalSection } ============================================
+
+{$IFNDEF CLR}
+constructor TJclIntfCriticalSection.Create;
+begin
+  inherited Create;
+  InitializeCriticalSection(FCriticalSection);
+end;
+
+destructor TJclIntfCriticalSection.Destroy;
+begin
+  DeleteCriticalSection(FCriticalSection);
+  inherited Destroy;
+end;
+
+function TJclIntfCriticalSection._AddRef: Integer;
+begin
+  EnterCriticalSection(FCriticalSection);
+  Result := 0;
+end;
+
+function TJclIntfCriticalSection._Release: Integer;
+begin
+  LeaveCriticalSection(FCriticalSection);
+  Result := 0;
+end;
+
+function TJclIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+begin
+  if GetInterface(IID, Obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+{$ENDIF ~CLR}
+
+
+initialization
+
+  {$IFDEF THREADSAFE}
+  if not Assigned(GlobalMMFHandleListCS) then
+    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
+  {$ENDIF THREADSAFE}
+
+finalization
+
+  FinalizeMMFHandleList;
+
+  {$IFDEF THREADSAFE}
+  GlobalMMFHandleListCS.Free;
+  {$ENDIF THREADSAFE}
+
 // History:
 
 // $Log$
+// Revision 1.40  2006/03/15 21:58:24  outchy
+// TJclIntfCriticalSection moved from JclAbstractContainers to JclSysUtils
+// Donation from Andreas Hausladen: named shared memory between processes
+//
 // Revision 1.39  2006/03/13 22:07:26  outchy
 // New functions to handle list of separated values
 //
