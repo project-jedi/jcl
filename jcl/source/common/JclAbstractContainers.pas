@@ -46,22 +46,12 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, Classes, JclBase, JclContainerIntf;
+  SysUtils, Classes, JclBase, JclContainerIntf, JclSysUtils;
 
 type
-  TJclIntfCriticalSection = class(TObject, IInterface)
-  {$IFNDEF CLR}
-  private
-    FCriticalSection: TRTLCriticalSection;
-  protected
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
-  public
-    constructor Create;
-    destructor Destroy; override;
-  {$ENDIF ~CLR}
-  end;
+  {$IFDEF KEEP_DEPRECATED}
+  TJclIntfCriticalSection = JclSysUtils.TJclIntfCriticalSection;
+  {$ENDIF KEEP_DEPRECATED}
 
   TJclAbstractContainer = class(TInterfacedObject)
   {$IFDEF THREADSAFE}
@@ -102,42 +92,6 @@ type
   end;
 
 implementation
-
-//=== { TJclIntfCriticalSection } ============================================
-
-{$IFNDEF CLR}
-constructor TJclIntfCriticalSection.Create;
-begin
-  inherited Create;
-  InitializeCriticalSection(FCriticalSection);
-end;
-
-destructor TJclIntfCriticalSection.Destroy;
-begin
-  DeleteCriticalSection(FCriticalSection);
-  inherited Destroy;
-end;
-
-function TJclIntfCriticalSection._AddRef: Integer;
-begin
-  EnterCriticalSection(FCriticalSection);
-  Result := 0;
-end;
-
-function TJclIntfCriticalSection._Release: Integer;
-begin
-  LeaveCriticalSection(FCriticalSection);
-  Result := 0;
-end;
-
-function TJclIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
-end;
-{$ENDIF ~CLR}
 
 //=== { TJclAbstractContainer } ==============================================
 
@@ -277,6 +231,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2006/03/15 21:58:24  outchy
+// TJclIntfCriticalSection moved from JclAbstractContainers to JclSysUtils
+// Donation from Andreas Hausladen: named shared memory between processes
+//
 // Revision 1.6  2005/05/05 20:08:41  ahuser
 // JCL.NET support
 //

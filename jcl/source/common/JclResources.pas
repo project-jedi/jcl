@@ -1660,6 +1660,9 @@ resourcestring
 
   RsInvalidGUIDString    = 'Invalid conversion from string to GUID (%s).';
 
+  RsInvalidMMFName = 'Invalid MMF name "%s"';
+  RsInvalidMMFEmpty = 'The MMF named "%s" cannot be created empty';
+
 //=== JclTD32 ================================================================
 resourcestring
   RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
@@ -1722,6 +1725,10 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.40  2006/03/15 21:58:24  outchy
+// TJclIntfCriticalSection moved from JclAbstractContainers to JclSysUtils
+// Donation from Andreas Hausladen: named shared memory between processes
+//
 // Revision 1.39  2006/03/13 22:09:40  outchy
 // Style cleaning
 // More informations displayed in error messages
