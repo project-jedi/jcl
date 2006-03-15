@@ -242,7 +242,7 @@ resourcestring
   RsJCL                  = 'JEDI Code Library';
 
   // Common features
-  RsDefThreadSafe        = 'Thread safe container classes';
+  RsDefThreadSafe        = 'Enable thread safe code';
   RsDefDropObsoleteCode  = 'Drop obsolete code';
   RsDefMathPrecSingle    = 'Single float precision';
   RsDefMathPrecDouble    = 'Double float precision';
@@ -291,7 +291,7 @@ resourcestring
 // Hints
   RsHintTarget = 'Installation target';
   RsHintJCL = 'Select to install JCL for this target.';
-  RsHintJclDefThreadSafe        = 'Conditionally compile container classes to be thread safe';
+  RsHintJclDefThreadSafe        = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
   RsHintJclDefDropObsoleteCode  = 'Do not compile deprecated code';
   RsHintJclDefMathPrecSingle    = 'type Float = Single';
   RsHintJclDefMathPrecDouble    = 'type Float = Double';
@@ -1422,7 +1422,7 @@ begin
   Result := True;
   case Option of
     ioJclDefThreadSafe:
-      Defines.Add('THREAD_SAFE');
+      Defines.Add('THREADSAFE');
     ioJclDefDropObsoleteCode:
       Defines.Add('DROP_OBSOLETE_CODE');
     ioJclDefMathPrecSingle:
@@ -2682,6 +2682,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.98  2006/03/15 20:48:34  outchy
+// Fixed thread safe support
+//
 // Revision 1.97  2006/03/13 22:15:00  outchy
 // PathSeparator renamed to DirDelimiter
 // Installer checks paths
