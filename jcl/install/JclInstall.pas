@@ -226,9 +226,7 @@ uses
   {$IFDEF MSWINDOWS}
   JclPeImage,
   JClRegistry,
-  {$IFDEF COMPILER6_UP}
   MSHelpServices_TLB,
-  {$ENDIF COMPILER6_UP}
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
   JediRegInfo;
@@ -1981,10 +1979,6 @@ end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.RegisterHelp2Files;
-{$IFDEF COMPILER5}
-begin
-end;
-{$ELSE}
 var
   HxRegisterSession: IHxRegisterSession;
   HxPlugin: IHxPlugIn;
@@ -2053,7 +2047,6 @@ begin
     SetCurrentDir(CurrentDir);
   end;
 end;
-{$ENDIF COMPILER5}
 {$ENDIF MSWINDOWS}
 
 procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
@@ -2265,10 +2258,6 @@ end;
 
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.UnregisterHelp2Files;
-{$IFDEF COMPILER5}
-begin
-end;
-{$ELSE}
 var
   HxRegisterSession: IHxRegisterSession;
   HxPlugin: IHxPlugIn;
@@ -2339,7 +2328,6 @@ begin
 
   end;
 end;
-{$ENDIF COMPILER5}
 {$ENDIF MSWINDOWS}
 
 
@@ -2682,6 +2670,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.99  2006/03/22 19:52:17  outchy
+// Fixed c5 and d5 compilation
+//
 // Revision 1.98  2006/03/15 20:48:34  outchy
 // Fixed thread safe support
 //
