@@ -43,12 +43,12 @@ unit MSHelpServices_TLB;
 // programmatically created via a method of the appropriate CoClass before    
 // they can be used.                                                          
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$WARN SYMBOL_PLATFORM OFF}
+//{$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
-{$VARPROPSETTER ON}
+//{$VARPROPSETTER ON}
 interface
 
-uses Windows, ActiveX, Classes, Graphics, OleServer, StdVCL, Variants;
+uses Windows, ActiveX, Classes, Graphics, OleServer, StdVCL{, Variants};
   
 
 // *********************************************************************//
