@@ -29,9 +29,16 @@ unit mscoree_TLB;
 { $WARN SYMBOL_PLATFORM OFF}
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
+
+{$I jedi.inc}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+{$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+
 interface
 
-uses ActiveX, Classes, OleServer;
+uses ActiveX, Classes;
 
 
 // *********************************************************************//

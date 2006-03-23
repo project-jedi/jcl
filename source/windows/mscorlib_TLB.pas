@@ -47,6 +47,13 @@ unit mscorlib_TLB;
 { $WARN SYMBOL_PLATFORM OFF}
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
+
+{$I jedi.inc}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+{$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+
 interface
 
 uses ActiveX, Classes;
@@ -4789,6 +4796,7 @@ type
     function GetHashCode: Integer; dispid 1610743810;
     function GetType: _Type; dispid 1610743811;
   end;
+  {$EXTERNALSYM _ObjectDisp}
 
 // *********************************************************************//
 // Interface: ICloneable
@@ -4809,6 +4817,7 @@ type
     ['{0CB251A7-3AB3-3B5C-A0B8-9DDF88824B85}']
     function Clone: OleVariant; dispid 1610743808;
   end;
+  {$EXTERNALSYM ICloneableDisp}
 
 // *********************************************************************//
 // Interface: IEnumerable
@@ -4829,6 +4838,7 @@ type
     ['{496B0ABE-CDEE-11D3-88E8-00902754C43A}']
     function GetEnumerator: IEnumVARIANT; dispid -4;
   end;
+  {$EXTERNALSYM IEnumerableDisp}
 
 // *********************************************************************//
 // Interface: ICollection
@@ -4858,6 +4868,7 @@ type
     property SyncRoot: OleVariant readonly dispid 1610743810;
     property IsSynchronized: WordBool readonly dispid 1610743811;
   end;
+  {$EXTERNALSYM ICollectionDisp}
 
 // *********************************************************************//
 // Interface: IList
@@ -4900,6 +4911,7 @@ type
     procedure Remove(value: OleVariant); dispid 1610743817;
     procedure RemoveAt(index: Integer); dispid 1610743818;
   end;
+  {$EXTERNALSYM IListDisp}
 
 // *********************************************************************//
 // Interface: _Array
@@ -4918,6 +4930,7 @@ type
   _ArrayDisp = dispinterface
     ['{2B67CECE-71C3-36A9-A136-925CCC1935A8}']
   end;
+  {$EXTERNALSYM _ArrayDisp}
 
 // *********************************************************************//
 // Interface: IEnumerator
@@ -4943,6 +4956,7 @@ type
     property Current: OleVariant readonly dispid 1610743809;
     procedure Reset; dispid 1610743810;
   end;
+  {$EXTERNALSYM IEnumeratorDisp}
 
 // *********************************************************************//
 // Interface: IComparable
@@ -4963,6 +4977,7 @@ type
     ['{DEB0E770-91FD-3CF6-9A6C-E6A3656F3965}']
     function CompareTo(obj: OleVariant): Integer; dispid 1610743808;
   end;
+  {$EXTERNALSYM IComparableDisp}
 
 // *********************************************************************//
 // Interface: IConvertible
@@ -5016,6 +5031,7 @@ type
     property ToString[const provider: IFormatProvider]: WideString readonly dispid 1610743823;
     function ToType(const conversionType: _Type; const provider: IFormatProvider): OleVariant; dispid 1610743824;
   end;
+  {$EXTERNALSYM IConvertibleDisp}
 
 // *********************************************************************//
 // Interface: _String
@@ -5034,6 +5050,7 @@ type
   _StringDisp = dispinterface
     ['{36936699-FC79-324D-AB43-E33C1F94E263}']
   end;
+  {$EXTERNALSYM _StringDisp}
 
 // *********************************************************************//
 // Interface: _StringBuilder
@@ -5052,6 +5069,7 @@ type
   _StringBuilderDisp = dispinterface
     ['{9FB09782-8D39-3B0C-B79E-F7A37A65B3DA}']
   end;
+  {$EXTERNALSYM _StringBuilderDisp}
 
 // *********************************************************************//
 // Interface: ISerializable
@@ -5072,6 +5090,7 @@ type
     ['{D0EEAA62-3D30-3EE2-B896-A2F34DDA47D8}']
     procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant); dispid 1610743808;
   end;
+  {$EXTERNALSYM ISerializableDisp}
 
 // *********************************************************************//
 // Interface: _Exception
@@ -5123,6 +5142,7 @@ type
     property InnerException: _Exception readonly dispid 1610743820;
     property TargetSite: _MethodBase readonly dispid 1610743821;
   end;
+  {$EXTERNALSYM _ExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ValueType
@@ -5141,6 +5161,7 @@ type
   _ValueTypeDisp = dispinterface
     ['{139E041D-0E41-39F5-A302-C4387E9D0A6C}']
   end;
+  {$EXTERNALSYM _ValueTypeDisp}
 
 // *********************************************************************//
 // Interface: IFormattable
@@ -5162,6 +5183,7 @@ type
     ['{9A604EE7-E630-3DED-9444-BAAE247075AB}']
     property ToString[const format: WideString; const formatProvider: IFormatProvider]: WideString readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IFormattableDisp}
 
 // *********************************************************************//
 // Interface: _SystemException
@@ -5180,6 +5202,7 @@ type
   _SystemExceptionDisp = dispinterface
     ['{4C482CC2-68E9-37C6-8353-9A94BD2D7F0B}']
   end;
+  {$EXTERNALSYM _SystemExceptionDisp}
 
 // *********************************************************************//
 // Interface: _OutOfMemoryException
@@ -5198,6 +5221,7 @@ type
   _OutOfMemoryExceptionDisp = dispinterface
     ['{CF3EDB7E-0574-3383-A44F-292F7C145DB4}']
   end;
+  {$EXTERNALSYM _OutOfMemoryExceptionDisp}
 
 // *********************************************************************//
 // Interface: _StackOverflowException
@@ -5216,6 +5240,7 @@ type
   _StackOverflowExceptionDisp = dispinterface
     ['{9CF4339A-2911-3B8A-8F30-E5C6B5BE9A29}']
   end;
+  {$EXTERNALSYM _StackOverflowExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ExecutionEngineException
@@ -5234,6 +5259,7 @@ type
   _ExecutionEngineExceptionDisp = dispinterface
     ['{CCF0139C-79F7-3D0A-AFFE-2B0762C65B07}']
   end;
+  {$EXTERNALSYM _ExecutionEngineExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Delegate
@@ -5275,6 +5301,7 @@ type
     property Method: _MethodInfo readonly dispid 1610743816;
     property Target: OleVariant readonly dispid 1610743817;
   end;
+  {$EXTERNALSYM _DelegateDisp}
 
 // *********************************************************************//
 // Interface: _MulticastDelegate
@@ -5293,6 +5320,7 @@ type
   _MulticastDelegateDisp = dispinterface
     ['{16FE0885-9129-3884-A232-90B58C5B2AA9}']
   end;
+  {$EXTERNALSYM _MulticastDelegateDisp}
 
 // *********************************************************************//
 // Interface: _Enum
@@ -5311,6 +5339,7 @@ type
   _EnumDisp = dispinterface
     ['{D09D1E04-D590-39A3-B517-B734A49A9277}']
   end;
+  {$EXTERNALSYM _EnumDisp}
 
 // *********************************************************************//
 // Interface: _MemberAccessException
@@ -5329,6 +5358,7 @@ type
   _MemberAccessExceptionDisp = dispinterface
     ['{7EABA4E2-1259-3CF2-B084-9854278E5897}']
   end;
+  {$EXTERNALSYM _MemberAccessExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Activator
@@ -5347,6 +5377,7 @@ type
   _ActivatorDisp = dispinterface
     ['{03973551-57A1-3900-A2B5-9083E3FF2943}']
   end;
+  {$EXTERNALSYM _ActivatorDisp}
 
 // *********************************************************************//
 // Interface: _ApplicationException
@@ -5365,6 +5396,7 @@ type
   _ApplicationExceptionDisp = dispinterface
     ['{D81130BF-D627-3B91-A7C7-CEA597093464}']
   end;
+  {$EXTERNALSYM _ApplicationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _EventArgs
@@ -5383,6 +5415,7 @@ type
   _EventArgsDisp = dispinterface
     ['{1F9EC719-343A-3CB3-8040-3927626777C1}']
   end;
+  {$EXTERNALSYM _EventArgsDisp}
 
 // *********************************************************************//
 // Interface: _ResolveEventArgs
@@ -5401,6 +5434,7 @@ type
   _ResolveEventArgsDisp = dispinterface
     ['{98947CF0-77E7-328E-B709-5DD1AA1C9C96}']
   end;
+  {$EXTERNALSYM _ResolveEventArgsDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyLoadEventArgs
@@ -5419,6 +5453,7 @@ type
   _AssemblyLoadEventArgsDisp = dispinterface
     ['{7A0325F0-22C2-31F9-8823-9B8AEE9456B1}']
   end;
+  {$EXTERNALSYM _AssemblyLoadEventArgsDisp}
 
 // *********************************************************************//
 // Interface: _ResolveEventHandler
@@ -5437,6 +5472,7 @@ type
   _ResolveEventHandlerDisp = dispinterface
     ['{8E54A9CC-7AA4-34CA-985B-BD7D7527B110}']
   end;
+  {$EXTERNALSYM _ResolveEventHandlerDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyLoadEventHandler
@@ -5455,6 +5491,7 @@ type
   _AssemblyLoadEventHandlerDisp = dispinterface
     ['{DEECE11F-A893-3E35-A4C3-DAB7FA0911EB}']
   end;
+  {$EXTERNALSYM _AssemblyLoadEventHandlerDisp}
 
 // *********************************************************************//
 // Interface: _MarshalByRefObject
@@ -5473,6 +5510,7 @@ type
   _MarshalByRefObjectDisp = dispinterface
     ['{2C358E27-8C1A-3C03-B086-A40465625557}']
   end;
+  {$EXTERNALSYM _MarshalByRefObjectDisp}
 
 // *********************************************************************//
 // Interface: _AppDomain
@@ -5695,6 +5733,7 @@ type
     procedure DoCallBack(const theDelegate: _CrossAppDomainDelegate); dispid 1610743869;
     property DynamicDirectory: WideString readonly dispid 1610743870;
   end;
+  {$EXTERNALSYM _AppDomainDisp}
 
 // *********************************************************************//
 // Interface: IEvidenceFactory
@@ -5716,6 +5755,7 @@ type
     ['{35A8F3AC-FE28-360F-A0C0-9A4D50C4682A}']
     property Evidence: _Evidence readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IEvidenceFactoryDisp}
 
 // *********************************************************************//
 // Interface: _CrossAppDomainDelegate
@@ -5734,6 +5774,7 @@ type
   _CrossAppDomainDelegateDisp = dispinterface
     ['{AF93163F-C2F4-3FAB-9FF1-728A7AAAD1CB}']
   end;
+  {$EXTERNALSYM _CrossAppDomainDelegateDisp}
 
 // *********************************************************************//
 // Interface: IAppDomainSetup
@@ -5781,6 +5822,7 @@ type
   _AttributeDisp = dispinterface
     ['{917B14D0-2D9E-38B8-92A9-381ACF52F7C0}']
   end;
+  {$EXTERNALSYM _AttributeDisp}
 
 // *********************************************************************//
 // Interface: _LoaderOptimizationAttribute
@@ -5799,6 +5841,7 @@ type
   _LoaderOptimizationAttributeDisp = dispinterface
     ['{CE59D7AD-05CA-33B4-A1DD-06028D46E9D2}']
   end;
+  {$EXTERNALSYM _LoaderOptimizationAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AppDomainUnloadedException
@@ -5817,6 +5860,7 @@ type
   _AppDomainUnloadedExceptionDisp = dispinterface
     ['{6E96AA70-9FFB-399D-96BF-A68436095C54}']
   end;
+  {$EXTERNALSYM _AppDomainUnloadedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ArgumentException
@@ -5835,6 +5879,7 @@ type
   _ArgumentExceptionDisp = dispinterface
     ['{4DB2C2B7-CBC2-3185-B966-875D4625B1A8}']
   end;
+  {$EXTERNALSYM _ArgumentExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ArgumentNullException
@@ -5853,6 +5898,7 @@ type
   _ArgumentNullExceptionDisp = dispinterface
     ['{C991949B-E623-3F24-885C-BBB01FF43564}']
   end;
+  {$EXTERNALSYM _ArgumentNullExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ArgumentOutOfRangeException
@@ -5871,6 +5917,7 @@ type
   _ArgumentOutOfRangeExceptionDisp = dispinterface
     ['{77DA3028-BC45-3E82-BF76-2C123EE2C021}']
   end;
+  {$EXTERNALSYM _ArgumentOutOfRangeExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ArithmeticException
@@ -5889,6 +5936,7 @@ type
   _ArithmeticExceptionDisp = dispinterface
     ['{9B012CF1-ACF6-3389-A336-C023040C62A2}']
   end;
+  {$EXTERNALSYM _ArithmeticExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ArrayTypeMismatchException
@@ -5907,6 +5955,7 @@ type
   _ArrayTypeMismatchExceptionDisp = dispinterface
     ['{DD7488A6-1B3F-3823-9556-C2772B15150F}']
   end;
+  {$EXTERNALSYM _ArrayTypeMismatchExceptionDisp}
 
 // *********************************************************************//
 // Interface: _AsyncCallback
@@ -5925,6 +5974,7 @@ type
   _AsyncCallbackDisp = dispinterface
     ['{3612706E-0239-35FD-B900-0819D16D442D}']
   end;
+  {$EXTERNALSYM _AsyncCallbackDisp}
 
 // *********************************************************************//
 // Interface: _AttributeUsageAttribute
@@ -5943,6 +5993,7 @@ type
   _AttributeUsageAttributeDisp = dispinterface
     ['{A902A192-49BA-3EC8-B444-AF5F7743F61A}']
   end;
+  {$EXTERNALSYM _AttributeUsageAttributeDisp}
 
 // *********************************************************************//
 // Interface: _BadImageFormatException
@@ -5961,6 +6012,7 @@ type
   _BadImageFormatExceptionDisp = dispinterface
     ['{F98BCE04-4A4B-398C-A512-FD8348D51E3B}']
   end;
+  {$EXTERNALSYM _BadImageFormatExceptionDisp}
 
 // *********************************************************************//
 // Interface: _BitConverter
@@ -5979,6 +6031,7 @@ type
   _BitConverterDisp = dispinterface
     ['{5CD861E8-CA91-301B-9E24-141E3D85BD5D}']
   end;
+  {$EXTERNALSYM _BitConverterDisp}
 
 // *********************************************************************//
 // Interface: _Buffer
@@ -5997,6 +6050,7 @@ type
   _BufferDisp = dispinterface
     ['{F036BCA4-F8DF-3682-8290-75285CE7456C}']
   end;
+  {$EXTERNALSYM _BufferDisp}
 
 // *********************************************************************//
 // Interface: _CannotUnloadAppDomainException
@@ -6015,6 +6069,7 @@ type
   _CannotUnloadAppDomainExceptionDisp = dispinterface
     ['{6D4B6ADB-B9FA-3809-B5EA-FA57B56C546F}']
   end;
+  {$EXTERNALSYM _CannotUnloadAppDomainExceptionDisp}
 
 // *********************************************************************//
 // Interface: _CharEnumerator
@@ -6033,6 +6088,7 @@ type
   _CharEnumeratorDisp = dispinterface
     ['{1DD627FC-89E3-384F-BB9D-58CB4EFB9456}']
   end;
+  {$EXTERNALSYM _CharEnumeratorDisp}
 
 // *********************************************************************//
 // Interface: _CLSCompliantAttribute
@@ -6051,6 +6107,7 @@ type
   _CLSCompliantAttributeDisp = dispinterface
     ['{BF1AF177-94CA-3E6D-9D91-55CF9E859D22}']
   end;
+  {$EXTERNALSYM _CLSCompliantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeUnloadedException
@@ -6069,6 +6126,7 @@ type
   _TypeUnloadedExceptionDisp = dispinterface
     ['{C2A10F3A-356A-3C77-AAB9-8991D73A2561}']
   end;
+  {$EXTERNALSYM _TypeUnloadedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Console
@@ -6087,6 +6145,7 @@ type
   _ConsoleDisp = dispinterface
     ['{88592805-9549-3E00-8308-03CFA6B93882}']
   end;
+  {$EXTERNALSYM _ConsoleDisp}
 
 // *********************************************************************//
 // Interface: _ContextMarshalException
@@ -6105,6 +6164,7 @@ type
   _ContextMarshalExceptionDisp = dispinterface
     ['{7386F4D7-7C11-389F-BB75-895714B12BB5}']
   end;
+  {$EXTERNALSYM _ContextMarshalExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Convert
@@ -6123,6 +6183,7 @@ type
   _ConvertDisp = dispinterface
     ['{9E1348D4-3FAC-3704-840D-20D91E4AD542}']
   end;
+  {$EXTERNALSYM _ConvertDisp}
 
 // *********************************************************************//
 // Interface: _ContextBoundObject
@@ -6141,6 +6202,7 @@ type
   _ContextBoundObjectDisp = dispinterface
     ['{3EB1D909-E8BF-3C6B-ADA5-0E86E31E186E}']
   end;
+  {$EXTERNALSYM _ContextBoundObjectDisp}
 
 // *********************************************************************//
 // Interface: _ContextStaticAttribute
@@ -6159,6 +6221,7 @@ type
   _ContextStaticAttributeDisp = dispinterface
     ['{160D517F-F175-3B61-8264-6D2305B8246C}']
   end;
+  {$EXTERNALSYM _ContextStaticAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TimeZone
@@ -6177,6 +6240,7 @@ type
   _TimeZoneDisp = dispinterface
     ['{3025F666-7891-33D7-AACD-23D169EF354E}']
   end;
+  {$EXTERNALSYM _TimeZoneDisp}
 
 // *********************************************************************//
 // Interface: _DBNull
@@ -6195,6 +6259,7 @@ type
   _DBNullDisp = dispinterface
     ['{0D9F1B65-6D27-3E9F-BAF3-0597837E0F33}']
   end;
+  {$EXTERNALSYM _DBNullDisp}
 
 // *********************************************************************//
 // Interface: _Binder
@@ -6246,6 +6311,7 @@ type
     function ChangeType(value: OleVariant; const Type_: _Type; const culture: _CultureInfo): OleVariant; dispid 1610743816;
     procedure ReorderArgumentArray(var args: {??PSafeArray}OleVariant; state: OleVariant); dispid 1610743817;
   end;
+  {$EXTERNALSYM _BinderDisp}
 
 // *********************************************************************//
 // Interface: IObjectReference
@@ -6266,6 +6332,7 @@ type
     ['{6E70ED5F-0439-38CE-83BB-860F1421F29F}']
     function GetRealObject(Context: {??StreamingContext}OleVariant): OleVariant; dispid 1610743808;
   end;
+  {$EXTERNALSYM IObjectReferenceDisp}
 
 // *********************************************************************//
 // Interface: _DivideByZeroException
@@ -6284,6 +6351,7 @@ type
   _DivideByZeroExceptionDisp = dispinterface
     ['{BDEEA460-8241-3B41-9ED3-6E3E9977AC7F}']
   end;
+  {$EXTERNALSYM _DivideByZeroExceptionDisp}
 
 // *********************************************************************//
 // Interface: _DuplicateWaitObjectException
@@ -6302,6 +6370,7 @@ type
   _DuplicateWaitObjectExceptionDisp = dispinterface
     ['{D345A42B-CFE0-3EEE-861C-F3322812B388}']
   end;
+  {$EXTERNALSYM _DuplicateWaitObjectExceptionDisp}
 
 // *********************************************************************//
 // Interface: _TypeLoadException
@@ -6320,6 +6389,7 @@ type
   _TypeLoadExceptionDisp = dispinterface
     ['{82D6B3BF-A633-3B3B-A09E-2363E4B24A41}']
   end;
+  {$EXTERNALSYM _TypeLoadExceptionDisp}
 
 // *********************************************************************//
 // Interface: _EntryPointNotFoundException
@@ -6338,6 +6408,7 @@ type
   _EntryPointNotFoundExceptionDisp = dispinterface
     ['{67388F3F-B600-3BCF-84AA-BB2B88DD9EE2}']
   end;
+  {$EXTERNALSYM _EntryPointNotFoundExceptionDisp}
 
 // *********************************************************************//
 // Interface: _DllNotFoundException
@@ -6356,6 +6427,7 @@ type
   _DllNotFoundExceptionDisp = dispinterface
     ['{24AE6464-2834-32CD-83D6-FA06953DE62A}']
   end;
+  {$EXTERNALSYM _DllNotFoundExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Environment
@@ -6374,6 +6446,7 @@ type
   _EnvironmentDisp = dispinterface
     ['{29DC56CF-B981-3432-97C8-3680AB6D862D}']
   end;
+  {$EXTERNALSYM _EnvironmentDisp}
 
 // *********************************************************************//
 // Interface: _EventHandler
@@ -6392,6 +6465,7 @@ type
   _EventHandlerDisp = dispinterface
     ['{7CEFC46E-16E0-3E65-9C38-55B4342BA7F0}']
   end;
+  {$EXTERNALSYM _EventHandlerDisp}
 
 // *********************************************************************//
 // Interface: _FieldAccessException
@@ -6410,6 +6484,7 @@ type
   _FieldAccessExceptionDisp = dispinterface
     ['{8D5F5811-FFA1-3306-93E3-8AFC572B9B82}']
   end;
+  {$EXTERNALSYM _FieldAccessExceptionDisp}
 
 // *********************************************************************//
 // Interface: _FlagsAttribute
@@ -6428,6 +6503,7 @@ type
   _FlagsAttributeDisp = dispinterface
     ['{EBE3746D-DDEC-3D23-8E8D-9361BA87BAC6}']
   end;
+  {$EXTERNALSYM _FlagsAttributeDisp}
 
 // *********************************************************************//
 // Interface: _FormatException
@@ -6446,6 +6522,7 @@ type
   _FormatExceptionDisp = dispinterface
     ['{07F92156-398A-3548-90B7-2E58026353D0}']
   end;
+  {$EXTERNALSYM _FormatExceptionDisp}
 
 // *********************************************************************//
 // Interface: _GC
@@ -6464,6 +6541,7 @@ type
   _GCDisp = dispinterface
     ['{679ED106-5DC1-38FE-8B5C-2ADCA3552298}']
   end;
+  {$EXTERNALSYM _GCDisp}
 
 // *********************************************************************//
 // Interface: IAsyncResult
@@ -6494,6 +6572,7 @@ type
     property AsyncState: OleVariant readonly dispid 1610743810;
     property CompletedSynchronously: WordBool readonly dispid 1610743811;
   end;
+  {$EXTERNALSYM IAsyncResultDisp}
 
 // *********************************************************************//
 // Interface: ICustomFormatter
@@ -6514,6 +6593,7 @@ type
     ['{2B130940-CA5E-3406-8385-E259E68AB039}']
     function format(const format: WideString; arg: OleVariant; const formatProvider: IFormatProvider): WideString; dispid 1610743808;
   end;
+  {$EXTERNALSYM ICustomFormatterDisp}
 
 // *********************************************************************//
 // Interface: IDisposable
@@ -6534,6 +6614,7 @@ type
     ['{805D7A98-D4AF-3F0F-967F-E5CF45312D2C}']
     procedure Dispose; dispid 1610743808;
   end;
+  {$EXTERNALSYM IDisposableDisp}
 
 // *********************************************************************//
 // Interface: IFormatProvider
@@ -6554,6 +6635,7 @@ type
     ['{C8CB1DED-2814-396A-9CC0-473CA49779CC}']
     function GetFormat(const formatType: _Type): OleVariant; dispid 1610743808;
   end;
+  {$EXTERNALSYM IFormatProviderDisp}
 
 // *********************************************************************//
 // Interface: _IndexOutOfRangeException
@@ -6572,6 +6654,7 @@ type
   _IndexOutOfRangeExceptionDisp = dispinterface
     ['{E5A5F1E4-82C1-391F-A1C6-F39EAE9DC72F}']
   end;
+  {$EXTERNALSYM _IndexOutOfRangeExceptionDisp}
 
 // *********************************************************************//
 // Interface: _InvalidCastException
@@ -6590,6 +6673,7 @@ type
   _InvalidCastExceptionDisp = dispinterface
     ['{FA047CBD-9BA5-3A13-9B1F-6694D622CD76}']
   end;
+  {$EXTERNALSYM _InvalidCastExceptionDisp}
 
 // *********************************************************************//
 // Interface: _InvalidOperationException
@@ -6608,6 +6692,7 @@ type
   _InvalidOperationExceptionDisp = dispinterface
     ['{8D520D10-0B8A-3553-8874-D30A4AD2FF4C}']
   end;
+  {$EXTERNALSYM _InvalidOperationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _InvalidProgramException
@@ -6626,6 +6711,7 @@ type
   _InvalidProgramExceptionDisp = dispinterface
     ['{3410E0FB-636F-3CD1-8045-3993CA113F25}']
   end;
+  {$EXTERNALSYM _InvalidProgramExceptionDisp}
 
 // *********************************************************************//
 // Interface: _LocalDataStoreSlot
@@ -6644,6 +6730,7 @@ type
   _LocalDataStoreSlotDisp = dispinterface
     ['{DC77F976-318D-3A1A-9B60-ABB9DD9406D6}']
   end;
+  {$EXTERNALSYM _LocalDataStoreSlotDisp}
 
 // *********************************************************************//
 // Interface: _Math
@@ -6662,6 +6749,7 @@ type
   _MathDisp = dispinterface
     ['{A19F91C8-7D23-3DFB-A988-CEE05B039121}']
   end;
+  {$EXTERNALSYM _MathDisp}
 
 // *********************************************************************//
 // Interface: _MethodAccessException
@@ -6680,6 +6768,7 @@ type
   _MethodAccessExceptionDisp = dispinterface
     ['{FF0BF77D-8F81-3D31-A3BB-6F54440FA7E5}']
   end;
+  {$EXTERNALSYM _MethodAccessExceptionDisp}
 
 // *********************************************************************//
 // Interface: _MissingMemberException
@@ -6698,6 +6787,7 @@ type
   _MissingMemberExceptionDisp = dispinterface
     ['{8897D14B-7FB3-3D8B-9EE4-221C3DBAD6FE}']
   end;
+  {$EXTERNALSYM _MissingMemberExceptionDisp}
 
 // *********************************************************************//
 // Interface: _MissingFieldException
@@ -6716,6 +6806,7 @@ type
   _MissingFieldExceptionDisp = dispinterface
     ['{9717176D-1179-3487-8849-CF5F63DE356E}']
   end;
+  {$EXTERNALSYM _MissingFieldExceptionDisp}
 
 // *********************************************************************//
 // Interface: _MissingMethodException
@@ -6734,6 +6825,7 @@ type
   _MissingMethodExceptionDisp = dispinterface
     ['{E5C659F6-92C8-3887-A07E-74D0D9C6267A}']
   end;
+  {$EXTERNALSYM _MissingMethodExceptionDisp}
 
 // *********************************************************************//
 // Interface: _MulticastNotSupportedException
@@ -6752,6 +6844,7 @@ type
   _MulticastNotSupportedExceptionDisp = dispinterface
     ['{D2BA71CC-1B3D-3966-A0D7-C61E957AD325}']
   end;
+  {$EXTERNALSYM _MulticastNotSupportedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _NonSerializedAttribute
@@ -6770,6 +6863,7 @@ type
   _NonSerializedAttributeDisp = dispinterface
     ['{665C9669-B9C6-3ADD-9213-099F0127C893}']
   end;
+  {$EXTERNALSYM _NonSerializedAttributeDisp}
 
 // *********************************************************************//
 // Interface: _NotFiniteNumberException
@@ -6788,6 +6882,7 @@ type
   _NotFiniteNumberExceptionDisp = dispinterface
     ['{8E21CE22-4F17-347B-B3B5-6A6DF3E0E58A}']
   end;
+  {$EXTERNALSYM _NotFiniteNumberExceptionDisp}
 
 // *********************************************************************//
 // Interface: _NotImplementedException
@@ -6806,6 +6901,7 @@ type
   _NotImplementedExceptionDisp = dispinterface
     ['{1E4D31A2-63EA-397A-A77E-B20AD87A9614}']
   end;
+  {$EXTERNALSYM _NotImplementedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _NotSupportedException
@@ -6824,6 +6920,7 @@ type
   _NotSupportedExceptionDisp = dispinterface
     ['{40E5451F-B237-33F8-945B-0230DB700BBB}']
   end;
+  {$EXTERNALSYM _NotSupportedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _NullReferenceException
@@ -6842,6 +6939,7 @@ type
   _NullReferenceExceptionDisp = dispinterface
     ['{ECBE2313-CF41-34B4-9FD0-B6CD602B023F}']
   end;
+  {$EXTERNALSYM _NullReferenceExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ObjectDisposedException
@@ -6860,6 +6958,7 @@ type
   _ObjectDisposedExceptionDisp = dispinterface
     ['{17B730BA-45EF-3DDF-9F8D-A490BAC731F4}']
   end;
+  {$EXTERNALSYM _ObjectDisposedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ObsoleteAttribute
@@ -6878,6 +6977,7 @@ type
   _ObsoleteAttributeDisp = dispinterface
     ['{E84307BE-3036-307A-ACC2-5D5DE8A006A8}']
   end;
+  {$EXTERNALSYM _ObsoleteAttributeDisp}
 
 // *********************************************************************//
 // Interface: _OperatingSystem
@@ -6896,6 +6996,7 @@ type
   _OperatingSystemDisp = dispinterface
     ['{9E230640-A5D0-30E1-B217-9D2B6CC0FC40}']
   end;
+  {$EXTERNALSYM _OperatingSystemDisp}
 
 // *********************************************************************//
 // Interface: _OverflowException
@@ -6914,6 +7015,7 @@ type
   _OverflowExceptionDisp = dispinterface
     ['{37C69A5D-7619-3A0F-A96B-9C9578AE00EF}']
   end;
+  {$EXTERNALSYM _OverflowExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ParamArrayAttribute
@@ -6932,6 +7034,7 @@ type
   _ParamArrayAttributeDisp = dispinterface
     ['{D54500AE-8CF4-3092-9054-90DC91AC65C9}']
   end;
+  {$EXTERNALSYM _ParamArrayAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PlatformNotSupportedException
@@ -6950,6 +7053,7 @@ type
   _PlatformNotSupportedExceptionDisp = dispinterface
     ['{1EB8340B-8190-3D9D-92F8-51244B9804C5}']
   end;
+  {$EXTERNALSYM _PlatformNotSupportedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Random
@@ -6968,6 +7072,7 @@ type
   _RandomDisp = dispinterface
     ['{0F240708-629A-31AB-94A5-2BB476FE1783}']
   end;
+  {$EXTERNALSYM _RandomDisp}
 
 // *********************************************************************//
 // Interface: _RankException
@@ -6986,6 +7091,7 @@ type
   _RankExceptionDisp = dispinterface
     ['{871DDC46-B68E-3FEE-A09A-C808B0F827E6}']
   end;
+  {$EXTERNALSYM _RankExceptionDisp}
 
 // *********************************************************************//
 // Interface: ICustomAttributeProvider
@@ -7010,6 +7116,7 @@ type
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743809;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743810;
   end;
+  {$EXTERNALSYM ICustomAttributeProviderDisp}
 
 // *********************************************************************//
 // Interface: _MemberInfo
@@ -7055,6 +7162,7 @@ type
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
   end;
+  {$EXTERNALSYM _MemberInfoDisp}
 
 // *********************************************************************//
 // Interface: IReflect
@@ -7109,6 +7217,7 @@ type
                           namedParameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743818;
     property UnderlyingSystemType: _Type readonly dispid 1610743819;
   end;
+  {$EXTERNALSYM IReflectDisp}
 
 // *********************************************************************//
 // Interface: _Type
@@ -7424,6 +7533,7 @@ type
     property IsMarshalByRef: WordBool readonly dispid 1610743914;
     function Equals_2(const o: _Type): WordBool; dispid 1610743915;
   end;
+  {$EXTERNALSYM _TypeDisp}
 
 // *********************************************************************//
 // Interface: _SerializableAttribute
@@ -7442,6 +7552,7 @@ type
   _SerializableAttributeDisp = dispinterface
     ['{1B96E53C-4028-38BC-9DC3-8D7A9555C311}']
   end;
+  {$EXTERNALSYM _SerializableAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeInitializationException
@@ -7460,6 +7571,7 @@ type
   _TypeInitializationExceptionDisp = dispinterface
     ['{FEB0323D-8CE4-36A4-A41E-0BA0C32E1A6A}']
   end;
+  {$EXTERNALSYM _TypeInitializationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _UnauthorizedAccessException
@@ -7478,6 +7590,7 @@ type
   _UnauthorizedAccessExceptionDisp = dispinterface
     ['{6193C5F6-6807-3561-A7F3-B64C80B5F00F}']
   end;
+  {$EXTERNALSYM _UnauthorizedAccessExceptionDisp}
 
 // *********************************************************************//
 // Interface: _UnhandledExceptionEventArgs
@@ -7496,6 +7609,7 @@ type
   _UnhandledExceptionEventArgsDisp = dispinterface
     ['{A218E20A-0905-3741-B0B3-9E3193162E50}']
   end;
+  {$EXTERNALSYM _UnhandledExceptionEventArgsDisp}
 
 // *********************************************************************//
 // Interface: _UnhandledExceptionEventHandler
@@ -7514,6 +7628,7 @@ type
   _UnhandledExceptionEventHandlerDisp = dispinterface
     ['{84199E64-439C-3011-B249-3C9065735ADB}']
   end;
+  {$EXTERNALSYM _UnhandledExceptionEventHandlerDisp}
 
 // *********************************************************************//
 // Interface: _Version
@@ -7532,6 +7647,7 @@ type
   _VersionDisp = dispinterface
     ['{011A90C5-4910-3C29-BBB7-50D05CCBAA4A}']
   end;
+  {$EXTERNALSYM _VersionDisp}
 
 // *********************************************************************//
 // Interface: _WeakReference
@@ -7550,6 +7666,7 @@ type
   _WeakReferenceDisp = dispinterface
     ['{C5DF3568-C251-3C58-AFB4-32E79E8261F0}']
   end;
+  {$EXTERNALSYM _WeakReferenceDisp}
 
 // *********************************************************************//
 // Interface: _WaitHandle
@@ -7568,6 +7685,7 @@ type
   _WaitHandleDisp = dispinterface
     ['{40DFC50A-E93A-3C08-B9EF-E2B4F28B5676}']
   end;
+  {$EXTERNALSYM _WaitHandleDisp}
 
 // *********************************************************************//
 // Interface: _AutoResetEvent
@@ -7586,6 +7704,7 @@ type
   _AutoResetEventDisp = dispinterface
     ['{3F243EBD-612F-3DB8-9E03-BD92343A8371}']
   end;
+  {$EXTERNALSYM _AutoResetEventDisp}
 
 // *********************************************************************//
 // Interface: _CompressedStack
@@ -7604,6 +7723,7 @@ type
   _CompressedStackDisp = dispinterface
     ['{4BCBC4D6-98EB-381A-A8A6-08B2378738ED}']
   end;
+  {$EXTERNALSYM _CompressedStackDisp}
 
 // *********************************************************************//
 // Interface: _Interlocked
@@ -7622,6 +7742,7 @@ type
   _InterlockedDisp = dispinterface
     ['{DF20F518-8ED1-35E3-950E-020214FDB9B2}']
   end;
+  {$EXTERNALSYM _InterlockedDisp}
 
 // *********************************************************************//
 // Interface: IObjectHandle
@@ -7650,6 +7771,7 @@ type
   _ManualResetEventDisp = dispinterface
     ['{C0BB9361-268F-3E72-BF6F-4120175A1500}']
   end;
+  {$EXTERNALSYM _ManualResetEventDisp}
 
 // *********************************************************************//
 // Interface: _Monitor
@@ -7668,6 +7790,7 @@ type
   _MonitorDisp = dispinterface
     ['{EE22485E-4C45-3C9D-9027-A8D61C5F53F2}']
   end;
+  {$EXTERNALSYM _MonitorDisp}
 
 // *********************************************************************//
 // Interface: _Mutex
@@ -7686,6 +7809,7 @@ type
   _MutexDisp = dispinterface
     ['{36CB559B-87C6-3AD2-9225-62A7ED499B37}']
   end;
+  {$EXTERNALSYM _MutexDisp}
 
 // *********************************************************************//
 // Interface: _Overlapped
@@ -7704,6 +7828,7 @@ type
   _OverlappedDisp = dispinterface
     ['{DD846FCC-8D04-3665-81B6-AACBE99C19C3}']
   end;
+  {$EXTERNALSYM _OverlappedDisp}
 
 // *********************************************************************//
 // Interface: _ReaderWriterLock
@@ -7722,6 +7847,7 @@ type
   _ReaderWriterLockDisp = dispinterface
     ['{AD89B568-4FD4-3F8D-8327-B396B20A460E}']
   end;
+  {$EXTERNALSYM _ReaderWriterLockDisp}
 
 // *********************************************************************//
 // Interface: _SynchronizationLockException
@@ -7740,6 +7866,7 @@ type
   _SynchronizationLockExceptionDisp = dispinterface
     ['{87F55344-17E0-30FD-8EB9-38EAF6A19B3F}']
   end;
+  {$EXTERNALSYM _SynchronizationLockExceptionDisp}
 
 // *********************************************************************//
 // Interface: _Thread
@@ -7758,6 +7885,7 @@ type
   _ThreadDisp = dispinterface
     ['{C281C7F1-4AA9-3517-961A-463CFED57E75}']
   end;
+  {$EXTERNALSYM _ThreadDisp}
 
 // *********************************************************************//
 // Interface: _ThreadAbortException
@@ -7776,6 +7904,7 @@ type
   _ThreadAbortExceptionDisp = dispinterface
     ['{95B525DB-6B81-3CDC-8FE7-713F7FC793C0}']
   end;
+  {$EXTERNALSYM _ThreadAbortExceptionDisp}
 
 // *********************************************************************//
 // Interface: _STAThreadAttribute
@@ -7794,6 +7923,7 @@ type
   _STAThreadAttributeDisp = dispinterface
     ['{85D72F83-BE91-3CB1-B4F0-76B56FF04033}']
   end;
+  {$EXTERNALSYM _STAThreadAttributeDisp}
 
 // *********************************************************************//
 // Interface: _MTAThreadAttribute
@@ -7812,6 +7942,7 @@ type
   _MTAThreadAttributeDisp = dispinterface
     ['{C02468D1-8713-3225-BDA3-49B2FE37DDBB}']
   end;
+  {$EXTERNALSYM _MTAThreadAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ThreadInterruptedException
@@ -7830,6 +7961,7 @@ type
   _ThreadInterruptedExceptionDisp = dispinterface
     ['{B9E07599-7C44-33BE-A70E-EFA16F51F54A}']
   end;
+  {$EXTERNALSYM _ThreadInterruptedExceptionDisp}
 
 // *********************************************************************//
 // Interface: _RegisteredWaitHandle
@@ -7848,6 +7980,7 @@ type
   _RegisteredWaitHandleDisp = dispinterface
     ['{64409425-F8C9-370E-809E-3241CE804541}']
   end;
+  {$EXTERNALSYM _RegisteredWaitHandleDisp}
 
 // *********************************************************************//
 // Interface: _WaitCallback
@@ -7866,6 +7999,7 @@ type
   _WaitCallbackDisp = dispinterface
     ['{CE949142-4D4C-358D-89A9-E69A531AA363}']
   end;
+  {$EXTERNALSYM _WaitCallbackDisp}
 
 // *********************************************************************//
 // Interface: _WaitOrTimerCallback
@@ -7884,6 +8018,7 @@ type
   _WaitOrTimerCallbackDisp = dispinterface
     ['{F078F795-F452-3D2D-8CC8-16D66AE46C67}']
   end;
+  {$EXTERNALSYM _WaitOrTimerCallbackDisp}
 
 // *********************************************************************//
 // Interface: _IOCompletionCallback
@@ -7902,6 +8037,7 @@ type
   _IOCompletionCallbackDisp = dispinterface
     ['{BBAE942D-BFF4-36E2-A3BC-508BB3801F4F}']
   end;
+  {$EXTERNALSYM _IOCompletionCallbackDisp}
 
 // *********************************************************************//
 // Interface: _ThreadPool
@@ -7920,6 +8056,7 @@ type
   _ThreadPoolDisp = dispinterface
     ['{F5E02ADE-E724-3001-B498-3305B2A93D72}']
   end;
+  {$EXTERNALSYM _ThreadPoolDisp}
 
 // *********************************************************************//
 // Interface: _ThreadStart
@@ -7938,6 +8075,7 @@ type
   _ThreadStartDisp = dispinterface
     ['{B45BBD7E-A977-3F56-A626-7A693E5DBBC5}']
   end;
+  {$EXTERNALSYM _ThreadStartDisp}
 
 // *********************************************************************//
 // Interface: _ThreadStateException
@@ -7956,6 +8094,7 @@ type
   _ThreadStateExceptionDisp = dispinterface
     ['{A13A41CF-E066-3B90-82F4-73109104E348}']
   end;
+  {$EXTERNALSYM _ThreadStateExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ThreadStaticAttribute
@@ -7974,6 +8113,7 @@ type
   _ThreadStaticAttributeDisp = dispinterface
     ['{A6B94B6D-854E-3172-A4EC-A17EDD16F85E}']
   end;
+  {$EXTERNALSYM _ThreadStaticAttributeDisp}
 
 // *********************************************************************//
 // Interface: _Timeout
@@ -7992,6 +8132,7 @@ type
   _TimeoutDisp = dispinterface
     ['{81456E86-22AF-31D1-A91A-9C370C0E2530}']
   end;
+  {$EXTERNALSYM _TimeoutDisp}
 
 // *********************************************************************//
 // Interface: _TimerCallback
@@ -8010,6 +8151,7 @@ type
   _TimerCallbackDisp = dispinterface
     ['{3741BC6F-101B-36D7-A9D5-03FCC0ECDA35}']
   end;
+  {$EXTERNALSYM _TimerCallbackDisp}
 
 // *********************************************************************//
 // Interface: _Timer
@@ -8028,6 +8170,7 @@ type
   _TimerDisp = dispinterface
     ['{B49A029B-406B-3B1E-88E4-F86690D20364}']
   end;
+  {$EXTERNALSYM _TimerDisp}
 
 // *********************************************************************//
 // Interface: _ArrayList
@@ -8046,6 +8189,7 @@ type
   _ArrayListDisp = dispinterface
     ['{401F89CB-C127-3041-82FD-B67035395C56}']
   end;
+  {$EXTERNALSYM _ArrayListDisp}
 
 // *********************************************************************//
 // Interface: _BitArray
@@ -8064,6 +8208,7 @@ type
   _BitArrayDisp = dispinterface
     ['{F145C46A-D170-3170-B52F-4678DFCA0300}']
   end;
+  {$EXTERNALSYM _BitArrayDisp}
 
 // *********************************************************************//
 // Interface: IComparer
@@ -8084,6 +8229,7 @@ type
     ['{C20FD3EB-7022-3D14-8477-760FAB54E50D}']
     function Compare(x: OleVariant; y: OleVariant): Integer; dispid 1610743808;
   end;
+  {$EXTERNALSYM IComparerDisp}
 
 // *********************************************************************//
 // Interface: _CaseInsensitiveComparer
@@ -8102,6 +8248,7 @@ type
   _CaseInsensitiveComparerDisp = dispinterface
     ['{EA6795AC-97D6-3377-BE64-829ABD67607B}']
   end;
+  {$EXTERNALSYM _CaseInsensitiveComparerDisp}
 
 // *********************************************************************//
 // Interface: IHashCodeProvider
@@ -8122,6 +8269,7 @@ type
     ['{5D573036-3435-3C5A-AEFF-2B8191082C71}']
     function GetHashCode(obj: OleVariant): Integer; dispid 1610743808;
   end;
+  {$EXTERNALSYM IHashCodeProviderDisp}
 
 // *********************************************************************//
 // Interface: _CaseInsensitiveHashCodeProvider
@@ -8140,6 +8288,7 @@ type
   _CaseInsensitiveHashCodeProviderDisp = dispinterface
     ['{0422B845-B636-3688-8F61-9B6D93096336}']
   end;
+  {$EXTERNALSYM _CaseInsensitiveHashCodeProviderDisp}
 
 // *********************************************************************//
 // Interface: _CollectionBase
@@ -8158,6 +8307,7 @@ type
   _CollectionBaseDisp = dispinterface
     ['{B7D29E26-7798-3FA4-90F4-E6A22D2099F9}']
   end;
+  {$EXTERNALSYM _CollectionBaseDisp}
 
 // *********************************************************************//
 // Interface: _Comparer
@@ -8176,6 +8326,7 @@ type
   _ComparerDisp = dispinterface
     ['{8064A157-B5C8-3A4A-AD3D-02DC1A39C417}']
   end;
+  {$EXTERNALSYM _ComparerDisp}
 
 // *********************************************************************//
 // Interface: IDictionary
@@ -8220,6 +8371,7 @@ type
     function GetEnumerator: IDictionaryEnumerator; dispid 1610743817;
     procedure Remove(key: OleVariant); dispid 1610743818;
   end;
+  {$EXTERNALSYM IDictionaryDisp}
 
 // *********************************************************************//
 // Interface: _DictionaryBase
@@ -8238,6 +8390,7 @@ type
   _DictionaryBaseDisp = dispinterface
     ['{DDD44DA2-BC6B-3620-9317-C0372968C741}']
   end;
+  {$EXTERNALSYM _DictionaryBaseDisp}
 
 // *********************************************************************//
 // Interface: IDeserializationCallback
@@ -8258,6 +8411,7 @@ type
     ['{AB3F47E4-C227-3B05-BF9F-94649BEF9888}']
     procedure OnDeserialization(sender: OleVariant); dispid 1610743808;
   end;
+  {$EXTERNALSYM IDeserializationCallbackDisp}
 
 // *********************************************************************//
 // Interface: _Hashtable
@@ -8276,6 +8430,7 @@ type
   _HashtableDisp = dispinterface
     ['{D25A197E-3E69-3271-A989-23D85E97F920}']
   end;
+  {$EXTERNALSYM _HashtableDisp}
 
 // *********************************************************************//
 // Interface: IDictionaryEnumerator
@@ -8303,6 +8458,7 @@ type
     property value: OleVariant readonly dispid 0;
     property Entry: {??DictionaryEntry}OleVariant readonly dispid 1610743810;
   end;
+  {$EXTERNALSYM IDictionaryEnumeratorDisp}
 
 // *********************************************************************//
 // Interface: _Queue
@@ -8321,6 +8477,7 @@ type
   _QueueDisp = dispinterface
     ['{3A7D3CA4-B7D1-3A2A-800C-8FC2ACFCBDA4}']
   end;
+  {$EXTERNALSYM _QueueDisp}
 
 // *********************************************************************//
 // Interface: _ReadOnlyCollectionBase
@@ -8339,6 +8496,7 @@ type
   _ReadOnlyCollectionBaseDisp = dispinterface
     ['{BD32D878-A59B-3E5C-BFE0-A96B1A1E9D6F}']
   end;
+  {$EXTERNALSYM _ReadOnlyCollectionBaseDisp}
 
 // *********************************************************************//
 // Interface: _SortedList
@@ -8357,6 +8515,7 @@ type
   _SortedListDisp = dispinterface
     ['{56421139-A143-3AE9-9852-1DBDFE3D6BFA}']
   end;
+  {$EXTERNALSYM _SortedListDisp}
 
 // *********************************************************************//
 // Interface: _Stack
@@ -8375,6 +8534,7 @@ type
   _StackDisp = dispinterface
     ['{AB538809-3C2F-35D9-80E6-7BAD540484A1}']
   end;
+  {$EXTERNALSYM _StackDisp}
 
 // *********************************************************************//
 // Interface: _ConditionalAttribute
@@ -8393,6 +8553,7 @@ type
   _ConditionalAttributeDisp = dispinterface
     ['{E40A025C-645B-3C8E-A1AC-9C5CCA279625}']
   end;
+  {$EXTERNALSYM _ConditionalAttributeDisp}
 
 // *********************************************************************//
 // Interface: _Debugger
@@ -8411,6 +8572,7 @@ type
   _DebuggerDisp = dispinterface
     ['{A9B4786C-08E3-344F-A651-2F9926DEAC5E}']
   end;
+  {$EXTERNALSYM _DebuggerDisp}
 
 // *********************************************************************//
 // Interface: _DebuggerStepThroughAttribute
@@ -8429,6 +8591,7 @@ type
   _DebuggerStepThroughAttributeDisp = dispinterface
     ['{3344E8B4-A5C3-3882-8D30-63792485ECCF}']
   end;
+  {$EXTERNALSYM _DebuggerStepThroughAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DebuggerHiddenAttribute
@@ -8447,6 +8610,7 @@ type
   _DebuggerHiddenAttributeDisp = dispinterface
     ['{55B6903B-55FE-35E0-804F-E42A096D2EB0}']
   end;
+  {$EXTERNALSYM _DebuggerHiddenAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DebuggableAttribute
@@ -8465,6 +8629,7 @@ type
   _DebuggableAttributeDisp = dispinterface
     ['{428E3627-2B1F-302C-A7E6-6388CD535E75}']
   end;
+  {$EXTERNALSYM _DebuggableAttributeDisp}
 
 // *********************************************************************//
 // Interface: _StackTrace
@@ -8483,6 +8648,7 @@ type
   _StackTraceDisp = dispinterface
     ['{9A2669EC-FF84-3726-89A0-663A3EF3B5CD}']
   end;
+  {$EXTERNALSYM _StackTraceDisp}
 
 // *********************************************************************//
 // Interface: _StackFrame
@@ -8501,6 +8667,7 @@ type
   _StackFrameDisp = dispinterface
     ['{0E9B8E47-CA67-38B6-B9DB-2C42EE757B08}']
   end;
+  {$EXTERNALSYM _StackFrameDisp}
 
 // *********************************************************************//
 // Interface: ISymbolBinder
@@ -8521,6 +8688,7 @@ type
     ['{20808ADC-CC01-3F3A-8F09-ED12940FC212}']
     function GetReader(importer: Integer; const filename: WideString; const searchPath: WideString): ISymbolReader; dispid 1610743808;
   end;
+  {$EXTERNALSYM ISymbolBinderDisp}
 
 // *********************************************************************//
 // Interface: ISymbolDocument
@@ -8568,6 +8736,7 @@ type
     function GetSourceRange(startLine: Integer; startColumn: Integer; endLine: Integer; 
                             endColumn: Integer): {??PSafeArray}OleVariant; dispid 1610743817;
   end;
+  {$EXTERNALSYM ISymbolDocumentDisp}
 
 // *********************************************************************//
 // Interface: ISymbolDocumentWriter
@@ -8590,6 +8759,7 @@ type
     procedure SetSource(Source: {??PSafeArray}OleVariant); dispid 1610743808;
     procedure SetCheckSum(algorithmId: {??TGUID}OleVariant; checkSum: {??PSafeArray}OleVariant); dispid 1610743809;
   end;
+  {$EXTERNALSYM ISymbolDocumentWriterDisp}
 
 // *********************************************************************//
 // Interface: ISymbolMethod
@@ -8637,6 +8807,7 @@ type
     function GetSourceStartEnd(docs: {??PSafeArray}OleVariant; lines: {??PSafeArray}OleVariant; 
                                columns: {??PSafeArray}OleVariant): WordBool; dispid 1610743817;
   end;
+  {$EXTERNALSYM ISymbolMethodDisp}
 
 // *********************************************************************//
 // Interface: ISymbolNamespace
@@ -8662,6 +8833,7 @@ type
     function GetNamespaces: {??PSafeArray}OleVariant; dispid 1610743809;
     function GetVariables: {??PSafeArray}OleVariant; dispid 1610743810;
   end;
+  {$EXTERNALSYM ISymbolNamespaceDisp}
 
 // *********************************************************************//
 // Interface: ISymbolReader
@@ -8705,6 +8877,7 @@ type
     function GetSymAttribute(parent: {??SymbolToken}OleVariant; const name: WideString): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetNamespaces: {??PSafeArray}OleVariant; dispid 1610743817;
   end;
+  {$EXTERNALSYM ISymbolReaderDisp}
 
 // *********************************************************************//
 // Interface: ISymbolScope
@@ -8741,6 +8914,7 @@ type
     function GetLocals: {??PSafeArray}OleVariant; dispid 1610743813;
     function GetNamespaces: {??PSafeArray}OleVariant; dispid 1610743814;
   end;
+  {$EXTERNALSYM ISymbolScopeDisp}
 
 // *********************************************************************//
 // Interface: ISymbolVariable
@@ -8785,6 +8959,7 @@ type
     property StartOffset: Integer readonly dispid 1610743815;
     property EndOffset: Integer readonly dispid 1610743816;
   end;
+  {$EXTERNALSYM ISymbolVariableDisp}
 
 // *********************************************************************//
 // Interface: ISymbolWriter
@@ -8875,6 +9050,7 @@ type
                                    endLine: Integer; endColumn: Integer); dispid 1610743826;
     procedure SetUnderlyingWriter(underlyingWriter: Integer); dispid 1610743827;
   end;
+  {$EXTERNALSYM ISymbolWriterDisp}
 
 // *********************************************************************//
 // Interface: _SymDocumentType
@@ -8893,6 +9069,7 @@ type
   _SymDocumentTypeDisp = dispinterface
     ['{5141D79C-7B01-37DA-B7E9-53E5A271BAF8}']
   end;
+  {$EXTERNALSYM _SymDocumentTypeDisp}
 
 // *********************************************************************//
 // Interface: _SymLanguageType
@@ -8911,6 +9088,7 @@ type
   _SymLanguageTypeDisp = dispinterface
     ['{22BB8891-FD21-313D-92E4-8A892DC0B39C}']
   end;
+  {$EXTERNALSYM _SymLanguageTypeDisp}
 
 // *********************************************************************//
 // Interface: _SymLanguageVendor
@@ -8929,6 +9107,7 @@ type
   _SymLanguageVendorDisp = dispinterface
     ['{01364E7B-C983-3651-B7D8-FD1B64FC0E00}']
   end;
+  {$EXTERNALSYM _SymLanguageVendorDisp}
 
 // *********************************************************************//
 // Interface: _AmbiguousMatchException
@@ -8947,6 +9126,7 @@ type
   _AmbiguousMatchExceptionDisp = dispinterface
     ['{81AA0D59-C3B1-36A3-B2E7-054928FBFC1A}']
   end;
+  {$EXTERNALSYM _AmbiguousMatchExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ModuleResolveEventHandler
@@ -8965,6 +9145,7 @@ type
   _ModuleResolveEventHandlerDisp = dispinterface
     ['{05532E88-E0F2-3263-9B57-805AC6B6BB72}']
   end;
+  {$EXTERNALSYM _ModuleResolveEventHandlerDisp}
 
 // *********************************************************************//
 // Interface: _Assembly
@@ -9086,6 +9267,7 @@ type
     function GetReferencedAssemblies: {??PSafeArray}OleVariant; dispid 1610743850;
     property GlobalAssemblyCache: WordBool readonly dispid 1610743851;
   end;
+  {$EXTERNALSYM _AssemblyDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyCultureAttribute
@@ -9104,6 +9286,7 @@ type
   _AssemblyCultureAttributeDisp = dispinterface
     ['{177C4E63-9E0B-354D-838B-B52AA8683EF6}']
   end;
+  {$EXTERNALSYM _AssemblyCultureAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyVersionAttribute
@@ -9122,6 +9305,7 @@ type
   _AssemblyVersionAttributeDisp = dispinterface
     ['{A1693C5C-101F-3557-94DB-C480CEB4C16B}']
   end;
+  {$EXTERNALSYM _AssemblyVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyKeyFileAttribute
@@ -9140,6 +9324,7 @@ type
   _AssemblyKeyFileAttributeDisp = dispinterface
     ['{A9FCDA18-C237-3C6F-A6EF-749BE22BA2BF}']
   end;
+  {$EXTERNALSYM _AssemblyKeyFileAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyKeyNameAttribute
@@ -9158,6 +9343,7 @@ type
   _AssemblyKeyNameAttributeDisp = dispinterface
     ['{322A304D-11AC-3814-A905-A019F6E3DAE9}']
   end;
+  {$EXTERNALSYM _AssemblyKeyNameAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyDelaySignAttribute
@@ -9176,6 +9362,7 @@ type
   _AssemblyDelaySignAttributeDisp = dispinterface
     ['{6CF1C077-C974-38E1-90A4-976E4835E165}']
   end;
+  {$EXTERNALSYM _AssemblyDelaySignAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyAlgorithmIdAttribute
@@ -9194,6 +9381,7 @@ type
   _AssemblyAlgorithmIdAttributeDisp = dispinterface
     ['{57B849AA-D8EF-3EA6-9538-C5B4D498C2F7}']
   end;
+  {$EXTERNALSYM _AssemblyAlgorithmIdAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyFlagsAttribute
@@ -9212,6 +9400,7 @@ type
   _AssemblyFlagsAttributeDisp = dispinterface
     ['{0ECD8635-F5EB-3E4A-8989-4D684D67C48A}']
   end;
+  {$EXTERNALSYM _AssemblyFlagsAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyFileVersionAttribute
@@ -9230,6 +9419,7 @@ type
   _AssemblyFileVersionAttributeDisp = dispinterface
     ['{B101FE3C-4479-311A-A945-1225EE1731E8}']
   end;
+  {$EXTERNALSYM _AssemblyFileVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyName
@@ -9248,6 +9438,7 @@ type
   _AssemblyNameDisp = dispinterface
     ['{B42B6AAC-317E-34D5-9FA9-093BB4160C50}']
   end;
+  {$EXTERNALSYM _AssemblyNameDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyNameProxy
@@ -9266,6 +9457,7 @@ type
   _AssemblyNameProxyDisp = dispinterface
     ['{FE52F19A-8AA8-309C-BF99-9D0A566FB76A}']
   end;
+  {$EXTERNALSYM _AssemblyNameProxyDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyCopyrightAttribute
@@ -9284,6 +9476,7 @@ type
   _AssemblyCopyrightAttributeDisp = dispinterface
     ['{6163F792-3CD6-38F1-B5F7-000B96A5082B}']
   end;
+  {$EXTERNALSYM _AssemblyCopyrightAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyTrademarkAttribute
@@ -9302,6 +9495,7 @@ type
   _AssemblyTrademarkAttributeDisp = dispinterface
     ['{64C26BF9-C9E5-3F66-AD74-BEBAADE36214}']
   end;
+  {$EXTERNALSYM _AssemblyTrademarkAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyProductAttribute
@@ -9320,6 +9514,7 @@ type
   _AssemblyProductAttributeDisp = dispinterface
     ['{DE10D587-A188-3DCB-8000-92DFDB9B8021}']
   end;
+  {$EXTERNALSYM _AssemblyProductAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyCompanyAttribute
@@ -9338,6 +9533,7 @@ type
   _AssemblyCompanyAttributeDisp = dispinterface
     ['{C6802233-EF82-3C91-AD72-B3A5D7230ED5}']
   end;
+  {$EXTERNALSYM _AssemblyCompanyAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyDescriptionAttribute
@@ -9356,6 +9552,7 @@ type
   _AssemblyDescriptionAttributeDisp = dispinterface
     ['{6B2C0BC4-DDB7-38EA-8A86-F0B59E192816}']
   end;
+  {$EXTERNALSYM _AssemblyDescriptionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyTitleAttribute
@@ -9374,6 +9571,7 @@ type
   _AssemblyTitleAttributeDisp = dispinterface
     ['{DF44CAD3-CEF2-36A9-B013-383CC03177D7}']
   end;
+  {$EXTERNALSYM _AssemblyTitleAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyConfigurationAttribute
@@ -9392,6 +9590,7 @@ type
   _AssemblyConfigurationAttributeDisp = dispinterface
     ['{746D1D1E-EE37-393B-B6FA-E387D37553AA}']
   end;
+  {$EXTERNALSYM _AssemblyConfigurationAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyDefaultAliasAttribute
@@ -9410,6 +9609,7 @@ type
   _AssemblyDefaultAliasAttributeDisp = dispinterface
     ['{04311D35-75EC-347B-BEDF-969487CE4014}']
   end;
+  {$EXTERNALSYM _AssemblyDefaultAliasAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyInformationalVersionAttribute
@@ -9428,6 +9628,7 @@ type
   _AssemblyInformationalVersionAttributeDisp = dispinterface
     ['{C6F5946C-143A-3747-A7C0-ABFADA6BDEB7}']
   end;
+  {$EXTERNALSYM _AssemblyInformationalVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CustomAttributeFormatException
@@ -9446,6 +9647,7 @@ type
   _CustomAttributeFormatExceptionDisp = dispinterface
     ['{1660EB67-EE41-363E-BEB0-C2DE09214ABF}']
   end;
+  {$EXTERNALSYM _CustomAttributeFormatExceptionDisp}
 
 // *********************************************************************//
 // Interface: _MethodBase
@@ -9549,6 +9751,7 @@ type
     property IsConstructor: WordBool readonly dispid 1610743837;
     function Invoke_3(obj: OleVariant; parameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743838;
   end;
+  {$EXTERNALSYM _MethodBaseDisp}
 
 // *********************************************************************//
 // Interface: _ConstructorInfo
@@ -9658,6 +9861,7 @@ type
                       parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743839;
     function Invoke_5(parameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743840;
   end;
+  {$EXTERNALSYM _ConstructorInfoDisp}
 
 // *********************************************************************//
 // Interface: _DefaultMemberAttribute
@@ -9676,6 +9880,7 @@ type
   _DefaultMemberAttributeDisp = dispinterface
     ['{C462B072-FE6E-3BDC-9FAB-4CDBFCBCD124}']
   end;
+  {$EXTERNALSYM _DefaultMemberAttributeDisp}
 
 // *********************************************************************//
 // Interface: _EventInfo
@@ -9749,6 +9954,7 @@ type
     property IsSpecialName: WordBool readonly dispid 1610743829;
     property IsMulticast: WordBool readonly dispid 1610743830;
   end;
+  {$EXTERNALSYM _EventInfoDisp}
 
 // *********************************************************************//
 // Interface: _FieldInfo
@@ -9851,6 +10057,7 @@ type
     property IsSpecialName: WordBool readonly dispid 1610743837;
     property IsPinvokeImpl: WordBool readonly dispid 1610743838;
   end;
+  {$EXTERNALSYM _FieldInfoDisp}
 
 // *********************************************************************//
 // Interface: _InvalidFilterCriteriaException
@@ -9869,6 +10076,7 @@ type
   _InvalidFilterCriteriaExceptionDisp = dispinterface
     ['{E6DF0AE7-BA15-3F80-8AFA-27773AE414FC}']
   end;
+  {$EXTERNALSYM _InvalidFilterCriteriaExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ManifestResourceInfo
@@ -9887,6 +10095,7 @@ type
   _ManifestResourceInfoDisp = dispinterface
     ['{3188878C-DEB3-3558-80E8-84E9ED95F92C}']
   end;
+  {$EXTERNALSYM _ManifestResourceInfoDisp}
 
 // *********************************************************************//
 // Interface: _MemberFilter
@@ -9905,6 +10114,7 @@ type
   _MemberFilterDisp = dispinterface
     ['{FAE5D9B7-40C1-3DE1-BE06-A91C9DA1BA9F}']
   end;
+  {$EXTERNALSYM _MemberFilterDisp}
 
 // *********************************************************************//
 // Interface: _MethodInfo
@@ -10016,6 +10226,7 @@ type
     property ReturnTypeCustomAttributes: ICustomAttributeProvider readonly dispid 1610743840;
     function GetBaseDefinition: _MethodInfo; dispid 1610743841;
   end;
+  {$EXTERNALSYM _MethodInfoDisp}
 
 // *********************************************************************//
 // Interface: _Missing
@@ -10034,6 +10245,7 @@ type
   _MissingDisp = dispinterface
     ['{0C48F55D-5240-30C7-A8F1-AF87A640CEFE}']
   end;
+  {$EXTERNALSYM _MissingDisp}
 
 // *********************************************************************//
 // Interface: _Module
@@ -10052,6 +10264,7 @@ type
   _ModuleDisp = dispinterface
     ['{D002E9BA-D9E3-3749-B1D3-D565A08B13E7}']
   end;
+  {$EXTERNALSYM _ModuleDisp}
 
 // *********************************************************************//
 // Interface: _ParameterInfo
@@ -10070,6 +10283,7 @@ type
   _ParameterInfoDisp = dispinterface
     ['{993634C4-E47A-32CC-BE08-85F567DC27D6}']
   end;
+  {$EXTERNALSYM _ParameterInfoDisp}
 
 // *********************************************************************//
 // Interface: _Pointer
@@ -10088,6 +10302,7 @@ type
   _PointerDisp = dispinterface
     ['{F0DEAFE9-5EBA-3737-9950-C1795739CDCD}']
   end;
+  {$EXTERNALSYM _PointerDisp}
 
 // *********************************************************************//
 // Interface: _PropertyInfo
@@ -10175,6 +10390,7 @@ type
     function GetSetMethod_2: _MethodInfo; dispid 1610743833;
     property IsSpecialName: WordBool readonly dispid 1610743834;
   end;
+  {$EXTERNALSYM _PropertyInfoDisp}
 
 // *********************************************************************//
 // Interface: _ReflectionTypeLoadException
@@ -10193,6 +10409,7 @@ type
   _ReflectionTypeLoadExceptionDisp = dispinterface
     ['{22C26A41-5FA3-34E3-A76F-BA480252D8EC}']
   end;
+  {$EXTERNALSYM _ReflectionTypeLoadExceptionDisp}
 
 // *********************************************************************//
 // Interface: _StrongNameKeyPair
@@ -10211,6 +10428,7 @@ type
   _StrongNameKeyPairDisp = dispinterface
     ['{FC4963CB-E52B-32D8-A418-D058FA51A1FA}']
   end;
+  {$EXTERNALSYM _StrongNameKeyPairDisp}
 
 // *********************************************************************//
 // Interface: _TargetException
@@ -10229,6 +10447,7 @@ type
   _TargetExceptionDisp = dispinterface
     ['{98B1524D-DA12-3C4B-8A69-7539A6DEC4FA}']
   end;
+  {$EXTERNALSYM _TargetExceptionDisp}
 
 // *********************************************************************//
 // Interface: _TargetInvocationException
@@ -10247,6 +10466,7 @@ type
   _TargetInvocationExceptionDisp = dispinterface
     ['{A90106ED-9099-3329-8A5A-2044B3D8552B}']
   end;
+  {$EXTERNALSYM _TargetInvocationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _TargetParameterCountException
@@ -10265,6 +10485,7 @@ type
   _TargetParameterCountExceptionDisp = dispinterface
     ['{6032B3CD-9BED-351C-A145-9D500B0F636F}']
   end;
+  {$EXTERNALSYM _TargetParameterCountExceptionDisp}
 
 // *********************************************************************//
 // Interface: _TypeDelegator
@@ -10283,6 +10504,7 @@ type
   _TypeDelegatorDisp = dispinterface
     ['{34E00EF9-83E2-3BBC-B6AF-4CAE703838BD}']
   end;
+  {$EXTERNALSYM _TypeDelegatorDisp}
 
 // *********************************************************************//
 // Interface: _TypeFilter
@@ -10301,6 +10523,7 @@ type
   _TypeFilterDisp = dispinterface
     ['{E1817846-3745-3C97-B4A6-EE20A1641B29}']
   end;
+  {$EXTERNALSYM _TypeFilterDisp}
 
 // *********************************************************************//
 // Interface: _UnmanagedMarshal
@@ -10319,6 +10542,7 @@ type
   _UnmanagedMarshalDisp = dispinterface
     ['{FD302D86-240A-3694-A31F-9EF59E6E41BC}']
   end;
+  {$EXTERNALSYM _UnmanagedMarshalDisp}
 
 // *********************************************************************//
 // Interface: IFormatter
@@ -10353,6 +10577,7 @@ type
     property Binder: _SerializationBinder readonly dispid 1610743812;
     property Context: {??StreamingContext}OleVariant readonly dispid 1610743814;
   end;
+  {$EXTERNALSYM IFormatterDisp}
 
 // *********************************************************************//
 // Interface: _Formatter
@@ -10371,6 +10596,7 @@ type
   _FormatterDisp = dispinterface
     ['{D9BD3C8D-9395-3657-B6EE-D1B509C38B70}']
   end;
+  {$EXTERNALSYM _FormatterDisp}
 
 // *********************************************************************//
 // Interface: IFormatterConverter
@@ -10424,6 +10650,7 @@ type
     function ToDateTime(value: OleVariant): TDateTime; dispid 1610743823;
     property ToString[value: OleVariant]: WideString readonly dispid 1610743824;
   end;
+  {$EXTERNALSYM IFormatterConverterDisp}
 
 // *********************************************************************//
 // Interface: _FormatterConverter
@@ -10442,6 +10669,7 @@ type
   _FormatterConverterDisp = dispinterface
     ['{3FAA35EE-C867-3E2E-BF48-2DA271F88303}']
   end;
+  {$EXTERNALSYM _FormatterConverterDisp}
 
 // *********************************************************************//
 // Interface: _FormatterServices
@@ -10460,6 +10688,7 @@ type
   _FormatterServicesDisp = dispinterface
     ['{F859954A-78CF-3D00-86AB-EF661E6A4B8D}']
   end;
+  {$EXTERNALSYM _FormatterServicesDisp}
 
 // *********************************************************************//
 // Interface: ISerializationSurrogate
@@ -10487,6 +10716,7 @@ type
                            Context: {??StreamingContext}OleVariant; 
                            const selector: ISurrogateSelector): OleVariant; dispid 1610743809;
   end;
+  {$EXTERNALSYM ISerializationSurrogateDisp}
 
 // *********************************************************************//
 // Interface: ISurrogateSelector
@@ -10513,6 +10743,7 @@ type
                           out selector: ISurrogateSelector): ISerializationSurrogate; dispid 1610743809;
     function GetNextSelector: ISurrogateSelector; dispid 1610743810;
   end;
+  {$EXTERNALSYM ISurrogateSelectorDisp}
 
 // *********************************************************************//
 // Interface: _ObjectIDGenerator
@@ -10531,6 +10762,7 @@ type
   _ObjectIDGeneratorDisp = dispinterface
     ['{A30646CC-F710-3BFA-A356-B4C858D4ED8E}']
   end;
+  {$EXTERNALSYM _ObjectIDGeneratorDisp}
 
 // *********************************************************************//
 // Interface: _ObjectManager
@@ -10549,6 +10781,7 @@ type
   _ObjectManagerDisp = dispinterface
     ['{F28E7D04-3319-3968-8201-C6E55BECD3D4}']
   end;
+  {$EXTERNALSYM _ObjectManagerDisp}
 
 // *********************************************************************//
 // Interface: _SerializationBinder
@@ -10567,6 +10800,7 @@ type
   _SerializationBinderDisp = dispinterface
     ['{450222D0-87CA-3699-A7B4-D8A0FDB72357}']
   end;
+  {$EXTERNALSYM _SerializationBinderDisp}
 
 // *********************************************************************//
 // Interface: _SerializationInfo
@@ -10585,6 +10819,7 @@ type
   _SerializationInfoDisp = dispinterface
     ['{B58D62CF-B03A-3A14-B0B6-B1E5AD4E4AD5}']
   end;
+  {$EXTERNALSYM _SerializationInfoDisp}
 
 // *********************************************************************//
 // Interface: _SerializationInfoEnumerator
@@ -10603,6 +10838,7 @@ type
   _SerializationInfoEnumeratorDisp = dispinterface
     ['{607056C6-1BCA-36C8-AB87-33B202EBF0D8}']
   end;
+  {$EXTERNALSYM _SerializationInfoEnumeratorDisp}
 
 // *********************************************************************//
 // Interface: _SerializationException
@@ -10621,6 +10857,7 @@ type
   _SerializationExceptionDisp = dispinterface
     ['{245FE7FD-E020-3053-B5F6-7467FD2C6883}']
   end;
+  {$EXTERNALSYM _SerializationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _SurrogateSelector
@@ -10639,6 +10876,7 @@ type
   _SurrogateSelectorDisp = dispinterface
     ['{6DE1230E-1F52-3779-9619-F5184103466C}']
   end;
+  {$EXTERNALSYM _SurrogateSelectorDisp}
 
 // *********************************************************************//
 // Interface: _Calendar
@@ -10657,6 +10895,7 @@ type
   _CalendarDisp = dispinterface
     ['{4CCA29E4-584B-3CD0-AD25-855DC5799C16}']
   end;
+  {$EXTERNALSYM _CalendarDisp}
 
 // *********************************************************************//
 // Interface: _CompareInfo
@@ -10675,6 +10914,7 @@ type
   _CompareInfoDisp = dispinterface
     ['{505DEFE5-AEFA-3E23-82B0-D5EB085BB840}']
   end;
+  {$EXTERNALSYM _CompareInfoDisp}
 
 // *********************************************************************//
 // Interface: _CultureInfo
@@ -10693,6 +10933,7 @@ type
   _CultureInfoDisp = dispinterface
     ['{152722C2-F0B1-3D19-ADA8-F40CA5CAECB8}']
   end;
+  {$EXTERNALSYM _CultureInfoDisp}
 
 // *********************************************************************//
 // Interface: _DateTimeFormatInfo
@@ -10711,6 +10952,7 @@ type
   _DateTimeFormatInfoDisp = dispinterface
     ['{015E9F67-337C-398A-A0C1-DA4AF1905571}']
   end;
+  {$EXTERNALSYM _DateTimeFormatInfoDisp}
 
 // *********************************************************************//
 // Interface: _DaylightTime
@@ -10729,6 +10971,7 @@ type
   _DaylightTimeDisp = dispinterface
     ['{EFEA8FEB-EE7F-3E48-8A36-6206A6ACBF73}']
   end;
+  {$EXTERNALSYM _DaylightTimeDisp}
 
 // *********************************************************************//
 // Interface: _GregorianCalendar
@@ -10747,6 +10990,7 @@ type
   _GregorianCalendarDisp = dispinterface
     ['{677AD8B5-8A0E-3C39-92FB-72FB817CF694}']
   end;
+  {$EXTERNALSYM _GregorianCalendarDisp}
 
 // *********************************************************************//
 // Interface: _HebrewCalendar
@@ -10765,6 +11009,7 @@ type
   _HebrewCalendarDisp = dispinterface
     ['{96A62D6C-72A9-387A-81FA-E6DD5998CAEE}']
   end;
+  {$EXTERNALSYM _HebrewCalendarDisp}
 
 // *********************************************************************//
 // Interface: _HijriCalendar
@@ -10783,6 +11028,7 @@ type
   _HijriCalendarDisp = dispinterface
     ['{28DDC187-56B2-34CF-A078-48BD1E113D1E}']
   end;
+  {$EXTERNALSYM _HijriCalendarDisp}
 
 // *********************************************************************//
 // Interface: _JapaneseCalendar
@@ -10801,6 +11047,7 @@ type
   _JapaneseCalendarDisp = dispinterface
     ['{D662AE3F-CEF9-38B4-BB8E-5D8DD1DBF806}']
   end;
+  {$EXTERNALSYM _JapaneseCalendarDisp}
 
 // *********************************************************************//
 // Interface: _JulianCalendar
@@ -10819,6 +11066,7 @@ type
   _JulianCalendarDisp = dispinterface
     ['{36E2DE92-1FB3-3D7D-BA26-9CAD5B98DD52}']
   end;
+  {$EXTERNALSYM _JulianCalendarDisp}
 
 // *********************************************************************//
 // Interface: _KoreanCalendar
@@ -10837,6 +11085,7 @@ type
   _KoreanCalendarDisp = dispinterface
     ['{48BEA6C4-752E-3974-8CA8-CFB6274E2379}']
   end;
+  {$EXTERNALSYM _KoreanCalendarDisp}
 
 // *********************************************************************//
 // Interface: _RegionInfo
@@ -10855,6 +11104,7 @@ type
   _RegionInfoDisp = dispinterface
     ['{F9E97E04-4E1E-368F-B6C6-5E96CE4362D6}']
   end;
+  {$EXTERNALSYM _RegionInfoDisp}
 
 // *********************************************************************//
 // Interface: _SortKey
@@ -10873,6 +11123,7 @@ type
   _SortKeyDisp = dispinterface
     ['{F4C70E15-2CA6-3E90-96ED-92E28491F538}']
   end;
+  {$EXTERNALSYM _SortKeyDisp}
 
 // *********************************************************************//
 // Interface: _StringInfo
@@ -10891,6 +11142,7 @@ type
   _StringInfoDisp = dispinterface
     ['{0A25141F-51B3-3121-AA30-0AF4556A52D9}']
   end;
+  {$EXTERNALSYM _StringInfoDisp}
 
 // *********************************************************************//
 // Interface: _TaiwanCalendar
@@ -10909,6 +11161,7 @@ type
   _TaiwanCalendarDisp = dispinterface
     ['{0C08ED74-0ACF-32A9-99DF-09A9DC4786DD}']
   end;
+  {$EXTERNALSYM _TaiwanCalendarDisp}
 
 // *********************************************************************//
 // Interface: _TextElementEnumerator
@@ -10927,6 +11180,7 @@ type
   _TextElementEnumeratorDisp = dispinterface
     ['{8C248251-3E6C-3151-9F8E-A255FB8D2B12}']
   end;
+  {$EXTERNALSYM _TextElementEnumeratorDisp}
 
 // *********************************************************************//
 // Interface: _TextInfo
@@ -10945,6 +11199,7 @@ type
   _TextInfoDisp = dispinterface
     ['{DB8DE23F-F264-39AC-B61C-CC1E7EB4A5E6}']
   end;
+  {$EXTERNALSYM _TextInfoDisp}
 
 // *********************************************************************//
 // Interface: _ThaiBuddhistCalendar
@@ -10963,6 +11218,7 @@ type
   _ThaiBuddhistCalendarDisp = dispinterface
     ['{C70C8AE8-925B-37CE-8944-34F15FF94307}']
   end;
+  {$EXTERNALSYM _ThaiBuddhistCalendarDisp}
 
 // *********************************************************************//
 // Interface: _NumberFormatInfo
@@ -10981,6 +11237,7 @@ type
   _NumberFormatInfoDisp = dispinterface
     ['{25E47D71-20DD-31BE-B261-7AE76497D6B9}']
   end;
+  {$EXTERNALSYM _NumberFormatInfoDisp}
 
 // *********************************************************************//
 // Interface: _Encoding
@@ -10999,6 +11256,7 @@ type
   _EncodingDisp = dispinterface
     ['{DDEDB94D-4F3F-35C1-97C9-3F1D87628D9E}']
   end;
+  {$EXTERNALSYM _EncodingDisp}
 
 // *********************************************************************//
 // Interface: _System_Text_Decoder
@@ -11017,6 +11275,7 @@ type
   _System_Text_DecoderDisp = dispinterface
     ['{2ADB0D4A-5976-38E4-852B-C131797430F5}']
   end;
+  {$EXTERNALSYM _System_Text_DecoderDisp}
 
 // *********************************************************************//
 // Interface: _System_Text_Encoder
@@ -11035,6 +11294,7 @@ type
   _System_Text_EncoderDisp = dispinterface
     ['{8FD56502-8724-3DF0-A1B5-9D0E8D4E4F78}']
   end;
+  {$EXTERNALSYM _System_Text_EncoderDisp}
 
 // *********************************************************************//
 // Interface: _ASCIIEncoding
@@ -11053,6 +11313,7 @@ type
   _ASCIIEncodingDisp = dispinterface
     ['{0CBE0204-12A1-3D40-9D9E-195DE6AAA534}']
   end;
+  {$EXTERNALSYM _ASCIIEncodingDisp}
 
 // *********************************************************************//
 // Interface: _UnicodeEncoding
@@ -11071,6 +11332,7 @@ type
   _UnicodeEncodingDisp = dispinterface
     ['{F7DD3B7F-2B05-3894-8EDA-59CDF9395B6A}']
   end;
+  {$EXTERNALSYM _UnicodeEncodingDisp}
 
 // *********************************************************************//
 // Interface: _UTF7Encoding
@@ -11089,6 +11351,7 @@ type
   _UTF7EncodingDisp = dispinterface
     ['{89B9F00B-AA2A-3A49-91B4-E8D1F1C00E58}']
   end;
+  {$EXTERNALSYM _UTF7EncodingDisp}
 
 // *********************************************************************//
 // Interface: _UTF8Encoding
@@ -11107,6 +11370,7 @@ type
   _UTF8EncodingDisp = dispinterface
     ['{010FC1D0-3EF9-3F3B-AA0A-B78A1FF83A37}']
   end;
+  {$EXTERNALSYM _UTF8EncodingDisp}
 
 // *********************************************************************//
 // Interface: IResourceReader
@@ -11129,6 +11393,7 @@ type
     procedure Close; dispid 1610743808;
     function GetEnumerator: IDictionaryEnumerator; dispid 1610743809;
   end;
+  {$EXTERNALSYM IResourceReaderDisp}
 
 // *********************************************************************//
 // Interface: IResourceWriter
@@ -11157,6 +11422,7 @@ type
     procedure Close; dispid 1610743811;
     procedure Generate; dispid 1610743812;
   end;
+  {$EXTERNALSYM IResourceWriterDisp}
 
 // *********************************************************************//
 // Interface: _MissingManifestResourceException
@@ -11175,6 +11441,7 @@ type
   _MissingManifestResourceExceptionDisp = dispinterface
     ['{1A4E1878-FE8C-3F59-B6A9-21AB82BE57E9}']
   end;
+  {$EXTERNALSYM _MissingManifestResourceExceptionDisp}
 
 // *********************************************************************//
 // Interface: _NeutralResourcesLanguageAttribute
@@ -11193,6 +11460,7 @@ type
   _NeutralResourcesLanguageAttributeDisp = dispinterface
     ['{F48DF808-8B7D-3F4E-9159-1DFD60F298D6}']
   end;
+  {$EXTERNALSYM _NeutralResourcesLanguageAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ResourceManager
@@ -11211,6 +11479,7 @@ type
   _ResourceManagerDisp = dispinterface
     ['{4DE671B7-7C85-37E9-AFF8-1222ABE4883E}']
   end;
+  {$EXTERNALSYM _ResourceManagerDisp}
 
 // *********************************************************************//
 // Interface: _ResourceReader
@@ -11229,6 +11498,7 @@ type
   _ResourceReaderDisp = dispinterface
     ['{7FBCFDC7-5CEC-3945-8095-DAED61BE5FB1}']
   end;
+  {$EXTERNALSYM _ResourceReaderDisp}
 
 // *********************************************************************//
 // Interface: _ResourceSet
@@ -11247,6 +11517,7 @@ type
   _ResourceSetDisp = dispinterface
     ['{44D5F81A-727C-35AE-8DF8-9FF6722F1C6C}']
   end;
+  {$EXTERNALSYM _ResourceSetDisp}
 
 // *********************************************************************//
 // Interface: _ResourceWriter
@@ -11265,6 +11536,7 @@ type
   _ResourceWriterDisp = dispinterface
     ['{AF170258-AAC6-3A86-BD34-303E62CED10E}']
   end;
+  {$EXTERNALSYM _ResourceWriterDisp}
 
 // *********************************************************************//
 // Interface: _SatelliteContractVersionAttribute
@@ -11283,6 +11555,7 @@ type
   _SatelliteContractVersionAttributeDisp = dispinterface
     ['{5CBB1F47-FBA5-33B9-9D4A-57D6E3D133D2}']
   end;
+  {$EXTERNALSYM _SatelliteContractVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _Registry
@@ -11301,6 +11574,7 @@ type
   _RegistryDisp = dispinterface
     ['{23BAE0C0-3A36-32F0-9DAD-0E95ADD67D23}']
   end;
+  {$EXTERNALSYM _RegistryDisp}
 
 // *********************************************************************//
 // Interface: _RegistryKey
@@ -11319,6 +11593,7 @@ type
   _RegistryKeyDisp = dispinterface
     ['{2EAC6733-8D92-31D9-BE04-DC467EFC3EB1}']
   end;
+  {$EXTERNALSYM _RegistryKeyDisp}
 
 // *********************************************************************//
 // Interface: _X509Certificate
@@ -11337,6 +11612,7 @@ type
   _X509CertificateDisp = dispinterface
     ['{68FD6F14-A7B2-36C8-A724-D01F90D73477}']
   end;
+  {$EXTERNALSYM _X509CertificateDisp}
 
 // *********************************************************************//
 // Interface: _AsymmetricAlgorithm
@@ -11355,6 +11631,7 @@ type
   _AsymmetricAlgorithmDisp = dispinterface
     ['{09343AC0-D19A-3E62-BC16-0F600F10180A}']
   end;
+  {$EXTERNALSYM _AsymmetricAlgorithmDisp}
 
 // *********************************************************************//
 // Interface: _AsymmetricKeyExchangeDeformatter
@@ -11373,6 +11650,7 @@ type
   _AsymmetricKeyExchangeDeformatterDisp = dispinterface
     ['{B6685CCA-7A49-37D1-A805-3DE829CB8DEB}']
   end;
+  {$EXTERNALSYM _AsymmetricKeyExchangeDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _AsymmetricKeyExchangeFormatter
@@ -11391,6 +11669,7 @@ type
   _AsymmetricKeyExchangeFormatterDisp = dispinterface
     ['{1365B84B-6477-3C40-BE6A-089DC01ECED9}']
   end;
+  {$EXTERNALSYM _AsymmetricKeyExchangeFormatterDisp}
 
 // *********************************************************************//
 // Interface: _AsymmetricSignatureDeformatter
@@ -11409,6 +11688,7 @@ type
   _AsymmetricSignatureDeformatterDisp = dispinterface
     ['{7CA5FE57-D1AC-3064-BB0B-F450BE40F194}']
   end;
+  {$EXTERNALSYM _AsymmetricSignatureDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _AsymmetricSignatureFormatter
@@ -11427,6 +11707,7 @@ type
   _AsymmetricSignatureFormatterDisp = dispinterface
     ['{5363D066-6295-3618-BE33-3F0B070B7976}']
   end;
+  {$EXTERNALSYM _AsymmetricSignatureFormatterDisp}
 
 // *********************************************************************//
 // Interface: ICryptoTransform
@@ -11465,6 +11746,7 @@ type
     function TransformFinalBlock(inputBuffer: {??PSafeArray}OleVariant; inputOffset: Integer; 
                                  inputCount: Integer): {??PSafeArray}OleVariant; dispid 1610743813;
   end;
+  {$EXTERNALSYM ICryptoTransformDisp}
 
 // *********************************************************************//
 // Interface: _ToBase64Transform
@@ -11483,6 +11765,7 @@ type
   _ToBase64TransformDisp = dispinterface
     ['{23DED1E1-7D5F-3936-AA4E-18BBCC39B155}']
   end;
+  {$EXTERNALSYM _ToBase64TransformDisp}
 
 // *********************************************************************//
 // Interface: _FromBase64Transform
@@ -11501,6 +11784,7 @@ type
   _FromBase64TransformDisp = dispinterface
     ['{FC0717A6-2E86-372F-81F4-B35ED4BDF0DE}']
   end;
+  {$EXTERNALSYM _FromBase64TransformDisp}
 
 // *********************************************************************//
 // Interface: _KeySizes
@@ -11519,6 +11803,7 @@ type
   _KeySizesDisp = dispinterface
     ['{8978B0BE-A89E-3FF9-9834-77862CEBFF3D}']
   end;
+  {$EXTERNALSYM _KeySizesDisp}
 
 // *********************************************************************//
 // Interface: _CryptographicException
@@ -11537,6 +11822,7 @@ type
   _CryptographicExceptionDisp = dispinterface
     ['{4311E8F5-B249-3F81-8FF4-CF853D85306D}']
   end;
+  {$EXTERNALSYM _CryptographicExceptionDisp}
 
 // *********************************************************************//
 // Interface: _CryptographicUnexpectedOperationException
@@ -11555,6 +11841,7 @@ type
   _CryptographicUnexpectedOperationExceptionDisp = dispinterface
     ['{7FB08423-038F-3ACC-B600-E6D072BAE160}']
   end;
+  {$EXTERNALSYM _CryptographicUnexpectedOperationExceptionDisp}
 
 // *********************************************************************//
 // Interface: _CryptoAPITransform
@@ -11573,6 +11860,7 @@ type
   _CryptoAPITransformDisp = dispinterface
     ['{983B8639-2ED7-364C-9899-682ABB2CE850}']
   end;
+  {$EXTERNALSYM _CryptoAPITransformDisp}
 
 // *********************************************************************//
 // Interface: _CspParameters
@@ -11591,6 +11879,7 @@ type
   _CspParametersDisp = dispinterface
     ['{D5331D95-FFF2-358F-AFD5-588F469FF2E4}']
   end;
+  {$EXTERNALSYM _CspParametersDisp}
 
 // *********************************************************************//
 // Interface: _CryptoConfig
@@ -11609,6 +11898,7 @@ type
   _CryptoConfigDisp = dispinterface
     ['{AB00F3F8-7DDE-3FF5-B805-6C5DBB200549}']
   end;
+  {$EXTERNALSYM _CryptoConfigDisp}
 
 // *********************************************************************//
 // Interface: _Stream
@@ -11627,6 +11917,7 @@ type
   _StreamDisp = dispinterface
     ['{2752364A-924F-3603-8F6F-6586DF98B292}']
   end;
+  {$EXTERNALSYM _StreamDisp}
 
 // *********************************************************************//
 // Interface: _CryptoStream
@@ -11645,6 +11936,7 @@ type
   _CryptoStreamDisp = dispinterface
     ['{4134F762-D0EC-3210-93C0-DE4F443D5669}']
   end;
+  {$EXTERNALSYM _CryptoStreamDisp}
 
 // *********************************************************************//
 // Interface: _SymmetricAlgorithm
@@ -11663,6 +11955,7 @@ type
   _SymmetricAlgorithmDisp = dispinterface
     ['{05BC0E38-7136-3825-9E34-26C1CF2142C9}']
   end;
+  {$EXTERNALSYM _SymmetricAlgorithmDisp}
 
 // *********************************************************************//
 // Interface: _DES
@@ -11681,6 +11974,7 @@ type
   _DESDisp = dispinterface
     ['{C7EF0214-B91C-3799-98DD-C994AABFC741}']
   end;
+  {$EXTERNALSYM _DESDisp}
 
 // *********************************************************************//
 // Interface: _DESCryptoServiceProvider
@@ -11699,6 +11993,7 @@ type
   _DESCryptoServiceProviderDisp = dispinterface
     ['{65E8495E-5207-3248-9250-0FC849B4F096}']
   end;
+  {$EXTERNALSYM _DESCryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _DeriveBytes
@@ -11717,6 +12012,7 @@ type
   _DeriveBytesDisp = dispinterface
     ['{140EE78F-067F-3765-9258-C3BC72FE976B}']
   end;
+  {$EXTERNALSYM _DeriveBytesDisp}
 
 // *********************************************************************//
 // Interface: _DSA
@@ -11735,6 +12031,7 @@ type
   _DSADisp = dispinterface
     ['{0EB5B5E0-1BE6-3A5F-87B3-E3323342F44E}']
   end;
+  {$EXTERNALSYM _DSADisp}
 
 // *********************************************************************//
 // Interface: _DSACryptoServiceProvider
@@ -11753,6 +12050,7 @@ type
   _DSACryptoServiceProviderDisp = dispinterface
     ['{1F38AAFE-7502-332F-971F-C2FC700A1D55}']
   end;
+  {$EXTERNALSYM _DSACryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _DSASignatureDeformatter
@@ -11771,6 +12069,7 @@ type
   _DSASignatureDeformatterDisp = dispinterface
     ['{0E774498-ADE6-3820-B1D5-426B06397BE7}']
   end;
+  {$EXTERNALSYM _DSASignatureDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _DSASignatureFormatter
@@ -11789,6 +12088,7 @@ type
   _DSASignatureFormatterDisp = dispinterface
     ['{4B5FC561-5983-31E4-903B-1404231B2C89}']
   end;
+  {$EXTERNALSYM _DSASignatureFormatterDisp}
 
 // *********************************************************************//
 // Interface: _HashAlgorithm
@@ -11807,6 +12107,7 @@ type
   _HashAlgorithmDisp = dispinterface
     ['{69D3BABA-1C3D-354C-ACFE-F19109EC3896}']
   end;
+  {$EXTERNALSYM _HashAlgorithmDisp}
 
 // *********************************************************************//
 // Interface: _KeyedHashAlgorithm
@@ -11825,6 +12126,7 @@ type
   _KeyedHashAlgorithmDisp = dispinterface
     ['{D182CF91-628C-3FF6-87F0-41BA51CC7433}']
   end;
+  {$EXTERNALSYM _KeyedHashAlgorithmDisp}
 
 // *********************************************************************//
 // Interface: _HMACSHA1
@@ -11843,6 +12145,7 @@ type
   _HMACSHA1Disp = dispinterface
     ['{63AC7C37-C51A-3D82-8FDD-2A567039E46D}']
   end;
+  {$EXTERNALSYM _HMACSHA1Disp}
 
 // *********************************************************************//
 // Interface: _MACTripleDES
@@ -11861,6 +12164,7 @@ type
   _MACTripleDESDisp = dispinterface
     ['{1CAC0BDA-AC58-31BC-B624-63F77D0C3D2F}']
   end;
+  {$EXTERNALSYM _MACTripleDESDisp}
 
 // *********************************************************************//
 // Interface: _MD5
@@ -11879,6 +12183,7 @@ type
   _MD5Disp = dispinterface
     ['{9AA8765E-69A0-30E3-9CDE-EBC70662AE37}']
   end;
+  {$EXTERNALSYM _MD5Disp}
 
 // *********************************************************************//
 // Interface: _MD5CryptoServiceProvider
@@ -11897,6 +12202,7 @@ type
   _MD5CryptoServiceProviderDisp = dispinterface
     ['{D3F5C812-5867-33C9-8CEE-CB170E8D844A}']
   end;
+  {$EXTERNALSYM _MD5CryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _MaskGenerationMethod
@@ -11915,6 +12221,7 @@ type
   _MaskGenerationMethodDisp = dispinterface
     ['{85601FEE-A79D-3710-AF21-099089EDC0BF}']
   end;
+  {$EXTERNALSYM _MaskGenerationMethodDisp}
 
 // *********************************************************************//
 // Interface: _PasswordDeriveBytes
@@ -11933,6 +12240,7 @@ type
   _PasswordDeriveBytesDisp = dispinterface
     ['{3CD62D67-586F-309E-A6D8-1F4BAAC5AC28}']
   end;
+  {$EXTERNALSYM _PasswordDeriveBytesDisp}
 
 // *********************************************************************//
 // Interface: _PKCS1MaskGenerationMethod
@@ -11951,6 +12259,7 @@ type
   _PKCS1MaskGenerationMethodDisp = dispinterface
     ['{425BFF0D-59E4-36A8-B1FF-1F5D39D698F4}']
   end;
+  {$EXTERNALSYM _PKCS1MaskGenerationMethodDisp}
 
 // *********************************************************************//
 // Interface: _RC2
@@ -11969,6 +12278,7 @@ type
   _RC2Disp = dispinterface
     ['{F7C0C4CC-0D49-31EE-A3D3-B8B551E4928C}']
   end;
+  {$EXTERNALSYM _RC2Disp}
 
 // *********************************************************************//
 // Interface: _RC2CryptoServiceProvider
@@ -11987,6 +12297,7 @@ type
   _RC2CryptoServiceProviderDisp = dispinterface
     ['{875715C5-CB64-3920-8156-0EE9CB0E07EA}']
   end;
+  {$EXTERNALSYM _RC2CryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _RandomNumberGenerator
@@ -12005,6 +12316,7 @@ type
   _RandomNumberGeneratorDisp = dispinterface
     ['{7AE4B03C-414A-36E0-BA68-F9603004C925}']
   end;
+  {$EXTERNALSYM _RandomNumberGeneratorDisp}
 
 // *********************************************************************//
 // Interface: _RNGCryptoServiceProvider
@@ -12023,6 +12335,7 @@ type
   _RNGCryptoServiceProviderDisp = dispinterface
     ['{2C65D4C0-584C-3E4E-8E6D-1AFB112BFF69}']
   end;
+  {$EXTERNALSYM _RNGCryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _RSA
@@ -12041,6 +12354,7 @@ type
   _RSADisp = dispinterface
     ['{0B3FB710-A25C-3310-8774-1CF117F95BD4}']
   end;
+  {$EXTERNALSYM _RSADisp}
 
 // *********************************************************************//
 // Interface: _RSACryptoServiceProvider
@@ -12059,6 +12373,7 @@ type
   _RSACryptoServiceProviderDisp = dispinterface
     ['{BD9DF856-2300-3254-BCF0-679BA03C7A13}']
   end;
+  {$EXTERNALSYM _RSACryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _RSAOAEPKeyExchangeDeformatter
@@ -12077,6 +12392,7 @@ type
   _RSAOAEPKeyExchangeDeformatterDisp = dispinterface
     ['{37625095-7BAA-377D-A0DC-7F465C0167AA}']
   end;
+  {$EXTERNALSYM _RSAOAEPKeyExchangeDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _RSAOAEPKeyExchangeFormatter
@@ -12095,6 +12411,7 @@ type
   _RSAOAEPKeyExchangeFormatterDisp = dispinterface
     ['{77A416E7-2AC6-3D0E-98FF-3BA0F586F56F}']
   end;
+  {$EXTERNALSYM _RSAOAEPKeyExchangeFormatterDisp}
 
 // *********************************************************************//
 // Interface: _RSAPKCS1KeyExchangeDeformatter
@@ -12113,6 +12430,7 @@ type
   _RSAPKCS1KeyExchangeDeformatterDisp = dispinterface
     ['{8034AAF4-3666-3B6F-85CF-463F9BFD31A9}']
   end;
+  {$EXTERNALSYM _RSAPKCS1KeyExchangeDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _RSAPKCS1KeyExchangeFormatter
@@ -12131,6 +12449,7 @@ type
   _RSAPKCS1KeyExchangeFormatterDisp = dispinterface
     ['{9FF67F8E-A7AA-3BA6-90EE-9D44AF6E2F8C}']
   end;
+  {$EXTERNALSYM _RSAPKCS1KeyExchangeFormatterDisp}
 
 // *********************************************************************//
 // Interface: _RSAPKCS1SignatureDeformatter
@@ -12149,6 +12468,7 @@ type
   _RSAPKCS1SignatureDeformatterDisp = dispinterface
     ['{FC38507E-06A4-3300-8652-8D7B54341F65}']
   end;
+  {$EXTERNALSYM _RSAPKCS1SignatureDeformatterDisp}
 
 // *********************************************************************//
 // Interface: _RSAPKCS1SignatureFormatter
@@ -12167,6 +12487,7 @@ type
   _RSAPKCS1SignatureFormatterDisp = dispinterface
     ['{FB7A5FF4-CFA8-3F24-AD5F-D5EB39359707}']
   end;
+  {$EXTERNALSYM _RSAPKCS1SignatureFormatterDisp}
 
 // *********************************************************************//
 // Interface: _Rijndael
@@ -12185,6 +12506,7 @@ type
   _RijndaelDisp = dispinterface
     ['{21B52A91-856F-373C-AD42-4CF3F1021F5A}']
   end;
+  {$EXTERNALSYM _RijndaelDisp}
 
 // *********************************************************************//
 // Interface: _RijndaelManaged
@@ -12203,6 +12525,7 @@ type
   _RijndaelManagedDisp = dispinterface
     ['{427EA9D3-11D8-3E38-9E05-A4F7FA684183}']
   end;
+  {$EXTERNALSYM _RijndaelManagedDisp}
 
 // *********************************************************************//
 // Interface: _SHA1
@@ -12221,6 +12544,7 @@ type
   _SHA1Disp = dispinterface
     ['{48600DD2-0099-337F-92D6-961D1E5010D4}']
   end;
+  {$EXTERNALSYM _SHA1Disp}
 
 // *********************************************************************//
 // Interface: _SHA1CryptoServiceProvider
@@ -12239,6 +12563,7 @@ type
   _SHA1CryptoServiceProviderDisp = dispinterface
     ['{A16537BC-1EDF-3516-B75E-CC65CAF873AB}']
   end;
+  {$EXTERNALSYM _SHA1CryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: _SHA1Managed
@@ -12257,6 +12582,7 @@ type
   _SHA1ManagedDisp = dispinterface
     ['{C27990BB-3CFD-3D29-8DC0-BBE5FBADEAFD}']
   end;
+  {$EXTERNALSYM _SHA1ManagedDisp}
 
 // *********************************************************************//
 // Interface: _SHA256
@@ -12275,6 +12601,7 @@ type
   _SHA256Disp = dispinterface
     ['{3B274703-DFAE-3F9C-A1B5-9990DF9D7FA3}']
   end;
+  {$EXTERNALSYM _SHA256Disp}
 
 // *********************************************************************//
 // Interface: _SHA256Managed
@@ -12293,6 +12620,7 @@ type
   _SHA256ManagedDisp = dispinterface
     ['{3D077954-7BCC-325B-9DDA-3B17A03378E0}']
   end;
+  {$EXTERNALSYM _SHA256ManagedDisp}
 
 // *********************************************************************//
 // Interface: _SHA384
@@ -12311,6 +12639,7 @@ type
   _SHA384Disp = dispinterface
     ['{B60AD5D7-2C2E-35B7-8D77-7946156CFE8E}']
   end;
+  {$EXTERNALSYM _SHA384Disp}
 
 // *********************************************************************//
 // Interface: _SHA384Managed
@@ -12329,6 +12658,7 @@ type
   _SHA384ManagedDisp = dispinterface
     ['{DE541460-F838-3698-B2DA-510B09070118}']
   end;
+  {$EXTERNALSYM _SHA384ManagedDisp}
 
 // *********************************************************************//
 // Interface: _SHA512
@@ -12347,6 +12677,7 @@ type
   _SHA512Disp = dispinterface
     ['{49DD9E4B-84F3-3D6D-91FB-3FEDCEF634C7}']
   end;
+  {$EXTERNALSYM _SHA512Disp}
 
 // *********************************************************************//
 // Interface: _SHA512Managed
@@ -12365,6 +12696,7 @@ type
   _SHA512ManagedDisp = dispinterface
     ['{DC8CE439-7954-36ED-803C-674F72F27249}']
   end;
+  {$EXTERNALSYM _SHA512ManagedDisp}
 
 // *********************************************************************//
 // Interface: _SignatureDescription
@@ -12383,6 +12715,7 @@ type
   _SignatureDescriptionDisp = dispinterface
     ['{8017B414-4886-33DA-80A3-7865C1350D43}']
   end;
+  {$EXTERNALSYM _SignatureDescriptionDisp}
 
 // *********************************************************************//
 // Interface: _TripleDES
@@ -12401,6 +12734,7 @@ type
   _TripleDESDisp = dispinterface
     ['{C040B889-5278-3132-AFF9-AFA61707A81D}']
   end;
+  {$EXTERNALSYM _TripleDESDisp}
 
 // *********************************************************************//
 // Interface: _TripleDESCryptoServiceProvider
@@ -12419,6 +12753,7 @@ type
   _TripleDESCryptoServiceProviderDisp = dispinterface
     ['{EC69D083-3CD0-3C0C-998C-3B738DB535D5}']
   end;
+  {$EXTERNALSYM _TripleDESCryptoServiceProviderDisp}
 
 // *********************************************************************//
 // Interface: ISecurityEncodable
@@ -12441,6 +12776,7 @@ type
     function ToXml: _SecurityElement; dispid 1610743808;
     procedure FromXml(const e: _SecurityElement); dispid 1610743809;
   end;
+  {$EXTERNALSYM ISecurityEncodableDisp}
 
 // *********************************************************************//
 // Interface: ISecurityPolicyEncodable
@@ -12463,6 +12799,7 @@ type
     function ToXml(const level: _PolicyLevel): _SecurityElement; dispid 1610743808;
     procedure FromXml(const e: _SecurityElement; const level: _PolicyLevel); dispid 1610743809;
   end;
+  {$EXTERNALSYM ISecurityPolicyEncodableDisp}
 
 // *********************************************************************//
 // Interface: IMembershipCondition
@@ -12490,6 +12827,7 @@ type
     property ToString: WideString readonly dispid 0;
     function Equals(obj: OleVariant): WordBool; dispid 1610743811;
   end;
+  {$EXTERNALSYM IMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _AllMembershipCondition
@@ -12508,6 +12846,7 @@ type
   _AllMembershipConditionDisp = dispinterface
     ['{99F01720-3CC2-366D-9AB9-50E36647617F}']
   end;
+  {$EXTERNALSYM _AllMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _ApplicationDirectory
@@ -12526,6 +12865,7 @@ type
   _ApplicationDirectoryDisp = dispinterface
     ['{9CCC831B-1BA7-34BE-A966-56D5A6DB5AAD}']
   end;
+  {$EXTERNALSYM _ApplicationDirectoryDisp}
 
 // *********************************************************************//
 // Interface: _ApplicationDirectoryMembershipCondition
@@ -12544,6 +12884,7 @@ type
   _ApplicationDirectoryMembershipConditionDisp = dispinterface
     ['{A02A2B22-1DBA-3F92-9F84-5563182851BB}']
   end;
+  {$EXTERNALSYM _ApplicationDirectoryMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _CodeGroup
@@ -12562,6 +12903,7 @@ type
   _CodeGroupDisp = dispinterface
     ['{D7093F61-ED6B-343F-B1E9-02472FCC710E}']
   end;
+  {$EXTERNALSYM _CodeGroupDisp}
 
 // *********************************************************************//
 // Interface: _Evidence
@@ -12580,6 +12922,7 @@ type
   _EvidenceDisp = dispinterface
     ['{A505EDBC-380E-3B23-9E1A-0974D4EF02EF}']
   end;
+  {$EXTERNALSYM _EvidenceDisp}
 
 // *********************************************************************//
 // Interface: _FileCodeGroup
@@ -12598,6 +12941,7 @@ type
   _FileCodeGroupDisp = dispinterface
     ['{DFAD74DC-8390-32F6-9612-1BD293B233F4}']
   end;
+  {$EXTERNALSYM _FileCodeGroupDisp}
 
 // *********************************************************************//
 // Interface: _FirstMatchCodeGroup
@@ -12616,6 +12960,7 @@ type
   _FirstMatchCodeGroupDisp = dispinterface
     ['{54B0AFB1-E7D3-3770-BB0E-75A95E8D2656}']
   end;
+  {$EXTERNALSYM _FirstMatchCodeGroupDisp}
 
 // *********************************************************************//
 // Interface: _Hash
@@ -12634,6 +12979,7 @@ type
   _HashDisp = dispinterface
     ['{7574E121-74A6-3626-B578-0783BADB19D2}']
   end;
+  {$EXTERNALSYM _HashDisp}
 
 // *********************************************************************//
 // Interface: _HashMembershipCondition
@@ -12652,6 +12998,7 @@ type
   _HashMembershipConditionDisp = dispinterface
     ['{6BA6EA7A-C9FC-3E73-82EC-18F29D83EEFD}']
   end;
+  {$EXTERNALSYM _HashMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: IIdentityPermissionFactory
@@ -12672,6 +13019,7 @@ type
     ['{4E95244E-C6FC-3A86-8DB7-1712454DE3B6}']
     function CreateIdentityPermission(const Evidence: _Evidence): IPermission; dispid 1610743808;
   end;
+  {$EXTERNALSYM IIdentityPermissionFactoryDisp}
 
 // *********************************************************************//
 // Interface: _NetCodeGroup
@@ -12690,6 +13038,7 @@ type
   _NetCodeGroupDisp = dispinterface
     ['{A8F69ECA-8C48-3B5E-92A1-654925058059}']
   end;
+  {$EXTERNALSYM _NetCodeGroupDisp}
 
 // *********************************************************************//
 // Interface: _PermissionRequestEvidence
@@ -12708,6 +13057,7 @@ type
   _PermissionRequestEvidenceDisp = dispinterface
     ['{34B0417E-E71D-304C-9FAC-689350A1B41C}']
   end;
+  {$EXTERNALSYM _PermissionRequestEvidenceDisp}
 
 // *********************************************************************//
 // Interface: _PolicyException
@@ -12726,6 +13076,7 @@ type
   _PolicyExceptionDisp = dispinterface
     ['{A9C9F3D9-E153-39B8-A533-B8DF4664407B}']
   end;
+  {$EXTERNALSYM _PolicyExceptionDisp}
 
 // *********************************************************************//
 // Interface: _PolicyLevel
@@ -12744,6 +13095,7 @@ type
   _PolicyLevelDisp = dispinterface
     ['{44494E35-C370-3014-BC78-0F2ECBF83F53}']
   end;
+  {$EXTERNALSYM _PolicyLevelDisp}
 
 // *********************************************************************//
 // Interface: _PolicyStatement
@@ -12762,6 +13114,7 @@ type
   _PolicyStatementDisp = dispinterface
     ['{3EEFD1FC-4D8D-3177-99F6-6C19D9E088D3}']
   end;
+  {$EXTERNALSYM _PolicyStatementDisp}
 
 // *********************************************************************//
 // Interface: _Publisher
@@ -12780,6 +13133,7 @@ type
   _PublisherDisp = dispinterface
     ['{77CCA693-ABF6-3773-BF58-C0B02701A744}']
   end;
+  {$EXTERNALSYM _PublisherDisp}
 
 // *********************************************************************//
 // Interface: _PublisherMembershipCondition
@@ -12798,6 +13152,7 @@ type
   _PublisherMembershipConditionDisp = dispinterface
     ['{3515CF63-9863-3044-B3E1-210E98EFC702}']
   end;
+  {$EXTERNALSYM _PublisherMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _Site
@@ -12816,6 +13171,7 @@ type
   _SiteDisp = dispinterface
     ['{90C40B4C-B0D0-30F5-B520-FDBA97BC31A0}']
   end;
+  {$EXTERNALSYM _SiteDisp}
 
 // *********************************************************************//
 // Interface: _SiteMembershipCondition
@@ -12834,6 +13190,7 @@ type
   _SiteMembershipConditionDisp = dispinterface
     ['{0A7C3542-8031-3593-872C-78D85D7CC273}']
   end;
+  {$EXTERNALSYM _SiteMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _StrongName
@@ -12852,6 +13209,7 @@ type
   _StrongNameDisp = dispinterface
     ['{2A75C1FD-06B0-3CBB-B467-2545D4D6C865}']
   end;
+  {$EXTERNALSYM _StrongNameDisp}
 
 // *********************************************************************//
 // Interface: _StrongNameMembershipCondition
@@ -12870,6 +13228,7 @@ type
   _StrongNameMembershipConditionDisp = dispinterface
     ['{579E93BC-FFAB-3B8D-9181-CE9C22B51915}']
   end;
+  {$EXTERNALSYM _StrongNameMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _UnionCodeGroup
@@ -12888,6 +13247,7 @@ type
   _UnionCodeGroupDisp = dispinterface
     ['{D9D822DE-44E5-33CE-A43F-173E475CECB1}']
   end;
+  {$EXTERNALSYM _UnionCodeGroupDisp}
 
 // *********************************************************************//
 // Interface: _Url
@@ -12906,6 +13266,7 @@ type
   _UrlDisp = dispinterface
     ['{D94ED9BF-C065-3703-81A2-2F76EA8E312F}']
   end;
+  {$EXTERNALSYM _UrlDisp}
 
 // *********************************************************************//
 // Interface: _UrlMembershipCondition
@@ -12924,6 +13285,7 @@ type
   _UrlMembershipConditionDisp = dispinterface
     ['{BB7A158D-DBD9-3E13-B137-8E61E87E1128}']
   end;
+  {$EXTERNALSYM _UrlMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: _Zone
@@ -12942,6 +13304,7 @@ type
   _ZoneDisp = dispinterface
     ['{742E0C26-0E23-3D20-968C-D221094909AA}']
   end;
+  {$EXTERNALSYM _ZoneDisp}
 
 // *********************************************************************//
 // Interface: _ZoneMembershipCondition
@@ -12960,6 +13323,7 @@ type
   _ZoneMembershipConditionDisp = dispinterface
     ['{ADBC3463-0101-3429-A06C-DB2F1DD6B724}']
   end;
+  {$EXTERNALSYM _ZoneMembershipConditionDisp}
 
 // *********************************************************************//
 // Interface: IIdentity
@@ -12987,6 +13351,7 @@ type
     property AuthenticationType: WideString readonly dispid 1610743809;
     property IsAuthenticated: WordBool readonly dispid 1610743810;
   end;
+  {$EXTERNALSYM IIdentityDisp}
 
 // *********************************************************************//
 // Interface: _GenericIdentity
@@ -13005,6 +13370,7 @@ type
   _GenericIdentityDisp = dispinterface
     ['{9A37D8B2-2256-3FE3-8BF0-4FC421A1244F}']
   end;
+  {$EXTERNALSYM _GenericIdentityDisp}
 
 // *********************************************************************//
 // Interface: IPrincipal
@@ -13028,6 +13394,7 @@ type
     property Identity: IIdentity readonly dispid 1610743808;
     function IsInRole(const role: WideString): WordBool; dispid 1610743809;
   end;
+  {$EXTERNALSYM IPrincipalDisp}
 
 // *********************************************************************//
 // Interface: _GenericPrincipal
@@ -13046,6 +13413,7 @@ type
   _GenericPrincipalDisp = dispinterface
     ['{B4701C26-1509-3726-B2E1-409A636C9B4F}']
   end;
+  {$EXTERNALSYM _GenericPrincipalDisp}
 
 // *********************************************************************//
 // Interface: _WindowsIdentity
@@ -13064,6 +13432,7 @@ type
   _WindowsIdentityDisp = dispinterface
     ['{D8CF3F23-1A66-3344-8230-07EB53970B85}']
   end;
+  {$EXTERNALSYM _WindowsIdentityDisp}
 
 // *********************************************************************//
 // Interface: _WindowsImpersonationContext
@@ -13082,6 +13451,7 @@ type
   _WindowsImpersonationContextDisp = dispinterface
     ['{60ECFDDA-650A-324C-B4B3-F4D75B563BB1}']
   end;
+  {$EXTERNALSYM _WindowsImpersonationContextDisp}
 
 // *********************************************************************//
 // Interface: _WindowsPrincipal
@@ -13100,6 +13470,7 @@ type
   _WindowsPrincipalDisp = dispinterface
     ['{6C42BAF9-1893-34FC-B3AF-06931E9B34A3}']
   end;
+  {$EXTERNALSYM _WindowsPrincipalDisp}
 
 // *********************************************************************//
 // Interface: _DispIdAttribute
@@ -13118,6 +13489,7 @@ type
   _DispIdAttributeDisp = dispinterface
     ['{BBE41AC5-8692-3427-9AE1-C1058A38D492}']
   end;
+  {$EXTERNALSYM _DispIdAttributeDisp}
 
 // *********************************************************************//
 // Interface: _InterfaceTypeAttribute
@@ -13136,6 +13508,7 @@ type
   _InterfaceTypeAttributeDisp = dispinterface
     ['{A2145F38-CAC1-33DD-A318-21948AF6825D}']
   end;
+  {$EXTERNALSYM _InterfaceTypeAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ClassInterfaceAttribute
@@ -13154,6 +13527,7 @@ type
   _ClassInterfaceAttributeDisp = dispinterface
     ['{6B6391EE-842F-3E9A-8EEE-F13325E10996}']
   end;
+  {$EXTERNALSYM _ClassInterfaceAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComVisibleAttribute
@@ -13172,6 +13546,7 @@ type
   _ComVisibleAttributeDisp = dispinterface
     ['{1E7FFFE2-AAD9-34EE-8A9F-3C016B880FF0}']
   end;
+  {$EXTERNALSYM _ComVisibleAttributeDisp}
 
 // *********************************************************************//
 // Interface: _LCIDConversionAttribute
@@ -13190,6 +13565,7 @@ type
   _LCIDConversionAttributeDisp = dispinterface
     ['{4AB67927-3C86-328A-8186-F85357DD5527}']
   end;
+  {$EXTERNALSYM _LCIDConversionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComRegisterFunctionAttribute
@@ -13208,6 +13584,7 @@ type
   _ComRegisterFunctionAttributeDisp = dispinterface
     ['{51BA926F-AAB5-3945-B8A6-C8F0F4A7D12B}']
   end;
+  {$EXTERNALSYM _ComRegisterFunctionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComUnregisterFunctionAttribute
@@ -13226,6 +13603,7 @@ type
   _ComUnregisterFunctionAttributeDisp = dispinterface
     ['{9F164188-34EB-3F86-9F74-0BBE4155E65E}']
   end;
+  {$EXTERNALSYM _ComUnregisterFunctionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ProgIdAttribute
@@ -13244,6 +13622,7 @@ type
   _ProgIdAttributeDisp = dispinterface
     ['{2B9F01DF-5A12-3688-98D6-C34BF5ED1865}']
   end;
+  {$EXTERNALSYM _ProgIdAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ImportedFromTypeLibAttribute
@@ -13262,6 +13641,7 @@ type
   _ImportedFromTypeLibAttributeDisp = dispinterface
     ['{3F3311CE-6BAF-3FB0-B855-489AFF740B6E}']
   end;
+  {$EXTERNALSYM _ImportedFromTypeLibAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IDispatchImplAttribute
@@ -13280,6 +13660,7 @@ type
   _IDispatchImplAttributeDisp = dispinterface
     ['{5778E7C7-2040-330E-B47A-92974DFFCFD4}']
   end;
+  {$EXTERNALSYM _IDispatchImplAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComSourceInterfacesAttribute
@@ -13298,6 +13679,7 @@ type
   _ComSourceInterfacesAttributeDisp = dispinterface
     ['{E1984175-55F5-3065-82D8-A683FDFCF0AC}']
   end;
+  {$EXTERNALSYM _ComSourceInterfacesAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComConversionLossAttribute
@@ -13316,6 +13698,7 @@ type
   _ComConversionLossAttributeDisp = dispinterface
     ['{FD5B6AAC-FF8C-3472-B894-CD6DFADB6939}']
   end;
+  {$EXTERNALSYM _ComConversionLossAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeLibTypeAttribute
@@ -13334,6 +13717,7 @@ type
   _TypeLibTypeAttributeDisp = dispinterface
     ['{B5A1729E-B721-3121-A838-FDE43AF13468}']
   end;
+  {$EXTERNALSYM _TypeLibTypeAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeLibFuncAttribute
@@ -13352,6 +13736,7 @@ type
   _TypeLibFuncAttributeDisp = dispinterface
     ['{3D18A8E2-EEDE-3139-B29D-8CAC057955DF}']
   end;
+  {$EXTERNALSYM _TypeLibFuncAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeLibVarAttribute
@@ -13370,6 +13755,7 @@ type
   _TypeLibVarAttributeDisp = dispinterface
     ['{7B89862A-02A4-3279-8B42-4095FA3A778E}']
   end;
+  {$EXTERNALSYM _TypeLibVarAttributeDisp}
 
 // *********************************************************************//
 // Interface: _MarshalAsAttribute
@@ -13388,6 +13774,7 @@ type
   _MarshalAsAttributeDisp = dispinterface
     ['{D858399F-E19E-3423-A720-AC12ABE2E5E8}']
   end;
+  {$EXTERNALSYM _MarshalAsAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComImportAttribute
@@ -13406,6 +13793,7 @@ type
   _ComImportAttributeDisp = dispinterface
     ['{1B093056-5454-386F-8971-BBCBC4E9A8F3}']
   end;
+  {$EXTERNALSYM _ComImportAttributeDisp}
 
 // *********************************************************************//
 // Interface: _GuidAttribute
@@ -13424,6 +13812,7 @@ type
   _GuidAttributeDisp = dispinterface
     ['{74435DAD-EC55-354B-8F5B-FA70D13B6293}']
   end;
+  {$EXTERNALSYM _GuidAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PreserveSigAttribute
@@ -13442,6 +13831,7 @@ type
   _PreserveSigAttributeDisp = dispinterface
     ['{FDF2A2EE-C882-3198-A48B-E37F0E574DFA}']
   end;
+  {$EXTERNALSYM _PreserveSigAttributeDisp}
 
 // *********************************************************************//
 // Interface: _InAttribute
@@ -13460,6 +13850,7 @@ type
   _InAttributeDisp = dispinterface
     ['{8474B65C-C39A-3D05-893D-577B9A314615}']
   end;
+  {$EXTERNALSYM _InAttributeDisp}
 
 // *********************************************************************//
 // Interface: _OutAttribute
@@ -13478,6 +13869,7 @@ type
   _OutAttributeDisp = dispinterface
     ['{0697FC8C-9B04-3783-95C7-45ECCAC1CA27}']
   end;
+  {$EXTERNALSYM _OutAttributeDisp}
 
 // *********************************************************************//
 // Interface: _OptionalAttribute
@@ -13496,6 +13888,7 @@ type
   _OptionalAttributeDisp = dispinterface
     ['{0D6BD9AD-198E-3904-AD99-F6F82A2787C4}']
   end;
+  {$EXTERNALSYM _OptionalAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DllImportAttribute
@@ -13514,6 +13907,7 @@ type
   _DllImportAttributeDisp = dispinterface
     ['{A1A26181-D55E-3EE2-96E6-70B354EF9371}']
   end;
+  {$EXTERNALSYM _DllImportAttributeDisp}
 
 // *********************************************************************//
 // Interface: _StructLayoutAttribute
@@ -13532,6 +13926,7 @@ type
   _StructLayoutAttributeDisp = dispinterface
     ['{23753322-C7B3-3F9A-AC96-52672C1B1CA9}']
   end;
+  {$EXTERNALSYM _StructLayoutAttributeDisp}
 
 // *********************************************************************//
 // Interface: _FieldOffsetAttribute
@@ -13550,6 +13945,7 @@ type
   _FieldOffsetAttributeDisp = dispinterface
     ['{C14342B8-BAFD-322A-BB71-62C672DA284E}']
   end;
+  {$EXTERNALSYM _FieldOffsetAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComAliasNameAttribute
@@ -13568,6 +13964,7 @@ type
   _ComAliasNameAttributeDisp = dispinterface
     ['{E78785C4-3A73-3C15-9390-618BF3A14719}']
   end;
+  {$EXTERNALSYM _ComAliasNameAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AutomationProxyAttribute
@@ -13586,6 +13983,7 @@ type
   _AutomationProxyAttributeDisp = dispinterface
     ['{57B908A8-C082-3581-8A47-6B41B86E8FDC}']
   end;
+  {$EXTERNALSYM _AutomationProxyAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PrimaryInteropAssemblyAttribute
@@ -13604,6 +14002,7 @@ type
   _PrimaryInteropAssemblyAttributeDisp = dispinterface
     ['{C69E96B2-6161-3621-B165-5805198C6B8D}']
   end;
+  {$EXTERNALSYM _PrimaryInteropAssemblyAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CoClassAttribute
@@ -13622,6 +14021,7 @@ type
   _CoClassAttributeDisp = dispinterface
     ['{15D54C00-7C95-38D7-B859-E19346677DCD}']
   end;
+  {$EXTERNALSYM _CoClassAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComEventInterfaceAttribute
@@ -13640,6 +14040,7 @@ type
   _ComEventInterfaceAttributeDisp = dispinterface
     ['{76CC0491-9A10-35C0-8A66-7931EC345B7F}']
   end;
+  {$EXTERNALSYM _ComEventInterfaceAttributeDisp}
 
 // *********************************************************************//
 // Interface: _TypeLibVersionAttribute
@@ -13658,6 +14059,7 @@ type
   _TypeLibVersionAttributeDisp = dispinterface
     ['{A03B61A4-CA61-3460-8232-2F4EC96AA88F}']
   end;
+  {$EXTERNALSYM _TypeLibVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ComCompatibleVersionAttribute
@@ -13676,6 +14078,7 @@ type
   _ComCompatibleVersionAttributeDisp = dispinterface
     ['{AD419379-2AC8-3588-AB1E-0115413277C4}']
   end;
+  {$EXTERNALSYM _ComCompatibleVersionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _BestFitMappingAttribute
@@ -13694,6 +14097,7 @@ type
   _BestFitMappingAttributeDisp = dispinterface
     ['{ED47ABE7-C84B-39F9-BE1B-828CFB925AFE}']
   end;
+  {$EXTERNALSYM _BestFitMappingAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ExternalException
@@ -13712,6 +14116,7 @@ type
   _ExternalExceptionDisp = dispinterface
     ['{A83F04E9-FD28-384A-9DFF-410688AC23AB}']
   end;
+  {$EXTERNALSYM _ExternalExceptionDisp}
 
 // *********************************************************************//
 // Interface: _COMException
@@ -13730,6 +14135,7 @@ type
   _COMExceptionDisp = dispinterface
     ['{A28C19DF-B488-34AE-BECC-7DE744D17F7B}']
   end;
+  {$EXTERNALSYM _COMExceptionDisp}
 
 // *********************************************************************//
 // Interface: _CurrencyWrapper
@@ -13748,6 +14154,7 @@ type
   _CurrencyWrapperDisp = dispinterface
     ['{7DF6F279-DA62-3C9F-8944-4DD3C0F08170}']
   end;
+  {$EXTERNALSYM _CurrencyWrapperDisp}
 
 // *********************************************************************//
 // Interface: _DispatchWrapper
@@ -13766,6 +14173,7 @@ type
   _DispatchWrapperDisp = dispinterface
     ['{72103C67-D511-329C-B19A-DD5EC3F1206C}']
   end;
+  {$EXTERNALSYM _DispatchWrapperDisp}
 
 // *********************************************************************//
 // Interface: _ErrorWrapper
@@ -13784,6 +14192,7 @@ type
   _ErrorWrapperDisp = dispinterface
     ['{F79DB336-06BE-3959-A5AB-58B2AB6C5FD1}']
   end;
+  {$EXTERNALSYM _ErrorWrapperDisp}
 
 // *********************************************************************//
 // Interface: _ExtensibleClassFactory
@@ -13802,6 +14211,7 @@ type
   _ExtensibleClassFactoryDisp = dispinterface
     ['{519EB857-7A2D-3A95-A2A3-8BB8ED63D41B}']
   end;
+  {$EXTERNALSYM _ExtensibleClassFactoryDisp}
 
 // *********************************************************************//
 // Interface: ICustomAdapter
@@ -13822,6 +14232,7 @@ type
     ['{3CC86595-FEB5-3CE9-BA14-D05C8DC3321C}']
     function GetUnderlyingObject: IUnknown; dispid 1610743808;
   end;
+  {$EXTERNALSYM ICustomAdapterDisp}
 
 // *********************************************************************//
 // Interface: ICustomMarshaler
@@ -13850,6 +14261,7 @@ type
     procedure CleanUpManagedData(ManagedObj: OleVariant); dispid 1610743811;
     function GetNativeDataSize: Integer; dispid 1610743812;
   end;
+  {$EXTERNALSYM ICustomMarshalerDisp}
 
 // *********************************************************************//
 // Interface: ICustomFactory
@@ -13870,6 +14282,7 @@ type
     ['{0CA9008E-EE90-356E-9F6D-B59E6006B9A4}']
     function CreateInstance(const serverType: _Type): _MarshalByRefObject; dispid 1610743808;
   end;
+  {$EXTERNALSYM ICustomFactoryDisp}
 
 // *********************************************************************//
 // Interface: _InvalidComObjectException
@@ -13888,6 +14301,7 @@ type
   _InvalidComObjectExceptionDisp = dispinterface
     ['{DE9156B5-5E7A-3041-BF45-A29A6C2CF48A}']
   end;
+  {$EXTERNALSYM _InvalidComObjectExceptionDisp}
 
 // *********************************************************************//
 // Interface: _InvalidOleVariantTypeException
@@ -13906,6 +14320,7 @@ type
   _InvalidOleVariantTypeExceptionDisp = dispinterface
     ['{76E5DBD6-F960-3C65-8EA6-FC8AD6A67022}']
   end;
+  {$EXTERNALSYM _InvalidOleVariantTypeExceptionDisp}
 
 // *********************************************************************//
 // Interface: IRegistrationServices
@@ -13940,6 +14355,7 @@ type
     function TypeRequiresRegistration(const Type_: _Type): WordBool; dispid 1610743814;
     function TypeRepresentsComType(const Type_: _Type): WordBool; dispid 1610743815;
   end;
+  {$EXTERNALSYM IRegistrationServicesDisp}
 
 // *********************************************************************//
 // Interface: ITypeLibImporterNotifySink
@@ -14019,6 +14435,7 @@ type
   _MarshalDisp = dispinterface
     ['{5F06D2F8-F3D4-3585-814C-2E886C465F25}']
   end;
+  {$EXTERNALSYM _MarshalDisp}
 
 // *********************************************************************//
 // Interface: _MarshalDirectiveException
@@ -14037,6 +14454,7 @@ type
   _MarshalDirectiveExceptionDisp = dispinterface
     ['{523F42A5-1FD2-355D-82BF-0D67C4A0A0E7}']
   end;
+  {$EXTERNALSYM _MarshalDirectiveExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ObjectCreationDelegate
@@ -14055,6 +14473,7 @@ type
   _ObjectCreationDelegateDisp = dispinterface
     ['{E4A369D3-6CF0-3B05-9C0C-1A91E331641A}']
   end;
+  {$EXTERNALSYM _ObjectCreationDelegateDisp}
 
 // *********************************************************************//
 // Interface: _RuntimeEnvironment
@@ -14073,6 +14492,7 @@ type
   _RuntimeEnvironmentDisp = dispinterface
     ['{EDCEE21A-3E3A-331E-A86D-274028BE6716}']
   end;
+  {$EXTERNALSYM _RuntimeEnvironmentDisp}
 
 // *********************************************************************//
 // Interface: _SafeArrayRankMismatchException
@@ -14091,6 +14511,7 @@ type
   _SafeArrayRankMismatchExceptionDisp = dispinterface
     ['{8608FE7B-2FDC-318A-B711-6F7B2FEDED06}']
   end;
+  {$EXTERNALSYM _SafeArrayRankMismatchExceptionDisp}
 
 // *********************************************************************//
 // Interface: _SafeArrayTypeMismatchException
@@ -14109,6 +14530,7 @@ type
   _SafeArrayTypeMismatchExceptionDisp = dispinterface
     ['{E093FB32-E43B-3B3F-A163-742C920C2AF3}']
   end;
+  {$EXTERNALSYM _SafeArrayTypeMismatchExceptionDisp}
 
 // *********************************************************************//
 // Interface: _SEHException
@@ -14127,6 +14549,7 @@ type
   _SEHExceptionDisp = dispinterface
     ['{3E72E067-4C5E-36C8-BBEF-1E2978C7780D}']
   end;
+  {$EXTERNALSYM _SEHExceptionDisp}
 
 // *********************************************************************//
 // Interface: _UnknownWrapper
@@ -14145,6 +14568,7 @@ type
   _UnknownWrapperDisp = dispinterface
     ['{1C8D8B14-4589-3DCA-8E0F-A30E80FBD1A8}']
   end;
+  {$EXTERNALSYM _UnknownWrapperDisp}
 
 // *********************************************************************//
 // Interface: IExpando
@@ -14171,6 +14595,7 @@ type
     function AddMethod(const name: WideString; const Method: _Delegate): _MethodInfo; dispid 1610743810;
     procedure RemoveMember(const m: _MemberInfo); dispid 1610743811;
   end;
+  {$EXTERNALSYM IExpandoDisp}
 
 // *********************************************************************//
 // Interface: _BinaryReader
@@ -14189,6 +14614,7 @@ type
   _BinaryReaderDisp = dispinterface
     ['{442E3C03-A205-3F21-AA4D-31768BB8EA28}']
   end;
+  {$EXTERNALSYM _BinaryReaderDisp}
 
 // *********************************************************************//
 // Interface: _BinaryWriter
@@ -14207,6 +14633,7 @@ type
   _BinaryWriterDisp = dispinterface
     ['{4CA8147E-BAA3-3A7F-92CE-A4FD7F17D8DA}']
   end;
+  {$EXTERNALSYM _BinaryWriterDisp}
 
 // *********************************************************************//
 // Interface: _BufferedStream
@@ -14225,6 +14652,7 @@ type
   _BufferedStreamDisp = dispinterface
     ['{4B7571C3-1275-3457-8FEE-9976FD3937E3}']
   end;
+  {$EXTERNALSYM _BufferedStreamDisp}
 
 // *********************************************************************//
 // Interface: _Directory
@@ -14243,6 +14671,7 @@ type
   _DirectoryDisp = dispinterface
     ['{8CE58FF5-F26D-38A4-9195-0E2ECB3B56B9}']
   end;
+  {$EXTERNALSYM _DirectoryDisp}
 
 // *********************************************************************//
 // Interface: _FileSystemInfo
@@ -14261,6 +14690,7 @@ type
   _FileSystemInfoDisp = dispinterface
     ['{A5D29A57-36A8-3E36-A099-7458B1FABAA2}']
   end;
+  {$EXTERNALSYM _FileSystemInfoDisp}
 
 // *********************************************************************//
 // Interface: _DirectoryInfo
@@ -14279,6 +14709,7 @@ type
   _DirectoryInfoDisp = dispinterface
     ['{487E52F1-2BB9-3BD0-A0CA-6728B3A1D051}']
   end;
+  {$EXTERNALSYM _DirectoryInfoDisp}
 
 // *********************************************************************//
 // Interface: _IOException
@@ -14297,6 +14728,7 @@ type
   _IOExceptionDisp = dispinterface
     ['{C5BFC9BF-27A7-3A59-A986-44C85F3521BF}']
   end;
+  {$EXTERNALSYM _IOExceptionDisp}
 
 // *********************************************************************//
 // Interface: _DirectoryNotFoundException
@@ -14315,6 +14747,7 @@ type
   _DirectoryNotFoundExceptionDisp = dispinterface
     ['{C8A200E4-9735-30E4-B168-ED861A3020F2}']
   end;
+  {$EXTERNALSYM _DirectoryNotFoundExceptionDisp}
 
 // *********************************************************************//
 // Interface: _EndOfStreamException
@@ -14333,6 +14766,7 @@ type
   _EndOfStreamExceptionDisp = dispinterface
     ['{D625AFD0-8FD9-3113-A900-43912A54C421}']
   end;
+  {$EXTERNALSYM _EndOfStreamExceptionDisp}
 
 // *********************************************************************//
 // Interface: _File
@@ -14351,6 +14785,7 @@ type
   _FileDisp = dispinterface
     ['{5D59051F-E19D-329A-9962-FD00D552E13D}']
   end;
+  {$EXTERNALSYM _FileDisp}
 
 // *********************************************************************//
 // Interface: _FileInfo
@@ -14369,6 +14804,7 @@ type
   _FileInfoDisp = dispinterface
     ['{C3C429F9-8590-3A01-B2B2-434837F3D16D}']
   end;
+  {$EXTERNALSYM _FileInfoDisp}
 
 // *********************************************************************//
 // Interface: _FileLoadException
@@ -14387,6 +14823,7 @@ type
   _FileLoadExceptionDisp = dispinterface
     ['{51D2C393-9B70-3551-84B5-FF5409FB3ADA}']
   end;
+  {$EXTERNALSYM _FileLoadExceptionDisp}
 
 // *********************************************************************//
 // Interface: _FileNotFoundException
@@ -14405,6 +14842,7 @@ type
   _FileNotFoundExceptionDisp = dispinterface
     ['{A15A976B-81E3-3EF4-8FF1-D75DDBE20AEF}']
   end;
+  {$EXTERNALSYM _FileNotFoundExceptionDisp}
 
 // *********************************************************************//
 // Interface: _FileStream
@@ -14423,6 +14861,7 @@ type
   _FileStreamDisp = dispinterface
     ['{74265195-4A46-3D6F-A9DD-69C367EA39C8}']
   end;
+  {$EXTERNALSYM _FileStreamDisp}
 
 // *********************************************************************//
 // Interface: _MemoryStream
@@ -14441,6 +14880,7 @@ type
   _MemoryStreamDisp = dispinterface
     ['{2DBC46FE-B3DD-3858-AFC2-D3A2D492A588}']
   end;
+  {$EXTERNALSYM _MemoryStreamDisp}
 
 // *********************************************************************//
 // Interface: _Path
@@ -14459,6 +14899,7 @@ type
   _PathDisp = dispinterface
     ['{6DF93530-D276-31D9-8573-346778C650AF}']
   end;
+  {$EXTERNALSYM _PathDisp}
 
 // *********************************************************************//
 // Interface: _PathTooLongException
@@ -14477,6 +14918,7 @@ type
   _PathTooLongExceptionDisp = dispinterface
     ['{468B8EB4-89AC-381B-8F86-5E47EC0648B4}']
   end;
+  {$EXTERNALSYM _PathTooLongExceptionDisp}
 
 // *********************************************************************//
 // Interface: _TextReader
@@ -14495,6 +14937,7 @@ type
   _TextReaderDisp = dispinterface
     ['{897471F2-9450-3F03-A41F-D2E1F1397854}']
   end;
+  {$EXTERNALSYM _TextReaderDisp}
 
 // *********************************************************************//
 // Interface: _StreamReader
@@ -14513,6 +14956,7 @@ type
   _StreamReaderDisp = dispinterface
     ['{E645B470-DC3F-3CE0-8104-5837FEDA04B3}']
   end;
+  {$EXTERNALSYM _StreamReaderDisp}
 
 // *********************************************************************//
 // Interface: _TextWriter
@@ -14531,6 +14975,7 @@ type
   _TextWriterDisp = dispinterface
     ['{556137EA-8825-30BC-9D49-E47A9DB034EE}']
   end;
+  {$EXTERNALSYM _TextWriterDisp}
 
 // *********************************************************************//
 // Interface: _StreamWriter
@@ -14549,6 +14994,7 @@ type
   _StreamWriterDisp = dispinterface
     ['{1F124E1C-D05D-3643-A59F-C3DE6051994F}']
   end;
+  {$EXTERNALSYM _StreamWriterDisp}
 
 // *********************************************************************//
 // Interface: _StringReader
@@ -14567,6 +15013,7 @@ type
   _StringReaderDisp = dispinterface
     ['{59733B03-0EA5-358C-95B5-659FCD9AA0B4}']
   end;
+  {$EXTERNALSYM _StringReaderDisp}
 
 // *********************************************************************//
 // Interface: _StringWriter
@@ -14585,6 +15032,7 @@ type
   _StringWriterDisp = dispinterface
     ['{CB9F94C0-D691-3B62-B0B2-3CE5309CFA62}']
   end;
+  {$EXTERNALSYM _StringWriterDisp}
 
 // *********************************************************************//
 // Interface: _AccessedThroughPropertyAttribute
@@ -14603,6 +15051,7 @@ type
   _AccessedThroughPropertyAttributeDisp = dispinterface
     ['{998DCF16-F603-355D-8C89-3B675947997F}']
   end;
+  {$EXTERNALSYM _AccessedThroughPropertyAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CallConvCdecl
@@ -14621,6 +15070,7 @@ type
   _CallConvCdeclDisp = dispinterface
     ['{A6C2239B-08E6-3822-9769-E3D4B0431B82}']
   end;
+  {$EXTERNALSYM _CallConvCdeclDisp}
 
 // *********************************************************************//
 // Interface: _CallConvStdcall
@@ -14639,6 +15089,7 @@ type
   _CallConvStdcallDisp = dispinterface
     ['{8E17A5CD-1160-32DC-8548-407E7C3827C9}']
   end;
+  {$EXTERNALSYM _CallConvStdcallDisp}
 
 // *********************************************************************//
 // Interface: _CallConvThiscall
@@ -14657,6 +15108,7 @@ type
   _CallConvThiscallDisp = dispinterface
     ['{FA73DD3D-A472-35ED-B8BE-F99A13581F72}']
   end;
+  {$EXTERNALSYM _CallConvThiscallDisp}
 
 // *********************************************************************//
 // Interface: _CallConvFastcall
@@ -14675,6 +15127,7 @@ type
   _CallConvFastcallDisp = dispinterface
     ['{3B452D17-3C5E-36C4-A12D-5E9276036CF8}']
   end;
+  {$EXTERNALSYM _CallConvFastcallDisp}
 
 // *********************************************************************//
 // Interface: _RuntimeHelpers
@@ -14693,6 +15146,7 @@ type
   _RuntimeHelpersDisp = dispinterface
     ['{028A39F4-2061-3C98-897C-2F6B29370B9B}']
   end;
+  {$EXTERNALSYM _RuntimeHelpersDisp}
 
 // *********************************************************************//
 // Interface: _CustomConstantAttribute
@@ -14711,6 +15165,7 @@ type
   _CustomConstantAttributeDisp = dispinterface
     ['{62CAF4A2-6A78-3FC7-AF81-A6BBF930761F}']
   end;
+  {$EXTERNALSYM _CustomConstantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DateTimeConstantAttribute
@@ -14729,6 +15184,7 @@ type
   _DateTimeConstantAttributeDisp = dispinterface
     ['{EF387020-B664-3ACD-A1D2-806345845953}']
   end;
+  {$EXTERNALSYM _DateTimeConstantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DiscardableAttribute
@@ -14747,6 +15203,7 @@ type
   _DiscardableAttributeDisp = dispinterface
     ['{3C3A8C69-7417-32FA-AA20-762D85E1B594}']
   end;
+  {$EXTERNALSYM _DiscardableAttributeDisp}
 
 // *********************************************************************//
 // Interface: _DecimalConstantAttribute
@@ -14765,6 +15222,7 @@ type
   _DecimalConstantAttributeDisp = dispinterface
     ['{7E133967-CCEC-3E89-8BD2-6CFCA649ECBF}']
   end;
+  {$EXTERNALSYM _DecimalConstantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CompilationRelaxationsAttribute
@@ -14783,6 +15241,7 @@ type
   _CompilationRelaxationsAttributeDisp = dispinterface
     ['{C5C4F625-2329-3382-8994-AAF561E5DFE9}']
   end;
+  {$EXTERNALSYM _CompilationRelaxationsAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CompilerGlobalScopeAttribute
@@ -14801,6 +15260,7 @@ type
   _CompilerGlobalScopeAttributeDisp = dispinterface
     ['{1EED213E-656A-3A73-A4B9-0D3B26FD942B}']
   end;
+  {$EXTERNALSYM _CompilerGlobalScopeAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IDispatchConstantAttribute
@@ -14819,6 +15279,7 @@ type
   _IDispatchConstantAttributeDisp = dispinterface
     ['{97D0B28A-6932-3D74-B67F-6BCD3C921E7D}']
   end;
+  {$EXTERNALSYM _IDispatchConstantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IndexerNameAttribute
@@ -14837,6 +15298,7 @@ type
   _IndexerNameAttributeDisp = dispinterface
     ['{243368F5-67C9-3510-9424-335A8A67772F}']
   end;
+  {$EXTERNALSYM _IndexerNameAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IsVolatile
@@ -14855,6 +15317,7 @@ type
   _IsVolatileDisp = dispinterface
     ['{0278C819-0C06-3756-B053-601A3E566D9B}']
   end;
+  {$EXTERNALSYM _IsVolatileDisp}
 
 // *********************************************************************//
 // Interface: _IUnknownConstantAttribute
@@ -14873,6 +15336,7 @@ type
   _IUnknownConstantAttributeDisp = dispinterface
     ['{54542649-CE64-3F96-BCE5-FDE3BB22F242}']
   end;
+  {$EXTERNALSYM _IUnknownConstantAttributeDisp}
 
 // *********************************************************************//
 // Interface: _MethodImplAttribute
@@ -14891,6 +15355,7 @@ type
   _MethodImplAttributeDisp = dispinterface
     ['{98966503-5D80-3242-83EF-79E136F6B954}']
   end;
+  {$EXTERNALSYM _MethodImplAttributeDisp}
 
 // *********************************************************************//
 // Interface: _RequiredAttributeAttribute
@@ -14909,6 +15374,7 @@ type
   _RequiredAttributeAttributeDisp = dispinterface
     ['{DB2C11D9-3870-35E7-A10C-A3DDC3DC79B1}']
   end;
+  {$EXTERNALSYM _RequiredAttributeAttributeDisp}
 
 // *********************************************************************//
 // Interface: IStackWalk
@@ -14935,6 +15401,7 @@ type
     procedure Deny; dispid 1610743810;
     procedure PermitOnly; dispid 1610743811;
   end;
+  {$EXTERNALSYM IStackWalkDisp}
 
 // *********************************************************************//
 // Interface: _PermissionSet
@@ -14953,6 +15420,7 @@ type
   _PermissionSetDisp = dispinterface
     ['{C2AF4970-4FB6-319C-A8AA-0614D27F2B2C}']
   end;
+  {$EXTERNALSYM _PermissionSetDisp}
 
 // *********************************************************************//
 // Interface: _NamedPermissionSet
@@ -14971,6 +15439,7 @@ type
   _NamedPermissionSetDisp = dispinterface
     ['{BA3E053F-ADE3-3233-874A-16E624C9A49B}']
   end;
+  {$EXTERNALSYM _NamedPermissionSetDisp}
 
 // *********************************************************************//
 // Interface: _SecurityElement
@@ -14989,6 +15458,7 @@ type
   _SecurityElementDisp = dispinterface
     ['{8D597C42-2CFD-32B6-B6D6-86C9E2CFF00A}']
   end;
+  {$EXTERNALSYM _SecurityElementDisp}
 
 // *********************************************************************//
 // Interface: _XmlSyntaxException
@@ -15007,6 +15477,7 @@ type
   _XmlSyntaxExceptionDisp = dispinterface
     ['{D9FCAD88-D869-3788-A802-1B1E007C7A22}']
   end;
+  {$EXTERNALSYM _XmlSyntaxExceptionDisp}
 
 // *********************************************************************//
 // Interface: IPermission
@@ -15035,6 +15506,7 @@ type
     function IsSubsetOf(const Target: IPermission): WordBool; dispid 1610743811;
     procedure Demand; dispid 1610743812;
   end;
+  {$EXTERNALSYM IPermissionDisp}
 
 // *********************************************************************//
 // Interface: _CodeAccessPermission
@@ -15053,6 +15525,7 @@ type
   _CodeAccessPermissionDisp = dispinterface
     ['{4803CE39-2F30-31FC-B84B-5A0141385269}']
   end;
+  {$EXTERNALSYM _CodeAccessPermissionDisp}
 
 // *********************************************************************//
 // Interface: IUnrestrictedPermission
@@ -15073,6 +15546,7 @@ type
     ['{0F1284E6-4399-3963-8DDD-A6A4904F66C8}']
     function IsUnrestricted: WordBool; dispid 1610743808;
   end;
+  {$EXTERNALSYM IUnrestrictedPermissionDisp}
 
 // *********************************************************************//
 // Interface: _EnvironmentPermission
@@ -15091,6 +15565,7 @@ type
   _EnvironmentPermissionDisp = dispinterface
     ['{0720590D-5218-352A-A337-5449E6BD19DA}']
   end;
+  {$EXTERNALSYM _EnvironmentPermissionDisp}
 
 // *********************************************************************//
 // Interface: _FileDialogPermission
@@ -15109,6 +15584,7 @@ type
   _FileDialogPermissionDisp = dispinterface
     ['{A8B7138C-8932-3D78-A585-A91569C743AC}']
   end;
+  {$EXTERNALSYM _FileDialogPermissionDisp}
 
 // *********************************************************************//
 // Interface: _FileIOPermission
@@ -15127,6 +15603,7 @@ type
   _FileIOPermissionDisp = dispinterface
     ['{A2ED7EFC-8E59-3CCC-AE92-EA2377F4D5EF}']
   end;
+  {$EXTERNALSYM _FileIOPermissionDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStoragePermission
@@ -15145,6 +15622,7 @@ type
   _IsolatedStoragePermissionDisp = dispinterface
     ['{7FEE7903-F97C-3350-AD42-196B00AD2564}']
   end;
+  {$EXTERNALSYM _IsolatedStoragePermissionDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorageFilePermission
@@ -15163,6 +15641,7 @@ type
   _IsolatedStorageFilePermissionDisp = dispinterface
     ['{0D0C83E8-BDE1-3BA5-B1EF-A8FC686D8BC9}']
   end;
+  {$EXTERNALSYM _IsolatedStorageFilePermissionDisp}
 
 // *********************************************************************//
 // Interface: _SecurityAttribute
@@ -15181,6 +15660,7 @@ type
   _SecurityAttributeDisp = dispinterface
     ['{48815668-6C27-3312-803E-2757F55CE96A}']
   end;
+  {$EXTERNALSYM _SecurityAttributeDisp}
 
 // *********************************************************************//
 // Interface: _CodeAccessSecurityAttribute
@@ -15199,6 +15679,7 @@ type
   _CodeAccessSecurityAttributeDisp = dispinterface
     ['{9C5149CB-D3C6-32FD-A0D5-95350DE7B813}']
   end;
+  {$EXTERNALSYM _CodeAccessSecurityAttributeDisp}
 
 // *********************************************************************//
 // Interface: _EnvironmentPermissionAttribute
@@ -15217,6 +15698,7 @@ type
   _EnvironmentPermissionAttributeDisp = dispinterface
     ['{4164071A-ED12-3BDD-AF40-FDABCAA77D5F}']
   end;
+  {$EXTERNALSYM _EnvironmentPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _FileDialogPermissionAttribute
@@ -15235,6 +15717,7 @@ type
   _FileDialogPermissionAttributeDisp = dispinterface
     ['{0CCCA629-440F-313E-96CD-BA1B4B4997F7}']
   end;
+  {$EXTERNALSYM _FileDialogPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _FileIOPermissionAttribute
@@ -15253,6 +15736,7 @@ type
   _FileIOPermissionAttributeDisp = dispinterface
     ['{0DCA817D-F21A-3943-B54C-5E800CE5BC50}']
   end;
+  {$EXTERNALSYM _FileIOPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PrincipalPermissionAttribute
@@ -15271,6 +15755,7 @@ type
   _PrincipalPermissionAttributeDisp = dispinterface
     ['{68AB69E4-5D68-3B51-B74D-1BEAB9F37F2B}']
   end;
+  {$EXTERNALSYM _PrincipalPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ReflectionPermissionAttribute
@@ -15289,6 +15774,7 @@ type
   _ReflectionPermissionAttributeDisp = dispinterface
     ['{D31EED10-A5F0-308F-A951-E557961EC568}']
   end;
+  {$EXTERNALSYM _ReflectionPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _RegistryPermissionAttribute
@@ -15307,6 +15793,7 @@ type
   _RegistryPermissionAttributeDisp = dispinterface
     ['{38B6068C-1E94-3119-8841-1ECA35ED8578}']
   end;
+  {$EXTERNALSYM _RegistryPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SecurityPermissionAttribute
@@ -15325,6 +15812,7 @@ type
   _SecurityPermissionAttributeDisp = dispinterface
     ['{3A5B876C-CDE4-32D2-9C7E-020A14ACA332}']
   end;
+  {$EXTERNALSYM _SecurityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _UIPermissionAttribute
@@ -15343,6 +15831,7 @@ type
   _UIPermissionAttributeDisp = dispinterface
     ['{1D5C0F70-AF29-38A3-9436-3070A310C73B}']
   end;
+  {$EXTERNALSYM _UIPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ZoneIdentityPermissionAttribute
@@ -15361,6 +15850,7 @@ type
   _ZoneIdentityPermissionAttributeDisp = dispinterface
     ['{2E3BE3ED-2F22-3B20-9F92-BD29B79D6F42}']
   end;
+  {$EXTERNALSYM _ZoneIdentityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _StrongNameIdentityPermissionAttribute
@@ -15379,6 +15869,7 @@ type
   _StrongNameIdentityPermissionAttributeDisp = dispinterface
     ['{C9A740F4-26E9-39A8-8885-8CA26BD79B21}']
   end;
+  {$EXTERNALSYM _StrongNameIdentityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SiteIdentityPermissionAttribute
@@ -15397,6 +15888,7 @@ type
   _SiteIdentityPermissionAttributeDisp = dispinterface
     ['{6FE6894A-2A53-3FB6-A06E-348F9BDAD23B}']
   end;
+  {$EXTERNALSYM _SiteIdentityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _UrlIdentityPermissionAttribute
@@ -15415,6 +15907,7 @@ type
   _UrlIdentityPermissionAttributeDisp = dispinterface
     ['{CA4A2073-48C5-3E61-8349-11701A90DD9B}']
   end;
+  {$EXTERNALSYM _UrlIdentityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PublisherIdentityPermissionAttribute
@@ -15433,6 +15926,7 @@ type
   _PublisherIdentityPermissionAttributeDisp = dispinterface
     ['{6722C730-1239-3784-AC94-C285AE5B901A}']
   end;
+  {$EXTERNALSYM _PublisherIdentityPermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStoragePermissionAttribute
@@ -15451,6 +15945,7 @@ type
   _IsolatedStoragePermissionAttributeDisp = dispinterface
     ['{5C4C522F-DE4E-3595-9AA9-9319C86A5283}']
   end;
+  {$EXTERNALSYM _IsolatedStoragePermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorageFilePermissionAttribute
@@ -15469,6 +15964,7 @@ type
   _IsolatedStorageFilePermissionAttributeDisp = dispinterface
     ['{6F1F8AAE-D667-39CC-98FA-722BEBBBEAC3}']
   end;
+  {$EXTERNALSYM _IsolatedStorageFilePermissionAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PermissionSetAttribute
@@ -15487,6 +15983,7 @@ type
   _PermissionSetAttributeDisp = dispinterface
     ['{947A1995-BC16-3E7C-B65A-99E71F39C091}']
   end;
+  {$EXTERNALSYM _PermissionSetAttributeDisp}
 
 // *********************************************************************//
 // Interface: _PublisherIdentityPermission
@@ -15505,6 +16002,7 @@ type
   _PublisherIdentityPermissionDisp = dispinterface
     ['{E86CC74A-1233-3DF3-B13F-8B27EEAAC1F6}']
   end;
+  {$EXTERNALSYM _PublisherIdentityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _ReflectionPermission
@@ -15523,6 +16021,7 @@ type
   _ReflectionPermissionDisp = dispinterface
     ['{AEB3727F-5C3A-34C4-BF18-A38F088AC8C7}']
   end;
+  {$EXTERNALSYM _ReflectionPermissionDisp}
 
 // *********************************************************************//
 // Interface: _RegistryPermission
@@ -15541,6 +16040,7 @@ type
   _RegistryPermissionDisp = dispinterface
     ['{C3FB5510-3454-3B31-B64F-DE6AAD6BE820}']
   end;
+  {$EXTERNALSYM _RegistryPermissionDisp}
 
 // *********************************************************************//
 // Interface: _PrincipalPermission
@@ -15559,6 +16059,7 @@ type
   _PrincipalPermissionDisp = dispinterface
     ['{7C6B06D1-63AD-35EF-A938-149B4AD9A71F}']
   end;
+  {$EXTERNALSYM _PrincipalPermissionDisp}
 
 // *********************************************************************//
 // Interface: _SecurityPermission
@@ -15577,6 +16078,7 @@ type
   _SecurityPermissionDisp = dispinterface
     ['{33C54A2D-02BD-3848-80B6-742D537085E5}']
   end;
+  {$EXTERNALSYM _SecurityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _SiteIdentityPermission
@@ -15595,6 +16097,7 @@ type
   _SiteIdentityPermissionDisp = dispinterface
     ['{790B3EE9-7E06-3CD0-8243-5848486D6A78}']
   end;
+  {$EXTERNALSYM _SiteIdentityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _StrongNameIdentityPermission
@@ -15613,6 +16116,7 @@ type
   _StrongNameIdentityPermissionDisp = dispinterface
     ['{5F1562FB-0160-3655-BAEA-B15BEF609161}']
   end;
+  {$EXTERNALSYM _StrongNameIdentityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _StrongNamePublicKeyBlob
@@ -15631,6 +16135,7 @@ type
   _StrongNamePublicKeyBlobDisp = dispinterface
     ['{AF53D21A-D6AF-3406-B399-7DF9D2AAD48A}']
   end;
+  {$EXTERNALSYM _StrongNamePublicKeyBlobDisp}
 
 // *********************************************************************//
 // Interface: _UIPermission
@@ -15649,6 +16154,7 @@ type
   _UIPermissionDisp = dispinterface
     ['{47698389-F182-3A67-87DF-AED490E14DC6}']
   end;
+  {$EXTERNALSYM _UIPermissionDisp}
 
 // *********************************************************************//
 // Interface: _UrlIdentityPermission
@@ -15667,6 +16173,7 @@ type
   _UrlIdentityPermissionDisp = dispinterface
     ['{EC7CAC31-08A2-393B-BDF2-D052EB53AF2C}']
   end;
+  {$EXTERNALSYM _UrlIdentityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _ZoneIdentityPermission
@@ -15685,6 +16192,7 @@ type
   _ZoneIdentityPermissionDisp = dispinterface
     ['{38B2F8D7-8CF4-323B-9C17-9C55EE287A63}']
   end;
+  {$EXTERNALSYM _ZoneIdentityPermissionDisp}
 
 // *********************************************************************//
 // Interface: _SuppressUnmanagedCodeSecurityAttribute
@@ -15703,6 +16211,7 @@ type
   _SuppressUnmanagedCodeSecurityAttributeDisp = dispinterface
     ['{8000E51A-541C-3B20-A8EC-C8A8B41116C4}']
   end;
+  {$EXTERNALSYM _SuppressUnmanagedCodeSecurityAttributeDisp}
 
 // *********************************************************************//
 // Interface: _UnverifiableCodeAttribute
@@ -15721,6 +16230,7 @@ type
   _UnverifiableCodeAttributeDisp = dispinterface
     ['{41F41C1B-7B8D-39A3-A28F-AAE20787F469}']
   end;
+  {$EXTERNALSYM _UnverifiableCodeAttributeDisp}
 
 // *********************************************************************//
 // Interface: _AllowPartiallyTrustedCallersAttribute
@@ -15739,6 +16249,7 @@ type
   _AllowPartiallyTrustedCallersAttributeDisp = dispinterface
     ['{F1C930C4-2233-3924-9840-231D008259B4}']
   end;
+  {$EXTERNALSYM _AllowPartiallyTrustedCallersAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SecurityException
@@ -15757,6 +16268,7 @@ type
   _SecurityExceptionDisp = dispinterface
     ['{F174290F-E4CF-3976-88AA-4F8E32EB03DB}']
   end;
+  {$EXTERNALSYM _SecurityExceptionDisp}
 
 // *********************************************************************//
 // Interface: _SecurityManager
@@ -15775,6 +16287,7 @@ type
   _SecurityManagerDisp = dispinterface
     ['{ABC04B16-5539-3C7E-92EC-0905A4A24464}']
   end;
+  {$EXTERNALSYM _SecurityManagerDisp}
 
 // *********************************************************************//
 // Interface: _VerificationException
@@ -15793,6 +16306,7 @@ type
   _VerificationExceptionDisp = dispinterface
     ['{F65070DF-57AF-3AE3-B951-D2AD7D513347}']
   end;
+  {$EXTERNALSYM _VerificationExceptionDisp}
 
 // *********************************************************************//
 // Interface: IContextAttribute
@@ -15815,6 +16329,7 @@ type
     function IsContextOK(const ctx: _Context; const msg: IConstructionCallMessage): WordBool; dispid 1610743808;
     procedure GetPropertiesForNewContext(const msg: IConstructionCallMessage); dispid 1610743809;
   end;
+  {$EXTERNALSYM IContextAttributeDisp}
 
 // *********************************************************************//
 // Interface: IContextProperty
@@ -15840,6 +16355,7 @@ type
     function IsNewContextOK(const newCtx: _Context): WordBool; dispid 1610743809;
     procedure Freeze(const newContext: _Context); dispid 1610743810;
   end;
+  {$EXTERNALSYM IContextPropertyDisp}
 
 // *********************************************************************//
 // Interface: _ContextAttribute
@@ -15858,6 +16374,7 @@ type
   _ContextAttributeDisp = dispinterface
     ['{F042505B-7AAC-313B-A8C7-3F1AC949C311}']
   end;
+  {$EXTERNALSYM _ContextAttributeDisp}
 
 // *********************************************************************//
 // Interface: IActivator
@@ -15885,6 +16402,7 @@ type
     function Activate(const msg: IConstructionCallMessage): IConstructionReturnMessage; dispid 1610743810;
     property level: ActivatorLevel readonly dispid 1610743811;
   end;
+  {$EXTERNALSYM IActivatorDisp}
 
 // *********************************************************************//
 // Interface: IMessageSink
@@ -15910,6 +16428,7 @@ type
     function AsyncProcessMessage(const msg: IMessage; const replySink: IMessageSink): IMessageCtrl; dispid 1610743809;
     property NextSink: IMessageSink readonly dispid 1610743810;
   end;
+  {$EXTERNALSYM IMessageSinkDisp}
 
 // *********************************************************************//
 // Interface: _AsyncResult
@@ -15928,6 +16447,7 @@ type
   _AsyncResultDisp = dispinterface
     ['{3936ABE1-B29E-3593-83F1-793D1A7F3898}']
   end;
+  {$EXTERNALSYM _AsyncResultDisp}
 
 // *********************************************************************//
 // Interface: _CallContext
@@ -15946,6 +16466,7 @@ type
   _CallContextDisp = dispinterface
     ['{53BCE4D4-6209-396D-BD4A-0B0A0A177DF9}']
   end;
+  {$EXTERNALSYM _CallContextDisp}
 
 // *********************************************************************//
 // Interface: ILogicalThreadAffinative
@@ -15964,6 +16485,7 @@ type
   ILogicalThreadAffinativeDisp = dispinterface
     ['{4D125449-BA27-3927-8589-3E1B34B622E5}']
   end;
+  {$EXTERNALSYM ILogicalThreadAffinativeDisp}
 
 // *********************************************************************//
 // Interface: _LogicalCallContext
@@ -15982,6 +16504,7 @@ type
   _LogicalCallContextDisp = dispinterface
     ['{9AFF21F5-1C9C-35E7-AEA4-C3AA0BEB3B77}']
   end;
+  {$EXTERNALSYM _LogicalCallContextDisp}
 
 // *********************************************************************//
 // Interface: _ChannelServices
@@ -16000,6 +16523,7 @@ type
   _ChannelServicesDisp = dispinterface
     ['{FFB2E16E-E5C7-367C-B326-965ABF510F24}']
   end;
+  {$EXTERNALSYM _ChannelServicesDisp}
 
 // *********************************************************************//
 // Interface: IClientResponseChannelSinkStack
@@ -16024,6 +16548,7 @@ type
     procedure DispatchReplyMessage(const msg: IMessage); dispid 1610743809;
     procedure DispatchException(const e: _Exception); dispid 1610743810;
   end;
+  {$EXTERNALSYM IClientResponseChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: IClientChannelSinkStack
@@ -16046,6 +16571,7 @@ type
     procedure Push(const sink: IClientChannelSink; state: OleVariant); dispid 1610743808;
     function Pop(const sink: IClientChannelSink): OleVariant; dispid 1610743809;
   end;
+  {$EXTERNALSYM IClientChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: _ClientChannelSinkStack
@@ -16064,6 +16590,7 @@ type
   _ClientChannelSinkStackDisp = dispinterface
     ['{E1796120-C324-30D8-86F4-20086711463B}']
   end;
+  {$EXTERNALSYM _ClientChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: IServerResponseChannelSinkStack
@@ -16088,6 +16615,7 @@ type
                                    const Stream: _Stream); dispid 1610743808;
     function GetResponseStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743809;
   end;
+  {$EXTERNALSYM IServerResponseChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: IServerChannelSinkStack
@@ -16116,6 +16644,7 @@ type
     procedure StoreAndDispatch(const sink: IServerChannelSink; state: OleVariant); dispid 1610743811;
     procedure ServerCallback(const ar: IAsyncResult); dispid 1610743812;
   end;
+  {$EXTERNALSYM IServerChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: _ServerChannelSinkStack
@@ -16134,6 +16663,7 @@ type
   _ServerChannelSinkStackDisp = dispinterface
     ['{52DA9F90-89B3-35AB-907B-3562642967DE}']
   end;
+  {$EXTERNALSYM _ServerChannelSinkStackDisp}
 
 // *********************************************************************//
 // Interface: _InternalMessageWrapper
@@ -16152,6 +16682,7 @@ type
   _InternalMessageWrapperDisp = dispinterface
     ['{EF926E1F-3EE7-32BC-8B01-C6E98C24BC19}']
   end;
+  {$EXTERNALSYM _InternalMessageWrapperDisp}
 
 // *********************************************************************//
 // Interface: IMessage
@@ -16173,6 +16704,7 @@ type
     ['{1A8B0DE6-B825-38C5-B744-8F93075FD6FA}']
     property Properties: IDictionary readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IMessageDisp}
 
 // *********************************************************************//
 // Interface: IMethodMessage
@@ -16222,6 +16754,7 @@ type
     property LogicalCallContext: _LogicalCallContext readonly dispid 1610743817;
     property MethodBase: _MethodBase readonly dispid 1610743818;
   end;
+  {$EXTERNALSYM IMethodMessageDisp}
 
 // *********************************************************************//
 // Interface: IMethodCallMessage
@@ -16250,6 +16783,7 @@ type
     function GetInArg(argNum: Integer): OleVariant; dispid 1610743810;
     property InArgs: {??PSafeArray}OleVariant readonly dispid 1610743811;
   end;
+  {$EXTERNALSYM IMethodCallMessageDisp}
 
 // *********************************************************************//
 // Interface: _MethodCallMessageWrapper
@@ -16268,6 +16802,7 @@ type
   _MethodCallMessageWrapperDisp = dispinterface
     ['{C9614D78-10EA-3310-87EA-821B70632898}']
   end;
+  {$EXTERNALSYM _MethodCallMessageWrapperDisp}
 
 // *********************************************************************//
 // Interface: ISponsor
@@ -16288,6 +16823,7 @@ type
     ['{675591AF-0508-3131-A7CC-287D265CA7D6}']
     function Renewal(const lease: ILease): {??TimeSpan}OleVariant; dispid 1610743808;
   end;
+  {$EXTERNALSYM ISponsorDisp}
 
 // *********************************************************************//
 // Interface: _ClientSponsor
@@ -16306,6 +16842,7 @@ type
   _ClientSponsorDisp = dispinterface
     ['{FF19D114-3BDA-30AC-8E89-36CA64A87120}']
   end;
+  {$EXTERNALSYM _ClientSponsorDisp}
 
 // *********************************************************************//
 // Interface: _CrossContextDelegate
@@ -16324,6 +16861,7 @@ type
   _CrossContextDelegateDisp = dispinterface
     ['{EE949B7B-439F-363E-B9FC-34DB1FB781D7}']
   end;
+  {$EXTERNALSYM _CrossContextDelegateDisp}
 
 // *********************************************************************//
 // Interface: _Context
@@ -16342,6 +16880,7 @@ type
   _ContextDisp = dispinterface
     ['{11A2EA7A-D600-307B-A606-511A6C7950D1}']
   end;
+  {$EXTERNALSYM _ContextDisp}
 
 // *********************************************************************//
 // Interface: _ContextProperty
@@ -16360,6 +16899,7 @@ type
   _ContextPropertyDisp = dispinterface
     ['{4ACB3495-05DB-381B-890A-D12F5340DCA3}']
   end;
+  {$EXTERNALSYM _ContextPropertyDisp}
 
 // *********************************************************************//
 // Interface: IContextPropertyActivator
@@ -16388,6 +16928,7 @@ type
     procedure CollectFromServerContext(const msg: IConstructionReturnMessage); dispid 1610743811;
     function DeliverServerContextToClientContext(const msg: IConstructionReturnMessage): WordBool; dispid 1610743812;
   end;
+  {$EXTERNALSYM IContextPropertyActivatorDisp}
 
 // *********************************************************************//
 // Interface: IChannel
@@ -16414,6 +16955,7 @@ type
     property ChannelName: WideString readonly dispid 1610743809;
     function Parse(const Url: WideString; out objectURI: WideString): WideString; dispid 1610743810;
   end;
+  {$EXTERNALSYM IChannelDisp}
 
 // *********************************************************************//
 // Interface: IChannelSender
@@ -16436,6 +16978,7 @@ type
     function CreateMessageSink(const Url: WideString; remoteChannelData: OleVariant; 
                                out objectURI: WideString): IMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IChannelSenderDisp}
 
 // *********************************************************************//
 // Interface: IChannelReceiver
@@ -16463,6 +17006,7 @@ type
     procedure StartListening(data: OleVariant); dispid 1610743810;
     procedure StopListening(data: OleVariant); dispid 1610743811;
   end;
+  {$EXTERNALSYM IChannelReceiverDisp}
 
 // *********************************************************************//
 // Interface: IServerChannelSinkProvider
@@ -16489,6 +17033,7 @@ type
     function CreateSink(const channel: IChannelReceiver): IServerChannelSink; dispid 1610743809;
     property Next: IServerChannelSinkProvider readonly dispid 1610743810;
   end;
+  {$EXTERNALSYM IServerChannelSinkProviderDisp}
 
 // *********************************************************************//
 // Interface: IChannelSinkBase
@@ -16510,6 +17055,7 @@ type
     ['{308DE042-ACC8-32F8-B632-7CB9799D9AA6}']
     property Properties: IDictionary readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IChannelSinkBaseDisp}
 
 // *********************************************************************//
 // Interface: IServerChannelSink
@@ -16549,6 +17095,7 @@ type
                                const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743810;
     property NextChannelSink: IServerChannelSink readonly dispid 1610743811;
   end;
+  {$EXTERNALSYM IServerChannelSinkDisp}
 
 // *********************************************************************//
 // Interface: _EnterpriseServicesHelper
@@ -16567,6 +17114,7 @@ type
   _EnterpriseServicesHelperDisp = dispinterface
     ['{77C9BCEB-9958-33C0-A858-599F66697DA7}']
   end;
+  {$EXTERNALSYM _EnterpriseServicesHelperDisp}
 
 // *********************************************************************//
 // Interface: _Header
@@ -16585,6 +17133,7 @@ type
   _HeaderDisp = dispinterface
     ['{0D296515-AD19-3602-B415-D8EC77066081}']
   end;
+  {$EXTERNALSYM _HeaderDisp}
 
 // *********************************************************************//
 // Interface: _HeaderHandler
@@ -16603,6 +17152,7 @@ type
   _HeaderHandlerDisp = dispinterface
     ['{5DBBAF39-A3DF-30B7-AAEA-9FD11394123F}']
   end;
+  {$EXTERNALSYM _HeaderHandlerDisp}
 
 // *********************************************************************//
 // Interface: IConstructionCallMessage
@@ -16637,6 +17187,7 @@ type
     property ActivationType: _Type readonly dispid 1610743812;
     property ContextProperties: IList readonly dispid 1610743813;
   end;
+  {$EXTERNALSYM IConstructionCallMessageDisp}
 
 // *********************************************************************//
 // Interface: IMethodReturnMessage
@@ -16671,6 +17222,7 @@ type
     property Exception: _Exception readonly dispid 1610743812;
     property ReturnValue: OleVariant readonly dispid 1610743813;
   end;
+  {$EXTERNALSYM IMethodReturnMessageDisp}
 
 // *********************************************************************//
 // Interface: IConstructionReturnMessage
@@ -16689,6 +17241,7 @@ type
   IConstructionReturnMessageDisp = dispinterface
     ['{CA0AB564-F5E9-3A7F-A80B-EB0AEEFA44E9}']
   end;
+  {$EXTERNALSYM IConstructionReturnMessageDisp}
 
 // *********************************************************************//
 // Interface: IChannelReceiverHook
@@ -16718,6 +17271,7 @@ type
     property ChannelSinkChain: IServerChannelSink readonly dispid 1610743810;
     procedure AddHookChannelUri(const channelUri: WideString); dispid 1610743811;
   end;
+  {$EXTERNALSYM IChannelReceiverHookDisp}
 
 // *********************************************************************//
 // Interface: IClientChannelSinkProvider
@@ -16744,6 +17298,7 @@ type
                         remoteChannelData: OleVariant): IClientChannelSink; dispid 1610743808;
     property Next: IClientChannelSinkProvider readonly dispid 1610743809;
   end;
+  {$EXTERNALSYM IClientChannelSinkProviderDisp}
 
 // *********************************************************************//
 // Interface: IClientFormatterSinkProvider
@@ -16762,6 +17317,7 @@ type
   IClientFormatterSinkProviderDisp = dispinterface
     ['{6D94B6F3-DA91-3C2F-B876-083769667468}']
   end;
+  {$EXTERNALSYM IClientFormatterSinkProviderDisp}
 
 // *********************************************************************//
 // Interface: IServerFormatterSinkProvider
@@ -16780,6 +17336,7 @@ type
   IServerFormatterSinkProviderDisp = dispinterface
     ['{042B5200-4317-3E4D-B653-7E9A08F1A5F2}']
   end;
+  {$EXTERNALSYM IServerFormatterSinkProviderDisp}
 
 // *********************************************************************//
 // Interface: IClientChannelSink
@@ -16819,6 +17376,7 @@ type
     function GetRequestStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743811;
     property NextChannelSink: IClientChannelSink readonly dispid 1610743812;
   end;
+  {$EXTERNALSYM IClientChannelSinkDisp}
 
 // *********************************************************************//
 // Interface: IClientFormatterSink
@@ -16837,6 +17395,7 @@ type
   IClientFormatterSinkDisp = dispinterface
     ['{46527C03-B144-3CF0-86B3-B8776148A6E9}']
   end;
+  {$EXTERNALSYM IClientFormatterSinkDisp}
 
 // *********************************************************************//
 // Interface: IChannelDataStore
@@ -16862,6 +17421,7 @@ type
     property ChannelUris: {??PSafeArray}OleVariant readonly dispid 1610743808;
     property Item[key: OleVariant]: OleVariant dispid 0; default;
   end;
+  {$EXTERNALSYM IChannelDataStoreDisp}
 
 // *********************************************************************//
 // Interface: _ChannelDataStore
@@ -16880,6 +17440,7 @@ type
   _ChannelDataStoreDisp = dispinterface
     ['{AA6DA581-F972-36DE-A53B-7585428A68AB}']
   end;
+  {$EXTERNALSYM _ChannelDataStoreDisp}
 
 // *********************************************************************//
 // Interface: ITransportHeaders
@@ -16904,6 +17465,7 @@ type
     property Item[key: OleVariant]: OleVariant dispid 0; default;
     function GetEnumerator: IEnumVARIANT; dispid -4;
   end;
+  {$EXTERNALSYM ITransportHeadersDisp}
 
 // *********************************************************************//
 // Interface: _TransportHeaders
@@ -16922,6 +17484,7 @@ type
   _TransportHeadersDisp = dispinterface
     ['{65887F70-C646-3A66-8697-8A3F7D8FE94D}']
   end;
+  {$EXTERNALSYM _TransportHeadersDisp}
 
 // *********************************************************************//
 // Interface: _SinkProviderData
@@ -16940,6 +17503,7 @@ type
   _SinkProviderDataDisp = dispinterface
     ['{A18545B7-E5EE-31EE-9B9B-41199B11C995}']
   end;
+  {$EXTERNALSYM _SinkProviderDataDisp}
 
 // *********************************************************************//
 // Interface: _BaseChannelObjectWithProperties
@@ -16958,6 +17522,7 @@ type
   _BaseChannelObjectWithPropertiesDisp = dispinterface
     ['{A1329EC9-E567-369F-8258-18366D89EAF8}']
   end;
+  {$EXTERNALSYM _BaseChannelObjectWithPropertiesDisp}
 
 // *********************************************************************//
 // Interface: _BaseChannelSinkWithProperties
@@ -16976,6 +17541,7 @@ type
   _BaseChannelSinkWithPropertiesDisp = dispinterface
     ['{8AF3451E-154D-3D86-80D8-F8478B9733ED}']
   end;
+  {$EXTERNALSYM _BaseChannelSinkWithPropertiesDisp}
 
 // *********************************************************************//
 // Interface: _BaseChannelWithProperties
@@ -16994,6 +17560,7 @@ type
   _BaseChannelWithPropertiesDisp = dispinterface
     ['{94BB98ED-18BB-3843-A7FE-642824AB4E01}']
   end;
+  {$EXTERNALSYM _BaseChannelWithPropertiesDisp}
 
 // *********************************************************************//
 // Interface: IContributeClientContextSink
@@ -17014,6 +17581,7 @@ type
     ['{4DB956B7-69D0-312A-AA75-44FB55FD5D4B}']
     function GetClientContextSink(const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IContributeClientContextSinkDisp}
 
 // *********************************************************************//
 // Interface: IContributeDynamicSink
@@ -17034,6 +17602,7 @@ type
     ['{A0FE9B86-0C06-32CE-85FA-2FF1B58697FB}']
     function GetDynamicSink: IDynamicMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IContributeDynamicSinkDisp}
 
 // *********************************************************************//
 // Interface: IContributeEnvoySink
@@ -17054,6 +17623,7 @@ type
     ['{124777B6-0308-3569-97E5-E6FE88EAE4EB}']
     function GetEnvoySink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IContributeEnvoySinkDisp}
 
 // *********************************************************************//
 // Interface: IContributeObjectSink
@@ -17074,6 +17644,7 @@ type
     ['{6A5D38BC-2789-3546-81A1-F10C0FB59366}']
     function GetObjectSink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IContributeObjectSinkDisp}
 
 // *********************************************************************//
 // Interface: IContributeServerContextSink
@@ -17094,6 +17665,7 @@ type
     ['{0CAA23EC-F78C-39C9-8D25-B7A9CE4097A7}']
     function GetServerContextSink(const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
+  {$EXTERNALSYM IContributeServerContextSinkDisp}
 
 // *********************************************************************//
 // Interface: IDynamicProperty
@@ -17115,6 +17687,7 @@ type
     ['{00A358D4-4D58-3B9D-8FB6-FB7F6BC1713B}']
     property name: WideString readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IDynamicPropertyDisp}
 
 // *********************************************************************//
 // Interface: IDynamicMessageSink
@@ -17137,6 +17710,7 @@ type
     procedure ProcessMessageStart(const reqMsg: IMessage; bCliSide: WordBool; bAsync: WordBool); dispid 1610743808;
     procedure ProcessMessageFinish(const replyMsg: IMessage; bCliSide: WordBool; bAsync: WordBool); dispid 1610743809;
   end;
+  {$EXTERNALSYM IDynamicMessageSinkDisp}
 
 // *********************************************************************//
 // Interface: ILease
@@ -17181,6 +17755,7 @@ type
     property CurrentLeaseTime: {??TimeSpan}OleVariant readonly dispid 1610743818;
     property CurrentState: LeaseState readonly dispid 1610743819;
   end;
+  {$EXTERNALSYM ILeaseDisp}
 
 // *********************************************************************//
 // Interface: IMessageCtrl
@@ -17201,6 +17776,7 @@ type
     ['{3677CBB0-784D-3C15-BBC8-75CD7DC3901E}']
     procedure Cancel(msToCancel: Integer); dispid 1610743808;
   end;
+  {$EXTERNALSYM IMessageCtrlDisp}
 
 // *********************************************************************//
 // Interface: IRemotingFormatter
@@ -17224,6 +17800,7 @@ type
     procedure Serialize(const serializationStream: _Stream; graph: OleVariant; 
                         headers: {??PSafeArray}OleVariant); dispid 1610743809;
   end;
+  {$EXTERNALSYM IRemotingFormatterDisp}
 
 // *********************************************************************//
 // Interface: _LifetimeServices
@@ -17242,6 +17819,7 @@ type
   _LifetimeServicesDisp = dispinterface
     ['{B0AD9A21-5439-3D88-8975-4018B828D74C}']
   end;
+  {$EXTERNALSYM _LifetimeServicesDisp}
 
 // *********************************************************************//
 // Interface: _ReturnMessage
@@ -17260,6 +17838,7 @@ type
   _ReturnMessageDisp = dispinterface
     ['{0EEFF4C2-84BF-3E4E-BF22-B7BDBB5DF899}']
   end;
+  {$EXTERNALSYM _ReturnMessageDisp}
 
 // *********************************************************************//
 // Interface: _MethodCall
@@ -17278,6 +17857,7 @@ type
   _MethodCallDisp = dispinterface
     ['{95E01216-5467-371B-8597-4074402CCB06}']
   end;
+  {$EXTERNALSYM _MethodCallDisp}
 
 // *********************************************************************//
 // Interface: _ConstructionCall
@@ -17296,6 +17876,7 @@ type
   _ConstructionCallDisp = dispinterface
     ['{A2246AE7-EB81-3A20-8E70-C9FA341C7E10}']
   end;
+  {$EXTERNALSYM _ConstructionCallDisp}
 
 // *********************************************************************//
 // Interface: _MethodResponse
@@ -17314,6 +17895,7 @@ type
   _MethodResponseDisp = dispinterface
     ['{9E9EA93A-D000-3AB9-BFCA-DDEB398A55B9}']
   end;
+  {$EXTERNALSYM _MethodResponseDisp}
 
 // *********************************************************************//
 // Interface: IFieldInfo
@@ -17340,6 +17922,7 @@ type
     property FieldNames: {??PSafeArray}OleVariant readonly dispid 1610743808;
     property FieldTypes: {??PSafeArray}OleVariant readonly dispid 1610743810;
   end;
+  {$EXTERNALSYM IFieldInfoDisp}
 
 // *********************************************************************//
 // Interface: _ConstructionResponse
@@ -17358,6 +17941,7 @@ type
   _ConstructionResponseDisp = dispinterface
     ['{BE457280-6FFA-3E76-9822-83DE63C0C4E0}']
   end;
+  {$EXTERNALSYM _ConstructionResponseDisp}
 
 // *********************************************************************//
 // Interface: _MethodReturnMessageWrapper
@@ -17376,6 +17960,7 @@ type
   _MethodReturnMessageWrapperDisp = dispinterface
     ['{89304439-A24F-30F6-9A8F-89CE472D85DA}']
   end;
+  {$EXTERNALSYM _MethodReturnMessageWrapperDisp}
 
 // *********************************************************************//
 // Interface: _ObjectHandle
@@ -17411,6 +17996,7 @@ type
     function CreateObjRef(const requestedType: _Type): _ObjRef; dispid 1610743814;
     function Unwrap: OleVariant; dispid 1610743815;
   end;
+  {$EXTERNALSYM _ObjectHandleDisp}
 
 // *********************************************************************//
 // Interface: IRemotingTypeInfo
@@ -17435,6 +18021,7 @@ type
     property typeName: WideString readonly dispid 1610743808;
     function CanCastTo(const fromType: _Type; o: OleVariant): WordBool; dispid 1610743810;
   end;
+  {$EXTERNALSYM IRemotingTypeInfoDisp}
 
 // *********************************************************************//
 // Interface: IChannelInfo
@@ -17457,6 +18044,7 @@ type
     ['{855E6566-014A-3FE8-AA70-1EAC771E3A88}']
     property ChannelData: {??PSafeArray}OleVariant readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IChannelInfoDisp}
 
 // *********************************************************************//
 // Interface: IEnvoyInfo
@@ -17479,6 +18067,7 @@ type
     ['{2A6E91B9-A874-38E4-99C2-C5D83D78140D}']
     property EnvoySinks: IMessageSink readonly dispid 1610743808;
   end;
+  {$EXTERNALSYM IEnvoyInfoDisp}
 
 // *********************************************************************//
 // Interface: _ObjRef
@@ -17497,6 +18086,7 @@ type
   _ObjRefDisp = dispinterface
     ['{1DD3CF3D-DF8E-32FF-91EC-E19AA10B63FB}']
   end;
+  {$EXTERNALSYM _ObjRefDisp}
 
 // *********************************************************************//
 // Interface: _OneWayAttribute
@@ -17515,6 +18105,7 @@ type
   _OneWayAttributeDisp = dispinterface
     ['{8FFEDC68-5233-3FA8-813D-405AABB33ECB}']
   end;
+  {$EXTERNALSYM _OneWayAttributeDisp}
 
 // *********************************************************************//
 // Interface: _ProxyAttribute
@@ -17533,6 +18124,7 @@ type
   _ProxyAttributeDisp = dispinterface
     ['{D80FF312-2930-3680-A5E9-B48296C7415F}']
   end;
+  {$EXTERNALSYM _ProxyAttributeDisp}
 
 // *********************************************************************//
 // Interface: _RealProxy
@@ -17551,6 +18143,7 @@ type
   _RealProxyDisp = dispinterface
     ['{E0CF3F77-C7C3-33DA-BEB4-46147FC905DE}']
   end;
+  {$EXTERNALSYM _RealProxyDisp}
 
 // *********************************************************************//
 // Interface: _SoapAttribute
@@ -17569,6 +18162,7 @@ type
   _SoapAttributeDisp = dispinterface
     ['{725692A5-9E12-37F6-911C-E3DA77E5FACA}']
   end;
+  {$EXTERNALSYM _SoapAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SoapTypeAttribute
@@ -17587,6 +18181,7 @@ type
   _SoapTypeAttributeDisp = dispinterface
     ['{EBCDCD84-8C74-39FD-821C-F5EB3A2704D7}']
   end;
+  {$EXTERNALSYM _SoapTypeAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SoapMethodAttribute
@@ -17605,6 +18200,7 @@ type
   _SoapMethodAttributeDisp = dispinterface
     ['{C58145B5-BD5A-3896-95D9-B358F54FBC44}']
   end;
+  {$EXTERNALSYM _SoapMethodAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SoapFieldAttribute
@@ -17623,6 +18219,7 @@ type
   _SoapFieldAttributeDisp = dispinterface
     ['{46A3F9FF-F73C-33C7-BCC3-1BEF4B25E4AE}']
   end;
+  {$EXTERNALSYM _SoapFieldAttributeDisp}
 
 // *********************************************************************//
 // Interface: _SoapParameterAttribute
@@ -17641,6 +18238,7 @@ type
   _SoapParameterAttributeDisp = dispinterface
     ['{C32ABFC9-3917-30BF-A7BC-44250BDFC5D8}']
   end;
+  {$EXTERNALSYM _SoapParameterAttributeDisp}
 
 // *********************************************************************//
 // Interface: _RemotingConfiguration
@@ -17659,6 +18257,7 @@ type
   _RemotingConfigurationDisp = dispinterface
     ['{4B10971E-D61D-373F-BC8D-2CCF31126215}']
   end;
+  {$EXTERNALSYM _RemotingConfigurationDisp}
 
 // *********************************************************************//
 // Interface: _System_Runtime_Remoting_TypeEntry
@@ -17677,6 +18276,7 @@ type
   _System_Runtime_Remoting_TypeEntryDisp = dispinterface
     ['{8359F3AB-643F-3BCF-91E8-16E779EDEBE1}']
   end;
+  {$EXTERNALSYM _System_Runtime_Remoting_TypeEntryDisp}
 
 // *********************************************************************//
 // Interface: _ActivatedClientTypeEntry
@@ -17695,6 +18295,7 @@ type
   _ActivatedClientTypeEntryDisp = dispinterface
     ['{BAC12781-6865-3558-A8D1-F1CADD2806DD}']
   end;
+  {$EXTERNALSYM _ActivatedClientTypeEntryDisp}
 
 // *********************************************************************//
 // Interface: _ActivatedServiceTypeEntry
@@ -17713,6 +18314,7 @@ type
   _ActivatedServiceTypeEntryDisp = dispinterface
     ['{94855A3B-5CA2-32CF-B1AB-48FD3915822C}']
   end;
+  {$EXTERNALSYM _ActivatedServiceTypeEntryDisp}
 
 // *********************************************************************//
 // Interface: _WellKnownClientTypeEntry
@@ -17731,6 +18333,7 @@ type
   _WellKnownClientTypeEntryDisp = dispinterface
     ['{4D0BC339-E3F9-3E9E-8F68-92168E6F6981}']
   end;
+  {$EXTERNALSYM _WellKnownClientTypeEntryDisp}
 
 // *********************************************************************//
 // Interface: _WellKnownServiceTypeEntry
@@ -17749,6 +18352,7 @@ type
   _WellKnownServiceTypeEntryDisp = dispinterface
     ['{60B8B604-0AED-3093-AC05-EB98FB29FC47}']
   end;
+  {$EXTERNALSYM _WellKnownServiceTypeEntryDisp}
 
 // *********************************************************************//
 // Interface: _RemotingException
@@ -17767,6 +18371,7 @@ type
   _RemotingExceptionDisp = dispinterface
     ['{7264843F-F60C-39A9-99E1-029126AA0815}']
   end;
+  {$EXTERNALSYM _RemotingExceptionDisp}
 
 // *********************************************************************//
 // Interface: _ServerException
@@ -17785,6 +18390,7 @@ type
   _ServerExceptionDisp = dispinterface
     ['{19373C44-55B4-3487-9AD8-4C621AAE85EA}']
   end;
+  {$EXTERNALSYM _ServerExceptionDisp}
 
 // *********************************************************************//
 // Interface: _RemotingTimeoutException
@@ -17803,6 +18409,7 @@ type
   _RemotingTimeoutExceptionDisp = dispinterface
     ['{44DB8E15-ACB1-34EE-81F9-56ED7AE37A5C}']
   end;
+  {$EXTERNALSYM _RemotingTimeoutExceptionDisp}
 
 // *********************************************************************//
 // Interface: _RemotingServices
@@ -17821,6 +18428,7 @@ type
   _RemotingServicesDisp = dispinterface
     ['{7B91368D-A50A-3D36-BE8E-5B8836A419AD}']
   end;
+  {$EXTERNALSYM _RemotingServicesDisp}
 
 // *********************************************************************//
 // Interface: _InternalRemotingServices
@@ -17839,6 +18447,7 @@ type
   _InternalRemotingServicesDisp = dispinterface
     ['{F4EFB305-CDC4-31C5-8102-33C9B91774F3}']
   end;
+  {$EXTERNALSYM _InternalRemotingServicesDisp}
 
 // *********************************************************************//
 // Interface: _MessageSurrogateFilter
@@ -17857,6 +18466,7 @@ type
   _MessageSurrogateFilterDisp = dispinterface
     ['{04A35D22-0B08-34E7-A573-88EF2374375E}']
   end;
+  {$EXTERNALSYM _MessageSurrogateFilterDisp}
 
 // *********************************************************************//
 // Interface: _RemotingSurrogateSelector
@@ -17875,6 +18485,7 @@ type
   _RemotingSurrogateSelectorDisp = dispinterface
     ['{551F7A57-8651-37DB-A94A-6A3CA09C0ED7}']
   end;
+  {$EXTERNALSYM _RemotingSurrogateSelectorDisp}
 
 // *********************************************************************//
 // Interface: _SoapServices
@@ -17893,6 +18504,7 @@ type
   _SoapServicesDisp = dispinterface
     ['{7416B6EE-82E8-3A16-966B-018A40E7B1AA}']
   end;
+  {$EXTERNALSYM _SoapServicesDisp}
 
 // *********************************************************************//
 // Interface: ISoapXsd
@@ -17913,6 +18525,7 @@ type
     ['{80031D2A-AD59-3FB4-97F3-B864D71DA86B}']
     function GetXsdType: WideString; dispid 1610743808;
   end;
+  {$EXTERNALSYM ISoapXsdDisp}
 
 // *********************************************************************//
 // Interface: _SoapDateTime
@@ -17931,6 +18544,7 @@ type
   _SoapDateTimeDisp = dispinterface
     ['{1738ADBC-156E-3897-844F-C3147C528DEA}']
   end;
+  {$EXTERNALSYM _SoapDateTimeDisp}
 
 // *********************************************************************//
 // Interface: _SoapDuration
@@ -17949,6 +18563,7 @@ type
   _SoapDurationDisp = dispinterface
     ['{7EF50DDB-32A5-30A1-B412-47FAB911404A}']
   end;
+  {$EXTERNALSYM _SoapDurationDisp}
 
 // *********************************************************************//
 // Interface: _SoapTime
@@ -17967,6 +18582,7 @@ type
   _SoapTimeDisp = dispinterface
     ['{A3BF0BCD-EC32-38E6-92F2-5F37BAD8030D}']
   end;
+  {$EXTERNALSYM _SoapTimeDisp}
 
 // *********************************************************************//
 // Interface: _SoapDate
@@ -17985,6 +18601,7 @@ type
   _SoapDateDisp = dispinterface
     ['{CFA6E9D2-B3DE-39A6-94D1-CC691DE193F8}']
   end;
+  {$EXTERNALSYM _SoapDateDisp}
 
 // *********************************************************************//
 // Interface: _SoapYearMonth
@@ -18003,6 +18620,7 @@ type
   _SoapYearMonthDisp = dispinterface
     ['{103C7EF9-A9EE-35FB-84C5-3086C9725A20}']
   end;
+  {$EXTERNALSYM _SoapYearMonthDisp}
 
 // *********************************************************************//
 // Interface: _SoapYear
@@ -18021,6 +18639,7 @@ type
   _SoapYearDisp = dispinterface
     ['{C20769F3-858D-316A-BE6D-C347A47948AD}']
   end;
+  {$EXTERNALSYM _SoapYearDisp}
 
 // *********************************************************************//
 // Interface: _SoapMonthDay
@@ -18039,6 +18658,7 @@ type
   _SoapMonthDayDisp = dispinterface
     ['{F9EAD0AA-4156-368F-AE05-FD59D70F758D}']
   end;
+  {$EXTERNALSYM _SoapMonthDayDisp}
 
 // *********************************************************************//
 // Interface: _SoapDay
@@ -18057,6 +18677,7 @@ type
   _SoapDayDisp = dispinterface
     ['{D9E8314D-5053-3497-8A33-97D3DCFE33E2}']
   end;
+  {$EXTERNALSYM _SoapDayDisp}
 
 // *********************************************************************//
 // Interface: _SoapMonth
@@ -18075,6 +18696,7 @@ type
   _SoapMonthDisp = dispinterface
     ['{B4E32423-E473-3562-AA12-62FDE5A7D4A2}']
   end;
+  {$EXTERNALSYM _SoapMonthDisp}
 
 // *********************************************************************//
 // Interface: _SoapHexBinary
@@ -18093,6 +18715,7 @@ type
   _SoapHexBinaryDisp = dispinterface
     ['{63B9DA95-FB91-358A-B7B7-90C34AA34AB7}']
   end;
+  {$EXTERNALSYM _SoapHexBinaryDisp}
 
 // *********************************************************************//
 // Interface: _SoapBase64Binary
@@ -18111,6 +18734,7 @@ type
   _SoapBase64BinaryDisp = dispinterface
     ['{8ED115A1-5E7B-34DC-AB85-90316F28015D}']
   end;
+  {$EXTERNALSYM _SoapBase64BinaryDisp}
 
 // *********************************************************************//
 // Interface: _SoapInteger
@@ -18129,6 +18753,7 @@ type
   _SoapIntegerDisp = dispinterface
     ['{30C65C40-4E54-3051-9D8F-4709B6AB214C}']
   end;
+  {$EXTERNALSYM _SoapIntegerDisp}
 
 // *********************************************************************//
 // Interface: _SoapPositiveInteger
@@ -18147,6 +18772,7 @@ type
   _SoapPositiveIntegerDisp = dispinterface
     ['{4979EC29-C2B7-3AD6-986D-5AAF7344CC4E}']
   end;
+  {$EXTERNALSYM _SoapPositiveIntegerDisp}
 
 // *********************************************************************//
 // Interface: _SoapNonPositiveInteger
@@ -18165,6 +18791,7 @@ type
   _SoapNonPositiveIntegerDisp = dispinterface
     ['{AAF5401E-F71C-3FE3-8A73-A25074B20D3A}']
   end;
+  {$EXTERNALSYM _SoapNonPositiveIntegerDisp}
 
 // *********************************************************************//
 // Interface: _SoapNonNegativeInteger
@@ -18183,6 +18810,7 @@ type
   _SoapNonNegativeIntegerDisp = dispinterface
     ['{BC261FC6-7132-3FB5-9AAC-224845D3AA99}']
   end;
+  {$EXTERNALSYM _SoapNonNegativeIntegerDisp}
 
 // *********************************************************************//
 // Interface: _SoapNegativeInteger
@@ -18201,6 +18829,7 @@ type
   _SoapNegativeIntegerDisp = dispinterface
     ['{E384AA10-A70C-3943-97CF-0F7C282C3BDC}']
   end;
+  {$EXTERNALSYM _SoapNegativeIntegerDisp}
 
 // *********************************************************************//
 // Interface: _SoapAnyUri
@@ -18219,6 +18848,7 @@ type
   _SoapAnyUriDisp = dispinterface
     ['{818EC118-BE7E-3CDE-92C8-44B99160920E}']
   end;
+  {$EXTERNALSYM _SoapAnyUriDisp}
 
 // *********************************************************************//
 // Interface: _SoapQName
@@ -18237,6 +18867,7 @@ type
   _SoapQNameDisp = dispinterface
     ['{3AC646B6-6B84-382F-9AED-22C2433244E6}']
   end;
+  {$EXTERNALSYM _SoapQNameDisp}
 
 // *********************************************************************//
 // Interface: _SoapNotation
@@ -18255,6 +18886,7 @@ type
   _SoapNotationDisp = dispinterface
     ['{974F01F4-6086-3137-9448-6A31FC9BEF08}']
   end;
+  {$EXTERNALSYM _SoapNotationDisp}
 
 // *********************************************************************//
 // Interface: _SoapNormalizedString
@@ -18273,6 +18905,7 @@ type
   _SoapNormalizedStringDisp = dispinterface
     ['{F4926B50-3F23-37E0-9AFA-AA91FF89A7BD}']
   end;
+  {$EXTERNALSYM _SoapNormalizedStringDisp}
 
 // *********************************************************************//
 // Interface: _SoapToken
@@ -18291,6 +18924,7 @@ type
   _SoapTokenDisp = dispinterface
     ['{AB4E97B9-651D-36F4-AABA-28ACF5746624}']
   end;
+  {$EXTERNALSYM _SoapTokenDisp}
 
 // *********************************************************************//
 // Interface: _SoapLanguage
@@ -18309,6 +18943,7 @@ type
   _SoapLanguageDisp = dispinterface
     ['{14AED851-A168-3462-B877-8F9A01126653}']
   end;
+  {$EXTERNALSYM _SoapLanguageDisp}
 
 // *********************************************************************//
 // Interface: _SoapName
@@ -18327,6 +18962,7 @@ type
   _SoapNameDisp = dispinterface
     ['{5EB06BEF-4ADF-3CC1-A6F2-62F76886B13A}']
   end;
+  {$EXTERNALSYM _SoapNameDisp}
 
 // *********************************************************************//
 // Interface: _SoapIdrefs
@@ -18345,6 +18981,7 @@ type
   _SoapIdrefsDisp = dispinterface
     ['{7947A829-ADB5-34D0-9CC8-6C172742C803}']
   end;
+  {$EXTERNALSYM _SoapIdrefsDisp}
 
 // *********************************************************************//
 // Interface: _SoapEntities
@@ -18363,6 +19000,7 @@ type
   _SoapEntitiesDisp = dispinterface
     ['{ACA96DA3-96ED-397E-8A72-EE1BE1025F5E}']
   end;
+  {$EXTERNALSYM _SoapEntitiesDisp}
 
 // *********************************************************************//
 // Interface: _SoapNmtoken
@@ -18381,6 +19019,7 @@ type
   _SoapNmtokenDisp = dispinterface
     ['{E941FA15-E6C8-3DD4-B060-C0DDFBC0240A}']
   end;
+  {$EXTERNALSYM _SoapNmtokenDisp}
 
 // *********************************************************************//
 // Interface: _SoapNmtokens
@@ -18399,6 +19038,7 @@ type
   _SoapNmtokensDisp = dispinterface
     ['{A5E385AE-27FB-3708-BAF7-0BF1F3955747}']
   end;
+  {$EXTERNALSYM _SoapNmtokensDisp}
 
 // *********************************************************************//
 // Interface: _SoapNcName
@@ -18417,6 +19057,7 @@ type
   _SoapNcNameDisp = dispinterface
     ['{725CDAF7-B739-35C1-8463-E2A923E1F618}']
   end;
+  {$EXTERNALSYM _SoapNcNameDisp}
 
 // *********************************************************************//
 // Interface: _SoapId
@@ -18435,6 +19076,7 @@ type
   _SoapIdDisp = dispinterface
     ['{6A46B6A2-2D2C-3C67-AF67-AAE0175F17AE}']
   end;
+  {$EXTERNALSYM _SoapIdDisp}
 
 // *********************************************************************//
 // Interface: _SoapIdref
@@ -18453,6 +19095,7 @@ type
   _SoapIdrefDisp = dispinterface
     ['{7DB7FD83-DE89-38E1-9645-D4CABDE694C0}']
   end;
+  {$EXTERNALSYM _SoapIdrefDisp}
 
 // *********************************************************************//
 // Interface: _SoapEntity
@@ -18471,6 +19114,7 @@ type
   _SoapEntityDisp = dispinterface
     ['{37171746-B784-3586-A7D5-692A7604A66B}']
   end;
+  {$EXTERNALSYM _SoapEntityDisp}
 
 // *********************************************************************//
 // Interface: _SynchronizationAttribute
@@ -18489,6 +19133,7 @@ type
   _SynchronizationAttributeDisp = dispinterface
     ['{2D985674-231C-33D4-B14D-F3A6BD2EBE19}']
   end;
+  {$EXTERNALSYM _SynchronizationAttributeDisp}
 
 // *********************************************************************//
 // Interface: ITrackingHandler
@@ -18513,6 +19158,7 @@ type
     procedure UnmarshaledObject(obj: OleVariant; const or_: _ObjRef); dispid 1610743809;
     procedure DisconnectedObject(obj: OleVariant); dispid 1610743810;
   end;
+  {$EXTERNALSYM ITrackingHandlerDisp}
 
 // *********************************************************************//
 // Interface: _TrackingServices
@@ -18531,6 +19177,7 @@ type
   _TrackingServicesDisp = dispinterface
     ['{F51728F2-2DEF-308C-874A-CBB1BAA9CF9E}']
   end;
+  {$EXTERNALSYM _TrackingServicesDisp}
 
 // *********************************************************************//
 // Interface: _UrlAttribute
@@ -18549,6 +19196,7 @@ type
   _UrlAttributeDisp = dispinterface
     ['{717105A3-739B-3BC3-A2B7-AD215903FAD2}']
   end;
+  {$EXTERNALSYM _UrlAttributeDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorage
@@ -18567,6 +19215,7 @@ type
   _IsolatedStorageDisp = dispinterface
     ['{34EC3BD7-F2F6-3C20-A639-804BFF89DF65}']
   end;
+  {$EXTERNALSYM _IsolatedStorageDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorageFile
@@ -18585,6 +19234,7 @@ type
   _IsolatedStorageFileDisp = dispinterface
     ['{6BBB7DEE-186F-3D51-9486-BE0A71E915CE}']
   end;
+  {$EXTERNALSYM _IsolatedStorageFileDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorageFileStream
@@ -18603,6 +19253,7 @@ type
   _IsolatedStorageFileStreamDisp = dispinterface
     ['{68D5592B-47C8-381A-8D51-3925C16CF025}']
   end;
+  {$EXTERNALSYM _IsolatedStorageFileStreamDisp}
 
 // *********************************************************************//
 // Interface: _IsolatedStorageException
@@ -18621,6 +19272,7 @@ type
   _IsolatedStorageExceptionDisp = dispinterface
     ['{AEC2B0DE-9898-3607-B845-63E2E307CB5F}']
   end;
+  {$EXTERNALSYM _IsolatedStorageExceptionDisp}
 
 // *********************************************************************//
 // Interface: INormalizeForIsolatedStorage
@@ -18641,6 +19293,7 @@ type
     ['{F5006531-D4D7-319E-9EDA-9B4B65AD8D4F}']
     function Normalize: OleVariant; dispid 1610743808;
   end;
+  {$EXTERNALSYM INormalizeForIsolatedStorageDisp}
 
 // *********************************************************************//
 // Interface: ISoapMessage
@@ -18683,6 +19336,7 @@ type
     property XmlNameSpace: WideString readonly dispid 1610743816;
     property headers: {??PSafeArray}OleVariant readonly dispid 1610743818;
   end;
+  {$EXTERNALSYM ISoapMessageDisp}
 
 // *********************************************************************//
 // Interface: _InternalRM
@@ -18701,6 +19355,7 @@ type
   _InternalRMDisp = dispinterface
     ['{361A5049-1BC8-35A9-946A-53A877902F25}']
   end;
+  {$EXTERNALSYM _InternalRMDisp}
 
 // *********************************************************************//
 // Interface: _InternalST
@@ -18719,6 +19374,7 @@ type
   _InternalSTDisp = dispinterface
     ['{A864FB13-F945-3DC0-A01C-B903F944FC97}']
   end;
+  {$EXTERNALSYM _InternalSTDisp}
 
 // *********************************************************************//
 // Interface: _SoapMessage
@@ -18737,6 +19393,7 @@ type
   _SoapMessageDisp = dispinterface
     ['{BC0847B2-BD5C-37B3-BA67-7D2D54B17238}']
   end;
+  {$EXTERNALSYM _SoapMessageDisp}
 
 // *********************************************************************//
 // Interface: _SoapFault
@@ -18755,6 +19412,7 @@ type
   _SoapFaultDisp = dispinterface
     ['{A1C392FC-314C-39D5-8DE6-1F8EBCA0A1E2}']
   end;
+  {$EXTERNALSYM _SoapFaultDisp}
 
 // *********************************************************************//
 // Interface: _ServerFault
@@ -18773,6 +19431,7 @@ type
   _ServerFaultDisp = dispinterface
     ['{02D1BD78-3BB6-37AD-A9F8-F7D5DA273E4E}']
   end;
+  {$EXTERNALSYM _ServerFaultDisp}
 
 // *********************************************************************//
 // Interface: _BinaryFormatter
@@ -18791,6 +19450,7 @@ type
   _BinaryFormatterDisp = dispinterface
     ['{3BCF0CB2-A849-375E-8189-1BA5F1F4A9B0}']
   end;
+  {$EXTERNALSYM _BinaryFormatterDisp}
 
 // *********************************************************************//
 // Interface: _AssemblyBuilder
@@ -18809,6 +19469,7 @@ type
   _AssemblyBuilderDisp = dispinterface
     ['{BEBB2505-8B54-3443-AEAD-142A16DD9CC7}']
   end;
+  {$EXTERNALSYM _AssemblyBuilderDisp}
 
 // *********************************************************************//
 // Interface: _ConstructorBuilder
@@ -18827,6 +19488,7 @@ type
   _ConstructorBuilderDisp = dispinterface
     ['{ED3E4384-D7E2-3FA7-8FFD-8940D330519A}']
   end;
+  {$EXTERNALSYM _ConstructorBuilderDisp}
 
 // *********************************************************************//
 // Interface: _EventBuilder
@@ -18845,6 +19507,7 @@ type
   _EventBuilderDisp = dispinterface
     ['{AADABA99-895D-3D65-9760-B1F12621FAE8}']
   end;
+  {$EXTERNALSYM _EventBuilderDisp}
 
 // *********************************************************************//
 // Interface: _FieldBuilder
@@ -18863,6 +19526,7 @@ type
   _FieldBuilderDisp = dispinterface
     ['{CE1A3BF5-975E-30CC-97C9-1EF70F8F3993}']
   end;
+  {$EXTERNALSYM _FieldBuilderDisp}
 
 // *********************************************************************//
 // Interface: _ILGenerator
@@ -18881,6 +19545,7 @@ type
   _ILGeneratorDisp = dispinterface
     ['{A4924B27-6E3B-37F7-9B83-A4501955E6A7}']
   end;
+  {$EXTERNALSYM _ILGeneratorDisp}
 
 // *********************************************************************//
 // Interface: _LocalBuilder
@@ -18899,6 +19564,7 @@ type
   _LocalBuilderDisp = dispinterface
     ['{4E6350D1-A08B-3DEC-9A3E-C465F9AEEC0C}']
   end;
+  {$EXTERNALSYM _LocalBuilderDisp}
 
 // *********************************************************************//
 // Interface: _MethodBuilder
@@ -18917,6 +19583,7 @@ type
   _MethodBuilderDisp = dispinterface
     ['{007D8A14-FDF3-363E-9A0B-FEC0618260A2}']
   end;
+  {$EXTERNALSYM _MethodBuilderDisp}
 
 // *********************************************************************//
 // Interface: _CustomAttributeBuilder
@@ -18935,6 +19602,7 @@ type
   _CustomAttributeBuilderDisp = dispinterface
     ['{BE9ACCE8-AAFF-3B91-81AE-8211663F5CAD}']
   end;
+  {$EXTERNALSYM _CustomAttributeBuilderDisp}
 
 // *********************************************************************//
 // Interface: _MethodRental
@@ -18953,6 +19621,7 @@ type
   _MethodRentalDisp = dispinterface
     ['{C2323C25-F57F-3880-8A4D-12EBEA7A5852}']
   end;
+  {$EXTERNALSYM _MethodRentalDisp}
 
 // *********************************************************************//
 // Interface: _ModuleBuilder
@@ -18971,6 +19640,7 @@ type
   _ModuleBuilderDisp = dispinterface
     ['{D05FFA9A-04AF-3519-8EE1-8D93AD73430B}']
   end;
+  {$EXTERNALSYM _ModuleBuilderDisp}
 
 // *********************************************************************//
 // Interface: _OpCodes
@@ -18989,6 +19659,7 @@ type
   _OpCodesDisp = dispinterface
     ['{1DB1CC2A-DA73-389E-828B-5C616F4FAC49}']
   end;
+  {$EXTERNALSYM _OpCodesDisp}
 
 // *********************************************************************//
 // Interface: _ParameterBuilder
@@ -19007,6 +19678,7 @@ type
   _ParameterBuilderDisp = dispinterface
     ['{36329EBA-F97A-3565-BC07-0ED5C6EF19FC}']
   end;
+  {$EXTERNALSYM _ParameterBuilderDisp}
 
 // *********************************************************************//
 // Interface: _PropertyBuilder
@@ -19025,6 +19697,7 @@ type
   _PropertyBuilderDisp = dispinterface
     ['{15F9A479-9397-3A63-ACBD-F51977FB0F02}']
   end;
+  {$EXTERNALSYM _PropertyBuilderDisp}
 
 // *********************************************************************//
 // Interface: _SignatureHelper
@@ -19043,6 +19716,7 @@ type
   _SignatureHelperDisp = dispinterface
     ['{7D13DD37-5A04-393C-BBCA-A5FEA802893D}']
   end;
+  {$EXTERNALSYM _SignatureHelperDisp}
 
 // *********************************************************************//
 // Interface: _TypeBuilder
@@ -19061,6 +19735,7 @@ type
   _TypeBuilderDisp = dispinterface
     ['{7E5678EE-48B3-3F83-B076-C58543498A58}']
   end;
+  {$EXTERNALSYM _TypeBuilderDisp}
 
 // *********************************************************************//
 // Interface: _EnumBuilder
@@ -19079,6 +19754,7 @@ type
   _EnumBuilderDisp = dispinterface
     ['{C7BD73DE-9F85-3290-88EE-090B8BDFE2DF}']
   end;
+  {$EXTERNALSYM _EnumBuilderDisp}
 
 // *********************************************************************//
 // The Class CoAppDomain provides a Create and CreateRemote method to          

@@ -20,6 +20,7 @@
     <File Name="..\..\source\common\Jcl8087.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBase.pas" Targets="JclDev" Formname="" Condition=""/>
@@ -73,6 +74,7 @@
     <File Name="..\..\source\windows\JclCOM.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclConsole.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebug.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclDotNet.pas" Targets="DelphiDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHookExcept.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLANMan.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLocales.pas" Targets="WinDev" Formname="" Condition=""/>
@@ -94,7 +96,11 @@
     <File Name="..\..\source\windows\JclUnicode.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWideFormat.pas" Targets="DelphiDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclWin32Ex.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\mscoree_TLB.pas" Targets="DelphiDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="DelphiDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSTask.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="WinDev" Formname="" Condition=""/>

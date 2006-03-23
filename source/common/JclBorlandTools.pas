@@ -63,6 +63,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
+  MSHelpServices_TLB,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, IniFiles, Contnrs,
   JclBase, JclSysUtils;
@@ -182,6 +183,43 @@ type
     property IndexFileName: string read GetIndexFileName;
     property LinkFileName: string read GetLinkFileName;
     property ProjectFileName: string read GetProjectFileName;
+  end;
+
+  TJclHelp2Object = (hoRegisterSession, hoRegister, hoPlugin);
+  TJclHelp2Objects = set of TJclHelp2Object;
+
+  TJclHelp2Manager = class(TJclBorRADToolInstallationObject)
+  private
+    FHxRegisterSession: IHxRegisterSession;
+    FHxRegister: IHxRegister;
+    FHxPlugin: IHxPlugIn;
+    function RequireObject(HelpObjects: TJclHelp2Objects): Boolean;
+    function GetHxPlugin: IHxPlugin;
+    function GetHxRegister: IHxRegister;
+    function GetHxRegisterSession: IHxRegisterSession;
+  protected
+    constructor Create(AInstallation: TJclBorRADToolInstallation); overload;
+  public
+    constructor Create; overload;
+    destructor Destroy; override;
+    function CreateTransaction: Boolean;
+    function CommitTransaction: Boolean;
+    function RegisterNameSpace(const Name, Collection,
+      Description: WideString): Boolean;
+    function UnregisterNameSpace(const Name: WideString): Boolean;
+    function RegisterHelpFile(const NameSpace, Identifier: WideString;
+      const LangId: Integer; const HxSFile, HxIFile: WideString): Boolean;
+    function UnregisterHelpFile(const NameSpace, Identifier: WideString;
+      const LangId: Integer): Boolean;
+    function PlugNameSpaceIn(const SourceNameSpace,
+      TargetNameSpace: WideString): Boolean;
+    function UnPlugNameSpace(const SourceNameSpace,
+      TargetNameSpace: WideString): Boolean;
+    function PlugNameSpaceInBorlandHelp(const NameSpace: WideString): Boolean;
+    function UnPlugNameSpaceFromBorlandHelp(const NameSpace: WideString): Boolean;
+    property HxRegisterSession: IHxRegisterSession read GetHxRegisterSession;
+    property HxRegister: IHxRegister read GetHxRegister;
+    property HxPlugin: IHxPlugin read GetHxPlugin;
   end;
   {$ENDIF MSWINDOWS}
 
@@ -644,6 +682,7 @@ type
   TJclBDSInstallation = class(TJclBorRADToolInstallation)
   private
     FDualPackageInstallation: Boolean;
+    FHelp2Manager: TJclHelp2Manager;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppBrowsingPath: TJclBorRADToolPath;
     function GetCppSearchPath: TJclBorRADToolPath;
@@ -660,7 +699,7 @@ type
     function GetVclIncludeDir: string; override;
     function GetName: string; override;
   public
-  //  destructor Destroy; override;
+    destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
     class function ProjectSourceFileExtension: string; override;
     class function RadToolKind: TJclBorRadToolKind; override;
@@ -682,6 +721,7 @@ type
     function CleanPackageCache(const BinaryFileName: string): Boolean;
 
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
+    property Help2Manager: TJclHelp2Manager read FHelp2Manager;
   end;
   {$ENDIF MSWINDOWS}
 
@@ -1230,9 +1270,9 @@ begin
   FInstallation := AInstallation;
 end;
 
-//=== { TJclBorlandOpenHelp } ================================================
-
 {$IFDEF MSWINDOWS}
+
+//=== { TJclBorlandOpenHelp } ================================================
 
 function TJclBorlandOpenHelp.AddHelpFile(const HelpFileName, IndexName: string): Boolean;
 var
@@ -1377,6 +1417,220 @@ begin
       FileDelete(GidFileName);
     finally
       List.Free;
+    end;
+  end;
+end;
+
+//== { TJclHelp2Manager } ====================================================
+
+const
+  Help2BorlandNameSpace  = 'Borland.BDS%d';
+  Help2DefaultKeyWord    = '_DEFAULT';
+
+function TJclHelp2Manager.CommitTransaction: Boolean;
+begin
+  Result := RequireObject([hoRegisterSession]);
+  if Result then
+  begin
+    try
+      FHxRegisterSession.CommitTransaction;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+constructor TJclHelp2Manager.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited Create(AInstallation);
+  FHxRegisterSession := nil;
+  FHxRegister := nil;
+  FHxPlugin := nil;
+end;
+
+constructor TJclHelp2Manager.Create;
+begin
+  Create(nil);
+end;
+
+function TJclHelp2Manager.CreateTransaction: Boolean;
+begin
+  Result := RequireObject([hoRegisterSession]);
+  if Result then
+  begin
+    try
+      FHxRegisterSession.CreateTransaction('');
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+destructor TJclHelp2Manager.Destroy;
+begin
+  FHxRegisterSession := nil;
+  FHxRegister := nil;
+  FHxPlugin := nil;
+  inherited Destroy;
+end;
+
+function TJclHelp2Manager.GetHxPlugin: IHxPlugin;
+begin
+  RequireObject([hoPlugin]);
+  Result := FHxPlugin;
+end;
+
+function TJclHelp2Manager.GetHxRegister: IHxRegister;
+begin
+  RequireObject([hoRegister]);
+  Result := FHxRegister;
+end;
+
+function TJclHelp2Manager.GetHxRegisterSession: IHxRegisterSession;
+begin
+  RequireObject([hoRegisterSession]);
+  Result := FHxRegisterSession;
+end;
+
+function TJclHelp2Manager.PlugNameSpaceIn(const SourceNameSpace,
+  TargetNameSpace: WideString): Boolean;
+var
+  Help2Default: WideString;
+begin
+  Result := RequireObject([hoPlugin]);
+  if Result then
+  begin
+    try
+      Help2Default := Help2DefaultKeyWord;
+      FHxPlugin.RegisterHelpPlugIn(TargetNameSpace, Help2Default,
+        SourceNameSpace, Help2Default, '', 0);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.PlugNameSpaceInBorlandHelp(
+  const NameSpace: WideString): Boolean;
+begin
+  Result := Assigned(FInstallation) and (Installation.RadToolKind = brBorlandDevStudio)
+    and PlugNameSpaceIn(NameSpace, Format(Help2BorlandNameSpace, [Installation.VersionNumber]));
+end;
+
+function TJclHelp2Manager.RegisterHelpFile(const NameSpace,
+  Identifier: WideString; const LangId: Integer; const HxSFile,
+  HxIFile: WideString): Boolean;
+begin
+  Result := RequireObject([hoRegister]);
+  if Result then
+  begin
+    try
+      FHxRegister.RegisterHelpFileSet(NameSpace, Identifier, LangId, HxSFile,
+        HxIFile, '', '', 0, 0, 0, 0);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.RegisterNameSpace(const Name, Collection,
+  Description: WideString): Boolean;
+begin
+  Result := RequireObject([hoRegister]);
+  if Result then
+  begin
+    try
+      FHxRegister.RegisterNamespace(Name, Collection, Description);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.RequireObject(HelpObjects: TJclHelp2Objects): Boolean;
+begin
+  // dependencies
+  if (hoRegister in HelpObjects) or (hoPlugin in HelpObjects)then
+    Include(HelpObjects, hoRegisterSession);
+
+  Result := True;
+
+  if (hoRegisterSession in HelpObjects) and not Assigned(FHxRegisterSession) then
+  begin
+    try
+      FHxRegisterSession := CoHxRegisterSession.Create;
+    except
+      Result := False;
+    end;
+  end;
+
+  if Result and (hoRegister in HelpObjects) and not Assigned(FHxRegister) then
+  begin
+    try
+      Result := Supports(FHxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxRegister), IHxRegister, FHxRegister);
+    except
+      Result := False;
+    end;
+  end;
+
+  if Result and (hoPlugin in HelpObjects) and not Assigned(FHxPlugin) then
+  begin
+    try
+      Result := Supports(FHxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxPlugIn), IHxPlugin, FHxPlugin);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.UnPlugNameSpace(const SourceNameSpace,
+  TargetNameSpace: WideString): Boolean;
+var
+  Help2Default: WideString;
+begin
+  Result := RequireObject([hoPlugin]);
+  if Result then
+  begin
+    try
+      Help2Default := Help2DefaultKeyWord;
+      FHxPlugin.RemoveHelpPlugIn(TargetNameSpace, Help2Default,
+        SourceNameSpace, Help2Default, '');
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.UnPlugNameSpaceFromBorlandHelp(
+  const NameSpace: WideString): Boolean;
+begin
+  Result := Assigned(FInstallation) and (Installation.RadToolKind = brBorlandDevStudio)
+    and UnPlugNameSpace(NameSpace, Format(Help2BorlandNameSpace, [Installation.VersionNumber]));
+end;
+
+function TJclHelp2Manager.UnregisterHelpFile(const NameSpace,
+  Identifier: WideString; const LangId: Integer): Boolean;
+begin
+  Result := RequireObject([hoRegister]);
+  if Result then
+  begin
+    try
+      FHxRegister.RemoveHelpFile(NameSpace, Identifier, LangId);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TJclHelp2Manager.UnregisterNameSpace(const Name: WideString): Boolean;
+begin
+  Result := RequireObject([hoRegister]);
+  if Result then
+  begin
+    try
+      FHxRegister.RemoveNamespace(Name);
+    except
+      Result := False;
     end;
   end;
 end;
@@ -3888,7 +4142,7 @@ const
   PersonalitiesSection = 'Personalities';
 begin
   inherited Create(AConfigDataLocation);
-  //FBCBInstallation := TJclBCBInstallation.Create(AConfigDataLocation);
+  FHelp2Manager := TJclHelp2Manager.Create(Self);
 
   { TODO : .net 64 bit }
   if ConfigData.ReadString(PersonalitiesSection, 'C#Builder', '') <> '' then
@@ -3906,6 +4160,12 @@ begin
 
   if FPersonalities = [] then
     raise EJclBorRadException.CreateRes(@RsNoSupportedPersonality);
+end;
+
+destructor TJclBDSInstallation.Destroy;
+begin
+  FHelp2Manager.Free;
+  inherited Destroy;
 end;
 
 { TODO -cHelp : Donator: Adreas Hausladen }
@@ -4405,6 +4665,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.59  2006/03/23 21:30:01  outchy
+// Help 2.0 code moved to runtime units
+// Fixed compilation of TLB files for BCB
+//
 // Revision 1.58  2006/03/13 22:15:00  outchy
 // PathSeparator renamed to DirDelimiter
 // Installer checks paths

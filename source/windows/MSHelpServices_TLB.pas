@@ -43,12 +43,19 @@ unit MSHelpServices_TLB;
 // programmatically created via a method of the appropriate CoClass before    
 // they can be used.                                                          
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-//{$WARN SYMBOL_PLATFORM OFF}
-{$WRITEABLECONST ON}
-//{$VARPROPSETTER ON}
+{ $WARN SYMBOL_PLATFORM OFF}
+{ $WRITEABLECONST ON}
+{ $VARPROPSETTER ON}
+
+{$I jedi.inc}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+{$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+
 interface
 
-uses Windows, ActiveX, Classes, Graphics, OleServer, StdVCL{, Variants};
+uses ActiveX, Classes;
   
 
 // *********************************************************************//
@@ -425,6 +432,7 @@ type
     function GetClosedImageIndex(hNode: Integer): Integer; dispid 66581;
     procedure PrintNode(hwnd: Integer; hNode: Integer; options: HxHierarchy_PrintNode_Options); dispid 66582;
   end;
+  {$EXTERNALSYM IHxHierarchyDisp}
 
 // *********************************************************************//
 // Interface: IHxTopic
@@ -472,6 +480,7 @@ type
     function HasAttrName(const Name: WideString): WordBool; dispid 68106;
     procedure HighlightDocument(const pIDispatch: IDispatch); dispid 68107;
   end;
+  {$EXTERNALSYM IHxTopicDisp}
 
 // *********************************************************************//
 // Interface: IHxAttributeList
@@ -502,6 +511,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttribute; dispid 70403;
   end;
+  {$EXTERNALSYM IHxAttributeListDisp}
 
 // *********************************************************************//
 // Interface: IHxAttribute
@@ -536,6 +546,7 @@ type
     property DisplayName: WideString readonly dispid 69892;
     property DisplayValue: WideString readonly dispid 69893;
   end;
+  {$EXTERNALSYM IHxAttributeDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxAttribute
@@ -603,6 +614,7 @@ type
                                   lHxqMediaId: Integer; lHxrMediaId: Integer; 
                                   lSampleMediaId: Integer); dispid 66831;
   end;
+  {$EXTERNALSYM IHxRegisterDisp}
 
 // *********************************************************************//
 // Interface: IHxIndex
@@ -646,6 +658,7 @@ type
     function GetFullStringFromSlot(iSlot: Integer; const sep: WideString): WideString; dispid 67082;
     function GetCrossRefSlot(iSlot: Integer): Integer; dispid 67083;
   end;
+  {$EXTERNALSYM IHxIndexDisp}
 
 // *********************************************************************//
 // Interface: IHxSession
@@ -695,6 +708,7 @@ type
     property LangId: Smallint dispid 65803;
     function GetFilterList: IHxRegFilterList; dispid 65805;
   end;
+  {$EXTERNALSYM IHxSessionDisp}
 
 // *********************************************************************//
 // Interface: IHxTopicList
@@ -725,6 +739,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 67586;
   end;
+  {$EXTERNALSYM IHxTopicListDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxTopic
@@ -762,6 +777,7 @@ type
     function QueryForTopic(const keywords: WideString; options: HxQuery_Options): IHxTopic; dispid 67329;
     function QueryForUrl(const keywords: WideString; options: HxQuery_Options): WideString; dispid 67330;
   end;
+  {$EXTERNALSYM IHxQueryDisp}
 
 // *********************************************************************//
 // Interface: IHxCollection
@@ -800,6 +816,7 @@ type
     procedure MergeIndex; dispid 68360;
     function GetFilterTopicCount(const bstrQuery: WideString): Integer; dispid 68361;
   end;
+  {$EXTERNALSYM IHxCollectionDisp}
 
 // *********************************************************************//
 // Interface: IHxAttrNameList
@@ -830,6 +847,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttrName; dispid 71171;
   end;
+  {$EXTERNALSYM IHxAttrNameListDisp}
 
 // *********************************************************************//
 // Interface: IHxAttrName
@@ -864,6 +882,7 @@ type
     property Flag: Integer readonly dispid 70660;
     property AttributeValues: IHxAttrValueList readonly dispid 70661;
   end;
+  {$EXTERNALSYM IHxAttrNameDisp}
 
 // *********************************************************************//
 // Interface: IHxAttrValueList
@@ -894,6 +913,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttrValue; dispid 71939;
   end;
+  {$EXTERNALSYM IHxAttrValueListDisp}
 
 // *********************************************************************//
 // Interface: IHxAttrValue
@@ -925,6 +945,7 @@ type
     property DisplayValue: WideString readonly dispid 71427;
     property Flag: Integer readonly dispid 71428;
   end;
+  {$EXTERNALSYM IHxAttrValueDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxAttrValue
@@ -987,6 +1008,7 @@ type
     procedure SetNamespace(const bstrName: WideString); dispid 66053;
     procedure SetCollectionFiltersFlag(vb: WordBool); dispid 66057;
   end;
+  {$EXTERNALSYM IHxFiltersDisp}
 
 // *********************************************************************//
 // Interface: IHxRegFilterList
@@ -1019,6 +1041,7 @@ type
     property Count: Integer readonly dispid 75778;
     function FindFilter(const bstrFilterName: WideString): IHxRegFilter; dispid 75779;
   end;
+  {$EXTERNALSYM IHxRegFilterListDisp}
 
 // *********************************************************************//
 // Interface: IHxRegFilter
@@ -1039,6 +1062,7 @@ type
     ['{31411221-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxRegFilterPropId): OleVariant; dispid 75520;
   end;
+  {$EXTERNALSYM IHxRegFilterDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxRegFilter
@@ -1074,6 +1098,7 @@ type
     function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString; 
                              const bstrSFLName: WideString): IHxSample; dispid 72448;
   end;
+  {$EXTERNALSYM IHxSampleCollectionDisp}
 
 // *********************************************************************//
 // Interface: IHxSample
@@ -1117,6 +1142,7 @@ type
     function ChooseDirectory(const bstrDefaultDir: WideString; const bstrTitle: WideString): WideString; dispid 72713;
     function GetFileTextAtIndex(index: Integer): WideString; dispid 72714;
   end;
+  {$EXTERNALSYM IHxSampleDisp}
 
 // *********************************************************************//
 // Interface: IHxRegistryWalker
@@ -1138,6 +1164,7 @@ type
     ['{314111EF-A502-11D2-BBCA-00C04F8EC294}']
     property RegisteredNamespaceList[const bstrStart: WideString]: IHxRegNamespaceList readonly dispid 72960;
   end;
+  {$EXTERNALSYM IHxRegistryWalkerDisp}
 
 // *********************************************************************//
 // Interface: IHxRegNamespaceList
@@ -1168,6 +1195,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 73474;
   end;
+  {$EXTERNALSYM IHxRegNamespaceListDisp}
 
 // *********************************************************************//
 // Interface: IHxRegNamespace
@@ -1193,6 +1221,7 @@ type
     function GetProperty(propid: HxRegNamespacePropId): OleVariant; dispid 73217;
     function IsTitle(const bstrTitle: WideString): WordBool; dispid 73218;
   end;
+  {$EXTERNALSYM IHxRegNamespaceDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxRegNamespace
@@ -1226,6 +1255,7 @@ type
     ['{31411202-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxRegTitlePropId): OleVariant; dispid 73984;
   end;
+  {$EXTERNALSYM IHxRegTitleDisp}
 
 // *********************************************************************//
 // Interface: IHxRegTitleList
@@ -1256,6 +1286,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 74242;
   end;
+  {$EXTERNALSYM IHxRegTitleListDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxRegTitle
@@ -1289,6 +1320,7 @@ type
     ['{3141120A-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxRegPlugInPropId): OleVariant; dispid 74752;
   end;
+  {$EXTERNALSYM IHxRegPluginDisp}
 
 // *********************************************************************//
 // Interface: IHxRegPlugInList
@@ -1319,6 +1351,7 @@ type
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 75010;
   end;
+  {$EXTERNALSYM IHxRegPluginListDisp}
 
 // *********************************************************************//
 // Interface: IEnumHxRegPlugIn
@@ -1362,6 +1395,7 @@ type
     procedure RevertTransaction; dispid 75267;
     function GetRegistrationObject(type_: HxRegisterSession_InterfaceType): IDispatch; dispid 75270;
   end;
+  {$EXTERNALSYM IHxRegisterSessionDisp}
 
 // *********************************************************************//
 // Interface: IHxPlugIn
@@ -1394,6 +1428,7 @@ type
                                const bstrProductHxt: WideString; const bstrNamespace: WideString; 
                                const bstrHxt: WideString; const bstrHxa: WideString); dispid 66305;
   end;
+  {$EXTERNALSYM IHxPlugInDisp}
 
 // *********************************************************************//
 // Interface: IHxInitialize
@@ -1418,6 +1453,7 @@ type
     procedure Initialize(const InitString: WideString; options: Integer); dispid 72192;
     property filter: WideString dispid 72193;
   end;
+  {$EXTERNALSYM IHxInitializeDisp}
 
 // *********************************************************************//
 // Interface: IHxCancel
@@ -1440,6 +1476,7 @@ type
     ['{31411225-A502-11D2-BBCA-00C04F8EC294}']
     property Cancel: HxCancelStatus dispid 76032;
   end;
+  {$EXTERNALSYM IHxCancelDisp}
 
 // *********************************************************************//
 // DispIntf:  IHxSessionEvents
@@ -1453,6 +1490,7 @@ type
     procedure PrintMergeStatus(const pSession: IDispatch; const pCancel: IDispatch; status: Integer); dispid 65802;
     procedure MergeIndexFileName(const pDisp: IDispatch; const bstrFile: WideString); dispid 65804;
   end;
+  {$EXTERNALSYM IHxSessionEvents}
 
 // *********************************************************************//
 // DispIntf:  IHxRegisterSessionEvents
@@ -1463,6 +1501,7 @@ type
     ['{31411223-A502-11D2-BBCA-00C04F8EC294}']
     procedure FiltersChanged(const pDisp: IDispatch; var pvar: OleVariant); dispid 75271;
   end;
+  {$EXTERNALSYM IHxRegisterSessionEvents}
 
 // *********************************************************************//
 // Interface: IHxRegisterProtocol
@@ -1485,6 +1524,7 @@ type
     procedure Register; dispid 1610743808;
     procedure Unregister; dispid 1610743809;
   end;
+  {$EXTERNALSYM IHxRegisterProtocolDisp}
 
 // *********************************************************************//
 // The Class CoHxSession provides a Create and CreateRemote method to          

@@ -571,9 +571,6 @@ const
   Help2LangId            = 1033;         // en/english
   Help2HxSFile           = 'JCLHelp.HxS';
   Help2HxIFile           = 'JCLHelp.HxI';
-  Help2BorlandNameSpace  = 'Borland.BDS%d';
-  Help2Default           = '_DEFAULT';
-
 
   JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
   JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
@@ -1980,12 +1977,9 @@ end;
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.RegisterHelp2Files;
 var
-  HxRegisterSession: IHxRegisterSession;
-  HxPlugin: IHxPlugIn;
-  HxRegister: IHxRegister;
+  Help2Manager: TJclHelp2Manager;
   CurrentDir: string;
-  NameSpace, Collection, Description, Identifier, HxSFile, HxIFile,
-  BorlandNameSpace, Default: WideString;
+  NameSpace, Collection, Description, Identifier, HxSFile, HxIFile: WideString;
   LangId: Integer;
 begin
   if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
@@ -2001,48 +1995,42 @@ begin
   LangId := Help2LangId;
   HxSFile := Help2HxSFile;
   HxIFile := Help2HxIFile;
-  BorlandNameSpace := Format(Help2BorlandNameSpace, [Target.VersionNumber]);
-  Default := Help2Default;
 
   CurrentDir := GetCurrentDir;
   if SetCurrentDir(Distribution.Path + 'help\') then
   try
-    HxRegisterSession := CoHxRegisterSession.Create;
+    Help2Manager := TJclBDSInstallation(Target).Help2Manager;
 
-    // WARNING all interface methods are safecall
-    // an OLE exception is raised on failure
+    if Help2Manager.CreateTransaction then
+      WriteLog('Transaction created')
+    else
+      WriteLog('Failed to create a transaction');
+      
+    WriteLog('Registering namespace...');
+    if Help2Manager.RegisterNameSpace(NameSpace, Collection, Description) then
+      WriteLog('...success')
+    else
+      WriteLog('...failed');
 
-    HxRegisterSession.CreateTransaction('');
-
-    WriteLog('Getting registration interface...');
-    if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxRegister), IHxRegister, HxRegister) then
-    begin
-      WriteLog('...success');
-      WriteLog('Registering namespace...');
-      HxRegister.RegisterNamespace(NameSpace, Collection, Description);
-      WriteLog('...success');
-      WriteLog('Registering help file...');
-      HxRegister.RegisterHelpFileSet(NameSpace, Identifier, LangId, HxSFile, HxIFile, '', '', 0, 0, 0, 0);
-      WriteLog('...success');
-    end
+    WriteLog('Registering help file...');
+    if Help2Manager.RegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile) then
+      WriteLog('...success')
     else
       WriteLog('...failed');
 
     if OptionSelected(ioJclHelpHxSPlugin) then
     begin
-      WriteLog('Getting plugin registration interface...');
-      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxPlugIn), IHxPlugin, HxPlugin) then
-      begin
-        WriteLog('...success');
-        WriteLog('Registering plugin...');
-        HxPlugin.RegisterHelpPlugIn(BorlandNameSpace, Default, NameSpace, Default, '', 0);
-        WriteLog('...success');
-      end
+      WriteLog('Registering plugin...');
+      if Help2Manager.PlugNameSpaceInBorlandHelp(NameSpace) then
+        WriteLog('...success')
       else
-        WriteLog('Error: could not get plugin registration interface');
+        WriteLog('...failed');
     end;
 
-    HxRegisterSession.CommitTransaction;
+    if Help2Manager.CommitTransaction then
+      WriteLog('Transaction committed')
+    else
+      WriteLog('Failed to commit the transaction');
   finally
     SetCurrentDir(CurrentDir);
   end;
@@ -2259,12 +2247,9 @@ end;
 {$IFDEF MSWINDOWS}
 procedure TJclInstallation.UnregisterHelp2Files;
 var
-  HxRegisterSession: IHxRegisterSession;
-  HxPlugin: IHxPlugIn;
-  HxRegister: IHxRegister;
+  Help2Manager: TJclHelp2Manager;
   CurrentDir: string;
-  NameSpace, Identifier, HxSFile, HxIFile,
-  BorlandNameSpace, Default: WideString;
+  NameSpace, Identifier, HxSFile, HxIFile: WideString;
   LangId: Integer;
 begin
   if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
@@ -2278,54 +2263,41 @@ begin
   LangId := Help2LangId;
   HxSFile := Help2HxSFile;
   HxIFile := Help2HxIFile;
-  BorlandNameSpace := Format(Help2BorlandNameSpace, [Target.VersionNumber]);
-  Default := Help2Default;
 
   CurrentDir := GetCurrentDir;
   if SetCurrentDir(Distribution.Path + 'help\') then
   try
-    try
-      HxRegisterSession := CoHxRegisterSession.Create;
+    Help2Manager := TJclBDSInstallation(Target).Help2Manager;
 
-      // WARNING all interface methods are safecall
-      // an OLE exception is raised on failure
+    if Help2Manager.CreateTransaction then
+      WriteLog('Transaction created')
+    else
+      WriteLog('Failed to create a transaction');
 
-      HxRegisterSession.CreateTransaction('');
+    WriteLog('Unregistering plugin...');
+    if Help2Manager.UnPlugNameSpaceFromBorlandHelp(NameSpace) then
+      WriteLog('...success')
+    else
+      WriteLog('...failed');
 
-      WriteLog('Getting plugin registration interface...');
-      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxPlugIn), IHxPlugin, HxPlugin) then
-      begin
-        WriteLog('...success');
+    WriteLog('Unregistering help file...');
+    if Help2Manager.UnregisterHelpFile(NameSpace, Identifier, LangId) then
+      WriteLog('...success')
+    else
+      WriteLog('...failed');
 
-        WriteLog('Unregistering plugin...');
-        HxPlugin.RemoveHelpPlugIn(BorlandNameSpace, Default, NameSpace, Default, '');
-        WriteLog('...success');
-      end
-      else
-        WriteLog('Error: could not get plugin registration interface');
+    WriteLog('Unregistering namespace...');
+    if Help2Manager.UnregisterNameSpace(NameSpace) then
+      WriteLog('...success')
+    else
+      WriteLog('...failed');
 
-      WriteLog('Getting registration interface...');
-      if Supports(HxRegisterSession.GetRegistrationObject(HxRegisterSession_IHxRegister), IHxRegister, HxRegister) then
-      begin
-        WriteLog('...success');
-
-        WriteLog('Unregistering help file...');
-        HxRegister.RemoveHelpFile(NameSpace, Identifier, LangId);
-        WriteLog('...success');
-
-        WriteLog('Unregistering namespace...');
-        HxRegister.RemoveNamespace(NameSpace);
-        WriteLog('...success');
-      end
-      else
-        WriteLog('...failed');
-
-      HxRegisterSession.CommitTransaction;
-    finally
-      SetCurrentDir(CurrentDir);
-    end;
-  except
-
+    if Help2Manager.CommitTransaction then
+      WriteLog('Transaction committed')
+    else
+      WriteLog('Failed to commit the transaction');
+  finally
+    SetCurrentDir(CurrentDir);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -2670,6 +2642,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.100  2006/03/23 21:29:59  outchy
+// Help 2.0 code moved to runtime units
+// Fixed compilation of TLB files for BCB
+//
 // Revision 1.99  2006/03/22 19:52:17  outchy
 // Fixed c5 and d5 compilation
 //
