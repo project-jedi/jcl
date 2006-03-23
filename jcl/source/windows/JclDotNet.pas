@@ -59,6 +59,8 @@ uses
   JclBase,
   mscoree_TLB, mscorlib_TLB;
 
+{$HPPEMIT '#include<Mscoree.h>'}
+
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
 type
@@ -230,45 +232,68 @@ type
 
 type
   HDOMAINENUM = Pointer;
+  {$EXTERNALSYM GetCORSystemDirectory}
 
 function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM GetCORSystemDirectory}
 function GetCORVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM GetCORVersion}
 function GetCORRequiredVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
-function CorBindToRuntimeHost(pwszVersion, pwszBuildFlavor, pwszHostConfigFile: PWideChar;
-  const pReserved: Pointer; const startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
-function CorBindToRuntimeEx(pwszVersion, pwszBuildFlavor: PWideChar; startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
-function CorBindToRuntimeByCfg(const pCfgStream: IStream; const reserved, startupFlags: DWORD;
-  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
+{$EXTERNALSYM GetCORRequiredVersion}
+function CorBindToRuntimeHost(pwszVersion, pwszBuildFlavor,
+  pwszHostConfigFile: PWideChar; const pReserved: Pointer;
+  const startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+  out pv): HRESULT; stdcall;
+{$EXTERNALSYM CorBindToRuntimeHost}
+function CorBindToRuntimeEx(pwszVersion, pwszBuildFlavor: PWideChar;
+  startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+  out pv): HRESULT; stdcall;
+{$EXTERNALSYM CorBindToRuntimeEx}
+function CorBindToRuntimeByCfg(const pCfgStream: IStream;
+  const reserved, startupFlags: DWORD; const rclsid: TCLSID;
+  const riid: TIID; out pv): HRESULT; stdcall;
+{$EXTERNALSYM CorBindToRuntimeByCfg}
 function CorBindToRuntime(pwszVersion, pwszBuildFlavor: PWideChar;
   const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
+{$EXTERNALSYM CorBindToRuntime}
 function CorBindToCurrentRuntime(pwszFileName: PWideChar;
   const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
+{$EXTERNALSYM CorBindToCurrentRuntime}
 function ClrCreateManagedInstance(pTypeName: PWideChar;
   const riid: TIID; out pv): HRESULT; stdcall;
+{$EXTERNALSYM ClrCreateManagedInstance}
 procedure CorMarkThreadInThreadPool; stdcall;
+{$EXTERNALSYM CorMarkThreadInThreadPool}
 function RunDll32ShimW(const hwnd: THandle; const hinst: HMODULE;
   lpszCmdLine: PWideChar; const nCmdShow: Integer): HRESULT; stdcall;
+{$EXTERNALSYM RunDll32ShimW}
 function LoadLibraryShim(szDllName, szVersion: PWideChar;
   const pvReserved: Pointer; out phModDll: HMODULE): HRESULT; stdcall;
+{$EXTERNALSYM LoadLibraryShim}
 function CallFunctionShim(szDllName: PWideChar; const szFunctionName: PChar;
   const lpvArgument1, lpvArgument2: Pointer; szVersion: PWideChar;
   const pvReserved: Pointer): HRESULT; stdcall;
-function GetRealProcAddress(const pwszProcName: PChar; out ppv: Pointer): HRESULT; stdcall;
+{$EXTERNALSYM CallFunctionShim}
+function GetRealProcAddress(const pwszProcName: PChar;
+  out ppv: Pointer): HRESULT; stdcall;
+{$EXTERNALSYM GetRealProcAddress}
 procedure CorExitProcess(const exitCode: Integer); stdcall;
+{$EXTERNALSYM CorExitProcess}
+
+const
+  mscoree_dll = 'mscoree.dll';
 
 implementation
 
 uses
-  ComObj, Variants, Provider,
+  ComObj,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JclSysUtils;
-
-const
-  mscoree_dll = 'mscoree.dll';
 
 function GetCORSystemDirectory; external mscoree_dll;
 function GetCORVersion; external mscoree_dll;
@@ -284,7 +309,7 @@ function RunDll32ShimW; external mscoree_dll;
 function LoadLibraryShim; external mscoree_dll;
 function CallFunctionShim; external mscoree_dll;
 function GetRealProcAddress; external mscoree_dll;
-procedure CorExitProcess; external mscoree_dll;
+procedure CorExitProcess; external mscoree_dll; 
 
 //=== { TJclClrHost } ========================================================
 
@@ -528,13 +553,16 @@ function TJclClrAppDomain.Execute(const AssemblyFile: TFileName;
   const Arguments: TStrings; const AssemblySecurity: IJclClrEvidence): Integer;
 var
   Args: Variant;
+  Index: Integer;
 begin
   Assert(FileExists(AssemblyFile));
   if Arguments.Count = 0 then
     Result := Execute(AssemblyFile, AssemblySecurity)
   else
   begin
-    Args := VarArrayFromStrings(Arguments);
+    Args := VarArrayCreate([0, Arguments.Count - 1], varOleStr);
+    for Index := 0 to Arguments.Count - 1 do
+      Args[Index] := WideString(Arguments.Strings[Index]);
     Result := DefaultInterface.ExecuteAssembly_3(AssemblyFile, AssemblySecurity, PSafeArray(TVarData(Args).VArray));
   end;
 end;
@@ -755,6 +783,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2006/03/23 21:29:22  outchy
+// JclDotNet is now included in the Jcl packages
+//
 // Revision 1.14  2005/12/12 21:54:10  outchy
 // HWND changed to THandle (linking problems with BCB).
 //
