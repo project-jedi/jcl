@@ -704,8 +704,10 @@ begin
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
+      Bucket.Entries[I].Key := nil;
+      Bucket.Entries[I].Value := nil;
       if I < Length(Bucket.Entries) - 1 then
-        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
       Dec(Bucket.Count);
       Dec(FCount);
       Break;
@@ -1040,8 +1042,10 @@ begin
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
+      Bucket.Entries[I].Key := '';
+      Bucket.Entries[I].Value := nil;
       if I < Length(Bucket.Entries) - 1 then
-        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
       Dec(Bucket.Count);
       Dec(FCount);
       Break;
@@ -1389,8 +1393,10 @@ begin
     if Bucket.Entries[I].Key = Key then
     begin
       Result := Bucket.Entries[I].Value;
+      Bucket.Entries[I].Key := '';
+      Bucket.Entries[I].Value := '';
       if I < Length(Bucket.Entries) - 1 then
-        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
       Dec(Bucket.Count);
       Dec(FCount);
       Break;
@@ -1617,6 +1623,7 @@ end;
 
 procedure TJclStrHashMap.FreeObject(var AObject: TObject);
 begin
+  // TODO: trap destructor exceptions
   if FOwnsObjects then
   begin
     AObject.Free;
@@ -1722,6 +1729,7 @@ begin
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
+      FreeObject(Bucket.Entries[I].Value);
       Bucket.Entries[I].Value := Value;
       Exit;
     end;
@@ -1751,13 +1759,11 @@ begin
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
-      if not FOwnsObjects then
-        Result := Bucket.Entries[I].Value
-      else
-        Bucket.Entries[I].Value.Free;
+      FreeObject(Bucket.Entries[I].Value);
+      Result := Bucket.Entries[I].Value;
       Bucket.Entries[I].Key := '';
       if I < Length(Bucket.Entries) - 1 then
-        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
       Dec(Bucket.Count);
       Dec(FCount);
       Break;
@@ -1824,7 +1830,7 @@ begin
   begin
     for J := 0 to FBuckets[I].Count - 1 do
     begin
-      FBuckets[I].Entries[J].Key := nil; // Free key ?
+      FBuckets[I].Entries[J].Key := nil; 
       FreeObject(FBuckets[I].Entries[J].Value);
     end;
     FBuckets[I].Count := 0;
@@ -1844,7 +1850,8 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  NewMap := TJclHashMap.Create(FCapacity, FOwnsObjects);
+  // only one can owns objects
+  NewMap := TJclHashMap.Create(FCapacity, False);
   for I := 0 to FCapacity - 1 do
   begin
     NewEntryArray := NewMap.FBuckets[I].Entries;
@@ -1944,6 +1951,7 @@ end;
 
 procedure TJclHashMap.FreeObject(var AObject: TObject);
 begin
+  // TODO: trap destructor exceptions
   if FOwnsObjects then
   begin
     AObject.Free;
@@ -2057,6 +2065,7 @@ begin
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
+      FreeObject(Bucket.Entries[I].Value);
       Bucket.Entries[I].Value := Value;
       Exit;
     end;
@@ -2088,12 +2097,10 @@ begin
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
-      if not FOwnsObjects then
-        Result := Bucket.Entries[I].Value
-      else
-        Bucket.Entries[I].Value.Free;
+      FreeObject(Bucket.Entries[I].Value);
+      Result := Bucket.Entries[I].Value;
       if I < Length(Bucket.Entries) - 1 then
-        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I);
+        MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
       Dec(Bucket.Count);
       Dec(FCount);
       Break;
@@ -2124,6 +2131,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2006/03/26 00:41:20  outchy
+// IT3605 and IT3536: memory corruption and memory leaks fixed.
+//
 // Revision 1.8  2005/08/09 10:30:21  ahuser
 // JCL.NET changes
 //
