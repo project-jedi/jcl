@@ -41,7 +41,8 @@ type
     procedure DialogShow(Sender: TObject);
   public
     constructor Create; reintroduce;
-    destructor Destroy; override;
+    procedure RegisterCommands; override;
+    procedure UnregisterCommands; override;
   end;
 
 // design package entry point
@@ -123,19 +124,6 @@ end;
 constructor TJclOpenDialogsFavoriteExpert.Create;
 begin
   inherited Create(JclFavoritesExpertName);
-  FFavOpenDialog := InitializeFavOpenDialog;
-  FFavOpenDialog.DisableHelpButton := True;
-  FFavOpenDialog.HookDialogs;
-  FFavOpenDialog.OnClose := DialogClose;
-  FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
-    PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
-end;
-
-destructor TJclOpenDialogsFavoriteExpert.Destroy;
-begin
-  FFavOpenDialog.UnhookDialogs;
-  inherited Destroy;
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
@@ -149,9 +137,30 @@ begin
   Settings.LoadStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
 end;
 
+procedure TJclOpenDialogsFavoriteExpert.RegisterCommands;
+begin
+  inherited RegisterCommands;
+  FFavOpenDialog := InitializeFavOpenDialog;
+  FFavOpenDialog.DisableHelpButton := True;
+  FFavOpenDialog.HookDialogs;
+  FFavOpenDialog.OnClose := DialogClose;
+  FFavOpenDialog.OnShow := DialogShow;
+  FFavOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
+    PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
+end;
+
+procedure TJclOpenDialogsFavoriteExpert.UnregisterCommands;
+begin
+  FFavOpenDialog.UnhookDialogs;
+  inherited UnregisterCommands;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.9  2006/03/26 20:22:19  outchy
+// Command registration moved out of expert constructors and destructors
+//
 // Revision 1.8  2006/01/08 17:16:57  outchy
 // Settings reworked.
 // Common window for expert configurations
@@ -168,10 +177,13 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Revision 1.8  2006/01/08 17:16:57  outchy
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Settings reworked.
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Common window for expert configurations
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and
+// - improved header information, added $Date: 2006/01/08 17:16:57 $ and Revision 1.9  2006/03/26 20:22:19  outchy
+// - improved header information, added $Date: 2006/01/08 17:16:57 $ and Command registration moved out of expert constructors and destructors
+// - improved header information, added $Date: 2006/01/08 17:16:57 $ and
+// - improved header information, added $Date$ and Revision 1.8  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date$ and Settings reworked.
+// - improved header information, added $Date$ and Common window for expert configurations
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.7  2005/12/26 18:03:41  outchy
 // - improved header information, added $Date$ and Enhanced bds support (including C#1 and D8)
 // - improved header information, added $Date$ and Introduction of dll experts

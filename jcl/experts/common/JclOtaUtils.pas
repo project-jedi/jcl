@@ -142,6 +142,8 @@ type
   public
     constructor Create(AName: string); virtual;
     destructor Destroy; override;
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
     
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
@@ -173,14 +175,14 @@ type
 
   TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard)
   protected
-    procedure AfterSave;
-    procedure BeforeSave;
-    procedure Destroyed;
-    procedure Modified;
-    procedure Execute;
-    function GetIDString: string;
-    function GetName: string;
-    function GetState: TWizardState;
+    procedure AfterSave; virtual;
+    procedure BeforeSave; virtual;
+    procedure Destroyed; virtual;
+    procedure Modified; virtual;
+    procedure Execute; virtual;
+    function GetIDString: string; virtual;
+    function GetName: string; virtual;
+    function GetState: TWizardState; virtual;
   end;
 
 // procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
@@ -404,6 +406,22 @@ begin
   GlobalExpertList.Add(AExpert);
 end;
 
+procedure TJclOTAExpertBase.AfterConstruction;
+begin
+  inherited AfterConstruction;
+
+  RegisterCommands;
+  AddExpert(Self);
+end;
+
+procedure TJclOTAExpertBase.BeforeDestruction;
+begin
+  RemoveExpert(Self);
+  UnregisterCommands;
+  
+  inherited BeforeDestruction;
+end;
+
 class procedure TJclOTAExpertBase.RemoveExpert(AExpert: TJclOTAExpertBase);
 begin
   if Assigned(GlobalExpertList) then
@@ -525,18 +543,10 @@ begin
   FName := AName;
   FEnvVariables := TStringList.Create;
   FSettings := TJclOTASettings.Create(FName);
-
-  RegisterCommands;
-
-  AddExpert(Self);
 end;
 
 destructor TJclOTAExpertBase.Destroy;
 begin
-  RemoveExpert(Self);
-
-  UnRegisterCommands;
-
   FreeAndNil(FSettings);
   FreeAndNil(FEnvVariables);
 
@@ -1133,6 +1143,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2006/03/26 20:22:19  outchy
+// Command registration moved out of expert constructors and destructors
+//
 // Revision 1.18  2006/03/02 18:48:08  outchy
 // Updated function prototype (fixing link error with C++Builder 6)
 //
