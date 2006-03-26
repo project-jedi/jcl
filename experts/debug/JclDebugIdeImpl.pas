@@ -91,7 +91,6 @@ type
     procedure EndStoreResults;
   public
     constructor Create; reintroduce;
-    destructor Destroy; override;
     {$IFNDEF OldStyleExpert}
     procedure AfterCompile(Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
@@ -198,20 +197,6 @@ end;
 constructor TJclDebugExtension.Create;
 begin
   inherited Create(JclDebugExpertRegKey);
-  {$IFNDEF OldStyleExpert}
-  FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
-  LoadExpertValues;
-  {$ENDIF OldStyleExpert}
-end;
-
-destructor TJclDebugExtension.Destroy;
-begin
-  {$IFNDEF OldStyleExpert}
-  if FNotifierIndex <> -1 then
-    Services.RemoveNotifier(FNotifierIndex);
-  SaveExpertValues;
-  {$ENDIF OldStyleExpert}
-  inherited Destroy;
 end;
 
 {$IFNDEF OldStyleExpert}
@@ -696,6 +681,11 @@ begin
     ImageBmp.Free;
   end;
 
+  {$IFNDEF OldStyleExpert}
+  FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
+  LoadExpertValues;
+  {$ENDIF OldStyleExpert}
+
   IDEProjectItem := nil;
   with IDEMainMenu do
     for I := 0 to Items.Count - 1 do
@@ -775,6 +765,9 @@ procedure TJclDebugExtension.UnregisterCommands;
 begin
   inherited UnregisterCommands;
   {$IFNDEF OldStyleExpert}
+  if FNotifierIndex <> -1 then
+    Services.RemoveNotifier(FNotifierIndex);
+  SaveExpertValues;
   HookBuildActions(False);
   UnregisterAction(FInsertDataAction);
   FreeAndNil(FInsertDataItem);
