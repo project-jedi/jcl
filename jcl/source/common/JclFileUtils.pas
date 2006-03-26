@@ -1966,13 +1966,13 @@ begin
       LocalPath := Path
     else
       LocalPath := ExtractFilePath(Path);
-    StrIToStrings(LocalPath, '\', List, True);
+    StrIToStrings(LocalPath, DirDelimiter, List, True);
     I := Depth + 1;
     if PathIsUNC(LocalPath) then
       I := I + 2;
     while I < List.Count do
       List.Delete(I);
-    Result := PathAddSeparator(StringsToStr(List, '\', True));
+    Result := PathAddSeparator(StringsToStr(List, DirDelimiter, True));
   finally
     List.Free;
   end;
@@ -1993,7 +1993,7 @@ begin
       LocalPath := Path
     else
       LocalPath := ExtractFilePath(Path);
-    StrIToStrings(LocalPath, '\', List, False);
+    StrIToStrings(LocalPath, DirDelimiter, List, False);
     if PathIsUNC(LocalPath) then
       Start := 1
     else
@@ -2192,7 +2192,7 @@ begin
   if (DestDrive <> '') and ((OrigDrive = '') or ((OrigDrive <> '') and not Equal(OrigDrive, DestDrive))) then
     Result := Destination
   else
-  if (OrigDrive <> '') and (Pos('\', Destination) = 1) then
+  if (OrigDrive <> '') and (Pos(DirDelimiter, Destination) = 1) then
     Result := OrigDrive + Destination  // prepend drive part from Origin
   else
   {$ENDIF MSWINDOWS}
@@ -2460,7 +2460,7 @@ var
     // leading '$' is valid (indicates a hidden share)
     Result := True;
     {$IFDEF CLR}
-    while (Index <= LenPath) and (Path[Index] <> '\') do
+    while (Index <= LenPath) and (Path[Index] <> DirDelimiter) do
     begin
       if AnsiChar(Path[Index]) in InvalidCharacters then
       begin
@@ -2470,7 +2470,7 @@ var
       Inc(Index);
     end;
     {$ELSE ~CLR}
-    while (P^ <> #0) and (P^ <> '\') do
+    while (P^ <> #0) and (P^ <> DirDelimiter) do
     begin
       if P^ in InvalidCharacters then
       begin
@@ -2569,13 +2569,20 @@ begin
   MaskList := TStringList.Create;
   try
     {* extract the Directory *}
-    Directory := PathAddSeparator(ExtractFileDir(Path));
+    Directory := ExtractFileDir(Path);
 
-    {* extract the FileMasks portion out of Path *}
-    Masks := StrAfter(Directory, Path);
+    {* files can be searched in the current directory *}
+    if Directory <> '' then
+    begin
+      Directory := PathAddSeparator(Directory);
+      {* extract the FileMasks portion out of Path *}
+      Masks := StrAfter(Directory, Path);
+    end
+    else
+      Masks := Path;
 
     {* put the Masks into TStringlist *}
-    StrTokenToStrings(Masks, ';', MaskList);
+    StrTokenToStrings(Masks, DirSeparator, MaskList);
 
     {* search all files in the directory *}
     Result := FindFirst(Directory + '*', faAnyFile, SearchRec) = 0;
@@ -2685,7 +2692,7 @@ begin
     BuildFileList(LPath + '\*.*', faAnyFile, Files);
     for I := 0 to Files.Count - 1 do
     begin
-      FileName := LPath + '\' + Files[I];
+      FileName := LPath + DirDelimiter + Files[I];
       PartialResult := True;
       // If the current file is itself a directory then recursively delete it
       Attr := GetFileAttributes(PChar(FileName));
@@ -3277,7 +3284,7 @@ function GetDirectorySize(const Path: string): Int64;
         if (F.Name <> '.') and (F.Name <> '..') then
         begin
           if (F.Attr and faDirectory) = faDirectory then
-            Inc(Result, RecurseFolder(Path + F.Name + '\'))
+            Inc(Result, RecurseFolder(Path + F.Name + DirDelimiter))
           else
           {$IFDEF MSWINDOWS}
           begin
@@ -4361,7 +4368,7 @@ begin
   begin
     SetLength(Buffer, Size);
     if GetFileVersionInfo(PChar(FileName), Handle, Size, Pointer(Buffer)) and
-      VerQueryValue(Pointer(Buffer), '\', Pointer(FixInfoBuf), FixInfoLen) and
+      VerQueryValue(Pointer(Buffer), DirDelimiter, Pointer(FixInfoBuf), FixInfoLen) and
       (FixInfoLen = SizeOf(TVSFixedFileInfo)) then
     begin
       Result := True;
@@ -4750,7 +4757,7 @@ end;
 constructor TJclFileMaskComparator.Create;
 begin
   inherited Create;
-  FSeparator := ';';
+  FSeparator := DirSeparator;
 end;
 
 function TJclFileMaskComparator.Compare(const NameExt: string): Boolean;
@@ -5768,7 +5775,7 @@ end;
 
 function TJclFileEnumerator.GetFileMask: string;
 begin
-  Result := StringsToStr(FileMasks, ';', False);
+  Result := StringsToStr(FileMasks, DirSeparator, False);
 end;
 
 function TJclFileEnumerator.GetFileMasks: TStrings;
@@ -5859,7 +5866,7 @@ end;
 procedure TJclFileEnumerator.SetFileMask(const Value: string);
 begin
   { TODO : UNIX : ? }
-  StrToStrings(Value, ';', FFileMasks, False);
+  StrToStrings(Value, DirSeparator, FFileMasks, False);
 end;
 
 procedure TJclFileEnumerator.SetFileMasks(const Value: TStrings);
@@ -6079,6 +6086,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.63  2006/03/26 00:10:52  outchy
+// Style cleaning
+// IT3207: searching files in the current path
+//
 // Revision 1.62  2006/03/14 21:18:36  ahuser
 // .NET compatibility
 //
