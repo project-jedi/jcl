@@ -908,7 +908,11 @@ const
   MakeExeName                = 'make.exe';
   DelphiOptionsFileExtension = '.dof';
   ConfigurationExtension     = '.cfg';
+  {$IFDEF BCB}
+  BorRADToolRepositoryFileName = 'bcb.dro';
+  {$ELSE BCB}
   BorRADToolRepositoryFileName = 'delphi32.dro';
+  {$ENDIF BCB}
   HelpContentFileName        = '%s\Help\%s%d.ohc';
   HelpIndexFileName          = '%s\Help\%s%d.ohi';
   HelpLinkFileName           = '%s\Help\%s%d.ohl';
@@ -4665,6 +4669,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.60  2006/03/26 20:13:13  outchy
+// Fixed BCB repository name
+//
 // Revision 1.59  2006/03/23 21:30:01  outchy
 // Help 2.0 code moved to runtime units
 // Fixed compilation of TLB files for BCB
