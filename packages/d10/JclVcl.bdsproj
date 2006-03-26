@@ -123,7 +123,7 @@
       <Directories Name="SearchPath">..\..\source</Directories>
       <Directories Name="OutputDir"></Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
-      <Directories Name="PackageDCPOutputDir"></Directories>
+      <Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>
       <Directories Name="Packages">rtl;vcl;vcljpg;Jcl</Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>

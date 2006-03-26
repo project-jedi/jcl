@@ -120,7 +120,7 @@
       <Directories Name="OutputDir"></Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d9</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
-      <Directories Name="PackageDCPOutputDir"></Directories>
+      <Directories Name="PackageDCPOutputDir">..\..\lib\d9</Directories>
       <Directories Name="SearchPath">..\..\common</Directories>
       <Directories Name="Packages">rtl;vcl;designide;Jcl</Directories>
       <Directories Name="Conditionals"></Directories>
