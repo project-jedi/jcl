@@ -19,6 +19,7 @@
 {   André Snepvangers (asnepvangers)                                                               }
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Anthony Steele                                                                                 }
+{   Rik Barker    (rikbarker)                                                                      }
 {   Azret Botash                                                                                   }
 {   Charlie Calvert                                                                                }
 {   David Hervieux                                                                                 }
@@ -4531,7 +4532,12 @@ var
             if ValueLen in [1..4] then
               Value := Format('$%.*x', [ValueLen * 2, PInteger(Data)^])
             else
-              Value := '';
+            begin
+              if (ValueLen > 0) and IsUnicode then
+                Value:=PWideChar(Data)
+              else
+                Value := '';
+            end;
           1:
             if ValueLen = 0 then
               Value := ''
