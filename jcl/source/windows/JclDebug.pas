@@ -2794,7 +2794,10 @@ begin
     end;
   end
   else
+  begin
     Result := Format('[%p]', [Addr]);
+    IncludeVAdress := True;
+  end;
   if IncludeVAdress or IncludeModuleName then
   begin
     Module := ModuleFromAddr(Addr);
