@@ -111,8 +111,8 @@ type
 
 {$IFDEF MSWINDOWS}
 
-{ SharedGetMem return ERROR_ALREADY_EXISTS if the shared memory is already,
-  otherwise it return 0.
+{ SharedGetMem return ERROR_ALREADY_EXISTS if the shared memory is already
+  allocated, otherwise it returns 0.
   Throws ESharedMemError if the Name is invalid. }
 function SharedGetMem(var p{: Pointer}; const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Integer;
@@ -129,7 +129,7 @@ function SharedFreeMem(var p{: Pointer}): Boolean;
 // Functions for the shared memory user 
 
 { SharedOpenMem returns True if the shared memory was already allocated by
-  SharedGetMem or SharedAllocMem. Otherwise it return False.
+  SharedGetMem or SharedAllocMem. Otherwise it returns False.
   Throws ESharedMemError if the Name is invalid. }
 
 function SharedOpenMem(var p{: Pointer}; const Name: string;
