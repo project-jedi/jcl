@@ -170,6 +170,9 @@ uses
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
   JclInstall;
 
+resourcestring
+  RsConfirmUninstall = 'Do you really want to uninstall the JCL?';
+
 const
   {$IFNDEF RTL140_UP}
   PathSep = ';';
@@ -543,8 +546,11 @@ procedure TMainForm.UninstallBtnClick(Sender: TObject);
 begin
   if ({$IFDEF MSWINDOWS} IsDebuggerAttached or {$ENDIF} not CheckRunningInstances) then
   begin
-    Uninstall;
-    QuitBtn.SetFocus;
+    if MessageDlg(RsConfirmUninstall, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      Uninstall;
+      QuitBtn.SetFocus;
+    end;
   end;
 end;
 
