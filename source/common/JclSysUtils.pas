@@ -481,6 +481,27 @@ type
   {$ENDIF ~CLR}
   end;
 
+type
+  TJclSimpleLog = class (TObject)
+  private
+    FLogFileHandle: THandle;
+    FLogFileName: string;
+    FLogWasEmpty: Boolean;
+    function GetLogOpen: Boolean;
+  protected
+    function CreateDefaultFileName: string;
+  public
+    constructor Create(const ALogFileName: string = '');
+    destructor Destroy; override;
+    procedure CloseLog;
+    procedure OpenLog;
+    procedure Write(const Text: string; Indent: Integer = 0); overload;
+    procedure Write(Strings: TStrings; Indent: Integer = 0); overload;
+    procedure WriteStamp(SeparatorLen: Integer = 0);
+    property LogFileName: string read FLogFileName;
+    property LogOpen: Boolean read GetLogOpen;
+  end;
+
 implementation
 
 uses
@@ -503,7 +524,7 @@ uses
   {$ENDIF CLR}
   Contnrs,
   JclResources, JclStrings, JclMath,
-  JclSysInfo;
+  JclSysInfo, JclFileUtils;
 
 {$IFNDEF CLR}
 // Pointer manipulation
@@ -2888,6 +2909,98 @@ begin
 end;
 {$ENDIF ~CLR}
 
+//=== { TJclSimpleLog } ======================================================
+
+procedure TJclSimpleLog.CloseLog;
+begin
+  if LogOpen then
+  begin
+    CloseHandle(FLogFileHandle);
+    FLogFileHandle := INVALID_HANDLE_VALUE;
+    FLogWasEmpty := False;
+  end;
+end;
+
+constructor TJclSimpleLog.Create(const ALogFileName: string);
+begin
+  if ALogFileName = '' then
+    FLogFileName := CreateDefaultFileName
+  else
+    FLogFileName := ALogFileName;
+  FLogFileHandle := INVALID_HANDLE_VALUE;
+end;
+
+function TJclSimpleLog.CreateDefaultFileName: string;
+begin
+  Result := PathExtractFileDirFixed(ParamStr(0))
+    + PathExtractFileNameNoExt(ParamStr(0)) + '_Err.log';
+end;
+
+destructor TJclSimpleLog.Destroy;
+begin
+  CloseLog;
+  inherited;
+end;
+
+function TJclSimpleLog.GetLogOpen: Boolean;
+begin
+  Result := FLogFileHandle <> INVALID_HANDLE_VALUE;
+end;
+
+procedure TJclSimpleLog.OpenLog;
+begin
+  if not LogOpen then
+  begin
+    FLogFileHandle := CreateFile(PChar(FLogFileName), GENERIC_WRITE,
+      FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    if LogOpen then
+      FLogWasEmpty := SetFilePointer(FLogFileHandle, 0, nil, FILE_END) = 0;
+  end
+  else
+    FLogWasEmpty := False;
+end;
+
+procedure TJclSimpleLog.Write(const Text: string; Indent: Integer);
+var
+  S: string;
+  SL: TStringList;
+  I: Integer;
+begin
+  if LogOpen then
+  begin
+    SL := TStringList.Create;
+    try
+      SL.Text := Text;
+      for I := 0 to SL.Count - 1 do
+      begin
+        S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        FileWrite(Integer(FLogFileHandle), Pointer(S)^, Length(S));
+      end;
+    finally
+      SL.Free;
+    end;
+  end;
+end;
+
+procedure TJclSimpleLog.Write(Strings: TStrings; Indent: Integer);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Write(Strings[I], Indent);
+end;
+
+procedure TJclSimpleLog.WriteStamp(SeparatorLen: Integer);
+begin
+  if SeparatorLen = 0 then
+    SeparatorLen := 40;
+  OpenLog;
+  if not FLogWasEmpty then
+    Write(AnsiCrLf);
+  Write(StrRepeat('=', SeparatorLen));
+  Write(Format('= %-*s =', [SeparatorLen - 4, DateTimeToStr(Now)]));
+  Write(StrRepeat('=', SeparatorLen));
+end;
 
 initialization
 
