@@ -293,23 +293,225 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclSysUtils;
+  JclSysUtils, JclResources;
 
-function GetCORSystemDirectory; external mscoree_dll;
-function GetCORVersion; external mscoree_dll;
-function GetCORRequiredVersion; external mscoree_dll;
-function CorBindToRuntimeHost; external mscoree_dll;
-function CorBindToRuntimeEx; external mscoree_dll;
-function CorBindToRuntimeByCfg; external mscoree_dll;
-function CorBindToRuntime; external mscoree_dll;
-function CorBindToCurrentRuntime; external mscoree_dll;
-function ClrCreateManagedInstance; external mscoree_dll;
-procedure CorMarkThreadInThreadPool; external mscoree_dll;
-function RunDll32ShimW; external mscoree_dll;
-function LoadLibraryShim; external mscoree_dll;
-function CallFunctionShim; external mscoree_dll;
-function GetRealProcAddress; external mscoree_dll;
-procedure CorExitProcess; external mscoree_dll; 
+procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
+var
+  ModuleHandle: HMODULE;
+begin
+  if not Assigned(P) then
+  begin
+    ModuleHandle := GetModuleHandle(PChar(ModuleName));
+    if ModuleHandle = 0 then
+    begin
+      ModuleHandle := LoadLibrary(PChar(ModuleName));
+      if ModuleHandle = 0 then
+        raise EJclError.CreateResFmt(@RsELibraryNotFound, [ModuleName]);
+    end;
+    P := GetProcAddress(ModuleHandle, PChar(ProcName));
+    if not Assigned(P) then
+      raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
+  end;
+end;
+
+{$WARNINGS OFF}
+
+var
+  _GetCORSystemDirectory: Pointer;
+
+function GetCORSystemDirectory;
+begin
+  GetProcedureAddress(_GetCORSystemDirectory, mscoree_dll, 'GetCORSystemDirectory');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetCORSystemDirectory]
+  end;
+end;
+
+var
+  _GetCORVersion: Pointer;
+
+function GetCORVersion;
+begin
+  GetProcedureAddress(_GetCORVersion, mscoree_dll, 'GetCORVersion');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetCORVersion]
+  end;
+end;
+
+var
+  _GetCORRequiredVersion: Pointer;
+
+function GetCORRequiredVersion;
+begin
+  GetProcedureAddress(_GetCORRequiredVersion, mscoree_dll, 'GetCORRequiredVersion');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetCORRequiredVersion]
+  end;
+end;
+
+var
+  _CorBindToRuntimeHost: Pointer;
+
+function CorBindToRuntimeHost;
+begin
+  GetProcedureAddress(_CorBindToRuntimeHost, mscoree_dll, 'CorBindToRuntimeHost');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorBindToRuntimeHost]
+  end;
+end;
+
+var
+  _CorBindToRuntimeEx: Pointer;
+
+function CorBindToRuntimeEx;
+begin
+  GetProcedureAddress(_CorBindToRuntimeEx, mscoree_dll, 'CorBindToRuntimeEx');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorBindToRuntimeEx]
+  end;
+end;
+
+var
+  _CorBindToRuntimeByCfg: Pointer;
+
+function CorBindToRuntimeByCfg;
+begin
+  GetProcedureAddress(_CorBindToRuntimeByCfg, mscoree_dll, 'CorBindToRuntimeByCfg');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorBindToRuntimeByCfg]
+  end;
+end;
+
+var
+  _CorBindToRuntime: Pointer;
+
+function CorBindToRuntime;
+begin
+  GetProcedureAddress(_CorBindToRuntime, mscoree_dll, 'CorBindToRuntime');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorBindToRuntime]
+  end;
+end;
+
+var
+  _CorBindToCurrentRuntime: Pointer;
+
+function CorBindToCurrentRuntime;
+begin
+  GetProcedureAddress(_CorBindToCurrentRuntime, mscoree_dll, 'CorBindToCurrentRuntime');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorBindToCurrentRuntime]
+  end;
+end;
+
+var
+  _ClrCreateManagedInstance: Pointer;
+
+function ClrCreateManagedInstance;
+begin
+  GetProcedureAddress(_ClrCreateManagedInstance, mscoree_dll, 'ClrCreateManagedInstance');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_ClrCreateManagedInstance]
+  end;
+end;
+
+var
+  _CorMarkThreadInThreadPool: Pointer;
+
+procedure CorMarkThreadInThreadPool;
+begin
+  GetProcedureAddress(_CorMarkThreadInThreadPool, mscoree_dll, 'CorMarkThreadInThreadPool');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorMarkThreadInThreadPool]
+  end;
+end;
+
+var
+  _RunDll32ShimW: Pointer;
+
+function RunDll32ShimW;
+begin
+  GetProcedureAddress(_RunDll32ShimW, mscoree_dll, 'RunDll32ShimW');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_RunDll32ShimW]
+  end;
+end;
+
+var
+  _LoadLibraryShim: Pointer;
+
+function LoadLibraryShim;
+begin
+  GetProcedureAddress(_LoadLibraryShim, mscoree_dll, 'LoadLibraryShim');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LoadLibraryShim]
+  end;
+end;
+
+var
+  _CallFunctionShim: Pointer;
+
+function CallFunctionShim;
+begin
+  GetProcedureAddress(_CallFunctionShim, mscoree_dll, 'CallFunctionShim');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CallFunctionShim]
+  end;
+end;
+
+var
+  _GetRealProcAddress: Pointer;
+
+function GetRealProcAddress;
+begin
+  GetProcedureAddress(_GetRealProcAddress, mscoree_dll, 'GetRealProcAddress');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetRealProcAddress]
+  end;
+end;
+
+var
+  _CorExitProcess: Pointer;
+
+procedure CorExitProcess;
+begin
+  GetProcedureAddress(_CorExitProcess, mscoree_dll, 'CorExitProcess');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CorExitProcess]
+  end;
+end;
+
+{$WARNINGS ON}
 
 //=== { TJclClrHost } ========================================================
 
