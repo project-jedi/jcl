@@ -176,7 +176,7 @@ type
     FLastAllSortType: TJclPeImportSort;
     FLastAllSortDescending: Boolean;
     FLinkerProducer: TJclPeLinkerProducer;
-    FParalelImportTable: array of Pointer;
+    FparallelImportTable: array of Pointer;
     FUniqueNamesList: TStringList;
     function GetAllItemCount: Integer;
     function GetAllItems(Index: Integer): TJclPeImportFuncItem;
@@ -1443,8 +1443,8 @@ var
 begin
   FreeAndNil(FAllItemsList);
   FreeAndNil(FUniqueNamesList);
-  for I := 0 to Length(FParalelImportTable) - 1 do
-    FreeMem(FParalelImportTable[I]);
+  for I := 0 to Length(FparallelImportTable) - 1 do
+    FreeMem(FparallelImportTable[I]);
   inherited Destroy;
 end;
 
@@ -1499,7 +1499,7 @@ begin
         LibItem.FImportKind := ikImport;
         if ImportDesc^.Union.Characteristics = 0 then
         begin
-          if FAttachedImage then  // Borland images doesn't have two paralel arrays
+          if FAttachedImage then  // Borland images doesn't have two parallel arrays
             LibItem.FThunk := nil // see MakeBorlandImportTableForMappedImage method
           else
             LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.FirstThunk));
@@ -1602,7 +1602,7 @@ var
   I, TableSize: Integer;
 begin
   if FImage.FAttachedImage and (FLinkerProducer = lrBorland) and
-    (Length(FParalelImportTable) = 0) then
+    (Length(FParallelImportTable) = 0) then
   begin
     FileImage := TJclPeImage.Create(True);
     try
@@ -1610,14 +1610,14 @@ begin
       Result := FileImage.StatusOK;
       if Result then
       begin
-        SetLength(FParalelImportTable, FileImage.ImportList.Count);
+        SetLength(FParallelImportTable, FileImage.ImportList.Count);
         for I := 0 to FileImage.ImportList.Count - 1 do
         begin
           Assert(Items[I].ImportKind = ikImport); // Borland doesn't have Delay load or Bound imports
           TableSize := (FileImage.ImportList[I].Count + 1) * SizeOf(TImageThunkData);
-          GetMem(FParalelImportTable[I], TableSize);
-          System.Move(FileImage.ImportList[I].ThunkData^, FParalelImportTable[I]^, TableSize);
-          Items[I].FThunk := FParalelImportTable[I];
+          GetMem(FParallelImportTable[I], TableSize);
+          System.Move(FileImage.ImportList[I].ThunkData^, FParallelImportTable[I]^, TableSize);
+          Items[I].FThunk := FParallelImportTable[I];
         end;
       end;
     finally
