@@ -329,6 +329,7 @@ type
     OffsetFromLineNumber: Integer;  // Offset from Address to LineNumber symbol location
     SourceName: string;             // Module file name
     DebugInfo: TJclDebugInfoSource; // Location object
+    BinaryFileName: string;         // Name of the binary file containing the symbol 
   end;
 
   TJclDebugInfoSource = class(TObject)
@@ -2500,6 +2501,7 @@ begin
       Info.LineNumber := LineNumberFromAddr(VA, Info.OffsetFromLineNumber);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
+      Info.BinaryFileName := FileName;
     end;
   end;
 end;
@@ -2539,6 +2541,7 @@ begin
       Info.LineNumber := LineNumberFromAddr(VA, Info.OffsetFromLineNumber);
       Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
+      Info.BinaryFileName := FileName;
     end;
   end;
 end;
@@ -2591,6 +2594,7 @@ begin
   RawName := not FBorImage.IsPackage;
   Info.OffsetFromProcName := 0;
   Info.OffsetFromLineNumber := 0;
+  Info.BinaryFileName := FileName;
   with FBorImage.ExportList do
   begin
     SortList(esAddress, False);
@@ -2666,6 +2670,7 @@ begin
       LineNumber := FImage.TD32Scanner.LineNumberFromAddr(VA, OffsetFromLineNumber);
       SourceName := FImage.TD32Scanner.SourceNameFromAddr(VA);
       DebugInfo := Self;
+      BinaryFileName := FileName;
     end;
 end;
 
