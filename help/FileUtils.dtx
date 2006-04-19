@@ -505,18 +505,22 @@ Donator: Pelle F. S. Liljendal
 Summary:
   Returns a unique filename composed of the specified parts and a unique number.
 Description:
-  FindUnusedFileName returns a unique filename composed of the FileName and Suffix
-  parts and an optional number. If a file of the form FileName + Suffix.FileExt
-  doesn't exist yet this is the name that's returned. If such a file already exists
-  the function appends a number to the filename, starting at '1' and continues to
-  increment this number until no file with the composed filename exists. For example,
-  calling FindUnusedFileName('My', 'txt', 'File') while a file named 'MyFile.txt'
-  and 'MyFile1.txt' already exists, will return 'MyFile2.txt' (the sequence tried
-  by the function is 'MyFile.txt', 'MyFile1.txt' and 'MyFile2.txt').
+  FindUnusedFileName returns a unique filename composed of the FileName, 
+  NumberPrefix, a sequential number and FileExt. If a file of the form 
+  FileName.FileExt doesn't exist, this is returned. If such a file already exists,
+  NumberPrefix and a sequential number are appended to FileName.
+
+  e.g. FindUnusedFileName('c:\MyFile', '.txt', '.backup-') would return the first 
+  unused filename in the following list:
+    c:\MyFile.txt
+    c:\MyFile.backup-1.txt
+    c:\MyFile.backup-2.txt
+    etc.
+  
 Parameters:
   FileName - Name part of the filename
   FileExt - Extension part of the filename
-  Suffix - Optional suffix to be appended to FileName
+  NumberPrefix - Optional text that is inserted before the unique number
 Result:
   A unique filename composed of the specified parts and a number to make it unique.
 
