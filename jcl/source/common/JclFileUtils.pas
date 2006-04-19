@@ -247,7 +247,7 @@ function FileGetTempName(const Prefix: string): string;
 {$IFDEF Win32API}
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF Win32API}
-function FindUnusedFileName(const FileName, FileExt, Suffix: string): string;
+function FindUnusedFileName(const FileName, FileExt: string; NumberPrefix: string = ''): string;
 function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
 {$IFDEF Win32API}
@@ -3220,7 +3220,7 @@ begin
 end;
 {$ENDIF Win32API}
 
-function FindUnusedFileName(const FileName, FileExt, Suffix: string): string;
+function FindUnusedFileName(const FileName, FileExt: string; NumberPrefix: string = ''): string;
 var
   I: Integer;
 begin
@@ -3229,7 +3229,7 @@ begin
   while FileExists(Result) do
   begin
     Inc(I);
-    Result := PathAddExtension(FileName + Suffix + IntToStr(I), FileExt);
+    Result := PathAddExtension(FileName + NumberPrefix + IntToStr(I), FileExt);
   end;
 end;
 
