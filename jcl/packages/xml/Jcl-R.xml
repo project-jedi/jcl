@@ -56,7 +56,6 @@
     <File Name="..\..\source\common\JclSchedule.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStreams.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrHashMap.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrings.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev" Formname="" Condition=""/>
