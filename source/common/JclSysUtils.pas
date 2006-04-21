@@ -103,22 +103,6 @@ function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 
-// AutoPtr
-type
-  IAutoPtr = interface
-    {$IFNDEF CLR}
-    { Returns the object as pointer, so it is easier to assign it to a variable }
-    function AsPointer: Pointer;
-    {$ENDIF ~CLR}
-    { Returns the AutoPtr handled object }
-    function AsObject: TObject;
-    { Releases the object from the AutoPtr. The AutoPtr looses the control over
-      the object. }
-    function ReleaseObject: TObject;
-  end;
-
-function CreateAutoPtr(Value: TObject): IAutoPtr;
-
 { Shared memory between processes functions }
 
 // Functions for the shared memory owner
@@ -216,6 +200,22 @@ type
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 {$ENDIF ~CLR}
+
+// AutoPtr
+type
+  IAutoPtr = interface
+    {$IFNDEF CLR}
+    { Returns the object as pointer, so it is easier to assign it to a variable }
+    function AsPointer: Pointer;
+    {$ENDIF ~CLR}
+    { Returns the AutoPtr handled object }
+    function AsObject: TObject;
+    { Releases the object from the AutoPtr. The AutoPtr looses the control over
+      the object. }
+    function ReleaseObject: TObject;
+  end;
+
+function CreateAutoPtr(Value: TObject): IAutoPtr;
 
 // Replacement for the C ternary conditional operator ? :
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
@@ -848,58 +848,6 @@ begin
   Guard(Result, SafeGuard);
 end;
 
-//=== { TAutoPtr } ===========================================================
-type
-  TAutoPtr = class(TInterfacedObject, IAutoPtr)
-  private
-    FValue: TObject;
-  public
-    constructor Create(AValue: TObject);
-    destructor Destroy; override;
-    {$IFNDEF CLR}
-    function AsPointer: Pointer;
-    {$ENDIF ~CLR}
-    function AsObject: TObject;
-    function ReleaseObject: TObject;
-  end;
-
-function CreateAutoPtr(Value: TObject): IAutoPtr;
-begin
-  Result := TAutoPtr.Create(Value);
-end;
-
-{ TAutoPtr }
-
-constructor TAutoPtr.Create(AValue: TObject);
-begin
-  inherited Create;
-  FValue := AValue;
-end;
-
-destructor TAutoPtr.Destroy;
-begin
-  FValue.Free;
-  inherited Destroy;
-end;
-
-function TAutoPtr.AsObject: TObject;
-begin
-  Result := FValue;
-end;
-
-{$IFNDEF CLR}
-function TAutoPtr.AsPointer: Pointer;
-begin
-  Result := FValue;
-end;
-{$ENDIF ~CLR}
-
-function TAutoPtr.ReleaseObject: TObject;
-begin
-  Result := FValue;
-  FValue := nil;
-end;
-
 //=== Shared memory functions ================================================
 
 type
@@ -1471,6 +1419,59 @@ begin
   raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
 {$ENDIF ~CLR}
+
+//=== { TAutoPtr } ===========================================================
+
+type
+  TAutoPtr = class(TInterfacedObject, IAutoPtr)
+  private
+    FValue: TObject;
+  public
+    constructor Create(AValue: TObject);
+    destructor Destroy; override;
+    {$IFNDEF CLR}
+    function AsPointer: Pointer;
+    {$ENDIF ~CLR}
+    function AsObject: TObject;
+    function ReleaseObject: TObject;
+  end;
+
+function CreateAutoPtr(Value: TObject): IAutoPtr;
+begin
+  Result := TAutoPtr.Create(Value);
+end;
+
+{ TAutoPtr }
+
+constructor TAutoPtr.Create(AValue: TObject);
+begin
+  inherited Create;
+  FValue := AValue;
+end;
+
+destructor TAutoPtr.Destroy;
+begin
+  FValue.Free;
+  inherited Destroy;
+end;
+
+function TAutoPtr.AsObject: TObject;
+begin
+  Result := FValue;
+end;
+
+{$IFNDEF CLR}
+function TAutoPtr.AsPointer: Pointer;
+begin
+  Result := FValue;
+end;
+{$ENDIF ~CLR}
+
+function TAutoPtr.ReleaseObject: TObject;
+begin
+  Result := FValue;
+  FValue := nil;
+end;
 
 //=== replacement for the C distfix operator ? : =============================
 
