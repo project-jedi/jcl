@@ -247,7 +247,7 @@ function FileGetTempName(const Prefix: string): string;
 {$IFDEF Win32API}
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF Win32API}
-function FindUnusedFileName(const FileName, FileExt: string; NumberPrefix: string = ''): string;
+function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
 function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
 {$IFDEF Win32API}
@@ -1721,10 +1721,10 @@ end;
 function PathAddExtension(const Path, Extension: string): string;
 begin
   Result := Path;
-  if (Path <> '') and (ExtractFileExt(Path) = '') and (Extension <> '') then
+  if (Path <> '') and (Extension <> '') and not SameText(ExtractFileExt(Path), Extension) then
   begin
-    // Note that if we get here Path is guarenteed not to end in a '.' otherwise ExtractFileExt
-    // would have returned '.' therefore there's no need to check it explicitly in the code below
+    if Path[Length(Path)] = '.' then
+      Delete(Result, Length(Path), 1);
     if Extension[1] = '.' then
       Result := Result + Extension
     else
@@ -3220,17 +3220,20 @@ begin
 end;
 {$ENDIF Win32API}
 
-function FindUnusedFileName(const FileName, FileExt: string; NumberPrefix: string = ''): string;
+function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
 var
   I: Integer;
 begin
   Result := PathAddExtension(FileName, FileExt);
+  if not FileExists(Result) then
+    Exit;
+  if SameText(Result, FileName) then
+    Delete(FileName, Length(FileName) - Length(FileExt) + 1, Length(FileExt));
   I := 0;
-  while FileExists(Result) do
-  begin
+  repeat
     Inc(I);
     Result := PathAddExtension(FileName + NumberPrefix + IntToStr(I), FileExt);
-  end;
+  until not FileExists(Result);
 end;
 
 // This routine is copied from FileCtrl.pas to avoid dependency on that unit.
