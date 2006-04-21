@@ -1720,6 +1720,10 @@ resourcestring
   RsCompressionZLibZVersionError     = 'zlib returned: Version error';
   RsCompressionZLibError             = 'ZLib error';
 
+//=== JclStreams =============================================================
+resourcestring
+  RsStreamsRangeError = '32 bit overflow in stream operations, use the 64 bit version';
+
 implementation
 
 // History:
