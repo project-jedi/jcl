@@ -1721,7 +1721,11 @@ end;
 function PathAddExtension(const Path, Extension: string): string;
 begin
   Result := Path;
-  if (Path <> '') and (Extension <> '') and not SameText(ExtractFileExt(Path), Extension) then
+  // (obones) Extension may not contain the leading dot while ExtractFileExt
+  // always returns it. Hence the need to use StrEnsurePrefix for the SameText
+  // test to return an accurate value.
+  if (Path <> '') and (Extension <> '') and
+    not SameText(ExtractFileExt(Path), StrEnsurePrefix('.', Extension)) then
   begin
     if Path[Length(Path)] = '.' then
       Delete(Result, Length(Path), 1);
