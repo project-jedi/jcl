@@ -45,10 +45,10 @@ type
   TJclStream = class(TStream)
   protected
     procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64); overload; {$IFDEF COMPILER5} virtual; {$ELSE COMPILER5} override; {$ENDIF COMPILER5}
+    procedure SetSize(const NewSize: Int64); {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE COMPILER5} overload; override; {$ENDIF COMPILER5}
   public
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; {$IFDEF COMPILER5} virtual; {$ELSE COMPILER5} override; {$ENDIF COMPILER5}
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE COMPILER5} overload; override; {$ENDIF COMPILER5}
   end;
 
   // classes that inherit from TJclStream should override these methods:
