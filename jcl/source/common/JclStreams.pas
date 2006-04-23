@@ -34,9 +34,9 @@ uses
   SysUtils, Classes;
 
 type
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
-{$ENDIF COMPILER5}
+  {$ENDIF COMPILER5}
 
   EJclStreamException = class(Exception);
   
@@ -45,21 +45,24 @@ type
   TJclStream = class(TStream)
   protected
     procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64); {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE COMPILER5} overload; override; {$ENDIF COMPILER5}
+    procedure SetSize(const NewSize: Int64);
+      {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
   public
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE COMPILER5} overload; override; {$ENDIF COMPILER5}
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+      {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
   end;
 
-  // classes that inherit from TJclStream should override these methods:
-  //TMyJclStream = class(TJclStream)
-  //protected
-  //  procedure SetSize(const NewSize: Int64); override;
-  //public
-  //  function Read(var Buffer; Count: Longint): Longint; override;
-  //  function Write(const Buffer; Count: Longint): Longint; override;
-  //  function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
-  //end;
+  {  classes that inherit from TJclStream should override these methods:
+  TMyJclStream = class(TJclStream)
+  protected
+    procedure SetSize(const NewSize: Int64); override;
+  public
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+  end;
+  }
 
   TJclEmptyStream = class(TJclStream)
   protected
@@ -83,8 +86,14 @@ type
   end;
 
   TJclRandomStream = class(TJclNullStream)
+  protected
+    function GetRandSeed: Longint;
+    procedure SetRandSeed(Seed: Longint);
   public
+    function RandomData: Byte; virtual;
+    procedure Randomize; dynamic;
     function Read(var Buffer; Count: Longint): Longint; override;
+    property RandSeed: Longint read GetRandSeed write SetRandSeed;
   end;
 
   TJclMultiplexStream = class(TJclStream)
@@ -92,7 +101,7 @@ type
     FStreams: TList;
     FReadStreamIndex: Integer;
     function GetStream(Index: Integer): TStream;
-    function GetStreamCount: Integer;
+    function GetCount: Integer;
     procedure SetStream(Index: Integer; const Value: TStream);
     function GetReadStream: TStream;
     procedure SetReadStream(const Value: TStream);
@@ -100,45 +109,45 @@ type
   protected
     procedure SetSize(const NewSize: Int64); override;
   public
-    constructor Create; reintroduce;
+    constructor Create; virtual;
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
 
-    function AddStream(NewStream: TStream): Integer;
-    procedure ClearStream;
-    function RemoveStream(AStream: TStream): Integer;
-    procedure DeleteStream(const Index: Integer);
+    function Add(NewStream: TStream): Integer;
+    procedure Clear;
+    function Remove(AStream: TStream): Integer;
+    procedure Delete(const Index: Integer);
 
     property Streams[Index: Integer]: TStream read GetStream write SetStream;
     property ReadStreamIndex: Integer read FReadStreamIndex write SetReadStreamIndex;
     property ReadStream: TStream read GetReadStream write SetReadStream;
-    property StreamCount: Integer read GetStreamCount;
+    property Count: Integer read GetCount;
   end;
 
 implementation
 
 uses
-  JclResources, JclBase;
+  JclBase, JclResources;
 
 //=== { TJclStream } =========================================================
 
-function TJclStream.Seek(Offset: Integer; Origin: Word): Longint;
+function TJclStream.Seek(Offset: Longint; Origin: Word): Longint;
 var
   Result64: Int64;
 begin
   case Origin of
-    soFromBeginning :
+    soFromBeginning:
       Result64 := Seek(Int64(Offset), soBeginning);
-    soFromCurrent :
+    soFromCurrent:
       Result64 := Seek(Int64(Offset), soCurrent);
-    soFromEnd :
+    soFromEnd:
       Result64 := Seek(Int64(Offset), soEnd);
   else
     Result64 := 0;
   end;
-  if (Result64 < Low(LongInt)) or (Result64 > High(LongInt)) then
+  if (Result64 < Low(Longint)) or (Result64 > High(Longint)) then
     raise EJclStreamException.CreateRes(@RsStreamsRangeError);
   Result := Result64;
 end;
@@ -149,7 +158,7 @@ begin
   Result := -1;
 end;
 
-procedure TJclStream.SetSize(NewSize: Integer);
+procedure TJclStream.SetSize(NewSize: Longint);
 begin
   SetSize(Int64(NewSize));
 end;
@@ -161,6 +170,9 @@ end;
 
 //=== { TJclEmptyStream } ====================================================
 
+// a stream which stays empty no matter what you do
+// so it is a Unix /dev/null equivalent
+
 procedure TJclEmptyStream.SetSize(const NewSize: Int64);
 begin
   // nothing
@@ -168,20 +180,29 @@ end;
 
 function TJclEmptyStream.Read(var Buffer; Count: Longint): Longint;
 begin
+  // you cannot read anything
   Result := 0;
 end;
 
 function TJclEmptyStream.Write(const Buffer; Count: Longint): Longint;
 begin
+  // you cannot write anything
   Result := 0;
 end;
 
 function TJclEmptyStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  Result := 0;
+  if Offset <> 0 then
+    // seeking to anywhere except the position 0 is an error
+    Result := -1
+  else
+    Result := 0;
 end;
 
 //=== { TJclNullStream } =====================================================
+
+// a stream which only keeps position and size, but no data
+// so it is a Unix /dev/zero equivalent (?)
 
 procedure TJclNullStream.SetSize(const NewSize: Int64);
 begin
@@ -256,45 +277,49 @@ end;
 
 //=== { TJclRandomStream } ===================================================
 
-function TJclRandomStream.Read(var Buffer; Count: Integer): Longint;
-{$IFDEF COMPILER5}
-type
-  PWord = ^Word;
-{$ENDIF COMPILER5}
+// A TJclNullStream decendant which returns random data when read
+// so it is a Unix /dev/random equivalent
+
+function TJclRandomStream.GetRandSeed: Longint;
+begin
+  Result := System.RandSeed;
+end;
+
+procedure TJclRandomStream.SetRandSeed(Seed: Longint);
+begin
+  System.RandSeed := Seed;
+end;
+
+function TJclRandomStream.RandomData: Byte;
+begin
+  Result := Byte(System.Random(256));
+end;
+
+procedure TJclRandomStream.Randomize;
+begin
+  System.Randomize;
+end;
+
+function TJclRandomStream.Read(var Buffer; Count: Longint): Longint;
 var
+  I: Longint;
   BufferPtr: PByte;
 begin
   if Count < 0 then
     Count := 0;
-  if FSize - FPosition < Count then
-    Count := FSize - FPosition;
-  if Count > 0 then
+  if Size - Position < Count then
+    Count := Size - Position;
+  BufferPtr := @Buffer;
+  for I := 0 to Count - 1 do
   begin
-    BufferPtr := @Buffer;
-    while Count > 1 do
-    begin
-      PWord(BufferPtr)^ := Random($10000);
-      Inc(BufferPtr, 2);
-    end;
-    if Count <> 0 then
-      BufferPtr^ := Random($100);
-    FPosition := FPosition + Count;
+    BufferPtr^ := RandomData;
+    Inc(BufferPtr);
   end;
+  Position := Position + Count;
   Result := Count;
 end;
 
 //=== { TJclMultiplexStream } ================================================
-
-function TJclMultiplexStream.AddStream(NewStream: TStream): Integer;
-begin
-  Result := FStreams.Add(Pointer(NewStream));
-end;
-
-procedure TJclMultiplexStream.ClearStream;
-begin
-  FStreams.Clear;
-  FReadStreamIndex := -1;
-end;
 
 constructor TJclMultiplexStream.Create;
 begin
@@ -303,19 +328,31 @@ begin
   FReadStreamIndex := -1;
 end;
 
-procedure TJclMultiplexStream.DeleteStream(const Index: Integer);
-begin
-  FStreams.Delete(Index);
-  if ReadStreamIndex = Index then
-    FReadStreamIndex := -1
-  else if ReadStreamIndex > Index then
-    Dec(FReadStreamIndex);
-end;
-
 destructor TJclMultiplexStream.Destroy;
 begin
   FStreams.Free;
   inherited Destroy;
+end;
+
+function TJclMultiplexStream.Add(NewStream: TStream): Integer;
+begin
+  Result := FStreams.Add(Pointer(NewStream));
+end;
+
+procedure TJclMultiplexStream.Clear;
+begin
+  FStreams.Clear;
+  FReadStreamIndex := -1;
+end;
+
+procedure TJclMultiplexStream.Delete(const Index: Integer);
+begin
+  FStreams.Delete(Index);
+  if ReadStreamIndex = Index then
+    FReadStreamIndex := -1
+  else
+  if ReadStreamIndex > Index then
+    Dec(FReadStreamIndex);
 end;
 
 function TJclMultiplexStream.GetReadStream: TStream;
@@ -331,33 +368,33 @@ begin
   Result := TStream(FStreams.Items[Index]);
 end;
 
-function TJclMultiplexStream.GetStreamCount: Integer;
+function TJclMultiplexStream.GetCount: Integer;
 begin
   Result := FStreams.Count;
 end;
 
-function TJclMultiplexStream.Read(var Buffer; Count: Integer): Longint;
+function TJclMultiplexStream.Read(var Buffer; Count: Longint): Longint;
 var
-  AReadStream: TStream;
+  Stream: TStream;
 begin
-  AReadStream := ReadStream;
-  if Assigned(AReadStream) then
-    Result := AReadStream.Read(Buffer, Count)
+  Stream := ReadStream;
+  if Assigned(Stream) then
+    Result := Stream.Read(Buffer, Count)
   else
     Result := 0;
 end;
 
-function TJclMultiplexStream.RemoveStream(AStream: TStream): Integer;
+function TJclMultiplexStream.Remove(AStream: TStream): Integer;
 begin
   Result := FStreams.Remove(Pointer(AStream));
   if FReadStreamIndex = Result then
     FReadStreamIndex := -1
-  else if FReadStreamIndex > Result then
+  else
+  if FReadStreamIndex > Result then
     Dec(FReadStreamIndex);
 end;
 
-function TJclMultiplexStream.Seek(const Offset: Int64;
-  Origin: TSeekOrigin): Int64;
+function TJclMultiplexStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
   // what should this function do?
   Result := -1;
@@ -383,13 +420,13 @@ begin
   FStreams.Items[Index] := Pointer(Value);
 end;
 
-function TJclMultiplexStream.Write(const Buffer; Count: Integer): Longint;
+function TJclMultiplexStream.Write(const Buffer; Count: Longint): Longint;
 var
   Index: Integer;
   ByteWritten, MinByteWritten: Longint;
 begin
   MinByteWritten := Count;
-  for Index := 0 to StreamCount - 1 do
+  for Index := 0 to Self.Count - 1 do
   begin
     ByteWritten := TStream(FStreams.Items[Index]).Write(Buffer, Count);
     if ByteWritten < MinByteWritten then
