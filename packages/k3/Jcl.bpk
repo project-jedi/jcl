@@ -44,6 +44,7 @@
       ..\..\lib\k3\obj\JclSchedule.obj
       ..\..\lib\k3\obj\JclStacks.obj
       ..\..\lib\k3\obj\JclStatistics.obj
+      ..\..\lib\k3\obj\JclStreams.obj
       ..\..\lib\k3\obj\JclStrHashMap.obj
       ..\..\lib\k3\obj\JclStrings.obj
       ..\..\lib\k3\obj\JclSysInfo.obj
@@ -140,6 +141,7 @@
       <FILE FILENAME="../../source/common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStacks.pas" FORMNAME="" UNITNAME="JclStacks" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclStreams.pas" FORMNAME="" UNITNAME="JclStreams" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStrHashMap.pas" FORMNAME="" UNITNAME="JclStrHashMap" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStrings.pas" FORMNAME="" UNITNAME="JclStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
