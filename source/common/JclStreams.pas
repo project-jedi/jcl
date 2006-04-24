@@ -66,7 +66,8 @@ type
 
   TJclEmptyStream = class(TJclStream)
   protected
-    procedure SetSize(const NewSize: Int64); override;
+    procedure SetSize(NewSize: Longint); overload; override;
+    procedure SetSize(const NewSize: Int64); overload; override;
   public
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
@@ -145,10 +146,10 @@ begin
     soFromEnd:
       Result64 := Seek(Int64(Offset), soEnd);
   else
-    Result64 := 0;
+    Result64 := -1;
   end;
-  if (Result64 < Low(Longint)) or (Result64 > High(Longint)) then
-    raise EJclStreamException.CreateRes(@RsStreamsRangeError);
+  if (Result64 < 0) or (Result64 > High(Longint)) then
+    Result64 := -1;
   Result := Result64;
 end;
 
@@ -188,6 +189,15 @@ function TJclEmptyStream.Write(const Buffer; Count: Longint): Longint;
 begin
   // you cannot write anything
   Result := 0;
+end;
+
+function TJclEmptyStream.Seek(Offset: Longint; Origin: Word): Longint;
+begin
+  if (Offset <> 0) or not (Origin in [soFromBeginning, soFromCurrent, soFromEnd]) then
+    // seeking to anywhere except the position 0 is an error
+    Result := -1
+  else
+    Result := 0;
 end;
 
 function TJclEmptyStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
@@ -248,17 +258,29 @@ begin
         else
           FPosition := 0;
         if FPosition > FSize then
+        begin
           FPosition := FSize;
-        Result := FPosition;
+          Result := -1;
+        end
+        else
+          Result := FPosition;
       end;
     soCurrent:
       begin
         FPosition := FPosition + Offset;
         if FPosition > FSize then
+        begin
           FPosition := FSize;
+          Result := -1;
+        end
+        else
         if FPosition < 0 then
+        begin
           FPosition := 0;
-        Result := FPosition;
+          Result := -1;
+        end
+        else
+          Result := FPosition;
       end;
     soEnd:
       begin
@@ -267,8 +289,12 @@ begin
         else
           FPosition := FSize;
         if FPosition < 0 then
+        begin
           FPosition := 0;
-        Result := FPosition;
+          Result := -1;
+        end
+        else
+          Result := FPosition;
       end;
   else
     Result := -1;

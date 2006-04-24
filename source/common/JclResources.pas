@@ -750,6 +750,21 @@ resourcestring
 resourcestring
   RsComplexInvalidString = 'Failed to create a complex number from the string provided';
 
+//=== JclCompression =========================================================
+resourcestring
+  RsCompressionOperationNotSupported = 'Operation is not supported.';
+  RsCompressionReadNotSupported      = 'read is not an supported operation.';
+  RsCompressionWriteNotSupported     = 'write is not an supported operation.';
+  RsCompressionResetNotSupported     = 'reset is not an supported operation.';
+  RsCompressionSeekNotSupported      = 'seek is not an supported operation.';
+  RsCompressionZLibZErrNo            = 'zlib returned: ERRNO';
+  RsCompressionZLibZStreamError      = 'zlib returned: Stream error';
+  RsCompressionZLibZDataError        = 'zlib returned: data error';
+  RsCompressionZLibZMemError         = 'zlib returned: memory error';
+  RsCompressionZLibZBufError         = 'zlib returned: buffer error';
+  RsCompressionZLibZVersionError     = 'zlib returned: Version error';
+  RsCompressionZLibError             = 'ZLib error';
+
 //=== JclConsole =============================================================
 resourcestring
   RsCannotRaiseSignal = 'Cannot raise %s signal.';
@@ -1447,7 +1462,6 @@ resourcestring
   RsHKCCShort = 'HKCC';
   RsHKDDShort = 'HKDD';
 
-
 //=== JclRTTI ================================================================
 resourcestring
   RsRTTIValueOutOfRange   = 'Value out of range (%s).';
@@ -1704,25 +1718,6 @@ resourcestring
 resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
   RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
-
-//=== JclCompression =========================================================
-resourcestring
-  RsCompressionOperationNotSupported = 'Operation is not supported.';
-  RsCompressionReadNotSupported      = 'read is not an supported operation.';
-  RsCompressionWriteNotSupported     = 'write is not an supported operation.';
-  RsCompressionResetNotSupported     = 'reset is not an supported operation.';
-  RsCompressionSeekNotSupported      = 'seek is not an supported operation.';
-  RsCompressionZLibZErrNo            = 'zlib returned: ERRNO';
-  RsCompressionZLibZStreamError      = 'zlib returned: Stream error';
-  RsCompressionZLibZDataError        = 'zlib returned: data error';
-  RsCompressionZLibZMemError         = 'zlib returned: memory error';
-  RsCompressionZLibZBufError         = 'zlib returned: buffer error';
-  RsCompressionZLibZVersionError     = 'zlib returned: Version error';
-  RsCompressionZLibError             = 'ZLib error';
-
-//=== JclStreams =============================================================
-resourcestring
-  RsStreamsRangeError = '32 bit overflow in stream operations, use the 64 bit version';
 
 implementation
 
