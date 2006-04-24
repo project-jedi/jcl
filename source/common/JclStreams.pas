@@ -87,8 +87,8 @@ type
 
   TJclRandomStream = class(TJclNullStream)
   protected
-    function GetRandSeed: Longint;
-    procedure SetRandSeed(Seed: Longint);
+    function GetRandSeed: Longint; dynamic;
+    procedure SetRandSeed(Seed: Longint); dynamic;
   public
     function RandomData: Byte; virtual;
     procedure Randomize; dynamic;
