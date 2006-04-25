@@ -174,6 +174,11 @@ end;
 // a stream which stays empty no matter what you do
 // so it is a Unix /dev/null equivalent
 
+procedure TJclEmptyStream.SetSize(NewSize: Longint); 
+begin
+  // nothing
+end;
+
 procedure TJclEmptyStream.SetSize(const NewSize: Int64);
 begin
   // nothing
@@ -189,15 +194,6 @@ function TJclEmptyStream.Write(const Buffer; Count: Longint): Longint;
 begin
   // you cannot write anything
   Result := 0;
-end;
-
-function TJclEmptyStream.Seek(Offset: Longint; Origin: Word): Longint;
-begin
-  if (Offset <> 0) or not (Origin in [soFromBeginning, soFromCurrent, soFromEnd]) then
-    // seeking to anywhere except the position 0 is an error
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclEmptyStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
