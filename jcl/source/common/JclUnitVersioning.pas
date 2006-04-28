@@ -776,7 +776,7 @@ end;
 
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$HeadURL$:';
+    RCSfile: '$HeadURL:$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
