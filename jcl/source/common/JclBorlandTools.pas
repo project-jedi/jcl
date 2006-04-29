@@ -124,11 +124,17 @@ const
 
   ProjectTypePackage = 'package';
   ProjectTypeLibrary = 'library';
-  ProjectTypeProgram = 'program'; 
+  ProjectTypeProgram = 'program';
 
+  Personality32Bit     = '32 bit';
+  Personality64Bit     = '64 bit';
   PersonalityDelphi    = 'Delphi';
+  PersonalityDelphiDotNet = 'Delphi.net';
   PersonalityBCB       = 'C++Builder';
   PersonalityCSB       = 'C#Builder';
+  PersonalityVB        = 'Visual Basic';
+  PersonalityDesign    = 'Design';
+  PersonalityUnknown   = 'Unknown personality';
   PersonalityBDS       = 'Borland Developer Studio';
 
   DOFDirectoriesSection = 'Directories';
@@ -149,12 +155,29 @@ const
 
 // Installed versions information classes
 type
-  TJclBorPersonality = (bpDelphi32, bpBCBuilder32, bpDelphiNet32, bpDelphiNet64,
-    bpCSBuilder32, bpCSBuilder64);
+  TJclBorPersonality = (bpDelphi32, bpDelphi64, bpBCBuilder32, bpBCBuilder64,
+    bpDelphiNet32, bpDelphiNet64, bpCSBuilder32, bpCSBuilder64,
+    bpVisualBasic32, bpVisualBasic64, bpDesign, bpUnknown);
   //  bpDelphi64, bpBCBuilder64);
   
   TJclBorPersonalities = set of TJclBorPersonality;
 
+const
+  JclBorPersonalityDescription: array [TJclBorPersonality] of string =
+    ( Personality32Bit + ' ' + PersonalityDelphi,
+      Personality64Bit + ' ' + PersonalityDelphi,
+      Personality32Bit + ' ' + PersonalityBCB,
+      Personality64Bit + ' ' + PersonalityBCB,
+      Personality32Bit + ' ' + PersonalityDelphiDotNet,
+      Personality64Bit + ' ' + PersonalityDelphiDotNet,
+      Personality32Bit + ' ' + PersonalityCSB,
+      Personality64Bit + ' ' + PersonalityCSB,
+      Personality32Bit + ' ' + PersonalityVB,
+      Personality64Bit + ' ' + PersonalityVB,
+      PersonalityDesign,
+      PersonalityUnknown );
+
+type
   TJclBorRADToolInstallation = class;
 
   TJclBorRADToolInstallationObject = class(TInterfacedObject)

@@ -426,6 +426,7 @@ type
     SSE: Byte;        // SSE version 0 = no SSE, 1 = SSE, 2 = SSE2, 3 = SSE3
     IsFDIVOK: Boolean;
     Is64Bits: Boolean;
+    DEPEnabled: Boolean; // incomplete
     HasCacheInfo: Boolean;
     HasExtendedInfo: Boolean;
     PType: Byte;
@@ -1100,6 +1101,7 @@ function IsSystemResourcesMeterPresent: Boolean;
 
 function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; overload;
 function GetFreeSystemResources: TFreeSystemResources; overload;
+function GetBPP: Cardinal;
 {$ENDIF MSWINDOWS}
 
 // Public global variables
@@ -5188,6 +5190,20 @@ begin
     GdiRes := GetFreeSystemResources(rtGdi);
     UserRes := GetFreeSystemResources(rtUser);
   end;
+end;
+
+function GetBPP: Cardinal;
+var
+  DC: HDC;
+begin
+  DC := GetDC(HWND_DESKTOP);
+  if DC <> 0 then
+  begin
+    Result := GetDeviceCaps(DC, BITSPIXEL) * GetDeviceCaps(DC, PLANES);
+    ReleaseDC(HWND_DESKTOP, DC);
+  end
+  else
+    Result := 0;
 end;
 
 //=== Initialization/Finalization ============================================
