@@ -511,8 +511,10 @@ type
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
-    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD; AFirstCaller: Pointer;
-      ADelayedTrace: Boolean = False);
+    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+      AFirstCaller: Pointer); overload;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+      AFirstCaller: Pointer; ADelayedTrace: Boolean); overload;
     destructor Destroy; override;
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -3311,6 +3313,12 @@ begin
     TraceStackRaw
   else
     TraceStackFrames;
+end;
+
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+  AFirstCaller: Pointer);
+begin
+  Create(ARaw, AIgnoreLevels, AFirstCaller, False);
 end;
 
 destructor TJclStackInfoList.Destroy;
