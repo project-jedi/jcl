@@ -4571,8 +4571,9 @@ var
   function EnumVersions(const KeyName: string; const Personalities: array of string; CreateClass: TJclBorRADToolInstallationClass) : Boolean;
   var
     I, J: Integer;
-    VersionKeyName: string;
+    VersionKeyName, PersonalitiesKeyName: string;
     PersonalitiesList: TStrings;
+    Installation: TJclBorRADToolInstallation;
   begin
     Result := False;
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
@@ -4586,7 +4587,9 @@ var
           if Length(Personalities) = 0 then
           begin
             try
-              FList.Add(CreateClass.Create(VersionKeyName));
+              Installation := CreateClass.Create(VersionKeyName);
+              if Installation.Valid then
+                FList.Add(Installation);
             finally
               Result := True;
             end;
@@ -4595,12 +4598,17 @@ var
           begin
             PersonalitiesList := TStringList.Create;
             try
-              RegGetValueNames(HKEY_LOCAL_MACHINE, VersionKeyName + '\Personalities', PersonalitiesList);
+              PersonalitiesKeyName := VersionKeyName + '\Personalities';
+              if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName) then
+                RegGetValueNames(HKEY_LOCAL_MACHINE, PersonalitiesKeyName, PersonalitiesList);
+                
               for J := Low(Personalities) to High(Personalities) do
                 if PersonalitiesList.IndexOf(Personalities[J]) >= 0 then
               begin
                 try
-                  FList.Add(CreateClass.Create(VersionKeyName));
+                  Installation := CreateClass.Create(VersionKeyName);
+                  if Installation.Valid then
+                    FList.Add(Installation);
                 finally
                   Result := True;
                 end;
