@@ -151,7 +151,7 @@ begin
 
     if Reg.OpenKey(JediKeyName, False) then // do not localize
     begin
-      
+      Names := TStringList.Create;
       try
         Reg.GetKeyNames(Names);
         if Names.Count = 0 then
