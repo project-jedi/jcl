@@ -2128,8 +2128,14 @@ begin
 end;
 
 function TJclInstallation.RemoveSettings: Boolean;
+var
+  JclSettingsKey: string;
 begin
-  Result := RegDeleteKeyTree(HKCU, Target.ConfigDataLocation + '\Jedi\JCL');
+  JclSettingsKey := Target.ConfigDataLocation + '\Jedi\JCL';
+  if RegKeyExists(HKCU, JclSettingsKey) then
+    Result := RegDeleteKeyTree(HKCU, JclSettingsKey)
+  else
+    Result := True;
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
