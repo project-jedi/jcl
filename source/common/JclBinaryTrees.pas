@@ -1530,14 +1530,32 @@ begin
 end;
 
 function TJclIntfBinaryTree.First: IJclIntfIterator;
+var
+  Start: PJclIntfBinaryNode;
 begin
+  Start := FRoot;
   case GetTraverseOrder of
     toPreOrder:
-      Result := TPreOrderIntfItr.Create(Self, FRoot);
+      Result := TPreOrderIntfItr.Create(Self, Start);
     toOrder:
-      Result := TInOrderIntfItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while Start.Left <> nil do
+            Start := Start.Left;
+        Result := TInOrderIntfItr.Create(Self, Start);
+      end;
     toPostOrder:
-      Result := TPostOrderIntfItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+        Result := TPostOrderIntfItr.Create(Self, Start);
+      end;
   end;
 end;
 
@@ -1560,8 +1578,13 @@ begin
     toPreOrder:
       begin
         if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
+        end;
         Result := TPreOrderIntfItr.Create(Self, Start);
       end;
     toOrder:
@@ -2263,14 +2286,32 @@ begin
 end;
 
 function TJclStrBinaryTree.First: IJclStrIterator;
+var
+  Start: PJclStrBinaryNode;
 begin
+  Start := FRoot;
   case GetTraverseOrder of
     toPreOrder:
-      Result := TPreOrderStrItr.Create(Self, FRoot);
+      Result := TPreOrderStrItr.Create(Self, Start);
     toOrder:
-      Result := TInOrderStrItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while Start.Left <> nil do
+            Start := Start.Left;
+        Result := TInOrderStrItr.Create(Self, Start);
+      end;
     toPostOrder:
-      Result := TPostOrderStrItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+        Result := TPostOrderStrItr.Create(Self, Start);
+      end;
   end;
 end;
 
@@ -2293,8 +2334,13 @@ begin
     toPreOrder:
       begin
         if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
+        end;
         Result := TPreOrderStrItr.Create(Self, Start);
       end;
     toOrder:
@@ -2926,14 +2972,32 @@ begin
 end;
 
 function TJclBinaryTree.First: IJclIterator;
+var
+  Start: PJclBinaryNode;
 begin
+  Start := FRoot;
   case GetTraverseOrder of
     toPreOrder:
-      Result := TPreOrderItr.Create(Self, FRoot);
+      Result := TPreOrderItr.Create(Self, Start);
     toOrder:
-      Result := TInOrderItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while Start.Left <> nil do
+            Start := Start.Left;
+        Result := TInOrderItr.Create(Self, Start);
+      end;
     toPostOrder:
-      Result := TPostOrderItr.Create(Self, FRoot);
+      begin
+        if Start <> nil then
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+        Result := TPostOrderItr.Create(Self, Start);
+      end;
   end;
 end;
 
@@ -2956,8 +3020,13 @@ begin
     toPreOrder:
       begin
         if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
+          while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
+        end;
         Result := TPreOrderItr.Create(Self, Start);
       end;
     toOrder:
