@@ -118,6 +118,7 @@ type
     function ProgressWeight(Option: TJediInstallOption): Integer;
     function Run: Boolean;
     function Undo: Boolean;
+    function RemoveSettings: Boolean;
     function StoredBplPath: string;
     function StoredDcpPath: string;
     property Defines: TStringList read FDefines;
@@ -1959,6 +1960,7 @@ begin
       Result := 2;
     ioJclPackages:
       Result := 10;
+    ioJclExpertDebug..ioJclExpertVersionControl:
       Result := 5;
     ioJclCopyPackagesHppFiles:
       Result := 2;
@@ -2123,6 +2125,11 @@ begin
   if OptionSelected(ioJCL) then
     Result := UninstallSelectedOptions;
   SaveOptions;
+end;
+
+function TJclInstallation.RemoveSettings: Boolean;
+begin
+  Result := RegDeleteKeyTree(HKCU, Target.ConfigDataLocation + '\Jedi\JCL');
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
@@ -2553,7 +2560,8 @@ begin
     for I := 0 to FTargetInstalls.Count - 1 do
     begin
       if not KeepSettings then
-        TJclInstallation(FTargetInstalls[I]).Undo;
+        TJclInstallation(FTargetInstalls[I]).RemoveSettings;
+      TJclInstallation(FTargetInstalls[I]).Undo;
       Result := Result and TJclInstallation(FTargetInstalls[I]).Run;
     end;
   finally
@@ -2572,7 +2580,8 @@ begin
     InitProgress;
     for I := 0 to FTargetInstalls.Count - 1 do
     begin
-      Success := TJclInstallation(FTargetInstalls[I]).Undo;
+      Success := TJclInstallation(FTargetInstalls[I]).RemoveSettings
+                 and TJclInstallation(FTargetInstalls[I]).Undo;
       Result := Result and Success;
     end;
   finally
