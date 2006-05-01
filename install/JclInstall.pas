@@ -1390,9 +1390,19 @@ function TJclInstallation.InstallSelectedOptions: Boolean;
 
 var
   Option: TJediInstallOption;
+  Personality: TJclBorPersonality;
 begin
   Tool.UpdateStatus(Format(RsStatusMessage, [Target.Name]));
   WriteLog(StrPadRight(BorRADToolVersionStr, 44, '='));
+  WriteLog('');
+  WriteLog('Installed personalities :');
+  for Personality := Low(TJclBorPersonality) to High(TJclBorPersonality) do
+    if Personality in Target.Personalities then
+  begin
+    WriteLog(JclBorPersonalityDescription[Personality]);
+  end;
+  WriteLog(StrRepeat('=', 44));
+    
   Result := CheckDirectories;
   if Result then
   begin
@@ -1949,13 +1959,6 @@ begin
       Result := 2;
     ioJclPackages:
       Result := 10;
-    ioJclExpertDebug,
-    ioJclExpertAnalyzer,
-    ioJclExpertFavorite,
-    ioJclExpertThreadNames,
-    ioJclExpertUses,
-    ioJclExpertSimdView,
-    ioJclExpertVersionControl:
       Result := 5;
     ioJclCopyPackagesHppFiles:
       Result := 2;
@@ -2531,14 +2534,26 @@ end;
 function TJclDistribution.Install: Boolean;
 var
   I: Integer;
+  KeepSettings: Boolean;
 begin
   FInstalling := True; // tell UninstallOption not to call Progress()
+  KeepSettings := False;
   Result := True;
   try
     InitProgress;
+
+    for I := 0 to FTargetInstalls.Count - 1 do
+      if TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJCL) then
+    begin
+      KeepSettings := MessageDlg('Do you want to keep JCL expert settings ?',
+        mtConfirmation, [mbYes, mbNo], 0) = mrYes;
+      Break;
+    end;
+
     for I := 0 to FTargetInstalls.Count - 1 do
     begin
-      TJclInstallation(FTargetInstalls[I]).Undo;
+      if not KeepSettings then
+        TJclInstallation(FTargetInstalls[I]).Undo;
       Result := Result and TJclInstallation(FTargetInstalls[I]).Run;
     end;
   finally
