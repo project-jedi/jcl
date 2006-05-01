@@ -1247,7 +1247,7 @@ begin
     if (NewNode.Parent.Parent <> nil) and (NewNode.Parent = NewNode.Parent.Parent.Left) then
     begin
       Current := NewNode.Parent.Parent.Right;
-      if Current.Color = tcRed then
+      if (Current <> nil) and (Current.Color = tcRed) then
       begin
         NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
@@ -2643,7 +2643,7 @@ begin
     if (NewNode.Parent.Parent <> nil) and (NewNode.Parent = NewNode.Parent.Parent.Left) then
     begin
       Current := NewNode.Parent.Parent.Right;
-      if Current.Color = tcRed then
+      if (Current <> nil) and (Current.Color = tcRed) then
       begin
         NewNode.Parent.Color := tcBlack;
         Current.Color := tcBlack;
