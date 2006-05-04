@@ -1532,6 +1532,12 @@ resourcestring
 resourcestring
   RsInvalidSampleSize = 'Invalid sample size (%d)';
 
+//=== JclStreams =============================================================
+resourcestring
+  RsStreamsCreateError = 'Cannot create file %s';
+  RsStreamsOpenError = 'Cannot open file %s';
+  RsStreamsSetSizeError = 'Error setting stream size';
+
 //=== JclStrHashMap ==========================================================
 resourcestring
   RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';

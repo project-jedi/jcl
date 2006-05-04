@@ -32,6 +32,12 @@ unit JclStreams;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   SysUtils, Classes;
 
 type
@@ -39,7 +45,7 @@ type
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
   {$ENDIF COMPILER5}
 
-  EJclStreamException = class(Exception);
+  EJclStreamError = class(Exception);
   
   // abstraction layer to support Delphi 5 and C++Builder 5 streams
   // 64 bit version of overloaded functions are introduced
@@ -54,16 +60,43 @@ type
       {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
   end;
 
-  {  classes that inherit from TJclStream should override these methods:
-  TMyJclStream = class(TJclStream)
+  //=== VCL stream replacements ===
+
+  TJclHandleStream = class(TJclStream)
+  private
+    FHandle: THandle;
   protected
+    procedure SetSize(NewSize: Longint); override;
     procedure SetSize(const NewSize: Int64); override;
   public
+    constructor Create(AHandle: THandle); virtual;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    property Handle: THandle read FHandle;
+  end;
+
+  TJclFileStream = class(TJclHandleStream)
+  public
+    constructor Create(const FileName: string; Mode: Word; Rights: Cardinal = 0); reintroduce; virtual;
+    destructor Destroy; override;
+  end;
+
+  {
+  TJclCustomMemoryStream = class(TJclStream)
+  end;
+
+  TJclMemoryStream = class(TJclCustomMemoryStream)
+  end;
+
+  TJclStringStream = class(TJclStream)
+  end;
+
+  TJclResourceStream = class(TJclCustomMemoryStream)
   end;
   }
+
+  //=== new stream ideas ===
 
   TJclEmptyStream = class(TJclStream)
   protected
@@ -276,6 +309,128 @@ begin
   // override to customize
 end;
 
+//=== { TJclHandleStream } ===================================================
+
+constructor TJclHandleStream.Create(AHandle: THandle);
+begin
+  inherited Create;
+  FHandle := AHandle;
+end;
+
+function TJclHandleStream.Read(var Buffer; Count: Longint): Longint;
+begin
+  {$IFDEF MSWINDOWS}
+  if (Count <= 0) or not ReadFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
+    Result := 0;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := __read(Handle, Buffer, Count);
+  {$ENDIF LINUX}
+end;
+
+function TJclHandleStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  {$IFDEF MSWINDOWS}
+  if (Count <= 0) or not WriteFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
+    Result := 0;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := __write(Handle, Buffer, Count);
+  {$ENDIF LINUX}
+end;
+
+{$IFDEF MSWINDOWS}
+function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+const
+  INVALID_SET_FILE_POINTER = -1;
+type
+  TLarge = record
+    case Boolean of
+    False:
+     (OffsetLo: Longint;
+      OffsetHi: Longint);
+    True:
+      (Offset64: Int64);
+  end;
+var
+  Offs: TLarge;
+begin
+  Offs.Offset64 := Offset;
+  Offs.OffsetLo := SetFilePointer(Handle, Offs.OffsetLo, @Offs.OffsetHi, Ord(Origin));
+  if (Offs.OffsetLo = INVALID_SET_FILE_POINTER) and (GetLastError <> NO_ERROR) then
+    Result := -1
+  else
+    Result := Offs.Offset64;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+  Result := __lseek(Handle, Offset, Origin);
+end;
+{$ENDIF LINUX}
+
+procedure TJclHandleStream.SetSize(NewSize: Longint);
+begin
+  SetSize(Int64(NewSize));
+end;
+
+procedure TJclHandleStream.SetSize(const NewSize: Int64);
+begin
+  Seek(NewSize, soBeginning);
+  {$IFDEF MSWINDOWS}
+  if not SetEndOfFile(Handle) then
+    RaiseLastOSError;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if ftruncate(Handle, Position) = -1 then
+    raise EJclStreamError.CreateRes(@RsStreamsSetSizeError);
+  {$ENDIF LINUX}
+end;
+
+//=== { TJclFileStream } =====================================================
+
+constructor TJclFileStream.Create(const FileName: string; Mode: Word; Rights: Cardinal);
+var
+  H: THandle;
+begin
+  if Mode = fmCreate then
+  begin
+    H := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
+      0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    inherited Create(H);
+    if Handle = INVALID_HANDLE_VALUE then
+      {$IFDEF CLR}
+      raise EJclStreamError.CreateFmt(RsStreamsCreateError, [FileName]);
+      {$ELSE}
+      raise EJclStreamError.CreateResFmt(@RsStreamsCreateError, [FileName]);
+      {$ENDIF CLR}
+  end
+  else
+  begin
+    H := THandle(FileOpen(FileName, Mode));
+    inherited Create(H);
+    if Handle = INVALID_HANDLE_VALUE then
+      {$IFDEF CLR}
+      raise EJclStreamError.CreateFmt(RsStreamsOpenError, [FileName]);
+      {$ELSE}
+      raise EJclStreamError.CreateResFmt(@RsStreamsOpenError, [FileName]);
+      {$ENDIF CLR}
+  end;
+end;
+
+destructor TJclFileStream.Destroy;
+begin
+  {$IFDEF MSWINDOWS}
+  if Handle <> INVALID_HANDLE_VALUE then
+    CloseHandle(Handle);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  __close(Handle);
+  {$ENDIF LINUX}
+  inherited Destroy;
+end;
+
 //=== { TJclEmptyStream } ====================================================
 
 // a stream which stays empty no matter what you do
@@ -331,8 +486,10 @@ function TJclNullStream.Read(var Buffer; Count: Longint): Longint;
 begin
   if Count < 0 then
     Count := 0;
+  // FPosition > FSize is possible!
   if FSize - FPosition < Count then
     Count := FSize - FPosition;
+  // does not read if beyond EOF
   if Count > 0 then
   begin
     FillChar(Buffer, Count, 0);
@@ -346,62 +503,35 @@ begin
   if Count < 0 then
     Count := 0;
   FPosition := FPosition + Count;
+  // writing when FPosition > FSize is possible!
   if FPosition > FSize then
     FSize := FPosition;
   Result := Count;
 end;
 
 function TJclNullStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+var
+  Rel: Int64;
 begin
   case Origin of
     soBeginning:
-      begin
-        if Offset >= 0 then
-          FPosition := Offset
-        else
-          FPosition := 0;
-        if FPosition > FSize then
-        begin
-          FPosition := FSize;
-          Result := -1;
-        end
-        else
-          Result := FPosition;
-      end;
+      Rel := 0;
     soCurrent:
-      begin
-        FPosition := FPosition + Offset;
-        if FPosition > FSize then
-        begin
-          FPosition := FSize;
-          Result := -1;
-        end
-        else
-        if FPosition < 0 then
-        begin
-          FPosition := 0;
-          Result := -1;
-        end
-        else
-          Result := FPosition;
-      end;
+      Rel := FPosition;
     soEnd:
-      begin
-        if Offset <= 0 then
-          FPosition := FSize + Offset // offset is negative
-        else
-          FPosition := FSize;
-        if FPosition < 0 then
-        begin
-          FPosition := 0;
-          Result := -1;
-        end
-        else
-          Result := FPosition;
-      end;
+      Rel := FSize;
+  else
+    // force Rel + Offset = -1 (code is never reached)
+    Rel := Offset - 1;
+  end;
+  if Rel + Offset >= 0 then
+  begin
+    // all non-negative destination positions including beyond EOF are valid
+    FPosition := Rel + Offset;
+    Result := FPosition;
+  end
   else
     Result := -1;
-  end;
 end;
 
 //=== { TJclRandomStream } ===================================================
@@ -434,17 +564,14 @@ var
   I: Longint;
   BufferPtr: PByte;
 begin
-  if Count < 0 then
-    Count := 0;
-  if Size - Position < Count then
-    Count := Size - Position;
+  // this handles all necessary checks
+  Count := inherited Read(Buffer, Count);
   BufferPtr := @Buffer;
   for I := 0 to Count - 1 do
   begin
     BufferPtr^ := RandomData;
     Inc(BufferPtr);
   end;
-  Position := Position + Count;
   Result := Count;
 end;
 
@@ -873,38 +1000,40 @@ end;
 //=== { TJclEasyStream } =====================================================
 
 function TJclEasyStream.IsEqual(Stream: TStream): Boolean;
-type
-  TTestBuffer = array [0..4095] of Byte;
+const
+  BUFSIZE = 65536;
 var
-  MyPos: Integer;
-  MyRead: Integer;
-  MyBuffer: TTestBuffer;
-  StreamPos: Integer;
-  StreamRead: Integer;
-  StreamBuffer: TTestBuffer;
+  SavePos, StreamSavePos: Integer;
+  ReadCount, StreamReadCount: Integer;
+  Buffer, StreamBuffer: PChar;
   TestSize: Integer;
 begin
   Result := False;
-  MyPos := Position;
-  StreamPos := Stream.Position;
+  SavePos := Position;
+  StreamSavePos := Stream.Position;
   if Size <> Stream.Size then
     Exit;
+  Buffer := nil;
   try
+    GetMem(Buffer, 2*BUFSIZE);
+    StreamBuffer := Buffer + BUFSIZE;
     Position := 0;
     Stream.Position := 0;
     TestSize := Size;
     while Position < TestSize do
     begin
-      MyRead := Read(MyBuffer, SizeOf(MyBuffer));
-      StreamRead := Stream.Read(StreamBuffer, SizeOf(StreamBuffer));
-      if MyRead <> StreamRead then
+      ReadCount := Read(Buffer^, BUFSIZE);
+      StreamReadCount := Stream.Read(StreamBuffer^, BUFSIZE);
+      if ReadCount <> StreamReadCount then
         Exit;
-      if not CompareMem(Addr(MyBuffer), Addr(StreamBuffer), MyRead) then
+      if not CompareMem(Buffer, StreamBuffer, ReadCount) then
         Exit;
     end;
   finally
-    Position := MyPos;
-    Stream.Position := StreamPos;
+    Position := SavePos;
+    Stream.Position := StreamSavePos;
+    if Buffer <> nil then
+      FreeMem(Buffer);
   end;
   Result := True;
 end;
