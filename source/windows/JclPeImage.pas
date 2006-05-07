@@ -938,7 +938,7 @@ type
     function HookImport(Base: Pointer; const ModuleName, FunctionName: string;
       NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
     class function IsWin9xDebugThunk(P: Pointer): Boolean;
-    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
+    class function ReplaceImport(Base: Pointer; const ModuleName: string; FromProc, ToProc: Pointer): Boolean;
     class function SystemBase: Pointer;
     procedure UnhookAll;
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
@@ -5021,7 +5021,7 @@ begin
     Result := (PUSH = $68) and (JMP = $E9);
 end;
 
-class function TJclPeMapImgHooks.ReplaceImport(Base: Pointer; ModuleName: string;
+class function TJclPeMapImgHooks.ReplaceImport(Base: Pointer; const ModuleName: string;
   FromProc, ToProc: Pointer): Boolean;
 var
   FromProcDebugThunk, ImportThunk: PWin9xDebugThunk;
