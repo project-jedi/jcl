@@ -730,7 +730,16 @@ end;
 function TJclStreamDecorator.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
   if Assigned(FStream) then
-    Result := Stream.Seek(Offset, Origin)
+  begin
+    {$IFDEF COMPILER5}
+    if (Offset <= MaxLongint) or (Offset > -MaxLongint) then
+      Result := Stream.Seek(Longint(Offset), Ord(Origin))
+    else
+      Result := -1;
+    {$ELSE}
+    Result := Stream.Seek(Offset, Origin);
+    {$ENDIF COMPILER5}
+  end
   else
     Result := -1;
 end;
@@ -752,7 +761,10 @@ end;
 procedure TJclStreamDecorator.SetSize(const NewSize: Int64);
 begin
   if Assigned(FStream) then
-    Stream.Size := NewSize;
+    {$IFDEF COMPILER5}
+    if (Offset <= MaxLongint) or (Offset > -MaxLongint) then
+    {$ENDIF COMPILER5}
+      Stream.Size := NewSize;
 end;
 
 procedure TJclStreamDecorator.SetStream(Value: TStream);
