@@ -241,7 +241,9 @@ type
     function IsEqual(Stream: TStream): Boolean;
     function ReadBoolean: Boolean;
     function ReadChar: Char;
+    {$IFNDEF BCB}
     function ReadComp: Comp;
+    {$ENDIF !BCB}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
     function ReadDouble: Double;
@@ -764,10 +766,7 @@ end;
 procedure TJclStreamDecorator.SetSize(const NewSize: Int64);
 begin
   if Assigned(FStream) then
-    {$IFDEF COMPILER5}
-    if (Stream is TJclStream) or ((Offset <= MaxLongint) and (Offset > -MaxLongint)) then
-    {$ENDIF COMPILER5}
-      Stream.Size := NewSize;
+    Stream.Size := NewSize;
 end;
 
 procedure TJclStreamDecorator.SetStream(Value: TStream);
@@ -1063,10 +1062,12 @@ begin
   ReadBuffer(Result, SizeOf(Result));
 end;
 
+{$IFNDEF BCB}
 function TJclEasyStream.ReadComp: Comp;
 begin
   ReadBuffer(Result, SizeOf(Result));
 end;
+{$ENDIF !BCB}
 
 function TJclEasyStream.ReadCurrency: Currency;
 begin
