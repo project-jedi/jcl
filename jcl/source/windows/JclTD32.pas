@@ -1151,15 +1151,19 @@ var
 begin
   Count := PDWORD(pSubsection)^;
   pszName := PChar(DWORD(pSubsection) + SizeOf(DWORD));
-  for I := 0 to Count - 1 do
+  if Count > 0 then
   begin
-    // Get the length of the name
-    Len := Ord(pszName^);
-    Inc(pszName);
-    // Get the name
-    FNames.Add(pszName);
-    // skip the length of name and a NULL at the end
-    Inc(pszName, Len + 1);
+    FNames.Capacity := FNames.Capacity + Count;
+    for I := 0 to Count - 1 do
+    begin
+      // Get the length of the name
+      Len := Ord(pszName^);
+      Inc(pszName);
+      // Get the name
+      FNames.Add(pszName);
+      // skip the length of name and a NULL at the end
+      Inc(pszName, Len + 1);
+    end;
   end;
 end;
 
@@ -1267,9 +1271,9 @@ var
 begin
   pTyp := PSymbolTypeInfo(pTypes);
   repeat
-    case pTyp.TypeId of
+    {case pTyp.TypeId of
       TID_VOID: ;
-    end;
+    end;}
     pTyp := PSymbolTypeInfo(DWORD(pTyp) + pTyp.Size + SizeOf(pTyp^));
   until DWORD(pTyp) >= DWORD(pTypes) + Size;
 end;
