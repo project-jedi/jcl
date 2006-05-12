@@ -74,7 +74,7 @@ uses
   System.Net, System.ComponentModel,
   {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, ActiveX,
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF ~FPC}
@@ -1102,6 +1102,17 @@ function IsSystemResourcesMeterPresent: Boolean;
 function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; overload;
 function GetFreeSystemResources: TFreeSystemResources; overload;
 function GetBPP: Cardinal;
+
+// installed programs information
+function ProgIDExists(const ProgID: string): Boolean;
+function IsWordInstalled: Boolean;
+function IsExcelInstalled: Boolean;
+function IsAccessInstalled: Boolean;
+function IsPowerPointInstalled: Boolean;
+function IsFrontPageInstalled: Boolean;
+function IsOutlookInstalled: Boolean;
+function IsInternetExplorerInstalled: Boolean;
+
 {$ENDIF MSWINDOWS}
 
 // Public global variables
@@ -5204,6 +5215,52 @@ begin
   end
   else
     Result := 0;
+end;
+
+//=== Installed programs =====================================================
+
+function ProgIDExists(const ProgID: string): Boolean;
+var
+  Tmp: TGUID;
+  WideProgID: WideString;
+begin
+  WideProgID := ProgID;
+  Result := Succeeded(CLSIDFromProgID(PWideChar(WideProgID), Tmp));
+end;
+
+function IsWordInstalled: Boolean;
+begin
+  Result := ProgIDExists('Word.Application');
+end;
+
+function IsExcelInstalled: Boolean;
+begin
+  Result := ProgIDExists('Excel.Application');
+end;
+
+function IsAccessInstalled: Boolean;
+begin
+  Result := ProgIDExists('Access.Application');
+end;
+
+function IsPowerPointInstalled: Boolean;
+begin
+  Result := ProgIDExists('PowerPoint.Application');
+end;
+
+function IsFrontPageInstalled: Boolean;
+begin
+  Result := ProgIDExists('FrontPage.Application');
+end;
+
+function IsOutlookInstalled: Boolean;
+begin
+  Result := ProgIDExists('Outlook.Application');
+end;
+
+function IsInternetExplorerInstalled: Boolean;
+begin
+  Result := ProgIDExists('InternetExplorer.Application');
 end;
 
 //=== Initialization/Finalization ============================================
