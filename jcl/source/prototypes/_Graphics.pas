@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -275,6 +275,7 @@ type
     FStipplePattern: TArrayOfColor32;
     FStippleStep: Single;
     FStretchFilter: TStretchFilter;
+    FResetAlphaOnAssign: Boolean;
     function  GetPixel(X, Y: Integer): TColor32;
     function  GetPixelS(X, Y: Integer): TColor32;
     function  GetPixelPtr(X, Y: Integer): PColor32;
@@ -408,6 +409,7 @@ type
     property MasterAlpha: Byte read FMasterAlpha write SetMasterAlpha default $FF;
     property OuterColor: TColor32 read FOuterColor write FOuterColor default 0;
     property StretchFilter: TStretchFilter read FStretchFilter write SetStretchFilter default sfNearest;
+    property ResetAlphaOnAssign: Boolean read FResetAlphaOnAssign write FResetAlphaOnAssign;
     property OnChanging;
     property OnChange;
   end;
@@ -2625,6 +2627,9 @@ end;
 constructor TJclBitmap32.Create;
 begin
   inherited Create;
+
+  FResetAlphaOnAssign := True;
+
   FillChar(FBitmapInfo, SizeOf(TBitmapInfo), #0);
   with FBitmapInfo.bmiHeader do
   begin
@@ -2751,7 +2756,8 @@ var
     if Empty then
       Exit;
     BitBlt(Handle, 0, 0, Width, Height, SrcBmp.Canvas.Handle, 0, 0, SRCCOPY);
-    ResetAlpha;
+    if ResetAlphaOnAssign then
+      ResetAlpha;
   end;
 
 begin
@@ -2793,7 +2799,8 @@ begin
           try
             Canvas.Handle := Self.Handle;
             TJclGraphicAccess(Graphic).Draw(Canvas, Rect(0, 0, Width, Height));
-            ResetAlpha;
+            if ResetAlphaOnAssign then
+              ResetAlpha;
           finally
             Canvas.Free;
           end;
@@ -2814,7 +2821,8 @@ begin
         try
           Canvas.Handle := Self.Handle;
           TJclGraphicAccess(Picture.Graphic).Draw(Canvas, Rect(0, 0, Width, Height));
-          ResetAlpha;
+          if ResetAlphaOnAssign then
+            ResetAlpha;
         finally
           Canvas.Free;
         end;
