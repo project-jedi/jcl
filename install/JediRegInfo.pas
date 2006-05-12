@@ -126,10 +126,10 @@ begin
 
     if Reg.OpenKey(ProjectKeyName, False) then
     begin
-      Reg.DeleteValue('Version');
-      Reg.DeleteValue('DcpDir');
-      Reg.DeleteValue('BplDir');
-      Reg.DeleteValue('RootDir');
+      Reg.DeleteValue('Version'); // do not localize
+      Reg.DeleteValue('DcpDir'); // do not localize
+      Reg.DeleteValue('BplDir'); // do not localize
+      Reg.DeleteValue('RootDir'); // do not localize
 
       Names := TStringList.Create;
       try
