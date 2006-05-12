@@ -202,8 +202,7 @@ type
   TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
   private
     FCursor: PJclIntfBinaryNode;
-    FOwnList: TJclIntfBinaryTree;
-    FLastRet: PJclIntfBinaryNode;
+    FOwnList: IJclIntfCollection;
   protected
     { IJclIntfIterator }
     procedure Add(AInterface: IInterface);
@@ -217,29 +216,15 @@ type
     procedure Remove;
     procedure SetObject(AInterface: IInterface);
   public
-    constructor Create(OwnList: TJclIntfBinaryTree; Start: PJclIntfBinaryNode);
-    {$IFNDEF CLR}
-    destructor Destroy; override;
-    {$ENDIF ~CLR}
+    constructor Create(OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
   end;
 
-constructor TIntfItr.Create(OwnList: TJclIntfBinaryTree; Start: PJclIntfBinaryNode);
+constructor TIntfItr.Create(OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
-  {$IFNDEF CLR}
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  {$ENDIF ~CLR}
 end;
-
-{$IFNDEF CLR}
-destructor TIntfItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-{$ENDIF ~CLR}
 
 procedure TIntfItr.Add(AInterface: IInterface);
 {$IFDEF THREADSAFE}
@@ -338,8 +323,9 @@ type
   end;
 
 function TPreOrderIntfItr.Next: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -347,7 +333,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
@@ -356,14 +342,9 @@ begin
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Left <> FLastRet) do // come from Right
+    while (FCursor <> nil) and ((FCursor.Right = nil) or (FCursor.Right = LastRet)) do
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Parent;
-    end;
-    while (FCursor <> nil) and (FCursor.Right = nil) do
-    begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
@@ -372,8 +353,9 @@ begin
 end;
 
 function TPreOrderIntfItr.Previous: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -381,19 +363,20 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> FLastRet) then // come from Right
-    if FCursor.Left <> nil then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+    // come from Right
+  begin
+    FCursor := FCursor.Left;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do // both childs
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Left;
-      while FCursor.Right <> nil do
-      begin
-        FLastRet := FCursor;
-        FCursor := FCursor.Right;
-      end;
+      if FCursor.Right <> nil then // right child first
+        FCursor := FCursor.Right
+      else
+        FCursor := FCursor.Left;
     end;
+  end;
 end;
 
 //=== { TInOrderIntfItr } ====================================================
@@ -407,35 +390,38 @@ type
   end;
 
 function TInOrderIntfItr.Next: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if FCursor.Left <> FLastRet then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
   Result := FCursor.Obj;
-  FLastRet := FCursor;
   if FCursor.Right <> nil then
-    FCursor := FCursor.Right
+  begin
+    FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) do
+      FCursor := FCursor.Left;
+  end
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right = FLastRet) do
+    while (FCursor <> nil) and (FCursor.Right = LastRet) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
 end;
 
 function TInOrderIntfItr.Previous: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -443,22 +429,19 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
   begin
     FCursor := FCursor.Left;
     while FCursor.Right <> nil do
-    begin
-      FLastRet := FCursor;
       FCursor := FCursor.Right;
-    end;
   end
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right <> FLastRet) do // Come from Left
+    while (FCursor <> nil) and (FCursor.Right <> LastRet) do // Come from Left
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
@@ -475,33 +458,35 @@ type
   end;
 
 function TPostOrderIntfItr.Next: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  Result := FCursor.Obj;
+  LastRet := FCursor;
+  FCursor := FCursor.Parent;
+  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-    if FCursor.Right <> nil then // particular worst case
-      FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
+    begin
+      if FCursor.Left <> nil then
+        FCursor := FCursor.Left
+      else
+        FCursor := FCursor.Right;
+    end;
   end;
-  Result := FCursor.Obj;
-  FLastRet := FCursor;
-  FCursor := FCursor.Parent;
 end;
 
 function TPostOrderIntfItr.Previous: IInterface;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclIntfBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -509,15 +494,17 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  if (FCursor.Right <> nil) then
     FCursor := FCursor.Right
+  else if (FCursor.Left <> nil) then
+    FCursor := FCursor.Left
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = FLastRet)) do
+    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = LastRet)) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
@@ -531,8 +518,7 @@ type
   TStrItr = class(TJclAbstractContainer, IJclStrIterator)
   protected
     FCursor: PJclStrBinaryNode;
-    FOwnList: TJclStrBinaryTree;
-    FLastRet: PJclStrBinaryNode;
+    FOwnList: IJclStrCollection;
     { IJclStrIterator }
     procedure Add(const AString: string);
     function GetString: string;
@@ -545,29 +531,15 @@ type
     procedure Remove;
     procedure SetString(const AString: string);
   public
-    constructor Create(OwnList: TJclStrBinaryTree; Start: PJclStrBinaryNode);
-    {$IFNDEF CLR}
-    destructor Destroy; override;
-    {$ENDIF ~CLR}
+    constructor Create(OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
   end;
 
-constructor TStrItr.Create(OwnList: TJclStrBinaryTree; Start: PJclStrBinaryNode);
+constructor TStrItr.Create(OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
-  {$IFNDEF CLR}
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  {$ENDIF ~CLR}
 end;
-
-{$IFNDEF CLR}
-destructor TStrItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-{$ENDIF ~CLR}
 
 procedure TStrItr.Add(const AString: string);
 {$IFDEF THREADSAFE}
@@ -666,8 +638,9 @@ type
   end;
 
 function TPreOrderStrItr.Next: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -675,7 +648,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Str;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
@@ -684,14 +657,9 @@ begin
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Left <> FLastRet) do // come from Right
+    while (FCursor <> nil) and ((FCursor.Right = nil) or (FCursor.Right = LastRet)) do
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Parent;
-    end;
-    while (FCursor <> nil) and (FCursor.Right = nil) do
-    begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
@@ -700,8 +668,9 @@ begin
 end;
 
 function TPreOrderStrItr.Previous: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -709,19 +678,20 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Str;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> FLastRet) then // come from Right
-    if FCursor.Left <> nil then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+    // come from Right
+  begin
+    FCursor := FCursor.Left;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do // both childs
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Left;
-      while FCursor.Right <> nil do
-      begin
-        FLastRet := FCursor;
-        FCursor := FCursor.Right;
-      end;
+      if FCursor.Right <> nil then // right child first
+        FCursor := FCursor.Right
+      else
+        FCursor := FCursor.Left;
     end;
+  end;
 end;
 
 //=== { TInOrderStrItr } =====================================================
@@ -735,35 +705,38 @@ type
   end;
 
 function TInOrderStrItr.Next: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if FCursor.Left <> FLastRet then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
   Result := FCursor.Str;
-  FLastRet := FCursor;
   if FCursor.Right <> nil then
-    FCursor := FCursor.Right
+  begin
+    FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) do
+      FCursor := FCursor.Left;
+  end
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right = FLastRet) do
+    while (FCursor <> nil) and (FCursor.Right = LastRet) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
 end;
 
 function TInOrderStrItr.Previous: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -771,22 +744,19 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Str;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
   begin
     FCursor := FCursor.Left;
     while FCursor.Right <> nil do
-    begin
-      FLastRet := FCursor;
       FCursor := FCursor.Right;
-    end;
   end
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right <> FLastRet) do // Come from Left
+    while (FCursor <> nil) and (FCursor.Right <> LastRet) do // Come from Left
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
@@ -803,33 +773,35 @@ type
   end;
 
 function TPostOrderStrItr.Next: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  Result := FCursor.Str;
+  LastRet := FCursor;
+  FCursor := FCursor.Parent;
+  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-    if FCursor.Right <> nil then // particular worst case
-      FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
+    begin
+      if FCursor.Left <> nil then
+        FCursor := FCursor.Left
+      else
+        FCursor := FCursor.Right;
+    end;
   end;
-  Result := FCursor.Str;
-  FLastRet := FCursor;
-  FCursor := FCursor.Parent;
 end;
 
 function TPostOrderStrItr.Previous: string;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclStrBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -837,15 +809,17 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Str;
-  FLastRet := FCursor;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  if (FCursor.Right <> nil) then
     FCursor := FCursor.Right
+  else if (FCursor.Left <> nil) then
+    FCursor := FCursor.Left
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = FLastRet)) do
+    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = LastRet)) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
@@ -859,8 +833,7 @@ type
   TItr = class(TJclAbstractContainer, IJclIterator)
   protected
     FCursor: PJclBinaryNode;
-    FOwnList: TJclBinaryTree;
-    FLastRet: PJclBinaryNode;
+    FOwnList: IJclCollection;
     { IJclIntfIterator }
     procedure Add(AObject: TObject);
     function GetObject: TObject;
@@ -873,29 +846,15 @@ type
     procedure Remove;
     procedure SetObject(AObject: TObject);
   public
-    constructor Create(OwnList: TJclBinaryTree; Start: PJclBinaryNode);
-    {$IFNDEF CLR}
-    destructor Destroy; override;
-    {$ENDIF ~CLR}
+    constructor Create(OwnList: IJclCollection; Start: PJclBinaryNode);
   end;
 
-constructor TItr.Create(OwnList: TJclBinaryTree; Start: PJclBinaryNode);
+constructor TItr.Create(OwnList: IJclCollection; Start: PJclBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
-  {$IFNDEF CLR}
-  FOwnList._AddRef; // Add a ref because FOwnList is not an interface !
-  {$ENDIF ~CLR}
 end;
-
-{$IFNDEF CLR}
-destructor TItr.Destroy;
-begin
-  FOwnList._Release;
-  inherited Destroy;
-end;
-{$ENDIF ~CLR}
 
 procedure TItr.Add(AObject: TObject);
 {$IFDEF THREADSAFE}
@@ -996,8 +955,9 @@ type
   end;
 
 function TPreOrderItr.Next: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -1005,7 +965,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
@@ -1014,14 +974,9 @@ begin
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Left <> FLastRet) do // come from Right
+    while (FCursor <> nil) and ((FCursor.Right = nil) or (FCursor.Right = LastRet)) do
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Parent;
-    end;
-    while (FCursor <> nil) and (FCursor.Right = nil) do
-    begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
@@ -1030,8 +985,9 @@ begin
 end;
 
 function TPreOrderItr.Previous: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -1039,19 +995,20 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> FLastRet) then // come from Right
-    if FCursor.Left <> nil then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+    // come from Right
+  begin
+    FCursor := FCursor.Left;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do // both childs
     begin
-      FLastRet := FCursor;
-      FCursor := FCursor.Left;
-      while FCursor.Right <> nil do
-      begin
-        FLastRet := FCursor;
-        FCursor := FCursor.Right;
-      end;
+      if FCursor.Right <> nil then // right child first
+        FCursor := FCursor.Right
+      else
+        FCursor := FCursor.Left;
     end;
+  end;
 end;
 
 //=== { TInOrderItr } ========================================================
@@ -1065,35 +1022,38 @@ type
   end;
 
 function TInOrderItr.Next: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if FCursor.Left <> FLastRet then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
   Result := FCursor.Obj;
-  FLastRet := FCursor;
   if FCursor.Right <> nil then
-    FCursor := FCursor.Right
+  begin
+    FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) do
+      FCursor := FCursor.Left;
+  end
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right = FLastRet) do
+    while (FCursor <> nil) and (FCursor.Right = LastRet) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
 end;
 
 function TInOrderItr.Previous: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -1101,22 +1061,19 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
+  LastRet := FCursor;
   if FCursor.Left <> nil then
   begin
     FCursor := FCursor.Left;
     while FCursor.Right <> nil do
-    begin
-      FLastRet := FCursor;
       FCursor := FCursor.Right;
-    end;
   end
   else
   begin
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and (FCursor.Right <> FLastRet) do // Come from Left
+    while (FCursor <> nil) and (FCursor.Right <> LastRet) do // Come from Left
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
   end;
@@ -1133,33 +1090,35 @@ type
   end;
 
 function TPostOrderItr.Next: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  Result := FCursor.Obj;
+  LastRet := FCursor;
+  FCursor := FCursor.Parent;
+  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
-    while FCursor.Left <> nil do
-      FCursor := FCursor.Left;
-    if FCursor.Right <> nil then // particular worst case
-      FCursor := FCursor.Right;
+    while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
+    begin
+      if FCursor.Left <> nil then
+        FCursor := FCursor.Left
+      else
+        FCursor := FCursor.Right;
+    end;
   end;
-  Result := FCursor.Obj;
-  FLastRet := FCursor;
-  FCursor := FCursor.Parent;
 end;
 
 function TPostOrderItr.Previous: TObject;
-{$IFDEF THREADSAFE}
 var
+  LastRet: PJclBinaryNode;
+{$IFDEF THREADSAFE}
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
@@ -1167,15 +1126,17 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  FLastRet := FCursor;
-  if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
+  if (FCursor.Right <> nil) then
     FCursor := FCursor.Right
+  else if (FCursor.Left <> nil) then
+    FCursor := FCursor.Left
   else
   begin
+    LastRet := FCursor;
     FCursor := FCursor.Parent;
-    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = FLastRet)) do
+    while (FCursor <> nil) and ((FCursor.Left = nil) or (FCursor.Left = LastRet)) do
     begin
-      FLastRet := FCursor;
+      LastRet := FCursor;
       FCursor := FCursor.Parent;
     end;
     if FCursor <> nil then // not root
