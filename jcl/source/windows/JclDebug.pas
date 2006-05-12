@@ -355,6 +355,9 @@ type
   protected
     function CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
   public
+    class procedure RegisterDebugInfoSource(const InfoSourceClass: TJclDebugInfoSourceClass);
+    class procedure UnRegisterDebugInfoSource(const InfoSourceClass: TJclDebugInfoSourceClass);
+    class procedure NeedInfoSourceClassList; 
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
     property ItemFromModule[const Module: HMODULE]: TJclDebugInfoSource read GetItemFromModule;
     property Items[Index: Integer]: TJclDebugInfoSource read GetItems;
@@ -2406,7 +2409,8 @@ end;
 //=== { TJclDebugInfoList } ==================================================
 
 var
-  DebugInfoList: TJclDebugInfoList;
+  DebugInfoList: TJclDebugInfoList = nil;
+  InfoSourceClassList: TList = nil;
   DebugInfoCritSect: TJclCriticalSection;
 
 procedure NeedDebugInfoList;
@@ -2416,15 +2420,14 @@ begin
 end;
 
 function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
-const
-  DebugInfoSources: array [1..4] of TJclDebugInfoSourceClass =
-    (TJclDebugInfoBinary, TJclDebugInfoTD32, TJclDebugInfoMap, TJclDebugInfoExports);
 var
   I: Integer;
 begin
-  for I := Low(DebugInfoSources) to High(DebugInfoSources) do
+  NeedDebugInfoList;
+
+  for I := 0 to InfoSourceClassList.Count - 1 do
   begin
-    Result := DebugInfoSources[I].Create(Module);
+    Result := TJclDebugInfoSourceClass(InfoSourceClassList.Items[I]).Create(Module);
     try
       if Result.InitializeSource then
         Break
@@ -2477,6 +2480,41 @@ begin
     Result := Item.GetLocationInfo(Addr, Info)
   else
     Result := False;
+end;
+
+class procedure TJclDebugInfoList.NeedInfoSourceClassList;
+begin
+  if not Assigned(InfoSourceClassList) then
+  begin
+    InfoSourceClassList := TList.Create;
+    {$IFNDEF DEBUG_NO_BINARY}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoBinary));
+    {$ENDIF !DEBUG_NO_BINARY}
+    {$IFNDEF DEBUG_NO_TD32}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoTD32));
+    {$ENDIF !DEBUG_NO_TD32}
+    {$IFNDEF DEBUG_NO_MAP}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoMap));
+    {$ENDIF !DEBUG_NO_MAP}
+    {$IFNDEF DEBUG_NO_EXPORTS}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoExports));
+    {$ENDIF !DEBUG_NO_EXPORTS}
+  end;
+end;
+
+class procedure TJclDebugInfoList.RegisterDebugInfoSource(
+  const InfoSourceClass: TJclDebugInfoSourceClass);
+begin
+  NeedInfoSourceClassList;
+
+  InfoSourceClassList.Add(Pointer(InfoSourceClass));
+end;
+
+class procedure TJclDebugInfoList.UnRegisterDebugInfoSource(
+  const InfoSourceClass: TJclDebugInfoSourceClass);
+begin
+  if Assigned(InfoSourceClassList) then
+    InfoSourceClassList.Remove(Pointer(InfoSourceClass));
 end;
 
 //=== { TJclDebugInfoMap } ===================================================
@@ -4179,6 +4217,7 @@ finalization
   FreeAndNil(GlobalStackList);
   FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
+  FreeAndNil(InfoSourceClassList);
 
 // History:
 
