@@ -2401,11 +2401,22 @@ end;
 { TJclDistribution }
 
 constructor TJclDistribution.Create;
+var
+  IniFileName: string;
 begin
   inherited;
   FTargetInstalls := TObjectList.Create;
   FTargetInstalls.OwnsObjects := True;
-  FIniFile := TMemIniFile.Create(ExtractFilePath(ParamStr(0)) + RsIniFileName);
+
+  IniFileName := GetEnvironmentVariable('JCL_INSTALL_INI');
+
+  if IniFileName = '' then
+    IniFileName := RsIniFileName;
+
+  if not PathIsAbsolute(IniFileName) then
+    IniFileName := ExtractFilePath(ParamStr(0)) + IniFileName;
+
+  FIniFile := TMemIniFile.Create(IniFileName);
 end;
 
 destructor TJclDistribution.Destroy;
