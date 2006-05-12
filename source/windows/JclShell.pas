@@ -137,7 +137,9 @@ type
   end;
 
 procedure ShellLinkFree(var Link: TShellLink);
-function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
+function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT; overload;
+function ShellLinkResolve(const FileName: string; var Link: TShellLink;
+  const ResolveFlags: Cardinal): HRESULT; overload;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
 function ShellLinkIcon(const Link: TShellLink): HICON; overload;
@@ -179,10 +181,10 @@ const
 var
   RtdlMsiLibHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
   RtdlMsiGetShortcutTarget: function(szShortcutPath: LPCSTR; szProductCode: LPSTR;
-    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT; stdcall = nil;
+    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT stdcall = nil;
 
   RtdlMsiGetComponentPath: function(szProduct: LPCSTR; szComponent: LPCSTR;
-    lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE; stdcall = nil;
+    lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE stdcall = nil;
 
 implementation
 
@@ -982,6 +984,12 @@ begin
 end;
 
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
+begin
+  Result := ShellLinkResolve(FileName, Link, SLR_ANY_MATCH);
+end;
+
+function ShellLinkResolve(const FileName: string; var Link: TShellLink;
+  const ResolveFlags: Cardinal): HRESULT;
 const
   MAX_FEATURE_CHARS = 38;   // maximum chars in MSI feature name
 var
