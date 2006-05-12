@@ -392,7 +392,7 @@ type
     property MasterAlpha: Byte read FMasterAlpha write SetMasterAlpha default $FF;
     property OuterColor: TColor32 read FOuterColor write FOuterColor default 0;
     property StretchFilter: TStretchFilter read FStretchFilter write SetStretchFilter default sfNearest;
-    property ResetAlphaOnAssign: Boolean read FResetAlphaOnAssign write FResetAlphaOnAssign;
+    property ResetAlphaOnAssign: Boolean read FResetAlphaOnAssign write FResetAlphaOnAssign default true;
     property OnChanging;
     property OnChange;
   end;
@@ -2114,6 +2114,7 @@ begin
   end;
   Result := True;
 end;
+
 
 //=== { TJclDesktopCanvas } ==================================================
 
@@ -4895,6 +4896,7 @@ begin
   Bitmap.EndUpdate;
   Bitmap.Changed;
 end;
+
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
