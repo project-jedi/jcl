@@ -2568,7 +2568,9 @@ begin
       if not KeepSettings then
         TJclInstallation(FTargetInstalls[I]).RemoveSettings;
       TJclInstallation(FTargetInstalls[I]).Undo;
-      Result := Result and TJclInstallation(FTargetInstalls[I]).Run;
+      Result := TJclInstallation(FTargetInstalls[I]).Run;
+      if not Result then
+        Break;
     end;
   finally
     Tool.UpdateStatus('');
