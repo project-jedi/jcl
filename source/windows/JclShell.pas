@@ -1043,7 +1043,7 @@ begin
 
     if Succeeded(Result) then
     begin
-      Result := ShellLink.Resolve(0, SLR_ANY_MATCH);
+      Result := ShellLink.Resolve(0, ResolveFlags);
 
       if Succeeded(Result) then
       begin
