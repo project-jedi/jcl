@@ -256,7 +256,9 @@ type
     function ReadSizedString: string;
     procedure WriteBoolean(Value: Boolean);
     procedure WriteChar(Value: Char);
+    {$IFNDEF BCB}
     procedure WriteComp(const Value: Comp);
+    {$ENDIF !BCB}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
     procedure WriteDouble(const Value: Double);
@@ -1147,10 +1149,12 @@ begin
   WriteBuffer(Value, SizeOf(Value));
 end;
 
+{$IFNDEF BCB}
 procedure TJclEasyStream.WriteComp(const Value: Comp);
 begin
   WriteBuffer(Value, SizeOf(Value));
 end;
+{$ENDIF !BCB}
 
 procedure TJclEasyStream.WriteCurrency(const Value: Currency);
 begin
