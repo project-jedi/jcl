@@ -1112,6 +1112,9 @@ function IsPowerPointInstalled: Boolean;
 function IsFrontPageInstalled: Boolean;
 function IsOutlookInstalled: Boolean;
 function IsInternetExplorerInstalled: Boolean;
+function IsMSProjectInstalled: Boolean;
+
+function IsOpenOfficeInstalled: Boolean;
 
 {$ENDIF MSWINDOWS}
 
@@ -5261,6 +5264,16 @@ end;
 function IsInternetExplorerInstalled: Boolean;
 begin
   Result := ProgIDExists('InternetExplorer.Application');
+end;
+
+function IsMSProjectInstalled: Boolean;
+begin
+  Result := ProgIDExists('MSProject.Application');
+end;
+
+function IsOpenOfficeInstalled: Boolean;
+begin
+  Result := ProgIDExists('com.sun.star.ServiceManager');
 end;
 
 //=== Initialization/Finalization ============================================
