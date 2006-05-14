@@ -5253,7 +5253,7 @@ var
 begin
   with FList[Index] do
   begin
-    A := TDynWideCharArray(FString);
+    Pointer(A) := TDynWideCharArray(FString);
     if A <> nil then
       A := nil; // free memory
 
