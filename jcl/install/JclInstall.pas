@@ -2398,7 +2398,7 @@ begin
     FOnWriteLog(Msg);
 end;
 
-{ TJclDistribution }
+//=== { TJclDistribution } ===================================================
 
 constructor TJclDistribution.Create;
 var
@@ -2408,7 +2408,8 @@ begin
   FTargetInstalls := TObjectList.Create;
   FTargetInstalls.OwnsObjects := True;
 
-  IniFileName := GetEnvironmentVariable('JCL_INSTALL_INI');
+  if not GetEnvironmentVar('JCL_INSTALL_INI', IniFileName) then
+    IniFileName := '';
 
   if IniFileName = '' then
     IniFileName := RsIniFileName;
