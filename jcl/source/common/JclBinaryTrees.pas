@@ -470,7 +470,7 @@ begin
   Result := FCursor.Obj;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
+  if (FCursor <> nil) and (FCursor.Right <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
     while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
@@ -785,7 +785,7 @@ begin
   Result := FCursor.Str;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
+  if (FCursor <> nil) and (FCursor.Right <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
     while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
@@ -1102,7 +1102,7 @@ begin
   Result := FCursor.Obj;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Right <> LastRet) then
+  if (FCursor <> nil) and (FCursor.Right <> nil) and (FCursor.Right <> LastRet) then
   begin
     FCursor := FCursor.Right;
     while (FCursor.Left <> nil) or (FCursor.Right <> nil) do
