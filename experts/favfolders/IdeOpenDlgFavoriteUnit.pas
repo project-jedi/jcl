@@ -177,9 +177,9 @@ end;
 //
 // Revision 1.5  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2006/01/08 17:16:57 $ and Revision 1.9  2006/03/26 20:22:19  outchy
-// - improved header information, added $Date: 2006/01/08 17:16:57 $ and Command registration moved out of expert constructors and destructors
-// - improved header information, added $Date: 2006/01/08 17:16:57 $ and
+// - improved header information, added $Date$ and Revision 1.9  2006/03/26 20:22:19  outchy
+// - improved header information, added $Date$ and Command registration moved out of expert constructors and destructors
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.8  2006/01/08 17:16:57  outchy
 // - improved header information, added $Date$ and Settings reworked.
 // - improved header information, added $Date$ and Common window for expert configurations

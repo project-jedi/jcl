@@ -140,10 +140,10 @@ end;
 //
 // Revision 1.4  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Revision 1.6  2006/01/08 17:16:57  outchy
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Settings reworked.
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and Common window for expert configurations
-// - improved header information, added $Date: 2005/12/16 23:46:25 $ and
+// - improved header information, added $Date$ and Revision 1.6  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date$ and Settings reworked.
+// - improved header information, added $Date$ and Common window for expert configurations
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.5  2005/12/16 23:46:25  outchy
 // - improved header information, added $Date$ and Added expert stack form.
 // - improved header information, added $Date$ and Added code to display call stack on expert exception.

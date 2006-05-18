@@ -900,11 +900,11 @@ end;
 //
 // Revision 1.3  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Revision 1.6  2005/12/16 23:46:25  outchy
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added expert stack form.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Added code to display call stack on expert exception.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and Fixed package extension for D2006.
-// - improved header information, added $Date: 2005/12/04 10:10:57 $ and
+// - improved header information, added $Date$ and Revision 1.6  2005/12/16 23:46:25  outchy
+// - improved header information, added $Date$ and Added expert stack form.
+// - improved header information, added $Date$ and Added code to display call stack on expert exception.
+// - improved header information, added $Date$ and Fixed package extension for D2006.
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.5  2005/12/04 10:10:57  obones
 // - improved header information, added $Date$ and Borland Developer Studio 2006 support
 // - improved header information, added $Date$ and CVS tags.
