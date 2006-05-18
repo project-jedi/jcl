@@ -1041,10 +1041,10 @@ end;
 //
 // Revision 1.6  2005/10/26 03:29:44  rrossmair
 // - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Revision 1.9  2006/01/08 17:16:57  outchy
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Settings reworked.
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and Common window for expert configurations
-// - improved header information, added $Date: 2005/12/26 18:03:41 $ and
+// - improved header information, added $Date$ and Revision 1.9  2006/01/08 17:16:57  outchy
+// - improved header information, added $Date$ and Settings reworked.
+// - improved header information, added $Date$ and Common window for expert configurations
+// - improved header information, added $Date$ and
 // - improved header information, added $Date$ and Revision 1.8  2005/12/26 18:03:41  outchy
 // - improved header information, added $Date$ and Enhanced bds support (including C#1 and D8)
 // - improved header information, added $Date$ and Introduction of dll experts
