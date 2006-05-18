@@ -355,9 +355,13 @@ type
   protected
     function CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
   public
-    class procedure RegisterDebugInfoSource(const InfoSourceClass: TJclDebugInfoSourceClass);
-    class procedure UnRegisterDebugInfoSource(const InfoSourceClass: TJclDebugInfoSourceClass);
-    class procedure NeedInfoSourceClassList; 
+    class procedure RegisterDebugInfoSource(
+      const InfoSourceClass: TJclDebugInfoSourceClass);
+    class procedure UnRegisterDebugInfoSource(
+      const InfoSourceClass: TJclDebugInfoSourceClass);
+    class procedure RegisterDebugInfoSourceFirst(
+      const InfoSourceClass: TJclDebugInfoSourceClass);
+    class procedure NeedInfoSourceClassList;
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
     property ItemFromModule[const Module: HMODULE]: TJclDebugInfoSource read GetItemFromModule;
     property Items[Index: Integer]: TJclDebugInfoSource read GetItems;
@@ -2423,7 +2427,7 @@ function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfo
 var
   I: Integer;
 begin
-  NeedDebugInfoList;
+  NeedInfoSourceClassList;
 
   for I := 0 to InfoSourceClassList.Count - 1 do
   begin
@@ -2508,6 +2512,14 @@ begin
   NeedInfoSourceClassList;
 
   InfoSourceClassList.Add(Pointer(InfoSourceClass));
+end;
+
+class procedure TJclDebugInfoList.RegisterDebugInfoSourceFirst(
+  const InfoSourceClass: TJclDebugInfoSourceClass);
+begin
+  NeedInfoSourceClassList;
+
+  InfoSourceClassList.Insert(0, Pointer(InfoSourceClass));
 end;
 
 class procedure TJclDebugInfoList.UnRegisterDebugInfoSource(
