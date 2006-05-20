@@ -388,6 +388,8 @@ type
   end;
 
   TJclDCC32 = class(TJclBorlandCommandLineTool)
+  private
+    FOnBeforeSaveOptionsToFile: TNotifyEvent;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
@@ -402,6 +404,7 @@ type
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
     {$ENDIF KEEP_DEPRECATED}
+    property OnBeforeSaveOptionsToFile: TNotifyEvent read FOnBeforeSaveOptionsToFile write FOnBeforeSaveOptionsToFile;
   end;
   {$IFDEF KEEP_DEPRECATED}
   TJclDCC = TJclDCC32;
@@ -2228,6 +2231,8 @@ var
   S: string;
   F: TextFile;
 begin
+  if Assigned(FOnBeforeSaveOptionsToFile) then
+    FOnBeforeSaveOptionsToFile(Self);
   AssignFile(F, ConfigFileName);
   Rewrite(F);
   List := TStringList.Create;
@@ -2246,8 +2251,9 @@ begin
         begin
           for J := 0 to List.Count - 2 do
             Write(F, List[J], PathSep);
-          WriteLn(F, List[List.Count - 1], '"');
+          Write(F, List[List.Count - 1]);
         end;
+        WriteLn(F, '"');
       end
       else
         WriteLn(F, S);
