@@ -86,7 +86,8 @@ uses
   JclBase,              // for PByte and PCardinal
   JclMath,              // for TDelphiSet
   JclResources,         // for resourcestrings
-  JclStrings,           // for BooleanToStr, StrLen
+  JclStrings,           // for StrLen
+  JclSysUtils,          // for BooleanToStr
   JclWideStrings;       // for StrLenW, MoveWideChar
 
 type
