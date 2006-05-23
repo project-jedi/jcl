@@ -60,6 +60,7 @@ type
       ioJclExpertDebug,
       ioJclExpertAnalyzer,
       ioJclExpertFavorite,
+      ioJclExpertRepository,
       ioJclExpertThreadNames,
       ioJclExpertUses,
       ioJclExpertSimdView,

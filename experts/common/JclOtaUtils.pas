@@ -38,6 +38,7 @@ uses
 {$IFDEF MSWINDOWS}
   JclDebug,
 {$ENDIF MSWINDOWS}
+  JclBorlandTools,
   ToolsAPI;
 
 const
@@ -119,9 +120,12 @@ type
     FEnvVariables: TStringList;
     FRootDir: string;
     FServices: IOTAServices;
-    FName: string;
     FNTAServices: INTAServices;
+    FOTAModuleServices: IOTAModuleServices;
     FSettings: TJclOTASettings;
+    {$IFDEF BDS}
+    FOTAPersonalityServices: IOTAPersonalityServices;
+    {$ENDIF BDS}
     function GetModuleHInstance: Cardinal;
     function GetActiveProject: IOTAProject;
     function GetProjectGroup: IOTAProjectGroup;
@@ -129,6 +133,8 @@ type
     procedure ReadEnvVariables;
     procedure ConfigurationActionUpdate(Sender: TObject);
     procedure ConfigurationActionExecute(Sender: TObject);
+    function GetActivePersonality: TJclBorPersonality;
+    function GetDesigner: string;
   public
     class procedure AddExpert(AExpert: TJclOTAExpertBase);
     class procedure RemoveExpert(AExpert: TJclOTAExpertBase);
@@ -164,16 +170,22 @@ type
 
     property ActiveProject: IOTAProject read GetActiveProject;
     property Settings: TJclOTASettings read FSettings;
-    property Name: string read FName;
     property NTAServices: INTAServices read FNTAServices;
     property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
     property RootDir: string read GetRootDir;
     property Services: IOTAServices read FServices;
+    property OTAModuleServices: IOTAModuleServices read FOTAModuleServices;
+    {$IFDEF BDS}
+    property OTAPersonalityServices: IOTAPersonalityServices read FOTAPersonalityServices;
+    {$ENDIF BDS}
+
+    property ActivePersonality: TJclBorPersonality read GetActivePersonality;
+    property Designer: string read GetDesigner;
 
     property ModuleHInstance: Cardinal read GetModuleHInstance;
   end;
 
-  TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard)
+  TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard, IOTANotifier)
   protected
     procedure AfterSave; virtual;
     procedure BeforeSave; virtual;
@@ -187,6 +199,9 @@ type
 
 // procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
+{$IFDEF BDS}
+function PersonalityTextToId(const PersonalityText: string): TJclBorPersonality;
+{$ENDIF BDS}
 
 {$IFDEF BDS}
 procedure RegisterSplashScreen;
@@ -199,7 +214,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Forms, Graphics, Dialogs,
+  Forms, Graphics, Dialogs, ActiveX,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
@@ -208,11 +223,9 @@ uses
   {$ENDIF KYLIX}
   JclFileUtils, JclStrings, JclSysInfo,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
-  JclOtaActionConfigureSheet;
+  JclOtaActionConfigureSheet, JclOtaWizardForm, JclOtaWizardFrame;
 
-{$IFDEF BDS}
 {$R 'JclImages.res'}
-{$ENDIF BDS}
 
 var
   GlobalActionList: TList = nil;
@@ -265,6 +278,28 @@ begin
   end;
 end;
 
+{$IFDEF BDS}
+function PersonalityTextToId(const PersonalityText: string): TJclBorPersonality;
+begin
+  if SameText(PersonalityText, sDelphiPersonality) then
+    Result := bpDelphi32
+  else if SameText(PersonalityText, sDelphiDotNetPersonality) then
+    Result := bpDelphiNet32
+  else if SameText(PersonalityText, sCBuilderPersonality) then
+    Result := bpBCBuilder32
+  else if SameText(PersonalityText, sCSharpPersonality) then
+    Result := bpCSBuilder32
+  else if SameText(PersonalityText, sVBPersonality) then
+    Result := bpVisualBasic32
+  {$IFDEF COMPILER10_UP}
+  else if SameText(PersonalityText, sDesignPersonality) then
+    Result := bpDesign
+  {$ENDIF COMPILER10_UP}
+  else
+    Result := bpUnknown;
+end;
+{$ENDIF BDS}
+
 //=== { EJclExpertException } ================================================
 
 constructor EJclExpertException.CreateTrace(const Msg: string);
@@ -297,7 +332,7 @@ begin
 
   FBaseKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey);
   
-  FKeyName := BaseKeyName + JediIDESubKey + ExpertName;
+  FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
 function TJclOTASettings.LoadBool(Name: string; Def: Boolean): Boolean;
@@ -418,7 +453,7 @@ procedure TJclOTAExpertBase.BeforeDestruction;
 begin
   RemoveExpert(Self);
   UnregisterCommands;
-  
+
   inherited BeforeDestruction;
 end;
 
@@ -532,17 +567,26 @@ begin
   RegisterAboutBox;
   {$ENDIF BDS}
   
-  Supports(BorlandIDEServices,IOTAServices,FServices);
+  Supports(BorlandIDEServices, IOTAServices, FServices);
   if not Assigned(FServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
-  Supports(FServices,INTAServices,FNTAServices);
+  Supports(BorlandIDEServices, INTAServices, FNTAServices);
   if not Assigned(FNTAServices) then
     raise EJclExpertException.CreateTrace(RsENoNTAServices);
 
-  FName := AName;
+  {$IFDEF BDS}
+  Supports(BorlandIDEServices, IOTAPersonalityServices, FOTAPersonalityServices);
+  if not Assigned(FOTAPersonalityServices) then
+    raise EJclExpertException.CreateTrace(RsENoPersonalityServices);
+  {$ENDIF BDS}
+
+  Supports(BorlandIDEServices, IOTAModuleServices, FOTAModuleServices);
+  if not Assigned(FOTAModuleServices) then
+    raise EJclExpertException.CreateTrace(RsENoModuleServices);
+
   FEnvVariables := TStringList.Create;
-  FSettings := TJclOTASettings.Create(FName);
+  FSettings := TJclOTASettings.Create(AName);
 end;
 
 destructor TJclOTAExpertBase.Destroy;
@@ -608,6 +652,15 @@ begin
     Result := nil;
 end;
 
+function TJclOTAExpertBase.GetDesigner: string;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := Services.GetActiveDesignerType;
+  {$ELSE COMPILER6_UP}
+  Result := JclDesignerAny;
+  {$ENDIF COMPILER6_UP}
+end;
+
 function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
   if not Assigned(Project) then
@@ -671,19 +724,42 @@ begin
     Result := ExtractFilePath(Project.FileName);
 end;
 
+function TJclOTAExpertBase.GetActivePersonality: TJclBorPersonality;
+{$IFDEF BDS}
+var
+  PersonalityText: string;
+  {$IFDEF COMPILER9_UP}
+  CurrentProject: IOTAProject;
+  {$ENDIF COMPILER9_UP}
+{$ENDIF BDS}
+begin
+{$IFDEF BDS}
+  {$IFDEF COMPILER9_UP}
+  CurrentProject := ActiveProject;
+  if Assigned(CurrentProject) then
+    PersonalityText := CurrentProject.Personality
+  else
+  {$ENDIF COMPILER9_UP}
+    PersonalityText := OTAPersonalityServices.CurrentPersonality;
+  Result := PersonalityTextToId(PersonalityText);
+{$ELSE BDS}
+{$IFDEF DELPHI}
+  Result := bpDelphi32;
+{$ENDIF DELPHI}
+{$IFDEF BCB}
+  Result := bpBCBuilder32;
+{$ENDIF BCB}
+{$ENDIF BDS}
+end;
+
 function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
-  AModuleServices: IOTAModuleServices;
   AModule: IOTAModule;
   I: Integer;
 begin
-  Supports(BorlandIDEServices, IOTAModuleServices, AModuleServices);
-  if not Assigned(AModuleServices) then
-    raise EJclExpertException.CreateTrace(RsENoModuleServices);
-
-  for I := 0 to AModuleServices.ModuleCount - 1 do
+  for I := 0 to OTAModuleServices.ModuleCount - 1 do
   begin
-    AModule := AModuleServices.Modules[I];
+    AModule := OTAModuleServices.Modules[I];
     if not Assigned(AModule) then
       raise EJclExpertException.CreateTrace(RsENoModule);
     if AModule.QueryInterface(IOTAProjectGroup, Result) = S_OK then
@@ -1044,10 +1120,10 @@ end;
 
 procedure TJclOTAExpert.Modified;
 begin
+
 end;
 
 {$IFDEF BDS}
-
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
   AboutBoxIndex: Integer = -1;
@@ -1103,6 +1179,9 @@ end;
 
 initialization
 
+Classes.RegisterClass(TJclWizardForm);
+Classes.RegisterClass(TJclWizardFrame);
+
 finalization
 
 try
@@ -1142,7 +1221,7 @@ end;
 
 // History:
 
-// $Log$
+// $Log: JclOtaUtils.pas,v $
 // Revision 1.19  2006/03/26 20:22:19  outchy
 // Command registration moved out of expert constructors and destructors
 //

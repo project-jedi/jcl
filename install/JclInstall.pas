@@ -18,7 +18,7 @@
 {                                                                                                  }
 { Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                            }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -282,6 +282,7 @@ resourcestring
   RsJCLIdeDebug          = 'Debug Extension';
   RsJCLIdeAnalyzer       = 'Project Analyzer';
   RsJCLIdeFavorite       = 'Favorite combobox in Open/Save dialogs';
+  RsJCLExpertRepository  = 'Exception dialog expert';
   RsJCLIdeThreadNames    = 'Displaying thread names in Thread Status window';
   RsJCLIdeUses           = 'Uses Wizard';
   RsJCLSimdView          = 'Debug window for XMM registers';
@@ -324,6 +325,7 @@ resourcestring
     'executable files.';
   RsHintJclExpertAnalyzer = 'Install IDE Project Analyzer.';
   RsHintJclExpertFavorite = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
+  RsHintJclExpertRepository = 'Repository expert to easily create exception dialogs';
   RsHintJclExpertsThreadNames = 'Display thread names in Thread Status window IDE extension.';
   RsHintJclExpertUses = 'Install IDE Uses Wizard.';
   RsHintJclExpertSimdView = 'Install a debug window of XMM registers (used by SSE instructions)';
@@ -444,6 +446,9 @@ const
       (Parent: ioJclExperts;             // ioJclExpertFavorite
        Caption: RsJCLIdeFavorite;
        Hint: RsHintJclExpertFavorite),
+      (Parent: ioJclExperts;             // ioJclExpertRepository
+       Caption: RsJclExpertRepository;
+       Hint: RsHintJclExpertRepository),
       (Parent: ioJclExperts;             // ioJclExpertThreadNames
        Caption: RsJCLIdeThreadNames;
        Hint: RsHintJclExpertsThreadNames),
@@ -520,6 +525,7 @@ const
   JclIdeDebugDpk    = 'JclDebugExpert';
   JclIdeAnalyzerDpk = 'JclProjectAnalysisExpert';
   JclIdeFavoriteDpk = 'JclFavoriteFoldersExpert';
+  JclIdeRepositoryDpk = 'JclRepositoryExpert';
   JclIdeThrNamesDpk = 'JclThreadNameExpert';
   JclIdeUsesDpk     = 'JclUsesExpert';
   JclIdeSimdViewDpk = 'JclSIMDViewExpert';
@@ -532,6 +538,7 @@ const
       JclIdeDebugDpk,
       JclIdeAnalyzerDpk,
       JclIdeFavoriteDpk,
+      JclIdeRepositoryDpk,
       JclIdeThrNamesDpk,
       JclIdeUsesDpk,
       JclIdeSimdViewDpk,
@@ -1370,6 +1377,7 @@ begin
     AddNode(ExpertsNode, ioJclExpertAnalyzer, ExpertOptions);
     AddNode(ExpertsNode, ioJclExpertUses, ExpertOptions);
     AddNode(ExpertsNode, ioJclExpertSimdView, ExpertOptions);
+    AddNode(ExpertsNode, ioJclExpertRepository, [goNoAutoCheck]);
   end;
   AddNode(ExpertsNode, ioJclExpertFavorite, ExpertOptions);
   AddNode(ExpertsNode, ioJclExpertVersionControl, [goNoAutoCheck]);
@@ -2186,6 +2194,7 @@ function TJclInstallation.UninstallExpert(const Option: TJediInstallOption): Boo
       'JclDebugIde%s0.bpl',
       'ProjectAnalyzer%s0.bpl',
       'IdeOpenDlgFavorite%s0.bpl',
+      'JclRepositoryExpert',
       'ThreadNameExpert%s0.bpl',
       'JediUses%s0.bpl',
       'JclSIMDView%s.bpl',

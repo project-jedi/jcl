@@ -31,9 +31,13 @@ interface
 
 {$I jcl.inc}
 
+uses
+  ToolsApi;
+
 const
   DelphiRootDirKeyValue = 'RootDir';
-  JediIDESubKey         = 'Jedi\JCL\IDE\';
+  RegJclKey             = 'Jedi\JCL\';
+  RegJclIDEKey          = RegJclKey + 'IDE\';
   DelphiEnvironmentVar  = 'DELPHI';
   {$IFDEF COMPILER6_UP}
   EnvironmentVarsKey    = 'Environment Variables';
@@ -50,6 +54,13 @@ const
   JclTop    = 'Top';
   JclWidth  = 'Right';
   JclHeight = 'Height';
+
+  JclDesignerAny = {$IFDEF COMPILER6_UP} dAny {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
+  JclDesignerVcl = {$IFDEF COMPILER6_UP} dVcl {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
+  JclDesignerClx = {$IFDEF COMPILER6_UP} dClx {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
+  JclDelphiPersonality = {$IFDEF BDS} sDelphiPersonality {$ELSE BDS} '' {$ENDIF BDS};
+  JclCBuilderPersonality = {$IFDEF BDS} sCBuilderPersonality {$ELSE BDS} '' {$ENDIF BDS};
+
 
   //=== Configuration ========================================================
   JclConfigurationSettings = 'JclExpertConfigurationForm';
@@ -103,6 +114,11 @@ const
 
   //=== Project analyser =====================================================
   AnalyzerViewName = 'AnalyzerView';
+
+
+  //=== Repository Expert ====================================================
+  JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};
+  JclRepositoryCategoryCBuilderFiles = {$IFDEF BDS} sCategoryCBuilderNewFiles {$ELSE BDS} '' {$ENDIF BDS};
 
 implementation
 

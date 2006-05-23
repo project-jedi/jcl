@@ -1,0 +1,4 @@
+[Directories]
+UnitOutputDir=..\..\lib\d9
+SearchPath=..\..\source;..\..\experts\common
+

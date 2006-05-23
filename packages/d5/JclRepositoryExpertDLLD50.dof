@@ -1,0 +1,8 @@
+[Directories]
+UnitOutputDir=..\..\lib\d5
+SearchPath=..\..\source;..\..\experts\common
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=vcl50;dsnide50;JclD50;JclBaseExpertD50
+
