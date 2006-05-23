@@ -437,6 +437,7 @@ type
   EJclConversionError = class(EJclError);
 
 function StrToBoolean(const S: string): Boolean;
+function BooleanToStr(B: Boolean): string;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
 
@@ -2690,6 +2691,14 @@ begin
       raise EJclConversionError.CreateResFmt(@RsStringToBoolean, [S]);
       {$ENDIF CLR}
   end;
+end;
+
+function BooleanToStr(B: Boolean): string;
+begin
+  if B then
+    Result := DefaultTrueBoolStr
+  else
+    Result := DefaultFalseBoolStr;
 end;
 
 function IntToBool(I: Integer): Boolean;

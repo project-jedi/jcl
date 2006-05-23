@@ -334,7 +334,9 @@ procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True );
 function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
+{$IFDEF KEEP_DEPRECATED}
 function BooleanToStr(B: Boolean): string;
+{$ENDIF KEEP_DEPRECATED}
 function FileToString(const FileName: string): AnsiString;
 procedure StringToFile(const FileName: string; const Contents: AnsiString);
 function StrToken(var S: string; Separator: Char): string;
@@ -3797,12 +3799,14 @@ end;
 
 //=== Miscellaneous ==========================================================
 
+{$IFDEF KEEP_DEPRECATED}
 function BooleanToStr(B: Boolean): string;
 const
   Bools: array [Boolean] of string = ('False', 'True');
 begin
   Result := Bools[B];
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 function FileToString(const FileName: string): AnsiString;
 var

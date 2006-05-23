@@ -59,7 +59,7 @@ uses
 {$IFDEF USE_JWA}
   JwaWinCrypt, JwaWinNT,
 {$ENDIF}
-  JclStrings, ClrDemoMain;
+  JclStrings, JclSysUtils, ClrDemoMain;
 
 { TfrmTable }
 

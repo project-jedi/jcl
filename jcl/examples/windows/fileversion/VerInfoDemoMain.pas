@@ -33,7 +33,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JclFileUtils, JclStrings;
+  JclFileUtils, JclStrings, JclSysUtils;
 
 { TForm1 }
 
