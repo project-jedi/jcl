@@ -9,29 +9,49 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJcl70.bpl DJclVcl70.bpl DJclVClx70.bpl
+PROJECTS = Jcl70.bpl JclVcl70.bpl JclVClx70.bpl JclBaseExpert70.bpl \
+  JclDebugExpert70.bpl JclFavoriteFoldersExpert70.bpl \
+  JclProjectAnalysisExpert70.bpl JclRepositoryExpert70.bpl \
+  JclSIMDViewExpert70.bpl JclThreadNameExpert70.bpl JclUsesExpert70.bpl \
+  JclVersionControlExpert70.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-DJcl70.bpl: D7\DJcl.dpk
+Jcl70.bpl: d7\Jcl.dpk
   $(DCC)
 
-DJclVcl70.bpl: D7.dev\DJclVcl.dpk
+JclBaseExpert70.bpl: d7\JclBaseExpert.dpk
   $(DCC)
 
-DJclVClx70.bpl: D7.dev\DJclVClx.dpk
+JclDebugExpert70.bpl: d7\JclDebugExpert.dpk
   $(DCC)
 
-JclDebugIdeD70.bpl: ..\examples\vcl\debugextension\JclDebugIdeD70.dpk
+JclFavoriteFoldersExpert70.bpl: d7\JclFavoriteFoldersExpert.dpk
   $(DCC)
 
-ThreadNameExpertD70.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertD70.dpk
+JclProjectAnalysisExpert70.bpl: d7\JclProjectAnalysisExpert.dpk
   $(DCC)
 
-ProjectAnalyzerD70.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD70.dpk
+JclRepositoryExpert70.bpl: d7\JclRepositoryExpert.dpk
   $(DCC)
 
-IdeOpenDlgFavoriteD70.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD70.dpk
+JclSIMDViewExpert70.bpl: d7\JclSIMDViewExpert.dpk
   $(DCC)
+
+JclThreadNameExpert70.bpl: d7\JclThreadNameExpert.dpk
+  $(DCC)
+
+JclUsesExpert70.bpl: d7\JclUsesExpert.dpk
+  $(DCC)
+
+JclVersionControlExpert70.bpl: d7\JclVersionControlExpert.dpk
+  $(DCC)
+
+JclVcl70.bpl: d7.dev\JclVcl.dpk
+  $(DCC)
+
+JclVClx70.bpl: d7.dev\JclVClx.dpk
+  $(DCC)
+
 

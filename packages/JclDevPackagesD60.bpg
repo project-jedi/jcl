@@ -9,31 +9,45 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJcl60.bpl DJclVcl60.bpl DJclVClx60.bpl IdeOpenDlgFavoriteD60.bpl \
-  JclDebugIdeD60.bpl ProjectAnalyzerD60.bpl ThreadNameExpertD60.bpl
+PROJECTS = JclD60.bpl JclVclD60.bpl JclVClxD60.bpl JclBaseExpertD60.bpl \
+  JclDebugExpertD60.bpl JclFavoriteFoldersExpertD60.bpl \
+  JclProjectAnalysisExpertD60.bpl JclRepositoryExpertD60.bpl \
+  JclSIMDViewExpertD60.bpl JclThreadNameExpertD60.bpl JclUsesExpertD60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-
-DJcl60.bpl: D6\DJcl.dpk
+JclBaseExpertD60.bpl: d6\JclBaseExpert.dpk
   $(DCC)
 
-DJclVcl60.bpl: D6.dev\DJclVcl.dpk
+JclDebugExpertD60.bpl: d6\JclDebugExpert.dpk
   $(DCC)
 
-DJclVClx60.bpl: D6.dev\DJclVClx.dpk
+JclFavoriteFoldersExpertD60.bpl: d6\JclFavoriteFoldersExpert.dpk
   $(DCC)
 
-JclDebugIdeD60.bpl: ..\examples\vcl\debugextension\JclDebugIdeD60.dpk
+JclProjectAnalysisExpertD60.bpl: d6\JclProjectAnalysisExpert.dpk
   $(DCC)
 
-ThreadNameExpertD60.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertD60.dpk
+JclRepositoryExpertD60.bpl: d6\JclRepositoryExpert.dpk
   $(DCC)
 
-ProjectAnalyzerD60.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD60.dpk
+JclSIMDViewExpertD60.bpl: d6\JclSIMDViewExpert.dpk
   $(DCC)
 
-IdeOpenDlgFavoriteD60.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD60.dpk
+JclThreadNameExpertD60.bpl: d6\JclThreadNameExpert.dpk
   $(DCC)
+
+JclUsesExpertD60.bpl: d6\JclUsesExpert.dpk
+  $(DCC)
+
+JclD60.bpl: d6\Jcl.dpk
+  $(DCC)
+
+JclVclD60.bpl: d6.dev\JclVcl.dpk
+  $(DCC)
+
+JclVClxD60.bpl: d6.dev\JclVClx.dpk
+  $(DCC)
+
 
