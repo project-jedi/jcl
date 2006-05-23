@@ -10,6 +10,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclFavoriteFoldersExpertDLLC50.res    \
            c5\JclProjectAnalysisExpertC50.res       \
            c5\JclProjectAnalysisExpertDLLC50.res    \
+           c5\JclRepositoryExpertC50.res            \
+           c5\JclRepositoryExpertDLLC50.res         \
            c5\JclSIMDViewExpertC50.res              \
            c5\JclThreadNameExpertDLLC50.res         \
            c5\JclSIMDViewExpertDLLC50.res           \
@@ -25,6 +27,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c6\JclFavoriteFoldersExpertDLL.res       \
            c6\JclProjectAnalysisExpert.res          \
            c6\JclProjectAnalysisExpertDLL.res       \
+           c6\JclRepositoryExpert.res               \
+           c6\JclRepositoryExpertDLL.res            \
            c6\JclSIMDViewExpert.res                 \
            c6\JclThreadNameExpertDLL.res            \
            c6\JclSIMDViewExpertDLL.res              \
@@ -48,6 +52,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d10\JclProjectAnalysisExpert.res         \
            d10\JclFavoriteFoldersExpertDLL.res      \
            d10\JclProjectAnalysisExpertDLL.res      \
+           d10\JclRepositoryExpert.res              \
+           d10\JclRepositoryExpertDLL.res           \
            d10\JclSIMDViewExpert.res                \
            d10\JclUsesExpertDLL.res                 \
            d10\JclSIMDViewExpertDLL.res             \
@@ -65,6 +71,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclFavoriteFoldersExpertD50.res       \
            d5\JclFavoriteFoldersExpertDLLD50.res    \
            d5\JclProjectAnalysisExpertD50.res       \
+           d5\JclRepositoryExpertD50.res            \
+           d5\JclRepositoryExpertDLLD50.res         \
            d5\JclSIMDViewExpertD50.res              \
            d5\JclSIMDViewExpertDLLD50.res           \
            d5\JclThreadNameExpertD50.res            \
@@ -81,6 +89,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d6\JclFavoriteFoldersExpertDLL.res       \
            d6\JclProjectAnalysisExpert.res          \
            d6\JclProjectAnalysisExpertDLL.res       \
+           d6\JclRepositoryExpert.res               \
+           d6\JclRepositoryExpertDLL.res            \
            d6\JclSIMDViewExpert.res                 \
            d6\JclVcl.res                            \
            d6\JclSIMDViewExpertDLL.res              \
@@ -100,6 +110,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d7\JclFavoriteFoldersExpertDLL.res       \
            d7\JclProjectAnalysisExpert.res          \
            d7\JclProjectAnalysisExpertDLL.res       \
+           d7\JclRepositoryExpert.res               \
+           d7\JclRepositoryExpertDLL.res            \
            d7\JclSIMDViewExpert.res                 \
            d7\JclVcl.res                            \
            d7\JclSIMDViewExpertDLL.res              \
@@ -125,6 +137,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclFavoriteFoldersExpertDLL.res       \
            d9\JclProjectAnalysisExpert.res          \
            d9\JclProjectAnalysisExpertDLL.res       \
+           d9\JclRepositoryExpert.res               \
+           d9\JclRepositoryExpertDLL.res            \
            d9\JclSIMDViewExpert.res                 \
            d9\JclUsesExpert.res                     \
            d9\JclSIMDViewExpertDLL.res              \

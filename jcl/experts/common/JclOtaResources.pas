@@ -42,6 +42,8 @@ resourcestring
   RsENoModuleServices = 'Unable to get Borland Module Services';
   RsENoWizardServices = 'Unable to get Borland Wizard Services';
   RsENoPackageServices = 'Unable to get Borland Package Services';
+  RsENoPersonalityServices = 'Unable to get Borland Personality Services';
+  RsENoGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
   RsENoModule = 'Unable to get Module';
   RsBadModuleHInstance = 'Unable to get module HInstance';
   RsENoRootDir = 'RootDir is empty';
@@ -95,6 +97,58 @@ resourcestring
   RsCancel = '&Cancel';
   RsSelectPage = 'Select a page';
   RsHomePage = '&JCL Home page';
+
+//=== JclOtaWizardForm.pas ===================================================
+resourcestring
+  RsNext = '&Next';
+  RsPrevious = '&Previous';
+  RsFinish = '&Finish';
+  RsWizardProgression = 'Page %d of %d: %s';
+
+//=== JclOtaExcDlgWizard.pas =================================================
+resourcestring
+  RsExceptionDialogConfigure = 'New exception dialog...';
+
+//=== JclOtaExcDlgFileFrame.pas ==============================================
+resourcestring
+  RsExcDlgFileOptions = 'file options';
+  RsLanguage = 'Language:';
+  RsFileName = 'File name:';
+  RsFormName = 'Form name:';
+  RsFormAncestor = 'Form ancestor:';
+  RsFileNameDialog = 'Save new file as...';
+
+//=== JclOtaExcDlgFormFrame.pas ==============================================
+resourcestring
+  RsExcDlgFormOptions = 'form options';
+  RsDialogWithMailButton = 'Button to send stack trace by mail';
+  RsEMail = 'EMail:';
+  RsSubject = 'Subject:';
+  RsModalDialog = 'Modal dialog';
+  RsSizeableDialog = 'Sizeable dialog';
+  RsAutoScrollBars = 'Automatic scroll bars';
+
+//=== JclOtaExcDlgSystemFrame.pas ============================================
+resourcestring
+  RsExcDlgSystemOptions = 'system options';
+  RsDelayedStackTrace = 'Delayed stack traces (faster)';
+  RsLogTrace = 'Add crash data to log file';
+  RsHookDll = 'Hook DLL';
+  RsModuleList = 'Module list';
+  RsOSInfo = 'Operating system informations';
+  RsActiveControls = 'List of active controls';
+
+//=== JclOtaExcDlgTraceFrame.pas =============================================
+resourcestring
+  RsExcDlgTraceOptions = 'trace options';
+  RsStackList = 'Stack list';
+  RsRawData = 'No debug informations';
+  RsModuleName = 'Module name';
+  //RsAddressOffset = 'Address offset';
+  RsCodeDetails = 'Code details';
+  RsVirtualAddress = 'Virtual address';
+  RsModuleOffset = 'Module offset';
+  RsPreview = 'Preview:';
 
 //=== OpenDlgFavAdapter.pas ==================================================
 resourcestring
@@ -253,11 +307,21 @@ resourcestring
 resourcestring
   RsECantUpdateThreadContext = 'Unable to update the thread context';
 
+//=== JclOtaExcDlgRepository.pas =============================================
+resourcestring
+  RsRepositoryExcDlgPage = 'Exception dialog';
+  
+  RsRepositoryExcDlgDelphiName = 'Jcl Exception dialog for Delphi';
+  RsRepositoryExcDlgDelphiDescription = 'Create an exception dialog for your Delphi project';
+
+  RsRepositoryExcDlgCBuilderName = 'Jcl Exception dialog for C++Builder';
+  RsRepositoryExcDlgCBuilderDescription = 'Create an exception dialog for your C++Builder';
+
 implementation
 
 // History:
 
-// $Log$
+// $Log: JclOtaResources.pas,v $
 // Revision 1.11  2006/03/13 22:05:31  outchy
 // Fixed error message to display project name
 //

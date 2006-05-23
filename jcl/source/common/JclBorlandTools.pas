@@ -121,6 +121,16 @@ const
   CompilerExtensionTDS         = '.tds';
   CompilerExtensionMAP         = '.map';
   CompilerExtensionDEF         = '.def';
+  SourceExtensionCPP           = '.cpp';
+  SourceExtensionH             = '.h';
+  SourceExtensionPAS           = '.pas';
+  SourceExtensionDFM           = '.dfm';
+  SourceExtensionXFM           = '.xfm';
+  SourceDescriptionPAS         = 'Pascal source file';
+  SourceDescriptionCPP         = 'C++ source file';
+
+  DesignerVCL = 'VCL';
+  DesignerCLX = 'CLX';
 
   ProjectTypePackage = 'package';
   ProjectTypeLibrary = 'library';
@@ -162,6 +172,10 @@ type
   
   TJclBorPersonalities = set of TJclBorPersonality;
 
+  TJclBorDesigner = (bdVCL, bdCLX);
+  
+  TJclBorDesigners = set of TJClBorDesigner;
+
 const
   JclBorPersonalityDescription: array [TJclBorPersonality] of string =
     ( Personality32Bit + ' ' + PersonalityDelphi,
@@ -176,6 +190,11 @@ const
       Personality64Bit + ' ' + PersonalityVB,
       PersonalityDesign,
       PersonalityUnknown );
+
+  JclBorDesignerDescription: array [TJclBorDesigner] of string =
+    ( DesignerVCL, DesignerCLX );
+  JclBorDesignerFormExtension: array [TJclBorDesigner] of string =
+    ( SourceExtensionDFM, SourceExtensionXFM );
 
 type
   TJclBorRADToolInstallation = class;
