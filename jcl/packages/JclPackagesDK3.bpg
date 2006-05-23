@@ -8,15 +8,15 @@ endif
 MAKE = make -$(MAKEFLAGS) -f$**
 DCC =dcc -LN../lib/k3 -N../lib/k3 -U../lib/k3 $<
 #------------------------------------------------------------------------------
-PROJECTS = bplDJclK3.so.1.90.0 bplDJclVClxK3.so.1.90.0
+PROJECTS = bplJclK3.so.1.90.0 bplJclVClxK3.so.1.90.0
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 
 
-bplDJclK3.so.1.90.0: k3/DJcl.dpk
+bplDJclK3.so.1.90.0: k3/Jcl.dpk
 	$(DCC)
 
-bplDJclVClxK3.so.1.90.0: k3/DJclVClx.dpk
+bplDJclVClxK3.so.1.90.0: k3/JclVClx.dpk
 	$(DCC)

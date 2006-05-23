@@ -1,13 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-	<PersonalityInfo>
-		<Option>
-			<Option Name="Personality" Type="String">Default.Personality</Option>
-			<Option Name="ProjectType" Type="String"></Option>
-			<Option Name="Version" Type="String">1.0</Option>
-			<Option Name="GUID" Type="String">{7D3C6F18-762E-4A04-83D5-3C966D2D1A3C}</Option>
-		</Option>
-	</PersonalityInfo>
-	<Default.Personality>
-		<Projects><Projects Name="DJcl90.bpl">d9\DJcl.bdsproj</Projects><Projects Name="DJclVcl90.bpl">d9\DJclVcl.bdsproj</Projects><Projects Name="JclDebugIdeD90.bpl">..\examples\vcl\debugextension\JclDebugIdeD90.bdsproj</Projects><Projects Name="JclSIMDViewD9.bpl">..\examples\vcl\debugextension\SIMDView\JclSIMDViewD9.bdsproj</Projects><Projects Name="IdeOpenDlgFavoriteD90.bpl">..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD90.bdsproj</Projects><Projects Name="JediUsesD90.bpl">..\examples\vcl\JUW\JediUsesD90.bdsproj</Projects><Projects Name="ProjectAnalyzerD90.bpl">..\examples\vcl\projectanalyzer\ProjectAnalyzerD90.bdsproj</Projects><Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl JclDebugIdeD90.bpl JclSIMDViewD9.bpl IdeOpenDlgFavoriteD90.bpl JediUsesD90.bpl ProjectAnalyzerD90.bpl</Projects></Projects><Dependencies><Dependency GUID="{56BD28A4-80E6-467C-BD0E-CAC01DE0CE04}"><Dependency GUID="{727821B9-CAC9-4A6B-8F7A-31B5E1CD3BC4}"/></Dependency></Dependencies></Default.Personality>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{90322E9F-4353-4EE0-AE43-54D743F61068}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="Jcl90.bpl">d9\Jcl.bdsproj</Projects>
+      <Projects Name="JclVcl90.bpl">d9\JclVcl.bdsproj</Projects>
+      <Projects Name="JclBaseExpert90.bpl">d9\JclBaseExpert.bdsproj</Projects>
+      <Projects Name="JclDebugExpert90.bpl">d9\JclDebugExpert.bdsproj</Projects>
+      <Projects Name="JclFavoriteFoldersExpert90.bpl">d9\JclFavoriteFoldersExpert.bdsproj</Projects>
+      <Projects Name="JclProjectAnalysisExpert90.bpl">d9\JclProjectAnalysisExpert.bdsproj</Projects>
+      <Projects Name="JclRepositoryExpert90.bpl">d9\JclRepositoryExpert.bdsproj</Projects>
+      <Projects Name="JclUsesExpert90.bpl">d9\JclUsesExpert.bdsproj</Projects>
+      <Projects Name="JclVersionControlExpert90.bpl">d9\JclVersionControlExpert.bdsproj</Projects>
+      <Projects Name="Targets">Jcl90.bpl JclVcl90.bpl JclBaseExpert90.bpl JclDebugExpert90.bpl JclFavoriteFoldersExpert90.bpl JclProjectAnalysisExpert90.bpl JclRepositoryExpert90.bpl JclUsesExpert90.bpl JclVersionControlExpert90.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
 </BorlandProject>

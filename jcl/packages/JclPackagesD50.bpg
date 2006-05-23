@@ -9,25 +9,42 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL50.bpl IdeOpenDlgFavoriteD50.bpl JclDebugIdeD50.bpl \
-  ProjectAnalyzerD50.bpl ThreadNameExpertD50.bpl
+PROJECTS = JclD50.bpl JclBaseExpertD50.bpl JclDebugExpertD50.bpl \
+  JclFavoriteFoldersExpertD50.bpl JclProjectAnalysisExpertD50.bpl \
+  JclRepositoryExpertD50.bpl JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl \
+  JclUsesExpertD50.bpl JclVersionControlExpertD50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-DJCL50.bpl: d5\DJCL50.dpk
+JclD50.bpl: d5\JclD50.dpk
   $(DCC)
 
-JclDebugIdeD50.bpl: ..\examples\vcl\debugextension\JclDebugIdeD50.dpk
+JclBaseExpertD50.bpl: d5\JclBaseExpertD50.dpk
   $(DCC)
 
-ThreadNameExpertD50.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpertD50.dpk
+JclDebugExpertD50.bpl: d5\JclDebugExpertD50.dpk
   $(DCC)
 
-ProjectAnalyzerD50.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzerD50.dpk
+JclFavoriteFoldersExpertD50.bpl: d5\JclFavoriteFoldersExpertD50.dpk
   $(DCC)
 
-IdeOpenDlgFavoriteD50.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteD50.dpk
+JclProjectAnalysisExpertD50.bpl: d5\JclProjectAnalysisExpertD50.dpk
+  $(DCC)
+
+JclRepositoryExpertD50.bpl: d5\JclRepositoryExpertD50.dpk
+  $(DCC)
+
+JclSIMDViewExpertD50.bpl: d5\JclSIMDViewExpertD50.dpk
+  $(DCC)
+
+JclThreadNameExpertD50.bpl: d5\JclThreadNameExpertD50.dpk
+  $(DCC)
+
+JclUsesExpertD50.bpl: d5\JclUsesExpertD50.dpk
+  $(DCC)
+
+JclVersionControlExpertD50.bpl: d5\JclVersionControlExpertD50.dpk
   $(DCC)
 
 

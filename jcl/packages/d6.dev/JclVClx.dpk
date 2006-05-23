@@ -38,9 +38,9 @@ package JclVClx;
 requires
   rtl,
   visualclx
-
+  ;
 contains
   JclQGraphUtils in '..\..\source\prototypes\JclQGraphUtils.pas' ,
   JclQGraphics in '..\..\source\prototypes\JclQGraphics.pas' 
-
+  ;
 end.

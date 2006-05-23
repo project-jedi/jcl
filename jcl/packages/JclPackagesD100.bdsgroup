@@ -1,27 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-	<PersonalityInfo>
-		<Option>
-			<Option Name="Personality">Default.Personality</Option>
-			<Option Name="ProjectType"></Option>
-			<Option Name="Version">1.0</Option>
-			<Option Name="GUID">{BFBAF4DB-7647-483D-8D66-9EF5E8B03D32}</Option>
-		</Option>
-	</PersonalityInfo>
-	<Default.Personality>  <Projects>
-      <Projects Name="JediInstaller.exe">..\install\JediInstaller.bdsproj</Projects>
-      <Projects Name="pgEdit.exe">..\..\JVCL\JVCL3\devtools\PackagesGenerator\pgEdit.bdsproj</Projects>
-      <Projects Name="pg.exe">..\..\JVCL\JVCL3\devtools\PackagesGenerator\pg.bdsproj</Projects>
-      <Projects Name="JVCLInstall.exe">..\..\JVCL\JVCL3\install\JVCLInstall\JVCLInstall.bdsproj</Projects>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{E7B4DBC9-B036-40B2-88E6-984F5D7843B1}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
       <Projects Name="Jcl100.bpl">d10\Jcl.bdsproj</Projects>
+      <Projects Name="JclVcl100.bpl">d10\JclVcl.bdsproj</Projects>
       <Projects Name="JclBaseExpert100.bpl">d10\JclBaseExpert.bdsproj</Projects>
       <Projects Name="JclDebugExpert100.bpl">d10\JclDebugExpert.bdsproj</Projects>
       <Projects Name="JclFavoriteFoldersExpert100.bpl">d10\JclFavoriteFoldersExpert.bdsproj</Projects>
       <Projects Name="JclProjectAnalysisExpert100.bpl">d10\JclProjectAnalysisExpert.bdsproj</Projects>
-      <Projects Name="JclSIMDViewExpert100.bpl">d10\JclSIMDViewExpert.bdsproj</Projects>
+      <Projects Name="JclRepositoryExpert100.bpl">d10\JclRepositoryExpert.bdsproj</Projects>
       <Projects Name="JclUsesExpert100.bpl">d10\JclUsesExpert.bdsproj</Projects>
-      <Projects Name="JclThreadNameExpert100.bpl">d10\JclThreadNameExpert.bdsproj</Projects>
-      <Projects Name="Targets">JediInstaller.exe pgEdit.exe pg.exe JVCLInstall.exe Jcl100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclSIMDViewExpert100.bpl JclUsesExpert100.bpl JclThreadNameExpert100.bpl</Projects>
+      <Projects Name="JclVersionControlExpert100.bpl">d10\JclVersionControlExpert.bdsproj</Projects>
+      <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclUsesExpert100.bpl JclVersionControlExpert100.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
