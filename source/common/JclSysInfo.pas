@@ -2894,7 +2894,7 @@ begin
           if KernelVersionHi = $0004005A then // 4.90.x.x
             Result := wvWinME
           else
-          if TrimmedWin32CSDVersion = 'A' then
+          if (TrimmedWin32CSDVersion = 'A') or (TrimmedWin32CSDVersion = 'B') then
             Result := wvWin98SE
           else
             Result := wvWin98;
