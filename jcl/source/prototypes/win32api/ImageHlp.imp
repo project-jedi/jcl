@@ -1,5 +1,6 @@
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
 const
   ImageHlpLib = 'imagehlp.dll';
   
@@ -199,5 +200,7 @@ function UnDecorateSymbolName(DecoratedName: PAnsiChar; UnDecoratedName: PAnsiCh
 begin
   Result := 0;
 end;
+
+{$ENDIF ~CLR}
 
 {$ENDIF UNIX}

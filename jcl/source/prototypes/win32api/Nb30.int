@@ -1,3 +1,5 @@
+{$IFNDEF CLR}
+
 (****************************************************************
  *                                                              *
  *              Data structure templates                        *
@@ -260,6 +262,8 @@ const
   MS_NBF         = 'MNBF';
   {$EXTERNALSYM MS_NBF}
 
+{$ENDIF ~CLR}
+
 (****************************************************************
  *                                                              *
  *              Special values and constants                    *
@@ -419,6 +423,8 @@ const
  ****************************************************************)
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}

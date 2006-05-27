@@ -1,3 +1,4 @@
+{$IFNDEF CLR}
 
 type
   { TODO : Source unknown }
@@ -38,7 +39,7 @@ type
   TImgDelayDescr = ImgDelayDescr;
   PImgDelayDescr = ^ImgDelayDescr;
 
-  
+
   // Microsoft version (64 bit SDK)
   {$EXTERNALSYM RVA}
   RVA = DWORD;
@@ -59,3 +60,5 @@ type
   PImgDelayDescr = ImgDelayDescr;
   TImgDelayDescr = ImgDelayDescr;
 *)
+
+{$ENDIF ~CLR}

@@ -5,6 +5,7 @@
 //
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
@@ -39,6 +40,7 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
 
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 //
@@ -102,7 +104,7 @@ type
     usri2_acct_expires: DWORD;
     usri2_max_storage: DWORD;
     usri2_units_per_week: DWORD;
-    usri2_logon_hours: PBYTE;
+    usri2_logon_hours: {$IFDEF CLR}IntPtr{$ELSE}PBYTE{$ENDIF};
     usri2_bad_pw_count: DWORD;
     usri2_num_logons: DWORD;
     usri2_logon_server: LPWSTR;
@@ -247,6 +249,7 @@ const
 //
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
@@ -276,6 +279,7 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
 
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 //
@@ -321,6 +325,7 @@ type
 //
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
@@ -356,6 +361,7 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
 
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 //

@@ -57,6 +57,8 @@ begin
   Result := (Tag and ULONG($20000000)) <> 0;
 end;
 
+{$IFNDEF CLR}
+
 // IMAGE_FIRST_SECTION by Nico Bendlin - supplied by Markus Fuchs
 
 function FieldOffset(const Struc; const Field): Cardinal;
@@ -103,3 +105,4 @@ begin
   Result := ((Ordinal and IMAGE_ORDINAL_FLAG32) <> 0);
 end;
 
+{$ENDIF ~CLR}
