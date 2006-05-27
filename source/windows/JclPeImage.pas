@@ -942,6 +942,7 @@ type
     class function SystemBase: Pointer;
     procedure UnhookAll;
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
+    procedure UnhookByBaseAddress(BaseAddress: Pointer);
     property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
     property ItemFromNewAddress[NewAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromNewAddress;
@@ -4916,8 +4917,13 @@ begin
 end;
 
 function TJclPeMapImgHookItem.InternalUnhook: Boolean;
+var
+  Buf: TMemoryBasicInformation;
 begin
-  Result := TJclPeMapImgHooks.ReplaceImport(FBaseAddress, ModuleName, NewAddress, OriginalAddress);
+  if (VirtualQuery(FBaseAddress, Buf, SizeOf(Buf)) = SizeOf(Buf)) and (Buf.State and MEM_FREE = 0) then
+    Result := TJclPeMapImgHooks.ReplaceImport(FBaseAddress, ModuleName, NewAddress, OriginalAddress)
+  else
+    Result := True; // PE image is not available anymore (DLL got unloaded)
   if Result then
     FBaseAddress := nil;
 end;
@@ -5101,6 +5107,15 @@ var
 begin
   Item := ItemFromNewAddress[NewAddress];
   Result := (Item <> nil) and Item.Unhook;
+end;
+
+procedure TJclPeMapImgHooks.UnhookByBaseAddress(BaseAddress: Pointer);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if Items[I].BaseAddress = BaseAddress then
+      Items[I].Unhook;
 end;
 
 // Image access under a debbuger
