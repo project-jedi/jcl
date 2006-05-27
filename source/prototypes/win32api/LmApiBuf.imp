@@ -1,5 +1,7 @@
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
+
 var
   _NetApiBufferFree: Pointer;
 
@@ -12,5 +14,7 @@ begin
     jmp [_NetApiBufferFree]
   end;
 end;
+
+{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

@@ -1,5 +1,7 @@
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
+
 var
   _GetCalendarInfoA: Pointer;
 
@@ -38,5 +40,7 @@ begin
     jmp [_EnumCalendarInfoExA]
   end;
 end;
+
+{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

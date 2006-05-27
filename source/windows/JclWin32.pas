@@ -81,7 +81,7 @@ uses
 {$HPPEMIT '#include "lm.h"'}
 {$HPPEMIT '#include "Nb30.h"'}
 {$HPPEMIT '#include "RasDlg.h"'}
-{$IFDEF COMPILER6_UP}     // Reason.h is not in BCB5.
+{$IFDEF COMPILER6_UP}
 {$HPPEMIT '#include "Reason.h"'}
 {$ENDIF COMPILER6_UP}
 {$HPPEMIT '#include "ShlWApi.h"'}
@@ -1150,6 +1150,7 @@ const
 //
 // File header format.
 //
+
 {$IFNDEF CLR}
 
 type
@@ -2961,10 +2962,11 @@ const
   {$EXTERNALSYM FILE_FLAG_FIRST_PIPE_INSTANCE}
 
 // line 3189
-
+  
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
-  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: {$IFDEF CLR}IntPtr{$ELSE}Pointer{$ENDIF}): BOOL; stdcall;
+  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
+  var lpContext: {$IFDEF CLR}IntPtr{$ELSE}Pointer{$ENDIF}): BOOL; stdcall;
   {$IFDEF CLR}external kernel32 name 'BackupSeek';{$ENDIF}
 {$EXTERNALSYM BackupSeek}
 
@@ -3072,6 +3074,7 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
 
 {$ENDIF ~CLR}
 
+
 type
   {$EXTERNALSYM ULONG_PTR}
   ULONG_PTR = LongWord;      // Need to have the same size like Pointer
@@ -3089,6 +3092,10 @@ function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
+{$ENDIF ~CLR}
+
+{$IFNDEF CLR}
+
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -3215,7 +3222,58 @@ function UnDecorateSymbolName(DecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{
   {$IFDEF CLR}external 'imagehlp.dll' name 'UnDecorateSymbolName';{$ENDIF}
 {$EXTERNALSYM UnDecorateSymbolName}
 
+// line 1475
 
+//
+// options that are set/returned by SymSetOptions() & SymGetOptions()
+// these are used as a mask
+//
+
+const
+// defined in ImageHlp.pas
+//  SYMOPT_CASE_INSENSITIVE       = $00000001;
+//  {$EXTERNALSYM SYMOPT_CASE_INSENSITIVE}
+//  SYMOPT_UNDNAME                = $00000002;
+//  {$EXTERNALSYM SYMOPT_UNDNAME}
+//  SYMOPT_DEFERRED_LOADS         = $00000004;
+//  {$EXTERNALSYM SYMOPT_DEFERRED_LOADS}
+//  SYMOPT_NO_CPP                 = $00000008;
+//  {$EXTERNALSYM SYMOPT_NO_CPP}
+  SYMOPT_LOAD_LINES             = $00000010;
+  {$EXTERNALSYM SYMOPT_LOAD_LINES}
+  SYMOPT_OMAP_FIND_NEAREST      = $00000020;
+  {$EXTERNALSYM SYMOPT_OMAP_FIND_NEAREST}
+  SYMOPT_LOAD_ANYTHING          = $00000040;
+  {$EXTERNALSYM SYMOPT_LOAD_ANYTHING}
+  SYMOPT_IGNORE_CVREC           = $00000080;
+  {$EXTERNALSYM SYMOPT_IGNORE_CVREC}
+  SYMOPT_NO_UNQUALIFIED_LOADS   = $00000100;
+  {$EXTERNALSYM SYMOPT_NO_UNQUALIFIED_LOADS}
+  SYMOPT_FAIL_CRITICAL_ERRORS   = $00000200;
+  {$EXTERNALSYM SYMOPT_FAIL_CRITICAL_ERRORS}
+  SYMOPT_EXACT_SYMBOLS          = $00000400;
+  {$EXTERNALSYM SYMOPT_EXACT_SYMBOLS}
+  SYMOPT_ALLOW_ABSOLUTE_SYMBOLS = $00000800;
+  {$EXTERNALSYM SYMOPT_ALLOW_ABSOLUTE_SYMBOLS}
+  SYMOPT_IGNORE_NT_SYMPATH      = $00001000;
+  {$EXTERNALSYM SYMOPT_IGNORE_NT_SYMPATH}
+  SYMOPT_INCLUDE_32BIT_MODULES  = $00002000;
+  {$EXTERNALSYM SYMOPT_INCLUDE_32BIT_MODULES}
+  SYMOPT_PUBLICS_ONLY           = $00004000;
+  {$EXTERNALSYM SYMOPT_PUBLICS_ONLY}
+  SYMOPT_NO_PUBLICS             = $00008000;
+  {$EXTERNALSYM SYMOPT_NO_PUBLICS}
+  SYMOPT_AUTO_PUBLICS           = $00010000;
+  {$EXTERNALSYM SYMOPT_AUTO_PUBLICS}
+  SYMOPT_NO_IMAGE_SEARCH        = $00020000;
+  {$EXTERNALSYM SYMOPT_NO_IMAGE_SEARCH}
+  SYMOPT_SECURE                 = $00040000;
+  {$EXTERNALSYM SYMOPT_SECURE}
+  SYMOPT_NO_PROMPTS             = $00080000;
+  {$EXTERNALSYM SYMOPT_NO_PROMPTS}
+
+  SYMOPT_DEBUG                  = $80000000;
+  {$EXTERNALSYM SYMOPT_DEBUG}
 
 
 const
@@ -4432,6 +4490,7 @@ function NetUserChangePassword(domainname, username, oldpassword, newpassword: L
 {$EXTERNALSYM NetUserChangePassword}
 
 {$ENDIF ~CLR}
+
 //
 //  Data Structures - User
 //
@@ -4854,6 +4913,10 @@ type
 
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
+
+{$ENDIF ~CLR}
+
+{$IFNDEF CLR}
 
 (****************************************************************
  *                                                              *
@@ -5286,7 +5349,7 @@ type
   PRasDialDlg = ^TRasDialDlg;
   tagRASDIALDLG = packed record
     dwSize: DWORD;
-    hwndOwner: THandle;
+    hwndOwner: HWND;
     dwFlags: DWORD;
     xDlg: Longint;
     yDlg: Longint;
@@ -6449,6 +6512,7 @@ type
 
 
 {$IFNDEF CLR}
+
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 {$EXTERNALSYM GetCalendarInfoA}
@@ -6463,6 +6527,7 @@ function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
 {$EXTERNALSYM EnumCalendarInfoExA}
 
 {$ENDIF ~CLR}
+
 
 type
   {$IFDEF CLR}
@@ -6617,68 +6682,73 @@ type
   TImgDelayDescr = ImgDelayDescr;
 *)
 
+{$ENDIF ~CLR}
+
+
+{$IFNDEF CLR}
+
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
-    pDacl, pSacl: PACL): DWORD; stdcall = SetNamedSecurityInfoW;
+    pDacl, pSacl: PACL): DWORD stdcall = SetNamedSecurityInfoW;
 
   RtdlSetWaitableTimer: function(hTimer: THandle; var lpDueTime: TLargeInteger;
     lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
-    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall = SetWaitableTimer;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL stdcall = SetWaitableTimer;
 
   RtdlNetUserAdd: function(servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetUserAdd;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS stdcall = NetUserAdd;
 
   RtdlNetUserDel: function(servername: LPCWSTR;
-    username: LPCWSTR): NET_API_STATUS; stdcall = NetUserDel;
+    username: LPCWSTR): NET_API_STATUS stdcall = NetUserDel;
 
   RtdlNetGroupAdd: function(servername: LPCWSTR; level: DWORD; buf: PByte;
-    parm_err: PDWord): NET_API_STATUS; stdcall = NetGroupAdd;
+    parm_err: PDWord): NET_API_STATUS stdcall = NetGroupAdd;
 
   RtdlNetGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resume_handle: PDWORD_PTR): NET_API_STATUS; stdcall = NetGroupEnum;
+    resume_handle: PDWORD_PTR): NET_API_STATUS stdcall = NetGroupEnum;
 
   RtdlNetGroupDel: function(servername: LPCWSTR;
-    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetGroupDel;
+    groupname: LPCWSTR): NET_API_STATUS stdcall = NetGroupDel;
 
   RtdlNetLocalGroupAdd: function(servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetLocalGroupAdd;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS stdcall = NetLocalGroupAdd;
 
   RtdlNetLocalGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall = NetLocalGroupEnum;
+    resumehandle: PDWORD_PTR): NET_API_STATUS stdcall = NetLocalGroupEnum;
 
   RtdlNetLocalGroupDel: function(servername: LPCWSTR;
-    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetLocalGroupDel;
+    groupname: LPCWSTR): NET_API_STATUS stdcall = NetLocalGroupDel;
 
   RtdlNetLocalGroupAddMembers: function(servername: LPCWSTR; groupname: LPCWSTR;
     level: DWORD; buf: PByte;
-    totalentries: DWORD): NET_API_STATUS; stdcall = NetLocalGroupAddMembers;
+    totalentries: DWORD): NET_API_STATUS stdcall = NetLocalGroupAddMembers;
 
-  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS; stdcall = NetApiBufferFree;
+  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS stdcall = NetApiBufferFree;
 
   RtdlGetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
     lpCalData: PAnsiChar; cchData: Integer;
-    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoA;
+    lpValue: PDWORD): Integer stdcall = GetCalendarInfoA;
 
   RtdlGetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
     lpCalData: PWideChar; cchData: Integer;
-    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoW;
+    lpValue: PDWORD): Integer stdcall = GetCalendarInfoW;
 
   RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall = EnumCalendarInfoExA;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExA;
 
   RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall = GetVolumeNameForVolumeMountPoint;
+    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPoint;
 
   RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPCSTR): BOOL; stdcall = SetVolumeMountPoint;
+    lpszVolumeName: LPCSTR): BOOL stdcall = SetVolumeMountPoint;
 
-  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL;
+  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL
     stdcall = DeleteVolumeMountPoint;
 
-  RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
+  RtdlNetBios: function(P: PNCB): UCHAR stdcall = NetBios;
 
 {$ENDIF ~CLR}
 
@@ -6695,7 +6765,6 @@ const
   {$ENDIF ~UNICODE}
 
 {$IFNDEF CLR}
-
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
@@ -6714,8 +6783,10 @@ begin
       raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
+{$ENDIF ~CLR}
 
 
+{$IFNDEF CLR}
 const
   aclapilib = 'advapi32.dll';
 
@@ -6731,9 +6802,11 @@ begin
     jmp [_SetNamedSecurityInfoW]
   end;
 end;
+{$ENDIF ~CLR}
 
 
 
+{$IFNDEF CLR}
 const
   ImageHlpLib = 'imagehlp.dll';
   
@@ -6867,8 +6940,11 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
 
+
+{$IFNDEF CLR}
 
 var
   _NetUserAdd: Pointer;
@@ -7273,7 +7349,10 @@ begin
   end;
 end;
 
+{$ENDIF ~CLR}
 
+
+{$IFNDEF CLR}
 
 var
   _NetApiBufferFree: Pointer;
@@ -7288,7 +7367,11 @@ begin
   end;
 end;
 
+{$ENDIF ~CLR}
 
+
+
+{$IFNDEF CLR}
 
 var
   _Netbios: Pointer;
@@ -7303,7 +7386,11 @@ begin
   end;
 end;
 
+{$ENDIF ~CLR}
 
+
+
+{$IFNDEF CLR}
 
 var
   _BackupSeek: Pointer;
@@ -7468,7 +7555,11 @@ begin
   end;
 end;
 
+{$ENDIF ~CLR}
 
+
+
+{$IFNDEF CLR}
 
 var
   _GetCalendarInfoA: Pointer;
@@ -7510,6 +7601,7 @@ begin
 end;
 
 {$ENDIF ~CLR}
+
 
 // line 9078
 

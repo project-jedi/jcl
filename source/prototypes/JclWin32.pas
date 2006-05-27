@@ -63,11 +63,21 @@ interface
 uses
   Windows, SysUtils,
   {$IFNDEF FPC}
-  AccCtrl, ActiveX,
+  {$IFDEF CLR}
+  System.Runtime.InteropServices, System.Security,
+  {$ELSE}
+  AccCtrl,
+  {$ENDIF CLR}
+  ActiveX,
   {$ENDIF ~FPC}
   JclBase;
 
 {$HPPEMIT ''}
+{$IFDEF COMPILER5}
+{$HPPEMIT '// To lift ambiguity between LONG64 and System::LONG64'}
+{$HPPEMIT '#define LONG64 System::LONG64'}
+{$HPPEMIT ''}
+{$ENDIF COMPILER5}
 {$HPPEMIT '#include "WinDef.h"'}
 {$HPPEMIT '#include "WinNT.h"'}
 {$HPPEMIT '#include "WinBase.h"'}
@@ -76,7 +86,9 @@ uses
 {$HPPEMIT '#include "lm.h"'}
 {$HPPEMIT '#include "Nb30.h"'}
 {$HPPEMIT '#include "RasDlg.h"'}
+{$IFDEF COMPILER6_UP}
 {$HPPEMIT '#include "Reason.h"'}
+{$ENDIF COMPILER6_UP}
 {$HPPEMIT '#include "ShlWApi.h"'}
 {$HPPEMIT '#include "WinError.h"'}
 {$HPPEMIT '#include "WinIoCtl.h"'}
@@ -84,6 +96,17 @@ uses
 
 {$HPPEMIT '#include <delayimp.h>'}
 {$HPPEMIT ''}
+
+{$IFDEF CLR}
+type
+  LPSTR = string;
+  LPWSTR = string;
+  LPCSTR = string;
+  LPCWSTR = string;
+  LPCTSTR = string;
+  PLongWord = ^LongWord;
+  PByte = IntPtr;
+{$ENDIF CLR}
 
 {$IFDEF FPC}
 // include file for FPC compatibility
@@ -114,69 +137,72 @@ uses
 
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
+
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
-    pDacl, pSacl: PACL): DWORD; stdcall = SetNamedSecurityInfoW;
+    pDacl, pSacl: PACL): DWORD stdcall = SetNamedSecurityInfoW;
 
   RtdlSetWaitableTimer: function(hTimer: THandle; var lpDueTime: TLargeInteger;
     lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
-    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall = SetWaitableTimer;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL stdcall = SetWaitableTimer;
 
   RtdlNetUserAdd: function(servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetUserAdd;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS stdcall = NetUserAdd;
 
   RtdlNetUserDel: function(servername: LPCWSTR;
-    username: LPCWSTR): NET_API_STATUS; stdcall = NetUserDel;
+    username: LPCWSTR): NET_API_STATUS stdcall = NetUserDel;
 
   RtdlNetGroupAdd: function(servername: LPCWSTR; level: DWORD; buf: PByte;
-    parm_err: PDWord): NET_API_STATUS; stdcall = NetGroupAdd;
+    parm_err: PDWord): NET_API_STATUS stdcall = NetGroupAdd;
 
   RtdlNetGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resume_handle: PDWORD_PTR): NET_API_STATUS; stdcall = NetGroupEnum;
+    resume_handle: PDWORD_PTR): NET_API_STATUS stdcall = NetGroupEnum;
 
   RtdlNetGroupDel: function(servername: LPCWSTR;
-    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetGroupDel;
+    groupname: LPCWSTR): NET_API_STATUS stdcall = NetGroupDel;
 
   RtdlNetLocalGroupAdd: function(servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetLocalGroupAdd;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS stdcall = NetLocalGroupAdd;
 
   RtdlNetLocalGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall = NetLocalGroupEnum;
+    resumehandle: PDWORD_PTR): NET_API_STATUS stdcall = NetLocalGroupEnum;
 
   RtdlNetLocalGroupDel: function(servername: LPCWSTR;
-    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetLocalGroupDel;
+    groupname: LPCWSTR): NET_API_STATUS stdcall = NetLocalGroupDel;
 
   RtdlNetLocalGroupAddMembers: function(servername: LPCWSTR; groupname: LPCWSTR;
     level: DWORD; buf: PByte;
-    totalentries: DWORD): NET_API_STATUS; stdcall = NetLocalGroupAddMembers;
+    totalentries: DWORD): NET_API_STATUS stdcall = NetLocalGroupAddMembers;
 
-  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS; stdcall = NetApiBufferFree;
+  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS stdcall = NetApiBufferFree;
 
   RtdlGetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
     lpCalData: PAnsiChar; cchData: Integer;
-    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoA;
+    lpValue: PDWORD): Integer stdcall = GetCalendarInfoA;
 
   RtdlGetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
     lpCalData: PWideChar; cchData: Integer;
-    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoW;
+    lpValue: PDWORD): Integer stdcall = GetCalendarInfoW;
 
   RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall = EnumCalendarInfoExA;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExA;
 
   RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall = GetVolumeNameForVolumeMountPoint;
+    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPoint;
 
   RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPCSTR): BOOL; stdcall = SetVolumeMountPoint;
+    lpszVolumeName: LPCSTR): BOOL stdcall = SetVolumeMountPoint;
 
-  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL;
+  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL
     stdcall = DeleteVolumeMountPoint;
 
-  RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
+  RtdlNetBios: function(P: PNCB): UCHAR stdcall = NetBios;
 
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 implementation
@@ -191,6 +217,7 @@ const
   AWSuffix = 'A';
   {$ENDIF ~UNICODE}
 
+{$IFNDEF CLR}
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
@@ -209,6 +236,7 @@ begin
       raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
+{$ENDIF ~CLR}
 
 {$I win32api\AclApi.imp}
 {$I win32api\ImageHlp.imp}
