@@ -36,7 +36,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclShell;
 
@@ -1419,55 +1418,6 @@ initialization
 
 finalization
   UnloadModule(rtdlMsiLibHandle);
-
-// History:
-
-// $Log$
-// Revision 1.22  2006/01/02 04:30:53  elahn
-// Added parameter "Explore" added to OpenFolder & OpenSpecialFolder (Mantis #3402)
-//
-// Revision 1.21  2005/12/12 21:54:10  outchy
-// HWND changed to THandle (linking problems with BCB).
-//
-// Revision 1.20  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.19  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.18  2005/02/13 15:47:09  mthoma
-// SHEnumFolderNext works now with Win9x.
-//
-// Revision 1.17  2004/12/22 11:44:22  rikbarker
-// Modified ShellLinkResolve to correctly read the target from MSI style shortcuts without invoking the windows installer if the product component was set to "Install on First Use".  Added dynamic links to MSI functions in msi.dll
-//
-// Revision 1.16  2004/12/03 15:36:04  rikbarker
-// Fixed ShellLinkResolve to correctly Resolve TargetPath for MS-Office style link files.
-//
-// Revision 1.15  2004/10/17 21:48:07  mthoma
-// Removed ShellRasDial contribution. Rewrite needed as soon as dynmic linking support in JclWin32 has been redesigned.
-//
-// Revision 1.14  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.13  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.12  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.11  2004/05/09 11:22:39  rrossmair
-// Contributor list update
-//
-// Revision 1.10  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.9  2004/04/09 20:46:30  mthoma
-// Fixed 0000923 (ShellRunControlPanel). Changed $data$ to date.
-//
-// Revision 1.8  2004/04/06 04:55:18
-// adapt compiler conditions, add log entry
-//
 
 end.
 

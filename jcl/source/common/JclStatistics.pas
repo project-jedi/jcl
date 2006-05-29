@@ -32,7 +32,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 { TODO : Test cases! }
 
@@ -499,52 +498,5 @@ begin
     Sum := Sum + X[I];
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.16  2005/05/05 20:08:44  ahuser
-// JCL.NET support
-//
-// Revision 1.15  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.14  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.13  2004/12/17 05:33:02  marquardt
-// updates for DCL
-//
-// Revision 1.12  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.11  2004/09/16 19:47:32  rrossmair
-// check-in in preparation for release 1.92
-//
-// Revision 1.10  2004/08/18 19:06:15  rrossmair
-// - got rid of warning
-// - renamed local variables "L" to "N" (as commonly used to denote sample size)
-//
-// Revision 1.9  2004/08/18 17:08:59  rrossmair
-// - mantis #2019 & #2021 handled, improved error reports
-//
-// Revision 1.8  2004/07/29 15:16:51  marquardt
-// simple style cleaning
-//
-// Revision 1.7  2004/05/05 07:18:31  rrossmair
-// MedianUnsorted: type cast for FPC compatibility
-//
-// Revision 1.6  2004/05/05 00:09:59  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.5  2004/04/08 17:14:46  mthoma
-// no message
-//
-// Revision 1.4  2004/04/08 16:57:21  mthoma
-// Fixed #1268. Introduced new function MedianUnsorted
-//
-// Revision 1.3  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
 
 end.

@@ -21,6 +21,7 @@
 { Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
+
 unit MapToJdbgMain;
 
 interface
@@ -200,12 +201,5 @@ procedure TMainForm.Convert1Update(Sender: TObject);
 begin
   Convert1.Enabled := FilesListView.Items.Count > 0;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.2  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
-//
 
 end.

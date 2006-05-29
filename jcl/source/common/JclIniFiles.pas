@@ -25,7 +25,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclIniFiles;
 
@@ -171,30 +170,5 @@ begin
       WriteString(Section, IntToStr(I), Strings[I]);
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.10  2005/05/05 20:08:43  ahuser
-// JCL.NET support
-//
-// Revision 1.9  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.8  2004/09/28 14:22:01  rrossmair
-// removed PH contributions
-//
-// Revision 1.7  2004/07/30 07:20:25  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate
-//
-// Revision 1.6  2004/06/02 03:23:46  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.5  2004/05/14 15:24:46  rrossmair
-// fixed header
-//
-// Revision 1.4  2004/05/05 00:04:11  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
 
 end.

@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclHashMaps;
 
@@ -2127,37 +2126,6 @@ begin
     for J := 0 to FBuckets[I].Count - 1 do
       Result.Add(FBuckets[I].Entries[J].Value);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.9  2006/03/26 00:41:20  outchy
-// IT3605 and IT3536: memory corruption and memory leaks fixed.
-//
-// Revision 1.8  2005/08/09 10:30:21  ahuser
-// JCL.NET changes
-//
-// Revision 1.7  2005/08/07 14:14:34  outchy
-// IT3044: The Count was not decremented after the removal of an item.
-//
-// Revision 1.6  2005/05/05 20:08:42  ahuser
-// JCL.NET support
-//
-// Revision 1.5  2005/04/29 15:31:56  outchy
-// IT2890, a string reference was not decremented as expected.
-//
-// Revision 1.4  2005/03/08 08:33:16  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.3  2005/02/27 11:36:20  marquardt
-// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
-//
-// Revision 1.2  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

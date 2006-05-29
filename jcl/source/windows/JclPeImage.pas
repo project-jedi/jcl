@@ -35,7 +35,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclPeImage;
 
@@ -5391,66 +5390,5 @@ begin
   if Result = umNotMangled then
     Unmangled := Name;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.24  2005/03/09 23:52:19  rrossmair
-// - replaced constant UnixDateDelta by JclDateTime.UnixTimeStart
-//
-// Revision 1.23  2005/03/08 16:10:10  marquardt
-// standard char sets extended and used, some optimizations for string literals
-//
-// Revision 1.22  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.21  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.20  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.19  2005/02/22 07:29:52  uschuster
-// added function PeInsertSection(a generic version of JclDebug.InsertDebugDataIntoExecutableFile)
-//
-// Revision 1.18  2004/10/23 23:31:27  rrossmair
-// - fixed bug # 0001885
-//
-// Revision 1.17  2004/10/19 21:26:47  rrossmair
-// restore JclWin32 compatibility
-//
-// Revision 1.16  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.15  2004/09/30 13:11:27  marquardt
-// remove PH contributions
-//
-// Revision 1.14  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.13  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.12  2004/07/29 07:58:22  marquardt
-// inc files updated
-//
-// Revision 1.11  2004/07/28 18:00:53  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.10  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.9  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.8  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.7  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.6  2004/04/06 04:41:07
-// Remove the BCB5 conditions
-//
 
 end.

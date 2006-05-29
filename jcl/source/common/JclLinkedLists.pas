@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclLinkedLists;
 
@@ -2541,56 +2540,6 @@ begin
   AppendDelimited(AString, Separator);
 end;
 }
-// History:
-
-// $Log$
-// Revision 1.11  2005/05/07 14:33:48  outchy
-// Now compile OK, corrected TJclLinkedList.Clear, TJclIntfLinkedList.Clear and TJclLinkedList.FreeObject
-//
-// Revision 1.10  2005/05/06 14:24:36  dade2004
-// Fixed a memory leak in TJclLinkedList.Create
-//
-// Changed
-//     Current.Obj := nil;
-// in
-//     FreeObject(Current.Obj);
-//
-// Revision 1.9  2005/05/05 20:08:43  ahuser
-// JCL.NET support
-//
-// Revision 1.8  2005/03/08 15:14:00  dade2004
-// Fixed some bug on
-// IJclStrList.InsertAll implementation
-//
-// Revision 1.7  2005/03/08 08:33:16  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.6  2005/03/03 08:02:57  marquardt
-// various style cleanings, bugfixes and improvements
-//
-// Revision 1.5  2005/03/02 17:51:24  rrossmair
-// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
-//
-// Revision 1.4  2005/03/02 09:59:30  dade2004
-// Added
-//  -TJclStrCollection in JclContainerIntf
-//        Every common methods for IJclStrCollection are implemented here
-//
-// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
-// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
-//
-// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
-// relative method in TJclStrCollection
-//
-// Revision 1.3  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.2  2005/02/24 07:36:24  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

@@ -34,7 +34,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclUnicode;
 
@@ -8527,82 +8526,5 @@ finalization
   FreeUnicodeData;
 
 {$ENDIF SUPPORTS_WIDESTRING}
-
-// History:
-
-// $Log$
-// Revision 1.31  2005/10/26 09:15:13  marquardt
-// most functions now have the same const parameters as their Ansi counterparts
-//
-// Revision 1.30  2005/10/26 08:36:29  marquardt
-// StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
-//
-// Revision 1.29  2005/10/25 18:20:10  outchy
-// IT3174: UTF8-file support in JclUnicode.pas
-//
-// Revision 1.28  2005/10/25 16:27:36  marquardt
-// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
-//
-// Revision 1.27  2005/10/25 10:33:40  marquardt
-// made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
-//
-// Revision 1.26  2005/10/25 09:47:04  marquardt
-// minor fixes and cleanups
-//
-// Revision 1.25  2005/10/25 08:54:57  marquardt
-// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
-//
-// Revision 1.24  2005/10/16 05:16:51  marquardt
-// TWideStrings now has GetText and GetTextStr like TStrings
-//
-// Revision 1.23  2005/07/19 21:28:26  outchy
-// IT 3066: JclUnicode.pas updated to Unicode 4.1
-//
-// Revision 1.22  2005/03/08 08:33:23  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.21  2005/03/01 15:37:40  marquardt
-// addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
-//
-// Revision 1.20  2005/02/24 16:34:53  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.19  2005/02/24 07:36:25  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.18  2005/02/14 03:20:59  rrossmair
-// - fixed issues #0000713 ( make CompareTextWin95/NT functions use const string parameters) and #0001909 (JclUnicode.CharSetFromLocale - result ignored)
-//
-// Revision 1.17  2004/11/22 19:17:18  ahuser
-// Fixed memory leak
-// Style cleaning
-//
-// Revision 1.16  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.15  2004/08/01 11:40:24  marquardt
-// move constructors/destructors
-//
-// Revision 1.14  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.13  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.12  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.11  2004/06/14 13:05:22  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.10  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.9  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.8  2004/04/06 04:55:18  
-// adapt compiler conditions, add log entry
-//
 
 end.

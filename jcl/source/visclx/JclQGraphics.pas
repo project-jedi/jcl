@@ -40,7 +40,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// For history, see end of file
 
 unit JclQGraphics;
 
@@ -1467,45 +1466,5 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
-
-// History:
-// Revision 1.18  2004/11/14 06:05:05  rrossmair
-// - some source formatting
-//
-// Revision 1.17  2004/11/06 02:19:45  mthoma
-// history cleaning.
-//
-// Revision 1.16  2004/10/17 20:54:14  mthoma
-// cleaning
-//
-// Revision 1.15  2004/07/28 07:40:41  marquardt
-// remove comiler warnings
-//
-// Revision 1.14  2004/07/16 03:50:35  rrossmair
-// fixed "not accesssible with BCB" warning for TJclRegion.CreateRect
-//
-// Revision 1.13  2004/07/15 05:15:41  rrossmair
-// TJclRegion: Handle ownership management added, some refactoring
-//
-// Revision 1.12  2004/07/12 02:54:33  rrossmair
-// TJclRegion.Create fixed
-//
-// Revision 1.11  2004/06/14 13:05:19  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.10  2004/05/14 15:20:44  rrossmair
-// added Marcin Wieczorek to Contributors list
-//
-// Revision 1.9  2004/05/05 22:16:40  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.8  2004/04/18 06:32:07  rrossmair
-// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
-//
-// Revision 1.7  2004/04/08 19:44:30  mthoma
-// Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
-//
-// Revision 1.6  2004/04/06 05:01:54  
-// adapt compiler conditions, add log entry
 
 end.

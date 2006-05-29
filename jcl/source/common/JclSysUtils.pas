@@ -41,7 +41,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclSysUtils;
 
@@ -3094,109 +3093,5 @@ finalization
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS.Free;
   {$ENDIF THREADSAFE}
-
-// History:
-
-// $Log$
-// Revision 1.40  2006/03/15 21:58:24  outchy
-// TJclIntfCriticalSection moved from JclAbstractContainers to JclSysUtils
-// Donation from Andreas Hausladen: named shared memory between processes
-//
-// Revision 1.39  2006/03/13 22:07:26  outchy
-// New functions to handle list of separated values
-//
-// Revision 1.38  2005/12/26 20:30:07  outchy
-// IT2772: ClearObjectList behaviour with TComponentList and TObjectList
-//
-// Revision 1.37  2005/05/05 20:08:45  ahuser
-// JCL.NET support
-//
-// Revision 1.36  2005/04/07 00:41:35  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.35  2005/03/08 16:10:08  marquardt
-// standard char sets extended and used, some optimizations for string literals
-//
-// Revision 1.34  2005/03/08 08:33:18  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.33  2005/03/06 18:15:03  marquardt
-// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
-//
-// Revision 1.32  2005/03/02 17:51:24  rrossmair
-// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
-//
-// Revision 1.31  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.30  2004/12/27 17:11:57  rrossmair
-// - fixed Mantis #2433
-//
-// Revision 1.29  2004/12/05 17:08:59  rrossmair
-// - fixed call to EJclError.CreateResRec in ReadKey function
-//
-// Revision 1.28  2004/12/05 04:58:47  rrossmair
-// added ReadKey donation by Wayne Sherman
-//
-// Revision 1.27  2004/11/28 16:37:26  uschuster
-// added possibility to abort Execute
-//
-// Revision 1.26  2004/11/18 00:46:49  rrossmair
-// - Execute() fixed
-//
-// Revision 1.25  2004/10/25 06:58:44  rrossmair
-// - fixed bug #0002065
-// - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()
-// - refactored this code
-// - added overload to supply callback capability per line of output
-//
-// Revision 1.24  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.23  2004/09/30 07:50:29  marquardt
-// remove FillRemainBytes, CopyMemE contributions
-//
-// Revision 1.22  2004/08/01 05:52:12  marquardt
-// move constructors/destructors
-//
-// Revision 1.21  2004/07/28 18:00:52  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.20  2004/06/14 11:05:51  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.19  2004/05/27 20:27:26  ahuser
-// Updated Linux code
-//
-// Revision 1.18  2004/05/14 15:28:06  rrossmair
-// removed duplicate entry in Contributors list
-//
-// Revision 1.17  2004/05/09 11:17:49  rrossmair
-// Contributor list update
-//
-// Revision 1.16  2004/05/09 03:22:15  rrossmair
-// fix: missing {$IFDEF Unix} around "uses dl" added
-//
-// Revision 1.15  2004/05/09 03:01:57  rrossmair
-// module loader code made FPC compatible
-//
-// Revision 1.14  2004/05/08 22:06:30  rrossmair
-// revert mistaken removal of COMPILER6_UP condition (v. 1.12)
-//
-// Revision 1.13  2004/05/08 08:44:17  rrossmair
-// introduced & applied symbol HAS_UNIT_LIBC
-//
-// Revision 1.12  2004/05/05 07:06:48  rrossmair
-// corrected typo ('\\' instead of '}'); removed COMPILER6_UP symbol.
-//
-// Revision 1.11  2004/05/05 00:15:47  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.10  2004/04/19 06:16:38  rrossmair
-// fixed for FPC, which doesn't like the assembler key word showing up in the interface section
-//
-// Revision 1.9  2004/04/06 04:30:21  
-// Add FillRemainBytes, CopyMemE
-//
 
 end.

@@ -30,7 +30,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclComplex;
 
@@ -1564,55 +1563,5 @@ begin
   Value := MiscalcSingle(Value);
   Result := Value;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.15  2005/05/05 20:08:42  ahuser
-// JCL.NET support
-//
-// Revision 1.14  2005/03/08 16:10:07  marquardt
-// standard char sets extended and used, some optimizations for string literals
-//
-// Revision 1.13  2005/03/08 08:33:15  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/24 16:34:39  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2005/02/13 09:55:20  mthoma
-// Fixed:  0000060: Don's use parameter 'Value' in trigonometric functions
-//
-// Revision 1.10  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.9  2004/10/12 17:21:54  rrossmair
-// restore JclMath compatibility
-//
-// Revision 1.8  2004/09/16 19:47:32  rrossmair
-// check-in in preparation for release 1.92
-//
-// Revision 1.7  2004/08/01 05:52:11  marquardt
-// move constructors/destructors
-//
-// Revision 1.6  2004/07/28 18:00:49  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.5  2004/05/05 00:04:10  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names
-// when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.4  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
-// Revision 1.3  2004/03/23 08:54 rrossmair
-// to work around D7 trial issues, $WEAKPACKAGEUNIT directives now depend on symbol in jedi.inc
-// modification date comments replaced by $Id$ CVS key word
-//
-// Revision 1.2  2003/11/27 16:54 rrossmair
-// removed unused JclSysUtils from uses clause
-//
-// Revision 1.1  2003/11/19 16:43 mthoma
-// Initial upload.
 
 end.

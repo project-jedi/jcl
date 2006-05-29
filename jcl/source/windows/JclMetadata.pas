@@ -29,7 +29,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclMetadata;
 
@@ -4807,45 +4806,5 @@ function TJclClrMethodParam.GetCustomModifierCount: Integer;
 begin
   Result := FCustomMods.Count;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.15  2005/08/07 13:09:57  outchy
-// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
-//
-// Revision 1.14  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.13  2005/03/06 18:15:03  marquardt
-// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
-//
-// Revision 1.12  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.11  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.9  2004/07/30 12:42:57  marquardt
-// style cleaning
-//
-// Revision 1.8  2004/06/16 07:30:30  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.7  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.6  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.5  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.4  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.

@@ -30,8 +30,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
-
 
 // Comments to Win9x compatibility of the functions used in this unit
 
@@ -432,33 +430,5 @@ begin
   ParseAccountName(AccountName, Domain, UserName);
   Result := (Domain = '') or (Domain = LocalServerName);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.12  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.11  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2005/02/06 07:45:42  marquardt
-// fixed non-compiling IsLocalAccount
-//
-// Revision 1.9  2005/02/06 03:36:50  mthoma
-// Added feature [Code Library 0000805]: IsLocalAccount does not work with names like serveruser.
-//
-// Revision 1.8  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.7  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17  
-// adapt compiler conditions, add log entry
-//
 
 end.

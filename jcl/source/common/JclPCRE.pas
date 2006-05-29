@@ -247,33 +247,5 @@ initialization
 finalization
   UnloadPCRE;
 
-// History:
-
-// $Log$
-// Revision 1.9  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.8  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.7  2004/11/09 07:53:07  rrossmair
-// - JclPCRE string extracted to JclResources
-//
-// Revision 1.6  2004/11/06 02:20:20  rrossmair
-// - better handling of calls into DLL when it got not loaded.
-//
-// Revision 1.5  2004/07/28 18:00:51  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.4  2004/07/28 00:14:12  rrossmair
-// fixed TJclAnsiRegEx.GetAPIOptions bug introduced in 1.3
-//
-// Revision 1.3  2004/07/27 06:42:23  marquardt
-// style cleaning of pcre files
-//
-// Revision 1.2  2004/07/26 05:13:52  rrossmair
-// made it compile under Kylix (no functional tests performed yet)
-//  
-
 end.
 

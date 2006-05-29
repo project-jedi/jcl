@@ -36,7 +36,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 {.$DEFINE PUREPASCAL}
 
@@ -1924,47 +1923,5 @@ begin
   else
     Result := B2;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.16  2006/03/26 13:05:44  outchy
-// IT3576: various optimizations
-//
-// Revision 1.15  2005/05/05 20:08:43  ahuser
-// JCL.NET support
-//
-// Revision 1.14  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.13  2004/11/06 01:57:15  mthoma
-//  Added CountBitsSet (Pointer...) by Andreas Schmidt. Some minor changes.
-//
-// Revision 1.12  2004/10/24 01:04:42  mthoma
-// Removed all contributions by you know who.
-//
-// Revision 1.11  2004/09/30 07:50:29  marquardt
-// remove PH contributions
-//
-// Revision 1.10  2004/07/28 18:00:50  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.9  2004/06/14 13:05:18  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.8  2004/06/14 11:05:51  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.7  2004/05/05 00:09:59  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.6  2004/04/14 23:07:34
-// add missing types to different functions
-// add pure pascal implementations
-// some bugfixes, a.o. sar with Count >= bit count
-//
-// Revision 1.5  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
 
 end.

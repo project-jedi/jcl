@@ -30,7 +30,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclConsole;
 
@@ -1544,51 +1543,5 @@ begin
   Evts[0] := Event;
   Result := PutEvents(Evts) = 1;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.18  2005/05/05 20:08:47  ahuser
-// JCL.NET support
-//
-// Revision 1.17  2005/04/07 00:41:38  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.16  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.15  2005/03/04 06:40:26  marquardt
-// changed overloaded constructors to constructor with default parameter (BCB friendly)
-//
-// Revision 1.14  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.13  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.12  2004/10/17 21:00:14  mthoma
-// cleaning
-//
-// Revision 1.11  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.10  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.9  2004/05/13 04:23:21  rrossmair
-// fixed TJclScreenWindow.InternalSetPosition; FPC-related changes
-//
-// Revision 1.8  2004/05/06 22:37:09  rrossmair
-// contributor list updated
-//
-// Revision 1.7  2004/05/06 05:09:55  rrossmair
-// Changes for FPC v1.9.4 compatibility
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.

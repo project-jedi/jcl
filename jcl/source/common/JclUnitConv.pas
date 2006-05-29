@@ -33,8 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
-// For history see end of file
+// Last modified: $Date$
 
 unit JclUnitConv;
 
@@ -998,35 +997,5 @@ function WattToHpMetric(const W: Float): Float;
 begin
   Result := W / 735.4988;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.11  2005/05/05 20:08:46  ahuser
-// JCL.NET support
-//
-// Revision 1.10  2005/03/08 08:33:18  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.9  2005/03/07 17:28:59  marquardt
-// raise was missing from several exceptions
-//
-// Revision 1.8  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.7  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.6  2004/08/23 10:14:50  scottprice
-// Modified temperature routines, and added support for Rankine and Reaumur.
-// Added some string constants to this unit related to that change.
-//
-// Revision 1.5  2004/05/05 00:11:24  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors,
-// added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.4  2004/04/06 04:53:19  
-// adapt compiler conditions, add log entry
-//
 
 end.

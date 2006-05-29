@@ -32,7 +32,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclSecurity;
 
@@ -415,42 +414,5 @@ begin
   end;
 end;
 {$ENDIF ~FPC}
-
-// History:
-
-// $Log$
-// Revision 1.17  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.16  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.15  2004/10/25 08:51:23  marquardt
-// PH cleaning
-//
-// Revision 1.14  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.13  2004/07/29 07:58:22  marquardt
-// inc files updated
-//
-// Revision 1.12  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.11  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.10  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.9  2004/05/13 07:46:06  rrossmair
-// changes for FPC 1.9.3+ compatibility
-//
-// Revision 1.8  2004/05/05 07:30:54  rrossmair
-// Changes for FPC compatibility; header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.7  2004/04/06 04:55:18  
-// adapt compiler conditions, add log entry
-//
 
 end.

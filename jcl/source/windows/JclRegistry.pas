@@ -37,7 +37,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclRegistry;
 
@@ -1641,115 +1640,6 @@ begin
     FreeMem(WidePath);
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.41  2006/03/13 22:09:41  outchy
-// Style cleaning
-// More informations displayed in error messages
-//
-// Revision 1.40  2006/01/15 19:10:45  ahuser
-// Added RegRead*Ex functions
-// RegRead*Def functions do not raise exceptions anymore (makes debugging easier)
-//
-// Revision 1.39  2005/10/24 12:06:28  marquardt
-// fix RegLoadList for nonexistent list
-//
-// Revision 1.38  2005/04/07 00:41:38  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.37  2005/04/04 19:15:42  outchy
-// IT2805: Range Check Error in RegReadInteger and RegWriteInteger
-//
-// Revision 1.36  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.35  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.34  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.33  2005/02/22 07:36:46  marquardt
-// minor cleanups
-//
-// Revision 1.32  2005/02/20 13:09:52  marquardt
-// Win 9x bugfixes
-//
-// Revision 1.31  2004/11/06 02:13:31  mthoma
-// history cleaning.
-//
-// Revision 1.30  2004/10/25 15:05:13  marquardt
-// bugfix
-//
-// Revision 1.29  2004/10/25 08:51:22  marquardt
-// PH cleaning
-//
-// Revision 1.28  2004/10/22 15:47:15  marquardt
-// add functions for Single, Double, Extended
-//
-// Revision 1.27  2004/10/21 06:38:53  marquardt
-// style clenaing, bugfixes, improvements
-//
-// Revision 1.26  2004/10/20 17:13:53  rrossmair
-// - fixed RegReadUInt64 (DataType undefined)
-//
-// Revision 1.25  2004/10/20 16:57:32  rrossmair
-// - RegReadUInt64: D7 internal error C1118 workaround
-//
-// Revision 1.24  2004/10/19 06:27:03  marquardt
-// JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
-//
-// Revision 1.23  2004/10/18 16:22:14  marquardt
-// JclRegistry redesign to remove PH contributor
-//
-// Revision 1.22  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.21  2004/10/11 08:13:04  marquardt
-// PH cleaning of JclStrings
-//
-// Revision 1.20  2004/09/30 07:50:29  marquardt
-// remove PH contributions
-//
-// Revision 1.19  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.18  2004/07/28 18:00:53  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.17  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.16  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.15  2004/05/31 22:45:07  rrossmair
-// rollback to rev. 1.13 state
-//
-// Revision 1.13  2004/05/19 21:43:36  rrossmair
-// processed help TODOs
-//
-// Revision 1.12  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.11  2004/04/12 22:02:53  
-// Bugfix RegReadBinary for @Value = Nil or ValueSize = 0,
-// add some WideString support, add RegGetDataSize, RegGetDataType, add alternative RegReadBinary function
-//
-// Revision 1.10  2004/04/08 13:46:38  ahuser
-// BCB 6 compatible (no impact on Delphi)
-//
-// Revision 1.9  2004/04/08 10:34:58  rrossmair
-// revert to 1.7 (temporarily?)
-//
-// Revision 1.7  2004/04/06 05:56:10  rrossmair
-// fixed RegReadUInt64 & RegReadUInt64Def
-//
-// Revision 1.6  2004/04/06 04:45:57  
-// Unite the single read functions and the single write functions, add Cardinal,
-// Int64, UInt64 and Multistring support
 
 end.
 

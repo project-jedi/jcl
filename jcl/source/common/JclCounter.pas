@@ -30,7 +30,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclCounter;
 
@@ -205,39 +204,5 @@ begin
   if Counter <> nil then
     Counter.Continue;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.13  2005/08/07 12:24:02  outchy
-// IT3137: Fixed the Iteration count in the loop.
-//
-// Revision 1.12  2005/03/08 08:33:15  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.11  2005/02/24 16:34:39  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.9  2004/07/28 18:00:49  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.8  2004/06/14 13:05:16  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.7  2004/06/14 11:05:50  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/08 08:44:17  rrossmair
-// introduced & applied symbol HAS_UNIT_LIBC
-//
-// Revision 1.5  2004/05/05 00:04:10  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.4  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
 
 end.

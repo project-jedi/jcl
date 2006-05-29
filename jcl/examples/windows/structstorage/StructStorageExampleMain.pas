@@ -934,22 +934,5 @@ begin
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.1  2005/10/17 13:35:15  rrossmair
-// - moved over from examples\vcl\*
-//
-// Revision 1.3  2004/10/02 05:47:27  marquardt
-// added check for incompatible jedi.inc
-// replaced jedi.inc with jvcl.inc
-//
-// Revision 1.2  2004/06/12 04:44:16  rrossmair
-// mistakenly commited the wrong (outdated) file version at first; corrected
-//
-// Revision 1.1  2004/06/12 03:44:01  rrossmair
-// structured storage demo initial check-in; adapted for JCL
-//
-
 end.
 

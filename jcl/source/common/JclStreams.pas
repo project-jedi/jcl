@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclStreams;
 
@@ -1209,9 +1208,5 @@ begin
   WriteInteger(StrSize);
   WriteBuffer(Pointer(Value)^, StrSize);
 end;
-
-// History:
-
-// $Log$
 
 end.

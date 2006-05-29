@@ -27,7 +27,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclUnitVersioningProviders;
 
@@ -399,15 +398,5 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-
-// History:
-
-// $Log$
-// Revision 1.2  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.1  2005/02/22 07:31:38  uschuster
-// new unit
-//
 
 end.

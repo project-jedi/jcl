@@ -32,7 +32,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclSynch;
 
@@ -1378,51 +1377,5 @@ function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 begin
   Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
 end;
-
-// History:
-
-// $Log$
-// Revision 1.17  2005/03/08 08:33:23  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.16  2005/03/04 06:40:26  marquardt
-// changed overloaded constructors to constructor with default parameter (BCB friendly)
-//
-// Revision 1.15  2005/02/24 16:34:53  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.14  2004/10/21 08:40:11  marquardt
-// style cleaning
-//
-// Revision 1.13  2004/10/17 23:09:37  mthoma
-// More cleaning. Removing RTLD versions of some functions.
-//
-// Revision 1.12  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.11  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.10  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.9  2004/07/26 03:47:36  rrossmair
-// replaced SetCriticalSectionSpinCount by RtdlSetCriticalSectionSpinCount to make it Win95 compatible
-//
-// Revision 1.8  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.7  2004/05/09 10:13:38  ahuser
-// Better Delphi 7.1 fix that does not throw hints for older versions
-//
-// Revision 1.6  2004/05/07 19:29:09  ahuser
-// Fix for Delphi 7.1 compiler warning bug.
-//
-// Revision 1.5  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.4  2004/04/06 04:55:18  
-// adapt compiler conditions, add log entry
-//
 
 end.

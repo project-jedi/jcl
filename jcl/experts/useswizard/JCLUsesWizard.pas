@@ -1022,39 +1022,4 @@ begin
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.9  2006/01/08 17:16:57  outchy
-// Settings reworked.
-// Common window for expert configurations
-//
-// Revision 1.8  2005/12/26 18:03:41  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.7  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.6  2005/10/26 03:29:44  rrossmair
-// - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date$ and Revision 1.9  2006/01/08 17:16:57  outchy
-// - improved header information, added $Date$ and Settings reworked.
-// - improved header information, added $Date$ and Common window for expert configurations
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.8  2005/12/26 18:03:41  outchy
-// - improved header information, added $Date$ and Enhanced bds support (including C#1 and D8)
-// - improved header information, added $Date$ and Introduction of dll experts
-// - improved header information, added $Date$ and Project types in templates
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.7  2005/12/16 23:46:25  outchy
-// - improved header information, added $Date$ and Added expert stack form.
-// - improved header information, added $Date$ and Added code to display call stack on expert exception.
-// - improved header information, added $Date$ and Fixed package extension for D2006.
-// - improved header information, added $Date$ and CVS tags.
-//
-
 end.

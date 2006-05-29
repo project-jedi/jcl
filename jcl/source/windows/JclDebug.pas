@@ -35,7 +35,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclDebug;
 
@@ -4230,72 +4229,5 @@ finalization
   FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
   FreeAndNil(InfoSourceClassList);
-
-// History:
-
-// $Log$
-// Revision 1.24  2006/03/02 18:26:21  outchy
-// Delay is now an option
-// Stack frame analyze can now be delayed
-//
-// Revision 1.23  2006/03/01 23:35:01  ahuser
-// RaiseException speed up. Stack tracing is now done when the StackTraceList is accessed. This moves the track tracing to the dialog and not to RaiseException.
-//
-// Revision 1.22  2006/02/26 19:05:48  outchy
-// Function InitializeSource promoted to public access.
-//
-// Revision 1.21  2005/12/26 18:03:58  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.20  2005/08/07 13:09:56  outchy
-// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
-//
-// Revision 1.19  2005/06/05 09:53:34  uschuster
-// improved TJclBinDebugScanner.Cache... (mantis #2952)
-//
-// Revision 1.18  2005/04/14 04:00:44  outchy
-// IT2858: Linker bug is disabled in D2005 (conditionnal directives were wrong).
-//
-// Revision 1.17  2005/04/13 17:50:21  outchy
-// IT2858: Linker bug in D2005 now disabled.
-//
-// Revision 1.16  2005/03/23 04:10:22  rrossmair
-// - TJclMapParser fixed for BCB6 (by outchy)
-//
-// Revision 1.15  2005/03/08 16:10:09  marquardt
-// standard char sets extended and used, some optimizations for string literals
-//
-// Revision 1.14  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.13  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.12  2004/10/21 08:40:10  marquardt
-// style cleaning
-//
-// Revision 1.11  2004/10/17 21:00:14  mthoma
-// cleaning
-//
-// Revision 1.10  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.9  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.8  2004/06/16 07:30:30  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.7  2004/06/14 11:05:52  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.

@@ -364,19 +364,4 @@ except
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.3  2006/03/13 22:14:59  outchy
-// PathSeparator renamed to DirDelimiter
-// Installer checks paths
-//
-// Revision 1.2  2006/01/25 20:32:29  outchy
-// Fixed issue with invalid cvs subdirectory
-//
-// Revision 1.1  2006/01/15 00:51:22  outchy
-// cvs support in version control expert
-// version control expert integration in the installer
-//
-
 end.

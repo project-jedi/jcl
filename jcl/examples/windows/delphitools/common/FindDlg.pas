@@ -199,11 +199,4 @@ begin
   end;    
 end;
 
-// History:
-
-// $Log$
-// Revision 1.2  2005/10/27 01:44:51  rrossmair
-// - added MPL headers and CVS Log tags
-//
-
 end.

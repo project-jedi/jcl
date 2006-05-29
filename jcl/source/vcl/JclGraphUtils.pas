@@ -32,7 +32,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// For history, see end of file
 
 unit JclGraphUtils;
 
@@ -2582,57 +2581,5 @@ initialization
 finalization
   if MMX_ACTIVE then
     FreeAlphaTable;
-
-// History:
-
-// Revision 1.18  2005/02/24 16:34:41  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.17  2004/11/25 21:56:12  rrossmair
-// - TColor32Array declaration changed to avoid range check errors in JclGraphics
-//
-// Revision 1.16  2004/11/14 06:05:05  rrossmair
-// - some source formatting
-//
-// Revision 1.15  2004/10/18 16:22:14  marquardt
-// corrected typo
-//
-// Revision 1.14  2004/10/17 20:54:14  mthoma
-// cleaning
-//
-// Revision 1.13  2004/07/31 06:21:02  marquardt
-// - reset AlphaTable to nil in FreeAlphaTable
-//
-// Revision 1.12  2004/07/16 03:58:14  rrossmair
-// some style cleaning
-//
-// Revision 1.11  2004/06/27 23:28:51  rrossmair
-// some style cleaning (case, spaces)
-//
-// Revision 1.10  2004/06/16 07:30:28  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.9  2004/06/14 13:05:19  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.8  2004/05/05 22:14:51  rrossmair
-// bug fix in HSLToRGB(const H, S, L: Single; out R, G, B: Single); source code formatted
-// renamed Hue/Luminance/Saturation related routines from *HSL* to *HLS*, as far as possible; old identifiers kept as deprecated
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.7  2004/05/01 00:21:10  rrossmair
-// fixed for Kylix
-//
-// Revision 1.6  2004/04/28 04:16:19  rrossmair
-// new functions added: RGBToHLS, HLSToRGB, RGB2HLS, HLS2RGB, SetBitmapColors (VCL only)
-//
-// Revision 1.5  2004/04/18 06:32:07  rrossmair
-// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
-//
-// Revision 1.4  2004/04/06 05:01:54
-// adapt compiler conditions, add log entry
-//
-// 2001-03-28, Mike Lischke:
-//  - ShortenString included
 
 end.

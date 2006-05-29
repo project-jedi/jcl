@@ -24,8 +24,8 @@
 {   A. Schmidt (shmia (at) bizerba.de)                                                             }
 {                                                                                                  }
 {**************************************************************************************************}
+
 // Last modified: $Date$
-// For history see end of file
 
 {
 Description:
@@ -762,40 +762,6 @@ begin
   if not Succeeded(FStream.Write(@Buffer, Count, @Result)) then
     Result := 0;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.9  2005/04/08 11:56:27  outchy
-// IT 2845: wrong widestring size
-//
-// Revision 1.8  2005/03/08 08:33:23  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.7  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.6  2004/10/02 05:47:29  marquardt
-// added check for incompatible jedi.inc
-// replaced jedi.inc with jvcl.inc
-//
-// Revision 1.5  2004/08/02 15:30:17  marquardt
-// hunting down (rom) comments
-//
-// Revision 1.4  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.3  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.2  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.1  2004/06/12 02:50:33  rrossmair
-// initial check-in
-//
-//
-// donated 2004/04/30 20:54:36
 
 end.
 

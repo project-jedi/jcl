@@ -21,6 +21,7 @@
 { Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
+
 unit TlbToMapMain;
 
 interface
@@ -385,12 +386,5 @@ begin
   EnableAlign;
   VersionMemo.Repaint;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.2  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
-//
 
 end.

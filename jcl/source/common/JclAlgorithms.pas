@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclAlgorithms;
 
@@ -576,33 +575,6 @@ procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare);
 begin
   SortProc(AList, First, Last, AComparator);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.5  2005/03/02 17:51:15  rrossmair
-// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
-//
-// Revision 1.4  2005/03/02 09:59:30  dade2004
-// Added
-//  -TJclStrCollection in JclContainerIntf
-//        Every common methods for IJclStrCollection are implemented here
-//
-// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
-// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
-//
-// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
-// relative method in TJclStrCollection
-//
-// Revision 1.3  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.2  2005/02/24 07:36:24  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

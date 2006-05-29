@@ -26,7 +26,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclUnitVersioning;
 
@@ -787,52 +786,6 @@ initialization
 
 finalization
   FinalizeUnitVersioning;
-
-// History:
-
-// $Log$
-// Revision 1.11  2005/03/18 19:16:21  ahuser
-// process ID type bug fix
-//
-// Revision 1.10  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.9  2005/02/22 07:28:08  uschuster
-// added unit versioning provider solution from donations\source\common
-//
-// (donations) Revision 1.2  2005/01/31 06:47:33  marquardt
-// cleanup and simplifications
-//
-// (donations) Revision 1.1  2005/01/30 13:51:02  uschuster
-// initial checkin (modified JclUnitVersioning 1.8)
-//
-// Revision 1.8  2004/10/28 22:42:33  ahuser
-// Fixed Mantis 2270 and 2260 (Access Violation with activated UnitVersioning)
-//
-// Revision 1.7  2004/10/27 15:54:47  ahuser
-// Update
-//
-// Revision 1.6  2004/10/17 11:01:03  ahuser
-// Fixed memory leak
-//
-// Revision 1.5  2004/09/05 12:46:02  uschuster
-// fixed TUnitVersioning.IndexOf
-// changed the module handle parameter name in (Un)registerUnitVersion to Instance to avoid scope confusion
-//
-// Revision 1.4  2004/09/02 16:16:13  marquardt
-// fixed a bug from style cleaning
-//
-// Revision 1.3  2004/09/02 06:16:09  marquardt
-// style cleaning
-//
-// Revision 1.2  2004/09/01 23:24:53  ahuser
-// Replaced single linked list by TObjectList
-// New methods FindUnit, IndexOf
-// TUnitVersionInfo is now a record that is completly hidden by TUnitVersion class
-//
-// Revision 1.1  2004/09/01 14:56:16  ahuser
-// Added common/JclUnitVersioning.pas
-//
 
 end.
 

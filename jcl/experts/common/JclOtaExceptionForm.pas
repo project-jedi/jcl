@@ -131,12 +131,3 @@ begin
 end;
 
 end.
-
-// History:
-
-// $Log$
-// Revision 1.1  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//

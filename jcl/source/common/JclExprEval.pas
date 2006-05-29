@@ -31,7 +31,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclExprEval;
 
@@ -3990,50 +3989,5 @@ procedure TExpressionCompiler.Clear;
 begin
   FExprHash.Iterate(nil, Iterate_FreeObjects);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.17  2005/04/12 17:04:30  outchy
-// a semicolon at the wrong place (just before an else)
-//
-// Revision 1.16  2005/04/11 21:46:20  mthoma
-// Fixed  0002743.
-//
-// Revision 1.15  2005/03/08 08:33:16  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.14  2005/02/26 23:27:25  mthoma
-// Fixed #150 - a valid expression followed by Rubbish doesn't throw an exception => Now it does.
-//
-// Revision 1.13  2005/02/26 23:18:46  mthoma
-// *** empty log message ***
-//
-// Revision 1.12  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2005/02/02 04:43:01  rrossmair
-// - issue #2522 fixed
-//
-// Revision 1.10  2004/10/12 17:20:50  rrossmair
-// cleanup
-//
-// Revision 1.9  2004/08/02 15:30:16  marquardt
-// hunting down (rom) comments
-//
-// Revision 1.8  2004/08/01 05:52:11  marquardt
-// move constructors/destructors
-//
-// Revision 1.7  2004/07/03 03:27:48  rrossmair
-// documentation extracted to ExprEval.dtx (Doc-O-Matic topic file)
-//
-// Revision 1.6  2004/06/02 03:23:44  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.5  2004/05/13 07:43:26  rrossmair
-// reworked comments for DOM2 inclusion
-//
-// Revision 1.4  2004/05/05 00:04:11  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 
 end.

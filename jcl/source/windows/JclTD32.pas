@@ -31,7 +31,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclTD32;
 
@@ -1676,36 +1675,5 @@ begin
     end;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.15  2006/01/15 19:11:42  ahuser
-// Some new data from td32 files
-//
-// Revision 1.14  2005/09/21 19:31:27  ahuser
-// Added further symbol types
-//
-// Revision 1.13  2005/03/08 08:33:23  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.11  2005/02/24 16:34:53  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.9  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.8  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.7  2004/04/06 04:55:18  
-// adapt compiler conditions, add log entry
-//
 
 end.

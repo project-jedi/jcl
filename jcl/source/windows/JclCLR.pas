@@ -30,7 +30,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclCLR;
 
@@ -1739,50 +1738,5 @@ begin
     Free;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.16  2005/12/26 18:03:58  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.15  2005/08/07 13:09:56  outchy
-// Changed PByteArray to PJclByteArray to avoid RangeCheck exceptions.
-//
-// Revision 1.14  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.13  2005/03/06 18:15:03  marquardt
-// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
-//
-// Revision 1.12  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.11  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2004/10/17 21:00:14  mthoma
-// cleaning
-//
-// Revision 1.9  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.8  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.7  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.6  2004/05/13 07:35:09  rrossmair
-// removed obsolete TODO
-//
-// Revision 1.5  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.4  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.
