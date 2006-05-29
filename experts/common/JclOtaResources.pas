@@ -319,46 +319,4 @@ resourcestring
 
 implementation
 
-// History:
-
-// $Log: JclOtaResources.pas,v $
-// Revision 1.11  2006/03/13 22:05:31  outchy
-// Fixed error message to display project name
-//
-// Revision 1.10  2006/01/08 17:16:56  outchy
-// Settings reworked.
-// Common window for expert configurations
-//
-// Revision 1.9  2005/12/26 18:03:39  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.8  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.7  2005/10/27 13:50:39  rrossmair
-// - cleaned up mistakenly expanded check-in comments
-//
-// Revision 1.6  2005/10/27 08:31:08  outchy
-// Items add in the splash screen and in the about box of Delphi (requires at least D2005)
-//
-// Revision 1.5  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
-//
-// Revision 1.4  2005/10/24 12:05:51  marquardt
-// further cleanup
-//
-// Revision 1.3  2005/10/23 12:53:36  marquardt
-// further expert cleanup and integration, use of JclRegistry
-//
-// Revision 1.2  2005/10/22 14:24:18  marquardt
-// more expert integration and cleanup
-//
-// Revision 1.1  2005/10/21 12:24:41  marquardt
-// experts reorganized with new directory common
-//
-
 end.

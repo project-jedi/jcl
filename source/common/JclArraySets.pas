@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclArraySets;
 
@@ -393,42 +392,6 @@ procedure TJclArraySet.Union(ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.8  2005/05/05 20:08:42  ahuser
-// JCL.NET support
-//
-// Revision 1.7  2005/03/09 22:44:10  rrossmair
-// - fixed comment
-//
-// Revision 1.6  2005/03/08 08:33:15  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.5  2005/03/03 08:02:56  marquardt
-// various style cleanings, bugfixes and improvements
-//
-// Revision 1.4  2005/03/02 09:59:30  dade2004
-// Added
-//  -TJclStrCollection in JclContainerIntf
-//        Every common methods for IJclStrCollection are implemented here
-//
-// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
-// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
-//
-// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
-// relative method in TJclStrCollection
-//
-// Revision 1.3  2005/02/27 11:36:20  marquardt
-// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
-//
-// Revision 1.2  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

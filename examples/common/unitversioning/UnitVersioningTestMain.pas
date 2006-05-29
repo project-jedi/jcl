@@ -27,7 +27,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit UnitVersioningTestMain;
 
@@ -287,15 +286,5 @@ begin
   else
     ShowMessage('Can''t insert section - DLL still loaded and unload failed...');
 end;
-
-// History:
-
-// $Log$
-// Revision 1.1  2005/10/17 13:19:01  rrossmair
-// - moved over from examples\vcl\*
-//
-// Revision 1.1  2005/03/07 18:47:42  uschuster
-// new example for UnitVersioning
-//
 
 end.

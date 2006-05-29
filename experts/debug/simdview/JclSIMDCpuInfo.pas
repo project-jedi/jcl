@@ -94,16 +94,4 @@ begin
   ShowModal;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.5  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.4  2005/10/26 03:29:44  rrossmair
-// - improved header information, added Date and Log CVS tags.
-//
-
 end.

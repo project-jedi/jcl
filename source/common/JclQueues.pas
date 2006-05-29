@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclQueues;
 
@@ -340,24 +339,5 @@ function TJclQueue.Size: Integer;
 begin
   Result := FTail - FHead;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.5  2005/05/05 20:08:44  ahuser
-// JCL.NET support
-//
-// Revision 1.4  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.3  2005/02/27 11:36:20  marquardt
-// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
-//
-// Revision 1.2  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.

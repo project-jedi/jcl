@@ -561,16 +561,4 @@ begin
   AllowEdit := Assigned(Node) and (Node.Text <> '-') and not Assigned(Node.Data);
 end;
 
-// History:
-
-// $Log$
-// Revision 1.2  2006/01/15 20:58:03  outchy
-// Delphi 5 support: no TCustomAction.AutoCheck property
-// Removed unused resources
-//
-// Revision 1.1  2006/01/15 00:51:22  outchy
-// cvs support in version control expert
-// version control expert integration in the installer
-//
-
 end.

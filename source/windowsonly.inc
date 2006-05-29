@@ -48,26 +48,5 @@ ALERT_jedi_inc_missing
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF ~MSWINDOWS}
 
-// History:
-
-// $Log$
-// Revision 1.6  2004/08/12 17:22:30  marquardt
-// removed XPLATFORM_RTL
-//
-// Revision 1.5  2004/08/10 00:52:06  rrossmair
-// don't allow missing jedi.inc/wrong inclusion order to happen unnoticed.
-//
-// Revision 1.4  2004/07/30 07:16:47  marquardt
-// added a tilde
-//
-// Revision 1.3  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.2  2004/06/21 01:17:51  rrossmair
-// - $IFDEFed contents (to prevent from repeated inclusion)
-// - use of feature friendly symbol names
-// - header text adapted for JCL
-//
-
 {$ENDIF ~WINDOWSONLY_INC}
 

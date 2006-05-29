@@ -34,7 +34,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclRTTI;
 
@@ -3014,69 +3013,5 @@ finalization
   ClearInfoList;
   FreeAndNil(TypeList);
 {$ENDIF ~CLR}
-
-// History:
-
-// $Log$
-// Revision 1.24  2005/05/05 20:08:44  ahuser
-// JCL.NET support
-//
-// Revision 1.23  2005/03/14 08:46:53  rrossmair
-// - check-in in preparation for release 1.95
-//
-// Revision 1.22  2005/03/08 16:10:08  marquardt
-// standard char sets extended and used, some optimizations for string literals
-//
-// Revision 1.21  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.20  2005/03/06 18:15:02  marquardt
-// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
-//
-// Revision 1.19  2005/03/01 00:10:26  ahuser
-// Delphi 2005 inline support
-//
-// Revision 1.18  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.17  2004/11/15 05:25:28  mthoma
-// Fixed #1055.
-//
-// Revision 1.16  2004/10/17 20:25:21  mthoma
-// style cleaning, adjusting contributors
-//
-// Revision 1.15  2004/09/30 07:50:29  marquardt
-// remove JclIsClass pure pascal contributions
-//
-// Revision 1.14  2004/08/03 07:22:37  marquardt
-// resourcestring cleanup
-//
-// Revision 1.13  2004/08/01 05:52:11  marquardt
-// move constructors/destructors
-//
-// Revision 1.12  2004/07/31 06:21:01  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.11  2004/07/28 18:00:51  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.10  2004/06/14 11:05:51  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.9  2004/06/11 14:08:51  twm
-// Bugfix: now uses AnsiLineBreak rather than AnsiCrLf so it will work with unix systems
-//
-// Revision 1.8  2004/05/05 00:09:59  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.7  2004/04/23 22:08:39  mthoma
-// Removed non delphi language version of JclIsClass.
-//
-// Revision 1.6  2004/04/15 16:19:36
-// add pure pascal implementation (JclIsClass)
-//
-// Revision 1.5  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
 
 end.

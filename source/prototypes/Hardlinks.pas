@@ -57,7 +57,6 @@
  ***                Copyright (c) 1995 - 2005 by -=Assarbad=-               ***
  ***             Portions Copyright (c) 2004 by Robert Marquardt            ***
  ***             Portions Copyright (c) 2004 by Robert Rossmair             ***
- ***                       (see JCL revision history)                       ***
  ***                                                                        ***
  ***   CONTACT TO THE AUTHOR(S):                                            ***
  ***    ____________________________________                                ***
@@ -161,7 +160,6 @@
 
 {$IFDEF JCL}
 // Last modified: $Date$
-// For history see end of file
 
 {$ENDIF ~JCL}
 unit Hardlinks;
@@ -886,122 +884,6 @@ initialization
 {$IFNDEF JCL}
 //--------------------------------------------------------------------------------------------------
 {$ENDIF ~JCL}
-
-// History:
-
-{$IFDEF PROTOTYPE}
-// $Log$
-// Revision 1.14  2005/04/07 01:12:01  rrossmair
-// - moved conditional compilation comments into directive brackets,
-//   so that they are removed together with the directive when it gets resolved by JPP
-//
-// Revision 1.13  2005/04/07 00:41:37  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.12  2005/03/08 08:33:18  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.11  2005/03/06 11:03:29  assarbad
-// - Changed prototype of RtlDosPathNameToNtPathName_U()
-//
-// Revision 1.10  2005/03/03 13:47:04  assarbad
-// - Dividing lines now enclosed by a preprocessor statement to still show in the author's version.
-// - Removed PEB/TEB/TIB declarations and renamed one function (see author's version comments for details v1.13)
-// - Any OSI-approved license qualifies now for licensing of this module.
-//
-// Revision 1.9  2005/02/24 16:34:41  marquardt
-// - remove divider lines, add section lines (unfinished)
-//
-// Revision 1.8  2004/10/29 05:46:36  marquardt
-// - style cleaning
-//
-// Revision 1.7  2004/10/26 14:23:48  assarbad
-// - Implementation of Robert Marquardts proposals for the sake of brevity
-//   in the CreateHardLinkW() implementation - C-like returns
-// - Removal of potential bug in CreateHardLinkA() implementation
-// - Removal of two unused function prototypes
-// - Some more comments and corrections and indentations
-// - Perl script to create "my" version from JCL prototype
-// - Compiles fine on Delphi 4 (minor changes would be necessary for D3)
-//
-// Revision 1.6  2004/10/26 00:05:45  assarbad
-// - Removed some superfluous records/structs and constants
-// - Replaced literals by symbolic names (constants) to make the source more meaningful
-// - Checked with Delphi 4 after preprocessing by JPP - works
-// - Will not yet check in the preprocessed version - still discussing in the egroup about it
-//
-// Revision 1.5  2004/10/25 15:05:12  marquardt
-// - remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
-//
-// Revision 1.4  2004/10/22 01:26:50  rrossmair
-// - fixed style cleaning collateral damage (as far as required to make it compile)
-//
-// Revision 1.3  2004/10/21 21:58:03  assarbad
-// - minimal changes in the prototype
-//   (change of the filename for the release version on assarbad.net
-//    Hardlink.pas -> Hardlinks.pas
-//    The JCL prototype is now reference for "my" release version)
-// - creation of new unit from style-cleaned prototype
-//
-// Revision 1.2  2004/10/21 17:53:03  marquardt
-// - style cleaning
-//
-// Revision 1.1  2004/10/20 19:49:00  rrossmair
-// - added prototype unit Hardlinks (formerly known as Hardlink)
-// - modified makefile accordingly
-//
-{$ENDIF PROTOTYPE}
-
-{
-   Version 1.13a - 2005-03-06
-   + Minor correction in the prototype of RtlDosPathNameToNtPathName_U()
-     to easier pass NIL as the 4th parameter.
-     
-   Version 1.13 - 2005-03-03
-   + NtMyGetProcessHeap() renamed to NtpGetProcessHeap()
-   + Removed declarations for TEB/PEB/TIB and supplement. As they depend
-     on structures which are unlikely to change, the respective offsets
-     can be hardcoded. As soon as this function becomes OS-version-
-     dependent, adapted offsets will be used.
-
-   Version 1.12c - 2004-10-26
-   + Implementation of Robert Marquardts proposals for the sake of brevity
-     in the CreateHardLinkW() implementation - C-like returns
-   + Removal of potential bug in CreateHardLinkA() implementation
-   + Removal of two unused function prototypes
-   + Some more comments and corrections and indentations
-   + Perl script to create "my" version from JCL prototype
-   + Compiles fine on Delphi 4 (minor changes would be necessary for D3)
-
-   Version 1.12b - 2004-10-26
-   + Added some constants and replaced literals by them
-   + Removed some superfluous constants and records
-
-   Version 1.12a - 2004-10-21
-   + "Original" file renamed according to the change in the JCL prototype
-     Hardlink.pas -> Hardlinks.pas
-   + The original version is now being created using:
-     jpp -c -uJCL -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -x..\ Hardlinks.pas
-   + Changes will first occur in this prototype and the output of the
-     preprocessor undefining the "JCL" symbol will be mirrored to my site
-     afterwards. The prototype at the JCL is the reference from now on.
-
-   Version 1.12 - 2004-10-18
-   + Code-cleaning (removal of the currently not working softlink stuff from 1.10)
-   + Comments for Project JEDI (JCL)
-   + Some extra declarations to be compatible with JclNTFS
-   + Runtime dynamic linking
-   + Checked into the JCL
-
-   Version 1.11 - 2004-07-01
-   + Bugfix from Nico Bendlin - Odd behavior of NtMyGetProcessHeap()
-
-  ! Version 1.10 - 2004-04-16 [this was taken out again in 1.12]
-  ! + Implemented softlinks for directories (junction points/reparse points)
-
-   Version 1.01 - 2003-08-25
-   + Implemented hardlinks
-}
 
 end.
 

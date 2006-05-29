@@ -29,7 +29,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclSchedule;
 
@@ -1569,36 +1568,5 @@ function CreateSchedule: IJclSchedule;
 begin
   Result := TSchedule.Create;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.13  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2004/10/17 22:30:27  mthoma
-// file header update
-//
-// Revision 1.10  2004/10/12 18:29:52  rrossmair
-// cleanup
-//
-// Revision 1.9  2004/08/01 05:52:12  marquardt
-// move constructors/destructors
-//
-// Revision 1.8  2004/07/28 18:00:51  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.7  2004/06/16 07:30:28  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.6  2004/06/14 06:24:52  marquardt
-// style cleaning IFDEF
-//
-// Revision 1.5  2004/05/05 00:09:59  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
 
 end.

@@ -27,7 +27,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclContainerIntf;
 
@@ -455,29 +454,6 @@ type
   EJclOperationNotSupportedError = class(EJclError);
 
 implementation
-
-// History:
-
-// $Log$
-// Revision 1.6  2005/05/05 20:08:42  ahuser
-// JCL.NET support
-//
-// Revision 1.5  2005/04/09 23:01:46  rrossmair
-// - fixed IJclStrStrSortedMap, IJclSortedMap, IJclIntfSortedSet declarations;
-//   First and Last methods of the latter 2 conflicted with inherited method names
-//
-// Revision 1.4  2005/03/02 17:51:24  rrossmair
-// - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
-//
-// Revision 1.3  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.2  2005/02/24 07:36:24  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

@@ -27,6 +27,8 @@ This is a lightweight Unicode unit. For more features use JclUnicode.
 Known Issues:
 -----------------------------------------------------------------------------}
 
+// Last modified: $Date$
+
 unit JclWideStrings;
 
 {$I jcl.inc}
@@ -1955,74 +1957,4 @@ begin
     CustomSort(DefaultSort);
 end;
 
-// History:
-
-// $Log$
-// Revision 1.23  2005/10/27 06:54:20  marquardt
-// removed unneeded Sign function and fixed multiple history entries
-//
-// Revision 1.22  2005/10/26 09:15:13  marquardt
-// most functions now have the same const parameters as their Ansi counterparts
-//
-// Revision 1.21  2005/10/26 08:36:29  marquardt
-// StrPCopyWW and StrPLCopyWW introduced to solve overloaded problem
-//
-// Revision 1.20  2005/10/25 16:27:36  marquardt
-// StrPCopyW and StrPLCopyW overloaded versions deactivated because of Delphi5 compiler problems
-//
-// Revision 1.19  2005/10/25 10:33:40  marquardt
-// made StrPCopyW and StrPLCopyW compatible with the original Unicode.pas by adding overloaded versions
-//
-// Revision 1.18  2005/10/25 09:46:35  marquardt
-// fixes for StrAllocW family and cleaned up Str*W parameter names
-//
-// Revision 1.17  2005/10/25 08:54:57  marquardt
-// make a union of the Str*W family of functions in JclUnicode and JclWideStrings
-//
-// Revision 1.16  2005/10/16 05:15:38  marquardt
-// Str*W family now matches completely Delphi Str* family semantics
-//
-// Revision 1.15  2005/07/19 23:21:21  outchy
-// IT 2968: The result StrLCompW was false when MaxLen characters were compared.
-//
-// Revision 1.14  2005/04/07 00:41:35  rrossmair
-// - changed for FPC 1.9.8
-//
-// Revision 1.13  2005/03/19 21:22:25  rrossmair
-// - fixed typo in changed StrScanW
-//
-// Revision 1.12  2005/03/19 02:47:07  rrossmair
-// - fixed issue #2680 (WideQuotedStr always fails)
-// - gives credit to Mike Lischke in header now
-//
-// Revision 1.11  2005/03/08 08:33:18  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.10  2005/03/01 15:37:40  marquardt
-// addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
-//
-// Revision 1.9  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.8  2005/02/14 00:47:23  rrossmair
-// - removed (redundant) comment in German language.
-//
-// Revision 1.7  2004/10/25 15:12:30  marquardt
-// fix internal error
-//
-// Revision 1.6  2004/10/17 21:49:03  rrossmair
-// added CVS Log entries
-//
-// Revision 1.5                       rossmair
-// fixed D6, FPC compatibility
-//
-// Revision 1.4                       marquardt
-// complete and fix PWideChar Str functions
-//
-// Revision 1.3                       marquardt
-// PH cleaning of JclStrings
-//
-// Revision 1.2                       rrossmair
-// replaced some conditional compilation symbols by more appropriate ones
-//
 end.

@@ -31,7 +31,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclMiscel;
 
@@ -335,39 +334,5 @@ begin
   CloseHandle(ProcInfo.hThread);
   CloseHandle(ProcInfo.hProcess);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.13  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2004/10/25 06:58:44  rrossmair
-// - fixed bug #0002065
-// - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()
-// - refactored this code
-// - added overload to supply callback capability per line of output
-//
-// Revision 1.10  2004/10/21 06:38:52  marquardt
-// style clenaing, bugfixes, improvements
-//
-// Revision 1.9  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.8  2004/07/28 18:00:53  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.7  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.

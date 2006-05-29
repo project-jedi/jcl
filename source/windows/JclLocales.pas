@@ -33,7 +33,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclLocales;
 
@@ -1033,50 +1032,5 @@ begin
     Free;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.16  2005/12/26 18:03:58  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.15  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.14  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.13  2005/02/06 03:37:52  mthoma
-// Fixed [Code Library 0002479]: Wrong parameter count in callback function
-//
-// Revision 1.12  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.11  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.10  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.9  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.8  2004/06/14 11:05:52  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.7  2004/05/13 07:46:06  rrossmair
-// changes for FPC 1.9.3+ compatibility
-//
-// Revision 1.6  2004/05/06 05:09:55  rrossmair
-// Changes for FPC v1.9.4 compatibility
-//
-// Revision 1.5  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.4  2004/04/06 04:55:17
-// adapt compiler conditions, add log entry
-//
 
 end.

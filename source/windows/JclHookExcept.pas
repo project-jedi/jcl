@@ -28,7 +28,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclHookExcept;
 
@@ -551,36 +550,5 @@ finalization
   FinalizeLibrariesHookExcept;
   {$ENDIF HOOK_DLL_EXCEPTIONS}
   FreeNotifiers;
-
-// History:
-
-// $Log$
-// Revision 1.11  2006/03/01 23:35:01  ahuser
-// RaiseException speed up. Stack tracing is now done when the StackTraceList is accessed. This moves the track tracing to the dialog and not to RaiseException.
-//
-// Revision 1.10  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.9  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.8  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.7  2004/08/02 15:30:17  marquardt
-// hunting down (rom) comments
-//
-// Revision 1.6  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.5  2004/06/16 07:30:30  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.4  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.3  2004/04/06 04:55:17  
-// adapt compiler conditions, add log entry
-//
 
 end.

@@ -27,7 +27,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclWinMidi;
 
@@ -274,36 +273,5 @@ initialization
 
 finalization
   FreeAndNil(FMidiOutputs);
-  
-// History:
-
-// $Log$
-// Revision 1.13  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.12  2005/02/24 16:34:53  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.10  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.9  2004/07/28 18:00:55  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.8  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.7  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:18  
-// adapt compiler conditions, add log entry
-//
 
 end.

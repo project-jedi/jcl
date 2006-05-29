@@ -23,7 +23,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclStacks;
 
@@ -343,18 +342,5 @@ function TJclStack.Size: Integer;
 begin
   Result := FCount;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.3  2005/02/27 11:36:20  marquardt
-// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
-//
-// Revision 1.2  2005/02/27 07:27:47  marquardt
-// changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.

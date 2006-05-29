@@ -2141,30 +2141,4 @@ except
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.9  2006/03/13 22:14:59  outchy
-// PathSeparator renamed to DirDelimiter
-// Installer checks paths
-//
-// Revision 1.8  2006/02/02 08:06:36  elahn
-// Add "Explore Folder" to TJclVersionControlSystemPlugin. Change RsVersionCtrlContextMenuCaption to "Context Menu (right-click)".
-//
-// Revision 1.7  2006/01/25 20:34:38  outchy
-// Multiple plugins can be active at the same time.
-// New plugin for common (system) actions.
-//
-// Revision 1.6  2006/01/19 07:58:11  elahn
-// Bugfix - ContextMenu not appearing at Mouse.CursorPos
-//
-// Revision 1.5  2006/01/15 20:58:03  outchy
-// Delphi 5 support: no TCustomAction.AutoCheck property
-// Removed unused resources
-//
-// Revision 1.4  2006/01/15 11:33:21  outchy
-// cvs support in version control expert
-// version control expert integration in the installer
-//
-
 end.

@@ -29,7 +29,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclTask;
 
@@ -891,58 +890,5 @@ function TJclScheduledTask.GetTask: ITask;
 begin
   Result := ScheduledWorkItem as ITask;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.21  2005/03/04 06:40:26  marquardt
-// changed overloaded constructors to constructor with default parameter (BCB friendly)
-//
-// Revision 1.20  2005/02/24 16:34:53  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.19  2005/02/24 07:36:24  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.18  2004/10/25 08:51:23  marquardt
-// PH cleaning
-//
-// Revision 1.17  2004/10/19 21:26:03  rrossmair
-// got rid of MSTaskError unit
-//
-// Revision 1.16  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.15  2004/10/08 20:13:03  rrossmair
-// replaced JclUnicode routines by JclWideStrings equivalents
-//
-// Revision 1.14  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.13  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.12  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.11  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.10  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.9  2004/05/06 23:43:22  rrossmair
-// minor improvements
-//
-// Revision 1.8  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.7  2004/04/26 04:28:16
-// - add TaskSchedulerServiceControl
-// - some bugfixes for Win9x
-//
-// Revision 1.6  2004/04/06 04:55:18
-// adapt compiler conditions, add log entry
-//
 
 end.

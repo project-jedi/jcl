@@ -32,7 +32,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit Jcl8087;
 
@@ -222,30 +221,5 @@ begin
   Exceptions := Result - Exceptions;
   SetMasked8087Exceptions(Exceptions, ClearBefore);
 end;
-
-// History:
-
-// rr 2003-10-12:
-//   Removed references to Default8087CW because of compiler problems when including Jcl8087 in
-//   package (D7, I remember having seen that with D5, too; Kylix 3 however went smoothly). Error
-//   message was, in spite of {$IMPORTEDDATA ON}:
-//   "Need imported data reference ($G) to access Default8087CW".
-
-// $Log$
-// Revision 1.7  2005/02/24 16:34:39  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.6  2004/10/17 20:02:05  mthoma
-// Clean. Fileheader update (contributors list).
-//
-// Revision 1.5  2004/06/14 06:24:52  marquardt
-// style cleaning IFDEF
-//
-// Revision 1.4  2004/05/05 00:04:10  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.3  2004/04/06 04:53:18
-// adapt compiler conditions, add log entry
-//
 
 end.

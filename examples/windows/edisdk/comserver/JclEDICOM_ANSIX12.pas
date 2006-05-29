@@ -1056,9 +1056,4 @@ initialization
   TAutoObjectFactory.Create(ComServer, TEDICOMFile, Class_EDICOMFile,
     ciMultiInstance, tmApartment);
 
-// History
-
-// rrossmair 2004-07-17:
-// - removed unit Dialogs usage
-
 end.

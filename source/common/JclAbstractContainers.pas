@@ -27,7 +27,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclAbstractContainers;
 
@@ -227,33 +226,6 @@ begin
   Strings.Clear;
   AppendToStrings(Strings);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.7  2006/03/15 21:58:24  outchy
-// TJclIntfCriticalSection moved from JclAbstractContainers to JclSysUtils
-// Donation from Andreas Hausladen: named shared memory between processes
-//
-// Revision 1.6  2005/05/05 20:08:41  ahuser
-// JCL.NET support
-//
-// Revision 1.5  2005/03/14 08:46:53  rrossmair
-// - check-in in preparation for release 1.95
-//
-// Revision 1.4  2005/03/03 08:02:56  marquardt
-// various style cleanings, bugfixes and improvements
-//
-// Revision 1.3  2005/03/02 17:48:54  rrossmair
-// - replaced $IFDEF UNIX by $IFDEF HAS_UNIT_LIBC, fixed header
-//
-// Revision 1.2  2005/03/02 09:59:30  dade2004
-// - added TJclStrCollection, which now serves as a common ancestor to all classes implementing IJclStrCollection.
-// - replaced and bug-fixed JclAlgorithms.DCLAppendDelimited() by TJclStrCollection.AppendDelimited
-//
-// Revision 1.1  2005/02/24 03:57:10  rrossmair
-// - donated DCL code, initial check-in
-//
 
 end.
 

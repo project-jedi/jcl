@@ -948,44 +948,4 @@ begin
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.10  2006/02/12 11:31:39  outchy
-// The form can now be docked
-//
-// Revision 1.9  2006/01/08 17:16:56  outchy
-// Settings reworked.
-// Common window for expert configurations
-//
-// Revision 1.8  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.7  2005/12/04 10:10:57  obones
-// Borland Developer Studio 2006 support
-//
-// Revision 1.6  2005/11/21 21:25:40  outchy
-// Modified the get/set methods of thread context for Delphi 2005
-//
-// Revision 1.5  2005/10/26 03:29:44  rrossmair
-// - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date$ and Revision 1.10  2006/02/12 11:31:39  outchy
-// - improved header information, added $Date$ and The form can now be docked
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.9  2006/01/08 17:16:56  outchy
-// - improved header information, added $Date$ and Settings reworked.
-// - improved header information, added $Date$ and Common window for expert configurations
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.8  2005/12/16 23:46:25  outchy
-// - improved header information, added $Date$ and Added expert stack form.
-// - improved header information, added $Date$ and Added code to display call stack on expert exception.
-// - improved header information, added $Date$ and Fixed package extension for D2006.
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.7  2005/12/04 10:10:57  obones
-// - improved header information, added $Date$ and Borland Developer Studio 2006 support
-// - improved header information, added $Date$ and CVS tags.
-//
-
 end.

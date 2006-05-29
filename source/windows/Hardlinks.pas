@@ -40,7 +40,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit Hardlinks;
 
@@ -675,60 +674,6 @@ initialization
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
 
-
-// History:
-
-
-{
-   Version 1.13a - 2005-03-06
-   + Minor correction in the prototype of RtlDosPathNameToNtPathName_U()
-     to easier pass NIL as the 4th parameter.
-     
-   Version 1.13 - 2005-03-03
-   + NtMyGetProcessHeap() renamed to NtpGetProcessHeap()
-   + Removed declarations for TEB/PEB/TIB and supplement. As they depend
-     on structures which are unlikely to change, the respective offsets
-     can be hardcoded. As soon as this function becomes OS-version-
-     dependent, adapted offsets will be used.
-
-   Version 1.12c - 2004-10-26
-   + Implementation of Robert Marquardts proposals for the sake of brevity
-     in the CreateHardLinkW() implementation - C-like returns
-   + Removal of potential bug in CreateHardLinkA() implementation
-   + Removal of two unused function prototypes
-   + Some more comments and corrections and indentations
-   + Perl script to create "my" version from JCL prototype
-   + Compiles fine on Delphi 4 (minor changes would be necessary for D3)
-
-   Version 1.12b - 2004-10-26
-   + Added some constants and replaced literals by them
-   + Removed some superfluous constants and records
-
-   Version 1.12a - 2004-10-21
-   + "Original" file renamed according to the change in the JCL prototype
-     Hardlink.pas -> Hardlinks.pas
-   + The original version is now being created using:
-     jpp -c -uJCL -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -x..\ Hardlinks.pas
-   + Changes will first occur in this prototype and the output of the
-     preprocessor undefining the "JCL" symbol will be mirrored to my site
-     afterwards. The prototype at the JCL is the reference from now on.
-
-   Version 1.12 - 2004-10-18
-   + Code-cleaning (removal of the currently not working softlink stuff from 1.10)
-   + Comments for Project JEDI (JCL)
-   + Some extra declarations to be compatible with JclNTFS
-   + Runtime dynamic linking
-   + Checked into the JCL
-
-   Version 1.11 - 2004-07-01
-   + Bugfix from Nico Bendlin - Odd behavior of NtMyGetProcessHeap()
-
-  ! Version 1.10 - 2004-04-16 [this was taken out again in 1.12]
-  ! + Implemented softlinks for directories (junction points/reparse points)
-
-   Version 1.01 - 2003-08-25
-   + Implemented hardlinks
-}
 
 end.
 

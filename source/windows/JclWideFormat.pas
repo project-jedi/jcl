@@ -31,7 +31,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 { TODO : Replacing the calls to MultiBytetoWideChar is all what's needed to make this crossplatform }
 { TODO : Fix Internal Error DBG1384 in BCB 6 compilation }
@@ -875,36 +874,5 @@ begin
   AllowedTypes := GetTypeList(Allowed);
   Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatBadArgumentTypeEx), [FoundType, ArgIndex, Copy(Format, FormatStart, FormatEnd - FormatStart + 1), AllowedTypes]);
 end;
-
-// History:
-
-// $Log$
-// Revision 1.10  2006/01/15 12:29:49  outchy
-// IT3393:  WideFormat not formating because of a dandling pointer
-//
-// Revision 1.9  2005/03/11 20:31:05  rrossmair
-// - refactored (and tested with D5 & D9) by Rob Kennedy
-//
-// Revision 1.7  2005/03/08 08:33:23  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.6  2005/03/01 00:55:50  ahuser
-// Delphi 2005 compiler bug workaround
-//
-// Revision 1.5  2005/02/27 07:27:47  marquardt
-// moved resourcestrings to JclResource.pas
-//
-// Revision 1.4  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.3  2005/02/24 07:36:25  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.2  2005/02/22 07:55:18  rrossmair
-// - issue #2662 fixed (internal error C6662 when compiling with D2005)
-//
-// Revision 1.1  2005/02/14 00:45:50  rrossmair
-// - initial check-in
-//
 
 end.

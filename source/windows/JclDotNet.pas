@@ -29,7 +29,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclDotNet;
 
@@ -981,42 +980,5 @@ begin
   inherited Create;
   FDefaultInterface := Intf;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.15  2006/03/23 21:29:22  outchy
-// JclDotNet is now included in the Jcl packages
-//
-// Revision 1.14  2005/12/12 21:54:10  outchy
-// HWND changed to THandle (linking problems with BCB).
-//
-// Revision 1.13  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/25 07:20:15  marquardt
-// add section lines
-//
-// Revision 1.11  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.10  2004/10/17 21:00:14  mthoma
-// cleaning
-//
-// Revision 1.9  2004/08/09 06:38:08  marquardt
-// add JvWStrUtils.pas as JclWideStrings.pas
-//
-// Revision 1.8  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.7  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17  
-// adapt compiler conditions, add log entry
-//
 
 end.

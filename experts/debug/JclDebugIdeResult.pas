@@ -197,28 +197,4 @@ begin
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.5  2006/02/16 16:53:11  outchy
-// Fixed fomat bug
-//
-// Revision 1.4  2006/01/08 17:16:56  outchy
-// Settings reworked.
-// Common window for expert configurations
-//
-// Revision 1.3  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.2  2005/10/21 12:24:41  marquardt
-// experts reorganized with new directory common
-//
-// Revision 1.1  2005/10/03 16:15:58  rrossmair
-// - moved over from jcl\examples\vcl\debugextension
-//
-// Revision 1.3  2004/07/25 06:29:51  rrossmair
-// ImgList added to uses clause
-//
 end.

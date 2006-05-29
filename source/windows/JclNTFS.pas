@@ -32,8 +32,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
-
 
 // Comments on Win9x compatibility of the functions used in this unit
 
@@ -1152,71 +1150,5 @@ begin
     end;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.23  2005/03/08 08:33:22  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.22  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.21  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.20  2004/12/07 02:46:44  rrossmair
-// - NtfsSparseStreamsSupported, NtfsReparsePointsSupported:
-//   Fixed bug in call to GetVolumeInformation (did not ensure trailing backslash)
-//   by replacing it with new function JclSysInfo.GetVolumeFileSystemFlags
-//
-// Revision 1.19  2004/10/20 19:52:15  rrossmair
-// - renamed Hardlink to Hardlinks
-// - Hardlinks now generated from prototype unit
-//
-// Revision 1.18  2004/10/19 06:26:48  marquardt
-// JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
-//
-// Revision 1.17  2004/10/18 18:42:49  assarbad
-// Just removed a stupidity (BTW: introduced by PH)
-//
-// Revision 1.16  2004/10/18 18:20:55  assarbad
-// Completely replaced the CreateHardLink() implementation. For the sake of brevity it is kept in the separate unit Hardlink.pas now.
-//
-// Please check wether it compiles. I had to change fragments as the JCL will not compile on my Delphi 4.
-//
-// Revision 1.15  2004/10/17 21:00:15  mthoma
-// cleaning
-//
-// Revision 1.14  2004/07/31 06:21:03  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.13  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.12  2004/07/28 18:00:53  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.11  2004/07/14 03:00:34  rrossmair
-// fixed bug #1962 ( NtfsCreateJunctionPoint fails if a \\??\\ path is used)
-//
-// Revision 1.10  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.9  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.8  2004/05/31 00:30:45  rrossmair
-// Processed documentation TODOs
-//
-// Revision 1.7  2004/05/13 07:46:06  rrossmair
-// changes for FPC 1.9.3+ compatibility
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:18
-// adapt compiler conditions, add log entry
-//
 
 end.

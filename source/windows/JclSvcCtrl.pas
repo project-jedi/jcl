@@ -33,7 +33,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 {$R+} { TODO : Why Rangecheck on here? }
 
@@ -1435,102 +1434,5 @@ begin
       Break;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.32  2005/02/25 07:20:16  marquardt
-// add section lines
-//
-// Revision 1.31  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.30  2004/12/22 09:21:32  rrossmair
-// - removed superfluous comma in line 746 (which D7's parser did tolerate, but those of D5 and D6 did not)
-//
-// Revision 1.29  2004/12/21 12:24:51  rikbarker
-// Added code by Warren Postma to allow modification of service start type. (Disabled, Automatic etc)
-// Added three new helper functions,
-//    GetServiceStatusByName
-//    StartServiceByName
-//    StopServiceByName
-//
-// Revision 1.28  2004/10/24 01:36:26  mthoma
-// history cleaned.
-//
-// Revision 1.27  2004/10/21 08:40:11  marquardt
-// style cleaning
-//
-// Revision 1.26  2004/10/21 06:38:53  marquardt
-// style clenaing, bugfixes, improvements
-//
-// Revision 1.25  2004/10/20 09:35:06  rikbarker
-// EnumServiceGroups Modified to use new JclRegistry MULTI_SZ enabled functions.
-// PH cleaning of GetServiceStatus.
-// GetServiceStatusWaitingIfPending rewritten
-// New set ssPendingStates defined
-//
-// Revision 1.24  2004/10/17 21:00:16  mthoma
-// cleaning
-//
-// Revision 1.23  2004/10/11 08:13:04  marquardt
-// PH cleaning of JclStrings
-//
-// Revision 1.22  2004/07/29 07:58:22  marquardt
-// inc files updated
-//
-// Revision 1.21  2004/07/28 18:00:54  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.20  2004/06/16 07:30:31  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.19  2004/06/14 13:05:21  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.18  2004/06/14 11:05:53  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.17  2004/06/02 03:23:47  rrossmair
-// cosmetic changes in several units (code formatting, help TODOs processed etc.)
-//
-// Revision 1.16  2004/05/13 07:46:06  rrossmair
-// changes for FPC 1.9.3+ compatibility
-//
-// Revision 1.15  2004/05/06 23:41:33  rrossmair
-// fix: $IFDEF FPC left empty const section
-//
-// Revision 1.14  2004/05/06 22:37:10  rrossmair
-// contributor list updated
-//
-// Revision 1.13  2004/05/06 22:29:19  rrossmair
-// Changes for FPC v1.9.4 compatibility
-//
-// Revision 1.12  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.11  2004/04/26 04:25:46
-// - add GetServiceStatus
-// - add GetServiceStatusWaitingIfPending
-//
-// Revision 1.10  2004/04/12 22:04:38
-// Bugfix: TJclSCManager.Refresh EnumServiceGroups
-//
-// Revision 1.9  2004/04/08 19:49:26  mthoma
-// Fixed 0000521, 0000848. Range check error in TJclSCManager.Refresh and TJclSCManager raises exception when free'd .
-//
-// Revision 1.8  2004/04/08 12:18:07  obones
-// BCB5 compatibility fix
-//
-// Revision 1.7  2004/04/08 02:44:52  rrossmair
-// Log clean-up, typo in $Date$ corrected
-//
-// Revision 1.6  2004/04/07 18:43:02
-//
-// Revision 1.5  2004/04/07 14:01:15  obones
-//
-// Revision 1.4  2004/04/06 04:55:18
-// adapt compiler conditions, add log entry
-//
 
 end.

@@ -25,7 +25,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit OpenDlgFavAdapter;
 
@@ -521,30 +520,5 @@ except
     raise;
   end;
 end;
-
-
-// History:
-
-// $Log$
-// Revision 1.4  2005/12/26 18:03:41  outchy
-// Enhanced bds support (including C#1 and D8)
-// Introduction of dll experts
-// Project types in templates
-//
-// Revision 1.3  2005/12/16 23:46:25  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.2  2005/10/21 12:24:41  marquardt
-// experts reorganized with new directory common
-//
-// Revision 1.1  2005/10/03 16:27:37  rrossmair
-// - moved over from jcl\examples\vcl\idefavopendialogs
-//
-// Revision 1.5  2005/02/26 17:36:01  rrossmair
-// - applied Salvatore Besso's fix for truncation of Add button when using large fonts.
-// - some cleaning, module header updated.
-//
 
 end.

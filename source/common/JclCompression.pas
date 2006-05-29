@@ -38,7 +38,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclCompression;
 
@@ -752,28 +751,6 @@ begin
      Result := inherited Seek(Offset, Origin);
 end;
 *)
-
-// History:
-// $Log$
-// Revision 1.9  2005/10/25 04:46:31  rrossmair
-// - fix for issue #0003276 (as provided by reporter)
-//
-// Revision 1.8  2005/03/08 08:33:15  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.7  2005/02/27 14:55:25  marquardt
-// changed overloaded constructors to constructor with default parameter (BCB friendly)
-//
-// Revision 1.6  2005/02/24 16:34:39  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.5  2005/02/24 07:36:24  marquardt
-// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
-//
-// Revision 1.4  2004/11/17 03:24:43  mthoma
-// Just noticed that I checked in the wrong version... this one is bugfixed and contains
-//  $date and $log
-//
 
 end.
 

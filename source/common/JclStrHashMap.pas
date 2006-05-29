@@ -26,7 +26,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclStrHashMap;
 
@@ -857,46 +856,6 @@ initialization
 finalization
   FreeAndNil(GlobalCaseInsensitiveTraits);
   FreeAndNil(GlobalCaseSensitiveTraits);
-
-// History:
-
-// $Log$
-// Revision 1.15  2005/08/09 10:30:21  ahuser
-// JCL.NET changes
-//
-// Revision 1.14  2005/05/05 20:08:44  ahuser
-// JCL.NET support
-//
-// Revision 1.13  2005/03/08 08:33:17  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.12  2005/02/24 16:34:40  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.11  2004/10/13 06:58:20  marquardt
-// normal style cleaning
-//
-// Revision 1.10  2004/10/12 18:29:52  rrossmair
-// cleanup
-//
-// Revision 1.9  2004/09/16 19:47:32  rrossmair
-// check-in in preparation for release 1.92
-//
-// Revision 1.8  2004/08/03 07:22:37  marquardt
-// resourcestring cleanup
-//
-// Revision 1.7  2004/07/31 06:21:01  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
-//
-// Revision 1.6  2004/07/28 18:00:51  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.5  2004/05/18 18:58:04  rrossmair
-// documentation extracted to StrHashMap.dtx
-//
-// Revision 1.4  2004/05/05 00:11:24  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
 
 end.
 

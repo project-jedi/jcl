@@ -122,38 +122,4 @@ const
 
 implementation
 
-// History:
-
-// $Log$
-// Revision 1.6  2006/01/08 17:16:56  outchy
-// Settings reworked.
-// Common window for expert configurations
-//
-// Revision 1.5  2005/12/16 23:46:24  outchy
-// Added expert stack form.
-// Added code to display call stack on expert exception.
-// Fixed package extension for D2006.
-//
-// Revision 1.4  2005/10/26 03:29:44  rrossmair
-// - improved header information, added $Date$ and $Log$
-// - improved header information, added $Date$ and Revision 1.6  2006/01/08 17:16:56  outchy
-// - improved header information, added $Date$ and Settings reworked.
-// - improved header information, added $Date$ and Common window for expert configurations
-// - improved header information, added $Date$ and
-// - improved header information, added $Date$ and Revision 1.5  2005/12/16 23:46:24  outchy
-// - improved header information, added $Date$ and Added expert stack form.
-// - improved header information, added $Date$ and Added code to display call stack on expert exception.
-// - improved header information, added $Date$ and Fixed package extension for D2006.
-// - improved header information, added $Date$ and CVS tags.
-//
-// Revision 1.3  2005/10/23 12:53:36  marquardt
-// further expert cleanup and integration, use of JclRegistry
-//
-// Revision 1.2  2005/10/22 14:24:18  marquardt
-// more expert integration and cleanup
-//
-// Revision 1.1  2005/10/21 12:24:41  marquardt
-// experts reorganized with new directory common
-//
-
 end.

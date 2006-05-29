@@ -343,14 +343,4 @@ begin
   Application.BringToFront;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.3  2005/11/22 10:23:35  ahuser
-// FileDrop support
-//
-// Revision 1.2  2005/10/27 01:44:51  rrossmair
-// - added MPL headers and CVS Log tags
-//
-
 end.

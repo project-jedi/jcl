@@ -20,7 +20,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclValidation;
 
@@ -126,15 +125,5 @@ begin
   // Accumulator content must be divisible by 11 without a remainder.
   Result := (Accumulator mod 11) = 0;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.2  2005/05/05 20:08:46  ahuser
-// JCL.NET support
-//
-// Revision 1.1  2004/08/19 00:42:02  rrossmair
-// initial check-in
-//
 
 end.

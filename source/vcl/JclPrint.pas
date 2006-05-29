@@ -26,7 +26,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclPrint;
 
@@ -1170,67 +1169,5 @@ begin
     end;
   end;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.21  2005/10/30 01:55:34  rrossmair
-// - introduce KEEP_DEPRECATED as alias for ~DROP_OBSOLETE_CODE
-//
-// Revision 1.20  2005/03/08 08:33:20  marquardt
-// overhaul of exceptions and resourcestrings, minor style cleaning
-//
-// Revision 1.19  2005/03/05 06:31:19  rrossmair
-// - allow conditional compilation for deprecated code (symbol DROP_OBSOLETE_CODE)
-//
-// Revision 1.18  2005/02/24 16:34:51  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.17  2004/11/06 02:07:05  mthoma
-// cleaning.
-//
-// Revision 1.16  2004/10/09 13:58:52  marquardt
-// style cleaning JclPrint
-// remove WinSpool related functions from JclWin32
-//
-// Revision 1.15  2004/10/09 06:17:27  marquardt
-// cleaning: DPSetDefaultPrinter reimplemented from scratch
-//
-// Revision 1.14  2004/10/08 16:45:31  marquardt
-// cleaning: DPGetDefaultPrinter reimplemented from scratch
-//
-// Revision 1.13  2004/09/16 19:47:32  rrossmair
-// check-in in preparation for release 1.92
-//
-// Revision 1.12  2004/08/02 15:30:16  marquardt
-// hunting down (rom) comments
-//
-// Revision 1.11  2004/08/02 06:34:59  marquardt
-// minor string literal improvements
-//
-// Revision 1.10  2004/07/30 07:20:25  marquardt
-// fixing TStringLists, adding BeginUpdate/EndUpdate
-//
-// Revision 1.9  2004/07/28 18:00:52  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.8  2004/06/14 13:05:20  marquardt
-// style cleaning ENDIF, Tabs
-//
-// Revision 1.7  2004/06/14 11:05:52  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/13 07:32:18  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/13 13:33:38
-// add DPSetDefaultPrinter, bugfix GetDefaultPrinterName
-//
-// Revision 1.4  2004/04/11 22:12:16  mthoma
-// Added a new function: GetDefaultPrinterName.
-//
-// Revision 1.3  2004/04/06 04:37:59
-// DPSetDefaultPrinter
-//
 
 end.

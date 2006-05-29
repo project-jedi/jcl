@@ -48,27 +48,4 @@ ALERT_jedi_inc_missing
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF ~UNIX}
 
-// History:
-
-// $Log$
-// Revision 1.5  2004/08/12 17:22:30  marquardt
-// removed XPLATFORM_RTL
-//
-// Revision 1.4  2004/08/10 00:52:06  rrossmair
-// don't allow missing jedi.inc/wrong inclusion order to happen unnoticed.
-//
-// Revision 1.3  2004/07/30 07:16:47  marquardt
-// added a tilde
-//
-// Revision 1.2  2004/07/29 07:58:21  marquardt
-// inc files updated
-//
-// Revision 1.1  2004/06/21 01:21:37  rrossmair
-// - renamed from linuxonly.inc
-// - $IFDEFed contents (to prevent from repeated inclusion)
-// - uses UNIX symbol instead of LINUX (FPC requirement)
-// - use of feature friendly symbol names
-// - header text adapted for JCL
-//
-
 {$ENDIF ~UNIXONLY_INC}

@@ -33,7 +33,6 @@
 {**************************************************************************************************}
 
 // Last modified: $Date$
-// For history see end of file
 
 unit JclAppInst;
 
@@ -572,39 +571,5 @@ initialization
 
 finalization
   FreeAndNil(AppInstances);
-
-// History:
-
-// $Log$
-// Revision 1.14  2005/12/12 21:54:10  outchy
-// HWND changed to THandle (linking problems with BCB).
-//
-// Revision 1.13  2005/02/24 16:34:52  marquardt
-// remove divider lines, add section lines (unfinished)
-//
-// Revision 1.12  2004/10/17 21:00:14  mthoma
-// cleaning
-//
-// Revision 1.11  2004/09/22 20:38:49  obones
-// Removed "const" specifiers that were triggering the well known HPP generation bug in C++ Builder
-//
-// Revision 1.10  2004/08/01 11:40:23  marquardt
-// move constructors/destructors
-//
-// Revision 1.9  2004/07/28 18:00:52  marquardt
-// various style cleanings, some minor fixes
-//
-// Revision 1.8  2004/06/16 07:30:30  marquardt
-// added tilde to all IFNDEF ENDIFs, inherited qualified
-//
-// Revision 1.7  2004/06/14 11:05:52  marquardt
-// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
-//
-// Revision 1.6  2004/05/05 07:33:49  rrossmair
-// header updated according to new policy: initial developers & contributors listed
-//
-// Revision 1.5  2004/04/06 04:55:17  
-// adapt compiler conditions, add log entry
-//
 
 end.
