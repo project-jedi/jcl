@@ -778,11 +778,14 @@ type
     FModules: TObjectList;
     FSourceModules: TObjectList;
     FSymbols: TObjectList;
+    FProcSymbols: TList;
     FValidData: Boolean;
     function GetName(const Idx: Integer): string;
     function GetNameCount: Integer;
     function GetSymbol(const Idx: Integer): TJclSymbolInfo;
     function GetSymbolCount: Integer;
+    function GetProcSymbol(const Idx: Integer): TJclProcSymbolInfo;
+    function GetProcSymbolCount: Integer;
     function GetModule(const Idx: Integer): TJclModuleInfo;
     function GetModuleCount: Integer;
     function GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
@@ -809,6 +812,8 @@ type
     property NameCount: Integer read GetNameCount;
     property Symbols[const Idx: Integer]: TJclSymbolInfo read GetSymbol;
     property SymbolCount: Integer read GetSymbolCount;
+    property ProcSymbols[const Idx: Integer]: TJclProcSymbolInfo read GetProcSymbol;
+    property ProcSymbolCount: Integer read GetProcSymbolCount;
     property Modules[const Idx: Integer]: TJclModuleInfo read GetModule;
     property ModuleCount: Integer read GetModuleCount;
     property SourceModules[const Idx: Integer]: TJclSourceModuleInfo read GetSourceModule;
@@ -1087,6 +1092,7 @@ begin
   FModules := TObjectList.Create;
   FSourceModules := TObjectList.Create;
   FSymbols := TObjectList.Create;
+  FProcSymbols := TList.Create;
   FNames.Add(nil);
   FData := ATD32Data;
   FBase := FData.Memory;
@@ -1097,6 +1103,7 @@ end;
 
 destructor TJclTD32InfoParser.Destroy;
 begin
+  FreeAndNil(FProcSymbols);
   FreeAndNil(FSymbols);
   FreeAndNil(FSourceModules);
   FreeAndNil(FModules);
@@ -1290,9 +1297,15 @@ begin
     pInfo := PSymbolInfo(DWORD(pSymbols) + Offset);
     case pInfo.SymbolType of
       SYMBOL_TYPE_LPROC32:
-        Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
+        begin
+          Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
+          FProcSymbols.Add(Symbol);
+        end;
       SYMBOL_TYPE_GPROC32:
-        Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
+        begin
+          Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
+          FProcSymbols.Add(Symbol);
+        end;
       SYMBOL_TYPE_OBJNAME:
         Symbol := TJclObjNameSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_LDATA32:
@@ -1387,6 +1400,16 @@ begin
   Result := FSymbols.Count;
 end;
 
+function TJclTD32InfoParser.GetProcSymbol(const Idx: Integer): TJclProcSymbolInfo;
+begin
+  Result := TJclProcSymbolInfo(FProcSymbols.Items[Idx]);
+end;
+
+function TJclTD32InfoParser.GetProcSymbolCount: Integer;
+begin
+  Result := FProcSymbols.Count;
+end;
+
 function TJclTD32InfoParser.FindModule(const AAddr: DWORD;
   var AMod: TJclModuleInfo): Boolean;
 var
@@ -1397,14 +1420,11 @@ begin
     with Modules[I] do
       for J := 0 to SegmentCount - 1 do
       begin
-        if AAddr >= FSegments[J].Offset then
+        if (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
         begin
-          if AAddr - FSegments[J].Offset <= Segment[J].Size then
-          begin
-            Result := True;
-            AMod := Modules[I];
-            Exit;
-          end;
+          Result := True;
+          AMod := Modules[I];
+          Exit;
         end;
       end;
   Result := False;
@@ -1420,15 +1440,15 @@ begin
     for I := 0 to SourceModuleCount - 1 do
     with SourceModules[I] do
       for J := 0 to SegmentCount - 1 do
-      with Segment[J] do
-        if (StartOffset <= AAddr) and (AAddr < EndOffset) then
-        begin
-          Result := True;
-          ASrcMod := SourceModules[I];
-          Exit;
-        end;
-  Result := False;
+        with Segment[J] do
+          if (StartOffset <= AAddr) and (AAddr < EndOffset) then
+          begin
+            Result := True;
+            ASrcMod := SourceModules[I];
+            Exit;
+          end;
   ASrcMod := nil;
+  Result := False;
 end;
 
 function TJclTD32InfoParser.FindProc(const AAddr: DWORD; var AProc: TJclProcSymbolInfo): Boolean;
@@ -1436,17 +1456,18 @@ var
   I: Integer;
 begin
   if ValidData then
-    for I := 0 to SymbolCount - 1 do
-      if Symbols[I].InheritsFrom(TJclProcSymbolInfo) then
-      with Symbols[I] as TJclProcSymbolInfo do
+    for I := 0 to ProcSymbolCount - 1 do
+    begin
+      AProc := ProcSymbols[I];
+      with AProc do
         if (Offset <= AAddr) and (AAddr < Offset + Size) then
         begin
           Result := True;
-          AProc := TJclProcSymbolInfo(Symbols[I]);
           Exit;
         end;
-  Result := False;
+    end;
   AProc := nil;
+  Result := False;
 end;
 
 class function TJclTD32InfoParser.IsTD32DebugInfoValid(
