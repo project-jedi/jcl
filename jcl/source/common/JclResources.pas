@@ -1549,6 +1549,11 @@ resourcestring
   RsBlankSearchString       = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
+  RsFormatException         = 'Format exception';
+  RsDotNetFormatNullFormat  = 'Format string is null';
+  RsArgumentIsNull          = 'Argument %d is null';
+  RsDotNetFormatArgumentNotSupported = 'Argument type of %d is not supported';
+  RsArgumentOutOfRange      = 'Argument out of range';
 
 //=== JclStructStorage =======================================================
 resourcestring
