@@ -236,7 +236,7 @@ function StrCharsCount(const S: string; Chars: TSysCharSet): Integer;
 function StrStrCount(const S, SubS: string): Integer;
 function StrCompare(const S1, S2: string): Integer;
 function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
-function StrFillChar(const C: Char; Count: Integer): string; 
+function StrFillChar(const C: Char; Count: Integer): string;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 function StrIndex(const S: string; const List: array of string): Integer;
@@ -362,6 +362,106 @@ function TryStrToFloat(const S: string; out Value: Double): Boolean; overload;
 function TryStrToFloat(const S: string; out Value: Single): Boolean; overload;
 function TryStrToCurr(const S: string; out Value: Currency): Boolean;
 {$ENDIF COMPILER5}
+
+
+{$IFDEF CLR}
+type
+  TStringBuilder = System.Text.StringBuilder;
+
+function DotNetFormat(const Fmt: string; const Args: array of System.Object): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0: System.Object): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0, Arg1: System.Object): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: System.Object): string; overload;
+
+{$ELSE}
+
+type
+  FormatException = class(Exception);
+  ArgumentException = class(Exception);
+  ArgumentNullException = class(Exception);
+  ArgumentOutOfRangeException = class(Exception);
+
+  IToString = interface
+    ['{C4ABABB4-1029-46E7-B5FA-99800F130C05}']
+    function ToString: string;
+  end;
+
+  TCharDynArray = array of Char;
+
+  // The TStringBuilder class is a Delphi implementation of the .NET
+  // System.Text.StringBuilder.
+  // It is zero based and the method that allow an TObject (Append, Insert,
+  // AppendFormat) are limited to IToString implementors.
+  TStringBuilder = class(TInterfacedObject, IToString)
+  private
+    FChars: TCharDynArray;
+    FLength: Integer;
+    FMaxCapacity: Integer;
+    FLock: TRTLCriticalSection;
+
+    function GetCapacity: Integer;
+    procedure SetCapacity(const Value: Integer);
+    function GetChars(Index: Integer): Char;
+    procedure SetChars(Index: Integer; const Value: Char);
+    procedure Set_Length(const Value: Integer);
+
+    function AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
+    function InsertPChar(Index: Integer; Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
+  public
+    constructor Create(const Value: string; Capacity: Integer = 16); overload;
+    constructor Create(Capacity: Integer = 16; MaxCapacity: Integer = MaxInt); overload;
+    constructor Create(const Value: string; StartIndex, Length, Capacity: Integer); overload;
+    destructor Destroy; override;
+
+    function Append(const Value: string): TStringBuilder; overload;
+    function Append(const Value: string; StartIndex, Length: Integer): TStringBuilder; overload;
+    function Append(Value: Boolean): TStringBuilder; overload;
+    function Append(Value: Char; RepeatCount: Integer = 1): TStringBuilder; overload;
+    function Append(const Value: array of Char): TStringBuilder; overload;
+    function Append(const Value: array of Char; StartIndex, Length: Integer): TStringBuilder; overload;
+    function Append(Value: Cardinal): TStringBuilder; overload;
+    function Append(Value: Integer): TStringBuilder; overload;
+    function Append(Value: Double): TStringBuilder; overload;
+    function Append(Value: Int64): TStringBuilder; overload;
+    function Append(Obj: TObject): TStringBuilder; overload;
+    function AppendFormat(const Fmt: string; const Args: array of const): TStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0: Variant): TStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TStringBuilder; overload;
+
+    function Insert(Index: Integer; const Value: string; Count: Integer = 1): TStringBuilder; overload;
+    function Insert(Index: Integer; Value: Boolean): TStringBuilder; overload;
+    function Insert(Index: Integer; const Value: array of Char): TStringBuilder; overload;
+    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TStringBuilder; overload;
+    function Insert(Index: Integer; Value: Cardinal): TStringBuilder; overload;
+    function Insert(Index: Integer; Value: Integer): TStringBuilder; overload;
+    function Insert(Index: Integer; Value: Double): TStringBuilder; overload;
+    function Insert(Index: Integer; Value: Int64): TStringBuilder; overload;
+    function Insert(Index: Integer; Obj: TObject): TStringBuilder; overload;
+
+    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TStringBuilder; overload;
+    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TStringBuilder; overload;
+
+    function Remove(StartIndex, Length: Integer): TStringBuilder;
+    function EnsureCapacity(Capacity: Integer): Integer;
+
+    function ToString: string;
+
+    property __Chars__[Index: Integer]: Char read GetChars write SetChars; default;
+    property Chars: TCharDynArray read FChars;
+    property Length: Integer read FLength write Set_Length;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    property MaxCapacity: Integer read FMaxCapacity;
+  end;
+
+
+// DotNetFormat() uses the .NET format style: "{argX}"
+function DotNetFormat(const Fmt: string; const Args: array of const): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0: Variant): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0, Arg1: Variant): string; overload;
+function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): string; overload;
+
+{$ENDIF CLR}
 
 // Exceptions
 type
@@ -4187,6 +4287,674 @@ begin
   Result := TextToFloat(PChar(S), Value, fvCurrency);
 end;
 {$ENDIF COMPILER5}
+
+{$IFDEF CLR}
+
+function DotNetFormat(const Fmt: string; const Args: array of System.Object): string;
+begin
+  Result := System.String.Format(Fmt, Args);
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0: System.Object): string;
+begin
+  Result := System.String.Format(Fmt, Arg0);
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0, Arg1: System.Object): string;
+begin
+  Result := System.String.Format(Fmt, Arg0, Arg1);
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: System.Object): string;
+begin
+  Result := System.String.Format(Fmt, Arg0, Arg1, Arg2);
+end;
+
+{$ELSE}
+
+const
+  BoolToStr: array[Boolean] of string[5] = ('false', 'true');
+
+type
+  TInterfacedObjectAccess = class(TInterfacedObject);
+
+procedure MoveChar(const Source; var Dest; Count: Integer);
+begin
+  if Count > 0 then
+    Move(Source, Dest, Count * SizeOf(Char));
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0: Variant): string;
+begin
+  Result := DotNetFormat(Fmt, [Arg0]);
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0, Arg1: Variant): string;
+begin
+  Result := DotNetFormat(Fmt, [Arg0, Arg1]);
+end;
+
+function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): string;
+begin
+  Result := DotNetFormat(Fmt, [Arg0, Arg1, Arg2]);
+end;
+
+function DotNetFormat(const Fmt: string; const Args: array of const): string;
+var
+  F, P: PChar;
+  Len, Capacity, Count: Integer;
+  Index, ErrorCode: Integer;
+  S: string;
+
+  procedure Grow(Count: Integer);
+  begin
+    if Len + Count > Capacity then
+    begin
+      Capacity := Capacity * 5 div 3 + Count;
+      SetLength(Result, Capacity);
+    end;
+  end;
+
+  function InheritsFrom(AClass: TClass; const ClassName: string): Boolean;
+  begin
+    Result := True;
+    while AClass <> nil do
+    begin
+      if CompareText(AClass.ClassName, ClassName) = 0 then
+        Exit;
+      AClass := AClass.ClassParent;
+    end;
+    Result := False;
+  end;
+
+  function GetStringOf(const V: TVarData; Index: Integer): string; overload;
+  begin
+    case V.VType of
+      varEmpty, varNull:
+        raise ArgumentNullException.CreateRes(@RsArgumentIsNull);
+      varSmallInt:
+        Result := IntToStr(V.VSmallInt);
+      varInteger:
+        Result := IntToStr(V.VInteger);
+      varSingle:
+        Result := FloatToStr(V.VSingle);
+      varDouble:
+        Result := FloatToStr(V.VDouble);
+      varCurrency:
+        Result := CurrToStr(V.VCurrency);
+      varDate:
+        Result := DateTimeToStr(V.VDate);
+      varOleStr:
+        Result := V.VOleStr;
+      varBoolean:
+        Result := BoolToStr[V.VBoolean <> False];
+      varShortInt:
+        Result := IntToStr(V.VShortInt);
+      varByte:    
+        Result := IntToStr(V.VByte);
+      varWord:
+        Result := IntToStr(V.VWord);
+      varLongWord:
+        Result := IntToStr(V.VLongWord);
+      varInt64:
+        Result := IntToStr(V.VInt64);
+      varString:
+        Result := string(V.VString);
+        
+      {varArray,
+      varDispatch,
+      varError,
+      varUnknown,
+      varAny,
+      varByRef:}
+    else
+      raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+    end;
+  end;
+
+  function GetStringOf(Index: Integer): string; overload;
+  var
+    V: TVarRec;
+    Intf: IToString;
+  begin
+    V := Args[Index];
+    if (V.VInteger = 0) and
+       (V.VType in [vtExtended, vtString, vtObject, vtClass, vtCurrency,
+                    vtInterface, vtInt64]) then
+      raise ArgumentNullException.CreateResFmt(@RsArgumentIsNull, [Index]);
+
+    case V.VType of
+      vtInteger:
+        Result := IntToStr(V.VInteger);
+      vtBoolean:
+        Result := BoolToStr[V.VBoolean];
+      vtChar:
+        Result := V.VChar;
+      vtExtended:
+        Result := FloatToStr(V.VExtended^);
+      vtString:
+        Result := V.VString^;
+      vtPointer:
+        Result := IntToHex(Cardinal(V.VPointer), 8);
+      vtPChar:
+        Result := V.VPChar;
+      vtObject:
+        if (V.VObject is TInterfacedObject) and V.VObject.GetInterface(IToString, Intf) then
+        begin
+          Result := Intf.ToString;
+          Pointer(Intf) := nil; // do not release the object
+          // undo the RefCount change
+          Dec(TInterfacedObjectAccess(V.VObject).FRefCount);
+        end
+        else if InheritsFrom(V.VObject.ClassType, 'TComponent') and V.VObject.GetInterface(IToString, Intf) then
+          Result := Intf.ToString
+        else
+          raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+      vtClass:
+        Result := V.VClass.ClassName;
+      vtWideChar:
+        Result := V.VWideChar;
+      vtPWideChar:
+        Result := V.VPWideChar;
+      vtAnsiString:
+        Result := string(V.VAnsiString);
+      vtCurrency:
+        Result := CurrToStr(V.VCurrency^);
+      vtVariant:
+        Result := GetStringOf(TVarData(V.VVariant^), Index);
+      vtInterface:
+        if IInterface(V.VInterface).QueryInterface(IToString, Intf) = 0 then
+          Result := IToString(Intf).ToString
+        else
+          raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+      vtWideString:
+        Result := WideString(V.VWideString);
+      vtInt64:
+        Result := IntToStr(V.VInt64^);
+    else
+      raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+    end;
+  end;
+
+begin
+  if Length(Args) = 0 then
+  begin
+    Result := Fmt;
+    Exit;
+  end;
+  Len := 0;
+  Capacity := Length(Fmt);
+  SetLength(Result, Capacity);
+  if Capacity = 0 then
+    raise ArgumentNullException.CreateRes(@RsDotNetFormatNullFormat);
+
+  P := Pointer(Fmt);
+  F := P;
+  while True do
+  begin
+    if (P[0] = #0) or (P[0] = '{') then
+    begin
+      Count := P - F;
+      Inc(P);
+      if (P[-1] <> #0) and (P[0] = '{') then
+        Inc(Count); // include '{'
+
+      if Count > 0 then
+      begin
+        Grow(Count);
+        MoveChar(F[0], Result[Len + 1], Count);
+        Inc(Len, Count);
+      end;
+
+      if P[-1] = #0 then
+        Break;
+
+      if P[0] <> '{' then
+      begin
+        F := P;
+        Inc(P);
+        while (P[0] <> #0) and (P[0] <> '}') do
+          Inc(P);
+        SetString(S, F, P - F);
+        Val(S, Index, ErrorCode);
+        if ErrorCode <> 0 then
+          raise FormatException.CreateRes(@RsFormatException);
+        if (Index < 0) or (Index > High(Args)) then
+          raise FormatException.CreateRes(@RsFormatException);
+        S := GetStringOf(Index);
+        if S <> '' then
+        begin
+          Grow(Length(S));
+          MoveChar(S[1], Result[Len + 1], Length(S));
+          Inc(Len, Length(S));
+        end;
+
+        if P[0] = #0 then
+          Break;
+      end;
+      F := P + 1;
+    end
+    else
+    if (P[0] = '}') and (P[1] = '}') then
+    begin
+      Count := P - F + 1;
+      Inc(P); // skip next '}'
+
+      Grow(Count);
+      MoveChar(F[0], Result[Len + 1], Count);
+      Inc(Len, Count);
+      F := P + 1;
+    end;
+
+    Inc(P);
+  end;
+
+  SetLength(Result, Len);
+end;
+
+{ TStringBuilder }
+
+constructor TStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
+begin
+  inherited Create;
+  InitializeCriticalSection(FLock);
+  SetLength(FChars, Capacity);
+  FMaxCapacity := MaxCapacity;
+end;
+
+destructor TStringBuilder.Destroy;
+begin
+  DeleteCriticalSection(FLock);
+  inherited Destroy;
+end;
+
+constructor TStringBuilder.Create(const Value: string; Capacity: Integer);
+begin
+  Create(Capacity);
+  Append(Value);
+end;
+
+constructor TStringBuilder.Create(const Value: string; StartIndex,
+  Length, Capacity: Integer);
+begin
+  Create(Capacity);
+  Append(Value, StartIndex + 1, Length);
+end;
+
+function TStringBuilder.ToString: string;
+begin
+  if FLength > 0 then
+    SetString(Result, PChar(@FChars[0]), FLength)
+  else
+    Result := '';
+end;
+
+function TStringBuilder.EnsureCapacity(Capacity: Integer): Integer;
+begin
+  if System.Length(FChars) < Capacity then
+    SetCapacity(Capacity);
+  Result := System.Length(FChars);
+end;
+
+procedure TStringBuilder.SetCapacity(const Value: Integer);
+begin
+  if Value <> System.Length(FChars) then
+  begin
+    SetLength(FChars, Value);
+    if Value < FLength then
+      FLength := Value;
+  end;
+end;
+
+function TStringBuilder.GetChars(Index: Integer): Char;
+begin
+  Result := FChars[Index];
+end;
+
+procedure TStringBuilder.SetChars(Index: Integer; const Value: Char);
+begin
+  FChars[Index] := Value;
+end;
+
+procedure TStringBuilder.Set_Length(const Value: Integer);
+begin
+  FLength := Value;
+end;
+
+function TStringBuilder.GetCapacity: Integer;
+begin
+  Result := System.Length(FChars);
+end;
+
+function TStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer): TStringBuilder;
+var
+  Capacity: Integer;
+  IsMultiThreaded: Boolean;
+begin
+  if (Count > 0) and (RepeatCount > 0) then
+  begin
+    IsMultiThreaded := IsMultiThread;
+    if IsMultiThreaded then
+      EnterCriticalSection(FLock);
+    try
+      repeat
+        Capacity := System.Length(FChars);
+        if Capacity + Count > MaxCapacity then
+          raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+        if Capacity < FLength + Count then
+          SetLength(FChars, Capacity * 5 div 3 + Count);
+        if Count = 1 then
+          FChars[FLength] := Value[0]
+        else
+          MoveChar(Value[0], FChars[FLength], Count);
+        Inc(FLength, Count);
+
+        Dec(RepeatCount);
+      until RepeatCount <= 0;
+    finally
+      if IsMultiThreaded then
+        LeaveCriticalSection(FLock);
+    end;
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
+  RepeatCount: Integer): TStringBuilder;
+var
+  Capacity: Integer;
+  IsMultiThreaded: Boolean;
+begin
+  if (Index < 0) or (Index > FLength) then
+    raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+
+  if Index = FLength then
+  begin
+    AppendPChar(Value, Count, RepeatCount);
+  end
+  else
+  if (Count > 0) and (RepeatCount > 0) then
+  begin
+    IsMultiThreaded := IsMultiThread;
+    if IsMultiThreaded then
+      EnterCriticalSection(FLock);
+    try
+      repeat
+        Capacity := System.Length(FChars);
+        if Capacity + Count > MaxCapacity then
+          raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+        if Capacity < FLength + Count then
+          SetLength(FChars, Capacity * 5 div 3 + Count);
+        MoveChar(FChars[Index], FChars[Index + Count], FLength - Index);
+        if Count = 1 then
+          FChars[Index] := Value[0]
+        else
+          MoveChar(Value[0], FChars[Index], Count);
+        Inc(FLength, Count);
+
+        Dec(RepeatCount);
+
+        Inc(Index, Count); // little optimization
+      until RepeatCount <= 0;
+    finally
+      if IsMultiThreaded then
+        LeaveCriticalSection(FLock);
+    end;
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Append(const Value: array of Char): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if Len > 0 then
+    AppendPChar(@Value[0], Len);
+  Result := Self;
+end;
+
+function TStringBuilder.Append(const Value: array of Char; StartIndex, Length: Integer): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if (Length > 0) and (StartIndex < Len) then
+  begin
+    if StartIndex + Length > Len then
+      Length := Len - StartIndex;
+    AppendPChar(PChar(@Value[0]) + StartIndex, Length);
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Append(Value: Char; RepeatCount: Integer = 1): TStringBuilder;
+begin
+  Result := AppendPChar(@Value, 1, RepeatCount);
+end;
+
+function TStringBuilder.Append(const Value: string): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if Len > 0 then
+    AppendPChar(Pointer(Value), Len);
+  Result := Self;
+end;
+
+function TStringBuilder.Append(const Value: string; StartIndex, Length: Integer): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if (Length > 0) and (StartIndex < Len) then
+  begin
+    if StartIndex + Length > Len then
+      Length := Len - StartIndex;
+    AppendPChar(PChar(Pointer(Value)) + StartIndex, Length);
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Append(Value: Boolean): TStringBuilder;
+begin
+  Result := Append(BoolToStr[Value]);
+end;
+
+function TStringBuilder.Append(Value: Cardinal): TStringBuilder;
+begin
+  Result := Append(IntToStr(Value));
+end;
+
+function TStringBuilder.Append(Value: Integer): TStringBuilder;
+begin
+  Result := Append(IntToStr(Value));
+end;
+
+function TStringBuilder.Append(Value: Double): TStringBuilder;
+begin
+  Result := Append(FloatToStr(Value));
+end;
+
+function TStringBuilder.Append(Value: Int64): TStringBuilder;
+begin
+  Result := Append(IntToStr(Value));
+end;
+
+function TStringBuilder.Append(Obj: TObject): TStringBuilder;
+begin
+  Result := Append(DotNetFormat('{0}', [Obj]));
+end;
+
+function TStringBuilder.AppendFormat(const Fmt: string; Arg0: Variant): TStringBuilder;
+begin
+  Result := Append(DotNetFormat(Fmt, [Arg0]));
+end;
+
+function TStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TStringBuilder;
+begin
+  Result := Append(DotNetFormat(Fmt, [Arg0, Arg1]));
+end;
+
+function TStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TStringBuilder;
+begin
+  Result := Append(DotNetFormat(Fmt, [Arg0, Arg1, Arg2]));
+end;
+
+function TStringBuilder.AppendFormat(const Fmt: string; const Args: array of const): TStringBuilder;
+begin
+  Result := Append(DotNetFormat(Fmt, Args));
+end;
+
+function TStringBuilder.Insert(Index: Integer; const Value: array of Char): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if Len > 0 then
+    InsertPChar(Index, @Value[0], Len);
+  Result := Self;
+end;
+
+function TStringBuilder.Insert(Index: Integer; const Value: string; Count: Integer): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if Len > 0 then
+    InsertPChar(Index, Pointer(Value), Len, Count);
+  Result := Self;
+end;
+
+function TStringBuilder.Insert(Index: Integer; Value: Boolean): TStringBuilder;
+begin
+  Result := Insert(Index, BoolToStr[Value]);
+end;
+
+function TStringBuilder.Insert(Index: Integer; const Value: array of Char;
+  StartIndex, Length: Integer): TStringBuilder;
+var
+  Len: Integer;
+begin
+  Len := System.Length(Value);
+  if (Length > 0) and (StartIndex < Len) then
+  begin
+    if StartIndex + Length > Len then
+      Length := Len - StartIndex;
+    InsertPChar(Index, PChar(@Value[0]) + StartIndex, Length);
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Insert(Index: Integer; Value: Double): TStringBuilder;
+begin
+  Result := Insert(Index, FloatToStr(Value));
+end;
+
+function TStringBuilder.Insert(Index: Integer; Value: Int64): TStringBuilder;
+begin
+  Result := Insert(Index, IntToStr(Value));
+end;
+
+function TStringBuilder.Insert(Index: Integer; Value: Cardinal): TStringBuilder;
+begin
+  Result := Insert(Index, IntToStr(Value));
+end;
+
+function TStringBuilder.Insert(Index, Value: Integer): TStringBuilder;
+begin
+  Result := Insert(Index, IntToStr(Value));
+end;
+
+function TStringBuilder.Insert(Index: Integer; Obj: TObject): TStringBuilder;
+begin
+  Result := Insert(Index, Format('{0}', [Obj]));
+end;
+
+function TStringBuilder.Remove(StartIndex, Length: Integer): TStringBuilder;
+begin
+  if (StartIndex < 0) or (Length < 0) or (StartIndex + Length > FLength) then
+    raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+  if Length > 0 then
+  begin
+    MoveChar(FChars[StartIndex + Length], FChars[StartIndex], Length);
+    Dec(FLength, Length);
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Replace(OldChar, NewChar: Char; StartIndex,
+  Count: Integer): TStringBuilder;
+var
+  i: Integer;
+begin
+  if Count = -1 then
+    Count := FLength;
+  if (StartIndex < 0) or (Count < 0) or (StartIndex + Count > FLength) then
+    raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+  if (Count > 0) and (OldChar <> NewChar) then
+  begin
+    for i := StartIndex to StartIndex + Length - 1 do
+      if FChars[i] = OldChar then
+        FChars[i] := NewChar;
+  end;
+  Result := Self;
+end;
+
+function TStringBuilder.Replace(OldValue, NewValue: string; StartIndex,
+  Count: Integer): TStringBuilder;
+var
+  i: Integer;
+  Offset: Integer;
+  NewLen, OldLen, Capacity: Integer;
+begin
+  if Count = -1 then
+    Count := FLength;
+  if (StartIndex < 0) or (Count < 0) or (StartIndex + Count > FLength) then
+    raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+  if OldValue = '' then
+    raise ArgumentException.CreateResFmt(@RsArgumentIsNull, [0]);
+
+  if (Count > 0) and (OldValue <> NewValue) then
+  begin
+    OldLen := System.Length(OldValue);
+    NewLen := System.Length(NewValue);
+    Offset := NewLen - OldLen;
+    Capacity := System.Length(FChars);
+    for i := StartIndex to StartIndex + Length - 1 do
+      if FChars[i] = OldValue[1] then
+      begin
+        if OldLen > 1 then
+          if StrLComp(@FChars[i + 1], PChar(OldValue) + 1, OldLen - 1) <> 0 then
+            Continue;
+        if Offset <> 0 then
+        begin
+          if FLength - OldLen + NewLen > MaxCurrency then
+            raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+          if Capacity < FLength + Offset then
+          begin
+            Capacity := Capacity * 5 div 3 + Offset;
+            SetLength(FChars, Capacity);
+          end;
+          if Offset < 0 then
+            MoveChar(FChars[i - Offset], FChars[i], FLength - i)
+          else
+            MoveChar(FChars[i + OldLen], FChars[i + OldLen + Offset], FLength - OldLen - i);
+          Inc(FLength, Offset);
+        end;
+        if NewLen > 0 then
+        begin
+          if (OldLen = 1) and (NewLen = 1) then
+            FChars[i] := NewValue[1]
+          else
+            MoveChar(NewValue[1], FChars[i], NewLen);
+        end;
+      end;
+  end;
+  Result := Self;
+end;
+{$ENDIF CLR}
 
 
 {$IFNDEF CLR}
