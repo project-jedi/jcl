@@ -4314,6 +4314,14 @@ end;
 
 const
   BoolToStr: array[Boolean] of string[5] = ('false', 'true');
+{$IFDEF COMPILER5}
+  MaxCurrency: Currency =  922337203685477.5807;
+
+  varShortInt = $0010; { vt_i1     16 }
+  varWord     = $0012; { vt_ui2    18 }
+  varLongWord = $0013; { vt_ui4    19 }
+  varInt64    = $0014; { vt_i8     20 }
+{$ENDIF COMPILER5}
 
 type
   TInterfacedObjectAccess = class(TInterfacedObject);
@@ -4388,16 +4396,25 @@ var
         Result := V.VOleStr;
       varBoolean:
         Result := BoolToStr[V.VBoolean <> False];
-      varShortInt:
-        Result := IntToStr(V.VShortInt);
-      varByte:    
+      varByte:
         Result := IntToStr(V.VByte);
+      {$IFDEF COMPILER5}
+      varWord:
+        Result := IntToStr(Word(V.VSmallint));
+      varShortInt:
+        Result := IntToStr(ShortInt(V.VByte));
+      varLongWord:
+        Result := IntToStr(V.VError);
+      {$ELSE}
       varWord:
         Result := IntToStr(V.VWord);
+      varShortInt:
+        Result := IntToStr(V.VShortInt);
       varLongWord:
         Result := IntToStr(V.VLongWord);
       varInt64:
         Result := IntToStr(V.VInt64);
+      {$ENDIF COMPILER5}
       varString:
         Result := string(V.VString);
         
