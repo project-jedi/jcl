@@ -404,6 +404,16 @@ type
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
+  TJclDebugInfoSymbols = class(TJclDebugInfoSource)
+  public
+    class function LoadDebugFunctions: Boolean;
+    class function UnloadDebugFunctions: Boolean;
+    class function InitializeDebugSymbols: Boolean;
+    class function CleanupDebugSymbols: Boolean;
+    function InitializeSource: Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+  end;
+
 // Source location functions
 function Caller(Level: Integer = 0; FastStackWalk: Boolean = False): Pointer;
 
@@ -715,13 +725,18 @@ function IsHandleValid(Handle: THandle): Boolean;
 {$EXTERNALSYM __LINE__}
 {$ENDIF SUPPORTS_EXTSYM}
 
+const
+  EnvironmentVarNtSymbolPath = '_NT_SYMBOL_PATH';                    // do not localize
+  EnvironmentVarAlternateNtSymbolPath = '_NT_ALTERNATE_SYMBOL_PATH'; // do not localize
+
 implementation
 
 uses
+  ImageHlp,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils;
+  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
 
 //=== Helper assembler routines ==============================================
 
@@ -2502,6 +2517,9 @@ begin
     {$IFNDEF DEBUG_NO_EXPORTS}
     InfoSourceClassList.Add(Pointer(TJclDebugInfoExports));
     {$ENDIF !DEBUG_NO_EXPORTS}
+    {$IFNDEF DEBUG_NO_SYMBOLS}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoSymbols));
+    {$ENDIF !DEBUG_NO_SYMBOLS}
   end;
 end;
 
@@ -2734,6 +2752,226 @@ begin
   except
     Result := False;
   end;
+end;
+
+//=== { TJclDebugInfoSymbols } ===============================================
+
+type
+  TSymInitializeFunc = function (hProcess: THandle; UserSearchPath: LPSTR;
+    fInvadeProcess: Bool): Bool; stdcall;
+  TSymGetOptionsFunc = function: DWORD; stdcall;
+  TSymSetOptionsFunc = function (SymOptions: DWORD): DWORD; stdcall;
+  TSymCleanupFunc = function (hProcess: THandle): Bool; stdcall;
+  TSymGetSymFromAddrFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Symbol: TImagehlpSymbol): Bool; stdcall;
+  TSymGetModuleInfoFunc = function (hProcess: THandle; dwAddr: DWORD;
+    var ModuleInfo: TImagehlpModule): Bool; stdcall;
+  TSymLoadModuleFunc = function (hProcess: THandle; hFile: THandle; ImageName,
+    ModuleName: LPSTR; BaseOfDll, SizeOfDll: DWORD): Bool; stdcall;
+  TSymGetLineFromAddrFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Line: TImageHlpLine): Bool; stdcall;
+
+var
+  DebugSymbolsInitialized: Boolean = False;
+  DebugSymbolsLoadFailed: Boolean = False;
+  ImageHlpDllHandle: THandle = 0;
+  SymInitializeFunc: TSymInitializeFunc = nil;
+  SymGetOptionsFunc: TSymGetOptionsFunc = nil;
+  SymSetOptionsFunc: TSymSetOptionsFunc = nil;
+  SymCleanupFunc: TSymCleanupFunc = nil;
+  SymGetSymFromAddrFunc: TSymGetSymFromAddrFunc = nil;
+  SymGetModuleInfoFunc: TSymGetModuleInfoFunc = nil;
+  SymLoadModuleFunc: TSymLoadModuleFunc = nil;
+  SymGetLineFromAddrFunc: TSymGetLineFromAddrFunc = nil;
+
+const
+  ImageHlpDllName = 'imagehlp.dll';                   // do not localize
+  SymInitializeFuncName = 'SymInitialize';            // do not localize
+  SymGetOptionsFuncName = 'SymGetOptions';            // do not localize
+  SymSetOptionsFuncName = 'SymSetOptions';            // do not localize
+  SymCleanupFuncName = 'SymCleanup';                  // do not localize
+  SymGetSymFromAddrFuncName = 'SymGetSymFromAddr';    // do not localize
+  SymGetModuleInfoFuncName = 'SymGetModuleInfo';      // do not localize
+  SymLoadModuleFuncName = 'SymLoadModule';            // do not localize
+  SymGetLineFromAddrName = 'SymGetLineFromAddr';      // do not localize 
+
+class function TJclDebugInfoSymbols.InitializeDebugSymbols: Boolean;
+var
+  EnvironmentVarValue, SearchPath: string;
+  SymOptions: Cardinal;
+begin
+  if DebugSymbolsLoadFailed then
+    Result := False
+  else if not DebugSymbolsInitialized then
+  begin
+    DebugSymbolsLoadFailed := LoadDebugFunctions;
+
+    Result := not DebugSymbolsLoadFailed;
+
+    if Result then
+    begin
+      SearchPath := StrEnsureSuffix(DirSeparator, ExtractFilePath(GetModulePath(GetCurrentProcess)) + GetCurrentFolder);
+      if GetEnvironmentVar(EnvironmentVarNtSymbolPath, EnvironmentVarValue) then
+        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue);
+      if GetEnvironmentVar(EnvironmentVarAlternateNtSymbolPath, EnvironmentVarValue) then
+        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue);
+
+      if IsWinNT then
+        Result := SymInitializeFunc(GetCurrentProcess, PChar(SearchPath), False)
+      else
+        Result := SymInitializeFunc(GetCurrentProcessId, PChar(SearchPath), False);
+      if Result then
+      begin
+        SymOptions := SymGetOptionsFunc or SYMOPT_DEFERRED_LOADS
+          or SYMOPT_FAIL_CRITICAL_ERRORS or SYMOPT_INCLUDE_32BIT_MODULES or SYMOPT_LOAD_LINES;
+        SymOptions := SymOptions and (not (SYMOPT_NO_UNQUALIFIED_LOADS or SYMOPT_UNDNAME));
+        SymSetOptionsFunc(SymOptions);
+      end;
+
+      DebugSymbolsInitialized := Result;
+    end
+    else
+      UnloadDebugFunctions;
+  end
+  else
+    Result := DebugSymbolsInitialized;
+end;
+
+class function TJclDebugInfoSymbols.CleanupDebugSymbols: Boolean;
+begin
+  Result := True;
+  
+  if DebugSymbolsInitialized then
+    Result := SymCleanupFunc(GetCurrentProcess);
+
+  UnloadDebugFunctions;
+end;
+
+function TJclDebugInfoSymbols.GetLocationInfo(const Addr: Pointer;
+  var Info: TJclLocationInfo): Boolean;
+const
+  SymbolNameLength = 1000;
+  SymbolSize = SizeOf(TImagehlpSymbol) + SymbolNameLength;
+  UndecoratedLength = 100;
+var
+  Displacement: DWORD;
+  Symbol: PImagehlpSymbol;
+  SymbolName: PChar;
+  ProcessHandle: THandle;
+  UndecoratedName: array [0..UndecoratedLength] of Char;
+  Line: TImageHlpLine;
+begin
+  GetMem(Symbol, SymbolSize);
+  try
+    ProcessHandle := GetCurrentProcess;
+    
+    ZeroMemory(Symbol, SymbolSize);
+    Symbol^.SizeOfStruct := SizeOf(TImageHlpSymbol);
+    Symbol^.MaxNameLength := SymbolNameLength;
+    Displacement := 0;
+
+    Result := SymGetSymFromAddrFunc(ProcessHandle, DWORD(Addr), @Displacement, Symbol^);
+
+    if Result then
+    begin
+      Info.DebugInfo := Self;
+      Info.Address := Addr;
+      Info.BinaryFileName := FileName;
+      Info.OffsetFromProcName := Displacement;
+      SymbolName := Symbol^.Name;
+      SetString(Info.ProcedureName, UndecoratedName, UnDecorateSymbolName(SymbolName, UndecoratedName, UndecoratedLength, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS));
+    end;
+  finally
+    FreeMem(Symbol);
+  end;
+
+  // line number is optional
+  if Result and Assigned(SymGetLineFromAddrFunc) then
+  begin
+    ZeroMemory(@Line, SizeOf(Line));
+    Line.SizeOfStruct := SizeOf(Line);
+    Displacement := 0;
+
+    if SymGetLineFromAddrFunc(ProcessHandle, DWORD(Addr), @Displacement, Line) then
+    begin
+      Info.LineNumber := Line.LineNumber;
+      Info.UnitName := Line.FileName;
+      Info.OffsetFromLineNumber := Displacement;
+    end;
+  end;
+end;
+
+function TJclDebugInfoSymbols.InitializeSource: Boolean;
+var
+  ModuleFileName: string;
+  ModuleInfo: TImagehlpModule;
+  ProcessHandle: THandle;
+begin
+  Result := InitializeDebugSymbols;
+
+  if Result then
+  begin
+    ProcessHandle := GetCurrentProcess;
+
+    ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
+    ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
+
+    if Result
+      and ((not SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo))
+           or (ModuleInfo.BaseOfImage = 0)) then
+    begin
+      ModuleFileName := GetModulePath(Module);
+      Result := (DWORD(SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, 0, 0)) <> 0);
+
+      ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
+      ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
+      Result := Result and SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo);
+    end;
+
+    Result := Result and (ModuleInfo.SymType <> SymNone);
+  end;
+end;
+
+class function TJclDebugInfoSymbols.LoadDebugFunctions: Boolean;
+begin
+  ImageHlpDllHandle := LoadLibrary(ImageHlpDllName);
+
+  if ImageHlpDllHandle <> 0 then
+  begin
+    SymInitializeFunc := GetProcAddress(ImageHlpDllHandle, SymInitializeFuncName);
+    SymGetOptionsFunc := GetProcAddress(ImageHlpDllHandle, SymGetOptionsFuncName);
+    SymSetOptionsFunc := GetProcAddress(ImageHlpDllHandle, SymSetOptionsFuncName);
+    SymCleanupFunc := GetProcAddress(ImageHlpDllHandle, SymCleanupFuncName);
+    SymGetSymFromAddrFunc := GetProcAddress(ImageHlpDllHandle, SymGetSymFromAddrFuncName);
+    SymGetModuleInfoFunc := GetProcAddress(ImageHlpDllHandle, SymGetModuleInfoFuncName);
+    SymLoadModuleFunc := GetProcAddress(ImageHlpDllHandle, SymLoadModuleFuncName);
+    SymGetLineFromAddrFunc := GetProcAddress(ImageHlpDllHandle, SymGetLineFromAddrName);
+  end;
+
+  // SymGetLineFromAddrFunc is optional
+  Result := (ImageHlpDllHandle = 0) or (not Assigned(SymInitializeFunc))
+    or (not Assigned(SymGetOptionsFunc)) or (not Assigned(SymSetOptionsFunc))
+    or (not Assigned(SymCleanupFunc)) or (not Assigned(SymGetSymFromAddrFunc))
+    or (not Assigned(SymGetModuleInfoFunc)) or (not Assigned(SymLoadModuleFunc));
+end;
+
+class function TJclDebugInfoSymbols.UnloadDebugFunctions: Boolean;
+begin
+  Result := ImageHlpDllHandle <> 0;
+
+  if Result then
+    FreeLibrary(ImageHlpDllHandle);
+
+  ImageHlpDllHandle := 0;
+
+  SymInitializeFunc := nil;
+  SymGetOptionsFunc := nil;
+  SymSetOptionsFunc := nil;
+  SymCleanupFunc := nil;
+  SymGetSymFromAddrFunc := nil;
+  SymGetModuleInfoFunc := nil;
+  SymLoadModuleFunc := nil;
+  SymGetLineFromAddrFunc := nil;
 end;
 
 //=== Source location functions ==============================================
@@ -4223,11 +4461,14 @@ finalization
     the code without a real need. Although there doesn't seem to be a way to unhook exceptions
     safely because we need to be covered by JclHookExcept.Notifiers critical section }
   JclStopExceptionTracking;
+
   FreeAndNil(RegisteredThreadList);
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
   FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
   FreeAndNil(InfoSourceClassList);
+
+  TJclDebugInfoSymbols.CleanupDebugSymbols;
 
 end.

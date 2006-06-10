@@ -33,6 +33,7 @@
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -3221,6 +3222,23 @@ function UnDecorateSymbolName(DecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{
   UnDecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF}; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
   {$IFDEF CLR}external 'imagehlp.dll' name 'UnDecorateSymbolName';{$ENDIF}
 {$EXTERNALSYM UnDecorateSymbolName}
+
+// line 1342
+
+type
+  _IMAGEHLP_LINE = packed record
+    SizeOfStruct: DWORD;           // set to sizeof(IMAGEHLP_LINE)
+    Key: Pointer;                  // internal
+    LineNumber: DWORD;             // line number in file
+    FileName: PChar;               // full filename
+    Address: DWORD;                // first instruction of line
+  end;
+
+  IMAGEHLP_LINE = _IMAGEHLP_LINE;
+  PIMAGEHLP_LINE = ^_IMAGEHLP_LINE;
+
+  TImageHlpLine = _IMAGEHLP_LINE;
+  PImageHlpLine = PIMAGEHLP_LINE;
 
 // line 1475
 
