@@ -29,6 +29,7 @@
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
