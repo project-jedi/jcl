@@ -2812,9 +2812,9 @@ begin
     begin
       SearchPath := StrEnsureSuffix(DirSeparator, ExtractFilePath(GetModulePath(GetCurrentProcess)) + GetCurrentFolder);
       if GetEnvironmentVar(EnvironmentVarNtSymbolPath, EnvironmentVarValue) then
-        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue);
+        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath;
       if GetEnvironmentVar(EnvironmentVarAlternateNtSymbolPath, EnvironmentVarValue) then
-        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue);
+        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath;
 
       if IsWinNT then
         Result := SymInitializeFunc(GetCurrentProcess, PChar(SearchPath), False)
