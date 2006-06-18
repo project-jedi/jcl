@@ -2382,19 +2382,23 @@ var
   Value, Name: Integer;
   StartAddr, ModuleStartAddr, ItemAddr: DWORD;
   P: Pointer;
+  Found: Boolean;
 begin
   ModuleStartAddr := ModuleStartFromAddr(Addr);
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.SourceNames);
   Name := 0;
   StartAddr := 0;
   ItemAddr := 0;
+  Found := False;
   while ReadValue(P, Value) do
   begin
     Inc(StartAddr, Value);
     if Addr < StartAddr then
     begin
       if ItemAddr < ModuleStartAddr then
-        Name := 0;
+        Name := 0
+      else
+        Found := True;
       Break;
     end
     else
@@ -2404,7 +2408,10 @@ begin
       Inc(Name, Value);
     end;
   end;
-  Result := DataToStr(Name);
+  if Found then
+    Result := DataToStr(Name)
+  else
+    Result := '';
 end;
 
 //=== { TJclDebugInfoSource } ================================================
