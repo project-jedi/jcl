@@ -3140,9 +3140,19 @@ end;
 
 // Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
 // setting 8087CW in the intialization section
-function glGetString(name: Cardinal): PChar; stdcall; external opengl32; 
+{
+function glGetString(name: Cardinal): PChar; stdcall; external opengl32;
 function glGetError: Cardinal; stdcall; external opengl32;
 function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
+}
+var
+  glGetString: function(name: Cardinal): PChar; stdcall;
+  glGetError: function: Cardinal; stdcall;
+  gluErrorString: function(errCode: Cardinal): PChar; stdcall;
+
+  wglCreateContext: function(DC: HDC): HGLRC; stdcall;
+  wglDeleteContext: function(p1: HGLRC): BOOL; stdcall;
+  wglMakeCurrent: function(DC: HDC; p2: HGLRC): BOOL; stdcall;
 
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 const
@@ -3159,6 +3169,7 @@ var
   bError: Boolean;
   sOpenGLVersion, sOpenGLVendor: string;
   Save8087CW: Word;
+  OpenGlLib, Glu32Lib: HModule;
 
   procedure FunctionFailedError(Name: string);
   begin
@@ -3166,6 +3177,35 @@ var
   end;
 
 begin
+  if not Assigned(glGetString) then
+  begin
+    OpenGlLib := SafeLoadLibrary(opengl32);
+    if OpenGlLib <> 0 then
+    begin
+      Glu32Lib := SafeLoadLibrary('glu32.dll');
+      if (OpenGlLib <> 0) and (Glu32Lib <> 0) then
+      begin
+        glGetString := GetProcAddress(OpenGlLib, 'glGetString');
+        glGetError := GetProcAddress(OpenGlLib, 'glGetError');
+        gluErrorString := GetProcAddress(Glu32Lib, 'gluErrorString');
+        
+        wglCreateContext := GetProcAddress(OpenGlLib, 'wglCreateContext');
+        wglDeleteContext := GetProcAddress(OpenGlLib, 'wglDeleteContext');
+        wglMakeCurrent := GetProcAddress(OpenGlLib, 'wglMakeCurrent');
+      end;
+    end;
+    if not (Assigned(glGetString) and Assigned(glGetError) and Assigned(gluErrorString) and
+            Assigned(wglCreateContext) and Assigned(wglDeleteContext) and Assigned(wglMakeCurrent)) then
+    begin
+      @glGetString := nil;
+      Result := False;
+      Vendor := RsOpenGLInfoError;
+      Version := RsOpenGLInfoError;
+      Exit;
+    end;
+  end;
+
+
   { To call for the version information string we must first have an active
     context established for use.  We can, of course, close this after use }
   Save8087CW := Get8087ControlWord;
