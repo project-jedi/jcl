@@ -3145,14 +3145,35 @@ function glGetString(name: Cardinal): PChar; stdcall; external opengl32;
 function glGetError: Cardinal; stdcall; external opengl32;
 function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
 }
-var
-  glGetString: function(name: Cardinal): PChar; stdcall;
-  glGetError: function: Cardinal; stdcall;
-  gluErrorString: function(errCode: Cardinal): PChar; stdcall;
 
-  wglCreateContext: function(DC: HDC): HGLRC; stdcall;
-  wglDeleteContext: function(p1: HGLRC): BOOL; stdcall;
-  wglMakeCurrent: function(DC: HDC; p2: HGLRC): BOOL; stdcall;
+type
+  TglGetStringFunc = function(name: Cardinal): PChar; stdcall;
+  TglGetErrorFunc = function: Cardinal; stdcall;
+  TgluErrorStringFunc = function(errCode: Cardinal): PChar; stdcall;
+
+  TwglCreateContextFunc = function(DC: HDC): HGLRC; stdcall;
+  TwglDeleteContextFunc = function(p1: HGLRC): BOOL; stdcall;
+  TwglMakeCurrentFunc = function(DC: HDC; p2: HGLRC): BOOL; stdcall;
+
+var
+  glGetStringFunc: TglGetStringFunc = nil;
+  glGetErrorFunc: TglGetErrorFunc = nil;
+  gluErrorStringFunc: TgluErrorStringFunc = nil;
+
+  wglCreateContextFunc: TwglCreateContextFunc = nil;
+  wglDeleteContextFunc: TwglDeleteContextFunc = nil;
+  wglMakeCurrentFunc: TwglMakeCurrentFunc = nil;
+
+const
+  glu32 = 'glu32.dll'; // do not localize
+  glGetStringName = 'glGetString'; // do not localize
+  glGetErrorName = 'glGetError'; // do not localize
+  gluErrorStringName = 'gluErrorString'; // do not localize
+  wglCreateContextName = 'wglCreateContext'; // do not localize
+  wglDeleteContextName = 'wglDeleteContext'; // do not localize
+  wglMakeCurrentName = 'wglMakeCurrent'; // do not localize
+  ChoosePixelFormatName = 'ChoosePixelFormat'; // do not localize
+  SetPixelFormatName = 'SetPixelFormat'; // do not localize
 
 function GetOpenGLVersion(const Win: THandle; out Version, Vendor: AnsiString): Boolean;
 const
@@ -3177,27 +3198,27 @@ var
   end;
 
 begin
-  if not Assigned(glGetString) then
+  if not Assigned(glGetStringFunc) then
   begin
     OpenGlLib := SafeLoadLibrary(opengl32);
     if OpenGlLib <> 0 then
     begin
-      Glu32Lib := SafeLoadLibrary('glu32.dll');
+      Glu32Lib := SafeLoadLibrary(glu32); // do not localize
       if (OpenGlLib <> 0) and (Glu32Lib <> 0) then
       begin
-        glGetString := GetProcAddress(OpenGlLib, 'glGetString');
-        glGetError := GetProcAddress(OpenGlLib, 'glGetError');
-        gluErrorString := GetProcAddress(Glu32Lib, 'gluErrorString');
-        
-        wglCreateContext := GetProcAddress(OpenGlLib, 'wglCreateContext');
-        wglDeleteContext := GetProcAddress(OpenGlLib, 'wglDeleteContext');
-        wglMakeCurrent := GetProcAddress(OpenGlLib, 'wglMakeCurrent');
+        glGetStringFunc := GetProcAddress(OpenGlLib, glGetStringName);
+        glGetErrorFunc := GetProcAddress(OpenGlLib, glGetErrorName);
+        gluErrorStringFunc := GetProcAddress(Glu32Lib, gluErrorStringName);
+
+        wglCreateContextFunc := GetProcAddress(OpenGlLib, wglCreateContextName);
+        wglDeleteContextFunc := GetProcAddress(OpenGlLib, wglDeleteContextName);
+        wglMakeCurrentFunc := GetProcAddress(OpenGlLib, wglMakeCurrentName);
       end;
     end;
-    if not (Assigned(glGetString) and Assigned(glGetError) and Assigned(gluErrorString) and
-            Assigned(wglCreateContext) and Assigned(wglDeleteContext) and Assigned(wglMakeCurrent)) then
+    if not (Assigned(glGetStringFunc) and Assigned(glGetErrorFunc) and Assigned(gluErrorStringFunc) and
+            Assigned(wglCreateContextFunc) and Assigned(wglDeleteContextFunc) and Assigned(wglMakeCurrentFunc)) then
     begin
-      @glGetString := nil;
+      @glGetStringFunc := nil;
       Result := False;
       Vendor := RsOpenGLInfoError;
       Version := RsOpenGLInfoError;
@@ -3239,21 +3260,21 @@ begin
     try
       iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
       if iFormatIndex = 0 then
-        FunctionFailedError('ChoosePixelFormat');
+        FunctionFailedError(ChoosePixelFormatName);
 
       if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
-        FunctionFailedError('SetPixelFormat');
+        FunctionFailedError(SetPixelFormatName);
 
-      hGLContext := wglCreateContext(hGLDC);
+      hGLContext := wglCreateContextFunc(hGLDC);
       if hGLContext = 0 then
-        FunctionFailedError('wglCreateContext');
+        FunctionFailedError(wglCreateContextName);
 
-      if not wglMakeCurrent(hGLDC, hGLContext) then
-        FunctionFailedError('wglMakeCurrent');
+      if not wglMakeCurrentFunc(hGLDC, hGLContext) then
+        FunctionFailedError(wglMakeCurrentName);
 
       { TODO : Review the following.  Not sure I am 100% happy with this code
                in its current structure. }
-      pcTemp := glGetString(GL_VERSION);
+      pcTemp := glGetStringFunc(GL_VERSION);
       if pcTemp <> nil then
       begin
         { TODO : Store this information in a Global Variable, and return that??
@@ -3263,15 +3284,15 @@ begin
       else
       begin
         bError := True;
-        glErr := glGetError;
+        glErr := glGetErrorFunc;
         if glErr <> GL_NO_ERROR then
         begin
-          sOpenGLVersion := gluErrorString(glErr);
+          sOpenGLVersion := gluErrorStringFunc(glErr);
           sOpenGLVendor := '';
         end;
       end;
 
-      pcTemp := glGetString(GL_VENDOR);
+      pcTemp := glGetStringFunc(GL_VENDOR);
       if pcTemp <> nil then
       begin
         { TODO : Store this information in a Global Variable, and return that??
@@ -3281,10 +3302,10 @@ begin
       else
       begin
         bError := True;
-        glErr := glGetError;
+        glErr := glGetErrorFunc;
         if glErr <> GL_NO_ERROR then
         begin
-          sOpenGLVendor := gluErrorString(glErr);
+          sOpenGLVendor := gluErrorStringFunc(glErr);
           Exit;
         end;
       end;
@@ -3294,9 +3315,9 @@ begin
       Vendor := sOpenGLVendor;
     finally
       { Close all resources }
-      wglMakeCurrent(hGLDC, 0);
+      wglMakeCurrentFunc(hGLDC, 0);
       if hGLContext <> 0 then
-        wglDeleteContext(hGLContext);
+        wglDeleteContextFunc(hGLContext);
     end;
   finally
     Set8087CW(Save8087CW);
