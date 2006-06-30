@@ -3155,15 +3155,6 @@ type
   TwglDeleteContextFunc = function(p1: HGLRC): BOOL; stdcall;
   TwglMakeCurrentFunc = function(DC: HDC; p2: HGLRC): BOOL; stdcall;
 
-var
-  glGetStringFunc: TglGetStringFunc = nil;
-  glGetErrorFunc: TglGetErrorFunc = nil;
-  gluErrorStringFunc: TgluErrorStringFunc = nil;
-
-  wglCreateContextFunc: TwglCreateContextFunc = nil;
-  wglDeleteContextFunc: TwglDeleteContextFunc = nil;
-  wglMakeCurrentFunc: TwglMakeCurrentFunc = nil;
-
 const
   glu32 = 'glu32.dll'; // do not localize
   glGetStringName = 'glGetString'; // do not localize
@@ -3181,6 +3172,16 @@ const
   GL_VENDOR   = $1F00;
   GL_VERSION  = $1F02;
 var
+  OpenGlLib, Glu32Lib: HModule;
+
+  glGetStringFunc: TglGetStringFunc;
+  glGetErrorFunc: TglGetErrorFunc;
+  gluErrorStringFunc: TgluErrorStringFunc;
+
+  wglCreateContextFunc: TwglCreateContextFunc;
+  wglDeleteContextFunc: TwglDeleteContextFunc;
+  wglMakeCurrentFunc: TwglMakeCurrentFunc;
+
   pfd: TPixelFormatDescriptor;
   iFormatIndex: Integer;
   hGLContext: HGLRC;
@@ -3190,7 +3191,6 @@ var
   bError: Boolean;
   sOpenGLVersion, sOpenGLVendor: string;
   Save8087CW: Word;
-  OpenGlLib, Glu32Lib: HModule;
 
   procedure FunctionFailedError(Name: string);
   begin
@@ -3198,9 +3198,17 @@ var
   end;
 
 begin
-  if not Assigned(glGetStringFunc) then
-  begin
-    OpenGlLib := SafeLoadLibrary(opengl32);
+  @glGetStringFunc := nil;
+  @glGetErrorFunc := nil;
+  @gluErrorStringFunc := nil;
+
+  @wglCreateContextFunc := nil;
+  @wglDeleteContextFunc := nil;
+  @wglMakeCurrentFunc := nil;
+
+  Glu32Lib := 0;
+  OpenGlLib := SafeLoadLibrary(opengl32);
+  try
     if OpenGlLib <> 0 then
     begin
       Glu32Lib := SafeLoadLibrary(glu32); // do not localize
@@ -3215,6 +3223,7 @@ begin
         wglMakeCurrentFunc := GetProcAddress(OpenGlLib, wglMakeCurrentName);
       end;
     end;
+
     if not (Assigned(glGetStringFunc) and Assigned(glGetErrorFunc) and Assigned(gluErrorStringFunc) and
             Assigned(wglCreateContextFunc) and Assigned(wglDeleteContextFunc) and Assigned(wglMakeCurrentFunc)) then
     begin
@@ -3224,103 +3233,107 @@ begin
       Version := RsOpenGLInfoError;
       Exit;
     end;
-  end;
 
-
-  { To call for the version information string we must first have an active
-    context established for use.  We can, of course, close this after use }
-  Save8087CW := Get8087ControlWord;
-  try
-    Set8087CW($133F);
-    hGLContext := 0;
-    Result := False;
-    bError := False;
-
-    if Win = 0 then
-    begin
-      Result := False;
-      Vendor := RsOpenGLInfoError;
-      Version := RsOpenGLInfoError;
-      Exit;
-    end;
-
-    FillChar(pfd, SizeOf(pfd), 0);
-    with pfd do
-    begin
-      nSize := SizeOf(pfd);
-      nVersion := 1;  { The Current Version of the descriptor is 1 }
-      dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
-      iPixelType := PFD_TYPE_RGBA;
-      cColorBits := 24;  { support 24-bit colour }
-      cDepthBits := 32;  { Depth of the z-buffer }
-      iLayerType := PFD_MAIN_PLANE;
-    end;
-
-    hGLDC := GetDC(Win);
+    { To call for the version information string we must first have an active
+      context established for use.  We can, of course, close this after use }
+    Save8087CW := Get8087ControlWord;
     try
-      iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
-      if iFormatIndex = 0 then
-        FunctionFailedError(ChoosePixelFormatName);
+      Set8087CW($133F);
+      hGLContext := 0;
+      Result := False;
+      bError := False;
 
-      if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
-        FunctionFailedError(SetPixelFormatName);
-
-      hGLContext := wglCreateContextFunc(hGLDC);
-      if hGLContext = 0 then
-        FunctionFailedError(wglCreateContextName);
-
-      if not wglMakeCurrentFunc(hGLDC, hGLContext) then
-        FunctionFailedError(wglMakeCurrentName);
-
-      { TODO : Review the following.  Not sure I am 100% happy with this code
-               in its current structure. }
-      pcTemp := glGetStringFunc(GL_VERSION);
-      if pcTemp <> nil then
+      if Win = 0 then
       begin
-        { TODO : Store this information in a Global Variable, and return that??
-                 This would save this work being performed again with later calls }
-        sOpenGLVersion := StrPas(pcTemp);
-      end
-      else
-      begin
-        bError := True;
-        glErr := glGetErrorFunc;
-        if glErr <> GL_NO_ERROR then
-        begin
-          sOpenGLVersion := gluErrorStringFunc(glErr);
-          sOpenGLVendor := '';
-        end;
+        Result := False;
+        Vendor := RsOpenGLInfoError;
+        Version := RsOpenGLInfoError;
+        Exit;
       end;
 
-      pcTemp := glGetStringFunc(GL_VENDOR);
-      if pcTemp <> nil then
+      FillChar(pfd, SizeOf(pfd), 0);
+      with pfd do
       begin
-        { TODO : Store this information in a Global Variable, and return that??
-                 This would save this work being performed again with later calls }
-        sOpenGLVendor := StrPas(pcTemp);
-      end
-      else
-      begin
-        bError := True;
-        glErr := glGetErrorFunc;
-        if glErr <> GL_NO_ERROR then
-        begin
-          sOpenGLVendor := gluErrorStringFunc(glErr);
-          Exit;
-        end;
+        nSize := SizeOf(pfd);
+        nVersion := 1;  { The Current Version of the descriptor is 1 }
+        dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
+        iPixelType := PFD_TYPE_RGBA;
+        cColorBits := 24;  { support 24-bit colour }
+        cDepthBits := 32;  { Depth of the z-buffer }
+        iLayerType := PFD_MAIN_PLANE;
       end;
 
-      Result := (not bError);
-      Version := sOpenGLVersion;
-      Vendor := sOpenGLVendor;
+      hGLDC := GetDC(Win);
+      try
+        iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
+        if iFormatIndex = 0 then
+          FunctionFailedError(ChoosePixelFormatName);
+
+        if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
+          FunctionFailedError(SetPixelFormatName);
+
+        hGLContext := wglCreateContextFunc(hGLDC);
+        if hGLContext = 0 then
+          FunctionFailedError(wglCreateContextName);
+
+        if not wglMakeCurrentFunc(hGLDC, hGLContext) then
+          FunctionFailedError(wglMakeCurrentName);
+
+        { TODO : Review the following.  Not sure I am 100% happy with this code
+                 in its current structure. }
+        pcTemp := glGetStringFunc(GL_VERSION);
+        if pcTemp <> nil then
+        begin
+          { TODO : Store this information in a Global Variable, and return that??
+                   This would save this work being performed again with later calls }
+          sOpenGLVersion := StrPas(pcTemp);
+        end
+        else
+        begin
+          bError := True;
+          glErr := glGetErrorFunc;
+          if glErr <> GL_NO_ERROR then
+          begin
+            sOpenGLVersion := gluErrorStringFunc(glErr);
+            sOpenGLVendor := '';
+          end;
+        end;
+
+        pcTemp := glGetStringFunc(GL_VENDOR);
+        if pcTemp <> nil then
+        begin
+          { TODO : Store this information in a Global Variable, and return that??
+                   This would save this work being performed again with later calls }
+          sOpenGLVendor := StrPas(pcTemp);
+        end
+        else
+        begin
+          bError := True;
+          glErr := glGetErrorFunc;
+          if glErr <> GL_NO_ERROR then
+          begin
+            sOpenGLVendor := gluErrorStringFunc(glErr);
+            Exit;
+          end;
+        end;
+
+        Result := (not bError);
+        Version := sOpenGLVersion;
+        Vendor := sOpenGLVendor;
+      finally
+        { Close all resources }
+        wglMakeCurrentFunc(hGLDC, 0);
+        if hGLContext <> 0 then
+          wglDeleteContextFunc(hGLContext);
+      end;
     finally
-      { Close all resources }
-      wglMakeCurrentFunc(hGLDC, 0);
-      if hGLContext <> 0 then
-        wglDeleteContextFunc(hGLContext);
+      Set8087CW(Save8087CW);
     end;
   finally
-    Set8087CW(Save8087CW);
+    if (OpenGlLib <> 0) then
+      FreeLibrary(OpenGlLib);
+    if (Glu32Lib <> 0) then
+      FreeLibrary(Glu32Lib);
   end;
 end;
 
