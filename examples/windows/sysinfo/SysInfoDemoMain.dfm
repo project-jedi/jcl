@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 382
   Top = 187
-  Width = 484
-  Height = 459
+  ClientWidth = 476
+  ClientHeight = 433
   Caption = 'JCL SysInfo demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

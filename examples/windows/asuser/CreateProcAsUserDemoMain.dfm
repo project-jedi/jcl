@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 386
   Top = 230
-  Width = 398
-  Height = 370
+  ClientWidth = 390
+  ClientHeight = 344
   Caption = 'CreateProcAsUser Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -1,8 +1,8 @@
 object JclExpertExceptionForm: TJclExpertExceptionForm
   Left = 157
   Top = 183
-  Width = 559
-  Height = 459
+  ClientWidth = 551
+  ClientHeight = 423
   BorderIcons = [biSystemMenu]
   Caption = 'RsReportFormCaption'
   Color = clBtnFace

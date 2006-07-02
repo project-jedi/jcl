@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 192
   Top = 107
-  Width = 646
-  Height = 511
+  ClientWidth = 638
+  ClientHeight = 485
   Caption = 'JclDebug Source location example'
   Color = clBtnFace
   Constraints.MinHeight = 300

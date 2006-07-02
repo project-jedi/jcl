@@ -1,8 +1,8 @@
 object ViewForm: TViewForm
   Left = 288
   Top = 168
-  Width = 348
-  Height = 301
+  ClientWidth = 340
+  ClientHeight = 284
   BorderStyle = bsSizeToolWin
   Caption = 'ViewForm'
   Color = clBtnFace

@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 271
   Top = 251
-  Width = 640
-  Height = 480
+  ClientWidth = 640
+  ClientHeight = 426
   Caption = 'NT Service Control Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

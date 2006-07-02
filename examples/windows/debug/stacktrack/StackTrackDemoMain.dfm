@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 342
   Top = 197
-  Width = 614
-  Height = 523
+  ClientWidth = 606
+  ClientHeight = 497
   Caption = 'Tracking unhandled exceptions in VCL application'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

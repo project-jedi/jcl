@@ -1,15 +1,13 @@
 object MainForm: TMainForm
   Left = 280
   Top = 163
-  Width = 846
-  Height = 614
+  ClientWidth = 838
+  ClientHeight = 608
   VertScrollBar.Range = 49
   ActiveControl = ReadmePane
   AutoScroll = False
   Caption = 'JEDI Installer'
   Color = clButton
-  Constraints.MinHeight = 600
-  Constraints.MinWidth = 800
   Font.Color = clText
   Font.Height = 12
   Font.Name = 'helvetica'
@@ -18,7 +16,6 @@ object MainForm: TMainForm
   Font.Weight = 40
   ParentFont = False
   Position = poScreenCenter
-  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy

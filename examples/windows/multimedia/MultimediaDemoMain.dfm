@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 313
   Top = 238
-  Width = 677
-  Height = 567
+  ClientWidth = 669
+  ClientHeight = 541
   Caption = 'Multimedia example'
   Color = clBtnFace
   Constraints.MinHeight = 515

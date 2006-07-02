@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 203
   Top = 116
-  Width = 537
-  Height = 420
+  ClientWidth = 529
+  ClientHeight = 394
   Caption = 'TJclFileVersionInfo example'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

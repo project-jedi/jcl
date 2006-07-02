@@ -1,8 +1,8 @@
 object frmProps: TfrmProps
   Left = 798
   Top = 376
-  Width = 339
-  Height = 385
+  ClientWidth = 331
+  ClientHeight = 349
   BorderIcons = [biSystemMenu]
   Caption = 'Properties'
   Color = clBtnFace

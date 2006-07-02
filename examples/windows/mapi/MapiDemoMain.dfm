@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 285
   Top = 165
-  Width = 700
-  Height = 520
+  ClientWidth = 692
+  ClientHeight = 494
   Caption = 'JclMapi (TJclEmail class) example'
   Color = clBtnFace
   Constraints.MinHeight = 350

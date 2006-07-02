@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 199
   Top = 112
-  Width = 640
-  Height = 597
+  ClientWidth = 632
+  ClientHeight = 571
   Caption = 'JclLocales demo'
   Color = clBtnFace
   Constraints.MinHeight = 570
