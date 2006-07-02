@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 276
   Top = 195
-  Width = 548
-  Height = 276
+  ClientWidth = 540
+  ClientHeight = 250
   HorzScrollBar.Range = 508
   VertScrollBar.Range = 217
   ActiveControl = btnIntfArrayList
@@ -16,7 +16,6 @@ object MainForm: TMainForm
   Font.Pitch = fpVariable
   Font.Style = []
   OldCreateOrder = True
-  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object btnIntfArrayList: TButton
