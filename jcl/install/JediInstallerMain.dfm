@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 347
   Top = 123
-  Width = 800
-  Height = 608
+  ClientWidth = 792
+  ClientHeight = 582
   ActiveControl = QuitBtn
   Caption = 'JEDI Installer'
   Color = clBtnFace
@@ -16,7 +16,6 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy

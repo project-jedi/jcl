@@ -1,8 +1,8 @@
 object JclOtaOptionsForm: TJclOtaOptionsForm
-  Left = 337
-  Top = 238
-  Width = 562
-  Height = 522
+  Left = 0
+  Top = 0
+  ClientWidth = 554
+  ClientHeight = 486
   Caption = 'RsOtaConfigurationCaption'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -48,7 +48,6 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
     Left = 80
     Top = 330
     Width = 121
-    Height = 19
     Anchors = [akLeft, akBottom]
     HotKey = 0
     InvalidKeys = [hcNone]

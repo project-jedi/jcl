@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 194
   Top = 107
-  Width = 278
-  Height = 181
+  ClientWidth = 270
+  ClientHeight = 145
   Caption = 'Single application instance only'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

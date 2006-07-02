@@ -1,8 +1,8 @@
 object frmConverter: TfrmConverter
   Left = 227
   Top = 119
-  Width = 462
-  Height = 106
+  ClientWidth = 454
+  ClientHeight = 80
   Caption = 'Exception Report Converter'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

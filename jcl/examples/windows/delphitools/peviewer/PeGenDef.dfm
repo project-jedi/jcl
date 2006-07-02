@@ -1,8 +1,8 @@
 object PeGenDefChild: TPeGenDefChild
   Left = 278
   Top = 149
-  Width = 409
-  Height = 338
+  ClientWidth = 401
+  ClientHeight = 312
   Caption = 'Pascal unit generator'
   Color = clBtnFace
   Constraints.MinHeight = 230

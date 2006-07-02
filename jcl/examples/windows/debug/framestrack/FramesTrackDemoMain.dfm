@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 192
   Top = 136
-  Width = 790
-  Height = 500
+  ClientWidth = 782
+  ClientHeight = 474
   Caption = 'Exception frame tracking example'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

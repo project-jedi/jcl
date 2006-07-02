@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 328
   Top = 237
-  Width = 470
-  Height = 295
+  ClientWidth = 462
+  ClientHeight = 259
   Caption = 'Binary Tree'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 222
   Top = 107
-  Width = 487
-  Height = 357
+  ClientWidth = 479
+  ClientHeight = 321
   Caption = 'JclExprEval Example'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

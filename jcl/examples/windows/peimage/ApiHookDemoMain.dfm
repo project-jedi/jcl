@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 193
   Top = 103
-  Width = 458
-  Height = 356
+  ClientWidth = 450
+  ClientHeight = 330
   Caption = 'TJclPeMapImgHooks demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

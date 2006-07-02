@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 300
   Top = 115
-  Width = 470
-  Height = 370
+  ClientWidth = 462
+  ClientHeight = 334
   Caption = 'JclPCRE Demo'
   Color = clBtnFace
   Constraints.MinHeight = 370

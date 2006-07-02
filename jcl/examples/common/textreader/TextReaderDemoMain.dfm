@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 275
   Top = 163
-  Width = 771
-  Height = 641
+  ClientWidth = 763
+  ClientHeight = 605
   Caption = 'TJclMappedTextReader class demo'
   Color = clBtnFace
   Constraints.MinHeight = 200
