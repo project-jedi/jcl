@@ -1,8 +1,8 @@
 object FileSearchForm: TFileSearchForm
   Left = 258
   Top = 301
-  Width = 787
-  Height = 508
+  ClientWidth = 779
+  ClientHeight = 482
   HorzScrollBar.Range = 378
   VertScrollBar.Range = 252
   ActiveControl = StartBtn
@@ -19,7 +19,6 @@ object FileSearchForm: TFileSearchForm
   Font.Style = []
   OldCreateOrder = True
   Position = poDefaultPosOnly
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

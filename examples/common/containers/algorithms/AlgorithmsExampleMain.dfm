@@ -1,8 +1,8 @@
 object MainForm: TMainForm
   Left = 280
   Top = 180
-  Width = 392
-  Height = 330
+  ClientWidth = 384
+  ClientHeight = 304
   ActiveControl = PageControl1
   Caption = 'Algos'
   Color = clBtnFace
@@ -13,7 +13,6 @@ object MainForm: TMainForm
   Font.Pitch = fpVariable
   Font.Style = []
   OldCreateOrder = True
-  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

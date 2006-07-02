@@ -1,8 +1,8 @@
 object StretchDemoForm: TStretchDemoForm
   Left = 255
   Top = 208
-  Width = 788
-  Height = 609
+  ClientWidth = 780
+  ClientHeight = 583
   VertScrollBar.Range = 19
   ActiveControl = PageControl
   AutoScroll = False
@@ -17,7 +17,6 @@ object StretchDemoForm: TStretchDemoForm
   KeyPreview = True
   Menu = MainMenu
   OldCreateOrder = True
-  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown

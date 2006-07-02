@@ -1,8 +1,8 @@
 object Keyboard: TKeyboard
   Left = 145
   Top = 347
-  Width = 528
-  Height = 243
+  ClientWidth = 520
+  ClientHeight = 223
   HorzScrollBar.Range = 517
   VertScrollBar.Range = 209
   ActiveControl = MidiProgramNum
@@ -16,7 +16,6 @@ object Keyboard: TKeyboard
   Font.Pitch = fpVariable
   Font.Style = []
   OldCreateOrder = True
-  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   PixelsPerInch = 96
