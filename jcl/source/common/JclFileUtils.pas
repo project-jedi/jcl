@@ -138,12 +138,11 @@ const
   faNotContentIndexed = $00002000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
   faEncrypted         = $00004000 {$IFDEF SUPPORTS_PLATFORM} platform {$ENDIF};
 
-  // outchy: why were faVolumeID commented for JCL.NET support?
-  faRejectedByDefault = faHidden + faSysFile +
-                        {$IFDEF KEEP_DEPRECATED} faVolumeID + {$ENDIF KEEP_DEPRECATED}
-                        faDirectory;
-  faWindowsSpecific   = {$IFDEF KEEP_DEPRECATED} faVolumeID + {$ENDIF KEEP_DEPRECATED}
-                        faArchive + faTemporary + faSparseFile + faReparsePoint +
+  // Note: faVolumeID is potentially dangerous and its usage has been discontinued
+  // Please see QC report 6003 for details, available online at this URL:
+  // http://qc.borland.com/wc/qcmain.aspx?d=6003
+  faRejectedByDefault = faHidden + faSysFile + faDirectory;
+  faWindowsSpecific   = faArchive + faTemporary + faSparseFile + faReparsePoint +
                         faCompressed + faOffline + faNotContentIndexed + faEncrypted;
   faUnixSpecific      = faSymLink;
 
@@ -342,11 +341,6 @@ type
       read GetAttr write SetAttr stored False;
     property System: TAttributeInterest index faSysFile
       read GetAttr write SetAttr stored False;
-    // outchy: why were these lines commented for JCL.NET support?
-    {$IFDEF KEEP_DEPRECATED}
-    property VolumeID: TAttributeInterest index faVolumeID
-      read GetAttr write SetAttr stored False;
-    {$ENDIF KEEP_DEPRECATED}
     property Directory: TAttributeInterest index faDirectory
       read GetAttr write SetAttr stored False;
     property SymLink: TAttributeInterest index faSymLink
@@ -381,6 +375,10 @@ type
   end;
 
   TJclFileAttributeMask = class(TJclCustomFileAttrMask)
+  private
+    procedure ReadVolumeID(Reader: TReader);
+  public
+    procedure DefineProperties(Filer: TFiler); override;
   published
     property ReadOnly;
     property Hidden;
@@ -391,9 +389,6 @@ type
     property SymLink;
     {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
-    {$IFDEF KEEP_DEPRECATED}
-    property VolumeID;
-    {$ENDIF KEEP_DEPRECATED}
     property Archive;
     property Temporary;
     property SparseFile;
@@ -3393,10 +3388,6 @@ begin
       Items.Add(RsAttrReadOnly);
     if Attr and faSysFile = faSysFile then
       Items.Add(RsAttrSystemFile);
-    {$IFDEF KEEP_DEPRECATED}
-    if Attr and faVolumeID = faVolumeID then
-      Items.Add(RsAttrVolumeID);
-    {$ENDIF KEEP_DEPRECATED}
     if Attr and faArchive = faArchive then
       Items.Add(RsAttrArchive);
     if Attr and faAnyFile = faAnyFile then
@@ -5192,7 +5183,7 @@ begin
   Process(RootDir);
 end;
 
-//=== { TJclFileAttributeMask } ==============================================
+//=== { TJclCustomFileAttributeMask } ==============================================
 
 constructor TJclCustomFileAttrMask.Create;
 begin
@@ -5303,6 +5294,22 @@ end;
 procedure TJclCustomFileAttrMask.WriteRequiredAttributes(Writer: TWriter);
 begin
   Writer.WriteInteger(FRequiredAttr);
+end;
+
+//=== { TJclFileAttributeMask } ==============================================
+
+procedure TJclFileAttributeMask.ReadVolumeID(Reader: TReader);
+begin
+  // Nothing, we are not interested in the value of the VolumeID property,
+  // this procedure and the associated DefineProperty call are here only
+  // to allow reading legacy DFMs that have this property defined.
+end;
+
+procedure TJclFileAttributeMask.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+
+  Filer.DefineProperty('VolumeID', ReadVolumeID, nil, False);
 end;
 
 //=== { TEnumFileThread } ====================================================
