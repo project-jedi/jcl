@@ -466,7 +466,7 @@ begin
       B := B or InputBuffer[InIndex + 1];
       B := B shl 8;
       B := B or InputBuffer[InIndex + 2];
-      Inc(InIndex);
+      Inc(InIndex, 3);
       { Write 4 bytes to OutputBuffer (in reverse order). }
       OutputBuffer[OutIndex + 3] := MIME_ENCODE_TABLE[B and $3F];
       B := B shr 6;
@@ -475,7 +475,7 @@ begin
       OutputBuffer[OutIndex + 1] := MIME_ENCODE_TABLE[B and $3F];
       B := B shr 6;
       OutputBuffer[OutIndex + 0] := MIME_ENCODE_TABLE[B];
-      Inc(OutIndex);
+      Inc(OutIndex, 3);
     until InIndex >= InnerLimit;
 
     { Write line break (CRLF). }
@@ -566,7 +566,7 @@ begin
     B := B or InputBuffer[InIndex + 1];
     B := B shl 8;
     B := B or InputBuffer[InIndex + 2];
-    Inc(InIndex);
+    Inc(InIndex, 3);
     { Write 4 bytes to OutputBuffer (in reverse order). }
     OutputBuffer[OutIndex + 3] := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
@@ -575,7 +575,7 @@ begin
     OutputBuffer[OutIndex + 1] := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
     OutputBuffer[OutIndex + 0] := MIME_ENCODE_TABLE[B];
-    Inc(OutIndex);
+    Inc(OutIndex, 3);
   end;
 
   { End of data & padding. }
@@ -632,7 +632,7 @@ begin
     B := B or InPtr^.B2;
     B := B shl 8;
     B := B or InPtr^.B3;
-    Inc(InPtr);
+    Inc(InPtr, 3);
     { Write 4 bytes to OutputBuffer (in reverse order). }
     OutPtr^.B4 := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
@@ -641,7 +641,7 @@ begin
     OutPtr^.B2 := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
     OutPtr^.B1 := MIME_ENCODE_TABLE[B];
-    Inc(OutPtr);
+    Inc(OutPtr, 3);
   end;
 
   { End of data & padding. }
@@ -773,7 +773,7 @@ begin
       LByteBuffer := LByteBuffer shr 8;
       OutPtr^.B1 := Byte(LByteBuffer);
       LByteBuffer := 0;
-      Inc(OutPtr);
+      Inc(OutPtr, 3);
       LByteBufferSpace := 4;
     end;
     ByteBuffer := LByteBuffer;
