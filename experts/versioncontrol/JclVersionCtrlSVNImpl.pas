@@ -368,17 +368,17 @@ begin
       for IndexFileName := Length(FileName) downto 1 do
         if FileName[IndexFileName] = DirDelimiter then
     begin
+      DirectoryName := Copy(FileName, 1, IndexFileName);
       for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
       begin
-        DirectoryName := Copy(FileName, 1, IndexFileName) + JclVersionCtrlSVNDirectories[IndexDir];
-        if DirectoryExists(DirectoryName) then
+        if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir]) then
           SdBxNames.Add(DirectoryName);
       end;
     end;
   finally
     SdBxNames.EndUpdate;
   end;
-  
+
   if SdBxNames.Count = 0 then
     Result := inherited GetSandboxNames(FileName, SdBxNames);
 end;
