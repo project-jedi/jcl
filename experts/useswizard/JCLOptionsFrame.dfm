@@ -31,9 +31,9 @@ object FrameJclOptions: TFrameJclOptions
     TabOrder = 3
   end
   object EditIniFile: TEdit
-    Left = 111
+    Left = 136
     Top = 15
-    Width = 253
+    Width = 228
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
