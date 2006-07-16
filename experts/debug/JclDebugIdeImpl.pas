@@ -290,8 +290,12 @@ begin
     if IsInstalledPackage(Project) then
     begin
       if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
-        ExpertActive(False);
-      Cancel := True;
+        ExpertActive(False)
+      else
+      begin
+        Cancel := True;
+        MessageDlg(RsCompilationAborted, mtError, [mbOK], 0);
+      end;
     end
     else
     begin
@@ -420,7 +424,8 @@ begin
   try
     try
       FSaveBuildAllProjectsExecute(Sender);
-      DisplayResults;
+      if FInsertDataAction.Checked then
+        DisplayResults;
     except
       on ExceptionObj: TObject do
         JclExpertShowExceptionDialog(ExceptionObj);
@@ -437,7 +442,8 @@ begin
   try
     try
       FSaveBuildProjectExecute(Sender);
-      DisplayResults;
+      if FInsertDataAction.Checked then
+        DisplayResults;
     except
       on ExceptionObj: TObject do
         JclExpertShowExceptionDialog(ExceptionObj);
