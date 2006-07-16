@@ -959,6 +959,8 @@ begin
       Result := StringReplace(Result, Format('$(%s)', [Name]),
         FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
     end;
+  While Pos('\\', Result) > 0 do
+    Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
 end;
 
 procedure TJclOTAExpertBase.RegisterAction(Action: TCustomAction);
