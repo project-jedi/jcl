@@ -21,7 +21,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                            }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -217,7 +217,8 @@ resourcestring
   RsBuildActionName = 'ProjectJCLBuildCommand';
   RsBuildAllActionName = 'ProjectJCLBuildAllCommand';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
-    #13#10'%s'#13#10#10'Would you like to disable inserting JCL Debug data ?';
+    AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable inserting JCL Debug data ?';
+  RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak + 'Compilation aborted';
   RsInsertDataCaption = 'Insert JCL Debug data';
   RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
   RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
@@ -250,7 +251,7 @@ resourcestring
   RsLong = '64-bit Core';
 
   RsTrademarks =
-    'MMX is a trademark of Intel Corporation.' + #13#10 +
+    'MMX is a trademark of Intel Corporation.' + AnsiLineBreak +
     '3DNow! is a registered trademark of Advanced Micro Devices.';
 
   RsNoSIMD = 'No SIMD registers found';
