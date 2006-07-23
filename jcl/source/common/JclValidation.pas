@@ -27,10 +27,27 @@ unit JclValidation;
 
 interface
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 // ISBN: International Standard Book Number
 function IsValidISBN(const ISBN: string): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 { TODO -cDoc : Donator: Ivo Bauer }
 function IsValidISBN(const ISBN: string): Boolean;
@@ -125,5 +142,13 @@ begin
   // Accumulator content must be divisible by 11 without a remainder.
   Result := (Accumulator mod 11) = 0;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

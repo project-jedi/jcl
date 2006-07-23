@@ -62,6 +62,9 @@ unit JclWin32;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   {$IFNDEF FPC}
   {$IFDEF CLR}
@@ -206,7 +209,19 @@ const
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclResources;
@@ -247,6 +262,14 @@ end;
 {$I win32api\WinBase.imp}
 {$I win32api\WinNLS.imp}
 {$I win32api\WinNT.imp}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

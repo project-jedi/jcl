@@ -61,6 +61,9 @@ unit JclBorlandTools;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   MSHelpServices_TLB,
@@ -821,7 +824,19 @@ procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
 procedure GetBPKFileInfo(const BPKFileName: string; out RunOnly: Boolean;
   const BinaryFileName: PString = nil; const Description: PString = nil);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysConst,
@@ -4721,6 +4736,14 @@ procedure TJclCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandl
 begin
   FOutputCallback := CallbackMethod;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

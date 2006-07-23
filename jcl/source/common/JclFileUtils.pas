@@ -968,7 +968,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'jcl\source\common'
+    LogPath: 'JCL\source\common'
     );                               
 {$ENDIF UNITVERSIONING}
 
@@ -3199,19 +3199,7 @@ end;
 {$IFDEF UNIX}
 // Warning: Between the time the pathname is constructed and the file is created
 // another process might have created a file with the same name using tmpnam,
-// leading to a possible security hole. The 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'jcl\source\common'
-    );
-{$ENDIF UNITVERSIONING}
-
-implementation
- generates names which
+// leading to a possible security hole. The implementation generates names which
 // can hardly be predicted, but when opening the file you should use the O_EXCL
 // flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
 var
@@ -6128,5 +6116,13 @@ begin
     StrList.Free;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

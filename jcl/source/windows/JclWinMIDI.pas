@@ -36,6 +36,9 @@ unit JclWinMidi;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, MMSystem,
   JclMIDI;
 
@@ -62,7 +65,19 @@ procedure MidiOutCheck(Code: MMResult);
 // MIDI In
 procedure MidiInCheck(Code: MMResult);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclResources, JclStrings;
@@ -270,8 +285,15 @@ begin
 end;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   FreeAndNil(FMidiOutputs);
 
 end.

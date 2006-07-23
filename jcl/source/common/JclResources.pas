@@ -44,6 +44,11 @@ unit JclResources;
 
 interface
 
+{$IFDEF UNITVERSIONING}
+Uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFNDEF RTL140_UP}
 const
   sLineBreak = #13#10;
@@ -1729,6 +1734,26 @@ resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
   RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

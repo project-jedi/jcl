@@ -44,6 +44,9 @@ unit JclSvcCtrl;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, Contnrs,
   {$IFDEF FPC}
   JwaWinNT, JwaWinSvc,
@@ -347,7 +350,19 @@ function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceSt
 function StopServiceByName(const AServer, AServiceName: String):Boolean;
 function StartServiceByName(const AServer,AServiceName: String):Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF FPC}
@@ -1434,5 +1449,13 @@ begin
       Break;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

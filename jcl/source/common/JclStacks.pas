@@ -31,6 +31,9 @@ unit JclStacks;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
@@ -85,7 +88,19 @@ type
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 //=== { TJclIntfStack } ======================================================
 
@@ -342,5 +357,13 @@ function TJclStack.Size: Integer;
 begin
   Result := FCount;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

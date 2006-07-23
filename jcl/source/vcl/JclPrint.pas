@@ -35,6 +35,9 @@ unit JclPrint;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, StdCtrls, SysUtils,
   JclBase;
 
@@ -161,7 +164,19 @@ function GetDefaultPrinterName: string;
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\vcl'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
@@ -1169,5 +1184,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

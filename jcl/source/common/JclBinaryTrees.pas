@@ -33,6 +33,9 @@ unit JclBinaryTrees;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
 
@@ -189,7 +192,19 @@ type
     destructor Destroy; override;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -3270,6 +3285,14 @@ function TJclBinaryTree.Size: Integer;
 begin
   Result := FCount;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

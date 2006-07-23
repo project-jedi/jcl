@@ -38,6 +38,9 @@ unit JclMapi;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, Contnrs, Mapi, SysUtils,
   JclBase;
 
@@ -270,7 +273,19 @@ function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclFileUtils, JclLogic, JclRegistry, JclResources, JclStrings, JclSysInfo, JclSysUtils;
@@ -1277,5 +1292,13 @@ begin
   Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
     ProfileName, Password, MapiAddressTypeSMTP);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

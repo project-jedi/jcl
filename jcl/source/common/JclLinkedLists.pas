@@ -31,6 +31,9 @@ unit JclLinkedLists;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf;
 
@@ -188,7 +191,19 @@ type
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -2540,6 +2555,14 @@ begin
   AppendDelimited(AString, Separator);
 end;
 }
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

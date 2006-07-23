@@ -39,6 +39,9 @@ interface
 {$I jcl.inc}
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows, 
   {$ENDIF MSWINDOWS}
@@ -196,7 +199,19 @@ type
   EJclCliInstructionError = class(EJclError);
   EJclCliInstructionStreamInvalid = class(EJclCliInstructionError);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -1002,5 +1017,13 @@ begin
         Result := FullName + ' - ' + Description;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

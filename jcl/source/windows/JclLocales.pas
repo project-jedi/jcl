@@ -42,6 +42,9 @@ unit JclLocales;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   {$IFDEF FPC}
   JwaWinNLS,
   {$ENDIF FPC}
@@ -302,7 +305,19 @@ type
 // Various routines
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE_SENGCOUNTRY);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF FPC}
@@ -1032,5 +1047,13 @@ begin
     Free;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

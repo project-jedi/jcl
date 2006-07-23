@@ -54,6 +54,9 @@ unit JclAnsiStrings; // former JclStrings
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -355,7 +358,19 @@ function ArrayOf(List: TStrings): TDynStringArray; overload;
 type
   EJclStringError = EJclError;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF CLR}
@@ -3963,5 +3978,12 @@ end;
 initialization
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
+{$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.

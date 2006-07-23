@@ -31,6 +31,9 @@ unit JclArraySets;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
 
 type
@@ -83,7 +86,19 @@ type
     procedure Union(ACollection: IJclCollection);
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -392,6 +407,14 @@ procedure TJclArraySet.Union(ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

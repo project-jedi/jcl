@@ -47,6 +47,9 @@ unit JclNTFS;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes,
   JclBase, JclWin32;
 
@@ -158,7 +161,19 @@ function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo
 function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 function NtfsDeleteHardLinks(const FileName: string): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF FPC}
@@ -946,7 +961,19 @@ end;
 
 //=== Hard links =============================================================
 (*
-   Implementation of CreateHardLink completely swapped to the unit Hardlink.pas
+   
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+ of CreateHardLink completely swapped to the unit Hardlink.pas
 
    As with all APIs on the NT platform this version is completely implemented in
    UNICODE and calling the ANSI version results in conversion of parameters and
@@ -956,7 +983,19 @@ end;
 *)
 
 // For a description see: NtfsCreateHardLink()
-(* ANSI implementation of the function - calling UNICODE anyway ;-) *)
+(* ANSI 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+ of the function - calling UNICODE anyway ;-) *)
 function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
 begin
   // Invoke either (homegrown vs. API) function and supply NIL for security attributes
@@ -964,7 +1003,19 @@ begin
 end;
 
 // For a description see: NtfsCreateHardLink()
-(* UNICODE implementation of the function - we are on NT, aren't we ;-) *)
+(* UNICODE 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+ of the function - we are on NT, aren't we ;-) *)
 function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
 begin
   // Invoke either (homegrown vs. API) function and supply NIL for security attributes
@@ -1150,5 +1201,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

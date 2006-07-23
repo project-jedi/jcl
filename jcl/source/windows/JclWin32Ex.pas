@@ -28,6 +28,9 @@ unit JclWin32Ex;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows;
 
 type
@@ -68,7 +71,19 @@ function JclWin32ExFunctions: TJclWin32ExFunctions;
 
 procedure JclCheckAndInitializeOpenGL;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclBase, JclResources;
@@ -371,9 +386,18 @@ end;
 
 initialization
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+ 
+
 finalization
 
-UnloadLibraries;
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
+  UnloadLibraries;
 
 end.
 

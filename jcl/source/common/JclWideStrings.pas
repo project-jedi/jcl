@@ -36,6 +36,9 @@ unit JclWideStrings;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Classes, SysUtils;
 
 const
@@ -281,7 +284,19 @@ function TrimRightW(const S: WideString): WideString;
 function TrimLeftLengthW(const S: WideString): Integer;
 function TrimRightLengthW(const S: WideString): Integer;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -1956,5 +1971,13 @@ begin
   if not Sorted then
     CustomSort(DefaultSort);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

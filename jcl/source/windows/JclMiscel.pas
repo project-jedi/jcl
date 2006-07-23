@@ -39,6 +39,9 @@ unit JclMiscel;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows,
   JclBase;
 
@@ -68,7 +71,19 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 {$EXTERNALSYM ExitWindows}
 {$ENDIF SUPPORTS_EXTSYM}
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -334,5 +349,13 @@ begin
   CloseHandle(ProcInfo.hThread);
   CloseHandle(ProcInfo.hProcess);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

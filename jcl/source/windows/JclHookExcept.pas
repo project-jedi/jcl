@@ -36,6 +36,9 @@ interface
 {$I jcl.inc}
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, SysUtils;
 
 type
@@ -71,7 +74,19 @@ function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 // Hooking routines location info helper
 function JclBelongsHookedCode(Addr: Pointer): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   Classes,
@@ -545,7 +560,16 @@ end;
 initialization
   Notifiers := TThreadList.Create;
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 finalization
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF HOOK_DLL_EXCEPTIONS}
   FinalizeLibrariesHookExcept;
   {$ENDIF HOOK_DLL_EXCEPTIONS}

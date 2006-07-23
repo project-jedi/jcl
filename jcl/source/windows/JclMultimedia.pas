@@ -39,13 +39,28 @@ unit JclMultimedia;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, MMSystem, Contnrs,
   JclBase, JclSynch, JclStrings;
 
 type
   {$IFDEF FPC}
   // declarations missing from mmsystem.pp
-  // see also implementation section
+  // see also 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+ section
   TTimeCaps = TIMECAPS;
   TMixerControl = MIXERCONTROL;
   TMixerCaps = MIXERCAPS;
@@ -304,7 +319,19 @@ function GetCdInfo(InfoType: TJclCdMediaInfo; Drive: Char = #0): string;
 function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char = #0): TJclCdTrackInfo; overload;
 function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean = False; Drive: Char = #0): string; overload;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -1340,5 +1367,13 @@ begin
   end;
   Result := Format(RsMMCdTimeFormat, [TotalTime.Minute, TotalTime.Second]);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

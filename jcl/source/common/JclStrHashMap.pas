@@ -34,6 +34,9 @@ unit JclStrHashMap;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase, JclResources;
 
@@ -161,7 +164,19 @@ type
     function Compare(const L, R: string): Integer; override;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 // Case Sensitive & Insensitive Traits
 function TCaseSensitiveTraits.Compare(const L, R: string): Integer;
@@ -853,7 +868,17 @@ end;
 
 initialization
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+
 finalization
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   FreeAndNil(GlobalCaseInsensitiveTraits);
   FreeAndNil(GlobalCaseSensitiveTraits);
 

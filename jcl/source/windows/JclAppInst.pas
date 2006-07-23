@@ -41,6 +41,9 @@ unit JclAppInst;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, Messages,
   JclFileUtils, JclSynch;
 
@@ -109,7 +112,19 @@ procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: 
 procedure ReadMessageString(const Message: TMessage; var S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -568,8 +583,14 @@ begin
 end;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
   FreeAndNil(AppInstances);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

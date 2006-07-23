@@ -42,6 +42,9 @@ unit JclStatistics;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JclBase, JclMath;
 
 type
@@ -80,7 +83,19 @@ function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
 function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclLogic,
@@ -498,5 +513,13 @@ begin
     Sum := Sum + X[I];
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

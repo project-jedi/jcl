@@ -31,6 +31,9 @@ unit JclHashSets;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
 
@@ -125,7 +128,19 @@ type
     destructor Destroy; override;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 {$IFDEF CLR}
 var
@@ -599,7 +614,22 @@ end;
 {$IFDEF FPC}
 initialization
   RefUnique := @RefUnique;
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+{$ELSE}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+{$ENDIF UNITVERSIONING}
 {$ENDIF FPC}
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.
 

@@ -42,6 +42,9 @@ unit JclUnitConv;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase;
 
@@ -226,7 +229,19 @@ function MsToKnot(const Ms: Float): Float;
 function WattToHpElectric(const W: Float): Float;
 function WattToHpMetric(const W: Float): Float;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclMath, JclResources;
@@ -997,5 +1012,13 @@ function WattToHpMetric(const W: Float): Float;
 begin
   Result := W / 735.4988;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
