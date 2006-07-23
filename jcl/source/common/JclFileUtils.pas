@@ -63,6 +63,9 @@ unit JclFileUtils;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
@@ -958,7 +961,19 @@ procedure PathListSetItem(var List: string; const Index: Integer; const Value: s
 // return the index of an item
 function PathListItemIndex(const List, Item: string): Integer;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'jcl\source\common'
+    );                               
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF Win32API}
@@ -3184,7 +3199,19 @@ end;
 {$IFDEF UNIX}
 // Warning: Between the time the pathname is constructed and the file is created
 // another process might have created a file with the same name using tmpnam,
-// leading to a possible security hole. The implementation generates names which
+// leading to a possible security hole. The 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'jcl\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+ generates names which
 // can hardly be predicted, but when opening the file you should use the O_EXCL
 // flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
 var
