@@ -246,6 +246,8 @@ resourcestring
   RsDefMathPrecSingle    = 'Single float precision';
   RsDefMathPrecDouble    = 'Double float precision';
   RsDefMathPrecExtended  = 'Extended float precision';
+  
+  RsUnitVersioning       = 'Include Unit Versioning';
 
   RsMapCreate            = 'Create MAP files';
   RsMapLink              = 'Link MAP files';
@@ -296,6 +298,7 @@ resourcestring
   RsHintJclDefMathPrecSingle    = 'type Float = Single';
   RsHintJclDefMathPrecDouble    = 'type Float = Double';
   RsHintJclDefMathPrecExtended  = 'type Float = Extended';
+  RsHintJclUnitVersioning       = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
   RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
   RsHintJclMapLink              = 'Link MAP files as a resource in the output library or executable, the stack can be traced on exceptions';
   RsHintJclMapDelete            = 'Once linked in the binary, delete the original MAP file';
@@ -383,6 +386,9 @@ const
       (Parent: ioJCL;                    // ioJclDefMathPrecExtended
        Caption: RsDefMathPrecExtended;
        Hint: RsHintJclDefMathPrecExtended),
+      (Parent: ioJCL;                    // ioJclUnitVersioning
+       Caption: RsUnitVersioning;
+       Hint: RsHintJclUnitVersioning),   
       (Parent: ioJCL;                    // ioJclMapCreate
        Caption: RsMapCreate;
        Hint: RsHintJclMapCreate),
@@ -1275,6 +1281,7 @@ begin
     AddNode(ProductNode, ioJclDefMathPrecSingle, [goRadioButton]);
     AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
     AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
+    AddNode(ProductNode, ioJclUnitVersioning);
 
     EnvNode := AddNode(ProductNode, ioJclEnv);
     AddNode(EnvNode, ioJclEnvLibPath);
@@ -1445,6 +1452,8 @@ begin
       Defines.Add('MATH_DOUBLE_PRECISION');
     ioJclDefMathPrecExtended:
       Defines.Add('MATH_EXTENDED_PRECISION');
+    ioJclUnitVersioning:
+      Defines.Add('UNITVERSIONING');
     ioJclMapCreate:
       Target.MapCreate := True;
     ioJclMapLink:

@@ -39,6 +39,7 @@ type
       ioJclDefMathPrecSingle,
       ioJclDefMathPrecDouble,
       ioJclDefMathPrecExtended,
+      ioJclUnitVersioning,
       ioJclMapCreate,
       ioJclMapLink,
       ioJclMapDelete,
