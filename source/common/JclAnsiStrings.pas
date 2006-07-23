@@ -178,8 +178,8 @@ procedure StrLowerBuff(S: PAnsiChar);
 {$ENDIF ~CLR}
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex,
   FromIndex, Count: Integer);
-function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace ): AnsiString;
-function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace ): AnsiString;
+function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace): AnsiString;
+function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace): AnsiString;
 function StrProper(const S: AnsiString): AnsiString;
 {$IFNDEF CLR}
 procedure StrProperBuff(S: PAnsiChar);
@@ -289,7 +289,7 @@ function CharToggleCase(const C: AnsiChar): AnsiChar;
 // Character Search and Replace
 function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
 function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
-function CharIPos(const S: AnsiString; C: AnsiChar; const Index: Integer = 1 ): Integer;
+function CharIPos(const S: AnsiString; C: AnsiChar; const Index: Integer = 1): Integer;
 function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
 
 {$IFNDEF CLR}
@@ -326,9 +326,9 @@ function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
-procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True );
+procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True);
 function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
@@ -345,7 +345,7 @@ function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 {$ENDIF ~CLR}
 function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
-procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
+procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 
 {$IFDEF CLR}
 function ArrayOf(List: TStrings): TDynStringArray; overload;
@@ -884,7 +884,7 @@ end;
 
 function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
 var
-  PrefixLen : Integer;
+  PrefixLen: Integer;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -895,8 +895,8 @@ end;
 
 function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
 var
-  SuffixLen : Integer;
-  StrLength : Integer;
+  SuffixLen: Integer;
+  StrLength: Integer;
 begin
   SuffixLen := Length(Suffix);
   StrLength := Length(Text);
@@ -959,7 +959,7 @@ var
         end;
       end;
 
-      if val > 255 then
+      if Val > 255 then
         {$IFDEF CLR}
         raise EJclStringError.Create(RsNumericConstantTooLarge);
         {$ELSE}
@@ -1364,10 +1364,10 @@ var
   SourceMatchPtr: PAnsiChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PAnsiChar; { been matched and we're probing for a complete match }
   ResultPtr: PAnsiChar;      { pointer into Result of character being written }
-  ResultIndex,
-  SearchLength,              { length of search string }
-  ReplaceLength,             { length of replace string }
-  BufferLength,              { length of temporary result buffer }
+  ResultIndex: Integer;
+  SearchLength: Integer;     { length of search string }
+  ReplaceLength: Integer;    { length of replace string }
+  BufferLength: Integer;     { length of temporary result buffer }
   ResultLength: Integer;     { length of result string }
   C: AnsiChar;               { first character of search string }
   IgnoreCase: Boolean;
@@ -1565,13 +1565,13 @@ end;
 
 function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 var
-{$IFDEF CLR}
+  {$IFDEF CLR}
   Index: Integer;
   LenS: Integer;
-{$ELSE}
+  {$ELSE}
   Source, Dest: PAnsiChar;
   Index, Len: Integer;
-{$ENDIF CLR}
+  {$ENDIF CLR}
 begin
   Result := '';
   if Delimiters = [] then
@@ -1593,7 +1593,7 @@ begin
     UniqueString(Result);
 
     Len := Length(S);
-    Source  := PAnsiChar(S);
+    Source := PAnsiChar(S);
     Dest := PAnsiChar(Result);
     Inc(Dest);
 
@@ -1640,7 +1640,7 @@ begin
     else
       // Characters < ' ' are escaped with hex sequence
       if S[I] < #32 then
-        Result := Result + Format('\x%.2x',[Integer(S[I])])
+        Result := Result + Format('\x%.2x', [Integer(S[I])])
       else
         Result := Result + S[I];
     end;
@@ -1706,7 +1706,8 @@ var
 begin
   I := 1;
   L := Length(S);
-  while (I <= L) and (S[I] = C) do Inc(I);
+  while (I <= L) and (S[I] = C) do
+    Inc(I);
   Result := Copy(S, I, L - I + 1);
 end;
 
@@ -1716,7 +1717,8 @@ var
 begin
   I := 1;
   L := Length(S);
-  while (I <= L) and (S[I] in Chars) do Inc(I);
+  while (I <= L) and (S[I] in Chars) do
+    Inc(I);
   Result := Copy(S, I, L - I + 1);
 end;
 
@@ -1725,7 +1727,8 @@ var
   I: Integer;
 begin
   I := Length(S);
-  while (I >= 1) and (S[I] in Chars) do Dec(I);
+  while (I >= 1) and (S[I] in Chars) do
+    Dec(I);
   Result := Copy(S, 1, I);
 end;
 
@@ -1734,7 +1737,8 @@ var
   I: Integer;
 begin
   I := Length(S);
-  while (I >= 1) and (S[I] = C) do Dec(I);
+  while (I >= 1) and (S[I] = C) do
+    Dec(I);
   Result := Copy(S, 1, I);
 end;
 
@@ -1845,7 +1849,8 @@ var
   Foo: AnsiString;
 begin
   case StrRefCount(S) of
-    -1, 0: { nothing } ;
+    -1, 0:
+      { nothing } ;
      1:
        begin
          Finalize(S);
@@ -2250,22 +2255,22 @@ end;
 {$IFDEF CLR}
 function StrFillChar(const C: Char; Count: Integer): string;
 var
-  sb: System.Text.StringBuilder;
+  SB: System.Text.StringBuilder;
 begin
-  sb := System.Text.StringBuilder.Create(Count);
+  SB := System.Text.StringBuilder.Create(Count);
   while Count > 0 do
   begin
-    sb.Append(C);
+    SB.Append(C);
     Dec(Count);
   end;
-  Result := sb.ToString();
+  Result := SB.ToString;
 end;
 {$ENDIF CLR}
 
 {$IFDEF CLR}
 function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer;
 begin
-  Result := System.String(S).ToLower().IndexOf(System.String(SubStr).ToLower(), Index - 1) + 1;
+  Result := System.String(S).ToLower().IndexOf(System.String(SubStr).ToLower, Index - 1) + 1;
 end;
 {$ELSE}
 function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
@@ -3057,7 +3062,7 @@ var
   L: Integer;
 begin
   PosStart := Pos(Start, S);
-  PosEnd := StrSearch(Stop, S, PosStart+1);  // PosEnd has to be after PosStart.
+  PosEnd := StrSearch(Stop, S, PosStart + 1);  // PosEnd has to be after PosStart.
 
   if (PosStart > 0) and (PosEnd > PosStart) then
   begin
@@ -3083,7 +3088,7 @@ begin
   Result := Copy(S, Start, Count);
 end;
 
-function StrRestOf(const S: AnsiString; N: Integer ): AnsiString;
+function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
 begin
   Result := Copy(S, N, (Length(S) - N + 1));
 end;
@@ -3097,7 +3102,7 @@ end;
 
 function CharEqualNoCase(const C1, C2: AnsiChar): Boolean;
 begin
-  //if they are not equal chars, may be same letter different case
+  // if they are not equal chars, may be same letter different case
   Result := (C1 = C2) or
     (CharIsAlpha(C1) and CharIsAlpha(C2) and (CharLower(C1) = CharLower(C2)));
 end;
@@ -3293,22 +3298,18 @@ end;
 function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
 begin
   if (Index > 0) and (Index <= Length(S)) then
-  begin
     for Result := Length(S) downto Index do
       if S[Result] = C then
         Exit;
-  end;
   Result := 0;
 end;
 
 function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
 begin
   if (Index > 0) and (Index <= Length(S)) then
-  begin
     for Result := Index to Length(S) do
       if S[Result] = C then
         Exit;
-  end;
   Result := 0;
 end;
 
@@ -3475,7 +3476,7 @@ begin
     P := StrECopyW(P, PWideChar(Source[I]));
     Inc(P);
   end;
-  P^:= #0;
+  P^ := #0;
   Result := Dest;
 end;
 
@@ -3607,7 +3608,8 @@ begin
   end;
 end;
 
-function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean): AnsiString;
+function StringsToStr(const List: TStrings; const Sep: AnsiString;
+  const AllowEmptyString: Boolean): AnsiString;
 var
   I, L: Integer;
 begin
@@ -3692,6 +3694,7 @@ begin
 end;
 
 //=== Miscellaneous ==========================================================
+
 {$IFDEF KEEP_DEPRECATED}
 function BooleanToStr(B: Boolean): AnsiString;
 const
@@ -3703,47 +3706,47 @@ end;
 
 function FileToString(const FileName: AnsiString): AnsiString;
 var
-  fs: TFileStream;
+  FS: TFileStream;
   Len: Integer;
   {$IFDEF CLR}
   Buf: array of Byte;
   {$ENDIF CLR}
 begin
-  fs := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    Len := fs.Size;
+    Len := FS.Size;
     SetLength(Result, Len);
     if Len > 0 then
     {$IFDEF CLR}
     begin
       SetLength(Buf, Len);
-      fs.ReadBuffer(Buf, Len);
+      FS.ReadBuffer(Buf, Len);
       Result := Buf;
     end;
     {$ELSE}
-      fs.ReadBuffer(Result[1], Len);
+    FS.ReadBuffer(Result[1], Len);
     {$ENDIF CLR}
   finally
-    fs.Free;
+    FS.Free;
   end;
 end;
 
 procedure StringToFile(const FileName: AnsiString; const Contents: AnsiString);
 var
-  fs: TFileStream;
+  FS: TFileStream;
   Len: Integer;
 begin
-  fs := TFileStream.Create(FileName, fmCreate);
+  FS := TFileStream.Create(FileName, fmCreate);
   try
     Len := Length(Contents);
     if Len > 0 then
     {$IFDEF CLR}
-      fs.WriteBuffer(BytesOf(Contents), Len);
+    FS.WriteBuffer(BytesOf(Contents), Len);
     {$ELSE}
-      fs.WriteBuffer(Contents[1], Len);
+    FS.WriteBuffer(Contents[1], Len);
     {$ENDIF CLR}
   finally
-    fs.Free;
+    FS.Free;
   end;
 end;
 
@@ -3765,6 +3768,7 @@ begin
 end;
 
 {$IFNDEF CLR}
+
 procedure StrTokens(const S: AnsiString; const List: TStrings);
 var
   Start: PAnsiChar;
@@ -3841,7 +3845,7 @@ begin
             Exit;
           end
           else
-            while (S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn]) do
+            while S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn] do
               Inc(S);
         end;
     else
@@ -3851,6 +3855,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF ~CLR}
 
 function StrToFloatSafe(const S: AnsiString): Float;
@@ -3908,8 +3913,8 @@ begin
       if Temp[I] = DecSep then
         Temp[I] := ThouSep
       else
-        if Temp[I] = ThouSep then
-          Temp[I] := DecSep;
+      if Temp[I] = ThouSep then
+        Temp[I] := DecSep;
   end;
 
   Temp := StrKeepChars(Temp, AnsiDecDigits + [DecSep]);
@@ -3918,7 +3923,7 @@ begin
   begin
     if Temp[1] = DecSep then
       Temp := '0' + Temp;
-    if Temp[length(Temp)] = DecSep then
+    if Temp[Length(Temp)] = DecSep then
       Temp := Temp + '0';
     Result := StrToFloat(Temp);
     if IsNegative then
@@ -3933,10 +3938,10 @@ begin
   Result := Trunc(StrToFloatSafe(S));
 end;
 
-procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
+procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 begin
-   Index := Max(1, Min(Index, StrLen+1));
-   Count := Max(0, Min(Count, StrLen+1 - Index));
+  Index := Max(1, Min(Index, StrLen + 1));
+  Count := Max(0, Min(Count, StrLen + 1 - Index));
 end;
 
 {$IFDEF CLR}
