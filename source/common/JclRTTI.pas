@@ -42,6 +42,9 @@ unit JclRTTI;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$IFDEF CLR}
@@ -375,7 +378,19 @@ procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -3009,9 +3024,31 @@ end;
 initialization
   TypeList := TThreadList.Create;
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+
+
 finalization
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   ClearInfoList;
   FreeAndNil(TypeList);
+
+{$ELSE}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 {$ENDIF ~CLR}
 
 end.

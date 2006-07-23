@@ -39,7 +39,10 @@ interface
 {$I jcl.inc}
 
 uses
-  {$IFDEF MSWINDOWS}
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
+{$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
@@ -850,7 +853,19 @@ type
     property TD32Scanner: TJclTD32InfoScanner read FTD32Scanner;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclResources, JclSysUtils;
@@ -1675,5 +1690,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

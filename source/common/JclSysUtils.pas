@@ -49,6 +49,9 @@ unit JclSysUtils;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   Variants,
   {$ELSE}
@@ -518,7 +521,19 @@ type
     property LogOpen: Boolean read GetLogOpen;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF HAS_UNIT_TYPES}
@@ -3086,7 +3101,16 @@ initialization
     GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
   {$ENDIF THREADSAFE}
 
+
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 finalization
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
   FinalizeMMFHandleList;
 

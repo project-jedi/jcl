@@ -37,6 +37,9 @@ unit JclMetadata;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -1616,6 +1619,16 @@ type
   end;
 
   EJclMetadataError = class(EJclError);
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -4806,5 +4819,13 @@ function TJclClrMethodParam.GetCustomModifierCount: Integer;
 begin
   Result := FCustomMods.Count;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

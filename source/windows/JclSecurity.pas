@@ -43,6 +43,9 @@ unit JclSecurity;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   JclBase;
 
@@ -71,7 +74,19 @@ procedure FreeTokenInformation(var Buffer: Pointer);
 function GetInteractiveUserName: string;
 {$ENDIF ~FPC}
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF FPC}
@@ -414,5 +429,13 @@ begin
   end;
 end;
 {$ENDIF ~FPC}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

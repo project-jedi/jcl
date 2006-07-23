@@ -31,6 +31,9 @@ unit JclAlgorithms;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JclBase, JclContainerIntf;
 
 // function pointer types
@@ -112,7 +115,19 @@ procedure Sort(AList: IJclIntfList; First, Last: Integer; AComparator: TIntfComp
 procedure Sort(AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
 procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils;
@@ -575,6 +590,14 @@ procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare);
 begin
   SortProc(AList, First, Last, AComparator);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

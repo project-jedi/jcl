@@ -42,6 +42,11 @@ unit JclWideFormat;
 
 interface
 
+{$IFDEF UNITVERSIONING}
+Uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 { With FORMAT_EXTENSIONS defined, WideFormat will accept more argument types
   than Borland's Format function. In particular, it will accept Variant
   arguments for the D, E, F, G, M, N, U, and X format types, it will accept
@@ -71,7 +76,19 @@ interface
   messages, the exception class is still EConvertError. }
 function WideFormat(const Format: WideString; const Args: array of const): WideString;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   Windows,              // for MultiBytetoWideChar
@@ -874,5 +891,13 @@ begin
   AllowedTypes := GetTypeList(Allowed);
   Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatBadArgumentTypeEx), [FoundType, ArgIndex, Copy(Format, FormatStart, FormatEnd - FormatStart + 1), AllowedTypes]);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

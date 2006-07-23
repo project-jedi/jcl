@@ -44,6 +44,9 @@ unit JclShell;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   {$IFNDEF FPC}
   ShlObj,
@@ -185,7 +188,19 @@ var
   RtdlMsiGetComponentPath: function(szProduct: LPCSTR; szComponent: LPCSTR;
     lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE stdcall = nil;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   ActiveX,
@@ -1416,7 +1431,15 @@ end;
 initialization
   //We don't load the msi functions until the first attempt to resolve an MSI link
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   UnloadModule(rtdlMsiLibHandle);
 
 end.

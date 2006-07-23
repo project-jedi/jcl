@@ -44,6 +44,9 @@ unit JclLANMan;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes;
 
 // User Management
@@ -83,7 +86,19 @@ function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): str
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclBase, JclStrings, JclSysInfo, JclWin32;
@@ -430,5 +445,13 @@ begin
   ParseAccountName(AccountName, Domain, UserName);
   Result := (Domain = '') or (Domain = LocalServerName);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -38,6 +38,9 @@ unit JclComplex;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase, JclMath, JclResources, JclStrings;
 
@@ -228,7 +231,19 @@ const
   MaxTerm: Byte = 35;
   EpsilonSqr: Float = 1E-20;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 const
   MaxFracLen = 18;
@@ -1563,5 +1578,13 @@ begin
   Value := MiscalcSingle(Value);
   Result := Value;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

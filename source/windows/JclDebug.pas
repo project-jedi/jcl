@@ -43,6 +43,9 @@ interface
 {$I jcl.inc}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -729,7 +732,19 @@ const
   EnvironmentVarNtSymbolPath = '_NT_SYMBOL_PATH';                    // do not localize
   EnvironmentVarAlternateNtSymbolPath = '_NT_ALTERNATE_SYMBOL_PATH'; // do not localize
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   ImageHlp,
@@ -4463,7 +4478,16 @@ initialization
   GlobalModulesList := TJclGlobalModulesList.Create;
   GlobalStackList := TJclGlobalStackList.Create;
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 finalization
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+
   { TODO -oPV -cInvestigate : Calling JclStopExceptionTracking causes linking of various classes to
     the code without a real need. Although there doesn't seem to be a way to unhook exceptions
     safely because we need to be covered by JclHookExcept.Notifiers critical section }

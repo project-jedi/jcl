@@ -39,6 +39,11 @@ unit Jcl8087;
 
 interface
 
+{$IFDEF UNITVERSIONING}
+Uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 type
   T8087Precision = (pcSingle, pcReserved, pcDouble, pcExtended);
   T8087Rounding = (rcNearestOrEven, rcDownInfinity, rcUpInfinity, rcChopOrTruncate);
@@ -68,7 +73,19 @@ function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boole
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
 function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 const
   X87ExceptBits = $3F;
@@ -221,5 +238,13 @@ begin
   Exceptions := Result - Exceptions;
   SetMasked8087Exceptions(Exceptions, ClearBefore);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

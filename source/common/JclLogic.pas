@@ -46,6 +46,11 @@ unit JclLogic;
 
 interface
 
+{$IFDEF UNITVERSIONING}
+Uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 // Conversion
 function OrdToBinary(Value: Byte): string; overload;
 function OrdToBinary(Value: ShortInt): string; overload;
@@ -280,7 +285,19 @@ const
   CardinalMask    = Cardinal($FFFFFFFF);
   Int64Mask       = Int64($FFFFFFFFFFFFFFFF);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclBase;
@@ -1923,5 +1940,13 @@ begin
   else
     Result := B2;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

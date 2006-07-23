@@ -38,6 +38,9 @@ unit JclBase;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.Reflection,
   {$ELSE}
@@ -233,7 +236,19 @@ function StringToByteArray(const S: string): TBytes;
 function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 {$ENDIF CLR}
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclResources;
@@ -489,5 +504,15 @@ begin
   RaiseLastWin32Error;
 end;
 {$ENDIF ~XPLATFORM_RTL}
+
+
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -35,6 +35,9 @@ unit JclAbstractContainers;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.Threading,
   {$ELSE}
@@ -90,7 +93,19 @@ type
     procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 //=== { TJclAbstractContainer } ==============================================
 
@@ -226,6 +241,14 @@ begin
   Strings.Clear;
   AppendToStrings(Strings);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

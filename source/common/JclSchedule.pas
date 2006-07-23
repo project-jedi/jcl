@@ -37,6 +37,9 @@ unit JclSchedule;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase;
 
@@ -176,7 +179,19 @@ function CompareTimeStamps(const Stamp1, Stamp2: TTimeStamp): Int64;
 function EqualTimeStamps(const Stamp1, Stamp2: TTimeStamp): Boolean;
 function IsNullTimeStamp(const Stamp: TTimeStamp): Boolean;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclDateTime, JclResources;  
@@ -1568,5 +1583,13 @@ function CreateSchedule: IJclSchedule;
 begin
   Result := TSchedule.Create;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

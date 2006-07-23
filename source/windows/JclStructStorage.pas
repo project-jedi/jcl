@@ -64,6 +64,9 @@ unit JclStructStorage;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, ActiveX,
   JclBase;
 
@@ -219,7 +222,19 @@ type
 
 procedure CoMallocFree(P: Pointer);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   ComObj,
@@ -762,6 +777,14 @@ begin
   if not Succeeded(FStream.Write(@Buffer, Count, @Result)) then
     Result := 0;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

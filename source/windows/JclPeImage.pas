@@ -44,6 +44,9 @@ unit JclPeImage;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
@@ -977,7 +980,19 @@ function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   JclLogic, JclResources, JclSysUtils;
@@ -5390,5 +5405,13 @@ begin
   if Result = umNotMangled then
     Unmangled := Name;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

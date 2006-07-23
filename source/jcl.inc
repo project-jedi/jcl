@@ -79,6 +79,10 @@ ALERT_jedi_inc_incompatible
   {$DEFINE KEEP_DEPRECATED}
 {$ENDIF}
 
+//Support for JclUnitVersioning.pas)
+{$DEFINE UNITVERSIONING}                     
+
+
 // debug sources
 
 // defining these symbols will the debug source to be automatically registered
@@ -98,3 +102,4 @@ ALERT_jedi_inc_incompatible
  {$DEFINE PIC}
  {$DEFINE PUREPASCAL}
 {$ENDIF CLR}
+

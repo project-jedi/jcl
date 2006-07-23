@@ -38,6 +38,9 @@ unit JclCOM;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, ActiveX, Classes,
   JclBase;
 
@@ -114,7 +117,19 @@ function StreamToVariantArray(Stream: IStream): OleVariant; overload;
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream); overload;
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overload;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF FPC}
@@ -126,7 +141,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
-{ Implementation Constants - may be reused by more than one routine }
+{implementation Constants - may be reused by more than one routine }
 
 const
   pcOLE32 = 'OLE32.dll';
@@ -647,5 +662,14 @@ begin
     end;
   end;
 end;
+
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

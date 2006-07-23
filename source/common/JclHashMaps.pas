@@ -31,6 +31,9 @@ unit JclHashMaps;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
@@ -302,7 +305,19 @@ type
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -2126,6 +2141,14 @@ begin
     for J := 0 to FBuckets[I].Count - 1 do
       Result.Add(FBuckets[I].Entries[J].Value);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

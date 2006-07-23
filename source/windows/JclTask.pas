@@ -38,6 +38,9 @@ interface
 {$I windowsonly.inc}
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, SysUtils, Contnrs,
   MSTask,
   JclBase, JclSysUtils, JclSysInfo, JclWideStrings, JclWin32;
@@ -209,7 +212,19 @@ type
     property TaskFlags: DWORD read GetTaskFlags write SetTaskFlags;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   ActiveX, ComObj, CommCtrl,
@@ -890,5 +905,13 @@ function TJclScheduledTask.GetTask: ITask;
 begin
   Result := ScheduledWorkItem as ITask;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -47,6 +47,9 @@ unit JclMath;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
   JclBase;
 
@@ -622,7 +625,19 @@ function CotH(const Z: TRectComplex): TRectComplex; overload;
 function SecH(const Z: TRectComplex): TRectComplex; overload;
 function CscH(const Z: TRectComplex): TRectComplex; overload;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   {$IFDEF Win32API}
@@ -4435,5 +4450,14 @@ begin
 end;
 
 {$ENDIF SUPPORTS_CLASS_OPERATORS}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.

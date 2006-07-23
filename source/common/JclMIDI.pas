@@ -35,6 +35,9 @@ unit JclMIDI;
 interface
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   Classes,
   JclBase;
 
@@ -357,7 +360,19 @@ procedure GetMidiOutputs(const List: TStrings);
 function MIDISingleNoteTuningData(Key: TMIDINote; Frequency: Single): TSingleNoteTuningData;
 function MIDINoteToStr(Note: TMIDINote): string;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
 
 uses
   SysUtils,
@@ -791,5 +806,13 @@ begin
   SendControlChange(Channel, MIDICCPolyModeOn, 0);
   FActiveNotes[Channel] := []; // implicit All Notes Off
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
