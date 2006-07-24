@@ -38,9 +38,9 @@ unit JclComplex;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase, JclMath, JclResources, JclStrings;
 
@@ -231,7 +231,6 @@ const
   MaxTerm: Byte = 35;
   EpsilonSqr: Float = 1E-20;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -243,7 +242,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 const
   MaxFracLen = 18;

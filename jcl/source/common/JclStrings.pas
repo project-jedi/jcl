@@ -55,9 +55,9 @@ unit JclStrings;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -470,7 +470,6 @@ function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): strin
 type
   EJclStringError = EJclError;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -482,7 +481,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF CLR}
@@ -4988,7 +4986,6 @@ begin
 end;
 {$ENDIF CLR}
 
-
 {$IFNDEF CLR}
 initialization
   LoadCharTypes;  // this table first
@@ -5004,13 +5001,9 @@ initialization
 {$ENDIF UNITVERSIONING}
 {$ENDIF ~CLR}
 
-
-
 {$IFDEF UNITVERSIONING}
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
-
 
 end.

@@ -181,7 +181,6 @@ type
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -193,7 +192,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources;
@@ -1486,6 +1484,7 @@ begin
 end;
 
 {$IFNDEF CLR}
+
 procedure TJclVector.AfterConstruction;
 begin
 end;
@@ -1493,6 +1492,7 @@ end;
 procedure TJclVector.BeforeDestruction;
 begin
 end;
+
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}

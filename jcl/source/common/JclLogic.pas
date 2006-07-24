@@ -47,7 +47,7 @@ unit JclLogic;
 interface
 
 {$IFDEF UNITVERSIONING}
-Uses
+uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
@@ -285,7 +285,6 @@ const
   CardinalMask    = Cardinal($FFFFFFFF);
   Int64Mask       = Int64($FFFFFFFFFFFFFFFF);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -297,7 +296,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclBase;

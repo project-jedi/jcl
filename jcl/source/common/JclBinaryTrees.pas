@@ -33,9 +33,9 @@ unit JclBinaryTrees;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
 

@@ -33,9 +33,9 @@ unit JclIniFiles;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, IniFiles;
 
 // Initialization (ini) Files
@@ -50,7 +50,6 @@ procedure IniWriteString(const FileName, Section, Line, Value: string);         
 procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -62,7 +61,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF CLR}
 type
@@ -185,7 +183,6 @@ begin
       WriteString(Section, IntToStr(I), Strings[I]);
   end;
 end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization

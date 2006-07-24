@@ -42,9 +42,9 @@ unit JclUnitConv;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase;
 
@@ -229,7 +229,6 @@ function MsToKnot(const Ms: Float): Float;
 function WattToHpElectric(const W: Float): Float;
 function WattToHpMetric(const W: Float): Float;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -241,7 +240,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclMath, JclResources;

@@ -37,9 +37,9 @@ unit JclSchedule;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclBase;
 
@@ -179,7 +179,6 @@ function CompareTimeStamps(const Stamp1, Stamp2: TTimeStamp): Int64;
 function EqualTimeStamps(const Stamp1, Stamp2: TTimeStamp): Boolean;
 function IsNullTimeStamp(const Stamp: TTimeStamp): Boolean;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -191,7 +190,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclDateTime, JclResources;  

@@ -42,9 +42,9 @@ unit JclStatistics;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JclBase, JclMath;
 
 type
@@ -83,7 +83,6 @@ function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
 function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -95,7 +94,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclLogic,

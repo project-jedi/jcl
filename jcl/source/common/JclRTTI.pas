@@ -378,7 +378,6 @@ procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -390,7 +389,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -3023,19 +3021,14 @@ end;
 {$IFNDEF CLR}
 initialization
   TypeList := TThreadList.Create;
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
-
 finalization
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   ClearInfoList;
   FreeAndNil(TypeList);
 

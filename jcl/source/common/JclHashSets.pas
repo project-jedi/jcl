@@ -31,9 +31,9 @@ unit JclHashSets;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
 
@@ -128,7 +128,6 @@ type
     destructor Destroy; override;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -140,7 +139,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF CLR}
 var
@@ -623,7 +621,6 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 {$ENDIF UNITVERSIONING}
 {$ENDIF FPC}
-
 
 {$IFDEF UNITVERSIONING}
 finalization

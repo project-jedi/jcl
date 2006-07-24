@@ -31,9 +31,9 @@ unit JclArraySets;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
 
 type
@@ -86,7 +86,6 @@ type
     procedure Union(ACollection: IJclCollection);
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -98,7 +97,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,

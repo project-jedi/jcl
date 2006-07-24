@@ -38,9 +38,9 @@ unit JclBase;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.Reflection,
   {$ELSE}
@@ -156,7 +156,7 @@ type
 {$IFNDEF CLR}
 // Redefinition of PByteArray to avoid range check exceptions.
 type
-  TJclByteArray = array[0..MaxInt div SizeOf(Byte) - 1] of Byte;
+  TJclByteArray = array [0..MaxInt div SizeOf(Byte) - 1] of Byte;
   PJclByteArray = ^TJclByteArray;
   TBytes = Pointer; // under .NET System.pas: TBytes = array of Byte;
 
@@ -236,7 +236,6 @@ function StringToByteArray(const S: string): TBytes;
 function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 {$ENDIF CLR}
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -248,7 +247,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources;
@@ -270,7 +268,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;
@@ -292,7 +291,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;
@@ -335,16 +335,16 @@ procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
-  i: Integer;
+  I: Integer;
   Buf: array of Char;
 begin
   Buf := Dest.ToCharArray;
   if FromIndex <= ToIndex then
-    for i := 0 to Count - 1 do
-      Buf[ToIndex + i] := Source[FromIndex + i]
+    for I := 0 to Count - 1 do
+      Buf[ToIndex + I] := Source[FromIndex + I]
   else
-    for i := Count - 1 downto 0 do
-      Buf[ToIndex + i] := Source[FromIndex + i];
+    for I := Count - 1 downto 0 do
+      Buf[ToIndex + I] := Source[FromIndex + I];
   Dest := System.String.Create(Buf);
 {$ELSE}
 begin
@@ -504,8 +504,6 @@ begin
   RaiseLastWin32Error;
 end;
 {$ENDIF ~XPLATFORM_RTL}
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization

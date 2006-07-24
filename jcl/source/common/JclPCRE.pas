@@ -32,9 +32,9 @@ unit JclPCRE;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -92,7 +92,6 @@ type
     property ErrorOffset: Integer read FErrorOffset;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -104,7 +103,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   pcre,
@@ -258,19 +256,14 @@ end;
 initialization
   pcre.LibNotLoadedHandler := LibNotLoadedHandler;
   LoadPCRE;
-
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
-
 
 finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   UnloadPCRE;
 
 end.
