@@ -35,9 +35,9 @@ unit JclContainerIntf;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JclBase;
 
@@ -456,7 +456,6 @@ type
   EJclIllegalArgumentError = class(EJclError);
   EJclOperationNotSupportedError = class(EJclError);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -468,7 +467,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF UNITVERSIONING}
 initialization

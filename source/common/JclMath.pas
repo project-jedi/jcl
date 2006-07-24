@@ -625,7 +625,6 @@ function CotH(const Z: TRectComplex): TRectComplex; overload;
 function SecH(const Z: TRectComplex): TRectComplex; overload;
 function CscH(const Z: TRectComplex): TRectComplex; overload;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -637,7 +636,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF Win32API}
@@ -4458,6 +4456,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
 
 end.

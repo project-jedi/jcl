@@ -31,9 +31,9 @@ unit JclQueues;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
@@ -88,7 +88,6 @@ type
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -100,7 +99,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources;

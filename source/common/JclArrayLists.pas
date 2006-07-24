@@ -31,9 +31,9 @@ unit JclArrayLists;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf;
 
@@ -164,7 +164,6 @@ type
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -176,7 +175,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,

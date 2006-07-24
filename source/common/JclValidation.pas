@@ -35,7 +35,6 @@ uses
 // ISBN: International Standard Book Number
 function IsValidISBN(const ISBN: string): Boolean;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -47,7 +46,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 { TODO -cDoc : Donator: Ivo Bauer }
 function IsValidISBN(const ISBN: string): Boolean;

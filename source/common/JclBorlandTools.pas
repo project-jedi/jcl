@@ -61,9 +61,9 @@ unit JclBorlandTools;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   MSHelpServices_TLB,
@@ -824,7 +824,6 @@ procedure GetDPKFileInfo(const DPKFileName: string; out RunOnly: Boolean;
 procedure GetBPKFileInfo(const BPKFileName: string; out RunOnly: Boolean;
   const BinaryFileName: PString = nil; const Description: PString = nil);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -836,7 +835,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysConst,

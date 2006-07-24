@@ -39,9 +39,9 @@ unit JclExprEval;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   JclBase, JclSysUtils, JclStrHashMap, JclResources;
 
@@ -842,7 +842,6 @@ type
     procedure Clear;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -854,7 +853,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 //=== { TExprHashContext } ===================================================
 

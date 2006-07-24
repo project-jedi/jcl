@@ -93,7 +93,6 @@ type
     procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -105,7 +104,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 //=== { TJclAbstractContainer } ==============================================
 

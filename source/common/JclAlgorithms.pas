@@ -31,9 +31,9 @@ unit JclAlgorithms;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JclBase, JclContainerIntf;
 
 // function pointer types
@@ -115,7 +115,6 @@ procedure Sort(AList: IJclIntfList; First, Last: Integer; AComparator: TIntfComp
 procedure Sort(AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
 procedure Sort(AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -127,7 +126,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils;

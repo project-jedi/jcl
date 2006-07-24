@@ -45,7 +45,7 @@ unit JclResources;
 interface
 
 {$IFDEF UNITVERSIONING}
-Uses
+uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
@@ -1734,7 +1734,6 @@ resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
   RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1746,7 +1745,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF UNITVERSIONING}
 initialization

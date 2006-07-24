@@ -521,7 +521,6 @@ type
     property LogOpen: Boolean read GetLogOpen;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -533,7 +532,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF HAS_UNIT_TYPES}
@@ -3095,25 +3093,19 @@ begin
 end;
 
 initialization
-
   {$IFDEF THREADSAFE}
   if not Assigned(GlobalMMFHandleListCS) then
     GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
   {$ENDIF THREADSAFE}
-
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   FinalizeMMFHandleList;
-
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS.Free;
   {$ENDIF THREADSAFE}

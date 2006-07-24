@@ -54,9 +54,9 @@ unit JclAnsiStrings; // former JclStrings
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -358,7 +358,6 @@ function ArrayOf(List: TStrings): TDynStringArray; overload;
 type
   EJclStringError = EJclError;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -370,7 +369,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF CLR}
@@ -3984,6 +3982,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
 
 end.

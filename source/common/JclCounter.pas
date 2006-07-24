@@ -38,9 +38,9 @@ unit JclCounter;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -82,7 +82,6 @@ function StopCount(var Counter: TJclCounter): Float;
 type
   EJclCounterError = class(EJclError);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -94,7 +93,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,

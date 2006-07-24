@@ -961,7 +961,6 @@ procedure PathListSetItem(var List: string; const Index: Integer; const Value: s
 // return the index of an item
 function PathListItemIndex(const List, Item: string): Integer;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -969,11 +968,10 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\source\common'
-    );                               
+    );
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF Win32API}

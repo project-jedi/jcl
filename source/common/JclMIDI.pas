@@ -35,9 +35,9 @@ unit JclMIDI;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes,
   JclBase;
 
@@ -360,7 +360,6 @@ procedure GetMidiOutputs(const List: TStrings);
 function MIDISingleNoteTuningData(Key: TMIDINote; Frequency: Single): TSingleNoteTuningData;
 function MIDINoteToStr(Note: TMIDINote): string;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -372,7 +371,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,
@@ -389,7 +387,7 @@ procedure ErrorNotImplemented;
 begin
   raise EJclInternalError.CreateRes(@RsMidiNotImplemented);
 end;
-  {$ENDIF UNIX}
+{$ENDIF UNIX}
 
 function MIDIOut(DeviceID: Cardinal = 0): IJclMIDIOut;
 begin

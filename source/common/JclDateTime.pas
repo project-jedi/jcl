@@ -53,9 +53,9 @@ unit JclDateTime;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.Globalization, System.Runtime.InteropServices,
   {$ELSE}
@@ -203,7 +203,6 @@ function UnixTimeToFileTime(const AValue: TJclUnixTime32): TFileTime;
 type
   EJclDateTimeError = class(EJclError);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -215,7 +214,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 const
   DaysInMonths: array [1..12] of Integer =
