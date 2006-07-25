@@ -39,9 +39,9 @@ interface
 {$I jcl.inc}
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows, 
   {$ENDIF MSWINDOWS}
@@ -199,7 +199,6 @@ type
   EJclCliInstructionError = class(EJclError);
   EJclCliInstructionStreamInvalid = class(EJclCliInstructionError);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -211,7 +210,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF HAS_UNIT_VARIANTS}

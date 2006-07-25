@@ -38,9 +38,9 @@ interface
 {$I windowsonly.inc}
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, SysUtils, Contnrs,
   MSTask,
   JclBase, JclSysUtils, JclSysInfo, JclWideStrings, JclWin32;
@@ -212,7 +212,6 @@ type
     property TaskFlags: DWORD read GetTaskFlags write SetTaskFlags;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -224,7 +223,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   ActiveX, ComObj, CommCtrl,

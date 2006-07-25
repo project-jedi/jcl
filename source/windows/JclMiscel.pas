@@ -39,9 +39,9 @@ unit JclMiscel;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows,
   JclBase;
 
@@ -71,7 +71,6 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 {$EXTERNALSYM ExitWindows}
 {$ENDIF SUPPORTS_EXTSYM}
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -83,7 +82,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,

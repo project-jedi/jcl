@@ -163,9 +163,9 @@ unit JclUnicode;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -1117,7 +1117,6 @@ var
 type
   EJclUnicodeError = class(EJclError);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1129,7 +1128,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF SUPPORTS_WIDESTRING}
 
@@ -8536,17 +8534,14 @@ end;
 
 initialization
   PrepareUnicodeData;
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
 
 finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   FreeUnicodeData;
 
 {$ENDIF SUPPORTS_WIDESTRING}

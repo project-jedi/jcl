@@ -39,10 +39,10 @@ interface
 {$I jcl.inc}
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-{$IFDEF MSWINDOWS}
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
@@ -853,7 +853,6 @@ type
     property TD32Scanner: TJclTD32InfoScanner read FTD32Scanner;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -865,7 +864,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources, JclSysUtils;

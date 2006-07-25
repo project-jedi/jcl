@@ -35,9 +35,9 @@ unit JclPrint;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, StdCtrls, SysUtils,
   JclBase;
 
@@ -164,7 +164,6 @@ function GetDefaultPrinterName: string;
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -176,7 +175,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,

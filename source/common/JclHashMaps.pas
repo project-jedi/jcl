@@ -338,7 +338,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;
@@ -360,7 +361,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;
@@ -382,7 +384,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;
@@ -404,7 +407,8 @@ begin
   { Keep reference counting working }
   if FromIndex < ToIndex then
     FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-  else if FromIndex > ToIndex then
+  else
+  if FromIndex > ToIndex then
     FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
 {$ENDIF CLR}
 end;

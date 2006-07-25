@@ -65,7 +65,6 @@ procedure MidiOutCheck(Code: MMResult);
 // MIDI In
 procedure MidiInCheck(Code: MMResult);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -77,7 +76,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources, JclStrings;
@@ -94,10 +92,8 @@ begin
   begin
     FMidiOutputs := TStringList.Create;
     for I := 0 to midiOutGetNumDevs - 1 do
-    begin
       if (midiOutGetDevCaps(I, @Caps, SizeOf(Caps)) = MMSYSERR_NOERROR) then
         FMidiOutputs.Add(Caps.szPName);
-    end;
   end;
   Result := FMidiOutputs;
 end;
@@ -145,7 +141,7 @@ type
     FHandle: HMIDIOUT;
     FDeviceID: Cardinal;
     FDeviceCaps: MIDIOUTCAPS;
-    FVolume: DWord;
+    FVolume: DWORD;
     function GetChannelVolume(Channel: TStereoChannel): Word;
     procedure SetChannelVolume(Channel: TStereoChannel; const Value: Word);
     function GetVolume: Word;
@@ -220,7 +216,8 @@ begin
   Hdr.dwFlags := 0;
   MidiOutCheck(midiOutPrepareHeader(FHandle, @Hdr, SizeOf(Hdr)));
   MidiOutCheck(midiOutLongMsg(FHandle, @Hdr, SizeOf(Hdr)));
-  repeat until (Hdr.dwFlags and MHDR_DONE) <> 0;
+  repeat
+  until (Hdr.dwFlags and MHDR_DONE) <> 0;
 end;
 
 procedure TMidiOut.DoSendMessage(const Data: array of Byte);
@@ -240,7 +237,8 @@ begin
       Msg.Bytes[I] := Data[I];
     MidiOutCheck(midiOutShortMsg(FHandle, Msg.DWord));
   end
-  else LongMessage(Data);
+  else
+    LongMessage(Data);
 end;
 
 function TMidiOut.GetChannelVolume(Channel: TStereoChannel): Word;
@@ -269,7 +267,7 @@ end;
 
 procedure TMidiOut.SetLRVolume(const LeftValue, RightValue: Word);
 var
-  Value: DWord;
+  Value: DWORD;
 begin
   with LongRec(Value) do
   begin
@@ -293,7 +291,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   FreeAndNil(FMidiOutputs);
 
 end.

@@ -222,7 +222,6 @@ type
 
 procedure CoMallocFree(P: Pointer);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -234,7 +233,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   ComObj,

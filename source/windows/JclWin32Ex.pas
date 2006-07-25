@@ -71,7 +71,6 @@ function JclWin32ExFunctions: TJclWin32ExFunctions;
 
 procedure JclCheckAndInitializeOpenGL;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -83,7 +82,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclBase, JclResources;
@@ -385,18 +383,14 @@ begin
 end;
 
 initialization
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
- 
 
 finalization
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   UnloadLibraries;
 
 end.

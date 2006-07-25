@@ -41,9 +41,9 @@ unit JclAppInst;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, Messages,
   JclFileUtils, JclSynch;
 
@@ -112,7 +112,6 @@ procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: 
 procedure ReadMessageString(const Message: TMessage; var S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -124,7 +123,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   SysUtils,

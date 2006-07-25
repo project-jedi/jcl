@@ -44,9 +44,9 @@ unit JclSvcCtrl;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, Contnrs,
   {$IFDEF FPC}
   JwaWinNT, JwaWinSvc,
@@ -350,7 +350,6 @@ function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceSt
 function StopServiceByName(const AServer, AServiceName: String):Boolean;
 function StartServiceByName(const AServer,AServiceName: String):Boolean;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -362,7 +361,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF FPC}

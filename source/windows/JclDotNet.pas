@@ -48,9 +48,9 @@ interface
 {$I jcl.inc}
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows, ActiveX,
   {$ENDIF MSWINDOWS}
@@ -288,7 +288,6 @@ procedure CorExitProcess(const exitCode: Integer); stdcall;
 const
   mscoree_dll = 'mscoree.dll';
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -300,7 +299,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   ComObj,

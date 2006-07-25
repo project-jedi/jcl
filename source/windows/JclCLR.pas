@@ -38,9 +38,9 @@ interface
 {$I jcl.inc}
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -487,7 +487,6 @@ type
     property VTableFixupCount: Integer read GetVTableFixupCount;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -499,7 +498,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   Math, TypInfo,
