@@ -38,9 +38,9 @@ unit JclMapi;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, Contnrs, Mapi, SysUtils,
   JclBase;
 
@@ -273,7 +273,6 @@ function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -285,7 +284,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclFileUtils, JclLogic, JclRegistry, JclResources, JclStrings, JclSysInfo, JclSysUtils;

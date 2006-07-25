@@ -35,9 +35,9 @@ unit JclMsdosSys;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils;
 
 type
@@ -117,7 +117,6 @@ type
 
 function GetMsdosSys: IJclMsdosSys;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -129,7 +128,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 const
   cMsdosSys = 'C:\MSDOS.SYS';

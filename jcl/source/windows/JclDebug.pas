@@ -732,7 +732,6 @@ const
   EnvironmentVarNtSymbolPath = '_NT_SYMBOL_PATH';                    // do not localize
   EnvironmentVarAlternateNtSymbolPath = '_NT_ALTERNATE_SYMBOL_PATH'; // do not localize
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -744,7 +743,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   ImageHlp,
@@ -2824,7 +2822,8 @@ var
 begin
   if DebugSymbolsLoadFailed then
     Result := False
-  else if not DebugSymbolsInitialized then
+  else
+  if not DebugSymbolsInitialized then
   begin
     DebugSymbolsLoadFailed := LoadDebugFunctions;
 
@@ -3618,7 +3617,8 @@ begin
   end;
   if DelayedTrace then
     DelayStoreStack
-  else if Raw then
+  else
+  if Raw then
     TraceStackRaw
   else
     TraceStackFrames;
@@ -4477,13 +4477,11 @@ initialization
   DebugInfoCritSect := TJclCriticalSection.Create;
   GlobalModulesList := TJclGlobalModulesList.Create;
   GlobalStackList := TJclGlobalStackList.Create;
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

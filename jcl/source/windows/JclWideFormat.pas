@@ -43,7 +43,7 @@ unit JclWideFormat;
 interface
 
 {$IFDEF UNITVERSIONING}
-Uses
+uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
@@ -76,7 +76,6 @@ Uses
   messages, the exception class is still EConvertError. }
 function WideFormat(const Format: WideString; const Args: array of const): WideString;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -88,7 +87,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   Windows,              // for MultiBytetoWideChar

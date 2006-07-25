@@ -43,9 +43,9 @@ unit JclSecurity;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   JclBase;
 
@@ -74,7 +74,6 @@ procedure FreeTokenInformation(var Buffer: Pointer);
 function GetInteractiveUserName: string;
 {$ENDIF ~FPC}
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -86,7 +85,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF FPC}

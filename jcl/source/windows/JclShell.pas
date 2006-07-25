@@ -44,9 +44,9 @@ unit JclShell;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   {$IFNDEF FPC}
   ShlObj,
@@ -188,7 +188,6 @@ var
   RtdlMsiGetComponentPath: function(szProduct: LPCSTR; szComponent: LPCSTR;
     lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE stdcall = nil;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -200,7 +199,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   ActiveX,
@@ -1439,7 +1437,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-
   UnloadModule(rtdlMsiLibHandle);
 
 end.

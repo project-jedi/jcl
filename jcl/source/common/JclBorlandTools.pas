@@ -1230,7 +1230,9 @@ begin
   begin
     GetDPKFileInfo(PackageFileName, RunOnly, @LibSuffix);
     Result := PathExtractFileNameNoExt(PackageFileName) + LibSuffix + BinaryExtensionPackage;
-  end else if SameText(PackageExtension, SourceExtensionBCBPackage) then
+  end
+  else
+  if SameText(PackageExtension, SourceExtensionBCBPackage) then
     GetBPKFileInfo(PackageFileName, RunOnly, @Result)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
@@ -1248,13 +1250,18 @@ begin
   begin
     GetDPKFileInfo(ProjectFileName, RunOnly, @LibSuffix);
     Result := PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + BinaryExtensionPackage;
-  end else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+  end
+  else
+  if SameText(ProjectExtension, SourceExtensionDelphiProject) then
   begin
     GetDPRFileInfo(ProjectFileName, BinaryExtension, @LibSuffix);
     Result := PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + BinaryExtension;
-  end else if SameText(ProjectExtension, SourceExtensionBCBPackage) then
+  end
+  else
+  if SameText(ProjectExtension, SourceExtensionBCBPackage) then
     GetBPKFileInfo(ProjectFileName, RunOnly, @Result)
-  else if SameText(ProjectExtension, SourceExtensionBCBProject) then
+  else
+  if SameText(ProjectExtension, SourceExtensionBCBProject) then
     GetBPRFileInfo(ProjectFileName, Result)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
@@ -2886,7 +2893,8 @@ begin
   PackageExtension := ExtractFileExt(PackageName);
   if SameText(PackageExtension,SourceExtensionBCBPackage) then
     Result := CompileBCBPackage(PackageName, BPLPath, DCPPath)
-  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  else
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
@@ -2900,7 +2908,8 @@ begin
   ProjectExtension := ExtractFileExt(ProjectName);
   if SameText(ProjectExtension,SourceExtensionBCBProject) then
     Result := CompileBCBProject(ProjectName, OutputDir, DcpSearchPath)
-  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+  else
+  if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
@@ -3299,7 +3308,8 @@ begin
   ProjectExtension := ExtractFileExt(ProjectName);
   if SameText(ProjectExtension, SourceExtensionBCBProject) then
     Result := InstallBCBExpert(ProjectName, OutputDir, DcpSearchPath)
-  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+  else
+  if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := InstallDelphiExpert(ProjectName, OutputDir, DcpSearchPath)
   else
     raise EJclBorRADException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
@@ -3313,7 +3323,8 @@ begin
   PackageExtension := ExtractFileExt(PackageName);
   if SameText(PackageExtension, SourceExtensionBCBPackage) then
     Result := InstallBCBIdePackage(PackageName, BPLPath, DCPPath)
-  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  else
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := InstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
   else
     raise EJclBorRADException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
@@ -3326,7 +3337,8 @@ begin
   PackageExtension := ExtractFileExt(PackageName);
   if SameText(PackageExtension, SourceExtensionBCBPackage) then
     Result := InstallBCBPackage(PackageName, BPLPath, DCPPath)
-  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  else
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath)
   else
     raise EJclBorRADException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
@@ -3892,7 +3904,8 @@ begin
   ProjectExtension := ExtractFileExt(ProjectName);
   if SameText(ProjectExtension,SourceExtensionBCBProject) then
     Result := UninstallBCBExpert(ProjectName, OutputDir)
-  else if SameText(ProjectExtension, SourceExtensionDelphiProject) then
+  else
+  if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := UninstallDelphiExpert(ProjectName, OutputDir)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
@@ -3906,7 +3919,8 @@ begin
   PackageExtension := ExtractFileExt(PackageName);
   if SameText(PackageExtension,SourceExtensionBCBPackage) then
     Result := UninstallBCBIdePackage(PackageName, BPLPath, DCPPath)
-  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  else
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := UninstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
@@ -3919,7 +3933,8 @@ begin
   PackageExtension := ExtractFileExt(PackageName);
   if SameText(PackageExtension,SourceExtensionBCBPackage) then
     Result := UninstallBCBPackage(PackageName, BPLPath, DCPPath)
-  else if SameText(PackageExtension, SourceExtensionDelphiPackage) then
+  else
+  if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := UninstallDelphiPackage(PackageName, BPLPath, DCPPath)
   else
     raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);

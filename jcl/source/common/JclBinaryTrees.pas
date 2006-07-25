@@ -339,9 +339,9 @@ type
 function TPreOrderIntfItr.Next: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -369,9 +369,9 @@ end;
 function TPreOrderIntfItr.Previous: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -406,9 +406,9 @@ type
 function TInOrderIntfItr.Next: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -435,9 +435,9 @@ end;
 function TInOrderIntfItr.Previous: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -474,9 +474,9 @@ type
 function TPostOrderIntfItr.Next: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -500,17 +500,18 @@ end;
 function TPostOrderIntfItr.Previous: IInterface;
 var
   LastRet: PJclIntfBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  if (FCursor.Right <> nil) then
+  if FCursor.Right <> nil then
     FCursor := FCursor.Right
-  else if (FCursor.Left <> nil) then
+  else
+  if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
   begin
@@ -654,9 +655,9 @@ type
 function TPreOrderStrItr.Next: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -684,9 +685,9 @@ end;
 function TPreOrderStrItr.Previous: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -721,9 +722,9 @@ type
 function TInOrderStrItr.Next: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -750,9 +751,9 @@ end;
 function TInOrderStrItr.Previous: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -789,9 +790,9 @@ type
 function TPostOrderStrItr.Next: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -815,17 +816,18 @@ end;
 function TPostOrderStrItr.Previous: string;
 var
   LastRet: PJclStrBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Str;
-  if (FCursor.Right <> nil) then
+  if FCursor.Right <> nil then
     FCursor := FCursor.Right
-  else if (FCursor.Left <> nil) then
+  else
+  if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
   begin
@@ -971,9 +973,9 @@ type
 function TPreOrderItr.Next: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -1001,9 +1003,9 @@ end;
 function TPreOrderItr.Previous: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -1038,9 +1040,9 @@ type
 function TInOrderItr.Next: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -1067,9 +1069,9 @@ end;
 function TInOrderItr.Previous: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -1106,9 +1108,9 @@ type
 function TPostOrderItr.Next: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
@@ -1132,17 +1134,18 @@ end;
 function TPostOrderItr.Previous: TObject;
 var
   LastRet: PJclBinaryNode;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := FCursor.Obj;
-  if (FCursor.Right <> nil) then
+  if FCursor.Right <> nil then
     FCursor := FCursor.Right
-  else if (FCursor.Left <> nil) then
+  else
+  if FCursor.Left <> nil then
     FCursor := FCursor.Left
   else
   begin

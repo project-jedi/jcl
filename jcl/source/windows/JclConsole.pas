@@ -46,9 +46,9 @@ unit JclConsole;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows,
   Classes, SysUtils, Contnrs,
   JclBase;
@@ -391,7 +391,6 @@ type
     property EventCount: DWORD read GetEventCount;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -403,7 +402,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF FPC}

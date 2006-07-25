@@ -2875,6 +2875,7 @@ begin
 end;
 
 {$IFNDEF CLR}
+
 function JclGenerateSetType(BaseType: PTypeInfo;
   const TypeName: ShortString): PTypeInfo;
 var
@@ -2944,6 +2945,7 @@ type
         (OpCode2: Byte;
          EntryOffset: Longint);
   end;
+  
 {$ENDIF ~CLR}
 
 // Copied from System.pas (_IsClass function)

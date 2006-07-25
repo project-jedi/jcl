@@ -209,7 +209,6 @@ const
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -221,7 +220,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclResources;

@@ -2364,8 +2364,8 @@ end;
         end
         else
         begin
-          if   IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64
-            or IsWinVista or IsWinLonghorn then
+          if IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64 or
+            IsWinVista or IsWinLonghorn then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -2938,8 +2938,9 @@ begin
                 GetNativeSystemInfo(SystemInfo);
                 if GetSystemMetrics(SM_SERVERR2) <> 0 then
                   Result := wvWin2003R2
-                else if (SystemInfo.wProcessorArchitecture <> PROCESSOR_ARCHITECTURE_INTEL)
-                  and GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                else
+                if (SystemInfo.wProcessorArchitecture <> PROCESSOR_ARCHITECTURE_INTEL) and
+                  GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
                   Result := wvWinXP64
                 else
                   Result := wvWin2003;
@@ -2979,7 +2980,8 @@ begin
     begin
       if (OSVersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptWorkstation
-      else if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+      else
+      if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
         Result := ptEnterprise
       else
         Result := ptServer;
@@ -2994,7 +2996,8 @@ begin
       begin
         if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) <> 0 then
           Result := ptDatacenterServer
-        else if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) <> 0 then
+        else
+        if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) <> 0 then
           Result := ptAdvancedServer
         else
           Result := ptServer;
@@ -3015,7 +3018,8 @@ begin
         else
         if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
           Result := ptEnterprise
-        else if (OSVersionInfo.wSuiteMask = VER_SUITE_BLADE) then
+        else
+        if (OSVersionInfo.wSuiteMask = VER_SUITE_BLADE) then
           Result := ptWebEdition
         else
           Result := ptServer;
@@ -3125,8 +3129,7 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
-  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista
-    or IsWinLonghorn then
+  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista or IsWinLonghorn then
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);

@@ -7743,7 +7743,6 @@ end;
 
 {$ENDIF ~CLR}
 
-
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

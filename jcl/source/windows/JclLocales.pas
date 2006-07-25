@@ -42,9 +42,9 @@ unit JclLocales;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   {$IFDEF FPC}
   JwaWinNLS,
   {$ENDIF FPC}
@@ -305,7 +305,6 @@ type
 // Various routines
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE_SENGCOUNTRY);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -317,7 +316,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   {$IFDEF FPC}

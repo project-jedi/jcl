@@ -459,6 +459,9 @@ begin
 end;
 
 function ConvertTemperature(const FromType, ToType: TTemperatureType; const Temperature: Float): Float;
+const
+  cToType = 'ToType';
+  cFromType = 'FromType';
 begin
   case FromType of
     { All conversions from Celcius to other formats are listed here }
@@ -475,9 +478,9 @@ begin
             Result := CelsiusToReaumur(Temperature);
         else
           {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
-          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
         end;
       end;
@@ -495,9 +498,9 @@ begin
             Result := FahrenheitToReaumur(Temperature);
         else
           {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
-          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
         end;
       end;
@@ -515,9 +518,9 @@ begin
             Result := KelvinToReaumur(Temperature);
         else
           {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
-          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
         end;
       end;
@@ -535,9 +538,9 @@ begin
             Result := RankineToReaumur(Temperature);
         else
           {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
-          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
         end;
       end;
@@ -555,17 +558,17 @@ begin
             Result := ReaumurToRankine(Temperature);
         else
           {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
-          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['ToType']);
+          raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
         end;
       end;
   else
     {$IFDEF CLR}
-    raise EInvalidOp.CreateFmt(RsTempConvTypeError, ['FromType']);
+    raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cFromType]);
     {$ELSE}
-    raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, ['FromType']);
+    raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
     {$ENDIF CLR}
   end;
 end;

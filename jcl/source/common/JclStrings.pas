@@ -1046,7 +1046,7 @@ var
         end;
       end;
 
-      if val > 255 then
+      if Val > 255 then
         {$IFDEF CLR}
         raise EJclStringError.Create(RsNumericConstantTooLarge);
         {$ELSE}
@@ -1082,7 +1082,7 @@ var
       end;
     end;
 
-    if val > 255 then
+    if Val > 255 then
       {$IFDEF CLR}
       raise EJclStringError.Create(RsNumericConstantTooLarge);
       {$ELSE}
@@ -4476,7 +4476,8 @@ var
           // undo the RefCount change
           Dec(TInterfacedObjectAccess(V.VObject).FRefCount);
         end
-        else if InheritsFrom(V.VObject.ClassType, 'TComponent') and V.VObject.GetInterface(IToString, Intf) then
+        else
+        if InheritsFrom(V.VObject.ClassType, 'TComponent') and V.VObject.GetInterface(IToString, Intf) then
           Result := Intf.ToString
         else
           raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);

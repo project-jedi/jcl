@@ -44,9 +44,9 @@ unit JclPeImage;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
@@ -980,7 +980,6 @@ function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -992,7 +991,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 uses
   JclLogic, JclResources, JclSysUtils;
