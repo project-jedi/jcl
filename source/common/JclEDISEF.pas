@@ -1408,12 +1408,7 @@ end;
 procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
 
-  {$IFNDEF CLR}
-  function ToPChar(const S: string): PChar;
-  begin
-    Result := PChar(S);
-  end;
-  {$ELSE}
+  {$IFDEF CLR}
   function ToPChar(const S: string): string;
   var
     I: Integer;
@@ -1426,7 +1421,12 @@ procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
       end;
     Result := S;
   end;
-  {$ENDIF ~CLR}
+  {$ELSE}
+  function ToPChar(const S: string): PChar;
+  begin
+    Result := PChar(S);
+  end;
+  {$ENDIF CLR}
 
 var
   Temp: TStringList;

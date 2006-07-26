@@ -233,7 +233,7 @@ function FileCreateTemp(var Prefix: string): THandle;
 {$ENDIF ~CLR}
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
 function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
-function FileDelete(const FileName: string {$IFNDEF CLR}; MoveToRecycleBin: Boolean = False{$ENDIF}): Boolean;
+function FileDelete(const FileName: string {$IFNDEF CLR}; MoveToRecycleBin: Boolean = False {$ENDIF}): Boolean;
 function FileExists(const FileName: string): Boolean;
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 function FileRestore(const FileName: string): Boolean;
@@ -2905,7 +2905,7 @@ begin
   {$ENDIF ~CLR}
 end;
 
-function FileDelete(const FileName: string {$IFNDEF CLR}; MoveToRecycleBin: Boolean = False{$ENDIF}): Boolean;
+function FileDelete(const FileName: string {$IFNDEF CLR}; MoveToRecycleBin: Boolean = False {$ENDIF}): Boolean;
 {$IFDEF CLR}
 begin
   Result := True;
@@ -5582,6 +5582,7 @@ begin
 end;
 
 {$IFNDEF CLR}
+
 procedure TJclFileEnumerator.AfterConstruction;
 begin
   inherited AfterConstruction;
@@ -5616,6 +5617,7 @@ begin
       Destroy;
   end;
 end;
+
 {$ENDIF ~CLR}
 
 procedure TJclFileEnumerator.Assign(Source: TPersistent);
