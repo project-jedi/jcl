@@ -80,7 +80,7 @@ ALERT_jedi_inc_incompatible
 {$ENDIF}
 
 //Support for JclUnitVersioning.pas)
-{$DEFINE UNITVERSIONING}                     
+{.$DEFINE UNITVERSIONING}
 
 
 // debug sources
