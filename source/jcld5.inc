@@ -47,7 +47,7 @@
 
 
 // JclHookExcept support for hooking exceptions from DLLs
-{.$DEFINE HOOK_DLL_EXCEPTIONS}
+{$DEFINE HOOK_DLL_EXCEPTIONS}
 
 
 //Threadsafe directive (added for DCL support)
@@ -59,7 +59,7 @@
 
 
 //Support for JclUnitVersioning.pas)
-{$DEFINE UNITVERSIONING}
+{.$DEFINE UNITVERSIONING}
 
 // debug sources
 // defining these symbols will the debug source to be automatically registered
@@ -69,3 +69,5 @@
 {.$DEFINE DEBUG_NO_EXPORTS}
 {.$DEFINE DEBUG_NO_SYMBOLS}
 
+// mark EDI units as weak package units (to avoid conflicts with the EDI package)
+{.$DEFINE EDI_WEAK_PACKAGE_UNITS}

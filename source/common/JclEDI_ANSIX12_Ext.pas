@@ -39,14 +39,21 @@ unit JclEDI_ANSIX12_Ext;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$IFDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF EDI_WEAK_PACKAGE_UNITS}
 
 interface
 
 uses
-  SysUtils, Classes, Contnrs, JclResources, 
+  SysUtils, Classes, Contnrs, JclResources,
+  {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
@@ -86,6 +93,18 @@ type
       write FEDITSDOptions;
     property ErrorOccured: Boolean read FErrorOccured;
   end;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 implementation
 
@@ -256,5 +275,15 @@ begin
     end;
   end;
 end;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 end.

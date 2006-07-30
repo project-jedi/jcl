@@ -47,6 +47,7 @@ type
       ioJclDefDebugNoMap,
       ioJclDefDebugNoExports,
       ioJclDefDebugNoSymbols,
+      ioJclDefEDIWeakPackageUnits,
       ioJclMapCreate,
       ioJclMapLink,
       ioJclMapDelete,

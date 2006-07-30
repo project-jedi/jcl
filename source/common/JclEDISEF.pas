@@ -39,14 +39,21 @@ unit JclEDISEF;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$IFDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF EDI_WEAK_PACKAGE_UNITS}
 
 interface
 
 uses
   SysUtils, Classes, Contnrs,
+  {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
   JclEDI;
 
 const
@@ -792,6 +799,18 @@ function InsertTableInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFTable; overload;
 function InsertTableInto(DataObjectGroup: TEDISEFDataObjectGroup;
   Table: TEDISEFTable; BeforeObject: TEDISEFDataObject): TEDISEFTable; overload;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 implementation
 
@@ -4673,5 +4692,15 @@ begin
     EDISEFFile.TEXTSETS.Add(TextSet, TextSet.Where);
   end;
 end;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 end.
