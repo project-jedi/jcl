@@ -46,6 +46,9 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils,
   Qt, QGraphics,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase;
 
 type
@@ -271,6 +274,16 @@ var
 
   BlendLine: TBlendLine;
   BlendLineEx: TBlendLineEx;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\visclx'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -2500,9 +2513,15 @@ initialization
   SetupFunctions;
   if MMX_ACTIVE then
     GenAlphaTable;
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
   if MMX_ACTIVE then
     FreeAlphaTable;
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

@@ -56,6 +56,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF VisualCLX}
   Types, QGraphics, JclQGraphUtils,
   {$ELSE}
@@ -547,6 +550,21 @@ procedure ColorToGrayscale(Dst, Src: TJclBitmap32);
 procedure ApplyLUT(Dst, Src: TJclBitmap32; const LUT: TLUT8);
 procedure SetGamma(Gamma: Single = 0.7);
 {$ENDIF Bitmap32}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    {$IFDEF VCL}
+    LogPath: 'JCL\source\vcl'
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    LogPath: 'JCL\source\visclx'
+    {$ENDIF VisualCLX}
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -5685,5 +5703,11 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
+{$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

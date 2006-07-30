@@ -52,6 +52,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Types, QGraphics, JclQGraphUtils,
   JclBase;
 
@@ -178,6 +181,16 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 {$ENDIF MSWINDOWS}
 
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\visclx'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1466,5 +1479,11 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
+{$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
