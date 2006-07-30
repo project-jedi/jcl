@@ -258,6 +258,8 @@ resourcestring
   RsDefDebugNoExports    = 'No debug source from function export table for libraries';
   RsDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
 
+  RsDefEDIWeakPackageUnits = 'EDI weak package units';
+
   RsMapCreate            = 'Create MAP files';
   RsMapLink              = 'Link MAP files';
   RsMapDelete            = 'Delete MAP files after the link';
@@ -315,6 +317,7 @@ resourcestring
   RsHintJclDefDebugNoTD32       = 'Disable support for TD32 informations';
   RsHintJclDefDebugNoExports    = 'Disable support for export names of libraries';
   RsHintJclDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
+  RsHintJclDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
   RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
   RsHintJclMapLink              = 'Link MAP files as a resource in the output library or executable, the stack can be traced on exceptions';
   RsHintJclMapDelete            = 'Once linked in the binary, delete the original MAP file';
@@ -426,6 +429,9 @@ const
       (Parent: ioJCL;                    // ioJclDefDebugNoSymbols
        Caption: RsDefDebugNoSymbols;
        Hint: RsHintJclDefDebugNoSymbols),
+      (Parent: ioJCL;                    // ioJclDefEDIWeakPackageUnits
+       Caption: RsDefEDIWeakPackageUnits;
+       Hint: RsHintJclDefEDIWeakPackageUnits),
       (Parent: ioJCL;                    // ioJclMapCreate
        Caption: RsMapCreate;
        Hint: RsHintJclMapCreate),
@@ -1326,6 +1332,7 @@ begin
     AddNode(ProductNode, ioJclDefDebugNoMap, [goNoAutoCheck]);
     AddNode(ProductNode, ioJclDefDebugNoExports, [goNoAutoCheck]);
     AddNode(ProductNode, ioJclDefDebugNoSymbols, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefEDIWeakPackageUnits, [goNoAutoCheck]);
 
     EnvNode := AddNode(ProductNode, ioJclEnv);
     AddNode(EnvNode, ioJclEnvLibPath);
@@ -1512,6 +1519,8 @@ begin
       Defines.Add('DEBUG_NO_EXPORTS');
     ioJclDefDebugNoSymbols:
       Defines.Add('DEBUG_NO_SYMBOLS');
+    ioJclDefEDIWeakPackageUnits:
+      Defines.Add('EDI_WEAK_PACKAGE_UNITS');
     ioJclMapCreate:
       Target.MapCreate := True;
     ioJclMapLink:

@@ -39,14 +39,21 @@ unit JclEDITranslators;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$IFDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF EDI_WEAK_PACKAGE_UNITS}
 
 interface
 
 uses
-  SysUtils, 
+  SysUtils,
+  {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
@@ -80,6 +87,18 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 implementation
 
@@ -393,5 +412,15 @@ destructor TEDISEFToSpecTranslator.Destroy;
 begin
   inherited Destroy;
 end;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 end.

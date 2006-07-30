@@ -40,10 +40,11 @@ unit JclEDI;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
+{$IFDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF EDI_WEAK_PACKAGE_UNITS}
 // Add the following directive in project options for debugging memory leaks.
 // {$DEFINE ENABLE_EDI_DEBUGGING}
 
@@ -51,6 +52,11 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
   JclBase;
 
 const
@@ -369,6 +375,18 @@ type
 // Compatibility functions
 function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
+
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 implementation
 
@@ -1638,4 +1656,13 @@ begin
   Result := Peek;
 end;
 
+{$IFNDEF EDI_WEAK_PACKAGE_UNITS}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 end.
