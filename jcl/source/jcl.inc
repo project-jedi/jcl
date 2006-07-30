@@ -1,33 +1,35 @@
-{**************************************************************************************************}
-{                                                                                                  }
-{ Project JEDI Code Library (JCL)                                                                  }
-{                                                                                                  }
-{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
-{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
-{ License at http://www.mozilla.org/MPL/                                                           }
-{                                                                                                  }
-{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
-{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
-{ and limitations under the License.                                                               }
-{                                                                                                  }
-{ The Original Code is jcl.inc                                                                     }
-{                                                                                                  }
-{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
-{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel.                       }
-{                                                                                                  }
-{ Contributors:                                                                                    }
-{   Marcel van Brakel                                                                              }
-{   Matthias Thoma (mthoma)                                                                        }
-{   Petr Vones                                                                                     }
-{   Robert Marquardt (marquardt)                                                                   }
-{   Robert Rossmair (rrossmair)                                                                    }
-{                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ This include file defines various JCL specific defines. The more generic defines are defined in  }
-{ the jedi.inc file which is shared with the JEDI VCL.                                             }
-{                                                                                                  }
-{**************************************************************************************************}
+{****************************************************************************}
+{                                                                            }
+{ Project JEDI Code Library (JCL)                                            }
+{                                                                            }
+{ The contents of this file are subject to the Mozilla Public License        }
+{ Version 1.1 (the "License"); you may not use this file except in           }
+{ compliance with the License. You may obtain a copy of the License at       }
+{ http://www.mozilla.org/MPL/                                                }
+{                                                                            }
+{ Software distributed under the License is distributed on an "AS IS" basis, }
+{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
+{ for the specific language governing rights and limitations under the       }
+{ License.                                                                   }
+{                                                                            }
+{ The Original Code is jcl.inc                                               }
+{                                                                            }
+{ The Initial Developer of the Original Code is Marcel van Brakel.           }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. }
+{                                                                            }
+{ Contributors:                                                              }
+{   Marcel van Brakel                                                        }
+{   Matthias Thoma (mthoma)                                                  }
+{   Petr Vones                                                               }
+{   Robert Marquardt (marquardt)                                             }
+{   Robert Rossmair (rrossmair)                                              }
+{                                                                            }
+{****************************************************************************}
+{                                                                            }
+{ This include file defines various JCL specific defines. The more generic   }
+{ defines are defined in the jedi.inc file which is shared with the JEDI VCL.}
+{                                                                            }
+{****************************************************************************}
 
 {$B-} // Boolean shortcut evaluation
 {$H+} // Long strings
@@ -41,12 +43,96 @@ ALERT_jedi_inc_incompatible
 // secure against old versions of jedi.inc.
 {$ENDIF ~JEDI_INC}
 
+{$IFDEF CLR}
+  {----------------------------}
+  { BDS                        }
+  {----------------------------}
+  {$IFDEF BDS3}
+    {$I jcld9.net.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS3}
+  {----------------------------}
+  {$IFDEF BDS4}
+    {$I jcld10.net.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS4}
+  {----------------------------}
+{$ELSE CLR}
+  {----------------------------}
+  { Kylix                      }
+  {----------------------------}
+  {$IFDEF KYLIX3}
+    {$I jclk3.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF KYLIX3}
+  {----------------------------}
+  { C++Builder                 }
+  {----------------------------}
+  {$IFDEF BCB5}
+    {$I jclc5.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BCB5}
+  {----------------------------}
+  {$IFDEF BCB6}
+    {$I jclc6.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BCB6}
+  {----------------------------}
+  { Delphi                     }
+  {----------------------------}
+  {$IFDEF DELPHI5}
+    {$I jcld5.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF DELPIH5}
+  {----------------------------}
+  {$IFDEF DELPHI6}
+    {$I jcld6.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF DELPIH6}
+  {----------------------------}
+  {$IFDEF DELPHI7}
+    {$I jcld7.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF DELPIH7}  
+  {----------------------------}
+  { BDS                        }
+  {----------------------------}
+  {$IFDEF BDS1}
+    {$I jclcs1.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS1}
+  {----------------------------}
+  {$IFDEF BDS2}
+    {$I jcld8.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS2}
+  {----------------------------}
+  {$IFDEF BDS3}
+    {$I jcld9.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS3}
+  {----------------------------}
+  {$IFDEF BDS4}
+    {$I jcld10.inc}
+    {$DEFINE JCL_CONFIGURED}
+  {$ENDIF BDS4}
+  {----------------------------}
+{$ENDIF ~CLR}
+
+// check configuration
+{$IFNDEF JCL_CONFIGURED}
+ {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+  {$MESSAGE FATAL 'Your Delphi/BCB version is not supported by this JCL version!'}
+ {$ELSE}
+  'Your Delphi/BCB version is not supported by this JCL version!'
+ {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
+{$ENDIF !JCL_CONFIGURED}
+
 // Math precision selection, mutually exclusive
-
-{$DEFINE MATH_EXTENDED_PRECISION}
-{.$DEFINE MATH_DOUBLE_PRECISION}
-{.$DEFINE MATH_SINGLE_PRECISION}
-
+{$IFDEF MATH_EXTENDED_PRECISION}
+  {$UNDEF MATH_SINGLE_PRECISION}
+  {$UNDEF MATH_DOUBLE_PRECISION}
+{$ENDIF}
 {$IFDEF MATH_DOUBLE_PRECISION}
   {$UNDEF MATH_SINGLE_PRECISION}
   {$UNDEF MATH_EXTENDED_PRECISION}
@@ -56,11 +142,13 @@ ALERT_jedi_inc_incompatible
   {$UNDEF MATH_EXTENDED_PRECISION}
 {$ENDIF}
 
-{.$DEFINE MATH_EXT_EXTREMEVALUES}
-
-// JclHookExcept support for hooking exceptions from DLLs
-
-{.$DEFINE HOOK_DLL_EXCEPTIONS}
+{$IFNDEF MATH_EXTENDED_PRECISION}
+  {$IFNDEF MATH_DOUBLE_PRECISION}
+    {$IFNDEF MATH_SINGLE_PRECISION}
+      {$DEFINE MATH_EXTENDED_PRECISION}
+    {$ENDIF}
+  {$ENDIF}
+{$ENDIF}
 
 {$IFDEF SUPPORTS_UNSAFE_WARNINGS}
   {$WARN UNSAFE_TYPE OFF}
@@ -68,29 +156,9 @@ ALERT_jedi_inc_incompatible
   {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
 
-
-//Threadsafe directive (added for DCL support)
-{.DEFINE THREADSAFE}
-
-// To exclude obsolete code from compilation, remove the point from the line below
-{.$DEFINE DROP_OBSOLETE_CODE}
-
 {$IFNDEF DROP_OBSOLETE_CODE}
   {$DEFINE KEEP_DEPRECATED}
 {$ENDIF}
-
-//Support for JclUnitVersioning.pas)
-{.$DEFINE UNITVERSIONING}
-
-
-// debug sources
-
-// defining these symbols will the debug source to be automatically registered
-{.$DEFINE DEBUG_NO_BINARY}
-{.$DEFINE DEBUG_NO_TD32}
-{.$DEFINE DEBUG_NO_MAP}
-{.$DEFINE DEBUG_NO_EXPORTS}
-{.$DEFINE DEBUG_NO_SYMBOLS}
 
 {$IFDEF CLR}
  {$WARN UNSAFE_TYPE ON}

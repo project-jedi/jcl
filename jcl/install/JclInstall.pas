@@ -96,6 +96,7 @@ type
   protected
     constructor Create(JclDistribution: TJclDistribution; InstallTarget: TJclBorRADToolInstallation);
     function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+    function SaveDefines: Boolean;
     {$IFDEF MSWINDOWS}
     procedure AddHelpToIdeTools;
     procedure AddHelpToOpenHelp;
@@ -246,8 +247,16 @@ resourcestring
   RsDefMathPrecSingle    = 'Single float precision';
   RsDefMathPrecDouble    = 'Double float precision';
   RsDefMathPrecExtended  = 'Extended float precision';
-  
-  RsUnitVersioning       = 'Include Unit Versioning';
+  RsDefMathExtremeValues = 'Support for infinite and NaN';
+
+  RsDefUnitVersioning    = 'Include Unit Versioning';
+
+  RsDefHookDllExceptions = 'Hook exceptions in DLL';
+  RsDefDebugNoBinary     = 'No debug source from Jedi debug informations';
+  RsDefDebugNoTD32       = 'No debug source from TD32 debug symbols';
+  RsDefDebugNoMap        = 'No debug source from Map files';
+  RsDefDebugNoExports    = 'No debug source from function export table for libraries';
+  RsDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
 
   RsMapCreate            = 'Create MAP files';
   RsMapLink              = 'Link MAP files';
@@ -298,7 +307,14 @@ resourcestring
   RsHintJclDefMathPrecSingle    = 'type Float = Single';
   RsHintJclDefMathPrecDouble    = 'type Float = Double';
   RsHintJclDefMathPrecExtended  = 'type Float = Extended';
-  RsHintJclUnitVersioning       = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
+  RsHintJclDefMathExtremeValues = 'Exp en Power functions accept and return infinite and NaN';
+  RsHintJclDefUnitVersioning    = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
+  RsHintJclDefHookDllExceptions = 'Hook exceptions raised in DLL compiled with the JCL';
+  RsHintJclDefDebugNoBinary     = 'Disable support for JDBG files';
+  RsHintJclDefDebugNoMap        = 'Disable support for MAP files';
+  RsHintJclDefDebugNoTD32       = 'Disable support for TD32 informations';
+  RsHintJclDefDebugNoExports    = 'Disable support for export names of libraries';
+  RsHintJclDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
   RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
   RsHintJclMapLink              = 'Link MAP files as a resource in the output library or executable, the stack can be traced on exceptions';
   RsHintJclMapDelete            = 'Once linked in the binary, delete the original MAP file';
@@ -386,9 +402,30 @@ const
       (Parent: ioJCL;                    // ioJclDefMathPrecExtended
        Caption: RsDefMathPrecExtended;
        Hint: RsHintJclDefMathPrecExtended),
-      (Parent: ioJCL;                    // ioJclUnitVersioning
-       Caption: RsUnitVersioning;
-       Hint: RsHintJclUnitVersioning),   
+      (Parent: ioJCL;                    // ioJclDefMathExtremeValues
+       Caption: RsDefMathExtremeValues;
+       Hint: RsHintJclDefMathExtremeValues),
+      (Parent: ioJCL;                    // ioJclDefUnitVersioning
+       Caption: RsDefUnitVersioning;
+       Hint: RsHintJclDefUnitVersioning),
+      (Parent: ioJCL;                    // ioJclDefHookDllExceptions
+       Caption: RsDefHookDllExceptions;
+       Hint: RsHintJclDefHookDllExceptions),
+      (Parent: ioJCL;                    // ioJclDefDebugNoBinary
+       Caption: RsDefDebugNoBinary;
+       Hint: RsHintJclDefDebugNoBinary),
+      (Parent: ioJCL;                    // ioJclDefDebugNoTD32
+       Caption: RsDefDebugNoTD32;
+       Hint: RsHintJclDefDebugNoTD32),
+      (Parent: ioJCL;                    // ioJclDefDebugNoMap
+       Caption: RsDefDebugNoMap;
+       Hint: RsHintJclDefDebugNoMap),
+      (Parent: ioJCL;                    // ioJclDefDebugNoExports
+       Caption: RsDefDebugNoExports;
+       Hint: RsHintJclDefDebugNoExports),
+      (Parent: ioJCL;                    // ioJclDefDebugNoSymbols
+       Caption: RsDefDebugNoSymbols;
+       Hint: RsHintJclDefDebugNoSymbols),
       (Parent: ioJCL;                    // ioJclMapCreate
        Caption: RsMapCreate;
        Hint: RsHintJclMapCreate),
@@ -895,7 +932,7 @@ begin
   with Target.DCC32 do
   begin
     SetDefaultOptions;
-    Options.Add('-D' + StringsToStr(Defines, ';'));
+    //Options.Add('-D' + StringsToStr(Defines, ';'));
     Options.Add('-M');
     if Target.RADToolKind = brCppBuilder then
     begin
@@ -1281,7 +1318,14 @@ begin
     AddNode(ProductNode, ioJclDefMathPrecSingle, [goRadioButton]);
     AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
     AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
-    AddNode(ProductNode, ioJclUnitVersioning);
+    AddNode(ProductNode, ioJclDefMathExtremeValues, [goChecked]);
+    AddNode(ProductNode, ioJclDefUnitVersioning, [goChecked]);
+    AddNode(ProductNode, ioJclDefHookDllExceptions, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefDebugNoBinary, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefDebugNoTD32, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefDebugNoMap, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefDebugNoExports, [goNoAutoCheck]);
+    AddNode(ProductNode, ioJclDefDebugNoSymbols, [goNoAutoCheck]);
 
     EnvNode := AddNode(ProductNode, ioJclEnv);
     AddNode(EnvNode, ioJclEnvLibPath);
@@ -1452,8 +1496,22 @@ begin
       Defines.Add('MATH_DOUBLE_PRECISION');
     ioJclDefMathPrecExtended:
       Defines.Add('MATH_EXTENDED_PRECISION');
-    ioJclUnitVersioning:
+    ioJclDefMathExtremeValues:
+      Defines.Add('MATH_EXT_EXTREMEVALUES');
+    ioJclDefUnitVersioning:
       Defines.Add('UNITVERSIONING');
+    ioJclDefHookDllExceptions:
+      Defines.Add('HOOK_DLL_EXCEPTIONS');
+    ioJclDefDebugNoBinary:
+      Defines.Add('DEBUG_NO_BINARY');
+    ioJclDefDebugNoTD32:
+      Defines.Add('DEBUG_NO_TD32');
+    ioJclDefDebugNoMap:
+      Defines.Add('DEBUG_NO_MAP');
+    ioJclDefDebugNoExports:
+      Defines.Add('DEBUG_NO_EXPORTS');
+    ioJclDefDebugNoSymbols:
+      Defines.Add('DEBUG_NO_SYMBOLS');
     ioJclMapCreate:
       Target.MapCreate := True;
     ioJclMapLink:
@@ -1505,7 +1563,8 @@ begin
     ioJclEnvDebugDCUPath:
       if Target.AddToDebugDCUPath(DebugDcuDir) then
         WriteLog(Format(LineBreak + 'Added "%s" to Debug DCU Path.', [DebugDcuDir]));
-    // ioJclMake:
+    ioJclMake:
+      Result := SaveDefines;
     ioJclMakeRelease:
       Result := MakeUnits(False);
     // ioJclMakeReleaseVClx: handled with ioJclMakeRelease
@@ -2087,6 +2146,17 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+function TJclInstallation.RemoveSettings: Boolean;
+var
+  JclSettingsKey: string;
+begin
+  JclSettingsKey := Target.ConfigDataLocation + '\Jedi\JCL';
+  if RegKeyExists(HKCU, JclSettingsKey) then
+    Result := RegDeleteKeyTree(HKCU, JclSettingsKey)
+  else
+    Result := True;
+end;
+
 function TJclInstallation.Run: Boolean;
   procedure EnsureDirectoryExists(const DirectoryName, DisplayName: string);
   begin
@@ -2136,23 +2206,74 @@ begin
   SaveOptions;
 end;
 
+function TJclInstallation.SaveDefines: Boolean;
+var
+  IncludeFileName, IncludeLine, Symbol: string;
+  IncludeFile: TStrings;
+  IndexLine, DefinePos, SymbolEnd: Integer;
+  Defined, NotDefined: Boolean;
+const
+  DefineText = '$DEFINE';
+  NotDefineText = '.' + DefineText;
+begin
+  WriteLog('Saving conditional defines...');
+  Result := True;
+  IncludeFileName := Format('%sjcl%s.inc', [PathAddSeparator(Distribution.SourceDir), Target.VersionNumberStr]);
+
+  try
+    IncludeFile := TStringList.Create;
+    try
+      IncludeFile.LoadFromFile(IncludeFileName);
+      WriteLog('Include file loaded');
+
+      for IndexLine := 0 to IncludeFile.Count - 1 do
+      begin
+        IncludeLine := IncludeFile.Strings[IndexLine];
+        DefinePos := AnsiPos(DefineText, UpperCase(IncludeLine));
+        if DefinePos > 1 then
+        begin
+          Defined := IncludeLine[DefinePos - 1] = '{';
+          NotDefined := IncludeLine[DefinePos - 1] = '.';
+          if Defined or NotDefined then
+          begin
+            Inc(DefinePos, Length(DefineText));
+            while IncludeLine[DefinePos] in AnsiWhiteSpace do
+              Inc(DefinePos);
+            SymbolEnd := DefinePos;
+            while IncludeLine[SymbolEnd] in AnsiValidIdentifierLetters do
+              Inc(SymbolEnd);
+
+            Symbol := Copy(IncludeLine, DefinePos, SymbolEnd - DefinePos);
+
+            DefinePos := Defines.IndexOf(Symbol);
+
+            if (DefinePos >= 0) and NotDefined then
+              IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
+
+            if (DefinePos < 0) and Defined then
+              IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
+
+            IncludeFile.Strings[IndexLine] := IncludeLine;
+          end;
+        end;
+      end;
+
+      IncludeFile.SaveToFile(IncludeFileName);
+      WriteLog('Include file saved');
+    finally
+      IncludeFile.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
 function TJclInstallation.Undo: Boolean;
 begin
   Result := True;
   if OptionSelected(ioJCL) then
     Result := UninstallSelectedOptions;
   SaveOptions;
-end;
-
-function TJclInstallation.RemoveSettings: Boolean;
-var
-  JclSettingsKey: string;
-begin
-  JclSettingsKey := Target.ConfigDataLocation + '\Jedi\JCL';
-  if RegKeyExists(HKCU, JclSettingsKey) then
-    Result := RegDeleteKeyTree(HKCU, JclSettingsKey)
-  else
-    Result := True;
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
