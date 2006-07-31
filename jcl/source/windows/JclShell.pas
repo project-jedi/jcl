@@ -26,6 +26,8 @@
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   kogerbnz                                                                                       }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -59,6 +61,10 @@ type
   TSHDeleteOptions = set of TSHDeleteOption;
   TSHRenameOption  = (roSilent, roRenameOnCollision);
   TSHRenameOptions = set of TSHRenameOption;
+  TSHCopyOption    = (coSilent, coAllowUndo, coFilesOnly, coNoConfirmation);
+  TSHCopyOptions   = set of TSHCopyOption;
+  TSHMoveOption    = (moSilent, moAllowUndo, moFilesOnly, moNoConfirmation);
+  TSHMoveOptions   = set of TSHMoveOption;
 
   TUnicodePath     = array [0..MAX_PATH-1] of WideChar;
   TAnsiPath        = array [0..MAX_PATH-1] of char;
@@ -66,6 +72,8 @@ type
 function SHDeleteFiles(Parent: THandle; const Files: string; Options: TSHDeleteOptions): Boolean;
 function SHDeleteFolder(Parent: THandle; const Folder: string; Options: TSHDeleteOptions): Boolean;
 function SHRenameFile(const Src, Dest: string; Options: TSHRenameOptions): Boolean;
+function SHCopy(Parent: THandle; const Src, Dest: string; Options: TSHCopyOptions): Boolean;
+function SHMove(Parent: THandle; const Src, Dest: string; Options: TSHMoveOptions): Boolean;
 
 type
   TEnumFolderFlag = (efFolders, efNonFolders, efIncludeHidden);
@@ -297,6 +305,80 @@ begin
     pTo := PChar(Destination);
     fFlags := RenameOptionsToCardinal(Options);
   end;
+  {$IFDEF FPC}
+  Result := SHFileOperation(@FileOp) = 0;
+  {$ELSE}
+  Result := SHFileOperation(FileOp) = 0;
+  {$ENDIF FPC}
+end;
+
+function CopyOptionsToCardinal(Options: TSHCopyOptions): Cardinal;
+begin
+  Result := 0;
+  if coSilent in Options then
+    Result := Result or FOF_SILENT;
+  if coAllowUndo in Options then
+    Result := Result or FOF_ALLOWUNDO;
+  if coFilesOnly in Options then
+    Result := Result or FOF_FILESONLY;
+  if coNoConfirmation in Options then
+    Result := Result or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR;
+end;
+
+function SHCopy(Parent: THandle; const Src, Dest: string; Options: TSHCopyOptions): Boolean;
+var
+  FileOp: TSHFileOpStruct;
+  Source, Destination: string;
+begin
+  FillChar(FileOp,SizeOf(FileOp),0);
+  {$IFDEF FPC}
+  FileOp.THandle := Parent;
+  {$ELSE}
+  FileOp.Wnd := Parent;
+  {$ENDIF FPC}
+  FileOp.wFunc := FO_COPY;
+  Source := Src + #0#0;
+  Destination := Dest + #0#0;
+  FileOp.pFrom := PChar(Source);
+  FileOp.pTo := PChar(Destination);
+  FileOp.fFlags := CopyOptionsToCardinal(Options);
+  {$IFDEF FPC}
+  Result := SHFileOperation(@FileOp) = 0;
+  {$ELSE}
+  Result := SHFileOperation(FileOp) = 0;
+  {$ENDIF FPC}
+end;
+
+function MoveOptionsToCardinal(Options: TSHMoveOptions): Cardinal;
+begin
+  Result := 0;
+  if moSilent in Options then
+    Result := Result or FOF_SILENT;
+  if moAllowUndo in Options then
+    Result := Result or FOF_ALLOWUNDO;
+  if moFilesOnly in Options then
+    Result := Result or FOF_FILESONLY;
+  if moNoConfirmation in Options then
+    Result := Result or FOF_NOCONFIRMATION;
+end;
+
+function SHMove(Parent: THandle; const Src, Dest: string; Options: TSHMoveOptions): Boolean;
+var
+  FileOp: TSHFileOpStruct;
+  Source, Destination: string;
+begin
+  FillChar(FileOp,SizeOf(FileOp),0);
+  {$IFDEF FPC}
+  FileOp.THandle := Parent;
+  {$ELSE}
+  FileOp.Wnd := Parent;
+  {$ENDIF FPC}
+  FileOp.wFunc := FO_MOVE;
+  Source := Src + #0#0;
+  Destination := Dest + #0#0;
+  FileOp.pFrom := PChar(Source);
+  FileOp.pTo := PChar(Destination);
+  FileOp.fFlags := MoveOptionsToCardinal(Options);
   {$IFDEF FPC}
   Result := SHFileOperation(@FileOp) = 0;
   {$ELSE}
