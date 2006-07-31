@@ -123,10 +123,11 @@ resourcestring
   RsCompilingProject            = 'Compiling project %s';
   RsCompilationOk               = 'Compilation success';
   RsCompilationFailed           = 'Compilation failure';
-  RsLinkingMap                  = 'Linking MAP file in %s';
-  RsLinkMapOk                   = 'Map link success';
-  RsLinkMapInfo                 = 'Bug unit: %s; MAP size: %d; Debug size: %d';
-  RsLinkMapFailed               = 'Map link failure';
+  RsCreatingJdbg                = 'Creating Jedi Debug informations for %s';
+  RsInsertingJdbg               = 'Inserting Jedi Debug informations in %s';
+  RsJdbgInfo                    = 'Bug unit: %s; MAP size: %d; Debug size: %d';
+  RsJdbgInfoOk                  = 'JDBG successfully generated';
+  RsJdbgInfoFailed              = 'Cannot generate JDBG informations';
   RsDeletingFile                = 'Deleting file %s';
   RsFileDeletionOk              = 'File deletion success';
   RsFileDeletionFailed          = 'File deletion failure';

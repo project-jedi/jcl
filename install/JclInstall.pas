@@ -261,8 +261,9 @@ resourcestring
   RsDefEDIWeakPackageUnits = 'EDI weak package units';
 
   RsMapCreate            = 'Create MAP files';
-  RsMapLink              = 'Link MAP files';
-  RsMapDelete            = 'Delete MAP files after the link';
+  RsJdbgCreate           = 'Create Jedi Debug Informations';
+  RsJdbgInsert           = 'Insert Jedi Debug Informations in the librairies';
+  RsMapDelete            = 'Do not keep MAP files';
 
   RsEnvironment          = 'Environment';
   RsEnvLibPath           = 'Add JCL to IDE Library Path';
@@ -319,8 +320,9 @@ resourcestring
   RsHintJclDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
   RsHintJclDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
   RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
-  RsHintJclMapLink              = 'Link MAP files as a resource in the output library or executable, the stack can be traced on exceptions';
-  RsHintJclMapDelete            = 'Once linked in the binary, delete the original MAP file';
+  RsHintJclJdbgCreate           = 'Create Jedi Debug Informations from the MAP files';
+  RsHintJclJdbgInsert           = 'Insert Jedi Debug Informations into the libraries (only the BPL has to be redistributed)';
+  RsHintJclMapDelete            = 'The original MAP file is not kept once Jedi Debug Informations are generated';
   RsHintJclEnv = 'Set selected environment items';
   RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
@@ -435,10 +437,13 @@ const
       (Parent: ioJCL;                    // ioJclMapCreate
        Caption: RsMapCreate;
        Hint: RsHintJclMapCreate),
-      (Parent: ioJclMapCreate;           // ioJclMapLink
-       Caption: RsMapLink;
-       Hint: RsHintJclMapLink),
-      (Parent: ioJclMapLink;             // ioJclMapDelete
+      (Parent: ioJclMapCreate;           // ioJclJdbgCreate
+       Caption: RsJdbgCreate;
+       Hint: RsHintJclJdbgCreate),
+      (Parent: ioJclMapCreate;           // ioJclJdbgInsert
+       Caption: RsJdbgInsert;
+       Hint: RsHintJclJdbgInsert),
+      (Parent: ioJclJdbgCreate;          // ioJclMapDelete
        Caption: RsMapDelete;
        Hint: RsHintJclMapDelete),
       (Parent: ioJCL;                    // ioJclEnv
@@ -1255,7 +1260,7 @@ var
   {$ENDIF MSWINDOWS}
   InstallationNode, ProductNode, PackagesNode, ExpertsNode, DemosNode,
   MakeNode, EnvNode, HelpNode, HelpHxSNode, RepositoryNode, MapCreateNode,
-  MapLinkNode, BCBNode: TObject;
+  JDbgCreateNode, BCBNode: TObject;
   RunTimeInstallation: Boolean;
 
   function AddNode(Parent: TObject; Option: TJediInstallOption;
@@ -1401,8 +1406,9 @@ begin
   MapCreateNode := AddNode(PackagesNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
 
   {$IFDEF MSWINDOWS}
-  MapLinkNode := AddNode(MapCreateNode, ioJclMapLink, [goExpandable, goStandaloneParent, goNoAutoCheck]);
-  AddNode(MapLinkNode,ioJclMapDelete, [goNoAutoCheck]);
+  JDbgCreateNode := AddNode(MapCreateNode, ioJclJdbgCreate, [goExpandable, goStandaloneParent]);
+  AddNode(JDbgCreateNode, ioJclJdbgInsert, [goNoAutoCheck]);
+  AddNode(JDbgCreateNode, ioJclMapDelete, [goNoAutoCheck]);
 
   if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber = 3)
     and (Target.Edition = deStd) then
@@ -1476,7 +1482,8 @@ begin
     CleanupRepository;
     Defines.Clear;
     Target.MapCreate := False;
-    Target.MapLink := False;
+    Target.JdbgCreate := False;
+    Target.JdbgInsert := False;
     Target.MapDelete := False;
     {$IFDEF MSWINDOWS}
     if Target is TJclBDSInstallation then
@@ -1523,8 +1530,10 @@ begin
       Defines.Add('EDI_WEAK_PACKAGE_UNITS');
     ioJclMapCreate:
       Target.MapCreate := True;
-    ioJclMapLink:
-      Target.MapLink := True;
+    ioJclJdbgCreate:
+      Target.JdbgCreate := True;
+    ioJclJdbgInsert:
+      Target.JdbgInsert := True;
     ioJclMapDelete:
       Target.MapDelete := True;
     ioJclEnvLibPath:

@@ -520,7 +520,8 @@ type
     FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7
     FMapCreate: Boolean;
     {$IFDEF MSWINDOWS}
-    FMapLink: Boolean;
+    FJdbgCreate: Boolean;
+    FJdbgInsert: Boolean;
     FMapDelete: Boolean;
     {$ENDIF MSWINDOWS}
     FCommandLineTools: TCommandLineTools;
@@ -552,7 +553,7 @@ type
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
 
-    function LinkMapFile(const BinaryFileName: string): Boolean;
+    function ProcessMapFile(const BinaryFileName: string): Boolean;
 
     // compilation functions
     function CompileDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean; overload; virtual;
@@ -669,7 +670,8 @@ type
     {$ENDIF MSWINDOWS}
     property MapCreate: Boolean read FMapCreate write FMapCreate;
     {$IFDEF MSWINDOWS}
-    property MapLink: Boolean read FMapLink write FMapLink;
+    property JdbgCreate: Boolean read FJdbgCreate write FJdbgCreate;
+    property JdbgInsert: Boolean read FJdbgInsert write FJdbgInsert;
     property MapDelete: Boolean read FMapDelete write FMapDelete;
     {$ENDIF MSWINDOWS}
     property ConfigData: TCustomIniFile read FConfigData;
@@ -2642,7 +2644,8 @@ begin
   {$ENDIF ~MSWINDOWS}
   FMapCreate := False;
   {$IFDEF MSWINDOWS}
-  FMapLink := False;
+  FJdbgCreate := False;
+  FJdbgInsert := False;
   FMapDelete := False;
   {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + AsmExeName) then
@@ -2774,7 +2777,7 @@ begin
     GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
       
     Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)]))
-      and LinkMapFile(PathAddSeparator(BPLPath) + BinaryFileName);
+      and ProcessMapFile(PathAddSeparator(BPLPath) + BinaryFileName);
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -2813,7 +2816,7 @@ begin
     GetBPRFileInfo(ProjectName, BinaryFileName);
 
     Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)]))
-      and LinkMapFile(PathAddSeparator(OutputDir) + BinaryFileName);
+      and ProcessMapFile(PathAddSeparator(OutputDir) + BinaryFileName);
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -2850,7 +2853,7 @@ begin
   BinaryFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
 
   Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, NewOptions)
-    and LinkMapFile(BinaryFileName);
+    and ProcessMapFile(BinaryFileName);
 
   if Result then
     OutputString(RsCompilationOk)
@@ -2877,7 +2880,7 @@ begin
   BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
 
   Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions)
-    and LinkMapFile(BinaryFileName);
+    and ProcessMapFile(BinaryFileName);
 
   if Result then
     OutputString(RsCompilationOk)
@@ -3360,28 +3363,38 @@ begin
   Result := PathAddSeparator(RootDir) + PathAddSeparator('lib');
 end;
 
-function TJclBorRADToolInstallation.LinkMapFile(
+function TJclBorRADToolInstallation.ProcessMapFile(
   const BinaryFileName: string): Boolean;
 var
   MAPFileName, LinkerBugUnit: string;
   MAPFileSize, JclDebugDataSize: Integer;
 begin
   {$IFDEF MSWINDOWS}
-  if MapLink then
+  if JdbgCreate then
   begin
-    OutputString(Format(RsLinkingMap, [BinaryFileName]));
-    MAPFileName := ChangeFileExt(BinaryFileName,'.MAP');
-    Result := InsertDebugDataIntoExecutableFile(BinaryFileName, MAPFileName,
-                LinkerBugUnit, MAPFileSize, JclDebugDataSize);
+    MAPFileName := ChangeFileExt(BinaryFileName, CompilerExtensionMAP);
+
+    if JdbgInsert then
+    begin
+      OutputString(Format(RsInsertingJdbg, [BinaryFileName]));
+      Result := InsertDebugDataIntoExecutableFile(BinaryFileName, MAPFileName,
+                  LinkerBugUnit, MAPFileSize, JclDebugDataSize);
+      OutputString(Format(RsJdbgInfo, [LinkerBugUnit, MAPFileSize, JclDebugDataSize]));
+    end
+    else
+    begin
+      OutputString(Format(RsCreatingJdbg, [BinaryFileName]));
+      Result := ConvertMapFileToJdbgFile(MAPFileName);
+    end;
     if Result then
     begin
-      OutputString(RsLinkMapOk);
-      OutputString(Format(RsLinkMapInfo, [LinkerBugUnit, MAPFileSize, JclDebugDataSize]));
+      OutputString(RsJdbgInfoOk);
+
       if MapDelete then
         OutputFileDelete(MAPFileName);
     end
     else
-      OutputString(RsLinkMapFailed);
+      OutputString(RsJdbgInfoFailed);
   end
   else
     Result := True;
@@ -4206,7 +4219,7 @@ begin
     BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
 
     Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions)
-      and LinkMapFile(BinaryFileName);
+      and ProcessMapFile(BinaryFileName);
 
     if Result then
       OutputString(RsCompilationOk)
