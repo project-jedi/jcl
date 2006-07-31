@@ -27,6 +27,7 @@
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Olivier Sannier (obones)                                                                       }
 {   Petr Vones (pvones)                                                                            }
+{   kogerbnz                                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -217,6 +218,7 @@ begin
 end;
 }
 function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
+function RegValueExists(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
@@ -1571,6 +1573,18 @@ begin
   Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
     RegCloseKey(RegKey);
+end;
+
+function RegValueExists(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
+var
+  RegKey: HKEY;
+begin
+  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  if Result then
+  begin
+    Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, nil) = ERROR_SUCCESS;
+    RegCloseKey(RegKey);
+  end;
 end;
 
 function RegSaveList(const RootKey: DelphiHKEY; const Key: string;
