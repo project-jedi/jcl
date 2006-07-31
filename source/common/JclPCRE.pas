@@ -209,9 +209,12 @@ end;
 function TJclAnsiRegEx.GetCaptures(Index: Integer): AnsiString;
 var
   Buffer: array [0..1024] of Char;
+  Len: Integer;
 begin
-  PCRECheck(pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, Buffer, SizeOf(Buffer)));
-  Result := AnsiString(Buffer);
+  Len := pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, Buffer, SizeOf(Buffer));
+  PCRECheck(Len);
+
+  SetString(Result, Buffer, Len);
 end;
 
 function TJclAnsiRegEx.GetCapturesOffset(Index: Integer): TJclAnsiCaptureOffset;
