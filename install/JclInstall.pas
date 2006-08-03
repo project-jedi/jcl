@@ -2229,7 +2229,7 @@ var
   IncludeFileName, IncludeLine, Symbol: string;
   IncludeFile: TStrings;
   IndexLine, DefinePos, SymbolEnd: Integer;
-  Defined, NotDefined: Boolean;
+  Defined, NotDefined, Changed: Boolean;
 const
   DefineText = '$DEFINE';
   NotDefineText = '.' + DefineText;
@@ -2239,6 +2239,8 @@ begin
   IncludeFileName := Format('%sjcl%s.inc', [PathAddSeparator(Distribution.SourceDir), Target.VersionNumberStr]);
 
   try
+    Changed := False;
+
     IncludeFile := TStringList.Create;
     try
       IncludeFile.LoadFromFile(IncludeFileName);
@@ -2266,18 +2268,29 @@ begin
             DefinePos := Defines.IndexOf(Symbol);
 
             if (DefinePos >= 0) and NotDefined then
+            begin
               IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
+              Changed := True;
+            end;
 
             if (DefinePos < 0) and Defined then
+            begin
               IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
+              Changed := True;
+            end;
 
             IncludeFile.Strings[IndexLine] := IncludeLine;
           end;
         end;
       end;
 
-      IncludeFile.SaveToFile(IncludeFileName);
-      WriteLog('Include file saved');
+      if Changed then
+      begin
+        IncludeFile.SaveToFile(IncludeFileName);
+        WriteLog('Include file saved');
+      end
+      else
+        WriteLog('No changes were made');
     finally
       IncludeFile.Free;
     end;
