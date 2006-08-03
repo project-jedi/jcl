@@ -59,15 +59,13 @@ resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';
   RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
+  {$IFDEF CLR}
+  RsEGetBytesExFmt     = 'GetBytesEx(): Unsupported value type: %s';
+  RsESetBytesExFmt     = 'SetBytesEx(): Unsupported value type: %s';
+  {$ENDIF CLR}
 
 //=== JclBorlandTools ========================================================
 resourcestring
-  RsNotFound            = '%s not found';
-  RsNotABcbPackage      = '%s not a C++Builder package source file';
-  RsNotABcbProject      = '%s not a C++Builder project source file';
-  RsNotADelphiPackage   = '%s not a Delphi package source file';
-  RsNotADelphiProject   = '%s not a Delphi project source file';
-  RsIndexOufOfRange     = 'Index out of range';
   RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
   RsUpdatePackName      = 'Update Pack #%d';
   RsDelphiName          = 'Delphi';
@@ -92,19 +90,11 @@ resourcestring
   RsPersonal            = 'Personal';
   RsProfessional        = 'Professional';
 
-  RsNoSupportedPersonality = 'No personalities supported';
-  RsDualPackageNotSupported = 'This installation of %s doesn''t support dual packages';
   RsCommandLineToolMissing = 'No compiler available for %s';
 
-  RsUnknownProjectExtension = '%s not a known project extension';
-  RsUnknownPackageExtension = '%s not a known package extension';
-  RsUnknownIdePackageExtension = '%s not a known ide package extension';
-
-  RsCannotInstallRunOnly = 'A run-only package cannot be installed';
   RsUnknownProjectType = '%s not a known project type';
 
   RsBorlandStudioProjects = 'Borland Studio Projects';                 
-  RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
 
   RsPackageInstallationStarted    = 'Installing package %s';
   RsPackageInstallationFinished   = 'Installation of package finished';
@@ -144,6 +134,23 @@ resourcestring
   RsCleaningPackageCache        = 'Cleaning package cache for %s';
   RsCleaningOk                  = 'Cleaning ok';
   RsCleaningFailed              = 'Cleaning failed';
+
+  RsEUnknownPackageExtension    = '%s not a known package extension';
+  RsEUnknownProjectExtension    = '%s not a known project extension';
+  RsEUnknownIdePackageExtension = '%s not a known IDE package extension';
+  RsEIndexOufOfRange            = 'Index out of range';
+  RsECmdLineToolOutputInvalid   = '%s: Output invalid, when OutputCallback assigned.';
+  RsENotABcbPackage             = '%s not a C++Builder package source file';
+  RsENotADelphiProject          = '%s not a Delphi project source file';
+  RsENotADelphiPackage          = '%s not a Delphi package source file';
+  RsENotFound                   = '%s not found';
+  RsECannotInstallRunOnly       = 'A run-only package cannot be installed';
+  RsENotABcbProject             = '%s not a C++Builder project source file';
+  RsENoSupportedPersonality     = 'No personalities supported';
+  RsEDualPackageNotSupported    = 'This installation of %s doesn''t support dual packages';
+  {$IFDEF MSWINDOWS}
+  RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
+  {$ENDIF MSWINDOWS}
 
 //=== JclCIL =================================================================
 resourcestring

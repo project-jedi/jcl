@@ -1237,7 +1237,7 @@ begin
   if SameText(PackageExtension, SourceExtensionBCBPackage) then
     GetBPKFileInfo(PackageFileName, RunOnly, @Result)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 
   Result := PathAddSeparator(BPLPath) + Result;
 end;
@@ -1266,7 +1266,7 @@ begin
   if SameText(ProjectExtension, SourceExtensionBCBProject) then
     GetBPRFileInfo(ProjectFileName, Result)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownProjectExtension, [ProjectExtension]);
 
   Result := PathAddSeparator(OutputPath) + Result;
 end;
@@ -1436,7 +1436,7 @@ begin
         S := 'bcb';
       else
       //brBorlandDevStudio :
-        raise EJclBorRadException.Create('open help not present in Borland Developer Studio');
+        raise EJclBorRadException.CreateRes(@RsENoOpenHelp);
     end;
     Result := Format(FormatName, [RootDir, S, VersionNumber]);
   end;
@@ -1716,7 +1716,7 @@ end;
 procedure TJclBorRADToolIdeTool.CheckIndex(Index: Integer);
 begin
   if (Index < 0) or (Index >= Count) then
-    raise EJclError.CreateRes(@RsIndexOufOfRange);
+    raise EJclError.CreateRes(@RsEIndexOufOfRange);
 end;
 
 function TJclBorRADToolIdeTool.GetCount: Integer;
@@ -2085,7 +2085,7 @@ end;
 procedure TJclBorlandCommandLineTool.CheckOutputValid;
 begin
   if Assigned(FOutputCallback) then
-    raise EJclCommandLineToolError.CreateResFmt(@RsCmdLineToolOutputInvalid, [GetExeName]);
+    raise EJclCommandLineToolError.CreateResFmt(@RsECmdLineToolOutputInvalid, [GetExeName]);
 end;
 
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
@@ -2744,7 +2744,7 @@ begin
   OutputString(Format(RsCompilingPackage, [PackageName]));
 
   if not IsBCBPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
 
   PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
   SaveDir := GetCurrentDir;
@@ -2785,7 +2785,7 @@ begin
   OutputString(Format(RsCompilingProject, [ProjectName]));
 
   if not IsBCBProject(ProjectName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
   PackagePath := PathRemoveSeparator(ExtractFilePath(ProjectName));
   SaveDir := GetCurrentDir;
@@ -2832,7 +2832,7 @@ begin
   OutputString(Format(RsCompilingPackage, [PackageName]));
 
   if not IsDelphiPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
 
   if MapCreate then
     NewOptions := ExtraOptions + ' -GD'
@@ -2860,7 +2860,7 @@ begin
   OutputString(Format(RsCompilingProject, [ProjectName]));
 
   if not IsDelphiProject(ProjectName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
   if MapCreate then
     ExtraOptions := '-GD'
@@ -2892,7 +2892,7 @@ begin
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
 
 function TJclBorRADToolInstallation.CompileProject(const ProjectName,
@@ -2907,7 +2907,7 @@ begin
   if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownProjectExtension, [ProjectExtension]);
 end;
 
 function TJclBorRADToolInstallation.FindFolderInPath(Folder: string; List: TStrings): Integer;
@@ -2934,7 +2934,7 @@ begin
   if not Assigned(FBpr2Mak) then
   begin
     if not (clProj2Mak in CommandLineTools) then
-      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Bpr2MakExeName]);
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bpr2MakExeName]);
     FBpr2Mak := TJclBpr2Mak.Create(Self);
   end;
   Result := FBpr2Mak;
@@ -2945,7 +2945,7 @@ begin
   if not Assigned(FBCC32) then
   begin
     if not (clBcc32 in CommandLineTools) then
-      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Bcc32ExeName]);
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Bcc32ExeName]);
     FBCC32 := TJclBCC32.Create(Self);
   end;
   Result := FBCC32;
@@ -2956,7 +2956,7 @@ begin
   if not Assigned(FDCC32) then
   begin
     if not (clDcc32 in CommandLineTools) then
-      raise EJclBorRadException.CreateResFmt(@RsNotFound, [Dcc32ExeName]);
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc32ExeName]);
     FDCC32 := TJclDCC32.Create(Self);
   end;
   Result := FDCC32;
@@ -3116,7 +3116,7 @@ begin
   if not Assigned(FMake) then
   begin
     if not (clMake in CommandLineTools) then
-      raise EJclBorRadException.CreateResFmt(@RsNotFound, [MakeExeName]);
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [MakeExeName]);
     {$IFDEF KYLIX}
     FMake := TJclCommandLineTool.Create(MakeExeName);
     {$ELSE ~KYLIX}
@@ -3208,7 +3208,7 @@ begin
   GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
   BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
   if RunOnly then
-    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+    raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
 
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
     RegisterIdePackage(BinaryFileName, Description);
@@ -3226,7 +3226,7 @@ begin
   GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
   BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
   if RunOnly then
-    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+    raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
 
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
     RegisterPackage(BinaryFileName, Description);
@@ -3263,7 +3263,7 @@ begin
 
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
   if RunOnly then
-    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+    raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
   BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) +
     LibSuffix + BinaryExtensionPackage;
   
@@ -3282,7 +3282,7 @@ begin
 
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
   if RunOnly then
-    raise EJclBorRadException.CreateResFmt(@RsCannotInstallRunOnly, [PackageName]);
+    raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
   BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) +
     LibSuffix + BinaryExtensionPackage;
   
@@ -3303,7 +3303,7 @@ begin
   if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := InstallDelphiExpert(ProjectName, OutputDir, DcpSearchPath)
   else
-    raise EJclBorRADException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+    raise EJclBorRADException.CreateResFmt(@RsEUnknownProjectExtension, [ProjectExtension]);
 end;
 
 function TJclBorRADToolInstallation.InstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3317,7 +3317,7 @@ begin
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := InstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
   else
-    raise EJclBorRADException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
+    raise EJclBorRADException.CreateResFmt(@RsEUnknownIdePackageExtension, [PackageExtension]);
 end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3331,7 +3331,7 @@ begin
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := InstallDelphiPackage(PackageName, BPLPath, DCPPath)
   else
-    raise EJclBorRADException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+    raise EJclBorRADException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
 
 {$IFDEF KEEP_DEPRECATED}
@@ -3688,7 +3688,7 @@ begin
   OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
 
   if not IsBCBProject(ProjectName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotABCBProject, [ProjectName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotABCBProject, [ProjectName]);
 
   GetBPRFileInfo(ProjectName, BinaryFileName);
   BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
@@ -3713,7 +3713,7 @@ begin
   OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
 
   if not IsBCBPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
 
   GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
 
@@ -3754,7 +3754,7 @@ begin
   OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
   
   if not IsBCBPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotABCBPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
     
   GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
 
@@ -3793,7 +3793,7 @@ begin
   OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
 
   if not IsDelphiProject(ProjectName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
   BaseName := PathExtractFileNameNoExt(ProjectName);
   GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
@@ -3821,7 +3821,7 @@ begin
   OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
   
   if not IsDelphiPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
 
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
   BaseName := PathExtractFileNameNoExt(PackageName);
@@ -3857,7 +3857,7 @@ begin
   OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
   
   if not IsDelphiPackage(PackageName) then
-    raise EJclBorRADException.CreateResFmt(@RsNotADelphiPackage, [PackageName]);
+    raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
 
   GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
   BaseName := PathExtractFileNameNoExt(PackageName);
@@ -3894,7 +3894,7 @@ begin
   if SameText(ProjectExtension, SourceExtensionDelphiProject) then
     Result := UninstallDelphiExpert(ProjectName, OutputDir)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownProjectExtension, [ProjectExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownProjectExtension, [ProjectExtension]);
 end;
 
 function TJclBorRADToolInstallation.UninstallIDEPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3908,7 +3908,7 @@ begin
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := UninstallDelphiIdePackage(PackageName, BPLPath, DCPPath)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownIdePackageExtension, [PackageExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownIdePackageExtension, [PackageExtension]);
 end;
 
 function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3922,7 +3922,7 @@ begin
   if SameText(PackageExtension, SourceExtensionDelphiPackage) then
     Result := UninstallDelphiPackage(PackageName, BPLPath, DCPPath)
   else
-    raise EJclBorRadException.CreateResFmt(@RsUnknownPackageExtension, [PackageExtension]);
+    raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
 
 function TJclBorRADToolInstallation.UnregisterExpert(const BinaryFileName: string): Boolean;
@@ -4113,7 +4113,7 @@ begin
     Include(FPersonalities, bpDelphi32);
 
   if FPersonalities = [] then
-    raise EJclBorRadException.CreateRes(@RsNoSupportedPersonality);
+    raise EJclBorRadException.CreateRes(@RsENoSupportedPersonality);
 end;
 
 destructor TJclBDSInstallation.Destroy;
@@ -4185,7 +4185,7 @@ begin
   if DualPackageInstallation then
   begin
     if not (bpBCBuilder32 in Personalities) then
-      raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+      raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
 
     NewOptions := Format('%s -JL -NB"%s" -NO"%s" -N1"%s"',
       [ExtraOptions, DcpPath, DcpPath, VclIncludeDir]);
@@ -4205,7 +4205,7 @@ begin
     OutputString(Format(RsCompilingProject, [ProjectName]));
 
     if not IsDelphiProject(ProjectName) then
-      raise EJclBorRADException.CreateResFmt(@RsNotADelphiProject, [ProjectName]);
+      raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
     if MapCreate then
       ExtraOptions := '-GD'
@@ -4340,7 +4340,7 @@ end;
 function TJclBDSInstallation.GetVclIncludeDir: string;
 begin
   if not (bpBCBuilder32 in Personalities) then
-    raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+    raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
   Result := inherited GetVclIncludeDir;
 end;
 
@@ -4416,7 +4416,7 @@ end;
 procedure TJclBDSInstallation.SetDualPackageInstallation(const Value: Boolean);
 begin
   if Value and not (bpBCBuilder32 in Personalities) then
-    raise EJclBorRadException.CreateResFmt(@RsDualPackageNotSupported, [Name]);
+    raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
   FDualPackageInstallation := Value;
 end;
 
