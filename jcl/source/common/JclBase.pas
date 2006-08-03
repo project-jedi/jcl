@@ -353,6 +353,7 @@ begin
 end;
 
 {$IFDEF CLR}
+
 function GetBytesEx(const Value): TBytes;
 begin
   if TObject(Value) is TBytes then
@@ -365,7 +366,7 @@ begin
     BitConverter.GetBytes(UInt32(Value))
   { TODO : Add further types }
   else
-    raise EJclError.CreateFmt('GetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
+    raise EJclError.CreateFmt(RsEGetBytesExFmt, [TObject(Value).GetType.FullName]);
 end;
 
 procedure SetBytesEx(var Value; Bytes: TBytes);
@@ -380,7 +381,7 @@ begin
     Value := BitConverter.ToUInt32(Bytes, 0)
   { TODO : Add further types }
   else
-    raise EJclError.CreateFmt('SetBytesEx(): Unsupported value type: %s', [TObject(Value).GetType.FullName]);
+    raise EJclError.CreateFmt(RsESetBytesExFmt, [TObject(Value).GetType.FullName]);
 end;
 
 procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32);
