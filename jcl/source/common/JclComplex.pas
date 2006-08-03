@@ -307,19 +307,17 @@ begin
         FCoord.Y := FCoord.R * Sin(FCoord.Theta);
       end;
     crRectangular:
+      if FCoord.X = 0.0 then
       begin
-        if FCoord.X = 0.0 then
-        begin
-          FCoord.R := Abs(FCoord.Y);
-          FCoord.Theta := PiOn2 * Sgn(FCoord.Y);
-        end
-        else
-        begin
-          FCoord.R := AbsoluteValue;
-          FCoord.Theta := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.ArcTan(FCoord.Y / FCoord.X);
-          if FCoord.X < 0.0 then
-            FCoord.Theta := FCoord.Theta + Pi * Sgn(FCoord.Y);
-        end;
+        FCoord.R := Abs(FCoord.Y);
+        FCoord.Theta := PiOn2 * Sgn(FCoord.Y);
+      end
+      else
+      begin
+        FCoord.R := AbsoluteValue;
+        FCoord.Theta := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.ArcTan(FCoord.Y / FCoord.X);
+        if FCoord.X < 0.0 then
+          FCoord.Theta := FCoord.Theta + Pi * Sgn(FCoord.Y);
       end;
   end;
   MiscalcComplex;
@@ -367,6 +365,8 @@ begin
 end;
 
 function TJclComplex.GetRectangularString: string;
+const
+  cImaginary = 'i';
 begin
   MiscalcComplex;
   if (FCoord.X = 0.0) and (FCoord.Y = 0.0) then
@@ -381,10 +381,10 @@ begin
     if FCoord.Y < 0.0 then
       Result := Result + '-';
     if FCoord.Y <> 0.0 then
-      Result := Result + FormatExtended(Abs(FCoord.Y)) + 'i';
+      Result := Result + FormatExtended(Abs(FCoord.Y)) + cImaginary;
   end
   else
-    Result := FormatExtended(FCoord.Y) + 'i';
+    Result := FormatExtended(FCoord.Y) + cImaginary;
 end;
 
 function TJclComplex.GetPolarString: string;
@@ -1305,23 +1305,23 @@ end;
 
 function TJclComplex.CoreI0(const Value: TRectCoord): TRectCoord;
 var
-  zSQR25, term: TRectCoord;
-  i: Integer;
+  ZSqr25, Term: TRectCoord;
+  I: Integer;
   SizeSqr: Float;
 begin
   Result := RectOne;
-  zSQR25 := CoreMul(Value, Value);
-  zSQR25 := RectCoord(0.25 * zSQR25.X, 0.25 * zSQR25.Y);
-  term := zSQR25;
-  Result := CoreAdd(Result, zSQR25);
-  i := 1;
+  ZSqr25 := CoreMul(Value, Value);
+  ZSqr25 := RectCoord(0.25 * ZSqr25.X, 0.25 * ZSqr25.Y);
+  Term := ZSqr25;
+  Result := CoreAdd(Result, ZSqr25);
+  I := 1;
   repeat
-    term := CoreMul(zSQR25, term);
-    Inc(i);
-    term := RectCoord(term.X / Sqr(i), term.Y / Sqr(i));
-    Result := CoreAdd(Result, term);
-    SizeSqr := Sqr(term.X) + Sqr(term.Y);
-  until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
+    Term := CoreMul(ZSqr25, Term);
+    Inc(I);
+    Term := RectCoord(Term.X / Sqr(I), Term.Y / Sqr(I));
+    Result := CoreAdd(Result, Term);
+    SizeSqr := Sqr(Term.X) + Sqr(Term.Y);
+  until (I > MaxTerm) or (SizeSqr < EpsilonSqr);
 end;
 
 function TJclComplex.CI0: TJclComplex;
@@ -1345,29 +1345,29 @@ end;
 
 function TJclComplex.CoreJ0(const Value: TRectCoord): TRectCoord;
 var
-  zSQR25, term: TRectCoord;
-  i: Integer;
+  ZSqr25, Term: TRectCoord;
+  I: Integer;
   SizeSqr: Float;
-  addFlag: Boolean;
+  AddFlag: Boolean;
 begin
   Result := RectOne;
-  zSQR25 := CoreMul(Value, Value);
-  zSQR25 := RectCoord(0.25 * zSQR25.X, 0.25 * zSQR25.Y);
-  term := zSQR25;
-  Result := CoreSub(Result, zSQR25);
-  addFlag := False;
-  i := 1;
+  ZSqr25 := CoreMul(Value, Value);
+  ZSqr25 := RectCoord(0.25 * ZSqr25.X, 0.25 * ZSqr25.Y);
+  Term := ZSqr25;
+  Result := CoreSub(Result, ZSqr25);
+  AddFlag := False;
+  I := 1;
   repeat
-    term := CoreMul(zSQR25, term);
-    Inc(i);
-    addFlag := not addFlag;
-    term := RectCoord(term.X / Sqr(i), term.Y / Sqr(i));
-    if addFlag then
-      Result := CoreAdd(Result, term)
+    Term := CoreMul(ZSqr25, Term);
+    Inc(I);
+    AddFlag := not AddFlag;
+    Term := RectCoord(Term.X / Sqr(I), Term.Y / Sqr(I));
+    if AddFlag then
+      Result := CoreAdd(Result, Term)
     else
-      Result := CoreSub(Result, term);
-    SizeSqr := Sqr(term.X) + Sqr(term.Y);
-  until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
+      Result := CoreSub(Result, Term);
+    SizeSqr := Sqr(Term.X) + Sqr(Term.Y);
+  until (I > MaxTerm) or (SizeSqr < EpsilonSqr);
 end;
 
 function TJclComplex.CJ0: TJclComplex;
@@ -1391,29 +1391,29 @@ end;
 
 function TJclComplex.CoreApproxLnGamma(const Value: TRectCoord): TRectCoord;
 const
-  c: array [1..8] of Float =
+  C: array [1..8] of Float =
    (1.0 / 12.0, -1.0 / 360.0, 1.0 / 1260.0, -1.0 / 1680.0,
     1.0 / 1188.0, -691.0 / 360360.0, 1.0 / 156.0, -3617.0 / 122400.0);
 var
-  i: Integer;
+  I: Integer;
   Powers: array [1..8] of TRectCoord;
-  temp1, temp2: TRectCoord;
+  Temp1, Temp2: TRectCoord;
 begin
-  temp1 := CoreLn(Value);
-  temp2 := RectCoord(Value.X - 0.5, Value.Y);
-  Result := CoreAdd(temp1, temp2);
+  Temp1 := CoreLn(Value);
+  Temp2 := RectCoord(Value.X - 0.5, Value.Y);
+  Result := CoreAdd(Temp1, Temp2);
   Result := CoreSub(Result, Value);
   Result.X := Result.X + hLn2PI;
 
-  temp1 := RectOne;
-  Powers[1] := CoreDiv(temp1, Value);
-  temp2 := CoreMul(powers[1], Powers[1]);
-  for i := 2 to 8 do
-    Powers[i] := CoreMul(Powers[i - 1], temp2);
-  for i := 8 downto 1 do
+  Temp1 := RectOne;
+  Powers[1] := CoreDiv(Temp1, Value);
+  Temp2 := CoreMul(powers[1], Powers[1]);
+  for I := 2 to 8 do
+    Powers[I] := CoreMul(Powers[I - 1], Temp2);
+  for I := 8 downto 1 do
   begin
-    temp1 := RectCoord(c[i] * Powers[i].X, c[i] * Powers[i].Y);
-    Result := CoreAdd(Result, temp1);
+    Temp1 := RectCoord(C[I] * Powers[I].X, C[I] * Powers[I].Y);
+    Result := CoreAdd(Result, Temp1);
   end;
 end;
 
@@ -1438,7 +1438,7 @@ end;
 
 function TJclComplex.CoreLnGamma(Value: TRectCoord): TRectCoord;
 var
-  lna, temp: TRectCoord;
+  LNA, Temp: TRectCoord;
 begin
   if (Value.X <= 0.0) and (MiscalcSingle(Value.Y) = 0.0) then
     if MiscalcSingle(Int(Value.X - 1E-8) - Value.X) = 0.0 then
@@ -1457,10 +1457,10 @@ begin
   begin
     if Value.X < 9.0 then
     begin
-      lna := CoreLn(Value);
+      LNA := CoreLn(Value);
       Value := RectCoord(Value.X + 1, Value.Y);
-      temp := CoreLnGamma(Value);
-      Result := CoreSub(temp, lna);
+      Temp := CoreLnGamma(Value);
+      Result := CoreSub(Temp, LNA);
     end
     else
       CoreApproxLnGamma(Value);
@@ -1488,16 +1488,16 @@ end;
 
 function TJclComplex.CoreGamma(const Value: TRectCoord): TRectCoord;
 var
-  lnz: TRectCoord;
+  LNZ: TRectCoord;
 begin
-  lnz := CoreLnGamma(Value);
-  if lnz.X > 75.0 then
+  LNZ := CoreLnGamma(Value);
+  if LNZ.X > 75.0 then
     Result := RectInfinity
   else
-    if lnz.X < -200.0 then
+    if LNZ.X < -200.0 then
       Result := RectZero
     else
-      Result := CoreExp(lnz);
+      Result := CoreExp(LNZ);
 end;
 
 function TJclComplex.CGamma: TJclComplex;
