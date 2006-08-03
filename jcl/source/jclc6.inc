@@ -70,4 +70,4 @@
 {.$DEFINE DEBUG_NO_SYMBOLS}
 
 // mark EDI units as weak package units (to avoid conflicts with the EDI package)
-{$DEFINE EDI_WEAK_PACKAGE_UNITS}
+{.$DEFINE EDI_WEAK_PACKAGE_UNITS}
