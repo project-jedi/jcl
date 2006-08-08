@@ -1425,7 +1425,7 @@ procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick(Sender: TObject);
           end;
 
           if HideActions and not VersionControlActionInfos[AControlAction].AllPlugins then
-            BMenuItem.Visible := Assigned(AFileCache.Plugin)
+            BMenuItem.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
               and (AControlAction in AFileCache.Plugin.SupportActions)
           else
             BMenuItem.Visible := True;
