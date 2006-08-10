@@ -752,9 +752,14 @@ var
   FindData: TWin32FindDataW;
   SearchHandle: THandle;
   DirectoryBuffer, VersionBuffer: WideString;
-  DirectoryLength, VersionLength, OldErrorMode: DWORD;
+  DirectoryLength, VersionLength, OldErrorMode, RuntimeInfo: DWORD;
 begin
   SystemDirectory := CorSystemDirectory;
+
+  if Pos('V1', AnsiUpperCase(CorVersion)) > 0 then
+    RunTimeInfo := 0
+  else
+    RunTimeInfo := RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG;
 
   if (SystemDirectory = '') or not DirectoryExistsW(SystemDirectory) then
     Exit;
@@ -780,7 +785,7 @@ begin
         begin
           OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
           try
-            if (GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
+            if (GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RunTimeInfo,
               nil, 0, DirectoryLength, nil, 0, VersionLength) and $1FFF = ERROR_INSUFFICIENT_BUFFER)
               and (DirectoryLength > 0) and (VersionLength > 0) then
             begin
