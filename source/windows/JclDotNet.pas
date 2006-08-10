@@ -752,7 +752,7 @@ var
   FindData: TWin32FindDataW;
   SearchHandle: THandle;
   DirectoryBuffer, VersionBuffer: WideString;
-  DirectoryLength, VersionLength: DWORD;
+  DirectoryLength, VersionLength, OldErrorMode: DWORD;
 begin
   SystemDirectory := CorSystemDirectory;
 
@@ -778,16 +778,21 @@ begin
         if ((FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) <> 0)
           and (WideString(FindData.cFileName) <> '.') and (WideString(FindData.cFileName) <> '..') then
         begin
-          if (GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
-            nil, 0, DirectoryLength, nil, 0, VersionLength) and $1FFF = ERROR_INSUFFICIENT_BUFFER)
-            and (DirectoryLength > 0) and (VersionLength > 0) then
-          begin
-            SetLength(DirectoryBuffer, DirectoryLength - 1);
-            SetLength(VersionBuffer, VersionLength - 1);
-            if GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
-              PWideChar(DirectoryBuffer), DirectoryLength, DirectoryLength,
-              PWideChar(VersionBuffer), VersionLength, VersionLength) = S_OK then
-              VersionNames.Values[VersionBuffer] := DirectoryBuffer + VersionBuffer;
+          OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+          try
+            if (GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
+              nil, 0, DirectoryLength, nil, 0, VersionLength) and $1FFF = ERROR_INSUFFICIENT_BUFFER)
+              and (DirectoryLength > 0) and (VersionLength > 0) then
+            begin
+              SetLength(DirectoryBuffer, DirectoryLength - 1);
+              SetLength(VersionBuffer, VersionLength - 1);
+              if GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
+                PWideChar(DirectoryBuffer), DirectoryLength, DirectoryLength,
+                PWideChar(VersionBuffer), VersionLength, VersionLength) = S_OK then
+                VersionNames.Values[VersionBuffer] := DirectoryBuffer + VersionBuffer;
+            end;
+          finally
+            SetErrorMode(OldErrorMode);
           end;
         end;
       until not FindNextFileW(SearchHandle, FindData);
