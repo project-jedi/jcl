@@ -19,6 +19,7 @@
 {   Flier Lu (flier)                                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Olivier Sannier (obones)                                                                       }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -33,7 +34,7 @@
 unit JclDotNet;
 
 {**************************************************************************************************}
-{ Read this before compile!                                                                         }
+{ Read this before compile!                                                                        }
 {**************************************************************************************************}
 { 1. This unit is developed in Delphi6 with MS.Net v1.0.3705,                                      }
 {    you maybe need to modify it for your environment.                                             }
@@ -58,7 +59,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase,
+  JclBase, JclWideStrings,
   mscoree_TLB, mscorlib_TLB;
 
 {$HPPEMIT '#include<Mscoree.h>'}
@@ -120,6 +121,7 @@ type
     class function CorSystemDirectory: WideString;
     class function CorVersion: WideString;
     class function CorRequiredVersion: WideString;
+    class procedure GetClrVersions(VersionNames: TWideStrings);
     property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
     property AppDomains[const Idx: Integer]: TJclClrAppDomain read GetAppDomain; default;
     property AppDomainCount: Integer read GetAppDomainCount;
@@ -234,7 +236,24 @@ type
 
 type
   HDOMAINENUM = Pointer;
-  {$EXTERNALSYM GetCORSystemDirectory}
+  {$EXTERNALSYM HDOMAINENUM}
+
+const
+  STARTUP_CONCURRENT_GC                         = $1;
+  STARTUP_LOADER_OPTIMIZATION_MASK              = $3 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST = $3 shl 1;
+  STARTUP_LOADER_SAFEMODE                       = $10;
+  STARTUP_LOADER_SETPREFERENCE                  = $100;
+
+  RUNTIME_INFO_UPGRADE_VERSION         = $01;
+  RUNTIME_INFO_REQUEST_IA64            = $02;
+  RUNTIME_INFO_REQUEST_AMD64           = $04;
+  RUNTIME_INFO_REQUEST_X86             = $08;
+  RUNTIME_INFO_DONT_RETURN_DIRECTORY   = $10;
+  RUNTIME_INFO_DONT_RETURN_VERSION     = $20;
+  RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG  = $40;
 
 function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
@@ -242,9 +261,20 @@ function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD;
 function GetCORVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
 {$EXTERNALSYM GetCORVersion}
+function GetFileVersion(szFileName, szBuffer: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM GetFileVersion}
 function GetCORRequiredVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
 {$EXTERNALSYM GetCORRequiredVersion}
+function GetRequestedRuntimeInfo(pExe, pwszVersion, pConfigurationFile: PWideChar;
+  const startupFlags, reserved: DWORD; pDirectory: PWideChar; const dwDirectory: DWORD;
+  var dwDirectoryLength: DWORD; pVersion: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM GetRequestedRuntimeInfo}
+function GetRequestedRuntimeVersion(pExe, pVersion: PWideChar;
+  const cchBuffer: DWORD; var dwLength: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM GetRequestedRuntimeVersion}
 function CorBindToRuntimeHost(pwszVersion, pwszBuildFlavor,
   pwszHostConfigFile: PWideChar; const pReserved: Pointer;
   const startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
@@ -284,6 +314,21 @@ function GetRealProcAddress(const pwszProcName: PChar;
 {$EXTERNALSYM GetRealProcAddress}
 procedure CorExitProcess(const exitCode: Integer); stdcall;
 {$EXTERNALSYM CorExitProcess}
+
+type
+  CLSID_RESOLUTION_FLAGS = type Byte;
+  {$EXTERNALSYM CLSID_RESOLUTION_FLAGS}
+
+const
+  CLSID_RESOLUTION_DEFAULT	  = $0;
+  {$EXTERNALSYM CLSID_RESOLUTION_DEFAULT}
+	CLSID_RESOLUTION_REGISTERED	= $1;
+  {$EXTERNALSYM CLSID_RESOLUTION_REGISTERED}
+
+function GetRequestedRuntimeVersionForCLSID(rclsid: TGuid; pVersion: PWideChar;
+  const cchBuffer: DWORD; var dwLength: DWORD;
+  const dwResolutionFlags: CLSID_RESOLUTION_FLAGS): HRESULT; stdcall;
+{$EXTERNALSYM GetRequestedRuntimeVersionForCLSID}
 
 const
   mscoree_dll = 'mscoree.dll';
@@ -329,7 +374,7 @@ end;
 {$WARNINGS OFF}
 
 var
-  _GetCORSystemDirectory: Pointer;
+  _GetCORSystemDirectory: Pointer = nil;
 
 function GetCORSystemDirectory;
 begin
@@ -342,7 +387,7 @@ begin
 end;
 
 var
-  _GetCORVersion: Pointer;
+  _GetCORVersion: Pointer = nil;
 
 function GetCORVersion;
 begin
@@ -355,7 +400,20 @@ begin
 end;
 
 var
-  _GetCORRequiredVersion: Pointer;
+  _GetFileVersion: Pointer = nil;
+
+function GetFileVersion;
+begin
+  GetProcedureAddress(_GetFileVersion, mscoree_dll, 'GetFileVersion');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetFileVersion]
+  end;
+end;
+
+var
+  _GetCORRequiredVersion: Pointer = nil;
 
 function GetCORRequiredVersion;
 begin
@@ -368,7 +426,33 @@ begin
 end;
 
 var
-  _CorBindToRuntimeHost: Pointer;
+  _GetRequestedRuntimeInfo: Pointer = nil;
+
+function GetRequestedRuntimeInfo;
+begin
+  GetProcedureAddress(_GetRequestedRuntimeInfo, mscoree_dll, 'GetRequestedRuntimeInfo');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetRequestedRuntimeInfo]
+  end;
+end;
+
+var
+  _GetRequestedRuntimeVersion: Pointer = nil;
+
+function GetRequestedRuntimeVersion;
+begin
+  GetProcedureAddress(_GetRequestedRuntimeVersion, mscoree_dll, 'GetRequestedRuntimeVersion');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetRequestedRuntimeVersion]
+  end;
+end;
+
+var
+  _CorBindToRuntimeHost: Pointer = nil;
 
 function CorBindToRuntimeHost;
 begin
@@ -381,7 +465,7 @@ begin
 end;
 
 var
-  _CorBindToRuntimeEx: Pointer;
+  _CorBindToRuntimeEx: Pointer = nil;
 
 function CorBindToRuntimeEx;
 begin
@@ -394,7 +478,7 @@ begin
 end;
 
 var
-  _CorBindToRuntimeByCfg: Pointer;
+  _CorBindToRuntimeByCfg: Pointer = nil;
 
 function CorBindToRuntimeByCfg;
 begin
@@ -407,7 +491,7 @@ begin
 end;
 
 var
-  _CorBindToRuntime: Pointer;
+  _CorBindToRuntime: Pointer = nil;
 
 function CorBindToRuntime;
 begin
@@ -420,7 +504,7 @@ begin
 end;
 
 var
-  _CorBindToCurrentRuntime: Pointer;
+  _CorBindToCurrentRuntime: Pointer = nil;
 
 function CorBindToCurrentRuntime;
 begin
@@ -433,7 +517,7 @@ begin
 end;
 
 var
-  _ClrCreateManagedInstance: Pointer;
+  _ClrCreateManagedInstance: Pointer = nil;
 
 function ClrCreateManagedInstance;
 begin
@@ -446,7 +530,7 @@ begin
 end;
 
 var
-  _CorMarkThreadInThreadPool: Pointer;
+  _CorMarkThreadInThreadPool: Pointer = nil;
 
 procedure CorMarkThreadInThreadPool;
 begin
@@ -459,7 +543,7 @@ begin
 end;
 
 var
-  _RunDll32ShimW: Pointer;
+  _RunDll32ShimW: Pointer = nil;
 
 function RunDll32ShimW;
 begin
@@ -472,7 +556,7 @@ begin
 end;
 
 var
-  _LoadLibraryShim: Pointer;
+  _LoadLibraryShim: Pointer = nil;
 
 function LoadLibraryShim;
 begin
@@ -485,7 +569,7 @@ begin
 end;
 
 var
-  _CallFunctionShim: Pointer;
+  _CallFunctionShim: Pointer = nil;
 
 function CallFunctionShim;
 begin
@@ -498,7 +582,7 @@ begin
 end;
 
 var
-  _GetRealProcAddress: Pointer;
+  _GetRealProcAddress: Pointer = nil;
 
 function GetRealProcAddress;
 begin
@@ -511,7 +595,7 @@ begin
 end;
 
 var
-  _CorExitProcess: Pointer;
+  _CorExitProcess: Pointer = nil;
 
 procedure CorExitProcess;
 begin
@@ -523,6 +607,20 @@ begin
   end;
 end;
 
+// truncated because the symbol was not found in assembler
+var
+  _GetRequestedRuntimeVersionForCL: Pointer = nil;
+
+function GetRequestedRuntimeVersionForCLSID;
+begin
+  GetProcedureAddress(_GetRequestedRuntimeVersionForCL, mscoree_dll, 'GetRequestedRuntimeVersionForCLSID');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetRequestedRuntimeVersionForCL]
+  end;
+end;
+
 {$WARNINGS ON}
 
 //=== { TJclClrHost } ========================================================
@@ -531,14 +629,6 @@ const
   CLR_MAJOR_VERSION = 1;
   CLR_MINOR_VERSION = 0;
   CLR_BUILD_VERSION = 3705;
-
-  STARTUP_CONCURRENT_GC                         = $1;
-  STARTUP_LOADER_OPTIMIZATION_MASK              = $3 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST = $3 shl 1;
-  STARTUP_LOADER_SAFEMODE                       = $10;
-  STARTUP_LOADER_SETPREFERENCE                  = $100;
 
 constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHostFlavor;
   const ConcurrentGC: Boolean; const LoaderFlags: TJclClrHostLoaderFlags);
@@ -645,6 +735,68 @@ begin
   Result := Unk as IJclClrAppDomain;
 end;
 
+class procedure TJclClrHost.GetClrVersions(VersionNames: TWideStrings);
+  function DirectoryExistsW(const DirectoryName: WideString): Boolean;
+  var
+    Code: DWORD;
+  begin
+    Code := GetFileAttributesW(PWideChar(DirectoryName));
+    Result := (Code <> $FFFFFFFF) and ((Code and FILE_ATTRIBUTE_DIRECTORY) <> 0);
+  end;
+const
+  WideDirDelimiter: WideChar = '\';
+var
+  SystemDirectory: WideString;
+  Index: Integer;
+  PathOk: Boolean;
+  FindData: TWin32FindDataW;
+  SearchHandle: THandle;
+  DirectoryBuffer, VersionBuffer: WideString;
+  DirectoryLength, VersionLength: DWORD;
+begin
+  SystemDirectory := CorSystemDirectory;
+
+  if (SystemDirectory = '') or not DirectoryExistsW(SystemDirectory) then
+    Exit;
+
+  PathOk := False;
+  for Index := Length(SystemDirectory) - 1 downto 1 do
+    if SystemDirectory[Index] = WideDirDelimiter then
+  begin
+    SetLength(SystemDirectory, Index);
+    PathOk := True;
+    Break;
+  end;
+
+  if PathOk then
+  begin
+    SearchHandle := FindFirstFileW(PWideChar(SystemDirectory + '*.*'), FindData);
+    if SearchHandle = INVALID_HANDLE_VALUE then
+      Exit;
+    try
+      repeat
+        if ((FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) <> 0)
+          and (WideString(FindData.cFileName) <> '.') and (WideString(FindData.cFileName) <> '..') then
+        begin
+          if (GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
+            nil, 0, DirectoryLength, nil, 0, VersionLength) and $1FFF = ERROR_INSUFFICIENT_BUFFER)
+            and (DirectoryLength > 0) and (VersionLength > 0) then
+          begin
+            SetLength(DirectoryBuffer, DirectoryLength - 1);
+            SetLength(VersionBuffer, VersionLength - 1);
+            if GetRequestedRuntimeInfo(nil, FindData.cFileName, nil, 0, RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG,
+              PWideChar(DirectoryBuffer), DirectoryLength, DirectoryLength,
+              PWideChar(VersionBuffer), VersionLength, VersionLength) = S_OK then
+              VersionNames.Values[VersionBuffer] := DirectoryBuffer + VersionBuffer;
+          end;
+        end;
+      until not FindNextFileW(SearchHandle, FindData);
+    finally
+      Windows.FindClose(SearchHandle);
+    end;
+  end;
+end;
+
 function TJclClrHost.GetCurrentAppDomain: IJclClrAppDomain;
 var
   Unk: IUnknown;
@@ -669,7 +821,8 @@ var
 begin
   SetLength(Result, MAX_PATH);
   OleCheck(GetCORSystemDirectory(PWideChar(Result), Length(Result), Len));
-  SetLength(Result, Len);
+  if Len > 0 then
+    SetLength(Result, Len - 1);
 end;
 
 class function TJclClrHost.CorVersion: WideString;
@@ -678,7 +831,8 @@ var
 begin
   SetLength(Result, 64);
   OleCheck(GetCORVersion(PWideChar(Result), Length(Result), Len));
-  SetLength(Result, Len);
+  if Len > 0 then
+    SetLength(Result, Len - 1);
 end;
 
 class function TJclClrHost.CorRequiredVersion: WideString;
@@ -687,7 +841,8 @@ var
 begin
   SetLength(Result, 64);
   OleCheck(GetCORRequiredVersion(PWideChar(Result), Length(Result), Len));
-  SetLength(Result, Len);
+  if Len > 0 then
+    SetLength(Result, Len - 1);
 end;
 
 function TJclClrHost.CreateDomainSetup: TJclClrAppDomainSetup;
