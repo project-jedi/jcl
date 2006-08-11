@@ -338,6 +338,14 @@ type
     property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
   end;
 
+{$HPPEMIT 'namespace Jclborlandtools'}
+{$HPPEMIT '{'}
+{$HPPEMIT '  // For some reason, the generator puts this interface after its first'}
+{$HPPEMIT '  // usage, resulting in an unusable header file. We fix this by forward'}
+{$HPPEMIT '  // declaring the interface.'}
+{$HPPEMIT '  __interface IJclCommandLineTool;'}
+{$HPPEMIT '}'}
+
   IJclCommandLineTool = interface
     ['{A0034B09-A074-D811-847D-0030849E4592}']
     function GetExeName: string;
