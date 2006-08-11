@@ -114,7 +114,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">4096</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">4194304</Linker>
+      <Linker Name="ImageBase">$48000000</Linker>
       <Linker Name="ExeDescription"></Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>
@@ -153,9 +153,9 @@
       <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">96</VersionInfo>
+      <VersionInfo Name="MinorVer">97</VersionInfo>
       <VersionInfo Name="Release">1</VersionInfo>
-      <VersionInfo Name="Build">2070</VersionInfo>
+      <VersionInfo Name="Build">2172</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -171,14 +171,14 @@
       <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl90.dll</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl9.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.96 Build 2070</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.97 Build 2172</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
     </VersionInfoKeys>
     <FileList>
-      <File FileName="" ContainerId="" ModuleName=""/>
-      <File FileName="" ContainerId="" ModuleName=""/>
+      <File FileName="" ContainerId="" ModuleName="System.Reflection"/>
+      <File FileName="" ContainerId="" ModuleName="System.Runtime.InteropServices"/>
       <File FileName="..\..\source\common\JclAbstractContainers.pas" ContainerId="" ModuleName="JclAbstractContainers"/>
       <File FileName="..\..\source\common\JclAlgorithms.pas" ContainerId="" ModuleName="JclAlgorithms"/>
       <File FileName="..\..\source\common\JclAnsiStrings.pas" ContainerId="" ModuleName="JclAnsiStrings"/>
@@ -190,6 +190,7 @@
       <File FileName="..\..\source\common\JclContainerIntf.pas" ContainerId="" ModuleName="JclContainerIntf"/>
       <File FileName="..\..\source\common\JclDateTime.pas" ContainerId="" ModuleName="JclDateTime"/>
       <File FileName="..\..\source\common\JclFileUtils.pas" ContainerId="" ModuleName="JclFileUtils"/>
+      <File FileName="..\..\source\common\JclHashMaps.pas" ContainerId="" ModuleName="JclHashMaps"/>
       <File FileName="..\..\source\common\JclHashSets.pas" ContainerId="" ModuleName="JclHashSets"/>
       <File FileName="..\..\source\common\JclIniFiles.pas" ContainerId="" ModuleName="JclIniFiles"/>
       <File FileName="..\..\source\common\JclLinkedLists.pas" ContainerId="" ModuleName="JclLinkedLists"/>
@@ -207,7 +208,6 @@
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
       <File FileName="..\..\source\common\JclVectors.pas" ContainerId="" ModuleName="JclVectors"/>
-      <File FileName="..\..\source\common\JclHashMaps.pas" ContainerId="" ModuleName="JclHashMaps"/>
     </FileList>
   </DelphiDotNet.Personality>
 </BorlandProject>
