@@ -500,6 +500,7 @@ type
   {$ENDIF ~CLR}
   end;
 
+{$IFNDEF CLR}
 type
   TJclSimpleLog = class (TObject)
   private
@@ -520,6 +521,7 @@ type
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
+{$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2997,7 +2999,6 @@ begin
   else
     Result := E_NOINTERFACE;
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclSimpleLog } ======================================================
 
@@ -3092,6 +3093,8 @@ begin
   Write(StrRepeat('=', SeparatorLen));
 end;
 
+{$ENDIF ~CLR}
+
 initialization
   {$IFDEF THREADSAFE}
   if not Assigned(GlobalMMFHandleListCS) then
@@ -3105,7 +3108,9 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+  {$IFNDEF CLR}
   FinalizeMMFHandleList;
+  {$ENDIF ~CLR}
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS.Free;
   {$ENDIF THREADSAFE}
