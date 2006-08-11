@@ -1,8 +1,9 @@
 Library Jedi.Jcl;
 
 uses
+  System.Reflection,
+  System.Runtime.InteropServices
   ,
-  
   JclAbstractContainers in '..\..\source\common\JclAbstractContainers.pas' ,
   JclAlgorithms in '..\..\source\common\JclAlgorithms.pas' ,
   JclAnsiStrings in '..\..\source\common\JclAnsiStrings.pas' ,
@@ -14,6 +15,7 @@ uses
   JclContainerIntf in '..\..\source\common\JclContainerIntf.pas' ,
   JclDateTime in '..\..\source\common\JclDateTime.pas' ,
   JclFileUtils in '..\..\source\common\JclFileUtils.pas' ,
+  JclHashMaps in '..\..\source\common\JclHashMaps.pas' ,
   JclHashSets in '..\..\source\common\JclHashSets.pas' ,
   JclIniFiles in '..\..\source\common\JclIniFiles.pas' ,
   JclLinkedLists in '..\..\source\common\JclLinkedLists.pas' ,
@@ -30,14 +32,13 @@ uses
   JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,
   JclUnitConv in '..\..\source\common\JclUnitConv.pas' ,
   JclValidation in '..\..\source\common\JclValidation.pas' ,
-  JclVectors in '..\..\source\common\JclVectors.pas' ,
-  JclHashMaps in '..\..\source\common\JclHashMaps.pas' 
+  JclVectors in '..\..\source\common\JclVectors.pas' 
   ;
 
 {$LIBSUFFIX '9'}
 
 [assembly: AssemblyTitle('JEDI Code Library')]
-[assembly: AssemblyDescription('Functions and classes')]
+[assembly: AssemblyDescription('JEDI Code Library RTL package')]
 [assembly: AssemblyConfiguration('')]
 [assembly: AssemblyCompany('')]
 [assembly: AssemblyProduct('JCL')]
