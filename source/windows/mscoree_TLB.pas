@@ -40,6 +40,7 @@ interface
 
 uses ActiveX, Classes;
 
+{$HPPEMIT '#include <winnt.h>'}
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -109,7 +110,8 @@ type
   PByte1 = ^Byte; {*}
   PUINT1 = ^LongWord; {*}
 
-  ULONG_PTR = LongWord; 
+  ULONG_PTR = LongWord;
+  {$EXTERNALSYM ULONG_PTR}
 
   _LARGE_INTEGER = packed record
     QuadPart: Int64;
@@ -123,6 +125,7 @@ type
     dwLowDateTime: LongWord;
     dwHighDateTime: LongWord;
   end;
+  {$EXTERNALSYM _FILETIME}
 
   tagSTATSTG = packed record
     pwcsName: PWideChar;
@@ -137,6 +140,7 @@ type
     grfStateBits: LongWord;
     reserved: LongWord;
   end;
+  {$EXTERNALSYM tagSTATSTG}
 
   _COR_GC_STATS = packed record
     Flags: LongWord;
@@ -255,6 +259,7 @@ type
     function Stat(out pstatstg: tagSTATSTG; grfStatFlag: LongWord): HResult; stdcall;
     function Clone(out ppstm: ISequentialStream): HResult; stdcall;
   end;
+  {$EXTERNALSYM IStream}
 
 // *********************************************************************//
 // Interface: ICorRuntimeHost

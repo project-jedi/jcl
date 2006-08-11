@@ -142,7 +142,7 @@ type
     req_char: PChar;
     code: array [0..0] of Char;
   end;
-  {$EXTERNALSYM real_pcre}
+  //{$EXTERNALSYM real_pcre}
   TPCRE = real_pcre;
   PPCRE = ^TPCRE;
 
@@ -150,7 +150,7 @@ type
     options: PChar;
     start_bits: array [0..31] of Char;
   end;
-{$EXTERNALSYM real_pcre_extra}
+  //{$EXTERNALSYM real_pcre_extra}
   TPCREExtra = real_pcre_extra;
   PPCREExtra = ^TPCREExtra;
 
