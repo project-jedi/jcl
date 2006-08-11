@@ -57,6 +57,7 @@
 
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
 
+{$HPPEMIT '#define __MACTYPES__'}
 {$HPPEMIT '#include <zutil.h>'}
 
 unit zlibh;

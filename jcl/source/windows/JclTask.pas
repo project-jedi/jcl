@@ -69,6 +69,9 @@ const
 type
   TJclScheduledTask = class;
 
+{$HPPEMIT '#define _di_ITaskScheduler ITaskScheduler*'}
+{$HPPEMIT '#define _di_ITask ITask*'}
+
   TJclTaskSchedule = class(TObject)
   private
     FTaskScheduler: ITaskScheduler;
@@ -95,6 +98,8 @@ type
     class procedure Start;
     class procedure Stop;
   end;
+
+{$HPPEMIT '#define _di_ITaskTrigger ITaskTrigger*'}
 
   TJclTaskTrigger = class(TCollectionItem)
   private
@@ -126,6 +131,8 @@ type
     function Insert(Index: Integer): TJclTaskTrigger;
     property Items[Index: Integer]: TJclTaskTrigger read GetItem write SetItem; default;
   end;
+
+{$HPPEMIT '#define _di_IScheduledWorkItem IScheduledWorkItem*'}
 
   TJclScheduledWorkItem = class(TPersistent)
   private

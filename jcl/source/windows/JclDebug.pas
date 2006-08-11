@@ -56,7 +56,11 @@ uses
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
 procedure AssertKindOf(const ClassType: TClass; const Obj: TObject); overload;
 
+{$IFDEF KEEP_DEPRECATED}
 procedure Trace(const Msg: string);
+{$EXTERNALSYM Trace}
+{$ENDIF KEEP_DEPRECATED}
+procedure TraceMsg(const Msg: string);
 procedure TraceFmt(const Fmt: string; const Args: array of const);
 procedure TraceLoc(const Msg: string);
 procedure TraceLocFmt(const Fmt: string; const Args: array of const);
@@ -806,7 +810,15 @@ begin
   Assert(Obj.InheritsFrom(ClassType));
 end;
 
+
+{$IFDEF KEEP_DEPRECATED}
 procedure Trace(const Msg: string);
+begin
+  TraceMsg(Msg);
+end;
+{$ENDIF KEEP_DEPRECATED}
+
+procedure TraceMsg(const Msg: string);
 begin
   OutputDebugString(PChar(StrDoubleQuote(Msg)));
 end;

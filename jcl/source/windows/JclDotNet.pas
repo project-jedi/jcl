@@ -62,7 +62,7 @@ uses
   JclBase, JclWideStrings,
   mscoree_TLB, mscorlib_TLB;
 
-{$HPPEMIT '#include<Mscoree.h>'}
+//{$HPPEMIT '#include<Mscoree.h>'}
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 

@@ -326,8 +326,15 @@ type
 
 const
   Infinity    = 1/0;       // tricky
+  {$EXTERNALSYM Infinity}
   NaN         = 0/0;       // tricky
+  {$EXTERNALSYM NaN}
   NegInfinity = -Infinity;
+  {$EXTERNALSYM NegInfinity}
+
+{$HPPEMIT 'static const Infinity    =  1.0 / 0.0;'}
+{$HPPEMIT 'static const NaN         =  0.0 / 0.0;'}
+{$HPPEMIT 'static const NegInfinity = -1.0 / 0.0;'}
 
 function IsInfinite(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsInfinite(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -505,7 +512,7 @@ type
   private
     FTag: TNaNTag;
   public
-    constructor Create(ATag: TNaNTag);
+    constructor Create(ATag: TNaNTag; Dummy: Boolean = False);
     property Tag: TNaNTag read FTag;
   end;
   {$ENDIF ~CLR}
@@ -3255,7 +3262,7 @@ end;
 //=== { EJclNaNSignal } ======================================================
 
 {$IFNDEF CLR}
-constructor EJclNaNSignal.Create(ATag: TNaNTag);
+constructor EJclNaNSignal.Create(ATag: TNaNTag; Dummy: Boolean);
 begin
   FTag := ATag;
   CreateResFmt(@RsNaNSignal, [ATag]);

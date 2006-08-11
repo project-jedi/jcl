@@ -15383,7 +15383,7 @@ type
 // *********************************************************************//
   IStackWalk = interface(IDispatch)
     ['{60FC57B0-4A46-32A0-A5B4-B05B0DE8E781}']
-    procedure Assert; safecall;
+    procedure _Assert; safecall;
     procedure Demand; safecall;
     procedure Deny; safecall;
     procedure PermitOnly; safecall;

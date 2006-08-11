@@ -1010,9 +1010,12 @@ type
 
   TJclClrArrayData = (adSize, adLowBound);
 
+  TJclClrArraySignBound = array [TJclClrArrayData] of Integer;
+  TJclClrArraySignBounds = array of TJclClrArraySignBound;
+
   TJclClrArraySign = class(TJclClrSignature)
   private
-    FBounds: array of array [TJclClrArrayData] of Integer;
+    FBounds: TJclClrArraySignBounds;
   public
     constructor Create(const ABlob: TJclClrBlobRecord);
   end;
