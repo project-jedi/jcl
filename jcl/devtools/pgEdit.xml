@@ -72,15 +72,34 @@
         <target name="d10" pname="d10p" pdir="d10per"/>
       </targets>
       <aliases>
-        <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
-        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
-        <alias name="Bcb" value="c5,c5s,c6,c6p,d10,d10p"/>
-        <alias name="Kylix" value="k3,k3p"/>
+        <alias name="VCL" value="c5,c5s,d5,d5s,c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+        <alias name="VCLv5" value="c5,c5s,d5,d5s"/>
+        <alias name="VCLv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
+
+        <alias name="D" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+        <alias name="Dv5" value="d5,d5s"/>
+        <alias name="Dv6up" value="d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+
+        <alias name="C" value="c5,c5s,c6,c6p,d10,d10p"/>
+        <alias name="Cv5" value="c5,c5s"/>
+        <alias name="Cv6up" value="c6,c6p,d10,d10p"/>
+
+        <alias name="DB" value="c5,d5,c6,d6,d7,d9,d10"/>
+        <alias name="DBv5" value="c5,d5"/>
+        <alias name="DBv6up" value="c6,d6,d7,d9,d10"/>
+
+        <alias name="DBVCL" value="c5,d5,c6,d6,d7,d9,d10"/>
+        <alias name="DBVCLv5" value="c5,d5"/>
+        <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10"/>
+
+        <alias name="CLX" value="d7clx,k3,k3p"/>
+        <alias name="DBCLX" value="d7clx,k3"/>
+        
+        <alias name="allv5" value="c5,c5s,d5,d5s"/>
+        <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
+
         <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p"/>
         <alias name="Linux" value="k3,k3p"/>
-        <alias name="allclx" value="d7clx,k3,k3p"/>
-        <alias name="allbutclx" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d9,d9p,d10,d10p"/>
-        <alias name="allbutperso" value="c5,c6,d5,d6,d7,d7clx,k3,d9,d10"/>
       </aliases>
       <ClxReplacements>
         <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
@@ -88,7 +107,7 @@
         <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
       </ClxReplacements>
     </model>
-    <Model Name="JCL" format="%p%n" NoLibSuffixFormat="%p%n%e%v0" prefix="Jcl" packages="..\packages" incfile="">
+    <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
         <target name="c5"/>
         <target name="c6"/>
@@ -104,6 +123,8 @@
         <target name="d10" IsBds="1"/>
         <target name="k3" PathSep="/"/>
         <target name="k3.dev" PathSep="/"/>
+        <target name="d9.net" IsDotNet="1"/>
+        <target name="d10.net" IsDotNet="1"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d6,d7,d9,d10"/>
@@ -121,6 +142,7 @@
         <alias name="Vcl" value="c6,d6,d7,d9,d10"/>
         <alias name="VclDev" value="c6.dev,d6.dev,d7.dev"/>
         <alias name="Bds" value="cs1,d8,d9,d10"/>
+        <alias name="JclDotNet" value="d9.net,d10.net"/>
       </aliases>
     </Model>
   </models>
