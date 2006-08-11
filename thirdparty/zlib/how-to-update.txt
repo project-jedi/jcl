@@ -3,3 +3,4 @@
 1. Extract the source in jcl/source/zlib-X.Y.Z
 2. Set the current directory to jcl/source/windows/obj
 3. Execute makefile.mak
+4. Update zconf.h, zlib.h and zutil.h in jcl/include
