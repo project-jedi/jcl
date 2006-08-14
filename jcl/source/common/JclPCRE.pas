@@ -17,13 +17,15 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Mario R. Carro                                                                                 }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Class wrapper for PCRE (PERL Compatible Regular Expression)                                      }
 {                                                                                                  }
 { Unit owner: Peter Thörnqvist                                                                     }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -56,7 +58,10 @@ type
   PPCREIntArray = ^TPCREIntArray;
 
   TJclAnsiRegExOption = (roIgnoreCase, roMultiLine, roDotAll, roExtended,
-    roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy, roNotEmpty, roUTF8);
+    roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
+    roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
+    roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
+    roNewLineCR, roNewLineLF);
   TJclAnsiRegExOptions = set of TJclAnsiRegExOption;
   TJclAnsiCaptureOffset = record
     FirstPos: Integer;
@@ -75,6 +80,7 @@ type
     FStringCount: Integer;
     FVectorSize: Integer;
     FTables: PChar;
+    FMaxCaptureLength: Integer;
     function GetCaptureCount: Integer;
     function GetCaptures(Index: Integer): AnsiString;
     function GetAPIOptions(RunTime: Boolean): Integer;
@@ -90,6 +96,7 @@ type
     property CaptureOffset[Index: Integer]: TJclAnsiCaptureOffset read GetCapturesOffset;
     property ErrorMessage: AnsiString read FErrorMessage;
     property ErrorOffset: Integer read FErrorOffset;
+    property MaxCaptureLength: Integer read FMaxCaptureLength write FMaxCaptureLength;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -107,6 +114,16 @@ implementation
 uses
   pcre,
   JclResources;
+
+function JclPCREGetMem(Size: Integer): Pointer; cdecl;
+begin
+  GetMem(Result, Size);
+end;
+
+procedure JclPCREFreeMem(P: Pointer); cdecl;
+begin
+  FreeMem(P);
+end;
 
 function PCRECheck(Value: Integer): Boolean;
 var
@@ -129,6 +146,34 @@ begin
       PErr := @RsErrNoMemory;
     PCRE_ERROR_NOSUBSTRING:
       PErr := @RsErrNoSubString;
+    PCRE_ERROR_MATCHLIMIT:
+      PErr := @RsErrMatchLimit;
+    PCRE_ERROR_CALLOUT:
+      PErr := @RsErrCallout;
+    PCRE_ERROR_BADUTF8:
+      PErr := @RsErrBadUTF8;
+    PCRE_ERROR_BADUTF8_OFFSET:
+      PErr := @RsErrBadUTF8Offset;
+    PCRE_ERROR_PARTIAL:
+      PErr := @RsErrPartial;
+    PCRE_ERROR_BADPARTIAL:
+      PErr := @RsErrBadPartial;
+    PCRE_ERROR_INTERNAL:
+      PErr := @RsErrInternal;
+    PCRE_ERROR_BADCOUNT:
+      PErr := @RsErrBadCount;
+    PCRE_ERROR_DFA_UITEM:
+      PErr := @RsErrDfaUItem;
+    PCRE_ERROR_DFA_UCOND:
+      PErr := @RsErrDfaUCond;
+    PCRE_ERROR_DFA_UMLIMIT:
+      PErr := @RsErrDfaUMLimit;
+    PCRE_ERROR_DFA_WSSIZE:
+      PErr := @RsErrDfaWSSize;
+    PCRE_ERROR_DFA_RECURSE:
+      PErr := @RsErrDfaRecurse;
+    PCRE_ERROR_RECURSIONLIMIT:
+      PErr := @RsErrRecursionLimit;
   else
     Result := True;
   end;
@@ -141,17 +186,17 @@ end;
 constructor TJclAnsiRegEx.Create;
 begin
   inherited Create;
+  FMaxCaptureLength := 1024;
   FVectorSize := SizeOf(FVector) div SizeOf(Integer);
 end;
 
 destructor TJclAnsiRegEx.Destroy;
 begin
-  (*
-    if FCode <> nil then
-      pcre_free(FCode);
-    if FExtra <> nil then
-      pcre_free(FExtra);
-  *)
+  if FCode <> nil then
+    pcre_free^(FCode);
+  if FExtra <> nil then
+    pcre_free^(FExtra);
+
   inherited Destroy;
 end;
 
@@ -166,22 +211,34 @@ begin
     FTables := nil;
   if Pattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
+  if FCode <> nil then pcre_free^(FCode);
   FCode := pcre_compile(PChar(Pattern), GetAPIOptions(False), @ErrPtr, @ErrOffset, FTables);
   FErrorMessage := ErrPtr;
   FErrorOffset := ErrOffset;
   Result := (FCode <> nil);
   if Result and Study then
+  begin
+    if FExtra <> nil then pcre_free^(FExtra);
     FExtra := pcre_study(FCode, 0, @ErrPtr);
+  end;
 end;
 
 function TJclAnsiRegEx.GetAPIOptions(RunTime: Boolean): Integer;
 const
+  { roIgnoreCase, roMultiLine, roDotAll, roExtended,
+    roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
+    roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
+    roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
+    roNewLineCR, roNewLineLF }
   cDesignOptions: array [TJclAnsiRegExOption] of Integer =
-   (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED, PCRE_DOLLAR_ENDONLY,
-    PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8);
+   (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
+    PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
+    PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
+    PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF);
   cRunOptions: array [TJclAnsiRegExOption] of Integer =
-   (0, 0, 0, 0, 0, 0,
-    0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0);
+   (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
+   PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
+   PCRE_NEWLINE_LF);
 var
   I: TJclAnsiRegExOption;
 begin
@@ -208,13 +265,12 @@ end;
 
 function TJclAnsiRegEx.GetCaptures(Index: Integer): AnsiString;
 var
-  Buffer: array [0..1024] of Char;
   Len: Integer;
 begin
-  Len := pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, Buffer, SizeOf(Buffer));
+  SetLength(Result, MaxCaptureLength);
+  Len := pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, PChar(Result), MaxCaptureLength);
   PCRECheck(Len);
-
-  SetString(Result, Buffer, Len);
+  SetLength(Result, Len);
 end;
 
 function TJclAnsiRegEx.GetCapturesOffset(Index: Integer): TJclAnsiCaptureOffset;
@@ -259,6 +315,8 @@ end;
 initialization
   pcre.LibNotLoadedHandler := LibNotLoadedHandler;
   LoadPCRE;
+  SetPCREMallocCallback(JclPCREGetMem);
+  SetPCREFreeCallback(JclPCREFreeMem);
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
