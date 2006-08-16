@@ -97,6 +97,7 @@ uses
 {$HPPEMIT '#include "WinError.h"'}
 {$HPPEMIT '#include "WinIoCtl.h"'}
 {$HPPEMIT '#include "WinUser.h"'}
+{$HPPEMIT '#include "Powrprof.h"}
 
 {$HPPEMIT '#include <delayimp.h>'}
 {$HPPEMIT ''}
@@ -136,6 +137,7 @@ type
 {$I win32api\WinIoctl.int}
 {$I win32api\WinNLS.int}
 {$I win32api\WinUser.int}
+{$I win32api\PowrProf.int}
 
 {$I win32api\DelayImp.int}
 
@@ -260,6 +262,7 @@ end;
 {$I win32api\WinBase.imp}
 {$I win32api\WinNLS.imp}
 {$I win32api\WinNT.imp}
+{$I win32api\PowrProf.imp}
 
 {$IFDEF UNITVERSIONING}
 initialization
