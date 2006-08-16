@@ -53,11 +53,33 @@ function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean = False): Cardinal;
 
+type
+  TJclKillLevel = (klNormal, klNoSignal, klTimeOut);
+
+// klNormal: old shutdown style: waiting all applications to respond to the signals
+// klNoSignal: do not send shutdown signal, all applications are killed (only Windows NT/2000/XP)
+// klTimeOut: kill applications that do not respond within the timeout interval (only Windows 2000 and XP)
+
 function ExitWindows(ExitCode: Cardinal): Boolean;
-function LogOffOS: Boolean;
-function PowerOffOS: Boolean;
-function ShutDownOS: Boolean;
-function RebootOS: Boolean;
+function LogOffOS(KillLevel: TJclKillLevel = klNormal): Boolean;
+function PowerOffOS(KillLevel: TJclKillLevel = klNormal): Boolean;
+function ShutDownOS(KillLevel: TJclKillLevel = klNormal): Boolean;
+function RebootOS(KillLevel: TJclKillLevel = klNormal): Boolean;
+function HibernateOS(Force, DisableWakeEvents: Boolean): Boolean;
+function SuspendOS(Force, DisableWakeEvents: Boolean): Boolean;
+
+function ShutDownDialog(const DialogMessage: string; TimeOut: DWORD;
+  Force, Reboot: Boolean): Boolean; overload;
+function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD;
+  Force, Reboot: Boolean): Boolean; overload;
+function AbortShutDown: Boolean; overload;
+function AbortShutDown(const MachineName: string): Boolean; overload;
+
+type                                              
+  TJclAllowedPowerOperation = (apoHibernate, apoShutdown, apoSuspend);
+  TJclAllowedPowerOperations = set of TJclAllowedPowerOperation;
+  
+function GetAllowedPowerOperations: TJclAllowedPowerOperations;
 
 // CreateProcAsUser
 type
@@ -85,7 +107,7 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
+  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32, JclSysInfo;
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 var
@@ -173,32 +195,47 @@ begin
   Result := Execute(Cmd, Output, RawOutput);
 end;
 
-function LogOffOS: Boolean;
+function KillLevelToFlags(KillLevel: TJclKillLevel): Cardinal;
+begin
+  Result := 0;
+  case KillLevel of
+    klNoSignal:
+      if not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2, wvWin98,
+        wvWin98SE, wvWinME]) then
+        Result := EWX_FORCE;
+    klTimeOut:
+      if not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2, wvWin98,
+        wvWin98SE, wvWinME, wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4]) then
+        Result := EWX_FORCEIFHUNG;
+  end;
+end;
+
+function LogOffOS(KillLevel: TJclKillLevel): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := JclMiscel.ExitWindows(EWX_LOGOFF);
+  Result := JclMiscel.ExitWindows(EWX_LOGOFF or KillLevelToFlags(KillLevel));
   {$ENDIF MSWINDOWS}
   { TODO : implement at least LINUX variants throwing an exception }
 end;
 
-function PowerOffOS: Boolean;
+function PowerOffOS(KillLevel: TJclKillLevel): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := JclMiscel.ExitWindows(EWX_POWEROFF);
+  Result := JclMiscel.ExitWindows(EWX_POWEROFF or KillLevelToFlags(KillLevel));
   {$ENDIF MSWINDOWS}
 end;
 
-function ShutDownOS: Boolean;
+function ShutDownOS(KillLevel: TJclKillLevel): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := JclMiscel.ExitWindows(EWX_SHUTDOWN);
+  Result := JclMiscel.ExitWindows(EWX_SHUTDOWN or KillLevelToFlags(KillLevel));
   {$ENDIF MSWINDOWS}
 end;
 
-function RebootOS: Boolean;
+function RebootOS(KillLevel: TJclKillLevel): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := JclMiscel.ExitWindows(EWX_Reboot);
+  Result := JclMiscel.ExitWindows(EWX_REBOOT or KillLevelToFlags(KillLevel));
   {$ENDIF MSWINDOWS}
 end;
 
@@ -209,6 +246,107 @@ begin
     Result := False
   else
     Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
+end;
+
+function HibernateOS(Force, DisableWakeEvents: Boolean): Boolean;
+var
+  OldShutdownPrivilege: Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  try
+    OldShutdownPrivilege := IsPrivilegeEnabled(SE_SHUTDOWN_NAME);
+    try
+      Result := EnableProcessPrivilege(True, SE_SHUTDOWN_NAME)
+        and SetSuspendState(True, Force, DisableWakeEvents);
+    finally
+      EnableProcessPrivilege(OldShutdownPrivilege, SE_SHUTDOWN_NAME);
+    end;
+  except
+    Result := False;
+  end;
+  {$ENDIF MSWINDOWS}
+end;
+
+function SuspendOS(Force, DisableWakeEvents: Boolean): Boolean;
+var
+  OldShutdownPrivilege: Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  try
+    OldShutdownPrivilege := IsPrivilegeEnabled(SE_SHUTDOWN_NAME);
+    try
+      Result := EnableProcessPrivilege(True, SE_SHUTDOWN_NAME)
+        and SetSuspendState(False, Force, DisableWakeEvents);
+    finally
+      EnableProcessPrivilege(OldShutdownPrivilege, SE_SHUTDOWN_NAME);
+    end;
+  except
+    Result := False;
+  end;
+  {$ENDIF MSWINDOWS}
+end;
+
+function ShutDownDialog(const DialogMessage: string; TimeOut: DWORD;
+  Force, Reboot: Boolean): Boolean;
+begin
+  Result := ShutDownDialog('', DialogMessage, TimeOut, Force, Reboot);
+end;
+
+function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD;
+  Force, Reboot: Boolean): Boolean;
+var
+  OldShutdownPrivilege: Boolean;
+  PrivilegeName: string;
+begin
+  {$IFDEF MSWINDOWS}
+  if MachineName = '' then
+    PrivilegeName := SE_SHUTDOWN_NAME
+  else
+    PrivilegeName := SE_REMOTE_SHUTDOWN_NAME;
+
+  try
+    OldShutdownPrivilege := IsPrivilegeEnabled(PrivilegeName);
+    try
+      Result := EnableProcessPrivilege(True, PrivilegeName)
+        and InitiateSystemShutdown(PChar(MachineName), PChar(DialogMessage),
+          TimeOut, Force, Reboot);
+    finally
+      EnableProcessPrivilege(OldShutdownPrivilege, PrivilegeName);
+    end;
+  except
+    Result := False;
+  end;
+  {$ENDIF MSWINDOWS}
+end;
+
+function AbortShutDown: Boolean;
+begin
+  Result := AbortShutDown('');
+end;
+
+function AbortShutDown(const MachineName: string): Boolean;
+var
+  OldShutdownPrivilege: Boolean;
+  PrivilegeName: string;
+begin
+  {$IFDEF MSWINDOWS}
+  if MachineName = '' then
+    PrivilegeName := SE_SHUTDOWN_NAME
+  else
+    PrivilegeName := SE_REMOTE_SHUTDOWN_NAME;
+
+  try
+    OldShutdownPrivilege := IsPrivilegeEnabled(PrivilegeName);
+    try
+      Result := EnableProcessPrivilege(True, PrivilegeName)
+        and AbortSystemShutDown(PChar(MachineName));
+    finally
+      EnableProcessPrivilege(OldShutdownPrivilege, PrivilegeName);
+    end;
+  except
+    Result := False;
+  end;
+  {$ENDIF MSWINDOWS}
 end;
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
@@ -225,6 +363,23 @@ begin
     DevMode.dmPelsHeight := YRes;
     Result := ChangeDisplaySettings(DevMode, 0);
   end;
+end;
+
+function GetAllowedPowerOperations: TJclAllowedPowerOperations;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := [];
+  try
+    if IsPwrSuspendAllowed then
+      Include(Result, apoSuspend);
+    if IsPwrHibernateAllowed then
+      Include(Result, apoHibernate);
+    if IsPwrShutdownAllowed then
+      Include(Result, apoShutdown);
+  except
+    Result := [];
+  end;
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure CheckOSVersion;

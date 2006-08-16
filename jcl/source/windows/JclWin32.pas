@@ -92,6 +92,7 @@ uses
 {$HPPEMIT '#include "WinError.h"'}
 {$HPPEMIT '#include "WinIoCtl.h"'}
 {$HPPEMIT '#include "WinUser.h"'}
+{$HPPEMIT '#include "Powrprof.h"}
 
 {$HPPEMIT '#include <delayimp.h>'}
 {$HPPEMIT ''}
@@ -6639,6 +6640,14 @@ const
   {$EXTERNALSYM KLF_RESET}
 
 
+{$IFNDEF CLR}
+
+function IsPwrSuspendAllowed: BOOL; stdcall;
+function IsPwrHibernateAllowed: BOOL; stdcall;
+function IsPwrShutdownAllowed: BOOL; stdcall;
+function SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL; stdcall;
+
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 
@@ -7739,6 +7748,65 @@ end;
 function IMAGE_SNAP_BY_ORDINAL(Ordinal: DWORD): Boolean;
 begin
   Result := ((Ordinal and IMAGE_ORDINAL_FLAG32) <> 0);
+end;
+
+{$ENDIF ~CLR}
+
+{$IFNDEF CLR}
+
+const
+  PowrprofLib = 'PowrProf.dll';
+  
+var
+  _IsPwrSuspendAllowed: Pointer;
+
+function IsPwrSuspendAllowed;
+begin
+  GetProcedureAddress(_IsPwrSuspendAllowed, PowrprofLib, 'IsPwrSuspendAllowed');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_IsPwrSuspendAllowed]
+  end;
+end;
+
+var
+  _IsPwrHibernateAllowed: Pointer;
+
+function IsPwrHibernateAllowed;
+begin
+  GetProcedureAddress(_IsPwrHibernateAllowed, PowrprofLib, 'IsPwrHibernateAllowed');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_IsPwrHibernateAllowed]
+  end;
+end;
+
+var
+  _IsPwrShutdownAllowed: Pointer;
+
+function IsPwrShutdownAllowed;
+begin
+  GetProcedureAddress(_IsPwrShutdownAllowed, PowrprofLib, 'IsPwrShutdownAllowed');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_IsPwrShutdownAllowed]
+  end;
+end;
+
+var
+  _SetSuspendState: Pointer;
+
+function SetSuspendState;
+begin
+  GetProcedureAddress(_SetSuspendState, PowrprofLib, 'SetSuspendState');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetSuspendState]
+  end;
 end;
 
 {$ENDIF ~CLR}
