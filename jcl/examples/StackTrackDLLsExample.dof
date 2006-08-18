@@ -1,0 +1,5 @@
+[Directories]
+OutputDir=..\Bin
+UnitOutputDir=..\Dcu
+SearchPath=..\Source
+Conditionals=HOOK_DLL_EXCEPTIONS

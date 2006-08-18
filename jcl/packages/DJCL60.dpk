@@ -1,0 +1,79 @@
+package DJCL60;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $48000000}
+{$DESCRIPTION 'JEDI Code Library package for Delphi 6'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  vcljpg;
+
+contains
+  JclWin32 in '..\Source\JclWin32.pas',
+  JclAppInst in '..\Source\JclAppInst.pas',
+  JclBase in '..\Source\JclBase.pas',
+  JclCOM in '..\Source\JclCOM.pas',
+  JclComplex in '..\Source\JclComplex.pas',
+  JclCounter in '..\Source\JclCounter.pas',
+  JclDateTime in '..\Source\JclDateTime.pas',
+  JclDebug in '..\Source\JclDebug.pas',
+  JclFileUtils in '..\Source\JclFileUtils.pas',
+  JclGraphics in '..\Source\JclGraphics.pas',
+  JclGraphUtils in '..\Source\JclGraphUtils.pas',
+  JclHookExcept in '..\Source\JclHookExcept.pas',
+  JclIniFiles in '..\Source\JclIniFiles.pas',
+  JclLocales in '..\Source\JclLocales.pas',
+  JclLogic in '..\Source\JclLogic.pas',
+  JclMapi in '..\Source\JclMapi.pas',
+  JclMath in '..\Source\JclMath.pas',
+  JclMime in '..\Source\JclMime.pas',
+  JclMiscel in '..\Source\JclMiscel.pas',
+  JclMultimedia in '..\Source\JclMultimedia.pas',
+  JclNTFS in '..\Source\JclNTFS.pas',
+  JclPeImage in '..\Source\JclPeImage.pas',
+  JclPrint in '..\Source\JclPrint.pas',
+  JclRegistry in '..\Source\JclRegistry.pas',
+  JclResources in '..\Source\JclResources.pas',
+  JclSecurity in '..\Source\JclSecurity.pas',
+  JclShell in '..\Source\JclShell.pas',
+  JclStatistics in '..\Source\JclStatistics.pas',
+  JclStrings in '..\Source\JclStrings.pas',
+  JclSynch in '..\Source\JclSynch.pas',
+  JclSysInfo in '..\Source\JclSysInfo.pas',
+  JclSysUtils in '..\Source\JclSysUtils.pas',
+  JclUnicode in '..\Source\JclUnicode.pas',
+  JclUnitConv in '..\Source\JclUnitConv.pas',
+  Jcl8087 in '..\Source\Jcl8087.pas',
+  JclLANMan in '..\Source\JclLANMan.pas',
+  JclExprEval in '..\Source\JclExprEval.pas',
+  JclRTTI in '..\Source\JclRTTI.pas',
+  LM in '..\Source\LM.pas',
+  Snmp in '..\Source\Snmp.pas',
+  JclTD32 in '..\Source\JclTD32.pas',
+  JclSvcCtrl in '..\Source\JclSvcCtrl.pas',
+  JclStrHashMap in '..\Source\JclStrHashMap.pas';
+
+end.

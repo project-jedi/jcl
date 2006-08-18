@@ -1,0 +1,38 @@
+package JclDebugIde50;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $58000000}
+{$DESCRIPTION 'JCL Debug IDE extension for Delphi 5'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  DJCL50;
+
+contains
+  JclDebugIdeImpl in 'JclDebugIdeImpl.pas',
+  JclDebugIdeResult in 'JclDebugIdeResult.pas' {JclDebugResultForm},
+  JclOtaUtils in 'JclOtaUtils.pas';
+
+end.

@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = DJCL40.bpl IdeOpenDlgFavorite40.bpl JclDebugIde40.bpl ProjectAnalyzer40.bpl \
+  ThreadNameExpert40.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+DJCL40.bpl: DJCL40.dpk
+  $(DCC)
+
+JclDebugIde40.bpl: ..\examples\debugextension\JclDebugIde40.dpk
+  $(DCC)
+
+ThreadNameExpert40.bpl: ..\examples\debugextension\threadnames\ThreadNameExpert40.dpk
+  $(DCC)
+
+ProjectAnalyzer40.bpl: ..\examples\projectanalyzer\ProjectAnalyzer40.dpk
+  $(DCC)
+
+IdeOpenDlgFavorite40.bpl: ..\examples\idefavopendialogs\IdeOpenDlgFavorite40.dpk
+  $(DCC)
