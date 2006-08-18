@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="CJCL50.bpl"/>
+    <OBJFILES value="..\dcu\JclStrHashMap.obj ..\dcu\JclStrings.obj ..\dcu\JclSysInfo.obj 
+      ..\dcu\JclUnicode.obj ..\dcu\JclAppInst.obj ..\dcu\JclDebug.obj 
+      ..\dcu\JclGraphics.obj ..\dcu\JclGraphUtils.obj ..\dcu\JclHookExcept.obj 
+      ..\dcu\JclRTTI.obj ..\dcu\JclResources.obj ..\dcu\JclBase.obj 
+      ..\dcu\JclLogic.obj ..\dcu\JclWin32.obj ..\dcu\JclShell.obj 
+      ..\dcu\JclRegistry.obj ..\dcu\JclFileUtils.obj ..\dcu\JclSynch.obj 
+      ..\dcu\JclSysUtils.obj ..\dcu\JclTD32.obj ..\dcu\JclPeImage.obj 
+      ..\dcu\JclSecurity.obj ..\dcu\JclDateTime.obj ..\dcu\JclCOM.obj 
+      ..\dcu\JclComplex.obj ..\dcu\JclCounter.obj ..\dcu\JclIniFiles.obj 
+      ..\dcu\JclLocales.obj ..\dcu\JclMiscel.obj ..\dcu\JclMath.obj 
+      ..\dcu\JclMime.obj ..\dcu\JclMultimedia.obj ..\dcu\JclNTFS.obj 
+      ..\dcu\JclMapi.obj ..\dcu\JclPrint.obj ..\dcu\JclStatistics.obj 
+      ..\dcu\JclExprEval.obj ..\dcu\Jcl8087.obj ..\dcu\JclUnitConv.obj 
+      ..\dcu\JclSvcCtrl.obj ..\dcu\Snmp.obj ..\dcu\CJCL50.obj"/>
+    <RESFILES value="CJCL50.res ..\dcu\JclUnicode.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="JvInspector50_AJLBCB.lib"/>
+    <SPARELIBS value="Vcl50.lib vcljpg50.lib JvInspector50_AJLBCB.lib"/>
+    <PACKAGES value="vcl50.bpi vcljpg50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\source"/>
+    <PATHRC value=".;..\source"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="CJCL50.cpp"/>
+    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\dcu -N0..\dcu -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\dcu -D&quot;JEDI Code Library package for C++Builder 5&quot; -aa -Tpp -Gpr -x 
+      -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=20
+Release=1
+Build=779
+Debug=0
+PreRelease=0
+Special=1
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Project JEDI
+FileDescription=C5 package for JCL
+FileVersion=1.20.1.779
+InternalName=CJCL50
+LegalCopyright=Copyright (C) 1999, 2002 Project JEDI
+LegalTrademarks=
+OriginalFilename=CJCL50.bpk
+ProductName=Jedi Code Library
+ProductVersion=1.20.1.779 Release 1.20
+Comments=
+SpecialBuild=for C++Builder 5
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\source;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\source;$(BCB)\lib\obj;$(BCB)\lib
+Item2=c:\program files\borland\cbuilder5\projects\lib\;..\source;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\dcu
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

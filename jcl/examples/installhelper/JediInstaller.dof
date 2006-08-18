@@ -1,0 +1,6 @@
+[Directories]
+OutputDir=..\..\Bin
+UnitOutputDir=..\..\Dcu
+SearchPath=..\..\Source
+Conditionals=JCLINSTALL
+
