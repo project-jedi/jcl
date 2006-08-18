@@ -1,0 +1,84 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = ApiHookExample.exe AppInstExample.exe CreateProcAsUserExample.exe FramesTrackExample.exe \
+  LanManExample.exe LocalesExample.exe MapiExample.exe MultiMediaExample.exe NtSvcExample.exe \
+  PeFuncExample.exe ReadMailExample.exe RegistryExample.exe RTTIExample.exe SingleInstExample.exe \
+  SourceLocExample.exe StackTrackExample.exe SysInfoExample.exe TextReaderExample.exe \
+  ThreadExceptExample.exe UnmangleNameExample.exe VerInfoExample.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+MapiExample.exe: MapiExample.dpr
+  $(DCC)
+
+LocalesExample.exe: LocalesExample.dpr
+  $(DCC)
+
+AppInstExample.exe: AppInstExample.dpr
+  $(DCC)
+
+CreateProcAsUserExample.exe: CreateProcAsUserExample.dpr
+  $(DCC)
+
+SysInfoExample.exe: SysInfoExample.dpr
+  $(DCC)
+
+ApiHookExample.exe: ApiHookExample.dpr
+  $(DCC)
+
+UnmangleNameExample.exe: UnmangleNameExample.dpr
+  $(DCC)
+
+VerInfoExample.exe: VerInfoExample.dpr
+  $(DCC)
+
+RegistryExample.exe: RegistryExample.dpr
+  $(DCC)
+
+SourceLocExample.exe: SourceLocExample.dpr
+  $(DCC)
+
+StackTrackExample.exe: StackTrackExample.dpr
+  $(DCC)
+
+FramesTrackExample.exe: FramesTrackExample.dpr
+  $(DCC)
+
+ReadMailExample.exe: ReadMailExample.dpr
+  $(DCC)
+
+PeFuncExample.exe: PeFuncExample.dpr
+  $(DCC)
+
+SingleInstExample.exe: SingleInstExample.dpr
+  $(DCC)
+
+LanManExample.exe: LanManExample.dpr
+  $(DCC)
+
+MultiMediaExample.exe: MultiMediaExample.dpr
+  $(DCC)
+
+NtSvcExample.exe: NtSvcExample.dpr
+  $(DCC)
+
+RTTIExample.exe: RTTIExample.dpr
+  $(DCC)
+
+TextReaderExample.exe: TextReaderExample.dpr
+  $(DCC)
+
+ThreadExceptExample.exe: ThreadExceptExample.dpr
+  $(DCC)
+
+
