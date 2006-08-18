@@ -1,0 +1,1263 @@
+8087.txt
+
+  All8087Exceptions                A set containing all FPU exception flags.
+  ClearPending8087Exceptions       Clears all pending FPU exceptions.
+  Get8087ControlWord               Returns the 80x87 control word.
+  Get8087Infinity                  Returns the infinity setting of the FPU.
+  Get8087Precision                 Returns the precision setting of the FPU.
+  Get8087Rounding                  Returns the rounding setting of the FPU.
+  Get8087StatusWord                Returns the 80x87 status word.
+  GetMasked8087Exceptions          Returns the set of masked FPU exceptions.
+  GetPending8087Exceptions         Returns a set of pending FPU exception flags.
+  Mask8087Exceptions               Masks additional exceptions.
+  Set8087ControlWord               Sets the 80x87 control word
+  Set8087Infinity                  Sets the infinity control of the FPU.
+  Set8087Precision                 Sets the precision control of the FPU.
+  Set8087Rounding                  Sets the rounding control of the FPU.
+  SetMasked8087Exceptions          Sets the FPU exception mask.
+  T8087Exceptions                  Enumeration which describes the set of available FPU exception masks. Note that you can use the All8087Exceptions constant whenever you need a set which includes all exception flags.
+  T8087Infinity                    Enumeration used for retrieving and setting the FPU precision control.
+  T8087Precision                   Used for retrieving and setting the FPU precision control.
+  T8087Rounding                    Enumeration used for retrieving and setting the FPU rounding control.
+  Unmask8087Exceptions             Unmasks the specified exceptions.
+
+AppInst.txt
+
+  AI_INSTANCECREATED               WParam field for instance creation notifications
+  AI_INSTANCEDESTROYED             WParam field for instance destruction notifications
+  AI_USERMSG                       WParam field for user-defined notification messages.
+  TJclAppInstances                 TJclAppInstances allows you to control the number of application instances the user can run.
+
+Base.txt
+
+  CardinalsToI64                   Packs the supplied 32 bit values in an Int64
+  DynArrayAllocSize                Returns the allocation size for a dynamic array
+  DynArrayElemSize                 Returns the size of an element in the array.
+  DynArrayFinalize                 Releases the memory reserved for the dynamic array.
+  DynArrayHigh                     Upper bound for dynamic array of some type.
+  DynArrayInitialize               Initializes a dynamic array for use.
+  DynArrayLength                   Returns the length of a dynamic array
+  DynArraySetLength                Sets the length of the dynamic array.
+  EJclError                        Base exception class for all JCL exceptions.
+  EJclWin32Error                   Base class for exceptions raised in response to Win32 errors.
+  Float                            Generic floating point type.
+  I64Assign                        Initializes an Int64 to the supplied values.
+  I64Compare                       Compares two 64 bit integers.
+  I64Copy                          Copies an Int64
+  I64ToCardinals                   Extracts the high and low 32 bit values from an Int64.
+  Int64                            Int64 is used to simulate an unsigned 64-bit value in compilers which do not natively support this type. All supported compilers except Delphi3 and C++ Builder 3 natively support Int64 in which case Int64 is not redefined. Various support routines have been defined to assist manipulating an Int64.
+  JclVersion                       Constants describing the JCL version.
+  LongWord                         Alias for Cardinal.
+  TDynArray                        A dynamic array of some type.
+  TObjectList                      TList descendent to maintain a list of TObject descendents.
+  TSysCharSet                      A set of characters.
+
+Com.txt
+
+  GetDCOMVersion                   Returns the version of DCOM installed.
+  GetMDACVersion                   Returns the version of MDAC (Microsoft Data Access) installed.
+  IsDCOMEnabled                    Returns whether DCOM is enabled.
+  IsDCOMInstalled                  Returns whether DCOM is installed.
+
+Complex.txt
+
+  TComplexKind                     Enumeration specifies the way of representing a complex number using either rectangular representation or polar coordinates.
+
+Counter.txt
+
+  StartCount                       Starts a high performance resolution counter.
+  StopCount                        Stops a high performance resolution counter.
+  TJclCounter                      Implements a high performance counter.
+
+DateTime.txt
+
+  CenturyBaseYear                  Gives the year "00" of the century specified by DateTime.
+  CenturyOfDate                    Extracts the century from a DateTime.
+  CreationDateTimeOfFile           Extracts the creation date of the file specified by SR.
+  DateTimeToDosDateTime            Converts a TDateTime to a TDosDateTime.
+  DateTimeToFileTime               Converts a TDateTime to a TFileTime.
+  DateTimeToLocalDateTime          Converts a UNC based TDateTime to a local TDateTime
+  DateTimeToSystemTime             Converts a TDateTime to a TSystemTime.
+  DayOfDate                        Extracts the day from a DateTime.
+  DayOfTheYear                     Returns the day of the year (1... 366) and optionally the year.
+  DayOfTheYearToDateTime           Encodes the DateTime denoted by a year and the number of a day in that year.
+  DaysInMonth                      Returns the number of days in the month represent by a DateTime.
+  DecodeDate                       Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
+  DosDateTimeToDateTime            Converts a TDosDateTime to a TDateTime.
+  DosDateTimeToFileTime            Converts a TDosDateTime to a TFileTime.
+  DosDateTimeToStr                 Converts a DOS DateTime to a string.
+  DosDateTimeToSystemTime          Converts a TDoaDateTime to a TSystemTime.
+  EasterSunday                     Returns the date of Easter Sunday for a given year.
+  EncodeDate                       Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
+  FATDatesEqual                    Test if the dates are equal within the granularity of the FAT file system (2 seconds)
+  FileTimeToDateTime               Converts a TFileTime to a TDateTime.
+  FileTimeToDosDateTime            Converts a UTC based TFileTime to a TDateTime.
+  FileTimeToLocalDateTime          Converts a UTC based TFileTime to a local TDateTime.
+  FileTimeToStr                    Converts a TFileTime to a string.
+  FileTimeToSystemTime             Converts a UTC based TFileTime to a TSystemTime.
+  FormatDateTime                   Enhences FormatDateTime by the additional Format tokens w, i, e and f.
+  HourOfTime                       Extracts the hour from a DateTime.
+  HoursToMSecs                     Converts hours to milliseconds.
+  IsLeapYear                       Tests whether DateTime represents a leap year.
+  ISOWeekNumber                    Returns the week number of a given date. Optionally the reference-year for this week and the weekday can be requested
+  ISOWeekToDateTime                Returns the date denoted by year, week and weekday.
+  LastAccessDateTimeOfFile         Extracts the last access date of the file specified by SR.
+  LastWriteDateTimeOfFile          Extracts the last write date of the file specified by SR.
+  LocalDateTimeToDateTime          Converts a local TDateTime to a UNC based TDateTime
+  LocalDateTimeToFileTime          Converts a local TDateTime to a UNC based TFileTime
+  Make4DigitYear                   Converts a 2 digit year into a 4 digit year.
+  MakeYear4Digit                   Converts a 2 digit year into a 4 digit year.
+  MinuteOfTime                     Extracts the minutes from a DateTime.
+  MinutesToMSecs                   Converts minutes to milliseconds.
+  MonthOfDate                      Extracts the month from a DateTime.
+  SecondOfTime                     Extracts the seconds from a DateTime.
+  SecondsToMSecs                   Converts seconds to milliseconds.
+  SystemTimeToDosDateTime          Converts a TSystemTime to a TDosDateTime.
+  SystemTimeToFileTime             Converts a TSystemTime to a TFileTime.
+  SystemTimeToStr                  Converts a TSystemTime to a string.
+  TimeOfDateTimeToMSecs            Returns the number of milliseconds in a DateTime.
+  TimeOfDateTimeToSeconds          Returns the number of seconds in a DateTime.
+  YearOfDate                       Extracts the year from a DateTime.
+
+Debug.txt
+
+  __FILE__                         Returns the name of the file.
+  __FILE_OF_ADDR__                 Returns the filename for an address.
+  __LINE__                         Returns the line number in the source code file at which a routine is executing.
+  __LINE_OF_ADDR__                 Returns the line number given an address.
+  __MAP__                          Returns the file name, unit name, procedure name and line number at which a routine is executing.
+  __MAP_OF_ADDR__                  Returns the file name, unit name, procedure name and line number given an address.
+  __MODULE__                       Returns the name of the unit in which a routine resides.
+  __MODULE_OF_ADDR__               Returns the module name for an address.
+  __PROC__                         Returns the name of the routine at a specified level.
+  __PROC_OF_ADDR__                 Returns the procedure name for an address.
+  AssertKindOf                     Asserts that an object is of a specified class.
+  Caller                           Returns the address of a calling routine.
+  ClearLocationData                Clears the list of debug information items.
+  ConvertMapFileToJdbgFile         Converts a text based MAP file to a Jcl binary debug file.
+  DebugInfoAvailable               Determines if debug info for a module is available.
+  EnableCrashOnCtrlScroll          Enables manually crashing Windows.
+  ExceptionFrameTrackingEnable     Except frame tracking enabled for hooked exceptions.
+  ExceptNotifyMethod               Exception notify method place holder.
+  ExceptNotifyProc                 Exception notify routine place holder.
+  ExtractClassName                 Extracts the class name from a procedure name.
+  ExtractMethodName                Extracts the method name from a procedure name.
+  FileByLevel                      Returns the name of the file.
+  FileOfAddr                       Returns the filename for an address.
+  GetLocationInfo                  Returns location info given an address.
+  GetLocationInfoStr               Returns location info in a formatted string, given an address.
+  InsertDebugDataIntoExecutableFile Insert binary debug data into an executable.
+  IsDebuggerAttached               Determines whether the calling process is running under the context of a debugger.
+  IsHandleValid                    Tests whether a handle is valid.
+  IsSystemModule                   Determines if a module belongs to the current application
+  JclCreateExceptFrameList         Creates an exception frame list.
+  JclCreateStackList               Creates a stack list.
+  JclDbgDataResName                Resource name for binary debug data
+  JclDbgDataSignature              Signature of Jcl Binary Debug Data
+  JclDbgFileExtension              File extension for a Jcl Binary Debug File
+  JclExceptionsHooked              Determines if exceptions are hooked.
+  JclHookExceptions                Enables exception hooking.
+  JclLastExceptFrameList           Retreives the last generated except frame list.
+  JclLastExceptStackList           Retreives the last generated stack info list.
+  JclUnhookExceptions              Disables exception hooking.
+  JmpInstruction                   Disected jump instruction
+  LineByLevel                      Returns the line number in the source code file at which a routine is executing.
+  LineOfAddr                       Returns the line number given an address.
+  MapByLevel                       Returns the file name, unit name, procedure name and line number at which a routine is executing.
+  MapOfAddr                        Returns the file name, unit name, procedure name and line number given an address.
+  ModuleByLevel                    Returns the name of the unit in which a routine resides.
+  ModuleFromAddr                   Returns the module handle for an address.
+  ModuleOfAddr                     Returns the module name for an address.
+  PExcDesc                         Except frame descriptor
+  PExcFrame                        Except frame
+  PJclMapString                    A map-file string
+  ProcByLevel                      Returns the name of the routine at a specified level.
+  ProcOfAddr                       Returns the procedure name for an address.
+  PStackFrame                      Stack frame information
+  RawStackTracking                 Raw tack tracking enabled for hooked exceptions.
+  StackTrackingEnable              Stack tracking enabled for hooked exceptions.
+  TExcDescEntry                    Except on... handler item
+  TExceptFrameKind                 Exception frame kind.
+  TJclAbstractMapParser            Abstract Map parser
+  TJclBinDebugGenerator            Generates a binary version of a map file.
+  TJclBinDebugScanner              Scans a binary version of a map file.
+  TJclDebugInfoBinary              Debug info location item for Jcl binary debug data.
+  TJclDebugInfoExports             Debug info location item for Borland export header.
+  TJclDebugInfoList                Holds a list of debug info items
+  TJclDebugInfoMap                 Debug info location item for text-base map files.
+  TJclDebugInfoSource              Debug info location item.
+  TJclExceptFrame                  Except frame item.
+  TJclExceptFrameList              List of except frame item.
+  TJclExceptNotifyMethod           Exception notify method type.
+  TJclExceptNotifyProc             Exception notify procedure type.
+  TJclLocationInfo                 Location info structure
+  TJclMapAddress                   Holds location information.
+  TJclMapParser                    Generic map file parser
+  TJclMapScanner                   Generic map file parser
+  TJclStackBaseList                Base stack information list
+  TJclStackInfoItem                Stack information item
+  TJclStackInfoList                Stack information list
+  Trace                            Sends a message to the debugger.
+  TraceFmt                         Sends a formatted message to the debugger.
+  TraceLoc                         Sends a message to the debugger including location information.
+  TraceLocFmt                      Sends a formatted message to the debugger prepending it with location information.
+  TrackAllModules                  Track all modules or Borland modules only.
+  TStackInfo                       Stack information
+
+FileUtils.txt
+
+  AdvBuildFileList                 AdvBuildFileList works like BuildFileList if called with only three parameters, but it accepts two optional parameters for extended functionality.
+  BuildFileList                    Builds a list of files and folders in a directory.
+  CloseVolume                      Closes a handle for a previously opened volume.
+  CreateEmptyFile                  Creates a new file with a zero length.
+  DelTree                          Recursively deletes a folder.
+  DelTreeEx                        Recursively deletes a folder.
+  DirectoryExists                  Determines whether a directory exists.
+  DiskInDrive                      Tests whether there is a disk in the specified drive.
+  DriveLetters                     Set of valid characters to use as drive letters.
+  FileCreateTemp                   Creates a temporary file.
+  FileExists                       Tests whether a file exists.
+  FileGetDisplayName               Returns the display name of a path.
+  FileGetSize                      Returns the size of the specified file.
+  FileGetTempName                  Returns the name for a temporary file.
+  FileGetTypeName                  Returns a string that describes the file's type.
+  FindUnusedFileName               Returns a unique filename composed of the specified parts and a unique number.
+  ForceDirectories                 Creates all the directories along a directory path if they do not already exist.
+  GetDirectorySize                 Returns the size of a directory.
+  GetDriveTypeStr                  Returns the type of drive.
+  GetFileAgeCoherence              Tests the file age coherence of a file.
+  GetFileAttributeList             Converts attributes flag to a stringlist.
+  GetFileAttributeListEx           Converts attributes flag to a stringlist.
+  GetFileCreation                  Returns the date/time that the file was created.
+  GetFileInformation               Returns information about a file.
+  GetFileLastAccess                Returns the date/time that the file was last accessed.
+  GetFileLastWrite                 Returns the date/time that the file was last written to.
+  GetModulePath                    Returns the filename of a module.
+  GetSizeOfFile                    Returns the size of a file.
+  GetStandardFileInfo              Returns information about a file.
+  IsDirectory                      Tests if the file is a directory.
+  LockVolume                       Locks the specified volume.
+  OpenVolume                       Opens a handle to the specified volume.
+  OSIdentToString                  Maps an OS identifier as to a string.
+  PathAddExtension                 Adds the extension to a path.
+  PathAddSeparator                 Forces the string to end with a directory separator.
+  PathAppend                       Concatenates two paths.
+  PathBuildRoot                    Creates a root path for the given drive number.
+  PathCommonPrefix                 Compares two paths for a common prefix.
+  PathCompactPath                  Compacts a path to fit within the given pixel width.
+  PathDevicePrefix                 Prefix used to specify a physical device under Windows.
+  PathExtractElements              Extracts all elements from a path.
+  PathExtractFileDirFixed          Extracts drive and directory parts from a filename.
+  PathExtractFileNameNoExt         Extracts the filename without the extension.
+  PathGetLongName                  Returns the long name of a path.
+  PathGetShortName                 Returns the short name of a path.
+  PathIsAbsolute                   Tests if a path is an absolute path.
+  PathIsChild                      Checks whether Path is a child of Base.
+  PathIsDiskDevice                 Tests whether a path denotes a disk device.
+  PathIsUNC                        Tests whether a path is a UNC path.
+  PathRemoveExtension              Removes the extension from a path.
+  PathRemoveSeparator              Removes a trailing directory separator from a path.
+  PathSeparator                    Character used as path element separator.
+  PathUncPrefix                    Prefix for UNC path names.
+  SetDirCreation                   Sets the directory's last-write time stamp.
+  SetDirLastAccess                 Sets the directory's last-write time stamp.
+  SetDirLastWrite                  Sets the directory's last-write time stamp.
+  SetFileCreation                  Sets the file's creation time stamp.
+  SetFileLastAccess                Sets the file's last-access time stamp.
+  SetFileLastWrite                 Sets the file's last-write time stamp.
+  ShredFile                        Shreds the contents of the file and then deletes it.
+  TDelTreeProgress                 Progress callback routine for the DelTreeEx function.
+  TFileFlags                       
+  TJclCustomFileMapping            Wrapper for Win32 filemapping object.
+  TJclFileMapping                  Implements a filemapping object backed by an actual disk file.
+  TJclFileMappingView              Implements a file mapping view object.
+  TJclFileVersionInfo              Enables reading of version information from executables.
+  TJclSwapFileMapping              Implements a filemapping object backed by the swap file.
+  TJclTempFileStream               Implements a temporary file-stream.
+  UnLockVolume                     Unlocks the specified volume.
+  VersionResourceAvailable         Tests if a file has a version resource.
+
+Graphics.txt
+
+  BitmapToIcon                     Converts a bitmap to an icon.
+  BitmapToJPeg                     Converts a bitmap to a JPEG.
+  BrightColor                      Brightens a color by a percentage.
+  BrightColorChannel               Brightens one channel of a color by a percentage.
+  CIED65ToCIED50                   Converts values of the XYZ color space using the D65 white point to D50 white point.
+  CIELAB2BGR                       Conversion of the CIE L*a*b color space to RGB using a two step approach assuming a D65 white point, first a conversion to CIE XYZ is performed and then from there to RGB.
+  CMYK2BGR                         Converts a stream of Count CMYK values to BGR.
+  DarkColor                        Darkens a color by a percentage.
+  DarkColorChannel                 Darkens one channel of a color by a percentage.
+  DrawBitmap                       Draws a bitmap to a device context.
+  ExtractIconCount                 Returns the number of icons in a file.
+  GetAntialiasedBitmap             Antialiases a bitmap.
+  GetColorBlue                     Extracts the Blue component from a TColor.
+  GetColorFlag                     Extracts the Flag component from a TColor.
+  GetColorGreen                    Extracts the Green component from a TColor.
+  GetColorRed                      Extracts the Red component from a TColor.
+  GetRGBValue                      Returns the Red, Green and Blue components of a TColor.
+  Gray16                           Converts each color component from a 16 bits per sample to 8 bit used in Windows DIBs.
+  IconToBitmap                     Converts an icon to a bitmap.
+  JPegToBitmap                     Converts a JPEG to a bitmap.
+  NullPoint                        Returns a null point.
+  NullRect                         Returns a null rectangle.
+  OpenGLColor2WinColor             Converts OpenGLColor to TColor.
+  PointAssign                      Initializes a TPoint with the supplied values.
+  PointCopy                        Copies a TPoint.
+  PointEqual                       Tests two points for equality.
+  PointIsNull                      Tests a point against the null point.
+  PointMove                        Moves a point.
+  RectAssign                       Initializes a rectangle by the individual coordinates.
+  RectAssignPoints                 Initializes a rectangle by TPoints.
+  RectBounds                       Initializes a rectangle by bounds.
+  RectCenter                       Returns the center-point of the rectangle.
+  RectCopy                         Copies a rectangle.
+  RectEqual                        Tests two rectangles for equality.
+  RectGrow                         Expands a rectangle by the specified amount.
+  RectGrowX                        Expands the horizontal dimension of a rectangle by the specified amount.
+  RectGrowY                        Expands the vertical dimension of a rectangle by the specified amount.
+  RectHeight                       Returns the height of a rectangle.
+  RectIncludesPoint                Tests if a point lies within a rectangle.
+  RectIncludesRect                 Tests if one rectangle is completely embedded inside another rectangle.
+  RectIntersection                 Calculates the intersection of two rectangles.
+  RectIntersectRect                Tests if two rectangles intersect.
+  RectIsEmpty                      Tests if the rectangle is empty.
+  RectIsNull                       Tests if a rectangle is a null rectangle.
+  RectIsSquare                     Tests if the rectangle is square.
+  RectIsValid                      Tests if R is a valid rectangle.
+  RectMove                         Moves the specified rectangle by the specified offsets.
+  RectMoveTo                       Moves the rectangle to the specified coordinates.
+  RectNormalize                    Normalizes a rectangle.
+  RectsAreValid                    Tests if all the rectangles in the array are valid.
+  RectUnion                        Calculates the union of two rectangles.
+  RectWidth                        Returns the width of a rectangle.
+  RGB2BGR                          Reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done.
+  RGBA2BGRA                        Reorders a stream of "Count" RGBA values to BGRA, additionally an eventual sample size adjustment is done.
+  SetColorBlue                     Sets the Blue component of a TColor.
+  SetColorFlag                     Sets the Flag component of a TColor.
+  SetColorGreen                    Sets the Green component of a TColor.
+  SetColorRed                      Sets the Red component of a TColor.
+  SetRGBValue                      Returns a TColor initialized with the supplied values.
+  Stretch                          Scales a bitmap to another bitmap.
+  TColor32                         TColor32 represents an ARGB color quad.
+  TColor32Array                    TColor32 Arrays.
+  TJclDesktopCanvas                Access the desktop canvas.
+  TPalette32                       TPalette32 types are mostly used to simulate palette-based operations.
+  TResamplingFilter                Filters for stretch function.
+  WinColor2OpenGLColor             Converts TColor to OpenGLColor.
+
+IniFiles.txt
+
+  IniReadBool                      Reads a boolean key from an ini file.
+  IniReadInteger                   Reads an integer key from an ini file.
+  IniReadString                    Reads a string key from an ini file.
+  IniWriteBool                     Writes a boolean key to an ini file.
+  IniWriteInteger                  Writes an integer key to an ini file.
+  IniWriteString                   Writes a string key to an ini file.
+
+Locales.txt
+
+  Create                           Creates an instance of TJclLocaleInfo for a specific locale.
+  TJclAvailableKeybLayout          Describes an available keyboard layout.
+  TJclKeybLayoutFlags              Set of flags which describe how to load, unload or activate an input locale identifier.[Description]
+  TJclKeyboardLayout               Wrapper for a loaded input locale identifier.
+  TJclKeyboardLayoutList           Maintains a list of input locale identifiers.
+  TJclLocaleInfo                   TJclLocaleInfo represents an installed or supported locale.
+  TJclLocalesKind                  TJclLocalesKind is used by the TJclLocalesList class to specify whether the list contains elements for all supported or all installed locales and codepages.
+  TJclLocalesList                  Maintains information about supported locales and codepages.
+
+Logic.txt
+
+  BitsHighest                      Returns the highest bit set in the supplied value.
+  BitsLowest                       Returns the lowest bit set in the supplied value.
+  BitsNeeded                       Returns the number of Bits needed to represent a given positive integer.
+  BitsToBooleans                   Unpacks a set of bits into an array of booleans.
+  BooleansToBits                   Packs an array of booleans into a set of bits.
+  ClearBit                         Clears a bit in an integer-type value.
+  CountBitsCleared                 Returns the number of cleared bits in the supplied value.
+  CountBitsSet                     Returns the number of set bits in the passed value.
+  DecLimit                         Decrements an ordinal up to limit.
+  DecLimitClamp                    Decrements an ordinal up to limit.
+  Digits                           Returns the number of digits in a given positive integer.
+  IncLimit                         Increments an ordinal up to limit.
+  IncLimitClamp                    Increments an ordinal up to limit.
+  LRot                             Left rotates bits.
+  LRot                             Left rotates bits.
+  Max                              Returns the larger of two values.
+  Min                              Returns the smaller of two values.
+  OrdToBinary                      Returns the supplied value in its binary form.
+  ReverseBits                      Reverses the bits of Value.
+  ReverseBytes                     Reverses the bytes of Value.
+  RRot                             Right rotates bits.
+  Sar                              Performs an arithmetic right shift.
+  SetBit                           Sets a bit in an integer-type value.
+  SwapOrd                          Swaps two integer-typed variables.
+  TestBit                          Tests a bit in an integer-type value.
+  TestBits                         Test multiple bits.
+  ToggleBit                        Toggles a bit in an integer-type value.
+
+Mapi.txt
+
+  EJclMapiError                    Exception class for MAPI-errors
+  JclSimpleBringUpSendMailDialog   Brings up the send mail dialog
+  JclSimpleSendMail                Sends an email to a recipient.
+  MapiCheck                        Checks the MAPI result code
+  MapiErrorMessage                 Retrieves the MAPI error message for a given MAPI result code.
+  TJclEmail                        E-mail class
+  TJclEmailFindOptions             MAPI search options
+  TJclEmailLogonOptions            Logon options
+  TJclEmailReadMsg                 Message information record
+  TJclEmailReadOptions             Read options
+  TJclEmailRecip                   E-mail recipient object
+  TJclEmailRecipKind               E-mail recipient type
+  TJclEmailRecips                  E-mail recipients list object
+  TJclMapiClient                   MAPI-Client record
+  TJclMapiClientConnect            MAPI-Client type
+  TJclSimpleMapi                   Simple MAPI class.
+
+Math.txt
+
+  ArcCos                           Calculates the inverse cosine of X.
+  ArcCosH                          Calculates the inverse hyperbolic cosine.
+  ArcCot                           Calculates the inverse of cotangent.
+  ArcCotH                          Calculates the inverse hyperbolic cotangent.
+  ArcCsc                           Calculates the inverse cosecant.
+  ArcCscH                          Calculates the inverse hyperbolic cosecant.
+  ArcSec                           Calculates the inverse Sec.
+  ArcSecH                          Calculates the inverse hyperbolic secant.
+  ArcSin                           Calculates the inverse sine.
+  ArcSinH                          Calculates the inverse hyperbolic sine.
+  ArcTan                           Calculates the inverse tangent
+  Arctan2                          Calculates the inverse tangent of Y / X
+  ArcTanH                          Returns the inverse hyperbolic tangent of X
+  Ceiling                          Return the nearest integer value above X.
+  CheckCrc32                       Checks and, if possible, corrects the data.
+  Cos                              Calculates the cosine of X
+  CosH                             Returns the hyperbolic cosine of X.
+  Cot                              Returns the cotangent of the argument.
+  CotH                             Returns the hyperbolic cotangent of X.
+  Crc32                            Calculates or checks a CRC.
+  Csc                              Returns the reciprocal of the sine of X.
+  CscH                             Hyperbolic Cosecant (csc).
+  CycleToGrad                      Converts cycles to grads.
+  DegMinSecToFloat                 Converts degrees, minutes, seconds to a float.
+  DegToGrad                        Converts degrees to grads.
+  Factorial                        Returns the factorial of the argument.
+  FloatingPointClass               Classifies the supplied floating point value.
+  FloatIsZero                      Tests if a float is zero.
+  FloatsEqual                      Compares two floats for equality.
+  FloatToDegMinSec                 Converts a float to degrees, minutes and seconds.
+  Floor                            Return the nearest integer value below X.
+  GCD                              Returns the greatest common divisor.
+  GradToCycle                      Converts grads to cycles.
+  GradToDeg                        Converts grads to degrees.
+  IsInfinite                       Determines whether <I>Value</I> is infinite.
+  IsNaN                            Determines whether <I>Value</I> is a NaN.
+  ISqrt                            Returns the integral part of the square root.
+  LCM                              Returns the Least Common Multiple of two integers.
+  LogBase10                        Returns log base 10.
+  LogBase2                         Returns log base 2.
+  LogBaseN                         Returns log base N.
+  MaxFloat                         Returns the larger of the two arguments.
+  MinFloat                         Returns the smaller of the arguments
+  ModFloat                         Returns the modulus of two floating point numbers.
+  NormalizeAngle                   Normalizes the given angle
+  Power                            Returns Base to the power Exponent.
+  PowerInt                         Returns X to the power N.
+  Pythagoras                       Computes Sqrt(X^2 + Y^2)
+  RelativePrime                    Tests if two numbers are relatively prime.
+  RemainderFloat                   Returns the remainder of two floating point numbers.
+  Sec                              Returns the reciprocal of the cosine of the argument.
+  SecH                             Returns the hyperbolic secant of the argument.
+  Sgn                              Returns the sign of the argument.
+  Signe                            Returns the value of X with the same sign as Y.
+  Sin                              Returns the sine of the argument.
+  SinCos                           Calculates the sine and cosine of the argument.
+  SinH                             Returns the hyperbolic sine of the argument.
+  SwapFloats                       Swaps two floating point values.
+  Tan                              Returns the tangent of the argument.
+  TanH                             Returns the hyperbolic tangent of the argument.
+  TenToY                           Raises 10 to the power Y.
+  TFloatingPointClass              Describes the hierarchy of floating point classes.
+  TwoToY                           Raises 2 to the power Y.
+
+Mime.txt
+
+  EJclMimeError                    Base class for exceptions raised in response to MIME encoding/decoding errors.
+  MimeDecode                       The primary Mime decoding routine
+  MimeDecodedSize                  Calculates the output size for decoding
+  MimeDecodePartial                MIME decode a chunk of data in a multi-phase decoding routine
+  MimeDecodePartialEnd             MIME decode the last chunk of data in a multi-phase decoding routine
+  MimeDecodeStream                 Decodes a MIME-encoded stream
+  MimeDecodeString                 MIME-Decodes a string
+  MimeEncode                       The primary Mime encoding routine
+  MimeEncodedSize                  Calculates the output size for encoding
+  MimeEncodeStream                 MIME-Encodes a stream
+  MimeEncodeString                 MIME-Encodes a string
+
+Miscel.txt
+
+  CreateProcAsUser                 Spawns a new process in the context of the specified user account.
+  CreateProcAsUserEx               Spawns a new process in the context of the specified user account.
+  EJclCreateProcessError           Class for exceptions raised due to errors in the <REF Target"..\CreateProcAsUser">CreateProcAsUser</REF> / <REF Target"..\CreateProcAsUserEx">CreateProcAsUserEx</REF> procedure pair.
+  SetDisplayResolution             Changes the resolution of the screen.
+
+MultiMedia.txt
+
+  GetMciErrorMessage               Wrapper for mciGetErrorString API.
+  OpenCloseCdDrive                 Opens or closes the CD drive.
+  TJclMultimediaTimer              Wrapper for a Win32 multi-media timer 'object'.
+  TMmNotificationKind              Determines the method of notification when the timer's interval elapses. You can choose between using kernel events or callbacks.
+  TMmTimerKind                     Determines the kind of timer, periodic or one-shot.
+
+NTFS.txt
+
+  NtfsCreateJunctionPoint          Creates an NTFS junction point.
+  NtfsDeleteJunctionPoint          Deletes a junction point.
+  NtfsDeleteReparsePoint           Deletes a reparse point.
+  NtfsFileHasReparsePoint          Returns whether a specified file or directory has an associated reparse point.
+  NtfsFindFirstStream              Starts the enumeration of streams in a file.
+  NtfsFindNextStream               Returns the next stream in a file.
+  NtfsFindStreamClose              Terminates the enumeration of streams.
+  NtfsGetAllocRangeEntry           Extracts an entry from the ranges record.
+  NtfsGetCompression               Obtains the compression state of a file.
+  NtfsGetJunctionPointDestination  Returns the destination directory of a junction point.
+  NtfsGetReparsePoint              Returns the reparse point data associated with the specified file or directory.
+  NtfsGetReparseTag                Returns the reparse tag of a file or directory.
+  NtfsGetSparse                    Tests whether the file is a sparse file.
+  NtfsIsFolderMountPoint           Returns whether a directory is a mount point.
+  NtfsMountDeviceAsDrive           Mounts a device as a drive.
+  NtfsMountVolume                  Mounts a volume to a specified directory.
+  NtfsQueryAllocRanges             Queries the specified sparse file for the ranges that are actually allocated.
+  NtfsReparsePointsSupported       Returns whether a filesystem supports reparse points.
+  NtfsSetCompression               Sets the compression state of a file.
+  NtfsSetReparsePoint              Sets a reparse point for a file or directory.
+  NtfsSetSparse                    Sets the sparse file attribute.
+  NtfsSparseStreamsSupported       Test if the volume supports sparse streams.
+  NtfsZeroDataByHandle             Decommits storage for a specified range within a sparse file.
+  NtfsZeroDataByName               Decommits storage for a specified range within a sparse file.
+  TFindStreamData                  Record type used by the NtfsFindFirstStream, NtfsFindNextStream and NtfsFindStreamClose functions which contains information about the streams in a NTFS file.
+  TNtfsAllocRanges                 TNtfsAllocRanges is initialized by a call to <REF Target"..\NtfsQueryAllocRanges">NtfsQueryAllocRanges</REF>. It holds the data that describes the allocated ranges in the file within the boundaries that the file was queried for. You can use the NtfsGetAllocRangeEntry to extract the individual entries from this record. WARNING: After you're done with this record you are responsible for freeing the memory associated with the Data member, i.e. you must call: FreeMem(Ranges.Data).
+  TReparseGuidDataBuffer           TGenericReparseBuffer is a generic record type used for reparse point operations on an NTFS volume.
+  TStreamId                        NTFS file stream IDs which denote the kind of data stored in an NTFS stream.
+
+PE.txt
+
+  EJclPeImageError                 Base exception class for exceptions raised by the JclPeImage module.
+  IsValidPeFile                    Determines whether a file is a valid portable executable file.
+  PeBorUnmangleName                TODO
+  PeCreateNameHintTable            TODO
+  PeDbgImgLibraryName              TODO
+  PeDbgImgNtHeaders                TODO
+  PeDoesExportFunction             Tests whether an image exports a specific fuction.
+  PeDoesImportFunction             Tests whether an image imports a specific function.
+  PeDoesImportLibrary              Tests whether an image is implicitly linked against a library.
+  PeExportedFunctions              Returns a list of exported function from an image.
+  PeExportedFunctionsArray         Returns a list of exported function from an image.
+  PeGetNtHeaders                   Returns a TImageNtHeaders record for an image.
+  PeImportedFunctions              Returns a list of all directly imported functions for an image.
+  PeImportedFunctionsArray         Returns a list of all directly imported functions for an image.
+  PeImportedLibraries              Returns a list of all libraries an image imports.
+  PeImportedLibrariesArray         Returns a list of all libraries an image imports.
+  PeIsExportFunctionForwarded      Tests whether a function is forwarded.
+  PeIsExportFunctionForwardedEx    Tests whether a function is forwarded.
+  PeIsNameMangled                  TODO
+  PeMapImgFindSection              Searches the image, specified by NtHeaders, for a specific named section.
+  PeMapImgLibraryName              Returns the name of the image file mapped at the specified address.
+  PeMapImgNtHeaders                Returns a pointer to the TImageNtHeaders record.
+  PeMapImgSections                 Returns a pointer to the header of the first section in an image.
+  PeRebaseImage                    Rebases an image.
+  PeSmartFunctionNameSame          Compares two function names.
+  PeStripFunctionAW                Returns the base name of the supplied function name.
+  PeUnmangleName                   TODO
+  PeUpdateCheckSum                 Updates the image checksum.
+  PeVerifyCheckSum                 Verifies the checksum of a portable executable file.
+  TJclBorUmDescription             TODO
+  TJclBorUmResult                  TODO
+  TJclBorUmSymbolKind              TODO
+  TJclBorUmSymbolModifier          TODO
+  TJclLoadConfig                   TODO
+  TJclPeBorImage                   Specialisation of TJclPeImage for Borland produced images.
+  TJclPeDebugList                  The TJclPeDebugList represent the debug section of an image file.
+  TJclPeExportFuncItem             Represents a single exported function.
+  TJclPeExportFuncList             The TJclPeExportFuncList class represents the export section of an image file.
+  TJclPeExportSort                 Enumeration used to determine on which field a list of exported functions is sorted.
+  TJclPeFileProperties             Record which contains some common attributes of an image file.
+  TJclPeHeader                     TODO
+  TJclPeImage                      Abstraction of a portable executable file.
+  TJclPeImageBaseList              Baseclass for list-like classes which require a TJclPeImage instance reference.
+  TJclPeImageStatus                TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
+  TJclPeImportFuncItem             Represents a single imported function.
+  TJclPeImportKind                 Specifies how a function was imported. This does not include whether or not the function was imported by name or ordinal.
+  TJclPeImportLibItem              Abstraction of an import descriptor.
+  TJclPeImportLibSort              Enumeration used by the TJclPeImportList which determines how the list of import library items is sorted.
+  TJclPeImportList                 Represents the import section of an image file.
+  TJclPeImportSort                 Enumeration used by the various import section related classes to determine how a list of imported functions should be sorted. Usually the method called to perform the sort operation allows for further options such as whether the sort should be ascending or descending.
+  TJclPeLinkerProducer             Specifies the manufacturer of the linker that produced an image file. The function uses a heauristic which is not perfect and is only capable of recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
+  TJclPeMapImgHookItem             The TJclPeMapImgHookItem represents a single hooked API function.
+  TJclPeMapImgHooks                Provides hooking and unhooking of API functions.
+  TJclPeNameSearch                 Searches a set of image files for occurences of a specific function.
+  TJclPeNameSearchFoundEvent       Event which is fired each time a name is found.
+  TJclPeNameSearchNotifyEvent      Event which is fired immediately before a new image is searched.
+  TJclPeNameSearchOptions          Flags that determine which parts of an image is searched.
+  TJclPePackageInfo                Allows you to obtain information about Delphi packages.
+  TJclPeRelocation                 TODO
+  TJclPeRelocEntry                 Represents a block of relocation entries.
+  TJclPeRelocList                  The TJclPeRelocList class represents the fix-up table of the image.
+  TJclPeResolveCheck               Both the classes that wrap the import section as well as the class that wraps the export section have methods to perform a resolve check. This means slightly different things for an import section than it does for an export section. For example, for the import section it means that the method tries to resolve all imported function by looking them up in the exports section of the image from which the function is imported. If the function is found there the import is considered resolved, otherwise it is unresolved. This latter case would indicate that the OS loader would probably also be unable to resolve the import and loading of the image would fail. The TJclPeResolveCheck type is used by the imports and exports classes to specify whether a function could be resolved. Note that all items start off begin unchecked, you have to request function resolving explicitly through the appropriate method call.
+  TJclPeResourceItem               TODO
+  TJclPeResourceItem               TODO
+  TJclPeResourceList               TODO
+  TJclPeResourceRawStream          TODO
+  TJclPeRootResourceList           TODO
+  TJclPeSectionStream              TODO
+  TJclPeUmResult                   TODO
+  TJclRebaseImageInfo              Record used by the PeRebaseImage function to return information about a rebase operation.
+  TJclResourceType                 TODO
+  TJclSmartCompOptions             TJclSmartCompOptions is a set of flags which determine how comparison of function names within the TJclPeImage module is performed. Using these options you can specify, for example, whether such a comparison should be case sensitive or not.
+
+regions.txt
+
+  CreateRegionFromBitmap           Creates the region from the specified bitmap.
+  FillGradient                     Fills a rectangle with a gradient pattern.
+  TGradientDirection               Specifies the direction of the gradient.
+  TJclRegion                       Class to be used as a wrapper for windows regions.
+  TJclRegionBitmapMode             Specifies the operation on the color.
+  TJclRegionCombineOperator        Specifies the combination operator.
+  TJclRegionInfo                   Class that contains a description of the region.
+  TJclRegionType                   Specifies the complexity of the region.
+  TPolyFillMode                    Specifies the fillmode of a poly region.
+
+Registry.txt
+
+  RegCreateKey                     Creates and initializes a key.
+  RegDeleteEntry                   Deletes an entry from the registry.
+  RegDeleteKeyTree                 Deletes a registry key including all subkeys.
+  RegDelList                       Deletes a stringlist from the registry.
+  RegGetKeyNames                   Reads a list of key names from the registry.
+  RegGetValueNames                 Reads a list of value names from the registry.
+  RegHasSubKeys                    Checks whether the specified key has any children.
+  RegisterAutoExec                 Registers the specified application for execution at logon.
+  RegLoadList                      Reads a stringlist from the registry.
+  RegReadBinary                    Reads binary data from the registry.
+  RegReadBinaryDef                 Reads binary data from the registry.
+  RegReadBool                      Reads a boolean key from the registry.
+  RegReadBoolDef                   Reads a boolean key from the registry.
+  RegReadInteger                   Reads an integer key from the registry.
+  RegReadIntegerDef                Reads an integer key from the registry.
+  RegReadString                    Reads a string key from the registry.
+  RegReadStringDef                 Reads a string key from the registry.
+  RegSaveList                      Saves a stringlist to the registry.
+  RegWriteBinary                   Writes binary data to the registry.
+  RegWriteBool                     Writes a boolean key to the registry.
+  RegWriteInteger                  Writes an integer key to the registry.
+  RegWriteString                   Writes a string key to the registry.
+  TExecKind                        Enumeration used by <REF>RegisterAutoExec</REF> to specify the desired autoexec kind.
+  UnregisterAutoExec               Unregisters the specified application for execution at logon.
+
+Security.txt
+
+  AllowRegKeyForEveryone           Allows full access to everyone for a registry key.
+  CreateInheritable                Initializes a security attributes structure for inheritable object creation.
+  CreateNullDacl                   Initializes a security attributes structure for NULL access and optional inheritability.
+  EnableProcessPrivilege           Enables or disables a privilege for the process.
+  EnableThreadPrivilege            Enables or disables a privilege for the thread.
+  IsAdministrator                  Tests whether the process is running in the user context of a local administrator.
+  IsPrivilegeEnabled               Tests if the specified Privilege is enabled.
+
+Shell.txt
+
+  DisplayContextMenu               Displays the context menu of a shell item.
+  DisplayContextMenuPidl           Displays the context menu of a shell item.
+  DisplayPropDialog                Displays the properties sheet of a shell item.
+  DriveToPidlBind                  Converts a drive to an item identifier list and binds to the CSIDL_DRIVES folder.
+  GetFileExeType                   Returns the type of executable file.
+  GetSystemIcon                    Retrieves the icon at the specified index from the system imagelist.
+  OpenFolder                       Opens a folder in Explorer.
+  OpenSpecialFolder                Opens a special folder in Explorer,.
+  OverlayIcon                      Overlays Icon with OverlayIcon.
+  OverlayIconShared                Overlays an icon with the system 'shared' icon.
+  OverlayIconShortCut              Overlays an icon with the system 'shortcut' icon.
+  PathToPidl                       Converts a path to an item identifier list.
+  PathToPidlBind                   Converts a path to an item identifier list and binds to its parent folder.
+  PidlBindToParent                 Binds the Folder to the parent folder of the specified item identifier.
+  PidlCompare                      Compares two item identifier lists.
+  PidlCopy                         Copies the item identifier list from source into destination.
+  PidlFree                         Frees the given item identifier list.
+  PidlGetDepth                     Returns the depth of the given item identifier list.
+  PidlGetLength                    Returns the length of the given item identifier list.
+  PidlGetNext                      Returns the next item identifier in the supplied item identifier list.
+  PidlToPath                       Converts an item identifier list to a path.
+  SHAllocMem                       Allocates memory using the Shell's memory allocator.
+  SHDeleteFiles                    Deletes one or more files.
+  SHDeleteFolder                   Deletes the specified folder.
+  SHDllGetVersion                  Reads version information from the specified file.
+  ShellExec                        Performs an action on a file.
+  ShellExecAndWait                 Performs an action on a file.
+  ShellFindExecutable              Returns the executable associated with a file.
+  ShellLinkCreate                  Creates a new shortcut.
+  ShellLinkCreateSystem            Creates a new shortcut in the specified system folder.
+  ShellLinkGetIcon                 Returns the icon associate with a shell link.
+  ShellLinkResolve                 Resolves a shortcut.
+  ShellOpenAs                      Invokes the shell's "Open With..." dialog for the specified file.
+  ShellRasDial                     Invokes the RAS Connect dialog.
+  ShellRunControlPanel             Executes a control panel application.
+  SHEnumFolderClose                Closes an enumeration sequence started by SHEnumFolderFirst.
+  SHEnumFolderFirst                Begins the enumeration of the items in a folder
+  SHEnumFolderNext                 Retrieves the next item in the enumeration matching the attributes specified by a previous call to SHEnumFolderFirst.
+  SHFreeMem                        Frees the memory pointed to by P.
+  SHGetItemInfoTip                 Returns the item's info tip.
+  SHGetMem                         Allocates memory using the Shell's memory allocator.
+  ShortCutFree                     Releases resources held by the ShellLink record.
+  SHReallocMem                     Reallocates (changes the size) a block of memory in the shell's memory space. The contents of the block prior to reallocation are reserved but there is no guarantee that the pointer will retain its value. The newly allocated block may be on a different address if there is not enough room to expand it in place. Also the actual size of the allocated block maybe slightly larger then the requested size because of additional maintenance data (not accessible).
+  SHRenameFile                     Renames a file.
+  StrRetFreeMem                    Frees the memory associated with the StrRet record.
+  StrRetToString                   Converts a TStrRet record to a string.
+  TDllVersionInfo                  This record is used by <REF Target"..\SHDllGetVersion">SHDllGetVersion</REF> to return version information about a specified DLL.
+  TEnumFolderFlags                 Enumeration used by <REF Target"..\SHEnumFolderFirst">SHEnumFolderFirst</REF> to specify the type of items to include in the enumeration.
+  TEnumFolderRec                   The TEnumFolderRec is used to return information about an item that was found during the enumeration of a folder using the <REF Target"..\SHEnumFolderFirst">SHEnumFolderFirst</REF> and <REF Target"..\SHEnumFolderNext">SHEnumFolderNext</REF> functions. It also holds data needed to perform the enumeration. Because of this you must always call SHEnumFolderClose to release these resources if SHEnumFolderFirst returned True.
+  TJclFileExeType                  Enumeration use by GetFileExeType representing a type of executable file.
+  TSHDeleteOptions                 Enumeration used by <REF Target"..\SHDeleteFiles">SHDeleteFiles</REF> and <REF Target"..\SHDeleteFolder">SHDeleteFolder</REF> to specify the deletion options.
+  TShellLink                       The TShellLink record is used when creating or resolving shortcuts with the <REF Target"..\ShellLinkCreate">ShellLinkCreate</REF> , <REF Target"..\ShellLinkCreateSystem">ShellLinkCreateSystem</REF> and <REF Target"..\ShellLinkResolve">ShellLinkResolve</REF> functions.
+  TSHRenameOptions                 Enumeration used by <REF Target"..\SHRenameFile">SHRenameFile</REF> to specify the rename options.
+
+SScanf.txt
+
+  Sscanf                           String Scan Format, extracts information from a data string.
+
+Statistics.txt
+
+  ArithmeticMean                   Calculates the arithmetic mean of an array of floats.
+  BinomialCoeff                    Returns nCr, i.e. Combination of R objects from N.
+  GeometricMean                    Calculates the geometric mean of an array of floats.
+  HarmonicMean                     Calculates the harmonic mean of an array of floats.
+  IsPositiveFloatArray             Tests whether an array contains only positive elements.
+  MaxFloatArray                    Returns the maximum value in the array.
+  MaxFloatArrayIndex               Returns the index of element with the maximum value in the array.
+  Median                           Returns the median of an array of floats.
+  MinFloatArray                    Returns the minimum value in the array.
+  MinFloatArrayIndex               Returns the index of element with the minimum value in the array.
+  Permutation                      Returns nPr. i.e. permutation of R objects from N.
+  PopulationVariance               Calculates the variance of the values assuming a population.
+  PopulationVarianceAndMean        Calculates the variance and mean of the values assuming a population.
+  SampleVariance                   Returns the variance of the value assuming a sample.
+  SampleVarianceAndMean            Calculates the variance and mean of the value assuming a sample.
+  SumFloatArray                    Returns the sum of the array of values.
+  SumPairProductFloatArray         Returns the sum of the product of the elements.
+  SumSquareDiffFloatArray          Returns the sum of the square of Diff subtracted from each elements value.
+  SumSquareFloatArray              Returns the sum of the square of the elements.
+
+Strings.txt
+
+  BooleanToStr                     Returns a string representation of the boolean values True and False.
+  CharEqualNoCase                  Test whether two characters are equal except possibly for case.
+  CharHex                          Converts a hex digit character to its binary value.
+  CharIPos                         Finds the position of a character in a string.
+  CharIsAlpha                      Tests whether C is an alpha character.
+  CharIsAlphaNum                   Test whether C is an alphanumeric character.
+  CharIsBlank                      Test whether C is a blank character.
+  CharIsControl                    Tests whether C is a control character.
+  CharIsDelete                     Tests whether C is a delete character.
+  CharIsDigit                      Test whether C is a digit.
+  CharIsLower                      Tests whether a character is lowercase.
+  CharIsNumber                     Tests whether C is a number.
+  CharIsPrintable                  Tests whether a character is printable.
+  CharIsPunctuation                Tests whether a character is a punctuation character.
+  CharIsReturn                     Tests whether C is a return character.
+  CharIsSpace                      Tests whether C represents space.
+  CharIsUpper                      Tests whether a character is uppercase.
+  CharIsWhiteSpace                 Tests whether C represents space.
+  CharLower                        Lowercases a character.
+  CharPos                          Finds the position of a character in a string.
+  CharReplace                      Replaces all occurrences of a character in a string.
+  CharToggleCase                   Reverses the case of a character.
+  CharType                         Returns character type information.
+  CharUpper                        Uppercases a character.
+  FileToString                     Reads the contents of a file into a string.
+  FreeMultiSz                      Frees the memory pointed to by Dest.
+  FreePCharVector                  Frees a PCharVector
+  MultiSzToStrings                 Converts a list of null terminated strings to a string list.
+  PCharVectorCount                 Returns the number of elements in a PCharVector.
+  PCharVectorToStrings             Converts a PCharVector to a stringlist.
+  StrAddRef                        Increments the reference count of a long string.
+  StrAfter                         Returns the portion of the string after a specific sub-string.
+  StrAllocSize                     Returns the memory allocated to store the string.
+  StrBefore                        Returns the portion of the string before a specific sub-string.
+  StrBetween                       Returns the sub-string between the first occurences of Start and Stop.
+  StrCenter                        Centers a string.
+  StrCharCount                     Counts the occurrences of a character in a string.
+  StrChopRight                     Removes the last N characters from the string.
+  StrCompare                       Compares two strings.
+  StrCompareRange                  Compares two (sub) strings.
+  StrContainsChars                 Determines whether a string contains a specified set of characters.
+  StrDecRef                        Decrements the reference count of a long string.
+  StrDoubleQuote                   Returns a double-quoted version of the string.
+  StrEnsurePrefix                  Forces Text to start with Prefix.
+  StrEnsureSuffix                  Forces Text to end with Suffix.
+  StrEscapedToString               Converts an escaped string to a string.
+  StrFillChar                      Creates a string consisting of the specified character repeated Count times.
+  StrFind                          Returns the index of the first character in a specified sub-string that occurs in a given string.
+  StrHasPrefix                     Returns whether a string is prefixed by one of the supplied strings.
+  StrILastPos                      Returns the index of the last occurrence of SubStr in S.
+  StrIndex                         Returns the index of a string in an array of strings.
+  StringsToMultiSz                 Converts a stringlist to a list of null terminated strings.
+  StringsToPCharVector             Converts a stringlist into a PCharVector.
+  StringsToStr                     Converts a stringlist to a single string.
+  StringToFile                     Writes a string to a file.
+  StrIPos                          Returns the index of the first occurrence of SubStr in S.
+  StrIsAlpha                       Tests whether S contains only alpha characters.
+  StrIsAlphaNum                    Tests whether S contains only alpha-numerical characters.
+  StrIsAlphaNumUnderscore          Tests whether S contains only alpha-numerical and underscore characters.
+  StrIsDigit                       Tests whether S contains only numerical characters.
+  StrIsNumber                      Tests whether S contains only numerical characters.
+  StrIsOneOf                       Tests whether the supplied string exists in the list of strings.
+  StrIsSubset                      Tests whether S contains only characters from the supplied set.
+  StrLastPos                       Returns the index of the last occurrence of SubStr in S.
+  StrLeft                          Returns the Count leftmost characters from the string.
+  StrLen                           Returns the length of the supplied string.
+  StrLength                        Returns the length of the supplied string.
+  StrLower                         Lowercases all characters in a string
+  StrLowerBuff                     Lowercases all characters in a string
+  StrLowerInPlace                  Lowercases all characters in a string
+  StrMatch                         Returns the index of the first character in a specified sub-string that occurs in a given string.
+  StrMid                           Copies part of a string.
+  StrMove                          Copies a sub-string from one string to another.
+  StrNIPos                         Returns the position of the N-th occurence of a sub-string within a string.
+  StrNPos                          Returns the position of the N-th occurence of a sub-string within a string.
+  StrPadLeft                       Left pads a string with characters.
+  StrPadRight                      Right pads a string with characters.
+  StrPrefixIndex                   Returns the index at which a string appears which is used as a prefix.
+  StrProper                        Lowercases the supplied string and uppercases the first character.
+  StrProperBuff                    Lowercases the supplied string and uppercases the first character.
+  StrQuote                         Quotes a string with a specific character.
+  StrRefCount                      Returns the reference count of the supplied string.
+  StrRemoveChars                   Removes a set of characters from a string.
+  StrRepeat                        Repeats a string Count number of times.
+  StrResetLength                   Resets the length of the supplied string.
+  StrRestOf                        Returns the remainder of a string starting at the specified index.
+  StrReverse                       Reverses a string.
+  StrReverseInPlace                Reverses a string.
+  StrRight                         Returns the Count rightmost characters from the string.
+  StrSame                          Tests two strings for equality.
+  StrSearch                        Returns the index of the first character in a specified sub-string that occurs in a given string.
+  StrSingleQuote                   Returns a single-quoted version of the string.
+  StrSmartCase                     Converts a string to 'smartcase' or 'camelcase'.
+  StrStringToEscaped               Converts a string to an escaped string.
+  StrStripNonNumberChars           Removes all non-number characters from a string.
+  StrToHex                         Converts a string of hex digit pairs to the corresponding bytes.
+  StrToken                         Returns a sub-string from S which is followed by Separator and deletes the sub-string from S including the separator.
+  StrTokens                        TODO
+  StrTokenToStrings                Breaks apart S using a specified delimiter into a StringList.
+  StrToStrings                     Converts a string into a list of strings using the specified separator character.
+  StrTrimCharLeft                  Removes leading characters from a string.
+  StrTrimCharRight                 Removes trailing characters from a string.
+  StrTrimQuotes                    Removes surrounding quotes from the supplied string.
+  StrUpper                         Uppercases all characters in a string
+  StrUpperBuff                     Uppercases all characters in a string
+  StrUpperInPlace                  Uppercases all characters in a string
+  StrWord                          TODO
+  TrimStrings                      Trims all strings in a string list.
+  TrimStringsLeft                  Left trims all strings in a stringlist.
+  TrimStringsRight                 Right trims all strings in a stringlist.
+
+Synch.txt
+
+  LockedAdd                        Thread safe addition.
+  LockedCompareExchange            Thread safe compare and exchange.
+  LockedDec                        Thread safe decrement.
+  LockedExchange                   Thread safe exchange.
+  LockedExchangeAdd                Thread safe addition.
+  LockedExchangeDec                Thread safe decrement.
+  LockedExchangeInc                Thread safe increment.
+  LockedExchangeSub                Thread safe subtraction.
+  LockedInc                        Thread safe increment.
+  LockedSub                        Thread safe subtraction.
+  QueryCriticalSection             Returns information about a critical section object.
+  QueryEvent                       Returns information about an event object.
+  QueryMutex                       Returns information about a mutex object.
+  QuerySemaphore                   Returns information about a semaphore object.
+  QueryTimer                       Returns information about a timer object.
+  TFNTimerAPCRoutine               Timer callback routine.
+  TJclCriticalSection              Wrapper for a Win32 critical section object
+  TJclCriticalSectionEx            Wrapper for a Win32 critical section object
+  TJclDispatcherObject             Base class for kernel synchronization objects.
+  TJclEvent                        Wrapper for the Win32 Event object.
+  TJclMeteredSection               Provides a fast alternative to the semaphore kernel object.
+  TJclMultiReadExclusiveWrite      Allows multiple readers but only one writer.
+  TJclMutex                        Wrapper for a Win32 Mutex object.
+  TJclOptex                        Optimized Mutex
+  TJclSemaphore                    Wrapper for a Win32 Semaphore object.
+  TJclWaitableTimer                Wrapper for a Win32 Waitable Timer object.
+  TJclWaitResult                   Enumeration used as the method result by WaitFor, WaitForever and WaitAlertable.
+
+SysInfo.txt
+
+  AllocGranularity                 Systems memory allocation granularity.
+  CPUID                            Returns information about the processor.
+  CreateEnvironmentBlock           Prepares a new environment block for <REF Target"..\..\Miscellaneous\CreateProcAsUserEx">CreateProcAsUserEx</REF>
+  DelEnvironmentVar                Deletes a environment variable.
+  ExpandEnvironmentVar             Expands the environment variable.
+  GetAPMBatteryFlag                Returns the charge status of the system battery.
+  GetAPMBatteryFullLifeTime        Returns the number of seconds of battery life minutes when at full charge, or -1 if full batery lifetime is unknown.
+  GetAPMBatteryLifePercent         Returns the percentage of full battery charge remaining.
+  GetAPMBatteryLifeTime            Returns the number of seconds of battery life reamining, or -1 if this time is unknown.
+  GetAPMLineStatus                 Returns the line status of the APM system.
+  GetAppdataFolder                 Returns the name of the file system directory that serves as a common repository for application-specific data.
+  GetBIOSCopyright                 Returns the BIOS copyright string.
+  GetBIOSDate                      Returns the BIOS date.
+  GetBIOSExtendedInfo              Returns extended information on the BIOS.
+  GetBIOSName                      Returns the BIOS name.
+  GetCapsLockKeyState              Returns the state of the CapsLock key.
+  GetCommonDesktopdirectoryFolder  Returns the name of the file system directory that contains files and folders that appear on the desktop for all users.
+  GetCommonFavoritesFolder         Returns the name of the file system directory that serves as a common repository for all users' favorite items.
+  GetCommonFilesFolder             Returns the Windows Common Files directory.
+  GetCommonProgramsFolder          Returns the name of the file system directory that contains the directories for the common program groups that appear on the Start menu for all users.
+  GetCommonStartmenuFolder         Returns the name of the file system directory that contains the programs and folders that appear on the Start menu for all users.
+  GetCommonStartupFolder           Returns the name of the file system directory that contains the programs that appear in the Startup folder for all users.
+  GetCookiesFolder                 Returns the name of the file system directory that serves as a common repository for Internet cookies.
+  GetCpuInfo                       Returns information about the CPU.
+  GetCpuSpeed                      Returns information about the processor speed.
+  GetCurrentFolder                 Returns the current directory.
+  GetDesktopDirectoryFolder        Returns the name of the file system directory used to physically store file objects on the desktop.
+  GetDesktopFolder                 Returns the name of the virtual folder representing the Windows desktop.
+  GetDomainName                    Returns the name of the domain where the current user account resides.
+  GetEnvironmentVar                Retrieves the value of an environment variable.
+  GetEnvironmentVars               Retrieves a list of all environment variables.
+  GetFavoritesFolder               Returns the name of the directory that serves as a common repository for the user's favorite items.
+  GetFontsFolder                   Returns the name of the file system directory containing fonts.
+  GetFreePageFileMemory            Returns the amount of free pagefile memory.
+  GetFreePhysicalMemory            Returns the size of free physical memory.
+  GetFreeVirtualMemory             Returns the amount of free virtual memory.
+  GetHistoryFolder                 Returns the name of the file system directory that serves as a common repository for Internet history items.
+  GetIntelCacheDescription         Returns a descriptive string for an Intel cache descriptor.
+  GetInternetCacheFolder           Returns the name of the file system directory that serves as a common repository for temporary Internet files.
+  GetIPAddress                     Returns the IP address of a host.
+  GetKeyState                      Returns the state of a key.
+  GetLocalComputerName             Returns the name of the local computer.
+  GetLocalUserName                 Returns the name of the current user.
+  GetMacAddresses                  Retrieves the MAC addresses for a computer.
+  GetMaxAppAddress                 Returns a pointer to the highest memory address available to applications and DLLs.
+  GetMemoryLoad                    Returns the current system memory load.
+  GetMinAppAddress                 Returns a pointer to the lowest memory address available to applications and DLLs.
+  GetNethoodFolder                 Returns the name of the file system directory containing objects that appear in the network neighborhood.
+  GetNumLockKeyState               Returns the state of the Numlock key.
+  GetPersonalFolder                Returns the name of the directory that serves as a common repository for documents.
+  GetPidFromProcessName            Returns the process identifier (PID) for the process identified by processname.
+  GetPrinthoodFolder               Returns the name of the file system directory that serves as a common repository for printer links.
+  GetProcessNameFromPid            Returns the name of the process which is identified by PID.
+  GetProcessNameFromWnd            Returns the name of the process which owns a specific window.
+  GetProgramFilesFolder            Returns the Windows Program Files directory.
+  GetProgramsFolder                Returns the name of the file system directory containing the current user's program groups.
+  GetRecentFolder                  Returns the name of the file system directory that contains the user's most recently used documents.
+  GetRegisteredCompany             Returns the registered company.
+  GetRegisteredOwner               Returns the registered owner.
+  GetScrollLockKeyState            Returns the state of the ScrollLock key.
+  GetSendToFolder                  Returns the name of the file system directory that contains Send To menu items.
+  GetStartmenuFolder               Returns the name of the file system directory containing Start menu items.
+  GetStartupFolder                 Returns the name of the directory that corresponds to the user's Startup program group.
+  GetSwapFileSize                  Returns the current pagefile size.
+  GetSwapFileUsage                 Returns the percentage of swap file space occupied.
+  GetTasksList                     Returns a list of running tasks.
+  GetTemplatesFolder               Returns the name of the file system directory that serves as a common repository for document templates.
+  GetTotalPageFileMemory           Returns the amount of pagefile memory.
+  GetTotalPhysicalMemory           Returns the total size of physical memory.
+  GetTotalVirtualMemory            Returns the amount of virtual memory.
+  GetUserDomainName                Returns the name of the domain where a user account resides.
+  GetVolumeFileSystem              Returns the name of the filesystem of the specified volume.
+  GetVolumeName                    Returns the name for the specified drive.
+  GetVolumeSerialNumber            Returns the volume serial number for the specified drive.
+  GetWindowIcon                    Returns the icon of a window.
+  GetWindowsFolder                 Returns the Windows folder.
+  GetWindowsSystemFolder           Returns the Windows system directory.
+  GetWindowsTempFolder             Returns the Windows temp folder.
+  GetWindowsVersion                Returns the Windows version.
+  IsWin2K                          Returns whether the system is running Windows 2000
+  IsWin95                          Returns whether the system is running Windows 95
+  IsWin95OSR2                      Returns whether the system is running Windows 95 OSR 2
+  IsWin98                          Returns whether the system is running Windows 98
+  IsWin98SE                        Returns whether the system is running Windows 98 SE
+  IsWindowResponding               Determines whether a windows is responding to messages.
+  IsWinME                          Returns whether the system is running Windows Millenium
+  IsWinNT                          Returns whether the system is running Windows NT
+  IsWinNT3                         Returns whether the system is running Windows NT 3
+  IsWinNT4                         Returns whether the system is running Windows NT 4.
+  LoadedModulesList                Returns the list of modules loaded by a process.
+  NtProductType                    Returns the Windows NT product type.
+  ProcessorCount                   Number of processors.
+  ReadTimeStampCounter             Reads the time stamp counter.
+  RoundFrequency                   Normalizes a frequency.
+  RoundToAllocGranularityPtr       Rounds an address to an allocation boundary.
+  RunningProcessesList             Returns a list of all running processes.
+  SetEnvironmentVar                Sets the value of an environment variable.
+  TAMDSpecific                     Describes the cache of an AMD processor.
+  TAPMBatteryFlag                  Enumeration of APM battery flags. Used as function result by
+  TAPMLineStatus                   Enumeration of APM line stati. Used as function result by
+  TCacheInfo                       The IntelCacheDescription global variable uses this type to provide a mapping from a cache descriptor to a cache entry description.
+  TCpuInfo                         The TCpuInfo record is used by <REF>GetCpuInfo</REF> and returns the requested processor information.
+  TCyrixSpecific                   Describes the cache of a Cyrix processor.
+  TEnvironmentOptions              This set of options for <REF Target"..\CreateEnvironmentBlock">CreateEnvironmentBlock</REF> will determine which environment variables will be copied to the new environemt block.
+  TerminateApp                     Terminates the application specified by ProcessID.
+  TerminateTask                    Terminates the application which owns the specified window.
+  TestFDIVInstruction              Tests the processor for the flawed FDIV instruction.
+  TFreqInfo                        Record used as a field in the <REF>TCpuInfo</REF> record which contains frequency information about the CPU. This information is calculated when you call <REF>GetCpuInfo</REF>.
+  TIntelSpecific                   Describes the cache of an Intel processor.
+  TWindowsVersion                  Enumeration of Windows versions. Used as function result by <REF Target"..\GetWindowsVersion">GetWindowsVersion</REF>
+
+SysUtils.txt
+
+  ClearObjectList                  Clears the contents of a TList which contains objects.
+  FreeAndNil                       Frees an object reference and replaces it with nil.
+  FreeMemAndNil                    Frees a block of memory and sets the reference to nil.
+  FreeObjectList                   Clears the contents of a TList which contains objects.
+  GetAndFillMem                    Allocates memory and fills it with the specified value.
+  GetClassParent                   Returns the parent of the class.
+  GetDynamicAddressList            Returns the list of addresses for the dynamic methods of a class.
+  GetDynamicIndexList              Returns the list of indices of the dynamic methods.
+  GetDynamicMethod                 Returns a pointer to a specific dynamic method.
+  GetDynamicMethodCount            Returns the number of dynamic methods of a class.
+  GetFieldTable                    Returns the field table of a class.
+  GetInitTable                     Returns the initialization table of a class.
+  GetMethodEntry                   Returns an entry from the method table.
+  GetMethodTable                   Returns the method table of a class.
+  GetModuleSymbol                  Gives access to the exported symbol SymbolName from the loaded module Module.
+  GetModuleSymbolEx                Gives access to the exported symbol SymbolName from the loaded module Module.
+  GetVirtualMethod                 Returns a pointer to the virtual method from the specified class with the given index.
+  GetVirtualMethodCount            Returns the number of virtual methods of a class.
+  Guard                            Associates a resource, pointer or object reference, with a safeguard.
+  GuardAllocMem                    Allocates a specified amount of memory and associates it with a safeguard.
+  GuardGetMem                      Allocates a specified amount of memory and associates it with a safeguard.
+  HasDynamicMethod                 Test if the class (or one of its ancestors) has a dynamic method with the given index.
+  Iff                              Replacement for the C++ ternary conditional operator.
+  IntToStrZeroPad                  Converts an integer to a string an left pads it with zero's.
+  INVALID_MODULEHANDLE_VALUE       OS independent value for variables of type <REF>TModuleHandle</REF>.
+  ISafeGuard                       Interface used to provide automatic resource destruction.
+  IsClass                          Returns whether a pointer points to a class.
+  IsObject                         Returns whether a pointer points to an object.
+  LoadModule                       Loads the dynamic module (DLL) from file FileName.
+  LoadModuleEx                     Loads the dynamic module (DLL) from file FileName.
+  PCharOrNil                       Explicit replacement for PChar typecast.
+  PWideCharOrNil                   Explicit replacement for PWideChar typecast.
+  ReadModuleData                   Reads the data of an exported variable.
+  SetClassParent                   Modifies the class parent for the given class.
+  SetVirtualMethod                 Changes a virtual method to the given method.
+  SizeOfMem                        Returns the size of a memory block given a pointer.
+  TDynamicAddressList              List of addresses of a dynamic methods
+  TDynamicIndexList                List of valid indices in a dynamic method table.
+  TFieldClassTable                 List of classes used by the fields entries.
+  TFieldEntry                      TFieldEntry contains information about a field of a class.
+  TFieldTable                      TODO
+  TMethodEntry                     Entry of a method table use by <REF>TMethodTable</REF>.
+  TMethodTable                     Structure for the Method Table
+  TModuleHandle                    OS independent type for loaded modules.
+  UnloadModule                     Unloads a dynamic module (DLL) from memory.
+  WriteModuleData                  Writes the data of an exported variable.
+
+Unicode.txt
+
+  CharSetFromLocale                Returns character set information for a given locale.
+  CodeBlockFromChar                Returns the character block (code block) for a character.
+  CodePageFromLocale               Returns the ANSI code page for a specific locale.
+  ExpandANSIString                 Expands an ANSI string to a Widestring.
+  KeyboardCodePage                 Returns the codepage based on the thread input locale.
+  KeyUnicode                       
+  PUCS2                            UTF conversion scheme data type UCS2
+  PUCS4                            UTF conversion scheme data type UCS4
+  PUTF16                           Unicode transformation format data type UTF16
+  PUTF32                           Unicode transformation format data type UTF32
+  PUTF7                            Unicode transformation format data type UTF7
+  PUTF8                            Unicode transformation format data type UTF8
+  StrAllocW                        Allocates a buffer for a null-terminated wide string.
+  StrBufSizeW                      Returns the buffer size for a null-terminated wide string.
+  StrCatW                          Concatenates two strings.
+  StrCompW                         Case-sensitive, binary comparison of two null terminated strings.
+  StrCopyW                         Copies the source string into the destination string.
+  StrDisposeW                      Release the memory of a wide character string.
+  StrECopyW                        
+  StrEndW                          Returns a pointer to the end of the string.
+  StrICompW                        Case-insensitive, binary comparison of two null terminated strings.
+  StringToWideStringEx             Converts a string to a WideString.
+  StrLCatW                         Concatenates two strings enforcing a maximum for the total length.
+  StrLCompW                        Case-sensitive, binary comparison of two null terminated strings.
+  StrLCopyW                        Copies MaxLen characters from Source to Dest.
+  StrLenW                          Returns the length of the string in characters.
+  StrLICompW                       Case-insensitive, binary comparison of two null terminated strings.
+  StrMoveW                         Copies a string from Source to Dest.
+  StrNewW                          Duplicates a wide character string.
+  StrNScanW                        StrNScan returns the length of the consecutive characters in S1 which do not appear in S2.
+  StrPCopyW                        Copies a Pascal style string to a null terminated wide string.
+  StrPLCopyW                       Copies up to MaxLen characters from Source into Dest.
+  StrPosW                          
+  StrRNScanW                       StrRNScan returns the length of the consecutive characters from the end of S1 which do not appear in S2.
+  StrRScanW                        Scans the specified string for the occurrences of Chr.
+  StrScanW                         Scans the specified string for an occurrence of Chr.
+  StrSwapByteOrder                 For each character in the string StrSwapByteOrder exchanges the low order and high order byte to go from LSB to MSB and vice versa.
+  TCharacterCategory               Various predefined or otherwise useful character property categories
+  TNormalizationForm               Normalization form to use.
+  TranslateString                  Translates a string from one codepage to another.
+  TSearchEngine                    Abstract base class for the search engine.
+  TSearchFlags                     Flags used in the search class.
+  TUcNumber                        Record type for number-related Unicode functions.
+  TUnicodeBlock                    Unicode block enumeration.
+  TURESearch                       Unicode regular expression Search class.
+  TUTBMSearch                      Unicode Tuned Boyer-Moore Search class.
+  UnicodeComposePair               Map two sequences into a composed codepoint.
+  UnicodeIsAlpha                   Tests whether the codepoint is an alphabetic character.
+  UnicodeIsAlphaNum                Tests whether the codepoint is an alphanumerical character.
+  UnicodeIsBlank                   Tests whether the codepoint is a space character.
+  UnicodeIsCased                   Tests whether the codepoint is a cased character.
+  UnicodeIsClosePunctuation        Tests whether the codepoint is a closing/right punctuation character.
+  UnicodeIsComposed                Tests whether the codepoint is a composite character.
+  UnicodeIsConnectionPunctuation   Tests whether the codepoint is a connection punctuation.
+  UnicodeIsControl                 Tests whether the codepoint is a control character.
+  UnicodeIsCurrency                Tests whether the codepoint is a currency symbol.
+  UnicodeIsDash                    Tests whether the codepoint is a dash punctuation.
+  UnicodeIsDefined                 Tests whether the codepoint is defined.
+  UnicodeIsDigit                   Tests whether the codepoint is a digit.
+  UnicodeIsEnclosing               Tests whether the codepoint is enclosing.
+  UnicodeIsFinalPunctuation        Tests whether the codepoint is a final punctuation character.
+  UnicodeIsFormatControl           Tests whether the codepoint is a format control character.
+  UnicodeIsGraph                   Tests whether the codepoint is a graphical character.
+  UnicodeIsHan                     Tests whether the codepoint is a Han ideograph.
+  UnicodeIsHangul                  Tests whether the codepoint is a Hangul syllable.
+  UnicodeIsHexDigit                Tests whether the codepoint is a hexadecimal digit.
+  UnicodeIsIdentifierPart          Tests whether the codepoint is allowed as part of an identifier.
+  UnicodeIsIdentifierStart         Tests whether the codepoint is allowed as initial character of an identifier.
+  UnicodeIsInitialPunctuation      Tests whether the codepoint is an initial punctuation character.
+  UnicodeIsIsoControl              Tests whether the codepoint is an ISO control character.
+  UnicodeIsLeftToRight             Tests a Unicode character against left-to-right directionality.
+  UnicodeIsLetterNumber            Tests whether the codepoint is a number represented by a letter.
+  UnicodeIsLineSeparator           Tests whether the codepoint is a line separator character.
+  UnicodeIsLower                   Tests whether the codepoint is lowercase.
+  UnicodeIsMark                    Tests whether the codepoint is a mark of some kind.
+  UnicodeIsMath                    Tests whether the codepoint is a math character.
+  UnicodeIsMirroring               Tests whether the codepoint is a final mirroring character.
+  UnicodeIsModifier                Tests whether the codepoint is a modifier.
+  UnicodeIsModifierSymbol          Tests whether the codepoint is a modifier symbol.
+  UnicodeIsNeutral                 Tests a Unicode character for neutral directionality.
+  UnicodeIsNonBreaking             Tests whether the codepoint is a non breaking character.
+  UnicodeIsNonSpacing              Tests whether the codepoint is non-spacing.
+  UnicodeIsNonSpacingMark          Tests whether the codepoint is a non-spacing mark.
+  UnicodeIsNumber                  Tests whether the codepoint is a number or digit.
+  UnicodeIsOpenPunctuation         Tests whether the codepoint is an open/left punctuation.
+  UnicodeIsParagraphSeparator      Tests whether the codepoint is a paragraph separator character.
+  UnicodeIsPrintable               Tests whether the codepoint is a printable character.
+  UnicodeIsPrivate                 Tests whether the codepoint is from the private use area.
+  UnicodeIsPunctuation             Tests whether the codepoint is a punctuation mark.
+  UnicodeIsQuotationMark           Tests whether the codepoint is a quotation mark.
+  UnicodeIsRightToLeft             Tests a Unicode character against right-to-left directionality.
+  UnicodeIsSeparator               Tests a Unicode character against separator directionality.
+  UnicodeIsSpace                   Tests whether the codepoint is a spacing character.
+  UnicodeIsSpacingMark             Tests whether the codepoint is a spacing mark.
+  UnicodeIsStrong                  Tests a Unicode character for strong directionality.
+  UnicodeIsSurrogate               Tests whether the codepoint is one of the surrogate codes.
+  UnicodeIsSymbol                  Tests whether the codepoint is a symbol.
+  UnicodeIsSymmetric               Tests whether the codepoint is symmetric.
+  UnicodeIsTitle                   Tests whether the codepoint is a titlecased character.
+  UnicodeIsUndefined               Tests whether the codepoint is undefined.
+  UnicodeIsUpper                   Tests whether the codepoint is uppercase.
+  UnicodeIsWeak                    Tests a Unicode character for weak directionality.
+  UnicodeIsWhiteSpace              Tests whether the codepoint is a white space character.
+  UnicodeNumberLookup              Searches for the given code and returns its number equivalent (if there is one).
+  UnicodeToLower                   Converts a codepoint to lowercase.
+  UnicodeToTitle                   Converts a codepoint to title case.
+  UnicodeToUpper                   Converts a codepoint to uppercase.
+  UTF8ToWideString                 Converts the given UTF8 based AnsiString to a WideString.
+  WideAdjustLineBreaks             Standardizes linebreak characters to lineseparator characters.
+  WideCharPos                      Returns the index of the first occurrence of Ch in S.
+  WideCompose                      Transforms a string into a composed string.
+  WideDecompose                    Performs a decomposition of all characters in the supplied string.
+  WideExtractQuotedStr             Extracts a string enclosed in quote characters.
+  WideLowerCase                    Converts the supplied WideString or WideChar to lowercase.
+  WideNormalize                    Normalize a WideString.
+  WideQuotedStr                    Returns a quoted string.
+  WideStringOfChar                 
+  WideStringToStringEx             WideStringToStringEx maps a WideString to a string based on the specified codepage.
+  WideStringToUTF8                 Converts the given WideString to a UTF8 based AnsiString.
+  WideTitleCaseString              Converts the supplied WideString or WideChar to titlecase.
+  WideTrim                         Trims leading and trailing spaces and control characters.
+  WideTrimLeft                     Trims leading spaces and control characters.
+  WideTrimRight                    Trims trailing spaces and control characters.
+  WideUpperCase                    Converts the supplied WideString or WideChar to uppercase.
+
+UnitConv.txt
+
+  AtToPascal                       Converts a pressure from at to Pascal.
+  BarToPascal                      Converts a pressure from bar to Pascal.
+  CartesianToCylinder              Converts cartesian to cylinder coordinates.
+  CartesianToPolar                 Converts cartesian to polar coordinates.
+  CartesianToSpheric               Converts cartesian to spheric coordinates.
+  CelsiusToFahrenheit              Converts a temperature from Celsius to Fahrenheit.
+  CelsiusToKelvin                  Converts a temperature from celsius to kelvin.
+  CmToInch                         Converts a length from centimeters to inches.
+  CwtUkToKg                        Converts a mass from centweight to kilograms.
+  CwtUsToKg                        Converts a mass from centweight to kilograms.
+  CycleToDeg                       Converts an angle from cycles to degrees.
+  CycleToGrad                      Converts an angle from cycles to gradians.
+  CycleToRad                       Converts an angle from cycles to radians.
+  CylinderToCartesian              Converts cylinder to cartesian coordinates.
+  DegToCycle                       Converts an angle from degrees to cycles.
+  DegToGrad                        Converts an angle from degrees to gradians.
+  DegToRad                         Converts an angle from degrees to radians.
+  FahrenheitToCelsius              Converts a temperature from Fahrenheit to Celsius.
+  FahrenheitToKelvin               Converts a temperature from Fahrenheit to Kelvin.
+  FeetToMetre                      Converts a length from feet to meters.
+  GalCanToGalUs                    Converts a volume from Canadian Gallons to US Gallons.
+  GalCanToLitre                    Converts a volume from Canadian Gallons to Litres.
+  GalUkToGalUs                     Converts a volume from UK Gallons to US Gallons.
+  GalUkToLitre                     Converts a volume from UK Gallons to Litres.
+  GalUsToGalCan                    Converts a volume from US Gallons to Canadian Gallons.
+  GalUsToGalUk                     Converts a volume from US Gallons to UK Gallons.
+  GalUsToLitre                     Converts a volume from US Gallons to Litres.
+  GradToCycle                      Converts an angle from gradians to cycles.
+  GradToDeg                        Converts an angle from gradians to degrees.
+  GradToRad                        Converts an angle from gradians to radians.
+  HpElectricToWatt                 Converts a power from horsepower to Watt.
+  HpMetricToWatt                   Converts a power from metric horsepower to Watt.
+  InchToCm                         Converts a length from inches to centimeters.
+  KaratToKg                        Converts a mass from karat to kilograms.
+  KelvinToCelsius                  Converts a temperature from Kelvin to Celsius.
+  KelvinToFahrenheit               Converts a temperature from Kelvin to Fahrenheit.
+  KgToCwtUk                        Converts a mass from kilograms to centweight.
+  KgToCwtUs                        Converts a mass from kilograms to centweight.
+  KgToLb                           Converts a mass from kilograms to pounds.
+  KgToLton                         Converts a mass from kilograms to long ton.
+  KgToOz                           Converts a mass from kilograms to ounce.
+  KgToQrUk                         Converts a mass from kilograms to quarter.
+  KgToQrUs                         Converts a mass from kilograms to quarter.
+  KgToSton                         Converts a mass from kilograms to short ton.
+  KmToNm                           Converts a length from kilometers to nautic miles.
+  KmToSm                           Converts a length from kilometers to statute miles.
+  KnotToMs                         Converts a velocity from knot to meters per second.
+  LbToKg                           Converts a mass from pounds to kilograms.
+  LitreToGalCan                    Converts a volume from litres to Canadian Gallons.
+  LitreToGalUk                     Converts a volume from litres to UK Gallons.
+  LitreToGalUs                     Converts a volume from litres to US Gallons.
+  LtonToKg                         Converts a mass from long ton to kilograms.
+  MakePercentage                   Hehe, no way...
+  MetreToFeet                      Converts a length from meters to feet.
+  MetreToYard                      Converts a length from meters to yards.
+  MsToKnot                         Converts a velocity from meters per second to knots.
+  NmToKm                           Converts a length from nautic miles to kilometers.
+  OzToKg                           Converts a mass from pounds to kilograms.
+  PascalToAt                       Converts a pressure from Pascal to at.
+  PascalToBar                      Converts a pressure from Pascal to bar.
+  PascalToTorr                     Converts a pressure from Pascal to torr.
+  PolarToCartesian                 Converts polar to cartesian coordinates
+  QrUkToKg                         Converts a mass from quarter(UK) to kilograms.
+  QrUsToKg                         Converts a mass from quarter(US) to kilograms.
+  RadToCycle                       Converts an angle from radians to cycles.
+  RadToDeg                         Converts an angle from radians to degrees.
+  RadToGrad                        Converts an angle from radians to gradians.
+  SmToKm                           Converts a length from statute miles to kilometers.
+  SphericToCartesian               Converts spheric to cartesian coordinates.
+  StonToKg                         Converts a mass from short ton to kilograms.
+  TorrToPascal                     Converts a pressure from torr to Pascal.
+  WattToHpElectric                 Converts a power from Watt to horsepower.
+  WattToHpMetric                   Converts a power from Watt to metric horsepower.
+  YardToMetre                      Converts a length from yards to meters.
+
+WideStrings.txt
+
+  TWideStringList                  
+  TWideStrings                     TWideStrings is the abstract base class for objects that represent a list of WideStrings.
+

@@ -1,0 +1,22 @@
+JclDebug backward compatibility issues in JCL 1.11 Release
+----------------------------------------------------------
+
+Exception hooking code was moved from the JclDebug to new separate JclHookExcept
+unit and the code is now independent of exceptional stack tracking code. This
+will allow to use exception hooking code separately from JclDebug across the
+JCL. Below is the table with current changes:
+
+Old name:                       New name:
+---------                       ---------
+JclHookExceptions               JclStartExceptionTracking
+JclUnhookExceptions             JclStopExceptionTracking
+JclExceptionsHooked             JclExceptionTrackingActive
+StackTrackingEnable             JclStackTrackingOptions  [stStack]
+RawStackTracking                JclStackTrackingOptions  [stRawMode]
+ExceptionFrameTrackingEnable    JclStackTrackingOptions  [stExceptFrame]
+TrackAllModules                 JclStackTrackingOptions  [stAllModules]
+
+Calling JclStartExceptionTracking will also activate exception hooking code.
+
+In case you use exception hooking without exceptional stack tracking feature
+(StackTrackingEnable set to False) use JclHookExcept unit instead of JclDebug.

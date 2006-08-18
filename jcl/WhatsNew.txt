@@ -1,0 +1,120 @@
+================================================================================
+What's new
+================================================================================
+
+* Delphi 6 compatibility
+    This JCL release is 100% Delphi 6 compatible. The platform warnings have
+    been globally disabled using JCL.INC
+
+* New Unit: JclRTTI
+    JclRTTI provides interfaces to easier retrieve RTTI information and output
+    Pascal declarations. It also provides in various conversion functions and
+    allows for generating custom RTTI info. There's also the possibility to hook
+    the is and as operators
+
+* New Unit: JclExprEval
+     An extensible mathematical expression evaluator with three key use case
+     classes - TEvaluator (trivial cases), TCompiledEvaluator (fast evaluation,
+     single expression) and TExpressionCompiler (fast evaluation, many
+     expressions).
+
+* New Unit: JclStrHashMap
+     TStringHashMap - A flexible hash-based string-pointer associative map,
+     with operations for iteration and customizable traits (i.e. case
+     [in]sensitivity, replace hash function). Can be subclassed for custom
+     allocation strategy too.
+
+* New Unit: JclLanMan
+     This unit contains routines and classes to handle user and group management
+     tasks.
+
+* Changes and Bugfixes
+
+   JclMAPI
+      - JclSimpleBringUpSendMailDialog added
+      - Sscanf replaced
+
+   JCLWin32
+      - Added CreateMutex because of incorrect declaration in Windows.pas
+       (LongBool(True) = $FFFFFFF while implementation checks against
+       1 only)
+
+   JCLFileUtils
+      - PathGetLongName2 replaced by an improved function. Now is able to work
+        with UNC Paths.
+      - infinite loop in TJclFileVersionInfo.ExtractData when header length = 0
+        fixed
+      - Added GetDirectorySize (additional error checking)
+      - Replaced the StrMatch calls by StrMatches calls. This allows the
+        BuidList functions to work correctly.
+
+   JCLDebug
+      - Overflow checkings
+      - TJclAbstractMapParser.LinkerBug added
+      - TJclAbstractMapParser.LinkerBugUnitName added
+      - TrackAllModules gl.variable added
+      - Source location functions are thread-safe
+      - JclCreateStackList and JclCreateExceptFrameList functions returns
+        list for current thread
+      - various code formatting changes
+      - Make sure Except frame list only holds valid code addresses.
+      - InsertDebugDataIntoExecutableFile function added
+      - Caller and GetLocationInfo  functions enclosed by try..except block to
+        prevent unexpected exceptions.
+      - ExtractClassName, ExtractMethodName functions added
+      - GetLocationInfoStr and TJclStackInfoList.AddToStrings has additional
+        parameter IncludeModuleName
+      - overloaded GetLocationInfo function added
+      - DebugInfoAvailable function added
+      - TJclDebugInfoExports.InitializeSource bug fixed
+      - ExceptFrame tracker ignored package jumps,
+        which resulted in unknown exception frames
+
+   JCLMath
+      - TJclRational.SetAsString now more flexible.
+      - Direct Degree and Grad support removed.
+      - IsPrime Function fixed (Trial Division Method)
+      - IsPrimeRM Function added (Rabin-Miller)
+      - Prime Functions are now based upon Cardinal
+      - New CRC Functions added
+
+   JCLPeImage
+      - TJclStringsArray removed
+      - PeExportedFunctions changed
+      - PeExportedNames added
+      - PeExportedVariables added
+      - PeMapImgExportedVariables added,
+      - TJclPeExportFuncItem.IsExportedVariable added
+      - TJclPeMapImgHooks.SystemBase added
+      - TJclPePackageInfo.Description fixed
+      - TJclPeBorImage.CreateFormsList fixed
+      - PeMapFindResource added,
+      - overloaded TJclPeRootResourceList.FindResource added
+
+   JCLSysInfo
+      - Error checking added to GetLocalComputerName & GetLocalUserName
+      - Corrected return types for APM functions.
+
+   JCLRegistry
+      - Fixed absolute RegistryPath
+
+   JCLStrings
+      - Added new Function: StrMatches   
+
+   JclUnitConv
+      - Some minor changes to be compatible with SI naming.
+
+   JclGraphics
+      - Changed field declaration in TJclBitmap32 to avoid the DOM parser
+        problem
+
+   JclGraphUtils
+      - ShortenString included
+      - Added TColorRec structure
+      - Changed parameter lists of GetRGBValue, WinColorToOpenGLColor(var -> out),
+        Color32(Index, Palette) (var -> const)
+      - Rewrote GetRGBValue, SetRGBValue, GetColorRed, GetColorGreen,
+        GetColorBlue, SetColorRed, SetColorGreen, SetColorBlue, BrightColor,
+        BrightColorChannel, DarkColor, DarkColorChannel (bug fixing),
+        WinColorToOpenGLColor, OpenGLColorToWinColor (efficiency), GetColorFlag,
+        SetColorFlag (readability)
