@@ -2207,13 +2207,10 @@ end;
 
 function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
 begin
-  {$IFDEF MSWINDOWS}
-  // quotes not required with short path names
-  Result := Execute(PathGetShortName(ExtractFileDir(ProjectFileName)) +
-    DirDelimiter + ExtractFileName(ProjectFileName));
-  {$ELSE}
+  // Note: PathGetShortName may not return the short path if it's a network
+  // drive. Hence we always double quote the path, regardless of the compiling
+  // environment.
   Result := Execute(StrDoubleQuote(StrTrimQuotes(ProjectFileName)));
-  {$ENDIF MSWINDOWS}
 end;
 
 constructor TJclDCC32.Create(AInstallation: TJclBorRADToolInstallation);
