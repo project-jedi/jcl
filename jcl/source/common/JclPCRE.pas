@@ -31,6 +31,8 @@
 
 unit JclPCRE;
 
+{$RANGECHECKS OFF}
+
 interface
 
 uses
@@ -45,6 +47,9 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   Classes, SysUtils;
 
+const
+  JCL_PCRE_ERROR_STUDYFAILED = -999;
+
 type
   EPCREError = class(Exception)
   private
@@ -54,7 +59,7 @@ type
     property ErrorCode: Integer read FErrorCode;
   end;
 
-  TPCREIntArray = array [0..2999] of Integer; // 1000 subpatterns should be enough...
+  TPCREIntArray = array [0 .. 0] of Integer;
   PPCREIntArray = ^TPCREIntArray;
 
   TJclAnsiRegExOption = (roIgnoreCase, roMultiLine, roDotAll, roExtended,
@@ -73,31 +78,39 @@ type
     FCode: Pointer;
     FExtra: Pointer;
     FOptions: TJclAnsiRegExOptions;
-    FSubject: AnsiString;
-    FErrorMessage: AnsiString;
+    FSubject: String;
+
+    FErrorCode: Integer;
+    FErrorMessage: String;
     FErrorOffset: Integer;
-    FVector: TPCREIntArray;
-    FStringCount: Integer;
+
+    FVector: PPCREIntArray;
     FVectorSize: Integer;
-    FTables: PChar;
-    FMaxCaptureLength: Integer;
+    FStringCount: Integer;
+
     function GetCaptureCount: Integer;
-    function GetCaptures(Index: Integer): AnsiString;
+    function GetCaptures(Index: Integer): String;
     function GetAPIOptions(RunTime: Boolean): Integer;
     function GetCapturesOffset(Index: Integer): TJclAnsiCaptureOffset;
+
   public
-    constructor Create;
     destructor Destroy; override;
-    function Compile(const Pattern: AnsiString; Study, UserLocale: Boolean): Boolean;
-    function Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
+
     property Options: TJclAnsiRegExOptions read FOptions write FOptions;
+    function Compile(const Pattern: String; Study: Boolean;
+      UserLocale: Boolean = False): Boolean;
+    function Match(const Subject: String; StartOffset: Cardinal = 1): Boolean;
     property CaptureCount: Integer read GetCaptureCount;
-    property Captures[Index: Integer]: AnsiString read GetCaptures;
+    property Captures[Index: Integer]: String read GetCaptures;
     property CaptureOffset[Index: Integer]: TJclAnsiCaptureOffset read GetCapturesOffset;
-    property ErrorMessage: AnsiString read FErrorMessage;
+
+    property ErrorCode: Integer read FErrorCode;
+    property ErrorMessage: String read FErrorMessage;
     property ErrorOffset: Integer read FErrorOffset;
-    property MaxCaptureLength: Integer read FMaxCaptureLength write FMaxCaptureLength;
   end;
+
+procedure InitializeLocaleSupport;
+procedure TerminateLocaleSupport;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -114,6 +127,9 @@ implementation
 uses
   pcre,
   JclResources;
+
+var
+  GTables: PChar;
 
 function JclPCREGetMem(Size: Integer): Pointer; cdecl;
 begin
@@ -174,6 +190,8 @@ begin
       PErr := @RsErrDfaRecurse;
     PCRE_ERROR_RECURSIONLIMIT:
       PErr := @RsErrRecursionLimit;
+    JCL_PCRE_ERROR_STUDYFAILED:
+      PErr := @RsErrStudyFailed;
   else
     Result := True;
   end;
@@ -183,43 +201,60 @@ end;
 
 //=== { TJclAnsiRegEx } ======================================================
 
-constructor TJclAnsiRegEx.Create;
-begin
-  inherited Create;
-  FMaxCaptureLength := 1024;
-  FVectorSize := SizeOf(FVector) div SizeOf(Integer);
-end;
-
 destructor TJclAnsiRegEx.Destroy;
 begin
-  if FCode <> nil then
+  if Assigned(FCode) then
     pcre_free^(FCode);
-  if FExtra <> nil then
+  if Assigned(FExtra) then
     pcre_free^(FExtra);
+  if Assigned(FVector) then
+    FreeMem(FVector);
 
   inherited Destroy;
 end;
 
-function TJclAnsiRegEx.Compile(const Pattern: AnsiString; Study, UserLocale: Boolean): Boolean;
+function TJclAnsiRegEx.Compile(const Pattern: String; Study: Boolean;
+  UserLocale: Boolean = False): Boolean;
 var
-  ErrPtr: PChar;
-  ErrOffset: Integer;
+  ErrMsgPtr: PChar;
+  Tables: PChar;
 begin
   if UserLocale then
-    FTables := pcre_maketables
+  begin
+    InitializeLocaleSupport;
+    Tables := GTables;
+  end
   else
-    FTables := nil;
+    Tables := nil;
+
   if Pattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
-  if FCode <> nil then pcre_free^(FCode);
-  FCode := pcre_compile(PChar(Pattern), GetAPIOptions(False), @ErrPtr, @ErrOffset, FTables);
-  FErrorMessage := ErrPtr;
-  FErrorOffset := ErrOffset;
-  Result := (FCode <> nil);
-  if Result and Study then
+
+  if Assigned(FCode) then pcre_free^(FCode);
+  FCode := pcre_compile2(PChar(Pattern), GetAPIOptions(False),
+    @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
+  FErrorMessage := ErrMsgPtr;
+  Result := Assigned(FCode);
+  if Result then
   begin
-    if FExtra <> nil then pcre_free^(FExtra);
-    FExtra := pcre_study(FCode, 0, @ErrPtr);
+    if Study then
+    begin
+      if Assigned(FExtra) then pcre_free^(FExtra);
+      FExtra := pcre_study(FCode, 0, @ErrMsgPtr);
+      Result := Assigned(FExtra) or (not Assigned(ErrMsgPtr));
+      if not Result then
+      begin
+        FErrorCode := JCL_PCRE_ERROR_STUDYFAILED;
+        FErrorMessage := ErrMsgPtr;
+      end;
+    end;
+
+    PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @FStringCount));
+    if FStringCount > 0 then
+      FVectorSize := (FStringCount + 1) * 3
+    else
+      FVectorSize := 0;
+    ReAllocMem(FVector, FVectorSize * SizeOf(Integer));
   end;
 end;
 
@@ -260,17 +295,22 @@ end;
 function TJclAnsiRegEx.GetCaptureCount: Integer;
 begin
   Result := FStringCount;
-  //  PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @Result));
 end;
 
-function TJclAnsiRegEx.GetCaptures(Index: Integer): AnsiString;
+function TJclAnsiRegEx.GetCaptures(Index: Integer): String;
 var
-  Len: Integer;
+  From, Len: Integer;
 begin
-  SetLength(Result, MaxCaptureLength);
-  Len := pcre_copy_substring(PChar(FSubject), @FVector, FStringCount, Index, PChar(Result), MaxCaptureLength);
-  PCRECheck(Len);
-  SetLength(Result, Len);
+  if (Index < 0) or (Index >= FStringCount) then
+    PCRECheck(PCRE_ERROR_NOSUBSTRING)
+  else
+  begin
+    Index := Index * 2;
+    From := FVector^[Index];
+    Len := FVector^[Index + 1] - From;
+    SetLength(Result, Len);
+    Move(FSubject[From + 1], PChar(Result)^, Len);
+  end;
 end;
 
 function TJclAnsiRegEx.GetCapturesOffset(Index: Integer): TJclAnsiCaptureOffset;
@@ -280,23 +320,40 @@ begin
     Result.FirstPos := -1;
     Result.LastPos := -1;
   end;
-  Result.FirstPos := FVector[Index * 2];
-  Result.LastPos := FVector[Index * 2 + 1];
+  Index := Index * 2;
+  Result.FirstPos := FVector^[Index];
+  Result.LastPos := FVector^[Index + 1] - 1;
 end;
 
-function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
+function TJclAnsiRegEx.Match(const Subject: String; StartOffset: Cardinal = 1): Boolean;
 begin
-  if (FCode = nil) or (Subject = '') then
+  if (not Assigned(FCode)) or (Subject = '') then
   begin
     Result := False;
     Exit;
   end;
   if StartOffset < 1 then
     StartOffset := 1;
+
   FSubject := Subject;
   FStringCount := pcre_exec(FCode, FExtra, PChar(FSubject), Length(FSubject),
-    StartOffset - 1, GetAPIOptions(True), @FVector, FVectorSize);
-  Result := FStringCount > 0;
+    StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize);
+  Result := FStringCount >= 0;
+end;
+
+procedure InitializeLocaleSupport;
+begin
+  if not Assigned(GTables) then
+    GTables := pcre_maketables;
+end;
+
+procedure TerminateLocaleSupport;
+begin
+  if Assigned(GTables) then
+  begin
+    pcre_free^(GTables);
+    GTables := nil;
+  end;
 end;
 
 //=== { EPCREError } =========================================================
@@ -322,6 +379,7 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  TerminateLocaleSupport;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

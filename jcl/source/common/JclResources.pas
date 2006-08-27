@@ -1283,7 +1283,8 @@ resourcestring
   RsErrDfaRecurse    = 'DFA Recurse';
   RsErrRecursionLimit = 'Recursion limit';
   RsErrLibNotLoaded  = 'PCRE library not loaded';
-  RsErrMemFuncNotSet = 'PCRE memory management functions not set'; 
+  RsErrMemFuncNotSet = 'PCRE memory management functions not set';
+  RsErrStudyFailed   = 'Study failed'; 
 
 //=== JclPeImage =============================================================
 resourcestring
