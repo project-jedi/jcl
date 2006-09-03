@@ -87,6 +87,8 @@ type
   TJclClrHostLoaderFlags = set of TJclClrHostLoaderFlag;
 
 type
+  EJclClrException = class(SysUtils.Exception);
+  
   TJclClrAppDomain = class;
   TJclClrAppDomainSetup = class;
   TJclClrAssembly = class;
@@ -121,7 +123,8 @@ type
     class function CorSystemDirectory: WideString;
     class function CorVersion: WideString;
     class function CorRequiredVersion: WideString;
-    class procedure GetClrVersions(VersionNames: TWideStrings);
+    class procedure GetClrVersions(VersionNames: TWideStrings); overload;
+    class procedure GetClrVersions(VersionNames: TStrings); overload;
     property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
     property AppDomains[const Idx: Integer]: TJclClrAppDomain read GetAppDomain; default;
     property AppDomainCount: Integer read GetAppDomainCount;
@@ -233,6 +236,8 @@ type
     property Properties[const Name: WideString]: TJclClrProperty read GetProperty;
     property Methods[const Name: WideString]: TJclClrMethod read GetMethod;
   end;
+
+function CompareCLRVersions(const LeftVersion, RightVersion: string): Integer;
 
 type
   HDOMAINENUM = Pointer;
@@ -350,7 +355,77 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclSysUtils, JclResources;
+  JclSysUtils, JclResources, JclStrings;
+
+function CompareCLRVersions(const LeftVersion, RightVersion: string): Integer;
+var
+  LeftMajor, RightMajor, LeftMinor, RightMinor, LeftBuild, RightBuild, DotPos: Integer;
+  LeftStr, RightStr, LeftNum, RightNum: string;
+begin
+  if (Length(LeftVersion) = 0) or (LeftVersion[1] <> 'v') then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+
+  if (Length(RightVersion) = 0) or (RightVersion[1] <> 'v') then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+
+  DotPos := Pos('.', LeftVersion);
+  if DotPos = 0 then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+  LeftNum := Copy(LeftVersion, 2, DotPos - 2);
+  LeftStr := Copy(LeftVersion, DotPos + 1, Length(LeftVersion) - DotPos);
+  if not TryStrToInt(LeftNum, LeftMajor) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+
+  DotPos := Pos('.', RightVersion);
+  if DotPos = 0 then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+  RightNum := Copy(RightVersion, 2, DotPos - 2);
+  RightStr := Copy(RightVersion, DotPos + 1, Length(RightVersion) - DotPos);
+  if not TryStrToInt(RightNum, RightMajor) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+
+  Result := -1;
+  if LeftMajor < RightMajor then
+    Exit;
+  Result := 1;
+  if LeftMajor > RightMajor then
+    Exit;
+
+  DotPos := Pos('.', LeftStr);
+  if DotPos = 0 then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+  LeftNum := Copy(LeftStr, 1, DotPos - 1);
+  LeftStr := Copy(LeftStr, DotPos + 1, Length(LeftStr) - DotPos);
+  if not TryStrToInt(LeftNum, LeftMinor) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+
+  DotPos := Pos('.', RightStr);
+  if DotPos = 0 then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+  RightNum := Copy(RightStr, 1, DotPos - 1);
+  RightStr := Copy(RightStr, DotPos + 1, Length(RightStr) - DotPos);
+  if not TryStrToInt(RightNum, RightMinor) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+
+  Result := -1;
+  if LeftMinor < RightMinor then
+    Exit;
+  Result := 1;
+  if LeftMinor > RightMinor then
+    Exit;
+
+  if not TryStrToInt(LeftStr, LeftBuild) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [LeftVersion]);
+  if not TryStrToInt(RightStr, RightBuild) then
+    raise EJclClrException.CreateResFmt(@RsEUnknownCLRVersion, [RightVersion]);
+
+  if LeftBuild < RightBuild then
+    Result := -1
+  else if LeftBuild > RightBuild then
+    Result := 1
+  else
+    Result := 0;
+end;
 
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
@@ -804,6 +879,21 @@ begin
     finally
       Windows.FindClose(SearchHandle);
     end;
+  end;
+end;
+
+class procedure TJclClrHost.GetClrVersions(VersionNames: TStrings);
+var
+  AWideStrings: TWideStrings;
+  Index: Integer;
+begin
+  AWideStrings := TWideStringList.Create;
+  try
+    GetCLRVersions(AWideStrings);
+    for Index := 0 to AWideStrings.Count - 1 do
+      VersionNames.Add(AWideStrings.Strings[Index]);
+  finally
+    AWideStrings.Free;
   end;
 end;
 
