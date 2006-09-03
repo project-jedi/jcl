@@ -10,9 +10,7 @@ DCC=$DelphiRoot/bin/dcc\ -E../bin\ -I../source\ -R$DelphiRoot/lib\ -U../source/c
 source "$DelphiRoot/bin/kylixpath"
 cd install
 if [ -f ../devtools/jpp ]; then
-  cd prototypes
-  ./jpp.sh
-  cd ..
+  ./prototypes.sh
 fi
 $DCC QJediInstaller.dpr         # build...
 ../bin/QJediInstaller           # ...and run installer

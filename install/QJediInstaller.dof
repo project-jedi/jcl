@@ -1,7 +1,7 @@
 [Directories]
 OutputDir=..\bin
 UnitOutputDir=.
-SearchPath=
+SearchPath=..\source
 Conditionals=JCLINSTALL;VisualCLX
 [Version Info Keys]
 CompanyName=Project JEDI

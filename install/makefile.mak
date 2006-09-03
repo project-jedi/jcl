@@ -63,6 +63,6 @@ clean:
 	cd ..\install
 
 prototypes:
-	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak VclUnits
-	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak ClxUnits
+	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak VclGuiUnits
+	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak ClxGuiUnits
 

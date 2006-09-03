@@ -16,9 +16,11 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
+{ Contributor(s):                                                                                  }
+{   - Robert Rossmair - crossplatform & BCB support, refactoring                                   }
+{   - Florent Ouchet (outchy) - New installer core for .net compilation                            }
 {                                                                                                  }
-{ Last modified: $Date$                            }
+{ Last modified: $Date$                           }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -30,118 +32,145 @@ interface
 {$I crossplatform.inc}
 
 uses
-  SysUtils, Classes, IniFiles, Contnrs,
+  SysUtils, Classes, Contnrs,
   JclSysUtils, JclBorlandTools, JediInstall;
 
 type
+  TJclOption = (
+    joLibrary,
+      joDef,
+        joDefThreadSafe,
+        joDefDropObsoleteCode,
+        joDefMathPrecSingle,
+        joDefMathPrecDouble,
+        joDefMathPrecExtended,
+        joDefMathExtremeValues,
+        joDefUnitVersioning,
+        joDefHookDllExceptions,
+        joDefDebugNoBinary,
+        joDefDebugNoTD32,
+        joDefDebugNoMap,
+        joDefDebugNoExports,
+        joDefDebugNoSymbols,
+        joDefEDIWeakPackageUnits,
+      joEnvironment,
+        joEnvLibPath,
+        joEnvBrowsingPath,
+        joEnvDebugDCUPath,
+      joMake,
+        joMakeRelease,
+          joMakeReleaseVClx,
+          joMakeReleaseVCL,
+        joMakeDebug,
+          joMakeDebugVClx,
+          joMakeDebugVCL,
+        joCopyHppFiles,
+      joPackages,
+        joDualPackages,
+        joCopyPackagesHppFiles,
+        joPdbCreate,
+        joMapCreate,
+          joJdbgCreate,
+          joJdbgInsert,
+          joMapDelete,
+        joExperts,
+          joExpertsDsgnPackages,
+          joExpertsDLL,
+          joExpertDebug,
+          joExpertAnalyzer,
+          joExpertFavorite,
+          joExpertRepository,
+          joExpertThreadNames,
+          joExpertUses,
+          joExpertSimdView,
+          joExpertVersionControl,
+      joExceptDlg,
+        joExceptDlgVCL,
+        joExceptDlgVCLSnd,
+        joExceptDlgCLX,
+      joHelp,
+        joHelpHlp,
+        joHelpChm,
+        joHelpHxS,
+        joHelpHxSPlugin,
+      joMakeDemos);
+
   TJclDistribution = class;
 
   TJclInstallation = class
   private
+    // identification
     FDistribution: TJclDistribution;
     FTarget: TJclBorRADToolInstallation;
+    FCLRVersion: string;
+    FTargetName: string;
+    FTargetPlatform: TJclBorPlatform;
+    FGUIPage: IJediInstallPage;
+    FGUI: IJediInstallGUI;
+    FGUIBPLPathIndex: Integer;
+    FGUIDCPPathIndex: Integer;
     FDebugDcuDir: string;
     FLibDir: string;
     FLibObjDir: string;
-    FDefines: TStringList;
-    FUnits: TStringList;
-    FDemos: TStringList;
-    FDemoExclusionList: TStringList;
-    FOnWriteLog: TTextHandler;
-    FRelativeDemoPath: string;
+    FJclDcpPath: string;
+    FDemoList: TStringList;
+    FLogLines: TStringList;
     FDemoSectionName: string;
+    FLogFileName: string;
     procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
     procedure AddDemos(const Directory: string);
-    procedure AddDialogToRepository(const DialogName: string; const DialogFileName: string;
-      const DialogIconFileName: string; const Designer: string; const Ancestor: string = '');
     function GetDemoList: TStringList;
-    procedure BuildUnitList(const SubDir: string; Units: TStrings);
-    function GetDemoExclusionList: TStrings;
-    function GetProgressTotal: Integer;
-    function GetTool: IJediInstallTool;
-    function GetUnits(const SourceDir: string): TStrings;
-    function InitOptions: Boolean;
-    procedure InstallationStarted;
-    procedure InstallationFinished;
-    procedure InstallFailedOn(const InstallObj: string);
+    function MakePath(const FormatStr: string): string;
+    procedure WriteLog(const Msg: string);
+    function GetEnabled: Boolean;
+  protected
+    // if CLRVersion = '' then it is a native installation
+    constructor Create(JclDistribution: TJclDistribution;
+      InstallTarget: TJclBorRADToolInstallation; const ACLRVersion: string = '';
+      ATargetPlatform: TJclBorPlatform = bp32bit; AGUIPage: IJediInstallPage = nil);
+    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+    {$IFDEF MSWINDOWS}
+    function CompileCLRPackage(const Name: string): Boolean;
+    {$ENDIF MSWINDOWS}
+    function CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
+    function UninstallPackage(const Name: string): Boolean;
     procedure ConfigureBpr2Mak(const PackageFileName: string);
     {$IFDEF MSWINDOWS}
     function CompileExpert(const Name: string; InstallExpert: Boolean): Boolean;
+    function UninstallExpert(const Option: TJclOption): Boolean;
     {$ENDIF MSWINDOWS}
-    function CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
-    function CompilePackages: Boolean;
-    function InstallOption(Option: TJediInstallOption): Boolean;
-    procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
-    function UninstallPackage(const Name: string): Boolean;
-    function UninstallPackages: Boolean;
-    function UninstallOption(Option: TJediInstallOption): Boolean;
-    function LogFileName: string;
-    procedure MakeDemo(Index: Integer);
-    function MakeDemos: Boolean; overload;
-    function MakeUnits(Debug: Boolean): Boolean;
-    function MakePath(const FormatStr: string): string;
-    function Description(Option: TJediInstallOption): string;
-    procedure SaveDemoOption(Index: Integer);
-    procedure SaveOption(Option: TJediInstallOption);
-    procedure SaveOptions;
-    procedure Progress(Steps: Integer);
-    function StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
-    function TotalUnitCount: Integer;
-    procedure WriteLog(const Msg: string);
-    function GetJclDcpPath: string;
-    {$IFDEF MSWINDOWS}
-    function InstallExpert(const Option: TJediInstallOption): Boolean;
-    function UninstallExpert(const Option: TJediInstallOption): Boolean;
-    {$ENDIF MSWINDOWS}
-  protected
-    constructor Create(JclDistribution: TJclDistribution; InstallTarget: TJclBorRADToolInstallation);
-    function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
-    function SaveDefines: Boolean;
-    {$IFDEF MSWINDOWS}
-    procedure AddHelpToIdeTools;
-    procedure AddHelpToOpenHelp;
-    procedure RemoveHelpFromIdeTools;
-    procedure RemoveHelpFromOpenHelp;
-    procedure RegisterHelp2Files;
-    procedure UnregisterHelp2Files;
-    procedure CopyFakeXmlRtlPackage;
-    {$ENDIF MSWINDOWS}
-    function BplPath: string;
-    function DcpPath: string;
-    function CheckDirectories: Boolean;
-    procedure CleanupRepository;
-    function DemoOption(DemoIndex: Integer): TJediInstallOption;
-    function DemoOptionSelected(Index: Integer): Boolean;
-    function ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
-    function InstallSelectedOptions: Boolean;
-    function UninstallSelectedOptions: Boolean;
-    function OptionSelected(Option: TJediInstallOption): Boolean;
-    function ProgressWeight(Option: TJediInstallOption): Integer;
-    function Run: Boolean;
-    function Undo: Boolean;
-    function RemoveSettings: Boolean;
-    function StoredBplPath: string;
-    function StoredDcpPath: string;
-    property Defines: TStringList read FDefines;
-    property Demos: TStringList read GetDemoList;
-    property DemoSectionName: string read FDemoSectionName;
-    property DemoExclusionList: TStrings read GetDemoExclusionList;
-    property Tool: IJediInstallTool read GetTool;
-    property DebugDcuDir: string read FDebugDcuDir;
-    property LibDir: string read FLibDir;
-    property LibObjDir: string read FLibObjDir;
-    property ProgressTotal: Integer read GetProgressTotal;
-    property RelativeDemoPath: string read FRelativeDemoPath;
-    property Target: TJclBorRADToolInstallation read FTarget;
-    property Units[const SourceDir: string]: TStrings read GetUnits;
-    property JclDcpPath: string read GetJclDcpPath;
+    
+    function GetBplPath: string;
+    function GetDcpPath: string;
+    function GetOptionChecked(Option: TJclOption): Boolean; overload;
+    function GetOptionCheckedById(Id: Integer): Boolean; overload;
+    procedure MarkOptionBegin(Id: Integer); overload;
+    procedure MarkOptionBegin(Option: TJclOption); overload;
+    procedure MarkOptionEnd(Id: Integer; Success: Boolean); overload;
+    procedure MarkOptionEnd(Option: TJclOption; Success: Boolean); overload;
   public
     destructor Destroy; override;
-    property OnWriteLog: TTextHandler read FOnWriteLog write FOnWriteLog;
+    procedure Close;
+    procedure Init;
+    function RemoveSettings: Boolean;
+    function Install: Boolean;
+    function Uninstall: Boolean;
+
     property Distribution: TJclDistribution read FDistribution;
+    property Target: TJclBorRADToolInstallation read FTarget;
+    property CLRVersion: string read FCLRVersion;
+    property TargetName: string read FTargetName;
+    property GUIPage: IJediInstallPage read FGUIPage;
+    property GUI: IJediInstallGUI read FGUI;
+    property TargetPlatform: TJclBorPlatform read FTargetPlatform;
+    property Enabled: Boolean read GetEnabled;
+    property OptionCheckedById[Id: Integer]: Boolean read GetOptionCheckedById;
+    property OptionChecked[Option: TJclOption]: Boolean read GetOptionChecked;
+    property LogLines: TStringList read FLogLines;
+    property LogFileName: string read FLogFileName;
   end;
 
-  TJclDistribution = class (TInterfacedObject, IJediInstall)
+  TJclDistribution = class (TInterfacedObject, IJediProduct)
   private
     FJclPath: string;
     FJclBinDir: string;
@@ -150,41 +179,37 @@ type
     FLibObjDirMask: string;
     FJclSourceDir: string;
     FJclSourcePath: string;
+    FJclExamplesDir: string;
     FClxDialogFileName: string;
     FClxDialogIconFileName: string;
-    {$IFDEF MSWINDOWS}
     FVclDialogFileName: string;
     FVclDialogSendFileName: string;
     FVclDialogIconFileName: string;
     FVclDialogSendIconFileName: string;
-    {$ENDIF MSWINDOWS}
     FJclChmHelpFileName: string;
     FJclHlpHelpFileName: string;
     FJclHxSHelpFileName: string;
     FJclReadmeFileName: string;
-    FTool: IJediInstallTool;
+    FGUI: IJediInstallGUI;
+    FNbEnabled: Integer;
+    FNbInstalled: Integer;
+    {$IFDEF MSWINDOWS}
+    FCLRVersions: TStrings;
+    {$ENDIF MSWINDOWS}
+    FRadToolInstallations: TJclBorRADToolInstallations;
     FTargetInstalls: TObjectList;
-    FIniFile: TMemIniFile;
-    FProgress: Integer;
-    FProgressTotal: Integer;
-    FProgressPercent: Integer;
+{    FIniFile: TMemIniFile;
     FOnStarting: TInstallationEvent;
     FOnEnding: TInstallationEvent;
-    FOnProgress: TInstallationProgressEvent;
     FInstalling: Boolean;
     function CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
     function GetTargetInstall(Installation: TJclBorRADToolInstallation): TJclInstallation;
-    procedure InitInstallationTargets;
-    procedure InitProgress;
-    function GetExamplesDir: string;
-    function GetDemosPath: string;
+    procedure InitInstallationTargets; }
     function GetVersion: string;
-  protected
+  {protected
     constructor Create;
     function DocFileName(const BaseFileName: string): string;
-    procedure InstallProgress(Steps: Integer);
     procedure SetTool(const Value: IJediInstallTool);
-    procedure ShowProgress;
     property TargetInstall[Target: TJclBorRADToolInstallation]: TJclInstallation read GetTargetInstall;
   public
     destructor Destroy; override;
@@ -196,358 +221,326 @@ type
     function ReadmeFileName: string;
     procedure SetOnWriteLog(Installation: TJclBorRADToolInstallation; Value: TTextHandler);
     procedure SetOnEnding(Value: TInstallationEvent);
-    procedure SetOnProgress(Value: TInstallationProgressEvent);
     procedure SetOnStarting(Value: TInstallationEvent);
     function Supports(Target: TJclBorRADToolInstallation): Boolean;
     property BinDir: string read FJclBinDir;
-    property ExamplesDir: string read GetExamplesDir;
-    property DemosPath: string read GetDemosPath;
     property ChmHelpFileName: string read FJclChmHelpFileName;
     property HlpHelpFileName: string read FJclHlpHelpFileName;
     property HxSHelpFileName: string read FJclHxSHelpFileName;
     property Installing: Boolean read FInstalling;
     property Path: string read FJclPath;
     property SourceDir: string read FJclSourceDir;
-    property SourcePath: string read FJclSourcePath;
-    property Tool: IJediInstallTool read FTool write SetTool;
+    property Tool: IJediInstallTool read FTool write SetTool;}
     property Version: string read GetVersion;
-  end;
+    function CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
+    function GetTargetInstall(Index: Integer): TJclInstallation;
+    function GetTargetInstallCount: Integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    // IJediProduct
+    procedure Init;
+    procedure Install;
+    procedure Uninstall;
+    procedure Close;
 
-function CreateJclInstall: IJediInstall;
-function LogFileName(Target: TJclBorRADToolInstallation): string;
+    property JclPath: string read FJclPath;
+    property JclBinDir: string read FJclBinDir;
+    property LibDirMask: string read FLibDirMask;
+    property LibDebugDirMask: string read FLibDebugDirMask;
+    property LibObjDirMask: string read FLibObjDirMask;
+    property JclSourceDir: string read FJclSourceDir;
+    property JclSourcePath: string read FJclSourcePath;
+    property JclExamplesDir: string read FJclExamplesDir;
+    property ClxDialogFileName: string read FClxDialogFileName;
+    property ClxDialogIconFileName: string read FClxDialogIconFileName;
+    property VclDialogFileName: string read FVclDialogFileName;
+    property VclDialogSendFileName: string read FVclDialogSendFileName;
+    property VclDialogIconFileName: string read FVclDialogIconFileName;
+    property VclDialogSendIconFileName: string read FVclDialogSendIconFileName;
+    property JclChmHelpFileName: string read FJclChmHelpFileName;
+    property JclHlpHelpFileName: string read FJclHlpHelpFileName;
+    property JclHxSHelpFileName: string read FJclHxSHelpFileName;
+    property JclReadmeFileName: string read FJclReadmeFileName;
+    {$IFDEF MSWINDOWS}
+    property CLRVersions: TStrings read FCLRVersions;
+    {$ENDIF MSWINDOWS}
+    property RadToolInstallations: TJclBorRADToolInstallations read FRadToolInstallations;
+    property TargetInstalls[Index: Integer]: TJclInstallation read GetTargetInstall;
+    property TargetInstallCount: Integer read GetTargetInstallCount;
+
+    property GUI: IJediInstallGUI read FGUI;
+    property NbEnabled: Integer read FNbEnabled;
+    property NbInstalled: Integer read FNbInstalled;
+  end;
 
 implementation
 
 uses
+  TypInfo,
   {$IFDEF VCL}
-  Dialogs, Controls,
+//  Dialogs, Controls,
   {$ELSE VCL}
-  QDialogs, QControls,
+//  QDialogs, QControls,
   {$ENDIF VCL}
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
   JclPeImage,
-  JClRegistry,
-  MSHelpServices_TLB,
+  JclRegistry,
+//  MSHelpServices_TLB,
+  JclDotNet,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
   JediRegInfo;
 
-{ Install option data }
-
 resourcestring
+// Names
+  RsNameBPLPath = 'BPL-Path';
+  RsNameDCPPath = 'DCP-Path';
+  RsNameBPIPath = 'BPI-Path';
+
 // Captions
+  RsCaptionOutputPath = '&Output path:';
+  RsCaptionBPLPath    = '&BPL path:';
+  RsCaptionDCPPath    = '&DCP path:';
+  RsCaptionBPIPath    = 'BP&I path:';
 
   // Products
-  RsJCL                  = 'JEDI Code Library';
+  RsCaptionLibrary = 'JEDI Code Library';
 
-  // Common features
-  RsDefThreadSafe        = 'Enable thread safe code';
-  RsDefDropObsoleteCode  = 'Drop obsolete code';
-  RsDefMathPrecSingle    = 'Single float precision';
-  RsDefMathPrecDouble    = 'Double float precision';
-  RsDefMathPrecExtended  = 'Extended float precision';
-  RsDefMathExtremeValues = 'Support for infinite and NaN';
+  // Conditional features
+  RsCaptionDef                    = 'Conditional defines';
+  RsCaptionDefThreadSafe          = 'Enable thread safe code';
+  RsCaptionDefDropObsoleteCode    = 'Drop obsolete code';
+  RsCaptionDefMathPrecSingle      = 'Single float precision';
+  RsCaptionDefMathPrecDouble      = 'Double float precision';
+  RsCaptionDefMathPrecExtended    = 'Extended float precision';
+  RsCaptionDefMathExtremeValues   = 'Support for infinite and NaN';
+  RsCaptionDefUnitVersioning      = 'Include Unit Versioning';
+  RsCaptionDefHookDllExceptions   = 'Hook exceptions in DLL';
+  RsCaptionDefDebugNoBinary       = 'No debug source from Jedi debug informations';
+  RsCaptionDefDebugNoTD32         = 'No debug source from TD32 debug symbols';
+  RsCaptionDefDebugNoMap          = 'No debug source from Map files';
+  RsCaptionDefDebugNoExports      = 'No debug source from function export table for libraries';
+  RsCaptionDefDebugNoSymbols      = 'No debug source from Microsoft debug symbols';
+  RsCaptionDefEDIWeakPackageUnits = 'EDI weak package units';
 
-  RsDefUnitVersioning    = 'Include Unit Versioning';
+  // post compilation
+  RsCaptionPdbCreate  = 'Create PDB debug information';
+  RsCaptionMapCreate  = 'Create MAP files';
+  RsCaptionJdbgCreate = 'Create Jedi Debug Informations';
+  RsCaptionJdbgInsert = 'Insert Jedi Debug Informations in the librairies';
+  RsCaptionMapDelete  = 'Do not keep MAP files';
 
-  RsDefHookDllExceptions = 'Hook exceptions in DLL';
-  RsDefDebugNoBinary     = 'No debug source from Jedi debug informations';
-  RsDefDebugNoTD32       = 'No debug source from TD32 debug symbols';
-  RsDefDebugNoMap        = 'No debug source from Map files';
-  RsDefDebugNoExports    = 'No debug source from function export table for libraries';
-  RsDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
+  // environment
+  RsCaptionEnvironment     = 'Environment';
+  RsCaptionEnvLibPath      = 'Add JCL to IDE Library Path';
+  RsCaptionEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
+  RsCaptionEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
 
-  RsDefEDIWeakPackageUnits = 'EDI weak package units';
+  // make units
+  RsCaptionMake         = 'Make library units';
+  RsCaptionMakeRelease  = 'Release';
+  RsCaptionMakeDebug    = 'Debug';
+  RsCaptionMakeVClx     = 'Visual CLX';
+  RsCaptionMakeVCL      = 'Visual Component Library';
+  RsCaptionCopyHppFiles = 'Copy HPP files to %s';
 
-  RsMapCreate            = 'Create MAP files';
-  RsJdbgCreate           = 'Create Jedi Debug Informations';
-  RsJdbgInsert           = 'Insert Jedi Debug Informations in the librairies';
-  RsMapDelete            = 'Do not keep MAP files';
+  // packages
+  RsCaptionPackages             = 'Packages';
+  RsCaptionDualPackages         = 'Dual packages';
+  RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
-  RsEnvironment          = 'Environment';
-  RsEnvLibPath           = 'Add JCL to IDE Library Path';
-  RsEnvBrowsingPath      = 'Add JCL to IDE Browsing Path';
-  RsEnvDebugDCUPath      = 'Add JCL to Debug DCU Path';
-  RsMake                 = 'Make library units';
-  RsMakeRelease          = 'Release';
-  RsMakeDebug            = 'Debug';
-  RsMakeVClx             = 'Visual CLX';
-  RsMakeDemos            = 'Make demos';
+  // exception dialogs
+  RsCaptionExceptDlg       = 'Sample Exception Dialogs in the Object Reporitory';
+  RsCaptionExceptDlgVCL    = 'VCL Exception Dialog';
+  RsCaptionExceptDlgVCLSnd = 'VCL Exception Dialog with Send button';
+  RsCaptionExceptDlgCLX    = 'CLX Exception Dialog';
 
-  RsHelpFiles            = 'Help files';
-  RsIdeExperts           = 'IDE experts';
-  RsJCLPackages          = 'Packages';
-  RsIdeHelpHlp           = 'Add help file to IDE help system';
-  RsIdeHelpChm           = 'Add HTML help to the Tools menu';
-  RsIdeHelpHxS           = 'Register help 2.0 files';
-  RsIdeHelpHxSPlugin     = 'Plug help 2.0 files in the Borland help system';
-  RsCopyHppFiles         = 'Copy HPP files to %s';
-  RsDualPackages         = 'Dual packages';
-  RsCopyPackagesHppFiles = 'Output HPP files to %s';
+  // experts
+  RsCaptionExperts              = 'IDE experts';
+  RsCaptionExpertsDsgnPackages  = 'Design packages';
+  RsCaptionExpertsDLL           = 'DLL experts';
+  RsCaptionExpertDebug          = 'Debug Extension';
+  RsCaptionExpertAnalyzer       = 'Project Analyzer';
+  RsCaptionExpertFavorite       = 'Favorite combobox in Open/Save dialogs';
+  RsCaptionExpertRepository     = 'Exception dialog expert';
+  RsCaptionExpertThreadNames    = 'Displaying thread names in Thread Status window';
+  RsCaptionExpertUses           = 'Uses Wizard';
+  RsCaptionExpertSimdView       = 'Debug window for XMM registers';
+  RsCaptionExpertVersionControl = 'Version control';
 
-  // Product specific features
-  RsJCLExceptDlg         = 'Sample Exception Dialogs in the Object Reporitory';
-  RsJCLDialogVCL         = 'VCL Exception Dialog';
-  RsJCLDialogVCLSnd      = 'VCL Exception Dialog with Send button';
-  RsJCLDialogCLX         = 'CLX Exception Dialog';
-  RsExpertsDsgnPackages  = 'Design packages';
-  RsExpertsDLL           = 'DLL experts';
-  RsJCLIdeDebug          = 'Debug Extension';
-  RsJCLIdeAnalyzer       = 'Project Analyzer';
-  RsJCLIdeFavorite       = 'Favorite combobox in Open/Save dialogs';
-  RsJCLExpertRepository  = 'Exception dialog expert';
-  RsJCLIdeThreadNames    = 'Displaying thread names in Thread Status window';
-  RsJCLIdeUses           = 'Uses Wizard';
-  RsJCLSimdView          = 'Debug window for XMM registers';
-  RsJCLVersionControl    = 'Version control';
+  // help
+  RsCaptionHelp          = 'Help files';
+  RsCaptionHelpHlp       = 'Add help file to IDE help system';
+  RsCaptionHelpChm       = 'Add HTML help to the Tools menu';
+  RsCaptionHelpHxS       = 'Register help 2.0 files';
+  RsCaptionHelpHxSPlugin = 'Plug help 2.0 files in the Borland help system';
+
+  // demos
+  RsCaptionMakeDemos = 'Make demos';
 
 // Hints
-  RsHintTarget = 'Installation target';
-  RsHintJCL = 'Select to install JCL for this target.';
-  RsHintJclDefThreadSafe        = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
-  RsHintJclDefDropObsoleteCode  = 'Do not compile deprecated code';
-  RsHintJclDefMathPrecSingle    = 'type Float = Single';
-  RsHintJclDefMathPrecDouble    = 'type Float = Double';
-  RsHintJclDefMathPrecExtended  = 'type Float = Extended';
-  RsHintJclDefMathExtremeValues = 'Exp en Power functions accept and return infinite and NaN';
-  RsHintJclDefUnitVersioning    = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
-  RsHintJclDefHookDllExceptions = 'Hook exceptions raised in DLL compiled with the JCL';
-  RsHintJclDefDebugNoBinary     = 'Disable support for JDBG files';
-  RsHintJclDefDebugNoMap        = 'Disable support for MAP files';
-  RsHintJclDefDebugNoTD32       = 'Disable support for TD32 informations';
-  RsHintJclDefDebugNoExports    = 'Disable support for export names of libraries';
-  RsHintJclDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
-  RsHintJclDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
-  RsHintJclMapCreate            = 'Create detailled MAP files for each libraries';
-  RsHintJclJdbgCreate           = 'Create Jedi Debug Informations from the MAP files';
-  RsHintJclJdbgInsert           = 'Insert Jedi Debug Informations into the libraries (only the BPL has to be redistributed)';
-  RsHintJclMapDelete            = 'The original MAP file is not kept once Jedi Debug Informations are generated';
-  RsHintJclEnv = 'Set selected environment items';
-  RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to library path';
-  RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
-  RsHintJclEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units ' +
-    'by means of the respective'#13#10'Project Options|Compiler switch. See "Make library ' +
-    'units/Debug" option below.';
-  RsHintJclMake = 'Generate .dcu and .dpu (Kylix only) files.'#13#10'Recommended.';
-  RsHintJclMakeRelease = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
-  RsHintJclMakeReleaseVcl = 'Make precompiled VCL units for release';
-  RsHintJclMakeReleaseVClx = 'Make precompiled Visual CLX units for release';
-  RsHintJclMakeDebug = 'Make precompiled units for debugging, i.e.optimization off, debug ' +
-    'information included.'#13#10'When installed, available through Project Options|Compiler|Use ' +
-    'Debug DCUs.';
-  RsHintJclMakeDebugVcl = 'Make precompiled VCL units for debugging';
-  RsHintJclMakeDebugVClx = 'Make precompiled Visual CLX units for debugging';
-  RsHintJclCopyHppFiles = 'Copy .hhp files into C++Builder''s include path.';
-  RsHintJclDualPackages = 'The same package introduce component for Delphi Win32 and C++Builder Win32';
-  RsHintJclPackages = 'Build and eventually install JCL runtime packages (RTL, VCL and Visual ' +
+  // products
+  RsHintLibrary = 'Select to install JCL for this target.';
+
+  // conditional defines
+  RsHintDef                    = 'Enable or disable specific features to be compiled';
+  RsHintDefThreadSafe          = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
+  RsHintDefDropObsoleteCode    = 'Do not compile deprecated code';
+  RsHintDefMathPrecSingle      = 'type Float = Single';
+  RsHintDefMathPrecDouble      = 'type Float = Double';
+  RsHintDefMathPrecExtended    = 'type Float = Extended';
+  RsHintDefMathExtremeValues   = 'Exp en Power functions accept and return infinite and NaN';
+  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
+  RsHintDefHookDllExceptions   = 'Hook exceptions raised in DLL compiled with the JCL';
+  RsHintDefDebugNoBinary       = 'Disable support for JDBG files';
+  RsHintDefDebugNoMap          = 'Disable support for MAP files';
+  RsHintDefDebugNoTD32         = 'Disable support for TD32 informations';
+  RsHintDefDebugNoExports      = 'Disable support for export names of libraries';
+  RsHintDefDebugNoSymbols      = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
+  RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
+
+  // post compilation
+  RsHintPdbCreate  = 'Create detailled debug information for libraries';
+  RsHintMapCreate  = 'Create detailled MAP files for each libraries';
+  RsHintJdbgCreate = 'Create Jedi Debug Informations from the MAP files';
+  RsHintJdbgInsert = 'Insert Jedi Debug Informations into the libraries (only the BPL has to be redistributed)';
+  RsHintMapDelete  = 'The original MAP file is not kept once Jedi Debug Informations are generated';
+
+  // environment
+  RsHintEnvironment     = 'Set selected environment items';
+  RsHintEnvLibPath      = 'Add JCL precompiled unit directories to library path';
+  RsHintEnvBrowsingPath = 'Add JCL source directories to browsing path';
+  RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective' + AnsiLineBreak +
+    'Project Options|Compiler switch. See "Make library units/Debug" option below.';
+
+  // make units
+  RsHintMake            = 'Generate .dcu and .dpu (Kylix only) files.' + AnsiLineBreak + 'Recommended.';
+  RsHintMakeRelease     = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
+  RsHintMakeReleaseVcl  = 'Make precompiled VCL units for release';
+  RsHintMakeReleaseVClx = 'Make precompiled Visual CLX units for release';
+  RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + AnsiLineBreak +
+    'When installed, available through Project Options|Compiler|Use Debug DCUs.';
+  RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
+  RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
+  RsHintCopyHppFiles    = 'Copy .hhp files into C++Builder''s include path.';
+
+  // packages
+  RsHintPackages             = 'Build and eventually install JCL runtime packages (RTL, VCL and Visual ' +
     'CLX) and optional IDE experts.';
-  RsHintJclExperts = 'Build and install selected IDE experts.';
-  RsHintJclExpertsDsgnPackages = 'Design packages containing JCL experts';
-  RsHintJclExpertsDLL = 'DLLs containing JCL experts';
-  RsHintJclExpertDebug = 'Install IDE expert which assists to insert JCL Debug information into ' +
-    'executable files.';
-  RsHintJclExpertAnalyzer = 'Install IDE Project Analyzer.';
-  RsHintJclExpertFavorite = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
-  RsHintJclExpertRepository = 'Repository expert to easily create exception dialogs';
-  RsHintJclExpertsThreadNames = 'Display thread names in Thread Status window IDE extension.';
-  RsHintJclExpertUses = 'Install IDE Uses Wizard.';
-  RsHintJclExpertSimdView = 'Install a debug window of XMM registers (used by SSE instructions)';
-  RsHintJclExpertVersionControl = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
-  RsHintJclCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
+  RsHintDualPackages         = 'The same package introduce component for Delphi Win32 and C++Builder Win32';
+  RsHintCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
     'the source paths.';
-  RsHintJclExcDialog = 'Add selected Exception dialogs to the Object Repository.';
-  RsHintJclExcDialogVCL = 'Add VCL exception dialog to the Object Repository.';
-  RsHintJclExcDialogVCLSnd = 'Add VCL exception dialog with "Send Button" to the Object Repository.';
-  RsHintJclExcDialogCLX = 'Add CLX exception dialog (Windows only) to the Object Repository.';
-  RsHintJclHelp = 'Install JCL help files.';
-  RsHintJclHelpHlp = 'Customize Borland Open Help to include JCL help files.';
-  RsHintJclHelpChm = 'Compiled help files won''t be merged with the IDE help';
-  RsHintJclHelpHxS = 'Register Help 2.0 files';
-  RsHintJclHelpHxSPlugin = 'Register Help 2.0 files as a plugin for the Borland.BDS* namespace';
-  RsHintJclMakeDemos = 'Make JCL demo applications';
+
+  // exception dialogs
+  RsHintExceptDlg       = 'Add selected Exception dialogs to the Object Repository.';
+  RsHintExceptDlgVCL    = 'Add VCL exception dialog to the Object Repository.';
+  RsHintExceptDlgVCLSnd = 'Add VCL exception dialog with "Send Button" to the Object Repository.';
+  RsHintExceptDlgCLX    = 'Add CLX exception dialog (Windows only) to the Object Repository.';
+
+  // experts
+  RsHintExperts              = 'Build and install selected IDE experts.';
+  RsHintExpertsDsgnPackages  = 'Design packages containing JCL experts';
+  RsHintExpertsDLL           = 'DLLs containing JCL experts';
+  RsHintExpertDebug          = 'Install IDE expert which assists to insert JCL Debug information into executable files.';
+  RsHintExpertAnalyzer       = 'Install IDE Project Analyzer.';
+  RsHintExpertFavorite       = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
+  RsHintExpertRepository     = 'Repository expert to easily create exception dialogs';
+  RsHintExpertThreadNames    = 'Display thread names in Thread Status window IDE extension.';
+  RsHintExpertUses           = 'Install IDE Uses Wizard.';
+  RsHintExpertSimdView       = 'Install a debug window of XMM registers (used by SSE instructions)';
+  RsHintExpertVersionControl = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
+
+  // help
+  RsHintHelp          = 'Install JCL help files.';
+  RsHintHelpHlp       = 'Customize Borland Open Help to include JCL help files.';
+  RsHintHelpChm       = 'Compiled help files won''t be merged with the IDE help';
+  RsHintHelpHxS       = 'Register Help 2.0 files';
+  RsHintHelpHxSPlugin = 'Register Help 2.0 files as a plugin for the Borland.BDS* namespace';
+
+  // demos
+  RsHintMakeDemos = 'Make JCL demo applications';
 
 // warning messages
-  RsPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
+  RsWarningPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
     'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
     'Do you want to continue without compiling JCL packages?';
-  RsCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
+  RsWarningCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
     'Do you want the JCL installer to create it?';
-  RsCantCreatePath = 'The path %s cannot be created';
-  RsAddPathToEnvironment = 'The path where BPL are created must be present in the PATH' + sLineBreak +
+  RsErrorCantCreatePath = 'The path %s cannot be created';
+  RsWarningAddPathToEnvironment = 'The path where BPL are created must be present in the PATH' + sLineBreak +
     'environment variable, otherwise JCL packages won''t be found by the IDE.' + sLineBreak +
     'Do you want the JCL installer to add it?' + sLineBreak +
     'You will have to reboot your computer and/or to close your session to validate this change';
 
-const
-  Invalid = -1;
-  LineBreak = AnsiLineBreak;
-  ioUndef = TJediInstallOption(Invalid);
+type
+  TOptionRec = record
+    Id: Integer;
+    Caption: string;
+    Hint: string;
+  end;
 
-  InitData: array[TJediInstallOption] of TInstallOptionData =
+var
+  OptionData: array[TJclOption] of TOptionRec =
     (
-      (Parent: ioUndef;                  // ioTarget
-       Caption: '';
-       Hint: RsHintTarget),
-      (Parent: ioTarget;                 // ioJCL
-       Caption: RsJCL;
-       Hint: RsHintJcl),
-      (Parent: ioJCL;                    // ioJclDefThreadSafe
-       Caption: RsDefThreadSafe;
-       Hint: RsHintJclDefThreadSafe),
-      (Parent: ioJCL;                    // ioJclDefDropObsoleteCode
-       Caption: RsDefDropObsoleteCode;
-       Hint: RsHintJclDefDropObsoleteCode),
-      (Parent: ioJCL;                    // ioJclDefMathPrecSingle
-       Caption: RsDefMathPrecSingle;
-       Hint: RsHintJclDefMathPrecSingle),
-      (Parent: ioJCL;                    // ioJclDefMathPrecDouble
-       Caption: RsDefMathPrecDouble;
-       Hint: RsHintJclDefMathPrecDouble),
-      (Parent: ioJCL;                    // ioJclDefMathPrecExtended
-       Caption: RsDefMathPrecExtended;
-       Hint: RsHintJclDefMathPrecExtended),
-      (Parent: ioJCL;                    // ioJclDefMathExtremeValues
-       Caption: RsDefMathExtremeValues;
-       Hint: RsHintJclDefMathExtremeValues),
-      (Parent: ioJCL;                    // ioJclDefUnitVersioning
-       Caption: RsDefUnitVersioning;
-       Hint: RsHintJclDefUnitVersioning),
-      (Parent: ioJCL;                    // ioJclDefHookDllExceptions
-       Caption: RsDefHookDllExceptions;
-       Hint: RsHintJclDefHookDllExceptions),
-      (Parent: ioJCL;                    // ioJclDefDebugNoBinary
-       Caption: RsDefDebugNoBinary;
-       Hint: RsHintJclDefDebugNoBinary),
-      (Parent: ioJCL;                    // ioJclDefDebugNoTD32
-       Caption: RsDefDebugNoTD32;
-       Hint: RsHintJclDefDebugNoTD32),
-      (Parent: ioJCL;                    // ioJclDefDebugNoMap
-       Caption: RsDefDebugNoMap;
-       Hint: RsHintJclDefDebugNoMap),
-      (Parent: ioJCL;                    // ioJclDefDebugNoExports
-       Caption: RsDefDebugNoExports;
-       Hint: RsHintJclDefDebugNoExports),
-      (Parent: ioJCL;                    // ioJclDefDebugNoSymbols
-       Caption: RsDefDebugNoSymbols;
-       Hint: RsHintJclDefDebugNoSymbols),
-      (Parent: ioJCL;                    // ioJclDefEDIWeakPackageUnits
-       Caption: RsDefEDIWeakPackageUnits;
-       Hint: RsHintJclDefEDIWeakPackageUnits),
-      (Parent: ioJCL;                    // ioJclMapCreate
-       Caption: RsMapCreate;
-       Hint: RsHintJclMapCreate),
-      (Parent: ioJclMapCreate;           // ioJclJdbgCreate
-       Caption: RsJdbgCreate;
-       Hint: RsHintJclJdbgCreate),
-      (Parent: ioJclMapCreate;           // ioJclJdbgInsert
-       Caption: RsJdbgInsert;
-       Hint: RsHintJclJdbgInsert),
-      (Parent: ioJclJdbgCreate;          // ioJclMapDelete
-       Caption: RsMapDelete;
-       Hint: RsHintJclMapDelete),
-      (Parent: ioJCL;                    // ioJclEnv
-       Caption: RsEnvironment;
-       Hint: RsHintJclEnv),
-      (Parent: ioJclEnv;                 // ioJclEnvLibPath
-       Caption: RsEnvLibPath;
-       Hint: RsHintJclEnvLibPath),
-      (Parent: ioJclEnv;                 // ioJclEnvBrowsingPath
-       Caption: RsEnvBrowsingPath;
-       Hint: RsHintJclEnvBrowsingPath),
-      (Parent: ioJclEnv;                 // ioJclEnvDebugDCUPath
-       Caption: RsEnvDebugDCUPath;
-       Hint: RsHintJclEnvDebugDCUPath),
-      (Parent: ioJCL;                    // ioJclMake
-       Caption: RsMake;
-       Hint: RsHintJclMake),
-      (Parent: ioJclMake;                // ioJclMakeRelease
-       Caption: RsMakeRelease;
-       Hint: RsHintJclMakeRelease),
-      (Parent: ioJclMake;                // ioJclMakeReleaseVClx
-       Caption: RsMakeVClx;
-       Hint: RsHintJclMakeReleaseVClx),
-      (Parent: ioJclMake;                // ioJclMakeDebug
-       Caption: RsMakeDebug;
-       Hint: RsHintJclMakeDebug),
-      (Parent: ioJclMake;                // ioJclMakeDebugVClx
-       Caption: RsMakeVClx;
-       Hint: RsHintJclMakeDebugVClx),
-      (Parent: ioJclMake;                // ioJclCopyHppFiles
-       Caption: RsCopyHppFiles;
-       Hint: RsHintJclCopyHppFiles),
-      (Parent: ioJclPackages;            // ioJclDualPackages
-       Caption: RsDualPackages;
-       Hint: RsHintJclDualPackages),
-      (Parent: ioJCL;                    // ioJclPackages
-       Caption: RsJCLPackages;
-       Hint: RsHintJclPackages),
-      (Parent: ioJclExperts;             // ioJclExpertsDesignPackages
-       Caption: RsExpertsDsgnPackages;
-       Hint: RsHintJclExpertsDsgnPackages),
-      (Parent: ioJclExperts;             // ioJclExpertsDLL
-       Caption: RsExpertsDLL;
-       Hint: RsHintJclExpertsDLL),
-      (Parent: ioJclPackages;            // ioJclExperts
-       Caption: RsIdeExperts;
-       Hint: RsHintJclExperts),
-      (Parent: ioJclExperts;             // ioJclExpertDebug
-       Caption: RsJCLIdeDebug;
-       Hint: RsHintJclExpertDebug),
-      (Parent: ioJclExperts;             // ioJclExpertAnalyzer
-       Caption: RsJCLIdeAnalyzer;
-       Hint: RsHintJclExpertAnalyzer),
-      (Parent: ioJclExperts;             // ioJclExpertFavorite
-       Caption: RsJCLIdeFavorite;
-       Hint: RsHintJclExpertFavorite),
-      (Parent: ioJclExperts;             // ioJclExpertRepository
-       Caption: RsJclExpertRepository;
-       Hint: RsHintJclExpertRepository),
-      (Parent: ioJclExperts;             // ioJclExpertThreadNames
-       Caption: RsJCLIdeThreadNames;
-       Hint: RsHintJclExpertsThreadNames),
-      (Parent: ioJclExperts;             // ioJclExpertUses
-       Caption: RsJCLIdeUses;
-       Hint: RsHintJclExpertUses),
-      (Parent: ioJclExperts;             // ioJclExpertSimdView
-       Caption: RsJCLSimdView;
-       Hint: RsHintJclExpertSimdView),
-      (Parent: ioJclExperts;             // ioJclExpertVersionControl
-       Caption: RsJclVersionControl;
-       Hint: RsHintJclExpertVersionControl),
-      (Parent: ioJclPackages;            // ioJclCopyPackagesHppFiles
-       Caption: RsCopyPackagesHppFiles;
-       Hint: RsHintJclCopyPackagesHppFiles),
-      (Parent: ioJCL;                    // ioJclExcDialog
-       Caption: RsJCLExceptDlg;
-       Hint: RsHintJclExcDialog),
-      (Parent: ioJclExcDialog;           // ioJclExcDialogVCL
-       Caption: RsJCLDialogVCL;
-       Hint: RsHintJclExcDialogVCL),
-      (Parent: ioJclExcDialog;           // ioJclExcDialogVCLSnd
-       Caption: RsJCLDialogVCLSnd;
-       Hint: RsHintJclExcDialogVCLSnd),
-      (Parent: ioJclExcDialog;           // ioJclExcDialogCLX
-       Caption: RsJCLDialogCLX;
-       Hint: RsHintJclExcDialogCLX),
-      (Parent: ioJCL;                    // ioJclHelp
-       Caption: RsHelpFiles;
-       Hint: RsHintJclHelp),
-      (Parent: ioJclHelp;                // ioJclHelpHlp
-       Caption: RsIdeHelpHlp;
-       Hint: RsHintJclHelpHlp),
-      (Parent: ioJclHelp;                // ioJclHelpChm
-       Caption: RsIdeHelpChm;
-       Hint: RsHintJclHelpChm),
-      (Parent: ioJclHelp;                // ioJclHelpHxS
-       Caption: RsIdeHelpHxS;
-       Hint: RsHintJclHelpHxS),
-      (Parent: ioJclHelpHxS;             // ioJclHelpHxSPlugin
-       Caption: RsIdeHelpHxSPlugin;
-       Hint: RsHintJclHelpHxSPlugin),
-      (Parent: ioJCL;                    // ioJclMakeDemos
-       Caption: RsMakeDemos;
-       Hint: RsHintJclMakeDemos)
+      (Id: -1; Caption: RsCaptionLibrary; Hint: RsHintLibrary), // joLibrary
+      (Id: -1; Caption: RsCaptionDef; Hint: RsHintDef), // joDef
+      (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
+      (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
+      (Id: -1; Caption: RsCaptionDefMathPrecSingle; Hint: RsHintDefMathPrecSingle), // ioDefMathPrecSingle
+      (Id: -1; Caption: RsCaptionDefMathPrecDouble; Hint: RsHintDefMathPrecDouble), // joDefMathPrecDouble
+      (Id: -1; Caption: RsCaptionDefMathPrecExtended; Hint: RsHintDefMathPrecExtended), // joDefMathPrecExtended
+      (Id: -1; Caption: RsCaptionDefMathExtremeValues; Hint: RsHintDefMathExtremeValues), // joDefMathExtremeValues
+      (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
+      (Id: -1; Caption: RsCaptionDefHookDllExceptions; Hint: RsHintDefHookDllExceptions), // joDefHookDllExceptions
+      (Id: -1; Caption: RsCaptionDefDebugNoBinary; Hint: RsHintDefDebugNoBinary), // joDefDebugNoBinary
+      (Id: -1; Caption: RsCaptionDefDebugNoTD32; Hint: RsHintDefDebugNoTD32), // joDefDebugNoTD32
+      (Id: -1; Caption: RsCaptionDefDebugNoMap; Hint: RsHintDefDebugNoMap), // joDefDebugNoMap
+      (Id: -1; Caption: RsCaptionDefDebugNoExports; Hint: RsHintDefDebugNoExports), // joDefDebugNoExports
+      (Id: -1; Caption: RsCaptionDefDebugNoSymbols; Hint: RsHintDefDebugNoSymbols), // joDefDebugNoSymbols
+      (Id: -1; Caption: RsCaptionDefEDIWeakPackageUnits; Hint: RsHintDefEDIWeakPackageUnits), // joDefEDIWeakPackageUnits
+      (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
+      (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
+      (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
+      (Id: -1; Caption: RsCaptionEnvDebugDCUPath; Hint: RsHintEnvDebugDCUPath), // joEnvDebugDCUPath
+      (Id: -1; Caption: RsCaptionMake; Hint: RsHintMake), // joMake
+      (Id: -1; Caption: RsCaptionMakeRelease; Hint: RsHintMakeRelease), // joMakeRelease
+      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeReleaseVClx), // joMakeReleaseVClx
+      (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeReleaseVCL), // joMakeReleaseVCL
+      (Id: -1; Caption: RsCaptionMakeDebug; Hint: RsHintMakeDebug), // joMakeDebug
+      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeDebugVClx), // joMakeDebugVClx
+      (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeDebugVCL), // joMakeDebugVCL
+      (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
+      (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
+      (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
+      (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
+      (Id: -1; Caption: RsCaptionPdbCreate; Hint: RsHintPdbCreate), // joPdbCreate
+      (Id: -1; Caption: RsCaptionMapCreate; Hint: RsHintMapCreate), // joMapCreate
+      (Id: -1; Caption: RsCaptionJdbgCreate; Hint: RsHintJdbgCreate), // joJdbgCreate
+      (Id: -1; Caption: RsCaptionJdbgInsert; Hint: RsHintJdbgInsert), // joJdbgInsert
+      (Id: -1; Caption: RsCaptionMapDelete; Hint: RsHintMapDelete), // joMapDelete
+      (Id: -1; Caption: RsCaptionExperts; Hint: RsHintExperts), // joExperts
+      (Id: -1; Caption: RsCaptionExpertsDsgnPackages; Hint: RsHintExpertsDsgnPackages), // joExpertsDsgnPackages
+      (Id: -1; Caption: RsCaptionExpertsDLL; Hint: RsHintExpertsDLL), // joExpertsDLL
+      (Id: -1; Caption: RsCaptionExpertDebug; Hint: RsHintExpertDebug), // joExpertDebug
+      (Id: -1; Caption: RsCaptionExpertAnalyzer; Hint: RsHintExpertAnalyzer), // joExpertAnalyzer
+      (Id: -1; Caption: RsCaptionExpertFavorite; Hint: RsHintExpertFavorite), // joExpertFavorite
+      (Id: -1; Caption: RsCaptionExpertRepository; Hint: RsHintExpertRepository), // joExpertRepository
+      (Id: -1; Caption: RsCaptionExpertThreadNames; Hint: RsHintExpertThreadNames), // joExpertThreadNames
+      (Id: -1; Caption: RsCaptionExpertUses; Hint: RsHintExpertUses), // joExpertUses
+      (Id: -1; Caption: RsCaptionExpertSimdView; Hint: RsHintExpertSimdView), // joExpertSimdView
+      (Id: -1; Caption: RsCaptionExpertVersionControl; Hint: RsHintExpertVersionControl), // joExpertVersionControl
+      (Id: -1; Caption: RsCaptionExceptDlg; Hint: RsHintExceptDlg), // joExceptDlg
+      (Id: -1; Caption: RsCaptionExceptDlgVCL; Hint: RsHintExceptDlgVCL), // joExceptDlgVCL
+      (Id: -1; Caption: RsCaptionExceptDlgVCLSnd; Hint: RsHintExceptDlgVCLSnd), // joExceptDlgVCLSnd
+      (Id: -1; Caption: RsCaptionExceptDlgCLX; Hint: RsHintExceptDlgCLX), // joExceptDlgCLX
+      (Id: -1; Caption: RsCaptionHelp; Hint: RsHintHelp), // joHelp
+      (Id: -1; Caption: RsCaptionHelpHlp; Hint: RsHintHelpHlp), // joHelpHlp
+      (Id: -1; Caption: RsCaptionHelpChm; Hint: RsHintHelpChm), // joHelpChm
+      (Id: -1; Caption: RsCaptionHelpHxS; Hint: RsHintHelpHxS), // joHelpHxS
+      (Id: -1; Caption: RsCaptionHelpHxSPlugin; Hint: RsHintHelpHxSPlugin), // joHelpHxSPlugin
+      (Id: -1; Caption: RsCaptionMakeDemos; Hint: RsHintMakeDemos) // joMakeDemos
     );
 
 const
@@ -559,72 +552,61 @@ const
   VersionDirExp = '\%%s';
   {$ENDIF}
 
-  JclSrcDirCommon   = 'common';
-  JclSrcDirVisClx   = 'visclx';
-
-  {$IFDEF MSWINDOWS}
-  {$IFNDEF RTL140_UP}
-  PathSep = ';';
-  {$ENDIF RTL140_UP}
-  VclDialogFileName = 'ExceptDlg.pas';
-  VclDlgSndFileName = 'ExceptDlgMail.pas';
-  VclDialogName     = 'Exception Dialog';
-  VclDialogNameSend = 'Exception Dialog with Send';
-
   JclDpk     = 'Jcl';
   JclVclDpk  = 'JclVcl';
   JclVClxDpk = 'JclVClx';
+  JediJclDpr = 'Jedi.Jcl';
 
-  JclIdeBaseDpk     = 'JclBaseExpert';
-  JclIdeDebugDpk    = 'JclDebugExpert';
-  JclIdeAnalyzerDpk = 'JclProjectAnalysisExpert';
-  JclIdeFavoriteDpk = 'JclFavoriteFoldersExpert';
-  JclIdeRepositoryDpk = 'JclRepositoryExpert';
-  JclIdeThrNamesDpk = 'JclThreadNameExpert';
-  JclIdeUsesDpk     = 'JclUsesExpert';
-  JclIdeSimdViewDpk = 'JclSIMDViewExpert';
-  JclIdeVersionControlDpk = 'JclVersionControlExpert';
-  JclBdsExpertDpr   = 'JclBdsExpert';
+  JclExpertBase           = 'JclBaseExpert';
+  JclExpertDebug          = 'JclDebugExpert';
+  JclExpertAnalyzer       = 'JclProjectAnalysisExpert';
+  JclExpertFavorite       = 'JclFavoriteFoldersExpert';
+  JclExpertRepository     = 'JclRepositoryExpert';
+  JclExpertThrNames       = 'JclThreadNameExpert';
+  JclExpertUses           = 'JclUsesExpert';
+  JclExpertSimdView       = 'JclSIMDViewExpert';
+  JclExpertVersionControl = 'JclVersionControlExpert';
+//  JclExpertBdsExpertDpr   = 'JclBdsExpert';
 
-  ExpertPaths: array[ioJclExperts..ioJclExpertVersionControl] of string =
+  ExpertPaths: array[joExperts..joExpertVersionControl] of string =
     (
-      JclIdeBaseDpk,
-      JclIdeDebugDpk,
-      JclIdeAnalyzerDpk,
-      JclIdeFavoriteDpk,
-      JclIdeRepositoryDpk,
-      JclIdeThrNamesDpk,
-      JclIdeUsesDpk,
-      JclIdeSimdViewDpk,
-      JclIdeVersionControlDpk
-    );
+      JclExpertBase, '', '', JclExpertDebug, JclExpertAnalyzer,
+      JclExpertFavorite, JclExpertRepository, JclExpertThrNames,
+      JclExpertUses, JclExpertSimdView, JclExpertVersionControl
+    );            
 
-  JclSrcDirOS       = 'windows';
+  JclSrcDirWindows  = 'windows';
+  JclSrcDirUnix     = 'unix';
   JclSrcDirVcl      = 'vcl';
-  JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVcl, JclSrcDirVisClx);
-  JclSourcePath     = '%0:s\' + JclSrcDirOS +
-                     ';%0:s\' + JclSrcDirCommon +
-                     ';%0:s\' + JclSrcDirVcl +
-                     ';%0:s\' + JclSrcDirVisClx;
-  BCBIncludePath    = '%s;%s;$(BCB)\include;$(BCB)\include\vcl';
-  BCBObjectPath     = '%s;%s;$(BCB)\Lib\Obj';
+  JclSrcDirCommon   = 'common';
+  JclSrcDirVisClx   = 'visclx';
+
+  BCBIncludePath = '%s' + DirSeparator + '%s' + DirSeparator + '$(BCB)' + DirDelimiter + 'include;$(BCB)' + DirDelimiter + 'include' + DirDelimiter + 'vcl';
+  {$IFDEF MSWINDOWS}
+  BCBObjectPath  = '%s;%s;$(BCB)\Lib\Obj';
+  JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl, JclSrcDirVisClx);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  JclSrcDirOS       = 'unix';
+  BCBObjectPath  = BCBIncludePath;
   JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVisClx);
-  JclSourcePath     = '%0:s\' + JclSrcDirOS +
-                     ':%0:s\' + JclSrcDirCommon +
-                     ':%0:s\' + JclSrcDirVisClx;
-  BCBIncludePath    = '%s:%s:$(BCB)/include:$(BCB)/include/vcl';
-  BCBObjectPath     = BCBIncludePath;
   {$ENDIF UNIX}
 
-  DialogsPath       = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
-  ClxDialogFileName = 'ClxExceptDlg.pas';
-  ClxDialogName     = 'CLX Exception Dialog';
-  DialogDescription = 'JCL Application exception dialog';
-  DialogAuthor      = 'Project JEDI';
-  DialogPage        = 'Dialogs';
+  ExceptDlgPath = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
+  ExceptDlgClxFileName    = 'ClxExceptDlg.pas';
+  ExceptDlgVclFileName    = 'ExceptDlg.pas';
+  ExceptDlgVclSndFileName = 'ExceptDlgMail.pas';
+
+  ExceptDlgClxName    = 'CLX Exception Dialog';
+  ExceptDlgVclName    = 'Exception Dialog';
+  ExceptDlgVclSndName = 'Exception Dialog with Send';
+
+  ExceptDlgDescription = 'JCL Application exception dialog';
+  ExceptDlgAuthor      = 'Project JEDI';
+  ExceptDlgPage        = 'Dialogs';
+
+  JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
+  JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
+  JclHxSHelpFile    = 'help' + DirDelimiter + 'JCLHelp.HxS';
 
   Help2NameSpace         = 'Jedi.Jcl';
   Help2Collection        = 'JCLHelp_COL_MASTER.HxC';
@@ -634,12 +616,15 @@ const
   Help2HxSFile           = 'JCLHelp.HxS';
   Help2HxIFile           = 'JCLHelp.HxI';
 
-  JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
-  JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
-  JclHxSHelpFile     = 'help' + DirDelimiter + 'JCLHelp.HxS';
   JclHelpTitle      = 'JCL %d.%d Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
+
+  {$IFDEF VisualCLX}
+  ReadmeFileName = 'Readme.html';
+  {$ELSE}
+  ReadmeFileName = 'Readme.txt';
+  {$ENDIF}
 
   {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = 'packages\BCB.bmk';
@@ -653,68 +638,17 @@ const
   RegHKLMEnvironmentVar = 'SYSTEM\ControlSet001\Control\Session Manager\Environment';
 
 resourcestring
-  RsStatusMessage                   = 'Installing %s...';
-  RsStatusDetailMessage             = 'Installing %s for %s...';
+  RsInstallMessage                   = 'Installing %s...';
+  //RsStatusDetailMessage             = 'Installing %s for %s...';
   RsUninstallMessage                = 'Removing %s...';
   RsBuildingMessage                 = 'Building %s...';
-  RsBuildingDemosMessage            = 'Building demo projects...';
-  RsBuildingDemosByTargetMessage    = 'Building demo projects by %s...';
+  //RsBuildingDemosMessage            = 'Building demo projects...';
+  //RsBuildingDemosByTargetMessage    = 'Building demo projects by %s...';
   RsCompilingMessage                = 'Compiling %s...';
-  RsInstallFailed                   = 'Installation of %s failed, see %s for details.';
-  RsInvalidBplPath                  = LineBreak + 'Invalid BPL path "%s"';
-  RsInvalidDcpPath                  = LineBreak + 'Invalid DCP path "%s"';
+  //RsInstallFailed                   = 'Installation of %s failed, see %s for details.';
+  RsInvalidBplPath                  = 'Invalid BPL path "%s"';
+  RsInvalidDcpPath                  = 'Invalid DCP path "%s"';
   RsLibDescriptor                   = '%s library %sunits for %s';
-  {$IFDEF VisualCLX}
-  RsReadmeFileName                  = 'Readme.html';
-  {$ELSE}
-  RsReadmeFileName                  = 'Readme.txt';
-  {$ENDIF}
-  RsIniFileName                     = 'JCL-install.ini';
-
-function CreateJclInstall: IJediInstall;
-begin
-  Result := TJclDistribution.Create as IJediInstall;
-end;
-
-function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
-var
-  I: Integer;
-  FileName: string;
-begin
-  Result := True;
-  for I := 0 to Files.Count - 1 do
-  begin
-    FileName := Files[I];
-    Result := Result and FileCopy(FileName, PathAddSeparator(TargetDir) + ExtractFileName(FileName), Overwrite);
-  end;
-end;
-
-procedure CopyResFiles(TargetDir: string);
-var
-  FileList: TStringList;
-begin
-  FileList := TStringList.Create;
-  try
-    if BuildFileList('*.res', faAnyFile, FileList) then
-      CopyFiles(FileList, TargetDir);
-  finally
-    FileList.Free;
-  end;
-end;
-
-function CopyHppFiles(Units: TStrings; const TargetDir: string): Boolean;
-var
-  I: Integer;
-  FileName: string;
-begin
-  Result := True;
-  for I := 0 to Units.Count - 1 do
-  begin
-    FileName := Units[I] + '.hpp';
-    if FileExists(FileName) then
-      Result := Result and FileCopy(FileName, TargetDir + FileName, True);
-  end;
-end;
 
 function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
@@ -733,7 +667,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 function FullLibraryFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
   S = 'packages' + VersionDir + DirDelimiter + '%s';
@@ -744,167 +677,1466 @@ begin
     else
       Result := Format(S + 'DLL%s0%3:s', [VersionNumberStr, BaseName, VersionNumberStr, ProjectSourceFileExtension]);
 end;
-{$ENDIF MSWINDOWS}
 
-function LogFileName(Target: TJclBorRADToolInstallation): string;
-begin
-  with Target do
-    Result := Format('%s%s.log', [PathAddSeparator(ExtractFileDir(ParamStr(0))), Target.Name]);
-end;
-
-{ TJclInstallation }
+//=== { TJclInstallation } ===================================================
 
 constructor TJclInstallation.Create(JclDistribution: TJclDistribution;
-  InstallTarget: TJclBorRADToolInstallation);
+  InstallTarget: TJclBorRADToolInstallation; const ACLRVersion: string;
+  ATargetPlatform: TJclBorPlatform; AGUIPage: IJediInstallPage);
 begin
   inherited Create;
-  FDistribution := JclDistribution;
+
   FTarget := InstallTarget;
+  if not Target.Valid then
+    Abort;
+
+  FDistribution := JclDistribution;
+  FCLRVersion := ACLRVersion;
+  FTargetPlatform := ATargetPlatform;
   InstallTarget.OutputCallback := WriteLog;
+  FTargetName := Target.Name;
+  if CLRVersion <> '' then
+    FTargetName := Format('%s CLR %s', [FTargetName, CLRVersion]);
+
+  case TargetPlatform of
+    //bp32bit:
+    //  begin
+    //    FTargetName := Format('%s %s', [FTargetName, Personality32Bit]);
+    //    LibDirMask := LibDirMask + '.x86';
+    //  end;
+    bp64bit:
+      begin
+        FTargetName := Format('%s %s', [FTargetName, Personality64Bit]);
+      end;
+  end;
+
+  FLibDir := MakePath(Distribution.LibDirMask);
+  FJclDcpPath := PathAddSeparator(MakePath(Distribution.LibDirMask));
   FDebugDcuDir := MakePath(Distribution.FLibDebugDirMask);
-  FLibDir := MakePath(Distribution.FLibDirMask);
   if InstallTarget is TJclBCBInstallation then
     FLibObjDir := MakePath(Distribution.FLibObjDirMask);
-  FDefines := TStringList.Create;
-  FUnits := TStringList.Create;
   FDemoSectionName := Target.Name + ' demos';
+  FLogLines := TStringList.Create;
+  FLogFileName := Format('%s%s.log', [PathAddSeparator(ExtractFilePath(ParamStr(0))), TargetName]);
 end;
 
 destructor TJclInstallation.Destroy;
-var
-  I: Integer;
 begin
-  FDemoExclusionList.Free;
-  FDemos.Free;
-  if Assigned(FUnits) then
-    for I := 0 to FUnits.Count - 1 do
-      FUnits.Objects[I].Free;
-  FUnits.Free;
-  FDefines.Free;
+  FDemoList.Free;
+  FLogLines.Free;
+  FGUI := nil;
+  FGUIPage := nil;
+
   inherited Destroy;
 end;
 
-procedure TJclInstallation.AddDemo(const Directory: string; const FileInfo: TSearchRec);
+function TJclInstallation.GetEnabled: Boolean;
+begin
+  Result := OptionCheckedById[OptionData[joLibrary].Id];
+end;
+
+function TJclInstallation.GetOptionChecked(Option: TJclOption): Boolean;
+begin
+  Result := OptionCheckedById[OptionData[Option].Id];
+end;
+
+function TJclInstallation.GetOptionCheckedById(Id: Integer): Boolean;
 var
-  FileName: string;
+  AConfiguration: IJediConfiguration;
 begin
-  FileName := FRelativeDemoPath + FileInfo.Name;
-  if not DemoExclusionList.IndexOf(FileName) >= 0 then
-    Demos.Append(FileName);
-end;
-
-procedure TJclInstallation.AddDemos(const Directory: string);
-begin
-  FRelativeDemoPath := PathAddSeparator(PathGetRelativePath(Distribution.DemosPath, Directory));
-  EnumFiles(Directory + '*.dpr', AddDemo);
-end;
-
-procedure TJclInstallation.AddDialogToRepository(const DialogName: string;
-  const DialogFileName: string; const DialogIconFileName: string; const Designer: string;
-  const Ancestor: string = '');
-begin
-  WriteLog(Format(LineBreak + 'Installing %s...', [DialogName]));
-  with Target.Repository do
-    AddObject(
-      DialogFileName,
-      BorRADToolRepositoryFormTemplate,
-      FindPage(DialogPage, 1),
-      DialogName,
-      DialogIconFileName,
-      DialogDescription,
-      DialogAuthor,
-      BorRADToolRepositoryDesignerDfm);
-  WriteLog(Format('-> %s' + LineBreak + '-> %s' + LineBreak +
-    '...done.', [DialogFileName, DialogIconFileName]));
-end;
-
-{$IFDEF MSWINDOWS}
-procedure TJclInstallation.AddHelpToIdeTools;
-var
-  ToolsIndex: Integer;
-  HelpTitle: string;
-begin
-  HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
-  with Target.IdeTools do
-    if IndexOfTitle(HelpTitle) = Invalid then
-    begin
-      ToolsIndex := Count;
-      Count := ToolsIndex + 1;
-      Title[ToolsIndex] := HelpTitle;
-      Path[ToolsIndex] := HHFileName;
-      Parameters[ToolsIndex] := StrDoubleQuote(FDistribution.FJclChmHelpFileName);
-      WorkingDir[ToolsIndex] := Distribution.Path;
-    end;
-end;
-
-procedure TJclInstallation.AddHelpToOpenHelp;
-begin
-  if Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
-    WriteLog(Format(LineBreak + 'Added %s to %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]));
-end;
-{$ENDIF MSWINDOWS}
-
-function TJclInstallation.BplPath: string;
-begin
-  Result := Tool.BPLPath[Target];
-  {$IFDEF MSWINDOWS}
-  Result := PathGetShortName(Result);
-  {$ENDIF MSWINDOWS}
-end;
-
-function TJclInstallation.DcpPath: string;
-begin
-  Result := Tool.DCPPath[Target];
-  {$IFDEF MSWINDOWS}
-  Result := PathGetShortName(Result);
-  {$ENDIF MSWINDOWS}
-end;
-
-function TJclInstallation.CheckDirectories: Boolean;
-begin
-  Result := not OptionSelected(ioJclPackages);
-  if not Result then
+  if Assigned(GUIPage) then
+    Result := GUIPage.OptionChecked[Id]
+  else
   begin
-    Result := True;
-    if not DirectoryExists(BplPath) then
-    begin
-      WriteLog(Format(RsInvalidBplPath, [BplPath]));
+    AConfiguration := InstallCore.Configuration;
+    if Assigned(AConfiguration) then
+      Result := AConfiguration.OptionAsBool[TargetName, Id]
+    else
       Result := False;
-    end;
-    if not DirectoryExists(DcpPath) then
-    begin
-      WriteLog(Format(RsInvalidDcpPath, [DcpPath]));
-      Result := False;
-    end;
   end;
 end;
 
-procedure TJclInstallation.CleanupRepository;
+procedure TJclInstallation.MarkOptionBegin(Id: Integer);
 begin
-  if OptionSelected(ioJCL) then
-    with Target.Repository do
+  if Assigned(GUIPage) then
+    GUIPage.MarkOptionBegin(Id);
+  if Assigned(GUI) then
+    GUI.Status := InstallCore.InstallOptionName[Id];
+end;
+
+procedure TJclInstallation.MarkOptionBegin(Option: TJclOption);
+begin
+  if Assigned(GUIPage) then
+    GUIPage.MarkOptionBegin(OptionData[Option].Id);
+  if Assigned(GUI) then
+    GUI.Status := OptionData[Option].Hint;
+end;
+
+procedure TJclInstallation.MarkOptionEnd(Id: Integer; Success: Boolean);
+begin
+  if Assigned(GUIPage) then
+  begin
+    GUIPage.MarkOptionEnd(Id, not Success);
+    if Assigned(GUI) then
+      GUI.Progress := Round(100 * (Distribution.NbInstalled + GUIPage.Progress / 100) / Distribution.NbEnabled);
+  end;
+end;
+
+procedure TJclInstallation.MarkOptionEnd(Option: TJclOption; Success: Boolean);
+begin
+  if Assigned(GUIPage) then
+  begin
+    GUIPage.MarkOptionEnd(OptionData[Option].Id, not Success);
+    if Assigned(GUI) then
+      GUI.Progress := Round(100 * (Distribution.NbInstalled + GUIPage.Progress / 100) / Distribution.NbEnabled);
+  end;
+end;
+
+procedure TJclInstallation.Init;
+  procedure AddOption(Option: TJclOption; GUIOptions: TJediInstallGUIOptions;
+    Parent: Integer; const Caption, Hint: string); overload;
+  begin
+    GUIPage.AddInstallOption(OptionData[Option].Id, GUIOptions, Caption, Hint, Parent);
+  end;
+
+  procedure AddOption(Option: TJclOption; GUIOptions: TJediInstallGUIOptions;
+    Parent: Integer); overload;
+  begin
+    AddOption(Option, GUIOptions, Parent, OptionData[Option].Caption, OptionData[Option].Hint);
+  end;
+
+  procedure AddOption(Option: TJclOption; GUIOptions: TJediInstallGUIOptions;
+    Parent: TJclOption); overload;
+  begin
+    AddOption(Option, GUIOptions, OptionData[Parent].Id, OptionData[Option].Caption, OptionData[Option].Hint);
+  end;
+
+  procedure AddDefOptions(Parent: TJclOption);
+  begin
+    AddOption(joDefThreadSafe, [goChecked], Parent);
+    AddOption(joDefDropObsoleteCode, [goChecked], Parent);
+    AddOption(joDefMathPrecSingle, [goRadioButton], Parent);
+    AddOption(joDefMathPrecDouble, [goRadioButton], Parent);
+    AddOption(joDefMathPrecExtended, [goRadioButton, goChecked], Parent);
+    AddOption(joDefMathExtremeValues, [goChecked], Parent);
+    if CLRVersion = '' then   // these units are not CLR compliant
     begin
-      RemoveObjects(DialogsPath, ClxDialogFileName, BorRADToolRepositoryFormTemplate);
+      AddOption(joDefHookDllExceptions, [goNoAutoCheck], Parent);
+      AddOption(joDefDebugNoBinary, [goNoAutoCheck], Parent);
+      AddOption(joDefDebugNoTD32, [goNoAutoCheck], Parent);
+      AddOption(joDefDebugNoMap, [goNoAutoCheck], Parent);
+      AddOption(joDefDebugNoExports, [goNoAutoCheck], Parent);
+      AddOption(joDefDebugNoSymbols, [goNoAutoCheck], Parent);
+      AddOption(joDefEDIWeakPackageUnits, [goNoAutoCheck], Parent);
+      AddOption(joDefUnitVersioning, [goChecked], Parent);
+    end;
+  end;
+
+  procedure AddEnvOptions(Parent: TJclOption);
+  begin
+    AddOption(joEnvLibPath, [goChecked], Parent);
+    AddOption(joEnvBrowsingPath, [goChecked], Parent);
+    AddOption(joEnvDebugDCUPath, [goChecked], Parent);
+  end;
+
+  procedure AddMakeOptions(Parent: TJclOption);
+  begin
+    AddOption(joMakeRelease, [goStandAloneParent, goExpandable, goChecked], Parent);
+    AddOption(joMakeDebug, [goStandAloneParent, goExpandable, goChecked], Parent);
+
+    if CLRVersion = '' then
+    begin
+      if Target.SupportsVisualCLX then
+      begin
+        AddOption(joMakeReleaseVClx, [goChecked], joMakeRelease);
+        AddOption(joMakeDebugVClx, [goChecked], joMakeDebug);
+      end;
+
+      if Target.SupportsVCL then
+      begin
+        AddOption(joMakeReleaseVCL, [goChecked], joMakeRelease);
+        AddOption(joMakeDebugVCL, [goChecked], joMakeDebug);
+      end;
+
+      if bpBCBuilder32 in Target.Personalities then
+        AddOption(joCopyHppFiles, [goChecked], joMake);
+    end;
+  end;
+
+  procedure AddHelpOptions(Parent: TJclOption);
+  begin
+    {$IFDEF MSWINDOWS}
+    if Target.RadToolKind = brBorlandDevStudio then
+    begin
+      // TODO: expert help
+      if (Target.VersionNumber >= 3) and (Distribution.JclHxSHelpFileName <> '') then
+      begin
+        AddOption(joHelp, [goChecked], Parent);
+        AddOption(johelpHxS, [goStandaloneParent,goChecked], joHelp);
+        AddOption(joHelpHxSPlugin, [goChecked], joHelpHxS);
+      end;
+    end
+    else
+    begin
+      if (Distribution.JclHlpHelpFileName <> '') or (Distribution.JclChmHelpFileName <> '') then
+      begin
+        AddOption(joHelp, [goChecked], Parent);
+        if Distribution.JclHlpHelpFileName <> '' then
+          AddOption(joHelpHlp, [goChecked], joHelp);
+        if Distribution.JclChmHelpFileName <> '' then
+          AddOption(joHelpChm, [goChecked], joHelp);
+      end;
+    end;
+    {$ENDIF MSWINDOWS}
+  end;
+
+  procedure AddRepositoryOptions(Parent: TJclOption);
+  begin
+    // BDS has an expert for objects in the repository
+    if Target.RadToolKind <> brBorlandDevStudio then
+    begin
+      AddOption(joExceptDlg, [], Parent);
+      if Target.SupportsVCL then
+      begin
+        AddOption(joExceptDlgVCL, [goChecked], joExceptDlg);
+        {$IFDEF MSWINDOWS}
+        AddOption(joExceptDlgVCLSnd, [goChecked], joExceptDlg);
+        {$ENDIF MSWINDOWS}
+      end;
+      if Target.SupportsVisualCLX then
+        AddOption(joExceptDlgCLX, [goChecked], joExceptDlg);
+    end;
+  end;
+
+  procedure AddPackageOptions(Parent: TJclOption; RuntimeInstallation: Boolean);
+  begin
+    if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation and (CLRVersion = '') then
+    begin
+      if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
+      begin
+        AddOption(joDualPackages, [goStandAloneParent, goChecked], Parent);
+        AddOption(joCopyPackagesHppFiles, [goChecked], joDualPackages);
+      end
+      else
+        AddOption(joCopyPackagesHppFiles, [goChecked], Parent);
+    end;
+
+    if CLRVersion = '' then
+    begin
+      AddOption(joMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck], Parent);
+
       {$IFDEF MSWINDOWS}
-      RemoveObjects(DialogsPath, VclDialogFileName, BorRADToolRepositoryFormTemplate);
-      RemoveObjects(DialogsPath, VclDlgSndFileName, BorRADToolRepositoryFormTemplate);
+      AddOption(joJdbgCreate, [goExpandable, goStandaloneParent], joMapCreate);
+      AddOption(joJdbgInsert, [goNoAutoCheck], joMapCreate);
+      AddOption(joMapDelete, [goNoAutoCheck], joMapCreate);
+
+      {if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber = 3)
+        and (Target.Edition = deStd) then
+        CopyFakeXmlRtlPackage;
+      TODO: CopyFakeXmlRtlPackage
+      }
+      {$ENDIF MSWINDOWS}
+    end
+    else // CLRVersion <> ''
+      AddOption(joPdbCreate, [goNoAutoCheck], Parent);
+  end;
+
+  procedure AddExpertOptions(Parent: TJclOption; RuntimeInstallation: Boolean);
+  var
+    ExpertOptions: TJediInstallGUIOptions;
+  begin
+    // TODO :
+    //  It has been reported that IDE experts don't work under Win98.
+    //  Leave these options unchecked for Win9x/WinME until that has been examined.
+    if IsWinNT then
+      ExpertOptions := [goChecked]
+    else
+      ExpertOptions := [];
+
+    AddOption(joExperts, [goExpandable, goChecked], Parent);
+
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber <= 2) then
+      // design packages are not loaded by C#Builder 1 and Delphi 8
+      AddOption(joExpertsDLL, [goRadioButton, goChecked], joExperts)
+    else if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
+      // expert DLLs are unstable on Delphi 2005 and BDS 2006
+      // (problems while adding menu items in menu not loaded yet)
+      AddOption(joExpertsDsgnPackages, [goRadioButton, goChecked], joExperts)
+    else
+    begin
+      AddOption(joExpertsDLL, [goRadioButton, goChecked], joExperts);
+      AddOption(joExpertsDsgnPackages, [goRadioButton], joExperts);
+    end;
+
+    if RunTimeInstallation then
+    begin
+      AddOption(joExpertDebug, ExpertOptions, joExperts);
+      AddOption(joExpertAnalyzer, ExpertOptions, joExperts);
+      AddOption(joExpertUses, ExpertOptions, joExperts);
+      AddOption(joExpertSimdView, ExpertOptions, joExperts);
+      AddOption(joExpertRepository, [goNoAutoCheck], joExperts);
+    end;
+    AddOption(joExpertFavorite, ExpertOptions, joExperts);
+    AddOption(joExpertVersionControl, [goNoAutoCheck], joExperts);
+    if (Target.RadToolKind <> brBorlandDevStudio) and (Target.VersionNumber <= 6) then
+      AddOption(joExpertThreadNames, ExpertOptions, joExperts);
+  end;
+
+  procedure AddDemoNodes;
+  var
+    I: Integer;
+    ADemoList: TStrings;
+    DemoOption: Integer;
+    FileName: string;
+  begin
+    AddOption(joMakeDemos, [goNoAutoCheck], joLibrary);
+    ADemoList := GetDemoList;
+    for I := 0 to ADemoList.Count - 1 do
+    begin
+      FileName := ExtractRelativePath(Distribution.JclExamplesDir, ADemoList.Strings[I]);
+      DemoOption := InstallCore.AddInstallOption(FileName);
+      ADemoList.Objects[I] := TObject(DemoOption);
+      GUIPage.AddInstallOption(DemoOption, [], ExtractFileName(FileName), FileName, OptionData[joMakeDemos].Id);
+    end;
+  end;
+
+  procedure LoadValues;
+  var
+    AConfiguration: IJediConfiguration;
+    Option: TJclOption;
+    Id, Index: Integer;
+    StoredValue: string;
+    ADemoList: TStrings;
+  begin
+    AConfiguration := InstallCore.Configuration;
+    if not Assigned(AConfiguration) then
+      Exit;
+    if AConfiguration.SectionExists(TargetName) then
+      for Option := Low(TJclOption) to High(TJclOption) do
+    begin
+      Id := OptionData[Option].Id;
+      GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
+    end;
+
+    ADemoList := GetDemoList;
+    if AConfiguration.SectionExists(FDemoSectionName) then
+      for Index := 0 to ADemoList.Count - 1 do
+    begin
+      Id := Integer(ADemoList.Objects[Index]);
+      GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
+    end;
+
+    StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath];
+    if StoredValue = '' then
+      StoredValue := Target.BPLOutputPath;
+    GUIPage.Directories[FGUIBPLPathIndex] := StoredValue;
+    if Target.RadToolKind = brCppBuilder then
+      StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath]
+    else
+      StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath];
+    if StoredValue = '' then
+      StoredValue := FJclDcpPath;
+    GUIPage.Directories[FGUIDCPPathIndex] := StoredValue;
+  end;
+
+var
+  RunTimeInstallation: Boolean;
+begin
+  FGUI := InstallCore.InstallGUI;
+  if not Assigned(GUI) then
+    Exit;
+
+  FGUIPage := GUI.CreateInstallPage;
+  GUIPage.Caption := TargetName;
+
+  RunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
+    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));
+
+  AddOption(joLibrary, [goExpandable, goChecked], JediTargetOption);
+
+  if RunTimeInstallation then
+  begin
+    // conditional defines
+    AddOption(joDef, [goExpandable, goChecked], OptionData[joLibrary].Id);
+    AddDefOptions(joDef);
+
+    if CLRVersion = '' then
+    begin
+      AddOption(joEnvironment, [goExpandable, goChecked], OptionData[joLibrary].Id);
+      AddEnvOptions(joEnvironment);
+    end;
+
+    AddOption(joMake, [goExpandable, goChecked], OptionData[joLibrary].Id);
+    AddMakeOptions(joMake);
+
+    if CLRVersion = '' then
+    begin
+      AddHelpOptions(joLibrary);
+      AddRepositoryOptions(joLibrary);
+    end;
+  end;
+  
+  AddOption(joPackages, [goStandAloneParent, goExpandable, goChecked], joLibrary);
+  AddPackageOptions(joPackages, RuntimeInstallation);
+  
+  if CLRVersion = '' then
+  begin
+    {$IFDEF MSWINDOWS}
+    AddExpertOptions(joPackages, RunTimeInstallation);
+    {$ENDIF MSWINDOWS}
+    if RunTimeInstallation then
+      AddDemoNodes;
+  end;
+
+  GUIPage.InitDisplay;
+
+  if CLRVersion = '' then
+  begin
+    FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionBPLPath);
+    if Target.RadToolKind = brCppBuilder then
+      FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionBPIPath)
+    else
+      FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionDCPPath);
+  end
+  else
+    FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionOutputPath);
+
+  LoadValues;
+end;
+
+function TJclInstallation.Install: Boolean;
+
+  procedure WriteIntroduction;
+  var
+    Personality: TJclBorPersonality;
+  begin
+    WriteLog(StrPadRight(TargetName, 44, '='));
+    WriteLog('');
+    WriteLog('Installed personalities :');
+    for Personality := Low(TJclBorPersonality) to High(TJclBorPersonality) do
+      if Personality in Target.Personalities then
+    begin
+      WriteLog(JclBorPersonalityDescription[Personality]);
+    end;
+    WriteLog(StrRepeat('=', 44));
+  end;
+
+  function CheckDirectories: Boolean;
+  var
+    PathEnvVar: string;
+  begin
+    Result := not OptionChecked[joPackages];
+    if not Result then
+    begin
+      Result := True;
+      if not DirectoryExists(GetBplPath) then
+      begin
+        Result := False;
+        if not Assigned(GUI) then
+          WriteLog(Format(RsInvalidBplPath, [GetBplPath]))
+        else if GUI.Dialog(Format(RsWarningCreatePath, ['BPL']), dtWarning, [drYes, drNo]) = drYes then
+        begin
+          Result := ForceDirectories(GetBplPath);
+          if not Result then
+            GUI.Dialog(Format(RsErrorCantCreatePath, [GetBplPath]), dtError, [drCancel]);
+        end;
+      end;
+      if (CLRVersion = '') and not DirectoryExists(GetDcpPath) then
+      begin
+        Result := False;
+        if not Assigned(GUI) then
+          WriteLog(Format(RsInvalidDcpPath, [GetDcpPath]))
+        else if GUI.Dialog(Format(RsWarningCreatePath, ['DCP']), dtWarning, [drYes, drNo]) = drYes then
+        begin
+          Result := ForceDirectories(GetDcpPath);
+          if not Result then
+            GUI.Dialog(Format(RsErrorCantCreatePath, [GetDcpPath]), dtError, [drCancel]);
+        end;
+      end;
+      {$IFDEF MSWINDOWS}
+      if CLRVersion = '' then
+      begin
+        PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+        PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
+        if (PathListItemIndex(PathEnvVar, GetBplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(GetBplPath)) = -1)
+          and Assigned(GUI) and (GUI.Dialog(RsWarningAddPathToEnvironment, dtWarning, [drYes, drNo]) = drYes) then
+        begin
+          PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+          PathListIncludeItems(PathEnvVar, GetBplPath);
+          RegWriteString(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, PathEnvVar);
+        end;
+      end;
+      {$ENDIF MSWINDOWS}
+    end
+    else if Assigned(GUI) and (CLRVersion = '') then
+      Result := GUI.Dialog(RsWarningPackageNodeNotSelected, dtConfirmation, [drYes, drNo]) = drYes;
+  end;
+
+  function SetStaticOptions: Boolean;
+
+    function SaveDefines(Defines: TStrings): Boolean;
+    var
+      IncludeFileName, IncludeLine, Symbol, CLRSuffix: string;
+      IncludeFile: TStrings;
+      IndexLine, DefinePos, SymbolEnd: Integer;
+      Defined, NotDefined, Changed: Boolean;
+    const
+      DefineText = '$DEFINE';
+      NotDefineText = '.' + DefineText;
+    begin
+      WriteLog('Saving conditional defines...');
+      Result := True;
+      if CLRVersion = '' then
+        CLRSuffix := ''
+      else
+        CLRSuffix := '.net';
+      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.VersionNumberStr, CLRSuffix]);
+      try
+        Changed := False;
+        IncludeFile := TStringList.Create;
+        try
+          IncludeFile.LoadFromFile(IncludeFileName);
+          WriteLog('Include file loaded');
+    
+          for IndexLine := 0 to IncludeFile.Count - 1 do
+          begin
+            IncludeLine := IncludeFile.Strings[IndexLine];
+            DefinePos := AnsiPos(DefineText, UpperCase(IncludeLine));
+            if DefinePos > 1 then
+            begin
+              Defined := IncludeLine[DefinePos - 1] = '{';
+              NotDefined := IncludeLine[DefinePos - 1] = '.';
+              if Defined or NotDefined then
+              begin
+                Inc(DefinePos, Length(DefineText));
+                while IncludeLine[DefinePos] in AnsiWhiteSpace do
+                  Inc(DefinePos);
+                SymbolEnd := DefinePos;
+                while IncludeLine[SymbolEnd] in AnsiValidIdentifierLetters do
+                  Inc(SymbolEnd);
+                Symbol := Copy(IncludeLine, DefinePos, SymbolEnd - DefinePos);
+                DefinePos := Defines.IndexOf(Symbol);
+
+                if (DefinePos >= 0) and NotDefined then
+                begin
+                  IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
+                  Changed := True;
+                end;
+                if (DefinePos < 0) and Defined then
+                begin
+                  IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
+                  Changed := True;
+                end;
+    
+                IncludeFile.Strings[IndexLine] := IncludeLine;
+              end;
+            end;
+          end;
+          if Changed then
+          begin
+            IncludeFile.SaveToFile(IncludeFileName);
+            WriteLog('Include file saved');
+          end
+          else
+            WriteLog('No changes were made');
+        finally
+          IncludeFile.Free;
+        end;
+      except
+        Result := False;
+      end;
+    end;
+
+  const
+    DefineNames: array [joDefThreadSafe..joDefEDIWeakPackageUnits] of string =
+      ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'MATH_SINGLE_PRECISION',
+        'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
+        'MATH_EXT_EXTREMEVALUES', 'UNITVERSIONING', 'HOOK_DLL_EXCEPTIONS',
+        'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
+        'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS');
+  var
+    Option: TJclOption;
+    Defines: TStrings;
+  begin
+    Defines := TStringList.Create;
+    try
+      if OptionChecked[joDef] then
+      begin
+        MarkOptionBegin(joDef);
+        for Option := Low(DefineNames) to High(DefineNames) do
+          if OptionChecked[Option] then
+        begin
+          MarkOptionBegin(Option);
+          Defines.Add(DefineNames[Option]);
+          MarkOptionEnd(Option, True);
+        end;
+        MarkOptionEnd(joDef, True);
+      end;
+      MarkOptionBegin(joMapCreate);
+      Target.MapCreate := OptionChecked[joMapCreate];
+      MarkOptionEnd(joMapCreate, True);
+      MarkOptionBegin(joJdbgCreate);
+      Target.JdbgCreate := OptionChecked[joJdbgCreate];
+      MarkOptionEnd(joJdbgCreate, True);
+      MarkOptionBegin(joJdbgInsert);
+      Target.JdbgInsert := OptionChecked[joJdbgInsert];
+      MarkOptionEnd(joJdbgInsert, True);
+      MarkOptionBegin(joMapDelete);
+      Target.MapDelete := OptionChecked[joMapDelete];
+      MarkOptionEnd(joMapDelete, True);
+      {$IFDEF MSWINDOWS}
+      if Target is TJclBDSInstallation then
+      begin
+        MarkOptionBegin(joDualPackages);
+        TJclBDSInstallation(Target).DualPackageInstallation := OptionChecked[joDualPackages];
+        MarkOptionEnd(joDualPackages, True);
+        MarkOptionBegin(joPdbCreate);
+        TJclBDSInstallation(Target).PdbCreate := OptionChecked[joPdbCreate];
+        MarkOptionEnd(joPdbCreate, True);
+      end;
+      {$ENDIF MSWINDOWS}
+  
+      Result := SaveDefines(Defines);
+    finally
+      Defines.Free;
+    end;
+  end;
+
+  function SetEnvironment: Boolean;
+  begin
+    Result := True;
+    if OptionChecked[joEnvironment] then
+    begin
+      MarkOptionBegin(joEnvironment);
+  
+      if OptionChecked[joEnvLibPath] then
+      begin
+        MarkOptionBegin(joEnvLibPath);
+        Result := Target.AddToLibrarySearchPath(FLibDir) and Target.AddToLibrarySearchPath(Distribution.JclPath);
+        if Result then
+        begin
+          WriteLog(Format('Added "%s;%s" to library search path.', [FLibDir, Distribution.JclSourceDir]));
+          {$IFDEF MSWINDOWS}
+          if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities)
+            and OptionChecked[joDualPackages] then
+            with TJclBDSInstallation(Target) do
+          begin
+            Result := AddToCppSearchPath(FLibDir) and AddToCppSearchPath(Distribution.JclSourceDir);
+            if Result then
+              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibDir, Distribution.JclSourceDir]))
+            else
+              WriteLog('Failed to add cpp search paths.');
+          end;
+          {$ENDIF MSWINDOWS}
+        end
+        else
+          WriteLog('Failed to add library search paths.');
+        MarkOptionEnd(joEnvLibPath, Result);
+      end;
+  
+      if Result and OptionChecked[joEnvBrowsingPath] then
+      begin
+        MarkOptionBegin(joEnvBrowsingPath);
+        if Result then
+        begin
+          Result := Target.AddToLibraryBrowsingPath(Distribution.JclSourcePath);
+          if Result then
+          begin
+            WriteLog(Format('Added "%s" to library browsing path.', [Distribution.JclSourcePath]));
+            {$IFDEF MSWINDOWS}
+            if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities)
+              and OptionChecked[joDualPackages] then
+              with TJclBDSInstallation(Target) do
+            begin
+              Result := AddToCppBrowsingPath(Distribution.JclSourcePath);
+              if Result then
+                WriteLog(Format('Added "%s" to cpp browsing path.', [Distribution.JclSourcePath]))
+              else
+                WriteLog('Failed to add cpp browsing paths.');
+            end;
+            {$ENDIF MSWINDOWS}
+          end
+          else
+            WriteLog('Failed to add library browsing path');
+        end
+        else
+          WriteLog('Failed to add library browsing path.');
+        MarkOptionEnd(joEnvBrowsingPath, Result);
+      end;
+  
+      if Result and OptionChecked[joEnvDebugDCUPath] then
+      begin
+        MarkOptionBegin(joEnvDebugDCUPath);
+        Result := Target.AddToDebugDCUPath(FDebugDcuDir);
+        if Result then
+          WriteLog(Format('Added "%s" to Debug DCU Path.', [FDebugDcuDir]))
+        else
+          WriteLog('Failed to add debug DCU path');
+        MarkOptionEnd(joEnvDebugDCUPath, Result);
+      end;
+
+      MarkOptionEnd(joEnvironment, Result);
+    end;
+  end;
+
+  function MakeUnits: Boolean;
+  var
+    I: Integer;
+  begin
+    Result := True;
+    if OptionChecked[joMake] then
+    begin
+      MarkOptionBegin(joMake);
+
+      if OptionChecked[joMakeRelease] then
+      begin
+        MarkOptionBegin(joMakeRelease);
+
+        for I := Low(JclSourceDirs) to High(JclSourceDirs) do
+        begin
+          if (JclSourceDirs[I] = JclSrcDirVisClx) then
+          begin
+            if OptionChecked[joMakeReleaseVClx] then
+              MarkOptionBegin(joMakeReleaseVClx)
+            else
+              Continue;
+          end;
+          if (JclSourceDirs[I] = JclSrcDirVcl) then
+          begin
+            if OptionChecked[joMakeReleaseVCL] or
+              ((Target.VersionNumber <= 5) and (Target.RadToolKind <> brBorlandDevStudio)) then
+              MarkOptionBegin(joMakeReleaseVCL)
+            else
+              Continue;
+          end;
+          Result := Result and CompileLibraryUnits(JclSourceDirs[I], False);
+          if (JclSourceDirs[I] = JclSrcDirVisClx) then
+            MarkOptionEnd(joMakeReleaseVClx, Result);
+          if (JclSourceDirs[I] = JclSrcDirVcl) then
+            MarkOptionEnd(joMakeReleaseVCL, Result);
+        end;
+        MarkOptionEnd(joMakeRelease, Result);
+      end;
+
+      if Result and OptionChecked[joMakeDebug] then
+      begin
+        MarkOptionBegin(joMakeDebug);
+        for I := Low(JclSourceDirs) to High(JclSourceDirs) do
+        begin
+          if (JclSourceDirs[I] = JclSrcDirVisClx) then
+          begin
+            if OptionChecked[joMakeDebugVClx] then
+              MarkOptionBegin(joMakeDebugVClx)
+            else
+              Continue;
+          end;
+          if (JclSourceDirs[I] = JclSrcDirVcl) then
+          begin
+            if OptionChecked[joMakeDebugVCL] or
+              ((Target.VersionNumber <= 5) and (Target.RadToolKind <> brBorlandDevStudio)) then
+              MarkOptionBegin(joMakeDebugVCL)
+            else
+              Continue;
+          end;
+          Result := Result and CompileLibraryUnits(JclSourceDirs[I], True);
+          if (JclSourceDirs[I] = JclSrcDirVisClx) then
+            MarkOptionEnd(joMakeDebugVClx, Result);
+          if (JclSourceDirs[I] = JclSrcDirVcl) then
+            MarkOptionEnd(joMakeDebugVCL, Result);
+        end;
+        MarkOptionEnd(joMakeDebug, Result);
+      end;
+
+      MarkOptionEnd(joMake, Result);
+    end;
+  end;
+
+  function CompilePackages: Boolean;
+  begin
+    Result := True;
+    if OptionChecked[joPackages] then
+    begin
+      MarkOptionBegin(joPackages);
+      if CLRVersion = '' then
+      begin
+        {$IFDEF MSWINDOWS}
+        InstallJediRegInformation(Target.ConfigDataLocation, 'JCL', Distribution.Version,
+          GetDcpPath, GetBplPath, Distribution.FJclPath);
+        {$ENDIF MSWINDOWS}
+        Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
+        if Target.SupportsVisualCLX then
+          Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
+        if (Target.VersionNumber >= 6)
+          or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
+          Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk), False);
+        MarkOptionEnd(joPackages, Result);
+      end
+      {$IFDEF MSWINDOWS}
+      else
+        // CLR installation
+        Result := CompileCLRPackage(JediJclDpr);
       {$ENDIF MSWINDOWS}
     end;
+  end;
+
+  {$IFDEF MSWINDOWS}
+  function InstallExperts: Boolean;
+  var
+    Option: TJclOption;
+    DLLExperts: Boolean;
+  begin
+    Result := True;
+    if OptionChecked[joExperts] then
+    begin
+      MarkOptionBegin(joExperts);
+      DLLExperts := False;
+      // dual packages useless for experts
+      if Target.RadToolKind = brBorlandDevStudio then
+        TJclBDSInstallation(Target).DualPackageInstallation := False;
+      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+        if OptionChecked[Option] then
+      begin
+        MarkOptionBegin(Option);
+        if Option = joExpertsDsgnPackages then
+          // nothing, default value
+        else if Option = joExpertsDLL then
+          DLLExperts := OptionChecked[Option]
+        else if DLLExperts then
+          Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]), True)
+        else
+          Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]), True);
+        MarkOptionEnd(Option, Result);
+        if not Result then
+          Break;
+      end;
+      MarkOptionEnd(joExperts, Result);
+    end;
+  end;
+  {$ENDIF MSWINDOWS}
+
+  function InstallRepository: Boolean;
+    function AddDialogToRepository(const DialogName: string;
+      const DialogFileName: string; const DialogIconFileName: string;
+      const Designer: string): Boolean;
+    begin
+      Result := True;
+      try
+        WriteLog(Format('Installing %s...', [DialogName]));
+        Target.Repository.AddObject(DialogFileName, BorRADToolRepositoryFormTemplate,
+          Target.Repository.FindPage(ExceptDlgPage, 1), DialogName, DialogIconFileName,
+          ExceptDlgDescription, ExceptDlgAuthor, BorRADToolRepositoryDesignerDfm);
+        WriteLog('-> ' + DialogFileName);
+        WriteLog('-> ' + DialogIconFileName);
+        WriteLog('...done.');
+      except
+        Result := False;
+      end;
+    end;
+  begin
+    Result := True;
+    if OptionChecked[joExceptDlg] then
+    begin
+      MarkOptionBegin(joExceptDlg);
+      {$IFDEF MSWINDOWS}
+      if OptionChecked[joExceptDlgVCL] then
+      begin
+        MarkOptionBegin(joExceptDlgVCL);
+        Result := AddDialogToRepository(ExceptDlgVclName, Distribution.VclDialogFileName,
+          Distribution.VclDialogIconFileName, BorRADToolRepositoryDesignerDfm);
+        MarkOptionEnd(joExceptDlgVCL, Result);
+      end;
+      if Result and OptionChecked[joExceptDlgVCLSnd] then
+      begin
+        MarkOptionBegin(joExceptDlgVCLSnd);
+        Result := AddDialogToRepository(ExceptDlgVclSndName, Distribution.VclDialogSendFileName,
+          Distribution.VclDialogSendIconFileName, BorRADToolRepositoryDesignerDfm);
+        MarkOptionEnd(joExceptDlgVCLSnd, Result);
+      end;
+      {$ENDIF MSWINDOWS}
+      if Result and OptionChecked[joExceptDlgCLX] then
+      begin
+        MarkOptionBegin(joExceptDlgCLX);
+        Result := AddDialogToRepository(ExceptDlgClxName, Distribution.ClxDialogFileName,
+          Distribution.ClxDialogIconFileName, BorRADToolRepositoryDesignerXfm);
+        MarkOptionEnd(joExceptDlgCLX, Result);
+      end;
+      MarkOptionEnd(joExceptDlg, Result);
+    end;
+  end;
+
+  {$IFDEF MSWINDOWS}
+  function InstallHelpFiles: Boolean;
+    function AddHelpToIdeTools: Boolean;
+    var
+      ToolsIndex: Integer;
+      HelpTitle: string;
+      IdeTool: TJclBorRADToolIdeTool;
+    begin
+      Result := True;
+      try
+        IdeTool := Target.IdeTools;
+        HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
+        if IdeTool.IndexOfTitle(HelpTitle) = -1 then
+        begin
+          ToolsIndex := IdeTool.Count;
+          IdeTool.Count := ToolsIndex + 1;
+          IdeTool.Title[ToolsIndex] := HelpTitle;
+          IdeTool.Path[ToolsIndex] := HHFileName;
+          IdeTool.Parameters[ToolsIndex] := StrDoubleQuote(FDistribution.FJclChmHelpFileName);
+          IdeTool.WorkingDir[ToolsIndex] := Distribution.JclPath;
+        end;
+      except
+        Result := False;
+      end;
+    end;
+
+    function AddHelpToOpenHelp: Boolean;
+    begin
+      Result := Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
+      if Result then
+        WriteLog(Format('Added %s to %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]))
+      else
+        WriteLog('failed to add help file to Online Help');
+    end;
+
+    function RegisterHelp2Files: Boolean;
+    var
+      Help2Manager: TJclHelp2Manager;
+      CurrentDir: string;
+      NameSpace, Collection, Description, Identifier, HxSFile, HxIFile: WideString;
+      LangId: Integer;
+    begin
+      Result := False;
+      if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+        Exit;
+
+      WriteLog('Registering help 2.0 files...');
+
+      // to avoid Write AV, data have to be copied in data segment
+      NameSpace := Help2NameSpace;
+      Collection := Help2Collection;
+      Description := Help2Description;
+      Identifier := Help2Identifier;
+      LangId := Help2LangId;
+      HxSFile := Help2HxSFile;
+      HxIFile := Help2HxIFile;
+    
+      CurrentDir := GetCurrentDir;
+      if SetCurrentDir(Distribution.JclPath + 'help\') then
+      try
+        Help2Manager := TJclBDSInstallation(Target).Help2Manager;
+
+        Result := Help2Manager.CreateTransaction;
+        if Result then
+          WriteLog('Transaction created')
+        else
+          WriteLog('Failed to create a transaction');
+
+        WriteLog('Registering namespace...');
+        Result := Result and Help2Manager.RegisterNameSpace(NameSpace, Collection, Description);
+        if Result then
+          WriteLog('...success')
+        else
+          WriteLog('...failed');
+
+        WriteLog('Registering help file...');
+        Result := Result and Help2Manager.RegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile);
+        if Result then
+          WriteLog('...success')
+        else
+          WriteLog('...failed');
+    
+        if OptionChecked[joHelpHxSPlugin] then
+        begin
+          MarkOptionBegin(joHelpHxSPlugin);
+          WriteLog('Registering plugin...');
+          Result := Result and Help2Manager.PlugNameSpaceInBorlandHelp(NameSpace);
+          if Result then
+            WriteLog('...success')
+          else
+            WriteLog('...failed');
+          MarkOptionEnd(joHelpHxSPlugin, Result);
+        end;
+
+        Result := Result and Help2Manager.CommitTransaction;
+        if Result then
+          WriteLog('Transaction committed')
+        else
+          WriteLog('Failed to commit the transaction');
+      finally
+        SetCurrentDir(CurrentDir);
+      end;
+    end;
+  begin
+    Result := True;
+    if OptionChecked[joHelp] then
+    begin
+      MarkOptionBegin(joHelp);
+
+      if OptionChecked[joHelpHlp] then
+      begin
+        MarkOptionBegin(joHelpHlp);
+        Result := AddHelpToOpenHelp;
+        MarkOptionEnd(joHelpHlp, Result);
+      end;
+
+      if Result and OptionChecked[joHelpChm] then
+      begin
+        MarkOptionBegin(joHelpChm);
+        Result := AddHelpToIdeTools;
+        MarkOptionEnd(joHelpChm, Result);
+      end;
+
+      if Result and OptionChecked[joHelpHxS] then
+      begin
+        MarkOptionBegin(joHelpHxS);
+        Result := RegisterHelp2Files;
+        MarkOptionEnd(joHelpHxS, Result);
+      end;
+
+      MarkOptionEnd(joHelp, Result);
+    end;
+  end;
+  {$ENDIF MSWINDOWS}
+
+  function MakeDemos: Boolean;
+    function MakeDemo(FileName: string): Boolean;
+    var
+      CfgFileName, Directory: string;
+    begin
+      Directory := ExtractFileDir(FileName);
+      FileName := ExtractFileName(FileName);
+      WriteLog(Format(RsBuildingMessage, [FileName]));
+      SetCurrentDir(Directory);
+      CfgFileName := ChangeFileExt(FileName, '.cfg');
+      StringToFile(CfgFileName, Format(
+        '-e%s' + AnsiLineBreak +    // Exe output dir
+        '-u%s' + AnsiLineBreak +    // Unit directories
+        '-i%s',                     // Include path
+        [Distribution.JclBinDir, FLibDir, Distribution.JclSourceDir]));
+      Result := Target.DCC32.Execute(FileName);
+      FileDelete(CfgFileName);
+    end;
+  var
+    SaveDir: string;
+    Index, ID: Integer;
+    ADemoList: TStrings;
+    DemoResult: Boolean;
+  begin
+    Result := True;
+    if OptionChecked[joMakeDemos] then
+    begin
+      MarkOptionBegin(joMakeDemos);
+      SaveDir := GetCurrentDir;
+      try
+        ADemoList := GetDemoList;
+        for Index := 0 to ADemoList.Count - 1 do
+        begin
+          ID := Integer(ADemoList.Objects[Index]);
+          if OptionCheckedById[ID] then
+          begin
+            MarkOptionBegin(ID);
+            DemoResult := MakeDemo(ADemoList.Strings[Index]);
+            MarkOptionEnd(ID, DemoResult);
+            Result := Result and DemoResult;
+          end;
+        end;
+      finally
+        SetCurrentDir(SaveDir);
+      end;
+
+      MarkOptionEnd(joMakeDemos, Result);
+    end;
+  end;
+  
+begin
+  if Assigned(GUI) then
+    GUI.Status := Format(RsInstallMessage, [TargetName]);
+
+  try
+    if Assigned(GUIPage) then
+    begin
+      GUIPage.Show;
+      GUIPage.BeginInstall;
+    end;
+    WriteIntroduction;
+    Result := CheckDirectories and SetStaticOptions and SetEnvironment
+      and MakeUnits and CompilePackages
+      {$IFDEF MSWINDOWS} and InstallExperts and InstallHelpFiles {$ENDIF MSWINDOWS}
+      and InstallRepository and MakeDemos;
+    if not Result then
+      Uninstall;
+  finally
+    WriteLog('');
+    if Assigned(GUIPage) then
+      GUIPage.EndInstall;
+  end;
+end;
+
+function TJclInstallation.MakePath(const FormatStr: string): string;
+{$IFNDEF KYLIX}
+var
+  VersionStr: string;
+{$ENDIF KYLIX}
+begin
+  {$IFDEF KYLIX}
+  Result := Format(FormatStr, [Target.VersionNumber]);
+  {$ELSE ~KYLIX}
+  VersionStr := Target.VersionNumberStr;
+  if CLRVersion <> '' then
+    VersionStr := Format('%s.net', [VersionStr]);
+  Result := PathGetShortName(Format(FormatStr, [VersionStr]));
+  {$ENDIF ~KYLIX}
+end;
+
+function TJclInstallation.RemoveSettings: Boolean;
+{$IFDEF MSWINDOWS}
+var
+  JclSettingsKey: string;
+{$ENDIF MSWINDOWS}
+begin
+{$IFDEF MSWINDOWS}
+  JclSettingsKey := Target.ConfigDataLocation + '\Jedi\JCL';
+  if RegKeyExists(HKCU, JclSettingsKey) then
+    Result := RegDeleteKeyTree(HKCU, JclSettingsKey)
+  else
+{$ENDIF MSWINDOWS}
+    Result := True;
+end;
+
+function TJclInstallation.Uninstall: Boolean;
+  procedure RemoveEnvironment;
+  begin
+    //ioJclEnvLibPath
+    if CLRVersion = '' then
+    begin
+      if Target.RemoveFromLibrarySearchPath(FLibDir) and Target.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
+        WriteLog(Format('Removed "%s;%s" from library search path.', [FLibDir, Distribution.JclSourceDir]))
+      else
+        WriteLog('Failed to remove library search path.');
+      {$IFDEF MSWINDOWS}
+      if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+        with TJclBDSInstallation(Target) do
+      begin
+        if RemoveFromCppSearchPath(FLibDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) then
+          WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibDir, Distribution.JclSourceDir]))
+        else
+          WriteLog('Failed to remove cpp search path.');
+      end;
+      {$ENDIF MSWINDOWS}
+
+      //ioJclEnvBrowsingPath
+      if Target.RemoveFromLibraryBrowsingPath(Distribution.JclSourcePath) then
+        WriteLog(Format('Removed "%s" from library browsing path.', [Distribution.JclSourcePath]))
+      else
+        WriteLog('Failed to remove library browsing path.');
+      {$IFDEF MSWINDOWS}
+      if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
+        with TJclBDSInstallation(Target) do
+      begin
+        if RemoveFromCppBrowsingPath(Distribution.JclSourcePath) then
+          WriteLog(Format('Removed "%s" from cpp browsing path.', [Distribution.JclSourcePath]))
+        else
+          WriteLog('Failed to remove cpp browsing path.');
+      end;
+      {$ENDIF MSWINDOWS}
+
+      //ioJclEnvDebugDCUPath
+      if Target.RemoveFromDebugDCUPath(FDebugDcuDir) then
+        WriteLog(Format('Removed "%s" from Debug DCU Path.', [FDebugDcuDir]));
+    end;
+  end;
+
+  procedure RemoveMake;
+    procedure RemoveFileMask(const Directory, Extension: string);
+    var
+      FileList: TStrings;
+      Index: Integer;
+    begin
+      FileList := TStringList.Create;
+      try
+        BuildFileList(Format('%s*%s', [PathAddSeparator(Directory), Extension]), faAnyFile, FileList);
+        for Index := 0 to FileList.Count - 1 do
+          FileDelete(PathAddSeparator(Directory) + FileList.Strings[Index]);
+      finally
+        FileList.Free;
+      end;
+    end;
+  begin
+    if CLRVersion <> '' then
+    begin
+      RemoveFileMask(FLibDir, '.dcuil');
+      RemoveFileMask(FDebugDcuDir, '.dcuil');
+    end
+    else
+    begin
+      RemoveFileMask(FLibDir, '.dcu');
+      RemoveFileMask(FDebugDcuDir, '.dcuil');
+      if bpBCBuilder32 in Target.Personalities then
+      begin
+        RemoveFileMask(FLibDir, '.obj');
+        RemoveFileMask(FDebugDcuDir, '.obj');
+      end;
+    end;
+    //ioJclCopyHppFiles: ; // TODO : Delete copied files
+  end;
+
+  procedure UninstallPackages;
+  begin
+    if CLRVersion = '' then
+    begin
+      //ioJclPackages
+      UninstallPackage(FullPackageFileName(Target, JclDpk));
+      if Target.SupportsVisualCLX then
+        UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
+      if Target.VersionNumber >= 6 then
+        UninstallPackage(FullPackageFileName(Target, JclVclDpk));
+      {$IFDEF MSWINDOWS}
+      RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
+      {$ENDIF MSWINDOWS}
+    end;
+  end;
+  {$IFDEF MSWINDOWS}
+  procedure UninstallExperts;
+  var
+    Option: TJclOption;
+  begin
+    if CLRVersion = '' then
+    begin
+      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+        if not (Option in [joExpertsDsgnPackages, joExpertsDLL]) then
+          UninstallExpert(Option);
+    end;
+  end;
+
+  procedure UninstallHelp;
+    procedure RemoveHelpFromIdeTools;
+    var
+      HelpIndex: Integer;
+      HelpTitle: string;
+    begin
+      HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
+      with Target.IdeTools do
+      begin
+        HelpIndex := IndexOfTitle(HelpTitle);
+        if HelpIndex <> -1 then
+          RemoveIndex(HelpIndex);
+      end;
+    end;
+
+    procedure RemoveHelpFromOpenHelp;
+    begin
+      WriteLog(Format('Removing %s from %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]));
+      if Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
+        WriteLog('...done.')
+      else
+        WriteLog('...failed.');
+    end;
+
+    procedure UnregisterHelp2Files;
+    var
+      Help2Manager: TJclHelp2Manager;
+      CurrentDir: string;
+      NameSpace, Identifier, HxSFile, HxIFile: WideString;
+      LangId: Integer;
+    begin
+      if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+        Exit;
+    
+      WriteLog('Unregistering help 2.0 files');
+    
+      // to avoid Write AV, data has to be copied in data segment
+      NameSpace := Help2NameSpace;
+      Identifier := Help2Identifier;
+      LangId := Help2LangId;
+      HxSFile := Help2HxSFile;
+      HxIFile := Help2HxIFile;
+    
+      CurrentDir := GetCurrentDir;
+      if SetCurrentDir(Distribution.JclPath + 'help\') then
+      try
+        Help2Manager := TJclBDSInstallation(Target).Help2Manager;
+    
+        if Help2Manager.CreateTransaction then
+          WriteLog('Transaction created')
+        else
+          WriteLog('Failed to create a transaction');
+    
+        WriteLog('Unregistering plugin...');
+        if Help2Manager.UnPlugNameSpaceFromBorlandHelp(NameSpace) then
+          WriteLog('...success')
+        else
+          WriteLog('...failed');
+    
+        WriteLog('Unregistering help file...');
+        if Help2Manager.UnregisterHelpFile(NameSpace, Identifier, LangId) then
+          WriteLog('...success')
+        else
+          WriteLog('...failed');
+    
+        WriteLog('Unregistering namespace...');
+        if Help2Manager.UnregisterNameSpace(NameSpace) then
+          WriteLog('...success')
+        else
+          WriteLog('...failed');
+    
+        if Help2Manager.CommitTransaction then
+          WriteLog('Transaction committed')
+        else
+          WriteLog('Failed to commit the transaction');
+      finally
+        SetCurrentDir(CurrentDir);
+      end;
+    end;
+
+  begin
+    if CLRVersion = '' then
+    begin
+      RemoveHelpFromOpenHelp;
+      RemoveHelpFromIdeTools;
+      UnregisterHelp2Files;
+    end;
+  end;
+  {$ENDIF MSWINDOWS}
+  procedure UninstallRepository;
+    procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
+    begin
+      Target.Repository.RemoveObjects(ExceptDlgPath, DialogFileName, BorRADToolRepositoryFormTemplate);
+      WriteLog(Format('Removed %s.', [DialogName]));
+    end;
+  begin
+    if CLRVersion = '' then
+    begin
+      {$IFDEF MSWINDOWS}
+      // ioJclExcDialog
+      // ioJclExcDialogVCL
+      RemoveDialogFromRepository(ExceptDlgVclName, Distribution.VclDialogFileName);
+      //ioJclExcDialogVCLSnd
+      RemoveDialogFromRepository(ExceptDlgVclSndName, Distribution.VclDialogSendFileName);
+      {$ENDIF MSWINDOWS}
+      //ioJclExcDialogCLX
+      RemoveDialogFromRepository(ExceptDlgClxName, Distribution.ClxDialogFileName);
+    end;
+  end;
+
+begin
+  if Assigned(GUI) then
+    GUI.Status := Format(RsUninstallMessage, [TargetName]);
+  if Assigned(GUIPage) then
+    GUIPage.Show;
+
+  WriteLog(StrPadRight('Starting Uninstall process', 44, '.'));
+
+  RemoveEnvironment;
+  RemoveMake;
+  UninstallPackages;
+  {$IFDEF MSWINDOWS}
+  UninstallExperts;
+  UninstallHelp;
+  {$ENDIF MSWINDOWS}
+  // TODO: ioJclCopyPackagesHppFiles
+  UninstallRepository;
+  // TODO: ioJclMakeDemos:
+
+  Result := True;
+end;
+
+procedure TJclInstallation.WriteLog(const Msg: string);
+var
+  Line: string;
+  LineType: TCompileLineType;
+begin
+  Line := InstallCore.ProcessLogLine(Msg, LineType, GUIPage);
+  if Line <> '' then
+  begin
+    LogLines.Add(Line);
+    LogLines.SaveToFile(LogFileName);
+  end;
+end;
+
+function TJclInstallation.GetBplPath: string;
+var
+  AConfiguration: IJediConfiguration;
+begin
+  if Assigned(GUIPage) then
+    Result := GUIPage.Directories[FGUIBPLPathIndex]
+  else
+  begin
+    AConfiguration := InstallCore.Configuration;
+    if Assigned(AConfiguration) then
+      Result := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath]
+    else
+      Result := Target.BPLOutputPath;
+  end;
+  //{$IFDEF MSWINDOWS}
+  //Result := PathGetShortName(Result);
+  //{$ENDIF MSWINDOWS}
+end;
+
+function TJclInstallation.GetDcpPath: string;
+var
+  AConfiguration: IJediConfiguration;
+begin
+  if Assigned(GUIPage) then
+    Result := GUIPage.Directories[FGUIDCPPathIndex]
+  else
+  begin
+    AConfiguration := InstallCore.Configuration;
+    if Assigned(AConfiguration) then
+      Result := AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath]
+    else
+      Result := FJclDcpPath;
+  end;
+  //{$IFDEF MSWINDOWS}
+  //Result := PathGetShortName(Result);
+  //{$ENDIF MSWINDOWS}
+end;
+
+procedure TJclInstallation.Close;
+  procedure SaveOptions;
+  var
+    AConfiguration: IJediConfiguration;
+    Option: TJclOption;
+    Id, Index: Integer;
+    ADemoList: TStrings;
+  begin
+    AConfiguration := InstallCore.Configuration;
+    if not (Assigned(AConfiguration) and Assigned(GUIPage)) then
+      Exit;
+
+    for Option := Low(TJclOption) to High(TJclOption) do
+    begin
+      Id := OptionData[Option].Id;
+      AConfiguration.OptionAsBool[TargetName, Id] := GUIPage.OptionChecked[Id];
+    end;
+
+    ADemoList := GetDemoList;
+    for Index := 0 to ADemoList.Count - 1 do
+    begin
+      Id := Integer(ADemoList.Objects[Index]);
+      AConfiguration.OptionAsBool[FDemoSectionName, Id] := GUIPage.OptionChecked[Id];
+    end;
+
+    AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath] := GUIPage.Directories[FGUIBPLPathIndex];
+    if Target.RadToolKind = brCppBuilder then
+      AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath] := GUIPage.Directories[FGUIDCPPathIndex]
+    else
+      AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath] := GUIPage.Directories[FGUIDCPPathIndex];
+  end;
+begin
+  SaveOptions;
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
 var
   UnitList: TStrings;
-  UnitType: string;
-  LibDescriptor: string;
-  SaveDir, UnitOutputDir: string;
-  Path: string;
+  Compiler: TJclDCC32;
 
   function CompilationOptions: string;
   begin
     if FTarget.RADToolKind = brCppBuilder then
     begin
-      Result := StringsToStr(Target.DCC32.Options, ' ') + ' ';
+      Result := StringsToStr(Compiler.Options, ' ') + ' ';
       Result := StringReplace(Result, '$(BCB)', Target.RootDir, [rfReplaceAll]);
     end
     else
@@ -912,93 +2144,151 @@ var
   end;
 
   function CompileUnits: Boolean;
-  {$IFDEF COMPILE_UNITS_SEPARATELY // gives better progress resolution }
+  begin
+    Result := Compiler.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(UnitList, ' '));
+  end;
+
+  function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
   var
     I: Integer;
+    FileName: string;
+  begin
+    Result := True;
+    for I := 0 to Files.Count - 1 do
+    begin
+      FileName := Files[I];
+      Result := Result and FileCopy(FileName, PathAddSeparator(TargetDir) + ExtractFileName(FileName), Overwrite);
+    end;
+  end;
+
+  procedure CopyResFiles(TargetDir: string);
+  var
+    FileList: TStringList;
+  begin
+    FileList := TStringList.Create;
+    try
+      if BuildFileList('*.res', faAnyFile, FileList) then
+        CopyFiles(FileList, TargetDir);
+    finally
+      FileList.Free;
+    end;
+  end;
+
+  function CopyHppFiles(const TargetDir: string): Boolean;
+  var
+    I: Integer;
+    FileName: string;
   begin
     Result := True;
     for I := 0 to UnitList.Count - 1 do
     begin
-      Result := Target.DCC32.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}UnitList[I]);
-      Progress(1);
-      if not Result then
-        Break;
+      FileName := UnitList[I] + '.hpp';
+      if FileExists(FileName) then
+        Result := Result and FileCopy(FileName, TargetDir + FileName, True);
     end;
   end;
-  {$ELSE}
-  begin
-    Result := Target.DCC32.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(UnitList, ' '));
-    Progress(UnitList.Count);
-  end;
-  {$ENDIF}
 
+var
+  UnitType, LibDescriptor, SaveDir, UnitOutputDir, Path, ExclusionFileName: string;
+  Index, ExcIndex: Integer;
+  Exclusions: TStrings;
 begin
+  Result := True;
   if Debug then
     UnitType := 'debug ';
-  LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Target.Name]);
-  WriteLog(Format(LineBreak + 'Making %s', [LibDescriptor]));
-  Tool.UpdateStatus(Format(RsCompilingMessage, [LibDescriptor]));
-  Path := Format('%s' + DirDelimiter + '%s', [Distribution.SourceDir, SubDir]);
-  UnitList := Units[SubDir];
-  with Target.DCC32 do
-  begin
-    SetDefaultOptions;
+  LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, TargetName]);
+  WriteLog(Format('Making %s', [LibDescriptor]));
+  Path := Format('%s' + DirDelimiter + '%s', [Distribution.JclSourceDir, SubDir]);
+  UnitList := TStringList.Create;
+  try
+    BuildFileList(PathAddSeparator(Path) + '*.pas', faAnyFile, UnitList);
+    ExclusionFileName := PathAddSeparator(FLibDir) + SubDir + '.exc';
+    if FileExists(ExclusionFileName) then
+    begin
+      Exclusions := TStringList.Create;
+      try
+        Exclusions.LoadFromFile(ExclusionFileName);
+        for Index := 0 to Exclusions.Count - 1 do
+        begin
+          ExcIndex := UnitList.IndexOf(Exclusions.Strings[Index]);
+          if ExcIndex >= 0 then
+            UnitList.Delete(ExcIndex);
+        end;
+      finally
+        Exclusions.Free;
+      end;
+    end;
+    if UnitList.Count = 0 then
+      Exit;
+    for Index := 0 to UnitList.Count - 1 do
+      UnitList.Strings[Index] := ChangeFileExt(UnitList.Strings[Index], '');
+
+    {$IFDEF MSWINDOWS}
+    if CLRVersion <> '' then
+      Compiler := (Target as TJclBDSInstallation).DCCIL
+    else
+    {$ENDIF MSWINDOWS}
+      Compiler := Target.DCC32;
+    Compiler.SetDefaultOptions;
     //Options.Add('-D' + StringsToStr(Defines, ';'));
-    Options.Add('-M');
+    Compiler.Options.Add('-M');
     if Target.RADToolKind = brCppBuilder then
     begin
-      Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
+      Compiler.Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
       if Debug then
       begin
-        Options.Add('-$Y+');
-        Options.Add('-$W');
-        Options.Add('-$O-');
-        Options.Add('-v');
-        UnitOutputDir := MakePath(Distribution.FLibDebugDirMask);
-        AddPathOption('N2', MakePath(Distribution.FLibDirMask + DirDelimiter + 'obj')); // .obj files
+        Compiler.Options.Add('-$Y+');
+        Compiler.Options.Add('-$W');
+        Compiler.Options.Add('-$O-');
+        Compiler.Options.Add('-v');
+        UnitOutputDir := FLibDir;
+        Compiler.AddPathOption('N2', FLibObjDir); // .obj files
       end
       else
       begin
-        Options.Add('-$YD');
-        Options.Add('-$W+');
-        Options.Add('-$O+');
-        UnitOutputDir := MakePath(Distribution.FLibDirMask);
-        AddPathOption('N2', UnitOutputDir + DirDelimiter + 'obj'); // .obj files
+        Compiler.Options.Add('-$YD');
+        Compiler.Options.Add('-$W+');
+        Compiler.Options.Add('-$O+');
+        UnitOutputDir := FLibDir;
+        Compiler.AddPathOption('N2', FLibObjDir); // .obj files
       end;
-      Options.Add('-v');
-      Options.Add('-JPHNE');
-      Options.Add('--BCB');
-      AddPathOption('N0', UnitOutputDir); // .dcu files
-      AddPathOption('O', Format(BCBIncludePath, [Distribution.SourceDir, Distribution.SourcePath]));
-      AddPathOption('U', Format(BCBObjectPath, [Distribution.SourceDir, Distribution.SourcePath]));
+      Compiler.Options.Add('-v');
+      Compiler.Options.Add('-JPHNE');
+      Compiler.Options.Add('--BCB');
+      Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
+      Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
+      Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
     end
     else // Delphi
     begin
       if Debug then
       begin
-        Options.Add('-$O-');
-        Options.Add('-$W+');
-        Options.Add('-$R+');
-        Options.Add('-$Q+');
-        Options.Add('-$D+');
-        Options.Add('-$L+');
-        Options.Add('-$Y+');
-        UnitOutputDir := MakePath(Distribution.FLibDebugDirMask);
+        Compiler.Options.Add('-$O-');
+        if CLRVersion = '' then
+          Compiler.Options.Add('-$W+');
+        Compiler.Options.Add('-$R+');
+        Compiler.Options.Add('-$Q+');
+        Compiler.Options.Add('-$D+');
+        Compiler.Options.Add('-$L+');
+        Compiler.Options.Add('-$Y+');
+        UnitOutputDir := FDebugDcuDir;
       end
       else
       begin
-        Options.Add('-$O+');
-        Options.Add('-$R-');
-        Options.Add('-$Q-');
-        Options.Add('-$C-');
-        Options.Add('-$D-');
-        UnitOutputDir := MakePath(Distribution.FLibDirMask);
+        Compiler.Options.Add('-$O+');
+        Compiler.Options.Add('-$R-');
+        Compiler.Options.Add('-$Q-');
+        Compiler.Options.Add('-$C-');
+        Compiler.Options.Add('-$D-');
+        UnitOutputDir := FLibDir;
       end;
-      AddPathOption('N', UnitOutputDir);
-      AddPathOption('U', Distribution.SourcePath);
-      AddPathOption('R', Distribution.SourcePath);
+      Compiler.AddPathOption('N', UnitOutputDir);
+      if CLRVersion <> '' then
+        Compiler.Options.Add('--default-namespace:Jedi.Jcl');
+      Compiler.AddPathOption('U', Distribution.JclSourcePath);
+      Compiler.AddPathOption('R', Distribution.JclSourcePath);
     end;
-    AddPathOption('I', Distribution.SourceDir);
+    Compiler.AddPathOption('I', Distribution.JclSourceDir);
     SaveDir := GetCurrentDir;
     Result := SetCurrentDir(Path);
     {$IFDEF WIN32}
@@ -1010,24 +2300,145 @@ begin
       WriteLog('');
       WriteLog('Compiling .dcu files...');
       Result := Result and CompileUnits;
-      CopyResFiles(UnitOutputDir);
-      if OptionSelected(ioJclCopyHppFiles) then
+      if CLRVersion = '' then
       begin
-        Result := Result and CopyHppFiles(UnitList, Target.VclIncludeDir);
-        WriteLog('Copying .hpp files...');
+        CopyResFiles(UnitOutputDir);
+        if OptionChecked[joCopyHppFiles] then
+        begin
+          MarkOptionBegin(joCopyHppFiles);
+          WriteLog('Copying .hpp files...');
+          Result := Result and CopyHppFiles(Target.VclIncludeDir);
+          MarkOptionEnd(joCopyHppFiles, Result);
+        end;
+        {$IFDEF KYLIX}
+        Options.Add('-P');   // generate position independent code (PIC)
+        WriteLog('');
+        WriteLog('Compiling dpu files...');
+        Result := Result and CompileUnits;
+        {$ENDIF KYLIX}
       end;
-      {$IFDEF KYLIX}
-      Options.Add('-P');   // generate position independent code (PIC)
-      WriteLog('');
-      WriteLog('Compiling dpu files...');
-      Result := Result and CompileUnits;
-      {$ENDIF KYLIX}
     finally
       SetCurrentDir(SaveDir);
     end;
+  finally
+    UnitList.Free;
   end;
   if not Result then
-    InstallFailedOn(LibDescriptor);
+    WriteLog('Failed ' + LibDescriptor);
+end;
+
+{$IFDEF MSWINDOWS}
+function TJclInstallation.CompileCLRPackage(const Name: string): Boolean;
+var
+  ProjectFileName: string;
+begin
+  ProjectFileName := Format('%spackages%s%s.net%s%s%s', [PathAddSeparator(Distribution.JclPath),
+    DirDelimiter, Target.VersionNumberStr, DirDelimiter, Name, SourceExtensionDelphiProject]);
+  WriteLog(Format('Compiling CLR package %s...', [ProjectFileName]));
+
+  if Assigned(GUIPage) then
+    GUIPage.CompilationStart(ExtractFileName(Name));
+
+  Result := TJclBDSInstallation(Target).CompileDelphiDotNetProject(ProjectFileName,
+    GetBplPath, TargetPlatform, CLRVersion);
+end;
+{$ENDIF MSWINDOWS}
+
+function TJclInstallation.CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
+var
+  PackageFileName: string;
+{$IFNDEF KYLIX}
+  DpkPackageFileName: string;
+{$ENDIF}
+begin
+  PackageFileName := PathAddSeparator(Distribution.JclPath) + Name;
+  if InstallPackage then
+    WriteLog(Format('Installing package %s...', [PackageFileName]))
+  else
+    WriteLog(Format('Compiling package %s...', [PackageFileName]));
+
+  if Assigned(GUIPage) then
+    GUIPage.CompilationStart(ExtractFileName(Name));
+
+  if IsDelphiPackage(PackageFileName) and (bpDelphi32 in Target.Personalities) then
+  begin
+    if InstallPackage then
+      Result := Target.InstallPackage(PackageFileName, GetBplPath, GetDcpPath)
+    else
+    begin
+      {$IFNDEF KYLIX}
+      if Target.RadToolKind = brBorlandDevStudio then
+        (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
+      {$ENDIF ~KYLIX}
+      Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
+    end;
+  end
+  else if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
+  begin
+    ConfigureBpr2Mak(PackageFileName);
+    {$IFDEF KYLIX}
+    if InstallPackage then
+      Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath)
+    else
+      Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
+    {$ELSE ~KYLIX}
+
+    if Target.RadToolKind = brBorlandDevStudio then
+      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
+
+    // to satisfy JVCL (and eventually other libraries), create a .dcp file;
+    // Note: it is put out to .bpl path to make life easier for JVCL
+    DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
+    if InstallPackage then
+      Result := ((not FileExists(DpkPackageFileName))
+                 or Target.InstallPackage(DpkPackageFileName, GetBplPath, GetDcpPath))
+                and Target.InstallPackage(PackageFileName, GetBplPath, GetDcpPath)
+    else
+      Result := ((not FileExists(DpkPackageFileName))
+                 or Target.CompilePackage(DpkPackageFileName, GetBplPath, GetDcpPath))
+                and Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
+    {$ENDIF ~KYLIX}
+  end
+  else
+  begin
+    Result := False;
+    WriteLog(Format('No personality supports the extension %s', [ExtractFileExt(PackageFileName)]));
+  end;
+
+  if Result then
+    WriteLog('...done.')
+  else
+    WriteLog('...failed');
+end;
+
+function TJclInstallation.UninstallPackage(const Name: string): Boolean;
+var
+  PackageFileName: string;
+begin
+  WriteLog(Format('Removing package %s.', [Name]));
+  PackageFileName := Distribution.JclPath + Format(Name, [Target.VersionNumberStr]);
+
+  {$IFNDEF KYLIX}
+  if Target.RadToolKind = brBorlandDevStudio then
+    (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, PackageFileName));
+  {$ENDIF KYLIX}
+
+  Result := Target.UninstallPackage(PackageFileName, GetBPLPath, GetDCPPath);
+
+  // delete DCP files that were created to bpl path (old behavior)
+  FileDelete(PathAddSeparator(GetBPLPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
+  // delete DCP files that were created to target dcp path (old behavior)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
+  // delete BPI files that were created to target dcp path (old behavior)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionBPI);
+  // delete LIB files that were created to target dcp path (old behaviour)
+  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionLIB);
+
+  // TODO : evtl. remove .HPP Files
+  if Result then
+    WriteLog('...done.')
+  else
+    WriteLog('...failed.');
 end;
 
 procedure TJclInstallation.ConfigureBpr2Mak(const PackageFileName: string);
@@ -1038,715 +2449,26 @@ begin
   if clProj2Mak in Target.CommandLineTools then
   begin
     Target.Bpr2Mak.Options.Clear;
-    Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.Path + Bcb2MakTemplate));
+    Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
   end;
   {$IFDEF KYLIX}
-  SetEnvironmentVar('OBJDIR', LibObjDir);
-  SetEnvironmentVar('BPILIBDIR', DcpPath);
-  SetEnvironmentVar('BPLDIR', BplPath);
-  {$ELSE KYLIX}
+  SetEnvironmentVar('OBJDIR', FLibObjDir);
+  SetEnvironmentVar('BPILIBDIR', GetDcpPath);
+  SetEnvironmentVar('BPLDIR', GetBplPath);
+  {$ELSE ~KYLIX}
   if clMake in Target.CommandLineTools then
   begin
     Target.Make.Options.Clear;
-    Target.Make.AddPathOption('DBPILIBDIR=', DcpPath);
-    Target.Make.AddPathOption('DBPLDIR=', BplPath);
-    if OptionSelected(ioJclCopyPackagesHppFiles) then
+    Target.Make.AddPathOption('DBPILIBDIR=', GetDcpPath);
+    Target.Make.AddPathOption('DBPLDIR=', GetBplPath);
+    if OptionChecked[joCopyPackagesHppFiles] then
+    //begin
+    //  MarkOptionBegin(joCopyPackagesHppFiles);
       Target.Make.AddPathOption('DHPPDIR=', Target.VclIncludeDir);
+    //  MarkOptionEnd(joCopyPackagesHppFiles, True);
+    //end;
   end;
-  {$ENDIF KYLIX}
-end;
-
-function TJclInstallation.Description(Option: TJediInstallOption): string;
-begin
-  Result := InitData[Option].Caption;
-
-  case Option of
-    ioTarget:
-      Result := Target.Description;
-    ioJclCopyHppFiles:
-      Result := Format(Result, [Target.VclIncludeDir]);
-    ioJclCopyPackagesHppFiles:
-      Result := Format(Result, [Target.VclIncludeDir]);
-  end;
-end;
-
-{$IFDEF MSWINDOWS}
-procedure TJclInstallation.CopyFakeXmlRtlPackage;
-// replace missing xmlrtl.dcp in Delphi 2005 Personal by dummy package to allow expert installation
-begin
-  { TODO : implement copying of fake xmlrtl.dcp to $(BDS)\Lib }
-end;
-{$ENDIF MSWINDOWS}
-
-function TJclInstallation.ExcludeEdition(ExcludeList: TStrings; Index: Integer; out Name: string): Boolean;
-var
-  Editions: string;
-begin
-  Name := ExcludeList[Index];
-  if Pos('=', Name) > 0 then
-    Name := ExcludeList.Names[Index];
-  Editions := ExcludeList.Values[Name];
-  Result := (Editions = '') or (StrIPos(BorRADToolEditionIDs[Target.Edition], Editions) > 0);
-end;
-
-function TJclDistribution.GetExamplesDir: string;
-begin
-  Result := Path + 'examples';
-end;
-
-function DemoNameCompare(List: TStringList; Index1, Index2: Integer): Integer;
-var
-  Name1, Name2: string;
-begin
-  Name1 := ExtractFileName(List[Index1]);
-  Name2 := ExtractFileName(List[Index2]);
-  Result := CompareText(Name1, Name2);
-end;
-
-function TJclInstallation.GetDemoList: TStringList;
-begin
-  if not Assigned(FDemos) then
-  begin
-    FDemos := TStringList.Create;
-    EnumDirectories(Distribution.ExamplesDir, AddDemos);
-    Demos.CustomSort(DemoNameCompare);
-  end;
-  Result := FDemos;
-end;
-
-function TJclDistribution.GetDemosPath: string;
-begin
-  Result := PathAddSeparator(Path + 'examples');
-end;
-
-function TJclDistribution.GetHint(Option: TJediInstallOption): string;
-begin
-  if Ord(Option) < Ord(ioJclLast) then
-    Result := InitData[Option].Hint;
-end;
-
-function TJclInstallation.GetProgressTotal: Integer;
-var
-  Option: TJediInstallOption;
-begin
-  Result := 0;
-  if OptionSelected(ioJCL) then
-    for Option := Succ(ioJCL) to ioJclLast do
-      if OptionSelected(Option) then
-        Inc(Result, ProgressWeight(Option));
-end;
-
-function TJclInstallation.GetTool: IJediInstallTool;
-begin
-  Result := Distribution.Tool;
-end;
-
-procedure TJclInstallation.BuildUnitList(const SubDir: string; Units: TStrings);
-var
-  I, J: Integer;
-  ExcludeList: TStringList;
-  ExcludeListFileName: string;
-  UnitName: string;
-  FileMask: string;
-begin
-  FileMask := Format('%s' + DirDelimiter + '%s' + DirDelimiter + '*.pas', [Distribution.SourceDir, SubDir]);
-  BuildFileList(FileMask, faAnyFile, Units);
-  // check for units not to compile
-  ExcludeListFileName := MakePath(Format('%s' + DirDelimiter + '%s.exc', [Distribution.FLibDirMask, SubDir]));
-  if FileExists(ExcludeListFileName) then
-  begin
-    ExcludeList := TStringList.Create;
-    try
-      ExcludeList.LoadFromFile(ExcludeListFileName);
-      for I := 0 to ExcludeList.Count - 1 do
-        if ExcludeEdition(ExcludeList, I, UnitName) then
-        begin
-          J := Units.IndexOf(UnitName);
-          if J <> Invalid then
-            Units.Delete(J);
-        end;
-    finally
-      ExcludeList.Free;
-    end;
-  end;
-  for I := 0 to Units.Count -1 do
-    Units[I] := Copy(Units[I], 1, Length(Units[I]) - Length('.pas'));
-end;
-
-function TJclInstallation.DemoOption(DemoIndex: Integer): TJediInstallOption;
-begin
-  Result := TJediInstallOption(Ord(ioJclLast) + 1 + DemoIndex);
-end;
-
-function TJclInstallation.DemoOptionSelected(Index: Integer): Boolean;
-begin
-  Result := OptionSelected(DemoOption(Index));
-end;
-
-function TJclInstallation.GetDemoExclusionList: TStrings;
-var
-  I: Integer;
-  Strings: TStrings;
-  FileName: string;
-begin
-  if not Assigned(FDemoExclusionList) then
-  begin
-    FDemoExclusionList := TStringList.Create;
-    {$IFDEF KYLIX}
-    FileName := MakePath(Distribution.DemosPath + 'k%d.exc');
-    {$ELSE}
-    FileName := MakePath(Distribution.DemosPath + '%s.exc');
-    {$ENDIF KYLIX}
-    if FileExists(FileName) then
-    begin
-      FDemoExclusionList.LoadFromFile(FileName);
-      Strings := TStringList.Create;
-      try
-        I := 0;
-        while I < FDemoExclusionList.Count do
-        begin
-          if ExcludeEdition(FDemoExclusionList, I, FileName) then
-            if ExtractFileExt(FileName) = '.exc' then
-            begin
-              Strings.LoadFromFile(Distribution.DemosPath + FileName);
-              FDemoExclusionList.AddStrings(Strings);
-              FDemoExclusionList.Delete(I);
-            end
-            else
-            begin
-              FDemoExclusionList[I] := FileName;
-              Inc(I);
-            end
-          else
-            FDemoExclusionList.Delete(I);
-        end;
-      finally
-        Strings.Free;
-      end;
-    end;
-  end;
-  Result := FDemoExclusionList;
-end;
-
-function TJclInstallation.GetJclDcpPath: string;
-begin
-  Result := Format('%slib\%s', [Distribution.Path, Target.VersionNumberStr]);
-end;
-
-function TJclInstallation.GetUnits(const SourceDir: string): TStrings;
-var
-  I: Integer;
-begin
-  I := FUnits.IndexOf(SourceDir);
-  if I = Invalid then
-  begin
-    Result := TStringList.Create;
-    try
-      BuildUnitList(SourceDir, Result);
-    except
-      Result.Free;
-    end;
-    FUnits.AddObject(SourceDir, Result);
-  end
-  else
-    Result := FUnits.Objects[I] as TStrings;
-end;
-
-function TJclInstallation.InitOptions: Boolean;
-var
-  GUI: TObject;
-  {$IFDEF MSWINDOWS}
-  ExpertOptions: TJediInstallGUIOptions;
-  {$ENDIF MSWINDOWS}
-  InstallationNode, ProductNode, PackagesNode, ExpertsNode, DemosNode,
-  MakeNode, EnvNode, HelpNode, HelpHxSNode, RepositoryNode, MapCreateNode,
-  JDbgCreateNode, BCBNode: TObject;
-  RunTimeInstallation: Boolean;
-
-  function AddNode(Parent: TObject; Option: TJediInstallOption;
-    GUIOptions: TJediInstallGUIOptions = [goChecked]): TObject;
-  begin
-    if StoredOption(Option, goChecked in GUIOptions) then
-      Include(GUIOptions, goChecked)
-    else
-      Exclude(GUIOptions, goChecked);
-    Result := Tool.GUIAddOption(GUI, Parent, Option, Description(Option), GUIOptions);
-  end;
-
-  function AddDemoNode(Parent: TObject; Index: Integer;
-    GUIOptions: TJediInstallGUIOptions = []): TObject;
-  var
-    Checked: Boolean;
-  begin
-    Checked := Distribution.FIniFile.ReadInteger(DemoSectionName, Demos[Index], 0) > 0;
-    if Checked then
-      Include(GUIOptions, goChecked)
-    else
-      Exclude(GUIOptions, goChecked);
-    Result := Tool.GUIAddOption(GUI, Parent, DemoOption(Index),
-      ExtractFileName(Demos[Index]), GUIOptions);
-  end;
-
-  procedure AddDemoNodes;
-  var
-    I: Integer;
-  begin
-    DemosNode := AddNode(ProductNode, ioJclMakeDemos, [goExpandable, goNoAutoCheck]);
-    for I := 0 to Demos.Count - 1 do
-      AddDemoNode(DemosNode, I);
-  end;
-
-  procedure AddMakeNodes(Parent: TObject; DebugSettings: Boolean);
-  const
-    Option: array[Boolean, Boolean] of TJediInstallOption = (
-      (ioJclMakeRelease, ioJclMakeReleaseVClx),
-      (ioJclMakeDebug, ioJclMakeDebugVClx));
-  var
-    Node: TObject;
-  begin
-    Node := AddNode(Parent, Option[DebugSettings, False], [goStandAloneParent, goChecked]);
-    if Target.SupportsVisualCLX then
-      AddNode(Node, Option[DebugSettings, True]);
-  end;
-
-begin
-  Result := Assigned(Target) and Target.Valid;
-  if not Result then
-    Exit;
-
-  RunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
-    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));
-
-  GUI := Tool.OptionGUI(Target);
-  InstallationNode := AddNode(nil, ioTarget);
-  //InstallationNode.StateIndex := 0;
-  ProductNode := AddNode(InstallationNode, ioJCL);
-
-  if RunTimeInstallation then
-  begin
-    AddNode(ProductNode, ioJclDefThreadSafe);
-    AddNode(ProductNode, ioJclDefDropObsoleteCode);
-    AddNode(ProductNode, ioJclDefMathPrecSingle, [goRadioButton]);
-    AddNode(ProductNode, ioJclDefMathPrecDouble, [goRadioButton]);
-    AddNode(ProductNode, ioJclDefMathPrecExtended, [goRadioButton, goChecked]);
-    AddNode(ProductNode, ioJclDefMathExtremeValues, [goChecked]);
-    AddNode(ProductNode, ioJclDefUnitVersioning, [goChecked]);
-    AddNode(ProductNode, ioJclDefHookDllExceptions, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefDebugNoBinary, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefDebugNoTD32, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefDebugNoMap, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefDebugNoExports, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefDebugNoSymbols, [goNoAutoCheck]);
-    AddNode(ProductNode, ioJclDefEDIWeakPackageUnits, [goNoAutoCheck]);
-
-    EnvNode := AddNode(ProductNode, ioJclEnv);
-    AddNode(EnvNode, ioJclEnvLibPath);
-    AddNode(EnvNode, ioJclEnvBrowsingPath);
-    AddNode(EnvNode, ioJclEnvDebugDCUPath);
-  end;
-
-  if RunTimeInstallation then
-  begin
-    MakeNode := AddNode(ProductNode, ioJclMake, [goExpandable, goChecked]);
-    AddMakeNodes(MakeNode, False);
-    AddMakeNodes(MakeNode, True);
-
-    if bpBCBuilder32 in Target.Personalities then
-      AddNode(MakeNode, ioJclCopyHppFiles);
-    {$IFDEF MSWINDOWS}
-    if Target.RadToolKind = brBorlandDevStudio then
-    begin
-      {TODO: expert help}
-      if (Target.VersionNumber >= 3) and (Distribution.HxSHelpFileName <> '') then
-      begin
-        HelpNode := AddNode(ProductNode, ioJclHelp, [goChecked]);
-        HelpHxSNode := AddNode(HelpNode, ioJclhelpHxS, [goStandaloneParent, goChecked]);
-        AddNode(HelpHxSNode, ioJclHelpHxSPlugin, [goChecked]);
-      end;
-    end
-    else
-    begin
-      if (Distribution.HlpHelpFileName <> '') or (Distribution.ChmHelpFileName <> '') then
-      begin
-        HelpNode := AddNode(ProductNode, ioJclHelp);
-        if Distribution.HlpHelpFileName <> '' then
-          AddNode(HelpNode, ioJclHelpHlp);
-        if Distribution.ChmHelpFileName <> '' then
-          AddNode(HelpNode, ioJclHelpChm);
-      end;
-    end;
-
-    { TODO : Object Repository access for BDS }
-    if Target.RadToolKind <> brBorlandDevStudio then
-    {$ENDIF MSWINDOWS}
-    begin
-      RepositoryNode := AddNode(ProductNode, ioJclExcDialog);
-      {$IFDEF MSWINDOWS}
-      AddNode(RepositoryNode, ioJclExcDialogVCL);
-      AddNode(RepositoryNode, ioJclExcDialogVCLSnd);
-      if Target.SupportsVisualCLX then
-      {$ENDIF MSWINDOWS}
-        AddNode(RepositoryNode, ioJclExcDialogCLX);
-    end;
-  end;
-
-  PackagesNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
-
-  if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation then
-  begin
-    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
-    begin
-      BCBNode := AddNode(PackagesNode, ioJclDualPackages, [goStandAloneParent, goChecked]);
-      AddNode(BCBNode, ioJclCopyPackagesHppFiles);
-    end
-    else
-      AddNode(PackagesNode, ioJclCopyPackagesHppFiles);
-  end;
-
-  MapCreateNode := AddNode(PackagesNode, ioJclMapCreate, [goExpandable, goStandaloneParent, goNoAutoCheck]);
-
-  {$IFDEF MSWINDOWS}
-  JDbgCreateNode := AddNode(MapCreateNode, ioJclJdbgCreate, [goExpandable, goStandaloneParent]);
-  AddNode(JDbgCreateNode, ioJclJdbgInsert, [goNoAutoCheck]);
-  AddNode(JDbgCreateNode, ioJclMapDelete, [goNoAutoCheck]);
-
-  if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber = 3)
-    and (Target.Edition = deStd) then
-    CopyFakeXmlRtlPackage;
-  { TODO :
-    It has been reported that IDE experts don't work under Win98.
-    Leave these options unchecked for Win9x/WinME until that has been examined. }
-  if IsWinNT then
-    ExpertOptions := [goChecked]
-  else
-    ExpertOptions := [];
-  ExpertsNode := AddNode(PackagesNode, ioJclExperts, [goExpandable, goChecked]);
-
-  if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber <= 2) then
-    // design packages are not loaded by C#Builder 1 and Delphi 8
-    AddNode(ExpertsNode, ioJclExpertsDLL, [goRadioButton, goChecked])
-  else if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
-    // expert DLLs are unstable on Delphi 2005 and BDS 2006
-    // (problems while adding menu items in menu not yet loaded)
-    AddNode(ExpertsNode, ioJclExpertsDesignPackages, [goRadioButton, goChecked])
-  else
-  begin
-    AddNode(ExpertsNode, ioJclExpertsDesignPackages, [goRadioButton, goChecked]);
-    AddNode(ExpertsNode, ioJclExpertsDLL, [goRadioButton]);
-  end;
-
-  if RunTimeInstallation then
-  begin
-    AddNode(ExpertsNode, ioJclExpertDebug, ExpertOptions);
-    AddNode(ExpertsNode, ioJclExpertAnalyzer, ExpertOptions);
-    AddNode(ExpertsNode, ioJclExpertUses, ExpertOptions);
-    AddNode(ExpertsNode, ioJclExpertSimdView, ExpertOptions);
-    AddNode(ExpertsNode, ioJclExpertRepository, [goNoAutoCheck]);
-  end;
-  AddNode(ExpertsNode, ioJclExpertFavorite, ExpertOptions);
-  AddNode(ExpertsNode, ioJclExpertVersionControl, [goNoAutoCheck]);
-  if (Target.RadToolKind <> brBorlandDevStudio) and (Target.VersionNumber <= 6) then
-    AddNode(ExpertsNode, ioJclExpertThreadNames, ExpertOptions);
-  {$ENDIF MSWINDOWS}
-  if RunTimeInstallation then
-    AddDemoNodes;
-  Tool.BPLPath[Target] := StoredBplPath;
-  Tool.DCPPath[Target] := StoredDcpPath;
-end;
-
-function TJclInstallation.InstallSelectedOptions: Boolean;
-
-  function BorRADToolVersionStr: string;
-  begin
-    Result := Format('%s Build %s ', [Target.Name, Target.IdeExeBuildNumber]);
-  end;
-
-var
-  Option: TJediInstallOption;
-  Personality: TJclBorPersonality;
-begin
-  Tool.UpdateStatus(Format(RsStatusMessage, [Target.Name]));
-  WriteLog(StrPadRight(BorRADToolVersionStr, 44, '='));
-  WriteLog('');
-  WriteLog('Installed personalities :');
-  for Personality := Low(TJclBorPersonality) to High(TJclBorPersonality) do
-    if Personality in Target.Personalities then
-  begin
-    WriteLog(JclBorPersonalityDescription[Personality]);
-  end;
-  WriteLog(StrRepeat('=', 44));
-    
-  Result := CheckDirectories;
-  if Result then
-  begin
-    CleanupRepository;
-    Defines.Clear;
-    Target.MapCreate := False;
-    Target.JdbgCreate := False;
-    Target.JdbgInsert := False;
-    Target.MapDelete := False;
-    {$IFDEF MSWINDOWS}
-    if Target is TJclBDSInstallation then
-      TJclBDSInstallation(Target).DualPackageInstallation := False;
-    {$ENDIF MSWINDOWS}
-    for Option := ioJCL to ioJclLast do
-      if OptionSelected(Option) then
-        Result := Result and InstallOption(Option);
-  end;
-  WriteLog('');
-end;
-
-function TJclInstallation.InstallOption(Option: TJediInstallOption): Boolean;
-begin
-  Result := True;
-  case Option of
-    ioJclDefThreadSafe:
-      Defines.Add('THREADSAFE');
-    ioJclDefDropObsoleteCode:
-      Defines.Add('DROP_OBSOLETE_CODE');
-    ioJclDefMathPrecSingle:
-      Defines.Add('MATH_SINGLE_PRECISION');
-    ioJclDefMathPrecDouble:
-      Defines.Add('MATH_DOUBLE_PRECISION');
-    ioJclDefMathPrecExtended:
-      Defines.Add('MATH_EXTENDED_PRECISION');
-    ioJclDefMathExtremeValues:
-      Defines.Add('MATH_EXT_EXTREMEVALUES');
-    ioJclDefUnitVersioning:
-      Defines.Add('UNITVERSIONING');
-    ioJclDefHookDllExceptions:
-      Defines.Add('HOOK_DLL_EXCEPTIONS');
-    ioJclDefDebugNoBinary:
-      Defines.Add('DEBUG_NO_BINARY');
-    ioJclDefDebugNoTD32:
-      Defines.Add('DEBUG_NO_TD32');
-    ioJclDefDebugNoMap:
-      Defines.Add('DEBUG_NO_MAP');
-    ioJclDefDebugNoExports:
-      Defines.Add('DEBUG_NO_EXPORTS');
-    ioJclDefDebugNoSymbols:
-      Defines.Add('DEBUG_NO_SYMBOLS');
-    ioJclDefEDIWeakPackageUnits:
-      Defines.Add('EDI_WEAK_PACKAGE_UNITS');
-    ioJclMapCreate:
-      Target.MapCreate := True;
-    ioJclJdbgCreate:
-      Target.JdbgCreate := True;
-    ioJclJdbgInsert:
-      Target.JdbgInsert := True;
-    ioJclMapDelete:
-      Target.MapDelete := True;
-    ioJclEnvLibPath:
-      begin
-        Result := Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir);
-        if Result then
-        begin
-          WriteLog(Format(LineBreak + 'Added "%s;%s" to library search path.', [LibDir, Distribution.SourceDir]));
-          {$IFDEF MSWINDOWS}
-          if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
-            with TJclBDSInstallation(Target) do
-          begin
-            Result := AddToCppSearchPath(LibDir) and AddToCppSearchPath(Distribution.SourceDir);
-            if Result then
-              WriteLog(Format(LineBreak + 'Added "%s;%s" to cpp search path.', [LibDir, Distribution.SourceDir]))
-            else
-              WriteLog(LineBreak + 'Failed to add cpp search paths.');
-          end;
-          {$ENDIF MSWINDOWS}
-        end
-        else
-          WriteLog(LineBreak + 'Failed to add library search paths.');
-      end;
-    ioJclEnvBrowsingPath:
-      begin
-        Result := Target.AddToLibraryBrowsingPath(Distribution.SourcePath);
-        if Result then
-        begin
-          WriteLog(Format(LineBreak + 'Added "%s" to library browsing path.', [Distribution.SourcePath]));
-          {$IFDEF MSWINDOWS}
-          if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
-            with TJclBDSInstallation(Target) do
-          begin
-            Result := AddToCppBrowsingPath(Distribution.SourcePath);
-            if Result then
-              WriteLog(Format(LineBreak + 'Added "%s" to cpp browsing path.', [Distribution.SourcePath]))
-            else
-              WriteLog(LineBreak + 'Failed to add cpp browsing paths.');
-          end;
-          {$ENDIF MSWINDOWS}
-        end
-        else
-          WriteLog(LineBreak + 'Failed to add library browsing path.');
-      end;
-    ioJclEnvDebugDCUPath:
-      if Target.AddToDebugDCUPath(DebugDcuDir) then
-        WriteLog(Format(LineBreak + 'Added "%s" to Debug DCU Path.', [DebugDcuDir]));
-    ioJclMake:
-      Result := SaveDefines;
-    ioJclMakeRelease:
-      Result := MakeUnits(False);
-    // ioJclMakeReleaseVClx: handled with ioJclMakeRelease
-    ioJclMakeDebug:
-      Result := MakeUnits(True);
-    // ioJclMakeDebugVClx: handled with ioJclMakeDebug
-    // ioJclCopyHppFiles: handled by CompileLibraryUnits
-    //{$IFDEF MSWINDOWS}
-    //ioJclDualPackages: handled by CompilePackages and InstallExpert
-    //{$ENDIF MSWINDOWS}
-    ioJclPackages:
-      Result := CompilePackages;
-    {$IFDEF MSWINDOWS}
-    // ioJclExperts:
-    ioJclExperts..ioJclExpertVersionControl:
-      Result := InstallExpert(Option);
-    // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
-    // ioJclExcDialog:
-    ioJclExcDialogVCL:
-      with Distribution do
-        AddDialogToRepository(VclDialogName, FVclDialogFileName, FVclDialogIconFileName,
-          BorRADToolRepositoryDesignerDfm);
-    ioJclExcDialogVCLSnd:
-      with Distribution do
-        AddDialogToRepository(VclDialogNameSend, FVclDialogSendFileName,
-          FVclDialogSendIconFileName, BorRADToolRepositoryDesignerDfm, FVclDialogFileName);
-    {$ENDIF MSWINDOWS}
-    ioJclExcDialogCLX:
-      with Distribution do
-        AddDialogToRepository(ClxDialogName, FClxDialogFileName, FClxDialogIconFileName,
-          BorRADToolRepositoryDesignerXfm);
-    {$IFDEF MSWINDOWS}
-    // ioJclHelp:
-    ioJclHelpHlp:
-      AddHelpToOpenHelp;
-    ioJclHelpChm:
-      AddHelpToIdeTools;
-    ioJclHelpHxS:
-      RegisterHelp2Files;
-    {$ENDIF MSWINDOWS}
-    ioJclMakeDemos:
-      MakeDemos;
-  end;
-  if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
-    Progress(ProgressWeight(Option));
-end;
-
-function TJclInstallation.UninstallOption(Option: TJediInstallOption): Boolean;
-begin
-  Result := True;
-  case Option of
-    ioJclEnvLibPath:
-      begin
-        if Target.RemoveFromLibrarySearchPath(LibDir) and Target.RemoveFromLibrarySearchPath(Distribution.SourceDir) then
-          WriteLog(Format(LineBreak + 'Removed "%s;%s" from library search path.', [LibDir, Distribution.SourceDir]))
-        else
-          WriteLog(LineBreak + 'Failed to remove library search path.');
-        {$IFDEF MSWINDOWS}
-        if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
-          with TJclBDSInstallation(Target) do
-        begin
-          if RemoveFromCppSearchPath(LibDir) and RemoveFromCppSearchPath(Distribution.SourceDir) then
-            WriteLog(Format(LineBreak + 'Removed "%s;%s" from cpp search path.', [LibDir, Distribution.SourceDir]))
-          else
-            WriteLog(LineBreak + 'Failed to remove cpp search path.');
-        end;
-        {$ENDIF MSWINDOWS}
-      end;
-    ioJclEnvBrowsingPath:
-      begin
-        if Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath) then
-          WriteLog(Format(LineBreak + 'Removed "%s" from library browsing path.', [Distribution.SourcePath]))
-        else
-          WriteLog(LineBreak + 'Failed to remove library browsing path.');
-        {$IFDEF MSWINDOWS}
-        if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
-          with TJclBDSInstallation(Target) do
-        begin
-          if RemoveFromCppBrowsingPath(Distribution.SourcePath) then
-            WriteLog(Format(LineBreak + 'Removed "%s" from cpp browsing path.', [Distribution.SourcePath]))
-          else
-            WriteLog(LineBreak + 'Failed to remove cpp browsing path.');
-        end;
-        {$ENDIF MSWINDOWS}
-      end;
-    ioJclEnvDebugDCUPath:
-      if Target.RemoveFromDebugDCUPath(DebugDcuDir) then
-        WriteLog(Format(LineBreak + 'Removed "%s" from Debug DCU Path.', [DebugDcuDir]));
-    // ioJclMake:
-    ioJclMakeRelease: { TODO :  Delete generated files };
-    ioJclMakeDebug: { TODO : Delete generated files  };
-    ioJclCopyHppFiles: { TODO : Delete copied files };
-    ioJclPackages:
-      Result := UninstallPackages;
-    {$IFDEF MSWINDOWS}
-    ioJclExperts..ioJclExpertVersionControl:
-      Result := UninstallExpert(Option);
-    // ioJclCopyPackagesHppFiles:
-    // ioJclExcDialog:
-    ioJclExcDialogVCL:
-      with Distribution do
-        RemoveDialogFromRepository(VclDialogName, VclDialogFileName);
-    ioJclExcDialogVCLSnd:
-      with Distribution do
-        RemoveDialogFromRepository(VclDialogNameSend, VclDlgSndFileName);
-    {$ENDIF MSWINDOWS}
-    ioJclExcDialogCLX:
-      with Distribution do
-        RemoveDialogFromRepository(ClxDialogName, ClxDialogFileName);
-    {$IFDEF MSWINDOWS}
-    // ioJclHelp:
-    ioJclHelpHlp:
-      RemoveHelpFromOpenHelp;
-    ioJclHelpChm:
-      RemoveHelpFromIdeTools;
-    ioJclHelpHxS:
-      UnregisterHelp2Files;
-    ioJclMakeDemos:
-      ;
-    {$ENDIF MSWINDOWS}
-  end;
-  if not Distribution.Installing then
-    if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
-      Progress(ProgressWeight(Option));
-end;
-
-procedure TJclInstallation.InstallationStarted;
-begin
-  with FDistribution do
-    if Assigned(FOnStarting) then
-      FOnStarting(Target);
-end;
-
-function TJclInstallation.InstallExpert(
-  const Option: TJediInstallOption): Boolean;
-begin
-  if Option in [Low(ExpertPaths)..High(ExpertPaths)] then
-  begin
-    if (Option = ioJclExperts) or OptionSelected(ioJclExpertsDesignPackages) then
-    begin
-      // dual packages installation is useless for design time packages
-      {$IFDEF MSWINDOWS}
-      if Target.RadToolKind = brBorlandDevStudio then
-        TJclBDSInstallation(Target).DualPackageInstallation := False;
-      {$ENDIF MSWINDOWS}
-      Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]), True);
-    end
-    else
-      Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]), True);
-  end
-  else
-    Result := False;
-end;
-
-procedure TJclInstallation.InstallationFinished;
-begin
-  with FDistribution do
-    if Assigned(FOnEnding) then
-      FOnEnding(Target);
-end;
-
-procedure TJclInstallation.InstallFailedOn(const InstallObj: string);
-begin
-  Tool.Dialog(Format(RsInstallFailed, [InstallObj, LogFileName]), dtError);
+  {$ENDIF ~KYLIX}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -1761,25 +2483,25 @@ var
   FirstCompilationOk: Boolean;
 const
   WizardEntryPoint = 'INITWIZARD0001';
-  // note (outchy) : I don't know if the parameter signature is constant
-  // if constant, the complete signature would be
   // @*@JCLWizardInit$qqsx56System@%DelphiInterface$t28Toolsapi@IBorlandIDEServices%pqqrx47System@%DelphiInterface$t19Toolsapi@IOTAWizard%$orpqqrv$v
   InternalEntryPoint = '@JCLWizardInit$';
 begin
-  ProjectFileName := PathAddSeparator(Distribution.Path) + Name;
+  ProjectFileName := PathAddSeparator(Distribution.JclPath) + Name;
 
   if InstallExpert then
-    WriteLog(Format(LineBreak + 'Installing expert %s...', [ProjectFileName]))
+    WriteLog(Format('Installing expert %s...', [ProjectFileName]))
   else
-    WriteLog(Format(LineBreak + 'Compiling expert %s...', [ProjectFileName]));
-  Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(ProjectFileName), Target.Name]));
+    WriteLog(Format('Compiling expert %s...', [ProjectFileName]));
+
+  if Assigned(GUIPage) then
+    GUIPage.CompilationStart(ExtractFileName(Name));
 
   if IsDelphiProject(ProjectFileName) and (bpDelphi32 in Target.Personalities) then
   begin
     if InstallExpert then
-      Result := Target.InstallExpert(ProjectFileName, BplPath, JclDcpPath)
+      Result := Target.InstallExpert(ProjectFileName, GetBplPath, GetDcpPath)
     else
-      Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
+      Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath);
   end
   else if IsBCBProject(ProjectFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
@@ -1801,17 +2523,17 @@ begin
       DEFFile.Free;
     end;
 
-    Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
+    Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath);
 
     if Result then
     begin
-      WriteLog(LineBreak + 'First compilation ok');
+      WriteLog('First compilation ok');
       LibraryPeImage := TJclPeImage.Create;
       try
         GetBPRFileInfo(ProjectFileName, ProjectBinaryFileName, @ProjectDescription);
-        ProjectBinaryFileName := PathAddSeparator(BplPath) + ProjectBinaryFileName;
+        ProjectBinaryFileName := PathAddSeparator(GetBplPath) + ProjectBinaryFileName;
 
-        WriteLog(Format(LineBreak + 'Analysing expert %s for entry point %s...', [ProjectBinaryFileName, WizardEntryPoint]));
+        WriteLog(Format('Analysing expert %s for entry point %s...', [ProjectBinaryFileName, WizardEntryPoint]));
         LibraryPeImage.FileName := ProjectBinaryFileName;
         ExportFuncList := LibraryPeImage.ExportList;
 
@@ -1820,7 +2542,7 @@ begin
         if not FirstCompilationOk then
         begin
           Result := False;
-          WriteLog(LineBreak + 'Entry point not found');
+          WriteLog('Entry point not found');
 
           // try to find the decorated entry point
           // export names for pascal functions are:
@@ -1829,7 +2551,7 @@ begin
           for Index := 0 to ExportFuncList.Count - 1 do
             if Pos(StrUpper(InternalEntryPoint), StrUpper(ExportFuncList.Items[Index].Name)) > 0 then
           begin
-            WriteLog(Format(LineBreak + 'Internal entry point found %s', [ExportFuncList.Items[Index].Name]));
+            WriteLog(Format('Internal entry point found %s', [ExportFuncList.Items[Index].Name]));
             DEFFile := TStringList.Create;
             try
               DEFFile.Add('EXPORTS');
@@ -1844,7 +2566,7 @@ begin
         end
         else
         begin
-          WriteLog(LineBreak + 'Entry point found, registering expert...');
+          WriteLog('Entry point found, registering expert...');
           Target.RegisterExpert(ProjectBinaryFileName, ProjectDescription);
         end;
       finally
@@ -1855,15 +2577,15 @@ begin
       begin
         // second compilation
         if InstallExpert then
-          Result := Target.InstallExpert(ProjectFileName, BplPath, JclDcpPath)
+          Result := Target.InstallExpert(ProjectFileName, GetBplPath, GetDcpPath)
         else
-          Result := Target.CompileProject(ProjectFileName, BplPath, JclDcpPath);
+          Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath);
       end
       else if not Result then
-        WriteLog(LineBreak + 'Internal entry point not found');
+        WriteLog('Internal entry point not found');
     end
     else
-      WriteLog(LineBreak + 'First compilation failed');
+      WriteLog('First compilation failed');
   end
   else
     Result := False;
@@ -1871,310 +2593,146 @@ begin
   if Result then
     WriteLog('...done.')
   else
-    InstallFailedOn(ProjectFileName);
+    WriteLog('... failed ' + ProjectFileName);
 end;
-{$ENDIF MSWINDOWS}
 
-function TJclInstallation.CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
+function TJclInstallation.UninstallExpert(const Option: TJclOption): Boolean;
+
+  function OldExpertBPLFileName(const BaseName: string): string;
+  const
+    OldExperts: array[joExpertDebug..joExpertVersionControl] of string =
+      (
+        'JclDebugIde%s0.bpl', 'ProjectAnalyzer%s0.bpl',
+        'IdeOpenDlgFavorite%s0.bpl', 'JclRepositoryExpert',
+        'ThreadNameExpert%s0.bpl', 'JediUses%s0.bpl', 'JclSIMDView%s.bpl',
+        'JclVersionControl'
+      );
+
+  var
+    I: TJclOption;
+  begin
+    with Target do
+      for I := Low(OldExperts) to High(OldExperts) do
+        if BaseName = ExpertPaths[I] then
+    begin
+      Result := PathAddSeparator(GetBPLPath) + Format(OldExperts[I], [VersionNumberStr]);
+      Break;
+    end;
+  end;
+
 var
+  BaseName: string;
+  BPLFileName: string;
   PackageFileName: string;
-{$IFNDEF KYLIX}
-  DpkPackageFileName: string;
-{$ENDIF}
+  LibraryFileName: string;
 begin
-  PackageFileName := PathAddSeparator(Distribution.Path) + Name;
-  if InstallPackage then
-    WriteLog(Format(LineBreak + 'Installing package %s...', [PackageFileName]))
-  else
-    WriteLog(Format(LineBreak + 'Compiling package %s...', [PackageFileName]));
-  Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Target.Name]));
+  Result := False;
 
-  if IsDelphiPackage(PackageFileName) and (bpDelphi32 in Target.Personalities) then
-  begin
-    if InstallPackage then
-      Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath)
-    else
-    begin
-      {$IFNDEF KYLIX}
-      if Target.RadToolKind = brBorlandDevStudio then
-        (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
-      {$ENDIF KYLIX}
-      Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
-    end;
-  end
-  else if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
-  begin
-    ConfigureBpr2Mak(PackageFileName);
-    {$IFDEF KYLIX}
-    if InstallPackage then
-      Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath)
-    else
-      Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
-    {$ELSE}
+  BaseName := ExpertPaths[Option];
+  // uninstall package if it exists
+  PackageFileName := FullPackageFileName(Target, BaseName);
+  LibraryFileName := FullLibraryFileName(Target, BaseName);
 
-    if Target.RadToolKind = brBorlandDevStudio then
-      (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(BplPath, PackageFileName));
-
-    // to satisfy JVCL (and eventually other libraries), create a .dcp file;
-    // Note: it is put out to .bpl path to make life easier for JVCL
-    DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
-    if InstallPackage then
-      Result := ((not FileExists(DpkPackageFileName))
-                 or Target.InstallPackage(DpkPackageFileName, BplPath, DcpPath))
-                and Target.InstallPackage(PackageFileName, BplPath, DcpPath)
-    else
-      Result := ((not FileExists(DpkPackageFileName))
-                 or Target.CompilePackage(DpkPackageFileName, BplPath, DcpPath))
-                and Target.CompilePackage(PackageFileName, BplPath, DcpPath);
-    {$ENDIF}
-  end
-  else
+  if FileExists(Distribution.JclPath + PackageFileName) then
   begin
-    Result := False;
-    WriteLog(Format(LineBreak + 'No personality supports the extension %s', [ExtractFileExt(PackageFileName)]));
+    Result := UninstallPackage(PackageFileName);
+    // eventually remove old expert packages to avoid annoying package conflicts during IDE startup;
+    // for simplicity, .dcp files are not handled
+    BaseName := ExtractFileName(BaseName);
+    BPLFileName := OldExpertBPLFileName(BaseName);
+    FileDelete(BPLFileName);
+    Target.IdePackages.RemovePackage(BPLFileName);
   end;
 
-  if Result then
-    WriteLog('...done.')
-  else
-    InstallFailedOn(PackageFileName);
-end;
-
-function TJclInstallation.CompilePackages: Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  if Target.RadToolKind = brBorlandDevStudio then
-    TJclBDSInstallation(Target).DualPackageInstallation := OptionSelected(ioJclDualPackages);
-  InstallJediRegInformation(Target.ConfigDataLocation, 'JCL', Distribution.Version,
-    DcpPath, BplPath, Distribution.FJclPath);
-  {$ENDIF MSWINDOWS}
-  Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
-  if Target.SupportsVisualCLX then
-    Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
-  if (Target.VersionNumber >= 6)
-    or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
-    Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk), False);
-end;
-
-function TJclInstallation.LogFileName: string;
-begin
-  Result := JclInstall.LogFileName(Target);
-end;
-
-function TJclInstallation.MakePath(const FormatStr: string): string;
-begin
-  {$IFDEF KYLIX}
-  Result := Format(FormatStr, [Target.VersionNumber]);
-  {$ELSE ~KYLIX}
-  Result := PathGetShortName(Format(FormatStr, [Target.VersionNumberStr]));
-  {$ENDIF ~KYLIX}
-end;
-
-procedure TJclInstallation.MakeDemo(Index: Integer);
-var
-  FileName: string;
-  CfgFileName: string;
-  Directory: string;
-begin
-  FileName := Demos[Index];
-  Directory := Distribution.DemosPath + ExtractFileDir(FileName);
-  FileName := ExtractFileName(FileName);
-  WriteLog(Format(LineBreak + RsBuildingMessage, [FileName]));
-  SetCurrentDir(Directory);
-  CfgFileName := ChangeFileExt(FileName, '.cfg');
-  StringToFile(CfgFileName, Format(
-    '-e%s' + AnsiLineBreak +    // Exe output dir
-    '-u%s' + AnsiLineBreak +    // Unit directories
-    '-i%s',                     // Include path
-    [Distribution.BinDir, LibDir, Distribution.SourceDir]));
-  Target.DCC32.Execute(FileName);
-  FileDelete(CfgFileName);
-end;
-
-function TJclInstallation.MakeDemos: Boolean;
-var
-  I: Integer;
-  SaveDir: string;
-begin
-  Tool.UpdateStatus(Format(RsBuildingDemosByTargetMessage, [Target.Name]));
-  WriteLog(LineBreak + RsBuildingDemosMessage + LineBreak);
-  Result := True;
-  SaveDir := GetCurrentDir;
-  for I := 0 to Demos.Count - 1 do
-    if DemoOptionSelected(I) then
-      MakeDemo(I);
-  SetCurrentDir(SaveDir);
-end;
-
-function TJclInstallation.MakeUnits(Debug: Boolean): Boolean;
-var
-  I: Integer;
-begin
-  Result := True;
-  for I := Low(JclSourceDirs) to High(JclSourceDirs) do
+  if FileExists(Distribution.JclPath + LibraryFileName) then
   begin
-    {$IFDEF MSWINDOWS}
-    if (JclSourceDirs[I] = JclSrcDirVisClx) and
-      not (OptionSelected(ioJclMakeReleaseVClx) or OptionSelected(ioJclMakeDebugVClx)) then
-      Continue;
-    {$ENDIF MSWINDOWS}
-    Result := Result and CompileLibraryUnits(JclSourceDirs[I], Debug);
+    WriteLog(Format('Removing expert %s', [LibraryFileName]));
+    // delete DLL experts
+    Result := Target.UninstallExpert(Distribution.JclPath + LibraryFileName, GetBPLPath);
+    if Result then
+      WriteLog('...done.')
+    else
+      WriteLog('...failed');
   end;
 end;
+{$ENDIF MSWINDOWS}
 
-function TJclInstallation.OptionSelected(Option: TJediInstallOption): Boolean;
+function DemoNameCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  Name1, Name2: string;
 begin
-  Result := Tool.FeatureChecked(Ord(Option), Target);
+  Name1 := ExtractFileName(List[Index1]);
+  Name2 := ExtractFileName(List[Index2]);
+  Result := CompareText(Name1, Name2);
 end;
 
-procedure TJclInstallation.Progress(Steps: Integer);
+procedure TJclInstallation.AddDemo(const Directory: string; const FileInfo: TSearchRec);
 begin
-  Distribution.InstallProgress(Steps);
+  FDemoList.Append(Directory + FileInfo.Name);
 end;
 
-function TJclInstallation.ProgressWeight(Option: TJediInstallOption): Integer;
+procedure TJclInstallation.AddDemos(const Directory: string);
 begin
-  case Option of
-    ioJclEnvLibPath,
-    ioJclEnvBrowsingPath,
-    ioJclEnvDebugDCUPath:
-      Result := 1;
-    ioJclMakeRelease,
-    ioJclMakeDebug:
+  EnumFiles(Directory + '*.dpr', AddDemo);
+end;
+
+function TJclInstallation.GetDemoList: TStringList;
+  procedure ProcessExcludeFile(const ExcFileName: string);
+  var
+    DemoExclusionList: TStrings;
+    ExclusionFileName, FileName, Edition: string;
+    IndexExc, IndexDemo, EditionPos: Integer;
+  begin
+    DemoExclusionList := TStringList.Create;
+    try
+      ExclusionFileName := MakePath(PathAddSeparator(Distribution.JclExamplesDir) + ExcFileName);
+      if FileExists(ExclusionFileName) then
       begin
-        Result := TotalUnitCount;
-        {$IFDEF KYLIX}
-        Result := Result * 2; // .dcu + .dpu
-        {$ENDIF KYLIX}
+        DemoExclusionList.LoadFromFile(ExclusionFileName);
+        for IndexExc := 0 to DemoExclusionList.Count - 1 do
+        begin
+          FileName := DemoExclusionList.Strings[IndexExc];
+          EditionPos := Pos('=', FileName);
+          if EditionPos > 0 then
+          begin
+            Edition := Copy(FileName, EditionPos + 1, Length(FileName) - EditionPos);
+            SetLength(FileName, EditionPos - 1);
+          end
+          else
+            Edition := '';
+          if (Edition = '') or (StrIPos(BorRADToolEditionIDs[Target.Edition], Edition) = 0) then
+          begin
+            if ExtractFileExt(FileName) = '.exc' then
+              ProcessExcludeFile(FileName)
+            else
+            begin
+              for IndexDemo := FDemoList.Count - 1  downto 0 do
+                if StrMatches(PathAddSeparator(Distribution.JclExamplesDir) + FileName, FDemoList.Strings[IndexDemo]) then
+                  FDemoList.Delete(IndexDemo);
+            end;
+          end;
+        end;
       end;
-    ioJclMakeReleaseVClx,
-    ioJclMakeDebugVClx:
-      Result := 0;
-    ioJclCopyHppFiles:
-      Result := 2;
-    ioJclPackages:
-      Result := 10;
-    ioJclExpertDebug..ioJclExpertVersionControl:
-      Result := 5;
-    ioJclCopyPackagesHppFiles:
-      Result := 2;
-    ioJclExcDialog,
-    ioJclExcDialogVCL,
-    ioJclExcDialogVCLSnd,
-    ioJclExcDialogCLX,
-    ioJclHelpHlp,
-    ioJclHelpChm,
-    ioJclHelpHxS:
-      Result := 3;
-    ioJclMakeDemos:
-      Result := 50;
-  else
-    Result := 0;
-  end;
-end;
-
-{$IFDEF MSWINDOWS}
-procedure TJclInstallation.RegisterHelp2Files;
-var
-  Help2Manager: TJclHelp2Manager;
-  CurrentDir: string;
-  NameSpace, Collection, Description, Identifier, HxSFile, HxIFile: WideString;
-  LangId: Integer;
-begin
-  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
-    Exit;
-  
-  WriteLog('Registering help 2.0 files');
-
-  // to avoid Write AV, data has to be copied in data segment
-  NameSpace := Help2NameSpace;
-  Collection := Help2Collection;
-  Description := Help2Description;
-  Identifier := Help2Identifier;
-  LangId := Help2LangId;
-  HxSFile := Help2HxSFile;
-  HxIFile := Help2HxIFile;
-
-  CurrentDir := GetCurrentDir;
-  if SetCurrentDir(Distribution.Path + 'help\') then
-  try
-    Help2Manager := TJclBDSInstallation(Target).Help2Manager;
-
-    if Help2Manager.CreateTransaction then
-      WriteLog('Transaction created')
-    else
-      WriteLog('Failed to create a transaction');
-      
-    WriteLog('Registering namespace...');
-    if Help2Manager.RegisterNameSpace(NameSpace, Collection, Description) then
-      WriteLog('...success')
-    else
-      WriteLog('...failed');
-
-    WriteLog('Registering help file...');
-    if Help2Manager.RegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile) then
-      WriteLog('...success')
-    else
-      WriteLog('...failed');
-
-    if OptionSelected(ioJclHelpHxSPlugin) then
-    begin
-      WriteLog('Registering plugin...');
-      if Help2Manager.PlugNameSpaceInBorlandHelp(NameSpace) then
-        WriteLog('...success')
-      else
-        WriteLog('...failed');
+    finally
+      DemoExclusionList.Free;
     end;
-
-    if Help2Manager.CommitTransaction then
-      WriteLog('Transaction committed')
-    else
-      WriteLog('Failed to commit the transaction');
-  finally
-    SetCurrentDir(CurrentDir);
   end;
-end;
-{$ENDIF MSWINDOWS}
-
-procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
 begin
-  Target.Repository.RemoveObjects(DialogsPath, DialogFileName, BorRADToolRepositoryFormTemplate);
-  WriteLog(Format(LineBreak + 'Removed %s.', [DialogName]));
-end;
-
-{$IFDEF MSWINDOWS}
-procedure TJclInstallation.RemoveHelpFromIdeTools;
-var
-  HelpIndex: Integer;
-  HelpTitle: string;
-begin
-  HelpTitle := Format(JclHelpTitle, [JclVersionMajor, JclVersionMinor]);
-  with Target.IdeTools do
+  if not Assigned(FDemoList) then
   begin
-    HelpIndex := IndexOfTitle(HelpTitle);
-    if HelpIndex <> Invalid then
-      RemoveIndex(HelpIndex);
+    FDemoList := TStringList.Create;
+    EnumDirectories(Distribution.JclExamplesDir, AddDemos);
+    FDemoList.CustomSort(DemoNameCompare);
+
+    {$IFDEF KYLIX}
+    ProcessExcludeFile('k%d.exc');
+    {$ELSE ~KYLIX}
+    ProcessExcludeFile('%s.exc');
+    {$ENDIF ~KYLIX}
   end;
+  Result := FDemoList;
 end;
-
-procedure TJclInstallation.RemoveHelpFromOpenHelp;
-begin
-  if Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
-    WriteLog(Format(LineBreak + 'Removed %s from %s Online Help', [Distribution.FJclHlpHelpFileName, Target.RADToolName]));
-end;
-{$ENDIF MSWINDOWS}
-
-function TJclInstallation.RemoveSettings: Boolean;
-var
-  JclSettingsKey: string;
-begin
-  JclSettingsKey := Target.ConfigDataLocation + '\Jedi\JCL';
-  if RegKeyExists(HKCU, JclSettingsKey) then
-    Result := RegDeleteKeyTree(HKCU, JclSettingsKey)
-  else
-    Result := True;
-end;
-
+{
 function TJclInstallation.Run: Boolean;
   procedure EnsureDirectoryExists(const DirectoryName, DisplayName: string);
   begin
@@ -2202,7 +2760,7 @@ begin
     EnsureDirectoryExists(BplPath, 'BPL');
     EnsureDirectoryExists(DcpPath, 'DCP');
 
-    {$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWS
     PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
     PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
     if (PathListItemIndex(PathEnvVar, BplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(BplPath)) = -1)
@@ -2212,7 +2770,7 @@ begin
       PathListIncludeItems(PathEnvVar, BplPath);
       RegWriteString(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, PathEnvVar);
     end;
-    {$ENDIF MSWINDOWS}
+    {$ENDIF MSWINDOWS
 
     InstallationStarted;
     try
@@ -2223,634 +2781,304 @@ begin
   end;
   SaveOptions;
 end;
-
-function TJclInstallation.SaveDefines: Boolean;
-var
-  IncludeFileName, IncludeLine, Symbol: string;
-  IncludeFile: TStrings;
-  IndexLine, DefinePos, SymbolEnd: Integer;
-  Defined, NotDefined, Changed: Boolean;
-const
-  DefineText = '$DEFINE';
-  NotDefineText = '.' + DefineText;
-begin
-  WriteLog('Saving conditional defines...');
-  Result := True;
-  IncludeFileName := Format('%sjcl%s.inc', [PathAddSeparator(Distribution.SourceDir), Target.VersionNumberStr]);
-
-  try
-    Changed := False;
-
-    IncludeFile := TStringList.Create;
-    try
-      IncludeFile.LoadFromFile(IncludeFileName);
-      WriteLog('Include file loaded');
-
-      for IndexLine := 0 to IncludeFile.Count - 1 do
-      begin
-        IncludeLine := IncludeFile.Strings[IndexLine];
-        DefinePos := AnsiPos(DefineText, UpperCase(IncludeLine));
-        if DefinePos > 1 then
-        begin
-          Defined := IncludeLine[DefinePos - 1] = '{';
-          NotDefined := IncludeLine[DefinePos - 1] = '.';
-          if Defined or NotDefined then
-          begin
-            Inc(DefinePos, Length(DefineText));
-            while IncludeLine[DefinePos] in AnsiWhiteSpace do
-              Inc(DefinePos);
-            SymbolEnd := DefinePos;
-            while IncludeLine[SymbolEnd] in AnsiValidIdentifierLetters do
-              Inc(SymbolEnd);
-
-            Symbol := Copy(IncludeLine, DefinePos, SymbolEnd - DefinePos);
-
-            DefinePos := Defines.IndexOf(Symbol);
-
-            if (DefinePos >= 0) and NotDefined then
-            begin
-              IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
-              Changed := True;
-            end;
-
-            if (DefinePos < 0) and Defined then
-            begin
-              IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
-              Changed := True;
-            end;
-
-            IncludeFile.Strings[IndexLine] := IncludeLine;
-          end;
-        end;
-      end;
-
-      if Changed then
-      begin
-        IncludeFile.SaveToFile(IncludeFileName);
-        WriteLog('Include file saved');
-      end
-      else
-        WriteLog('No changes were made');
-    finally
-      IncludeFile.Free;
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-function TJclInstallation.Undo: Boolean;
-begin
-  Result := True;
-  if OptionSelected(ioJCL) then
-    Result := UninstallSelectedOptions;
-  SaveOptions;
-end;
-
-function TJclInstallation.UninstallPackage(const Name: string): Boolean;
-var
-  PackageFileName: string;
-begin
-  PackageFileName := Distribution.Path + Format(Name, [Target.VersionNumberStr]);
-
-  {$IFNDEF KYLIX}
-  if Target.RadToolKind = brBorlandDevStudio then
-    (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(StoredBPLPath, PackageFileName));
-  {$ENDIF KYLIX}
-
-  Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
-
-  // delete DCP files that were created to bpl path (old behavior)
-  FileDelete(PathAddSeparator(StoredBPLPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
-  // delete DCP files that were created to target dcp path (old behavior)
-  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP);
-  // delete BPI files that were created to target dcp path (old behavior)
-  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionBPI);
-  // delete LIB files that were created to target dcp path (old behaviour)
-  FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionLIB);
-
-  { TODO : evtl. remove .HPP Files }
-  if Result then
-    WriteLog(Format(LineBreak + 'Removed package %s.', [Name]));
-end;
-
-function TJclInstallation.UninstallPackages: Boolean;
-begin
-  Result := UninstallPackage(FullPackageFileName(Target, JclDpk));
-  if Target.SupportsVisualCLX then
-    Result := Result and UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
-  if Target.VersionNumber >= 6 then
-    Result := Result and UninstallPackage(FullPackageFileName(Target, JclVclDpk));
-  {$IFDEF MSWINDOWS}
-  RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
-  {$ENDIF MSWINDOWS}
-end;
-
-{$IFDEF MSWINDOWS}
-function TJclInstallation.UninstallExpert(const Option: TJediInstallOption): Boolean;
-
-  function OldExpertBPLFileName(const BaseName: string): string;
-  const
-    OldExperts: array[ioJclExpertDebug..ioJclExpertVersionControl] of string = (
-      'JclDebugIde%s0.bpl',
-      'ProjectAnalyzer%s0.bpl',
-      'IdeOpenDlgFavorite%s0.bpl',
-      'JclRepositoryExpert',
-      'ThreadNameExpert%s0.bpl',
-      'JediUses%s0.bpl',
-      'JclSIMDView%s.bpl',
-      'JclVersionControl');
-
-  var
-    I: TJediInstallOption;
-  begin
-    with Target do
-      for I := Low(OldExperts) to High(OldExperts) do
-        if BaseName = ExpertPaths[I] then
-    begin
-      Result := PathAddSeparator(StoredBPLPath) + Format(OldExperts[I], [VersionNumberStr]);
-      Break;
-    end;
-  end;
-
-var
-  BaseName: string;
-  BPLFileName: string;
-  PackageFileName: string;
-  LibraryFileName: string;
-begin
-  Result := False;
-
-  BaseName := ExpertPaths[Option];
-  // uninstall package if it exists
-  PackageFileName := FullPackageFileName(Target, BaseName);
-  LibraryFileName := FullLibraryFileName(Target, BaseName);
-
-  if FileExists(Distribution.Path + PackageFileName) then
-  begin
-    Result := UninstallPackage(PackageFileName);
-    // eventually remove old expert packages to avoid annoying package conflicts during IDE startup;
-    // for simplicity, .dcp files are not handled
-    BaseName := ExtractFileName(BaseName);
-    BPLFileName := OldExpertBPLFileName(BaseName);
-    FileDelete(BPLFileName);
-    Target.IdePackages.RemovePackage(BPLFileName);
-  end;
-
-  if FileExists(Distribution.Path + LibraryFileName) then
-  begin
-    // delete DLL experts
-    Result := Target.UninstallExpert(Distribution.Path + LibraryFileName, StoredBPLPath);
-  end;
-end;
-
-{$ENDIF MSWINDOWS}
-
-function TJclInstallation.UninstallSelectedOptions: Boolean;
-
-  function BorRADToolVersionStr: string;
-  begin
-    Result := Format('%s Build %s ', [Target.Name, Target.IdeExeBuildNumber]);
-  end;
-
-var
-  Option: TJediInstallOption;
-  Success: Boolean;
-begin
-  Result := True;
-  Tool.UpdateStatus(Format(RsUninstallMessage, [Target.Name]));
-  WriteLog(StrPadRight('Starting Uninstall process', 44, '.'));
-  for Option := ioJCL to ioJclLast do
-    if OptionSelected(Option) then
-    begin
-      // Don't stop uninstall process when one step fails
-      Success := UninstallOption(Option);
-      Result := Result and Success;
-    end;
-  WriteLog('');
-end;
-
-{$IFDEF MSWINDOWS}
-procedure TJclInstallation.UnregisterHelp2Files;
-var
-  Help2Manager: TJclHelp2Manager;
-  CurrentDir: string;
-  NameSpace, Identifier, HxSFile, HxIFile: WideString;
-  LangId: Integer;
-begin
-  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
-    Exit;
-
-  WriteLog('Unregistering help 2.0 files');
-
-  // to avoid Write AV, data has to be copied in data segment
-  NameSpace := Help2NameSpace;
-  Identifier := Help2Identifier;
-  LangId := Help2LangId;
-  HxSFile := Help2HxSFile;
-  HxIFile := Help2HxIFile;
-
-  CurrentDir := GetCurrentDir;
-  if SetCurrentDir(Distribution.Path + 'help\') then
-  try
-    Help2Manager := TJclBDSInstallation(Target).Help2Manager;
-
-    if Help2Manager.CreateTransaction then
-      WriteLog('Transaction created')
-    else
-      WriteLog('Failed to create a transaction');
-
-    WriteLog('Unregistering plugin...');
-    if Help2Manager.UnPlugNameSpaceFromBorlandHelp(NameSpace) then
-      WriteLog('...success')
-    else
-      WriteLog('...failed');
-
-    WriteLog('Unregistering help file...');
-    if Help2Manager.UnregisterHelpFile(NameSpace, Identifier, LangId) then
-      WriteLog('...success')
-    else
-      WriteLog('...failed');
-
-    WriteLog('Unregistering namespace...');
-    if Help2Manager.UnregisterNameSpace(NameSpace) then
-      WriteLog('...success')
-    else
-      WriteLog('...failed');
-
-    if Help2Manager.CommitTransaction then
-      WriteLog('Transaction committed')
-    else
-      WriteLog('Failed to commit the transaction');
-  finally
-    SetCurrentDir(CurrentDir);
-  end;
-end;
-{$ENDIF MSWINDOWS}
-
-
-procedure TJclInstallation.SaveDemoOption(Index: Integer);
-var
-  Value: Integer;
-begin
-  Value := Invalid;
-  if OptionSelected(DemoOption(Index)) then
-    Value := JclBase.JclVersionBuild;
-  Distribution.FIniFile.WriteInteger(DemoSectionName, Demos[Index], Value);
-end;
-
-procedure TJclInstallation.SaveOption(Option: TJediInstallOption);
-var
-  Value: Integer;
-begin
-  Value := Invalid;
-  if OptionSelected(Option) then
-    Value := JclBase.JclVersionBuild;
-  Distribution.FIniFile.WriteInteger(Target.Name, OptionToStr(Option), Value);
-end;
-
-procedure TJclInstallation.SaveOptions;
-var
-  I: Integer;
-  Option: TJediInstallOption;
-begin
-  SaveOption(ioTarget);
-  for Option := ioJCL to ioJclLast do
-    SaveOption(Option);
-  for I := 0 to Demos.Count - 1 do
-    SaveDemoOption(I);
-  Distribution.FIniFile.WriteString(Target.Name, 'BPL-Path', Tool.BPLPath[Target]);
-  Distribution.FIniFile.WriteString(Target.Name, 'DCP-Path', Tool.DCPPath[Target]);
-end;
-
-function TJclInstallation.StoredBplPath: string;
-begin
-  Result := Distribution.FIniFile.ReadString(Target.Name, 'BPL-Path', Target.BPLOutputPath);
-end;
-
-function TJclInstallation.StoredDcpPath: string;
-begin
-  Result := Distribution.FIniFile.ReadString(Target.Name, 'DCP-Path', JclDcpPath);
-end;
-
-function TJclInstallation.StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
-begin
-  case Distribution.FIniFile.ReadInteger(Target.Name, OptionToStr(Option), 0) of
-    Invalid:
-      Result := False;
-    0:
-      Result := Default;
-  else
-    Result := True;
-  end;
-end;
-
-function TJclInstallation.TotalUnitCount: Integer;
-var
-  I: Integer;
-begin
-  Result := 0;
-  for I := Low(JclSourceDirs) to High(JclSourceDirs) do
-  begin
-    {$IFDEF MSWINDOWS}
-    if (JclSourceDirs[I] = 'visclx') and
-      not (OptionSelected(ioJclMakeReleaseVClx) or OptionSelected(ioJclMakeDebugVClx)) then
-      Continue;
-    {$ENDIF MSWINDOWS}
-    with Units[JclSourceDirs[I]] do
-      Inc(Result, Count);
-  end;
-end;
-
-procedure TJclInstallation.WriteLog(const Msg: string);
-begin
-  if Assigned(FOnWriteLog) then
-    FOnWriteLog(Msg);
-end;
+}
 
 //=== { TJclDistribution } ===================================================
 
-constructor TJclDistribution.Create;
+procedure TJclDistribution.Close;
 var
-  IniFileName: string;
+  I: Integer;
 begin
-  inherited;
+  for I := 0 to TargetInstallCount - 1 do
+    TargetInstalls[I].Close;
+end;
+
+constructor TJclDistribution.Create;
+  procedure RegisterJclOptions;
+  var
+    Option: TJclOption;
+    AInstallCore: TJediInstallCore;
+    OptionName: string;
+  begin
+    AInstallCore := InstallCore;
+    for Option := Low(TJclOption) to High(TJclOption) do
+    begin
+      OptionName := GetEnumName(TypeInfo(TJclOption), Integer(Option));
+      OptionName := 'Jcl' + Copy(OptionName, 3, Length(OptionName) - 2);
+      OptionData[Option].Id := AInstallCore.AddInstallOption(OptionName);
+    end;
+  end;
+begin
+  inherited Create;
+
+  RegisterJclOptions;
+
+  {$IFDEF MSWINDOWS}
+  FCLRVersions := TStringList.Create;
+  {$ENDIF MSWINDOWS}
+  FRadToolInstallations := TJclBorRADToolInstallations.Create;
+
   FTargetInstalls := TObjectList.Create;
   FTargetInstalls.OwnsObjects := True;
+end;
 
-  if not GetEnvironmentVar('JCL_INSTALL_INI', IniFileName) then
-    IniFileName := '';
-
-  if IniFileName = '' then
-    IniFileName := RsIniFileName;
-
-  if not PathIsAbsolute(IniFileName) then
-    IniFileName := ExtractFilePath(ParamStr(0)) + IniFileName;
-
-  FIniFile := TMemIniFile.Create(IniFileName);
+function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
+  function Supported: Boolean;
+  begin
+    {$IFDEF KYLIX}
+    Result := Target.VersionNumber = 3;
+    {$ELSE ~KYLIX}
+    case Target.RadToolKind of
+      brDelphi :
+        Result := Target.VersionNumber in [5, 6, 7];
+      brCppBuilder :
+        Result := Target.VersionNumber in [5, 6];
+      brBorlandDevStudio :
+        Result := Target.VersionNumber in [1, 2, 3, 4];
+      else
+        Result := False;
+    end;
+    {$ENDIF ~KYLIX}
+  end;
+var
+  Inst: TJclInstallation;
+  Index: Integer;
+  CLRVersion: string;
+begin
+  if Supported then
+  try
+    Inst := TJclInstallation.Create(Self, Target);
+    FTargetInstalls.Add(Inst);
+    {$IFDEF MSWINDOWS}
+    // .net "virtual" targets
+    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) then
+    begin
+      for Index := 0 to FCLRVersions.Count - 1 do
+      begin
+        CLRVersion := FCLRVersions.Names[Index];
+        if (CompareCLRVersions(CLRVersion, TJclBDSInstallation(Target).MaxDelphiCLRVersion) = 0)
+          and (CompareCLRVersions(CLRVersion, 'v1.1.2344') >= 0)  then // CLR 1.0 not supported by the JCL
+        begin
+          Inst := TJclInstallation.Create(Self, Target, CLRVersion);
+          FTargetInstalls.Add(Inst);
+          {if Target.VersionNumber >= 4 then
+          begin
+            Inst := TJclInstallation.Create(Self, Target, CLRVersion, bp64bit);
+            FTargetInstalls.Add(Inst);
+          end;}
+        end;
+      end;
+    end;
+    {$ENDIF MSWINDOWS}
+  except
+  end;
+  Result := True;
 end;
 
 destructor TJclDistribution.Destroy;
 begin
+  {$IFDEF MSWINDOWS}
+  FCLRVersions.Free;
+  {$ENDIF MSWINDOWS}
+
+  FRadToolInstallations.Free;
+
   FTargetInstalls.Free;
-  if Assigned(FIniFile) then
-  begin
-    FIniFile.UpdateFile;
-    FreeAndNil(FIniFile);
-  end;
-  inherited;
+
+  inherited Destroy;
 end;
 
-function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
-var
-  Inst: TJclInstallation;
+function TJclDistribution.GetTargetInstall(Index: Integer): TJclInstallation;
 begin
-  if Supports(Target) then
-  try
-    Inst := TJclInstallation.Create(Self, Target);
-    FTargetInstalls.Add(Inst);
-    Inst.InitOptions;
-  except
-  end;
-  Result := True;
+  Result := TJclInstallation(FTargetInstalls.Items[Index]);
 end;
 
-function TJclDistribution.DocFileName(const BaseFileName: string): string;
-const
-  SDocFileMask = '%sdocs' + DirDelimiter + '%s';
+function TJclDistribution.GetTargetInstallCount: Integer;
 begin
-  Result := Format(SDocFileMask, [FJclPath, BaseFileName]);
-end;
-
-function TJclDistribution.FeatureInfoFileName(FeatureID: Cardinal): string;
-begin
-  Result := DocFileName(Format('%.7x.info', [FeatureID]));
-end;
-
-function TJclDistribution.GetTargetInstall(Installation: TJclBorRADToolInstallation): TJclInstallation;
-var
-  I: Integer;
-begin
-  for I := 0 to FTargetInstalls.Count - 1 do
-  begin
-    Result := TJclInstallation(FTargetInstalls[I]);
-    if Result.Target = Installation then
-      Exit;
-  end;
-  Result := nil;
+  Result := FTargetInstalls.Count;
 end;
 
 function TJclDistribution.GetVersion: string;
 begin
-  Result := Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
+  Result := Format('JCL %d.%d Build %d', [JclVersionMajor, JclVersionMinor, JclVersionBuild]);
 end;
 
-procedure TJclDistribution.InitInstallationTargets;
-begin
-  if not Tool.GetBorRADToolInstallations.Iterate(CreateInstall) then
-    raise EJediInstallInitFailure.CreateRes(@RsNoInstall);
-end;
+procedure TJclDistribution.Init;
+  procedure InitDistribution;
+  var
+    ExceptDialogsPath, InstallerFileName: string;
+    ReadMePage: IJediReadMePage;
+    Index: Integer;
+  begin
+    InstallerFileName := ParamStr(0);
 
-function TJclDistribution.InitInformation(const ApplicationFileName: string): Boolean;
-var
-  I: Integer;
-  ExceptDialogsPath: string;
-begin
-  FJclPath := PathAddSeparator(ExpandFileName(PathExtractFileDirFixed(ApplicationFileName) + '..'));
-  {$IFDEF MSWINDOWS}
-  FJclPath := PathGetShortName(FJclPath);
-  {$ENDIF MSWINDOWS}
-  FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
-  FLibDebugDirMask := FLibDirMask + DirDelimiter + 'debug';
-  FLibObjDirMask := FLibDirMask + DirDelimiter + 'obj';
-  FJclBinDir := FJclPath + 'bin';
-  FJclSourceDir := FJclPath + 'source';
+    FJclPath := PathAddSeparator(ExpandFileName(PathExtractFileDirFixed(InstallerFileName) + '..'));
+    {$IFDEF MSWINDOWS}
+    FJclPath := PathGetShortName(FJclPath);
+    {$ENDIF MSWINDOWS}
+    FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
+    FLibDebugDirMask := FLibDirMask + DirDelimiter + 'debug';
+    FLibObjDirMask := FLibDirMask + DirDelimiter + 'obj';
+    FJclBinDir := FJclPath + 'bin';
+    FJclSourceDir := FJclPath + 'source';
+    FJclExamplesDir := FJclPath + 'examples';
+    FJclSourcePath := '';
+    for Index := Low(JclSourceDirs) to High(JclSourceDirs) do
+      ListAddItems(FJclSourcePath, DirSeparator, PathAddSeparator(FJclSourceDir) + JclSourceDirs[Index]);
 
-  FJclSourcePath := '';
-  for I := Low(JclSourceDirs) to High(JclSourceDirs) do
-    FJclSourcePath := FJclSourcePath +
-      Format('%s' + DirDelimiter + '%s' + DirSeparator, [FJclSourceDir, JclSourceDirs[I]]);
-
-  {$IFDEF MSWINDOWS}
-  ExceptDialogsPath := PathGetShortName(FJclPath + DialogsPath);
-  FClxDialogFileName := AnsiUpperCase(ExceptDialogsPath + ClxDialogFileName);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  ExceptDialogsPath := FJclPath + DialogsPath;
-  FClxDialogFileName := ExceptDialogsPath + ClxDialogFileName;
-  {$ENDIF UNIX}
-  FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ico');
-  {$IFDEF MSWINDOWS}
-  FVclDialogFileName := AnsiUpperCase(ExceptDialogsPath + VclDialogFileName);
-  FVclDialogSendFileName := AnsiUpperCase(ExceptDialogsPath + VclDlgSndFileName);
-  FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
-  FVclDialogSendIconFileName := ChangeFileExt(FVclDialogSendFileName, '.ico');
-  {$ENDIF MSWINDOWS}
-  FJclChmHelpFileName := FJclPath + JclChmHelpFile;
-  FJclHlpHelpFileName := FJclPath + JclHlpHelpFile;
-  FJclHxSHelpFileName := FJclPath + JclHxSHelpFile;
-  if not FileExists(FJclChmHelpFileName) then
-    FJclChmHelpFileName := '';
-  if not FileExists(FJclHlpHelpFileName) then
-    FJclHlpHelpFileName := '';
-  if not FileExists(FJclHxSHelpFileName) then
-    FJclHxSHelpFileName := '';
-  {$IFDEF MSWINDOWS}
-  // Reset ReadOnly flag for dialog forms
-  FileSetAttr(FClxDialogFileName, faArchive);
-  FileSetAttr(ChangeFileExt(FClxDialogFileName, '.xfm'), faArchive);
-  FileSetAttr(FVclDialogFileName, faArchive);
-  FileSetAttr(ChangeFileExt(FVclDialogFileName, '.dfm'), faArchive);
-  FileSetAttr(FVclDialogSendFileName, faArchive);
-  FileSetAttr(ChangeFileExt(FVclDialogSendFileName, '.dfm'), faArchive);
-  Result := FileExists(FClxDialogFileName) and FileExists(FClxDialogIconFileName)
-    and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
-  {$ELSE ~MSWINDOWS}
-  Result := True;
-  {$ENDIF ~MSWINDOWS};
-  FJclReadmeFileName := DocFileName(RsReadmeFileName);
-  if FileExists(FJclReadmeFileName) then
-    Tool.Readme := FJclReadmeFileName;
-
-  if not Result then
-    raise EJediInstallInitFailure.CreateRes(@RsCantFindFiles);
-end;
-
-procedure TJclDistribution.InitProgress;
-var
-  I: Integer;
-begin
-  FProgress := 0;
-  FProgressTotal := 0;
-  for I := 0 to FTargetInstalls.Count - 1 do
-    Inc(FProgressTotal, TJclInstallation(FTargetInstalls[I]).ProgressTotal);
-end;
-
-function TJclDistribution.Install: Boolean;
-var
-  I: Integer;
-  KeepSettings: Boolean;
-begin
-  FInstalling := True; // tell UninstallOption not to call Progress()
-  KeepSettings := False;
-  Result := True;
-  try
-    InitProgress;
-
-    for I := 0 to FTargetInstalls.Count - 1 do
-      if TJclInstallation(FTargetInstalls[I]).OptionSelected(ioJCL) then
+    ExceptDialogsPath := FJclPath + ExceptDlgPath;
+    FClxDialogFileName := ExceptDialogsPath + ExceptDlgClxFileName;
+    FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ico');
+    FVclDialogFileName := ExceptDialogsPath + ExceptDlgVclFileName;
+    FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
+    FVclDialogSendFileName := ExceptDialogsPath + ExceptDlgVclSndFileName;
+    FVclDialogSendIconFileName := ChangeFileExt(FVclDialogSendFileName, '.ico');
+    FJclChmHelpFileName := FJclPath + JclChmHelpFile;
+    FJclHlpHelpFileName := FJclPath + JclHlpHelpFile;
+    FJclHxSHelpFileName := FJclPath + JclHxSHelpFile;
+    if not FileExists(FJclChmHelpFileName) then
+      FJclChmHelpFileName := '';
+    if not FileExists(FJclHlpHelpFileName) then
+      FJclHlpHelpFileName := '';
+    if not FileExists(FJclHxSHelpFileName) then
+      FJclHxSHelpFileName := '';
+    {$IFDEF MSWINDOWS}
+    // Reset ReadOnly flag for dialog forms
+    FileSetAttr(FClxDialogFileName, faArchive);
+    FileSetAttr(ChangeFileExt(FClxDialogFileName, '.xfm'), faArchive);
+    FileSetAttr(FVclDialogFileName, faArchive);
+    FileSetAttr(ChangeFileExt(FVclDialogFileName, '.dfm'), faArchive);
+    FileSetAttr(FVclDialogSendFileName, faArchive);
+    FileSetAttr(ChangeFileExt(FVclDialogSendFileName, '.dfm'), faArchive);
+    {$ENDIF MSWINDOWS}
+    FJclReadmeFileName := FJclPath + 'docs' + DirDelimiter + ReadmeFileName;
+    if Assigned(GUI) then
     begin
-      KeepSettings := MessageDlg('Do you want to keep JCL expert settings ?',
-        mtConfirmation, [mbYes, mbNo], 0) = mrYes;
-      Break;
+      ReadMePage := GUI.CreateReadmePage;
+      ReadMePage.Caption := Version;
+      ReadMePage.ReadmeFileName := FJclReadmeFileName;
     end;
 
-    for I := 0 to FTargetInstalls.Count - 1 do
+    {$IFDEF MSWINDOWS}
+    FCLRVersions.Clear;
+    JclDotNet.TJclClrHost.GetClrVersions(FCLRVersions);
+    {$ENDIF MSWINDOWS}
+  end;
+
+  procedure CreateInstallations;
+  begin
+    if not RADToolInstallations.Iterate(CreateInstall) then
+      raise EJediInstallInitFailure.CreateRes(@RsNoInstall);
+  end;
+
+  procedure InitInstallations;
+  var
+    I: Integer;
+  begin
+    for I := 0 to TargetInstallCount - 1 do
+      TargetInstalls[I].Init;
+  end;
+begin
+  FGUI := InstallCore.InstallGUI;
+
+  InitDistribution;
+  CreateInstallations;
+  InitInstallations;
+end;
+
+procedure TJclDistribution.Install;
+var
+  I: Integer;
+  KeepSettings, Success: Boolean;
+  AInstallation: TJclInstallation;
+begin
+  KeepSettings := True;
+  try
+    if Assigned(GUI) then
     begin
-      if not KeepSettings then
-        TJclInstallation(FTargetInstalls[I]).RemoveSettings;
-      TJclInstallation(FTargetInstalls[I]).Undo;
-      Result := TJclInstallation(FTargetInstalls[I]).Run;
-      if not Result then
-        Break;
+      GUI.Status := 'Initializing JCL installation process';
+
+      for I := 0 to TargetInstallCount - 1 do
+      begin
+        AInstallation := TargetInstalls[I];
+        if AInstallation.Enabled and (AInstallation.CLRVersion = '') then
+        begin
+          KeepSettings := GUI.Dialog('Do you want to keep JCL expert settings ?',
+            dtConfirmation, [drYes, drNo]) = drYes;
+          Break;
+        end;
+      end;
+    end;
+
+    FNbEnabled := 0;
+    FNbInstalled := 0;
+
+    for I := 0 to TargetInstallCount - 1 do
+      if TargetInstalls[I].Enabled then
+        Inc(FNbEnabled);
+
+    Success := True;
+    for I := 0 to TargetInstallCount - 1 do
+    begin
+      AInstallation := TargetInstalls[I];
+      if AInstallation.Enabled then
+      begin
+        if not KeepSettings then
+          AInstallation.RemoveSettings;
+        AInstallation.Uninstall;
+        Success := AInstallation.Install;
+        if not Success then
+          Break;
+        Inc(FNbInstalled);
+      end;
+    end;
+
+    if Assigned(GUI) then
+    begin
+      if Success then
+        GUI.Dialog('Installation success', dtInformation, [drOK])
+      else
+        GUI.Dialog('Installation failed, see logs for details', dtError, [drOK]);
     end;
   finally
-    Tool.UpdateStatus('');
-    FInstalling := False;
+    if Assigned(GUI) then
+      GUI.Status := 'Installation finished';
   end;
 end;
 
-function TJclDistribution.Uninstall: Boolean;
+procedure TJclDistribution.Uninstall;
 var
   I: Integer;
   Success: Boolean;
+  AInstallation: TJclInstallation;
 begin
-  Result := True;
   try
-    InitProgress;
-    for I := 0 to FTargetInstalls.Count - 1 do
+    if Assigned(GUI) then
+      GUI.Status := 'Initializing JCL uninstallation process';
+
+    Success := True;
+    for I := 0 to TargetInstallCount - 1 do
     begin
-      Success := TJclInstallation(FTargetInstalls[I]).RemoveSettings
-                 and TJclInstallation(FTargetInstalls[I]).Undo;
-      Result := Result and Success;
+      AInstallation := TargetInstalls[I];
+      if AInstallation.Enabled then
+        Success := Success and AInstallation.RemoveSettings and AInstallation.Uninstall;
+    end;
+
+    if Assigned(GUI) then
+    begin
+      if Success then
+        GUI.Dialog('Uninstallation success', dtInformation, [drOK])
+      else
+        GUI.Dialog('Uninstallation failed, see logs for details', dtError, [drOK]);
     end;
   finally
-    Tool.UpdateStatus('');
+    if Assigned(GUI) then
+      GUI.Status := 'Uninstallation finished';
   end;
 end;
 
-procedure TJclDistribution.InstallProgress(Steps: Integer);
-begin
-  if Steps > 0 then
-  begin
-    Inc(FProgress, Steps);
-    ShowProgress;
-  end;
-end;
+initialization
 
-function TJclDistribution.ReadmeFileName: string;
-begin
-  Result := FJclReadmeFileName;
-end;
-
-procedure TJclDistribution.SetOnWriteLog(Installation: TJclBorRADToolInstallation; Value: TTextHandler);
-begin
-  TargetInstall[Installation].OnWriteLog := Value;
-end;
-
-procedure TJclDistribution.SetOnEnding(Value: TInstallationEvent);
-begin
-  FOnEnding := Value;
-end;
-
-procedure TJclDistribution.SetOnProgress(Value: TInstallationProgressEvent);
-begin
-  FOnProgress := Value;
-end;
-
-procedure TJclDistribution.SetOnStarting(Value: TInstallationEvent);
-begin
-  FOnStarting := Value;
-end;
-
-procedure TJclDistribution.SetTool(const Value: IJediInstallTool);
-begin
-  FTool := Value;
-  InitInformation(ParamStr(0));
-  InitInstallationTargets;
-end;
-
-procedure TJclDistribution.ShowProgress;
-var
-  Percent: Integer;
-begin
-  if (FProgressTotal > 0) and Assigned(FOnProgress) then
-  begin
-    Percent := (FProgress * 100) div FProgressTotal;
-    if Percent <> FProgressPercent then
-    begin
-      FProgressPercent := Percent;
-      FOnProgress(Percent);
-    end;
-  end;
-end;
-
-function TJclDistribution.Supports(Target: TJclBorRADToolInstallation): Boolean;
-begin
-  {$IFDEF KYLIX}
-  Result := Target.VersionNumber = 3;
-  {$ELSE ~KYLIX}
-  case Target.RadToolKind of
-    brDelphi :
-      Result := Target.VersionNumber in [5, 6, 7];
-    brCppBuilder :
-      Result := Target.VersionNumber in [5, 6];
-    brBorlandDevStudio :
-      Result := Target.VersionNumber in [1, 2, 3, 4];
-    else
-      Result := False;
-  end;
-  {$ENDIF ~KYLIX}
-end;
+JediInstall.InstallCore.AddProduct(TJclDistribution.Create);
 
 end.
