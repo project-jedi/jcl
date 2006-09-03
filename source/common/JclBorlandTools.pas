@@ -179,6 +179,8 @@ type
   
   TJclBorDesigners = set of TJClBorDesigner;
 
+  TJclBorPlatform = (bp32bit, bp64bit);
+
 const
   JclBorPersonalityDescription: array [TJclBorPersonality] of string =
    (
@@ -427,15 +429,17 @@ type
     procedure SaveOptionsToFile(const ConfigFileName: string);
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
+    function GetConfigFileName: string; virtual;
   public
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
     function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
-    procedure SetDefaultOptions;
+    procedure SetDefaultOptions; virtual;
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
     {$ENDIF KEEP_DEPRECATED}
     property OnBeforeSaveOptionsToFile: TNotifyEvent read FOnBeforeSaveOptionsToFile write FOnBeforeSaveOptionsToFile;
+    property ConfigFileName: string read GetConfigFileName;
   end;
   {$IFDEF KEEP_DEPRECATED}
   TJclDCC = TJclDCC32;
@@ -557,7 +561,6 @@ type
     function GetLibraryBrowsingPath: TJclBorRADToolPath;
     procedure SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetDebugDCUPath(const Value: TJclBorRADToolPath);
-    procedure SetOutputCallback(const Value: TTextHandler);
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
 
@@ -594,6 +597,7 @@ type
     function GetName: string; virtual;
     procedure OutputString(const AText: string);
     function OutputFileDelete(const FileName: string): Boolean;
+    procedure SetOutputCallback(const Value: TTextHandler); virtual;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
@@ -647,6 +651,7 @@ type
     function SupportsBCB: Boolean;
     {$ENDIF KEEP_DEPRECATED}
     function SupportsVisualCLX: Boolean;
+    function SupportsVCL: Boolean;
     function LibFolderName: string;
     // Command line tools
     property CommandLineTools: TCommandLineTools read FCommandLineTools;
@@ -737,15 +742,31 @@ type
   end;
 
   {$IFDEF MSWINDOWS}
+  TJclDCCIL = class(TJclDCC32)
+  private
+    FMaxCLRVersion: string;
+  protected
+    function GetExeName: string; override;
+    function GetConfigFileName: string; override;
+    function GetMaxCLRVersion: string;
+  public
+    function MakeProject(const ProjectName, OutputDir, ExtraOptions: string): Boolean; reintroduce;
+    procedure SetDefaultOptions; override;
+    property MaxCLRVersion: string read GetMaxCLRVersion;
+  end;
+
   TJclBDSInstallation = class(TJclBorRADToolInstallation)
   private
     FDualPackageInstallation: Boolean;
     FHelp2Manager: TJclHelp2Manager;
+    FDCCIL: TJclDCCIL;
+    FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
     function GetCppBrowsingPath: TJclBorRADToolPath;
     function GetCppSearchPath: TJclBorRADToolPath;
     procedure SetCppBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetCppSearchPath(const Value: TJclBorRADToolPath);
+    function GetMaxDelphiCLRVersion: string;
   protected
     constructor Create(const AConfigDataLocation: string); override;
     function GetDCPOutputPath: string; override;
@@ -756,6 +777,7 @@ type
       const DcpSearchPath: string): Boolean; override;
     function GetVclIncludeDir: string; override;
     function GetName: string; override;
+     procedure SetOutputCallback(const Value: TTextHandler); override;
   public
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
@@ -778,8 +800,15 @@ type
     function UnregisterPackage(const BinaryFileName: string): Boolean; override;
     function CleanPackageCache(const BinaryFileName: string): Boolean;
 
+    function CompileDelphiDotNetProject(const ProjectName, OutputDir: string;
+      PEFormat: TJclBorPlatform = bp32bit;
+      const CLRVersion: string = ''; const ExtraOptions: string = ''): Boolean;
+
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
+    property DCCIL: TJclDCCIL read FDCCIL;
+    property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
+    property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
   end;
   {$ENDIF MSWINDOWS}
 
@@ -876,6 +905,7 @@ type
     Version: Integer;
     CoreIdeVersion: string;
     ProjectsDirResId: Integer;
+    CLRVersionResId: Integer;
     Supported: Boolean;
   end;
   {$ENDIF MSWINDOWS}
@@ -899,6 +929,7 @@ const
       Version: 1;
       CoreIdeVersion: '71';
       ProjectsDirResId: 64507;
+      CLRVersionResId: 0;  // no dccil.exe
       Supported: True),
     (
       Name: RsDelphiName;
@@ -906,6 +937,7 @@ const
       Version: 8;
       CoreIdeVersion: '71';
       ProjectsDirResId: 64460;
+      CLRVersionResId: 9499;
       Supported: True),
     (
       Name: RsDelphiName;
@@ -913,6 +945,7 @@ const
       Version: 9;
       CoreIdeVersion: '90';
       ProjectsDirResId: 64431;
+      CLRVersionResId: 9499;
       Supported: True),
     (
       Name: RsBDSName;
@@ -920,6 +953,7 @@ const
       Version: 10;
       CoreIdeVersion: '100';
       ProjectsDirResId: 64719;
+      CLRVersionResId: 9500;
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -987,6 +1021,13 @@ const
   HelpProjectFileName        = '%s\Help\%s%d.ohp';
   HelpGidFileName            = '%s\Help\%s%d.gid';      
   {$ENDIF MSWINDOWS}
+
+  {$IFDEF MSWINDOWS}
+  DCC32ConfigurationFile = 'DCC32.CFG';
+  {$ELSE MSWINDOWS}
+  DCC32ConfigurationFile = 'dcc.conf';
+  {$ENDIF MSWINDOWS}
+  DCCILConfigurationFile = 'DCCIL.CFG';
 
   {$IFDEF KYLIX}
   IDs: array [TKylixVersion] of Integer = (60, 65, 69);
@@ -2220,18 +2261,16 @@ begin
 end;
 
 function TJclDCC32.Execute(const CommandLine: string): Boolean;
-const
-  {$IFDEF WIN32}
-  ConfFileName = 'DCC32.CFG';
-  {$ENDIF WIN32}
-  {$IFDEF KYLIX}
-  ConfFileName = 'dcc.conf';
-  {$ENDIF KYLIX}
 begin
   FOutput := '';
-  SaveOptionsToFile(ConfFileName);
+  SaveOptionsToFile(ConfigFileName);
   Result := inherited Execute(CommandLine);
-  FileDelete(ConfFileName);
+  FileDelete(ConfigFileName);
+end;
+
+function TJclDCC32.GetConfigFileName: string;
+begin
+  Result := DCC32ConfigurationFile;
 end;
 
 procedure TJclDCC32.SaveOptionsToFile(const ConfigFileName: string);
@@ -2322,6 +2361,7 @@ begin
   SetCurrentDir(ExtractFilePath(PackageName) + '.');
   try
     Options.Clear;
+    SetDefaultOptions;
     AddProjectOptions(PackageName, DCPPath);
     AddPathOption('LN', DCPPath);
     AddPathOption('LE', BPLPath);
@@ -2341,6 +2381,7 @@ begin
   SetCurrentDir(ExtractFilePath(ProjectName) + '.');
   try
     Options.Clear;
+    SetDefaultOptions;
     AddProjectOptions(ProjectName, DcpSearchPath);
     AddPathOption('E', OutputDir);
     Options.Add(ExtraOptions);
@@ -2373,6 +2414,83 @@ begin
   Result := Installation.SupportsLibSuffix;
 end;
 {$ENDIF KEEP_DEPRECATED}
+
+{$IFDEF MSWINDOWS}
+//=== { TJclDCCIL } ==========================================================
+                                         
+function TJclDCCIL.GetConfigFileName: string;
+begin
+  Result := DCCILConfigurationFile;
+end;
+
+function TJclDCCIL.GetExeName: string;
+begin
+  Result := DCCILExeName;
+end;
+
+function TJclDCCIL.GetMaxCLRVersion: string;
+var
+  H: HMODULE;
+  FileName: string;
+  StartPos, EndPos: Integer;
+begin
+  if FMaxCLRVersion <> '' then
+  begin
+    Result := FMaxCLRVersion;
+    Exit;
+  end;
+
+  Result := 'v1.1.4322'; // do not localize
+
+  FileName := Installation.BinFolderName + GetExeName;
+
+  H := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+  if H <> 0 then
+  begin
+    SetLength(Result, 1024);
+    SetLength(Result, LoadString(H, BDSVersions[Installation.IDEVersionNumber].CLRVersionResId,
+      PChar(Result), Length(Result) - 1));
+    FreeLibrary(H);
+  end;
+
+  StartPos := Pos(':', Result);
+  if StartPos = 0 then
+    StartPos := Pos('=', Result);
+
+  if StartPos > 0 then
+    Result := Copy(Result, StartPos + 1, Length(Result) - StartPos);
+    
+  EndPos := Pos(' ', Result);
+  if EndPos > 0 then
+    SetLength(Result, EndPos - 1);
+
+  FMaxCLRVersion := Result;
+end;
+
+function TJclDCCIL.MakeProject(const ProjectName, OutputDir,
+  ExtraOptions: string): Boolean;
+var
+  SaveDir: string;
+begin
+  SaveDir := GetCurrentDir;
+  SetCurrentDir(ExtractFilePath(ProjectName) + '.');
+  try
+    Options.Clear;
+    SetDefaultOptions;
+    AddPathOption('E', OutputDir);
+    Options.Add(ExtraOptions);
+    Result := Compile(ProjectName);
+  finally
+    SetCurrentDir(SaveDir);
+  end;
+end;
+procedure TJclDCCIL.SetDefaultOptions;
+begin
+  Options.Clear;
+  AddPathOption('U', Installation.LibFolderName);
+end;
+
+{$ENDIF MSWINDOWS}
 
 //=== { TJclBorlandMake } ====================================================
 
@@ -3677,6 +3795,15 @@ begin
 end;
 {$ENDIF KEEP_DEPRECATED}
 
+function TJclBorRADToolInstallation.SupportsVCL: Boolean;
+begin
+  {$IFDEF KYLIX}
+  Result := False;
+  {$ELSE ~KYLIX}
+  Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6);
+  {$ENDIF ~KYLIX}
+end;
+
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
 begin
   {$IFDEF KYLIX}
@@ -4119,10 +4246,13 @@ begin
 
   if FPersonalities = [] then
     raise EJclBorRadException.CreateRes(@RsENoSupportedPersonality);
+
+  FDCCIL := TJclDCCIL.Create(Self);
 end;
 
 destructor TJclBDSInstallation.Destroy;
 begin
+  FDCCIL.Free;
   FHelp2Manager.Free;
   inherited Destroy;
 end;
@@ -4183,6 +4313,49 @@ begin
   end;
 end;
 
+function TJclBDSInstallation.CompileDelphiDotNetProject(const ProjectName,
+  OutputDir: string; PEFormat: TJclBorPlatform; const CLRVersion,
+  ExtraOptions: string): Boolean;
+var
+  DCCILOptions, PlatformOption, PdbOption: string;
+begin
+  if VersionNumber >= 2 then   // C#Builder 1 doesn't have any Delphi.net compiler
+  begin
+    OutputString(Format(RsCompilingProject, [ProjectName]));
+
+    if not IsDelphiProject(ProjectName) then
+      raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
+
+    PlatformOption := '';
+    case PEFormat of
+      bp32bit:
+        if VersionNumber >= 3 then
+          PlatformOption := 'x86';
+      bp64bit:
+        if VersionNumber >= 3 then
+          PlatformOption := 'x64'
+        else
+          raise EJclBorRADException.CreateRes(@RsEx64PlatformNotValid);
+    end;
+
+    if PdbCreate then
+      PdbOption := '-V'
+    else
+      PdbOption := '';
+
+    DCCILOptions := Format('%s --platform:%s %s', [ExtraOptions, PlatformOption, PdbOption]);
+
+    Result := DCCIL.MakeProject(ProjectName, OutputDir, DCCILOptions);
+
+    if Result then
+      OutputString(RsCompilationOk)
+    else
+      OutputString(RsCompilationFailed);
+  end
+  else
+    raise EJclBorRADException.CreateRes(@RsENoSupportedPersonality);
+end;
+
 function TJclBDSInstallation.CompileDelphiPackage(const PackageName, BPLPath, DCPPath, ExtraOptions: string): Boolean;
 var
   NewOptions: string;
@@ -4235,7 +4408,7 @@ begin
     Result := inherited CompileDelphiProject(ProjectName, DcpSearchPath, OutputDir);
 end;
 
-{ TODO -cHelp : Donator: Adreas Hausladen }
+{ TODO -cHelp : Donator: Andreas Hausladen }
 function TJclBDSInstallation.GetBorlandStudioProjectsDir: string;
 var
   H: HMODULE;
@@ -4334,6 +4507,11 @@ begin
   end;
 end;
 
+function TJclBDSInstallation.GetMaxDelphiCLRVersion: string;
+begin
+  Result := DCCIL.GetMaxCLRVersion;
+end;
+
 function TJclBDSInstallation.GetName: string;
 begin
   if VersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
@@ -4423,6 +4601,13 @@ begin
   if Value and not (bpBCBuilder32 in Personalities) then
     raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
   FDualPackageInstallation := Value;
+end;
+
+procedure TJclBDSInstallation.SetOutputCallback(const Value: TTextHandler);
+begin
+  inherited SetOutputCallback(Value);
+  if clDccIL in CommandLineTools then
+    DCCIL.OutputCallback := Value;
 end;
 
 function TJclBDSInstallation.UnregisterPackage(const BinaryFileName: string): Boolean;
