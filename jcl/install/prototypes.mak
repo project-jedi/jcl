@@ -8,29 +8,34 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uVCL -x.\Q
-VclOptions      = -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -x.\\
+VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uVCL -xClxGui\Q
+VclOptions      = -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\\
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 jpp = ..\devtools\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	VclUnits ClxUnits
+default:	VclGuiUnits ClxGuiUnits
 #---------------------------------------------------------------------------------------------------
 
-VclUnits:       ProductFrames.pas \
-                JediInstallerMain.pas
+VclGuiUnits:    VclGui\JediGUIMain.pas \
+                VClGui\JediGUIReadme.pas \
+                VclGui\JediGUIInstall.pas
 
-ClxUnits:       QProductFrames.pas \
-                QJediInstallerMain.pas
+ClxGuiUnits:    ClxGui\QJediGUIMain.pas \
+                ClxGui\QJediGUIReadme.pas \
+                ClxGui\QJediGUIInstall.pas
 
-{prototypes}.pas{.}.pas:
-	$(jpp) $(VclOptions) $<
+{prototypes}.pas{VclGui}.pas:
+        $(jpp) $(VclOptions) $<
 
-
-QJediInstallerMain.pas: \
-        prototypes\JediInstallerMain.pas
+ClxGui\QJediGUIMain.pas: \
+        prototypes\JediGUIMain.pas
         $(jpp) $(VClxOptions) $?
 
-QProductFrames.pas: \
-        prototypes\ProductFrames.pas
+ClxGui\QJediGUIReadme.pas: \
+        prototypes\JediGUIReadme.pas
+        $(jpp) $(VClxOptions) $?
+
+ClxGui\QJediGUIInstall.pas: \
+        prototypes\JediGUIInstall.pas
         $(jpp) $(VClxOptions) $?
