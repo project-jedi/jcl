@@ -693,7 +693,6 @@ begin
   FDistribution := JclDistribution;
   FCLRVersion := ACLRVersion;
   FTargetPlatform := ATargetPlatform;
-  InstallTarget.OutputCallback := WriteLog;
   FTargetName := Target.Name;
   if CLRVersion <> '' then
     FTargetName := Format('%s CLR %s', [FTargetName, CLRVersion]);
@@ -1751,10 +1750,12 @@ function TJclInstallation.Install: Boolean;
   end;
   
 begin
-  if Assigned(GUI) then
-    GUI.Status := Format(RsInstallMessage, [TargetName]);
-
   try
+    Target.OutputCallback := WriteLog;
+
+    if Assigned(GUI) then
+      GUI.Status := Format(RsInstallMessage, [TargetName]);
+
     if Assigned(GUIPage) then
     begin
       GUIPage.Show;
@@ -1768,6 +1769,7 @@ begin
     if not Result then
       Uninstall;
   finally
+    Target.OutputCallback := nil;
     WriteLog('');
     if Assigned(GUIPage) then
       GUIPage.EndInstall;
@@ -2021,23 +2023,28 @@ function TJclInstallation.Uninstall: Boolean;
   end;
 
 begin
-  if Assigned(GUI) then
-    GUI.Status := Format(RsUninstallMessage, [TargetName]);
-  if Assigned(GUIPage) then
-    GUIPage.Show;
+  try
+    Target.OutputCallback := WriteLog;
+    if Assigned(GUI) then
+      GUI.Status := Format(RsUninstallMessage, [TargetName]);
+    if Assigned(GUIPage) then
+      GUIPage.Show;
 
-  WriteLog(StrPadRight('Starting Uninstall process', 44, '.'));
+    WriteLog(StrPadRight('Starting Uninstall process', 44, '.'));
 
-  RemoveEnvironment;
-  RemoveMake;
-  UninstallPackages;
-  {$IFDEF MSWINDOWS}
-  UninstallExperts;
-  UninstallHelp;
-  {$ENDIF MSWINDOWS}
-  // TODO: ioJclCopyPackagesHppFiles
-  UninstallRepository;
-  // TODO: ioJclMakeDemos:
+    RemoveEnvironment;
+    RemoveMake;
+    UninstallPackages;
+    {$IFDEF MSWINDOWS}
+    UninstallExperts;
+    UninstallHelp;
+    {$ENDIF MSWINDOWS}
+    // TODO: ioJclCopyPackagesHppFiles
+    UninstallRepository;
+    // TODO: ioJclMakeDemos:
+  finally
+    Target.OutputCallback := nil;
+  end;
 
   Result := True;
 end;
