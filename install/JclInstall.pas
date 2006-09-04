@@ -278,16 +278,11 @@ implementation
 
 uses
   TypInfo,
-  {$IFDEF VCL}
-//  Dialogs, Controls,
-  {$ELSE VCL}
-//  QDialogs, QControls,
-  {$ENDIF VCL}
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
   JclPeImage,
   JclRegistry,
-//  MSHelpServices_TLB,
+  JclDebug,
   JclDotNet,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
@@ -1311,7 +1306,7 @@ function TJclInstallation.Install: Boolean;
       if OptionChecked[joEnvLibPath] then
       begin
         MarkOptionBegin(joEnvLibPath);
-        Result := Target.AddToLibrarySearchPath(FLibDir) and Target.AddToLibrarySearchPath(Distribution.JclPath);
+        Result := Target.AddToLibrarySearchPath(FLibDir) and Target.AddToLibrarySearchPath(Distribution.JclSourceDir);
         if Result then
         begin
           WriteLog(Format('Added "%s;%s" to library search path.', [FLibDir, Distribution.JclSourceDir]));
@@ -3002,6 +2997,13 @@ var
 begin
   KeepSettings := True;
   try
+    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    begin
+      if Assigned(GUI) then
+        GUI.Dialog(RsCloseRADTool, dtError, [drCancel]);
+      Exit;
+    end;
+
     if Assigned(GUI) then
     begin
       GUI.Status := 'Initializing JCL installation process';
@@ -3061,6 +3063,13 @@ var
   AInstallation: TJclInstallation;
 begin
   try
+    if RadToolInstallations.AnyInstanceRunning {$IFDEF MSWINDOWS} and not IsDebuggerAttached {$ENDIF} then
+    begin
+      if Assigned(GUI) then
+        GUI.Dialog(RsCloseRADTool, dtError, [drCancel]);
+      Exit;
+    end;
+
     if Assigned(GUI) then
       GUI.Status := 'Initializing JCL uninstallation process';
 
