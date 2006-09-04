@@ -20,7 +20,7 @@
 {   - Robert Rossmair - crossplatform & BCB support, refactoring                                   }
 {   - Florent Ouchet (outchy) - New installer core for .net compilation                            }
 {                                                                                                  }
-{ Last modified: $Date$                           }
+{ Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1460,7 +1460,8 @@ function TJclInstallation.Install: Boolean;
       if CLRVersion = '' then
       begin
         {$IFDEF MSWINDOWS}
-        InstallJediRegInformation(Target.ConfigDataLocation, 'JCL', Distribution.Version,
+        InstallJediRegInformation(Target.ConfigDataLocation, 'JCL',
+          Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]), 
           GetDcpPath, GetBplPath, Distribution.FJclPath);
         {$ENDIF MSWINDOWS}
         Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
