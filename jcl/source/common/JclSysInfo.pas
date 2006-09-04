@@ -1881,6 +1881,23 @@ end;
 { TODO -cHelp : Donator (incl. TFileSystemFlag[s]): Robert Rossmair }
 
 function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
+const
+  FileSystemFlags: array [TFileSystemFlag] of DWORD =
+    ( FILE_CASE_SENSITIVE_SEARCH,   // fsCaseSensitive
+      FILE_CASE_PRESERVED_NAMES,    // fsCasePreservedNames
+      FILE_UNICODE_ON_DISK,         // fsSupportsUnicodeOnDisk
+      FILE_PERSISTENT_ACLS,         // fsPersistentACLs
+      FILE_FILE_COMPRESSION,        // fsSupportsFileCompression
+      FILE_VOLUME_QUOTAS,           // fsSupportsVolumeQuotas
+      FILE_SUPPORTS_SPARSE_FILES,   // fsSupportsSparseFiles
+      FILE_SUPPORTS_REPARSE_POINTS, // fsSupportsReparsePoints
+      FILE_SUPPORTS_REMOTE_STORAGE, // fsSupportsRemoteStorage
+      FILE_VOLUME_IS_COMPRESSED,    // fsVolumeIsCompressed
+      FILE_SUPPORTS_OBJECT_IDS,     // fsSupportsObjectIds
+      FILE_SUPPORTS_ENCRYPTION,     // fsSupportsEncryption
+      FILE_NAMED_STREAMS,           // fsSupportsNamedStreams
+      FILE_READ_ONLY_VOLUME         // fsVolumeIsReadOnly
+    );
 var
   MaximumComponentLength, Flags: Cardinal;
   Flag: TFileSystemFlag;
@@ -1890,7 +1907,7 @@ begin
     RaiseLastOSError;
   Result := [];
   for Flag := Low(TFileSystemFlag) to High(TFileSystemFlag) do
-    if (Flags and Ord(Flag)) <> 0 then
+    if (Flags and FileSystemFlags[Flag]) <> 0 then
       Include(Result, Flag);
 end;
 
