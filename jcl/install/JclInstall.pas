@@ -1461,7 +1461,7 @@ function TJclInstallation.Install: Boolean;
         Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
         if Target.SupportsVisualCLX then
           Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
-        if (Target.VersionNumber >= 6)
+        if ((Target.VersionNumber >= 6) and (Target.RadToolKind <> brBorlandDevStudio))
           or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
           Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk), False);
         MarkOptionEnd(joPackages, Result);
@@ -1887,7 +1887,8 @@ function TJclInstallation.Uninstall: Boolean;
       UninstallPackage(FullPackageFileName(Target, JclDpk));
       if Target.SupportsVisualCLX then
         UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
-      if (Target.VersionNumber >= 6) or (Target.RadToolKind = brBorlandDevStudio) then
+      if ((Target.VersionNumber >= 6) and (Target.RadToolKind <> brBorlandDevStudio))
+        or ((Target.VersionNumber >=3) and (Target.RadToolKind = brBorlandDevStudio)) then
         UninstallPackage(FullPackageFileName(Target, JclVclDpk));
       {$IFDEF MSWINDOWS}
       RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
