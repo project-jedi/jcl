@@ -801,9 +801,9 @@ end;
 
 procedure TInstallFrame.AddText(const Line: string);
 begin
-  {$IFDEF VCL}
-  GetFormCompile.AddText(Line);
-  {$ENDIF VCL}
+  //{$IFDEF VCL}
+  //GetFormCompile.AddText(Line);
+  //{$ENDIF VCL}
   AddLogLine(Line);
 end;
 
