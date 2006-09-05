@@ -1887,7 +1887,7 @@ function TJclInstallation.Uninstall: Boolean;
       UninstallPackage(FullPackageFileName(Target, JclDpk));
       if Target.SupportsVisualCLX then
         UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
-      if Target.VersionNumber >= 6 then
+      if (Target.VersionNumber >= 6) or (Target.RadToolKind = brBorlandDevStudio) then
         UninstallPackage(FullPackageFileName(Target, JclVclDpk));
       {$IFDEF MSWINDOWS}
       RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
@@ -1990,9 +1990,13 @@ function TJclInstallation.Uninstall: Boolean;
   begin
     if CLRVersion = '' then
     begin
-      RemoveHelpFromOpenHelp;
-      RemoveHelpFromIdeTools;
-      UnregisterHelp2Files;
+      if Target.RadToolKind <> brBorlandDevStudio then
+      begin
+        RemoveHelpFromOpenHelp;
+        RemoveHelpFromIdeTools;
+      end
+      else
+        UnregisterHelp2Files;
     end;
   end;
   {$ENDIF MSWINDOWS}
@@ -2003,7 +2007,7 @@ function TJclInstallation.Uninstall: Boolean;
       WriteLog(Format('Removed %s.', [DialogName]));
     end;
   begin
-    if CLRVersion = '' then
+    if (CLRVersion = '') and (Target.RadToolKind <> brBorlandDevStudio) then
     begin
       {$IFDEF MSWINDOWS}
       // ioJclExcDialog

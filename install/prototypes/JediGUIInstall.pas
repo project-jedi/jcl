@@ -605,7 +605,7 @@ function TInstallFrame.AddDirectory(Caption: string): Integer;
 var
   ADirectoryRec: PDirectoryRec;
   ALabel: TLabel;
-  ControlTop, ButtonWidth: Integer;
+  ControlTop, ButtonWidth, LabelRight: Integer;
 begin
   if FDirectories.Count > 0 then
   begin
@@ -629,9 +629,10 @@ begin
   ADirectoryRec^.Button.Anchors := [akTop, akRight];
 
   ButtonWidth := 2 * ALabel.Height;
+  LabelRight := (ALabel.Width div 16) * 16 + 32 + ALabel.Left; // make edits aligned when label widths are nearly equals
 
-  ADirectoryRec^.Edit.SetBounds(4 * ALabel.Height + 8, ControlTop,
-    OptionsGroupBox.ClientWidth - 4 * ALabel.Height - ButtonWidth - 32,
+  ADirectoryRec^.Edit.SetBounds(LabelRight, ControlTop,
+    OptionsGroupBox.ClientWidth - LabelRight - ButtonWidth - 16,
     ADirectoryRec^.Edit.Height);
   ADirectoryRec^.Button.SetBounds(OptionsGroupBox.ClientWidth - ButtonWidth - 8,
     ControlTop, ButtonWidth, ADirectoryRec^.Edit.Height);
