@@ -2969,7 +2969,11 @@ procedure TJclDistribution.Init;
 
     {$IFDEF MSWINDOWS}
     FCLRVersions.Clear;
-    JclDotNet.TJclClrHost.GetClrVersions(FCLRVersions);
+    try
+      JclDotNet.TJclClrHost.GetClrVersions(FCLRVersions);
+    except
+      // trap exceptions when no .net runtimes are installed
+    end;
     {$ENDIF MSWINDOWS}
   end;
 
