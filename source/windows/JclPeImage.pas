@@ -5080,10 +5080,10 @@ begin
           if FoundProc then
           begin
             if VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc),
-              PAGE_READWRITE, @LastProtect) then
-            begin
+              PAGE_EXECUTE_READWRITE, @LastProtect) then
+            try
               ImportEntry^.Function_ := Cardinal(ToProc);
-
+            finally
               // According to Platform SDK documentation, the last parameter
               // has to be (point to) a valid variable
               VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc),
