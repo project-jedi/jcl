@@ -644,8 +644,19 @@ end;
 function WriteProtectedMemory(BaseAddress, Buffer: Pointer;
   Size: Cardinal; out WrittenBytes: Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
+var
+  OldProtect, Dummy: Cardinal;
 begin
-  Result := WriteProcessMemory(GetCurrentProcess, BaseAddress, Buffer, Size, WrittenBytes);
+  // (outchy) VirtualProtect for DEP issues
+  // Result := WriteProcessMemory(GetCurrentProcess, BaseAddress, Buffer, Size, WrittenBytes);
+  Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
+  if Result then
+  try
+    Move(Buffer^, BaseAddress^, Size);
+    WrittenBytes := Size;
+  finally
+    VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+  end;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
