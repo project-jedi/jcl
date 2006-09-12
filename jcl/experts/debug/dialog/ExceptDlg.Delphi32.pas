@@ -169,7 +169,7 @@ var
   TApplicationHandleExceptionAddr, SysUtilsShowExceptionAddr: Pointer;
   CALLInstruction: TCALLInstruction;
   CallAddress: Pointer;
-  OldProtect: DWORD;
+  OldProtect, Dummy: DWORD;
 
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
@@ -203,7 +203,7 @@ begin
       if Result then
         FlushInstructionCache(GetCurrentProcess, CallAddress, SizeOf(CALLInstruction));
     finally
-      VirtualProtect(CallAddress, sizeof(CallInstruction), OldProtect, OldProtect);
+      VirtualProtect(CallAddress, sizeof(CallInstruction), OldProtect, Dummy);
     end;
   end;
 end;
