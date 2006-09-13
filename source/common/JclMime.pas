@@ -22,6 +22,7 @@
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   edbored                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -645,7 +646,7 @@ begin
     B := B or InPtr^.B2;
     B := B shl 8;
     B := B or InPtr^.B3;
-    Inc(InPtr, 3);
+    Inc(InPtr);
     { Write 4 bytes to OutputBuffer (in reverse order). }
     OutPtr^.B4 := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
@@ -654,7 +655,7 @@ begin
     OutPtr^.B2 := MIME_ENCODE_TABLE[B and $3F];
     B := B shr 6;
     OutPtr^.B1 := MIME_ENCODE_TABLE[B];
-    Inc(OutPtr, 3);
+    Inc(OutPtr);
   end;
 
   { End of data & padding. }
@@ -740,7 +741,7 @@ begin
         LByteBuffer := LByteBuffer shr 8;
         OutputBuffer[OutIndex + 0] := Byte(LByteBuffer);
         LByteBuffer := 0;
-        Inc(OutINdex);
+        Inc(OutIndex, 3);
         LByteBufferSpace := 4;
       end;
       ByteBuffer := LByteBuffer;
@@ -786,7 +787,7 @@ begin
       LByteBuffer := LByteBuffer shr 8;
       OutPtr^.B1 := Byte(LByteBuffer);
       LByteBuffer := 0;
-      Inc(OutPtr, 3);
+      Inc(OutPtr);
       LByteBufferSpace := 4;
     end;
     ByteBuffer := LByteBuffer;
