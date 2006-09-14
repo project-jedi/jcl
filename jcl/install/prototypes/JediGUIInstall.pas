@@ -32,10 +32,10 @@ unit QJediGUIInstall;
 {$ENDIF VisualCLX}
 {$ENDIF ~PROTOTYPE}
 
-interface
-
 {$I jcl.inc}
 {$I crossplatform.inc}
+
+interface
 
 uses
   SysUtils, Classes,
@@ -132,11 +132,11 @@ type
 
 implementation
 
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ELSE}
+{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ELSE VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 uses
   {$IFDEF MSWINDOWS}
