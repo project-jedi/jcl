@@ -25,14 +25,21 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ This include file defines various JCL specific defines for BDS 2006 (Delphi.net and C#).         }
+{ This include file defines various JCL specific defines.                                          }
 { The more generic JCL defines are defined in jcl.inc and the generic defines in the jedi.inc file }
 { which is shared with the JEDI VCL.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
+{                                                                                                  }
+{ This file is filled by the JCL installer, all the changes made in its content will be lost the   }
+{ next time the JCL is installed.                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// $Id$
 
 // Math precision selection, mutually exclusive
-{$DEFINE MATH_EXTENDED_PRECISION}
+{.$DEFINE MATH_EXTENDED_PRECISION}
 {.$DEFINE MATH_DOUBLE_PRECISION}
 {.$DEFINE MATH_SINGLE_PRECISION}
 
