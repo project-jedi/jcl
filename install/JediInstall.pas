@@ -291,6 +291,9 @@ begin
   for Index := FProducts.Size - 1 downto 0 do
     (FProducts.GetObject(Index) as IJediProduct).Close;
   FProducts.Clear;
+  FProducts := nil;
+  FInstallGUI := nil;
+  FConfiguration := nil;
 end;
 
 constructor TJediInstallCore.Create;
