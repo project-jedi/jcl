@@ -43,90 +43,95 @@ ALERT_jedi_inc_incompatible
 // secure against old versions of jedi.inc.
 {$ENDIF ~JEDI_INC}
 
-{$IFDEF CLR}
-  {----------------------------}
-  { BDS                        }
-  {----------------------------}
-  {$IFDEF BDS3}
-    {$I jcld9.net.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS3}
-  {----------------------------}
-  {$IFDEF BDS4}
-    {$I jcld10.net.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS4}
-  {----------------------------}
-{$ELSE CLR}
-  {----------------------------}
-  { Kylix                      }
-  {----------------------------}
-  {$IFDEF KYLIX3}
-    {$I jclk3.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF KYLIX3}
-  {----------------------------}
-  { C++Builder                 }
-  {----------------------------}
-  {$IFDEF BCB5}
-    {$I jclc5.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BCB5}
-  {----------------------------}
-  {$IFDEF BCB6}
-    {$I jclc6.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BCB6}
-  {----------------------------}
-  { Delphi                     }
-  {----------------------------}
-  {$IFDEF DELPHI5}
-    {$I jcld5.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF DELPIH5}
-  {----------------------------}
-  {$IFDEF DELPHI6}
-    {$I jcld6.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF DELPIH6}
-  {----------------------------}
-  {$IFDEF DELPHI7}
-    {$I jcld7.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF DELPIH7}  
-  {----------------------------}
-  { BDS                        }
-  {----------------------------}
-  {$IFDEF BDS1}
-    {$I jclcs1.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS1}
-  {----------------------------}
-  {$IFDEF BDS2}
-    {$I jcld8.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS2}
-  {----------------------------}
-  {$IFDEF BDS3}
-    {$I jcld9.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS3}
-  {----------------------------}
-  {$IFDEF BDS4}
-    {$I jcld10.inc}
-    {$DEFINE JCL_CONFIGURED}
-  {$ENDIF BDS4}
-  {----------------------------}
-{$ENDIF ~CLR}
+{$IFNDEF JCLINSTALL}
+  {$IFDEF CLR}
+    {----------------------------}
+    { BDS                        }
+    {----------------------------}
+    {$IFDEF BDS3}
+      {$I jcld9.net.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS3}
+    {----------------------------}
+    {$IFDEF BDS4}
+      {$I jcld10.net.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS4}
+    {----------------------------}
+  {$ELSE ~CLR}
+    {----------------------------}
+    { Kylix                      }
+    {----------------------------}
+    {$IFDEF KYLIX3}
+      {$I jclk3.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF KYLIX3}
+    {----------------------------}
+    { C++Builder                 }
+    {----------------------------}
+    {$IFDEF BCB5}
+      {$I jclc5.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BCB5}
+    {----------------------------}
+    {$IFDEF BCB6}
+      {$I jclc6.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BCB6}
+    {----------------------------}
+    { Delphi                     }
+    {----------------------------}
+    {$IFDEF DELPHI5}
+      {$I jcld5.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF DELPIH5}
+    {----------------------------}
+    {$IFDEF DELPHI6}
+      {$I jcld6.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF DELPIH6}
+    {----------------------------}
+    {$IFDEF DELPHI7}
+      {$I jcld7.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF DELPIH7}  
+    {----------------------------}
+    { BDS                        }
+    {----------------------------}
+    // BDS 1 and BDS 2 have the same version numbers for their native compilers
+    // no compiler defines are used for BDS 1 and BDS 2
+    {$IFDEF BDS1}
+      //{$I jclcs1.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS1}
+    {----------------------------}
+    {$IFDEF BDS2}
+      //{$I jcld8.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS2}
+    {----------------------------}
+    {$IFDEF BDS3}
+      {$I jcld9.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS3}
+    {----------------------------}
+    {$IFDEF BDS4}
+      {$I jcld10.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS4}
+    {----------------------------}
+  {$ENDIF ~CLR}
 
-// check configuration
-{$IFNDEF JCL_CONFIGURED}
- {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
-  {$MESSAGE FATAL 'Your Delphi/BCB version is not supported by this JCL version!'}
- {$ELSE}
-  'Your Delphi/BCB version is not supported by this JCL version!'
- {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
-{$ENDIF !JCL_CONFIGURED}
+  // check configuration
+  {$IFNDEF JCL_CONFIGURED}
+    {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+      {$MESSAGE FATAL 'Your Delphi/BCB version is not supported by this JCL version!'}
+    {$ELSE}
+      'Your Delphi/BCB version is not supported by this JCL version!'
+    {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
+  {$ENDIF !JCL_CONFIGURED}
+
+{$ENDIF ~JCLINSTALL}
 
 // Math precision selection, mutually exclusive
 {$IFDEF MATH_EXTENDED_PRECISION}

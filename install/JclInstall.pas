@@ -1170,10 +1170,10 @@ function TJclInstallation.Install: Boolean;
 
     function SaveDefines(Defines: TStrings): Boolean;
     var
-      IncludeFileName, IncludeLine, Symbol, CLRSuffix: string;
+      TemplateFileName, IncludeFileName, IncludeLine, Symbol, CLRSuffix: string;
       IncludeFile: TStrings;
       IndexLine, DefinePos, SymbolEnd: Integer;
-      Defined, NotDefined, Changed: Boolean;
+      Defined, NotDefined: Boolean;
     const
       DefineText = '$DEFINE';
       NotDefineText = '.' + DefineText;
@@ -1184,13 +1184,13 @@ function TJclInstallation.Install: Boolean;
         CLRSuffix := ''
       else
         CLRSuffix := '.net';
+      TemplateFileName := PathAddSeparator(Distribution.JclSourceDir) + 'jcl.template.inc';
       IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.VersionNumberStr, CLRSuffix]);
       try
-        Changed := False;
         IncludeFile := TStringList.Create;
         try
-          IncludeFile.LoadFromFile(IncludeFileName);
-          WriteLog('Include file loaded');
+          IncludeFile.LoadFromFile(TemplateFileName);
+          WriteLog(Format('Loaded template for include file %s', [TemplateFileName]));
     
           for IndexLine := 0 to IncludeFile.Count - 1 do
           begin
@@ -1212,27 +1212,16 @@ function TJclInstallation.Install: Boolean;
                 DefinePos := Defines.IndexOf(Symbol);
 
                 if (DefinePos >= 0) and NotDefined then
-                begin
                   IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
-                  Changed := True;
-                end;
                 if (DefinePos < 0) and Defined then
-                begin
                   IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
-                  Changed := True;
-                end;
     
                 IncludeFile.Strings[IndexLine] := IncludeLine;
               end;
             end;
           end;
-          if Changed then
-          begin
-            IncludeFile.SaveToFile(IncludeFileName);
-            WriteLog('Include file saved');
-          end
-          else
-            WriteLog('No changes were made');
+          IncludeFile.SaveToFile(IncludeFileName);
+          WriteLog(Format('Saved include file %s', [IncludeFileName]));
         finally
           IncludeFile.Free;
         end;
@@ -1289,8 +1278,9 @@ function TJclInstallation.Install: Boolean;
         MarkOptionEnd(joPdbCreate, True);
       end;
       {$ENDIF MSWINDOWS}
-  
-      Result := SaveDefines(Defines);
+
+      // no conditional defines for C#Builder 1 and Delphi 8
+      Result := ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber <= 2)) or SaveDefines(Defines);
     finally
       Defines.Free;
     end;
