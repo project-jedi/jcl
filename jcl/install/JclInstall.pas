@@ -2133,6 +2133,9 @@ procedure TJclInstallation.Close;
   end;
 begin
   SaveOptions;
+  
+  FGUIPage := nil;
+  FGUI := nil;
 end;
 
 function TJclInstallation.CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
@@ -2799,6 +2802,7 @@ var
 begin
   for I := 0 to TargetInstallCount - 1 do
     TargetInstalls[I].Close;
+  FGUI := nil;
 end;
 
 constructor TJclDistribution.Create;
