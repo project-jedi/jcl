@@ -111,6 +111,7 @@ implementation
 
 constructor TJclAbstractContainer.Create;
 begin
+  inherited Create;
   FCriticalSection := TJclIntfCriticalSection.Create;
 end;
 

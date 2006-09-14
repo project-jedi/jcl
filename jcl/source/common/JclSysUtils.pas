@@ -654,6 +654,7 @@ begin
   try
     Move(Buffer^, BaseAddress^, Size);
     WrittenBytes := Size;
+    FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
   finally
     VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
   end;
@@ -3107,10 +3108,12 @@ end;
 {$ENDIF ~CLR}
 
 initialization
-  {$IFDEF THREADSAFE}
-  if not Assigned(GlobalMMFHandleListCS) then
-    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
-  {$ENDIF THREADSAFE}
+  {$IFNDEF CLR}
+    {$IFDEF THREADSAFE}
+    if not Assigned(GlobalMMFHandleListCS) then
+      GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
+    {$ENDIF THREADSAFE}
+  {$ENDIF ~CLR}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
@@ -3121,9 +3124,8 @@ finalization
   {$ENDIF UNITVERSIONING}
   {$IFNDEF CLR}
   FinalizeMMFHandleList;
-  {$ENDIF ~CLR}
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS.Free;
   {$ENDIF THREADSAFE}
-
+  {$ENDIF ~CLR}
 end.
