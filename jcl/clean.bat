@@ -12,5 +12,5 @@
 @del /f /s *.cfg
 @cd ..
 @cd packages
-@del /f /s *.cfg
+@del /f /s *.cfg *.local *.identcache *.rsp
 @cd..
