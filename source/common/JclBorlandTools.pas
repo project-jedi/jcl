@@ -153,6 +153,7 @@ const
   DOFDirectoriesSection = 'Directories';
   DOFUnitOutputDirKey   = 'UnitOutputDir';
   DOFSearchPathName     = 'SearchPath';
+  DOFConditionals       = 'Conditionals';
   DOFLinkerSection      = 'Linker';
   DOFPackagesKey        = 'Packages';
   DOFCompilerSection    = 'Compiler';
@@ -2210,7 +2211,7 @@ end;
 
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
-  SearchPath, DynamicPackages, SearchDcpPath, ConfigurationFileName, OptionsFileName: string;
+  SearchPath, DynamicPackages, SearchDcpPath, ConfigurationFileName, OptionsFileName, Conditionals: string;
   OptionsFile: TIniFile;
 begin
   ConfigurationFileName := ChangeFileExt(ProjectFileName, ConfigurationExtension);
@@ -2227,6 +2228,10 @@ begin
       AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, ''));
       AddPathOption('I', SearchPath);
       AddPathOption('R', SearchPath);
+
+      Conditionals := OptionsFile.ReadString(DOFDirectoriesSection, DOFConditionals, '');
+      if Conditionals <> '' then
+        Options.Add(Format('-D%s', [Conditionals]));
 
       if SamePath(DCPPath, Installation.DCPOutputPath) then
         SearchDcpPath := DCPPath
@@ -2484,6 +2489,7 @@ begin
     SetCurrentDir(SaveDir);
   end;
 end;
+
 procedure TJclDCCIL.SetDefaultOptions;
 begin
   Options.Clear;
