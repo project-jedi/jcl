@@ -721,7 +721,9 @@ begin
 
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
-    Result := ExtractFilePath(Project.FileName);
+    Result := ExtractFilePath(Project.FileName)
+  else if not PathIsAbsolute(Result) then
+    Result := PathAddSeparator(ExtractFilePath(Project.FileName)) + Result;
 end;
 
 function TJclOTAExpertBase.GetActivePersonality: TJclBorPersonality;
