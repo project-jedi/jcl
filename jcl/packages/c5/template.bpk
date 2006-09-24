@@ -52,7 +52,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value="_DEBUG;BCB"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
