@@ -142,7 +142,7 @@ resourcestring
 resourcestring
   RsExcDlgTraceOptions = 'trace options';
   RsStackList = 'Stack list';
-  RsRawData = 'No debug informations';
+  RsRawData = 'Raw analysis of the stack';
   RsModuleName = 'Module name';
   //RsAddressOffset = 'Address offset';
   RsCodeDetails = 'Code details';
