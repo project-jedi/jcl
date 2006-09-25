@@ -1,0 +1,12 @@
+EJclMIDIError
+GetMidiOutputs
+IJclMIDIOut
+MIDINoteToStr
+MIDIOut
+MIDISingleNoteTuningData
+TJclMIDIOut
+TMIDIChannel
+TMIDIDataByte
+TMIDIDataWord
+TMIDINotes
+TMIDIStatusByte

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclDebugExpert" Design="-1">
+  <Description>JCL Debug IDE extension</Description>
+  <GUID/>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>58020000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>97</VersionMinorNumber>
+  <ReleaseNumber>1</ReleaseNumber>
+  <BuildNumber>2172</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\debug\JclDebugIdeResult.pas" Targets="Windows" Formname="JclDebugResultForm" Condition=""/>
+    <File Name="..\..\experts\debug\JclDebugIdeImpl.pas" Targets="Windows" Formname="" Condition=""/>
+  </Contains>
+</Package>

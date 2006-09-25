@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclVClx" Design="0">
+  <Description>JEDI Code Library VisualCLX package</Description>
+  <GUID/>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>48300000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>97</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2172</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="visualclx" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="Clx" Formname="" Condition=""/>
+    <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="Clx" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="ClxDev" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="ClxDev" Formname="" Condition=""/>
+  </Contains>
+</Package>

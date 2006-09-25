@@ -1,0 +1,50 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = JclD50.bpl JclBaseExpertD50.bpl JclDebugExpertD50.bpl \
+  JclFavoriteFoldersExpertD50.bpl JclProjectAnalysisExpertD50.bpl \
+  JclRepositoryExpertD50.bpl JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl \
+  JclUsesExpertD50.bpl JclVersionControlExpertD50.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+JclBaseExpertD50.bpl: d5\JclBaseExpertD50.dpk
+  $(DCC)
+
+JclDebugExpertD50.bpl: d5\JclDebugExpertD50.dpk
+  $(DCC)
+
+JclFavoriteFoldersExpertD50.bpl: d5\JclFavoriteFoldersExpertD50.dpk
+  $(DCC)
+
+JclProjectAnalysisExpertD50.bpl: d5\JclProjectAnalysisExpertD50.dpk
+  $(DCC)
+
+JclRepositoryExpertD50.bpl: d5\JclRepositoryExpertD50.dpk
+  $(DCC)
+
+JclSIMDViewExpertD50.bpl: d5\JclSIMDViewExpertD50.dpk
+  $(DCC)
+
+JclThreadNameExpertD50.bpl: d5\JclThreadNameExpertD50.dpk
+  $(DCC)
+
+JclUsesExpertD50.bpl: d5\JclUsesExpertD50.dpk
+  $(DCC)
+
+JclVersionControlExpertD50.bpl: d5\JclVersionControlExpertD50.dpk
+  $(DCC)
+
+JclD50.bpl: d5.dev\JclD50.dpk
+  $(DCC)
+
+

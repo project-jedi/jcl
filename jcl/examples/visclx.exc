@@ -1,0 +1,7 @@
+common\pcre\QPCREDemo.dpr
+common\expreval\QExprEvalExample.dpr
+common\filesearch\QFileSearchDemo.dpr
+common\graphics\QClipLineDemo.dpr
+common\numformat\QNumFormatExample.dpr
+common\rtti\QRTTIDemo.dpr
+common\sysinfo\QEnvironmentExample.dpr

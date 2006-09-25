@@ -1,0 +1,4 @@
+This is where JCL development packages for Kylix 3 reside.
+
+Those packages are used instead of the standard packages of the same name for
+prototype unit testing and not intended for release.

@@ -1,0 +1,10 @@
+[Directories]
+UnitOutputDir=..\..\lib\d10
+SearchPath=..\..\source
+<%%% BEGIN LIBRARYONLY %%%>
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=%NOLINKPACKAGELIST%
+<%%% END LIBRARYONLY %%%>
+

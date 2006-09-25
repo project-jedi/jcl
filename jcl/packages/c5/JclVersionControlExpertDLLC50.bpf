@@ -1,0 +1,7 @@
+USEUNIT("..\..\experts\versioncontrol\VersionControlImpl.pas");
+USEUNIT("..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas");
+USEUNIT("..\..\experts\versioncontrol\JclVersionCtrlCVSImpl.pas");
+USEUNIT("..\..\experts\versioncontrol\JclVersionCtrlSVNImpl.pas");
+USEDEF("JclVersionControlExpertDLLC50.def");
+Project file
+DllEntryPoint

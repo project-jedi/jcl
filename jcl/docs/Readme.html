@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en-us">
+<head>
+  <title>Jedi Code Library Release 1.97</title>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <link rel="stylesheet" type="text/css" href="styles/default.css">
+  <meta content="Project JEDI" name="author">
+</head>
+<body>
+<hr>
+<h1>Jedi Code Library</h1>
+<p>Release 1.97<br>
+Build 2172<br>
+10-February-2006</p>
+<hr><br>
+<h3>News</h3>
+<p>JCL release 1.97 provide an updated support for all targets (including Borland 
+Developer Studio 2006) and an installation of some experts in C#Builder 1 and Delphi 8.</p>
+<p>As always, multiple bugs have been fixed; for detailed change logs, 
+use the facilities of our CVS repository at <a href="http://sourceforge.net/projects/jcl/">SourceForge.net</a>
+, see below.</p>
+<p><span style="FONT-WEIGHT: bold">Important:</span>
+</p>
+<ul>
+  <li><p>Note that the package naming has changed: the same package name is used by 
+all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6, 
+Delphi 7, C#Builder 1, Delphi 8, Delphi 2005 and BDS 2006); a different suffix 
+is added for each target. The installer tries to remove old packages. 
+3rd party packages requiring old DJcl* resp. CJcl* packages need to be changed 
+to accomodate the new naming scheme or they will cause conflicts in the IDE at load time.
+</p></li>
+  <li><p>DCP files are now created in the lib\target subdirectory of the JCL 
+installation. 3rd party packages requiring JCL packages need to have this path 
+in their "browse path" option to compile.
+</p></li>
+</ul>
+<p><span style="FONT-WEIGHT: bold">(Windows only)&nbsp;Installation&nbsp;options:</span></p>
+<p>Packages compiled by the JCL installer don't contain any debug 
+informations to keep their size as small as possible.</p>
+<p>The Jedi Code Library packages are required by some 3rd party packages 
+(including the Jedi Visual Component Library - JVCL), the installer generates 
+them if the "Packages" node is checked.</p>
+<p>The installer can generate MAP informations for each package. These informations 
+can be linked into binaries to become JCL debug data. Once linked MAP files could 
+be deleted. These options are subnodes of the "Packages" node.</p>
+<p><span style="FONT-WEIGHT: bold">Experts:</span></p>
+<p>For Delphi 5, Delphi 6, Delphi 7, C++Builder 5 and C++Builder 6, experts can 
+be installed as design time packages or dll experts. For C#Builder 1 and Delphi 8, 
+experts are installed as dll experts (those products don't load design time 
+packages). For Delphi 2005 and Borland Developer Studio 2006, experts are 
+installed as design time packages.</p>
+<p>A new expert integrating version control systems in the IDE was added. 
+It provides an integration of TortoiseCVS and TortoiseSVN inside the IDE, items 
+are added in the IDE menu and buttons can be placed in IDE toolbars via the 
+customize dialog, see below.</p>
+<p>A dialog-box provides configuration options for JCL experts in the Tools menu.</p>
+<p><span style="FONT-WEIGHT: bold">.net Framework support:</span></p>
+<p>A subset of JCL units was worked over to support Delphi.Net (Delphi 2005 
+&amp; BDS 2006). The packages belong to the Jedi.Jcl namespace.</p>
+<hr>
+<h3>Supported Tools</h3>
+<p><span style="FONT-WEIGHT: bold">Run time support:</span></p>
+<ul>
+  <li>Kylix 3</li>
+</ul>
+
+<p><span style="FONT-WEIGHT: bold">Design&nbsp;time support (only experts):</span></p>
+<ul>
+  <li>C#Builder 1 (refer to&nbsp;installation notes below).
+</li>
+  <li>Delphi 8.net (refer to installation notes below).</li>
+</ul>
+<p><span style="FONT-WEIGHT: bold">Both supports (run time and design time):</span></p>
+<ul>
+  <li>Delphi version 5, 6, 7
+</li>
+  <li>C++Builder version 5 &amp; 6
+</li>
+  <li>Delphi 2005 (Delphi Win32 and Delphi.net personalities)
+</li>
+  <li>Borland Developer Studio 2006 (Delphi Win32, C++ Builder Win32, Delphi.net and C#Builder personalities)</li>
+</ul>
+<hr>
+<h3>Notes</h3>
+<ul>
+  <li>Not every unit supports all tools. Look out for <tt>*.exc</tt>
+files in the tool-specific <tt>lib/</tt>subdirectories for a list of units 
+excluded from compilation.
+</li>
+  <li>Kylix 3/C++ installation is broken; the installer will fail when 
+it attempts to build the packages. Since the dreaded file open/save dialog Kylix 
+bug is haunting us again (wasn't it considered to be defeated as of Kernel 2.4.21?), 
+we are at present not investigating this further.
+</li>
+  <li><a href="http://www.freepascal.org/"><b>Free Pascal</b></a>&nbsp;(FP) 
+support has not been updated for this release; most units from 
+source/common should work with FP 2.0, as tests with a 2.0 beta (1.9.8) 
+indicated, but this has not been verified. Note that there are no plans 
+to&nbsp;support FP versions from the 1.0 branch.</li>
+</ul>
+<p><span style="FONT-WEIGHT: bold">Installation on C#Builder 1 and Delphi 8:</span></p>
+<ol>
+  <li>These products cannot be used to build the JCL installer, you need an
+    other supported product to install JCL experts on these products.</li>
+  <li>These products are not able to use the JCL library as a runtime library.
+   You cannot write managed applications and managed packages based on the JCL.
+</li>
+  <li>These products are not shipped with their native compilers, you have to
+    download it from codecentral (<a href="http://cc.borland.com/">http://cc.borland.com</a>).
+    The item (<a href="http://codecentral.borland.com/Download.aspx?id=21333">21333</a>)
+  &nbsp;the native compiler to be installed in Delphi 8.
+    The item (<a href="http://codecentral.borland.com/Download.aspx?id=21334">21334</a>)
+  &nbsp;the native compiler to be installed in C#Builder 1.
+    These zip files have to be extracted in the products director using the standard pattern:</li>
+</ol>
+<pre>		   Executable files (exe and dll)      - BDS\X.0\bin
+		   Compiler files (dcp and dcu)        - BDS\X.0\lib
+		   Toolsapi source files               - BDS\X.0\source\ToolsAPI.
+</pre>
+<hr>
+<h3>JCL Distribution content</h3>
+<pre>Install.bat                   - Compile and run JCL Installer (Win32)
+QInstall.bat                  - Compile and run CLX version of JCL Installer (Win32)
+install.sh                    - Compile and run JCL Installer (Linux)
+bin                           - Common place for sample application EXE files
+lib                           - Common place for compiled units.
+docs                          - Readme (this file) and other documents
+examples                      - JCL example applications
+experts                       - JCL IDE experts source code
+experts\debug                 - JCL Debug IDE expert for using JclDebug unit
+experts\debug\dialog          - Application exception dialog replacement
+experts\debug\simdview        - Low-level debug window for XMM registers
+experts\debug\threadnames     - IDE expert showing class names for debugged threads
+experts\debug\tools           - Tools for creating files with JCL debug information
+experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs
+experts\projectanalyzer       - Project Analyzer IDE expert
+experts\useswizard            - JCL uses wizard
+experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE
+examples\common               - CLX and Win32 example applications in Delphi
+examples\dotnet               - JCL example applications for Delphi.net
+examples\windows              - JCL example applications for Delphi.Win32
+examples\windows\delphitools  - Collection of system tools using JCL
+help                          - Help file
+install                       - Installer source code
+packages                      - JCL package sources
+source                        - JCL source code
+</pre>
+<hr>
+<h3>Feedback</h3>
+If you have any comments or suggestions we would appreciate it if you 
+drop us a note. There are several ways to get in contact with us:
+<ul>
+  <li>Newsgroup is the recommended way to contact other JCL users and the team itself. 
+They are hosted at&nbsp;<a href="news://forums.talkto.net/jedi.jcl">news://forums.talkto.net/jedi.jcl</a>.
+</li>
+  <li>Write to&nbsp;<a href="mailto:jcl@delphi-jedi.org">jcl@delphi-jedi.org</a>&nbsp; 
+or to&nbsp;<a href="mailto:jcl-testing@delphi-jedi.org">jcl-testing@delphi-jedi.org</a>&nbsp; 
+This email account should not be used for support requests. If you need 
+support please use either the newsgroups or the mailing list.</li>
+  <li>If you want to keep up to date about JCL then you can join the 
+JCL mailing list by going to <a href="http://www.egroups.com/group/JEDI-JCL">http://www.egroups.com/group/JEDI-JCL</a>
+You can also use this list to voice your opinion, comments or suggestions.
+</li>
+</ul>
+<hr>
+<h3>Issue Tracking</h3>
+<p>An issue tracking tool can be accessed via ('Code Library' category):</p>
+<p><a href="http://homepages.borland.com/jedi/issuetracker/">http://homepages.borland.com/jedi/issuetracker/</a></p>
+<p>The general rule is: <b><font color="#ff0000">If you want to get a 
+bug fixed you need to log it!</font></b></p>
+<p>The JEDI issue tracker is based up on the Mantis BugTracker Open 
+Source project. More background information about it is available on its homepage&nbsp;
+<a href="http://mantisbt.sourceforge.net/">http://mantisbt.sourceforge.net</a></p>
+<p>Please be aware that you are allowed there to enter feature request 
+and code donations as well.</p>
+<hr>
+<h3>Debug Extension for JclDebug unit</h3>
+<p>The <tt>experts\debug </tt>folder contains an IDE expert which 
+assists to insert JCL Debug information into executable files. This can be 
+useful when use source location routines from JclDebug unit. These routines 
+need some kind of special information to be able provide source location for 
+given address in the process. Currently there are four options to get it work:</p>
+<ol>
+  <li>Generate and deploy MAP file with your executable file. The file 
+is generated by the linker. It needs to be set in Project|Options 
+dialog -&gt; Linker page, Detailed checkbox.
+</li>
+  <li>Generate and deploy JDBG file file with your executable file. 
+This is binary file based on MAP file but its size is typically about 
+12% of original MAP file. You can generate it by MapToJdbg tool in <tt>jcl\examples\windows\tools</tt>
+folder. The advantage over MAP file is smaller size and better security 
+of the file content because it is not a plain text file and it also 
+contains a checksum.
+</li>
+  <li>Generate Borland TD32 debug symbols. These symbols are stored 
+directly in the executable file but usually adds several megabytes so 
+the file is very large. The advantage is you don't have to deploy any 
+other file and it is easy to generate it by checking Include TD32 debug 
+info in Linker option page.
+</li>
+  <li>Insert JCL Debug info into executable file by the IDE expert. The 
+size of added data is similar to JDBG file but it will be inserted 
+directly into the executable file. This is probably best option because 
+it combines small size of included data and no requirement of deploying 
+additional files. In case you use this option you need install the 
+JclDebugIde expert.</li>
+</ol>
+<p>
+The IDE expert will add new item to IDE Project menu. For 
+Delphi 5, 6 and 7 it adds 'Insert JCL Debug data' check item at the end 
+of the Project menu. When the item is checked, everytime the project is 
+compiled by one of following commands: Compile, Build, Compile All Projects, Build All 
+Projects or Run necessary JCL debug data are automatically inserted into the 
+executable. Moreover, for Build and Build All commands dialog with detailed 
+information of size of these data will be displayed.</p>
+<p>
+You can generate those debug data for packages and libraries as well 
+using the expert. Each executable file in the project can use different option 
+from those listed above. It is not necessary to generate any debug data for 
+Borland runtime packages because the source location code can use names of exported 
+functions to get procedure or method name. To get line number information for 
+Borland RTL and VCL/CLX units you have to check Use Debug DCUs checkbox in 
+Project|Options dialog -&gt; Compiler tab. Unfortunately it is not 
+possible to get line number information for Borland runtime packages 
+because Borland does not provide detailed MAP files for them so you get 
+procedure or method name only.</p>
+<p>In case you have more than one data source for an executable file by 
+an accident the best one is chosen in following order:</p>
+<ol>
+  <li>JCL Debug data in the executable file
+</li>
+  <li>JDBG file
+</li>
+  <li>Borland TD32 symbols
+</li>
+  <li>MAP file
+</li>
+  <li>Library or Borland package exports</li>
+</ol>
+<p>It is also possible to insert JCL debug data programmatically to the 
+executable file by using MakeJclDbg command line tool in 
+jcl\examples\windows\delphitools folder. You can study included makefiles 
+which uses this tool for building delphitools examples.</p>
+<p>To help using JclDebug exceptional stack tracking in application 
+simple dialog is provided in <tt>jcl\experts\debug\dialog</tt>folder. The dialog 
+replaces standard dialog displayed by VCL or CLX application when an unhandled 
+exception occurs. It has additional Detailed button showing the stack, list of 
+loaded modules and other system information. By adding the dialog to the 
+application exceptional stack tracking code is automatically initialized so you 
+don't have to care about it. You can also turn on logging to text file by setting 
+the Tag property of the dialog to '1'. There is also version for CLX 
+(ClxExceptDlg) but it works on Windows only. These dialogs are intended to be added to 
+Object Repository.</p>
+<p><b>Short description of getting the JclDebug functionality in your 
+project:</b></p>
+<ol>
+  <li>Close all running instances of Delphi
+</li>
+  <li>Install JCL and IDE experts by the JCL Installer
+</li>
+  <li>Run Delphi IDE and open your project
+</li>
+  <li>Remove any TApplication.OnException handlers from your project(if any).
+</li>
+  <li>Add new Exception Dialog by selecting File | New | Other ... | 
+Dialogs tab, Select 'Exception Dialog' or 'Exception Dialog with Send' 
+icon, Click OK button, Save the form (use ExceptionDialog.pas name, for 
+example)
+</li>
+  <li>Check Project | Insert JCL Debug data menu item
+</li>
+  <li>Do Project | Build</li>
+</ol>
+<hr>
+<h3>Version control expert</h3>
+<p>The JCL team is proud to release a new expert integrating version control actions 
+inside the Delphi/BCB/BDS IDE. It wraps <a href="http://tortoisecvs.sourceforge.net/">TortoiseCVS</a>&nbsp; 
+and&nbsp;<a href="http://tortoisesvn.sourceforge.net/">TortoiseSVN</a>&nbsp;commands in 
+actions that can be placed on IDE toolbars and in IDE menu.</p>
+<p>This expert requires <a href="http://tortoisecvs.sourceforge.net/">TortoiseCVS</a>&nbsp; 
+or/and&nbsp;<a href="http://tortoisesvn.sourceforge.net/">TortoiseSVN</a>&nbsp;installed on the 
+system to work properly. Please refer to these products documentations for help 
+about using version control systems.</p>
+<p>The structure of the "Jcl Version" menu can be customized in the JCL options 
+dialog (in the "Tools" menu).</p>
+<hr>
+<h3>Downloads of stable sources</h3>
+<p>These sources are official JCL releases and file status can be considered as 
+stable for use in final applications. During the past years, there have been around 2 
+or 3 releases per year.</p>
+<p>Jedi Code Library: File List on SourceForge:&nbsp;
+<a href="http://sourceforge.net/project/showfiles.php?group_id=47514">http://sourceforge.net/project/showfiles.php?group_id=47514</a>
+</p>
+<hr>
+<h3>Development sources</h3>
+<p>These files are under active development and may cause some incompatibilities 
+and some conflicts with existing code. You should not use these files in final 
+applications. The JCL development team provides these files for testing and 
+feedback from users.</p>
+
+    <html>
+      <head></head>
+      <body>
+<p>You can download snapshots of the CVS repository updated every day in the 
+&nbsp;<a href="http://jcl.sourceforge.net/daily">JCL daily page</a>
+</p>
+      </body>
+    </html>
+<p>To always have access to the most recent changes in the JCL, you 
+should install a CVS client (we recommend TortoiseCVS and WinCVS) and download 
+the CVS repository files to your computer. With the CVS client, you can update 
+your local repository at any time. For more instructions on how to set up CVS 
+and use it with JCL, see the&nbsp;<a href="http://sourceforge.net/docs/E04/">CVS instruction page</a>. 
+You can also access the CVS repository via the&nbsp;<a href="http://cvs.sourceforge.net/viewcvs.py/jcl/">web interface</a>.
+</p>
+<hr>
+<h3>Getting involved in JCL development</h3>
+If you want to help out making JCL better or bigger or just plain 
+cooler, there are several ways in which you can help out. Here are some of the 
+things we need your help on:
+<ul>
+  <li>Donate source code
+</li>
+  <li>Donate time writing help
+</li>
+  <li>Donate time writing demos
+</li>
+  <li>Donate time fixing bugs
+</li>
+  <li>Share your experience by helping users in newsgroups and mailing lists</li>
+</ul>
+<p>JCL accepts donations from developers as long as the source fullfills the 
+requirements set up by the JEDI and JCL teams. To read more about these 
+requirements, visit the page http://homepages.borland.com/jedi/jcl</p>
+<p>You can also donate your time by writing help for the source already 
+in JCL. We currently use Doc-o-Matic to create the finished help files but 
+the actual help sources are plain text files in a simple to understand format. 
+We can provide you with auto-generated templates with all classes, properties, 
+types etc already inserted. The "only" thing left to do is fill in the actual 
+help text for the help items. If you are interested in writing help, contact us.</p>
+<p>If you want to help fix bugs in JCL, go to Mantis and check the bug report 
+there. You can post replies as well as fixes directly in the bug report. One of the 
+JCL developers will pick up the report/fix and update the CVS repository if the fix is 
+satisfactory. If you report and fix a lot of bugs, you might even get developer 
+access to CVS so you can update the JCL files directly.</p>
+</body>
+</html>
