@@ -892,13 +892,13 @@ procedure TJclInstallation.Init;
       AddOption(joExceptDlg, [], Parent);
       if Target.SupportsVCL then
       begin
-        AddOption(joExceptDlgVCL, [goChecked], joExceptDlg);
+        AddOption(joExceptDlgVCL, [], joExceptDlg);
         {$IFDEF MSWINDOWS}
-        AddOption(joExceptDlgVCLSnd, [goChecked], joExceptDlg);
+        AddOption(joExceptDlgVCLSnd, [], joExceptDlg);
         {$ENDIF MSWINDOWS}
       end;
       if Target.SupportsVisualCLX then
-        AddOption(joExceptDlgCLX, [goChecked], joExceptDlg);
+        AddOption(joExceptDlgCLX, [], joExceptDlg);
     end;
   end;
 
@@ -968,7 +968,7 @@ procedure TJclInstallation.Init;
       AddOption(joExpertAnalyzer, ExpertOptions, joExperts);
       AddOption(joExpertUses, ExpertOptions, joExperts);
       AddOption(joExpertSimdView, ExpertOptions, joExperts);
-      AddOption(joExpertRepository, [goNoAutoCheck], joExperts);
+      AddOption(joExpertRepository, ExpertOptions, joExperts);
     end;
     AddOption(joExpertFavorite, ExpertOptions, joExperts);
     AddOption(joExpertVersionControl, [goNoAutoCheck], joExperts);
