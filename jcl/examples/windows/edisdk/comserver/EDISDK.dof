@@ -1,5 +1,5 @@
 [Directories]
-OutputDir=..\..\..\bin
+OutputDir=..\..\..\..\bin
 [Version Info Keys]
 CompanyName=Ray's Jedi Projects
 FileDescription=EDI SDK COM Object Library
