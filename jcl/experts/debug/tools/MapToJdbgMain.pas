@@ -15,10 +15,13 @@
 { The Initial Developer of the Original Code is Petr Vones.                                        }
 { Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Michael Chernyshev                                                                             }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                            }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -79,14 +82,33 @@ resourcestring
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
-  MapFileName: TFileName;
+  MapFileName, ExeFileName: TFileName;
+  LinkerBugUnit: string;
+  MapFileSize, JclDebugDataSize, LineNumberErrors: Integer;
 begin
-  MapFileName := ParamStr(1);
-  if MapFileName <> '' then
+  if ParamCount = 1 then
   begin
-    ConvertMapFileToJdbgFile(MapFileName);
-    Application.ShowMainForm := False;
-    Application.Terminate;
+    MapFileName := ParamStr(1);
+    if MapFileName <> '' then
+    begin
+      if not ConvertMapFileToJdbgFile(MapFileName) then
+        ExitCode := 1;
+      Application.ShowMainForm := False;
+      Application.Terminate;
+    end;
+  end
+  else
+  if ParamCount = 2 then
+  begin
+    MapFileName := ParamStr(1);
+    ExeFileName := ParamStr(2);
+    if (MapFileName <> '') and (ExeFileName <> '') then
+    begin
+      if not InsertDebugDataIntoExecutableFile(ExeFileName, MapFileName, LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors) then
+        ExitCode := 1;
+      Application.ShowMainForm := False;
+      Application.Terminate;
+    end;
   end;
 end;
 
