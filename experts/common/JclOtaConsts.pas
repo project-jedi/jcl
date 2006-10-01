@@ -92,10 +92,6 @@ const
 
   //=== Threads Expert =======================================================
   JclThreadsExpertName = 'JclThreadsExpert';
-  MutexName            = 'DebugThreadNamesMutex';
-  MutexReadName        = 'DebugThreadNamesReadMutex';
-  MappingName          = 'DebugThreadNamesMapping';
-  EventName            = 'DebugThreadNamesEvent';
 
   //=== SIMD Expert ==========================================================
   JclSIMDExpertName   = 'JclSIMDExpert';
