@@ -176,10 +176,6 @@ resourcestring
   RsEInvalidUnit = 'Invalid unit';
   RsEInvalidUses = 'Invalid uses clause';
 
-//=== ThreadExpertSharedNames.pas ============================================
-resourcestring
-  RsEnterMutexTimeout = 'JCL Thread Name IDE Expert Mutex Timeout';
-
 //=== ProjAnalyserImpl.pas ===================================================
 resourcestring
   RsAnalyzeActionCaption = 'Analyze project %s';

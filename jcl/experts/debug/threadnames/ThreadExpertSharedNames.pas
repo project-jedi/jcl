@@ -63,11 +63,19 @@ type
 implementation
 
 uses
-  JclOtaConsts, JclOtaResources, JclSysUtils;
+  // do not reference Ota units there because of the ThreadExceptExample
+  {JclOtaConsts, JclOtaResources,} JclSysUtils;
 
 const
   MaxThreadCount       = 256;
   IdeEnterMutexTimeout = 5000;
+  MutexName            = 'DebugThreadNamesMutex';
+  MutexReadName        = 'DebugThreadNamesReadMutex';
+  MappingName          = 'DebugThreadNamesMapping';
+  EventName            = 'DebugThreadNamesEvent';
+
+resourcestring
+  RsEnterMutexTimeout = 'JCL Thread Name IDE Expert Mutex Timeout';
 
 type
   TThreadName = record
