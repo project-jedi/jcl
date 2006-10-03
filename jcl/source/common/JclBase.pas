@@ -111,7 +111,7 @@ type
   PPointer = ^Pointer;
   {$IFDEF RTL140_UP}
   {$IFDEF CLR}
-  PJclByteArray = array of Byte;
+  PJclByteArray = TBytes;
   {$ELSE}
   PByte = System.PByte;
   Int8 = ShortInt;
@@ -153,12 +153,15 @@ type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = Int64;
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
+type
+  TJclBytes = TBytes;
+{$ELSE}
 // Redefinition of PByteArray to avoid range check exceptions.
 type
   TJclByteArray = array [0..MaxInt div SizeOf(Byte) - 1] of Byte;
   PJclByteArray = ^TJclByteArray;
-  TBytes = Pointer; // under .NET System.pas: TBytes = array of Byte;
+  TJclBytes = Pointer; // under .NET System.pas: TBytes = array of Byte;
 
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
 type
