@@ -243,9 +243,6 @@ type
     function IsEqual(Stream: TStream): Boolean;
     function ReadBoolean: Boolean;
     function ReadChar: Char;
-    {$IFNDEF BCB}
-    function ReadComp: Comp;
-    {$ENDIF !BCB}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
     function ReadDouble: Double;
@@ -258,9 +255,6 @@ type
     function ReadSizedString: string;
     procedure WriteBoolean(Value: Boolean);
     procedure WriteChar(Value: Char);
-    {$IFNDEF BCB}
-    procedure WriteComp(const Value: Comp);
-    {$ENDIF !BCB}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
     procedure WriteDouble(const Value: Double);
@@ -1076,13 +1070,6 @@ begin
   ReadBuffer(Result, SizeOf(Result));
 end;
 
-{$IFNDEF BCB}
-function TJclEasyStream.ReadComp: Comp;
-begin
-  ReadBuffer(Result, SizeOf(Result));
-end;
-{$ENDIF !BCB}
-
 function TJclEasyStream.ReadCurrency: Currency;
 begin
   ReadBuffer(Result, SizeOf(Result));
@@ -1160,13 +1147,6 @@ procedure TJclEasyStream.WriteChar(Value: Char);
 begin
   WriteBuffer(Value, SizeOf(Value));
 end;
-
-{$IFNDEF BCB}
-procedure TJclEasyStream.WriteComp(const Value: Comp);
-begin
-  WriteBuffer(Value, SizeOf(Value));
-end;
-{$ENDIF !BCB}
 
 procedure TJclEasyStream.WriteCurrency(const Value: Currency);
 begin
