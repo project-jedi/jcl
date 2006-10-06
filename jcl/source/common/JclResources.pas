@@ -1290,6 +1290,8 @@ resourcestring
   RsErrLibNotLoaded  = 'PCRE library not loaded';
   RsErrMemFuncNotSet = 'PCRE memory management functions not set';
   RsErrStudyFailed   = 'Study failed'; 
+  RsErrCalloutError  = 'Unhandled exception in callout';
+  RsErrUnknownError  = 'Unknown error'; 
 
 //=== JclPeImage =============================================================
 resourcestring
