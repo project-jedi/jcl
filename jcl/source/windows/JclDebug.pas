@@ -640,7 +640,7 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 type
   TJclStackTrackingOption =
     (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace);
+     stDelayedTrace, stTraceEAbort);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 var
@@ -735,6 +735,7 @@ function IsHandleValid(Handle: THandle): Boolean;
 const
   EnvironmentVarNtSymbolPath = '_NT_SYMBOL_PATH';                    // do not localize
   EnvironmentVarAlternateNtSymbolPath = '_NT_ALTERNATE_SYMBOL_PATH'; // do not localize
+  MaxStackTraceItems = 4096;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2484,7 +2485,7 @@ begin
       else
         FreeAndNil(Result);
     except
-      FreeAndNil(Result);
+      Result.Free;
       raise;
     end;
   end;
@@ -3558,7 +3559,7 @@ begin
   RawMode := stRawMode in JclStackTrackingOptions;
   Delayed := stDelayedTrace in JclStackTrackingOptions;
   if RawMode then
-    IgnoreLevels := 7
+    IgnoreLevels := 9
   else
     IgnoreLevels := 5;
   if OSException then
@@ -3703,34 +3704,50 @@ end;
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 var
   CallInstructionSize: Cardinal;
+  StackFrameCallersEBP, NewEBP: Cardinal;
+  StackFrameCallerAdr: Cardinal;
 begin
   // Only report this stack frame into the StockInfo structure
   // if the StackFrame pointer, EBP on the stack and return
   // address on the stack are valid addresses
+  StackFrameCallersEBP := StackInfo.CallersEBP;
   while ValidStackAddr(DWORD(StackFrame)) do
   begin
+    // CallersEBP above the previous CallersEBP
+    NewEBP := StackFrame^.CallersEBP;
+    if NewEBP <= StackFrameCallersEBP then
+      Break;
+    StackFrameCallersEBP := NewEBP;
+
     // CallerAdr within current process space, code segment etc.
     // CallersEBP within current thread stack. Added Mar 12 2002 per Hallvard's suggestion
-    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) and ValidStackAddr(StackFrame^.CallersEBP + FStackOffset) then
+    StackFrameCallerAdr := StackFrame^.CallerAdr;
+    if ValidCodeAddr(StackFrameCallerAdr, FModuleInfoList) and ValidStackAddr(StackFrameCallersEBP + FStackOffset) then
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
       StackInfo.ParamPtr := PDWORDArray(DWORD(StackFrame) + SizeOf(TStackFrame));
-      StackInfo.CallersEBP := StackFrame^.CallersEBP;
-      // Calculate the address of caller by subtracting the CALL instruction size (if possible)
-      if ValidCallSite(StackFrame^.CallerAdr, CallInstructionSize) then
-        StackInfo.CallerAdr := StackFrame^.CallerAdr - CallInstructionSize
+
+      if StackFrameCallersEBP > StackInfo.CallersEBP then
+        StackInfo.CallersEBP := StackFrameCallersEBP
       else
-        StackInfo.CallerAdr := StackFrame^.CallerAdr;
-      StackInfo.DumpSize := StackFrame^.CallersEBP - DWORD(StackFrame);
+        // EBP points to an address that is below the last EBP, so it must be invalid
+        Break;
+
+      // Calculate the address of caller by subtracting the CALL instruction size (if possible)
+      if ValidCallSite(StackFrameCallerAdr, CallInstructionSize) then
+        StackInfo.CallerAdr := StackFrameCallerAdr - CallInstructionSize
+      else
+        StackInfo.CallerAdr := StackFrameCallerAdr;
+      StackInfo.DumpSize := StackFrameCallersEBP - DWORD(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
       // Step to the next stack frame by following the EBP pointer
-      StackFrame := PStackFrame(StackFrame^.CallersEBP + FStackOffset);
+      StackFrame := PStackFrame(StackFrameCallersEBP + FStackOffset);
       Result := True;
       Exit;
     end;
     // Step to the next stack frame by following the EBP pointer
-    StackFrame := PStackFrame(StackFrame^.CallersEBP + FStackOffset);
+    StackFrame := PStackFrame(StackFrameCallersEBP + FStackOffset);
   end;
   Result := False;
 end;
@@ -3757,9 +3774,11 @@ var
   StackInfo: TStackInfo;
 begin
   Clear;
+  Capacity := 16; // reduce ReallocMem calls
 
   // Start at level 0
   StackInfo.Level := 0;
+  StackInfo.CallersEBP := 0;
   if DelayedTrace then
     // Get the current stack frame from the EBP register
     StackFrame := FFrameEBP
@@ -3771,7 +3790,7 @@ begin
   // stack than what would define valid stack frames.
   BaseOfStack := DWORD(StackFrame) - 1;
   // Loop over and report all valid stackframes
-  while NextStackFrame(StackFrame, StackInfo) do
+  while NextStackFrame(StackFrame, StackInfo) and (Count <> MaxStackTraceItems) do
     StoreToList(StackInfo);
 end;
 
@@ -3784,6 +3803,7 @@ var
   StackTop: DWORD;
 begin
   Clear;
+  Capacity := 16; // reduce ReallocMem calls
 
   if DelayedTrace then
   begin
@@ -3807,7 +3827,7 @@ begin
   // Clear the previous call address
   PrevCaller := 0;
   // Loop through all of the valid stack space
-  while DWORD(StackPtr) < StackTop do
+  while (DWORD(StackPtr) < StackTop) and (Count <> MaxStackTraceItems) do
   begin
     // If the current DWORD on the stack refers to a valid call site...
     if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
@@ -4086,13 +4106,7 @@ end;
 function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
 begin
   Result := TJclExceptFrame.Create(AFrame);
-  try
-    Add(Result);
-  except
-    Remove(Result);
-    Result.Free;
-    raise;
-  end;
+  Add(Result);
 end;
 
 function TJclExceptFrameList.GetItems(Index: Integer): TJclExceptFrame;
@@ -4130,7 +4144,7 @@ var
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
-  if TrackingActive then
+  if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) then
   begin
     if stStack in JclStackTrackingOptions then
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
