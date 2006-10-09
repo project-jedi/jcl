@@ -106,7 +106,8 @@ end;
 procedure TReadmeFrame.SetReadmeFileName(const Value: string);
 begin
   FReadmeFileName := Value;
-  ReadmePane.{$IFDEF VCL}Lines.{$ENDIF VCL}LoadFromFile(Value);
+  if FileExists(Value) then
+    ReadmePane.{$IFDEF VCL}Lines.{$ENDIF VCL}LoadFromFile(Value);
 end;
 
 procedure TReadmeFrame.Show;
