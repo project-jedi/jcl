@@ -41,6 +41,7 @@ unit JclDebug;
 interface
 
 {$I jcl.inc}
+{$R-,Q-}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -1096,8 +1097,6 @@ var
     end;
   end;
 
-  {$OVERFLOWCHECKS OFF}
-
   function ReadHexValue: Integer;
   var
     C: Char;
@@ -1132,10 +1131,6 @@ var
       Inc(CurrPos);
     until False;
   end;
-
-  {$IFDEF OVERFLOWCHECKS_ON}
-  {$OVERFLOWCHECKS ON}
-  {$ENDIF OVERFLOWCHECKS_ON}
 
   function ReadAddress: TJclMapAddress;
   begin
@@ -1539,9 +1534,6 @@ end;
 { D5  D4  D3  D2  D1  D0  C5  C4 | Data byte 2                                                     }
 {---------------------------------                                                                 }
 
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-
 function SimpleCryptString(const S: string): string;
 var
   I: Integer;
@@ -1691,14 +1683,6 @@ begin
   end;
   SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
 end;
-
-{$IFDEF RANGECHECKS_ON}
-{$RANGECHECKS ON}
-{$ENDIF RANGECHECKS_ON}
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
 var
@@ -1894,8 +1878,6 @@ begin
   inherited Destroy;
 end;
 
-{$OVERFLOWCHECKS OFF}
-
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
 var
   Header: PJclDbgHeader;
@@ -1919,10 +1901,6 @@ begin
     Header^.CheckSum := CheckSum;
   end;
 end;
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
 
 procedure TJclBinDebugGenerator.CreateData;
 var
@@ -2150,8 +2128,6 @@ begin
   end;
 end;
 
-{$OVERFLOWCHECKS OFF}
-
 procedure TJclBinDebugScanner.CheckFormat;
 var
   CheckSum: Integer;
@@ -2176,10 +2152,6 @@ begin
     FValidFormat := (CheckSum = Header^.CheckSum);
   end;
 end;
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
 
 function TJclBinDebugScanner.DataToStr(A: Integer): string;
 var
@@ -3563,7 +3535,10 @@ begin
   else
     IgnoreLevels := 5;
   if OSException then
-    FirstCaller := ExceptAddr
+  begin
+    Inc(IgnoreLevels); // => HandleAnyException
+    FirstCaller := ExceptAddr;
+  end
   else
     FirstCaller := nil;
 //  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
@@ -3699,8 +3674,6 @@ begin
   Result := TJclStackInfoItem(Get(Index));
 end;
 
-{$OVERFLOWCHECKS OFF}
-
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 var
   CallInstructionSize: Cardinal;
@@ -3752,10 +3725,6 @@ begin
   Result := False;
 end;
 
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
-
 procedure TJclStackInfoList.StoreToList(const StackInfo: TStackInfo);
 var
   Item: TJclStackInfoItem;
@@ -3790,7 +3759,7 @@ begin
   // stack than what would define valid stack frames.
   BaseOfStack := DWORD(StackFrame) - 1;
   // Loop over and report all valid stackframes
-  while NextStackFrame(StackFrame, StackInfo) and (Count <> MaxStackTraceItems) do
+  while NextStackFrame(StackFrame, StackInfo) and (inherited Count <> MaxStackTraceItems) do
     StoreToList(StackInfo);
 end;
 
@@ -3827,7 +3796,7 @@ begin
   // Clear the previous call address
   PrevCaller := 0;
   // Loop through all of the valid stack space
-  while (DWORD(StackPtr) < StackTop) and (Count <> MaxStackTraceItems) do
+  while (DWORD(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
   begin
     // If the current DWORD on the stack refers to a valid call site...
     if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
@@ -3875,17 +3844,9 @@ begin
   end;
 
   FFrameEBP := GetEBP;
-
-  {$OVERFLOWCHECKS OFF}
-
   FStackOffset := DWORD(FStackData) - DWORD(StackPtr);
-
   FFrameEBP := Pointer(Cardinal(FFrameEBP) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
-
-  {$IFDEF OVERFLOWCHECKS_ON}
-  {$OVERFLOWCHECKS ON}
-  {$ENDIF OVERFLOWCHECKS_ON}
 end;
 
 // Validate that the code address is a valid code site
@@ -3893,8 +3854,6 @@ end;
 // Information from Intel Manual 24319102(2).pdf, Download the 6.5 MBs from:
 // http://developer.intel.com/design/pentiumii/manuals/243191.htm
 // Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
-
-{$OVERFLOWCHECKS OFF}
 
 function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
 var
@@ -3945,10 +3904,6 @@ begin
     end;
   end;
 end;
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
@@ -4083,14 +4038,14 @@ begin
   if FrameKind <> efkUnknown then
   begin
     Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc.Instructions))));
-      if Result = nil then
-        Result := @ExcFrame.Desc.Instructions;
+    if Result = nil then
+      Result := @ExcFrame.Desc.Instructions;
   end
   else
   begin
     Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc))));
-      if Result = nil then
-        Result := @ExcFrame.Desc;
+    if Result = nil then
+      Result := @ExcFrame.Desc;
   end;
 end;
 
