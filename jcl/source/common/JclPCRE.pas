@@ -505,8 +505,10 @@ end;
 initialization
   pcre.LibNotLoadedHandler := LibNotLoadedHandler;
   LoadPCRE;
-  SetPCREMallocCallback(JclPCREGetMem);
-  SetPCREFreeCallback(JclPCREFreeMem);
+  if Assigned(pcre_malloc) then
+    SetPCREMallocCallback(JclPCREGetMem);
+  if Assigned(pcre_free) then
+    SetPCREFreeCallback(JclPCREFreeMem);
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
