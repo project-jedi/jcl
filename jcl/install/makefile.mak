@@ -42,14 +42,8 @@ $(BIN)\QJediInstaller.exe: \
 		QJediInstaller.dpr
 
 install:        $(BIN)\JediInstaller.exe
-	cd ..
-	bin\JediInstaller.exe
-	cd install
 
 qinstall:       $(BIN)\QJediInstaller.exe
-	cd ..
-	bin\QJediInstaller.exe
-	cd install
 
 .PHONY: clean prototypes
 
