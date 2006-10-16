@@ -586,7 +586,7 @@ begin
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_malloc^
+    Result := pcre_malloc^;
 end;
 
 procedure SetPCREFreeCallback(const FuncCallback: pcre_free_callback);
