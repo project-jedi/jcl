@@ -522,6 +522,7 @@ type
     FCorrectOnAccess: Boolean;
     FSkipFirstItem: Boolean;
     FDelayedTrace: Boolean;
+    FInStackTracing: Boolean;
     FRaw: Boolean;
     FStackOffset: Cardinal;
     function GetItems(Index: Integer): TJclStackInfoItem;
@@ -3628,15 +3629,20 @@ end;
 
 procedure TJclStackInfoList.ForceStackTracing;
 begin
-  if DelayedTrace and Assigned(FStackData) then
+  if DelayedTrace and Assigned(FStackData) and not FInStackTracing then
   begin
-    if Raw then
-      TraceStackRaw
-    else
-      TraceStackFrames;
-    FDelayedTrace := False;
-    if FCorrectOnAccess then
-      CorrectExceptStackListTop(Self, FSkipFirstItem);
+    FInStackTracing := True;
+    try
+      if Raw then
+        TraceStackRaw
+      else
+        TraceStackFrames;
+      if FCorrectOnAccess then
+        CorrectExceptStackListTop(Self, FSkipFirstItem);
+    finally
+      FInStackTracing := False;
+      FDelayedTrace := False;
+    end;
   end;
 end;
 
