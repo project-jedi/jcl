@@ -35,16 +35,7 @@
 
 {
 Todo:
-- style:
-  *done*- sort class members
-  *done*- insert markers
-*done*- support Aborted and set current dir in ...ExecAndCapture
-        (JclSysUtils.Execute does support it)
 - IFDEF OS specific compiler switches and defines?
-*done*- get settings from .cfg or .dof
-
-*done*- move ExecAndCapture to a unit where it fit's more
-   (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)
 }
 
 unit JclBorlandToolsExtensions;
@@ -90,7 +81,6 @@ type
 
   TJclDCCSwitchAValues = (aOn, aOff, a1, a2, a4, a8);
 
-  //(usc) check integer values
   TJclDCCASwitch = class(TJclDCCSwitch)
   private
     FDefaultValue: TJclDCCSwitchAValues;
@@ -127,7 +117,6 @@ type
 
   TJclDCCSwitchYValues = (yOn, yOff, yD);
 
-  //(usc) check because this have two checkboxes
   TJclDCCYSwitch = class(TJclDCCSwitch)
   private
     FDefaultValue: TJclDCCSwitchYValues;
@@ -147,7 +136,6 @@ type
 
   TJclDCCSwitchZValue = (zOn, zOff, z1, z2, z4);
 
-  //(usc) check integer values
   TJclDCCZSwitch = class(TJclDCCSwitch)
   private
     FDefaultValue: TJclDCCSwitchZValue;
@@ -469,9 +457,9 @@ type
 implementation
 
 uses
-  {$IFDEF DELPHI5}
+  {$IFDEF COMPILER5}
   FileCtrl,
-  {$ENDIF DELPHI5}
+  {$ENDIF COMPILER5}
   JclStrings;
 
 //=== { TJclDCCSwitch } ======================================================
@@ -541,6 +529,7 @@ end;
 function TJclDCCASwitch.GetAsInteger: Integer;
 begin
   case FValue of
+    aOff: Result := 0;
     a2: Result := 2;
     a4: Result := 4;
     a8: Result := 8;
@@ -673,8 +662,8 @@ begin
   Result := 0;//(usc) avoid hint
   case FValue of
     yOff: Result := 0;
-    yOn: Result := 1;
-    yD: Result := 2;
+    yOn: Result := 2;
+    yD: Result := 1;
   end;
 end;
 
@@ -699,10 +688,10 @@ end;
 procedure TJclDCCYSwitch.SetAsInteger(AValue: Integer);
 begin
   case AValue of
-    0: FValue := yOff;
-    1: FValue := yOn;
+    1: FValue := yD;
+    2: FValue := yOn;
     else
-      FValue := yD;
+      FValue := yOff;
   end;
 end;
 
@@ -1335,7 +1324,7 @@ begin
 
     ConditionalDefines := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFConditionalsEntry, '');
     Packages.AsDefaultString := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackagesEntry, '');
-    CompileWithPackages := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFUsePackagesEntry, 0) = 1;
+    CompileWithPackages := DOFFile.ReadInteger(JclDOFDirectoriesSection, JclDOFUsePackagesEntry, 0) = 1;
   finally
     DOFFile.Free;
   end;
@@ -1448,7 +1437,7 @@ begin
     if AIdent = JclDOFConditionalsEntry then
       Result := ConditionalDefines <> ''
     else
-    if (AIdent = JclDOFPackagesEntry) and (AIdent = JclDOFUsePackagesEntry) then
+    if (AIdent = JclDOFPackagesEntry) or (AIdent = JclDOFUsePackagesEntry) then
       Result := (Packages.Count > 0) and CompileWithPackages;
   end;
 end;
