@@ -723,7 +723,7 @@ begin
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
   else if not PathIsAbsolute(Result) then
-    Result := PathAddSeparator(ExtractFilePath(Project.FileName)) + Result;
+    Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
 function TJclOTAExpertBase.GetActivePersonality: TJclBorPersonality;
